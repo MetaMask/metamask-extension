@@ -1,36 +1,40 @@
-const EventEmitter = require('safe-event-emitter')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const Transaction = require('ethereumjs-tx')
-const EthQuery = require('ethjs-query')
-const { ethErrors } = require('eth-json-rpc-errors')
-const abi = require('human-standard-token-abi')
-const abiDecoder = require('abi-decoder')
+import EventEmitter from 'safe-event-emitter'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import Transaction from 'ethereumjs-tx'
+import EthQuery from 'ethjs-query'
+import { ethErrors } from 'eth-json-rpc-errors'
+import abi from 'human-standard-token-abi'
+import abiDecoder from 'abi-decoder'
+
 abiDecoder.addABI(abi)
-const {
+
+import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_TRANSFER_FROM,
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} = require('../../../../ui/app/helpers/constants/transactions.js')
-const TransactionStateManager = require('./tx-state-manager')
-const TxGasUtil = require('./tx-gas-utils')
-const PendingTransactionTracker = require('./pending-tx-tracker')
-const NonceTracker = require('nonce-tracker')
-const txUtils = require('./lib/util')
-const cleanErrorStack = require('../../lib/cleanErrorStack')
-const log = require('loglevel')
-const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
-const {
+} from '../../../../ui/app/helpers/constants/transactions.js'
+
+import TransactionStateManager from './tx-state-manager'
+import TxGasUtil from './tx-gas-utils'
+import PendingTransactionTracker from './pending-tx-tracker'
+import NonceTracker from 'nonce-tracker'
+import * as txUtils from './lib/util'
+import cleanErrorStack from '../../lib/cleanErrorStack'
+import log from 'loglevel'
+import recipientBlacklistChecker from './lib/recipient-blacklist-checker'
+
+import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
   TRANSACTION_TYPE_STANDARD,
   TRANSACTION_STATUS_APPROVED,
-} = require('./enums')
+} from './enums'
 
-const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
+import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -752,4 +756,4 @@ class TransactionController extends EventEmitter {
   }
 }
 
-module.exports = TransactionController
+export default TransactionController

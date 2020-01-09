@@ -1,9 +1,10 @@
-const fs = require('fs')
-const assert = require('assert')
-const clone = require('clone')
-const pify = require('pify')
-const Migrator = require('../../../app/scripts/lib/migrator/')
-const liveMigrations = require('../../../app/scripts/migrations/')
+import fs from 'fs'
+import assert from 'assert'
+import clone from 'clone'
+import pify from 'pify'
+import Migrator from '../../../app/scripts/lib/migrator'
+import liveMigrations from '../../../app/scripts/migrations'
+
 const stubMigrations = [
   {
     version: 1,
@@ -33,9 +34,11 @@ const stubMigrations = [
 ]
 const versionedData = { meta: { version: 0 }, data: { hello: 'world' } }
 
+import data from '../../../app/scripts/first-time-state'
+
 const firstTimeState = {
   meta: { version: 0 },
-  data: require('../../../app/scripts/first-time-state'),
+  data,
 }
 describe('liveMigrations require list', () => {
   it('should include all the migrations', async () => {

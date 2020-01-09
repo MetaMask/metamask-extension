@@ -7,7 +7,7 @@ import { removePermissionsFor } from '../../../../store/actions'
 
 const mapStateToProps = state => {
   return {
-    ...state.appState.modal.modalState.props || {},
+    ...(state.appState.modal.modalState.props || {}),
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
   }
 }

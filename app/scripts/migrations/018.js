@@ -6,11 +6,12 @@ This migration updates "transaction state history" to diffs style
 
 */
 
-const clone = require('clone')
-const txStateHistoryHelper = require('../controllers/transactions/lib/tx-state-history-helper')
+import clone from 'clone'
+
+import txStateHistoryHelper from '../controllers/transactions/lib/tx-state-history-helper'
 
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

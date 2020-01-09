@@ -84,4 +84,4 @@ class SimpleDropdown extends Component {
   }
 }
 
-module.exports = SimpleDropdown
+export default SimpleDropdown

@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const PropTypes = require('prop-types')
+import { inherits } from 'util'
+import PropTypes from 'prop-types'
 import Select from 'react-select'
 
 // Subviews
-const JsonImportView = require('./json.js')
-const PrivateKeyImportView = require('./private-key.js')
+import JsonImportView from './json.js'
+
+import PrivateKeyImportView from './private-key.js'
 
 
 AccountImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = AccountImportSubview
+export default AccountImportSubview
 
 
 inherits(AccountImportSubview, Component)

@@ -1,11 +1,13 @@
+import pump from 'pump'
+import querystring from 'querystring'
+import LocalMessageDuplexStream from 'post-message-stream'
+import ObjectMultiplex from 'obj-multiplex'
+import extension from 'extensionizer'
+import PortStream from 'extension-port-stream'
+
+// These require calls need to use require to be statically recognized by browserify
 const fs = require('fs')
 const path = require('path')
-const pump = require('pump')
-const querystring = require('querystring')
-const LocalMessageDuplexStream = require('post-message-stream')
-const ObjectMultiplex = require('obj-multiplex')
-const extension = require('extensionizer')
-const PortStream = require('extension-port-stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'

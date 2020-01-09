@@ -7,9 +7,9 @@ Removes the deprecated 'seedWords' state
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {

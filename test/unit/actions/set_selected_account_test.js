@@ -1,9 +1,7 @@
-const assert = require('assert')
-const freeze = require('deep-freeze-strict')
-const path = require('path')
-
-const actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-const reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+import assert from 'assert'
+import freeze from 'deep-freeze-strict'
+import reducers from '../../../ui/app/ducks'
+import { actionConstants } from '../../../ui/app/store/actions'
 
 describe('SHOW_ACCOUNT_DETAIL', function () {
   it('updates metamask state', function () {
@@ -15,7 +13,7 @@ describe('SHOW_ACCOUNT_DETAIL', function () {
     freeze(initialState)
 
     const action = {
-      type: actions.SHOW_ACCOUNT_DETAIL,
+      type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: 'bar',
     }
     freeze(action)

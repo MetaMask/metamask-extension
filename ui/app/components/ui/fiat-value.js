@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const formatBalance = require('../../helpers/utils/util').formatBalance
+import { inherits } from 'util'
+import { formatBalance } from '../../helpers/utils/util'
 
-module.exports = FiatValue
+export default FiatValue
 
 inherits(FiatValue, Component)
 function FiatValue () {

@@ -6,9 +6,9 @@ This migration modifies the network config from ambiguous 'testnet' to explicit 
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

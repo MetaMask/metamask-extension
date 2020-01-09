@@ -1,8 +1,8 @@
-const assert = require('assert')
-const ObservableStore = require('obs-store')
-const PreferencesController = require('../../../../app/scripts/controllers/preferences')
-const { addInternalMethodPrefix } = require('../../../../app/scripts/controllers/permissions')
-const sinon = require('sinon')
+import assert from 'assert'
+import ObservableStore from 'obs-store'
+import PreferencesController from '../../../../app/scripts/controllers/preferences'
+import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
+import sinon from 'sinon'
 
 describe('preferences controller', function () {
   let preferencesController

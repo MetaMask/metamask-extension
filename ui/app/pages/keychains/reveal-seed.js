@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-const { connect } = require('react-redux')
-const PropTypes = require('prop-types')
-const classnames = require('classnames')
-
-const { requestRevealSeedWords } = require('../../store/actions')
-const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
-const ExportTextContainer = require('../../components/ui/export-text-container')
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
+import { requestRevealSeedWords } from '../../store/actions'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import ExportTextContainer from '../../components/ui/export-text-container'
 
 import Button from '../../components/ui/button'
 
@@ -179,4 +178,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(null, mapDispatchToProps)(RevealSeedPage)
+export default connect(null, mapDispatchToProps)(RevealSeedPage)

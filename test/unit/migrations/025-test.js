@@ -1,8 +1,10 @@
-const assert = require('assert')
-const migration25 = require('../../../app/scripts/migrations/025')
+import assert from 'assert'
+import migration25 from '../../../app/scripts/migrations/025'
+import data from '../../../app/scripts/first-time-state'
+
 const firstTimeState = {
   meta: {},
-  data: require('../../../app/scripts/first-time-state'),
+  data,
 }
 
 const storage = {

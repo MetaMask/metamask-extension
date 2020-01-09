@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const actions = require('../../../store/actions')
-const Dropdown = require('./components/dropdown').Dropdown
-const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
-const NetworkDropdownIcon = require('./components/network-dropdown-icon')
-const R = require('ramda')
-const { NETWORKS_ROUTE } = require('../../../helpers/constants/routes')
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import * as actions from '../../../store/actions'
+import { Dropdown, DropdownMenuItem } from './components/dropdown'
+import NetworkDropdownIcon from './components/network-dropdown-icon'
+import R from 'ramda'
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -34,9 +33,6 @@ function mapDispatchToProps (dispatch) {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     },
-    setDefaultRpcTarget: type => {
-      dispatch(actions.setDefaultRpcTarget(type))
-    },
     setRpcTarget: (target, network, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, network, ticker, nickname))
     },
@@ -59,7 +55,7 @@ NetworkDropdown.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(NetworkDropdown)

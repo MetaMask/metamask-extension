@@ -1,14 +1,16 @@
-const ObservableStore = require('obs-store')
+import ObservableStore from 'obs-store'
+
 const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
-const log = require('loglevel')
-const migrations = require('../migrations/')
-const Migrator = require('../lib/migrator')
-const JsonRpcEngine = require('json-rpc-engine')
-const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
-const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
-const createOriginMiddleware = require('../lib/createOriginMiddleware')
+
+import log from 'loglevel'
+import migrations from '../migrations'
+import Migrator from '../lib/migrator'
+import JsonRpcEngine from 'json-rpc-engine'
+import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
+import createMetamaskMiddleware from './network/createMetamaskMiddleware'
+import createOriginMiddleware from '../lib/createOriginMiddleware'
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
@@ -243,4 +245,4 @@ class ThreeBoxController {
   }
 }
 
-module.exports = ThreeBoxController
+export default ThreeBoxController

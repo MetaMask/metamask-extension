@@ -1,9 +1,7 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const ethUtil = require('ethereumjs-util')
-
-const path = require('path')
-const util = require(path.join(__dirname, '..', '..', 'ui', 'app', 'helpers', 'utils', 'util.js'))
+import assert from 'assert'
+import sinon from 'sinon'
+import ethUtil from 'ethereumjs-util'
+import * as util from '../../ui/app/helpers/utils/util'
 
 describe('util', function () {
   let ethInWei = '1'

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 
-import actions from '../../../store/actions'
+import * as actions from '../../../store/actions'
 import {
   getSelectedAccount,
   getCurrentAccountWithSendEtherInfo,

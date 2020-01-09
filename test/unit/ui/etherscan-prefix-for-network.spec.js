@@ -1,5 +1,5 @@
-const assert = require('assert')
-const etherscanNetworkPrefix = require('../../../ui/lib/etherscan-prefix-for-network')
+import assert from 'assert'
+import etherscanNetworkPrefix from '../../../ui/lib/etherscan-prefix-for-network'
 
 describe('Etherscan Network Prefix', () => {
 

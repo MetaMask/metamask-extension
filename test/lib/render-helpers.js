@@ -1,29 +1,23 @@
-const { shallow, mount } = require('enzyme')
+import { shallow, mount } from 'enzyme'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { shape } from 'prop-types'
 
-module.exports = {
-  shallowWithStore,
-  mountWithStore,
-  mountWithRouter,
-}
-
-function shallowWithStore (component, store) {
+export function shallowWithStore (component, store) {
   const context = {
     store,
   }
   return shallow(component, { context })
 }
 
-function mountWithStore (component, store) {
+export function mountWithStore (component, store) {
   const context = {
     store,
   }
   return mount(component, { context })
 }
 
-function mountWithRouter (node) {
+export function mountWithRouter (node) {
 
   // Instantiate router context
   const router = {

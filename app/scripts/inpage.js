@@ -32,13 +32,14 @@ const restoreContextAfterImports = () => {
 
 cleanContextForImports()
 
-const log = require('loglevel')
-const LocalMessageDuplexStream = require('post-message-stream')
-const MetamaskInpageProvider = require('metamask-inpage-provider')
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+import MetamaskInpageProvider from 'metamask-inpage-provider'
 
 // TODO:deprecate:2020-01-13
-require('web3/dist/web3.min.js')
-const setupDappAutoReload = require('./lib/auto-reload.js')
+import 'web3/dist/web3.min.js'
+
+import setupDappAutoReload from './lib/auto-reload.js'
 
 restoreContextAfterImports()
 

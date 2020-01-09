@@ -1,10 +1,11 @@
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const BN = require('bn.js')
-const createId = require('../lib/random-id')
-const { bnToHex } = require('../lib/util')
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import BN from 'bn.js'
+import createId from '../lib/random-id'
+import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
-const {
+
+import {
   MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
@@ -15,7 +16,8 @@ const {
   KOVAN,
   GOERLI,
   MAINNET,
-} = require('./network/enums')
+} from './network/enums'
+
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
   [RINKEBY]: String(RINKEBY_CODE),
@@ -267,7 +269,7 @@ class IncomingTransactionsController {
   }
 }
 
-module.exports = IncomingTransactionsController
+export default IncomingTransactionsController
 
 function pairwise (fn) {
   let first = true

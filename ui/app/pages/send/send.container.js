@@ -2,9 +2,6 @@ import { connect } from 'react-redux'
 import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-const {
-  getSelectedAddress,
-} = require('../../selectors/selectors')
 
 import {
   getAmountConversionRate,
@@ -30,6 +27,7 @@ import {
   getSendEnsResolutionError,
 } from './send.selectors'
 import {
+  getSelectedAddress,
   getAddressBook,
 } from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'

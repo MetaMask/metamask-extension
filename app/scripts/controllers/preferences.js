@@ -1,8 +1,8 @@
-const ObservableStore = require('obs-store')
-const { addInternalMethodPrefix } = require('./permissions')
-const normalizeAddress = require('eth-sig-util').normalize
-const { isValidAddress, sha3, bufferToHex } = require('ethereumjs-util')
-const extend = require('xtend')
+import ObservableStore from 'obs-store'
+import { addInternalMethodPrefix } from './permissions'
+import { normalize as normalizeAddress } from 'eth-sig-util'
+import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import extend from 'xtend'
 
 
 class PreferencesController {
@@ -739,4 +739,4 @@ class PreferencesController {
   }
 }
 
-module.exports = PreferencesController
+export default PreferencesController

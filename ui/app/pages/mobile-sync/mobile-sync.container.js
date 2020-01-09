@@ -22,4 +22,4 @@ const mapStateToProps = state => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(MobileSyncPage)
+export default connect(mapStateToProps, mapDispatchToProps)(MobileSyncPage)

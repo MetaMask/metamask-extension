@@ -1,28 +1,28 @@
-const JsonRpcEngine = require('json-rpc-engine')
-const asMiddleware = require('json-rpc-engine/src/asMiddleware')
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const RpcCap = require('rpc-cap').CapabilitiesController
-const { ethErrors } = require('eth-json-rpc-errors')
-
-const getRestrictedMethods = require('./restrictedMethods')
-const createMethodMiddleware = require('./methodMiddleware')
-const createLoggerMiddleware = require('./loggerMiddleware')
+import JsonRpcEngine from 'json-rpc-engine'
+import asMiddleware from 'json-rpc-engine/src/asMiddleware'
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import { CapabilitiesController as RpcCap } from 'rpc-cap'
+import { ethErrors } from 'eth-json-rpc-errors'
+import getRestrictedMethods from './restrictedMethods'
+import createMethodMiddleware from './methodMiddleware'
+import createLoggerMiddleware from './loggerMiddleware'
 
 // Methods that do not require any permissions to use:
-const SAFE_METHODS = require('./permissions-safe-methods.json')
+import SAFE_METHODS from './permissions-safe-methods.json'
 
 // some constants
 const METADATA_STORE_KEY = 'domainMetadata'
 const LOG_STORE_KEY = 'permissionsLog'
 const HISTORY_STORE_KEY = 'permissionsHistory'
 const WALLET_METHOD_PREFIX = 'wallet_'
-const CAVEAT_NAMES = {
-  exposedAccounts: 'exposedAccounts',
-}
 const ACCOUNTS_CHANGED_NOTIFICATION = 'wallet_accountsChanged'
 
-class PermissionsController {
+export const CAVEAT_NAMES = {
+  exposedAccounts: 'exposedAccounts',
+}
+
+export class PermissionsController {
 
   constructor (
     {
@@ -378,13 +378,6 @@ class PermissionsController {
   }
 }
 
-module.exports = {
-  PermissionsController,
-  addInternalMethodPrefix: prefix,
-  CAVEAT_NAMES,
-}
-
-
-function prefix (method) {
+export function addInternalMethodPrefix (method) {
   return WALLET_METHOD_PREFIX + method
 }

@@ -1,16 +1,6 @@
-const {
-  getSelectedToken,
-  getSendEditingTransactionId,
-  getSendTo,
-} = require('../send.selectors.js')
+import { getSelectedToken, getSendEditingTransactionId, getSendTo } from '../send.selectors.js'
 
-const selectors = {
-  getTitleKey,
-}
-
-module.exports = selectors
-
-function getTitleKey (state) {
+export function getTitleKey (state) {
   const isEditing = Boolean(getSendEditingTransactionId(state))
   const isToken = Boolean(getSelectedToken(state))
 

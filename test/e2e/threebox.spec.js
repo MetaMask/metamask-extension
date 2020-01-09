@@ -1,6 +1,7 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 const getPort = require('get-port')
+
 const { By, until } = webdriver
 const {
   checkBrowserForConsoleErrors,

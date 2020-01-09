@@ -4,41 +4,43 @@
 
 
 // these need to run before anything else
-require('./lib/freezeGlobals')
-require('./lib/setupFetchDebugging')()
+import './lib/freezeGlobals'
+import setupFetchDebugging from './lib/setupFetchDebugging'
+
+setupFetchDebugging()
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const endOfStream = require('end-of-stream')
-const pump = require('pump')
-const debounce = require('debounce-stream')
-const log = require('loglevel')
-const extension = require('extensionizer')
-const ReadOnlyNetworkStore = require('./lib/network-store')
-const LocalStore = require('./lib/local-store')
-const storeTransform = require('obs-store/lib/transform')
-const asStream = require('obs-store/lib/asStream')
-const ExtensionPlatform = require('./platforms/extension')
-const Migrator = require('./lib/migrator/')
-const migrations = require('./migrations/')
-const PortStream = require('extension-port-stream')
-const createStreamSink = require('./lib/createStreamSink')
-const NotificationManager = require('./lib/notification-manager.js')
-const MetamaskController = require('./metamask-controller')
-const rawFirstTimeState = require('./first-time-state')
-const setupSentry = require('./lib/setupSentry')
-const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
-const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
-const getObjStructure = require('./lib/getObjStructure')
-const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+import endOfStream from 'end-of-stream'
+import pump from 'pump'
+import debounce from 'debounce-stream'
+import log from 'loglevel'
+import extension from 'extensionizer'
+import ReadOnlyNetworkStore from './lib/network-store'
+import LocalStore from './lib/local-store'
+import storeTransform from 'obs-store/lib/transform'
+import asStream from 'obs-store/lib/asStream'
+import ExtensionPlatform from './platforms/extension'
+import Migrator from './lib/migrator'
+import migrations from './migrations'
+import PortStream from 'extension-port-stream'
+import createStreamSink from './lib/createStreamSink'
+import NotificationManager from './lib/notification-manager.js'
+import MetamaskController from './metamask-controller'
+import rawFirstTimeState from './first-time-state'
+import setupSentry from './lib/setupSentry'
+import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import setupMetamaskMeshMetrics from './lib/setupMetamaskMeshMetrics'
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
+import getObjStructure from './lib/getObjStructure'
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 
-const {
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-} = require('./lib/enums')
+} from './lib/enums'
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)

@@ -1,8 +1,9 @@
-const extension = require('extensionizer')
-const ethUtil = require('ethereumjs-util')
-const assert = require('assert')
-const BN = require('bn.js')
-const {
+import extension from 'extensionizer'
+import ethUtil from 'ethereumjs-util'
+import assert from 'assert'
+import BN from 'bn.js'
+
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -12,7 +13,7 @@ const {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
-} = require('./enums')
+} from './enums'
 
 /**
  * Used to determine the window type through which the app is being viewed.
@@ -158,7 +159,7 @@ function checkForError () {
   return new Error(lastError.message)
 }
 
-module.exports = {
+export {
   removeListeners,
   getPlatform,
   getEnvironmentType,

@@ -1,10 +1,7 @@
-const assert = require('assert')
-const path = require('path')
-
+import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-
-const actions = require(path.join(__dirname, '../../../ui/app/store/actions.js'))
+import * as actions from '../../../ui/app/store/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -50,7 +47,7 @@ describe('tx confirmation screen', function () {
       store.dispatch(actions.cancelTx({ id: txId }))
         .then(() => {
           const storeActions = store.getActions()
-          const completedTxAction = storeActions.find(({ type }) => type === actions.COMPLETED_TX)
+          const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
           assert.equal(completedTxAction.value, txId)
           done()
         })

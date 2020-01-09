@@ -5,16 +5,10 @@ import {
   BASE_TOKEN_GAS_COST,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
-} from '../send.constants'
-const {
-  addCurrencies,
-  subtractCurrencies,
-} = require('../../../helpers/utils/conversion-util')
-
-const {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
-} = require('../send.constants')
+} from '../send.constants'
+import { addCurrencies, subtractCurrencies } from '../../../helpers/utils/conversion-util'
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {

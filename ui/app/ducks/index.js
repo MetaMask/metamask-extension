@@ -1,20 +1,21 @@
-const clone = require('clone')
-const extend = require('xtend')
-const copyToClipboard = require('copy-to-clipboard')
+import clone from 'clone'
+import extend from 'xtend'
+import copyToClipboard from 'copy-to-clipboard'
 
 //
 // Sub-Reducers take in the complete state and return their sub-state
 //
-const reduceMetamask = require('./metamask/metamask')
-const reduceLocale = require('./locale/locale')
-const reduceSend = require('./send/send.duck').default
+import reduceMetamask from './metamask/metamask'
+
+import reduceLocale from './locale/locale'
+import reduceSend from './send/send.duck'
 import reduceApp from './app/app'
 import reduceConfirmTransaction from './confirm-transaction/confirm-transaction.duck'
 import reduceGas from './gas/gas.duck'
 
 window.METAMASK_CACHED_LOG_STATE = null
 
-module.exports = rootReducer
+export default rootReducer
 
 function rootReducer (state, action) {
   // clone
