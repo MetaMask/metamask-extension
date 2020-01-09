@@ -33,14 +33,25 @@ export default class CurrencyDisplay extends PureComponent {
     const text = `${prefix || ''}${displayValue}`
     const title = suffix ? `${text} ${suffix}` : text
 
+    let currencyDisplayClass
+
+    if (!suffix) {
+      currencyDisplayClass = 'currency-display-component'
+    }
+
+    if (isNaN(parseInt(title[0]))) {
+      currencyDisplayClass =
+        'currency-display-component currency-display-component-hide'
+    }
+
+    if (suffix && currencies.includes(suffix.toLowerCase())) {
+      currencyDisplayClass =
+        'currency-display-component currency-display-component-hide'
+    }
+
     return (
       <div
-        className={classnames(
-          !suffix || !currencies.includes(suffix.toLowerCase())
-            ? 'currency-display-component'
-            : 'currency-display-component currency-display-component-hide',
-          className
-        )}
+        className={classnames(currencyDisplayClass, className)}
         style={style}
         title={(!hideTitle && title) || null}
       >
