@@ -243,6 +243,7 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
   }
+  // eslint-disable-next-line no-unused-vars
   const prefix = prefixForNetwork(networkId)
-  return `https://${prefix}etherscan.io/tx/${hash}`
+  return `https://confluxscan.io/transactionsdetail/${hash}`
 }

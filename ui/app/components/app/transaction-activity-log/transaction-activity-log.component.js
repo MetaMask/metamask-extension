@@ -8,6 +8,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
+// eslint-disable-next-line no-unused-vars
 import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionActivityLog extends PureComponent {
@@ -30,11 +31,11 @@ export default class TransactionActivityLog extends PureComponent {
   }
 
   handleActivityClick = hash => {
-    const { primaryTransaction } = this.props
-    const { metamaskNetworkId } = primaryTransaction
+    // const { primaryTransaction } = this.props
+    // const { metamaskNetworkId } = primaryTransaction
 
-    const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    // const prefix = prefixForNetwork(metamaskNetworkId)
+    const etherscanUrl = `https://confluxscan.io/transactionsdetail/${hash}`
 
     global.platform.openWindow({ url: etherscanUrl })
   }
@@ -88,7 +89,7 @@ export default class TransactionActivityLog extends PureComponent {
   renderActivity (activity, index) {
     const { conversionRate, nativeCurrency } = this.props
     const { eventKey, value, timestamp, hash } = activity
-    const ethValue =
+    let ethValue =
       index === 0
         ? `${getValueFromWeiHex({
           value,
@@ -104,6 +105,10 @@ export default class TransactionActivityLog extends PureComponent {
           numberOfDecimals: 3,
         })
     const formattedTimestamp = formatDate(timestamp, "T 'on' M/d/y")
+    ethValue = ethValue
+      .replace('ETH', 'CFX')
+      .replace('GWEI', 'GDrip')
+      .replace('WEI', 'Drip')
     const activityText = this.context.t(eventKey, [
       ethValue,
       formattedTimestamp,
