@@ -2,8 +2,6 @@ import ObservableStore from 'obs-store'
 import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
-import extend from 'xtend'
-
 
 class PreferencesController {
 
@@ -29,7 +27,7 @@ class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = extend({
+    const initState = Object.assign({
       frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
@@ -489,7 +487,7 @@ class PreferencesController {
     })
     if (index > -1) {
       const rpcDetail = rpcList[index]
-      const updatedRpc = extend(rpcDetail, newRpcDetails)
+      const updatedRpc = { ...rpcDetail, ...newRpcDetails }
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {

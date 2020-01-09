@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 import { getRandomArrayItem } from '../lib/util'
 
 /**
@@ -21,7 +20,7 @@ class ABTestController {
    */
   constructor (opts = {}) {
     const { initState } = opts
-    this.store = new ObservableStore(extend({
+    this.store = new ObservableStore(Object.assign({
       abTests: {
         fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
       },
