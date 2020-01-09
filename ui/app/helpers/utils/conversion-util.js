@@ -124,9 +124,20 @@ const converter = R.pipe(
   R.view(R.lensProp('value'))
 )
 
-const conversionUtil = (
-  value,
-  {
+// function CFXToETH (str) {
+//   if (str === 'CFX') {
+//     return 'ETH'
+//   }
+//   return str
+// }
+
+const conversionUtil = (value, opts) => {
+  // Object.keys(opts).forEach(key => {
+  //   opts[key] = CFXToETH(opts[key])
+  // })
+  // TODO: temp fix for ui crashing when switch back from none exist network
+  // should look into this, need to find a better solution
+  const {
     fromCurrency = null,
     toCurrency = fromCurrency,
     fromNumericBase,
@@ -136,20 +147,27 @@ const conversionUtil = (
     numberOfDecimals,
     conversionRate,
     invertConversionRate,
+  } = opts
+
+  let result
+  try {
+    result = converter({
+      fromCurrency,
+      toCurrency,
+      fromNumericBase,
+      toNumericBase,
+      fromDenomination,
+      toDenomination,
+      numberOfDecimals,
+      conversionRate,
+      invertConversionRate,
+      value: value || '0',
+    })
+  } catch (err) {
+    result = 0
   }
-) =>
-  converter({
-    fromCurrency,
-    toCurrency,
-    fromNumericBase,
-    toNumericBase,
-    fromDenomination,
-    toDenomination,
-    numberOfDecimals,
-    conversionRate,
-    invertConversionRate,
-    value: value || '0',
-  })
+  return result
+}
 
 const addCurrencies = (a, b, options = {}) => {
   const { aBase, bBase, ...conversionOptions } = options
