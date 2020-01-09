@@ -1,4 +1,4 @@
-const EventEmitter = require('events')
+import EventEmitter from 'events'
 
 /**
  * @typedef {object} Migration
@@ -95,4 +95,4 @@ class Migrator extends EventEmitter {
   }
 }
 
-module.exports = Migrator
+export default Migrator

@@ -3,9 +3,8 @@ import { compose } from 'recompose'
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 import { withRouter } from 'react-router-dom'
 
-const extend = require('xtend')
-
-const { addToken, removeSuggestedTokens } = require('../../store/actions')
+import extend from 'xtend'
+import { addToken, removeSuggestedTokens } from '../../store/actions'
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens, suggestedTokens } = metamask

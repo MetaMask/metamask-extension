@@ -1,7 +1,7 @@
-const valuesFor = require('../app/helpers/utils/util').valuesFor
-const log = require('loglevel')
+import { valuesFor } from '../app/helpers/utils/util'
+import log from 'loglevel'
 
-module.exports = function (
+export default function txHelper (
   unapprovedTxs,
   unapprovedMsgs,
   personalMsgs,

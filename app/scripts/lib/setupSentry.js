@@ -1,12 +1,14 @@
-const Sentry = require('@sentry/browser')
+import * as Sentry from '@sentry/browser'
+
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
+import extractEthjsErrorMessage from './extractEthjsErrorMessage'
+
 const SENTRY_DSN_PROD =
   'https://9f364c1e50ff4c8b96f279b236019359@sentry.conflux-chain.org/10'
 const SENTRY_DSN_DEV =
   'https://b6d6770834fe4c6bb3912b598d6b53b8@sentry.conflux-chain.org/9'
 
-module.exports = setupSentry
+export default setupSentry
 
 // Setup sentry remote error reporting
 function setupSentry (opts) {

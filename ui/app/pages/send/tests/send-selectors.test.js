@@ -1,7 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import selectors from '../send.selectors.js'
-const {
+import {
   accountsWithSendEtherInfoSelector,
   // autoAddToBetaUI,
   getBlockGasLimit,
@@ -38,7 +37,7 @@ const {
   getTokenExchangeRate,
   getUnapprovedTxs,
   transactionsSelector,
-} = selectors
+} from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
 describe('send selectors', () => {

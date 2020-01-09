@@ -3,7 +3,7 @@ const selectors = {
   getBasicGasEstimateLoadingStatus,
 }
 
-module.exports = selectors
+export default selectors
 
 function getCurrentBlockTime (state) {
   return state.gas.currentBlockTime

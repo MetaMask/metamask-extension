@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import QrScanner from './qr-scanner.component'
 
-const {
+import {
   hideModal,
   qrCodeDetected,
   showQrScanner,
-} = require('../../../../store/actions')
+} from '../../../../store/actions'
 import { SEND_ROUTE } from '../../../../helpers/constants/routes'
 
 const mapStateToProps = state => {

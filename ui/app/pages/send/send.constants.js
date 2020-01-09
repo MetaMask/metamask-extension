@@ -1,8 +1,8 @@
-const ethUtil = require('ethereumjs-util')
-const {
+import ethUtil from 'ethereumjs-util'
+import {
   conversionUtil,
   multiplyCurrencies,
-} = require('../../helpers/utils/conversion-util')
+} from '../../helpers/utils/conversion-util'
 
 const MIN_GAS_PRICE_DEC = '0'
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC).toString(16)
@@ -48,7 +48,7 @@ const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for token transfers.
 
-module.exports = {
+export {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,

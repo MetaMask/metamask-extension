@@ -1,24 +1,24 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const { compose } = require('recompose')
-const { withRouter } = require('react-router-dom')
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const {
+import PropTypes from 'prop-types'
+import { compose } from 'recompose'
+import { withRouter } from 'react-router-dom'
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
-} = require('../../../selectors/selectors')
-const { CONNECTED_ROUTE } = require('../../../helpers/constants/routes')
-const genAccountLink = require('../../../../lib/account-link.js')
-const { Menu, Item, CloseArea } = require('./components/menu')
+} from '../../../selectors/selectors'
+import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
+import genAccountLink from '../../../../lib/account-link.js'
+import { Menu, Item, CloseArea } from './components/menu'
 
 AccountDetailsDropdown.contextTypes = {
   t: PropTypes.func,
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(AccountDetailsDropdown)
@@ -124,7 +124,7 @@ AccountDetailsDropdown.prototype.render = function AccountDetailsDropdown () {
             eventOpts: {
               category: 'Navigation',
               action: 'Account Options',
-              name: 'Clicked View on Confluxscan',
+              name: 'Clicked View on Etherscan',
             },
           })
           viewOnEtherscan(address, network, rpcPrefs)

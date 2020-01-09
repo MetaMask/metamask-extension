@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-const qrCode = require('qrcode-generator')
-const connect = require('react-redux').connect
-const { isHexPrefixed } = require('ethereumjs-util')
-const ReadOnlyInput = require('./readonly-input')
-const { checksumAddress } = require('../../helpers/utils/util')
+import qrCode from 'qrcode-generator'
+import { connect } from 'react-redux'
+import { isHexPrefixed } from 'ethereumjs-util'
+import ReadOnlyInput from './readonly-input'
+import { checksumAddress } from '../../helpers/utils/util'
 
-module.exports = connect(mapStateToProps)(QrCodeView)
+export default connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps (state) {
   return {

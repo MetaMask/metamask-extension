@@ -50,7 +50,7 @@ const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from'
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method'
 const SIGNATURE_REQUEST_PATH = '/signature-request'
 
-module.exports = {
+export {
   DEFAULT_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,

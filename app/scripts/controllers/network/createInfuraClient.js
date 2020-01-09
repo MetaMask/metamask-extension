@@ -1,15 +1,15 @@
-const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
-const createBlockReRefMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/block-ref')
-const createRetryOnEmptyMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/retryOnEmpty')
-const createBlockCacheMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/block-cache')
-const createInflightMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/inflight-cache')
-const createBlockTrackerInspectorMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/block-tracker-inspector')
-const providerFromMiddleware = require('@yqrashawn/cfx-json-rpc-middleware/providerFromMiddleware')
-const createInfuraMiddleware = require('eth-json-rpc-infura')
-const BlockTracker = require('./eth-block-tracker')
+import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
+import createScaffoldMiddleware from 'json-rpc-engine/src/createScaffoldMiddleware'
+import createBlockReRefMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-ref'
+import createRetryOnEmptyMiddleware from '@yqrashawn/cfx-json-rpc-middleware/retryOnEmpty'
+import createBlockCacheMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-cache'
+import createInflightMiddleware from '@yqrashawn/cfx-json-rpc-middleware/inflight-cache'
+import createBlockTrackerInspectorMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-tracker-inspector'
+import providerFromMiddleware from '@yqrashawn/cfx-json-rpc-middleware/providerFromMiddleware'
+import createInfuraMiddleware from 'eth-json-rpc-infura'
+import BlockTracker from './eth-block-tracker'
 
-module.exports = createInfuraClient
+export default createInfuraClient
 
 function createInfuraClient ({ network, onRequest }) {
   const infuraMiddleware = mergeMiddleware([

@@ -1,10 +1,11 @@
-const extension = require('extensionizer')
-const log = require('loglevel')
+import extension from 'extensionizer'
+import log from 'loglevel'
+import { checkForError } from './util'
 
 /**
  * A wrapper around the extension's storage local API
  */
-module.exports = class ExtensionStore {
+export default class ExtensionStore {
   /**
    * @constructor
    */
@@ -89,22 +90,4 @@ module.exports = class ExtensionStore {
  */
 function isEmpty (obj) {
   return Object.keys(obj).length === 0
-}
-
-/**
- * Returns an Error if extension.runtime.lastError is present
- * this is a workaround for the non-standard error object thats used
- * @returns {Error}
- */
-function checkForError () {
-  const lastError = extension.runtime.lastError
-  if (!lastError) {
-    return
-  }
-  // if it quacks like an Error, its an Error
-  if (lastError.stack && lastError.message) {
-    return lastError
-  }
-  // repair incomplete error object (eg chromium v77)
-  return new Error(lastError.message)
 }

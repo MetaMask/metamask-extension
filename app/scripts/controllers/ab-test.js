@@ -1,6 +1,6 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
-const { getRandomArrayItem } = require('../lib/util')
+import ObservableStore from 'obs-store'
+import extend from 'xtend'
+import { getRandomArrayItem } from '../lib/util'
 
 /**
  * a/b test descriptions:
@@ -60,4 +60,4 @@ ABTestController.abTestGroupNames = {
   fullScreenVsPopup: ['control', 'fullScreen'],
 }
 
-module.exports = ABTestController
+export default ABTestController

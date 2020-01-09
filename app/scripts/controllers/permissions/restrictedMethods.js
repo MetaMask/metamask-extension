@@ -1,4 +1,4 @@
-module.exports = function getRestrictedMethods (permissionsController) {
+export default function getRestrictedMethods (permissionsController) {
   return {
     eth_accounts: {
       description: 'View the address of the selected account',

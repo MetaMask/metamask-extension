@@ -1,23 +1,24 @@
-const assert = require('assert')
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ComposedStore = require('obs-store/lib/composed')
-const EthQuery = require('../../eth-query')
-const JsonRpcEngine = require('json-rpc-engine')
-const providerFromEngine = require('@yqrashawn/cfx-json-rpc-middleware/providerFromEngine')
-const log = require('loglevel')
-const createMetamaskMiddleware = require('./createMetamaskMiddleware')
-// const createInfuraClient = require('./createInfuraClient')
-const createJsonRpcClient = require('./createJsonRpcClient')
-const createLocalhostClient = require('./createLocalhostClient')
-const {
+import assert from 'assert'
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ComposedStore from 'obs-store/lib/composed'
+import EthQuery from '../../eth-query'
+import JsonRpcEngine from 'json-rpc-engine'
+import providerFromEngine from '@yqrashawn/cfx-json-rpc-middleware/providerFromEngine'
+import log from 'loglevel'
+import createMetamaskMiddleware from './createMetamaskMiddleware'
+// import createInfuraClient from './createInfuraClient'
+import createJsonRpcClient from './createJsonRpcClient'
+import createLocalhostClient from './createLocalhostClient'
+import {
   createSwappableProxy,
   createEventEmitterProxy,
-} = require('swappable-obj-proxy')
-const extend = require('extend')
+} from 'swappable-obj-proxy'
+import extend from 'extend'
+
 const networks = { networkList: {} }
 
-const {
+import {
   // ROPSTEN,
   // RINKEBY,
   // KOVAN,
@@ -25,9 +26,8 @@ const {
   MAINNET,
   LOCALHOST,
   // GOERLI,
-} = require('./enums')
+} from './enums'
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-// const INFURA_PROVIDER_TYPES = []
 // TODO: add main net endpoint
 const CONFLUX_MAINNET = 'http://13.67.73.51:12537'
 const CONFLUX_TEST_NET = 'http://13.67.73.51:12537'
@@ -55,7 +55,7 @@ const defaultNetworkConfig = {
   ticker: 'CFX',
 }
 
-module.exports = class NetworkController extends EventEmitter {
+export default class NetworkController extends EventEmitter {
   constructor (opts = {}) {
     super()
 
@@ -261,7 +261,7 @@ module.exports = class NetworkController extends EventEmitter {
   //   this._setNetworkClient(networkClient)
   //   // setup networkConfig
   //   var settings = {
-  //     ticker: 'ETH',
+  //     ticker: 'CFX',
   //   }
   //   this.networkConfig.putState(settings)
   // }

@@ -1,9 +1,10 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
+import { inherits } from 'util'
+import { Component } from 'react'
+
 const defaultKey = 'persistent-form-default'
 const eventName = 'keyup'
 
-module.exports = PersistentForm
+export default PersistentForm
 
 function PersistentForm () {
   Component.call(this)

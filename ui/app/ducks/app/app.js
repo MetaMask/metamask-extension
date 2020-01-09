@@ -1,7 +1,9 @@
-const extend = require('xtend')
-const actions = require('../../store/actions')
-const txHelper = require('../../../lib/tx-helper')
-const log = require('loglevel')
+import extend from 'xtend'
+import txHelper from '../../../lib/tx-helper'
+import log from 'loglevel'
+import { actionConstants } from '../../store/actions'
+
+const actions = actionConstants
 
 // Actions
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'

@@ -1,7 +1,9 @@
+/* eslint-disable import/no-dynamic-require */
 const fs = require('fs')
 const path = require('path')
 const promisify = require('pify')
 const enLocaleMessages = require('../app/_locales/en/messages.json')
+
 const writeFile = promisify(fs.writeFile)
 
 start().catch(console.error)

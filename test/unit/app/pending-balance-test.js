@@ -1,7 +1,7 @@
-const assert = require('assert')
-const PendingBalanceCalculator = require('../../../app/scripts/lib/pending-balance-calculator')
-const MockTxGen = require('../../lib/mock-tx-gen')
-const BN = require('ethereumjs-util').BN
+import assert from 'assert'
+import PendingBalanceCalculator from '../../../app/scripts/lib/pending-balance-calculator'
+import MockTxGen from '../../lib/mock-tx-gen'
+import { BN } from 'ethereumjs-util'
 
 const zeroBn = new BN(0)
 const etherBn = new BN(String(1e18))

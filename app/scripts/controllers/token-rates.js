@@ -1,7 +1,7 @@
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const normalizeAddress = require('eth-sig-util').normalize
-const ethUtil = require('ethereumjs-util')
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import { normalize as normalizeAddress } from 'eth-sig-util'
+import ethUtil from 'ethereumjs-util'
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
@@ -97,4 +97,4 @@ class TokenRatesController {
   }
 }
 
-module.exports = TokenRatesController
+export default TokenRatesController

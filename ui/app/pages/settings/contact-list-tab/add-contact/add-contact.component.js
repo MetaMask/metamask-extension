@@ -7,7 +7,7 @@ import {
   isValidAddress,
   isValidENSAddress,
 } from '../../../../helpers/utils/util'
-import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input'
+import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 import debounce from 'lodash.debounce'
 

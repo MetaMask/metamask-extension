@@ -1,4 +1,4 @@
-const {
+import {
   ROPSTEN,
   RINKEBY,
   KOVAN,
@@ -17,7 +17,7 @@ const {
   MAINNET_DISPLAY_NAME,
   TESTNET_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
-} = require('./enums')
+} from './enums'
 
 const networkToNameMap = {
   [ROPSTEN]: ROPSTEN_DISPLAY_NAME,
@@ -34,9 +34,9 @@ const networkToNameMap = {
   [GOERLI_CODE]: GOERLI_DISPLAY_NAME,
 }
 
-const getNetworkDisplayName = key => networkToNameMap[key]
+export const getNetworkDisplayName = key => networkToNameMap[key]
 
-function formatTxMetaForRpcResult (txMeta) {
+export function formatTxMetaForRpcResult (txMeta) {
   return {
     blockHash: txMeta.txReceipt ? txMeta.txReceipt.blockHash : null,
     blockNumber: txMeta.txReceipt ? txMeta.txReceipt.blockNumber : null,
@@ -55,9 +55,4 @@ function formatTxMetaForRpcResult (txMeta) {
     r: txMeta.r,
     s: txMeta.s,
   }
-}
-
-module.exports = {
-  getNetworkDisplayName,
-  formatTxMetaForRpcResult,
 }

@@ -1,4 +1,4 @@
-module.exports = setupMetamaskMeshMetrics
+export default setupMetamaskMeshMetrics
 
 /**
  * Injects an iframe into the current document for testing

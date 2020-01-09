@@ -1,5 +1,5 @@
-const BN = require('ethereumjs-util').BN
-const normalize = require('eth-sig-util').normalize
+import { BN } from 'ethereumjs-util'
+import { normalize } from 'eth-sig-util'
 
 class PendingBalanceCalculator {
   /**
@@ -76,4 +76,4 @@ class PendingBalanceCalculator {
   }
 }
 
-module.exports = PendingBalanceCalculator
+export default PendingBalanceCalculator

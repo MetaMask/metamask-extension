@@ -1,6 +1,6 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
-const log = require('loglevel')
+import ObservableStore from 'obs-store'
+import extend from 'xtend'
+import log from 'loglevel'
 
 /**
  * @typedef {Object} InitState
@@ -79,4 +79,4 @@ class OnboardingController {
   }
 }
 
-module.exports = OnboardingController
+export default OnboardingController

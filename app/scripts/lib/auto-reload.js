@@ -1,6 +1,6 @@
 // TODO:deprecate:2020-01-13
 
-module.exports = setupDappAutoReload
+export default setupDappAutoReload
 
 function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage

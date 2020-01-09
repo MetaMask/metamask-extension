@@ -222,7 +222,7 @@ class ConnectScreen extends Component {
           {this.context.t('havingTroubleConnecting')}
           <a
             className="hw-connect__footer__link"
-            href="https://github.com/Conflux-Chain/metamask-extension/issues"
+            href="https://support.metamask.io/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -254,4 +254,4 @@ class ConnectScreen extends Component {
   }
 }
 
-module.exports = ConnectScreen
+export default ConnectScreen

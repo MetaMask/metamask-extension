@@ -1,148 +1,73 @@
-const abi = require('human-standard-token-abi')
-const pify = require('pify')
-const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
-const {
+import abi from 'human-standard-token-abi'
+import pify from 'pify'
+import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
+import {
   getTokenAddressFromTokenObject,
   checksumAddress,
-} = require('../helpers/utils/util')
-const { calcTokenBalance, estimateGas } = require('../pages/send/send.utils')
-const ethUtil = require('ethereumjs-util')
-const { fetchLocale } = require('../helpers/utils/i18n-helper')
-const { getMethodDataAsync } = require('../helpers/utils/transactions.util')
-const { fetchSymbolAndDecimals } = require('../helpers/utils/token-util')
+} from '../helpers/utils/util'
+import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
+import ethUtil from 'ethereumjs-util'
+import { fetchLocale } from '../helpers/utils/i18n-helper'
+import { getMethodDataAsync } from '../helpers/utils/transactions.util'
+import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
-const log = require('loglevel')
-const {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-} = require('../../../app/scripts/lib/enums')
-const {
-  hasUnconfirmedTransactions,
-} = require('../helpers/utils/confirm-tx.util')
-const gasDuck = require('../ducks/gas/gas.duck')
-const WebcamUtils = require('../../lib/webcam-utils')
+import log from 'loglevel'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
+import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
+import { setCustomGasLimit } from '../ducks/gas/gas.duck'
+import WebcamUtils from '../../lib/webcam-utils'
 
-const actions = {
-  _setBackgroundConnection: _setBackgroundConnection,
-
+export const actionConstants = {
   GO_HOME: 'GO_HOME',
-  goHome: goHome,
   // modal state
   MODAL_OPEN: 'UI_MODAL_OPEN',
   MODAL_CLOSE: 'UI_MODAL_CLOSE',
-  showModal: showModal,
-  hideModal: hideModal,
   // notification state
   CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
-  showSidebar: showSidebar,
-  hideSidebar: hideSidebar,
   // sidebar state
   ALERT_OPEN: 'UI_ALERT_OPEN',
   ALERT_CLOSE: 'UI_ALERT_CLOSE',
-  showAlert: showAlert,
-  hideAlert: hideAlert,
   QR_CODE_DETECTED: 'UI_QR_CODE_DETECTED',
-  qrCodeDetected,
   // network dropdown open
   NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
-  showNetworkDropdown: showNetworkDropdown,
-  hideNetworkDropdown: hideNetworkDropdown,
   // transition state
   TRANSITION_FORWARD: 'TRANSITION_FORWARD',
-  transitionForward,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
-  updateMetamaskState: updateMetamaskState,
-  fetchInfoToSync,
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  forgotPassword: forgotPassword,
-  markPasswordForgotten,
-  unMarkPasswordForgotten,
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
-  unlockMetamask: unlockMetamask,
-  unlockFailed: unlockFailed,
-  unlockSucceeded,
-  setNewAccountForm,
-  createNewVaultAndRestore: createNewVaultAndRestore,
-  createNewVaultAndGetSeedPhrase,
-  unlockAndGetSeedPhrase,
-  addNewKeyring,
-  importNewAccount,
-  addNewAccount,
-  connectHardware,
-  checkHardwareStatus,
-  forgetDevice,
-  unlockHardwareWalletAccount,
-  resetAccount,
-  removeAccount,
-  showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
-  closeWelcomeScreen,
-  // seed recovery actions
-  requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
   UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
   UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
-  tryUnlockMetamask: tryUnlockMetamask,
-  lockMetamask: lockMetamask,
-  unlockInProgress: unlockInProgress,
   // error handling
-  displayWarning: displayWarning,
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
-  hideWarning: hideWarning,
   // accounts screen
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
-  showQrScanner,
-  setCurrentCurrency,
-  setCurrentAccountTab,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
-  showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
-  showSendTokenPage,
-  addToAddressBook: addToAddressBook,
-  removeFromAddressBook: removeFromAddressBook,
-  exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
-  showPrivateKey: showPrivateKey,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
-  setAccountLabel,
-  updateNetworkNonce,
   SET_NETWORK_NONCE: 'SET_NETWORK_NONCE',
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
-  signMsg: signMsg,
-  cancelMsg: cancelMsg,
-  signPersonalMsg,
-  cancelPersonalMsg,
-  signTypedMsg,
-  cancelTypedMsg,
-  signTx: signTx,
-  signTokenTx: signTokenTx,
-  updateTransaction,
-  updateAndApproveTx,
-  cancelTx: cancelTx,
-  cancelTxs,
-  completedTx: completedTx,
-  txError: txError,
-  updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   SET_NEXT_NONCE: 'SET_NEXT_NONCE',
-  getNextNonce,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
@@ -159,200 +84,87 @@ const actions = {
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
   UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
-  updateSendEnsResolution,
-  updateSendEnsResolutionError,
-  setGasLimit,
-  setGasPrice,
-  updateGasData,
-  setGasTotal,
-  updateSendTokenBalance,
-  updateSendHexData,
-  updateSendTo,
-  updateSendAmount,
-  setMaxModeTo,
-  updateSend,
-  updateSendErrors,
-  clearSend,
-  setSelectedAddress,
-  gasLoadingStarted,
-  gasLoadingFinished,
-  // app messages
-  showAccountDetail: showAccountDetail,
-  showAccountsPage: showAccountsPage,
-  showConfTxPage: showConfTxPage,
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
-  showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
-  showAddTokenPage,
-  addToken,
-  addTokens,
-  removeToken,
-  updateTokens,
-  removeSuggestedTokens,
-  addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
-  updateAndSetCustomRpc: updateAndSetCustomRpc,
-  setRpcTarget: setRpcTarget,
-  delRpcTarget: delRpcTarget,
-  editRpc: editRpc,
-  setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
-  setHardwareWalletDefaultHdPath,
-  updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
-  showLoadingIndication: showLoadingIndication,
-  hideLoadingIndication: hideLoadingIndication,
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
-  buyEth: buyEth,
   PAIR_UPDATE: 'PAIR_UPDATE',
-  pairUpdate: pairUpdate,
   SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
-  showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
-  hideSubLoadingIndication: hideSubLoadingIndication,
   // QR STUFF:
   SHOW_QR: 'SHOW_QR',
-  showQrView: showQrView,
-  reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
 
-  forceUpdateMetamaskState,
-
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
-  toggleAccountMenu,
-
-  useEtherscanProvider,
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
-  setUseBlockie,
   SET_USE_NONCEFIELD: 'SET_USE_NONCEFIELD',
-  setUseNonceField,
   UPDATE_CUSTOM_NONCE: 'UPDATE_CUSTOM_NONCE',
-  updateCustomNonce,
   SET_IPFS_GATEWAY: 'SET_IPFS_GATEWAY',
-  setIpfsGateway,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
   SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
-  setParticipateInMetaMetrics,
-  setMetaMetricsSendCount,
 
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
-  setCurrentLocale,
-  updateCurrentLocale,
 
   // Feature Flags
-  setFeatureFlag,
-  updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
   // Preferences
-  setPreference,
-  updatePreferences,
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
-  setUseNativeCurrencyAsPrimaryCurrencyPreference,
-  setShowFiatConversionOnTestnetsPreference,
-  setAutoLogoutTimeLimit,
 
   // Onboarding
-  setCompletedOnboarding,
-  completeOnboarding,
   COMPLETE_ONBOARDING: 'COMPLETE_ONBOARDING',
 
-  setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  retryTransaction,
   SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
-  setPendingTokens,
-  clearPendingTokens,
 
-  createCancelTransaction,
-  createSpeedUpTransaction,
-  createRetryTransaction,
-
-  // Permissions
-  approvePermissionsRequest,
-  clearPermissions,
-  rejectPermissionsRequest,
-  removePermissionsFor,
-  legacyExposeAccounts,
-
-  setFirstTimeFlowType,
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
 
   SET_SELECTED_SETTINGS_RPC_URL: 'SET_SELECTED_SETTINGS_RPC_URL',
-  setSelectedSettingsRpcUrl,
   SET_NETWORKS_TAB_ADD_MODE: 'SET_NETWORKS_TAB_ADD_MODE',
-  setNetworksTabAddMode,
 
-  // AppStateController-related actions
-  setLastActiveTime,
-  setMkrMigrationReminderTimestamp,
-
-  getContractMethodData,
-  loadingMethoDataStarted,
-  loadingMethoDataFinished,
   LOADING_METHOD_DATA_STARTED: 'LOADING_METHOD_DATA_STARTED',
   LOADING_METHOD_DATA_FINISHED: 'LOADING_METHOD_DATA_FINISHED',
 
-  getTokenParams,
-  loadingTokenParamsStarted,
   LOADING_TOKEN_PARAMS_STARTED: 'LOADING_TOKEN_PARAMS_STARTED',
-  loadingTokenParamsFinished,
   LOADING_TOKEN_PARAMS_FINISHED: 'LOADING_TOKEN_PARAMS_FINISHED',
 
-  setSeedPhraseBackedUp,
-  verifySeedPhrase,
-  hideSeedPhraseBackupAfterOnboarding,
-
-  initializeThreeBox,
-  restoreFromThreeBox,
-  getThreeBoxLastUpdated,
-  setThreeBoxSyncingPermission,
-  setShowRestorePromptToFalse,
-  turnThreeBoxSyncingOn,
-  turnThreeBoxSyncingOnAndInitialize,
-
-  tryReverseResolveAddress,
-
-  getRequestAccountTabIds,
-  getCurrentWindowTab,
   SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
   SET_CURRENT_WINDOW_TAB: 'SET_CURRENT_WINDOW_TAB',
-  getOpenMetamaskTabsIds,
   SET_OPEN_METAMASK_TAB_IDS: 'SET_OPEN_METAMASK_TAB_IDS',
 }
 
-module.exports = actions
-
 let background = null
-function _setBackgroundConnection (backgroundConnection) {
+export function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
 
-function goHome () {
+export function goHome () {
   return {
-    type: actions.GO_HOME,
+    type: actionConstants.GO_HOME,
   }
 }
 
 // async actions
 
-function tryUnlockMetamask (password) {
+export function tryUnlockMetamask (password) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    dispatch(actions.unlockInProgress())
+    dispatch(showLoadingIndication())
+    dispatch(unlockInProgress())
     log.debug(`background.submitPassword`)
 
     return new Promise((resolve, reject) => {
@@ -365,14 +177,14 @@ function tryUnlockMetamask (password) {
       })
     })
       .then(() => {
-        dispatch(actions.unlockSucceeded())
+        dispatch(unlockSucceeded())
         return forceUpdateMetamaskState(dispatch)
       })
       .then(() => {
         return new Promise((resolve, reject) => {
           background.verifySeedPhrase(err => {
             if (err) {
-              dispatch(actions.displayWarning(err.message))
+              dispatch(displayWarning(err.message))
               return reject(err)
             }
 
@@ -381,26 +193,26 @@ function tryUnlockMetamask (password) {
         })
       })
       .then(() => {
-        dispatch(actions.transitionForward())
-        dispatch(actions.hideLoadingIndication())
+        dispatch(transitionForward())
+        dispatch(hideLoadingIndication())
       })
       .catch(err => {
-        dispatch(actions.unlockFailed(err.message))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(unlockFailed(err.message))
+        dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
   }
 }
 
-function transitionForward () {
+export function transitionForward () {
   return {
-    type: this.TRANSITION_FORWARD,
+    type: actionConstants.TRANSITION_FORWARD,
   }
 }
 
-function createNewVaultAndRestore (password, seed) {
+export function createNewVaultAndRestore (password, seed) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
     let vault
     return new Promise((resolve, reject) => {
@@ -412,56 +224,56 @@ function createNewVaultAndRestore (password, seed) {
         resolve()
       })
     })
-      .then(() => dispatch(actions.unMarkPasswordForgotten()))
+      .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
-        dispatch(actions.showAccountsPage())
-        dispatch(actions.hideLoadingIndication())
+        dispatch(showAccountsPage())
+        dispatch(hideLoadingIndication())
         return vault
       })
       .catch(err => {
-        dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(displayWarning(err.message))
+        dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
   }
 }
 
-function createNewVaultAndGetSeedPhrase (password) {
+export function createNewVaultAndGetSeedPhrase (password) {
   return async dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     try {
       await createNewVault(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(error.message))
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(error.message))
       throw new Error(error.message)
     }
   }
 }
 
-function unlockAndGetSeedPhrase (password) {
+export function unlockAndGetSeedPhrase (password) {
   return async dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     try {
       await submitPassword(password)
       const seedWords = await verifySeedPhrase()
       await forceUpdateMetamaskState(dispatch)
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(error.message))
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(error.message))
       throw new Error(error.message)
     }
   }
 }
 
-function submitPassword (password) {
+export function submitPassword (password) {
   return new Promise((resolve, reject) => {
     background.submitPassword(password, error => {
       if (error) {
@@ -473,7 +285,7 @@ function submitPassword (password) {
   })
 }
 
-function createNewVault (password) {
+export function createNewVault (password) {
   return new Promise((resolve, reject) => {
     background.createNewVaultAndKeychain(password, error => {
       if (error) {
@@ -485,7 +297,7 @@ function createNewVault (password) {
   })
 }
 
-function verifyPassword (password) {
+export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
     background.submitPassword(password, error => {
       if (error) {
@@ -497,7 +309,7 @@ function verifyPassword (password) {
   })
 }
 
-function verifySeedPhrase () {
+export function verifySeedPhrase () {
   return new Promise((resolve, reject) => {
     background.verifySeedPhrase((error, seedWords) => {
       if (error) {
@@ -509,25 +321,25 @@ function verifySeedPhrase () {
   })
 }
 
-function requestRevealSeedWords (password) {
+export function requestRevealSeedWords (password) {
   return async dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.submitPassword`)
 
     try {
       await verifyPassword(password)
       const seedWords = await verifySeedPhrase()
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       return seedWords
     } catch (error) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(error.message))
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(error.message))
       throw new Error(error.message)
     }
   }
 }
 
-function tryReverseResolveAddress (address) {
+export function tryReverseResolveAddress (address) {
   return () => {
     return new Promise(resolve => {
       background.tryReverseResolveAddress(address, err => {
@@ -540,13 +352,13 @@ function tryReverseResolveAddress (address) {
   }
 }
 
-function fetchInfoToSync () {
+export function fetchInfoToSync () {
   return dispatch => {
     log.debug(`background.fetchInfoToSync`)
     return new Promise((resolve, reject) => {
       background.fetchInfoToSync((err, result) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve(result)
@@ -555,66 +367,64 @@ function fetchInfoToSync () {
   }
 }
 
-function resetAccount () {
+export function resetAccount () {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.resetAccount((err, account) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
         log.info('Transaction history reset for ' + account)
-        dispatch(actions.showAccountsPage())
+        dispatch(showAccountsPage())
         resolve(account)
       })
     })
   }
 }
 
-function removeAccount (address) {
+export function removeAccount (address) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.removeAccount(address, (err, account) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
         log.info('Account removed: ' + account)
-        dispatch(actions.showAccountsPage())
+        dispatch(showAccountsPage())
         resolve()
       })
     })
   }
 }
 
-function addNewKeyring (type, opts) {
+export function addNewKeyring (type, opts) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.addNewKeyring`)
     background.addNewKeyring(type, opts, err => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
-      dispatch(actions.showAccountsPage())
+      dispatch(showAccountsPage())
     })
   }
 }
 
-function importNewAccount (strategy, args) {
+export function importNewAccount (strategy, args) {
   return async dispatch => {
     let newState
-    dispatch(
-      actions.showLoadingIndication('This may take a while, please be patient.')
-    )
+    dispatch(showLoadingIndication('This may take a while, please be patient.'))
     try {
       log.debug(`background.importAccountWithStrategy`)
       await pify(background.importAccountWithStrategy).call(
@@ -625,15 +435,15 @@ function importNewAccount (strategy, args) {
       log.debug(`background.getState`)
       newState = await pify(background.getState).call(background)
     } catch (err) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(err.message))
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(err.message))
       throw err
     }
-    dispatch(actions.hideLoadingIndication())
-    dispatch(actions.updateMetamaskState(newState))
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
     if (newState.selectedAddress) {
       dispatch({
-        type: actions.SHOW_ACCOUNT_DETAIL,
+        type: actionConstants.SHOW_ACCOUNT_DETAIL,
         value: newState.selectedAddress,
       })
     }
@@ -641,22 +451,22 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function addNewAccount () {
+export function addNewAccount () {
   log.debug(`background.addNewAccount`)
   return (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addNewAccount((err, { identities: newIdentities }) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         const newAccountAddress = Object.keys(newIdentities).find(
           address => !oldIdentities[address]
         )
 
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
         return resolve(newAccountAddress)
@@ -665,19 +475,19 @@ function addNewAccount () {
   }
 }
 
-function checkHardwareStatus (deviceName, hdPath) {
+export function checkHardwareStatus (deviceName, hdPath) {
   log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
         return resolve(unlocked)
@@ -686,19 +496,19 @@ function checkHardwareStatus (deviceName, hdPath) {
   }
 }
 
-function forgetDevice (deviceName) {
+export function forgetDevice (deviceName) {
   log.debug(`background.forgetDevice`, deviceName)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.forgetDevice(deviceName, err => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
         return resolve()
@@ -707,19 +517,19 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectHardware (deviceName, page, hdPath) {
+export function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
         return resolve(accounts)
@@ -728,32 +538,32 @@ function connectHardware (deviceName, page, hdPath) {
   }
 }
 
-function unlockHardwareWalletAccount (index, deviceName, hdPath) {
+export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
   log.debug(`background.unlockHardwareWalletAccount`, index, deviceName, hdPath)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.unlockHardwareWalletAccount(index, deviceName, hdPath, err => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         return resolve()
       })
     })
   }
 }
 
-function showInfoPage () {
+export function showInfoPage () {
   return {
-    type: actions.SHOW_INFO_PAGE,
+    type: actionConstants.SHOW_INFO_PAGE,
   }
 }
 
-function showQrScanner (ROUTE) {
+export function showQrScanner (ROUTE) {
   return dispatch => {
     return WebcamUtils.checkStatus()
       .then(status => {
@@ -762,7 +572,7 @@ function showQrScanner (ROUTE) {
           global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
         } else {
           dispatch(
-            actions.showModal({
+            showModal({
               name: 'QR_SCANNER',
             })
           )
@@ -770,7 +580,7 @@ function showQrScanner (ROUTE) {
       })
       .catch(e => {
         dispatch(
-          actions.showModal({
+          showModal({
             name: 'QR_SCANNER',
             error: true,
             errorType: e.type,
@@ -780,18 +590,18 @@ function showQrScanner (ROUTE) {
   }
 }
 
-function setCurrentCurrency (currencyCode) {
+export function setCurrentCurrency (currencyCode) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
         log.error(err.stack)
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
       dispatch({
-        type: actions.SET_CURRENT_FIAT,
+        type: actionConstants.SET_CURRENT_FIAT,
         value: {
           currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
@@ -802,24 +612,24 @@ function setCurrentCurrency (currencyCode) {
   }
 }
 
-function signMsg (msgData) {
+export function signMsg (msgData) {
   log.debug('action - signMsg')
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signMessage`)
       background.signMessage(msgData, (err, newState) => {
         log.debug('signMessage called back')
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -828,24 +638,24 @@ function signMsg (msgData) {
   }
 }
 
-function signPersonalMsg (msgData) {
+export function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signPersonalMessage`)
       background.signPersonalMessage(msgData, (err, newState) => {
         log.debug('signPersonalMessage called back')
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -854,24 +664,24 @@ function signPersonalMsg (msgData) {
   }
 }
 
-function signTypedMsg (msgData) {
+export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signTypedMessage`)
       background.signTypedMessage(msgData, (err, newState) => {
         log.debug('signTypedMessage called back')
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -880,39 +690,39 @@ function signTypedMsg (msgData) {
   }
 }
 
-function signTx (txData) {
+export function signTx (txData) {
   return dispatch => {
     global.ethQuery.sendTransaction(txData, err => {
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(showConfTxPage({}))
   }
 }
 
-function setGasLimit (gasLimit) {
+export function setGasLimit (gasLimit) {
   return {
-    type: actions.UPDATE_GAS_LIMIT,
+    type: actionConstants.UPDATE_GAS_LIMIT,
     value: gasLimit,
   }
 }
 
-function setGasPrice (gasPrice) {
+export function setGasPrice (gasPrice) {
   return {
-    type: actions.UPDATE_GAS_PRICE,
+    type: actionConstants.UPDATE_GAS_PRICE,
     value: gasPrice,
   }
 }
 
-function setGasTotal (gasTotal) {
+export function setGasTotal (gasTotal) {
   return {
-    type: actions.UPDATE_GAS_TOTAL,
+    type: actionConstants.UPDATE_GAS_TOTAL,
     value: gasTotal,
   }
 }
 
-function updateGasData ({
+export function updateGasData ({
   gasPrice,
   blockGasLimit,
   selectedAddress,
@@ -922,7 +732,7 @@ function updateGasData ({
   data,
 }) {
   return dispatch => {
-    dispatch(actions.gasLoadingStarted())
+    dispatch(gasLoadingStarted())
     return estimateGas({
       estimateGasMethod: background.estimateGas,
       blockGasLimit,
@@ -934,32 +744,36 @@ function updateGasData ({
       data,
     })
       .then(gas => {
-        dispatch(actions.setGasLimit(gas))
-        dispatch(gasDuck.setCustomGasLimit(gas))
+        dispatch(setGasLimit(gas))
+        dispatch(setCustomGasLimit(gas))
         dispatch(updateSendErrors({ gasLoadingError: null }))
-        dispatch(actions.gasLoadingFinished())
+        dispatch(gasLoadingFinished())
       })
       .catch(err => {
         log.error(err)
         dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
-        dispatch(actions.gasLoadingFinished())
+        dispatch(gasLoadingFinished())
       })
   }
 }
 
-function gasLoadingStarted () {
+export function gasLoadingStarted () {
   return {
-    type: actions.GAS_LOADING_STARTED,
+    type: actionConstants.GAS_LOADING_STARTED,
   }
 }
 
-function gasLoadingFinished () {
+export function gasLoadingFinished () {
   return {
-    type: actions.GAS_LOADING_FINISHED,
+    type: actionConstants.GAS_LOADING_FINISHED,
   }
 }
 
-function updateSendTokenBalance ({ selectedToken, tokenContract, address }) {
+export function updateSendTokenBalance ({
+  selectedToken,
+  tokenContract,
+  address,
+}) {
   return dispatch => {
     const tokenBalancePromise = tokenContract
       ? tokenContract.balanceOf(address)
@@ -981,93 +795,93 @@ function updateSendTokenBalance ({ selectedToken, tokenContract, address }) {
   }
 }
 
-function updateSendErrors (errorObject) {
+export function updateSendErrors (errorObject) {
   return {
-    type: actions.UPDATE_SEND_ERRORS,
+    type: actionConstants.UPDATE_SEND_ERRORS,
     value: errorObject,
   }
 }
 
-function setSendTokenBalance (tokenBalance) {
+export function setSendTokenBalance (tokenBalance) {
   return {
-    type: actions.UPDATE_SEND_TOKEN_BALANCE,
+    type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
   }
 }
 
-function updateSendHexData (value) {
+export function updateSendHexData (value) {
   return {
-    type: actions.UPDATE_SEND_HEX_DATA,
+    type: actionConstants.UPDATE_SEND_HEX_DATA,
     value,
   }
 }
 
-function updateSendTo (to, nickname = '') {
+export function updateSendTo (to, nickname = '') {
   return {
-    type: actions.UPDATE_SEND_TO,
+    type: actionConstants.UPDATE_SEND_TO,
     value: { to, nickname },
   }
 }
 
-function updateSendAmount (amount) {
+export function updateSendAmount (amount) {
   return {
-    type: actions.UPDATE_SEND_AMOUNT,
+    type: actionConstants.UPDATE_SEND_AMOUNT,
     value: amount,
   }
 }
 
-function updateCustomNonce (value) {
+export function updateCustomNonce (value) {
   return {
-    type: actions.UPDATE_CUSTOM_NONCE,
+    type: actionConstants.UPDATE_CUSTOM_NONCE,
     value: value,
   }
 }
 
-function setMaxModeTo (bool) {
+export function setMaxModeTo (bool) {
   return {
-    type: actions.UPDATE_MAX_MODE,
+    type: actionConstants.UPDATE_MAX_MODE,
     value: bool,
   }
 }
 
-function updateSend (newSend) {
+export function updateSend (newSend) {
   return {
-    type: actions.UPDATE_SEND,
+    type: actionConstants.UPDATE_SEND,
     value: newSend,
   }
 }
 
-function clearSend () {
+export function clearSend () {
   return {
-    type: actions.CLEAR_SEND,
+    type: actionConstants.CLEAR_SEND,
   }
 }
 
-function updateSendEnsResolution (ensResolution) {
+export function updateSendEnsResolution (ensResolution) {
   return {
-    type: actions.UPDATE_SEND_ENS_RESOLUTION,
+    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
     payload: ensResolution,
   }
 }
 
-function updateSendEnsResolutionError (errorMessage) {
+export function updateSendEnsResolutionError (errorMessage) {
   return {
-    type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
+    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,
   }
 }
 
-function signTokenTx (tokenAddress, toAddress, amount, txData) {
+export function signTokenTx (tokenAddress, toAddress, amount, txData) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
     token
       .transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
       .catch(err => {
-        dispatch(actions.hideLoadingIndication())
-        dispatch(actions.displayWarning(err.message))
+        dispatch(hideLoadingIndication())
+        dispatch(displayWarning(err.message))
       })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(showConfTxPage({}))
   }
 }
 
@@ -1085,18 +899,18 @@ const updateMetamaskStateFromBackground = () => {
   })
 }
 
-function updateTransaction (txData) {
+export function updateTransaction (txData) {
   log.info('actions: updateTx: ' + JSON.stringify(txData))
   return dispatch => {
     log.debug(`actions calling background.updateTx`)
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.updateTransaction(txData, err => {
-        dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+        dispatch(updateTransactionParams(txData.id, txData.txParams))
         if (err) {
-          dispatch(actions.txError(err))
-          dispatch(actions.goHome())
+          dispatch(txError(err))
+          dispatch(goHome())
           log.error(err.message)
           return reject(err)
         }
@@ -1105,28 +919,28 @@ function updateTransaction (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(actions.showConfTxPage({ id: txData.id }))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(showConfTxPage({ id: txData.id }))
+        dispatch(hideLoadingIndication())
         return txData
       })
   }
 }
 
-function updateAndApproveTx (txData) {
+export function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return dispatch => {
     log.debug(`actions calling background.updateAndApproveTx`)
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
-        dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
-        dispatch(actions.clearSend())
+        dispatch(updateTransactionParams(txData.id, txData.txParams))
+        dispatch(clearSend())
 
         if (err) {
-          dispatch(actions.txError(err))
-          dispatch(actions.goHome())
+          dispatch(txError(err))
+          dispatch(goHome())
           log.error(err.message)
           return reject(err)
         }
@@ -1135,59 +949,59 @@ function updateAndApproveTx (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(actions.clearSend())
-        dispatch(actions.completedTx(txData.id))
-        dispatch(actions.hideLoadingIndication())
-        dispatch(actions.updateCustomNonce(''))
+        dispatch(clearSend())
+        dispatch(completedTx(txData.id))
+        dispatch(hideLoadingIndication())
+        dispatch(updateCustomNonce(''))
         dispatch(closeCurrentNotificationWindow())
 
         return txData
       })
       .catch(err => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
   }
 }
 
-function completedTx (id) {
+export function completedTx (id) {
   return {
-    type: actions.COMPLETED_TX,
+    type: actionConstants.COMPLETED_TX,
     value: id,
   }
 }
 
-function updateTransactionParams (id, txParams) {
+export function updateTransactionParams (id, txParams) {
   return {
-    type: actions.UPDATE_TRANSACTION_PARAMS,
+    type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id,
     value: txParams,
   }
 }
 
-function txError (err) {
+export function txError (err) {
   return {
-    type: actions.TRANSACTION_ERROR,
+    type: actionConstants.TRANSACTION_ERROR,
     message: err.message,
   }
 }
 
-function cancelMsg (msgData) {
+export function cancelMsg (msgData) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`background.cancelMessage`)
       background.cancelMessage(msgData.id, (err, newState) => {
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
-        dispatch(actions.completedTx(msgData.id))
+        dispatch(completedTx(msgData.id))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -1196,20 +1010,20 @@ function cancelMsg (msgData) {
   }
 }
 
-function cancelPersonalMsg (msgData) {
+export function cancelPersonalMsg (msgData) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
-        dispatch(actions.completedTx(id))
+        dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -1218,20 +1032,20 @@ function cancelPersonalMsg (msgData) {
   }
 }
 
-function cancelTypedMsg (msgData) {
+export function cancelTypedMsg (msgData) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelTypedMessage(id, (err, newState) => {
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
-        dispatch(actions.completedTx(id))
+        dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
@@ -1240,10 +1054,10 @@ function cancelTypedMsg (msgData) {
   }
 }
 
-function cancelTx (txData) {
+export function cancelTx (txData) {
   return dispatch => {
     log.debug(`background.cancelTransaction`)
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, err => {
         if (err) {
@@ -1254,11 +1068,11 @@ function cancelTx (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(actions.clearSend())
-        dispatch(actions.completedTx(txData.id))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(clearSend())
+        dispatch(completedTx(txData.id))
+        dispatch(hideLoadingIndication())
         dispatch(closeCurrentNotificationWindow())
 
         return txData
@@ -1271,9 +1085,9 @@ function cancelTx (txData) {
  * @param {Array<object>} txDataList a list of tx data objects
  * @return {function(*): Promise<void>}
  */
-function cancelTxs (txDataList) {
+export function cancelTxs (txDataList) {
   return async dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     const txIds = txDataList.map(({ id }) => id)
     const cancellations = txIds.map(
       id =>
@@ -1290,14 +1104,14 @@ function cancelTxs (txDataList) {
 
     await Promise.all(cancellations)
     const newState = await updateMetamaskStateFromBackground()
-    dispatch(actions.updateMetamaskState(newState))
-    dispatch(actions.clearSend())
+    dispatch(updateMetamaskState(newState))
+    dispatch(clearSend())
 
     txIds.forEach(id => {
-      dispatch(actions.completedTx(id))
+      dispatch(completedTx(id))
     })
 
-    dispatch(actions.hideLoadingIndication())
+    dispatch(hideLoadingIndication())
 
     if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
       return global.platform.closeCurrentWindow()
@@ -1305,44 +1119,44 @@ function cancelTxs (txDataList) {
   }
 }
 
-function markPasswordForgotten () {
+export function markPasswordForgotten () {
   return dispatch => {
     return background.markPasswordForgotten(() => {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.forgotPassword())
+      dispatch(hideLoadingIndication())
+      dispatch(forgotPassword())
       forceUpdateMetamaskState(dispatch)
     })
   }
 }
 
-function unMarkPasswordForgotten () {
+export function unMarkPasswordForgotten () {
   return dispatch => {
     return new Promise(resolve => {
       background.unMarkPasswordForgotten(() => {
-        dispatch(actions.forgotPassword(false))
+        dispatch(forgotPassword(false))
         resolve()
       })
     }).then(() => forceUpdateMetamaskState(dispatch))
   }
 }
 
-function forgotPassword (forgotPasswordState = true) {
+export function forgotPassword (forgotPasswordState = true) {
   return {
-    type: actions.FORGOT_PASSWORD,
+    type: actionConstants.FORGOT_PASSWORD,
     value: forgotPasswordState,
   }
 }
 
-function setNewAccountForm (formToSelect) {
+export function setNewAccountForm (formToSelect) {
   return {
-    type: actions.SET_NEW_ACCOUNT_FORM,
+    type: actionConstants.SET_NEW_ACCOUNT_FORM,
     formToSelect,
   }
 }
 
-function closeWelcomeScreen () {
+export function closeWelcomeScreen () {
   return {
-    type: actions.CLOSE_WELCOME_SCREEN,
+    type: actionConstants.CLOSE_WELCOME_SCREEN,
   }
 }
 
@@ -1350,36 +1164,36 @@ function closeWelcomeScreen () {
 // unlock screen
 //
 
-function unlockInProgress () {
+export function unlockInProgress () {
   return {
-    type: actions.UNLOCK_IN_PROGRESS,
+    type: actionConstants.UNLOCK_IN_PROGRESS,
   }
 }
 
-function unlockFailed (message) {
+export function unlockFailed (message) {
   return {
-    type: actions.UNLOCK_FAILED,
+    type: actionConstants.UNLOCK_FAILED,
     value: message,
   }
 }
 
-function unlockSucceeded (message) {
+export function unlockSucceeded (message) {
   return {
-    type: actions.UNLOCK_SUCCEEDED,
+    type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
   }
 }
 
-function unlockMetamask (account) {
+export function unlockMetamask (account) {
   return {
-    type: actions.UNLOCK_METAMASK,
+    type: actionConstants.UNLOCK_METAMASK,
     value: account,
   }
 }
 
-function updateMetamaskState (newState) {
+export function updateMetamaskState (newState) {
   return {
-    type: actions.UPDATE_METAMASK_STATE,
+    type: actionConstants.UPDATE_METAMASK_STATE,
     value: newState,
   }
 }
@@ -1395,31 +1209,31 @@ const backgroundSetLocked = () => {
   })
 }
 
-function lockMetamask () {
+export function lockMetamask () {
   log.debug(`background.setLocked`)
 
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     return backgroundSetLocked()
       .then(() => updateMetamaskStateFromBackground())
       .catch(error => {
-        dispatch(actions.displayWarning(error.message))
+        dispatch(displayWarning(error.message))
         return Promise.reject(error)
       })
       .then(newState => {
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch(actions.hideLoadingIndication())
-        dispatch({ type: actions.LOCK_METAMASK })
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+        dispatch({ type: actionConstants.LOCK_METAMASK })
       })
       .catch(() => {
-        dispatch(actions.hideLoadingIndication())
-        dispatch({ type: actions.LOCK_METAMASK })
+        dispatch(hideLoadingIndication())
+        dispatch({ type: actionConstants.LOCK_METAMASK })
       })
   }
 }
 
-function setCurrentAccountTab (newTabName) {
+export function setCurrentAccountTab (newTabName) {
   log.debug(`background.setCurrentAccountTab: ${newTabName}`)
   return callBackgroundThenUpdateNoSpinner(
     background.setCurrentAccountTab,
@@ -1427,120 +1241,118 @@ function setCurrentAccountTab (newTabName) {
   )
 }
 
-function setSelectedToken (tokenAddress) {
+export function setSelectedToken (tokenAddress) {
   return {
-    type: actions.SET_SELECTED_TOKEN,
+    type: actionConstants.SET_SELECTED_TOKEN,
     value: tokenAddress || null,
   }
 }
 
-function setSelectedAddress (address) {
+export function setSelectedAddress (address) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
     background.setSelectedAddress(address, err => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
   }
 }
 
-function showAccountDetail (address) {
+export function showAccountDetail (address) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
     background.setSelectedAddress(address, (err, tokens) => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
       dispatch(updateTokens(tokens))
       dispatch({
-        type: actions.SHOW_ACCOUNT_DETAIL,
+        type: actionConstants.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
-      dispatch(actions.setSelectedToken())
+      dispatch(setSelectedToken())
     })
   }
 }
 
-function showAccountsPage () {
+export function showAccountsPage () {
   return {
-    type: actions.SHOW_ACCOUNTS_PAGE,
+    type: actionConstants.SHOW_ACCOUNTS_PAGE,
   }
 }
 
-function showConfTxPage ({ transForward = true, id }) {
+export function showConfTxPage ({ transForward = true, id }) {
   return {
-    type: actions.SHOW_CONF_TX_PAGE,
+    type: actionConstants.SHOW_CONF_TX_PAGE,
     transForward,
     id,
   }
 }
 
-function showConfigPage (transitionForward = true) {
+export function showConfigPage (transitionForward = true) {
   return {
-    type: actions.SHOW_CONFIG_PAGE,
+    type: actionConstants.SHOW_CONFIG_PAGE,
     value: transitionForward,
   }
 }
 
-function showAddTokenPage (transitionForward = true) {
+export function showAddTokenPage (transitionForward = true) {
   return {
-    type: actions.SHOW_ADD_TOKEN_PAGE,
+    type: actionConstants.SHOW_ADD_TOKEN_PAGE,
     value: transitionForward,
   }
 }
 
-function addToken (address, symbol, decimals, image) {
+export function addToken (address, symbol, decimals, image) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
-        dispatch(actions.updateTokens(tokens))
+        dispatch(updateTokens(tokens))
         resolve(tokens)
       })
     })
   }
 }
 
-function removeToken (address) {
+export function removeToken (address) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.removeToken(address, (err, tokens) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
-        dispatch(actions.updateTokens(tokens))
+        dispatch(updateTokens(tokens))
         resolve(tokens)
       })
     })
   }
 }
 
-function addTokens (tokens) {
+export function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
-      dispatch(
-        actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0]))
-      )
+      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(
         tokens.map(({ address, symbol, decimals }) =>
           dispatch(addToken(address, symbol, decimals))
         )
       )
     } else {
-      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
+      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object.entries(tokens).map(([_, { address, symbol, decimals }]) =>
           dispatch(addToken(address, symbol, decimals))
@@ -1550,16 +1362,16 @@ function addTokens (tokens) {
   }
 }
 
-function removeSuggestedTokens () {
+export function removeSuggestedTokens () {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise(resolve => {
       background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
         }
-        dispatch(actions.clearPendingTokens())
+        dispatch(clearPendingTokens())
         if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
           return global.platform.closeCurrentWindow()
         }
@@ -1568,31 +1380,31 @@ function removeSuggestedTokens () {
     })
       .then(() => updateMetamaskStateFromBackground())
       .then(suggestedTokens =>
-        dispatch(actions.updateMetamaskState({ ...suggestedTokens }))
+        dispatch(updateMetamaskState({ ...suggestedTokens }))
       )
   }
 }
 
-function addKnownMethodData (fourBytePrefix, methodData) {
+export function addKnownMethodData (fourBytePrefix, methodData) {
   return () => {
     background.addKnownMethodData(fourBytePrefix, methodData)
   }
 }
 
-function updateTokens (newTokens) {
+export function updateTokens (newTokens) {
   return {
-    type: actions.UPDATE_TOKENS,
+    type: actionConstants.UPDATE_TOKENS,
     newTokens,
   }
 }
 
-function clearPendingTokens () {
+export function clearPendingTokens () {
   return {
-    type: actions.CLEAR_PENDING_TOKENS,
+    type: actionConstants.CLEAR_PENDING_TOKENS,
   }
 }
 
-function retryTransaction (txId, gasPrice) {
+export function retryTransaction (txId, gasPrice) {
   log.debug(`background.retryTransaction`)
   let newTxId
 
@@ -1600,7 +1412,7 @@ function retryTransaction (txId, gasPrice) {
     return new Promise((resolve, reject) => {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
@@ -1610,12 +1422,12 @@ function retryTransaction (txId, gasPrice) {
         resolve(newState)
       })
     })
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId)
   }
 }
 
-function createCancelTransaction (txId, customGasPrice) {
+export function createCancelTransaction (txId, customGasPrice) {
   log.debug('background.cancelTransaction')
   let newTxId
 
@@ -1626,7 +1438,7 @@ function createCancelTransaction (txId, customGasPrice) {
         customGasPrice,
         (err, newState) => {
           if (err) {
-            dispatch(actions.displayWarning(err.message))
+            dispatch(displayWarning(err.message))
             return reject(err)
           }
 
@@ -1637,12 +1449,12 @@ function createCancelTransaction (txId, customGasPrice) {
         }
       )
     })
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId)
   }
 }
 
-function createSpeedUpTransaction (txId, customGasPrice) {
+export function createSpeedUpTransaction (txId, customGasPrice) {
   log.debug('background.createSpeedUpTransaction')
   let newTx
 
@@ -1653,7 +1465,7 @@ function createSpeedUpTransaction (txId, customGasPrice) {
         customGasPrice,
         (err, newState) => {
           if (err) {
-            dispatch(actions.displayWarning(err.message))
+            dispatch(displayWarning(err.message))
             return reject(err)
           }
 
@@ -1663,12 +1475,12 @@ function createSpeedUpTransaction (txId, customGasPrice) {
         }
       )
     })
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => newTx)
   }
 }
 
-function createRetryTransaction (txId, customGasPrice) {
+export function createRetryTransaction (txId, customGasPrice) {
   log.debug('background.createRetryTransaction')
   let newTx
 
@@ -1679,7 +1491,7 @@ function createRetryTransaction (txId, customGasPrice) {
         customGasPrice,
         (err, newState) => {
           if (err) {
-            dispatch(actions.displayWarning(err.message))
+            dispatch(displayWarning(err.message))
             return reject(err)
           }
 
@@ -1689,7 +1501,7 @@ function createRetryTransaction (txId, customGasPrice) {
         }
       )
     })
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(newState => dispatch(updateMetamaskState(newState)))
       .then(() => newTx)
   }
 }
@@ -1698,39 +1510,37 @@ function createRetryTransaction (txId, customGasPrice) {
 // config
 //
 
-function setProviderType (type) {
+export function setProviderType (type) {
   return (dispatch, getState) => {
     const { type: currentProviderType } = getState().metamask.provider
     log.debug(`background.setProviderType`, type)
     background.setProviderType(type, err => {
       if (err) {
         log.error(err)
-        return dispatch(
-          actions.displayWarning('Had a problem changing networks!')
-        )
+        return dispatch(displayWarning('Had a problem changing networks!'))
       }
       dispatch(setPreviousProvider(currentProviderType))
-      dispatch(actions.updateProviderType(type))
-      dispatch(actions.setSelectedToken())
+      dispatch(updateProviderType(type))
+      dispatch(setSelectedToken())
     })
   }
 }
 
-function updateProviderType (type) {
+export function updateProviderType (type) {
   return {
-    type: actions.SET_PROVIDER_TYPE,
+    type: actionConstants.SET_PROVIDER_TYPE,
     value: type,
   }
 }
 
-function setPreviousProvider (type) {
+export function setPreviousProvider (type) {
   return {
-    type: actions.SET_PREVIOUS_PROVIDER,
+    type: actionConstants.SET_PREVIOUS_PROVIDER,
     value: type,
   }
 }
 
-function updateAndSetCustomRpc (
+export function updateAndSetCustomRpc (
   newRpc,
   chainId,
   ticker = 'CFX',
@@ -1750,12 +1560,10 @@ function updateAndSetCustomRpc (
       err => {
         if (err) {
           log.error(err)
-          return dispatch(
-            actions.displayWarning('Had a problem changing networks!')
-          )
+          return dispatch(displayWarning('Had a problem changing networks!'))
         }
         dispatch({
-          type: actions.SET_RPC_TARGET,
+          type: actionConstants.SET_RPC_TARGET,
           value: newRpc,
         })
       }
@@ -1763,17 +1571,22 @@ function updateAndSetCustomRpc (
   }
 }
 
-function editRpc (oldRpc, newRpc, chainId, ticker = 'CFX', nickname, rpcPrefs) {
+export function editRpc (
+  oldRpc,
+  newRpc,
+  chainId,
+  ticker = 'CFX',
+  nickname,
+  rpcPrefs
+) {
   return dispatch => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
     background.delCustomRpc(oldRpc, err => {
       if (err) {
         log.error(err)
-        return dispatch(
-          actions.displayWarning('Had a problem removing network!')
-        )
+        return dispatch(displayWarning('Had a problem removing network!'))
       }
-      dispatch(actions.setSelectedToken())
+      dispatch(setSelectedToken())
       background.updateAndSetCustomRpc(
         newRpc,
         chainId,
@@ -1783,12 +1596,10 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'CFX', nickname, rpcPrefs) {
         err => {
           if (err) {
             log.error(err)
-            return dispatch(
-              actions.displayWarning('Had a problem changing networks!')
-            )
+            return dispatch(displayWarning('Had a problem changing networks!'))
           }
           dispatch({
-            type: actions.SET_RPC_TARGET,
+            type: actionConstants.SET_RPC_TARGET,
             value: newRpc,
           })
         }
@@ -1797,7 +1608,7 @@ function editRpc (oldRpc, newRpc, chainId, ticker = 'CFX', nickname, rpcPrefs) {
   }
 }
 
-function setRpcTarget (newRpc, chainId, ticker = 'CFX', nickname) {
+export function setRpcTarget (newRpc, chainId, ticker = 'CFX', nickname) {
   return dispatch => {
     log.debug(
       `background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`
@@ -1810,27 +1621,25 @@ function setRpcTarget (newRpc, chainId, ticker = 'CFX', nickname) {
       err => {
         if (err) {
           log.error(err)
-          return dispatch(
-            actions.displayWarning('Had a problem changing networks!')
-          )
+          return dispatch(displayWarning('Had a problem changing networks!'))
         }
-        dispatch(actions.setSelectedToken())
+        dispatch(setSelectedToken())
       }
     )
   }
 }
 
-function delRpcTarget (oldRpc) {
+export function delRpcTarget (oldRpc) {
   return dispatch => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
     return new Promise((resolve, reject) => {
       background.delCustomRpc(oldRpc, err => {
         if (err) {
           log.error(err)
-          dispatch(actions.displayWarning('Had a problem removing network!'))
+          dispatch(displayWarning('Had a problem removing network!'))
           return reject(err)
         }
-        dispatch(actions.setSelectedToken())
+        dispatch(setSelectedToken())
         resolve()
       })
     })
@@ -1838,7 +1647,7 @@ function delRpcTarget (oldRpc) {
 }
 
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname = '', memo = '') {
+export function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
 
   return (dispatch, getState) => {
@@ -1866,7 +1675,7 @@ function addToAddressBook (recipient, nickname = '', memo = '') {
  * @description Calls the addressBookController to remove an existing address.
  * @param {String} addressToRemove - Address of the entry to remove from the address book
  */
-function removeFromAddressBook (chainId, addressToRemove) {
+export function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
   return () => {
@@ -1874,41 +1683,41 @@ function removeFromAddressBook (chainId, addressToRemove) {
   }
 }
 
-function useEtherscanProvider () {
+export function useEtherscanProvider () {
   log.debug(`background.useEtherscanProvider`)
   background.useEtherscanProvider()
   return {
-    type: actions.USE_ETHERSCAN_PROVIDER,
+    type: actionConstants.USE_ETHERSCAN_PROVIDER,
   }
 }
 
-function showNetworkDropdown () {
+export function showNetworkDropdown () {
   return {
-    type: actions.NETWORK_DROPDOWN_OPEN,
+    type: actionConstants.NETWORK_DROPDOWN_OPEN,
   }
 }
 
-function hideNetworkDropdown () {
+export function hideNetworkDropdown () {
   return {
-    type: actions.NETWORK_DROPDOWN_CLOSE,
+    type: actionConstants.NETWORK_DROPDOWN_CLOSE,
   }
 }
 
-function showModal (payload) {
+export function showModal (payload) {
   return {
-    type: actions.MODAL_OPEN,
+    type: actionConstants.MODAL_OPEN,
     payload,
   }
 }
 
-function hideModal (payload) {
+export function hideModal (payload) {
   return {
-    type: actions.MODAL_CLOSE,
+    type: actionConstants.MODAL_CLOSE,
     payload,
   }
 }
 
-function closeCurrentNotificationWindow () {
+export function closeCurrentNotificationWindow () {
   return (dispatch, getState) => {
     if (
       global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -1921,15 +1730,15 @@ function closeCurrentNotificationWindow () {
   }
 }
 
-function closeNotifacationWindow () {
+export function closeNotifacationWindow () {
   return {
-    type: actions.CLOSE_NOTIFICATION_WINDOW,
+    type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   }
 }
 
-function showSidebar ({ transitionName, type, props }) {
+export function showSidebar ({ transitionName, type, props }) {
   return {
-    type: actions.SIDEBAR_OPEN,
+    type: actionConstants.SIDEBAR_OPEN,
     value: {
       transitionName,
       type,
@@ -1938,22 +1747,22 @@ function showSidebar ({ transitionName, type, props }) {
   }
 }
 
-function hideSidebar () {
+export function hideSidebar () {
   return {
-    type: actions.SIDEBAR_CLOSE,
+    type: actionConstants.SIDEBAR_CLOSE,
   }
 }
 
-function showAlert (msg) {
+export function showAlert (msg) {
   return {
-    type: actions.ALERT_OPEN,
+    type: actionConstants.ALERT_OPEN,
     value: msg,
   }
 }
 
-function hideAlert () {
+export function hideAlert () {
   return {
-    type: actions.ALERT_CLOSE,
+    type: actionConstants.ALERT_CLOSE,
   }
 }
 
@@ -1962,84 +1771,82 @@ function hideAlert () {
  * an object with the following structure {type, values}
  * or null (used to clear the previous value)
  */
-function qrCodeDetected (qrCodeData) {
+export function qrCodeDetected (qrCodeData) {
   return {
-    type: actions.QR_CODE_DETECTED,
+    type: actionConstants.QR_CODE_DETECTED,
     value: qrCodeData,
   }
 }
 
-function showLoadingIndication (message) {
+export function showLoadingIndication (message) {
   return {
-    type: actions.SHOW_LOADING,
+    type: actionConstants.SHOW_LOADING,
     value: message,
   }
 }
 
-function setHardwareWalletDefaultHdPath ({ device, path }) {
+export function setHardwareWalletDefaultHdPath ({ device, path }) {
   return {
-    type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+    type: actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
     value: { device, path },
   }
 }
 
-function hideLoadingIndication () {
+export function hideLoadingIndication () {
   return {
-    type: actions.HIDE_LOADING,
+    type: actionConstants.HIDE_LOADING,
   }
 }
 
-function showSubLoadingIndication () {
+export function showSubLoadingIndication () {
   return {
-    type: actions.SHOW_SUB_LOADING_INDICATION,
+    type: actionConstants.SHOW_SUB_LOADING_INDICATION,
   }
 }
 
-function hideSubLoadingIndication () {
+export function hideSubLoadingIndication () {
   return {
-    type: actions.HIDE_SUB_LOADING_INDICATION,
+    type: actionConstants.HIDE_SUB_LOADING_INDICATION,
   }
 }
 
-function displayWarning (text) {
+export function displayWarning (text) {
   return {
-    type: actions.DISPLAY_WARNING,
+    type: actionConstants.DISPLAY_WARNING,
     value: text,
   }
 }
 
-function hideWarning () {
+export function hideWarning () {
   return {
-    type: actions.HIDE_WARNING,
+    type: actionConstants.HIDE_WARNING,
   }
 }
 
-function exportAccount (password, address) {
+export function exportAccount (password, address) {
   return function (dispatch) {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
           log.error('Error in submiting password.')
-          dispatch(actions.hideLoadingIndication())
-          dispatch(actions.displayWarning('Incorrect Password.'))
+          dispatch(hideLoadingIndication())
+          dispatch(displayWarning('Incorrect Password.'))
           return reject(err)
         }
         log.debug(`background.exportAccount`)
         return background.exportAccount(address, function (err, result) {
-          dispatch(actions.hideLoadingIndication())
+          dispatch(hideLoadingIndication())
 
           if (err) {
             log.error(err)
-            dispatch(
-              actions.displayWarning('Had a problem exporting the account.')
-            )
+            dispatch(displayWarning('Had a problem exporting the account.'))
             return reject(err)
           }
 
-          dispatch(actions.showPrivateKey(result))
+          dispatch(showPrivateKey(result))
 
           return resolve(result)
         })
@@ -2048,29 +1855,29 @@ function exportAccount (password, address) {
   }
 }
 
-function showPrivateKey (key) {
+export function showPrivateKey (key) {
   return {
-    type: actions.SHOW_PRIVATE_KEY,
+    type: actionConstants.SHOW_PRIVATE_KEY,
     value: key,
   }
 }
 
-function setAccountLabel (account, label) {
+export function setAccountLabel (account, label) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setAccountLabel`)
 
     return new Promise((resolve, reject) => {
       background.setAccountLabel(account, label, err => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
         dispatch({
-          type: actions.SET_ACCOUNT_LABEL,
+          type: actionConstants.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
 
@@ -2080,42 +1887,42 @@ function setAccountLabel (account, label) {
   }
 }
 
-function showSendPage () {
+export function showSendPage () {
   return {
-    type: actions.SHOW_SEND_PAGE,
+    type: actionConstants.SHOW_SEND_PAGE,
   }
 }
 
-function showSendTokenPage () {
+export function showSendTokenPage () {
   return {
-    type: actions.SHOW_SEND_TOKEN_PAGE,
+    type: actionConstants.SHOW_SEND_TOKEN_PAGE,
   }
 }
 
-function buyEth (opts) {
+export function buyEth (opts) {
   return dispatch => {
     const url = getBuyEthUrl(opts)
     global.platform.openWindow({ url })
     dispatch({
-      type: actions.BUY_ETH,
+      type: actionConstants.BUY_ETH,
     })
   }
 }
 
-function pairUpdate (coin) {
+export function pairUpdate (coin) {
   return dispatch => {
-    dispatch(actions.showSubLoadingIndication())
-    dispatch(actions.hideWarning())
+    dispatch(showSubLoadingIndication())
+    dispatch(hideWarning())
     shapeShiftRequest(
       'marketinfo',
       { pair: `${coin.toLowerCase()}_eth` },
       mktResponse => {
-        dispatch(actions.hideSubLoadingIndication())
+        dispatch(hideSubLoadingIndication())
         if (mktResponse.error) {
-          return dispatch(actions.displayWarning(mktResponse.error))
+          return dispatch(displayWarning(mktResponse.error))
         }
         dispatch({
-          type: actions.PAIR_UPDATE,
+          type: actionConstants.PAIR_UPDATE,
           value: {
             marketinfo: mktResponse,
           },
@@ -2125,24 +1932,24 @@ function pairUpdate (coin) {
   }
 }
 
-function showQrView (data, message) {
+export function showQrView (data, message) {
   return {
-    type: actions.SHOW_QR_VIEW,
+    type: actionConstants.SHOW_QR_VIEW,
     value: {
       message: message,
       data: data,
     },
   }
 }
-function reshowQrCode (data, coin) {
+export function reshowQrCode (data, coin) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     shapeShiftRequest(
       'marketinfo',
       { pair: `${coin.toLowerCase()}_eth` },
       mktResponse => {
         if (mktResponse.error) {
-          return dispatch(actions.displayWarning(mktResponse.error))
+          return dispatch(displayWarning(mktResponse.error))
         }
 
         const message = [
@@ -2151,14 +1958,14 @@ function reshowQrCode (data, coin) {
           `Deposit Minimum:${mktResponse.minimum}`,
         ]
 
-        dispatch(actions.hideLoadingIndication())
-        return dispatch(actions.showQrView(data, message))
+        dispatch(hideLoadingIndication())
+        return dispatch(showQrView(data, message))
       }
     )
   }
 }
 
-function shapeShiftRequest (query, options = {}, cb) {
+export function shapeShiftRequest (query, options = {}, cb) {
   let queryResponse, method
   options.method ? (method = options.method) : (method = 'GET')
 
@@ -2194,22 +2001,21 @@ function shapeShiftRequest (query, options = {}, cb) {
   }
 }
 
-function setFeatureFlag (feature, activated, notificationType) {
+export function setFeatureFlag (feature, activated, notificationType) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.setFeatureFlag(
         feature,
         activated,
         (err, updatedFeatureFlags) => {
-          dispatch(actions.hideLoadingIndication())
+          dispatch(hideLoadingIndication())
           if (err) {
-            dispatch(actions.displayWarning(err.message))
+            dispatch(displayWarning(err.message))
             return reject(err)
           }
-          dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
-          notificationType &&
-            dispatch(actions.showModal({ name: notificationType }))
+          dispatch(updateFeatureFlags(updatedFeatureFlags))
+          notificationType && dispatch(showModal({ name: notificationType }))
           resolve(updatedFeatureFlags)
         }
       )
@@ -2217,86 +2023,86 @@ function setFeatureFlag (feature, activated, notificationType) {
   }
 }
 
-function updateFeatureFlags (updatedFeatureFlags) {
+export function updateFeatureFlags (updatedFeatureFlags) {
   return {
-    type: actions.UPDATE_FEATURE_FLAGS,
+    type: actionConstants.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
   }
 }
 
-function setPreference (preference, value) {
+export function setPreference (preference, value) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
-        dispatch(actions.hideLoadingIndication())
+        dispatch(hideLoadingIndication())
 
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.updatePreferences(updatedPreferences))
+        dispatch(updatePreferences(updatedPreferences))
         resolve(updatedPreferences)
       })
     })
   }
 }
 
-function updatePreferences (value) {
+export function updatePreferences (value) {
   return {
-    type: actions.UPDATE_PREFERENCES,
+    type: actionConstants.UPDATE_PREFERENCES,
     value,
   }
 }
 
-function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
+export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
 
-function setShowFiatConversionOnTestnetsPreference (value) {
+export function setShowFiatConversionOnTestnetsPreference (value) {
   return setPreference('showFiatInTestnets', value)
 }
 
-function setAutoLogoutTimeLimit (value) {
+export function setAutoLogoutTimeLimit (value) {
   return setPreference('autoLogoutTimeLimit', value)
 }
 
-function setCompletedOnboarding () {
+export function setCompletedOnboarding () {
   return async dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
 
     try {
       await pify(background.completeOnboarding).call(background)
     } catch (err) {
-      dispatch(actions.displayWarning(err.message))
+      dispatch(displayWarning(err.message))
       throw err
     }
 
-    dispatch(actions.completeOnboarding())
-    dispatch(actions.hideLoadingIndication())
+    dispatch(completeOnboarding())
+    dispatch(hideLoadingIndication())
   }
 }
 
-function completeOnboarding () {
+export function completeOnboarding () {
   return {
-    type: actions.COMPLETE_ONBOARDING,
+    type: actionConstants.COMPLETE_ONBOARDING,
   }
 }
 
-function setNetworkNonce (networkNonce) {
+export function setNetworkNonce (networkNonce) {
   return {
-    type: actions.SET_NETWORK_NONCE,
+    type: actionConstants.SET_NETWORK_NONCE,
     value: networkNonce,
   }
 }
 
-function updateNetworkNonce (address) {
+export function updateNetworkNonce (address) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       global.ethQuery.getTransactionCount(address, (err, data) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         dispatch(setNetworkNonce(data))
@@ -2306,9 +2112,9 @@ function updateNetworkNonce (address) {
   }
 }
 
-function setMouseUserState (isMouseUser) {
+export function setMouseUserState (isMouseUser) {
   return {
-    type: actions.SET_MOUSE_USER_STATE,
+    type: actionConstants.SET_MOUSE_USER_STATE,
     value: isMouseUser,
   }
 }
@@ -2321,51 +2127,51 @@ function setMouseUserState (isMouseUser) {
 // We hide loading indication.
 // If it errored, we show a warning.
 // If it didn't, we update the state.
-function callBackgroundThenUpdateNoSpinner (method, ...args) {
+export function callBackgroundThenUpdateNoSpinner (method, ...args) {
   return dispatch => {
     method.call(background, ...args, err => {
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
       forceUpdateMetamaskState(dispatch)
     })
   }
 }
 
-function forceUpdateMetamaskState (dispatch) {
+export function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   return new Promise((resolve, reject) => {
     background.getState((err, newState) => {
       if (err) {
-        dispatch(actions.displayWarning(err.message))
+        dispatch(displayWarning(err.message))
         return reject(err)
       }
 
-      dispatch(actions.updateMetamaskState(newState))
+      dispatch(updateMetamaskState(newState))
       resolve(newState)
     })
   })
 }
 
-function toggleAccountMenu () {
+export function toggleAccountMenu () {
   return {
-    type: actions.TOGGLE_ACCOUNT_MENU,
+    type: actionConstants.TOGGLE_ACCOUNT_MENU,
   }
 }
 
-function setParticipateInMetaMetrics (val) {
+export function setParticipateInMetaMetrics (val) {
   return dispatch => {
     log.debug(`background.setParticipateInMetaMetrics`)
     return new Promise((resolve, reject) => {
       background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
         log.debug(err)
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
         dispatch({
-          type: actions.SET_PARTICIPATE_IN_METAMETRICS,
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
           value: val,
         })
 
@@ -2375,18 +2181,18 @@ function setParticipateInMetaMetrics (val) {
   }
 }
 
-function setMetaMetricsSendCount (val) {
+export function setMetaMetricsSendCount (val) {
   return dispatch => {
     log.debug(`background.setMetaMetricsSendCount`)
     return new Promise((resolve, reject) => {
       background.setMetaMetricsSendCount(val, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
 
         dispatch({
-          type: actions.SET_METAMETRICS_SEND_COUNT,
+          type: actionConstants.SET_METAMETRICS_SEND_COUNT,
           value: val,
         })
 
@@ -2396,51 +2202,51 @@ function setMetaMetricsSendCount (val) {
   }
 }
 
-function setUseBlockie (val) {
+export function setUseBlockie (val) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setUseBlockie`)
     background.setUseBlockie(val, err => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
     dispatch({
-      type: actions.SET_USE_BLOCKIE,
+      type: actionConstants.SET_USE_BLOCKIE,
       value: val,
     })
   }
 }
 
-function setUseNonceField (val) {
+export function setUseNonceField (val) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setUseNonceField`)
     background.setUseNonceField(val, err => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
     dispatch({
-      type: actions.SET_USE_NONCEFIELD,
+      type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
     })
   }
 }
 
-function setIpfsGateway (val) {
+export function setIpfsGateway (val) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     log.debug(`background.setIpfsGateway`)
     background.setIpfsGateway(val, err => {
-      dispatch(actions.hideLoadingIndication())
+      dispatch(hideLoadingIndication())
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       } else {
         dispatch({
-          type: actions.SET_IPFS_GATEWAY,
+          type: actionConstants.SET_IPFS_GATEWAY,
           value: val,
         })
       }
@@ -2448,27 +2254,27 @@ function setIpfsGateway (val) {
   }
 }
 
-function updateCurrentLocale (key) {
+export function updateCurrentLocale (key) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(showLoadingIndication())
     return fetchLocale(key).then(localeMessages => {
       log.debug(`background.setCurrentLocale`)
       background.setCurrentLocale(key, (err, textDirection) => {
         if (err) {
-          dispatch(actions.hideLoadingIndication())
-          return dispatch(actions.displayWarning(err.message))
+          dispatch(hideLoadingIndication())
+          return dispatch(displayWarning(err.message))
         }
         switchDirection(textDirection)
-        dispatch(actions.setCurrentLocale(key, localeMessages))
-        dispatch(actions.hideLoadingIndication())
+        dispatch(setCurrentLocale(key, localeMessages))
+        dispatch(hideLoadingIndication())
       })
     })
   }
 }
 
-function setCurrentLocale (locale, messages) {
+export function setCurrentLocale (locale, messages) {
   return {
-    type: actions.SET_CURRENT_LOCALE,
+    type: actionConstants.SET_CURRENT_LOCALE,
     value: {
       locale,
       messages,
@@ -2476,7 +2282,7 @@ function setCurrentLocale (locale, messages) {
   }
 }
 
-function setPendingTokens (pendingTokens) {
+export function setPendingTokens (pendingTokens) {
   const { customToken = {}, selectedTokens = {} } = pendingTokens
   const { address, symbol, decimals } = customToken
   const tokens =
@@ -2485,7 +2291,7 @@ function setPendingTokens (pendingTokens) {
       : selectedTokens
 
   return {
-    type: actions.SET_PENDING_TOKENS,
+    type: actionConstants.SET_PENDING_TOKENS,
     payload: tokens,
   }
 }
@@ -2497,7 +2303,7 @@ function setPendingTokens (pendingTokens) {
  * @param {Object} request - The permissions request to approve
  * @param {string[]} accounts - The accounts to expose, if any.
  */
-function approvePermissionsRequest (request, accounts) {
+export function approvePermissionsRequest (request, accounts) {
   return () => {
     background.approvePermissionsRequest(request, accounts)
   }
@@ -2507,7 +2313,7 @@ function approvePermissionsRequest (request, accounts) {
  * Rejects the permissions request with the given ID.
  * @param {string} requestId - The id of the request to be rejected
  */
-function rejectPermissionsRequest (requestId) {
+export function rejectPermissionsRequest (requestId) {
   return () => {
     background.rejectPermissionsRequest(requestId)
   }
@@ -2517,7 +2323,7 @@ function rejectPermissionsRequest (requestId) {
  * Exposes the given account(s) to the given origin.
  * Call ONLY as a result of direct user action.
  */
-function legacyExposeAccounts (origin, accounts) {
+export function legacyExposeAccounts (origin, accounts) {
   return () => {
     return background.legacyExposeAccounts(origin, accounts)
   }
@@ -2526,7 +2332,7 @@ function legacyExposeAccounts (origin, accounts) {
 /**
  * Clears the given permissions for the given origin.
  */
-function removePermissionsFor (domains) {
+export function removePermissionsFor (domains) {
   return () => {
     background.removePermissionsFor(domains)
   }
@@ -2535,74 +2341,74 @@ function removePermissionsFor (domains) {
 /**
  * Clears all permissions for all domains.
  */
-function clearPermissions () {
+export function clearPermissions () {
   return () => {
     background.clearPermissions()
   }
 }
 
-function setFirstTimeFlowType (type) {
+export function setFirstTimeFlowType (type) {
   return dispatch => {
     log.debug(`background.setFirstTimeFlowType`)
     background.setFirstTimeFlowType(type, err => {
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
     dispatch({
-      type: actions.SET_FIRST_TIME_FLOW_TYPE,
+      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
     })
   }
 }
 
-function setSelectedSettingsRpcUrl (newRpcUrl) {
+export function setSelectedSettingsRpcUrl (newRpcUrl) {
   return {
-    type: actions.SET_SELECTED_SETTINGS_RPC_URL,
+    type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
     value: newRpcUrl,
   }
 }
 
-function setNetworksTabAddMode (isInAddMode) {
+export function setNetworksTabAddMode (isInAddMode) {
   return {
-    type: actions.SET_NETWORKS_TAB_ADD_MODE,
+    type: actionConstants.SET_NETWORKS_TAB_ADD_MODE,
     value: isInAddMode,
   }
 }
 
-function setLastActiveTime () {
+export function setLastActiveTime () {
   return dispatch => {
     background.setLastActiveTime(err => {
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
   }
 }
 
-function setMkrMigrationReminderTimestamp (timestamp) {
+export function setMkrMigrationReminderTimestamp (timestamp) {
   return dispatch => {
     background.setMkrMigrationReminderTimestamp(timestamp, err => {
       if (err) {
-        return dispatch(actions.displayWarning(err.message))
+        return dispatch(displayWarning(err.message))
       }
     })
   }
 }
 
-function loadingMethoDataStarted () {
+export function loadingMethoDataStarted () {
   return {
-    type: actions.LOADING_METHOD_DATA_STARTED,
+    type: actionConstants.LOADING_METHOD_DATA_STARTED,
   }
 }
 
-function loadingMethoDataFinished () {
+export function loadingMethoDataFinished () {
   return {
-    type: actions.LOADING_METHOD_DATA_FINISHED,
+    type: actionConstants.LOADING_METHOD_DATA_FINISHED,
   }
 }
 
-function getContractMethodData (data = '') {
+export function getContractMethodData (data = '') {
   return (dispatch, getState) => {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
@@ -2611,11 +2417,11 @@ function getContractMethodData (data = '') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
-    dispatch(actions.loadingMethoDataStarted())
+    dispatch(loadingMethoDataStarted())
     log.debug(`loadingMethodData`)
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
-      dispatch(actions.loadingMethoDataFinished())
+      dispatch(loadingMethoDataFinished())
 
       background.addKnownMethodData(fourBytePrefix, { name, params })
 
@@ -2624,19 +2430,19 @@ function getContractMethodData (data = '') {
   }
 }
 
-function loadingTokenParamsStarted () {
+export function loadingTokenParamsStarted () {
   return {
-    type: actions.LOADING_TOKEN_PARAMS_STARTED,
+    type: actionConstants.LOADING_TOKEN_PARAMS_STARTED,
   }
 }
 
-function loadingTokenParamsFinished () {
+export function loadingTokenParamsFinished () {
   return {
-    type: actions.LOADING_TOKEN_PARAMS_FINISHED,
+    type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
   }
 }
 
-function getTokenParams (tokenAddress) {
+export function getTokenParams (tokenAddress) {
   return (dispatch, getState) => {
     const existingTokens = getState().metamask.tokens
     const existingToken = existingTokens.find(
@@ -2650,25 +2456,25 @@ function getTokenParams (tokenAddress) {
       })
     }
 
-    dispatch(actions.loadingTokenParamsStarted())
+    dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
     return fetchSymbolAndDecimals(tokenAddress, existingTokens).then(
       ({ symbol, decimals }) => {
-        dispatch(actions.addToken(tokenAddress, symbol, decimals))
-        dispatch(actions.loadingTokenParamsFinished())
+        dispatch(addToken(tokenAddress, symbol, decimals))
+        dispatch(loadingTokenParamsFinished())
       }
     )
   }
 }
 
-function setSeedPhraseBackedUp (seedPhraseBackupState) {
+export function setSeedPhraseBackedUp (seedPhraseBackupState) {
   return dispatch => {
     log.debug(`background.setSeedPhraseBackedUp`)
     return new Promise((resolve, reject) => {
       background.setSeedPhraseBackedUp(seedPhraseBackupState, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         return forceUpdateMetamaskState(dispatch)
@@ -2679,18 +2485,18 @@ function setSeedPhraseBackedUp (seedPhraseBackupState) {
   }
 }
 
-function hideSeedPhraseBackupAfterOnboarding () {
+export function hideSeedPhraseBackupAfterOnboarding () {
   return {
-    type: actions.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
+    type: actionConstants.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
   }
 }
 
-function initializeThreeBox () {
+export function initializeThreeBox () {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.initializeThreeBox(err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve()
@@ -2699,12 +2505,12 @@ function initializeThreeBox () {
   }
 }
 
-function setShowRestorePromptToFalse () {
+export function setShowRestorePromptToFalse () {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.setShowRestorePromptToFalse(err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve()
@@ -2713,12 +2519,12 @@ function setShowRestorePromptToFalse () {
   }
 }
 
-function turnThreeBoxSyncingOn () {
+export function turnThreeBoxSyncingOn () {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.turnThreeBoxSyncingOn(err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve()
@@ -2727,12 +2533,12 @@ function turnThreeBoxSyncingOn () {
   }
 }
 
-function restoreFromThreeBox (accountAddress) {
+export function restoreFromThreeBox (accountAddress) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.restoreFromThreeBox(accountAddress, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve()
@@ -2741,12 +2547,12 @@ function restoreFromThreeBox (accountAddress) {
   }
 }
 
-function getThreeBoxLastUpdated () {
+export function getThreeBoxLastUpdated () {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.getThreeBoxLastUpdated((err, lastUpdated) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve(lastUpdated)
@@ -2755,12 +2561,12 @@ function getThreeBoxLastUpdated () {
   }
 }
 
-function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
+export function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         resolve()
@@ -2769,7 +2575,7 @@ function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
   }
 }
 
-function turnThreeBoxSyncingOnAndInitialize () {
+export function turnThreeBoxSyncingOnAndInitialize () {
   return async dispatch => {
     await dispatch(setThreeBoxSyncingPermission(true))
     await dispatch(turnThreeBoxSyncingOn())
@@ -2777,20 +2583,20 @@ function turnThreeBoxSyncingOnAndInitialize () {
   }
 }
 
-function setNextNonce (nextNonce) {
+export function setNextNonce (nextNonce) {
   return {
-    type: actions.SET_NEXT_NONCE,
+    type: actionConstants.SET_NEXT_NONCE,
     value: nextNonce,
   }
 }
 
-function getNextNonce () {
+export function getNextNonce () {
   return (dispatch, getState) => {
     const address = getState().metamask.selectedAddress
     return new Promise((resolve, reject) => {
       background.getNextNonce(address, (err, nextNonce) => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(displayWarning(err.message))
           return reject(err)
         }
         dispatch(setNextNonce(nextNonce))
@@ -2800,14 +2606,14 @@ function getNextNonce () {
   }
 }
 
-function setRequestAccountTabIds (requestAccountTabIds) {
+export function setRequestAccountTabIds (requestAccountTabIds) {
   return {
-    type: actions.SET_REQUEST_ACCOUNT_TABS,
+    type: actionConstants.SET_REQUEST_ACCOUNT_TABS,
     value: requestAccountTabIds,
   }
 }
 
-function getRequestAccountTabIds () {
+export function getRequestAccountTabIds () {
   return async dispatch => {
     const requestAccountTabIds = await pify(
       background.getRequestAccountTabIds
@@ -2816,14 +2622,14 @@ function getRequestAccountTabIds () {
   }
 }
 
-function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+export function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
   return {
-    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    type: actionConstants.SET_OPEN_METAMASK_TAB_IDS,
     value: openMetaMaskTabIDs,
   }
 }
 
-function getOpenMetamaskTabsIds () {
+export function getOpenMetamaskTabsIds () {
   return async dispatch => {
     const openMetaMaskTabIDs = await pify(
       background.getOpenMetamaskTabsIds
@@ -2832,14 +2638,14 @@ function getOpenMetamaskTabsIds () {
   }
 }
 
-function setCurrentWindowTab (currentWindowTab) {
+export function setCurrentWindowTab (currentWindowTab) {
   return {
-    type: actions.SET_CURRENT_WINDOW_TAB,
+    type: actionConstants.SET_CURRENT_WINDOW_TAB,
     value: currentWindowTab,
   }
 }
 
-function getCurrentWindowTab () {
+export function getCurrentWindowTab () {
   return async dispatch => {
     const currentWindowTab = await global.platform.currentTab()
     dispatch(setCurrentWindowTab(currentWindowTab))

@@ -1,7 +1,7 @@
-const Web3 = require('./ConfluxWeb/index')
-const contracts = require('@yqrashawn/cfx-contract-metadata')
-const { warn } = require('loglevel')
-const { MAINNET, TESTNET } = require('./network/enums')
+import Web3 from './ConfluxWeb/index'
+import contracts from '@yqrashawn/cfx-contract-metadata'
+import { warn } from 'loglevel'
+import { MAINNET, TESTNET } from './network/enums'
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [
@@ -14,10 +14,8 @@ const ERC20_ABI = [
     type: 'function',
   },
 ]
-const SINGLE_CALL_BALANCES_ABI = require('./cfx-single-call-balance-checker-abi')
-const {
-  SINGLE_CALL_BALANCES_ADDRESS,
-} = require('./network/contract-addresses.js')
+import SINGLE_CALL_BALANCES_ABI from './cfx-single-call-balance-checker-abi'
+import { SINGLE_CALL_BALANCES_ADDRESS } from './network/contract-addresses.js'
 
 /**
  * A controller that polls for token exchange
@@ -211,4 +209,4 @@ class DetectTokensController {
   }
 }
 
-module.exports = DetectTokensController
+export default DetectTokensController

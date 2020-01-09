@@ -1,7 +1,7 @@
 /**
  * Freezes the Promise global and prevents its reassignment.
  */
-const deepFreeze = require('deep-freeze-strict')
+import deepFreeze from 'deep-freeze-strict'
 
 if (process.env.IN_TEST !== 'true' && process.env.METAMASK_ENV !== 'test') {
   freeze(global, 'Promise')

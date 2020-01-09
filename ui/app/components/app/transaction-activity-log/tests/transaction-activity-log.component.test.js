@@ -46,7 +46,7 @@ describe('TransactionActivityLog Component', () => {
         className="test-class"
         inlineRetryIndex={-1}
         inlineCancelIndex={-1}
-        nativeCurrency="ETH"
+        nativeCurrency="CFX"
         onCancel={() => {}}
         onRetry={() => {}}
         primaryTransactionStatus="confirmed"
@@ -98,7 +98,7 @@ describe('TransactionActivityLog Component', () => {
         className="test-class"
         inlineRetryIndex={2}
         inlineCancelIndex={3}
-        nativeCurrency="ETH"
+        nativeCurrency="CFX"
         onCancel={() => {}}
         onRetry={() => {}}
         primaryTransactionStatus="pending"
@@ -155,7 +155,7 @@ describe('TransactionActivityLog Component', () => {
         className="test-class"
         inlineRetryIndex={2}
         inlineCancelIndex={3}
-        nativeCurrency="ETH"
+        nativeCurrency="CFX"
         onCancel={() => {}}
         onRetry={() => {}}
         primaryTransactionStatus="pending"

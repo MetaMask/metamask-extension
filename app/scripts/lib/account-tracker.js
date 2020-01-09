@@ -7,27 +7,27 @@
  * on each new block.
  */
 
-const EthQuery = require('../eth-query')
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const pify = require('pify')
-const Web3 = require('../controllers/ConfluxWeb')
-const SINGLE_CALL_BALANCES_ABI = require('../controllers/cfx-single-call-balance-checker-abi.js')
+import EthQuery from '../eth-query'
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import pify from 'pify'
+import Web3 from '../controllers/ConfluxWeb'
+import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
-const { bnToHex } = require('./util')
-const {
+import { bnToHex } from './util'
+import {
   MAINNET_CODE,
   TESTNET_CODE,
   RINKEBY_CODE,
   ROPSTEN_CODE,
   KOVAN_CODE,
-} = require('../controllers/network/enums')
-const {
+} from '../controllers/network/enums'
+import {
   SINGLE_CALL_BALANCES_ADDRESS,
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
-} = require('../controllers/network/contract-addresses')
+} from '../controllers/network/contract-addresses'
 
 class AccountTracker {
   /**
@@ -292,4 +292,4 @@ class AccountTracker {
   }
 }
 
-module.exports = AccountTracker
+export default AccountTracker

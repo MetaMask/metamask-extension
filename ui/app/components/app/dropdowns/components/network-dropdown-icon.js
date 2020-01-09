@@ -45,4 +45,4 @@ NetworkDropdownIcon.propTypes = {
   isSelected: PropTypes.bool,
 }
 
-module.exports = NetworkDropdownIcon
+export default NetworkDropdownIcon

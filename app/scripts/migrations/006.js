@@ -6,10 +6,11 @@ This migration moves KeyringController.selectedAddress to PreferencesController.
 
 */
 
-const extend = require('xtend')
-const clone = require('clone')
+import extend from 'xtend'
 
-module.exports = {
+import clone from 'clone'
+
+export default {
   version,
 
   migrate: function (originalVersionedData) {

@@ -1,9 +1,9 @@
 let iconFactory
-const isValidAddress = require('ethereumjs-util').isValidAddress
-const { checksumAddress } = require('../app/helpers/utils/util')
-const contractMap = require('@yqrashawn/cfx-contract-metadata')
+import { isValidAddress } from 'ethereumjs-util'
+import { checksumAddress } from '../app/helpers/utils/util'
+import contractMap from '@yqrashawn/cfx-contract-metadata'
 
-module.exports = function (jazzicon) {
+export default function iconFactoryGenerator (jazzicon) {
   if (!iconFactory) {
     iconFactory = new IconFactory(jazzicon)
   }

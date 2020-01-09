@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import actions from '../../../../store/actions'
+import * as actions from '../../../../store/actions'
 import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,

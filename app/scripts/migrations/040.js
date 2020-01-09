@@ -1,12 +1,12 @@
 const version = 40
-const clone = require('clone')
+import clone from 'clone'
 
 /**
  * Site connections are now managed by the PermissionsController, and the
  * ProviderApprovalController is removed. This migration deletes all
  * ProviderApprovalController state.
  */
-module.exports = {
+export default {
   version,
   migrate: async function (originalVersionedData) {
     const versionedData = clone(originalVersionedData)

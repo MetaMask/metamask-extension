@@ -1,7 +1,8 @@
-const jsonDiffer = require('fast-json-patch')
-const clone = require('clone')
+import jsonDiffer from 'fast-json-patch'
+import clone from 'clone'
+
 /** @module*/
-module.exports = {
+export default {
   generateHistoryEntry,
   replayHistory,
   snapshotFromTxMeta,

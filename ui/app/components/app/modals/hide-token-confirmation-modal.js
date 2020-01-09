@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
 import Identicon from '../../ui/identicon'
 
 function mapStateToProps (state) {
@@ -35,7 +35,7 @@ HideTokenConfirmationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(HideTokenConfirmationModal)

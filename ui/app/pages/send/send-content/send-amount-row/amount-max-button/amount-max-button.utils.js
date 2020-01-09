@@ -1,10 +1,15 @@
-const {
+import {
   multiplyCurrencies,
   subtractCurrencies,
-} = require('../../../../../helpers/utils/conversion-util')
-const ethUtil = require('ethereumjs-util')
+} from '../../../../../helpers/utils/conversion-util'
+import ethUtil from 'ethereumjs-util'
 
-function calcMaxAmount ({ balance, gasTotal, selectedToken, tokenBalance }) {
+export function calcMaxAmount ({
+  balance,
+  gasTotal,
+  selectedToken,
+  tokenBalance,
+}) {
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 
@@ -18,8 +23,4 @@ function calcMaxAmount ({ balance, gasTotal, selectedToken, tokenBalance }) {
       ethUtil.addHexPrefix(gasTotal),
       { toNumericBase: 'hex' }
     )
-}
-
-module.exports = {
-  calcMaxAmount,
 }

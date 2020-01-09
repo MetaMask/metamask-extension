@@ -1,14 +1,13 @@
-import React from 'react'
-const Component = require('react').Component
-const inherits = require('util').inherits
-const {
+import React, { Component } from 'react'
+import { inherits } from 'util'
+import {
   addCurrencies,
   conversionGTE,
   conversionLTE,
   subtractCurrencies,
-} = require('../../helpers/utils/conversion-util')
+} from '../../helpers/utils/conversion-util'
 
-module.exports = InputNumber
+export default InputNumber
 
 inherits(InputNumber, Component)
 function InputNumber () {

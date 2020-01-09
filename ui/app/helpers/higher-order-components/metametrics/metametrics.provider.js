@@ -121,7 +121,7 @@ const mapStateToProps = state => {
   }
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps)
 )(MetaMetricsProvider)

@@ -1,8 +1,8 @@
 const version = 4
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (versionedData) {

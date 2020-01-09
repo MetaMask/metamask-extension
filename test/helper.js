@@ -1,8 +1,9 @@
-// const Ganache = require('ganache-core')
-const CGanache = require('@yqrashawn/conflux-local-network-lite')
-const nock = require('nock')
+// import Ganache from 'ganache-core'
+import CGanache from '@yqrashawn/conflux-local-network-lite'
+import nock from 'nock'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import log from 'loglevel'
 
 Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
@@ -29,8 +30,6 @@ before(done => {
 //   console.log('Ganache Testrpc is running on "http://localhost:8545"')
 // })
 
-// logging util
-const log = require('loglevel')
 log.setDefaultLevel(5)
 global.log = log
 

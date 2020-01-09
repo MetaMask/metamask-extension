@@ -1,12 +1,15 @@
 const promisify = require('pify')
 const fs = require('fs')
+
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const path = require('path')
+
 const changelogPath = path.join(__dirname, '..', 'CHANGELOG.md')
 const manifestPath = path.join(__dirname, '..', 'app', 'manifest.json')
 const manifest = require('../app/manifest.json')
 const versionBump = require('./version-bump')
+
 const bumpType = normalizeType(process.argv[2])
 
 start().catch(console.error)

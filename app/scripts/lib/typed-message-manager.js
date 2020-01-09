@@ -1,11 +1,11 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const createId = require('./random-id')
-const assert = require('assert')
-const { ethErrors } = require('eth-json-rpc-errors')
-const sigUtil = require('eth-sig-util')
-const log = require('loglevel')
-const jsonschema = require('jsonschema')
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import createId from './random-id'
+import assert from 'assert'
+import { ethErrors } from 'eth-json-rpc-errors'
+import sigUtil from 'eth-sig-util'
+import log from 'loglevel'
+import jsonschema from 'jsonschema'
 
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
@@ -25,7 +25,7 @@ const jsonschema = require('jsonschema')
  *
  */
 
-module.exports = class TypedMessageManager extends EventEmitter {
+export default class TypedMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */

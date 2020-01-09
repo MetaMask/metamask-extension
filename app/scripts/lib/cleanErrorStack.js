@@ -21,4 +21,4 @@ function cleanErrorStack (err) {
   return err
 }
 
-module.exports = cleanErrorStack
+export default cleanErrorStack

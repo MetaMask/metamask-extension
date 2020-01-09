@@ -8,7 +8,7 @@ import {
   qrCodeDetected,
 } from '../../../../store/actions'
 import { CONTACT_ADD_ROUTE } from '../../../../helpers/constants/routes'
-import { getQrCodeData } from '../../../../pages/send/send.selectors'
+import { getQrCodeData } from '../../../send/send.selectors'
 
 const mapStateToProps = state => {
   return {

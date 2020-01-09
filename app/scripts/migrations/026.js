@@ -7,9 +7,9 @@ This migration moves the identities stored in the KeyringController
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
   migrate (originalVersionedData) {
     const versionedData = clone(originalVersionedData)

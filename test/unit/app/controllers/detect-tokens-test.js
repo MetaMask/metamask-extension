@@ -1,10 +1,10 @@
-const assert = require('assert')
-const nock = require('nock')
-const sinon = require('sinon')
-const ObservableStore = require('obs-store')
-const DetectTokensController = require('../../../../app/scripts/controllers/detect-tokens')
-const NetworkController = require('../../../../app/scripts/controllers/network/network')
-const PreferencesController = require('../../../../app/scripts/controllers/preferences')
+import assert from 'assert'
+import nock from 'nock'
+import sinon from 'sinon'
+import ObservableStore from 'obs-store'
+import DetectTokensController from '../../../../app/scripts/controllers/detect-tokens'
+import NetworkController from '../../../../app/scripts/controllers/network/network'
+import PreferencesController from '../../../../app/scripts/controllers/preferences'
 
 describe('DetectTokensController', () => {
   const sandbox = sinon.createSandbox()

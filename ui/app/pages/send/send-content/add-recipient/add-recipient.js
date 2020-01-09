@@ -1,19 +1,17 @@
-const {
+import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
-} = require('../../send.constants')
-const {
-  isValidAddress,
-  isEthNetwork,
-} = require('../../../../helpers/utils/util')
+} from '../../send.constants'
+
+import { isValidAddress, isEthNetwork } from '../../../../helpers/utils/util'
 import { checkExistingAddresses } from '../../../add-token/util'
 
-const ethUtil = require('ethereumjs-util')
-const contractMap = require('@yqrashawn/cfx-contract-metadata')
+import ethUtil from 'ethereumjs-util'
+import contractMap from '@yqrashawn/cfx-contract-metadata'
 
-function getToErrorObject (
+export function getToErrorObject (
   to,
   toError = null,
   hasHexData = false,
@@ -34,7 +32,7 @@ function getToErrorObject (
   return { to: toError }
 }
 
-function getToWarningObject (
+export function getToWarningObject (
   to,
   toWarning = null,
   tokens = [],
@@ -48,9 +46,4 @@ function getToWarningObject (
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR
   }
   return { to: toWarning }
-}
-
-module.exports = {
-  getToErrorObject,
-  getToWarningObject,
 }

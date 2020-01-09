@@ -81,4 +81,4 @@ class EditableLabel extends Component {
   }
 }
 
-module.exports = EditableLabel
+export default EditableLabel

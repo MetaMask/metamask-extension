@@ -1,13 +1,12 @@
-const assert = require('assert')
-const recipientBlackListChecker = require('../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker')
-const {
+import assert from 'assert'
+import recipientBlackListChecker from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
+import {
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
-} = require('../../../../../app/scripts/controllers/network/enums')
-
-const KeyringController = require('eth-keyring-controller')
+} from '../../../../../app/scripts/controllers/network/enums'
+import KeyringController from 'eth-keyring-controller'
 
 describe('Recipient Blacklist Checker', function () {
   let publicAccounts

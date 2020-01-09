@@ -1,7 +1,7 @@
 const ethJsRpcSlug = 'Error: [ethjs-rpc] rpc error with payload '
 const errorLabelPrefix = 'Error: '
 
-module.exports = extractEthjsErrorMessage
+export default extractEthjsErrorMessage
 
 /**
  * Extracts the important part of an ethjs-rpc error message. If the passed error is not an isEthjsRpcError, the error

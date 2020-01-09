@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
+import { inherits } from 'util'
 
-module.exports = ReadOnlyInput
+export default ReadOnlyInput
 
 inherits(ReadOnlyInput, Component)
 function ReadOnlyInput () {

@@ -1,9 +1,10 @@
-const assert = require('assert')
-const {
+import assert from 'assert'
+import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
-} = require('../../../../../app/scripts/controllers/network/middleware/pending')
-const txMetaStub = require('./stubs').txMetaStub
+} from '../../../../../app/scripts/controllers/network/middleware/pending'
+import { txMetaStub } from './stubs'
+
 describe('#createPendingNonceMiddleware', function () {
   const getPendingNonce = async () => '0x2'
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
@@ -66,7 +67,7 @@ describe('#createPendingTxMiddleware', function () {
     s: '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   }
   it('should call next if not a eth_getTransactionByHash request', done => {
-    const req = { method: 'cfx_getBlockByNumber' }
+    const req = { method: 'cfx_getBlockByEpochNumber' }
     const res = {}
     pendingTxMiddleware(req, res, () => done())
   })

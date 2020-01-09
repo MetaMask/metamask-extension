@@ -2,13 +2,12 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
-const prefixForNetwork = require('../../../../lib/etherscan-prefix-for-network')
-const {
+import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
+import {
   conversionUtil,
   multiplyCurrencies,
-} = require('../../../helpers/utils/conversion-util')
-
-const TokenMenuDropdown = require('../dropdowns/token-menu-dropdown.js')
+} from '../../../helpers/utils/conversion-util'
+import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
 
 export default class TokenCell extends Component {
   static contextTypes = {
@@ -41,7 +40,7 @@ export default class TokenCell extends Component {
     const {
       address,
       symbol,
-      string, // balance string
+      string,
       network,
       setSelectedToken,
       selectedTokenAddress,

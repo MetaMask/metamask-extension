@@ -84,4 +84,4 @@ NotificationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(null, mapDispatchToProps)(NotificationModal)
+export default connect(null, mapDispatchToProps)(NotificationModal)

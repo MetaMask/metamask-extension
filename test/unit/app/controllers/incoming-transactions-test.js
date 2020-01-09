@@ -1,20 +1,21 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const proxyquire = require('proxyquire')
+import assert from 'assert'
+import sinon from 'sinon'
+import proxyquire from 'proxyquire'
+
 const IncomingTransactionsController = proxyquire(
   '../../../../app/scripts/controllers/incoming-transactions',
   {
-    '../lib/random-id': () => 54321,
+    '../lib/random-id': { default: () => 54321 },
   }
-)
+).default
 
-const {
+import {
   ROPSTEN,
   RINKEBY,
   KOVAN,
   GOERLI,
   MAINNET,
-} = require('../../../../app/scripts/controllers/network/enums')
+} from '../../../../app/scripts/controllers/network/enums'
 
 describe('IncomingTransactionsController', () => {
   const EMPTY_INIT_STATE = {

@@ -5,12 +5,12 @@ import BalanceComponent from '../../ui/balance'
 import AddTokenButton from '../add-token-button'
 import AccountDetails from '../account-details'
 
-const { checksumAddress } = require('../../../helpers/utils/util')
-const TokenList = require('../token-list')
-const {
+import { checksumAddress } from '../../../helpers/utils/util'
+import TokenList from '../token-list'
+import {
   ADD_TOKEN_ROUTE,
   CONNECTED_ROUTE,
-} = require('../../../helpers/constants/routes')
+} from '../../../helpers/constants/routes'
 
 export default class WalletView extends Component {
   static contextTypes = {

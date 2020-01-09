@@ -1,4 +1,4 @@
-module.exports = [
+const abi = [
   {
     constant: true,
     inputs: [{ name: 'node', type: 'bytes32' }],
@@ -106,3 +106,4 @@ module.exports = [
     type: 'event',
   },
 ]
+export default abi

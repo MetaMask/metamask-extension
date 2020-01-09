@@ -8,7 +8,7 @@ export default class Selector extends Component {
     const {
       states,
       selectedKey,
-      actions,
+      updateState,
       store,
       modifyBackgroundConnection,
       backGroundConnectionModifiers,
@@ -24,7 +24,7 @@ export default class Selector extends Component {
           const backgroundConnectionModifier =
             backGroundConnectionModifiers[selectedKey]
           modifyBackgroundConnection(backgroundConnectionModifier || {})
-          store.dispatch(actions.update(selectedKey))
+          store.dispatch(updateState(selectedKey))
           this.setState({ selected: selectedKey })
         }}
       >
@@ -43,7 +43,7 @@ export default class Selector extends Component {
 Selector.propTypes = {
   states: PropTypes.object.isRequired,
   selectedKey: PropTypes.string.isRequired,
-  actions: PropTypes.object.isRequired,
+  updateState: PropTypes.func.isRequired,
   store: PropTypes.object.isRequired,
   modifyBackgroundConnection: PropTypes.func.isRequired,
   backGroundConnectionModifiers: PropTypes.object.isRequired,

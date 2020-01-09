@@ -6,9 +6,9 @@ This migration sets transactions who were retried and marked as failed to submit
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

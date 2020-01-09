@@ -1,4 +1,4 @@
-module.exports = createDnodeRemoteGetter
+export default createDnodeRemoteGetter
 
 function createDnodeRemoteGetter (dnode) {
   let remote

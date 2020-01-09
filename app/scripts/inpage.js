@@ -30,14 +30,14 @@ const restoreContextAfterImports = () => {
 
 cleanContextForImports()
 
-const log = require('loglevel')
-const LocalMessageDuplexStream = require('post-message-stream')
-const MetamaskInpageProvider = require('./metamask-inpage-provider.js')
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+import MetamaskInpageProvider from './metamask-inpage-provider.js'
 
 // TODO:deprecate:2020-01-13
-// const Conflux = require('js-conflux-sdk/dist/js-conflux-sdk.umd.min.js')
-const Conflux = require('js-conflux-sdk')
-const setupDappAutoReload = require('./lib/auto-reload.js')
+// import Conflux from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+import Conflux from 'js-conflux-sdk'
+import setupDappAutoReload from './lib/auto-reload.js'
 
 restoreContextAfterImports()
 

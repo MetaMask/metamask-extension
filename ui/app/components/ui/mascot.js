@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const metamaskLogo = require('metamask-logo')
-const debounce = require('debounce')
+import { inherits } from 'util'
+import metamaskLogo from 'metamask-logo'
+import debounce from 'debounce'
 
-module.exports = Mascot
+export default Mascot
 
 inherits(Mascot, Component)
 function Mascot ({ width = '200', height = '200' }) {

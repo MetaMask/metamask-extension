@@ -11,4 +11,4 @@ Snackbar.propTypes = {
   content: PropTypes.string.isRequired,
 }
 
-module.exports = Snackbar
+export default Snackbar

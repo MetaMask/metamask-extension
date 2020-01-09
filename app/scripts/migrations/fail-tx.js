@@ -1,6 +1,6 @@
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = function (version, reason, condition) {
+export default function failTxsThat (version, reason, condition) {
   return function (originalVersionedData) {
     const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
