@@ -46,7 +46,7 @@ export default class InfoTab extends PureComponent {
         <hr className="info-tab__separator" />
         <div className="info-tab__link-item">
           <a
-            href="https://support.metamask.io"
+            href="https://github.com/Conflux-Chain/metamask-extension/issues"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -55,14 +55,14 @@ export default class InfoTab extends PureComponent {
         </div>
         <div className="info-tab__link-item">
           <a
-            href="https://metamask.io/"
+            href="https://www.conflux-chain.org/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <span className="info-tab__link-text">{t('visitWebSite')}</span>
           </a>
         </div>
-        <div className="info-tab__link-item">
+        {/* <div className="info-tab__link-item">
           <a
             href="mailto:help@metamask.io?subject=Feedback"
             target="_blank"
@@ -70,7 +70,7 @@ export default class InfoTab extends PureComponent {
           >
             <span className="info-tab__link-text">{t('emailUs')}</span>
           </a>
-        </div>
+        </div> */}
       </div>
     )
   }

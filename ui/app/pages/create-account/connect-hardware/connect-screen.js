@@ -222,7 +222,7 @@ class ConnectScreen extends Component {
           {this.context.t('havingTroubleConnecting')}
           <a
             className="hw-connect__footer__link"
-            href="https://support.metamask.io/"
+            href="https://github.com/Conflux-Chain/metamask-extension/issues"
             target="_blank"
             rel="noopener noreferrer"
           >
