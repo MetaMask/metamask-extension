@@ -1,0 +1,41 @@
+.popover-content {
+  .details {
+    border: 1px solid #D2D8DD;
+    border-radius: 8px;
+    padding: 16px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 180%;
+    margin-bottom: 16px;
+
+    hr {
+      border: none;
+      border-bottom: 1px solid #D2D8DD;
+      margin: 16px 0;
+    }
+
+    .details-amounts, .details-totals {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      .col {
+        align-self: flex-start;
+        &:last-child {
+          margin: 0 0 0 auto;
+          text-align: right;
+        }
+      }
+    }
+
+    .details-totals {
+      h3 {
+        font-weight: bold;
+        color: #24292E;
+      }
+    }
+  }
+}
