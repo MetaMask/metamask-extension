@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { storiesOf } from '@storybook/react'
 import PopOver from './popover.component'
 import { text } from '@storybook/addon-knobs/react'
@@ -59,7 +60,7 @@ const Fees = () => (
 const Activity = () => (
   <div className="activity">
     <div className="header">
-      <a href="#" onClick={e => e.preventDefault()}className="etherscan">
+      <a href="#" onClick={e => e.preventDefault()} className="etherscan">
         View on Etherscan
       </a>
       <h3>Activity</h3>
@@ -82,7 +83,11 @@ const Activity = () => (
   </div>
 )
 
-const Details = () => (
+const TransactionDetails = ({
+  amount,
+  fee,
+  ethCost,
+}) => (
   <div className="details">
     <div className="details-amounts">
       <div className="col">
@@ -90,8 +95,8 @@ const Details = () => (
         Transaction Fee
       </div>
       <div className="col">
-        $0.00<br />
-        $0.04
+        ${amount}<br />
+        ${fee}
       </div>
     </div>
     <hr />
@@ -100,12 +105,18 @@ const Details = () => (
         <h3>Total amount</h3>
       </div>
       <div className="col">
-        <h3>$0.04</h3>
-        <p>0.000185 ETH</p>
+        <h3>${amount + fee}</h3>
+        <p>{ethCost} ETH</p>
       </div>
     </div>
   </div>
 )
+
+TransactionDetails.propTypes = {
+  amount: PropTypes.number.isRequired,
+  fee: PropTypes.number.isRequired,
+  ethCost: PropTypes.number.isRequired,
+}
 
 const Chart = () => (
   <div className="chart"></div>
@@ -146,7 +157,7 @@ storiesOf('PopOver', module)
               <h4>0x may spend up to:<br /> 071,992.54744099 DAI</h4>
             </div>
           </div>
-          <Details />
+          <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
           <Activity />
         </div>
       </PopOver>
@@ -165,7 +176,7 @@ storiesOf('PopOver', module)
             <div className="container">
               <h3>Select a higher fee to accelerate your transaction.</h3>
               <Fees />
-              <Details />
+              <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
               <button className="save">Save</button>
             </div>
           </TabPanel>
@@ -186,7 +197,7 @@ storiesOf('PopOver', module)
                 </div>
               </div>
               <Chart />
-              <Details />
+              <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
               <button className="save">Save</button>
             </div>
           </TabPanel>
