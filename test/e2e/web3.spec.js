@@ -145,7 +145,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const [mainnet] = await findElements(
         driver,
-        By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`)
+        By.xpath(`//span[contains(text(), 'Main Conflux Network')]`)
       )
       await mainnet.click()
       await delay(largeDelayMs * 2)

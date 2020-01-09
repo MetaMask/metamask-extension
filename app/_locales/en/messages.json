@@ -807,7 +807,7 @@
     "message": "Logout time is too great"
   },
   "mainnet": {
-    "message": "Conflux Test Network"
+    "message": "Conflux Main Network (not released yet, fallback to conflux test net)"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -1376,6 +1376,9 @@
   },
   "terms": {
     "message": "Terms of Use"
+  },
+  "testnet": {
+    "message": "Conflux Test Network"
   },
   "testFaucet": {
     "message": "Test Faucet"

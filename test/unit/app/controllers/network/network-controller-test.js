@@ -97,7 +97,7 @@ describe('Network utils', () => {
       },
       {
         input: 'mainnet',
-        expected: 'Main Ethereum Network',
+        expected: 'Main Conflux Network',
       },
       {
         input: 'goerli',

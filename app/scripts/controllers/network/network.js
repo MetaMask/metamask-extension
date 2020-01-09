@@ -21,7 +21,7 @@ const {
   // ROPSTEN,
   // RINKEBY,
   // KOVAN,
-  CFX_TEST,
+  TESTNET,
   MAINNET,
   LOCALHOST,
   // GOERLI,
@@ -37,14 +37,14 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
-  // defaultProviderConfigType = CFX_TEST
+  // defaultProviderConfigType = TESTNET
   defaultProviderConfigType = LOCALHOST
 } else if (METAMASK_DEBUG) {
-  defaultProviderConfigType = CFX_TEST
+  defaultProviderConfigType = TESTNET
 } else if (env === 'test') {
   defaultProviderConfigType = LOCALHOST
 } else {
-  defaultProviderConfigType = MAINNET
+  defaultProviderConfigType = TESTNET
 }
 
 const defaultProviderConfig = {
@@ -127,6 +127,12 @@ module.exports = class NetworkController extends EventEmitter {
       networks.networkList[type] && networks.networkList[type].chainId
         ? networks.networkList[type].chainId
         : network
+    if (type === MAINNET) {
+      network = '1'
+    } else if (type === TESTNET) {
+      network = '2'
+    }
+
     return this.networkStore.putState(network)
   }
 
@@ -169,16 +175,18 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   async setProviderType (type, rpcTarget = '', ticker = 'CFX', nickname = '') {
-    assert.notEqual(
-      type,
-      'rpc',
+    assert(
+      type === MAINNET ||
+        type === LOCALHOST ||
+        type === TESTNET ||
+        type === 'rpc',
       `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`
     )
-    // assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     assert(
-      type === 'mainnet' || type === LOCALHOST,
+      type === MAINNET || type === LOCALHOST || type === TESTNET,
       `NetworkController - Unknown rpc type "${type}"`
     )
+    // assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
@@ -220,10 +228,10 @@ module.exports = class NetworkController extends EventEmitter {
         ticker: 'CFX',
         nickname: 'conflux-main-net',
       })
-    } else if (type === CFX_TEST) {
+    } else if (type === TESTNET) {
       this._configureStandardProvider({
         rpcUrl: CONFLUX_TEST_NET,
-        chainId: 1,
+        chainId: 2,
         ticker: 'CFX',
         nickname: 'conflux-test-net',
       })
@@ -274,6 +282,7 @@ module.exports = class NetworkController extends EventEmitter {
       ticker: ticker || 'CFX',
       nickname,
     }
+
     // setup networkConfig
     let settings = {
       network: chainId,

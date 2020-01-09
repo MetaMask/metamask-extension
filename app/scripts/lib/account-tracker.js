@@ -12,11 +12,12 @@ const ObservableStore = require('obs-store')
 const log = require('loglevel')
 const pify = require('pify')
 const Web3 = require('../controllers/ConfluxWeb')
-const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+const SINGLE_CALL_BALANCES_ABI = require('../controllers/cfx-single-call-balance-checker-abi.js')
 
 const { bnToHex } = require('./util')
 const {
   MAINNET_CODE,
+  TESTNET_CODE,
   RINKEBY_CODE,
   ROPSTEN_CODE,
   KOVAN_CODE,
@@ -201,6 +202,13 @@ class AccountTracker {
         )
         break
 
+      case TESTNET_CODE:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS
+        )
+        break
+
       case RINKEBY_CODE:
         await this._updateAccountsViaBalanceChecker(
           addresses,
@@ -255,27 +263,32 @@ class AccountTracker {
    * @param {*} deployedContractAddress
    */
   async _updateAccountsViaBalanceChecker (addresses, deployedContractAddress) {
+    // TODO: deploy the SINGLE_CALL_BALANCES contract
     const accounts = this.store.getState().accounts
     this.web3.setProvider(this._provider)
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
       .at(deployedContractAddress)
-    const ethBalance = ['0x0']
+    const ethBalance = ['0x0000000000000000000000000000000000000000']
 
-    ethContract.balances(addresses, ethBalance, (error, result) => {
-      if (error) {
+    const result = await ethContract
+      .balances(addresses, ethBalance)
+      .call()
+      .catch(error => {
         log.warn(
           `MetaMask - Account Tracker single call balance fetch failed`,
           error
         )
         return Promise.all(addresses.map(this._updateAccount.bind(this)))
-      }
-      addresses.forEach((address, index) => {
-        const balance = bnToHex(result[index])
-        accounts[address] = { address, balance }
       })
-      this.store.updateState({ accounts })
+    addresses.forEach((address, index) => {
+      const rst = result[index]
+      if (rst) {
+        const balance = bnToHex(rst)
+        accounts[address] = { address, balance }
+      }
     })
+    this.store.updateState({ accounts })
   }
 }
 

@@ -661,7 +661,7 @@
     "message": "登出"
   },
   "mainnet": {
-    "message": "Conflux  測試網路"
+    "message": "Conflux 主網 (未上線, 選擇後依然連接測試網)"
   },
   "memorizePhrase": {
     "message": "絕對不要忘記您的助憶詞。"
@@ -1161,6 +1161,9 @@
   },
   "terms": {
     "message": "使用條款"
+  },
+  "testnet": {
+    "message": "Conflux 測試網路"
   },
   "testFaucet": {
     "message": "測試水管"

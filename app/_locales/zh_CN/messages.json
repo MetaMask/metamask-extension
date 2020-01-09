@@ -655,7 +655,7 @@
     "message": "登出"
   },
   "mainnet": {
-    "message": "Conflux测试网络"
+    "message": "Conflux 主网 (未上线, 选择后依然连接测试网)"
   },
   "memorizePhrase": {
     "message": "记住该密语。"
@@ -1167,6 +1167,9 @@
   },
   "terms": {
     "message": "使用条款"
+  },
+  "testnet": {
+    "message": "Conflux 测试网"
   },
   "testFaucet": {
     "message": "测试水管"

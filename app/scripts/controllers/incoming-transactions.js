@@ -6,6 +6,7 @@ const { bnToHex } = require('../lib/util')
 import fetchWithTimeout from '../lib/fetch-with-timeout'
 const {
   MAINNET_CODE,
+  TESTNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
@@ -15,6 +16,7 @@ const {
   KOVAN,
   GOERLI,
   MAINNET,
+  TESTNET,
 } = require('./network/enums')
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
@@ -22,6 +24,7 @@ const networkTypeToIdMap = {
   [KOVAN]: String(KOVAN_CODE),
   [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
+  [TESTNET]: String(TESTNET_CODE),
 }
 const fetch = fetchWithTimeout({
   timeout: 30000,

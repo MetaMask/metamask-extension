@@ -137,6 +137,30 @@ NetworkDropdown.prototype.render = function NetworkDropdown () {
           {this.context.t('mainnet')}
         </span>
       </DropdownMenuItem>
+      <DropdownMenuItem
+        key="testnet"
+        closeMenu={() => this.props.hideNetworkDropdown()}
+        onClick={() => this.handleClick('testnet')}
+        style={dropdownMenuItemStyle}
+      >
+        {providerType === 'testnet' ? (
+          <i className="fa fa-check" />
+        ) : (
+          <div className="network-check__transparent">✓</div>
+        )}
+        <NetworkDropdownIcon
+          backgroundColor="#ff4a8d"
+          isSelected={providerType === 'testnet'}
+        />
+        <span
+          className="network-name-item"
+          style={{
+            color: providerType === 'testnet' ? '#ffffff' : '#9b9b9b',
+          }}
+        >
+          {this.context.t('testnet')}
+        </span>
+      </DropdownMenuItem>
       {/* <DropdownMenuItem */}
       {/*   key="ropsten" */}
       {/*   closeMenu={() => this.props.hideNetworkDropdown()} */}
@@ -318,6 +342,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
   if (providerName === 'mainnet') {
     name = this.context.t('mainnet')
+  } else if (providerName === 'testnet') {
+    name = this.context.t('testnet')
   } else if (providerName === 'ropsten') {
     name = this.context.t('ropsten')
   } else if (providerName === 'kovan') {

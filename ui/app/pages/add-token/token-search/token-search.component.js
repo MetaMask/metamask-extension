@@ -5,7 +5,6 @@ import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../components/ui/text-field'
 
-console.log(contractMap)
 const contractList = Object.entries(contractMap)
   .map(([_, tokenData]) => tokenData)
   .filter(tokenData => Boolean(tokenData.erc20))
