@@ -7,6 +7,7 @@ import TokenBalance from '../../../../components/ui/token-balance/token-balance.
 import TokenTracker from 'eth-token-tracker'
 
 const { createTestProviderTools } = require('../../../../../../test/stub/provider')
+
 const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('WithTokenTracker HOC', () => {
