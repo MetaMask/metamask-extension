@@ -155,7 +155,6 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
  */
 async function initialize () {
   const initState = await loadStateFromPersistence()
-  console.log(JSON.stringify(initState))
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
@@ -233,7 +232,6 @@ function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,

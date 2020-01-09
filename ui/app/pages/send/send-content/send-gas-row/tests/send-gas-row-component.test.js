@@ -79,7 +79,7 @@ describe('SendGasRow Component', function () {
     it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', () => {
       wrapper.setProps({ gasButtonGroupShown: true })
       const rendered = wrapper.find(SendRowWrapper).childAt(0)
-      assert.equal(rendered.children().length, 2)
+      assert.equal(rendered.children().length, 1)
 
       const gasPriceButtonGroup = rendered.childAt(0)
       assert(gasPriceButtonGroup.is(GasPriceButtonGroup))
@@ -98,14 +98,14 @@ describe('SendGasRow Component', function () {
     it('should render an advanced options button if gasButtonGroupShown is true', () => {
       wrapper.setProps({ gasButtonGroupShown: true })
       const rendered = wrapper.find(SendRowWrapper).childAt(0)
-      assert.equal(rendered.children().length, 2)
+      assert.equal(rendered.children().length, 1)
 
-      const advancedOptionsButton = rendered.childAt(1)
-      assert.equal(advancedOptionsButton.text(), 'advancedOptions_t')
+      // const advancedOptionsButton = rendered.childAt(1)
+      // assert.equal(advancedOptionsButton.text(), 'advancedOptions_t')
 
       assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 0)
-      advancedOptionsButton.props().onClick()
-      assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)
+      // advancedOptionsButton.props().onClick()
+      // assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)
     })
   })
 })

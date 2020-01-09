@@ -32,25 +32,28 @@ export default class SendGasRow extends Component {
     metricsEvent: PropTypes.func,
   }
 
+  // TODO: add this back when we have gas station
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context
     const { showCustomizeGasModal } = this.props
     return (
-      <div
-        className="advanced-gas-options-btn"
-        onClick={() => {
-          metricsEvent({
-            eventOpts: {
-              category: 'Transactions',
-              action: 'Edit Screen',
-              name: 'Clicked "Advanced Options"',
-            },
-          })
-          showCustomizeGasModal()
-        }}
-      >
-        {this.context.t('advancedOptions')}
-      </div>
+      false && (
+        <div
+          className="advanced-gas-options-btn"
+          onClick={() => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Clicked "Advanced Options"',
+              },
+            })
+            showCustomizeGasModal()
+          }}
+        >
+          {this.context.t('advancedOptions')}
+        </div>
+      )
     )
   }
 

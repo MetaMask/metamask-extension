@@ -1538,6 +1538,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupControllerConnection (outStream) {
     const api = this.getApi()
+
+    // TODO: remove this when we add gas station
+    api.setFeatureFlag('advancedInlineGas', true)
+
     const dnode = Dnode(api)
     // report new active controller connection
     this.activeControllerConnections++

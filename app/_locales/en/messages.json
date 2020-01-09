@@ -600,7 +600,7 @@
     "message": "Gas Used"
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "Gas Price (GDrip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"

@@ -7,7 +7,7 @@ function setupDappAutoReload (web3, observable) {
   let reloadInProgress = false
   let lastTimeUsed
   let lastSeenNetwork
-  let hasBeenWarned = false
+  let hasBeenWarned = true
 
   global.web3 = new Proxy(web3, {
     get: (_web3, key) => {

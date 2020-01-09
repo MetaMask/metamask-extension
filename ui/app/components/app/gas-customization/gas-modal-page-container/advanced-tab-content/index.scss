@@ -65,12 +65,16 @@
     position: relative;
 
     &__title {
+      // TODO: add gas chart back when we have gas station
+      display: none !important;
       font-size: 12px;
       color: #313A5E;
       margin-left: 22px;
     }
 
     &__speed-buttons {
+      // TODO: add gas chart back when we have gas station
+      display: none !important;
       position: absolute;
       bottom: 13px;
       display: flex;
@@ -83,6 +87,8 @@
     }
 
     .loading-overlay {
+      // TODO: add gas chart back when we have gas station
+      display: none !important;
       height: auto;
     }
   }
