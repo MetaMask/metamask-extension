@@ -8,6 +8,15 @@ const defaultNetworksData = [
     ticker: 'CFX',
     blockExplorerUrl: 'https://confluxscan.io',
   },
+  {
+    labelKey: 'testnet',
+    iconColor: '#FF4A8D',
+    providerType: 'testnet',
+    rpcUrl: 'http://13.67.73.51:12537/',
+    // chainId: '1',
+    ticker: 'CFX',
+    blockExplorerUrl: 'https://confluxscan.io',
+  },
   // {
   //   labelKey: 'mainnet',
   //   iconColor: '#29B6AF',

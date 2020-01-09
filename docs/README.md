@@ -2,11 +2,9 @@
 
 These docs relate to how to contribute to the MetaMask project itself.
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/).
+You can find the latest version of MetaMask on [our official website](https://www.conflux-chain.org/).
 
-For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
-
-For up to the minute news, follow our [Twitter](https://twitter.com/metamask_io) or [Medium](https://medium.com/metamask) pages.
+For help using MetaMask, visit our [User Support Site](https://github.com/Conflux-Chain/metamask-extension/issues).
 
 To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
 

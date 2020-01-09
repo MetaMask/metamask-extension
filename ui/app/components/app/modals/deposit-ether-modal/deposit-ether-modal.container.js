@@ -16,12 +16,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toWyre: address => {
-      dispatch(buyEth({ service: 'wyre', address, amount: 0 }))
-    },
-    toCoinSwitch: address => {
-      dispatch(buyEth({ service: 'coinswitch', address }))
-    },
+    // toWyre: address => {
+    //   dispatch(buyEth({ service: 'wyre', address, amount: 0 }))
+    // },
+    // toCoinSwitch: address => {
+    //   dispatch(buyEth({ service: 'coinswitch', address }))
+    // },
     hideModal: () => {
       dispatch(hideModal())
     },
@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    toFaucet: network => dispatch(buyEth({ network })),
+    toFaucet: ({ network, address }) => dispatch(buyEth({ network, address })),
   }
 }
 

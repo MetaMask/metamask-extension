@@ -54,8 +54,8 @@ describe('Network Dropdown', () => {
       wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
-    it('renders 7 DropDownMenuItems ', () => {
-      assert.equal(wrapper.find(DropdownMenuItem).length, 4)
+    it('renders 5 DropDownMenuItems ', () => {
+      assert.equal(wrapper.find(DropdownMenuItem).length, 5)
     })
 
     it('checks background color for first NetworkDropdownIcon', () => {
@@ -65,10 +65,10 @@ describe('Network Dropdown', () => {
           .at(0)
           .prop('backgroundColor'),
         '#29B6AF'
-      ) // Main Ethereum Network Teal
+      ) // Main Conflux Network Teal
     })
 
-    it.skip('checks background color for second NetworkDropdownIcon', () => {
+    it('checks background color for second NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -108,31 +108,31 @@ describe('Network Dropdown', () => {
       ) // Goerli Blue
     })
 
-    it.skip('checks background color for sixth NetworkDropdownIcon', () => {
+    it('checks background color for third NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
-          .at(5)
+          .at(2)
           .prop('innerBorder'),
         '1px solid #9b9b9b'
       )
     })
 
-    it.skip('checks dropdown for frequestRPCList from  state ', () => {
+    it('checks dropdown for frequestRPCList from  state ', () => {
       assert.equal(
         wrapper
           .find(DropdownMenuItem)
-          .at(1)
+          .at(3)
           .text(),
         '✓http://localhost:7545'
       )
     })
 
-    it('checks background color for second NetworkDropdownIcon', () => {
+    it('checks background border for forth NetworkDropdownIcon', () => {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
-          .at(1)
+          .at(3)
           .prop('innerBorder'),
         '1px solid #9b9b9b'
       )

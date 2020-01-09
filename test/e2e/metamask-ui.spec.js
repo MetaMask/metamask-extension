@@ -2299,7 +2299,7 @@ describe('MetaMask', function () {
 
       const customRpcButton = await findElement(
         driver,
-        By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`)
+        By.xpath(`//span[contains(text(), 'Main Conflux Network')]`)
       )
       await customRpcButton.click()
       await delay(largeDelayMs * 2)

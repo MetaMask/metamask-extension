@@ -18,6 +18,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
   }
 
   switch (service) {
+    case 'conflux-test-faucet':
+      return `https://wallet.confluxscan.io/faucet/dev/ask?address=${address}`
     case 'wyre':
       return `https://dash.sendwyre.com/sign-up`
     case 'coinswitch':
@@ -41,6 +43,8 @@ function getDefaultServiceForNetwork (network) {
   switch (network) {
     case '1':
       return 'wyre'
+    case '2':
+      return 'conflux-test-faucet'
     case '3':
       return 'metamask-faucet'
     case '4':
