@@ -2,9 +2,9 @@ const Sentry = require('@sentry/browser')
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
 const SENTRY_DSN_PROD =
-  'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
+  'https://9f364c1e50ff4c8b96f279b236019359@sentry.conflux-chain.org/10'
 const SENTRY_DSN_DEV =
-  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
+  'https://b6d6770834fe4c6bb3912b598d6b53b8@sentry.conflux-chain.org/9'
 
 module.exports = setupSentry
 
