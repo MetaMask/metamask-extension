@@ -75,4 +75,4 @@ Spinner.propTypes = {
   color: PropTypes.string,
 }
 
-module.exports = Spinner
+export default Spinner

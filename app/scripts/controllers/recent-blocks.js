@@ -1,15 +1,10 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
-const EthQuery = require('eth-query')
-const log = require('loglevel')
-const pify = require('pify')
-const {
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  MAINNET,
-  GOERLI,
-} = require('./network/enums')
+import ObservableStore from 'obs-store'
+import extend from 'xtend'
+import EthQuery from 'eth-query'
+import log from 'loglevel'
+import pify from 'pify'
+import { ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI } from './network/enums'
+
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 
@@ -79,7 +74,7 @@ class RecentBlocksController {
    */
   async processBlock (newBlockNumberHex) {
     const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
-    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
+    const newBlock = await this.getBlockByNumber(newBlockNumber)
     if (!newBlock) {
       return
     }
@@ -153,7 +148,7 @@ class RecentBlocksController {
       const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber)
           if (!newBlock) {
             return
           }
@@ -180,4 +175,4 @@ class RecentBlocksController {
 
 }
 
-module.exports = RecentBlocksController
+export default RecentBlocksController

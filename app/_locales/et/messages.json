@@ -1150,7 +1150,7 @@
     "message": "Sümbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sümbol peab olema 0 kuni 12 tähemärki."
+    "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
   "syncWithMobile": {
     "message": "Mobiiliga sünkroonimine"

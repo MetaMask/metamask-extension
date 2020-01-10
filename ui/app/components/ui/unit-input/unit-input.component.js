@@ -22,15 +22,12 @@ export default class UnitInput extends PureComponent {
   }
 
   static defaultProps = {
+    value: '',
     placeholder: '0',
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      value: props.value || '',
-    }
+  state = {
+    value: this.props.value,
   }
 
   componentDidUpdate (prevProps) {

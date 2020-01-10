@@ -51,7 +51,7 @@ const SIGNATURE_REQUEST_PATH = '/signature-request'
 const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request'
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 
-module.exports = {
+export {
   DEFAULT_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,

@@ -22,11 +22,12 @@
 * the keys are specified in the options parameters and the values are setter functions.
 */
 
-const BigNumber = require('bignumber.js')
-const ethUtil = require('ethereumjs-util')
+import BigNumber from 'bignumber.js'
+
+import ethUtil, { stripHexPrefix } from 'ethereumjs-util'
+
 const BN = ethUtil.BN
-const R = require('ramda')
-const { stripHexPrefix } = require('ethereumjs-util')
+import R from 'ramda'
 
 BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
@@ -237,7 +238,7 @@ const toNegative = (n, options = {}) => {
   return multiplyCurrencies(n, -1, options)
 }
 
-module.exports = {
+export {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,

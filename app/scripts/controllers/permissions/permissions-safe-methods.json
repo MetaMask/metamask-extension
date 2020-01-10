@@ -48,4 +48,6 @@
   "eth_uninstallFilter",
   "encryption_public_key",
   "eth_decryptMessage",
+  "wallet_watchAsset",
+  "metamask_watchAsset"
 ]

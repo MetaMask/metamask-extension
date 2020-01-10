@@ -1,8 +1,8 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const ObservableStore = require('obs-store')
-const HttpProvider = require('ethjs-provider-http')
-const EnsController = require('../../../../app/scripts/controllers/ens')
+import assert from 'assert'
+import sinon from 'sinon'
+import ObservableStore from 'obs-store'
+import HttpProvider from 'ethjs-provider-http'
+import EnsController from '../../../../app/scripts/controllers/ens'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'

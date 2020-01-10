@@ -1,8 +1,7 @@
-const extension = require('extensionizer')
-const { createExplorerLink: explorerLink } = require('etherscan-link')
-
-const { getEnvironmentType, checkForError } = require('../lib/util')
-const { ENVIRONMENT_TYPE_BACKGROUND } = require('../lib/enums')
+import extension from 'extensionizer'
+import { createExplorerLink as explorerLink } from 'etherscan-link'
+import { getEnvironmentType, checkForError } from '../lib/util'
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 
 class ExtensionPlatform {
 
@@ -149,4 +148,4 @@ class ExtensionPlatform {
   }
 }
 
-module.exports = ExtensionPlatform
+export default ExtensionPlatform

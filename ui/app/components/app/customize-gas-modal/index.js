@@ -1,37 +1,30 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const BigNumber = require('bignumber.js')
-const actions = require('../../../store/actions')
-const GasModalCard = require('./gas-modal-card')
+import PropTypes from 'prop-types'
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import BigNumber from 'bignumber.js'
+import * as actions from '../../../store/actions'
+import GasModalCard from './gas-modal-card'
 import Button from '../../ui/button'
 
-const ethUtil = require('ethereumjs-util')
+import ethUtil from 'ethereumjs-util'
 
 import {
   updateSendErrors,
 } from '../../../ducks/send/send.duck'
 
-const {
-  MIN_GAS_PRICE_DEC,
-  MIN_GAS_LIMIT_DEC,
-  MIN_GAS_PRICE_GWEI,
-} = require('../../../pages/send/send.constants')
+import { MIN_GAS_PRICE_DEC, MIN_GAS_LIMIT_DEC, MIN_GAS_PRICE_GWEI } from '../../../pages/send/send.constants'
+import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
-const {
-  isBalanceSufficient,
-} = require('../../../pages/send/send.utils')
-
-const {
+import {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
   conversionMax,
   subtractCurrencies,
-} = require('../../../helpers/utils/conversion-util')
+} from '../../../helpers/utils/conversion-util'
 
-const {
+import {
   getGasIsLoading,
   getForceGasMin,
   conversionRateSelector,
@@ -41,12 +34,9 @@ const {
   getCurrentAccountWithSendEtherInfo,
   getSelectedTokenToFiatRate,
   getSendMaxModeState,
-} = require('../../../selectors/selectors')
+} from '../../../selectors/selectors'
 
-const {
-  getGasPrice,
-  getGasLimit,
-} = require('../../../pages/send/send.selectors')
+import { getGasPrice, getGasLimit } from '../../../pages/send/send.selectors'
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
@@ -115,7 +105,7 @@ CustomizeGasModal.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
+export default connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
 
 CustomizeGasModal.prototype.UNSAFE_componentWillReceiveProps = function (nextProps) {
   const currentState = getFreshState(this.props)

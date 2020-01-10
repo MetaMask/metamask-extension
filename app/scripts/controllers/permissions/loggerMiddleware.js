@@ -1,6 +1,5 @@
-
-const clone = require('clone')
-const { isValidAddress } = require('ethereumjs-util')
+import clone from 'clone'
+import { isValidAddress } from 'ethereumjs-util'
 
 const LOG_LIMIT = 100
 
@@ -8,7 +7,7 @@ const LOG_LIMIT = 100
  * Create middleware for logging requests and responses to restricted and
  * permissions-related methods.
  */
-module.exports = function createLoggerMiddleware ({
+export default function createLoggerMiddleware ({
   walletPrefix, restrictedMethods, store, logStoreKey, historyStoreKey, ignoreMethods,
 }) {
   return (req, res, next, _end) => {

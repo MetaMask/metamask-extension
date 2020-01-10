@@ -2,17 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 export default class Tabs extends Component {
+  static defaultProps = {
+    defaultActiveTabIndex: 0,
+  }
+
   static propTypes = {
     defaultActiveTabIndex: PropTypes.number,
     children: PropTypes.node,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      activeTabIndex: props.defaultActiveTabIndex || 0,
-    }
+  state = {
+    activeTabIndex: this.props.defaultActiveTabIndex,
   }
 
   handleTabClick (tabIndex) {

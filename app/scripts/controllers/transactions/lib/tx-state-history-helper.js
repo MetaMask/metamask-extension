@@ -1,7 +1,8 @@
-const jsonDiffer = require('fast-json-patch')
-const clone = require('clone')
+import jsonDiffer from 'fast-json-patch'
+import clone from 'clone'
+
 /** @module*/
-module.exports = {
+export default {
   generateHistoryEntry,
   replayHistory,
   snapshotFromTxMeta,
@@ -35,7 +36,7 @@ function migrateFromSnapshotsToDiffs (longHistory) {
   with the first entry having the note and a timestamp when the change took place
   @param previousState {object} - the previous state of the object
   @param newState {object} - the update object
-  @param note {string} - a optional note for the state change
+  @param {string} [note] - a optional note for the state change
   @returns {array}
 */
 function generateHistoryEntry (previousState, newState, note) {

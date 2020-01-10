@@ -1,11 +1,12 @@
-const assert = require('assert')
-const { getEnvironmentType, sufficientBalance } = require('../../../app/scripts/lib/util')
-const {
+import assert from 'assert'
+import { getEnvironmentType, sufficientBalance } from '../../../app/scripts/lib/util'
+
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
-} = require('../../../app/scripts/lib/enums')
+} from '../../../app/scripts/lib/enums'
 
 describe('getEnvironmentType', function () {
   it('should return popup type', function () {

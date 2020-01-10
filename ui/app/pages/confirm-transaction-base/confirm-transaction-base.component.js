@@ -551,7 +551,7 @@ export default class ConfirmTransactionBase extends Component {
 
   getNavigateTxData () {
     const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
-    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs).reverse()
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
     const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
 
     return {

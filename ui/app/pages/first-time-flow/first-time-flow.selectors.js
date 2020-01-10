@@ -4,7 +4,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes'
 
-function getFirstTimeFlowTypeRoute (state) {
+export function getFirstTimeFlowTypeRoute (state) {
   const { firstTimeFlowType } = state.metamask
 
   let nextRoute
@@ -19,7 +19,7 @@ function getFirstTimeFlowTypeRoute (state) {
   return nextRoute
 }
 
-const getOnboardingInitiator = (state) => {
+export const getOnboardingInitiator = (state) => {
   const { onboardingTabs } = state.metamask
 
   if (!onboardingTabs || Object.keys(onboardingTabs).length !== 1) {
@@ -33,10 +33,3 @@ const getOnboardingInitiator = (state) => {
     tabId,
   }
 }
-
-const selectors = {
-  getFirstTimeFlowTypeRoute,
-  getOnboardingInitiator,
-}
-
-module.exports = selectors

@@ -1,5 +1,5 @@
 
-module.exports = createOriginMiddleware
+export default createOriginMiddleware
 
 /**
  * Returns a middleware that appends the DApp origin to request

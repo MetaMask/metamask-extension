@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../../../selectors/selectors')
+import { inherits } from 'util'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { getMetaMaskAccounts } from '../../../selectors/selectors'
 import Button from '../../../components/ui/button'
 
 PrivateKeyImportView.contextTypes = {
@@ -14,7 +14,7 @@ PrivateKeyImportView.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(PrivateKeyImportView)

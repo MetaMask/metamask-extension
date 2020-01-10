@@ -1,6 +1,6 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
-const log = require('loglevel')
+import ObservableStore from 'obs-store'
+import extend from 'xtend'
+import log from 'loglevel'
 
 /**
  * @typedef {Object} InitState
@@ -60,7 +60,7 @@ class OnboardingController {
    * @param {string} location - The location of the site registering
    * @param {string} tabId - The id of the tab registering
    */
-  async registerOnboarding (location, tabId) {
+  registerOnboarding = async (location, tabId) => {
     if (this.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return
@@ -74,4 +74,4 @@ class OnboardingController {
   }
 }
 
-module.exports = OnboardingController
+export default OnboardingController

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const InputNumber = require('../input-number.js')
+import { inherits } from 'util'
+import InputNumber from '../input-number.js'
 
-module.exports = GasModalCard
+export default GasModalCard
 
 inherits(GasModalCard, Component)
 function GasModalCard () {

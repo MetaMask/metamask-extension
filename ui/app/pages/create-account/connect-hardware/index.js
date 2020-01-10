@@ -1,24 +1,21 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const { getMetaMaskAccounts } = require('../../../selectors/selectors')
-const ConnectScreen = require('./connect-screen')
-const AccountList = require('./account-list')
-const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
-const { formatBalance } = require('../../../helpers/utils/util')
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import { getMetaMaskAccounts } from '../../../selectors/selectors'
+import ConnectScreen from './connect-screen'
+import AccountList from './account-list'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { formatBalance } from '../../../helpers/utils/util'
 
 class ConnectHardwareForm extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      error: null,
-      selectedAccount: null,
-      accounts: [],
-      browserSupported: true,
-      unlocked: false,
-      device: null,
-    }
+  state = {
+    error: null,
+    selectedAccount: null,
+    accounts: [],
+    browserSupported: true,
+    unlocked: false,
+    device: null,
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -283,6 +280,6 @@ ConnectHardwareForm.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   ConnectHardwareForm
 )

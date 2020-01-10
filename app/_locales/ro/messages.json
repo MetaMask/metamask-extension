@@ -1147,7 +1147,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolul trebuie să fie între 0 și 12 caractere."
+    "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
   },
   "syncWithMobile": {
     "message": "Sincronizați cu dispozitivul mobil"

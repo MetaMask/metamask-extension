@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   'metamask': {
     'isInitialized': true,
     'isUnlocked': true,

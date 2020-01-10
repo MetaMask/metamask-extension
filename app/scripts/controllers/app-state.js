@@ -1,5 +1,5 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
+import ObservableStore from 'obs-store'
+import extend from 'xtend'
 
 class AppStateController {
   /**
@@ -76,5 +76,5 @@ class AppStateController {
   }
 }
 
-module.exports = AppStateController
+export default AppStateController
 

@@ -16,7 +16,7 @@ export default class PermissionPageContainer extends Component {
     permissionRejected: PropTypes.bool,
     requestMetadata: PropTypes.object,
     targetDomainMetadata: PropTypes.object.isRequired,
-  };
+  }
 
   static defaultProps = {
     redirect: null,
@@ -24,12 +24,12 @@ export default class PermissionPageContainer extends Component {
     request: {},
     requestMetadata: {},
     selectedIdentity: {},
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   state = {
     selectedPermissions: this.getRequestedMethodState(

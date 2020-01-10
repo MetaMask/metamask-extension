@@ -4,46 +4,46 @@
 
 
 // these need to run before anything else
-require('./lib/freezeGlobals')
-require('./lib/setupFetchDebugging')()
+import './lib/freezeGlobals'
+import setupFetchDebugging from './lib/setupFetchDebugging'
+
+setupFetchDebugging()
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const endOfStream = require('end-of-stream')
-const pump = require('pump')
-const debounce = require('debounce-stream')
-const log = require('loglevel')
-const extension = require('extensionizer')
-const ReadOnlyNetworkStore = require('./lib/network-store')
-const LocalStore = require('./lib/local-store')
-const storeTransform = require('obs-store/lib/transform')
-const asStream = require('obs-store/lib/asStream')
-const ExtensionPlatform = require('./platforms/extension')
-const Migrator = require('./lib/migrator/')
-const migrations = require('./migrations/')
-const PortStream = require('extension-port-stream')
-const createStreamSink = require('./lib/createStreamSink')
-const NotificationManager = require('./lib/notification-manager.js')
-const MetamaskController = require('./metamask-controller')
-const rawFirstTimeState = require('./first-time-state')
-const setupSentry = require('./lib/setupSentry')
-const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
-const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
-const getObjStructure = require('./lib/getObjStructure')
-const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+import endOfStream from 'end-of-stream'
+import pump from 'pump'
+import debounce from 'debounce-stream'
+import log from 'loglevel'
+import extension from 'extensionizer'
+import ReadOnlyNetworkStore from './lib/network-store'
+import LocalStore from './lib/local-store'
+import storeTransform from 'obs-store/lib/transform'
+import asStream from 'obs-store/lib/asStream'
+import ExtensionPlatform from './platforms/extension'
+import Migrator from './lib/migrator'
+import migrations from './migrations'
+import PortStream from 'extension-port-stream'
+import createStreamSink from './lib/createStreamSink'
+import NotificationManager from './lib/notification-manager.js'
+import MetamaskController from './metamask-controller'
+import rawFirstTimeState from './first-time-state'
+import setupSentry from './lib/setupSentry'
+import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import setupMetamaskMeshMetrics from './lib/setupMetamaskMeshMetrics'
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
+import getObjStructure from './lib/getObjStructure'
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 
-const {
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-} = require('./lib/enums')
+} from './lib/enums'
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
-
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -300,10 +300,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing', state)
+      throw new Error('MetaMask - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data', state)
+      throw new Error('MetaMask - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {
@@ -320,7 +320,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -360,10 +359,7 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      // construct fake URL for identifying internal messages
-      const metamaskUrl = new URL(window.location)
-      metamaskUrl.hostname = 'metamask'
-      controller.setupTrustedCommunication(portStream, metamaskUrl)
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -410,13 +406,8 @@ function setupController (initState, initLangCode) {
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const senderUrl = new URL(remotePort.sender.url)
-    let extensionId
-    if (remotePort.sender.id !== extension.runtime.id) {
-      extensionId = remotePort.sender.id
-    }
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //
@@ -494,7 +485,7 @@ function openPopup () {
 
 // On first install, open a new tab with MetaMask
 extension.runtime.onInstalled.addListener(({ reason }) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+  if (reason === 'install' && !(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
     platform.openExtensionInBrowser()
   }
 })

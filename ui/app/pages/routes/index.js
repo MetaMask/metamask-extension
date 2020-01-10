@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
-import actions from '../../store/actions'
+import * as actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {
@@ -18,11 +18,12 @@ import classnames from 'classnames'
 import FirstTimeFlow from '../first-time-flow'
 // accounts
 import SendTransactionScreen from '../send'
-const ConfirmTransaction = require('../confirm-transaction')
+import ConfirmTransaction from '../confirm-transaction'
 
 // slideout menu
-const Sidebar = require('../../components/app/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../../components/app/sidebars/sidebar.constants')
+import Sidebar from '../../components/app/sidebars'
+
+import { WALLET_VIEW_SIDEBAR } from '../../components/app/sidebars/sidebar.constants'
 
 // other views
 import Home from '../home'
@@ -32,23 +33,24 @@ import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
 import PermissionsConnect from '../permissions-connect'
 import ConnectedSites from '../connected-sites'
-const RestoreVaultPage = require('../keychains/restore-vault').default
-const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync').default
-const AddTokenPage = require('../add-token')
-const ConfirmAddTokenPage = require('../confirm-add-token')
-const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
+import RestoreVaultPage from '../keychains/restore-vault'
+import RevealSeedConfirmation from '../keychains/reveal-seed'
+import MobileSyncPage from '../mobile-sync'
+import AddTokenPage from '../add-token'
+import ConfirmAddTokenPage from '../confirm-add-token'
+import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token'
 import CreateAccountPage from '../create-account'
 
-const Loading = require('../../components/ui/loading-screen')
-const LoadingNetwork = require('../../components/app/loading-network-screen').default
-const NetworkDropdown = require('../../components/app/dropdowns/network-dropdown')
+import Loading from '../../components/ui/loading-screen'
+import LoadingNetwork from '../../components/app/loading-network-screen'
+import NetworkDropdown from '../../components/app/dropdowns/network-dropdown'
 import AccountMenu from '../../components/app/account-menu'
 
 // Global Modals
-const Modal = require('../../components/app/modals').Modal
+import { Modal } from '../../components/app/modals'
+
 // Global Alert
-const Alert = require('../../components/ui/alert')
+import Alert from '../../components/ui/alert'
 
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
@@ -439,7 +441,7 @@ Routes.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(Routes)

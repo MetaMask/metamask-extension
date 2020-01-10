@@ -414,7 +414,7 @@
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
+    "message": "Symbool moet 11 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"

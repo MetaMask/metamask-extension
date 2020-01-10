@@ -6,7 +6,7 @@ import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 import Sidebar from '../sidebar.component.js'
 
 import WalletView from '../../wallet-view'
-import CustomizeGas from '../../gas-customization/gas-modal-page-container/'
+import CustomizeGas from '../../gas-customization/gas-modal-page-container'
 
 const propsMethodSpies = {
   hideSidebar: sinon.spy(),

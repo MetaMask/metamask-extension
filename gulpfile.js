@@ -28,6 +28,7 @@ const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
+
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))

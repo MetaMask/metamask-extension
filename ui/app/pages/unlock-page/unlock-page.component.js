@@ -23,17 +23,14 @@ export default class UnlockPage extends Component {
     showOptInModal: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      password: '',
-      error: null,
-    }
-
-    this.submitting = false
-    this.animationEventEmitter = new EventEmitter()
+  state = {
+    password: '',
+    error: null,
   }
+
+  submitting = false
+
+  animationEventEmitter = new EventEmitter()
 
   UNSAFE_componentWillMount () {
     const { isUnlocked, history } = this.props

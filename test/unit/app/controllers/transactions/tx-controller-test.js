@@ -1,21 +1,21 @@
-const assert = require('assert')
-const EventEmitter = require('events')
-const ethUtil = require('ethereumjs-util')
-const EthTx = require('ethereumjs-tx')
-const ObservableStore = require('obs-store')
-const sinon = require('sinon')
-const TransactionController = require('../../../../../app/scripts/controllers/transactions')
-const {
-  TRANSACTION_TYPE_RETRY,
-} = require('../../../../../app/scripts/controllers/transactions/enums')
-const {
+import assert from 'assert'
+import EventEmitter from 'events'
+import ethUtil from 'ethereumjs-util'
+import EthTx from 'ethereumjs-tx'
+import ObservableStore from 'obs-store'
+import sinon from 'sinon'
+import TransactionController from '../../../../../app/scripts/controllers/transactions'
+import { TRANSACTION_TYPE_RETRY } from '../../../../../app/scripts/controllers/transactions/enums'
+
+import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} = require('../../../../../ui/app/helpers/constants/transactions.js')
-const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
+} from '../../../../../ui/app/helpers/constants/transactions.js'
+
+import { createTestProviderTools, getTestAccounts } from '../../../../stub/provider'
 
 const noop = () => true
 const currentNetworkId = 42

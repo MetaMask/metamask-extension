@@ -1,12 +1,9 @@
-const React = require('react')
-const assert = require('assert')
-
-const sinon = require('sinon')
-const path = require('path')
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'app', 'dropdowns', 'index.js')).Dropdown
-
-const { createMockStore } = require('redux-test-utils')
-const { mountWithStore } = require('../../../lib/render-helpers')
+import React from 'react'
+import assert from 'assert'
+import sinon from 'sinon'
+import { createMockStore } from 'redux-test-utils'
+import { mountWithStore } from '../../../lib/render-helpers'
+import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
 
 const mockState = {
   metamask: {

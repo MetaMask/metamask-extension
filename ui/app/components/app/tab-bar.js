@@ -1,6 +1,6 @@
 import React from 'react'
-const PropTypes = require('prop-types')
-const classnames = require('classnames')
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 const TabBar = props => {
   const { tabs = [], onSelect, isActive } = props
@@ -32,4 +32,4 @@ TabBar.propTypes = {
   onSelect: PropTypes.func,
 }
 
-module.exports = TabBar
+export default TabBar

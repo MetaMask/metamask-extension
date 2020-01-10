@@ -2,9 +2,9 @@ const version = 3
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
 const newTestRpc = 'https://testrpc.metamask.io/'
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

@@ -6,9 +6,9 @@ const version = 28
 normalizes txParams on unconfirmed txs
 
 */
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {

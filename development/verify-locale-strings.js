@@ -27,6 +27,7 @@ const { promisify } = require('util')
 const log = require('loglevel')
 const matchAll = require('string.prototype.matchall').getPolyfill()
 const localeIndex = require('../app/_locales/index.json')
+
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)

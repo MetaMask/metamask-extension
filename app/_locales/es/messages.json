@@ -937,7 +937,7 @@
     "message": "Visita nuestro centro de atención"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo debe ser entre 0 y 12 caracteres"
+    "message": "El símbolo debe tener 11 caracteres o menos."
   },
   "syncWithMobile": {
     "message": "Sincronizar con el móvil"

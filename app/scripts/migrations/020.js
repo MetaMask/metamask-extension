@@ -8,9 +8,9 @@ so that we can version notices in the future.
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

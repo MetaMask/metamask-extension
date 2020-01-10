@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const copyToClipboard = require('copy-to-clipboard')
-const { exportAsFile } = require('../../../helpers/utils/util')
+import PropTypes from 'prop-types'
+import copyToClipboard from 'copy-to-clipboard'
+import { exportAsFile } from '../../../helpers/utils/util'
 
 class ExportTextContainer extends Component {
   render () {
@@ -49,4 +49,4 @@ ExportTextContainer.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = ExportTextContainer
+export default ExportTextContainer

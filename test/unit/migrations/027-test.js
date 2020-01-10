@@ -1,5 +1,5 @@
-const assert = require('assert')
-const migration27 = require('../../../app/scripts/migrations/027')
+import assert from 'assert'
+import migration27 from '../../../app/scripts/migrations/027'
 
 const oldStorage = {
   'meta': {},

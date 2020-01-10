@@ -1,2 +1,3 @@
-const LoadingScreen = require('./loading-screen.component')
-module.exports = LoadingScreen
+import LoadingScreen from './loading-screen.component'
+
+export default LoadingScreen

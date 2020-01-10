@@ -4,7 +4,7 @@ import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress, isValidENSAddress } from '../../../../helpers/utils/util'
-import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input'
+import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 import debounce from 'lodash.debounce'
 

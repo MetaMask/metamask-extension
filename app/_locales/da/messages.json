@@ -1132,7 +1132,7 @@
     "message": "Besøg vores supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol skal være mellem 0 og 12 tegn."
+    "message": "Symbolet skal være mindst 11 tegn."
   },
   "syncWithMobile": {
     "message": "Synkronisér med mobil"

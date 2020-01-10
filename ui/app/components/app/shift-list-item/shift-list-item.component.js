@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-const explorerLink = require('etherscan-link').createExplorerLink
-const actions = require('../../../store/actions')
-const { formatDate, addressSummary } = require('../../../helpers/utils/util')
-
-const CopyButton = require('../../ui/copyButton')
-const EthBalance = require('../../ui/eth-balance').default
-const Tooltip = require('../../ui/tooltip')
+import { createExplorerLink as explorerLink } from 'etherscan-link'
+import * as actions from '../../../store/actions'
+import { formatDate, addressSummary } from '../../../helpers/utils/util'
+import CopyButton from '../../ui/copyButton'
+import EthBalance from '../../ui/eth-balance'
+import Tooltip from '../../ui/tooltip'
 
 export default class ShiftListItem extends Component {
   static contextTypes = {

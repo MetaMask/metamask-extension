@@ -26,22 +26,18 @@ class AddToken extends Component {
     identities: PropTypes.object,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
-      searchResults: [],
-      selectedTokens: {},
-      tokenSelectorError: null,
-      customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
-      autoFilled: false,
-      forceEditSymbol: false,
-    }
+  state = {
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
+    searchResults: [],
+    selectedTokens: {},
+    tokenSelectorError: null,
+    customAddressError: null,
+    customSymbolError: null,
+    customDecimalsError: null,
+    autoFilled: false,
+    forceEditSymbol: false,
   }
 
   componentDidMount () {

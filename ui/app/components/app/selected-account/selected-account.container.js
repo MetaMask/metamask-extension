@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SelectedAccount from './selected-account.component'
 
-const { getSelectedAddress, getSelectedIdentity } = require('../../../selectors/selectors')
+import { getSelectedAddress, getSelectedIdentity } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
   return {

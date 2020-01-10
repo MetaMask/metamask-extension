@@ -1,5 +1,5 @@
-const assert = require('assert')
-const migration35 = require('../../../app/scripts/migrations/035')
+import assert from 'assert'
+import migration35 from '../../../app/scripts/migrations/035'
 
 describe('migration #35', () => {
   it('should update the version metadata', (done) => {

@@ -1,9 +1,9 @@
-const { Component } = require('react')
-const connect = require('react-redux').connect
-const PropTypes = require('prop-types')
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const { getMessage } = require('../utils/i18n-helper')
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import { getMessage } from '../utils/i18n-helper'
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
@@ -59,7 +59,7 @@ const mapStateToProps = state => {
   }
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps)
 )(I18nProvider)
