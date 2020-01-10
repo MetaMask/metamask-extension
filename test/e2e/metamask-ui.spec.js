@@ -651,21 +651,21 @@ describe('MetaMask', function () {
       assert.equal(navigationText.includes('2'), true, 'correct (same) transaction in focus')
     })
 
-    it('confirms a transaction', async () => {
+    it('rejects a transaction', async () => {
       await delay(tinyDelayMs)
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject')]`), 10000)
       await confirmButton.click()
       await delay(largeDelayMs * 2)
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       await delay(tinyDelayMs)
       const navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('4'), true, 'transaction confirmed')
+      assert.equal(navigationText.includes('4'), true, 'transaction rejected')
     })
 
-    it('rejects a transaction', async () => {
+    it('confirms a transaction', async () => {
       await delay(tinyDelayMs / 2)
-      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject')]`), 10000)
+      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await delay(tinyDelayMs / 2)
       await rejectButton.click()
       await delay(regularDelayMs)
@@ -674,7 +674,7 @@ describe('MetaMask', function () {
       await delay(tinyDelayMs / 2)
       const navigationText = await navigationElement.getText()
       await delay(tinyDelayMs / 2)
-      assert.equal(navigationText.includes('3'), true, 'transaction rejected')
+      assert.equal(navigationText.includes('3'), true, 'transaction confirmed')
     })
 
     it('rejects the rest of the transactions', async () => {
@@ -855,9 +855,9 @@ describe('MetaMask', function () {
     it('renders the correct ETH balance', async () => {
       const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
-      await driver.wait(until.elementTextMatches(balance, /^90.*\s*ETH.*$/), 10000)
+      await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/), 10000)
       const tokenAmount = await balance.getText()
-      assert.ok(/^90.*\s*ETH.*$/.test(tokenAmount))
+      assert.ok(/^87.*\s*ETH.*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })
