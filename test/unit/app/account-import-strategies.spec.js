@@ -1,7 +1,6 @@
 import assert from 'assert'
 import ethUtil from 'ethereumjs-util'
 import accountImporter from '../../../app/scripts/account-import-strategies/index'
-import { assertRejects } from '../test-utils'
 
 describe('Account Import Strategies', function () {
   const privkey =
@@ -18,7 +17,7 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async () => {
-      assertRejects(
+      assert.rejects(
         async function () {
           await accountImporter.importAccount('Private Key', [''])
         },
@@ -28,19 +27,19 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for undefined string private key', async () => {
-      assertRejects(async function () {
+      assert.rejects(async function () {
         await accountImporter.importAccount('Private Key', [undefined])
       })
     })
 
     it('throws an error for undefined string private key', async () => {
-      assertRejects(async function () {
+      assert.rejects(async function () {
         await accountImporter.importAccount('Private Key', [])
       })
     })
 
     it('throws an error for invalid private key', async () => {
-      assertRejects(async function () {
+      assert.rejects(async function () {
         await accountImporter.importAccount('Private Key', ['popcorn'])
       })
     })
