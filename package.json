@@ -94,7 +94,7 @@
     "eth-json-rpc-errors": "^2.0.0",
     "eth-json-rpc-filters": "https://github.com/logvik/eth-json-rpc-filters",
     "eth-json-rpc-infura": "https://github.com/logvik/eth-json-rpc-infura",
-    "eth-json-rpc-middleware": "https://github.com/MetaMask/eth-json-rpc-middleware",
+    "eth-json-rpc-middleware": "^4.4.0",
     "eth-keyring-controller": "https://github.com/logvik/KeyringController",
     "eth-ledger-bridge-keyring": "^0.2.0",
     "eth-method-registry": "^1.2.0",
