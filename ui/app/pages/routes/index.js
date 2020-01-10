@@ -146,6 +146,7 @@ class Routes extends Component {
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
+
     if (autoLogoutTimeLimit > 0) {
       return (
         <IdleTimer onAction={setLastActiveTime} throttle={1000}>
