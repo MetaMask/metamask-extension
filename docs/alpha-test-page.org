@@ -11,9 +11,9 @@ Conflux 版本的 MetaMask (浏览器插件钱包), 目前为内部测试版本(
 ** Report bug/提交Bug
 Please report any bug at our [[https://github.com/Conflux-Chain/metamask-extension/issues][github issue page]]
 ** Download/下载
-- [[http://13.57.190.119:9000/metamask-chrome-0.0.1.zip][chrome]]
-- [[http://13.57.190.119:9000/metamask-firefox-0.0.1.zip][firefox]]
-- [[http://13.57.190.119:9000/metamask-opera-0.0.1.zip][opera]]
+- [[http://13.57.190.119:9000/metamask-chrome-0.0.2.zip][chrome]]
+- [[http://13.57.190.119:9000/metamask-firefox-0.0.2.zip][firefox]]
+- [[http://13.57.190.119:9000/metamask-opera-0.0.2.zip][opera]]
 
 ** Install/安装
 *** chrome
@@ -34,3 +34,8 @@ the zip file, use *Load unpacked* button to load the unziped folder.
 
 在opera地址栏中输入 ~opera://extensions~, 打开开发这模式, 解压zip文件, 通过加载
 未打包插件按钮加载解压后的文件夹.
+
+** Changelog
+*** 0.0.2 - <2020-01-10 Fri>
+- Some "Etherscan" to "Confluxscan"
+- Get default gas price from json rpc
