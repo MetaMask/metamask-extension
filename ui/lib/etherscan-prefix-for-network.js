@@ -1,4 +1,4 @@
-module.exports = function (network) {
+export default function etherscanNetworkPrefix (network) {
   const net = parseInt(network)
   let prefix
   switch (net) {

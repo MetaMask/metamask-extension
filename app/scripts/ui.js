@@ -1,27 +1,34 @@
 
 // this must run before anything else
-require('./lib/freezeGlobals')
+import './lib/freezeGlobals'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const PortStream = require('extension-port-stream')
-const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } = require('./lib/enums')
-const extension = require('extensionizer')
-const ExtensionPlatform = require('./platforms/extension')
-const NotificationManager = require('./lib/notification-manager')
+import PortStream from 'extension-port-stream'
+import { getEnvironmentType } from './lib/util'
+
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from './lib/enums'
+
+import extension from 'extensionizer'
+import ExtensionPlatform from './platforms/extension'
+import NotificationManager from './lib/notification-manager'
+
 const notificationManager = new NotificationManager()
-const setupSentry = require('./lib/setupSentry')
-const { EventEmitter } = require('events')
-const Dnode = require('dnode')
-const Eth = require('ethjs')
-const EthQuery = require('eth-query')
-const urlUtil = require('url')
-const launchMetaMaskUi = require('../../ui')
-const StreamProvider = require('web3-stream-provider')
-const { setupMultiplex } = require('./lib/stream-utils.js')
-const log = require('loglevel')
+import setupSentry from './lib/setupSentry'
+import { EventEmitter } from 'events'
+import Dnode from 'dnode'
+import Eth from 'ethjs'
+import EthQuery from 'eth-query'
+import urlUtil from 'url'
+import launchMetaMaskUi from '../../ui'
+import StreamProvider from 'web3-stream-provider'
+import { setupMultiplex } from './lib/stream-utils.js'
+import log from 'loglevel'
 
 start().catch(log.error)
 

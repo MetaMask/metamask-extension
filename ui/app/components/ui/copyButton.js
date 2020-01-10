@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-const copyToClipboard = require('copy-to-clipboard')
-const Tooltip = require('./tooltip')
+import copyToClipboard from 'copy-to-clipboard'
+import Tooltip from './tooltip'
 
 class CopyButton extends Component {
   static contextTypes = {
@@ -60,4 +60,4 @@ class CopyButton extends Component {
   }
 }
 
-module.exports = CopyButton
+export default CopyButton

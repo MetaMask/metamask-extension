@@ -1,4 +1,4 @@
-module.exports = getBuyEthUrl
+export default getBuyEthUrl
 
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in

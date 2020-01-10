@@ -5,7 +5,7 @@ const chrome = require('selenium-webdriver/chrome')
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build ({ extensionPath, responsive }) {
+  static async build ({ extensionPath, responsive, port }) {
     const args = [
       `load-extension=${extensionPath}`,
     ]
@@ -14,10 +14,15 @@ class ChromeDriver {
     }
     const options = new chrome.Options()
       .addArguments(args)
-    const driver = new Builder()
+    const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options)
-      .build()
+    if (port) {
+      const service = new chrome.ServiceBuilder()
+        .setPort(port)
+      builder.setChromeService(service)
+    }
+    const driver = builder.build()
     const chromeDriver = new ChromeDriver(driver)
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask')
 

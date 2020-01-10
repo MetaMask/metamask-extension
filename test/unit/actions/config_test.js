@@ -1,10 +1,7 @@
-// var jsdom = require('mocha-jsdom')
-const assert = require('assert')
-const freeze = require('deep-freeze-strict')
-const path = require('path')
-
-const actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
-const reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+import assert from 'assert'
+import freeze from 'deep-freeze-strict'
+import reducers from '../../../ui/app/ducks'
+import * as actions from '../../../ui/app/store/actions'
 
 describe('config view actions', function () {
   const initialState = {
@@ -30,7 +27,7 @@ describe('config view actions', function () {
   describe('SET_RPC_TARGET', function () {
     it('sets the state.metamask.rpcTarget property of the state to the action.value', function () {
       const action = {
-        type: actions.SET_RPC_TARGET,
+        type: actions.actionConstants.SET_RPC_TARGET,
         value: 'foo',
       }
 

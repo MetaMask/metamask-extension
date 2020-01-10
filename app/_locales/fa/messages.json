@@ -1160,7 +1160,7 @@
     "message": "سمبول"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "سمبول باید بین 0 و 12 حرف باشد"
+    "message": "نماد باید 11 کاراکتر یا کمتر باشد."
   },
   "syncWithMobile": {
     "message": "همگام سازی با موبایل"

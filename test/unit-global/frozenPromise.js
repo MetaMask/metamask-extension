@@ -2,9 +2,9 @@
 /* eslint-disable no-native-reassign */
 
 // this is what we're testing
-require('../../app/scripts/lib/freezeGlobals')
+import '../../app/scripts/lib/freezeGlobals'
 
-const assert = require('assert')
+import assert from 'assert'
 
 describe('Promise global is immutable', () => {
 

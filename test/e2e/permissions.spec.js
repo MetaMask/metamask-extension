@@ -1,5 +1,6 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
+
 const { By, until } = webdriver
 const {
   checkBrowserForConsoleErrors,
@@ -112,7 +113,8 @@ describe('MetaMask', function () {
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.executeScript("document.querySelector('.account-modal-close').click()")
+      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
+      await accountModalClose.click()
 
       await driver.wait(until.stalenessOf(accountModal))
       await delay(regularDelayMs)

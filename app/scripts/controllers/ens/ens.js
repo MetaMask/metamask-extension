@@ -1,5 +1,5 @@
-const EthJsEns = require('ethjs-ens')
-const ensNetworkMap = require('ethjs-ens/lib/network-map.json')
+import EthJsEns from 'ethjs-ens'
+import ensNetworkMap from 'ethjs-ens/lib/network-map.json'
 
 class Ens {
   static getNetworkEnsSupport (network) {
@@ -22,4 +22,4 @@ class Ens {
   }
 }
 
-module.exports = Ens
+export default Ens

@@ -1,4 +1,5 @@
-const extension = require('extensionizer')
+import extension from 'extensionizer'
+
 const NOTIFICATION_HEIGHT = 620
 const NOTIFICATION_WIDTH = 360
 
@@ -115,4 +116,4 @@ class NotificationManager {
 
 }
 
-module.exports = NotificationManager
+export default NotificationManager

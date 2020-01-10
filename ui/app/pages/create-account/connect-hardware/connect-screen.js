@@ -311,5 +311,5 @@ class ConnectScreen extends Component {
   }
 }
 
-module.exports = ConnectScreen
+export default ConnectScreen
 

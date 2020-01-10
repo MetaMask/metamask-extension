@@ -1,5 +1,5 @@
-const assert = require('assert')
-const cleanErrorStack = require('../../../app/scripts/lib/cleanErrorStack')
+import assert from 'assert'
+import cleanErrorStack from '../../../app/scripts/lib/cleanErrorStack'
 
 describe('Clean Error Stack', () => {
 

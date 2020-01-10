@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import TokenCell from './token-cell'
-const inherits = require('util').inherits
-const TokenTracker = require('eth-token-tracker')
-const connect = require('react-redux').connect
-const { getSelectedAddress } = require('../../selectors/selectors')
-const log = require('loglevel')
+import { inherits } from 'util'
+import TokenTracker from 'eth-token-tracker'
+import { connect } from 'react-redux'
+import { getSelectedAddress } from '../../selectors/selectors'
+import log from 'loglevel'
 
 function mapStateToProps (state) {
   return {
@@ -17,7 +17,8 @@ function mapStateToProps (state) {
 }
 
 const defaultTokens = []
-const contracts = require('eth-contract-metadata')
+import contracts from 'eth-contract-metadata'
+
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
@@ -30,7 +31,7 @@ TokenList.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps)(TokenList)
+export default connect(mapStateToProps)(TokenList)
 
 
 inherits(TokenList, Component)

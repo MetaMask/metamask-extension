@@ -9,11 +9,11 @@ export default class SendDropdownList extends Component {
     closeDropdown: PropTypes.func,
     onSelect: PropTypes.func,
     activeAddress: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   getListItemIcon (accountAddress, activeAddress) {
     return accountAddress === activeAddress

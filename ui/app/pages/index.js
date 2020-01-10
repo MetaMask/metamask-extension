@@ -1,10 +1,10 @@
 import React from 'react'
-const PropTypes = require('prop-types')
-const { Provider } = require('react-redux')
-const { HashRouter } = require('react-router-dom')
-const Routes = require('./routes')
-const I18nProvider = require('../helpers/higher-order-components/i18n-provider')
-const MetaMetricsProvider = require('../helpers/higher-order-components/metametrics/metametrics.provider')
+import PropTypes from 'prop-types'
+import { Provider } from 'react-redux'
+import { HashRouter } from 'react-router-dom'
+import Routes from './routes'
+import I18nProvider from '../helpers/higher-order-components/i18n-provider'
+import MetaMetricsProvider from '../helpers/higher-order-components/metametrics/metametrics.provider'
 
 const Index = props => {
   const { store } = props
@@ -26,4 +26,4 @@ Index.propTypes = {
   store: PropTypes.object,
 }
 
-module.exports = Index
+export default Index

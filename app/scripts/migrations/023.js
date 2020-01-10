@@ -7,9 +7,9 @@ This migration removes transactions that are no longer usefull down to 40 total
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

@@ -1148,7 +1148,7 @@
     "message": "Odwiedź nasze Centrum Pomocy"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć od 0 do 12 znaków."
+    "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
   "syncWithMobile": {
     "message": "Synchronizuj z telefonem"

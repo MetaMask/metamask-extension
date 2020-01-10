@@ -1,6 +1,7 @@
 // cross-browser connection to extension i18n API
-const log = require('loglevel')
-const Sentry = require('@sentry/browser')
+import log from 'loglevel'
+
+import * as Sentry from '@sentry/browser'
 
 const warned = {}
 const missingMessageErrors = {}

@@ -1,5 +1,5 @@
-const assert = require('assert')
-const txUtils = require('../../../../../app/scripts/controllers/transactions/lib/util')
+import assert from 'assert'
+import * as txUtils from '../../../../../app/scripts/controllers/transactions/lib/util'
 
 
 describe('txUtils', function () {

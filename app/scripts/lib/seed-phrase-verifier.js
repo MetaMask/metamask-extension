@@ -1,5 +1,5 @@
-const KeyringController = require('eth-keyring-controller')
-const log = require('loglevel')
+import KeyringController from 'eth-keyring-controller'
+import log from 'loglevel'
 
 const seedPhraseVerifier = {
 
@@ -54,4 +54,4 @@ const seedPhraseVerifier = {
   },
 }
 
-module.exports = seedPhraseVerifier
+export default seedPhraseVerifier

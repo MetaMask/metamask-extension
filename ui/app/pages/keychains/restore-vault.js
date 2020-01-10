@@ -22,7 +22,7 @@ class RestoreVaultPage extends Component {
     history: PropTypes.object,
     isLoading: PropTypes.bool,
     initializeThreeBox: PropTypes.func,
-  };
+  }
 
   state = {
     seedPhrase: '',

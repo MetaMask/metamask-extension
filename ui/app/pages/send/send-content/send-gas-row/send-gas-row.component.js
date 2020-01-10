@@ -31,7 +31,7 @@ export default class SendGasRow extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context

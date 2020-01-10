@@ -1,5 +1,4 @@
-
-module.exports = function getRestrictedMethods (permissionsController) {
+export default function getRestrictedMethods (permissionsController) {
   return {
 
     'eth_accounts': {

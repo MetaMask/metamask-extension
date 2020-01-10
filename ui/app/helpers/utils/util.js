@@ -1,9 +1,9 @@
-const abi = require('human-standard-token-abi')
-const ethUtil = require('ethereumjs-util')
+import abi from 'human-standard-token-abi'
+import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-function formatDate (date, format = 'M/d/y \'at\' T') {
+export function formatDate (date, format = 'M/d/y \'at\' T') {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
@@ -25,33 +25,7 @@ for (const currency in valueTable) {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
 }
 
-module.exports = {
-  valuesFor: valuesFor,
-  addressSummary: addressSummary,
-  isValidAddress: isValidAddress,
-  isValidENSAddress,
-  numericBalance: numericBalance,
-  parseBalance: parseBalance,
-  formatBalance: formatBalance,
-  generateBalanceObject: generateBalanceObject,
-  normalizeToWei: normalizeToWei,
-  normalizeEthStringToWei: normalizeEthStringToWei,
-  normalizeNumberToWei: normalizeNumberToWei,
-  valueTable: valueTable,
-  bnTable: bnTable,
-  isHex: isHex,
-  formatDate,
-  getContractAtAddress,
-  exportAsFile: exportAsFile,
-  getTokenAddressFromTokenObject,
-  checksumAddress,
-  addressSlicer,
-  isEthNetwork,
-  isValidAddressHead,
-  getOriginFromUrl,
-}
-
-function isEthNetwork (netId) {
+export function isEthNetwork (netId) {
   if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
     return true
   }
@@ -59,7 +33,7 @@ function isEthNetwork (netId) {
   return false
 }
 
-function valuesFor (obj) {
+export function valuesFor (obj) {
   if (!obj) {
     return []
   }
@@ -69,7 +43,7 @@ function valuesFor (obj) {
     })
 }
 
-function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+export function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
   if (!address) {
     return ''
   }
@@ -80,7 +54,7 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
   return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
 }
 
-function isValidAddress (address) {
+export function isValidAddress (address) {
   const prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') {
     return false
@@ -88,11 +62,11 @@ function isValidAddress (address) {
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
-function isValidENSAddress (address) {
+export function isValidENSAddress (address) {
   return address.match(/^.{3,}\.(eth|test|xyz)$/)
 }
 
-function isAllOneCase (address) {
+export function isAllOneCase (address) {
   if (!address) {
     return true
   }
@@ -102,7 +76,7 @@ function isAllOneCase (address) {
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
-function numericBalance (balance) {
+export function numericBalance (balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16)
   }
@@ -111,7 +85,7 @@ function numericBalance (balance) {
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
-function parseBalance (balance) {
+export function parseBalance (balance) {
   let afterDecimal
   const wei = numericBalance(balance)
   const weiString = wei.toString()
@@ -127,7 +101,7 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
+export function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
   const parsed = needsParse ? parseBalance(balance) : balance.split('.')
   const beforeDecimal = parsed[0]
   let afterDecimal = parsed[1]
@@ -152,7 +126,7 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ET
 }
 
 
-function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
+export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]
   const label = formattedBalance.split(' ')[1]
   const beforeDecimal = balance.split('.')[0]
@@ -173,7 +147,7 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   return { balance, label, shortBalance }
 }
 
-function shortenBalance (balance, decimalsToKeep = 1) {
+export function shortenBalance (balance, decimalsToKeep = 1) {
   let truncatedValue
   const convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
@@ -200,14 +174,14 @@ function shortenBalance (balance, decimalsToKeep = 1) {
 
 // Takes a BN and an ethereum currency name,
 // returns a BN in wei
-function normalizeToWei (amount, currency) {
+export function normalizeToWei (amount, currency) {
   try {
     return amount.mul(bnTable.wei).div(bnTable[currency])
   } catch (e) {}
   return amount
 }
 
-function normalizeEthStringToWei (str) {
+export function normalizeEthStringToWei (str) {
   const parts = str.split('.')
   let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
   if (parts[1]) {
@@ -225,21 +199,21 @@ function normalizeEthStringToWei (str) {
 }
 
 const multiple = new ethUtil.BN('10000', 10)
-function normalizeNumberToWei (n, currency) {
+export function normalizeNumberToWei (n, currency) {
   const enlarged = n * 10000
   const amount = new ethUtil.BN(String(enlarged), 10)
   return normalizeToWei(amount, currency).div(multiple)
 }
 
-function isHex (str) {
+export function isHex (str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
 }
 
-function getContractAtAddress (tokenAddress) {
+export function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-function exportAsFile (filename, data, type = 'text/csv') {
+export function exportAsFile (filename, data, type = 'text/csv') {
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
   const blob = new Blob([data], { type })
   if (window.navigator.msSaveOrOpenBlob) {
@@ -255,7 +229,7 @@ function exportAsFile (filename, data, type = 'text/csv') {
   }
 }
 
-function getTokenAddressFromTokenObject (token) {
+export function getTokenAddressFromTokenObject (token) {
   return Object.values(token)[0].address.toLowerCase()
 }
 
@@ -266,12 +240,12 @@ function getTokenAddressFromTokenObject (token) {
  * @returns {String} - checksummed address
  *
  */
-function checksumAddress (address) {
+export function checksumAddress (address) {
   const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
   return checksummed
 }
 
-function addressSlicer (address = '') {
+export function addressSlicer (address = '') {
   if (address.length < 11) {
     return address
   }
@@ -279,14 +253,14 @@ function addressSlicer (address = '') {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-function isValidAddressHead (address) {
+export function isValidAddressHead (address) {
   const addressLengthIsLessThanFull = address.length < 42
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
 }
 
-function getOriginFromUrl (url) {
+export function getOriginFromUrl (url) {
   url = new URL(url)
   const origin = url.hostname
   return origin

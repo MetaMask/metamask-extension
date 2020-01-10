@@ -7,16 +7,22 @@
  * on each new block.
  */
 
-const EthQuery = require('eth-query')
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const pify = require('pify')
-const Web3 = require('web3')
-const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+import EthQuery from 'eth-query'
 
-const { bnToHex } = require('./util')
-const { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } = require('../controllers/network/enums')
-const { SINGLE_CALL_BALANCES_ADDRESS, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN, SINGLE_CALL_BALANCES_ADDRESS_KOVAN } = require('../controllers/network/contract-addresses')
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import pify from 'pify'
+import Web3 from 'web3'
+import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
+import { bnToHex } from './util'
+import { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } from '../controllers/network/enums'
+
+import {
+  SINGLE_CALL_BALANCES_ADDRESS,
+  SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
+  SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
+  SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+} from '../controllers/network/contract-addresses'
 
 
 class AccountTracker {
@@ -255,4 +261,4 @@ class AccountTracker {
 
 }
 
-module.exports = AccountTracker
+export default AccountTracker

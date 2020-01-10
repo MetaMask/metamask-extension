@@ -7,9 +7,9 @@ removes invalid chaids from preferences and networkController for custom rpcs
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {

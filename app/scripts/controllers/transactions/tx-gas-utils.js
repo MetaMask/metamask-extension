@@ -1,12 +1,9 @@
-const EthQuery = require('ethjs-query')
-const {
-  hexToBn,
-  BnMultiplyByFraction,
-  bnToHex,
-} = require('../../lib/util')
-const log = require('loglevel')
-const { addHexPrefix } = require('ethereumjs-util')
-const { SEND_ETHER_ACTION_KEY } = require('../../../../ui/app/helpers/constants/transactions.js')
+import EthQuery from 'ethjs-query'
+import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
+import log from 'loglevel'
+import { addHexPrefix } from 'ethereumjs-util'
+import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
+
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
@@ -154,4 +151,4 @@ class TxGasUtil {
   }
 }
 
-module.exports = TxGasUtil
+export default TxGasUtil

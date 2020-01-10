@@ -1156,7 +1156,7 @@
     "message": "Simbols"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolam jāietver no 0 līdz 12 rakstzīmēm."
+    "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
   },
   "syncWithMobile": {
     "message": "Sinhronizēt ar tālruni"

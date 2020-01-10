@@ -1136,7 +1136,7 @@
     "message": "符號"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "代號必須介於 0 到 12 字元間."
+    "message": "符號不得超過11個字符。"
   },
   "syncWithMobile": {
     "message": "和移動裝置同步"

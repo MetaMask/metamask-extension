@@ -1,10 +1,10 @@
-const urlUtil = require('url')
-const extension = require('extensionizer')
-const resolveEnsToIpfsContentId = require('./resolver.js')
+import urlUtil from 'url'
+import extension from 'extensionizer'
+import resolveEnsToIpfsContentId from './resolver.js'
 
 const supportedTopLevelDomains = ['eth']
 
-module.exports = setupEnsIpfsResolver
+export default setupEnsIpfsResolver
 
 function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
 

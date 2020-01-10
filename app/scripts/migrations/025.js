@@ -6,10 +6,11 @@ const version = 25
 normalizes txParams on unconfirmed txs
 
 */
-const ethUtil = require('ethereumjs-util')
-const clone = require('clone')
+import ethUtil from 'ethereumjs-util'
 
-module.exports = {
+import clone from 'clone'
+
+export default {
   version,
 
   migrate: async function (originalVersionedData) {

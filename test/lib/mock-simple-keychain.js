@@ -4,7 +4,7 @@ const fakeWallet = {
 }
 const type = 'Simple Key Pair'
 
-module.exports = class MockSimpleKeychain {
+export default class MockSimpleKeychain {
 
   static type () {
     return type

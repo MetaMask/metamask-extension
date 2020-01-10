@@ -27,7 +27,7 @@ export default class ChooseAccount extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   renderAccountsList = () => {
     const { accounts, selectAccount, nativeCurrency, addressLastConnectedMap } = this.props

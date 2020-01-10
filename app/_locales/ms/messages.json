@@ -1131,7 +1131,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mestilah antara 0 hingga 12 aksara."
+    "message": "Simbol mestilah 11 aksara atau kurang."
   },
   "syncWithMobile": {
     "message": "Segerakkan dengan telefon mudah alih"

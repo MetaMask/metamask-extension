@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const actions = require('../../store/actions')
-const txHelper = require('../../../lib/tx-helper')
-const log = require('loglevel')
-const R = require('ramda')
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import * as actions from '../../store/actions'
+import txHelper from '../../../lib/tx-helper'
+import log from 'loglevel'
+import R from 'ramda'
+import SignatureRequest from '../../components/app/signature-request'
+import SignatureRequestOriginal from '../../components/app/signature-request-original'
+import Loading from '../../components/ui/loading-screen'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
-const SignatureRequest = require('../../components/app/signature-request').default
-const SignatureRequestOriginal = require('../../components/app/signature-request-original').default
-const Loading = require('../../components/ui/loading-screen')
-const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
-
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps)
 )(ConfirmTxScreen)

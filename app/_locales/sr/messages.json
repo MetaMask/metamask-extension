@@ -1151,7 +1151,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora da bude između 0 i 12 karaktera."
+    "message": "Simbol mora biti 11 znakova ili manje."
   },
   "syncWithMobile": {
     "message": "Sinhronizacija sa mobilnim telefonom"

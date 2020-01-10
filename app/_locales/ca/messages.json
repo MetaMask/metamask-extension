@@ -1138,7 +1138,7 @@
     "message": "Símbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "El símbol ha de tenir entre 0 i 12 caràcters."
+    "message": "El símbol ha de tenir com a mínim 11 caràcters."
   },
   "syncWithMobile": {
     "message": "Sincronitza amb el mòbil"

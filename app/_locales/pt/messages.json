@@ -424,7 +424,7 @@
     "message": "Visitar o nosso Centro de Suporte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo deve conter entre 0 e 12 characters."
+    "message": "O símbolo deve ter 11 caracteres ou menos."
   },
   "terms": {
     "message": "Termos de Uso"

@@ -1153,7 +1153,7 @@
     "message": "رمز"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "يجب أن يتراوح الرمز ما بين 0 و 12 أحرف."
+    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
   },
   "syncWithMobile": {
     "message": "مزامنة مع الهاتف المحمول"

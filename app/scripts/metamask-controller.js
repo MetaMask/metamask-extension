@@ -4,70 +4,75 @@
  * @license   MIT
  */
 
-const assert = require('assert').strict
-const EventEmitter = require('events')
-const pump = require('pump')
-const Dnode = require('dnode')
-const extension = require('extensionizer')
-const ObservableStore = require('obs-store')
-const ComposableObservableStore = require('./lib/ComposableObservableStore')
-const asStream = require('obs-store/lib/asStream')
-const AccountTracker = require('./lib/account-tracker')
-const RpcEngine = require('json-rpc-engine')
-const debounce = require('debounce')
-const createEngineStream = require('json-rpc-middleware-stream/engineStream')
-const createFilterMiddleware = require('eth-json-rpc-filters')
-const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
-const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
-const createOriginMiddleware = require('./lib/createOriginMiddleware')
-const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
-const { setupMultiplex } = require('./lib/stream-utils.js')
-const KeyringController = require('eth-keyring-controller')
-const EnsController = require('./controllers/ens')
-const NetworkController = require('./controllers/network')
-const PreferencesController = require('./controllers/preferences')
-const AppStateController = require('./controllers/app-state')
-const InfuraController = require('./controllers/infura')
-const CachedBalancesController = require('./controllers/cached-balances')
-const OnboardingController = require('./controllers/onboarding')
-const ThreeBoxController = require('./controllers/threebox')
-const RecentBlocksController = require('./controllers/recent-blocks')
-const IncomingTransactionsController = require('./controllers/incoming-transactions')
-const MessageManager = require('./lib/message-manager')
-const PersonalMessageManager = require('./lib/personal-message-manager')
-const TypedMessageManager = require('./lib/typed-message-manager')
-const TransactionController = require('./controllers/transactions')
-const TokenRatesController = require('./controllers/token-rates')
-const DetectTokensController = require('./controllers/detect-tokens')
-const ABTestController = require('./controllers/ab-test')
-const { PermissionsController } = require('./controllers/permissions/')
-const nodeify = require('./lib/nodeify')
-const accountImporter = require('./account-import-strategies')
-const getBuyEthUrl = require('./lib/buy-eth-url')
-const selectChainId = require('./lib/select-chain-id')
-const { Mutex } = require('await-semaphore')
-const { version } = require('../manifest.json')
-const { BN } = require('ethereumjs-util')
+import EventEmitter from 'events'
+
+import pump from 'pump'
+import Dnode from 'dnode'
+import extension from 'extensionizer'
+import ObservableStore from 'obs-store'
+import ComposableObservableStore from './lib/ComposableObservableStore'
+import asStream from 'obs-store/lib/asStream'
+import AccountTracker from './lib/account-tracker'
+import RpcEngine from 'json-rpc-engine'
+import debounce from 'debounce'
+import createEngineStream from 'json-rpc-middleware-stream/engineStream'
+import createFilterMiddleware from 'eth-json-rpc-filters'
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
+import createLoggerMiddleware from './lib/createLoggerMiddleware'
+import createOriginMiddleware from './lib/createOriginMiddleware'
+import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
+import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
+import { setupMultiplex } from './lib/stream-utils.js'
+import KeyringController from 'eth-keyring-controller'
+import EnsController from './controllers/ens'
+import NetworkController from './controllers/network'
+import PreferencesController from './controllers/preferences'
+import AppStateController from './controllers/app-state'
+import InfuraController from './controllers/infura'
+import CachedBalancesController from './controllers/cached-balances'
+import OnboardingController from './controllers/onboarding'
+import ThreeBoxController from './controllers/threebox'
+import RecentBlocksController from './controllers/recent-blocks'
+import IncomingTransactionsController from './controllers/incoming-transactions'
+import MessageManager from './lib/message-manager'
+import PersonalMessageManager from './lib/personal-message-manager'
+import TypedMessageManager from './lib/typed-message-manager'
+import TransactionController from './controllers/transactions'
+import TokenRatesController from './controllers/token-rates'
+import DetectTokensController from './controllers/detect-tokens'
+import ABTestController from './controllers/ab-test'
+import { PermissionsController } from './controllers/permissions'
+import nodeify from './lib/nodeify'
+import accountImporter from './account-import-strategies'
+import getBuyEthUrl from './lib/buy-eth-url'
+import selectChainId from './lib/select-chain-id'
+import { Mutex } from 'await-semaphore'
+import { version } from '../manifest.json'
+import ethUtil, { BN } from 'ethereumjs-util'
+
 const GWEI_BN = new BN('1000000000')
-const percentile = require('percentile')
-const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
-const log = require('loglevel')
-const TrezorKeyring = require('eth-trezor-keyring')
-const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
-const TrustvaultKeyring = require('../scripts/eth-trustvault-keyring')
-const EthQuery = require('eth-query')
-const ethUtil = require('ethereumjs-util')
-const nanoid = require('nanoid')
-const contractMap = require('eth-contract-metadata')
-const {
+import percentile from 'percentile'
+import seedPhraseVerifier from './lib/seed-phrase-verifier'
+import log from 'loglevel'
+import TrezorKeyring from 'eth-trezor-keyring'
+import LedgerBridgeKeyring from 'eth-ledger-bridge-keyring'
+import TrustvaultKeyring from './eth-trustvault-keyring'
+import EthQuery from 'eth-query'
+import nanoid from 'nanoid'
+import contractMap from 'eth-contract-metadata'
+
+import {
   AddressBookController,
   CurrencyRateController,
   ShapeShiftController,
   PhishingController,
-} = require('gaba')
-const backEndMetaMetricsEvent = require('./lib/backend-metametrics')
+} from 'gaba'
+
+import backEndMetaMetricsEvent from './lib/backend-metametrics'
+
 const TRUSTVAULT = 'trustvault'
-module.exports = class MetamaskController extends EventEmitter {
+
+export default class MetamaskController extends EventEmitter {
 
   /**
    * @constructor
@@ -1357,19 +1362,23 @@ module.exports = class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * A runtime.MessageSender object, as provided by the browser:
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
+   * @typedef {Object} MessageSender
+   */
+
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {URL} senderUrl - The URL of the resource requesting the stream,
-   * which may trigger a blacklist reload.
-   * @param {string} extensionId - The extension id of the sender, if the sender
-   * is an extension
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupUntrustedCommunication (connectionStream, senderUrl, extensionId) {
+  setupUntrustedCommunication (connectionStream, sender) {
+    const hostname = (new URL(sender.url)).hostname
     // Check if new connection is blacklisted
-    if (this.phishingController.test(senderUrl.hostname)) {
-      log.debug('MetaMask - sending phishing warning for', senderUrl.hostname)
-      this.sendPhishingWarning(connectionStream, senderUrl.hostname)
+    if (this.phishingController.test(hostname)) {
+      log.debug('MetaMask - sending phishing warning for', hostname)
+      this.sendPhishingWarning(connectionStream, hostname)
       return
     }
 
@@ -1377,7 +1386,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl, extensionId)
+    this.setupProviderConnection(mux.createStream('provider'), sender)
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
@@ -1388,15 +1397,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * functions, like the ability to approve transactions or sign messages.
    *
    * @param {*} connectionStream - The duplex stream to connect to.
-   * @param {URL} senderUrl - The URL requesting the connection,
-   * used in logging and error reporting.
+   * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupTrustedCommunication (connectionStream, senderUrl) {
+  setupTrustedCommunication (connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('controller'))
-    this.setupProviderConnection(mux.createStream('provider'), senderUrl)
+    this.setupProviderConnection(mux.createStream('provider'), sender, true)
   }
 
   /**
@@ -1451,14 +1459,23 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {URL} senderUrl - The URI of the requesting resource.
-   * @param {string} extensionId - The id of the extension, if the requesting
-   * resource is an extension.
-   * @param {object} publicApi - The public API
+   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param {boolean} isInternal - True if this is a connection with an internal process
    */
-  setupProviderConnection (outStream, senderUrl, extensionId) {
-    const origin = senderUrl.hostname
-    const engine = this.setupProviderEngine(senderUrl, extensionId)
+  setupProviderConnection (outStream, sender, isInternal) {
+    const origin = isInternal
+      ? 'metamask'
+      : (new URL(sender.url)).hostname
+    let extensionId
+    if (sender.id !== extension.runtime.id) {
+      extensionId = sender.id
+    }
+    let tabId
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id
+    }
+
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1486,10 +1503,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
+   * @param {Object} options - Provider engine options
+   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.location - The full URL of the sender
+   * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
+   * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    **/
-  setupProviderEngine (senderUrl, extensionId) {
-
-    const origin = senderUrl.hostname
+  setupProviderEngine ({ origin, location, extensionId, tabId }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1506,6 +1526,11 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     // logging
     engine.push(createLoggerMiddleware({ origin }))
+    engine.push(createOnboardingMiddleware({
+      location,
+      tabId,
+      registerOnboarding: this.onboardingController.registerOnboarding,
+    }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
@@ -1543,45 +1568,6 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       }
     )
-  }
-
-  // manage external connections
-
-  onMessage (message, sender, sendResponse) {
-    if (!message || !message.type) {
-      log.debug(`Ignoring invalid message: '${JSON.stringify(message)}'`)
-      return
-    }
-
-    let handleMessage
-
-    try {
-      if (message.type === 'metamask:registerOnboarding') {
-        assert(sender.tab, 'Missing tab from sender')
-        assert(sender.tab.id && sender.tab.id !== extension.tabs.TAB_ID_NONE, 'Missing tab ID from sender')
-        assert(message.location, 'Missing location from message')
-
-        handleMessage = this.onboardingController.registerOnboarding(message.location, sender.tab.id)
-      } else {
-        throw new Error(`Unrecognized message type: '${message.type}'`)
-      }
-    } catch (error) {
-      console.error(error)
-      sendResponse(error)
-      return true
-    }
-
-    if (handleMessage) {
-      handleMessage
-        .then(() => {
-          sendResponse(null, true)
-        })
-        .catch((error) => {
-          console.error(error)
-          sendResponse(error)
-        })
-      return true
-    }
   }
 
   /**

@@ -478,7 +478,7 @@
     "message": "Destek merkezimizi ziyaret edin"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sembol 0 ve 12 karakter aralığında olmalıdır."
+    "message": "Sembol 11 karakter veya daha az olmalıdır."
   },
   "terms": {
     "message": "Kullanım şartları"

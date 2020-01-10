@@ -1157,7 +1157,7 @@
     "message": "ምልክት"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ ከ0 እስከ 12 ቁምፊዎች መያዝ አለበት።"
+    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "syncWithMobile": {
     "message": "ከሞባይል ጋር አሳምር"

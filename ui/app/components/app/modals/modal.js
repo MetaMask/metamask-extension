@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 
-const inherits = require('util').inherits
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const { resetCustomData: resetCustomGasData } = require('../../../ducks/gas/gas.duck')
-const isMobileView = require('../../../../lib/is-mobile-view')
-const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
+import { inherits } from 'util'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck'
+import isMobileView from '../../../../lib/is-mobile-view'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 
 // Modal Components
 import DepositEtherModal from './deposit-ether-modal'
 import AccountDetailsModal from './account-details-modal'
-const ExportPrivateKeyModal = require('./export-private-key-modal').default
-const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
-const NotifcationModal = require('./notification-modal')
-const QRScanner = require('./qr-scanner')
+import ExportPrivateKeyModal from './export-private-key-modal'
+import HideTokenConfirmationModal from './hide-token-confirmation-modal'
+import NotifcationModal from './notification-modal'
+import QRScanner from './qr-scanner'
 
 import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
@@ -470,7 +470,7 @@ function Modal () {
   Component.call(this)
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
+export default connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']

@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
-const {
-  formatBalance,
-  generateBalanceObject,
-} = require('../../../helpers/utils/util')
-const Tooltip = require('../tooltip.js')
-const FiatValue = require('../fiat-value.js')
+import { formatBalance, generateBalanceObject } from '../../../helpers/utils/util'
+import Tooltip from '../tooltip.js'
+import FiatValue from '../fiat-value.js'
 
 export default class EthBalance extends Component {
   static defaultProps = {

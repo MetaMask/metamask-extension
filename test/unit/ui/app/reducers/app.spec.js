@@ -1,6 +1,8 @@
 import assert from 'assert'
 import reduceApp from '../../../../../ui/app/ducks/app/app'
-import * as actions from '../../../../../ui/app/store/actions'
+import { actionConstants } from '../../../../../ui/app/store/actions'
+
+const actions = actionConstants
 
 describe('App State', () => {
 

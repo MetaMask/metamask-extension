@@ -45,5 +45,7 @@
   "eth_submitHashrate",
   "eth_submitWork",
   "eth_syncing",
-  "eth_uninstallFilter"
+  "eth_uninstallFilter",
+  "wallet_watchAsset",
+  "metamask_watchAsset"
 ]

@@ -2,7 +2,6 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 
-let mapStateToProps
 let mapDispatchToProps
 
 const actionSpies = {
@@ -22,8 +21,7 @@ const utilsStubs = {
 
 proxyquire('../send-footer.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
-      mapStateToProps = ms
+    connect: (_, md) => {
       mapDispatchToProps = md
       return () => ({})
     },
@@ -54,30 +52,6 @@ proxyquire('../send-footer.container.js', {
 })
 
 describe('send-footer container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
-      assert.deepEqual(mapStateToProps('mockState'), {
-        amount: 'mockAmount:mockState',
-        data: 'mockHexData:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
-        editingTransactionId: 'mockEditingTransactionId:mockState',
-        from: 'mockFromObject:mockState',
-        gasLimit: 'mockGasLimit:mockState',
-        gasPrice: 'mockGasPrice:mockState',
-        gasTotal: 'mockGasTotal:mockState',
-        inError: 'mockInError:mockState',
-        to: 'mockTo:mockState',
-        toAccounts: 'mockToAccounts:mockState',
-        tokenBalance: 'mockTokenBalance:mockState',
-        unapprovedTxs: 'mockUnapprovedTxs:mockState',
-        sendErrors: 'mockSendErrors:mockState',
-        gasEstimateType: 'mockGasEstimateType:mockState',
-      })
-    })
-
-  })
 
   describe('mapDispatchToProps()', () => {
     let dispatchSpy

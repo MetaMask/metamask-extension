@@ -44,7 +44,7 @@ export default class AccountMenu extends Component {
     originOfCurrentTab: PropTypes.string,
   }
 
-  accountsRef;
+  accountsRef
 
   state = {
     shouldShowScrollButton: false,
