@@ -1546,6 +1546,7 @@ describe('MetaMask', function () {
         driver,
         By.xpath(`//button[contains(text(), 'Next')]`)
       )
+      await driver.wait(until.elementIsEnabled(nextScreen))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
