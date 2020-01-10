@@ -179,6 +179,12 @@ export function gasEstimatesLoadingFinished () {
 
 export function fetchBasicGasEstimates () {
   return async (dispatch, getState) => {
+    const {
+      metamask: {
+        settings: { rpcUrl },
+      },
+    } = getState()
+
     const { basicPriceEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceEstimatesLastRetrieved ||
@@ -189,11 +195,16 @@ export function fetchBasicGasEstimates () {
 
     let basicEstimates
     if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasEstimates(dispatch)
+      basicEstimates = await fetchExternalBasicGasEstimates(dispatch, {
+        rpcUrl,
+      })
     } else {
       const cachedBasicEstimates = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
       basicEstimates =
-        cachedBasicEstimates || (await fetchExternalBasicGasEstimates(dispatch))
+        cachedBasicEstimates ||
+        (await fetchExternalBasicGasEstimates(dispatch, {
+          rpcUrl,
+        }))
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates))
@@ -203,22 +214,36 @@ export function fetchBasicGasEstimates () {
   }
 }
 
-async function fetchExternalBasicGasEstimates (dispatch) {
-  const response = await fetch(
-    'https://ethgasstation.info/json/ethgasAPI.json',
-    {
+async function fetchExternalBasicGasEstimates (
+  dispatch,
+  { rpcUrl = 'http://13.67.73.51:12537' }
+) {
+  const [response, estimateGasResult] = await Promise.all([
+    fetch('https://ethgasstation.info/json/ethgasAPI.json', {
       headers: {},
       referrer: 'http://ethgasstation.info/json/',
       referrerPolicy: 'no-referrer-when-downgrade',
       body: null,
       method: 'GET',
       mode: 'cors',
-    }
-  )
+    }),
+    fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: '1',
+        method: 'cfx_gasPrice',
+      }),
+    }),
+  ])
+
+  let { result: estimateGasTimes10 } = await estimateGasResult.json()
+  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // default to 100 drip if cfx_gasPrice returns 0
 
   const {
     safeLow: safeLowTimes10,
-    average: averageTimes10,
+    // average: averageTimes10,
     fast: fastTimes10,
     fastest: fastestTimes10,
     block_time: blockTime,
@@ -226,7 +251,8 @@ async function fetchExternalBasicGasEstimates (dispatch) {
   } = await response.json()
 
   const [average, fast, fastest, safeLow] = [
-    averageTimes10,
+    // averageTimes10,
+    estimateGasTimes10,
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
@@ -251,6 +277,11 @@ async function fetchExternalBasicGasEstimates (dispatch) {
 
 export function fetchBasicGasAndTimeEstimates () {
   return async (dispatch, getState) => {
+    const {
+      metamask: {
+        settings: { rpcUrl },
+      },
+    } = getState()
     const { basicPriceAndTimeEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceAndTimeEstimatesLastRetrieved ||
@@ -261,14 +292,18 @@ export function fetchBasicGasAndTimeEstimates () {
 
     let basicEstimates
     if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch)
+      basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch, {
+        rpcUrl,
+      })
     } else {
       const cachedBasicEstimates = loadLocalStorageData(
         'BASIC_GAS_AND_TIME_API_ESTIMATES'
       )
       basicEstimates =
         cachedBasicEstimates ||
-        (await fetchExternalBasicGasAndTimeEstimates(dispatch))
+        (await fetchExternalBasicGasAndTimeEstimates(dispatch, {
+          rpcUrl,
+        }))
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates))
@@ -277,21 +312,35 @@ export function fetchBasicGasAndTimeEstimates () {
   }
 }
 
-async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
-  const response = await fetch(
-    'https://ethgasstation.info/json/ethgasAPI.json',
-    {
+async function fetchExternalBasicGasAndTimeEstimates (
+  dispatch,
+  { rpcUrl = 'http://13.67.73.51:12537' }
+) {
+  const [response, estimateGasResult] = await Promise.all([
+    fetch('https://ethgasstation.info/json/ethgasAPI.json', {
       headers: {},
       referrer: 'http://ethgasstation.info/json/',
       referrerPolicy: 'no-referrer-when-downgrade',
       body: null,
       method: 'GET',
       mode: 'cors',
-    }
-  )
+    }),
+    fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: '1',
+        method: 'cfx_gasPrice',
+      }),
+    }),
+  ])
+
+  let { result: estimateGasTimes10 } = await estimateGasResult.json()
+  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // drip
 
   const {
-    average: averageTimes10,
+    // average: averageTimes10,
     avgWait,
     block_time: blockTime,
     blockNum,
@@ -304,7 +353,8 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
     speed,
   } = await response.json()
   const [average, fast, fastest, safeLow] = [
-    averageTimes10,
+    // averageTimes10,
+    estimateGasTimes10,
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,

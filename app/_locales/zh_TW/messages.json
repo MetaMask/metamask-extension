@@ -478,6 +478,9 @@
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
   },
+  "gasLimitTooHigh": {
+    "message": "Gas 上限至多為 1000000"
+  },
   "gasUsed": {
     "message": "Gas 用量"
   },

@@ -406,6 +406,11 @@ describe('Gas Duck', () => {
       const mockDistpatch = sinon.spy()
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
         gas: Object.assign({}, initState, {
           basicPriceAEstimatesLastRetrieved: 1000000,
         }),
@@ -431,7 +436,7 @@ describe('Gas Duck', () => {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 2,
+            average: 10,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -462,6 +467,11 @@ describe('Gas Duck', () => {
         })
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
         gas: Object.assign({}, initState, {}),
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
@@ -493,6 +503,11 @@ describe('Gas Duck', () => {
         .returns(2000000 - 1) // one second ago from "now"
 
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
         gas: Object.assign({}, initState, {}),
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
@@ -516,7 +531,7 @@ describe('Gas Duck', () => {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 2,
+            average: 10,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -536,10 +551,14 @@ describe('Gas Duck', () => {
       const mockDistpatch = sinon.spy()
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
         gas: Object.assign({}, initState, {
           basicPriceAndTimeEstimatesLastRetrieved: 1000000,
         }),
-        metamask: { provider: { type: 'ropsten' } },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -564,7 +583,7 @@ describe('Gas Duck', () => {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 2,
+            average: 10,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
@@ -606,7 +625,11 @@ describe('Gas Duck', () => {
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
         gas: Object.assign({}, initState, {}),
-        metamask: { provider: { type: 'ropsten' } },
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -644,7 +667,11 @@ describe('Gas Duck', () => {
 
       await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({
         gas: Object.assign({}, initState, {}),
-        metamask: { provider: { type: 'ropsten' } },
+        metamask: {
+          settings: {
+            rpcUrl: 'http://localhost:7545',
+          },
+        },
       }))
       assert.deepEqual(mockDistpatch.getCall(0).args, [
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
@@ -669,7 +696,7 @@ describe('Gas Duck', () => {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 2,
+            average: 10,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',

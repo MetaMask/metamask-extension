@@ -105,6 +105,11 @@ export default class AdvancedGasInputs extends Component {
         errorText: t('gasLimitTooLow'),
         errorType: 'error',
       }
+    } else if (gasLimit > 1000000) {
+      return {
+        errorText: t('gasLimitTooHigh'),
+        errorType: 'error',
+      }
     }
 
     return {}

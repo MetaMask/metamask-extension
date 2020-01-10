@@ -596,6 +596,9 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasLimitTooHigh": {
+    "message": "Gas limit must be at most 1000000"
+  },
   "gasUsed": {
     "message": "Gas Used"
   },
