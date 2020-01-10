@@ -12,7 +12,7 @@ export default class MenuDroppoComponent extends Component {
     containerClassName: PropTypes.string,
     zIndex: PropTypes.number,
     style: PropTypes.object.isRequired,
-    useCssTransition: PropTypes.bool.isRequired,
+    useCssTransition: PropTypes.bool,
     speed: PropTypes.string,
   }
 
