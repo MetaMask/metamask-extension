@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
   },
-  "balanceIsInsufficientGas": {
-    "message": "當前餘額不足以支付 Gas"
-  },
   "basic": {
     "message": "基本"
   },
@@ -469,9 +466,6 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 上限。"
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
@@ -492,9 +486,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas 價格"
-  },
-  "gasPriceCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 價格"
   },
   "general": {
     "message": "一般"
@@ -924,9 +915,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
-  },
-  "revert": {
-    "message": "還原"
   },
   "remove": {
     "message": "移除"

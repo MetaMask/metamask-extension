@@ -34,9 +34,6 @@
   "balance": {
     "message": "Balanse:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Kulang ang balanse para sa kasalukuyang gas total"
-  },
   "buyCoinSwitch": {
     "message": "Bumili sa CoinSwitch"
   },
@@ -135,14 +132,8 @@
   "fromShapeShift": {
     "message": "Mula sa ShapeShift"
   },
-  "gasLimitCalculation": {
-    "message": "Kinalkula namin ang iminungkahing gas limit base sa network success rates."
-  },
   "gasLimitTooLow": {
     "message": "Ang gas limit ay hindi dabat bababa sa 21000"
-  },
-  "gasPriceCalculation": {
-    "message": "Kinalkula namin ang iminungkahing gas prices base sa network success rates."
   },
   "getEther": {
     "message": "Kumuha ng Ether"
@@ -248,9 +239,6 @@
   },
   "required": {
     "message": "Kailangan"
-  },
-  "revert": {
-    "message": "Ibalik"
   },
   "save": {
     "message": "I-save"

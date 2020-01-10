@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldot kanske inte är uppdaterat"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Otillräckligt saldo för aktuell totalsumma för gas"
-  },
   "basic": {
     "message": "Grunder"
   },
@@ -462,9 +459,6 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitCalculation": {
-    "message": "Vi beräknar den föreslagna gasgränsen baserat på nätverket framgångsgrad."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
   },
@@ -485,9 +479,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspris"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi beräknar de föreslagna gaspriserna baserat på nätverkets resultat."
   },
   "general": {
     "message": "Allmänt"
@@ -926,9 +917,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
-  },
-  "revert": {
-    "message": "Återställ"
   },
   "remove": {
     "message": "Ta bort"

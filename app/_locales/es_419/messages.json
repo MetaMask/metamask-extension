@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "El saldo puede estar anticuado"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para el total actual de gas"
-  },
   "basic": {
     "message": "Básicas"
   },
@@ -469,9 +466,6 @@
   "gasLimit": {
     "message": "Limite de gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido según las tasas de éxito en la red."
-  },
   "gasLimitInfoModalContent": {
     "message": "El límite de gas es la cantidad máxima de unidades de gas que estás dispuesto a gastar."
   },
@@ -492,9 +486,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Precio del gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos los precios de gas sugeridos según las tasas de ganancia en la red."
   },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, blockies identicon"
@@ -927,9 +918,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Alguien podría utilizar estas palabras para robar todas tus cuentas."
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "Quitar"

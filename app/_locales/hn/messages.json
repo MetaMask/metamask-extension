@@ -43,9 +43,6 @@
   "balance": {
     "message": "उपलब्ध बैलेंस।"
   },
-  "balanceIsInsufficientGas": {
-    "message": "वर्तमान गैस कुल के लिए अपर्याप्त शेष"
-  },
   "blockiesIdenticon": {
     "message": "ब्लॉकीज पहचान का उपयोग करें"
   },
@@ -168,17 +165,11 @@
   "gasLimit": {
     "message": "गैस सीमा"
   },
-  "gasLimitCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाई गई गैस सीमा की गणना करते हैं।"
-  },
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाए गए गैस की कीमतों की गणना करते हैं।"
   },
   "getEther": {
     "message": "ईथर प्राप्त करें"
@@ -362,9 +353,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
-  },
-  "revert": {
-    "message": "वापस"
   },
   "rinkeby": {
     "message": "रिचीव टेस्ट नेटवर्क"

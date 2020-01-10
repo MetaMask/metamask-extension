@@ -121,9 +121,6 @@
   "balance": {
     "message": "残高:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "現在のガス総量に対して残高が不足しています"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
   },
@@ -240,17 +237,11 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスリミットを提案しています。"
-  },
   "gasLimitTooLow": {
     "message": "ガスリミットは最低21000です。"
   },
   "gasPrice": {
     "message": "ガスプライス (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスプライスを提案しています。"
   },
   "getEther": {
     "message": "Etherを取得する"
@@ -425,9 +416,6 @@
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
-  },
-  "revert": {
-    "message": "元に戻す"
   },
   "rinkeby": {
     "message": "Rinkebyテストネットワーク"

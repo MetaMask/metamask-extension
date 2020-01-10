@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "余额可能已过期"
   },
-  "balanceIsInsufficientGas": {
-    "message": "当前余额不足以支付 Gas"
-  },
   "basic": {
     "message": "基本"
   },
@@ -469,9 +466,6 @@
   "functionType": {
     "message": "功能类型"
   },
-  "gasLimitCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Limit。"
-  },
   "gasLimitInfoModalContent": {
     "message": "天然气限制即您个人希望购买的最大单位数量。"
   },
@@ -489,9 +483,6 @@
   },
   "gasPriceNoDenom": {
     "message": "天然气价格"
-  },
-  "gasPriceCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Price"
   },
   "general": {
     "message": "通用"
@@ -924,9 +915,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "助记词可以用来窃取您的所有帐户."
-  },
-  "revert": {
-    "message": "还原"
   },
   "remove": {
     "message": "移除"

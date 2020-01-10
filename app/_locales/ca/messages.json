@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "El balanç pot ser obsolet"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficient per al total de gas actual"
-  },
   "basic": {
     "message": "Opcions bàsiques"
   },
@@ -465,9 +462,6 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculem el límit suggerit del gas  basant-nos en les taxes d'èxit de la xarxa."
-  },
   "gasLimitInfoModalContent": {
     "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
   },
@@ -488,9 +482,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Preu del Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculem els preus suggerits del gas  basant-nos en les taxes d'èxit de la xarxa."
   },
   "generalSettingsDescription": {
     "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
@@ -920,9 +911,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "Suprimeix"

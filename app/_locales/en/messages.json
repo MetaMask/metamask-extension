@@ -185,9 +185,6 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Insufficient balance for current gas total"
-  },
   "basic": {
     "message": "Basic"
   },
@@ -587,9 +584,6 @@
   "gasLimit": {
     "message": "Gas Limit"
   },
-  "gasLimitCalculation": {
-    "message": "We calculate the suggested gas limit based on network success rates."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
@@ -610,9 +604,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
-  },
-  "gasPriceCalculation": {
-    "message": "We calculate the suggested gas prices based on network success rates."
   },
   "general": {
     "message": "General"
@@ -1100,9 +1091,6 @@
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
   },
-  "revert": {
-    "message": "Revert"
-  },
   "remove": {
     "message": "Remove"
   },
@@ -1386,7 +1374,7 @@
   },
   "thisWillAllowExternalExtension": {
     "message": "This will allow an external extension with id $1 to:",
-    "description":  "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
