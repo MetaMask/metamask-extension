@@ -43,9 +43,6 @@
   "balance": {
     "message": "Saldo:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para a quantidade de gas total"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -168,17 +165,11 @@
   "gasLimit": {
     "message": "Limite de Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos o limite sugerido do gas com base nas taxas de sucesso da rede."
-  },
   "gasLimitTooLow": {
     "message": "Limite de Gas deve ser no mínimo 21000"
   },
   "gasPrice": {
     "message": "Preço Gas (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos o gas sugerido com base nas taxas de sucesso da rede."
   },
   "getEther": {
     "message": "Obter Ether"
@@ -359,9 +350,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revert": {
-    "message": "Reverter"
   },
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"

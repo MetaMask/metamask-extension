@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Bilance var nebūt aktuāla"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nepietiekama bilance pašreizējam Gas daudzumam"
-  },
   "basic": {
     "message": "Pamata"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitCalculation": {
-    "message": "Mēs aprēķinām ieteikto Gas robežvērtību, pamatojoties uz tīkla panākumu rādītājiem."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas cena"
-  },
-  "gasPriceCalculation": {
-    "message": "Mēs aprēķinām ieteiktās Gas cenas, pamatojoties uz tīkla panākumu rādītājiem."
   },
   "general": {
     "message": "Vispārīgi"
@@ -938,9 +929,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
-  },
-  "revert": {
-    "message": "Atgriezt"
   },
   "remove": {
     "message": "Noņemt"

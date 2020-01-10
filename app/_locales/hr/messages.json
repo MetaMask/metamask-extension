@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Stanje je možda zastarjelo"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljno stanje za trenutačni iznos goriva"
-  },
   "basic": {
     "message": "Osnovne"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženo ograničenje za gorivo na temelju postotka uspješnosti mreže."
-  },
   "gasLimitInfoModalContent": {
     "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cijena goriva"
-  },
-  "gasPriceCalculation": {
-    "message": "Izračunavamo predloženu cijenu goriva na temelju postotka uspješnosti mreže."
   },
   "general": {
     "message": "Opće"
@@ -935,9 +926,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
-  },
-  "revert": {
-    "message": "Vrati u prethodni oblik"
   },
   "remove": {
     "message": "Ukloni"

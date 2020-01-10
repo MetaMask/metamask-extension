@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldo je možda zastario"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljan iznos za trenutni ukupni gas"
-  },
   "basic": {
     "message": "Основна"
   },
@@ -469,9 +466,6 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženi limit za gas na osnovu stope uspešnosti mreže."
-  },
   "gasLimitInfoModalContent": {
     "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
   },
@@ -492,9 +486,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gas-a"
-  },
-  "gasPriceCalculation": {
-    "message": "Preračunavamo predložene cene za gas na osnovu stope uspešnosti mreže."
   },
   "general": {
     "message": "Opšte"
@@ -933,9 +924,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
-  },
-  "revert": {
-    "message": "Vrati"
   },
   "remove": {
     "message": "Уклони"

@@ -46,9 +46,6 @@
   "balance": {
     "message": "Баланс:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Недостаточный баланс для текущего объема газа"
-  },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
   },
@@ -195,17 +192,11 @@
   "gasLimit": {
     "message": "Лимит газа"
   },
-  "gasLimitCalculation": {
-    "message": "Мы расчитываем предлагаемый лимит газа на основании успешных ставок в сети."
-  },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть как минимум 21000"
   },
   "gasPrice": {
     "message": "Цена за газ (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Мы расчитываем предлагаемые цены за газ на основании успешных ставок в сети."
   },
   "getEther": {
     "message": "Получить Ether"
@@ -395,9 +386,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Не восстанавливайте ключевую фразу в общественном месте! Она может быть использована для кражи всех ваших счетов."
-  },
-  "revert": {
-    "message": "Восстановить"
   },
   "rinkeby": {
     "message": "Тестовая сеть Rinkeby"

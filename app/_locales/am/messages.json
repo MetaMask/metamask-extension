@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "ቀሪ ሂሳብ ጊዜው ያለፈበት ሊሆን ይችላል"
   },
-  "balanceIsInsufficientGas": {
-    "message": "አሁን ላለው አጠቃላይ ነዳጅ የማይበቃ ቀሪ ሂሳብ"
-  },
   "basic": {
     "message": "መሠረታዊ"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ገደብ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
-  },
   "gasLimitInfoModalContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "የነዳጅ ዋጋ"
-  },
-  "gasPriceCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ዋጋ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
   },
   "general": {
     "message": "አጠቃላይ"
@@ -939,9 +930,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
-  },
-  "revert": {
-    "message": "አድህር"
   },
   "remove": {
     "message": "አስወግድ"
