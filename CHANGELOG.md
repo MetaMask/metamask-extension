@@ -17,6 +17,7 @@
 - [#8463](https://github.com/MetaMask/metamask-extension/pull/8463): Update deprecated Etherscam link
 - [#8474](https://github.com/MetaMask/metamask-extension/pull/8474): Only update pending transactions upon block update
 - [#8476](https://github.com/MetaMask/metamask-extension/pull/8476): Update eth-contract-metadata
+- [#8509](https://github.com/MetaMask/metamask-extension/pull/8509): Fix Tohen Typo
 
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
