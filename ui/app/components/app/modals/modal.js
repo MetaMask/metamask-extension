@@ -467,15 +467,11 @@ function mapDispatchToProps (dispatch) {
 class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,
-    onHideCallback: PropTypes.func,
     hideModal: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
   }
 
   onHide (customOnHideOpts) {
-    if (this.props.onHideCallback) {
-      this.props.onHideCallback()
-    }
     this.props.hideModal(customOnHideOpts)
   }
 
