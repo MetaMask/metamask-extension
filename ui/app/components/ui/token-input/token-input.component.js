@@ -78,7 +78,7 @@ export default class TokenInput extends PureComponent {
   }
 
   handleBlur = () => {
-    this.props.onBlur(this.state.hexValue)
+    this.props.onBlur && this.props.onBlur(this.state.hexValue)
   }
 
   renderConversionComponent () {
