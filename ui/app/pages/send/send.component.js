@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PersistentForm from '../../../lib/persistent-form'
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -18,7 +17,7 @@ import SendContent from './send-content'
 import SendFooter from './send-footer'
 import EnsInput from './send-content/add-recipient/ens-input'
 
-export default class SendTransactionScreen extends PersistentForm {
+export default class SendTransactionScreen extends Component {
   static propTypes = {
     addressBook: PropTypes.arrayOf(PropTypes.object),
     amount: PropTypes.string,
