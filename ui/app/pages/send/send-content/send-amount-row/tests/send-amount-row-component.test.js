@@ -8,6 +8,8 @@ import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import AmountMaxButton from '../amount-max-button/amount-max-button.container'
 import UserPreferencedTokenInput from '../../../../../components/app/user-preferenced-token-input'
 
+import timeout from '../../../../../../lib/test-timeout'
+
 const propsMethodSpies = {
   setMaxModeTo: sinon.spy(),
   updateSendAmount: sinon.spy(),
@@ -153,9 +155,8 @@ describe('SendAmountRow Component', function () {
       assert(wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput))
     })
 
-    it('should render the UserPreferencedTokenInput with the correct props', () => {
+    it('should render the UserPreferencedTokenInput with the correct props', async () => {
       const {
-        onBlur,
         onChange,
         error,
         value,
@@ -164,8 +165,9 @@ describe('SendAmountRow Component', function () {
       assert.equal(value, 'mockAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 0)
       assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
-      onBlur('mockNewAmount')
-      assert.equal(SendAmountRow.prototype.updateGas.callCount, 1)
+      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
+      onChange('mockNewAmount')
+      await timeout(501)
       assert.deepEqual(
         SendAmountRow.prototype.updateGas.getCall(0).args,
         ['mockNewAmount']
@@ -175,8 +177,6 @@ describe('SendAmountRow Component', function () {
         SendAmountRow.prototype.updateAmount.getCall(0).args,
         ['mockNewAmount']
       )
-      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
-      onChange('mockNewAmount')
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
       assert.deepEqual(
         SendAmountRow.prototype.validateAmount.getCall(0).args,
