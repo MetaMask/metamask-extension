@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.7.2 Fri Jan 10 2020
+
 ## 7.7.1 Wed Dec 04 2019
 - [#7488](https://github.com/MetaMask/metamask-extension/pull/7488): Fix text overlap when expanding transaction
 - [#7491](https://github.com/MetaMask/metamask-extension/pull/7491): Update gas when asset is changed on send screen
