@@ -136,9 +136,6 @@
   "balanceOutdated": {
     "message": "Kontostand könnte überholt sein"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Guthaben unzureichend für den aktuellen gesamten Gasbetrag"
-  },
   "basic": {
     "message": "Grundlegend"
   },
@@ -457,9 +454,6 @@
   "gasLimit": {
     "message": "Gaslimit"
   },
-  "gasLimitCalculation": {
-    "message": "Wir berechnen das empfohlene Gaslimit basierend auf der Erfolgsrate des Netzwerks."
-  },
   "gasLimitInfoModalContent": {
     "message": "Die Gasgrenze ist die Höchstmenge an Gaseinheiten, die Sie auszugeben bereit sind."
   },
@@ -480,9 +474,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspreis"
-  },
-  "gasPriceCalculation": {
-    "message": "Wir berechnen den empfohlenen Gaspreis basierend auf der Erfolgsrate des Netzwerks."
   },
   "general": {
     "message": "Allgemein"
@@ -908,9 +899,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
-  },
-  "revert": {
-    "message": "Rückgängig machen"
   },
   "remove": {
     "message": "Entfernen"

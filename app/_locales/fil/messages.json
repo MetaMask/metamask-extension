@@ -127,9 +127,6 @@
   "balanceOutdated": {
     "message": "Maaaring outdated na ang balanse"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Hindi sapat ang balanse para sa kasalukuyang total ng gas"
-  },
   "basic": {
     "message": "Pangunahin"
   },
@@ -438,9 +435,6 @@
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Nakalkula namin ang iminungkahing limitasyon sa gas batay sa mga success rate sa network."
-  },
   "gasLimitInfoModalContent": {
     "message": "Ang limitasyon sa gas ay ang maximum na dami ng mga unit ng gas na handa kang gastusin."
   },
@@ -461,9 +455,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Presyo ng Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Kinakalkula namin ang mga iminumungkahing preyso ng gas batay sa mga success rate sa network."
   },
   "general": {
     "message": "Pangkalahatan"
@@ -863,9 +854,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account."
-  },
-  "revert": {
-    "message": "I-revert"
   },
   "remove": {
     "message": "Alisin"

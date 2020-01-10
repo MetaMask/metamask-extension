@@ -46,9 +46,6 @@
   "balance": {
     "message": "Zůstatek:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
   },
@@ -192,17 +189,11 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
-  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -385,9 +376,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "save": {
     "message": "Uložit"

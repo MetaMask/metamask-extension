@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "O saldo pode estar desatualizado"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente pelo total de Gas atual"
-  },
   "basic": {
     "message": "Básicas"
   },
@@ -466,9 +463,6 @@
   "gasLimit": {
     "message": "Limite de Gás"
   },
-  "gasLimitCalculation": {
-    "message": "Nós calculamos o limite de gás sugerido com base nas taxas de sucesso da rede."
-  },
   "gasLimitInfoModalContent": {
     "message": "O limite de gás é a quantidade máxima de unidades de gás que você está disposto a gastar."
   },
@@ -489,9 +483,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Preço do Gás"
-  },
-  "gasPriceCalculation": {
-    "message": "Nós calculamos os preços de gás sugeridos com base nas taxas de sucesso da rede."
   },
   "general": {
     "message": "Geral"
@@ -927,9 +918,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revert": {
-    "message": "Reverter"
   },
   "remove": {
     "message": "Remover"

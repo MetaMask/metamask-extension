@@ -37,9 +37,6 @@
   "balance": {
     "message": "Số dư:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
-  },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -144,17 +141,11 @@
   "gasLimit": {
     "message": "Hạn mức ga"
   },
-  "gasLimitCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một hạn mức ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
-  },
   "gasLimitTooLow": {
     "message": "Hạn mức ga phải đạt tối thiểu 21000"
   },
   "gasPrice": {
     "message": "Giá ga (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một giá ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
   "getEther": {
     "message": "Lấy Ether"
@@ -284,9 +275,6 @@
   },
   "required": {
     "message": "Yêu cầu"
-  },
-  "revert": {
-    "message": "Chuyển lại"
   },
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"
