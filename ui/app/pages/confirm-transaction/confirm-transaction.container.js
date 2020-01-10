@@ -35,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state)
   const totalUnconfirmed = unconfirmedTransactions.length
   const transaction = totalUnconfirmed
-    ? unapprovedTxs[id] || unconfirmedTransactions[totalUnconfirmed - 1]
+    ? unapprovedTxs[id] || unconfirmedTransactions[0]
     : {}
   const { id: transactionId, transactionCategory } = transaction
 

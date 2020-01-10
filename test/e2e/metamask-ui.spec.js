@@ -553,11 +553,11 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       let transactions = await findElements(driver, By.css('.transaction-list-item'))
-      await transactions[3].click()
+      await transactions[0].click()
       await delay(regularDelayMs)
       try {
         transactions = await findElements(driver, By.css('.transaction-list-item'), 1000)
-        await transactions[3].click()
+        await transactions[0].click()
       } catch (e) {
         console.log(e)
       }
@@ -631,7 +631,7 @@ describe('MetaMask', function () {
 
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('3'), true, 'correct transaction in focus')
+      assert.equal(navigationText.includes('2'), true, 'correct (same) transaction in focus')
     })
 
     it('confirms a transaction', async () => {
@@ -838,9 +838,9 @@ describe('MetaMask', function () {
     it('renders the correct ETH balance', async () => {
       const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
-      await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/), 10000)
+      await driver.wait(until.elementTextMatches(balance, /^90.*\s*ETH.*$/), 10000)
       const tokenAmount = await balance.getText()
-      assert.ok(/^87.*\s*ETH.*$/.test(tokenAmount))
+      assert.ok(/^90.*\s*ETH.*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })

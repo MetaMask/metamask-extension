@@ -38,8 +38,8 @@ async function runConfirmSigRequestsTest (assert) {
 
   const pendingRequestItem = $.find('.transaction-list-item .transaction-list-item__grid')
 
-  if (pendingRequestItem[2]) {
-    pendingRequestItem[2].click()
+  if (pendingRequestItem[0]) {
+    pendingRequestItem[0].click()
   }
 
   await timeout(1000)
@@ -47,11 +47,9 @@ async function runConfirmSigRequestsTest (assert) {
   let confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
-  const confirmSigMessage = await queryAsync($, '.request-signature__notice')
-  assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
-
   let confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.equal(confirmSigRowValue[0].textContent, '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0')
+  assert.equal(confirmSigRowValue[0].textContent, 'Hi, Alice!')
+  assert.equal(confirmSigRowValue[1].textContent, '1337')
 
   let confirmSigSignButton = await queryAsync($, 'button.btn-secondary.btn--large')
   confirmSigSignButton[0].click()
@@ -68,9 +66,11 @@ async function runConfirmSigRequestsTest (assert) {
   confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
+  const confirmSigMessage = await queryAsync($, '.request-signature__notice')
+  assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
+
   confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.equal(confirmSigRowValue[0].textContent, 'Hi, Alice!')
-  assert.equal(confirmSigRowValue[1].textContent, '1337')
+  assert.equal(confirmSigRowValue[0].textContent, '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0')
 
   confirmSigSignButton = await queryAsync($, 'button.btn-secondary.btn--large')
   confirmSigSignButton[0].click()
