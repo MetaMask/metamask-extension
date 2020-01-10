@@ -471,10 +471,6 @@ class Modal extends Component {
     modalState: PropTypes.object.isRequired,
   }
 
-  onHide (customOnHideOpts) {
-    this.props.hideModal(customOnHideOpts)
-  }
-
   hide () {
     this.modalRef.hide()
   }
@@ -504,7 +500,7 @@ class Modal extends Component {
           if (modal.onHide) {
             modal.onHide(this.props)
           }
-          this.onHide(modal.customOnHideOpts)
+          this.props.hideModal(modal.customOnHideOpts)
         }}
         ref={(ref) => {
           this.modalRef = ref
