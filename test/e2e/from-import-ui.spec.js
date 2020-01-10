@@ -118,7 +118,8 @@ describe('Using MetaMask with an existing account', function () {
       const [address] = await findElements(driver, By.css('input.qr-ellip-address'))
       assert.equal(await address.getAttribute('value'), testAddress)
 
-      await driver.executeScript("document.querySelector('.account-modal-close').click()")
+      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
+      await accountModalClose.click()
       await delay(largeDelayMs)
     })
 
@@ -128,7 +129,8 @@ describe('Using MetaMask with an existing account', function () {
       const detailModal = await driver.findElement(By.css('span .modal'))
       await delay(regularDelayMs)
 
-      await driver.executeScript("document.querySelector('.account-modal-close').click()")
+      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
+      await accountModalClose.click()
       await driver.wait(until.stalenessOf(detailModal))
       await delay(regularDelayMs)
     })
