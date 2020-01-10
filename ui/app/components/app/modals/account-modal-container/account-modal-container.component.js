@@ -25,7 +25,7 @@ export default function AccountModalContainer (props, context) {
             </span>
           </div>
         )}
-        <div className="account-modal-close" onClick={hideModal} />
+        <button className="account-modal-close" onClick={hideModal} />
         {children}
       </div>
     </div>
