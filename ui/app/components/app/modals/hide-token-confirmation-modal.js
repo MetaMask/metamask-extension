@@ -30,7 +30,6 @@ class HideTokenConfirmationModal extends Component {
   }
 
   static propTypes = {
-    network: PropTypes.number,
     hideToken: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     assetImages: PropTypes.object.isRequired,
@@ -43,7 +42,7 @@ class HideTokenConfirmationModal extends Component {
   state = {}
 
   render () {
-    const { token, network, hideToken, hideModal, assetImages } = this.props
+    const { token, hideToken, hideModal, assetImages } = this.props
     const { symbol, address } = token
     const image = assetImages[address]
 
@@ -57,7 +56,6 @@ class HideTokenConfirmationModal extends Component {
             className="hide-token-confirmation__identicon"
             diameter={45}
             address={address}
-            network={network}
             image={image}
           />
           <div className="hide-token-confirmation__symbol">{symbol}</div>
