@@ -33,7 +33,7 @@ const Button = ({
   ...buttonProps
 }) => (
   <button
-    type={submit && 'submit'}
+    type={submit ? 'submit' : undefined}
     className={classnames(
       'button',
       typeHash[type] || CLASSNAME_DEFAULT,

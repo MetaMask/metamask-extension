@@ -723,6 +723,7 @@ describe('MetaMask', function () {
         driver,
         By.css('.advanced-gas-inputs__gas-edit-row__input')
       )
+      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
       await gasPriceInput.sendKeys(Key.BACK_SPACE)
       await gasPriceInput.sendKeys('10')
@@ -883,28 +884,12 @@ describe('MetaMask', function () {
       )
       assert.equal(navigateTxButtons.length, 4, 'navigation button present')
 
-      await navigateTxButtons[0].click()
+      await navigateTxButtons[2].click()
       let navigationElement = await findElement(
         driver,
         By.css('.confirm-page-container-navigation')
       )
       let navigationText = await navigationElement.getText()
-      assert.equal(
-        navigationText.includes('1'),
-        true,
-        'changed transaction right'
-      )
-
-      navigateTxButtons = await findElements(
-        driver,
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[2].click()
-      navigationElement = await findElement(
-        driver,
-        By.css('.confirm-page-container-navigation')
-      )
-      navigationText = await navigationElement.getText()
       assert.equal(
         navigationText.includes('2'),
         true,
@@ -923,6 +908,22 @@ describe('MetaMask', function () {
       navigationText = await navigationElement.getText()
       assert.equal(
         navigationText.includes('3'),
+        true,
+        'changed transaction right'
+      )
+
+      navigateTxButtons = await findElements(
+        driver,
+        By.css('.confirm-page-container-navigation__arrow')
+      )
+      await navigateTxButtons[2].click()
+      navigationElement = await findElement(
+        driver,
+        By.css('.confirm-page-container-navigation')
+      )
+      navigationText = await navigationElement.getText()
+      assert.equal(
+        navigationText.includes('4'),
         true,
         'changed transaction right'
       )
@@ -1028,9 +1029,9 @@ describe('MetaMask', function () {
       )
       navigationText = await navigationElement.getText()
       assert.equal(
-        navigationText.includes('3'),
+        navigationText.includes('2'),
         true,
-        'correct transaction in focus'
+        'correct (same) transaction in focus'
       )
     })
 
@@ -1360,11 +1361,11 @@ describe('MetaMask', function () {
       )
       await delay(regularDelayMs)
       await driver.wait(
-        until.elementTextMatches(balance, /^87.*\s*ETH.*$/),
+        until.elementTextMatches(balance, /^90.*\s*ETH.*$/),
         10000
       )
       const tokenAmount = await balance.getText()
-      assert.ok(/^87.*\s*ETH.*$/.test(tokenAmount))
+      assert.ok(/^90.*\s*ETH.*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })

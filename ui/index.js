@@ -71,7 +71,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   if (numberOfUnapprivedTx > 0) {
     store.dispatch(
       actions.showConfTxPage({
-        id: unapprovedTxsAll[numberOfUnapprivedTx - 1].id,
+        id: unapprovedTxsAll[0].id,
       })
     )
   }
