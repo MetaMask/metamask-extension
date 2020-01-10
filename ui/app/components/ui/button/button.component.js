@@ -26,7 +26,7 @@ const typeHash = {
 
 const Button = ({ type, submit, large, children, className, ...buttonProps }) => (
   <button
-    type={submit && 'submit'}
+    type={submit ? 'submit' : undefined}
     className={classnames(
       'button',
       typeHash[type] || CLASSNAME_DEFAULT,
