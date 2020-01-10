@@ -19,6 +19,7 @@ import EnsInput from './send-content/add-recipient/ens-input'
 export default class SendTransactionScreen extends PersistentForm {
 
   static propTypes = {
+    addressBook: PropTypes.arrayOf(PropTypes.object),
     amount: PropTypes.string,
     amountConversionRate: PropTypes.oneOfType([
       PropTypes.string,
@@ -32,6 +33,7 @@ export default class SendTransactionScreen extends PersistentForm {
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
+    hasHexData: PropTypes.bool,
     history: PropTypes.object,
     network: PropTypes.string,
     primaryCurrency: PropTypes.string,
@@ -45,7 +47,6 @@ export default class SendTransactionScreen extends PersistentForm {
     tokens: PropTypes.array,
     tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
-    updateAndSetGasTotal: PropTypes.func,
     updateAndSetGasLimit: PropTypes.func.isRequired,
     updateSendEnsResolution: PropTypes.func.isRequired,
     updateSendEnsResolutionError: PropTypes.func.isRequired,
@@ -56,8 +57,6 @@ export default class SendTransactionScreen extends PersistentForm {
     scanQrCode: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
-    ensResolution: PropTypes.string,
-    ensResolutionError: PropTypes.string,
   }
 
   static contextTypes = {
@@ -76,21 +75,6 @@ export default class SendTransactionScreen extends PersistentForm {
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.qrCodeData) {
-      if (nextProps.qrCodeData.type === 'address') {
-        const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
-        const currentAddress = this.props.to && this.props.to.toLowerCase()
-        if (currentAddress !== scannedAddress) {
-          this.props.updateSendTo(scannedAddress)
-          this.updateGas({ to: scannedAddress })
-          // Clean up QR code data after handling
-          this.props.qrCodeDetected(null)
-        }
-      }
-    }
-  }
-
   componentDidUpdate (prevProps) {
     const {
       amount,
@@ -103,20 +87,25 @@ export default class SendTransactionScreen extends PersistentForm {
       selectedToken,
       tokenBalance,
       updateSendErrors,
+      updateSendTo,
       updateSendTokenBalance,
       tokenContract,
       to,
       toNickname,
       addressBook,
       updateToNicknameIfNecessary,
+      qrCodeData,
+      qrCodeDetected,
     } = this.props
 
+    let updateGas = false
     const {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
       selectedToken: prevSelectedToken,
+      to: prevTo,
     } = prevProps
 
     const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
@@ -164,7 +153,7 @@ export default class SendTransactionScreen extends PersistentForm {
           address,
         })
         updateToNicknameIfNecessary(to, toNickname, addressBook)
-        this.updateGas()
+        updateGas = true
       }
     }
 
@@ -173,7 +162,29 @@ export default class SendTransactionScreen extends PersistentForm {
 
     if (selectedTokenAddress && prevTokenAddress !== selectedTokenAddress) {
       this.updateSendToken()
-      this.updateGas()
+      updateGas = true
+    }
+
+    let scannedAddress
+    if (qrCodeData) {
+      if (qrCodeData.type === 'address') {
+        scannedAddress = qrCodeData.values.address.toLowerCase()
+        const currentAddress = prevTo && prevTo.toLowerCase()
+        if (currentAddress !== scannedAddress) {
+          updateSendTo(scannedAddress)
+          updateGas = true
+          // Clean up QR code data after handling
+          qrCodeDetected(null)
+        }
+      }
+    }
+
+    if (updateGas) {
+      if (scannedAddress) {
+        this.updateGas({ to: scannedAddress })
+      } else {
+        this.updateGas()
+      }
     }
   }
 
