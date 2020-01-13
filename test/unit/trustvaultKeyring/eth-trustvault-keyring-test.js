@@ -205,7 +205,8 @@ describe('TrustVault Keyring Tests', () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_getAuthenticationTokens').rejects(new Error('Incorrect pin.'))
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
       try {
-        await trustVaultKeyring.submitPartialPinChallenge(1, 2)
+        const result = await trustVaultKeyring.submitPartialPinChallenge(1, 2)
+        assert.fail(`Expected to fail returned with result ${result}`)
       } catch (e) {
         assert.equal(e.message, 'Incorrect pin.')
       }

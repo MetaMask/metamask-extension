@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import request  from 'request-promise'
+import request from 'request-promise'
 import ethUtil from 'ethereumjs-util'
 import log from 'loglevel'
 import BigNumber from 'bignumber.js'
@@ -12,7 +12,7 @@ const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
 export default class TrustvaultKeyring extends EventEmitter {
-  static type = 'type'
+  static type = type
   constructor (opts = {}) {
     super()
     this.type = type
@@ -155,10 +155,10 @@ export default class TrustvaultKeyring extends EventEmitter {
 
   /**
    * If the pinChallenge fails, an error as well as a new pinChallenge is returned
-   * @param {*} email String
-   * @param {*} firstPinDigit number
-   * @param {*} secondPinDigit number
-   * @param {*} sessionToken string
+   * @param {string} email
+   * @param {number} firstPinDigit
+   * @param {number} secondPinDigit
+   * @param {string} sessionToken
    */
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
@@ -271,7 +271,6 @@ export default class TrustvaultKeyring extends EventEmitter {
   }
 
   async trustVaultBridgeRequest (body) {
-    debugger;
     const options = {
       uri: trustVaultBridgeUrl,
       method: 'POST',
@@ -437,5 +436,3 @@ export default class TrustvaultKeyring extends EventEmitter {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }
-
-TrustvaultKeyring.type = type

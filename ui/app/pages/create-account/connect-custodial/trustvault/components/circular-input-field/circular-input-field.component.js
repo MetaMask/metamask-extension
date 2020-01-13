@@ -20,9 +20,10 @@ export default class CircularInputField extends PureComponent {
             'circle-input',
             'circular-input',
             'inline-block-child',
-            this.props.filled()
-              ? 'background-filled'
-              : 'background-empty'
+            {
+              'background-filled': this.props.filled(),
+              'background-empty': !this.props.filled(),
+            }
           )}
           maxLength={this.props.maxLength.toString()}
           type="password"

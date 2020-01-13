@@ -198,7 +198,6 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker._updateAccounts()
     })
 
-    // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, TrustvaultKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,

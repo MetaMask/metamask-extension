@@ -1,7 +1,3 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 
-export default class StarPlaceholder extends PureComponent {
-  render () {
-    return (<span className="star-placeholder inline-block-child">﹡</span>)
-  }
-}
+export const StarPlaceHolder = () => (<span className="star-placeholder inline-block-child">﹡</span>)

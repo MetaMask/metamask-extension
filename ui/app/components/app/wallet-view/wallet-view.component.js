@@ -9,7 +9,6 @@ import TokenList from '../token-list'
 import { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 
 const TRUSTVAULT = 'trustvault'
-
 export default class WalletView extends Component {
   static contextTypes = {
     t: PropTypes.func,

@@ -1,3 +1,3 @@
-import StarPlaceholder from './star-placeholder.component'
+import { StarPlaceHolder } from './star-placeholder.component'
 
-export default StarPlaceholder
+export default StarPlaceHolder
