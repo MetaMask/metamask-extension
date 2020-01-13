@@ -40,6 +40,13 @@ the zip file, use *Load unpacked* button to load the unziped folder.
 - [[http://13.57.190.119:9000/contract.html][example]] for testing dapp functionalities ([[https://github.com/Conflux-Chain/metamask-extension/blob/cfx-develop/test/e2e/contract-test/contract.js][code]])
 
 ** Changelog
+*** Unreleased
+**** Change
+- default gas price in inpage.js changed to 1 Gdrip (from 100 Drip)
+- default gas in inpage.js changed to 21000 (from 1000000)
+
+Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.2...HEAD
+
 *** 0.0.2 - <2020-01-10 Fri>
 - Some "Etherscan" to "Confluxscan"
 - Get default gas price from json rpc

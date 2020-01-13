@@ -239,7 +239,7 @@ async function fetchExternalBasicGasEstimates (
   ])
 
   let { result: estimateGasTimes10 } = await estimateGasResult.json()
-  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // default to 100 drip if cfx_gasPrice returns 0
+  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // this unit is gdrip * 10
 
   const {
     safeLow: safeLowTimes10,
@@ -337,7 +337,7 @@ async function fetchExternalBasicGasAndTimeEstimates (
   ])
 
   let { result: estimateGasTimes10 } = await estimateGasResult.json()
-  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // drip
+  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // the unit is gdrip * 10
 
   const {
     // average: averageTimes10,
