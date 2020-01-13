@@ -10,7 +10,7 @@ export default class Network extends Component {
   }
 
   static propTypes = {
-    network: PropTypes.number.isRequired,
+    network: PropTypes.string.isRequired,
     provider: PropTypes.shape({
       type: PropTypes.string,
       nickname: PropTypes.string,
