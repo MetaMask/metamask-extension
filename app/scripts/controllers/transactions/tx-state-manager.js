@@ -1,4 +1,3 @@
-import extend from 'xtend'
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
@@ -32,7 +31,7 @@ class TransactionStateManager extends EventEmitter {
     super()
 
     this.store = new ObservableStore(
-      extend({
+      Object.assign({
         transactions: [],
       }, initState))
     this.txHistoryLimit = txHistoryLimit
@@ -48,7 +47,7 @@ class TransactionStateManager extends EventEmitter {
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network')
     }
-    return extend({
+    return Object.assign({
       id: createId(),
       time: (new Date()).getTime(),
       status: 'unapproved',
@@ -222,7 +221,7 @@ class TransactionStateManager extends EventEmitter {
   */
   updateTxParams (txId, txParams) {
     const txMeta = this.getTx(txId)
-    txMeta.txParams = extend(txMeta.txParams, txParams)
+    txMeta.txParams = { ...txMeta.txParams, ...txParams }
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
   }
 

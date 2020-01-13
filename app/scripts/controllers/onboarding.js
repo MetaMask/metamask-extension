@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 import log from 'loglevel'
 
 /**
@@ -27,7 +26,7 @@ class OnboardingController {
     const initialTransientState = {
       onboardingTabs: {},
     }
-    const initState = extend(
+    const initState = Object.assign(
       {
         seedPhraseBackedUp: true,
       },

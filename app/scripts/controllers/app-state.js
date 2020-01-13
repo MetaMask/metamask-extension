@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 
 class AppStateController {
   /**
@@ -11,7 +10,7 @@ class AppStateController {
     const { preferences } = preferencesStore.getState()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(extend({
+    this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
       mkrMigrationReminderTimestamp: null,
     }, initState))
