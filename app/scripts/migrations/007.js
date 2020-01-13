@@ -6,8 +6,6 @@ This migration breaks out the TransactionManager substate
 
 */
 
-import extend from 'xtend'
-
 import clone from 'clone'
 
 export default {
@@ -28,12 +26,13 @@ export default {
 }
 
 function transformState (state) {
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     TransactionManager: {
       transactions: state.transactions || [],
       gasMultiplier: state.gasMultiplier || 1,
     },
-  })
+  }
   delete newState.transactions
   delete newState.gasMultiplier
 

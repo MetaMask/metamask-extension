@@ -1,4 +1,3 @@
-import extend from 'xtend'
 import { BN } from 'ethereumjs-util'
 
 const template = {
@@ -23,7 +22,8 @@ class TxGenerator {
     const txs = []
     for (let i = 0; i < count; i++) {
       txs.push(
-        extend(
+        Object.assign(
+          {},
           template,
           {
             txParams: {

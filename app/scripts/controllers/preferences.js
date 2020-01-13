@@ -2,7 +2,6 @@ import ObservableStore from 'obs-store'
 import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
-import extend from 'xtend'
 
 class PreferencesController {
   /**
@@ -27,7 +26,7 @@ class PreferencesController {
    *
    */
   constructor (opts = {}) {
-    const initState = extend(
+    const initState = Object.assign(
       {
         frequentRpcListDetail: [],
         currentAccountTab: 'history',
@@ -114,7 +113,6 @@ class PreferencesController {
    *
    */
   setParticipateInMetaMetrics (bool) {
-    // TODO: remove this?
     bool = false
     this.store.updateState({ participateInMetaMetrics: bool })
     let metaMetricsId = null
@@ -133,7 +131,6 @@ class PreferencesController {
   }
 
   getParticipateInMetaMetrics () {
-    // TODO: remove this at frontend
     return false
     // return this.store.getState().participateInMetaMetrics
   }
@@ -499,7 +496,7 @@ class PreferencesController {
     })
     if (index > -1) {
       const rpcDetail = rpcList[index]
-      const updatedRpc = extend(rpcDetail, newRpcDetails)
+      const updatedRpc = { ...rpcDetail, ...newRpcDetails }
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {

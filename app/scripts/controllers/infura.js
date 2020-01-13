@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 import log from 'loglevel'
 
 // every ten minutes
@@ -7,7 +6,7 @@ const POLLING_INTERVAL = 10 * 60 * 1000
 
 class InfuraController {
   constructor (opts = {}) {
-    const initState = extend(
+    const initState = Object.assign(
       {
         infuraNetworkStatus: {},
       },

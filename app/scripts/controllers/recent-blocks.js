@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 import EthQuery from 'eth-query'
 import log from 'loglevel'
 import pify from 'pify'
@@ -31,7 +30,7 @@ class RecentBlocksController {
     this.ethQuery = new EthQuery(provider)
     this.historyLength = opts.historyLength || 40
 
-    const initState = extend(
+    const initState = Object.assign(
       {
         recentBlocks: [],
       },
@@ -121,11 +120,12 @@ class RecentBlocksController {
    *
    */
   mapTransactionsToPrices (newBlock) {
-    const block = extend(newBlock, {
+    const block = {
+      ...newBlock,
       gasPrices: newBlock.transactions.map(tx => {
         return tx.gasPrice
       }),
-    })
+    }
     delete block.transactions
     return block
   }

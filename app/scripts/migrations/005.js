@@ -6,8 +6,6 @@ This migration moves state from the flat state trie into KeyringController subst
 
 */
 
-import extend from 'xtend'
-
 import clone from 'clone'
 
 export default {
@@ -29,13 +27,14 @@ export default {
 
 function selectSubstateForKeyringController (state) {
   const config = state.config
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     KeyringController: {
       vault: state.vault,
       selectedAccount: config.selectedAccount,
       walletNicknames: state.walletNicknames,
     },
-  })
+  }
   delete newState.vault
   delete newState.walletNicknames
   delete newState.config.selectedAccount
