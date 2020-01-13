@@ -1,7 +1,7 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import ethUtil from 'ethereumjs-util'
-import * as util from '../../ui/app/helpers/utils/util'
+import * as util from './util'
 
 describe('util', function () {
   let ethInWei = '1'
