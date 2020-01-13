@@ -423,7 +423,6 @@ export default class TrustvaultKeyring extends EventEmitter {
   }
 
   /* Helper functions */
-
   _normalize (buf) {
     return ethUtil.bufferToHex(buf).toString()
   }
