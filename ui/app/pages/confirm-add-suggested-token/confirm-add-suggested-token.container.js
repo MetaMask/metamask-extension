@@ -2,13 +2,11 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 import { withRouter } from 'react-router-dom'
-
-import extend from 'xtend'
 import { addToken, removeSuggestedTokens } from '../../store/actions'
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens, suggestedTokens } = metamask
-  const params = extend(pendingTokens, suggestedTokens)
+  const params = { ...pendingTokens, ...suggestedTokens }
 
   return {
     pendingTokens: params,

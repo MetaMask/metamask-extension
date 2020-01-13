@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Stanje morda ni posodobljeno"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nezadnosten znesek za trenutni gas"
-  },
   "basic": {
     "message": "Osnovno"
   },
@@ -469,9 +466,6 @@
   "functionType": {
     "message": "Vrsta funkcije"
   },
-  "gasLimitCalculation": {
-    "message": "Priporočen gas limit je izračunan glede na omrežje."
-  },
   "gasLimitInfoModalContent": {
     "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
   },
@@ -492,9 +486,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas price"
-  },
-  "gasPriceCalculation": {
-    "message": "Priporočen gas price je izračunan glede na omrežje."
   },
   "general": {
     "message": "Splošno"
@@ -924,9 +915,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune."
-  },
-  "revert": {
-    "message": "Obnovi"
   },
   "remove": {
     "message": "izbriši"

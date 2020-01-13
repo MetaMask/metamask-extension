@@ -67,9 +67,6 @@
   "balance": {
     "message": "Balans"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Ensifizan balans pou total gaz aktyèl la"
-  },
   "blockiesIdenticon": {
     "message": "Itilize Blockies Identicon"
   },
@@ -264,9 +261,6 @@
   "gasLimit": {
     "message": "Limit gaz"
   },
-  "gasLimitCalculation": {
-    "message": "Nou kalkile gaz limit sijere a ki baze sou pousantaj siksè rezo a."
-  },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
@@ -275,9 +269,6 @@
   },
   "gasPrice": {
     "message": "Pri gaz (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Nou kalkile pri yo gaz ki sijere ki baze sou pousantaj siksè rezo."
   },
   "getEther": {
     "message": "Jwenn Ether"
@@ -587,9 +578,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
-  },
-  "revert": {
-    "message": "Retounen"
   },
   "remove": {
     "message": "retire"

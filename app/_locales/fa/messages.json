@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "صورت حساب ممکن انقضاء شده باشد"
   },
-  "balanceIsInsufficientGas": {
-    "message": "بیلانس ناکافی برای مجموع گاز فعلی"
-  },
   "basic": {
     "message": "پایه"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitCalculation": {
-    "message": "ما محدوده پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
-  },
   "gasLimitInfoModalContent": {
     "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "قیمت گاز"
-  },
-  "gasPriceCalculation": {
-    "message": "ما قیمت های پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
   },
   "general": {
     "message": "عمومی"
@@ -942,9 +933,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
-  },
-  "revert": {
-    "message": "برگشت"
   },
   "remove": {
     "message": "پاک کردن"

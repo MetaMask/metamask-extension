@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Salio linaweza kuwa limepitwa na wakati"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Salio halitoshi kwa jumla ya sasa ya gesi"
-  },
   "basic": {
     "message": "Msingi"
   },
@@ -462,9 +459,6 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitCalculation": {
-    "message": "Tunakokotoa kikomo cha gesi kilichopendekezwa kulingana na viwango vya mafanikio ya mtandao."
-  },
   "gasLimitInfoModalContent": {
     "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
   },
@@ -485,9 +479,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Bei ya Gesi"
-  },
-  "gasPriceCalculation": {
-    "message": "Tunakokotoa bei za gesi zilizopendekzwa kulingana na viwango vya kufanikiwa mtandao."
   },
   "general": {
     "message": "Jumla"
@@ -920,9 +911,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
-  },
-  "revert": {
-    "message": "Batilisha"
   },
   "remove": {
     "message": "Ondoa"

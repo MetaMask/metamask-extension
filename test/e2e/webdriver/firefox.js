@@ -22,8 +22,8 @@ const GeckoDriverCommand = {
 class FirefoxDriver {
   /**
    * Builds a {@link FirefoxDriver} instance
-   * @param {{extensionPath: string}} options the options for the build
-   * @return {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
+   * @param {{extensionPath: string}} options - the options for the build
+   * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build ({ extensionPath, responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX)
@@ -58,7 +58,7 @@ class FirefoxDriver {
 
   /**
    * @constructor
-   * @param {!ThenableWebDriver} driver a {@code WebDriver} instance
+   * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
   constructor (driver) {
     this._driver = driver
@@ -66,7 +66,7 @@ class FirefoxDriver {
 
   /**
    * Initializes the driver
-   * @return {Promise<void>}
+   * @returns {Promise<void>}
    */
   async init () {
     await this._driver.getExecutor()
@@ -79,8 +79,8 @@ class FirefoxDriver {
 
   /**
    * Installs the extension at the given path
-   * @param {string} addonPath the path to the unpacked extension or XPI
-   * @return {Promise<string>} the extension ID
+   * @param {string} addonPath - the path to the unpacked extension or XPI
+   * @returns {Promise<string>} - the extension ID
    */
   async installExtension (addonPath) {
     const cmd = new Command(GeckoDriverCommand.INSTALL_ADDON)
@@ -92,7 +92,7 @@ class FirefoxDriver {
 
   /**
    * Returns the Internal UUID for the given extension
-   * @return {Promise<string>} the Internal UUID for the given extension
+   * @returns {Promise<string>} - the Internal UUID for the given extension
    */
   async getInternalId () {
     await this._driver.get('about:debugging#addons')

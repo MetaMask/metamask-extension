@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Балансът може да е остарял"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатъчен баланс за текущия общ газ"
-  },
   "basic": {
     "message": "Основни"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitCalculation": {
-    "message": "Изчисляваме препоръчителния лимит за газ въз основа на степента на успех на мрежата."
-  },
   "gasLimitInfoModalContent": {
     "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Цена на газа"
-  },
-  "gasPriceCalculation": {
-    "message": "Изчисляваме предложените цени на газ въз основа на успеваемостта на мрежата."
   },
   "general": {
     "message": "Общ"
@@ -938,9 +929,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
-  },
-  "revert": {
-    "message": "Обръщане"
   },
   "remove": {
     "message": "Премахване"

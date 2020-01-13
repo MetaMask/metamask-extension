@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "ಮೊಬಲಗು ಹಳೆಯದಾಗಿರಬಹುದು"
   },
-  "balanceIsInsufficientGas": {
-    "message": "ಪ್ರಸ್ತುತ ಗ್ಯಾಸ್ ಟೋಟಲ್‌ಗಾಗಿ ಸಾಕಷ್ಟು ಮೊಬಲಗು ಇಲ್ಲ"
-  },
   "basic": {
     "message": "ಮೂಲ"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitCalculation": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಯಶಸ್ಸಿನ ದರಗಳ ಆಧಾರದ ಮೇಲೆ ನಾವು ಸೂಚಿಸಲಾದ ಗ್ಯಾಸ್ ಮಿತಿಯನ್ನು ಲೆಕ್ಕಾಚಾರ ಮಾಡುತ್ತೇವೆ."
-  },
   "gasLimitInfoModalContent": {
     "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "ಗ್ಯಾಸ್ ದರ"
-  },
-  "gasPriceCalculation": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಯಶಸ್ಸಿನ ದರಗಳ ಆಧಾರದ ಮೇಲೆ ನಾವು ಸೂಚಿಸಿದ ಗ್ಯಾಸ್ ದರಗಳನ್ನು ಲೆಕ್ಕ ಹಾಕುತ್ತೇವೆ."
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
@@ -942,9 +933,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
-  },
-  "revert": {
-    "message": "ಹಿಂತಿರುಗಿಸಿ"
   },
   "remove": {
     "message": "ತೆಗೆದುಹಾಕು"

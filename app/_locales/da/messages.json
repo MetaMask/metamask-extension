@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldoen kan være forældet"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Utilstrækkelig saldo for nuværende brændstoftotalbeløb"
-  },
   "basic": {
     "message": "Grundlæggende oplysninger"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasLimitCalculation": {
-    "message": "Vi beregner den foreslåede gasgrænse baseret på netværkssuccesrater."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gasgrænse er den maksimale mængde gasenheder, du er villig til at bruge."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Brændstofpris"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi beregner de anbefalede brændstofpriser baseret på netværkernes succesrater."
   },
   "general": {
     "message": "Generelt"
@@ -920,9 +911,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
-  },
-  "revert": {
-    "message": "Vend tilbage"
   },
   "remove": {
     "message": "Fjern"

@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldo võib olla aegunud"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Ebapiisav kontojääk praeguse gaasi kogusumma jaoks"
-  },
   "basic": {
     "message": "Põhiseaded"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasLimitCalculation": {
-    "message": "Arvutame soovituslikku gaasi ülemmäära vastavalt võrgu efektiivsusele."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gaasi ülemmäär on maksimaalne gaasiühikute hulk, mida olete nõus kulutama."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaasi hind"
-  },
-  "gasPriceCalculation": {
-    "message": "Arvutame soovituslikke gaasihindu vastavalt võrgu efektiivsusele."
   },
   "general": {
     "message": "Üldine teave"
@@ -932,9 +923,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revert": {
-    "message": "Ennista"
   },
   "remove": {
     "message": "Eemalda"

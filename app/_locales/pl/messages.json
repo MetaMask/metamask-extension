@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldo może być nieaktualne"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Niewystarczająca ilość środków na opłatę za gaz"
-  },
   "basic": {
     "message": "Podstawy"
   },
@@ -469,9 +466,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitCalculation": {
-    "message": "Obliczamy sugerowany limit gazu na podstawie danych z transakcji w sieci."
-  },
   "gasLimitInfoModalContent": {
     "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
   },
@@ -492,9 +486,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gazu"
-  },
-  "gasPriceCalculation": {
-    "message": "Obliczamy ceny gazu na podstawie danych z transakcji w sieci."
   },
   "general": {
     "message": "Ogólne"
@@ -933,9 +924,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
-  },
-  "revert": {
-    "message": "Wycofaj"
   },
   "remove": {
     "message": "usuń"

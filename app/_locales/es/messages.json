@@ -127,9 +127,6 @@
   "balance": {
     "message": "Saldo"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo de gas insuficiente"
-  },
   "basic": {
     "message": "Básico"
   },
@@ -390,9 +387,6 @@
   "gasLimit": {
     "message": "Límite de gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido en función de las tasas de éxito de la red"
-  },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser de al menos 21000"
   },
@@ -407,9 +401,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Precio de Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos los precios sugeridos del gas en función de las tasas de éxito de la red"
   },
   "generalSettingsDescription": {
     "message": "Conversión de divisas, divisa principal, idioma, blockies identicon"
@@ -758,9 +749,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "¡No recuperes tu semilla en un lugar pública! Esas palabras pueden ser usadas para robarte todas tus cuentas"
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "borrar"

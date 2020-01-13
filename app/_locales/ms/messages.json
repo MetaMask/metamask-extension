@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Baki mungkin lapuk"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Baki tidak mencukupi untuk jumlah keseluruhan gas semasa"
-  },
   "basic": {
     "message": "Asas"
   },
@@ -456,9 +453,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Kami mengira had gas yang dicadangkan berdasarkan kadar kejayaan rangkaian."
-  },
   "gasLimitInfoModalContent": {
     "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
   },
@@ -479,9 +473,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Harga Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Kami mengira harga gas disyorkan berdasarkan kadar kejayaan rangkaian."
   },
   "general": {
     "message": "Am"
@@ -913,9 +904,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
-  },
-  "revert": {
-    "message": "Undur"
   },
   "remove": {
     "message": "Alih keluar"

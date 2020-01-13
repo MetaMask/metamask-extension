@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Az egyenleg elavult lehet"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Egyenlege nem elegendő a jelenlegi gáz végösszegéhez"
-  },
   "basic": {
     "message": "Alapvető"
   },
@@ -468,9 +465,6 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasLimitCalculation": {
-    "message": "A javasolt gázhatárértéket a hálózat sikeressége alapján számoljuk ki."
-  },
   "gasLimitInfoModalContent": {
     "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
   },
@@ -491,9 +485,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gázár"
-  },
-  "gasPriceCalculation": {
-    "message": "A javasolt gázárakat a hálózat sikerességi rátája alapján számoljuk ki."
   },
   "general": {
     "message": "Általános"
@@ -935,9 +926,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
-  },
-  "revert": {
-    "message": "Visszatérít"
   },
   "remove": {
     "message": "Eltávolítás"

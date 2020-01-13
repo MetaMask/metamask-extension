@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Saldoen kan utløpe"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Utilstrekkelig dekning for nåværende datakrafttotal"
-  },
   "basic": {
     "message": "Enkle"
   },
@@ -465,9 +462,6 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitCalculation": {
-    "message": "Vi kalkulerer den foreslåtte gassgrensen baser på nettverkets suksessrater."
-  },
   "gasLimitInfoModalContent": {
     "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
   },
@@ -488,9 +482,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Datakraft"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi kalkulerer den foreslåtte datakraftprisen basert på sukssesspriser for nettverk. "
   },
   "general": {
     "message": "Generell"
@@ -932,9 +923,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
-  },
-  "revert": {
-    "message": "Tilbakestill "
   },
   "remove": {
     "message": "Fjern"

@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
-import { inherits } from 'util'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck'
@@ -464,61 +464,59 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-// Global Modal Component
-inherits(Modal, Component)
-function Modal () {
-  Component.call(this)
+class Modal extends Component {
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    hideModal: PropTypes.func.isRequired,
+    hideWarning: PropTypes.func.isRequired,
+    modalState: PropTypes.object.isRequired,
+  }
+
+  hide () {
+    this.modalRef.hide()
+  }
+
+  show () {
+    this.modalRef.show()
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps, _) {
+    if (nextProps.active) {
+      this.show()
+    } else if (this.props.active) {
+      this.hide()
+    }
+  }
+
+  render () {
+    const modal = MODALS[this.props.modalState.name || 'DEFAULT']
+    const { contents: children, disableBackdropClick = false } = modal
+    const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
+    const contentStyle = modal.contentStyle || {}
+
+    return (
+      <FadeModal
+        keyboard={false}
+        onHide={() => {
+          if (modal.onHide) {
+            modal.onHide({
+              hideWarning: this.props.hideWarning,
+            })
+          }
+          this.props.hideModal(modal.customOnHideOpts)
+        }}
+        ref={(ref) => {
+          this.modalRef = ref
+        }}
+        modalStyle={modalStyle}
+        contentStyle={contentStyle}
+        backdropStyle={BACKDROPSTYLE}
+        closeOnClick={!disableBackdropClick}
+      >
+        {children}
+      </FadeModal>
+    )
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)
-
-Modal.prototype.render = function () {
-  const modal = MODALS[this.props.modalState.name || 'DEFAULT']
-  const { contents: children, disableBackdropClick = false } = modal
-  const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
-  const contentStyle = modal.contentStyle || {}
-
-  return (
-    <FadeModal
-      keyboard={false}
-      onHide={() => {
-        if (modal.onHide) {
-          modal.onHide(this.props)
-        }
-        this.onHide(modal.customOnHideOpts)
-      }}
-      ref={(ref) => {
-        this.modalRef = ref
-      }}
-      modalStyle={modalStyle}
-      contentStyle={contentStyle}
-      backdropStyle={BACKDROPSTYLE}
-      closeOnClick={!disableBackdropClick}
-    >
-      {children}
-    </FadeModal>
-  )
-}
-
-Modal.prototype.UNSAFE_componentWillReceiveProps = function (nextProps) {
-  if (nextProps.active) {
-    this.show()
-  } else if (this.props.active) {
-    this.hide()
-  }
-}
-
-Modal.prototype.onHide = function (customOnHideOpts) {
-  if (this.props.onHideCallback) {
-    this.props.onHideCallback()
-  }
-  this.props.hideModal(customOnHideOpts)
-}
-
-Modal.prototype.hide = function () {
-  this.modalRef.hide()
-}
-
-Modal.prototype.show = function () {
-  this.modalRef.show()
-}

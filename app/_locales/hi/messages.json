@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "शेष पुराना हो सकता है"
   },
-  "balanceIsInsufficientGas": {
-    "message": "र्तमान गैस की कुल योग के लिए अपर्याप्त बैलेंस"
-  },
   "basic": {
     "message": "मूलभूत"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "गैस की सीमा"
   },
-  "gasLimitCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाई गई गैस सीमा की गणना करते हैं।"
-  },
   "gasLimitInfoModalContent": {
     "message": "गैस की सीमा गैस के यूनिट की अधिकतम राशि है जिसे आप खर्च करना चाहते हैं।"
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "गैस का मूल्य"
-  },
-  "gasPriceCalculation": {
-    "message": "हम नेटवर्क की सफलता के दर के आधार पर सुझाए गए गैस की कीमतों की गणना करते हैं।"
   },
   "general": {
     "message": "सामान्य"
@@ -939,9 +930,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सम्पूर्ण खातों को चुराने के लिए किया जा सकता है।"
-  },
-  "revert": {
-    "message": "वापस जाएँ"
   },
   "remove": {
     "message": "निकालें"

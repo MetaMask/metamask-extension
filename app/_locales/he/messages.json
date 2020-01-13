@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "ייתכן כי היתרה אינה מעודכנת"
   },
-  "balanceIsInsufficientGas": {
-    "message": "יתרה לא מספיקה עבור סך דלק נוכחי"
-  },
   "basic": {
     "message": "בסיסי"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasLimitCalculation": {
-    "message": "אנו מחשבים את הגבלת הדלק המוצעת על בסיס שיעורי ההצלחה של הרשת."
-  },
   "gasLimitInfoModalContent": {
     "message": "הגבלת דלק היא המספר המרבי של יחידות דלק שהנך מוכנ/ה להוציא."
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "מחיר הדלק"
-  },
-  "gasPriceCalculation": {
-    "message": "אנו מחשבים את מחירי הדלק המוצעים על בסיס שיעורי ההצלחה של הרשת."
   },
   "general": {
     "message": "כללי"
@@ -939,9 +930,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
-  },
-  "revert": {
-    "message": "חזרה"
   },
   "remove": {
     "message": "הסר"

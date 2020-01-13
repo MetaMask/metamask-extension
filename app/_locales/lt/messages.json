@@ -139,9 +139,6 @@
   "balanceOutdated": {
     "message": "Likutis gali būti pasenęs"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nepakankamas dabartinio bendro dujų kiekio likutis"
-  },
   "basic": {
     "message": "Bendrieji"
   },
@@ -472,9 +469,6 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitCalculation": {
-    "message": "Siūlomą dujų apribojimą apskaičiuojame remdamiesi tinklo sėkmės rezultatais."
-  },
   "gasLimitInfoModalContent": {
     "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
   },
@@ -495,9 +489,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Dujų kaina"
-  },
-  "gasPriceCalculation": {
-    "message": "Siūlomas dujų kainas apskaičiuojame remdamiesi tinklo sėkmės rezultatais."
   },
   "general": {
     "message": "Bendra"
@@ -942,9 +933,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
-  },
-  "revert": {
-    "message": "Grįžti"
   },
   "remove": {
     "message": "Pašalinti"

@@ -136,9 +136,6 @@
   "balanceOutdated": {
     "message": "Le solde peut ne pas être à jour"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Solde insuffisant pour le total actuel de gaz"
-  },
   "basic": {
     "message": "Général"
   },
@@ -460,9 +457,6 @@
   "gasLimit": {
     "message": "Quantité max. de gaz"
   },
-  "gasLimitCalculation": {
-    "message": "Nous calculons la quantité max. de gaz suggérée en fonction du code exécuté."
-  },
   "gasLimitInfoModalContent": {
     "message": "La limite d'essence est la quantité maximale d'unités d'essence que vous êtes prêt à dépenser."
   },
@@ -483,9 +477,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Prix du gaz"
-  },
-  "gasPriceCalculation": {
-    "message": "Nous calculons les prix du gaz proposés en fonction des taux de réussite du réseau."
   },
   "general": {
     "message": "Général"
@@ -921,9 +912,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
-  },
-  "revert": {
-    "message": "Rétablir"
   },
   "remove": {
     "message": "Supprimer"
