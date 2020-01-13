@@ -19,11 +19,10 @@ class ConnectScreen extends Component {
   state = {
     selectedDevice: null,
   }
-  history = this.props.history
 
   connect = () => {
     if (this.state.selectedDevice === TRUSTVAULT) {
-      this.history.push(CONNECT_TRUSTVAULT_ROUTE)
+      this.props.history.push(CONNECT_TRUSTVAULT_ROUTE)
     } else if (this.state.selectedDevice) {
       this.props.connectToHardwareWallet(this.state.selectedDevice)
     }
