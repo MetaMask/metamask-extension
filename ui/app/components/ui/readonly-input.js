@@ -29,6 +29,6 @@ ReadOnlyInput.propTypes = {
   wrapperClass: PropTypes.string,
   inputClass: PropTypes.string,
   value: PropTypes.string,
-  textarea: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired,
+  textarea: PropTypes.bool,
+  onClick: PropTypes.func,
 }
