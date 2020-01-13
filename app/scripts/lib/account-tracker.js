@@ -37,7 +37,7 @@ class AccountTracker {
    * It also tracks transaction hashes, and checks their inclusion status on each new block.
    *
    * @typedef {Object} AccountTracker
-   * @param {Object} opts Initialize various properties of the class.
+   * @param {Object} opts - Initialize various properties of the class.
    * @property {Object} store The stored object containing all accounts to track, as well as the current block's gas limit.
    * @property {Object} store.accounts The accounts currently stored in this AccountTracker
    * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
@@ -91,7 +91,7 @@ class AccountTracker {
    * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
    * of these accounts are given an updated balance via EthQuery.
    *
-   * @param {array} address The array of hex addresses for accounts with which this AccountTracker's accounts should be
+   * @param {array} address - The array of hex addresses for accounts with which this AccountTracker's accounts should be
    * in sync
    *
    */
@@ -121,7 +121,7 @@ class AccountTracker {
    * Adds new addresses to track the balances of
    * given a balance as long this._currentBlockNumber is defined.
    *
-   * @param {array} addresses An array of hex addresses of new accounts to track
+   * @param {array} addresses - An array of hex addresses of new accounts to track
    *
    */
   addAccounts (addresses) {
@@ -142,7 +142,7 @@ class AccountTracker {
   /**
    * Removes accounts from being tracked
    *
-   * @param {array} an array of hex addresses to stop tracking
+   * @param {array} an - array of hex addresses to stop tracking
    *
    */
   removeAccount (addresses) {
@@ -160,7 +160,7 @@ class AccountTracker {
    * via EthQuery
    *
    * @private
-   * @param {number} blockNumber the block number to update to.
+   * @param {number} blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
    *
    */
@@ -186,7 +186,7 @@ class AccountTracker {
    * balanceChecker is deployed on main eth (test)nets and requires a single call
    * for all other networks, calls this._updateAccount for each account in this.store
    *
-   * @returns {Promise} after all account balances updated
+   * @returns {Promise} - after all account balances updated
    *
    */
   async _updateAccounts () {
@@ -239,8 +239,8 @@ class AccountTracker {
    * Updates the current balance of an account.
    *
    * @private
-   * @param {string} address A hex address of a the account to be updated
-   * @returns {Promise} after the account balance is updated
+   * @param {string} address - A hex address of a the account to be updated
+   * @returns {Promise} - after the account balance is updated
    *
    */
   async _updateAccount (address) {

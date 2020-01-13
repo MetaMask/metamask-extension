@@ -4,7 +4,7 @@ import classnames from 'classnames'
 
 /**
  * Menu component
- * @return {Component|null}
+ * @returns {Component|null}
  */
 export function Menu (props) {
   const { className, children, isShowing } = props

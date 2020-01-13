@@ -11,7 +11,7 @@ export default {
 
 /**
   converts non-initial history entries into diffs
-  @param longHistory {array}
+  @param {array} longHistory
   @returns {array}
 */
 function migrateFromSnapshotsToDiffs (longHistory) {
@@ -34,8 +34,8 @@ function migrateFromSnapshotsToDiffs (longHistory) {
     path (the key and if a nested object then each key will be seperated with a `/`)
     value
   with the first entry having the note and a timestamp when the change took place
-  @param previousState {object} - the previous state of the object
-  @param newState {object} - the update object
+  @param {Object} previousState - the previous state of the object
+  @param {Object} newState - the update object
   @param {string} [note] - a optional note for the state change
   @returns {array}
 */
@@ -54,7 +54,7 @@ function generateHistoryEntry (previousState, newState, note) {
 
 /**
   Recovers previous txMeta state obj
-  @returns {object}
+  @returns {Object}
 */
 function replayHistory (_shortHistory) {
   const shortHistory = clone(_shortHistory)
@@ -64,8 +64,8 @@ function replayHistory (_shortHistory) {
 }
 
 /**
-  @param txMeta {Object}
-  @returns {object} a clone object of the txMeta with out history
+  @param {Object} txMeta
+  @returns {Object} - a clone object of the txMeta with out history
 */
 function snapshotFromTxMeta (txMeta) {
   // create txMeta snapshot for history

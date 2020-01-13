@@ -4,7 +4,7 @@
  * numeric base, denomination and currency, and the desired numeric base, denomination and
  * currency. It should return a single value.
  *
- * @param {(number | string | BN)} value The value to convert.
+ * @param {(number | string | BN)} value - The value to convert.
  * @param {Object} [options] Options to specify details of the conversion
  * @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
  * @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
@@ -125,20 +125,9 @@ const converter = R.pipe(
   R.view(R.lensProp('value'))
 )
 
-// function CFXToETH (str) {
-//   if (str === 'CFX') {
-//     return 'ETH'
-//   }
-//   return str
-// }
-
-const conversionUtil = (value, opts) => {
-  // Object.keys(opts).forEach(key => {
-  //   opts[key] = CFXToETH(opts[key])
-  // })
-  // TODO: temp fix for ui crashing when switch back from none exist network
-  // should look into this, need to find a better solution
-  const {
+const conversionUtil = (
+  value,
+  {
     fromCurrency = null,
     toCurrency = fromCurrency,
     fromNumericBase,
@@ -148,8 +137,8 @@ const conversionUtil = (value, opts) => {
     numberOfDecimals,
     conversionRate,
     invertConversionRate,
-  } = opts
-
+  }
+) => {
   let result
   try {
     result = converter({

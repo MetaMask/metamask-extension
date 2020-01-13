@@ -37,7 +37,7 @@ class AppStateController {
 
   /**
    * Sets the last active time to the current time
-   * @return {void}
+   * @returns {void}
    */
   setLastActiveTime () {
     this._resetTimer()
@@ -45,8 +45,8 @@ class AppStateController {
 
   /**
    * Sets the inactive timeout for the app
-   * @param {number} timeoutMinutes the inactive timeout in minutes
-   * @return {void}
+   * @param {number} timeoutMinutes - the inactive timeout in minutes
+   * @returns {void}
    * @private
    */
   _setInactiveTimeout (timeoutMinutes) {
@@ -63,7 +63,7 @@ class AppStateController {
    * If the {@code timeoutMinutes} state is falsy (i.e., zero) then a new
    * timer will not be created.
    *
-   * @return {void}
+   * @returns {void}
    * @private
    */
   _resetTimer () {

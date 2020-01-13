@@ -7,8 +7,8 @@ export default extractEthjsErrorMessage
  * Extracts the important part of an ethjs-rpc error message. If the passed error is not an isEthjsRpcError, the error
  * is returned unchanged.
  *
- * @param {string} errorMessage The error message to parse
- * @returns {string} Returns an error message, either the same as was passed, or the ending message portion of an isEthjsRpcError
+ * @param {string} errorMessage - The error message to parse
+ * @returns {string} - Returns an error message, either the same as was passed, or the ending message portion of an isEthjsRpcError
  *
  * @example
  * // returns 'Transaction Failed: replacement transaction underpriced'

@@ -1082,8 +1082,8 @@ export function cancelTx (txData) {
 
 /**
  * Cancels all of the given transactions
- * @param {Array<object>} txDataList a list of tx data objects
- * @return {function(*): Promise<void>}
+ * @param {Array<object>} txDataList - a list of tx data objects
+ * @returns {function(*): Promise<void>}
  */
 export function cancelTxs (txDataList) {
   return async dispatch => {
@@ -1673,7 +1673,7 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
 
 /**
  * @description Calls the addressBookController to remove an existing address.
- * @param {String} addressToRemove - Address of the entry to remove from the address book
+ * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)

@@ -14,7 +14,7 @@ class RecentBlocksController {
    * (indicating that there is a new block to process).
    *
    * @typedef {Object} RecentBlocksController
-   * @param {object} opts Contains objects necessary for tracking blocks and querying the blockchain
+   * @param {Object} opts - Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.blockTracker Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.provider The provider used to create a new EthQuery instance.
    * @property {BlockTracker} blockTracker Points to the passed BlockTracker. On RecentBlocksController construction,
@@ -69,7 +69,7 @@ class RecentBlocksController {
    * Receives a new block and modifies it with this.mapTransactionsToPrices. Then adds that block to the recentBlocks
    * array in storage. If the recentBlocks array contains the maximum number of blocks, the oldest block is removed.
    *
-   * @param {object} newBlock The new block to modify and add to the recentBlocks array
+   * @param {Object} newBlock - The new block to modify and add to the recentBlocks array
    *
    */
   async processBlock (newBlockNumberHex) {
@@ -97,7 +97,7 @@ class RecentBlocksController {
    *
    * Unlike this.processBlock, backfillBlock adds the modified new block to the beginning of the recent block array.
    *
-   * @param {object} newBlock The new block to modify and add to the beginning of the recentBlocks array
+   * @param {Object} newBlock - The new block to modify and add to the beginning of the recentBlocks array
    *
    */
   backfillBlock (newBlock) {
@@ -116,8 +116,8 @@ class RecentBlocksController {
    * Receives a block and gets the gasPrice of each of its transactions. These gas prices are added to the block at a
    * new property, and the block's transactions are removed.
    *
-   * @param {object} newBlock The block to modify. It's transaction array will be replaced by a gasPrices array.
-   * @returns {object} The modified block.
+   * @param {Object} newBlock - The block to modify. It's transaction array will be replaced by a gasPrices array.
+   * @returns {Object} - The modified block.
    *
    */
   mapTransactionsToPrices (newBlock) {
@@ -138,7 +138,7 @@ class RecentBlocksController {
    *
    * Each iteration over the block numbers is delayed by 100 milliseconds.
    *
-   * @returns {Promise<void>} Promises undefined
+   * @returns {Promise<void>} - Promises undefined
    */
   async backfill () {
     this.blockTracker.once('latest', async blockNumberHex => {
@@ -168,8 +168,8 @@ class RecentBlocksController {
   /**
    * Uses EthQuery to get a block that has a given block number.
    *
-   * @param {number} number The number of the block to get
-   * @returns {Promise<object>} Promises A block with the passed number
+   * @param {number} number - The number of the block to get
+   * @returns {Promise<object>} - Promises A block with the passed number
    *
    */
   async getBlockByNumber (number) {

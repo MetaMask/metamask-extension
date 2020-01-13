@@ -1,6 +1,6 @@
 /**
  * Switch the CSS stylesheet used between 'rtl' and 'ltr'
- * @param {('ltr' | 'rtl')} direction Text direction, either left-to-right (ltr) or right-to-left (rtl)
+ * @param {('ltr' | 'rtl')} direction - Text direction, either left-to-right (ltr) or right-to-left (rtl)
  */
 const switchDirection = async direction => {
   if (direction === 'auto') {

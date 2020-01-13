@@ -42,7 +42,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * A getter for the number of 'unapproved' TypedMessages in this.messages
    *
-   * @returns {number} The number of 'unapproved' TypedMessages in this.messages
+   * @returns {number} - The number of 'unapproved' TypedMessages in this.messages
    *
    */
   get unapprovedTypedMessagesCount () {
@@ -52,7 +52,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' TypedMessages in this.messages
    *
-   * @returns {Object} An index of TypedMessage ids to TypedMessages, for all 'unapproved' TypedMessages in
+   * @returns {Object} - An index of TypedMessage ids to TypedMessages, for all 'unapproved' TypedMessages in
    * this.messages
    *
    */
@@ -70,9 +70,9 @@ export default class TypedMessageManager extends EventEmitter {
    * the new TypedMessage to this.messages, and to save the unapproved TypedMessages from that list to
    * this.memStore. Before any of this is done, msgParams are validated
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} When the message has been signed or rejected
+   * @returns {promise} - When the message has been signed or rejected
    *
    */
   addUnapprovedMessageAsync (msgParams, req, version) {
@@ -110,9 +110,9 @@ export default class TypedMessageManager extends EventEmitter {
    * the new TypedMessage to this.messages, and to save the unapproved TypedMessages from that list to
    * this.memStore. Before any of this is done, msgParams are validated
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {number} The id of the newly created TypedMessage.
+   * @returns {number} - The id of the newly created TypedMessage.
    *
    */
   addUnapprovedMessage (msgParams, req, version) {
@@ -146,7 +146,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Helper method for this.addUnapprovedMessage. Validates that the passed params have the required properties.
    *
-   * @param {Object} params The params to validate
+   * @param {Object} params - The params to validate
    *
    */
   validateParams (params) {
@@ -215,7 +215,7 @@ export default class TypedMessageManager extends EventEmitter {
    * Adds a passed TypedMessage to this.messages, and calls this._saveMsgList() to save the unapproved TypedMessages from that
    * list to this.memStore.
    *
-   * @param {Message} msg The TypedMessage to add to this.messages
+   * @param {Message} msg - The TypedMessage to add to this.messages
    *
    */
   addMsg (msg) {
@@ -226,8 +226,8 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Returns a specified TypedMessage.
    *
-   * @param {number} msgId The id of the TypedMessage to get
-   * @returns {TypedMessage|undefined} The TypedMessage with the id that matches the passed msgId, or undefined
+   * @param {number} msgId - The id of the TypedMessage to get
+   * @returns {TypedMessage|undefined} - The TypedMessage with the id that matches the passed msgId, or undefined
    * if no TypedMessage has that id.
    *
    */
@@ -239,9 +239,9 @@ export default class TypedMessageManager extends EventEmitter {
    * Approves a TypedMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper signing.
    *
-   * @param {Object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
-   * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
+   * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
    *
    */
   approveMessage (msgParams) {
@@ -252,7 +252,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Sets a TypedMessage status to 'approved' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the TypedMessage to approve.
+   * @param {number} msgId - The id of the TypedMessage to approve.
    *
    */
   setMsgStatusApproved (msgId) {
@@ -263,8 +263,8 @@ export default class TypedMessageManager extends EventEmitter {
    * Sets a TypedMessage status to 'signed' via a call to this._setMsgStatus and updates that TypedMessage in
    * this.messages by adding the raw signature data of the signature request to the TypedMessage
    *
-   * @param {number} msgId The id of the TypedMessage to sign.
-   * @param {buffer} rawSig The raw data of the signature request
+   * @param {number} msgId - The id of the TypedMessage to sign.
+   * @param {buffer} rawSig - The raw data of the signature request
    *
    */
   setMsgStatusSigned (msgId, rawSig) {
@@ -277,8 +277,8 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams The msgParams to modify
-   * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
+   * @param {Object} msgParams - The msgParams to modify
+   * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
    *
    */
   prepMsgForSigning (msgParams) {
@@ -290,7 +290,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Sets a TypedMessage status to 'rejected' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the TypedMessage to reject.
+   * @param {number} msgId - The id of the TypedMessage to reject.
    *
    */
   rejectMsg (msgId) {
@@ -300,7 +300,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Sets a TypedMessage status to 'errored' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the TypedMessage to error
+   * @param {number} msgId - The id of the TypedMessage to error
    *
    */
   errorMessage (msgId, error) {
@@ -318,8 +318,8 @@ export default class TypedMessageManager extends EventEmitter {
    * Updates the status of a TypedMessage in this.messages via a call to this._updateMsg
    *
    * @private
-   * @param {number} msgId The id of the TypedMessage to update.
-   * @param {string} status The new status of the TypedMessage.
+   * @param {number} msgId - The id of the TypedMessage to update.
+   * @param {string} status - The new status of the TypedMessage.
    * @throws A 'TypedMessageManager - TypedMessage not found for id: "${msgId}".' if there is no TypedMessage
    * in this.messages with an id equal to the passed msgId
    * @fires An event with a name equal to `${msgId}:${status}`. The TypedMessage is also fired.
@@ -347,7 +347,7 @@ export default class TypedMessageManager extends EventEmitter {
    * unapprovedTypedMsgs index to storage via this._saveMsgList
    *
    * @private
-   * @param {msg} TypedMessage A TypedMessage that will replace an existing TypedMessage (with the same
+   * @param {msg} TypedMessage - A TypedMessage that will replace an existing TypedMessage (with the same
    * id) in this.messages
    *
    */
