@@ -1,5 +1,4 @@
 import clone from 'clone'
-import extend from 'xtend'
 import copyToClipboard from 'copy-to-clipboard'
 
 //
@@ -19,7 +18,7 @@ export default rootReducer
 
 function rootReducer (state, action) {
   // clone
-  state = extend(state)
+  state = { ...state }
 
   if (action.type === 'GLOBAL_FORCE_UPDATE') {
     return action.value

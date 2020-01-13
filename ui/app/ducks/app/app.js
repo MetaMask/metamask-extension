@@ -1,4 +1,3 @@
-import extend from 'xtend'
 import txHelper from '../../../lib/tx-helper'
 import log from 'loglevel'
 import { actionConstants } from '../../store/actions'
@@ -30,7 +29,7 @@ export default function reduceApp (state, action) {
   }
 
   // default state
-  const appState = extend(
+  const appState = Object.assign(
     {
       shouldClose: false,
       menuOpen: false,
@@ -88,56 +87,64 @@ export default function reduceApp (state, action) {
   switch (action.type) {
     // dropdown methods
     case actions.NETWORK_DROPDOWN_OPEN:
-      return extend(appState, {
+      return {
+        ...appState,
         networkDropdownOpen: true,
-      })
+      }
 
     case actions.NETWORK_DROPDOWN_CLOSE:
-      return extend(appState, {
+      return {
+        ...appState,
         networkDropdownOpen: false,
-      })
+      }
 
     // sidebar methods
     case actions.SIDEBAR_OPEN:
-      return extend(appState, {
+      return {
+        ...appState,
         sidebar: {
           ...action.value,
           isOpen: true,
         },
-      })
+      }
 
     case actions.SIDEBAR_CLOSE:
-      return extend(appState, {
+      return {
+        ...appState,
         sidebar: {
           ...appState.sidebar,
           isOpen: false,
         },
-      })
+      }
 
     // alert methods
     case actions.ALERT_OPEN:
-      return extend(appState, {
+      return {
+        ...appState,
         alertOpen: true,
         alertMessage: action.value,
-      })
+      }
 
     case actions.ALERT_CLOSE:
-      return extend(appState, {
+      return {
+        ...appState,
         alertOpen: false,
         alertMessage: null,
-      })
+      }
 
     // qr scanner methods
     case actions.QR_CODE_DETECTED:
-      return extend(appState, {
+      return {
+        ...appState,
         qrCodeData: action.value,
-      })
+      }
 
     // modal methods:
     case actions.MODAL_OPEN:
       const { name, ...modalProps } = action.payload
 
-      return extend(appState, {
+      return {
+        ...appState,
         modal: {
           open: true,
           modalState: {
@@ -146,28 +153,31 @@ export default function reduceApp (state, action) {
           },
           previousModalState: { ...appState.modal.modalState },
         },
-      })
+      }
 
     case actions.MODAL_CLOSE:
-      return extend(appState, {
+      return {
+        ...appState,
         modal: Object.assign(
           state.appState.modal,
           { open: false },
           { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState }
         ),
-      })
+      }
 
     // transition methods
     case actions.TRANSITION_FORWARD:
-      return extend(appState, {
+      return {
+        ...appState,
         transForward: true,
-      })
+      }
 
     case actions.FORGOT_PASSWORD:
-      const newState = extend(appState, {
+      const newState = {
+        ...appState,
         forgottenPassword: action.value,
-      })
+      }
 
       if (action.value) {
         newState.currentView = {
@@ -178,64 +188,71 @@ export default function reduceApp (state, action) {
       return newState
 
     case actions.SHOW_CONFIG_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'config',
           context: appState.currentView.context,
         },
         transForward: action.value,
-      })
+      }
 
     case actions.SHOW_ADD_TOKEN_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'add-token',
           context: appState.currentView.context,
         },
         transForward: action.value,
-      })
+      }
 
     case actions.SET_NEW_ACCOUNT_FORM:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: appState.currentView.name,
           context: action.formToSelect,
         },
-      })
+      }
 
     case actions.SHOW_INFO_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'info',
           context: appState.currentView.context,
         },
         transForward: true,
-      })
+      }
 
     case actions.SHOW_SEND_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'sendTransaction',
           context: appState.currentView.context,
         },
         transForward: true,
         warning: null,
-      })
+      }
 
     case actions.SHOW_SEND_TOKEN_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'sendToken',
           context: appState.currentView.context,
         },
         transForward: true,
         warning: null,
-      })
+      }
 
       // unlock
 
     case actions.UNLOCK_METAMASK:
-      return extend(appState, {
+      return {
+        ...appState,
         forgottenPassword: appState.forgottenPassword
           ? !appState.forgottenPassword
           : null,
@@ -243,22 +260,25 @@ export default function reduceApp (state, action) {
         transForward: true,
         isLoading: false,
         warning: null,
-      })
+      }
 
     case actions.LOCK_METAMASK:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: defaultView,
         transForward: false,
         warning: null,
-      })
+      }
 
       // accounts
 
     case actions.GO_HOME:
-      return extend(appState, {
-        currentView: extend(appState.currentView, {
+      return {
+        ...appState,
+        currentView: {
+          ...appState.currentView,
           name: 'accountDetail',
-        }),
+        },
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',
@@ -266,10 +286,11 @@ export default function reduceApp (state, action) {
         },
         transForward: false,
         warning: null,
-      })
+      }
 
     case actions.SHOW_ACCOUNT_DETAIL:
-      return extend(appState, {
+      return {
+        ...appState,
         forgottenPassword: appState.forgottenPassword
           ? !appState.forgottenPassword
           : null,
@@ -283,10 +304,11 @@ export default function reduceApp (state, action) {
           privateKey: '',
         },
         transForward: false,
-      })
+      }
 
     case actions.SHOW_ACCOUNTS_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'accounts',
         },
@@ -295,10 +317,11 @@ export default function reduceApp (state, action) {
         warning: null,
         scrollToBottom: false,
         forgottenPassword: false,
-      })
+      }
 
     case actions.SHOW_CONF_TX_PAGE:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'confTx',
           context: action.id ? indexForPending(state, action.id) : 0,
@@ -306,7 +329,7 @@ export default function reduceApp (state, action) {
         transForward: action.transForward,
         warning: null,
         isLoading: false,
-      })
+      }
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
@@ -317,17 +340,19 @@ export default function reduceApp (state, action) {
 
       if (hasOtherUnconfActions) {
         log.debug('reducer detected txs - rendering confTx view')
-        return extend(appState, {
+        return {
+          ...appState,
           transForward: false,
           currentView: {
             name: 'confTx',
             context: 0,
           },
           warning: null,
-        })
+        }
       } else {
         log.debug('attempting to close popup')
-        return extend(appState, {
+        return {
+          ...appState,
           // indicate notification should close
           shouldClose: true,
           transForward: false,
@@ -339,79 +364,91 @@ export default function reduceApp (state, action) {
           accountDetail: {
             subview: 'transactions',
           },
-        })
+        }
       }
 
     case actions.TRANSACTION_ERROR:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'confTx',
           errorMessage: 'There was a problem submitting this transaction.',
         },
-      })
+      }
 
     case actions.UNLOCK_FAILED:
-      return extend(appState, {
+      return {
+        ...appState,
         warning: action.value || 'Incorrect password. Try again.',
-      })
+      }
 
     case actions.UNLOCK_SUCCEEDED:
-      return extend(appState, {
+      return {
+        ...appState,
         warning: '',
-      })
+      }
 
     case actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
       const { device, path } = action.value
       const newDefaults = { ...appState.defaultHdPaths }
       newDefaults[device] = path
 
-      return extend(appState, {
+      return {
+        ...appState,
         defaultHdPaths: newDefaults,
-      })
+      }
 
     case actions.SHOW_LOADING:
-      return extend(appState, {
+      return {
+        ...appState,
         isLoading: true,
         loadingMessage: action.value,
-      })
+      }
 
     case actions.HIDE_LOADING:
-      return extend(appState, {
+      return {
+        ...appState,
         isLoading: false,
-      })
+      }
 
     case actions.SHOW_SUB_LOADING_INDICATION:
-      return extend(appState, {
+      return {
+        ...appState,
         isSubLoading: true,
-      })
+      }
 
     case actions.HIDE_SUB_LOADING_INDICATION:
-      return extend(appState, {
+      return {
+        ...appState,
         isSubLoading: false,
-      })
+      }
 
     case actions.DISPLAY_WARNING:
-      return extend(appState, {
+      return {
+        ...appState,
         warning: action.value,
         isLoading: false,
-      })
+      }
 
     case actions.HIDE_WARNING:
-      return extend(appState, {
+      return {
+        ...appState,
         warning: undefined,
-      })
+      }
 
     case actions.SHOW_PRIVATE_KEY:
-      return extend(appState, {
+      return {
+        ...appState,
         accountDetail: {
           subview: 'export',
           accountExport: 'completed',
           privateKey: action.value,
         },
-      })
+      }
 
     case actions.PAIR_UPDATE:
-      return extend(appState, {
+      return {
+        ...appState,
         buyView: {
           subview: 'ShapeShift',
           formView: {
@@ -424,10 +461,11 @@ export default function reduceApp (state, action) {
           amount: appState.buyView.amount,
           warning: null,
         },
-      })
+      }
 
     case actions.SHOW_QR:
-      return extend(appState, {
+      return {
+        ...appState,
         qrRequested: true,
         transForward: true,
 
@@ -435,10 +473,11 @@ export default function reduceApp (state, action) {
           message: action.value.message,
           data: action.value.data,
         },
-      })
+      }
 
     case actions.SHOW_QR_VIEW:
-      return extend(appState, {
+      return {
+        ...appState,
         currentView: {
           name: 'qr',
           context: appState.currentView.context,
@@ -448,75 +487,88 @@ export default function reduceApp (state, action) {
           message: action.value.message,
           data: action.value.data,
         },
-      })
+      }
 
     case actions.SET_MOUSE_USER_STATE:
-      return extend(appState, {
+      return {
+        ...appState,
         isMouseUser: action.value,
-      })
+      }
 
     case actions.GAS_LOADING_STARTED:
-      return extend(appState, {
+      return {
+        ...appState,
         gasIsLoading: true,
-      })
+      }
 
     case actions.GAS_LOADING_FINISHED:
-      return extend(appState, {
+      return {
+        ...appState,
         gasIsLoading: false,
-      })
+      }
 
     case actions.SET_NETWORK_NONCE:
-      return extend(appState, {
+      return {
+        ...appState,
         networkNonce: action.value,
-      })
+      }
 
     case actions.SET_PREVIOUS_PROVIDER:
       if (action.value === 'loading') {
         return appState
       }
-      return extend(appState, {
+      return {
+        ...appState,
         lastSelectedProvider: action.value,
-      })
+      }
 
     case actions.SET_SELECTED_SETTINGS_RPC_URL:
-      return extend(appState, {
+      return {
+        ...appState,
         networksTabSelectedRpcUrl: action.value,
-      })
+      }
 
     case actions.SET_NETWORKS_TAB_ADD_MODE:
-      return extend(appState, {
+      return {
+        ...appState,
         networksTabIsInAddMode: action.value,
-      })
+      }
 
     case actions.LOADING_METHOD_DATA_STARTED:
-      return extend(appState, {
+      return {
+        ...appState,
         loadingMethodData: true,
-      })
+      }
 
     case actions.LOADING_METHOD_DATA_FINISHED:
-      return extend(appState, {
+      return {
+        ...appState,
         loadingMethodData: false,
-      })
+      }
 
     case SET_THREEBOX_LAST_UPDATED:
-      return extend(appState, {
+      return {
+        ...appState,
         threeBoxLastUpdated: action.value,
-      })
+      }
 
     case actions.SET_REQUEST_ACCOUNT_TABS:
-      return extend(appState, {
+      return {
+        ...appState,
         requestAccountTabs: action.value,
-      })
+      }
 
     case actions.SET_OPEN_METAMASK_TAB_IDS:
-      return extend(appState, {
+      return {
+        ...appState,
         openMetaMaskTabs: action.value,
-      })
+      }
 
     case actions.SET_CURRENT_WINDOW_TAB:
-      return extend(appState, {
+      return {
+        ...appState,
         currentWindowTab: action.value,
-      })
+      }
 
     default:
       return appState
