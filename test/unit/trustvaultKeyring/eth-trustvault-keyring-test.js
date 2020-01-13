@@ -1,7 +1,7 @@
-const TrustvaultKeyring = require('../../../app/scripts/eth-trustvault-keyring')
-const assert = require('assert')
-const sinon = require('sinon')
-const EthereumTx = require('ethereumjs-tx')
+import TrustvaultKeyring from '../../../app/scripts/eth-trustvault-keyring'
+import assert from 'assert'
+import sinon from 'sinon'
+import EthereumTx from 'ethereumjs-tx'
 
 const fakeTx = new EthereumTx({
   nonce: '0x07',
@@ -70,16 +70,14 @@ describe('TrustVault Keyring Tests', () => {
       const result = await trustVaultKeyring.unlock()
       assert.equal(result, 'already unlocked')
     })
-    it('should reject if we do not have authentication tokens', (done) => {
+    it('should reject if we do not have authentication tokens', async () => {
       const trustVaultKeyring = new TrustvaultKeyring({})
-      trustVaultKeyring.unlock()
-        .then(result => {
-          assert.fail(`test failed due to unexpected behaviour, result: ${result}`)
-        })
-        .catch(e => {
-          assert.equal(e.message, 'TrustVault tokens have expired. Connect to TrustVault again.')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring.unlock()
+        assert.fail(`test failed due to unexpected behaviour, result: ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'TrustVault tokens have expired. Connect to TrustVault again.')
+      }
     })
   })
 
@@ -140,15 +138,15 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.r.toString('hex'), '39b22bc9103314ed58df3d4377d563b36cb7c36b1c858f53c707fe3b3ec4a11f')
     })
 
-    it('should not verify the transaction if the r,s,v values are incorrect', (done) => {
+    it('should not verify the transaction if the r,s,v values are incorrect', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_signTransaction').resolves({ v: '09', r: '59b22bc9103314ed58df3d4377d563b36cb7c36b1c858f53c707fe3b3ec4a11f', s: '76a031cd755ada19393a8d526888f413290a37c073fee085bf6dd0094d46629' })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring.signTransaction('0xF30952A1c534CDE7bC471380065726fa8686dfB3', fakeTx)
-        .then(result => assert.fail(`Exepected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Signatures on the transactions are invalid.')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring.signTransaction('0xF30952A1c534CDE7bC471380065726fa8686dfB3', fakeTx)
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Signatures on the transactions are invalid.')
+      }
     })
   })
 
@@ -176,15 +174,15 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.r.toString('hex'), '39b22bc9103314ed58df3d4377d563b36cb7c36b1c858f53c707fe3b3ec4a11f')
     })
 
-    it('should not verify the transaction if the r,s,v values are incorrect', (done) => {
+    it('should not verify the transaction if the r,s,v values are incorrect', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_signTransaction').resolves({ v: '09', r: '59b22bc9103314ed58df3d4377d563b36cb7c36b1c858f53c707fe3b3ec4a11f', s: '76a031cd755ada19393a8d526888f413290a37c073fee085bf6dd0094d46629' })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring.signTransaction('0xF30952A1c534CDE7bC471380065726fa8686dfB3', fakeTx)
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Signatures on the transactions are invalid.')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring.signTransaction('0xF30952A1c534CDE7bC471380065726fa8686dfB3', fakeTx)
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Signatures on the transactions are invalid.')
+      }
     })
   })
 
@@ -203,15 +201,14 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.tag, 'tag')
     })
 
-    it('should throw error if partial pin  is incorrect.', (done) => {
+    it('should throw error if partial pin  is incorrect.', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_getAuthenticationTokens').rejects(new Error('Incorrect pin.'))
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring.submitPartialPinChallenge(1, 2)
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Incorrect pin.')
-          done()
-        })
+      try {
+        await trustVaultKeyring.submitPartialPinChallenge(1, 2)
+      } catch (e) {
+        assert.equal(e.message, 'Incorrect pin.')
+      }
     })
   })
 
@@ -232,15 +229,15 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.pinChallenge.secondPinDigitPosition, 2)
     })
 
-    it('should throw an error if partial pin request returns error', (done) => {
+    it('should throw an error if partial pin request returns error', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, 'trustVaultBridgeRequest').resolves({ error: { message: 'Invalid Request' } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._getPartialPinChallenge('test@test.com')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Invalid Request')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring._getPartialPinChallenge('test@test.com')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Invalid Request')
+      }
     })
   })
 
@@ -261,18 +258,18 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.authentication.tag, 'tag')
     })
 
-    it('should throw error and return partial pin challange', (done) => {
+    it('should throw error and return partial pin challange', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, 'trustVaultBridgeRequest').resolves({ data: { getAuthenticationTokens: { pinChallenge: { firstPinDigitPosition: 1, secondPinDigitPosition: 2, sessionToken: 'sessionToken' } } }, error: { message: 'Invalid Pin' } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._getAuthenticationTokens('test@test.com', 1, 2, 'sessionToken')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Invalid Pin')
-          assert.equal(e.data.pinChallenge.firstPinDigitPosition, 1)
-          assert.equal(e.data.pinChallenge.secondPinDigitPosition, 2)
-          assert.equal(e.data.pinChallenge.sessionToken, 'sessionToken')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring._getAuthenticationTokens('test@test.com', 1, 2, 'sessionToken')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Invalid Pin')
+        assert.equal(e.data.pinChallenge.firstPinDigitPosition, 1)
+        assert.equal(e.data.pinChallenge.secondPinDigitPosition, 2)
+        assert.equal(e.data.pinChallenge.sessionToken, 'sessionToken')
+      }
     })
   })
 
@@ -327,30 +324,29 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.test, 'testData')
 
     })
-    it('should try to refresh the tokens but return the errors as the session token is expired ', (done) => {
+    it('should try to refresh the tokens but return the errors as the session token is expired ', async () => {
       const trustVaultBridgeRequestStub = sandbox.stub(TrustvaultKeyring.prototype, 'trustVaultBridgeRequest')
       trustVaultBridgeRequestStub.onCall(0).resolves({ data: {}, error: { errorType: 'INVALID_SESSION_TOKEN' } })
       sandbox.stub(TrustvaultKeyring.prototype, '_refreshAuthTokensQuery').resolves({})
       trustVaultBridgeRequestStub.onCall(1).rejects({})
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._request(() => {}, {})
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'TrustVault session has expired. Connect to TrustVault again')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring._request(() => {}, {})
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'TrustVault session has expired. Connect to TrustVault again')
+      }
     })
-    it('should throw an error if the request is not valid', (done) => {
+    it('should throw an error if the request is not valid', async () => {
       const trustVaultBridgeRequestStub = sandbox.stub(TrustvaultKeyring.prototype, 'trustVaultBridgeRequest')
       trustVaultBridgeRequestStub.onCall(0).rejects(new Error('Invalid request'))
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._request(() => {}, {})
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Invalid request')
-          done()
-        })
-
+      try {
+        const result = await trustVaultKeyring._request(() => {}, {})
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Invalid request')
+      }
     })
   })
 
@@ -370,17 +366,16 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.s, 's')
     })
 
-    it('should throw an error if signing the transaction fails.', (done) => {
+    it('should throw an error if signing the transaction fails.', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_request').rejects(new Error('Invalid Transaction'))
       sandbox.stub(TrustvaultKeyring.prototype, '_pollTransaction').resolves({ transaction: { v: 'v', r: 'r', s: 's' } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._signTransaction('address', {}, 'digest')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Invalid Transaction')
-          done()
-        })
-
+      try {
+        const result = await trustVaultKeyring._signTransaction('address', {}, 'digest')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Invalid Transaction')
+      }
     })
   })
   describe('_signTransaction', async () => {
@@ -399,17 +394,16 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(result.s, 's')
     })
 
-    it('should throw an error if signing the transaction fails.', (done) => {
+    it('should throw an error if signing the transaction fails.', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_request').rejects(new Error('Invalid Transaction'))
       sandbox.stub(TrustvaultKeyring.prototype, '_pollTransaction').resolves({ transaction: { v: 'v', r: 'r', s: 's' } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._signTransaction('address', {}, 'digest')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e.message, 'Invalid Transaction')
-          done()
-        })
-
+      try {
+        const result = await trustVaultKeyring._signTransaction('address', {}, 'digest')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e.message, 'Invalid Transaction')
+      }
     })
   })
 
@@ -439,25 +433,25 @@ describe('TrustVault Keyring Tests', () => {
       assert.equal(signedTransaction, 'signedTransaction')
     })
 
-    it('should return "Transaction cancelled by user" transaction if transaction status is USER_CANCELLED', (done) => {
+    it('should return "Transaction cancelled by user" transaction if transaction status is USER_CANCELLED', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({ userWallet: { getTransactionInfo: { status: 'USER_CANCELLED', signedTransaction: 'signedTransaction' } } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._pollTransaction('txID')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e, 'Transaction cancelled by user')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring._pollTransaction('txID')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e, 'Transaction cancelled by user')
+      }
     })
-    it('should return Error transaction if transaction status is ERROR', (done) => {
+    it('should return Error transaction if transaction status is ERROR', async () => {
       sandbox.stub(TrustvaultKeyring.prototype, '_request').resolves({ userWallet: { getTransactionInfo: { status: 'ERROR', signedTransaction: 'signedTransaction' } } })
       const trustVaultKeyring = new TrustvaultKeyring({ auth: 'test' })
-      trustVaultKeyring._pollTransaction('txID')
-        .then(result => assert.fail(`Expected to fail returned with result ${result}`))
-        .catch(e => {
-          assert.equal(e, 'Signing the transaction errored')
-          done()
-        })
+      try {
+        const result = await trustVaultKeyring._pollTransaction('txID')
+        assert.fail(`Expected to fail returned with result ${result}`)
+      } catch (e) {
+        assert.equal(e, 'Signing the transaction errored')
+      }
     })
     it('should poll again if transaction status is not there.', async () => {
       const trustVaultBridgeRequestStub = sandbox.stub(TrustvaultKeyring.prototype, '_request')

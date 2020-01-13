@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from '../../../components/ui/button'
 import { CONNECT_TRUSTVAULT_ROUTE } from '../../../helpers/constants/routes'
+
 const TRUSTVAULT = 'trustvault'
 class ConnectScreen extends Component {
   static contextTypes = {

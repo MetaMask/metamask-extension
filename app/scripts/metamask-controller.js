@@ -726,7 +726,7 @@ export default class MetamaskController extends EventEmitter {
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: hdAccounts.filter((item, pos) => hdAccounts.indexOf(item) === pos).map(address => ethUtil.toChecksumAddress(address)),
+      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
@@ -807,7 +807,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //
-  // Hardware / Software
+  // Hardware
   //
 
   async getKeyringForDevice (deviceName, hdPath = null, auth = null) {

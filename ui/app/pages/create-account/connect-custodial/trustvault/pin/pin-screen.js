@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react'
+
 const PropTypes = require('prop-types')
+
 import Button from '../../../../../components/ui/button'
 import CircularInputField from '../components/circular-input-field'
 import StarPlaceholder from '../components/star-placeholder'
 
-class PinScreen extends PureComponent {
+export class PinScreen extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
@@ -218,4 +220,3 @@ PinScreen.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = PinScreen

@@ -907,7 +907,7 @@ describe('MetaMaskController', function () {
       })
 
       assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
-      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2'] ]])
+      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(setSelectedAddress.args, [['0x1']])
       assert.deepEqual(metamaskController.getState(), oldState)
     })

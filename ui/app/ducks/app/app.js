@@ -363,9 +363,10 @@ export default function reduceApp (state, action) {
       })
 
     case actions.TRUSTVAULT_PIN_CHALLENGE:
-      return extend(appState, {
+      return {
+        ...appState,
         trustVault: { ...appState.trustVault, pinChallenge: action.value },
-      })
+      }
 
     case actions.SHOW_LOADING:
       return extend(appState, {

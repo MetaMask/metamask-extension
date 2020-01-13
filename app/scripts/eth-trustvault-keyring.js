@@ -1,16 +1,18 @@
-const { EventEmitter } = require('events')
-const request = require('request-promise')
+import { EventEmitter } from 'events'
+import request  from 'request-promise'
+import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'
+import BigNumber from 'bignumber.js'
+
 const hdPathString = `m/44'/60'/0'/0`
-const ethUtil = require('ethereumjs-util')
 const type = 'TrustVault'
-const log = require('loglevel')
-const BigNumber = require('bignumber.js')
 const trustVaultBridgeUrl = 'https://t1tl7x0ii7.execute-api.eu-west-1.amazonaws.com/production/graphql'
 const apiKey = 'da2-ekziyghfhzda7hsapyziwdurwm'
 const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
-class TrustvaultKeyring extends EventEmitter {
+export default class TrustvaultKeyring extends EventEmitter {
+  static type = 'type'
   constructor (opts = {}) {
     super()
     this.type = type
@@ -49,12 +51,6 @@ class TrustvaultKeyring extends EventEmitter {
       return Promise.reject({ message: 'TrustVault tokens have expired. Connect to TrustVault again.' })
     }
     return Promise.resolve('already unlocked')
-  }
-
-  setAccountToUnlock () {
-  }
-
-  addAccounts () {
   }
 
   updateAuthKey (auth) {
@@ -159,10 +155,10 @@ class TrustvaultKeyring extends EventEmitter {
 
   /**
    * If the pinChallenge fails, an error as well as a new pinChallenge is returned
-   * @param {*} email
-   * @param {*} firstPinDigit
-   * @param {*} secondPinDigit
-   * @param {*} sessionToken
+   * @param {*} email String
+   * @param {*} firstPinDigit number
+   * @param {*} secondPinDigit number
+   * @param {*} sessionToken string
    */
   async _getAuthenticationTokens (email, firstPinDigit, secondPinDigit, sessionToken) {
     const query = this._getAuthTokenQuery(email, firstPinDigit, secondPinDigit, sessionToken)
@@ -275,6 +271,7 @@ class TrustvaultKeyring extends EventEmitter {
   }
 
   async trustVaultBridgeRequest (body) {
+    debugger;
     const options = {
       uri: trustVaultBridgeUrl,
       method: 'POST',
@@ -442,4 +439,3 @@ class TrustvaultKeyring extends EventEmitter {
 }
 
 TrustvaultKeyring.type = type
-module.exports = TrustvaultKeyring

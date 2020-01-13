@@ -87,5 +87,3 @@ CreateAccountPage.propTypes = {
 CreateAccountPage.contextTypes = {
   t: PropTypes.func,
 }
-
-

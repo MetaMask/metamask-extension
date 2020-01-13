@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
-const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
-const actions = require('../../../../../store/actions')
-const EmailScreen = require('./email-screen')
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { showAlert, hideAlert } from '../../../../../store/actions'
+import { EmailScreen } from './email-screen'
 
 class ConnectTrustVaultEmailForm extends PureComponent {
   constructor (props) {
@@ -28,9 +28,8 @@ class ConnectTrustVaultEmailForm extends PureComponent {
         history={this.props.history}
         browserSupported={this.state.browserSupported}
         getTrustVaultPinChallenge={this.props.getTrustVaultPinChallenge}
-      >
-
-      </EmailScreen>)
+      />
+    )
   }
 
 
@@ -52,15 +51,14 @@ ConnectTrustVaultEmailForm.propTypes = {
 const mapStateToProps = ({ metamask: { network } }) => ({ network })
 
 const mapDispatchToProps = dispatch => ({
-  showAlert: msg => dispatch(actions.showAlert(msg)),
-  hideAlert: () => dispatch(actions.hideAlert()),
+  showAlert: msg => dispatch(showAlert(msg)),
+  hideAlert: () => dispatch(hideAlert()),
 })
 
 ConnectTrustVaultEmailForm.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectTrustVaultEmailForm)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  ConnectTrustVaultEmailForm
+)

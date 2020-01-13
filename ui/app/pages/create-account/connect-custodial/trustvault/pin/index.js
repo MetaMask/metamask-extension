@@ -1,16 +1,10 @@
 import React, { PureComponent } from 'react'
-const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
-const actions = require('../../../../../store/actions')
-const PinScreen = require('./pin-screen')
+import { PinScreen } from './pin-screen'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { showAlert, hideAlert, connectCustodialWallet, submitTrustVaultPinChallenge } from '../../../../../store/actions'
 
 class ConnectTrustVaultPinForm extends PureComponent {
-  static propTypes = {
-    goToHomePage: PropTypes.func,
-    onCancelLogin: PropTypes.func,
-    email: PropTypes.string,
-    showAlert: PropTypes.func,
-  }
   constructor (props) {
     super(props)
     this.state = {
@@ -82,6 +76,10 @@ ConnectTrustVaultPinForm.propTypes = {
   connectCustodialWallet: PropTypes.func,
   pinChallenge: PropTypes.object,
   onNewPinChallenge: PropTypes.func,
+  goToHomePage: PropTypes.func,
+  onCancelLogin: PropTypes.func,
+  email: PropTypes.string,
+  showAlert: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
@@ -90,18 +88,17 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  showAlert: msg => dispatch(actions.showAlert(msg)),
-  hideAlert: () => dispatch(actions.hideAlert()),
-  connectCustodialWallet: (deviceName, auth) => dispatch(actions.connectCustodialWallet(deviceName, auth)),
+  showAlert: msg => dispatch(showAlert(msg)),
+  hideAlert: () => dispatch(hideAlert()),
+  connectCustodialWallet: (deviceName, auth) => dispatch(connectCustodialWallet(deviceName, auth)),
   submitTrustVaultPinChallenge: (email, firstPin, secondPin, sessionToken) =>
-    dispatch(actions.submitTrustVaultPinChallenge(email, firstPin, secondPin, sessionToken)),
+    dispatch(submitTrustVaultPinChallenge(email, firstPin, secondPin, sessionToken)),
 })
 
 ConnectTrustVaultPinForm.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectTrustVaultPinForm)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  ConnectTrustVaultPinForm
+)

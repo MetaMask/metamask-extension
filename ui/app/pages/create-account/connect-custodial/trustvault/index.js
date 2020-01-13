@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react'
-const { Switch, Route } = require('react-router-dom')
-const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
-const actions = require('../../../../store/actions')
-const { getCurrentViewContext } = require('../../../../selectors/selectors')
-const ConnectTrustVaultEmailForm = require('./email')
-const ConnectTrustVaultPinForm = require('./pin')
+import { Switch, Route } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { getTrustVaultPinChallenge } from '../../../../store/actions'
+import { getCurrentViewContext } from '../../../../selectors/selectors'
+import ConnectTrustVaultEmailForm from './email'
+import ConnectTrustVaultPinForm from './pin'
+
 const {
   TRUSTVAULT_EMAIL_ROUTE,
   TRUSTVAULT_PIN_ROUTE,
@@ -15,6 +16,7 @@ const {
 class ConnectTrustVaultForm extends PureComponent {
   static propTypes = {
     getTrustVaultPinChallenge: PropTypes.func,
+    history: PropTypes.object,
   }
   constructor (props) {
     super(props)
@@ -73,8 +75,7 @@ class ConnectTrustVaultForm extends PureComponent {
       <ConnectTrustVaultEmailForm
         history={this.props.history}
         getTrustVaultPinChallenge={this.getTrustVaultPinChallenge}
-      >
-      </ConnectTrustVaultEmailForm>
+      />
     )
   }
 
@@ -103,23 +104,13 @@ class ConnectTrustVaultForm extends PureComponent {
           {this.renderError()}
           {!this.state.pinChallenge ? this.renderEmailForm() : this.renderPinForm()}
           <Switch>
-            <Route exact path={TRUSTVAULT_EMAIL_ROUTE} component={ConnectTrustVaultEmailForm} >
-
-            </Route>
-            <Route exact path={TRUSTVAULT_PIN_ROUTE} component={ConnectTrustVaultPinForm} >
-
-            </Route>
+            <Route exact path={TRUSTVAULT_EMAIL_ROUTE} component={ConnectTrustVaultEmailForm} />
+            <Route exact path={TRUSTVAULT_PIN_ROUTE} component={ConnectTrustVaultPinForm} />
           </Switch>
-
         </div>
-
       </div>
     )
   }
-}
-
-ConnectTrustVaultForm.propTypes = {
-  history: PropTypes.object,
 }
 
 const mapStateToProps = state => ({
@@ -127,11 +118,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getTrustVaultPinChallenge: email => dispatch(actions.getTrustVaultPinChallenge(email)),
+  getTrustVaultPinChallenge: email => dispatch(getTrustVaultPinChallenge(email)),
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectTrustVaultForm)
-
+export default connect(mapStateToProps, mapDispatchToProps)(
+  ConnectTrustVaultForm
+)
