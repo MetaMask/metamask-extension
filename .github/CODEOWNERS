@@ -4,5 +4,5 @@
 package.json                         @danjm @whymarrh @Gudahtt
 yarn.lock                            @danjm @whymarrh @Gudahtt
 ui/                                  @danjm @whymarrh @Gudahtt
-app/scripts/controllers/transactions @frankiebee
+app/scripts/controllers/transactions @frankiebee @whymarrh
 .circleci/scripts/deps-install.sh    @kumavis @Gudahtt
