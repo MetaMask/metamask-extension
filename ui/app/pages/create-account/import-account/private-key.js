@@ -19,7 +19,7 @@ class PrivateKeyImportView extends Component {
     history: PropTypes.object.isRequired,
     displayWarning: PropTypes.func.isRequired,
     setSelectedAddress: PropTypes.func.isRequired,
-    firstAddress: PropTypes.object.isRequired,
+    firstAddress: PropTypes.string.isRequired,
     error: PropTypes.node,
   }
 
