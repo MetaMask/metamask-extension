@@ -4,16 +4,9 @@ const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
 const {
-  checkBrowserForConsoleErrors,
-  delay,
-  findElement,
-  findElements,
-  openNewPage,
-  verboseReportOnFailure,
-  waitUntilXWindowHandles,
-  switchToWindowWithTitle,
-  setupFetchMocking,
   prepareExtensionForTesting,
+  regularDelayMs,
+  largeDelayMs,
 } = require('./helpers')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
@@ -25,10 +18,6 @@ const ganacheServer = new Ganache()
 describe('MetaMask', function () {
   let driver
   let publicAddress
-
-  const tinyDelayMs = 200
-  const regularDelayMs = tinyDelayMs * 2
-  const largeDelayMs = regularDelayMs * 2
 
   this.timeout(0)
   this.bail(true)
@@ -42,12 +31,11 @@ describe('MetaMask', function () {
     publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await checkBrowserForConsoleErrors(driver)
+      const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
@@ -57,7 +45,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(driver, this.currentTest)
     }
   })
 
@@ -74,32 +62,29 @@ describe('MetaMask', function () {
     let windowHandles
 
     it('accepts the account password after lock', async () => {
-      await delay(1000)
-      await driver
-        .findElement(By.id('password'))
-        .sendKeys('correct horse battery staple')
-      await driver.findElement(By.id('password')).sendKeys(Key.ENTER)
-      await delay(largeDelayMs * 4)
+      await driver.delay(1000)
+      const passwordField = await driver.findElement(By.id('password'))
+      await passwordField.sendKeys('correct horse battery staple')
+      await passwordField.sendKeys(Key.ENTER)
+      await driver.delay(largeDelayMs * 4)
     })
 
     it('connects to the dapp', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:8080/')
-      await delay(regularDelayMs)
+      await driver.openNewPage('http://127.0.0.1:8080/')
+      await driver.delay(regularDelayMs)
 
-      const connectButton = await findElement(
-        driver,
+      const connectButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Connect')]`)
       )
       await connectButton.click()
 
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      await waitUntilXWindowHandles(driver, 3)
+      await driver.waitUntilXWindowHandles(3)
       const windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      dapp = await switchToWindowWithTitle(
-        driver,
+      dapp = await driver.switchToWindowWithTitle(
         'E2E Test Dapp',
         windowHandles
       )
@@ -107,54 +92,47 @@ describe('MetaMask', function () {
         handle => handle !== extension && handle !== dapp
       )
 
-      await driver.switchTo().window(popup)
+      await driver.switchToWindow(popup)
 
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      const accountButton = await findElement(
-        driver,
+      const accountButton = await driver.findElement(
         By.css('.permissions-connect-choose-account__account')
       )
       await accountButton.click()
 
-      const submitButton = await findElement(
-        driver,
+      const submitButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Submit')]`)
       )
       await submitButton.click()
 
-      await waitUntilXWindowHandles(driver, 2)
-      await driver.switchTo().window(dapp)
+      await driver.waitUntilXWindowHandles(2)
+      await driver.switchToWindow(dapp)
     })
 
     it('creates a sign typed data signature request', async () => {
-      const signTypedMessage = await findElement(
-        driver,
+      const signTypedMessage = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Sign')]`),
         10000
       )
       await signTypedMessage.click()
-      await delay(largeDelayMs)
+      await driver.delay(largeDelayMs)
 
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
       windowHandles = await driver.getAllWindowHandles()
-      await switchToWindowWithTitle(
-        driver,
+      await driver.switchToWindowWithTitle(
         'MetaMask Notification',
         windowHandles
       )
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      const title = await findElement(
-        driver,
+      const title = await driver.findElement(
         By.css('.signature-request-content__title')
       )
-      const name = await findElement(
-        driver,
+      const name = await driver.findElement(
         By.css('.signature-request-content__info--bolded')
       )
-      const content = await findElements(
-        driver,
+      const content = await driver.findElements(
         By.css('.signature-request-content__info')
       )
       const origin = content[0]
@@ -171,30 +149,25 @@ describe('MetaMask', function () {
     })
 
     it('signs the transaction', async () => {
-      const signButton = await findElement(
-        driver,
+      const signButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Sign')]`),
         10000
       )
       await signButton.click()
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
       extension = windowHandles[0]
-      await driver.switchTo().window(extension)
+      await driver.switchToWindow(extension)
     })
 
     it('gets the current accounts address', async () => {
-      const detailsButton = await findElement(
-        driver,
+      const detailsButton = await driver.findElement(
         By.css('.account-details__details-button')
       )
       await detailsButton.click()
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      const addressInput = await findElement(
-        driver,
-        By.css('.qr-ellip-address')
-      )
+      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
@@ -204,7 +177,7 @@ describe('MetaMask', function () {
       await accountModalClose.click()
 
       await driver.wait(until.stalenessOf(accountModal))
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
       assert.equal(newPublicAddress.toLowerCase(), publicAddress)
     })
   })

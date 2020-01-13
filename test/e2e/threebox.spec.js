@@ -4,13 +4,10 @@ const getPort = require('get-port')
 
 const { By, until } = webdriver
 const {
-  checkBrowserForConsoleErrors,
-  delay,
-  findElement,
-  findElements,
-  verboseReportOnFailure,
-  setupFetchMocking,
   prepareExtensionForTesting,
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
 } = require('./helpers')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
@@ -22,9 +19,6 @@ describe('MetaMask', function () {
 
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress'
-  const tinyDelayMs = 200
-  const regularDelayMs = tinyDelayMs * 2
-  const largeDelayMs = regularDelayMs * 2
 
   this.timeout(0)
   this.bail(true)
@@ -41,12 +35,11 @@ describe('MetaMask', function () {
     })
     const result = await prepareExtensionForTesting({ port: await getPort() })
     driver = result.driver
-    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await checkBrowserForConsoleErrors(driver)
+      const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
@@ -56,7 +49,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(driver, this.currentTest)
     }
   })
 
@@ -68,108 +61,99 @@ describe('MetaMask', function () {
   describe('set up data to be restored by 3box', () => {
     describe('First time flow starting from an existing seed phrase', () => {
       it('clicks the continue button on the welcome screen', async () => {
-        await findElement(driver, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(
-          driver,
+        await driver.findElement(By.css('.welcome-page__header'))
+        const welcomeScreenBtn = await driver.findElement(
           By.xpath(
             `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`
           )
         )
         welcomeScreenBtn.click()
-        await delay(largeDelayMs)
+        await driver.delay(largeDelayMs)
       })
 
       it('clicks the "Import Wallet" option', async () => {
-        const customRpcButton = await findElement(
-          driver,
+        const customRpcButton = await driver.findElement(
           By.xpath(`//button[contains(text(), 'Import Wallet')]`)
         )
         customRpcButton.click()
-        await delay(largeDelayMs)
+        await driver.delay(largeDelayMs)
       })
 
       it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-        const optOutButton = await findElement(driver, By.css('.btn-default'))
+        const optOutButton = await driver.findElement(By.css('.btn-default'))
         optOutButton.click()
-        await delay(largeDelayMs)
+        await driver.delay(largeDelayMs)
       })
 
       it('imports a seed phrase', async () => {
-        const [seedTextArea] = await findElements(
-          driver,
+        const [seedTextArea] = await driver.findElements(
           By.css('textarea.first-time-flow__textarea')
         )
         await seedTextArea.sendKeys(testSeedPhrase)
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
 
-        const [password] = await findElements(driver, By.id('password'))
+        const [password] = await driver.findElements(By.id('password'))
         await password.sendKeys('correct horse battery staple')
-        const [confirmPassword] = await findElements(
-          driver,
+        const [confirmPassword] = await driver.findElements(
           By.id('confirm-password')
         )
         confirmPassword.sendKeys('correct horse battery staple')
 
-        const tosCheckBox = await findElement(
-          driver,
+        const tosCheckBox = await driver.findElement(
           By.css('.first-time-flow__checkbox')
         )
         await tosCheckBox.click()
 
-        const [importButton] = await findElements(
-          driver,
+        const [importButton] = await driver.findElements(
           By.xpath(`//button[contains(text(), 'Import')]`)
         )
         await importButton.click()
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
       })
 
       it('clicks through the success screen', async () => {
-        await findElement(
-          driver,
+        await driver.findElement(
           By.xpath(`//div[contains(text(), 'Congratulations')]`)
         )
-        const doneButton = await findElement(
-          driver,
+        const doneButton = await driver.findElement(
           By.xpath(
             `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`
           )
         )
         await doneButton.click()
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
       })
 
       it('balance renders', async () => {
-        const balance = await findElement(
-          driver,
+        const balance = await driver.findElement(
           By.css('.balance-display .token-amount')
         )
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
       })
     })
 
     describe('turns on threebox syncing', () => {
       it('goes to the settings screen', async () => {
-        await driver.findElement(By.css('.account-menu__icon')).click()
-        await delay(regularDelayMs)
+        const accountMenuButton = await driver.findElement(
+          By.css('.account-menu__icon')
+        )
+        await accountMenuButton.click()
+        await driver.delay(regularDelayMs)
 
-        const settingsButton = await findElement(
-          driver,
+        const settingsButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'Settings')]`)
         )
         settingsButton.click()
       })
 
       it('turns on threebox syncing', async () => {
-        const advancedButton = await findElement(
-          driver,
+        const advancedButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'Advanced')]`)
         )
         await advancedButton.click()
 
-        const threeBoxToggle = await findElements(
-          driver,
+        const threeBoxToggle = await driver.findElements(
           By.css('.toggle-button')
         )
         const threeBoxToggleButton = await threeBoxToggle[4].findElement(
@@ -181,57 +165,51 @@ describe('MetaMask', function () {
 
     describe('updates settings and address book', () => {
       it('adds an address to the contact list', async () => {
-        const generalButton = await findElement(
-          driver,
+        const generalButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'General')]`)
         )
         await generalButton.click()
       })
 
       it('turns on use of blockies', async () => {
-        const toggleButton = await findElement(
-          driver,
+        const toggleButton = await driver.findElement(
           By.css('.toggle-button > div')
         )
         await toggleButton.click()
       })
 
       it('adds an address to the contact list', async () => {
-        const contactsButton = await findElement(
-          driver,
+        const contactsButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'Contacts')]`)
         )
         await contactsButton.click()
 
-        const addressBookAddButton = await findElement(
-          driver,
+        const addressBookAddButton = await driver.findElement(
           By.css('.address-book-add-button__button')
         )
         await addressBookAddButton.click()
-        await delay(tinyDelayMs)
+        await driver.delay(tinyDelayMs)
 
-        const addAddressInputs = await findElements(driver, By.css('input'))
+        const addAddressInputs = await driver.findElements(By.css('input'))
         await addAddressInputs[0].sendKeys('Test User Name 11')
 
-        await delay(tinyDelayMs)
+        await driver.delay(tinyDelayMs)
 
         await addAddressInputs[1].sendKeys(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970'
         )
 
-        await delay(largeDelayMs * 2)
+        await driver.delay(largeDelayMs * 2)
 
-        const saveButton = await findElement(
-          driver,
+        const saveButton = await driver.findElement(
           By.xpath(`//button[contains(text(), 'Save')]`)
         )
         await saveButton.click()
 
-        await findElement(
-          driver,
+        await driver.findElement(
           By.xpath(`//div[contains(text(), 'Test User Name 11')]`)
         )
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
       })
     })
   })
@@ -242,7 +220,6 @@ describe('MetaMask', function () {
     before(async function () {
       const result = await prepareExtensionForTesting({ port: await getPort() })
       driver2 = result.driver
-      await setupFetchMocking(driver2)
     })
 
     after(async function () {
@@ -251,111 +228,103 @@ describe('MetaMask', function () {
 
     describe('First time flow starting from an existing seed phrase', () => {
       it('clicks the continue button on the welcome screen', async () => {
-        await findElement(driver2, By.css('.welcome-page__header'))
-        const welcomeScreenBtn = await findElement(
-          driver2,
+        await driver2.findElement(By.css('.welcome-page__header'))
+        const welcomeScreenBtn = await driver2.findElement(
           By.xpath(
             `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`
           )
         )
         welcomeScreenBtn.click()
-        await delay(largeDelayMs)
+        await driver2.delay(largeDelayMs)
       })
 
       it('clicks the "Import Wallet" option', async () => {
-        const customRpcButton = await findElement(
-          driver2,
+        const customRpcButton = await driver2.findElement(
           By.xpath(`//button[contains(text(), 'Import Wallet')]`)
         )
         customRpcButton.click()
-        await delay(largeDelayMs)
+        await driver2.delay(largeDelayMs)
       })
 
       it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-        const optOutButton = await findElement(driver2, By.css('.btn-default'))
+        const optOutButton = await driver2.findElement(By.css('.btn-default'))
         optOutButton.click()
-        await delay(largeDelayMs)
+        await driver2.delay(largeDelayMs)
       })
 
       it('imports a seed phrase', async () => {
-        const [seedTextArea] = await findElements(
-          driver2,
+        const [seedTextArea] = await driver2.findElements(
           By.css('textarea.first-time-flow__textarea')
         )
         await seedTextArea.sendKeys(testSeedPhrase)
-        await delay(regularDelayMs)
+        await driver2.delay(regularDelayMs)
 
-        const [password] = await findElements(driver2, By.id('password'))
+        const [password] = await driver2.findElements(By.id('password'))
         await password.sendKeys('correct horse battery staple')
-        const [confirmPassword] = await findElements(
-          driver2,
+        const [confirmPassword] = await driver2.findElements(
           By.id('confirm-password')
         )
         confirmPassword.sendKeys('correct horse battery staple')
 
-        const tosCheckBox = await findElement(
-          driver2,
+        const tosCheckBox = await driver2.findElement(
           By.css('.first-time-flow__checkbox')
         )
         await tosCheckBox.click()
 
-        const [importButton] = await findElements(
-          driver2,
+        const [importButton] = await driver2.findElements(
           By.xpath(`//button[contains(text(), 'Import')]`)
         )
         await importButton.click()
-        await delay(regularDelayMs)
+        await driver2.delay(regularDelayMs)
       })
 
       it('clicks through the success screen', async () => {
-        await findElement(
-          driver2,
+        await driver2.findElement(
           By.xpath(`//div[contains(text(), 'Congratulations')]`)
         )
-        const doneButton = await findElement(
-          driver2,
+        const doneButton = await driver2.findElement(
           By.xpath(
             `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`
           )
         )
         await doneButton.click()
-        await delay(regularDelayMs)
+        await driver2.delay(regularDelayMs)
       })
 
       it('balance renders', async () => {
-        const balance = await findElement(
-          driver2,
+        const balance = await driver2.findElement(
           By.css('.balance-display .token-amount')
         )
         await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
-        await delay(regularDelayMs)
+        await driver2.delay(regularDelayMs)
       })
     })
 
     describe('restores 3box data', () => {
       it('confirms the 3box restore notification', async () => {
-        const restoreButton = await findElement(
-          driver2,
+        const restoreButton = await driver2.findElement(
           By.css('.home-notification__accept-button')
         )
         await restoreButton.click()
       })
 
+      // TODO: Fix tests from here forward; they're using the wrong driver
       it('goes to the settings screen', async () => {
-        await driver.findElement(By.css('.account-menu__icon')).click()
-        await delay(regularDelayMs)
+        const accountMenuButton = await driver.findElement(
+          By.css('.account-menu__icon')
+        )
+        await accountMenuButton.click()
+        await driver.delay(regularDelayMs)
 
-        const settingsButton = await findElement(
-          driver,
+        const settingsButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'Settings')]`)
         )
         settingsButton.click()
       })
 
       it('finds the blockies toggle turned on', async () => {
-        await delay(regularDelayMs)
-        const toggleLabel = await findElement(
-          driver,
+        await driver.delay(regularDelayMs)
+        const toggleLabel = await driver.findElement(
           By.css('.toggle-button__status-label')
         )
         const toggleLabelText = await toggleLabel.getText()
@@ -363,18 +332,16 @@ describe('MetaMask', function () {
       })
 
       it('finds the restored address in the contact list', async () => {
-        const contactsButton = await findElement(
-          driver,
+        const contactsButton = await driver.findElement(
           By.xpath(`//div[contains(text(), 'Contacts')]`)
         )
         await contactsButton.click()
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
 
-        await findElement(
-          driver,
+        await driver.findElement(
           By.xpath(`//div[contains(text(), 'Test User Name 11')]`)
         )
-        await delay(regularDelayMs)
+        await driver.delay(regularDelayMs)
       })
     })
   })

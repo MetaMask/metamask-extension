@@ -3,16 +3,9 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const {
-  checkBrowserForConsoleErrors,
-  delay,
-  findElement,
-  findElements,
-  openNewPage,
-  verboseReportOnFailure,
-  waitUntilXWindowHandles,
-  switchToWindowWithTitle,
-  setupFetchMocking,
   prepareExtensionForTesting,
+  regularDelayMs,
+  largeDelayMs,
 } = require('./helpers')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
@@ -22,10 +15,6 @@ const ganacheServer = new Ganache()
 describe('MetaMask', function () {
   let driver
   let publicAddress
-
-  const tinyDelayMs = 200
-  const regularDelayMs = tinyDelayMs * 2
-  const largeDelayMs = regularDelayMs * 2
 
   this.timeout(0)
   this.bail(true)
@@ -42,12 +31,11 @@ describe('MetaMask', function () {
     })
     const result = await prepareExtensionForTesting()
     driver = result.driver
-    await setupFetchMocking(driver)
   })
 
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await checkBrowserForConsoleErrors(driver)
+      const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
@@ -57,7 +45,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(driver, this.currentTest)
     }
   })
 
@@ -68,82 +56,71 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      await findElement(driver, By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await findElement(
-        driver,
+      await driver.findElement(By.css('.welcome-page__header'))
+      const welcomeScreenBtn = await driver.findElement(
         By.xpath(
           `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`
         )
       )
       welcomeScreenBtn.click()
-      await delay(largeDelayMs)
+      await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
-      const customRpcButton = await findElement(
-        driver,
+      const customRpcButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
       )
       customRpcButton.click()
-      await delay(largeDelayMs)
+      await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await findElement(driver, By.css('.btn-default'))
+      const optOutButton = await driver.findElement(By.css('.btn-default'))
       optOutButton.click()
-      await delay(largeDelayMs)
+      await driver.delay(largeDelayMs)
     })
 
     it('accepts a secure password', async () => {
-      const passwordBox = await findElement(
-        driver,
+      const passwordBox = await driver.findElement(
         By.css('.first-time-flow__form #create-password')
       )
-      const passwordBoxConfirm = await findElement(
-        driver,
+      const passwordBoxConfirm = await driver.findElement(
         By.css('.first-time-flow__form #confirm-password')
       )
-      const button = await findElement(
-        driver,
+      const button = await driver.findElement(
         By.css('.first-time-flow__form button')
       )
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
 
-      const tosCheckBox = await findElement(
-        driver,
+      const tosCheckBox = await driver.findElement(
         By.css('.first-time-flow__checkbox')
       )
       await tosCheckBox.click()
 
       await button.click()
-      await delay(largeDelayMs)
+      await driver.delay(largeDelayMs)
     })
 
     it('skips the seed phrase challenge', async () => {
-      const button = await findElement(
-        driver,
+      const button = await driver.findElement(
         By.xpath(
           `//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`
         )
       )
       await button.click()
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      const detailsButton = await findElement(
-        driver,
+      const detailsButton = await driver.findElement(
         By.css('.account-details__details-button')
       )
       await detailsButton.click()
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
     })
 
     it('gets the current accounts address', async () => {
-      const addressInput = await findElement(
-        driver,
-        By.css('.qr-ellip-address')
-      )
+      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
@@ -153,7 +130,7 @@ describe('MetaMask', function () {
       await accountModalClose.click()
 
       await driver.wait(until.stalenessOf(accountModal))
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
     })
   })
 
@@ -163,21 +140,19 @@ describe('MetaMask', function () {
     let dapp
 
     it('connects to the dapp', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:8080/')
-      await delay(regularDelayMs)
+      await driver.openNewPage('http://127.0.0.1:8080/')
+      await driver.delay(regularDelayMs)
 
-      const connectButton = await findElement(
-        driver,
+      const connectButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Connect')]`)
       )
       await connectButton.click()
 
-      await waitUntilXWindowHandles(driver, 3)
+      await driver.waitUntilXWindowHandles(3)
       const windowHandles = await driver.getAllWindowHandles()
 
       extension = windowHandles[0]
-      dapp = await switchToWindowWithTitle(
-        driver,
+      dapp = await driver.switchToWindowWithTitle(
         'E2E Test Dapp',
         windowHandles
       )
@@ -185,52 +160,46 @@ describe('MetaMask', function () {
         handle => handle !== extension && handle !== dapp
       )
 
-      await driver.switchTo().window(popup)
+      await driver.switchToWindow(popup)
 
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
 
-      const accountButton = await findElement(
-        driver,
+      const accountButton = await driver.findElement(
         By.css('.permissions-connect-choose-account__account')
       )
       await accountButton.click()
 
-      const submitButton = await findElement(
-        driver,
+      const submitButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Submit')]`)
       )
       await submitButton.click()
 
-      await waitUntilXWindowHandles(driver, 2)
-      await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
+      await driver.waitUntilXWindowHandles(2)
+      await driver.switchToWindow(extension)
+      await driver.delay(regularDelayMs)
     })
 
     it('shows connected sites', async () => {
-      const connectedSites = await findElement(
-        driver,
+      const connectedSites = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Connected Sites')]`)
       )
       await connectedSites.click()
 
-      await findElement(driver, By.css('.connected-sites__title'))
+      await driver.findElement(By.css('.connected-sites__title'))
 
-      const domains = await findElements(
-        driver,
+      const domains = await driver.findElements(
         By.css('.connected-sites-list__domain')
       )
       assert.equal(domains.length, 1)
 
-      const domainName = await findElement(
-        driver,
+      const domainName = await driver.findElement(
         By.css('.connected-sites-list__domain-name')
       )
       assert.equal(await domainName.getText(), 'E2E Test Dapp')
 
       await domains[0].click()
 
-      const permissionDescription = await findElement(
-        driver,
+      const permissionDescription = await driver.findElement(
         By.css('.connected-sites-list__permission-description')
       )
       assert.equal(
@@ -240,17 +209,15 @@ describe('MetaMask', function () {
     })
 
     it('can get accounts within the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
+      await driver.switchToWindow(dapp)
+      await driver.delay(regularDelayMs)
 
-      const getAccountsButton = await findElement(
-        driver,
+      const getAccountsButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'eth_accounts')]`)
       )
       await getAccountsButton.click()
 
-      const getAccountsResult = await findElement(
-        driver,
+      const getAccountsResult = await driver.findElement(
         By.css('#getAccountsResult')
       )
       assert.equal(
@@ -260,38 +227,34 @@ describe('MetaMask', function () {
     })
 
     it('can disconnect all accounts', async () => {
-      await driver.switchTo().window(extension)
+      await driver.switchToWindow(extension)
 
-      const disconnectAllButton = await findElement(
-        driver,
+      const disconnectAllButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Disconnect All')]`)
       )
       await disconnectAllButton.click()
 
       const disconnectModal = await driver.findElement(By.css('span .modal'))
 
-      const disconnectAllModalButton = await findElement(
-        driver,
+      const disconnectAllModalButton = await driver.findElement(
         By.css('.disconnect-all-modal .btn-danger')
       )
       await disconnectAllModalButton.click()
 
       await driver.wait(until.stalenessOf(disconnectModal))
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
     })
 
     it('can no longer get accounts within the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
+      await driver.switchToWindow(dapp)
+      await driver.delay(regularDelayMs)
 
-      const getAccountsButton = await findElement(
-        driver,
+      const getAccountsButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'eth_accounts')]`)
       )
       await getAccountsButton.click()
 
-      const getAccountsResult = await findElement(
-        driver,
+      const getAccountsResult = await driver.findElement(
         By.css('#getAccountsResult')
       )
       assert.equal(

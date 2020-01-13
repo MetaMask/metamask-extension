@@ -1,6 +1,6 @@
 const reactTriggerChange = require('react-trigger-change')
 const { timeout, queryAsync } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/fetch-mocks.json')
+const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('confirm sig requests')
 

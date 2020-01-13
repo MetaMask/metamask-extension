@@ -1,6 +1,6 @@
 const reactTriggerChange = require('../../lib/react-trigger-change')
 const { queryAsync, findAsync } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/fetch-mocks.json')
+const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('tx list items')
 
