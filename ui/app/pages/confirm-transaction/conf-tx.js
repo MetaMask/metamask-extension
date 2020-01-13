@@ -60,10 +60,8 @@ class ConfirmTxScreen extends Component {
     selectedAddressTxList: PropTypes.array,
     currentCurrency: PropTypes.string,
     blockGasLimit: PropTypes.string,
-    conversionRate: PropTypes.number,
     history: PropTypes.object,
     accounts: PropTypes.object,
-    selectedAddress: PropTypes.string,
     identities: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     send: PropTypes.shape({
@@ -218,7 +216,6 @@ class ConfirmTxScreen extends Component {
     const {
       currentCurrency,
       blockGasLimit,
-      conversionRate,
     } = this.props
 
     const txData = this.getTxData() || {}
@@ -236,10 +233,8 @@ class ConfirmTxScreen extends Component {
       <SigComponent
         txData={txData}
         key={txData.id}
-        selectedAddress={this.props.selectedAddress}
         accounts={this.props.accounts}
         identities={this.props.identities}
-        conversionRate={conversionRate}
         currentCurrency={currentCurrency}
         blockGasLimit={blockGasLimit}
         signMessage={this.signMessage.bind(this, txData)}
