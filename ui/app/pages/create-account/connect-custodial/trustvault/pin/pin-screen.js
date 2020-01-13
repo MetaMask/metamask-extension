@@ -1,20 +1,15 @@
 import React, { PureComponent } from 'react'
-
-const PropTypes = require('prop-types')
-
+import PropTypes from 'prop-types'
 import Button from '../../../../../components/ui/button'
 import CircularInputField from '../components/circular-input-field'
-import StarPlaceholder from '../components/star-placeholder'
+import StarPlaceHolder from '../components/star-placeholder'
 
 export class PinScreen extends PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      firstPin: null,
-      secondPin: null,
-    }
-    this.firstPinInput = null
+  state = {
+    firstPin: null,
+    secondPin: null,
   }
+  firstPinInput = null
 
   focusFirstPinInput = () => {
     if (this.firstPinInput) {
@@ -34,7 +29,7 @@ export class PinScreen extends PureComponent {
     const pinLength = 6
     const inputField = new Array(pinLength).fill('').map((_, index) => {
       const key = index.toString()
-      let component = <StarPlaceholder key={key}></StarPlaceholder>
+      let component = <StarPlaceHolder key={key}></StarPlaceHolder>
       if (index === firstPinDigitIndex) {
         component = this.getFirstPinInputField(key)
       }
@@ -70,8 +65,7 @@ export class PinScreen extends PureComponent {
             return this.submitPinChallenge()
           }
         }}
-      >
-      </CircularInputField>
+      />
     )
   }
 
@@ -83,9 +77,7 @@ export class PinScreen extends PureComponent {
         key={key}
         filled={() => Boolean(this.state.secondPin)}
         maxLength={0}
-      >
-
-      </CircularInputField>
+      />
     )
   }
 

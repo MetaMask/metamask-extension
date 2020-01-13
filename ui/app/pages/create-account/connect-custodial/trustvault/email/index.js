@@ -5,12 +5,10 @@ import { showAlert, hideAlert } from '../../../../../store/actions'
 import { EmailScreen } from './email-screen'
 
 class ConnectTrustVaultEmailForm extends PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      error: null,
-      browserSupported: true,
-    }
+
+  state = {
+    error: null,
+    browserSupported: true,
   }
 
   renderError () {

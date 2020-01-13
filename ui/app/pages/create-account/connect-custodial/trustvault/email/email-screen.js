@@ -6,12 +6,10 @@ import { CONNECT_HARDWARE_ROUTE } from '../../../../../helpers/constants/routes'
 
 const ENTER_KEY = 13
 export class EmailScreen extends PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: null,
-    }
+  state = {
+    email: null,
   }
+
   renderBackButton () {
     return (
       <div className="sw-connect__back" onClick={_ => this.props.history.push(CONNECT_HARDWARE_ROUTE)}>
@@ -43,7 +41,7 @@ export class EmailScreen extends PureComponent {
           placeholder="Email address"
           largeLabel
           fullWidth
-             onChange={event => this.setState({ email: event.target.value })}
+          onChange={event => this.setState({ email: event.target.value })}
           onKeyDown={event => {
             if (event.keyCode === ENTER_KEY) {
               this.props.getTrustVaultPinChallenge(this.state.email)

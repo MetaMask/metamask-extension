@@ -5,13 +5,10 @@ import { connect } from 'react-redux'
 import { showAlert, hideAlert, connectCustodialWallet, submitTrustVaultPinChallenge } from '../../../../../store/actions'
 
 class ConnectTrustVaultPinForm extends PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      error: null,
-      browserSupported: true,
-      pinChallenge: this.props.pinChallenge,
-    }
+  state = {
+    error: null,
+    browserSupported: true,
+    pinChallenge: this.props.pinChallenge,
   }
 
   showWalletConnectedAlert () {
@@ -79,7 +76,6 @@ ConnectTrustVaultPinForm.propTypes = {
   goToHomePage: PropTypes.func,
   onCancelLogin: PropTypes.func,
   email: PropTypes.string,
-  showAlert: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
