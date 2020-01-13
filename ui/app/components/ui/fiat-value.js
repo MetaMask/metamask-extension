@@ -1,36 +1,36 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { inherits } from 'util'
 import { formatBalance } from '../../helpers/utils/util'
 
-export default FiatValue
-
-inherits(FiatValue, Component)
-function FiatValue () {
-  Component.call(this)
-}
-
-FiatValue.prototype.render = function () {
-  const props = this.props
-  const { conversionRate, currentCurrency, style } = props
-  const renderedCurrency = currentCurrency || ''
-
-  const value = formatBalance(props.value, 6)
-
-  if (value === 'None') {
-    return value
-  }
-  let fiatDisplayNumber, fiatTooltipNumber
-  const splitBalance = value.split(' ')
-
-  if (conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
-  } else {
-    fiatDisplayNumber = 'N/A'
-    fiatTooltipNumber = 'Unknown'
+export default class FiatValue extends Component {
+  static propTypes = {
+    conversionRate: PropTypes.number.isRequired,
+    currentCurrency: PropTypes.string,
+    style: PropTypes.object,
+    value: PropTypes.string.isRequired,
   }
 
-  return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase(), style)
+  render () {
+    const { conversionRate, currentCurrency, style } = this.props
+    const renderedCurrency = currentCurrency || ''
+
+    const value = formatBalance(this.props.value, 6)
+
+    if (value === 'None') {
+      return value
+    }
+    let fiatDisplayNumber, fiatTooltipNumber
+    const splitBalance = value.split(' ')
+
+    if (conversionRate !== 0) {
+      fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
+      fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
+    } else {
+      fiatDisplayNumber = 'N/A'
+    }
+
+    return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase(), style)
+  }
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix, styleOveride = {}) {
