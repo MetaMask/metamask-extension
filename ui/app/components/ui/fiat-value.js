@@ -5,8 +5,8 @@ import { formatBalance } from '../../helpers/utils/util'
 export default class FiatValue extends Component {
   static propTypes = {
     conversionRate: PropTypes.number.isRequired,
-    currentCurrency: PropTypes.number,
-    style: PropTypes.object.isRequired,
+    currentCurrency: PropTypes.string,
+    style: PropTypes.object,
     value: PropTypes.string.isRequired,
   }
 
