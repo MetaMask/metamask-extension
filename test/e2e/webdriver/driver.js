@@ -108,8 +108,8 @@ class Driver {
 
   /**
    * Closes all windows except those in the given list of exceptions
-   * @param {Array<string>} exceptions the list of window handle exceptions
-   * @param {Array?} windowHandles the full list of window handles
+   * @param {Array<string>} exceptions - The list of window handle exceptions
+   * @param {Array} [windowHandles] - The full list of window handles
    * @returns {Promise<void>}
    */
   async closeAllWindowHandlesExcept (exceptions, windowHandles) {

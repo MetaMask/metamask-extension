@@ -9,7 +9,7 @@ import EthQuery from 'ethjs-query'
 <br>
   As well as continues broadcast while in the pending state
 <br>
-@param config {object} - non optional configuration object consists of:
+@param {Object} config - non optional configuration object consists of:
     @param {Object} config.provider - A network provider.
     @param {Object} config.nonceTracker see nonce tracker
     @param {function} config.getPendingTransactions a function for getting an array of transactions,
@@ -50,7 +50,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     Will resubmit any transactions who have not been confirmed in a block
-    @param block {object} - a block object
+    @param {Object} block - a block object
     @emits tx:warning
   */
   resubmitPendingTxs (blockNumber) {
@@ -95,10 +95,10 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     resubmits the individual txMeta used in resubmitPendingTxs
-    @param txMeta {Object} - txMeta object
-    @param latestBlockNumber {string} - hex string for the latest block number
+    @param {Object} txMeta - txMeta object
+    @param {string} latestBlockNumber - hex string for the latest block number
     @emits tx:retry
-    @returns txHash {string}
+    @returns {string} - txHash
   */
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
@@ -130,7 +130,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     Ask the network for the transaction to see if it has been include in a block
-    @param txMeta {Object} - the txMeta object
+    @param {Object} txMeta - the txMeta object
     @emits tx:failed
     @emits tx:dropped
     @emits tx:confirmed
@@ -209,8 +209,8 @@ class PendingTransactionTracker extends EventEmitter {
   }
   /**
     checks to see if if the tx's nonce has been used by another transaction
-    @param txMeta {Object} - txMeta object
-    @param transactionReceipt {Object} - transactionReceipt object
+    @param {Object} txMeta - txMeta object
+    @param {Object} transactionReceipt - transactionReceipt object
     @emits tx:dropped
     @returns {boolean}
   */
@@ -226,7 +226,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     checks local txs to see if a confirmed txMeta has the same nonce
-    @param txMeta {Object} - txMeta object
+    @param {Object} txMeta - txMeta object
     @returns {boolean}
   */
 

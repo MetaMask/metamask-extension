@@ -8,7 +8,7 @@ class BalanceController {
    * Controller responsible for storing and updating an account's balance.
    *
    * @typedef {Object} BalanceController
-   * @param {Object} opts Initialize various properties of the class.
+   * @param {Object} opts - Initialize various properties of the class.
    * @property {string} address A base 16 hex string. The account address which has the balance managed by this
    * BalanceController.
    * @property {AccountTracker} accountTracker Stores and updates the users accounts
@@ -47,7 +47,7 @@ class BalanceController {
   /**
    * Updates the ethBalance property to the current pending balance
    *
-   * @returns {Promise<void>} Promises undefined
+   * @returns {Promise<void>} - Promises undefined
    */
   async updateBalance () {
     const balance = await this.balanceCalc.getBalance()
@@ -87,7 +87,7 @@ class BalanceController {
    * Gets the balance, as a base 16 hex string, of the account at this BalanceController's current address.
    * If the current account has no balance, returns undefined.
    *
-   * @returns {Promise<BN|void>} Promises a BN with a value equal to the balance of the current account, or undefined
+   * @returns {Promise<BN|void>} - Promises a BN with a value equal to the balance of the current account, or undefined
    * if the current account has no balance
    *
    */
@@ -103,7 +103,7 @@ class BalanceController {
    * TransactionController passed to this BalanceController during construction.
    *
    * @private
-   * @returns {Promise<array>} Promises an array of transaction objects.
+   * @returns {Promise<array>} - Promises an array of transaction objects.
    *
    */
   async _getPendingTransactions () {
@@ -118,7 +118,7 @@ class BalanceController {
   /**
    * Validates that the passed options have all required properties.
    *
-   * @param {Object} opts The options object to validate
+   * @param {Object} opts - The options object to validate
    * @throws {string} Throw a custom error indicating that address, accountTracker, txController and blockTracker are
    * missing and at least one is required
    *

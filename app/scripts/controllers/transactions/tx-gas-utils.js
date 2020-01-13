@@ -22,8 +22,8 @@ class TxGasUtil {
   }
 
   /**
-    @param txMeta {Object} - the txMeta object
-    @returns {object} the txMeta object with the gas written to the txParams
+    @param {Object} txMeta - the txMeta object
+    @returns {Object} - the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)
@@ -50,9 +50,9 @@ class TxGasUtil {
 
   /**
     Estimates the tx's gas usage
-    @param txMeta {Object} - the txMeta object
-    @param blockGasLimitHex {string} - hex string of the block's gas limit
-    @returns {string} the estimated gas limit as a hex string
+    @param {Object} txMeta - the txMeta object
+    @param {string} blockGasLimitHex - hex string of the block's gas limit
+    @returns {string} - the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
     const txParams = txMeta.txParams
@@ -104,9 +104,9 @@ class TxGasUtil {
 
   /**
     Writes the gas on the txParams in the txMeta
-    @param txMeta {Object} - the txMeta object to write to
-    @param blockGasLimitHex {string} - the block gas limit hex
-    @param estimatedGasHex {string} - the estimated gas hex
+    @param {Object} txMeta - the txMeta object to write to
+    @param {string} blockGasLimitHex - the block gas limit hex
+    @param {string} estimatedGasHex - the estimated gas hex
   */
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
@@ -128,9 +128,9 @@ class TxGasUtil {
   /**
     Adds a gas buffer with out exceeding the block gas limit
 
-    @param initialGasLimitHex {string} - the initial gas limit to add the buffer too
-    @param blockGasLimitHex {string} - the block gas limit
-    @returns {string} the buffered gas limit as a hex string
+    @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
+    @param {string} blockGasLimitHex - the block gas limit
+    @returns {string} - the buffered gas limit as a hex string
   */
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
