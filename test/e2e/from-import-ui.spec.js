@@ -337,9 +337,9 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Connects to an External  wallet', () => {
     it('choose Connect External Wallet from the account menu', async () => {
-      const [connectAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Connect External Wallet')]`))
+      const [connectAccount] = await driver.findElements(By.xpath(`//div[contains(text(), 'Connect External Wallet')]`))
       await connectAccount.click()
-      await delay(regularDelayMs)
+      await driver.delay(regularDelayMs)
     })
 
     it('should open the TREZOR Connect popup', async () => {
