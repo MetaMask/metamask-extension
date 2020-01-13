@@ -61,7 +61,6 @@ class ConfirmTxScreen extends Component {
     currentCurrency: PropTypes.string,
     blockGasLimit: PropTypes.string,
     history: PropTypes.object,
-    accounts: PropTypes.object,
     identities: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     send: PropTypes.shape({
@@ -233,7 +232,6 @@ class ConfirmTxScreen extends Component {
       <SigComponent
         txData={txData}
         key={txData.id}
-        accounts={this.props.accounts}
         identities={this.props.identities}
         currentCurrency={currentCurrency}
         blockGasLimit={blockGasLimit}
