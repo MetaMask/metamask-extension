@@ -8,7 +8,15 @@ import TextField from '../../../../components/ui/text-field'
 describe('AdvancedTab Component', () => {
   it('should render correctly when threeBoxFeatureFlag', () => {
     const root = shallow(
-      <AdvancedTab />,
+      <AdvancedTab
+        ipfsGateway=""
+        setAutoLogoutTimeLimit={() => {}}
+        setIpfsGateway={() => {}}
+        setShowFiatConversionOnTestnetsPreference={() => {}}
+        setThreeBoxSyncingPermission={() => {}}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
+      />,
       {
         context: {
           t: s => `_${s}`,
@@ -23,7 +31,13 @@ describe('AdvancedTab Component', () => {
     const setAutoLogoutTimeLimitSpy = sinon.spy()
     const root = shallow(
       <AdvancedTab
+        ipfsGateway=""
         setAutoLogoutTimeLimit={setAutoLogoutTimeLimitSpy}
+        setIpfsGateway={() => {}}
+        setShowFiatConversionOnTestnetsPreference={() => {}}
+        setThreeBoxSyncingPermission={() => {}}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
       />,
       {
         context: {
