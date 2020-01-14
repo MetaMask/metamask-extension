@@ -54,45 +54,37 @@ describe('MetaMask', function () {
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      await welcomeScreenBtn.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
-      const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      await customRpcButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await driver.findElement(By.css('.btn-default'))
-      await optOutButton.click()
+      await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
     it('accepts a secure password', async () => {
       const passwordBox = await driver.findElement(By.css('.first-time-flow__form #create-password'))
       const passwordBoxConfirm = await driver.findElement(By.css('.first-time-flow__form #confirm-password'))
-      const button = await driver.findElement(By.css('.first-time-flow__form button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
 
-      const tosCheckBox = await driver.findElement(By.css('.first-time-flow__checkbox'))
-      await tosCheckBox.click()
-
-      await button.click()
+      await driver.clickElement(By.css('.first-time-flow__checkbox'))
+      await driver.clickElement(By.css('.first-time-flow__form button'))
       await driver.delay(largeDelayMs)
     })
 
     it('skips the seed phrase challenge', async () => {
-      const button = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
-      await button.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
-      const detailsButton = await driver.findElement(By.css('.account-details__details-button'))
-      await detailsButton.click()
+      await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
     })
 
@@ -101,8 +93,7 @@ describe('MetaMask', function () {
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
-      await accountModalClose.click()
+      await driver.clickElement(By.css('.account-modal-close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
@@ -119,8 +110,7 @@ describe('MetaMask', function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
-      const connectButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Connect')]`))
-      await connectButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
 
       await driver.delay(regularDelayMs)
 
@@ -135,11 +125,9 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
 
-      const accountButton = await driver.findElement(By.css('.permissions-connect-choose-account__account'))
-      await accountButton.click()
+      await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
 
-      const submitButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Submit')]`))
-      await submitButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
 
       await driver.waitUntilXWindowHandles(2)
       await driver.switchToWindow(dapp)
@@ -155,12 +143,10 @@ describe('MetaMask', function () {
     it('changes the network', async () => {
       await driver.switchToWindow(extension)
 
-      const networkDropdown = await driver.findElement(By.css('.network-name'))
-      await networkDropdown.click()
+      await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
-      const ropstenButton = await driver.findElement(By.xpath(`//span[contains(text(), 'Ropsten')]`))
-      await ropstenButton.click()
+      await driver.clickElement(By.xpath(`//span[contains(text(), 'Ropsten')]`))
       await driver.delay(largeDelayMs)
     })
 

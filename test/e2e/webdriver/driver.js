@@ -38,12 +38,28 @@ class Driver {
     return element
   }
 
+  async findClickableElement (locator) {
+    const element = await this.findElement(locator)
+    await this.driver.wait(until.elementIsVisible(element), this.timeout)
+    await this.driver.wait(until.elementIsEnabled(element), this.timeout)
+    return element
+  }
+
   findElements (locator) {
     return this.driver.wait(until.elementsLocated(locator), this.timeout)
   }
 
+  async findClickableElements (locator) {
+    const elements = await this.findElements(locator)
+    await Promise.all(elements.map(async element => {
+      await this.driver.wait(until.elementIsVisible(element), this.timeout)
+      await this.driver.wait(until.elementIsEnabled(element), this.timeout)
+    }))
+    return elements
+  }
+
   async clickElement (locator) {
-    const element = await this.findElement(locator)
+    const element = await this.findClickableElement(locator)
     await element.click()
   }
 

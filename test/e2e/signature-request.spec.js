@@ -69,8 +69,7 @@ describe('MetaMask', function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
-      const connectButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Connect')]`))
-      await connectButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
 
       await driver.delay(regularDelayMs)
 
@@ -85,19 +84,16 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
 
-      const accountButton = await driver.findElement(By.css('.permissions-connect-choose-account__account'))
-      await accountButton.click()
+      await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
 
-      const submitButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Submit')]`))
-      await submitButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
 
       await driver.waitUntilXWindowHandles(2)
       await driver.switchToWindow(dapp)
     })
 
     it('creates a sign typed data signature request', async () => {
-      const signTypedMessage = await driver.findElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
-      await signTypedMessage.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
       await driver.delay(largeDelayMs)
 
       await driver.delay(regularDelayMs)
@@ -117,8 +113,7 @@ describe('MetaMask', function () {
     })
 
     it('signs the transaction', async () => {
-      const signButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
-      await signButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
       await driver.delay(regularDelayMs)
 
       extension = windowHandles[0]
@@ -126,16 +121,14 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async () => {
-      const detailsButton = await driver.findElement(By.css('.account-details__details-button'))
-      await detailsButton.click()
+      await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
 
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
-      await accountModalClose.click()
+      await driver.clickElement(By.css('.account-modal-close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
