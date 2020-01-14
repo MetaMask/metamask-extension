@@ -2,12 +2,8 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
-const {
-  prepareExtensionForTesting,
-  tinyDelayMs,
-  regularDelayMs,
-  largeDelayMs,
-} = require('./helpers')
+const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -24,7 +20,7 @@ describe('MetaMask', function () {
 
   before(async function () {
     await ganacheServer.start()
-    const result = await prepareExtensionForTesting({ responsive: true })
+    const result = await buildWebDriver({ responsive: true })
     driver = result.driver
   })
 

@@ -3,12 +3,8 @@ const webdriver = require('selenium-webdriver')
 const getPort = require('get-port')
 
 const { By, until } = webdriver
-const {
-  prepareExtensionForTesting,
-  tinyDelayMs,
-  regularDelayMs,
-  largeDelayMs,
-} = require('./helpers')
+const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -33,7 +29,7 @@ describe('MetaMask', function () {
         },
       ],
     })
-    const result = await prepareExtensionForTesting({ port: await getPort() })
+    const result = await buildWebDriver({ port: await getPort() })
     driver = result.driver
   })
 
@@ -218,7 +214,7 @@ describe('MetaMask', function () {
     let driver2
 
     before(async function () {
-      const result = await prepareExtensionForTesting({ port: await getPort() })
+      const result = await buildWebDriver({ port: await getPort() })
       driver2 = result.driver
     })
 

@@ -2,11 +2,8 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By } = webdriver
-const {
-  prepareExtensionForTesting,
-  regularDelayMs,
-  largeDelayMs,
-} = require('./helpers')
+const { regularDelayMs, largeDelayMs } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 describe('Using MetaMask with an existing account', function () {
@@ -30,7 +27,7 @@ describe('Using MetaMask with an existing account', function () {
   this.bail(true)
 
   before(async function () {
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 
