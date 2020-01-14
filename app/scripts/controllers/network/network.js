@@ -256,12 +256,11 @@ export default class NetworkController extends EventEmitter {
   //   log.info('NetworkController - configureInfuraProvider', type)
   //   const networkClient = createInfuraClient({
   //     network: type,
-  //     onRequest: (req) => this.emit('rpc-req', { network: type, req }),
   //   })
   //   this._setNetworkClient(networkClient)
   //   // setup networkConfig
-  //   var settings = {
-  //     ticker: 'CFX',
+  //   const settings = {
+  //     ticker: 'ETH',
   //   }
   //   this.networkConfig.putState(settings)
   // }

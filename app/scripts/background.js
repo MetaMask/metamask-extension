@@ -30,7 +30,6 @@ import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
 import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
-import setupMetamaskMeshMetrics from './lib/setupMetamaskMeshMetrics'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 // import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -69,9 +68,6 @@ let versionedData
 
 // initialization flow
 initialize().catch(log.error)
-
-// setup metamask mesh testing container
-const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -257,11 +253,6 @@ function setupController (initState, initLangCode) {
   //   ),
   //   provider: controller.provider,
   // })
-
-  // submit rpc requests to mesh-metrics
-  controller.networkController.on('rpc-req', data => {
-    submitMeshMetricsEntry({ type: 'rpc', data })
-  })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
