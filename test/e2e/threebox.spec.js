@@ -122,8 +122,7 @@ describe('MetaMask', function () {
         const advancedButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Advanced')]`))
         await advancedButton.click()
 
-        const threeBoxToggle = await driver.findElements(By.css('.toggle-button'))
-        const threeBoxToggleButton = await threeBoxToggle[4].findElement(By.css('div'))
+        const threeBoxToggleButton = await driver.findElement(By.css('[data-testid="advanced-setting-3box"] .toggle-button div'))
         await threeBoxToggleButton.click()
       })
 
