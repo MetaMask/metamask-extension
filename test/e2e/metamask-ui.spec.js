@@ -577,46 +577,37 @@ describe('MetaMask', function () {
     })
 
     it('navigates the transactions', async () => {
-      let navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      assert.equal(navigateTxButtons.length, 4, 'navigation button present')
-
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       let navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       let navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('2'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('3'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('4'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[0].click()
+      await driver.clickElement(By.css('[data-testid="first-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('1'), true, 'navigate to first transaction')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[3].click()
+      await driver.clickElement(By.css('[data-testid="last-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.split('4').length, 3, 'navigate to last transaction')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('3'), true, 'changed transaction left')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('2'), true, 'changed transaction left')
