@@ -2,7 +2,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Icon from '../icon'
-import Preloader from '../preloader'
 
 const SendIcon = () => (
   <Icon
@@ -84,7 +83,19 @@ const Item = ({
       </div>
       <div className={`col main${isApproved ? ' approved' : ''}`}>
         {typeof title === 'string' ? (
-          <h2>{ title } {isPending && <span><Preloader className="preloader" /></span>}</h2>
+          <h2>
+            { title } {isPending && (
+              <span>
+                <Icon
+                  className="preloader"
+                  type="preloader"
+                  width={16}
+                  height={16}
+                  color="#D73A49"
+                />
+              </span>
+            )}
+          </h2>
         ) : (
           title
         )}
