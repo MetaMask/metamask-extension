@@ -51,19 +51,19 @@ describe('MetaMask', function () {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
       const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      welcomeScreenBtn.click()
+      await welcomeScreenBtn.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
       const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      customRpcButton.click()
+      await customRpcButton.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
       const optOutButton = await driver.findElement(By.css('.btn-default'))
-      optOutButton.click()
+      await optOutButton.click()
       await driver.delay(largeDelayMs)
     })
 
@@ -196,7 +196,7 @@ describe('MetaMask', function () {
   describe('Import seed phrase', () => {
     it('logs out of the vault', async () => {
       const accountMenuButton = await driver.findElement(By.css('.account-menu__icon'))
-      accountMenuButton.click()
+      await accountMenuButton.click()
       await driver.delay(regularDelayMs)
 
       const logoutButton = await driver.findElement(By.css('.account-menu__logout-button'))
@@ -406,7 +406,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const settingsButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Settings')]`))
-      settingsButton.click()
+      await settingsButton.click()
 
       // await driver.findElement(By.css('.tab-bar'))
 
@@ -989,7 +989,7 @@ describe('MetaMask', function () {
       assert(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await driver.findElement(By.xpath(`//li[contains(text(), 'Details')]`))
-      detailsTab.click()
+      await detailsTab.click()
       await driver.delay(regularDelayMs)
     })
 
