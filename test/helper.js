@@ -13,9 +13,7 @@ enableFailureOnUnhandledPromiseRejection()
 
 // ganache server
 const server = Ganache.server()
-server.listen(8545, () => {
-  console.log('Ganache Testrpc is running on "http://localhost:8545"')
-})
+server.listen(8545, () => {})
 
 log.setDefaultLevel(5)
 global.log = log
