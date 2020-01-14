@@ -59,7 +59,7 @@ describe('MetaMask', function () {
           `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`
         )
       )
-      welcomeScreenBtn.click()
+      await welcomeScreenBtn.click()
       await driver.delay(largeDelayMs)
     })
 
@@ -67,13 +67,13 @@ describe('MetaMask', function () {
       const customRpcButton = await driver.findElement(
         By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
       )
-      customRpcButton.click()
+      await customRpcButton.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
       const optOutButton = await driver.findElement(By.css('.btn-default'))
-      optOutButton.click()
+      await optOutButton.click()
       await driver.delay(largeDelayMs)
     })
 
