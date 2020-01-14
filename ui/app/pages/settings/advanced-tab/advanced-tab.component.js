@@ -45,9 +45,12 @@ export default class AdvancedTab extends PureComponent {
   renderMobileSync () {
     const { t } = this.context
     const { history } = this.props
-    //
+
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-mobile-sync"
+      >
         <div className="settings-page__content-item">
           <span>{t('syncWithMobile')}</span>
         </div>
@@ -74,7 +77,10 @@ export default class AdvancedTab extends PureComponent {
     const { displayWarning } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-state-logs"
+      >
         <div className="settings-page__content-item">
           <span>{t('stateLogs')}</span>
           <span className="settings-page__content-description">
@@ -109,7 +115,10 @@ export default class AdvancedTab extends PureComponent {
     const { showResetAccountConfirmationModal } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-reset-account"
+      >
         <div className="settings-page__content-item">
           <span>{t('resetAccount')}</span>
           <span className="settings-page__content-description">
@@ -147,7 +156,10 @@ export default class AdvancedTab extends PureComponent {
     const { sendHexData, setHexDataFeatureFlag } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-hex-data"
+      >
         <div className="settings-page__content-item">
           <span>{t('showHexData')}</span>
           <div className="settings-page__content-description">
@@ -173,7 +185,10 @@ export default class AdvancedTab extends PureComponent {
     const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-advanced-gas-inline"
+      >
         <div className="settings-page__content-item">
           <span>{t('showAdvancedGasInline')}</span>
           <div className="settings-page__content-description">
@@ -202,7 +217,10 @@ export default class AdvancedTab extends PureComponent {
     } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
         <div className="settings-page__content-item">
           <span>{t('showFiatConversionInTestnets')}</span>
           <div className="settings-page__content-description">
@@ -230,7 +248,10 @@ export default class AdvancedTab extends PureComponent {
     const { useNonceField, setUseNonceField } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-custom-nonce"
+      >
         <div className="settings-page__content-item">
           <span>{this.context.t('nonceField')}</span>
           <div className="settings-page__content-description">
@@ -275,7 +296,10 @@ export default class AdvancedTab extends PureComponent {
     const { autoLogoutTimeLimit, setAutoLogoutTimeLimit } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-auto-logout"
+      >
         <div className="settings-page__content-item">
           <span>{t('autoLogoutTimeLimit')}</span>
           <div className="settings-page__content-description">
@@ -328,7 +352,10 @@ export default class AdvancedTab extends PureComponent {
       description = t('syncWithThreeBoxDisabled')
     }
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-3box"
+      >
         <div className="settings-page__content-item">
           <span>{t('syncWithThreeBox')}</span>
           <div className="settings-page__content-description">
@@ -399,7 +426,10 @@ export default class AdvancedTab extends PureComponent {
     const { ipfsGatewayError } = this.state
 
     return (
-      <div className="settings-page__content-row">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-ipfs-gateway"
+      >
         <div className="settings-page__content-item">
           <span>{t('ipfsGateway')}</span>
           <div className="settings-page__content-description">

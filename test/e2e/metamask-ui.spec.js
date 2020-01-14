@@ -548,7 +548,7 @@ describe('MetaMask', function () {
 
       const showConversionToggle = await driver.findElement(
         By.css(
-          '.settings-page__content-row:nth-of-type(6) .settings-page__content-item-col > div > div'
+          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div'
         )
       )
       await showConversionToggle.click()
@@ -560,7 +560,7 @@ describe('MetaMask', function () {
 
       const advancedGasToggle = await driver.findElement(
         By.css(
-          '.settings-page__content-row:nth-of-type(4) .settings-page__content-item-col > div > div'
+          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div'
         )
       )
       await advancedGasToggle.click()
