@@ -40,9 +40,6 @@
   "balance": {
     "message": "Balans:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Onvoldoende saldo voor huidig ​​gastotaal"
-  },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -162,17 +159,11 @@
   "gasLimit": {
     "message": "Gaslimiet"
   },
-  "gasLimitCalculation": {
-    "message": "We berekenen de voorgestelde gaslimiet op basis van succespercentages van het netwerk."
-  },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -349,9 +340,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
-  "revert": {
-    "message": "terugkeren"
   },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"

@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 import { getRandomArrayItem } from '../lib/util'
 
 /**
@@ -21,7 +20,7 @@ class ABTestController {
    */
   constructor (opts = {}) {
     const { initState } = opts
-    this.store = new ObservableStore(extend({
+    this.store = new ObservableStore(Object.assign({
       abTests: {
         fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
       },
@@ -30,8 +29,8 @@ class ABTestController {
 
   /**
    * Returns the name of the test group to which the current user has been assigned
-   * @param {string} abTestKey the key of the a/b test
-   * @return {string} the name of the assigned test group
+   * @param {string} abTestKey - the key of the a/b test
+   * @returns {string} - the name of the assigned test group
    */
   getAssignedABTestGroupName (abTestKey) {
     return this.store.getState().abTests[abTestKey]
@@ -39,8 +38,8 @@ class ABTestController {
 
   /**
    * Returns a randomly chosen name of a test group from a given a/b test
-   * @param {string} abTestKey the key of the a/b test
-   * @return {string} the name of the randomly selected test group
+   * @param {string} abTestKey - the key of the a/b test
+   * @returns {string} - the name of the randomly selected test group
    * @private
    */
   _getRandomizedTestGroupName (abTestKey) {

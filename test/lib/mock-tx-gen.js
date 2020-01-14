@@ -1,4 +1,3 @@
-import extend from 'xtend'
 import { BN } from 'ethereumjs-util'
 
 const template = {
@@ -23,7 +22,7 @@ class TxGenerator {
     let nonce = fromNonce || this.txs.length
     const txs = []
     for (let i = 0; i < count; i++) {
-      txs.push(extend(template, {
+      txs.push(Object.assign({}, template, {
         txParams: {
           nonce: hexify(nonce++),
         },

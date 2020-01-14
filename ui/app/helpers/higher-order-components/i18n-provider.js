@@ -20,9 +20,9 @@ class I18nProvider extends Component {
     return {
       /**
        * Returns a localized message for the given key
-       * @param {string} key The message key
-       * @param {string[]} args A list of message substitution replacements
-       * @return {string|undefined|null} The localized message if available
+       * @param {string} key - The message key
+       * @param {string[]} args - A list of message substitution replacements
+       * @returns {string|undefined|null} - The localized message if available
        */
       t (key, ...args) {
         return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`

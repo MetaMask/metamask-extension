@@ -46,9 +46,6 @@
   "balance": {
     "message": "Bakiye:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Toplam gas için yetersiz bakiye"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
   },
@@ -195,17 +192,11 @@
   "gasLimit": {
     "message": "Gas Limiti"
   },
-  "gasLimitCalculation": {
-    "message": "Önerilen gas limitini ağ başarı oranını baz alarak hesaplıyoruz."
-  },
   "gasLimitTooLow": {
     "message": "Gas limiti en az 21000 olmalıdır"
   },
   "gasPrice": {
     "message": "Gas Fiyatı (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Önerilen gas fiyatını ağ başarı oranını baz alarak hesaplıyoruz."
   },
   "getEther": {
     "message": "Ether Al"
@@ -401,9 +392,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Açık bir yerde kaynak kelimeliriniz geri getirmeyin! Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
-  },
-  "revert": {
-    "message": "Geri döndür"
   },
   "rinkeby": {
     "message": "Rinkeby Test Ağı"

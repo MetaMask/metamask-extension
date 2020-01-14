@@ -236,8 +236,8 @@ export function getTokenAddressFromTokenObject (token) {
 /**
  * Safely checksumms a potentially-null address
  *
- * @param {String} [address] - address to checksum
- * @returns {String} - checksummed address
+ * @param {string} [address] - address to checksum
+ * @returns {string} - checksummed address
  *
  */
 export function checksumAddress (address) {

@@ -6,8 +6,6 @@ This migration breaks out the NoticeController substate
 
 */
 
-import extend from 'xtend'
-
 import clone from 'clone'
 
 export default {
@@ -28,11 +26,12 @@ export default {
 }
 
 function transformState (state) {
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     NoticeController: {
       noticesList: state.noticesList || [],
     },
-  })
+  }
   delete newState.noticesList
 
   return newState

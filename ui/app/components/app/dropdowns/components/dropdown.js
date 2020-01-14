@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import MenuDroppo from '../../menu-droppo'
-import extend from 'xtend'
 
 export class Dropdown extends Component {
   render () {
@@ -15,7 +14,7 @@ export class Dropdown extends Component {
       useCssTransition,
     } = this.props
 
-    const innerStyleDefaults = extend({
+    const innerStyleDefaults = Object.assign({
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'rgba(0, 0, 0, 0.8)',

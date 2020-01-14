@@ -50,7 +50,7 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * A getter for the number of 'unapproved' PersonalMessages in this.messages
    *
-   * @returns {number} The number of 'unapproved' PersonalMessages in this.messages
+   * @returns {number} - The number of 'unapproved' PersonalMessages in this.messages
    *
    */
   get unapprovedPersonalMsgCount () {
@@ -60,7 +60,7 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' PersonalMessages in this.messages
    *
-   * @returns {Object} An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
+   * @returns {Object} - An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
    * this.messages
    *
    */
@@ -76,9 +76,9 @@ export default class PersonalMessageManager extends EventEmitter {
    * the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
    * this.memStore.
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} When the message has been signed or rejected
+   * @returns {promise} - When the message has been signed or rejected
    *
    */
   addUnapprovedMessageAsync (msgParams, req) {
@@ -105,9 +105,9 @@ export default class PersonalMessageManager extends EventEmitter {
    * the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
    * this.memStore.
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {number} The id of the newly created PersonalMessage.
+   * @returns {number} - The id of the newly created PersonalMessage.
    *
    */
   addUnapprovedMessage (msgParams, req) {
@@ -138,7 +138,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * Adds a passed PersonalMessage to this.messages, and calls this._saveMsgList() to save the unapproved PersonalMessages from that
    * list to this.memStore.
    *
-   * @param {Message} msg The PersonalMessage to add to this.messages
+   * @param {Message} msg - The PersonalMessage to add to this.messages
    *
    */
   addMsg (msg) {
@@ -149,8 +149,8 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * Returns a specified PersonalMessage.
    *
-   * @param {number} msgId The id of the PersonalMessage to get
-   * @returns {PersonalMessage|undefined} The PersonalMessage with the id that matches the passed msgId, or undefined
+   * @param {number} msgId - The id of the PersonalMessage to get
+   * @returns {PersonalMessage|undefined} - The PersonalMessage with the id that matches the passed msgId, or undefined
    * if no PersonalMessage has that id.
    *
    */
@@ -162,9 +162,9 @@ export default class PersonalMessageManager extends EventEmitter {
    * Approves a PersonalMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper signing.
    *
-   * @param {Object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
-   * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
+   * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
    *
    */
   approveMessage (msgParams) {
@@ -175,7 +175,7 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * Sets a PersonalMessage status to 'approved' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the PersonalMessage to approve.
+   * @param {number} msgId - The id of the PersonalMessage to approve.
    *
    */
   setMsgStatusApproved (msgId) {
@@ -186,8 +186,8 @@ export default class PersonalMessageManager extends EventEmitter {
    * Sets a PersonalMessage status to 'signed' via a call to this._setMsgStatus and updates that PersonalMessage in
    * this.messages by adding the raw signature data of the signature request to the PersonalMessage
    *
-   * @param {number} msgId The id of the PersonalMessage to sign.
-   * @param {buffer} rawSig The raw data of the signature request
+   * @param {number} msgId - The id of the PersonalMessage to sign.
+   * @param {buffer} rawSig - The raw data of the signature request
    *
    */
   setMsgStatusSigned (msgId, rawSig) {
@@ -200,8 +200,8 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams The msgParams to modify
-   * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
+   * @param {Object} msgParams - The msgParams to modify
+   * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
    *
    */
   prepMsgForSigning (msgParams) {
@@ -212,7 +212,7 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * Sets a PersonalMessage status to 'rejected' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the PersonalMessage to reject.
+   * @param {number} msgId - The id of the PersonalMessage to reject.
    *
    */
   rejectMsg (msgId) {
@@ -223,8 +223,8 @@ export default class PersonalMessageManager extends EventEmitter {
    * Updates the status of a PersonalMessage in this.messages via a call to this._updateMsg
    *
    * @private
-   * @param {number} msgId The id of the PersonalMessage to update.
-   * @param {string} status The new status of the PersonalMessage.
+   * @param {number} msgId - The id of the PersonalMessage to update.
+   * @param {string} status - The new status of the PersonalMessage.
    * @throws A 'PersonalMessageManager - PersonalMessage not found for id: "${msgId}".' if there is no PersonalMessage
    * in this.messages with an id equal to the passed msgId
    * @fires An event with a name equal to `${msgId}:${status}`. The PersonalMessage is also fired.
@@ -250,7 +250,7 @@ export default class PersonalMessageManager extends EventEmitter {
    * unapprovedPersonalMsgs index to storage via this._saveMsgList
    *
    * @private
-   * @param {msg} PersonalMessage A PersonalMessage that will replace an existing PersonalMessage (with the same
+   * @param {msg} PersonalMessage - A PersonalMessage that will replace an existing PersonalMessage (with the same
    * id) in this.messages
    *
    */
@@ -279,8 +279,8 @@ export default class PersonalMessageManager extends EventEmitter {
   /**
    * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
    *
-   * @param {any} data The buffer data to convert to a hex
-   * @returns {string} A hex string conversion of the buffer data
+   * @param {any} data - The buffer data to convert to a hex
+   * @returns {string} - A hex string conversion of the buffer data
    *
    */
   normalizeMsgData (data) {

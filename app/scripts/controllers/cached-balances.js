@@ -1,5 +1,4 @@
 import ObservableStore from 'obs-store'
-import extend from 'xtend'
 
 /**
  * @typedef {Object} CachedBalancesOptions
@@ -24,7 +23,7 @@ class CachedBalancesController {
     this.accountTracker = accountTracker
     this.getNetwork = getNetwork
 
-    const initState = extend({
+    const initState = Object.assign({
       cachedBalances: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
@@ -36,7 +35,7 @@ class CachedBalancesController {
    * Updates the cachedBalances property for the current network. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {Object} obj The the recently updated accounts object for the current network
+   * @param {Object} obj - The the recently updated accounts object for the current network
    * @returns {Promise<void>}
    */
   async updateCachedBalances ({ accounts }) {

@@ -1,21 +1,14 @@
-import React, { Component } from 'react'
-import { inherits } from 'util'
+import PropTypes from 'prop-types'
+import React from 'react'
 
-export default ReadOnlyInput
-
-inherits(ReadOnlyInput, Component)
-function ReadOnlyInput () {
-  Component.call(this)
-}
-
-ReadOnlyInput.prototype.render = function ReadOnlyInput () {
+export default function ReadOnlyInput (props) {
   const {
     wrapperClass = '',
     inputClass = '',
     value,
     textarea,
     onClick,
-  } = this.props
+  } = props
 
   const InputType = textarea ? 'textarea' : 'input'
 
@@ -32,3 +25,10 @@ ReadOnlyInput.prototype.render = function ReadOnlyInput () {
   )
 }
 
+ReadOnlyInput.propTypes = {
+  wrapperClass: PropTypes.string,
+  inputClass: PropTypes.string,
+  value: PropTypes.string,
+  textarea: PropTypes.bool,
+  onClick: PropTypes.func,
+}
