@@ -30,12 +30,14 @@ const ConfirmPageContainerNavigation = props => {
       >
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
           onClick={() => onNextTx(firstTx)}
         >
           <img src="/images/double-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
           onClick={() => onNextTx(prevTxId)}
         >
           <img src="/images/single-arrow.svg" />
@@ -57,6 +59,7 @@ const ConfirmPageContainerNavigation = props => {
       >
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
           onClick={() => onNextTx(nextTxId)}
         >
           <img
@@ -66,6 +69,7 @@ const ConfirmPageContainerNavigation = props => {
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
           onClick={() => onNextTx(lastTx)}
         >
           <img

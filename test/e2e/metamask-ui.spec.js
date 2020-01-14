@@ -7,7 +7,7 @@ const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
-const ganacheServer = new Ganache()
+const ganacheServer = new Ganache({ genBlockInterval: 300 })
 
 describe('MetaMask', function () {
   let driver
@@ -20,7 +20,15 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    await ganacheServer.start()
+    await ganacheServer.start({
+      accounts: [
+        {
+          secretKey:
+            '0x4CFD3E90FC78B0F86BF7524722150BB8DA9C60CD532564D7FF43F5716514F553',
+          balance: 100000000000000000000,
+        },
+      ],
+    })
     const result = await buildWebDriver()
     driver = result.driver
   })
@@ -771,12 +779,7 @@ describe('MetaMask', function () {
     })
 
     it('navigates the transactions', async () => {
-      let navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      assert.equal(navigateTxButtons.length, 4, 'navigation button present')
-
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       let navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -787,10 +790,7 @@ describe('MetaMask', function () {
         'changed transaction right'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -801,10 +801,7 @@ describe('MetaMask', function () {
         'changed transaction right'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -815,10 +812,7 @@ describe('MetaMask', function () {
         'changed transaction right'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[0].click()
+      await driver.clickElement(By.css('[data-testid="first-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -829,10 +823,7 @@ describe('MetaMask', function () {
         'navigate to first transaction'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[3].click()
+      await driver.clickElement(By.css('[data-testid="last-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -843,10 +834,7 @@ describe('MetaMask', function () {
         'navigate to last transaction'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -857,10 +845,7 @@ describe('MetaMask', function () {
         'changed transaction left'
       )
 
-      navigateTxButtons = await driver.findElements(
-        By.css('.confirm-page-container-navigation__arrow')
-      )
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
