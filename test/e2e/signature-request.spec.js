@@ -4,10 +4,10 @@ const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
 const {
-  prepareExtensionForTesting,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
 
@@ -27,7 +27,7 @@ describe('MetaMask', function () {
     await fixtureServer.start()
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', 'imported-account'))
     publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 

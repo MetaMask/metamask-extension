@@ -3,11 +3,11 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const {
-  prepareExtensionForTesting,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -33,7 +33,7 @@ describe('MetaMask', function () {
         },
       ],
     })
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 
