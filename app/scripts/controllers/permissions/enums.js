@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   WALLET_PREFIX: 'wallet_',
   HISTORY_STORE_KEY: 'permissionsHistory',
   LOG_STORE_KEY: 'permissionsLog',

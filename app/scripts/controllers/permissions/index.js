@@ -20,10 +20,6 @@ import {
   NOTIFICATION_NAMES,
 } from './enums'
 
-export const CAVEAT_NAMES = {
-  exposedAccounts: 'exposedAccounts',
-}
-
 export class PermissionsController {
 
   constructor (

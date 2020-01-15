@@ -1,7 +1,7 @@
 
-const clone = require('clone')
-const { isValidAddress } = require('ethereumjs-util')
-const { CAVEAT_NAMES } = require('./enums')
+import clone from 'clone'
+import { isValidAddress } from 'ethereumjs-util'
+import { CAVEAT_NAMES } from './enums'
 
 const LOG_LIMIT = 100
 
@@ -13,7 +13,7 @@ const getAccountToTimeMap = (accounts, time) => accounts.reduce(
  * Create middleware for logging requests and responses to restricted and
  * permissions-related methods.
  */
-class PermissionsLogController {
+export default class PermissionsLogController {
 
   constructor ({
     walletPrefix, restrictedMethods, store,
@@ -305,5 +305,3 @@ function cloneObj (obj) {
   }
   return { ...obj }
 }
-
-module.exports = PermissionsLogController
