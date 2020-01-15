@@ -60,11 +60,6 @@ class ThreeBoxController {
           withAppKeyOrigin: 'wallet://3box.metamask.io',
         }))
       },
-      processDecryptMessage: (msgParams) => {
-        return Promise.resolve(keyringController.decryptMessage(msgParams, {
-          withAppKeyOrigin: 'wallet://3box.metamask.io',
-        }))
-      },
     })
 
     const initState = {

@@ -7,7 +7,7 @@ import classnames from 'classnames'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import Identicon from '../../components/ui/identicon'
-import AccountListItem from '../../pages/send/account-list-item/account-list-item.component'
+import AccountListItem from '../send/account-list-item/account-list-item.component'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 import Button from '../../components/ui/button'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
@@ -29,7 +29,7 @@ export default class ConfirmDecryptMessage extends Component {
     requesterAddress: PropTypes.string,
     selectedAccount: PropTypes.object,
     txData: PropTypes.object,
-    approvedOrigins: PropTypes.object,
+    domainMetadata: PropTypes.object,
   }
 
   state = {
@@ -222,9 +222,9 @@ export default class ConfirmDecryptMessage extends Component {
             onClick={(event) => {
               this.props.decryptMessageInline(txData, event).then((result, err) => {
                 if (!err) {
-                  this.setState({ hasDecrypted: true, rawMessage: result.rawData})
+                  this.setState({ hasDecrypted: true, rawMessage: result.rawData })
                 } else {
-                  this.setState({ hasDecrypted: true, rawMessage: err})
+                  this.setState({ hasDecrypted: true, rawMessage: err })
                 }
               })
             }}

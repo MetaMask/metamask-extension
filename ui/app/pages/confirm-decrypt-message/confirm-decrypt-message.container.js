@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-import { goHome, decryptMsg, cancelDecryptMsg, decryptMsgInline} from '../../store/actions'
+import { goHome, decryptMsg, cancelDecryptMsg, decryptMsgInline } from '../../store/actions'
 
 import {
   getSelectedAccount,

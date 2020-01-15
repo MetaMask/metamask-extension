@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
+
 const hexRe = /^[0-9A-Fa-f]+$/g
 import log from 'loglevel'
 
@@ -25,7 +26,7 @@ import log from 'loglevel'
  *
  */
 
-module.exports = class DecryptMessageManager extends EventEmitter {
+export default class DecryptMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *

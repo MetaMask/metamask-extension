@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
-import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import log from 'loglevel'
@@ -22,7 +21,7 @@ import log from 'loglevel'
  *
  */
 
-module.exports = class EncryptionPublicKeyManager extends EventEmitter {
+export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
