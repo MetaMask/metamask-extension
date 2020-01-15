@@ -82,7 +82,7 @@ export default class Network extends Component {
                     nonSelectBackgroundColor="#ec2c50"
                     loading={networkNumber === 'loading'}
                   />
-                  <div className="network-name">{context.t('ropsten')}</div>
+                  <div className="network-name">{context.t('testnet')}</div>
                   <div className="network-indicator__down-arrow" />
                 </div>
               )
