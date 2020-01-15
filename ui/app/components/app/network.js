@@ -38,18 +38,9 @@ export default class Network extends Component {
     if (providerName === 'mainnet') {
       hoverText = context.t('mainnet')
       iconName = 'ethereum-network'
-    } else if (providerName === 'ropsten') {
-      hoverText = context.t('ropsten')
-      iconName = 'ropsten-test-network'
-    } else if (providerName === 'kovan') {
-      hoverText = context.t('kovan')
-      iconName = 'kovan-test-network'
-    } else if (providerName === 'rinkeby') {
-      hoverText = context.t('rinkeby')
-      iconName = 'rinkeby-test-network'
-    } else if (providerName === 'goerli') {
-      hoverText = context.t('goerli')
-      iconName = 'goerli-test-network'
+    } else if (providerName === 'testnet') {
+      hoverText = 'conflux-test-network'
+      iconName = 'conflux-test-network'
     } else {
       hoverText = providerId
       iconName = 'private-network'
@@ -60,10 +51,7 @@ export default class Network extends Component {
         className={classnames('network-component pointer', {
           'network-component--disabled': this.props.disabled,
           'ethereum-network': providerName === 'mainnet',
-          'ropsten-test-network': providerName === 'ropsten',
-          'kovan-test-network': providerName === 'kovan',
-          'rinkeby-test-network': providerName === 'rinkeby',
-          'goerli-test-network': providerName === 'goerli',
+          'conflux-test-network': providerName === 'testnet',
         })}
         title={hoverText}
         onClick={event => {
@@ -86,7 +74,7 @@ export default class Network extends Component {
                   <div className="network-indicator__down-arrow" />
                 </div>
               )
-            case 'ropsten-test-network':
+            case 'conflux-test-network':
               return (
                 <div className="network-indicator">
                   <NetworkDropdownIcon
@@ -95,42 +83,6 @@ export default class Network extends Component {
                     loading={networkNumber === 'loading'}
                   />
                   <div className="network-name">{context.t('ropsten')}</div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-            case 'kovan-test-network':
-              return (
-                <div className="network-indicator">
-                  <NetworkDropdownIcon
-                    backgroundColor="#690496"
-                    nonSelectBackgroundColor="#b039f3"
-                    loading={networkNumber === 'loading'}
-                  />
-                  <div className="network-name">{context.t('kovan')}</div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-            case 'rinkeby-test-network':
-              return (
-                <div className="network-indicator">
-                  <NetworkDropdownIcon
-                    backgroundColor="#ebb33f"
-                    nonSelectBackgroundColor="#ecb23e"
-                    loading={networkNumber === 'loading'}
-                  />
-                  <div className="network-name">{context.t('rinkeby')}</div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-            case 'goerli-test-network':
-              return (
-                <div className="network-indicator">
-                  <NetworkDropdownIcon
-                    backgroundColor="#3099f2"
-                    nonSelectBackgroundColor="#ecb23e"
-                    loading={networkNumber === 'loading'}
-                  />
-                  <div className="network-name">{context.t('goerli')}</div>
                   <div className="network-indicator__down-arrow" />
                 </div>
               )
