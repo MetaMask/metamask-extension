@@ -10,9 +10,9 @@ import createTxMeta from '../../../lib/createTxMeta'
 import EthQuery from 'eth-query'
 
 const threeBoxSpies = {
-  init: sinon.spy(),
+  init: sinon.stub(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
-  turnThreeBoxSyncingOn: sinon.spy(),
+  turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
 }
 import proxyquire from 'proxyquire'
