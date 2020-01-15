@@ -4,11 +4,11 @@ const getPort = require('get-port')
 
 const { By, until } = webdriver
 const {
-  prepareExtensionForTesting,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -31,7 +31,7 @@ describe('MetaMask', function () {
         },
       ],
     })
-    const result = await prepareExtensionForTesting({ port: await getPort() })
+    const result = await buildWebDriver({ port: await getPort() })
     driver = result.driver
   })
 
@@ -60,19 +60,19 @@ describe('MetaMask', function () {
       it('clicks the continue button on the welcome screen', async () => {
         await driver.findElement(By.css('.welcome-page__header'))
         const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-        welcomeScreenBtn.click()
+        await welcomeScreenBtn.click()
         await driver.delay(largeDelayMs)
       })
 
       it('clicks the "Import Wallet" option', async () => {
         const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
-        customRpcButton.click()
+        await customRpcButton.click()
         await driver.delay(largeDelayMs)
       })
 
       it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
         const optOutButton = await driver.findElement(By.css('.btn-default'))
-        optOutButton.click()
+        await optOutButton.click()
         await driver.delay(largeDelayMs)
       })
 
@@ -115,15 +115,14 @@ describe('MetaMask', function () {
         await driver.delay(regularDelayMs)
 
         const settingsButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Settings')]`))
-        settingsButton.click()
+        await settingsButton.click()
       })
 
       it('turns on threebox syncing', async () => {
         const advancedButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Advanced')]`))
         await advancedButton.click()
 
-        const threeBoxToggle = await driver.findElements(By.css('.toggle-button'))
-        const threeBoxToggleButton = await threeBoxToggle[4].findElement(By.css('div'))
+        const threeBoxToggleButton = await driver.findElement(By.css('[data-testid="advanced-setting-3box"] .toggle-button div'))
         await threeBoxToggleButton.click()
       })
 
@@ -171,7 +170,7 @@ describe('MetaMask', function () {
     let driver2
 
     before(async function () {
-      const result = await prepareExtensionForTesting({ port: await getPort() })
+      const result = await buildWebDriver({ port: await getPort() })
       driver2 = result.driver
     })
 
@@ -183,19 +182,19 @@ describe('MetaMask', function () {
       it('clicks the continue button on the welcome screen', async () => {
         await driver2.findElement(By.css('.welcome-page__header'))
         const welcomeScreenBtn = await driver2.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-        welcomeScreenBtn.click()
+        await welcomeScreenBtn.click()
         await driver2.delay(largeDelayMs)
       })
 
       it('clicks the "Import Wallet" option', async () => {
         const customRpcButton = await driver2.findElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
-        customRpcButton.click()
+        await customRpcButton.click()
         await driver2.delay(largeDelayMs)
       })
 
       it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
         const optOutButton = await driver2.findElement(By.css('.btn-default'))
-        optOutButton.click()
+        await optOutButton.click()
         await driver2.delay(largeDelayMs)
       })
 
@@ -244,7 +243,7 @@ describe('MetaMask', function () {
         await driver.delay(regularDelayMs)
 
         const settingsButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Settings')]`))
-        settingsButton.click()
+        await settingsButton.click()
       })
 
       it('finds the blockies toggle turned on', async () => {

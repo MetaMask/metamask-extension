@@ -212,7 +212,7 @@ describe('TokenInput Component', () => {
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for ETH', () => {
+    it('should call onChange on input changes with the hex value for ETH', () => {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -224,7 +224,6 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
             selectedToken={{
               address: '0x1',
               decimals: '4',
@@ -253,14 +252,9 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '2ETH')
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
-
-      assert.equal(handleBlurSpy.callCount, 0)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith('2710'))
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', () => {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -272,7 +266,6 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
             selectedToken={{
               address: '0x1',
               decimals: '4',
@@ -302,11 +295,6 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
-
-      assert.equal(handleBlurSpy.callCount, 0)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith('2710'))
     })
 
     it('should change the state and pass in a new decimalValue when props.value changes', () => {
@@ -321,7 +309,6 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
             selectedToken={{
               address: '0x1',
               decimals: '4',

@@ -3,10 +3,10 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const {
-  prepareExtensionForTesting,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -28,7 +28,7 @@ describe('MetaMask', function () {
         },
       ],
     })
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 
@@ -55,19 +55,19 @@ describe('MetaMask', function () {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
       const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      welcomeScreenBtn.click()
+      await welcomeScreenBtn.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
       const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      customRpcButton.click()
+      await customRpcButton.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
       const optOutButton = await driver.findElement(By.css('.btn-default'))
-      optOutButton.click()
+      await optOutButton.click()
       await driver.delay(largeDelayMs)
     })
 

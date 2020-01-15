@@ -3,11 +3,11 @@ const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
 const {
-  prepareExtensionForTesting,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -24,7 +24,7 @@ describe('MetaMask', function () {
 
   before(async function () {
     await ganacheServer.start()
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 
@@ -51,19 +51,19 @@ describe('MetaMask', function () {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
       const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      welcomeScreenBtn.click()
+      await welcomeScreenBtn.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
       const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      customRpcButton.click()
+      await customRpcButton.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
       const optOutButton = await driver.findElement(By.css('.btn-default'))
-      optOutButton.click()
+      await optOutButton.click()
       await driver.delay(largeDelayMs)
     })
 
@@ -196,7 +196,7 @@ describe('MetaMask', function () {
   describe('Import seed phrase', () => {
     it('logs out of the vault', async () => {
       const accountMenuButton = await driver.findElement(By.css('.account-menu__icon'))
-      accountMenuButton.click()
+      await accountMenuButton.click()
       await driver.delay(regularDelayMs)
 
       const logoutButton = await driver.findElement(By.css('.account-menu__logout-button'))
@@ -406,7 +406,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const settingsButton = await driver.findElement(By.xpath(`//div[contains(text(), 'Settings')]`))
-      settingsButton.click()
+      await settingsButton.click()
 
       // await driver.findElement(By.css('.tab-bar'))
 
@@ -414,13 +414,13 @@ describe('MetaMask', function () {
       await advancedTab.click()
       await driver.delay(regularDelayMs)
 
-      const showConversionToggle = await driver.findElement(By.css('.settings-page__content-row:nth-of-type(6) .settings-page__content-item-col > div > div'))
+      const showConversionToggle = await driver.findElement(By.css('[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div'))
       await showConversionToggle.click()
 
       const advancedGasTitle = await driver.findElement(By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.scrollToElement(advancedGasTitle)
 
-      const advancedGasToggle = await driver.findElement(By.css('.settings-page__content-row:nth-of-type(4) .settings-page__content-item-col > div > div'))
+      const advancedGasToggle = await driver.findElement(By.css('[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
@@ -577,46 +577,37 @@ describe('MetaMask', function () {
     })
 
     it('navigates the transactions', async () => {
-      let navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      assert.equal(navigateTxButtons.length, 4, 'navigation button present')
-
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       let navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       let navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('2'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('3'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await driver.clickElement(By.css('[data-testid="next-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('4'), true, 'changed transaction right')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[0].click()
+      await driver.clickElement(By.css('[data-testid="first-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('1'), true, 'navigate to first transaction')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[3].click()
+      await driver.clickElement(By.css('[data-testid="last-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.split('4').length, 3, 'navigate to last transaction')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('3'), true, 'changed transaction left')
 
-      navigateTxButtons = await driver.findElements(By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await driver.clickElement(By.css('[data-testid="previous-page"]'))
       navigationElement = await driver.findElement(By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('2'), true, 'changed transaction left')
@@ -998,7 +989,7 @@ describe('MetaMask', function () {
       assert(confirmDataText.match(/0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/))
 
       const detailsTab = await driver.findElement(By.xpath(`//li[contains(text(), 'Details')]`))
-      detailsTab.click()
+      await detailsTab.click()
       await driver.delay(regularDelayMs)
     })
 

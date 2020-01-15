@@ -2,11 +2,11 @@ const assert = require('assert')
 const { By, until } = require('selenium-webdriver')
 
 const {
-  prepareExtensionForTesting,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
+const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
@@ -29,7 +29,7 @@ describe('MetaMask', function () {
         },
       ],
     })
-    const result = await prepareExtensionForTesting()
+    const result = await buildWebDriver()
     driver = result.driver
   })
 
@@ -56,19 +56,19 @@ describe('MetaMask', function () {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
       const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      welcomeScreenBtn.click()
+      await welcomeScreenBtn.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
       const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      customRpcButton.click()
+      await customRpcButton.click()
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
       const optOutButton = await driver.findElement(By.css('.btn-default'))
-      optOutButton.click()
+      await optOutButton.click()
       await driver.delay(largeDelayMs)
     })
 
@@ -161,7 +161,7 @@ describe('MetaMask', function () {
       await passwordInputs[0].sendKeys('correct horse battery staple')
       await passwordInputs[1].sendKeys('correct horse battery staple')
       const restoreButton = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.restore.message}')]`))
-      restoreButton.click()
+      await restoreButton.click()
       await driver.delay(regularDelayMs)
     })
 
