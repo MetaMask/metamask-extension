@@ -34,6 +34,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
+    unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network
   ) => txHelper(
@@ -41,6 +42,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedDecryptMsgs,
+    unapprovedEncryptionPublicKeyMsgs,
     unapprovedTypedMessages,
     network
   ) || []

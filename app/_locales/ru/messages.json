@@ -1359,23 +1359,14 @@
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
   },
-  "decryptRequest" : {
+  "decryptRequest": {
     "message": "Запрос расшифровки"
   },
-  "yourDecryptRequest" : {
-    "message": "Данные для расшифровки"
-  },
-  "yourEncryptionPublicKeyRequest" : {
-    "message": "Запрос публичного ключа шифрования"
-  },
-  "decrypt" : {
+  "decrypt": {
     "message": "Расшифровать"
   },
-  "youDecrypt": {
-    "message": "Вы расшифровываете"
-  },
   "decryptMessageNotice": {
-	"message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие"
+    "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие"
   },
   "decryptMetamask": {
     "message": "Расшифровать при помощи Metamask"

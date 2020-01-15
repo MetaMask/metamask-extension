@@ -1572,23 +1572,14 @@
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
   },
-  "decryptRequest" : {
+  "decryptRequest": {
     "message": "Decrypt request"
   },
-  "yourDecryptRequest" : {
-    "message": "Data decrypt"
-  },
-  "yourEncryptionPublicKeyRequest" : {
-    "message": "Request encryption public key"
-  },
-  "decrypt" : {
+  "decrypt": {
     "message": "Decrypt"
   },
-  "youDecrypt": {
-    "message": "You are decrypting"
-  },
   "decryptMessageNotice": {
-	"message": "$1 would like to read this message to complete your action"
+    "message": "$1 would like to read this message to complete your action"
   },
   "decryptMetamask": {
     "message": "Decrypt with Metamask"
