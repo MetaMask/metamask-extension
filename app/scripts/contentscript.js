@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import pump from 'pump'
 import querystring from 'querystring'
 import LocalMessageDuplexStream from 'post-message-stream'
@@ -21,8 +23,19 @@ const inpageBundle = inpageContent + inpageSuffix
 // MetaMask will be much faster loading and performant on Firefox.
 
 if (shouldInjectProvider()) {
-  injectScript(inpageBundle)
-  start()
+  // If this is Brave, it requires coordination to know if we should be the
+  // web3 provider.
+  if (chrome.braveWallet && chrome.braveWallet.getWeb3Provider) {
+    chrome.braveWallet.getWeb3Provider((provider) => {
+      if (provider === extension.runtime.id) {
+        injectScript(inpageBundle)
+        start()
+      }
+    })
+  } else {
+    injectScript(inpageBundle)
+    start()
+  }
 }
 
 /**
