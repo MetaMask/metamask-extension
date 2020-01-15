@@ -1,10 +1,9 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const { ethErrors } = require('eth-json-rpc-errors')
-const createId = require('./random-id')
-const hexRe = /^[0-9A-Fa-f]+$/g
-const log = require('loglevel')
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import { ethErrors } from 'eth-json-rpc-errors'
+import createId from './random-id'
+import log from 'loglevel'
 
 /**
  * Represents, and contains data about, an 'encryption_public_key' type request. These are created when
@@ -279,26 +278,6 @@ module.exports = class EncryptionPublicKeyManager extends EventEmitter {
     const unapprovedEncryptionPublicKeyMsgCount = Object.keys(unapprovedEncryptionPublicKeyMsgs).length
     this.memStore.updateState({ unapprovedEncryptionPublicKeyMsgs, unapprovedEncryptionPublicKeyMsgCount })
     this.emit('updateBadge')
-  }
-
-  /**
-   * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
-   *
-   * @param {any} data The buffer data to convert to a hex
-   * @returns {string} A hex string conversion of the buffer data
-   *
-   */
-  normalizeMsgData (data) {
-    try {
-      const stripped = ethUtil.stripHexPrefix(data)
-      if (stripped.match(hexRe)) {
-        return ethUtil.addHexPrefix(stripped)
-      }
-    } catch (e) {
-      log.debug(`Message was not hex encoded, interpreting as utf8.`)
-    }
-
-    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
 
 }

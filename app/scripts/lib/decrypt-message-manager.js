@@ -1,10 +1,10 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const { ethErrors } = require('eth-json-rpc-errors')
-const createId = require('./random-id')
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import { ethErrors } from 'eth-json-rpc-errors'
+import createId from './random-id'
 const hexRe = /^[0-9A-Fa-f]+$/g
-const log = require('loglevel')
+import log from 'loglevel'
 
 /**
  * Represents, and contains data about, an 'eth_decryptMessage' type decryption request. These are created when a

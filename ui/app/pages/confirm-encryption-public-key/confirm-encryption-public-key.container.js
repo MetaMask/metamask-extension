@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-const actions = require('../../store/actions')
+import { goHome, encryptionPublicKeyMsg, cancelEncryptionPublicKeyMsg } from '../../store/actions'
 
 import {
   getSelectedAccount,
@@ -31,16 +31,16 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
+    goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     encryptionPublicKey: (msgData, event) => {
       const params = { data: msgData.msgParams, metamaskId: msgData.id}
       event.stopPropagation()
-      return dispatch(actions.encryptionPublicKeyMsg(params))
+      return dispatch(encryptionPublicKeyMsg(params))
     },
     cancelEncryptionPublicKey: (msgData, event) => {
       event.stopPropagation()
-      return dispatch(actions.cancelEncryptionPublicKeyMsg(msgData))
+      return dispatch(cancelEncryptionPublicKeyMsg(msgData))
     },
   }
 }
