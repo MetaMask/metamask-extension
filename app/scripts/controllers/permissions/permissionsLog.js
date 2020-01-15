@@ -1,7 +1,11 @@
 
 import clone from 'clone'
 import { isValidAddress } from 'ethereumjs-util'
-import { CAVEAT_NAMES } from './enums'
+import {
+  CAVEAT_NAMES,
+  HISTORY_STORE_KEY,
+  LOG_STORE_KEY
+} from './enums'
 
 const LOG_LIMIT = 100
 
@@ -16,31 +20,28 @@ const getAccountToTimeMap = (accounts, time) => accounts.reduce(
 export default class PermissionsLogController {
 
   constructor ({
-    walletPrefix, restrictedMethods, store,
-    logStoreKey, historyStoreKey, ignoreMethods,
+    walletPrefix, restrictedMethods, store, ignoreMethods
   }) {
     this.walletPrefix = walletPrefix
     this.restrictedMethods = restrictedMethods
     this.store = store
-    this.logStoreKey = logStoreKey
-    this.historyStoreKey = historyStoreKey
     this.ignoreMethods = ignoreMethods
   }
 
   getLogStore () {
-    return this.store.getState()[this.logStoreKey] || []
+    return this.store.getState()[LOG_STORE_KEY] || []
   }
 
   updateLogStore (logs) {
-    this.store.updateState({ [this.logStoreKey]: logs })
+    this.store.updateState({ [LOG_STORE_KEY]: logs })
   }
 
   getHistoryStore () {
-    return this.store.getState()[this.logStoreKey] || {}
+    return this.store.getState()[HISTORY_STORE_KEY] || {}
   }
 
   updateHistoryStore (history) {
-    this.store.updateState({ [this.historyStoreKey]: history })
+    this.store.updateState({ [HISTORY_STORE_KEY]: history })
   }
 
   createMiddleware () {

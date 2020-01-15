@@ -45,8 +45,6 @@ export class PermissionsController {
       restrictedMethods: Object.keys(this._restrictedMethods),
       ignoreMethods: [ 'wallet_sendDomainMetadata' ],
       store: this.store,
-      logStoreKey: LOG_STORE_KEY,
-      historyStoreKey: HISTORY_STORE_KEY,
     })
     this._initializePermissions(restoredPermissions)
   }
