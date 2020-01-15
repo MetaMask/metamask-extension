@@ -59,45 +59,38 @@ describe('MetaMask', function () {
   describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      await welcomeScreenBtn.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Create New Wallet" option', async () => {
-      const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
-      await customRpcButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await driver.findElement(By.css('.btn-default'))
-      await optOutButton.click()
+      await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
     it('accepts a secure password', async () => {
       const passwordBox = await driver.findElement(By.css('.first-time-flow__form #create-password'))
       const passwordBoxConfirm = await driver.findElement(By.css('.first-time-flow__form #confirm-password'))
-      const button = await driver.findElement(By.css('.first-time-flow__form button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
 
-      const tosCheckBox = await driver.findElement(By.css('.first-time-flow__checkbox'))
-      await tosCheckBox.click()
+      await driver.clickElement(By.css('.first-time-flow__checkbox'))
 
-      await button.click()
+      await driver.clickElement(By.css('.first-time-flow__form button'))
       await driver.delay(regularDelayMs)
     })
 
     it('skips the seed phrase challenge', async () => {
-      const button = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
-      await button.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
-      const detailsButton = await driver.findElement(By.css('.account-details__details-button'))
-      await detailsButton.click()
+      await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
     })
 
@@ -107,8 +100,7 @@ describe('MetaMask', function () {
 
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      const accountModalClose = await driver.findElement(By.css('.account-modal-close'))
-      await accountModalClose.click()
+      await driver.clickElement(By.css('.account-modal-close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
@@ -132,8 +124,7 @@ describe('MetaMask', function () {
       await addressInput.sendKeys(publicAddress)
       await driver.delay(regularDelayMs)
 
-      const sendButton = await driver.findElement(By.css('#send'))
-      await sendButton.click()
+      await driver.clickElement(By.css('#send'))
 
       const txStatus = await driver.findElement(By.css('#success'))
       await driver.wait(until.elementTextMatches(txStatus, /Success/), 15000)
@@ -159,8 +150,7 @@ describe('MetaMask', function () {
     })
 
     it('should take the user to the seedphrase backup screen', async () => {
-      const backupButton = await driver.findElement(By.css('.home-notification__accept-button'))
-      await backupButton.click()
+      await driver.clickElement(By.css('.home-notification__accept-button'))
       await driver.delay(regularDelayMs)
     })
 
@@ -168,8 +158,7 @@ describe('MetaMask', function () {
 
     it('reveals the seed phrase', async () => {
       const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
-      const revealSeedPhraseButton = await driver.findElement(byRevealButton)
-      await revealSeedPhraseButton.click()
+      await driver.clickElement(byRevealButton)
       await driver.delay(regularDelayMs)
 
       const revealedSeedPhrase = await driver.findElement(By.css('.reveal-seed-phrase__secret-words'))
@@ -177,16 +166,13 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await driver.delay(regularDelayMs)
 
-      const nextScreen = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
-      await nextScreen.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.next.message}')]`))
       await driver.delay(regularDelayMs)
     })
 
     async function clickWordAndWait (word) {
       const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
-      const word0 = await driver.findElement(By.xpath(xpath))
-
-      await word0.click()
+      await driver.clickElement(By.xpath(xpath))
       await driver.delay(tinyDelayMs)
     }
 
@@ -197,14 +183,12 @@ describe('MetaMask', function () {
         await clickWordAndWait(word)
       }
 
-      const confirm = await driver.findElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirm.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
       await driver.delay(regularDelayMs)
     })
 
     it('can click through the success screen', async () => {
-      const confirm = await driver.findElement(By.xpath(`//button[contains(text(), 'All Done')]`))
-      await confirm.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'All Done')]`))
       await driver.delay(regularDelayMs)
     })
 
