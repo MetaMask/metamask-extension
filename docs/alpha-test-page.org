@@ -1,7 +1,7 @@
-#+TITLE: Conflux MetaMask Test
+#+TITLE: ConfluxPortal
 #+Author: Conflux Team
 
-* Conflux MetaMask Test
+* ConfluxPortal
 Test version (extremely unstable) of Conflux MetaMask (wallet as a browser extension) that can
 connect to Conflux test net.
 

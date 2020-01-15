@@ -9,7 +9,7 @@ function setupDappAutoReload (web3, observable) {
   let lastSeenNetwork
   let hasBeenWarned = true
 
-  global.web3 = new Proxy(web3, {
+  global.confluxJS = new Proxy(web3, {
     get: (_web3, key) => {
       // get the time of use
       lastTimeUsed = Date.now()
@@ -32,7 +32,7 @@ function setupDappAutoReload (web3, observable) {
   observable.subscribe(function (state) {
     // if the auto refresh on network change is false do not
     // do anything
-    if (!window.ethereum.autoRefreshOnNetworkChange) {
+    if (!window.conflux.autoRefreshOnNetworkChange) {
       return
     }
 

@@ -1,4 +1,4 @@
-/*global ethereum, MetamaskOnboarding, HumanStandardTokenContractCode PiggyBankContractCode keccak256*/
+/*global confluxJS, conflux, MetamaskOnboarding, HumanStandardTokenContractCode PiggyBankContractCode keccak256*/
 
 /*
 The `piggybankContract` is compiled from:
@@ -33,7 +33,7 @@ The `piggybankContract` is compiled from:
 const forwarderOrigin = 'http://localhost:9010'
 
 const isMetaMaskInstalled = () => {
-  return Boolean(window.ethereum && window.ethereum.isMetaMask)
+  return Boolean(window.conflux && window.conflux.isConfluxPortal)
 }
 
 const initialize = () => {
@@ -70,6 +70,8 @@ const initialize = () => {
 
   let onboarding
   try {
+    // this is metamask's onboarding package, we don't have one right now
+    // https://github.com/MetaMask/metamask-onboarding/blob/master/src/index.js
     onboarding = new MetamaskOnboarding({ forwarderOrigin })
   } catch (error) {
     console.error(error)
@@ -97,11 +99,12 @@ const initialize = () => {
   const onClickInstall = () => {
     onboardButton.innerText = 'Onboarding in progress'
     onboardButton.disabled = true
+    // https://github.com/MetaMask/metamask-onboarding/blob/master/src/index.js#L109
     onboarding.startOnboarding()
   }
 
   const onClickConnect = async () => {
-    await window.ethereum.enable()
+    await window.conflux.enable()
   }
 
   const updateButtons = () => {
@@ -138,7 +141,7 @@ const initialize = () => {
   }
 
   const initializeAccountButtons = () => {
-    piggybankContract = web3.Contract({
+    piggybankContract = confluxJS.Contract({
       abi: [
         {
           constant: false,
@@ -183,7 +186,7 @@ const initialize = () => {
         .constructor()
         .sendTransaction({
           from: accounts[0],
-          gas: 47000,
+          gas: 95000,
           gasPrice: 10000000000,
         })
         .confirmed()
@@ -233,7 +236,7 @@ const initialize = () => {
     }
 
     sendButton.onclick = async () => {
-      const txResult = await web3
+      const txResult = await confluxJS
         .sendTransaction({
           from: accounts[0],
           to: accounts[0],
@@ -250,7 +253,7 @@ const initialize = () => {
       const _tokenName = 'TST'
       const _decimalUnits = 0
       const _tokenSymbol = 'TST'
-      const humanstandardtokenContract = web3.Contract({
+      const humanstandardtokenContract = confluxJS.Contract({
         abi: [
           {
             constant: true,
@@ -538,11 +541,11 @@ const initialize = () => {
         },
       }
 
-      web3.provider.sendAsync(
+      confluxJS.provider.sendAsync(
         {
           method: 'personal_sign',
-          params: [JSON.stringify(typedData), ethereum.selectedAddress],
-          from: ethereum.selectedAddress,
+          params: [JSON.stringify(typedData), conflux.selectedAddress],
+          from: conflux.selectedAddress,
         },
         (err, result) => {
           if (err) {
@@ -596,14 +599,14 @@ const initialize = () => {
         },
       }
 
-      web3.provider.sendAsync(
+      confluxJS.provider.sendAsync(
         {
           method: 'cfx_sign',
           params: [
-            ethereum.selectedAddress,
+            conflux.selectedAddress,
             keccak256.digest(JSON.stringify(typedData)),
           ],
-          from: ethereum.selectedAddress,
+          from: conflux.selectedAddress,
         },
         (err, result) => {
           if (err) {
@@ -657,11 +660,11 @@ const initialize = () => {
         },
       }
 
-      web3.provider.sendAsync(
+      confluxJS.provider.sendAsync(
         {
           method: 'eth_signTypedData_v3',
-          params: [ethereum.selectedAddress, JSON.stringify(typedData)],
-          from: ethereum.selectedAddress,
+          params: [conflux.selectedAddress, JSON.stringify(typedData)],
+          from: conflux.selectedAddress,
         },
         (err, result) => {
           if (err) {
@@ -675,7 +678,7 @@ const initialize = () => {
 
     getAccountsButton.addEventListener('click', async () => {
       try {
-        const accounts = await ethereum.send({ method: 'eth_accounts' })
+        const accounts = await conflux.send({ method: 'cfx_accounts' })
         getAccountsResults.innerHTML = accounts[0] || 'Not able to get accounts'
       } catch (error) {
         console.error(error)
@@ -686,14 +689,14 @@ const initialize = () => {
 
   updateButtons()
   if (isMetaMaskInstalled()) {
-    ethereum.autoRefreshOnNetworkChange = false
-    ethereum.on('networkChanged', networkId => {
+    conflux.autoRefreshOnNetworkChange = false
+    conflux.on('networkChanged', networkId => {
       networkDiv.innerHTML = networkId
     })
-    ethereum.on('chainIdChanged', chainId => {
+    conflux.on('chainIdChanged', chainId => {
       chainIdDiv.innerHTML = chainId
     })
-    ethereum.on('accountsChanged', newAccounts => {
+    conflux.on('accountsChanged', newAccounts => {
       const connecting = Boolean(
         (!accounts || !accounts.length) && newAccounts && newAccounts.length
       )

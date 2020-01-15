@@ -202,6 +202,7 @@ class PendingTransactionTracker extends EventEmitter {
     } catch (e) {
       log.error(e)
     }
+
     if (taken || dropped) {
       return this.emit('tx:dropped', txId)
     }

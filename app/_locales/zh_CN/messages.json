@@ -75,17 +75,17 @@
     "message": "添加推荐代币"
   },
   "addAcquiredTokens": {
-    "message": "在Conflux MetaMask Test上添加已用的代币"
+    "message": "在ConfluxPortal上添加已用的代币"
   },
   "amount": {
     "message": "数量"
   },
   "appDescription": {
-    "message": "Conflux MetaMask Test 浏览器插件",
+    "message": "ConfluxPortal 浏览器插件",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "Conflux MetaMask Test",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "自动注销计时器（分钟）"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "请设置 Conflux MetaMask Test 自动注销前的空闲时间（以分钟为单位）"
+    "message": "请设置 ConfluxPortal 自动注销前的空闲时间（以分钟为单位）"
   },
   "average": {
     "message": "平均值"
@@ -128,7 +128,7 @@
     "message": "请备份您的私密恢复代码，保证个人钱包和资金安全。"
   },
   "backupApprovalInfo": {
-    "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 Conflux MetaMask Test，亦或是需在另一台设备上打开钱包，请使用该保密码恢复个人钱包数据。"
+    "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 ConfluxPortal，亦或是需在另一台设备上打开钱包，请使用该保密码恢复个人钱包数据。"
   },
   "backupNow": {
     "message": "立即备份"
@@ -156,13 +156,13 @@
     "message": "您的浏览器不支持该功能…"
   },
   "builtInCalifornia": {
-    "message": "Conflux MetaMask Test 是 fork MetaMask 代码并在其基础上进行更改从而适配 Conflux, MetaMask 在加利福尼亚设计和制造, 针对 Conflux 的修改在北京设计和制造."
+    "message": "ConfluxPortal 是 fork MetaMask 代码并在其基础上进行更改从而适配 Conflux, MetaMask 在加利福尼亚设计和制造, 针对 Conflux 的修改在北京设计和制造."
   },
   "buyWithWyre": {
     "message": "使用 Wyre 购买 CFX (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 Conflux MetaMask Test 账户。(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 ConfluxPortal 账户。(Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "buyCoinSwitch": {
     "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持该功能)"
@@ -210,7 +210,7 @@
     "message": "关闭"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要通过 Google Chrome 浏览器使用 Conflux MetaMask Test ，连接个人硬件钱包。(硬件钱包没有经过充分测试, 使用中可能会遇到问题)"
+    "message": "您需要通过 Google Chrome 浏览器使用 ConfluxPortal ，连接个人硬件钱包。(硬件钱包没有经过充分测试, 使用中可能会遇到问题)"
   },
   "confirm": {
     "message": "确认"
@@ -390,7 +390,7 @@
     "message": "绝不向任何分享该密语。"
   },
   "endOfFlowMessage5": {
-    "message": "谨防网络钓鱼！Conflux MetaMask Test 绝不会主动要求您提供个人种子密语。"
+    "message": "谨防网络钓鱼！ConfluxPortal 绝不会主动要求您提供个人种子密语。"
   },
   "endOfFlowMessage6": {
     "message": "如果您需要再次备份个人种子密语，请通过设置 -> 安全选项完成该操作。"
@@ -399,7 +399,7 @@
     "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 webextension@conflux-chain.org 进行咨询。"
   },
   "endOfFlowMessage8": {
-    "message": "Conflux MetaMask Test 无法恢复您的种子密语。了解更多。"
+    "message": "ConfluxPortal 无法恢复您的种子密语。了解更多。"
   },
   "endOfFlowMessage9": {
     "message": "了解详情。"
@@ -519,7 +519,7 @@
     "message": "连接硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
   },
   "hardwareWalletsMsg": {
-    "message": "请选择希望用于 Conflux MetaMask Test 的硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
+    "message": "请选择希望用于 ConfluxPortal 的硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
   },
   "havingTroubleConnecting": {
     "message": "连接出现问题？"
@@ -664,13 +664,13 @@
     "message": "消息"
   },
   "metamaskDescription": {
-    "message": "Conflux MetaMask Test is a secure identity vault for Conflux."
+    "message": "ConfluxPortal is a secure identity vault for Conflux."
   },
   "metamaskSeedWords": {
-    "message": "Conflux MetaMask Test 助记词"
+    "message": "ConfluxPortal 助记词"
   },
   "metamaskVersion": {
-    "message": "Conflux MetaMask Test 版本"
+    "message": "ConfluxPortal 版本"
   },
   "missingYourTokens": {
     "message": "无法看到您的代币？"
@@ -682,13 +682,13 @@
     "message": "我的钱包账户"
   },
   "myWalletAccountsDescription": {
-    "message": "所有已创建的 Conflux MetaMask Test 账户将自动添加到该部分。"
+    "message": "所有已创建的 ConfluxPortal 账户将自动添加到该部分。"
   },
   "mustSelectOne": {
     "message": "至少选择一种代币."
   },
   "needEtherInWallet": {
-    "message": "使用 Conflux MetaMask Test 与 DAPP 交互，需要你的钱包里有 CFX。"
+    "message": "使用 ConfluxPortal 与 DAPP 交互，需要你的钱包里有 CFX。"
   },
   "needImportFile": {
     "message": "必须选择导入一个文件。",
@@ -729,7 +729,7 @@
     "message": "新增网络"
   },
   "newToMetaMask": {
-    "message": "新增至 Conflux MetaMask Test？"
+    "message": "新增至 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
     "message": "不，我已经有一个种子密语了。"
@@ -738,7 +738,7 @@
     "message": "妥善保管您的密钥！"
   },
   "protectYourKeysMessage1": {
-    "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 Conflux MetaMask Test。Conflux MetaMask Test 绝不会要求您提供个人种子密语！"
+    "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 ConfluxPortal。ConfluxPortal 绝不会要求您提供个人种子密语！"
   },
   "protectYourKeysMessage2": {
     "message": "请妥善保管您的密语。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 webextension@conflux-chain.org 进行咨询"
@@ -798,7 +798,7 @@
     "message": "加入 MetaMetrics (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "加入 MetaMetrics ，帮助我们改善 Conflux MetaMask Test 服务 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "加入 MetaMetrics ，帮助我们改善 ConfluxPortal 服务 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "password": {
     "message": "密码"
@@ -1028,7 +1028,7 @@
     "message": "选择账户"
   },
   "selectAnAccountHelp": {
-    "message": "请通过 Conflux MetaMask Test 选择需要查看的账户"
+    "message": "请通过 ConfluxPortal 选择需要查看的账户"
   },
   "selectAHigherGasFee": {
     "message": "请选择价格稍高的然气费，加快交易处理速度。*"
@@ -1142,19 +1142,19 @@
     "message": "使用移动设备进行同步 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileDesc": {
-    "message": "您可以使用个人移动设备同步个人账户与信息。打开 Conflux MetaMask Test 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步” (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您可以使用个人移动设备同步个人账户与信息。打开 ConfluxPortal 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步” (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 Conflux MetaMask Test 移动应用程序，请通过个人手机完成如下操作。 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "如果您是首次启用 ConfluxPortal 移动应用程序，请通过个人手机完成如下操作。 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "使用 Conflux MetaMask Test 应用程序扫描编码 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用 ConfluxPortal 应用程序扫描编码 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileBeCareful": {
     "message": "扫描编码时，请确保身边无其他人正在查看您的显示页面 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 Conflux MetaMask Test 应用程序！(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您的数据已同步成功。尽情体验 ConfluxPortal 应用程序！(Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "terms": {
     "message": "使用条款"

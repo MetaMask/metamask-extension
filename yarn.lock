@@ -16567,10 +16567,10 @@ js-beautify@~1.5.4:
     mkdirp "~0.5.0"
     nopt "~3.0.1"
 
-js-conflux-sdk@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.4.0.tgz#e88814e8b8d2e88166aca30aff96934bf596cf3a"
-  integrity sha512-qJWTZDy7k5BkYcd8uxFzwdleLKwRDinxfyBZUIUhMh5ZSGVP2NbxihARNtx9DeCFS3gEZqH8vU3ppkhmVMGlxA==
+js-conflux-sdk@^0.4.0-beta:
+  version "0.4.0-beta"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.4.0-beta.tgz#5c62879ad0ce48118f557d418a90c007d707ec2f"
+  integrity sha512-9qBR3kdmgT5nUZFmFfgv36oW2inGeX0YrVk3bn3EJ/7ufRL3BgOfu0I4P5qsaKda50zdMV8FdEy4I4X2t4rxaQ==
   dependencies:
     bignumber.js "^9.0.0"
     keccak "^2.0.0"
@@ -16578,12 +16578,11 @@ js-conflux-sdk@^0.4.0:
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
 
-js-conflux-sdk@^0.4.0-beta:
-  version "0.4.0-beta"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.4.0-beta.tgz#5c62879ad0ce48118f557d418a90c007d707ec2f"
-  integrity sha512-9qBR3kdmgT5nUZFmFfgv36oW2inGeX0YrVk3bn3EJ/7ufRL3BgOfu0I4P5qsaKda50zdMV8FdEy4I4X2t4rxaQ==
+js-conflux-sdk@^0.6.0-alpha:
+  version "0.6.0-alpha"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.6.0-alpha.tgz#ef43685bf81bddc4b6134e1f5272e90ecd2d6cb3"
+  integrity sha512-JauQcWkCbqPijVlalCNEQC6qbiiQ0nQMJtL+B9nrpmdTnTBLuwIQJshIf1/wjbIfeprWmk1QfwLDLzGNh+8msg==
   dependencies:
-    bignumber.js "^9.0.0"
     keccak "^2.0.0"
     lodash "^4.17.15"
     secp256k1 "^3.7.1"

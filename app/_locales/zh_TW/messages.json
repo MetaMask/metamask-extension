@@ -75,7 +75,7 @@
     "message": "加入建議的代幣"
   },
   "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 Conflux MetaMask Test"
+    "message": "將您已經擁有的代幣顯示於 ConfluxPortal"
   },
   "amount": {
     "message": "數量"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "Conflux MetaMask Test",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "自動登出計時器（分）"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "設定閒置分鐘上限，時間到時 Conflux MetaMask Test 將自動登出"
+    "message": "設定閒置分鐘上限，時間到時 ConfluxPortal 將自動登出"
   },
   "average": {
     "message": "平均"
@@ -128,7 +128,7 @@
     "message": "備份你的秘密還原代碼，安全防護錢包與資金。"
   },
   "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 Conflux MetaMask Test、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
+    "message": "在裝置遺失、忘記密碼、需要重新安裝 ConfluxPortal、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
   "backupNow": {
     "message": "現在備份"
@@ -156,13 +156,13 @@
     "message": "您的瀏覽器尚未支援..."
   },
   "builtInCalifornia": {
-    "message": "Conflux MetaMask Test 是 fork MetaMask 代碼並在其基礎上進行更改從而適配 Conflux, MetaMask 在加利福尼亞設計和制造, 針對 Conflux 的修改在北京設計和制造."
+    "message": "ConfluxPortal 是 fork MetaMask 代碼並在其基礎上進行更改從而適配 Conflux, MetaMask 在加利福尼亞設計和制造, 針對 Conflux 的修改在北京設計和制造."
   },
   "buyWithWyre": {
     "message": "用 Wyre 購買 CFX (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 Conflux MetaMask Test 帳號中直接存入 CFX。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "Wyre 讓你使用信用卡在 ConfluxPortal 帳號中直接存入 CFX。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "buyCoinSwitch": {
     "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持該功能)"
@@ -207,7 +207,7 @@
     "message": "關閉"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要通過 Google Chrome 瀏覽器使用 Conflux MetaMask Test ，連接個人硬件錢包。(硬件錢包沒有經過充分測試, 使用中可能會遇到問題)"
+    "message": "您需要通過 Google Chrome 瀏覽器使用 ConfluxPortal ，連接個人硬件錢包。(硬件錢包沒有經過充分測試, 使用中可能會遇到問題)"
   },
   "confirm": {
     "message": "確認"
@@ -387,7 +387,7 @@
     "message": "不要分享此助記祠給任何人"
   },
   "endOfFlowMessage5": {
-    "message": "小心網路釣魚！Conflux MetaMask Test 永遠不會主動詢問你的助記詞。"
+    "message": "小心網路釣魚！ConfluxPortal 永遠不會主動詢問你的助記詞。"
   },
   "endOfFlowMessage6": {
     "message": "如你需要再次備份助記詞，可至設定 -> 安全。"
@@ -396,7 +396,7 @@
     "message": "如你有任何問題或察覺有異，請寄信給 webextension@conflux-chain.org"
   },
   "endOfFlowMessage8": {
-    "message": "Conflux MetaMask Test 無法還原你的助記詞。暸解更多"
+    "message": "ConfluxPortal 無法還原你的助記詞。暸解更多"
   },
   "endOfFlowMessage9": {
     "message": "深入瞭解。"
@@ -522,7 +522,7 @@
     "message": "連線硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
   },
   "hardwareWalletsMsg": {
-    "message": "選擇要連線到 Conflux MetaMask Test 的硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
+    "message": "選擇要連線到 ConfluxPortal 的硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
   },
   "havingTroubleConnecting": {
     "message": "無法正確連線? (該功能尚未測試, 使用中可能會出現問題)"
@@ -554,7 +554,7 @@
     "message": "匯入帳戶"
   },
   "importAccountMsg": {
-    "message": " 匯入的帳戶與您原有 Conflux MetaMask Test 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
+    "message": " 匯入的帳戶與您原有 ConfluxPortal 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
   },
   "importAccountSeedPhrase": {
     "message": "利用助憶詞還原"
@@ -670,10 +670,10 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "Conflux MetaMask Test 是 Conflux 安全身份識別金庫"
+    "message": "ConfluxPortal 是 Conflux 安全身份識別金庫"
   },
   "metamaskVersion": {
-    "message": "Conflux MetaMask Test 版本"
+    "message": "ConfluxPortal 版本"
   },
   "missingYourTokens": {
     "message": "看不到您的代幣？"
@@ -688,13 +688,13 @@
     "message": "我的錢包帳號"
   },
   "myWalletAccountsDescription": {
-    "message": "所有你在 Conflux MetaMask Test 創建的帳號將自動新增到此區塊。"
+    "message": "所有你在 ConfluxPortal 創建的帳號將自動新增到此區塊。"
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣"
   },
   "needEtherInWallet": {
-    "message": "要使用 Conflux MetaMask Test 存取去中心化應用服務時，您的錢包中需要有CFX。"
+    "message": "要使用 ConfluxPortal 存取去中心化應用服務時，您的錢包中需要有CFX。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入",
@@ -738,7 +738,7 @@
     "message": "新增網路"
   },
   "newToMetaMask": {
-    "message": "新來到 Conflux MetaMask Test？"
+    "message": "新來到 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
     "message": "不，我已經有助記詞"
@@ -747,7 +747,7 @@
     "message": "保護你的鑰匙！"
   },
   "protectYourKeysMessage1": {
-    "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 Conflux MetaMask Test。Conflux MetaMask Test 永遠不會詢問你的助記詞！"
+    "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 ConfluxPortal。ConfluxPortal 永遠不會詢問你的助記詞！"
   },
   "protectYourKeysMessage2": {
     "message": "安全存放你的助記詞。如你察覺有異，或你對某網站起疑，請寄信給 webextension@conflux-chain.org"
@@ -804,7 +804,7 @@
     "message": "參與 MetaMetrics (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "參與 MetaMetrics 來協助我們打造更好的 Conflux MetaMask Test (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "參與 MetaMetrics 來協助我們打造更好的 ConfluxPortal (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "password": {
     "message": "密碼"
@@ -1136,19 +1136,19 @@
     "message": "和移動裝置同步 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileDesc": {
-    "message": "你可以用移動裝置同步帳號與資訊。開啟 Conflux MetaMask Test 移動 app，至「設定」並點擊「自瀏覽器擴充功能同步」 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "你可以用移動裝置同步帳號與資訊。開啟 ConfluxPortal 移動 app，至「設定」並點擊「自瀏覽器擴充功能同步」 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如你是第一次開啟 Conflux MetaMask Test 移動 app，只要跟著手機上的指示操作即可。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "如你是第一次開啟 ConfluxPortal 移動 app，只要跟著手機上的指示操作即可。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "用你的 Conflux MetaMask Test 移動 app 掃描此代碼 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "用你的 ConfluxPortal 移動 app 掃描此代碼 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileBeCareful": {
     "message": "掃描代碼時確保沒有其他人在看你的螢幕 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 Conflux MetaMask Test 移動 app！(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "你的資料已成功同步。開始活用 ConfluxPortal 移動 app！(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "terms": {
     "message": "使用條款"
@@ -1309,7 +1309,7 @@
     "message": "歡迎回來!"
   },
   "welcome": {
-    "message": "歡迎來到 Conflux MetaMask Test"
+    "message": "歡迎來到 ConfluxPortal"
   },
   "writePhrase": {
     "message": "將助憶詞寫在紙上，並保存在安全的場所。若想要更安全，將助憶詞分別寫在不同紙張上並存放在不同的地方。"

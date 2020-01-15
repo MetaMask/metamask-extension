@@ -41,6 +41,8 @@ class MetamaskInpageProvider extends OriginalMetamaskInpageProvider {
       })
     })
   }
+
+  isConfluxPortal = true
 }
 
 module.exports = MetamaskInpageProvider

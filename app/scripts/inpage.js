@@ -34,9 +34,8 @@ import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import MetamaskInpageProvider from './metamask-inpage-provider.js'
 
-// TODO:deprecate:2020-01-13
-// import Conflux from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
-import Conflux from 'js-conflux-sdk'
+import ConfluxJS from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+// import ConfluxJS from 'js-conflux-sdk'
 import setupDappAutoReload from './lib/auto-reload.js'
 
 restoreContextAfterImports()
@@ -67,35 +66,25 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-//
-// TODO:deprecate:2020-01-13
-//
-
-// setup web3
-
-if (typeof window.web3 !== 'undefined') {
-  throw new Error(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
+// setup conflux web
+if (typeof window.conflux !== 'undefined') {
+  throw new Error(`ConfluxPortal detected another conflux.
+     ConfluxPortal will not work reliably with another
+     conflux extension. This usually happens if you have two MetaMasks
+     installed, or MetaMask and another conflux web extension.
+     Please remove one and try again.`)
 }
 
-// TODO: shouldn't specify default things here, let user do it?
-const web3 = new Conflux({ defaultGasPrice: 1000000000, defaultGas: 21000 })
-web3.provider = proxiedInpageProvider
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
+const confluxJS = new ConfluxJS()
+confluxJS.provider = proxiedInpageProvider
+confluxJS.setProvider = function () {
+  log.debug('ConfluxPortal - overrode conflux.setProvider')
 }
-log.debug('MetaMask - injected web3')
+log.debug('ConfluxPortal - injected conflux')
 
-proxiedInpageProvider._web3Ref = web3.eth
+proxiedInpageProvider._web3Ref = confluxJS
 
 // setup dapp auto reload AND proxy web3
-setupDappAutoReload(web3, inpageProvider._publicConfigStore)
+setupDappAutoReload(confluxJS, inpageProvider._publicConfigStore)
 
-//
-// end deprecate:2020-01-13
-//
-
-window.ethereum = proxiedInpageProvider
+window.conflux = proxiedInpageProvider

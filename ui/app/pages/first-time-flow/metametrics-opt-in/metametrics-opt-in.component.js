@@ -34,17 +34,17 @@ export default class MetaMetricsOptIn extends Component {
             <img src="images/metrics-chart.svg" />
           </div>
           <div className="metametrics-opt-in__title">
-            Help Us Improve Conflux MetaMask Test
+            Help Us Improve ConfluxPortal
           </div>
           <div className="metametrics-opt-in__body">
             <div className="metametrics-opt-in__description">
-              Conflux MetaMask Test would like to gather usage data to better
-              understand how our users interact with the extension. This data
-              will be used to continually improve the usability and user
-              experience of our product and the Ethereum ecosystem.
+              ConfluxPortal would like to gather usage data to better understand
+              how our users interact with the extension. This data will be used
+              to continually improve the usability and user experience of our
+              product and the Ethereum ecosystem.
             </div>
             <div className="metametrics-opt-in__description">
-              Conflux MetaMask Test will..
+              ConfluxPortal will..
             </div>
 
             <div className="metametrics-opt-in__committments">
