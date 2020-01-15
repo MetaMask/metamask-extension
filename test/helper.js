@@ -14,7 +14,6 @@ before(done => {
   server
     .start()
     .then(() => {
-      console.log('Ganache Testrpc is running on "http://localhost:12539"')
       nock.disableNetConnect()
       nock.enableNetConnect('localhost')
       done()
