@@ -186,7 +186,7 @@ const initialize = () => {
         .constructor()
         .sendTransaction({
           from: accounts[0],
-          gas: 95000,
+          gas: 300000,
           gasPrice: 10000000000,
         })
         .confirmed()
