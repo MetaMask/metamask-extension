@@ -10436,7 +10436,8 @@ eth-json-rpc-middleware@^1.5.0:
 
 eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-middleware@^4.4.0:
   version "4.4.0"
-  resolved "https://github.com/MetaMask/eth-json-rpc-middleware#a0f9d05b5f4e229621a9558c17fa4acb920de822"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-4.4.0.tgz#ef63b783b48dcbea9c1fe25c79e6ea01510e5877"
+  integrity sha512-IeOsil/XiHsybJO9nFf86+1+YIqGQWPPfiTEp3WLkpLZhJm97kw6tFM7GttIZXIcwtaO3zEXgY6PWAH1jkB3ag==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
