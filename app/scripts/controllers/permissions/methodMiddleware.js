@@ -6,7 +6,7 @@ const { ethErrors } = require('eth-json-rpc-errors')
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
 module.exports = function createMethodMiddleware ({
-  store, storeKey, getAccounts, requestAccountsPermission, getSeed,
+  store, storeKey, getAccounts, requestAccountsPermission, getSeed, requestSeedPermission,
 }) {
   return createAsyncMiddleware(async (req, res, next) => {
 
@@ -82,9 +82,30 @@ module.exports = function createMethodMiddleware ({
         return
 
       case 'wallet_requestSeed':
-        const seedWords = await getSeed()
-        res.result = seedWords
-        return
+
+        let seed = await getSeed()
+        if (seed !== "REJECTED") {
+          res.result = seed
+          return
+        }
+
+        try {
+          await requestSeedPermission();
+        } catch (err) {
+          res.error = err;
+          return;
+        } 
+
+        seed = await getSeed();
+
+        if (seed !== "REJECTED") {
+          res.result = seed;
+        } else {
+          // this should never happen
+          res.error = ethErrors.rpc.internal('Seed unexpectedly unavailable. Please report this bug.');
+        }
+
+        return;
 
       default:
         break
