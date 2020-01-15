@@ -175,6 +175,37 @@ describe('PendingTransactionTracker', function () {
         .catch(done)
     })
 
+    it("should emit tx:skipped with the txMetas id if tx recipient's outcomeStatus is none 0", function (done) {
+      txMeta = {
+        id: 1,
+        hash:
+          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: 'submitted',
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        history: [{}],
+        rawTx:
+          '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+      }
+
+      providerResultStub['eth_getTransactionCount'] = '0x02'
+      providerResultStub['eth_getTransactionReceipt'] = {
+        outcomeStatus: 1,
+        epochNumber: '0x9090',
+      }
+
+      pendingTxTracker.once('tx:skipped', id => {
+        delete providerResultStub['eth_getTransactionCount']
+        delete providerResultStub['eth_getTransactionReceipt']
+        assert(id, txMetaNoHash.id, 'should emit skipped')
+        done()
+      })
+      pendingTxTracker._checkPendingTx(txMeta)
+    })
+
     it('should should return if query does not return txParams', function () {
       providerResultStub.eth_getTransactionByHash = null
       pendingTxTracker._checkPendingTx(txMeta)
@@ -280,6 +311,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
     })
   })
+
   describe('#_resubmitTx', function () {
     const mockFirstRetryBlockNumber = '0x1'
     let txMetaToTestExponentialBackoff, enoughBalance

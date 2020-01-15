@@ -717,6 +717,10 @@ class TransactionController extends EventEmitter {
       'tx:failed',
       this.txStateManager.setTxStatusFailed.bind(this.txStateManager)
     )
+    this.pendingTxTracker.on(
+      'tx:skipped',
+      this.txStateManager.setTxStatusSkipped.bind(this.txStateManager)
+    )
     this.pendingTxTracker.on('tx:confirmed', (txId, transactionReceipt) =>
       this.confirmTransaction(txId, transactionReceipt)
     )

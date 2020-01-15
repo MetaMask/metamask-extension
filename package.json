@@ -18,7 +18,7 @@
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "yarn test:prepare-conflux-local && cross-env METAMASK_ENV=test mocha --timeout 10000 --exit --file test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:global": "yarn test:prepare-conflux-local && cross-env METAMASK_ENV=test mocha --exit --file test/setup.js --recursive test/unit-global/*",
-    "test:single": "cross-env METAMASK_ENV=test mocha --no-timeouts --file test/helper.js",
+    "test:single": "cross-env METAMASK_ENV=test mocha --exit --no-timeouts --file test/setup.js",
     "test:integration": "yarn test:integration:build && yarn test:flat",
     "test:integration:build": "gulp build:scss",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",

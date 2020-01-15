@@ -1042,6 +1042,9 @@
   "settings": {
     "message": "设置"
   },
+  "skipped": {
+    "message": "跳過"
+  },
   "showAdvancedGasInline": {
     "message": "高级然气控制"
   },

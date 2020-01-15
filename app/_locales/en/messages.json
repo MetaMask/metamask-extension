@@ -1205,6 +1205,9 @@
   "searchAccounts": {
     "message": "Search Accounts"
   },
+  "skipped": {
+    "message": "Skipped"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },

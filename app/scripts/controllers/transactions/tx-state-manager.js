@@ -403,6 +403,20 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
+     should update the status of the tx to 'skipped'.
+     and put the cost gas fee on the txMeta
+     @param {number} txId - the txMeta Id
+  */
+  setTxStatusSkipped (txId) {
+    const txMeta = this.getTx(txId)
+    this.updateTx(
+      txMeta,
+      'transactions:tx-state-manager#skip - add skip tx info'
+    )
+    this._setTxStatus(txId, 'skipped')
+  }
+
+  /**
     should update the status of the tx to 'failed'.
     and put the error on the txMeta
     @param {number} txId - the txMeta Id

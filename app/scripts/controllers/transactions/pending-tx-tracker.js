@@ -167,7 +167,7 @@ class PendingTransactionTracker extends EventEmitter {
     // *note to self* hard failure point
     const transactionReceipt = await this.query.getTransactionReceipt(txHash)
 
-    // TODO: show user different status depends on data form getTransactionReceipt
+    // status depends on data form cfx_getTransactionReceipt
     // getTransactionByHash has blockHash - mined
     // getTransactionReceipt has outcomeStatus === 0 - executed
     // risk getRiskCoefficient(receipt.epochNumber) has < threshold - confirmed
@@ -212,9 +212,11 @@ class PendingTransactionTracker extends EventEmitter {
       if (!transactionReceipt) {
         return
       }
+      const { outcomeStatus, epochNumber } = transactionReceipt
 
-      const { epochNumber } = transactionReceipt
-      if (epochNumber) {
+      if (outcomeStatus !== 0) {
+        this.emit('tx:skipped', txId, transactionReceipt)
+      } else if (epochNumber) {
         this.emit('tx:confirmed', txId, transactionReceipt)
       }
     } catch (err) {
