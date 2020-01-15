@@ -1,4 +1,5 @@
 const CGanache = require('@yqrashawn/conflux-local-network-lite')
+
 const server = new CGanache()
 server
   .start()
