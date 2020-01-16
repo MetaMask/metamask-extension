@@ -2,19 +2,25 @@
 #+Author: Conflux Team
 
 * ConfluxPortal
-Test version (extremely unstable) of Conflux MetaMask (wallet as a browser extension) that can
+Test version (extremely unstable) of ConfluxPortal (wallet as a browser extension) that can
 connect to Conflux test net.
 
-Conflux 版本的 MetaMask (浏览器插件钱包), 目前为内部测试版本(非常不稳定), 能够连接 Conflux
-测试网
+ConfluxPortal 是 Conflux 版本的 MetaMask (浏览器插件钱包), 目前为内部测试版本(非
+常不稳定), 能够连接 Conflux 测试网
 
 ** Report bug/提交Bug
 Please report any bug at our [[https://github.com/Conflux-Chain/metamask-extension/issues][github issue page]]
 
+** Documentation/文档
+ConfluxPortal support most MetaMask features. Check below pages for details.
+
+- [[https://github.com/yqrashawn/metamask-extension/blob/cfx-develop/docs/differences-between-confluxportal-and-metamask.org][Differences between ConfluxPortal and MetaMask]]
+- [[https://metamask.github.io/metamask-docs/][MetaMask Developer Docs]]
+
 ** Download/下载
-- [[http://13.57.190.119:9000/metamask-chrome-0.0.2.zip][chrome]]
-- [[http://13.57.190.119:9000/metamask-firefox-0.0.2.zip][firefox]]
-- [[http://13.57.190.119:9000/metamask-opera-0.0.2.zip][opera]]
+- [[http://13.57.190.119:9000/metamask-chrome-0.0.3.zip][chrome]]
+- [[http://13.57.190.119:9000/metamask-firefox-0.0.3.zip][firefox]]
+- [[http://13.57.190.119:9000/metamask-opera-0.0.3.zip][opera]]
 
 ** Install/安装
 *** chrome
@@ -41,11 +47,18 @@ the zip file, use *Load unpacked* button to load the unziped folder.
 
 ** Changelog
 *** Unreleased
-**** Change
-- default gas price in inpage.js changed to 1 Gdrip (from 100 Drip)
-- default gas in inpage.js changed to 21000 (from 1000000)
 
-Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.2...HEAD
+Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.3...HEAD
+
+*** 0.0.3 - <2020-01-16 Thu>
+**** Change
+- remove preset default gas and default gas price in injected web3
+- injected conflux version of web3 is now ~window.confluxJS~
+- injected ~window.ethereum~ changed to ~window.conflux~
+- ~window.ethereum.isMetaMask~ changed to ~window.conflux.isConfluxPortal~
+- support skipped transaction
+
+Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.2...0.0.3
 
 *** 0.0.2 - <2020-01-10 Fri>
 - Some "Etherscan" to "Confluxscan"

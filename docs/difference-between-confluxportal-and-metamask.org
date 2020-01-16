@@ -1,0 +1,10 @@
+* Differences between ConfluxPortal and MetaMask
+Feel free to [[https://github.com/Conflux-Chain/metamask-extension/issues/new/choose][submit issues]] for any question.
+** Injected
+MetaMask inject a ~window.web3~ (deprecated since 2020-01-13) and a
+~window.ethereum~ in user pages. The corresponding conflux global variables are
+~window.confluxJS~ and ~window.conflux~
+
+MetaMask has the api ~window.ethereum.isMetaMask~ for developer to check if the
+metamask version of provider is avalible. ConfluxPortal change that to
+~window.conflux.isConfluxPortal~.
