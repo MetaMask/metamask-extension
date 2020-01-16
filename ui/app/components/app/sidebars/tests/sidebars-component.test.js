@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { CSSTransition } from 'react-transition-group'
 import Sidebar from '../sidebar.component.js'
 
 import WalletView from '../../wallet-view'
@@ -83,17 +83,15 @@ describe('Sidebar Component', function () {
       assert.equal(wrapper.children().length, 1)
     })
 
-    it('should render the ReactCSSTransitionGroup without any children', () => {
-      assert(wrapper.children().at(0).is(ReactCSSTransitionGroup))
-      assert.equal(wrapper.children().at(0).children().length, 0)
+    it('should render the CSSTransition without any children', () => {
+      const transition = wrapper.find(CSSTransition)
+      assert.equal(transition.children().length, 0)
     })
 
     it('should render sidebar content and the overlay if sidebarOpen is true', () => {
       wrapper.setProps({ sidebarOpen: true })
-      assert.equal(wrapper.children().length, 2)
-      assert(wrapper.children().at(1).hasClass('sidebar-overlay'))
-      assert.equal(wrapper.children().at(0).children().length, 1)
-      assert(wrapper.children().at(0).children().at(0).is(WalletView))
+      assert(wrapper.find('.sidebar-overlay').length, 1)
+      assert(wrapper.find(WalletView).length, 1)
     })
   })
 })

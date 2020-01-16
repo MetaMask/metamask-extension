@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
-import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 export default class MenuDroppoComponent extends Component {
   static propTypes = {
@@ -71,7 +71,8 @@ export default class MenuDroppoComponent extends Component {
 
   render () {
     const { containerClassName = '', style } = this.props
-    const speed = this.props.speed || '300ms'
+    const speedStyle = this.props.speed || '300ms'
+    const speed = parseInt(speedStyle)
     const useCssTransition = this.props.useCssTransition
     const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
@@ -87,22 +88,22 @@ export default class MenuDroppoComponent extends Component {
       <div style={baseStyle} className={`menu-droppo-container ${containerClassName}`}>
         <style>{`
           .menu-droppo-enter {
-            transition: transform ${speed} ease-in-out;
+            transition: transform ${speedStyle} ease-in-out;
             transform: translateY(-200%);
           }
 
           .menu-droppo-enter.menu-droppo-enter-active {
-            transition: transform ${speed} ease-in-out;
+            transition: transform ${speedStyle} ease-in-out;
             transform: translateY(0%);
           }
 
-          .menu-droppo-leave {
-            transition: transform ${speed} ease-in-out;
+          .menu-droppo-exit {
+            transition: transform ${speedStyle} ease-in-out;
             transform: translateY(0%);
           }
 
-          .menu-droppo-leave.menu-droppo-leave-active {
-            transition: transform ${speed} ease-in-out;
+          .menu-droppo-exit.menu-droppo-exit-active {
+            transition: transform ${speedStyle} ease-in-out;
             transform: translateY(-200%);
           }
         `}
@@ -110,14 +111,14 @@ export default class MenuDroppoComponent extends Component {
         {
           useCssTransition
             ? (
-              <ReactCSSTransitionGroup
-                className="css-transition-group"
-                transitionName="menu-droppo"
-                transitionEnterTimeout={parseInt(speed)}
-                transitionLeaveTimeout={parseInt(speed)}
-              >
-                {this.renderPrimary()}
-              </ReactCSSTransitionGroup>
+              <TransitionGroup>
+                <CSSTransition
+                  classNames="menu-droppo"
+                  timeout={speed}
+                >
+                  {this.renderPrimary()}
+                </CSSTransition>
+              </TransitionGroup>
             )
             : this.renderPrimary()
         }

@@ -10,12 +10,12 @@
   transform: translateX(0%);
 }
 
-.sidebar-right-leave {
+.sidebar-right-exit {
   transition: transform 200ms ease-out;
   transform: translateX(0%);
 }
 
-.sidebar-right-leave.sidebar-right-leave-active {
+.sidebar-right-exit.sidebar-right-exit-active {
   transition: transform 200ms ease-out;
   transform: translateX(-100%);
 }
@@ -30,12 +30,12 @@
   transform: translateX(0%);
 }
 
-.sidebar-left-leave {
+.sidebar-left-exit {
   transition: transform 200ms ease-out;
   transform: translateX(0%);
 }
 
-.sidebar-left-leave.sidebar-left-leave-active {
+.sidebar-left-exit.sidebar-left-exit-active {
   transition: transform 200ms ease-out;
   transform: translateX(100%);
 }
