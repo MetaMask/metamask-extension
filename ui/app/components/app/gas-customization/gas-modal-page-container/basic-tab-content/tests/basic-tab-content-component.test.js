@@ -5,6 +5,7 @@ import BasicTabContent from '../basic-tab-content.component'
 
 import GasPriceButtonGroup from '../../../gas-price-button-group'
 import Loading from '../../../../../ui/loading-screen'
+import { GAS_ESTIMATE_TYPES } from '../../../../../../helpers/constants/common'
 
 const mockGasPriceButtonGroupProps = {
   buttonDataLoading: false,
@@ -15,18 +16,21 @@ const mockGasPriceButtonGroupProps = {
       feeInSecondaryCurrency: '0.0048 CFX',
       timeEstimate: '~ 1 min 0 sec',
       priceInHexWei: '0xa1b2c3f',
+      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
     {
       feeInPrimaryCurrency: '$0.39',
       feeInSecondaryCurrency: '0.004 CFX',
       timeEstimate: '~ 1 min 30 sec',
       priceInHexWei: '0xa1b2c39',
+      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
     {
       feeInPrimaryCurrency: '$0.30',
       feeInSecondaryCurrency: '0.00354 CFX',
       timeEstimate: '~ 2 min 1 sec',
       priceInHexWei: '0xa1b2c30',
+      gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
   ],
   handleGasPriceSelection: newPrice => console.log('NewPrice: ', newPrice),
