@@ -90,7 +90,7 @@ module.exports = function createMethodMiddleware ({
           return
         }
 
-        let seed = await getSeed()
+        const seed = await getSeed()
 
         if (seed !== 'REJECTED') {
           res.result = seed

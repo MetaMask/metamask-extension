@@ -16,7 +16,7 @@ module.exports = function getRestrictedMethods (permissionsController) {
       },
     },
 
-    'account_seed': { 
+    'account_seed': {
       description: 'View the seed of the selected account',
       method: (_, res, __, end) => {
         const primaryKeyring = permissionsController.keyringController.getKeyringsByType('HD Key Tree')[0]
@@ -24,12 +24,12 @@ module.exports = function getRestrictedMethods (permissionsController) {
           res.error = ('REJECTED')
           end()
         }
-        const serialized = primaryKeyring.serialize().then((serialized) => {
+        primaryKeyring.serialize().then((serialized) => {
           const seedWords = serialized.mnemonic
           res.result = seedWords
           end()
         })
-      }
+      },
     },
   }
 }
