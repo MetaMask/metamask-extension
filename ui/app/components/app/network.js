@@ -1,8 +1,44 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-
 import classnames from 'classnames'
 import NetworkDropdownIcon from './dropdowns/components/network-dropdown-icon'
+
+function NetworkIndicator ({
+  disabled,
+  children,
+  hoverText,
+  onClick,
+  providerName,
+}) {
+  return (
+    <div
+      className={classnames('network-component pointer', {
+        'network-component--disabled': disabled,
+        'ethereum-network': providerName === 'mainnet',
+        'conflux-test-network': providerName === 'testnet',
+      })}
+      title={hoverText}
+      onClick={event => {
+        if (!disabled) {
+          onClick(event)
+        }
+      }}
+    >
+      <div className="network-indicator">
+        {children}
+        <div className="network-indicator__down-arrow" />
+      </div>
+    </div>
+  )
+}
+
+NetworkIndicator.propTypes = {
+  children: PropTypes.node.isRequired,
+  disabled: PropTypes.bool,
+  hoverText: PropTypes.string,
+  onClick: PropTypes.func,
+  providerName: PropTypes.string,
+}
 
 export default class Network extends Component {
   static contextTypes = {
@@ -21,104 +57,84 @@ export default class Network extends Component {
   }
 
   render () {
-    const context = this.context
-    const networkNumber = this.props.network
+    const { t } = this.context
+
+    const { disabled, network: networkNumber, onClick, provider } = this.props
+
     let providerName, providerNick, providerUrl
-    try {
-      providerName = this.props.provider.type
-      providerNick = this.props.provider.nickname || ''
-      providerUrl = this.props.provider.rpcTarget
-    } catch (e) {
-      providerName = null
-    }
-    const providerId = providerNick || providerName || providerUrl || null
-    let iconName
-    let hoverText
-
-    if (providerName === 'mainnet') {
-      hoverText = context.t('mainnet')
-      iconName = 'ethereum-network'
-    } else if (providerName === 'testnet') {
-      hoverText = 'conflux-test-network'
-      iconName = 'conflux-test-network'
-    } else {
-      hoverText = providerId
-      iconName = 'private-network'
+    if (provider) {
+      providerName = provider.type
+      providerNick = provider.nickname || ''
+      providerUrl = provider.rpcTarget
     }
 
-    return (
-      <div
-        className={classnames('network-component pointer', {
-          'network-component--disabled': this.props.disabled,
-          'ethereum-network': providerName === 'mainnet',
-          'conflux-test-network': providerName === 'testnet',
-        })}
-        title={hoverText}
-        onClick={event => {
-          if (!this.props.disabled) {
-            this.props.onClick(event)
-          }
-        }}
-      >
-        {(function () {
-          switch (iconName) {
-            case 'ethereum-network':
-              return (
-                <div className="network-indicator">
-                  <NetworkDropdownIcon
-                    backgroundColor="#038789"
-                    nonSelectBackgroundColor="#15afb2"
-                    loading={networkNumber === 'loading'}
-                  />
-                  <div className="network-name">{context.t('mainnet')}</div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-            case 'conflux-test-network':
-              return (
-                <div className="network-indicator">
-                  <NetworkDropdownIcon
-                    backgroundColor="#e91550"
-                    nonSelectBackgroundColor="#ec2c50"
-                    loading={networkNumber === 'loading'}
-                  />
-                  <div className="network-name">{context.t('testnet')}</div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-            default:
-              return (
-                <div className="network-indicator">
-                  {networkNumber === 'loading' ? (
-                    <span
-                      className="pointer network-loading-spinner"
-                      onClick={event => this.props.onClick(event)}
-                    >
-                      <img
-                        title={context.t('attemptingConnect')}
-                        src="images/loading.svg"
-                        alt=""
-                      />
-                    </span>
-                  ) : (
-                    <i
-                      className="fa fa-question-circle fa-lg"
-                      style={{
-                        color: 'rgb(125, 128, 130)',
-                      }}
-                    />
-                  )}
-                  <div className="network-name">
-                    {providerName === 'localhost'
-                      ? context.t('localhost')
-                      : providerNick || context.t('privateNetwork')}
-                  </div>
-                  <div className="network-indicator__down-arrow" />
-                </div>
-              )
-          }
-        })()}
-      </div>
-    )
+    switch (providerName) {
+      case 'mainnet':
+        return (
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('mainnet')}
+            onClick={onClick}
+            providerName={providerName}
+          >
+            <NetworkDropdownIcon
+              backgroundColor="#038789"
+              nonSelectBackgroundColor="#15afb2"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('mainnet')}</div>
+          </NetworkIndicator>
+        )
+
+      case 'testnet':
+        return (
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={t('testnet')}
+            onClick={onClick}
+            providerName={providerName}
+          >
+            <NetworkDropdownIcon
+              backgroundColor="#e91550"
+              nonSelectBackgroundColor="#ec2c50"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('testnet')}</div>
+          </NetworkIndicator>
+        )
+
+      default:
+        return (
+          <NetworkIndicator
+            disabled={disabled}
+            hoverText={providerNick || providerName || providerUrl || null}
+            onClick={onClick}
+            providerName={providerName}
+          >
+            {networkNumber === 'loading' ? (
+              <span
+                className="pointer network-loading-spinner"
+                onClick={event => onClick(event)}
+              >
+                <img
+                  title={t('attemptingConnect')}
+                  src="images/loading.svg"
+                  alt=""
+                />
+              </span>
+            ) : (
+              <i
+                className="fa fa-question-circle fa-lg"
+                style={{ color: 'rgb(125, 128, 130)' }}
+              />
+            )}
+            <div className="network-name">
+              {providerName === 'localhost'
+                ? t('localhost')
+                : providerNick || t('privateNetwork')}
+            </div>
+          </NetworkIndicator>
+        )
+    }
   }
 }
