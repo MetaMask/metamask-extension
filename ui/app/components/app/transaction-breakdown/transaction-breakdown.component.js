@@ -14,7 +14,7 @@ export default class TransactionBreakdown extends PureComponent {
 
   static propTypes = {
     className: PropTypes.string,
-    nativeCurrency: PropTypes.string.isRequired,
+    nativeCurrency: PropTypes.string,
     showFiat: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
