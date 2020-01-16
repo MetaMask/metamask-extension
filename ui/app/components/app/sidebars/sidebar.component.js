@@ -12,7 +12,7 @@ export default class Sidebar extends Component {
     hideSidebar: PropTypes.func,
     sidebarShouldClose: PropTypes.bool,
     transitionName: PropTypes.string,
-    type: PropTypes.string,
+    type: PropTypes.oneOf(WALLET_VIEW_SIDEBAR, 'customize-gas'),
     sidebarProps: PropTypes.object,
     onOverlayClose: PropTypes.func,
   }
@@ -52,18 +52,24 @@ export default class Sidebar extends Component {
   }
 
   render () {
-    const { transitionName, sidebarOpen, sidebarShouldClose } = this.props
+    const { transitionName, sidebarOpen, sidebarShouldClose, type } = this.props
 
     return (
       <div>
-        <TransitionGroup>
-          <CSSTransition
-            classNames={transitionName}
-            timeout={{ enter: 300, leave: 200 }}
-          >
-            { sidebarOpen && !sidebarShouldClose ? this.renderSidebarContent() : null }
-          </CSSTransition>
-        </TransitionGroup>
+        {
+          type && sidebarOpen && !sidebarShouldClose
+            ? (
+              <TransitionGroup>
+                <CSSTransition
+                  classNames={transitionName}
+                  timeout={{ enter: 300, leave: 200 }}
+                >
+                  { this.renderSidebarContent() }
+                </CSSTransition>
+              </TransitionGroup>
+            )
+            : null
+        }
         { sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null }
       </div>
     )
