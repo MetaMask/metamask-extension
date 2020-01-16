@@ -15,6 +15,10 @@ export const NOTIFICATION_NAMES = {
   accountsChanged: 'wallet_accountsChanged',
 }
 
+export const LOG_IGNORE_METHODS = [
+  'wallet_sendDomainMetadata',
+]
+
 export const SAFE_METHODS = [
   'web3_sha3',
   'net_listening',

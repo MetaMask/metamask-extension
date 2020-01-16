@@ -5,6 +5,8 @@ import {
   CAVEAT_NAMES,
   HISTORY_STORE_KEY,
   LOG_STORE_KEY,
+  LOG_IGNORE_METHODS,
+  WALLET_PREFIX,
 } from './enums'
 
 const LOG_LIMIT = 100
@@ -19,13 +21,9 @@ const getAccountToTimeMap = (accounts, time) => accounts.reduce(
  */
 export default class PermissionsLogController {
 
-  constructor ({
-    walletPrefix, restrictedMethods, store, ignoreMethods,
-  }) {
-    this.walletPrefix = walletPrefix
+  constructor ({ restrictedMethods, store }) {
     this.restrictedMethods = restrictedMethods
     this.store = store
-    this.ignoreMethods = ignoreMethods
   }
 
   getLogStore () {
@@ -49,17 +47,17 @@ export default class PermissionsLogController {
 
       let activityEntry, requestedMethods
       const { origin, method } = req
-      const isInternal = method.startsWith(this.walletPrefix)
+      const isInternal = method.startsWith(WALLET_PREFIX)
 
       // we only log certain methods
       if (
-        (isInternal || this.restrictedMethods.includes(method)) &&
-        !this.ignoreMethods.includes(method)
+        !LOG_IGNORE_METHODS.includes(method) &&
+        (isInternal || this.restrictedMethods.includes(method))
       ) {
 
         activityEntry = this.logActivity(req, isInternal)
 
-        if (method === `${this.walletPrefix}requestPermissions`) {
+        if (method === `${WALLET_PREFIX}requestPermissions`) {
           // get the corresponding methods from the requested permissions
           requestedMethods = this.getRequestedMethods(req)
         }

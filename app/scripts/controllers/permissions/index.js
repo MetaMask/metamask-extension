@@ -41,9 +41,7 @@ export class PermissionsController {
     this._platform = platform
     this._restrictedMethods = getRestrictedMethods(this)
     this.permissionsLogController = new PermissionsLogController({
-      walletPrefix: WALLET_PREFIX,
       restrictedMethods: Object.keys(this._restrictedMethods),
-      ignoreMethods: [ 'wallet_sendDomainMetadata' ],
       store: this.store,
     })
     this._initializePermissions(restoredPermissions)
