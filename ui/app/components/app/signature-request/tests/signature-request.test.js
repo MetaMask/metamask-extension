@@ -10,6 +10,9 @@ describe('Signature Request Component', function () {
   beforeEach(() => {
     wrapper = shallow((
       <SignatureRequest
+        clearConfirmTransaction={() => {}}
+        cancel={() => {}}
+        sign={() => {}}
         txData={{
           msgParams: {
             data: '{"message": {"from": {"name": "hello"}}}',
