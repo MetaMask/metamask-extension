@@ -17,13 +17,6 @@ describe('config view actions', function () {
   }
   freeze(initialState)
 
-  describe('SHOW_CONFIG_PAGE', function () {
-    it('should set appState.currentView.name to config', function () {
-      const result = reducers(initialState, actions.showConfigPage())
-      assert.equal(result.appState.currentView.name, 'config')
-    })
-  })
-
   describe('SET_RPC_TARGET', function () {
     it('sets the state.metamask.rpcTarget property of the state to the action.value', function () {
       const action = {

@@ -6,7 +6,6 @@ import { getNetworkIdentifier } from '../../../selectors/selectors'
 const mapStateToProps = state => {
   const {
     loadingMessage,
-    currentView,
   } = state.appState
   const {
     provider,
@@ -20,7 +19,7 @@ const mapStateToProps = state => {
     : [provider.type]
 
   return {
-    isLoadingNetwork: network === 'loading' && currentView.name !== 'config',
+    isLoadingNetwork: network === 'loading',
     loadingMessage,
     lastSelectedProvider,
     setProviderArgs,

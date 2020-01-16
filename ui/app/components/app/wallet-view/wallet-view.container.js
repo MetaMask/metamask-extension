@@ -2,15 +2,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import WalletView from './wallet-view.component'
-import { showSendPage, hideSidebar, setSelectedToken, showAddTokenPage } from '../../../store/actions'
-import { getMetaMaskAccounts, getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'
+import { hideSidebar, setSelectedToken } from '../../../store/actions'
+import { getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'
 
 function mapStateToProps (state) {
   return {
-    network: state.metamask.network,
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
-    accounts: getMetaMaskAccounts(state),
     keyrings: state.metamask.keyrings,
     selectedAddress: getSelectedAddress(state),
     selectedAccount: getSelectedAccount(state),
@@ -20,10 +18,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showSendPage: () => dispatch(showSendPage()),
     hideSidebar: () => dispatch(hideSidebar()),
     unsetSelectedToken: () => dispatch(setSelectedToken()),
-    showAddTokenPage: () => dispatch(showAddTokenPage()),
   }
 }
 

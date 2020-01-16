@@ -50,11 +50,6 @@ export function getCurrentNetwork (state) {
   return state.metamask.network
 }
 
-export function getCurrentViewContext (state) {
-  const { currentView = {} } = state.appState
-  return currentView.context
-}
-
 export function getForceGasMin (state) {
   return state.metamask.send.forceGasMin
 }

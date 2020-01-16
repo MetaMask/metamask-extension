@@ -205,13 +205,12 @@ class Routes extends Component {
       network,
       provider,
       frequentRpcListDetail,
-      currentView,
       setMouseUserState,
       sidebar,
       submittedPendingTransactions,
       isMouseUser,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
+    const isLoadingNetwork = network === 'loading'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
@@ -366,7 +365,6 @@ Routes.propTypes = {
   provider: PropTypes.object,
   selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
-  currentView: PropTypes.object,
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
@@ -410,7 +408,6 @@ function mapStateToProps (state) {
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    currentView: state.appState.currentView,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
