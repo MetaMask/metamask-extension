@@ -185,16 +185,6 @@ export default function reduceApp (state, action) {
 
       return newState
 
-    case actions.SHOW_CONFIG_PAGE:
-      return {
-        ...appState,
-        currentView: {
-          name: 'config',
-          context: appState.currentView.context,
-        },
-        transForward: action.value,
-      }
-
     case actions.SHOW_ADD_TOKEN_PAGE:
       return {
         ...appState,

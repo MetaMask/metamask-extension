@@ -146,17 +146,6 @@ describe('App State', () => {
     assert.equal(state.currentView.name, 'restoreVault')
   })
 
-  it('shows config page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_CONFIG_PAGE,
-      value: true,
-    })
-
-    assert.equal(state.currentView.name, 'config')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-  })
-
   it('shows add token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_ADD_TOKEN_PAGE,
