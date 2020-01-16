@@ -5,12 +5,6 @@ import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
 
-/**
- * TODO:LoginPerSite
- * There are performance gains here once `domain.permissions` is converted
- * to key:value instead of an array. (requires update to rpc-cap)
- */
-
 const permissionsSelector = (state, origin) => {
   console.log('permissionsSelector', origin)
   return origin && state.metamask.domains && state.metamask.domains[origin]

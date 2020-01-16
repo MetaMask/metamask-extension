@@ -34,7 +34,7 @@ function mapStateToProps (state) {
   const selectedAddress = getSelectedAddress(state)
 
   /**
-   * TODO:LoginPerSite
+   * TODO:LoginPerSite:ui
    * - dispatch background.newAccountSelected() if selectedAddress !== lastSelectedAddress
    * - propagate the relevant props below after computing them
    */
