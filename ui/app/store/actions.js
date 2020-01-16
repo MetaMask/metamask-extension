@@ -36,7 +36,6 @@ export const actionConstants = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -1114,14 +1113,6 @@ export function forgotPassword (forgotPasswordState = true) {
   return {
     type: actionConstants.FORGOT_PASSWORD,
     value: forgotPasswordState,
-  }
-}
-
-
-export function setNewAccountForm (formToSelect) {
-  return {
-    type: actionConstants.SET_NEW_ACCOUNT_FORM,
-    formToSelect,
   }
 }
 

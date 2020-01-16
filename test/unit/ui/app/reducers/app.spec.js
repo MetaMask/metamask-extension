@@ -146,16 +146,6 @@ describe('App State', () => {
     assert.equal(state.currentView.name, 'restoreVault')
   })
 
-  it('sets new account form', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SET_NEW_ACCOUNT_FORM,
-      formToSelect: 'context',
-    })
-
-    assert.equal(state.currentView.name, 'accountDetail')
-    assert.equal(state.currentView.context, 'context')
-  })
-
   it('shows send token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,

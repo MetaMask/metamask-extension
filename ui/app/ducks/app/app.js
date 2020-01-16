@@ -185,15 +185,6 @@ export default function reduceApp (state, action) {
 
       return newState
 
-    case actions.SET_NEW_ACCOUNT_FORM:
-      return {
-        ...appState,
-        currentView: {
-          name: appState.currentView.name,
-          context: action.formToSelect,
-        },
-      }
-
     case actions.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
