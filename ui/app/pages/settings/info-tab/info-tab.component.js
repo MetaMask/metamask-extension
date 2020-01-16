@@ -46,7 +46,7 @@ export default class InfoTab extends PureComponent {
         <hr className="info-tab__separator" />
         <div className="info-tab__link-item">
           <a
-            href="https://github.com/Conflux-Chain/metamask-extension/issues"
+            href="https://github.com/Conflux-Chain/conflux-portal/issues"
             target="_blank"
             rel="noopener noreferrer"
           >

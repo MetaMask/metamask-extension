@@ -4,9 +4,9 @@ These docs relate to how to contribute to the MetaMask project itself.
 
 You can find the latest version of MetaMask on [our official website](https://www.conflux-chain.org/).
 
-For help using MetaMask, visit our [User Support Site](https://github.com/Conflux-Chain/metamask-extension/issues).
+For help using MetaMask, visit our [User Support Site](https://github.com/Conflux-Chain/conflux-portal/issues).
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://conflux-chain.github.io/metamask-docs/).
 
 - [How to add custom build to Chrome](./add-to-chrome.md)
 - [How to add custom build to Firefox](./add-to-firefox.md)

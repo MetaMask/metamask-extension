@@ -9,18 +9,18 @@ ConfluxPortal 是 Conflux 版本的 MetaMask (浏览器插件钱包), 目前为�
 常不稳定), 能够连接 Conflux 测试网
 
 ** Report bug/提交Bug
-Please report any bug at our [[https://github.com/Conflux-Chain/metamask-extension/issues][github issue page]]
+Please report any bug at our [[https://github.com/Conflux-Chain/conflux-portal/issues][github issue page]]
 
 ** Documentation/文档
 ConfluxPortal support most MetaMask features. Check below pages for details.
 
-- [[https://github.com/yqrashawn/metamask-extension/blob/cfx-develop/docs/differences-between-confluxportal-and-metamask.org][Differences between ConfluxPortal and MetaMask]]
-- [[https://metamask.github.io/metamask-docs/][MetaMask Developer Docs]]
+- [[https://github.com/Conflux-Chain/conflux-portal/blob/cfx-develop/docs/differences-between-confluxportal-and-metamask.org][Differences between ConfluxPortal and MetaMask]]
+- [[https://conflux-chain.github.io/conflux-portal-docs/][ConfluxPortal Developer Docs]]
 
 ** Download/下载
-- [[http://13.57.190.119:9000/metamask-chrome-0.0.3.zip][chrome]]
-- [[http://13.57.190.119:9000/metamask-firefox-0.0.3.zip][firefox]]
-- [[http://13.57.190.119:9000/metamask-opera-0.0.3.zip][opera]]
+- [[http://13.57.190.119:9000/conflux-portal-chrome-0.0.3.zip][chrome]]
+- [[http://13.57.190.119:9000/conflux-portal-firefox-0.0.3.zip][firefox]]
+- [[http://13.57.190.119:9000/conflux-portal-opera-0.0.3.zip][opera]]
 
 ** Install/安装
 *** chrome
@@ -43,12 +43,12 @@ the zip file, use *Load unpacked* button to load the unziped folder.
 未打包插件按钮加载解压后的文件夹.
 
 ** Examples
-- [[http://13.57.190.119:9000/contract.html][example]] for testing dapp functionalities ([[https://github.com/Conflux-Chain/metamask-extension/blob/cfx-develop/test/e2e/contract-test/contract.js][code]])
+- [[http://13.57.190.119:9000/contract.html][example]] for testing dapp functionalities ([[https://github.com/Conflux-Chain/conflux-portal/blob/cfx-develop/test/e2e/contract-test/contract.js][code]])
 
 ** Changelog
 *** Unreleased
 
-Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.3...HEAD
+Commits https://github.com/Conflux-Chain/conflux-portal-extension/compare/0.0.3...HEAD
 
 *** 0.0.3 - <2020-01-16 Thu>
 **** Change
@@ -58,7 +58,7 @@ Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.3...HEAD
 - ~window.ethereum.isMetaMask~ changed to ~window.conflux.isConfluxPortal~
 - support skipped transaction
 
-Commits https://github.com/Conflux-Chain/metamask-extension/compare/0.0.2...0.0.3
+Commits https://github.com/Conflux-Chain/conflux-portal-extension/compare/0.0.2...0.0.3
 
 *** 0.0.2 - <2020-01-10 Fri>
 - Some "Etherscan" to "Confluxscan"

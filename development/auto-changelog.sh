@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-readonly URL='https://github.com/MetaMask/metamask-extension'
+readonly URL='https://github.com/Conflux-Chain/conflux-portal'
 
 git fetch --tags
 

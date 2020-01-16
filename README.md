@@ -1,5 +1,5 @@
 # MetaMask Browser Extension
-[![Build Status](https://circleci.com/gh/Conflux-Chain/metamask-extension.svg?style=svg)](https://circleci.com/gh/Conflux-Chain/metamask-extension?branch=cfx-develop)
+[![Build Status](https://circleci.com/gh/Conflux-Chain/conflux-portal.svg?style=svg)](https://circleci.com/gh/Conflux-Chain/conflux-portal?branch=cfx-develop)
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
@@ -7,9 +7,9 @@ MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recomm
 
 For up to the minute news, follow our [Twitter](https://twitter.com/metamask_io) or [Medium](https://medium.com/metamask) pages.
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://conflux-chain.github.io/metamask-docs/).
 
-To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/Conflux-Chain/conflux-portal/tree/develop/docs).
 
 ## Building locally
 
@@ -29,7 +29,7 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 ## Contributing
 
-You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
+You can read [our internal docs here](https://conflux-chain.github.io/conflux-portal/).
 
 You can re-generate the docs locally by running `yarn doc`, and contributors can update the hosted docs by running `yarn publish-docs`.
 
