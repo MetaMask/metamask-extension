@@ -14,7 +14,7 @@ export default class SignatureRequest extends PureComponent {
       address: PropTypes.string,
       balance: PropTypes.string,
       name: PropTypes.string,
-    }).isRequired,
+    }),
 
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
