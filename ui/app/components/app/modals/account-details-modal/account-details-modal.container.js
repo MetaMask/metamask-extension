@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import * as actions from '../../../../store/actions'
+import { showModal, setAccountLabel } from '../../../../store/actions'
 import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
@@ -17,15 +17,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // Is this supposed to be used somewhere?
-    showQrView: (selected, identity) =>
-      dispatch(actions.showQrView(selected, identity)),
-    showExportPrivateKeyModal: () => {
-      dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
-    },
-    hideModal: () => dispatch(actions.hideModal()),
+    showExportPrivateKeyModal: () =>
+      dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
     setAccountLabel: (address, label) =>
-      dispatch(actions.setAccountLabel(address, label)),
+      dispatch(setAccountLabel(address, label)),
   }
 }
 

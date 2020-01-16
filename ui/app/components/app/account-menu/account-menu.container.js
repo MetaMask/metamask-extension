@@ -7,8 +7,6 @@ import {
   hideSidebar,
   lockMetamask,
   hideWarning,
-  showConfigPage,
-  showInfoPage,
   showModal,
 } from '../../../store/actions'
 import {
@@ -53,16 +51,6 @@ function mapDispatchToProps (dispatch) {
     lockMetamask: () => {
       dispatch(lockMetamask())
       dispatch(hideWarning())
-      dispatch(hideSidebar())
-      dispatch(toggleAccountMenu())
-    },
-    showConfigPage: () => {
-      dispatch(showConfigPage())
-      dispatch(hideSidebar())
-      dispatch(toggleAccountMenu())
-    },
-    showInfoPage: () => {
-      dispatch(showInfoPage())
       dispatch(hideSidebar())
       dispatch(toggleAccountMenu())
     },

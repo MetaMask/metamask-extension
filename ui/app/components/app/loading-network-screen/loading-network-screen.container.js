@@ -4,7 +4,7 @@ import * as actions from '../../../store/actions'
 import { getNetworkIdentifier } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { loadingMessage, currentView } = state.appState
+  const { loadingMessage } = state.appState
   const { provider, lastSelectedProvider, network } = state.metamask
   const { rpcTarget, chainId, ticker, nickname, type } = provider
 
@@ -12,7 +12,7 @@ const mapStateToProps = state => {
     type === 'rpc' ? [rpcTarget, chainId, ticker, nickname] : [provider.type]
 
   return {
-    isLoadingNetwork: network === 'loading' && currentView.name !== 'config',
+    isLoadingNetwork: network === 'loading',
     loadingMessage,
     lastSelectedProvider,
     setProviderArgs,

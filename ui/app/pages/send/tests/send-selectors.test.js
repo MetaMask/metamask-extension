@@ -9,7 +9,6 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
-  getCurrentViewContext,
   getNativeCurrency,
   getForceGasMin,
   getGasLimit,
@@ -152,15 +151,6 @@ describe('send selectors', () => {
   describe('getCurrentNetwork()', () => {
     it('should return the id of the currently selected network', () => {
       assert.equal(getCurrentNetwork(mockState), '3')
-    })
-  })
-
-  describe('getCurrentViewContext()', () => {
-    it('should return the context of the current view', () => {
-      assert.equal(
-        getCurrentViewContext(mockState),
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
-      )
     })
   })
 
