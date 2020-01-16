@@ -390,7 +390,7 @@ export function removeAccount (address) {
 
     try {
       await new Promise((resolve, reject) => {
-        background.removeAccount(address, async (error, account) => {
+        background.removeAccount(address, (error, account) => {
           if (error) {
             return reject(error)
           }
