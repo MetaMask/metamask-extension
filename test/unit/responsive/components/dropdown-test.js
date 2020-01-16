@@ -11,7 +11,6 @@ const mockState = {
 
 describe('Dropdown components', function () {
   let onClickOutside
-  let closeMenu
   let onClick
 
   const dropdownComponentProps = {
@@ -31,7 +30,6 @@ describe('Dropdown components', function () {
   let component
   beforeEach(function () {
     onClickOutside = sinon.spy()
-    closeMenu = sinon.spy()
     onClick = sinon.spy()
 
     store = createMockStore(mockState)
@@ -43,12 +41,8 @@ describe('Dropdown components', function () {
               .drop-menu-item i { margin: 11px; }
             `}
         </style>
-        <li closeMenu={closeMenu} onClick={onClick}>
-          Item 1
-        </li>
-        <li closeMenu={closeMenu} onClick={onClick}>
-          Item 2
-        </li>
+        <li onClick={onClick}>Item 1</li>
+        <li onClick={onClick}>Item 2</li>
       </Dropdown>,
       store
     )
@@ -60,17 +54,10 @@ describe('Dropdown components', function () {
     assert.equal(items.length, 2)
   })
 
-  it('closes when item clicked', function () {
-    const items = dropdownComponent.find('li')
-    const node = items.at(0)
-    node.simulate('click')
-    assert.equal(node.props().closeMenu, closeMenu)
-  })
-
   it('invokes click handler when item clicked', function () {
     const items = dropdownComponent.find('li')
     const node = items.at(0)
     node.simulate('click')
-    assert.equal(onClick.calledOnce, true)
+    assert.ok(onClick.calledOnce)
   })
 })

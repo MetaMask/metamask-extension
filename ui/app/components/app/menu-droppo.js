@@ -8,7 +8,7 @@ export default class MenuDroppoComponent extends Component {
     isOpen: PropTypes.bool.isRequired,
     innerStyle: PropTypes.object,
     children: PropTypes.node.isRequired,
-    onClickOutside: PropTypes.func.isRequired,
+    onClickOutside: PropTypes.func,
     containerClassName: PropTypes.string,
     zIndex: PropTypes.number,
     style: PropTypes.object.isRequired,
