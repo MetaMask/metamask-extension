@@ -55,7 +55,6 @@ export const actionConstants = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   // account detail screen
-  SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
@@ -85,7 +84,6 @@ export const actionConstants = {
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
-  SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   // loading overlay
@@ -1271,13 +1269,6 @@ export function showConfTxPage ({ transForward = true, id }) {
   }
 }
 
-export function showAddTokenPage (transitionForward = true) {
-  return {
-    type: actionConstants.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
-  }
-}
-
 export function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
@@ -1798,12 +1789,6 @@ export function setAccountLabel (account, label) {
         resolve(account)
       })
     })
-  }
-}
-
-export function showSendPage () {
-  return {
-    type: actionConstants.SHOW_SEND_PAGE,
   }
 }
 

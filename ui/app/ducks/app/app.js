@@ -185,16 +185,6 @@ export default function reduceApp (state, action) {
 
       return newState
 
-    case actions.SHOW_ADD_TOKEN_PAGE:
-      return {
-        ...appState,
-        currentView: {
-          name: 'add-token',
-          context: appState.currentView.context,
-        },
-        transForward: action.value,
-      }
-
     case actions.SET_NEW_ACCOUNT_FORM:
       return {
         ...appState,
@@ -212,17 +202,6 @@ export default function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: true,
-      }
-
-    case actions.SHOW_SEND_PAGE:
-      return {
-        ...appState,
-        currentView: {
-          name: 'sendTransaction',
-          context: appState.currentView.context,
-        },
-        transForward: true,
-        warning: null,
       }
 
     case actions.SHOW_SEND_TOKEN_PAGE:
