@@ -75,10 +75,7 @@ describe('TransactionStateManager', function () {
         txParams: {},
       }
       txStateManager.addTx(tx)
-      const noop = function (err) {
-        if (err) {
-          console.log('Error: ', err)
-        }
+      const noop = () => {
         assert(true, 'event listener has been triggered and noop executed')
         done()
       }
