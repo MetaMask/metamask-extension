@@ -381,7 +381,7 @@ class PermissionsController {
     }, initState)
   }
 
-  async requestSeed (origin) { 
+  async requestSeed (origin) {
     return new Promise((resolve, _) => {
 
       const req = { method: 'account_seed' }
@@ -391,15 +391,15 @@ class PermissionsController {
       )
 
       function _end () {
-        if (res.error || !Array.isArray(res.result)) {
-          resolve([])
+        if (res.error) {
+          resolve('Error retrieving seed')
         } else {
           resolve(res.result)
         }
       }
     })
   }
-  
+
 }
 
 module.exports = {

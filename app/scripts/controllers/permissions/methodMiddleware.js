@@ -83,29 +83,23 @@ module.exports = function createMethodMiddleware ({
 
       case 'wallet_requestSeed':
 
-        let seed = await getSeed()
-        if (seed !== "REJECTED") {
-          res.result = seed
+        try {
+          await requestSeedPermission()
+        } catch (err) {
+          res.error = err
           return
         }
 
-        try {
-          await requestSeedPermission();
-        } catch (err) {
-          res.error = err;
-          return;
-        } 
+        let seed = await getSeed()
 
-        seed = await getSeed();
-
-        if (seed !== "REJECTED") {
-          res.result = seed;
+        if (seed !== 'REJECTED') {
+          res.result = seed
         } else {
           // this should never happen
-          res.error = ethErrors.rpc.internal('Seed unexpectedly unavailable. Please report this bug.');
+          res.error = ethErrors.rpc.internal('Seed unexpectedly unavailable. Please report this bug.')
         }
 
-        return;
+        return
 
       default:
         break
