@@ -44,7 +44,7 @@ describe('SendFooter Component', function () {
         to="mockTo"
         toAccounts={['mockAccount']}
         tokenBalance="mockTokenBalance"
-        unapprovedTxs={['mockTx']}
+        unapprovedTxs={{}}
         update={propsMethodSpies.update}
         sendErrors={{}}
       />
@@ -87,36 +87,36 @@ describe('SendFooter Component', function () {
       },
       'should return true if gasTotal is falsy': {
         inError: false,
-        gasTotal: false,
+        gasTotal: '',
         expectedResult: true,
         gasIsLoading: false,
       },
       'should return true if to is truthy': {
         to: '0xsomevalidAddress',
         inError: false,
-        gasTotal: false,
+        gasTotal: '',
         expectedResult: true,
         gasIsLoading: false,
       },
       'should return true if selectedToken is truthy and tokenBalance is falsy': {
-        selectedToken: true,
-        tokenBalance: null,
+        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+        tokenBalance: '',
         expectedResult: true,
         gasIsLoading: false,
       },
       'should return true if gasIsLoading is truthy but all other params are falsy': {
         inError: false,
-        gasTotal: null,
+        gasTotal: '',
         selectedToken: null,
-        tokenBalance: 0,
+        tokenBalance: '',
         expectedResult: true,
         gasIsLoading: true,
       },
       'should return false if inError is false and all other params are truthy': {
         inError: false,
         gasTotal: '0x123',
-        selectedToken: true,
-        tokenBalance: 123,
+        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+        tokenBalance: '123',
         expectedResult: false,
         gasIsLoading: false,
       },
@@ -154,7 +154,7 @@ describe('SendFooter Component', function () {
           gasPrice: 'mockGasPrice',
           selectedToken: { mockProp: 'mockSelectedTokenProp' },
           to: 'mockTo',
-          unapprovedTxs: ['mockTx'],
+          unapprovedTxs: {},
         }
       )
     })
@@ -197,7 +197,7 @@ describe('SendFooter Component', function () {
 
   describe('render', () => {
     beforeEach(() => {
-      sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns('formShouldBeDisabledReturn')
+      sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true)
       wrapper = shallow((
         <SendFooter
           addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
@@ -217,7 +217,7 @@ describe('SendFooter Component', function () {
           to="mockTo"
           toAccounts={['mockAccount']}
           tokenBalance="mockTokenBalance"
-          unapprovedTxs={['mockTx']}
+          unapprovedTxs={{}}
           update={propsMethodSpies.update}
         />
       ), { context: { t: str => str, metricsEvent: () => ({}) } })
@@ -237,7 +237,7 @@ describe('SendFooter Component', function () {
         onSubmit,
         disabled,
       } = wrapper.find(PageContainerFooter).props()
-      assert.equal(disabled, 'formShouldBeDisabledReturn')
+      assert.equal(disabled, true)
 
       assert.equal(SendFooter.prototype.onSubmit.callCount, 0)
       onSubmit(MOCK_EVENT)

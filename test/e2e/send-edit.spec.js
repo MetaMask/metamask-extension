@@ -56,20 +56,17 @@ describe('Using MetaMask with an existing account', function () {
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
       await driver.findElement(By.css('.welcome-page__header'))
-      const welcomeScreenBtn = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
-      await welcomeScreenBtn.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "Import Wallet" option', async () => {
-      const customRpcButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
-      await customRpcButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
-      const optOutButton = await driver.findElement(By.css('.btn-default'))
-      await optOutButton.click()
+      await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
@@ -83,26 +80,22 @@ describe('Using MetaMask with an existing account', function () {
       const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
       confirmPassword.sendKeys('correct horse battery staple')
 
-      const tosCheckBox = await driver.findElement(By.css('.first-time-flow__checkbox'))
-      await tosCheckBox.click()
+      await driver.clickElement(By.css('.first-time-flow__checkbox'))
 
-      const [importButton] = await driver.findElements(By.xpath(`//button[contains(text(), 'Import')]`))
-      await importButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
       await driver.delay(regularDelayMs)
     })
 
     it('clicks through the success screen', async () => {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      const doneButton = await driver.findElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
-      await doneButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
   })
 
   describe('Send ETH from inside MetaMask', () => {
     it('starts a send transaction', async function () {
-      const sendButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Send')]`))
-      await sendButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(By.css('input[placeholder="Search, public address (0x), or ENS"]'))
@@ -112,8 +105,7 @@ describe('Using MetaMask with an existing account', function () {
       await inputAmount.sendKeys('1')
 
       // Set the gas limit
-      const configureGas = await driver.findElement(By.css('.advanced-gas-options-btn'))
-      await configureGas.click()
+      await driver.clickElement(By.css('.advanced-gas-options-btn'))
       await driver.delay(regularDelayMs)
 
       const gasModal = await driver.findElement(By.css('span .modal'))
@@ -138,14 +130,12 @@ describe('Using MetaMask with an existing account', function () {
 
       await driver.delay(1000)
 
-      const save = await driver.findElement(By.xpath(`//button[contains(text(), 'Save')]`))
-      await save.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Save')]`))
       await driver.wait(until.stalenessOf(gasModal))
       await driver.delay(regularDelayMs)
 
       // Continue to next screen
-      const nextScreen = await driver.findElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.delay(regularDelayMs)
     })
 
@@ -159,8 +149,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('edits the transaction', async function () {
-      const editButton = await driver.findElement(By.css('.confirm-page-container-header__back-button'))
-      await editButton.click()
+      await driver.clickElement(By.css('.confirm-page-container-header__back-button'))
 
       await driver.delay(regularDelayMs)
 
@@ -171,8 +160,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(50)
       await inputAmount.sendKeys('2.2')
 
-      const configureGas = await driver.findElement(By.css('.advanced-gas-options-btn'))
-      await configureGas.click()
+      await driver.clickElement(By.css('.advanced-gas-options-btn'))
       await driver.delay(regularDelayMs)
 
       const gasModal = await driver.findElement(By.css('span .modal'))
@@ -196,13 +184,11 @@ describe('Using MetaMask with an existing account', function () {
 
       await driver.delay(1000)
 
-      const save = await driver.findElement(By.xpath(`//button[contains(text(), 'Save')]`))
-      await save.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Save')]`))
       await driver.wait(until.stalenessOf(gasModal))
       await driver.delay(regularDelayMs)
 
-      const nextScreen = await driver.findElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.delay(regularDelayMs)
     })
 
@@ -216,8 +202,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('confirms the transaction', async function () {
-      const confirmButton = await driver.findElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirmButton.click()
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
       await driver.delay(regularDelayMs)
     })
 
