@@ -194,16 +194,6 @@ export default function reduceApp (state, action) {
         },
       }
 
-    case actions.SHOW_INFO_PAGE:
-      return {
-        ...appState,
-        currentView: {
-          name: 'info',
-          context: appState.currentView.context,
-        },
-        transForward: true,
-      }
-
     case actions.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,

@@ -156,16 +156,6 @@ describe('App State', () => {
     assert.equal(state.currentView.context, 'context')
   })
 
-  it('shows info page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_INFO_PAGE,
-    })
-
-    assert.equal(state.currentView.name, 'info')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-  })
-
   it('shows send token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,

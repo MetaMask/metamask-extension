@@ -36,7 +36,6 @@ export const actionConstants = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   // unlock screen
@@ -542,12 +541,6 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
         return resolve()
       })
     })
-  }
-}
-
-export function showInfoPage () {
-  return {
-    type: actionConstants.SHOW_INFO_PAGE,
   }
 }
 
