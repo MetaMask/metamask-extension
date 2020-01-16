@@ -302,11 +302,6 @@ export function getSelectedTokenContract (state) {
     : null
 }
 
-export function getCurrentViewContext (state) {
-  const { currentView = {} } = state.appState
-  return currentView.context
-}
-
 export function getTotalUnapprovedCount ({ metamask }) {
   const {
     unapprovedTxs = {},
