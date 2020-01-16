@@ -383,22 +383,28 @@ export function resetAccount () {
 }
 
 export function removeAccount (address) {
-  return dispatch => {
+  return async dispatch => {
     dispatch(showLoadingIndication())
 
-    return new Promise((resolve, reject) => {
-      background.removeAccount(address, (err, account) => {
-        dispatch(hideLoadingIndication())
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.info('Account removed: ' + account)
-        dispatch(showAccountsPage())
-        resolve()
+    try {
+      await new Promise((resolve, reject) => {
+        background.removeAccount(address, (error, account) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve(account)
+        })
       })
-    })
+      await forceUpdateMetamaskState(dispatch)
+    } catch (error) {
+      dispatch(displayWarning(error.message))
+      throw error
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+
+    log.info('Account removed: ' + address)
+    dispatch(showAccountsPage())
   }
 }
 

@@ -244,9 +244,10 @@ describe('Actions', () => {
       const store = mockStore(devState)
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'SHOW_ACCOUNTS_PAGE' },
+        'SHOW_LOADING_INDICATION',
+        'UPDATE_METAMASK_STATE',
+        'HIDE_LOADING_INDICATION',
+        'SHOW_ACCOUNTS_PAGE',
       ]
 
       removeAccountSpy = sinon.spy(background, 'removeAccount')
@@ -255,16 +256,19 @@ describe('Actions', () => {
         actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
       )
       assert(removeAccountSpy.calledOnce)
-      assert.deepEqual(store.getActions(), expectedActions)
+      const actionTypes = store
+        .getActions()
+        .map(action => action.type)
+      assert.deepEqual(actionTypes, expectedActions)
     })
 
     it('displays warning error message when removeAccount callback errors', async () => {
       const store = mockStore()
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        'SHOW_LOADING_INDICATION',
+        'DISPLAY_WARNING',
+        'HIDE_LOADING_INDICATION',
       ]
 
       removeAccountSpy = sinon.stub(background, 'removeAccount')
@@ -278,7 +282,10 @@ describe('Actions', () => {
         )
         assert.fail('Should have thrown error')
       } catch (_) {
-        assert.deepEqual(store.getActions(), expectedActions)
+        const actionTypes = store
+          .getActions()
+          .map(action => action.type)
+        assert.deepEqual(actionTypes, expectedActions)
       }
     })
   })
