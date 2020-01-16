@@ -213,7 +213,7 @@
     "@storybook/addon-info": "^5.1.1",
     "@storybook/addon-knobs": "^5.1.1",
     "@storybook/react": "^5.1.1",
-    "@yqrashawn/conflux-local-network-lite": "^0.9.9",
+    "@yqrashawn/conflux-local-network-lite": "^0.9.10",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",
     "babelify": "^10.0.0",
