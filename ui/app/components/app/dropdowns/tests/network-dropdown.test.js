@@ -12,12 +12,13 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState in false', () => {
     const mockState = {
       metamask: {
+        network: '1',
         provider: {
           type: 'test',
         },
       },
       appState: {
-        networkDropdown: false,
+        networkDropdownOpen: false,
       },
     }
 
@@ -39,6 +40,7 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState is true', () => {
     const mockState = {
       metamask: {
+        network: '1',
         provider: {
           type: 'test',
         },
