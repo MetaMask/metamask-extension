@@ -132,13 +132,13 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Log out an log back in', () => {
+  describe('Lock an unlock', () => {
     it('logs out of the account', async () => {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
       const lockButton = await driver.findClickableElement(By.css('.account-menu__lock-button'))
-      assert.equal(await lockButton.getText(), 'Log out')
+      assert.equal(await lockButton.getText(), 'Lock')
       await lockButton.click()
       await driver.delay(regularDelayMs)
     })
@@ -182,7 +182,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const lockButton = await driver.findClickableElement(By.css('.account-menu__lock-button'))
-      assert.equal(await lockButton.getText(), 'Log out')
+      assert.equal(await lockButton.getText(), 'Lock')
       await lockButton.click()
       await driver.delay(regularDelayMs)
     })
