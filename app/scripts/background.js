@@ -66,6 +66,10 @@ const inTest = process.env.IN_TEST === 'true'
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
 let versionedData
 
+if (inTest || process.env.METAMASK_DEBUG) {
+  global.metamaskGetState = localStore.get.bind(localStore)
+}
+
 // initialization flow
 initialize().catch(log.error)
 
