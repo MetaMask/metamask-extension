@@ -234,6 +234,12 @@
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
   },
+  "buyWithRamp": {
+    "message": "Buy crypto with Ramp"
+  },
+  "buyWithRampDescription": {
+    "message": "Top up your MetaMask account with Eth or DAI - no ID or credit required, just use your bank."
+  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -338,6 +344,9 @@
   },
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
+  },
+  "continueToRamp": {
+    "message": "Continue to Ramp"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
