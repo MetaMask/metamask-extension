@@ -7584,7 +7584,12 @@ core-js@^2.2.0, core-js@^2.5.0, core-js@^2.5.3:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
   integrity sha1-isw4NFgk8W2DZbfJtCWRaOjtYD4=
 
-core-js@^2.4.0, core-js@^2.5.7:
+core-js@^2.4.0:
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
+  integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
+
+core-js@^2.5.7:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha512-HOpZf6eXmnl7la+cUdMnLvUxKNqLUzJvgIziQ0DiF3JwSImNphIqdGqzj6hIKyX04MmV0poclQ7+wjWvxQyR2A==
@@ -19694,9 +19699,9 @@ nomnom@~1.6.2:
     underscore "~1.4.4"
 
 nonce-tracker@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/nonce-tracker/-/nonce-tracker-1.0.0.tgz#8a23e696320a439c550f3a6d9a98340370b7e467"
-  integrity sha512-hxKokxgLvOZx9A5qPQKwL34G1/YwMC5xJWZHFUKfvwxypkn2nP0KVJjbcoXwY6pXsRRa11KdFEPW61N4YCGnWQ==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/nonce-tracker/-/nonce-tracker-1.0.1.tgz#4be90cdd9339009730c2133e86b66dbceb624ff1"
+  integrity sha512-pmx0gvfipbsvMh0XWOyisxq3+POTDhaXBh+7RHxfjzcBLV7c/eEfieNC1HPmMMtvvznCo0j6aqvshTg05oxfjg==
   dependencies:
     assert "^1.4.1"
     await-semaphore "^0.1.3"
