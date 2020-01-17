@@ -329,9 +329,6 @@
   "loadingTokens": {
     "message": "กำลังโหลดโทเค็น..."
   },
-  "login": {
-    "message": "เข้าสู่ระบบ"
-  },
   "lock": {
     "message": "ออกจากระบบ"
   },

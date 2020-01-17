@@ -651,9 +651,6 @@
   "localhost": {
     "message": "লোকালহোস্ট 8545"
   },
-  "login": {
-    "message": "লগইন করুন"
-  },
   "lock": {
     "message": "লগ আউট করুন"
   },

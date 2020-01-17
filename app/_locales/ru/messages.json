@@ -281,9 +281,6 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "login": {
-    "message": "Вход"
-  },
   "lock": {
     "message": "Выход"
   },

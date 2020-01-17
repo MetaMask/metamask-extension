@@ -248,9 +248,6 @@
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },
-  "login": {
-    "message": "लॉग इन करें"
-  },
   "lock": {
     "message": "लॉग आउट करें"
   },

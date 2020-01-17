@@ -639,11 +639,8 @@
   "loadMore": {
     "message": "加载更多"
   },
-  "login": {
-    "message": "登录"
-  },
   "lock": {
-    "message": "登出"
+    "message": "锁定"
   },
   "mainnet": {
     "message": "以太坊主网络"

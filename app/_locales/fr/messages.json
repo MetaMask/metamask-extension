@@ -636,9 +636,6 @@
   "loadMore": {
     "message": "Charger plus"
   },
-  "login": {
-    "message": "Connexion"
-  },
   "lock": {
     "message": "Déconnexion"
   },

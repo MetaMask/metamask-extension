@@ -645,11 +645,8 @@
   "loadMore": {
     "message": "載入更多"
   },
-  "login": {
-    "message": "登入"
-  },
   "lock": {
-    "message": "登出"
+    "message": "鎖定"
   },
   "mainnet": {
     "message": "乙太坊 主網路"
@@ -1262,6 +1259,9 @@
   },
   "unknownCameraError": {
     "message": "無法存取攝影鏡頭。請再試一次..."
+  },
+  "unlock": {
+    "message": "解鎖"
   },
   "unlockMessage": {
     "message": "去中心化網路世界等待著您"

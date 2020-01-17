@@ -278,9 +278,6 @@
   "localhost": {
     "message": "லோக்கல் ஹோஸ்ட் 8545"
   },
-  "login": {
-    "message": "உள் நுழை"
-  },
   "lock": {
     "message": "வெளியேறு"
   },

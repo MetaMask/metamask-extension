@@ -651,9 +651,6 @@
   "localhost": {
     "message": "Vietinis serveris 8545"
   },
-  "login": {
-    "message": "Prisijungti"
-  },
   "lock": {
     "message": "Atsijungti"
   },

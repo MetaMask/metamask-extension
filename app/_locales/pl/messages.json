@@ -648,9 +648,6 @@
   "localhost": {
     "message": "Serwer lokalny 8545"
   },
-  "login": {
-    "message": "Zaloguj się"
-  },
   "lock": {
     "message": "Wyloguj się"
   },

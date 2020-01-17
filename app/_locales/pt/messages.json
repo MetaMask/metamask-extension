@@ -245,9 +245,6 @@
   "loadingTokens": {
     "message": "A carregar Tokens..."
   },
-  "login": {
-    "message": "Entrar"
-  },
   "lock": {
     "message": "Sair"
   },

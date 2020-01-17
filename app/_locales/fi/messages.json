@@ -648,9 +648,6 @@
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },
-  "login": {
-    "message": "Kirjaudu sisään"
-  },
   "lock": {
     "message": "Kirjaudu ulos"
   },

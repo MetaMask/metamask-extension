@@ -647,9 +647,6 @@
   "localhost": {
     "message": "Resursdators 8545"
   },
-  "login": {
-    "message": "Pierakstīties"
-  },
   "lock": {
     "message": "Izrakstīties"
   },

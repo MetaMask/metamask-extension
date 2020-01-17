@@ -647,9 +647,6 @@
   "localhost": {
     "message": "Локален хост 8545"
   },
-  "login": {
-    "message": "Вход"
-  },
   "lock": {
     "message": "Излизане"
   },

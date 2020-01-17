@@ -645,9 +645,6 @@
   "localhost": {
     "message": "로컬호스트 8545"
   },
-  "login": {
-    "message": "로그인"
-  },
   "lock": {
     "message": "로그아웃"
   },

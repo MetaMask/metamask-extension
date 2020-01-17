@@ -635,9 +635,6 @@
   "localhost": {
     "message": "Host local 8545"
   },
-  "login": {
-    "message": "Inicia sessió"
-  },
   "lock": {
     "message": "Tanca la sessió"
   },

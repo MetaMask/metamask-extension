@@ -314,9 +314,6 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "login": {
-    "message": "ログイン"
-  },
   "lock": {
     "message": "ログアウト"
   },

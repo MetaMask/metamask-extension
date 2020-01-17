@@ -651,9 +651,6 @@
   "localhost": {
     "message": "Localhost 8545 "
   },
-  "login": {
-    "message": "ورود"
-  },
   "lock": {
     "message": "خروج"
   },

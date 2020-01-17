@@ -641,9 +641,6 @@
   "localhost": {
     "message": "Lokalvert 8545"
   },
-  "login": {
-    "message": "Logg inn"
-  },
   "lock": {
     "message": "Logg ut "
   },

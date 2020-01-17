@@ -651,9 +651,6 @@
   "localhost": {
     "message": "Локальний хост 8545"
   },
-  "login": {
-    "message": "Увійти"
-  },
   "lock": {
     "message": "Вийти"
   },
