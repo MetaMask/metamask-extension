@@ -16,7 +16,7 @@ const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enum
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
 const gasDuck = require('../ducks/gas/gas.duck')
 const WebcamUtils = require('../../lib/webcam-utils')
-const { RampInstantSDK } = require('@ramp-network/ramp-instant-sdk');
+const { RampInstantSDK } = require('@ramp-network/ramp-instant-sdk')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -2259,7 +2259,7 @@ function buyEth (opts) {
   return (dispatch) => {
     if (opts.service === 'RAMP_INSTANT') {
       dispatch(buyEthWithRamp(opts))
-      return;
+      return
     }
 
     const url = getBuyEthUrl(opts)
@@ -2288,14 +2288,14 @@ function buyEthWithRamp (opts) {
   }
 }
 
-function openEmbeddedIntegrationInFullscreenMode(opts) {
-  return (dispatch) => {
-    global.platform.openExtensionInBrowser(undefined, `openEmbeddedIntegration=${opts.service}`);
+function openEmbeddedIntegrationInFullscreenMode (opts) {
+  return (_dispatch) => {
+    global.platform.openExtensionInBrowser(undefined, `openEmbeddedIntegration=${opts.service}`)
   }
 }
 
-function clearEmbeddedIntegrationQueryParam() {
-  return (dispatch) => {
+function clearEmbeddedIntegrationQueryParam () {
+  return (_dispatch) => {
     const currentUrl = new URL(window.location.href)
     currentUrl.searchParams.delete('openEmbeddedIntegration')
     history.pushState({}, null, currentUrl.toString())
