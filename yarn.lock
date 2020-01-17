@@ -2024,6 +2024,13 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
+"@ramp-network/ramp-instant-sdk@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-1.7.0.tgz#aee260de49ef148aaa8323de1414555918a7415c"
+  integrity sha512-6ZAkwxdYSXn1kkQ9oHzgDu2kox99Sg6weIYfSVzN7iJsoscPRtsKSii0j+gGSiblooyyyIpAYARtlPuIqkOUJQ==
+  dependencies:
+    body-scroll-lock "^2.6.4"
+
 "@reach/router@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.2.1.tgz#34ae3541a5ac44fa7796e5506a5d7274a162be4e"
@@ -5594,6 +5601,11 @@ body-parser@1.19.0, body-parser@^1.15.0, body-parser@^1.16.0, body-parser@^1.16.
     qs "6.7.0"
     raw-body "2.4.0"
     type-is "~1.6.17"
+
+body-scroll-lock@^2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-2.6.4.tgz#567abc60ef4d656a79156781771398ef40462e94"
+  integrity sha512-NP08WsovlmxEoZP9pdlqrE+AhNaivlTrz9a0FF37BQsnOrpN48eNqivKkE7SYpM9N+YIPjsdVzfLAUQDBm6OQw==
 
 body@^5.1.0:
   version "5.1.0"
