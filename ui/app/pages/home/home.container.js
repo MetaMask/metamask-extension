@@ -10,6 +10,7 @@ import {
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
   setShowRestorePromptToFalse,
+  buyEth,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -31,6 +32,7 @@ const mapStateToProps = state => {
   const { forgottenPassword, threeBoxLastUpdated } = appState
 
   const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+  const requestedEmbeddedIntegration = new URLSearchParams(window.location.search).get('openEmbeddedIntegration')
 
   return {
     forgottenPassword,
@@ -44,6 +46,7 @@ const mapStateToProps = state => {
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
+    requestedEmbeddedIntegration,
     hasDaiV1Token: Boolean(getDaiV1Token(state)),
   }
 }
@@ -62,6 +65,7 @@ const mapDispatchToProps = (dispatch) => ({
         }
       })
   },
+  buyEth: (opts) => dispatch(buyEth(opts)),
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })

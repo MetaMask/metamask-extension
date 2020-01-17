@@ -16,6 +16,7 @@ const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enum
 const { hasUnconfirmedTransactions } = require('../helpers/utils/confirm-tx.util')
 const gasDuck = require('../ducks/gas/gas.duck')
 const WebcamUtils = require('../../lib/webcam-utils')
+const { RampInstantSDK } = require('@ramp-network/ramp-instant-sdk');
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -262,6 +263,7 @@ var actions = {
   ONBOARDING_BUY_ETH_VIEW: 'ONBOARDING_BUY_ETH_VIEW',
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
+  openEmbeddedIntegrationInFullscreenMode,
   buyEthView: buyEthView,
   buyWithShapeShift,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
@@ -2255,11 +2257,48 @@ function showSendTokenPage () {
 
 function buyEth (opts) {
   return (dispatch) => {
+    if (opts.service === 'RAMP_INSTANT') {
+      dispatch(buyEthWithRamp(opts))
+      return;
+    }
+
     const url = getBuyEthUrl(opts)
     global.platform.openWindow({ url })
     dispatch({
       type: actions.BUY_ETH,
     })
+  }
+}
+
+function buyEthWithRamp (opts) {
+  return (dispatch) => {
+    dispatch(hideModal())
+
+    new RampInstantSDK({
+      hostAppName: 'MetaMask',
+      hostLogoUrl: 'https://metamask.io/img/metamask.png',
+      userAddress: opts.address,
+    }).show()
+
+    dispatch(clearEmbeddedIntegrationQueryParam())
+
+    dispatch({
+      type: actions.BUY_ETH,
+    })
+  }
+}
+
+function openEmbeddedIntegrationInFullscreenMode(opts) {
+  return (dispatch) => {
+    global.platform.openExtensionInBrowser(undefined, `openEmbeddedIntegration=${opts.service}`);
+  }
+}
+
+function clearEmbeddedIntegrationQueryParam() {
+  return (dispatch) => {
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.delete('openEmbeddedIntegration')
+    history.pushState({}, null, currentUrl.toString())
   }
 }
 

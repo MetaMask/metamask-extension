@@ -5,6 +5,8 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
 const { getNetworkDisplayName } = require('../../../../../app/scripts/controllers/network/util')
+const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_FULLSCREEN } = require('../../../../../app/scripts/lib/enums')
 
 import Button from '../../ui/button'
 
@@ -12,6 +14,8 @@ let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT
 let WYRE_ROW_TITLE
 let WYRE_ROW_TEXT
+let RAMP_ROW_TITLE
+let RAMP_ROW_TEXT
 let FAUCET_ROW_TITLE
 let COINSWITCH_ROW_TITLE
 let COINSWITCH_ROW_TEXT
@@ -30,6 +34,12 @@ function mapDispatchToProps (dispatch) {
     },
     toCoinSwitch: (address) => {
       dispatch(actions.buyEth({ service: 'coinswitch', address }))
+    },
+    showRampInstant: (address) => {
+      dispatch(actions.buyEth({ address, service: 'RAMP_INSTANT'}))
+    },
+    openEmbeddedIntegrationInFullscreenMode: (opts) => {
+      dispatch(actions.openEmbeddedIntegrationInFullscreenMode(opts))
     },
     hideModal: () => {
       dispatch(actions.hideModal())
@@ -53,6 +63,8 @@ function DepositEtherModal (_, context) {
   DIRECT_DEPOSIT_ROW_TEXT = context.t('directDepositEtherExplainer')
   WYRE_ROW_TITLE = context.t('buyWithWyre')
   WYRE_ROW_TEXT = context.t('buyWithWyreDescription')
+  RAMP_ROW_TITLE = context.t('buyWithRamp')
+  RAMP_ROW_TEXT = context.t('buyWithRampDescription')
   FAUCET_ROW_TITLE = context.t('testFaucet')
   COINSWITCH_ROW_TITLE = context.t('buyCoinSwitch')
   COINSWITCH_ROW_TEXT = context.t('buyCoinSwitchExplainer')
@@ -121,7 +133,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
+  const { network, toWyre, toCoinSwitch, address, toFaucet, showRampInstant, openEmbeddedIntegrationInFullscreenMode } = this.props
 
   const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
@@ -170,6 +182,26 @@ DepositEtherModal.prototype.render = function () {
           buttonLabel: this.context.t('getEther'),
           onButtonClick: () => toFaucet(network),
           hide: !isTestNetwork,
+        }),
+
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'./images/ramp.svg\')',
+              height: '60px',
+            },
+          }),
+          title: RAMP_ROW_TITLE,
+          text: RAMP_ROW_TEXT,
+          buttonLabel: this.context.t('continueToRamp'),
+          onButtonClick: () => {
+            if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+              showRampInstant(address)
+            } else {
+              openEmbeddedIntegrationInFullscreenMode({ service: 'RAMP_INSTANT' })
+            }
+          },
+          hide: isTestNetwork,
         }),
 
         this.renderRow({

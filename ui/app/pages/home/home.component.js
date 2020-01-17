@@ -40,8 +40,10 @@ export default class Home extends PureComponent {
     threeBoxSynced: PropTypes.bool,
     setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
+    requestedEmbeddedIntegration: PropTypes.string,
     showRestorePrompt: PropTypes.bool,
     selectedAddress: PropTypes.string,
+    buyEth: PropTypes.func,
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
@@ -63,11 +65,18 @@ export default class Home extends PureComponent {
     const {
       history,
       suggestedTokens = {},
+      requestedEmbeddedIntegration,
+      selectedAddress,
+      buyEth,
     } = this.props
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
+    }
+
+    if (requestedEmbeddedIntegration) {
+      buyEth({ address: selectedAddress, service: requestedEmbeddedIntegration })
     }
   }
 
