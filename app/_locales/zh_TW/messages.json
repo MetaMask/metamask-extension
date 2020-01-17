@@ -109,10 +109,10 @@
   "attributions": {
     "message": "來源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
   },
   "average": {
@@ -648,7 +648,7 @@
   "login": {
     "message": "登入"
   },
-  "logout": {
+  "lock": {
     "message": "登出"
   },
   "mainnet": {

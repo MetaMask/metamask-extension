@@ -389,7 +389,7 @@
   "login": {
     "message": "Ouvri"
   },
-  "logout": {
+  "lock": {
     "message": "Dekonekte"
   },
   "mainnet": {

@@ -248,7 +248,7 @@
   "login": {
     "message": "Entrar"
   },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {

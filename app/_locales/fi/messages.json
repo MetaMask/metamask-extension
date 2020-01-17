@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Attribuutiot"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Määritä, montako minuuttia MetaMask on ollut joutilaana ennen kuin sinut kirjataan automaattisesti ulos"
   },
   "average": {
@@ -651,7 +651,7 @@
   "login": {
     "message": "Kirjaudu sisään"
   },
-  "logout": {
+  "lock": {
     "message": "Kirjaudu ulos"
   },
   "mainnet": {

@@ -281,7 +281,7 @@
   "login": {
     "message": "உள் நுழை"
   },
-  "logout": {
+  "lock": {
     "message": "வெளியேறு"
   },
   "mainnet": {

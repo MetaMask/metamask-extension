@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Tillskrivningar"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
   },
   "average": {
@@ -641,7 +641,7 @@
   "login": {
     "message": "Logga in"
   },
-  "logout": {
+  "lock": {
     "message": "Logga ut"
   },
   "mainnet": {

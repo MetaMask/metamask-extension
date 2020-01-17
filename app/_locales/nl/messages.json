@@ -242,7 +242,7 @@
   "login": {
     "message": "Log in"
   },
-  "logout": {
+  "lock": {
     "message": "Uitloggen"
   },
   "mainnet": {

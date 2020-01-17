@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
   },
   "average": {
@@ -631,7 +631,7 @@
   "login": {
     "message": "Log Masuk"
   },
-  "logout": {
+  "lock": {
     "message": "Log keluar"
   },
   "mainnet": {

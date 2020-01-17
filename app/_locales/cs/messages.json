@@ -271,7 +271,7 @@
   "login": {
     "message": "Přihlásit"
   },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "message": {

@@ -332,7 +332,7 @@
   "login": {
     "message": "เข้าสู่ระบบ"
   },
-  "logout": {
+  "lock": {
     "message": "ออกจากระบบ"
   },
   "mainnet": {

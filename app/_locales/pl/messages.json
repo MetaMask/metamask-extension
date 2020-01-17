@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atrybuty"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
@@ -651,7 +651,7 @@
   "login": {
     "message": "Zaloguj się"
   },
-  "logout": {
+  "lock": {
     "message": "Wyloguj się"
   },
   "mainnet": {

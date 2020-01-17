@@ -125,7 +125,7 @@ export default class UnlockPage extends Component {
         onClick={this.handleSubmit}
         disableRipple
       >
-        { this.context.t('login') }
+        { this.context.t('unlock') }
       </Button>
     )
   }

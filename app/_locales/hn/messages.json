@@ -251,7 +251,7 @@
   "login": {
     "message": "लॉग इन करें"
   },
-  "logout": {
+  "lock": {
     "message": "लॉग आउट करें"
   },
   "mainnet": {
