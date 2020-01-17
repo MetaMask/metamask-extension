@@ -66,6 +66,10 @@ const localStore = inTest
   : new LocalStore()
 let versionedData
 
+if (inTest || process.env.METAMASK_DEBUG) {
+  global.metamaskGetState = localStore.get.bind(localStore)
+}
+
 // initialization flow
 initialize().catch(log.error)
 
