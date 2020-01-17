@@ -1,52 +1,94 @@
 import React from 'react'
+import configureStore from 'redux-mock-store'
 import assert from 'assert'
 import sinon from 'sinon'
-import { shallow } from 'enzyme'
+import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import MenuBar from '../index'
+import { Provider } from 'react-redux'
 
 describe('MenuBar', () => {
   let wrapper
 
-  const props = {
-    sidebarOpen: false,
-    hideSidebar: sinon.spy(),
-    showSidebar: sinon.spy(),
+  const mockStore = {
+    metamask: {
+      network: '1',
+      selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      identities: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          name: 'Account 1',
+        },
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: [
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          ],
+        },
+      ],
+      frequentRpcListDetail: [],
+    },
+    appState: {
+      sidebar: {
+        isOpen: false,
+      },
+    },
   }
 
-  beforeEach(() => {
-    wrapper = shallow(
-      <MenuBar.WrappedComponent {...props} />, {
-        context: {
-          t: str => str,
-          metricsEvent: () => {},
-        },
-      }
-    )
+  const store = configureStore()(mockStore)
+
+  afterEach(() => {
+    sinon.restore()
   })
 
   it('shows side bar when sidbarOpen is set to false', () => {
+    const props = {
+      showSidebar: sinon.spy(),
+    }
+
+    wrapper = mountWithRouter(
+      <Provider store={store}>
+        <MenuBar.WrappedComponent {...props} />
+      </Provider>, store
+    )
+
     const sidebarButton = wrapper.find('.menu-bar__sidebar-button')
     sidebarButton.simulate('click')
     assert(props.showSidebar.calledOnce)
   })
 
   it('hides side when sidebarOpen is set to true', () => {
-    wrapper.setProps({ sidebarOpen: true })
+    const props = {
+      showSidebar: sinon.spy(),
+      hideSidebar: sinon.spy(),
+      sidebarOpen: true,
+    }
+
+    wrapper = mountWithRouter(
+      <Provider store={store}>
+        <MenuBar.WrappedComponent {...props} />
+      </Provider>, store
+    )
+
     const sidebarButton = wrapper.find('.menu-bar__sidebar-button')
-    sidebarButton.simulate('click')
+    sidebarButton.prop('onClick')()
     assert(props.hideSidebar.calledOnce)
   })
 
   it('opens account detail menu when account options is clicked', () => {
     const accountOptions = wrapper.find('.menu-bar__open-in-browser')
     accountOptions.simulate('click')
-    assert.equal(wrapper.state('accountDetailsMenuOpen'), true)
+    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, true)
   })
 
   it('sets accountDetailsMenuOpen to false when closed', () => {
-    wrapper.setState({ accountDetailsMenuOpen: true })
-    const accountDetailsMenu = wrapper.find('.menu-bar__account-details-dropdown')
-    accountDetailsMenu.simulate('close')
-    assert.equal(wrapper.state('accountDetailsMenuOpen'), false)
+    wrapper.find('MenuBar').instance().setState({ accountDetailsMenuOpen: true })
+    wrapper.update()
+
+    const accountDetailsMenu = wrapper.find('AccountDetailsDropdown')
+    accountDetailsMenu.prop('onClose')()
+
+    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, false)
   })
 })

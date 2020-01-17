@@ -1,8 +1,8 @@
 import React from 'react'
 import assert from 'assert'
 import sinon from 'sinon'
-import configureMockStore from 'redux-mock-store'
-import { mountWithRouter, stubComponent } from '../../../../../test/lib/render-helpers'
+import { mount } from 'enzyme'
+import { stubComponent } from '../../../../../test/lib/render-helpers'
 import UnlockPage from '../index'
 import Mascot from '../../../components/ui/mascot'
 
@@ -21,19 +21,22 @@ describe('Unlock Page', () => {
     showOptInModal: sinon.spy(),
   }
 
-  const mockStore = {
-    metamask: {},
-  }
-
-  const store = configureMockStore()(mockStore)
-
   stubComponent(Mascot)
 
   beforeEach(() => {
-    wrapper = mountWithRouter(
-      <UnlockPage.WrappedComponent {...props} />, store
+
+    wrapper = mount(
+      <UnlockPage.WrappedComponent{...props} />, {
+        context: {
+          t: str => str,
+        },
+      }
     )
 
+  })
+
+  after(() => {
+    sinon.restore()
   })
 
   it('renders', () => {
@@ -45,10 +48,9 @@ describe('Unlock Page', () => {
     const loginButton = wrapper.find({ type: 'submit' }).last()
 
     const event = { target: { value: 'password' } }
-    // console.log(wrapper.find('UnlockPage').instance().state)
-    assert.equal(wrapper.find('UnlockPage').instance().state.password, '')
+    assert.equal(wrapper.instance().state.password, '')
     passwordField.last().simulate('change', event)
-    assert.equal(wrapper.find('UnlockPage').instance().state.password, 'password')
+    assert.equal(wrapper.instance().state.password, 'password')
 
     loginButton.simulate('click')
     assert(props.onSubmit.calledOnce)

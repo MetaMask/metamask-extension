@@ -11,14 +11,14 @@ export function mountWithStore (component, store) {
   return mount(component, { context })
 }
 
-export function mountWithRouter (component, store, pathname) {
+export function mountWithRouter (component, store = {}, pathname = '/') {
 
   // Instantiate router context
   const router = {
     history: new MemoryRouter().history,
     route: {
       location: {
-        pathname: pathname || '/',
+        pathname: pathname,
       },
       match: {},
     },

@@ -12,6 +12,10 @@ describe('Welcome', () => {
 
   const store = configureMockStore()(mockStore)
 
+  after(() => {
+    sinon.restore()
+  })
+
   it('routes to select action when participateInMetaMetrics is not initialized', () => {
 
     const props = {
