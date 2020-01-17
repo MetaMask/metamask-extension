@@ -163,6 +163,7 @@ export default class EnsInput extends Component {
             onPaste={this.onPaste}
             value={selectedAddress || input}
             autoFocus
+            data-testid="ens-input"
           />
           <div
             className={c('ens-input__wrapper__action-icon', {
