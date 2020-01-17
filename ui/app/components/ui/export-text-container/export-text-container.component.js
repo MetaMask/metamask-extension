@@ -5,7 +5,7 @@ import { exportAsFile } from '../../../helpers/utils/util'
 
 class ExportTextContainer extends Component {
   render () {
-    const { text = '', filename = '' } = this.props
+    const { text = '' } = this.props
     const { t } = this.context
 
     return (
@@ -27,7 +27,7 @@ class ExportTextContainer extends Component {
           </div>
           <div
             className="export-text-container__button"
-            onClick={() => exportAsFile(filename, text)}
+            onClick={() => exportAsFile('', text)}
           >
             <img src="images/download.svg" alt="" />
             <div className="export-text-container__button-text">
@@ -42,7 +42,6 @@ class ExportTextContainer extends Component {
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
-  filename: PropTypes.string,
 }
 
 ExportTextContainer.contextTypes = {

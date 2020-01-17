@@ -668,9 +668,6 @@
   "metamaskDescription": {
     "message": "إيصالك بالإيثيريوم وبالشبكة اللامركزية."
   },
-  "metamaskSeedWords": {
-    "message": "كلمات MetaMask البذرية"
-  },
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
