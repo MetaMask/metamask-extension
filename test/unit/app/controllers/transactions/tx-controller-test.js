@@ -22,7 +22,6 @@ import {
 
 const noop = () => true
 const currentNetworkId = 42
-const netStore = new ObservableStore(currentNetworkId)
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -45,7 +44,7 @@ describe('Transaction Controller', function () {
       getGasPrice: function () {
         return '0xee6b2800'
       },
-      networkStore: netStore,
+      networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: ethTx =>
