@@ -91,6 +91,12 @@ class Driver {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`)
   }
 
+  // Metrics
+
+  async collectMetrics () {
+    return await this.driver.executeScript(collectMetrics)
+  }
+
   // Window management
 
   async openNewPage (url) {
@@ -178,6 +184,29 @@ class Driver {
     const errorObjects = errorEntries.map(entry => entry.toJSON())
     return errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
   }
+}
+
+function collectMetrics () {
+  const results = {
+    paint: {},
+    navigation: [],
+  }
+
+  performance.getEntriesByType('paint').forEach((paintEntry) => {
+    results.paint[paintEntry.name] = paintEntry.startTime
+  })
+
+  performance.getEntriesByType('navigation').forEach((navigationEntry) => {
+    results.navigation.push({
+      domContentLoaded: navigationEntry.domContentLoadedEventEnd,
+      load: navigationEntry.loadEventEnd,
+      domInteractive: navigationEntry.domInteractive,
+      redirectCount: navigationEntry.redirectCount,
+      type: navigationEntry.type,
+    })
+  })
+
+  return results
 }
 
 Driver.PAGES = {
