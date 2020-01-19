@@ -5,6 +5,8 @@ const VERSION = require('../dist/chrome/manifest.json').version // eslint-disabl
 start().catch(console.error)
 
 async function start () {
+  const CIRCLE_PROJECT_USERNAME = process.env.CIRCLE_PROJECT_USERNAME
+  const CIRCLE_PROJECT_REPONAME = process.env.CIRCLE_PROJECT_REPONAME
   const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
   const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
@@ -55,7 +57,7 @@ async function start () {
   const depVizLink = `<a href="${depVizUrl}">background</a>`
 
   // link to artifacts
-  const allArtifactsUrl = `https://circleci.com/gh/Conflux-Chain/conflux-portal/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
+  const allArtifactsUrl = `https://circleci.com/gh/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
 
   const contentRows = [
     `builds: ${buildLinks}`,
@@ -69,7 +71,7 @@ async function start () {
   const commentBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody })
-  const POST_COMMENT_URI = `https://api.github.com/repos/Conflux-Chain/conflux-portal/issues/${CIRCLE_PR_NUMBER}/comments`
+  const POST_COMMENT_URI = `https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/issues/${CIRCLE_PR_NUMBER}/comments`
   console.log(`Announcement:\n${commentBody}`)
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
