@@ -20,7 +20,7 @@ async function start () {
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop()
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7)
-  const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`
+  const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-227567314-gh.circle-artifacts.com/0`
 
   // build the github comment content
 
@@ -28,7 +28,7 @@ async function start () {
   const platforms = ['chrome', 'firefox', 'opera']
   const buildLinks = platforms
     .map(platform => {
-      const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
+      const url = `${BUILD_LINK_BASE}/builds/conflux-portal-${platform}-${VERSION}.zip`
       return `<a href="${url}">${platform}</a>`
     })
     .join(', ')
@@ -69,7 +69,7 @@ async function start () {
   const commentBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody })
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/conflux-portal/issues/${CIRCLE_PR_NUMBER}/comments`
+  const POST_COMMENT_URI = `https://api.github.com/repos/Conflux-Chain/conflux-portal/issues/${CIRCLE_PR_NUMBER}/comments`
   console.log(`Announcement:\n${commentBody}`)
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
@@ -78,7 +78,7 @@ async function start () {
     uri: POST_COMMENT_URI,
     body: JSON_PAYLOAD,
     headers: {
-      'User-Agent': 'metamaskbot',
+      'User-Agent': 'confluxbot',
       Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
     },
   })

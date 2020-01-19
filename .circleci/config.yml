@@ -63,9 +63,6 @@ workflows:
             - test-integration-flat-chrome
             - test-integration-flat-firefox
       - job-publish-prerelease:
-          filters:
-            branches:
-              only: cfx-develop
           requires:
             - prep-deps
             - prep-build
