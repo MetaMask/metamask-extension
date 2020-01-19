@@ -17,7 +17,7 @@ function mapStateToProps (state) {
 }
 
 const defaultTokens = []
-import contracts from 'eth-contract-metadata'
+import contracts from '@yqrashawn/cfx-contract-metadata'
 
 for (const address in contracts) {
   const contract = contracts[address]

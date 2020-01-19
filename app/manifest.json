@@ -74,7 +74,7 @@
   ],
   "web_accessible_resources": ["inpage.js", "phishing.html"],
   "externally_connectable": {
-    "matches": ["https://metamask.io/*", "https://conflux-chain.org"],
+    "matches": ["https://metamask.io/*", "https://conflux-chain.org/*"],
     "ids": ["*"]
   }
 }
