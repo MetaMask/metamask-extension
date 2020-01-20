@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { DragSource, DropTarget } from 'react-dnd'
 
 class DraggableSeed extends Component {
-
   static propTypes = {
     // React DnD Props
     connectDragSource: PropTypes.func.isRequired,
@@ -13,21 +12,20 @@ class DraggableSeed extends Component {
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
-    draggingSeedIndex: PropTypes.number,
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
-    droppable: PropTypes.bool,
   }
 
   static defaultProps = {
     className: '',
+    onClick: undefined,
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     const { isOver, setHoveringIndex } = this.props
     if (isOver && !nextProps.isOver) {
       setHoveringIndex(-1)
@@ -48,21 +46,27 @@ class DraggableSeed extends Component {
       canDrop,
     } = this.props
 
-    return connectDropTarget(connectDragSource(
-      <div
-        key={index}
-        className={classnames('btn-secondary notranslate confirm-seed-phrase__seed-word', className, {
-          'confirm-seed-phrase__seed-word--selected btn-primary': selected,
-          'confirm-seed-phrase__seed-word--dragging': isDragging,
-          'confirm-seed-phrase__seed-word--empty': !word,
-          'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
-          'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
-        })}
-        onClick={onClick}
-      >
-        { word }
-      </div>
-    ))
+    return connectDropTarget(
+      connectDragSource(
+        <div
+          key={index}
+          className={classnames(
+            'btn-secondary notranslate confirm-seed-phrase__seed-word',
+            className,
+            {
+              'confirm-seed-phrase__seed-word--selected btn-primary': selected,
+              'confirm-seed-phrase__seed-word--dragging': isDragging,
+              'confirm-seed-phrase__seed-word--empty': !word,
+              'confirm-seed-phrase__seed-word--active-drop': !isOver && canDrop,
+              'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
+            }
+          )}
+          onClick={onClick}
+        >
+          {word}
+        </div>
+      )
+    )
   }
 }
 
@@ -120,6 +124,8 @@ const collectDrop = (connect, monitor) => {
   }
 }
 
-export default DropTarget(SEEDWORD, seedTarget, collectDrop)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))
-
-
+export default DropTarget(
+  SEEDWORD,
+  seedTarget,
+  collectDrop
+)(DragSource(SEEDWORD, seedSource, collectDrag)(DraggableSeed))

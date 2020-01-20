@@ -33,15 +33,20 @@ const UPDATE_TOKEN_DATA = 'metamask/confirm-transaction/UPDATE_TOKEN_DATA'
 const CLEAR_TOKEN_DATA = 'metamask/confirm-transaction/CLEAR_TOKEN_DATA'
 const UPDATE_METHOD_DATA = 'metamask/confirm-transaction/UPDATE_METHOD_DATA'
 const CLEAR_METHOD_DATA = 'metamask/confirm-transaction/CLEAR_METHOD_DATA'
-const UPDATE_TRANSACTION_AMOUNTS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
-const UPDATE_TRANSACTION_FEES = 'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
-const UPDATE_TRANSACTION_TOTALS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
+const UPDATE_TRANSACTION_AMOUNTS =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
+const UPDATE_TRANSACTION_FEES =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
+const UPDATE_TRANSACTION_TOTALS =
+  'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
 const UPDATE_TOKEN_PROPS = 'metamask/confirm-transaction/UPDATE_TOKEN_PROPS'
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE'
-const UPDATE_TO_SMART_CONTRACT = 'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
+const UPDATE_TO_SMART_CONTRACT =
+  'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
 const FETCH_DATA_START = 'metamask/confirm-transaction/FETCH_DATA_START'
 const FETCH_DATA_END = 'metamask/confirm-transaction/FETCH_DATA_END'
-const CLEAR_CONFIRM_TRANSACTION = 'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION'
+const CLEAR_CONFIRM_TRANSACTION =
+  'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION'
 
 describe('Confirm Transaction Duck', () => {
   describe('State changes', () => {
@@ -76,10 +81,7 @@ describe('Confirm Transaction Duck', () => {
     }
 
     it('should initialize state', () => {
-      assert.deepEqual(
-        ConfirmTransactionReducer({}),
-        initialState
-      )
+      assert.deepEqual(ConfirmTransactionReducer({}), initialState)
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', () => {
@@ -88,7 +90,7 @@ describe('Confirm Transaction Duck', () => {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        { ...mockState.confirmTransaction },
+        { ...mockState.confirmTransaction }
       )
     })
 
@@ -298,9 +300,12 @@ describe('Confirm Transaction Duck', () => {
 
     it('should set fetchingData to false when receiving a FETCH_DATA_END action', () => {
       assert.deepEqual(
-        ConfirmTransactionReducer({ confirmTransaction: { fetchingData: true } }, {
-          type: FETCH_DATA_END,
-        }),
+        ConfirmTransactionReducer(
+          { confirmTransaction: { fetchingData: true } },
+          {
+            type: FETCH_DATA_END,
+          }
+        ),
         {
           fetchingData: false,
         }
@@ -327,10 +332,7 @@ describe('Confirm Transaction Duck', () => {
         payload: txData,
       }
 
-      assert.deepEqual(
-        actions.updateTxData(txData),
-        expectedAction
-      )
+      assert.deepEqual(actions.updateTxData(txData), expectedAction)
     })
 
     it('should create an action to clear txData', () => {
@@ -338,10 +340,7 @@ describe('Confirm Transaction Duck', () => {
         type: CLEAR_TX_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearTxData(),
-        expectedAction
-      )
+      assert.deepEqual(actions.clearTxData(), expectedAction)
     })
 
     it('should create an action to update tokenData', () => {
@@ -351,10 +350,7 @@ describe('Confirm Transaction Duck', () => {
         payload: tokenData,
       }
 
-      assert.deepEqual(
-        actions.updateTokenData(tokenData),
-        expectedAction
-      )
+      assert.deepEqual(actions.updateTokenData(tokenData), expectedAction)
     })
 
     it('should create an action to clear tokenData', () => {
@@ -362,10 +358,7 @@ describe('Confirm Transaction Duck', () => {
         type: CLEAR_TOKEN_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearTokenData(),
-        expectedAction
-      )
+      assert.deepEqual(actions.clearTokenData(), expectedAction)
     })
 
     it('should create an action to update methodData', () => {
@@ -375,10 +368,7 @@ describe('Confirm Transaction Duck', () => {
         payload: methodData,
       }
 
-      assert.deepEqual(
-        actions.updateMethodData(methodData),
-        expectedAction
-      )
+      assert.deepEqual(actions.updateMethodData(methodData), expectedAction)
     })
 
     it('should create an action to clear methodData', () => {
@@ -386,10 +376,7 @@ describe('Confirm Transaction Duck', () => {
         type: CLEAR_METHOD_DATA,
       }
 
-      assert.deepEqual(
-        actions.clearMethodData(),
-        expectedAction
-      )
+      assert.deepEqual(actions.clearMethodData(), expectedAction)
     })
 
     it('should create an action to update transaction amounts', () => {
@@ -441,10 +428,7 @@ describe('Confirm Transaction Duck', () => {
         payload: tokenProps,
       }
 
-      assert.deepEqual(
-        actions.updateTokenProps(tokenProps),
-        expectedAction
-      )
+      assert.deepEqual(actions.updateTokenProps(tokenProps), expectedAction)
     })
 
     it('should create an action to update nonce', () => {
@@ -454,10 +438,7 @@ describe('Confirm Transaction Duck', () => {
         payload: nonce,
       }
 
-      assert.deepEqual(
-        actions.updateNonce(nonce),
-        expectedAction
-      )
+      assert.deepEqual(actions.updateNonce(nonce), expectedAction)
     })
 
     it('should create an action to set fetchingData to true', () => {
@@ -465,10 +446,7 @@ describe('Confirm Transaction Duck', () => {
         type: FETCH_DATA_START,
       }
 
-      assert.deepEqual(
-        actions.setFetchingData(true),
-        expectedAction
-      )
+      assert.deepEqual(actions.setFetchingData(true), expectedAction)
     })
 
     it('should create an action to set fetchingData to false', () => {
@@ -476,10 +454,7 @@ describe('Confirm Transaction Duck', () => {
         type: FETCH_DATA_END,
       }
 
-      assert.deepEqual(
-        actions.setFetchingData(false),
-        expectedAction
-      )
+      assert.deepEqual(actions.setFetchingData(false), expectedAction)
     })
 
     it('should create an action to clear confirmTransaction', () => {
@@ -487,19 +462,20 @@ describe('Confirm Transaction Duck', () => {
         type: CLEAR_CONFIRM_TRANSACTION,
       }
 
-      assert.deepEqual(
-        actions.clearConfirmTransaction(),
-        expectedAction
-      )
+      assert.deepEqual(actions.clearConfirmTransaction(), expectedAction)
     })
   })
 
   describe('Thunk actions', () => {
     beforeEach(() => {
       global.eth = {
-        getCode: sinon.stub().callsFake(
-          address => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x')
-        ),
+        getCode: sinon
+          .stub()
+          .callsFake(address =>
+            Promise.resolve(
+              address && address.match(/isContract/) ? 'not-0x' : '0x'
+            )
+          ),
       }
     })
 
@@ -555,11 +531,15 @@ describe('Confirm Transaction Duck', () => {
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
 
-      store.dispatch(actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' }))
+      store.dispatch(
+        actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' })
+      )
 
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index])
+      )
     })
 
     it('updates txData and updates gas values in confirmTransaction', () => {
@@ -627,7 +607,9 @@ describe('Confirm Transaction Duck', () => {
 
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index])
+      )
     })
 
     it('updates confirmTransaction transaction', () => {
@@ -676,7 +658,9 @@ describe('Confirm Transaction Duck', () => {
       const storeActions = store.getActions()
       assert.equal(storeActions.length, expectedActions.length)
 
-      storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
+      storeActions.forEach((action, index) =>
+        assert.equal(action.type, expectedActions[index])
+      )
     })
   })
 })

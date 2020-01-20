@@ -33,10 +33,7 @@
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "Simple Key Pair",
@@ -68,9 +65,7 @@
       },
       {
         "type": "HD Key Tree",
-        "accounts": [
-          "01208723ba84e15da2e71656544a2963b0c06d40"
-        ]
+        "accounts": ["01208723ba84e15da2e71656544a2963b0c06d40"]
       }
     ]
   },

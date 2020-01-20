@@ -6,9 +6,9 @@ This migration modifies our notices to delete their body after being read.
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -27,7 +27,7 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  newState.NoticeController.noticesList.forEach((notice) => {
+  newState.NoticeController.noticesList.forEach(notice => {
     if (notice.read) {
       notice.body = ''
     }

@@ -4,7 +4,6 @@ import ContactList from '../../../../components/app/contact-list'
 import { CONTACT_MY_ACCOUNTS_VIEW_ROUTE } from '../../../../helpers/constants/routes'
 
 export default class ViewContact extends PureComponent {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -21,7 +20,7 @@ export default class ViewContact extends PureComponent {
       <div>
         <ContactList
           searchForMyAccounts={() => myAccounts}
-          selectRecipient={(address) => {
+          selectRecipient={address => {
             history.push(`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${address}`)
           }}
         />
@@ -30,10 +29,6 @@ export default class ViewContact extends PureComponent {
   }
 
   render () {
-    return (
-      <div className="address-book">
-        { this.renderMyAccounts() }
-      </div>
-    )
+    return <div className="address-book">{this.renderMyAccounts()}</div>
   }
 }

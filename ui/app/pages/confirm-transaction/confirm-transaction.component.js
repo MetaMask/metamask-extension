@@ -8,7 +8,7 @@ import ConfirmSendEther from '../confirm-send-ether'
 import ConfirmSendToken from '../confirm-send-token'
 import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
-import ConfirmTokenTransactionBase from '../confirm-token-transaction-base'
+import ConfirmTokenTransactionBaseContainer from '../confirm-token-transaction-base'
 import ConfTx from './conf-tx'
 import {
   DEFAULT_ROUTE,
@@ -30,11 +30,8 @@ export default class ConfirmTransaction extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    match: PropTypes.object,
     send: PropTypes.object,
-    unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
-    confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
@@ -45,7 +42,6 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
     fullScreenVsPopupTestGroup: PropTypes.string,
     trackABTest: PropTypes.bool,
-    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {
@@ -75,14 +71,19 @@ export default class ConfirmTransaction extends Component {
       getTokenParams(to)
     }
     const txId = transactionId || paramsTransactionId
-    if (txId) this.props.setTransactionToConfirm(txId)
+    if (txId) {
+      this.props.setTransactionToConfirm(txId)
+    }
 
     if (trackABTest) {
       this.context.metricsEvent({
         eventOpts: {
           category: 'abtesting',
           action: 'fullScreenVsPopup',
-          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
+          name:
+            fullScreenVsPopupTestGroup === 'fullScreen'
+              ? 'fullscreen'
+              : 'original',
         },
       })
     }
@@ -100,15 +101,27 @@ export default class ConfirmTransaction extends Component {
       totalUnapprovedCount,
     } = this.props
 
-    if (paramsTransactionId && transactionId && prevProps.paramsTransactionId !== paramsTransactionId) {
+    if (
+      paramsTransactionId &&
+      transactionId &&
+      prevProps.paramsTransactionId !== paramsTransactionId
+    ) {
       clearConfirmTransaction()
       getContractMethodData(data)
       setTransactionToConfirm(paramsTransactionId)
       return
-    } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
+    } else if (
+      prevProps.transactionId &&
+      !transactionId &&
+      !totalUnapprovedCount
+    ) {
       history.replace(DEFAULT_ROUTE)
       return
-    } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
+    } else if (
+      prevProps.transactionId &&
+      transactionId &&
+      prevProps.transactionId !== transactionId
+    ) {
       history.replace(DEFAULT_ROUTE)
       return
     }
@@ -119,8 +132,8 @@ export default class ConfirmTransaction extends Component {
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    return transactionId && (!paramsTransactionId || paramsTransactionId === transactionId)
-      ? (
+    return transactionId &&
+      (!paramsTransactionId || paramsTransactionId === transactionId) ? (
         <Switch>
           <Route
             exact
@@ -150,7 +163,7 @@ export default class ConfirmTransaction extends Component {
           <Route
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TRANSFER_FROM_PATH}`}
-            component={ConfirmTokenTransactionBase}
+            component={ConfirmTokenTransactionBaseContainer}
           />
           <Route
             exact
@@ -159,7 +172,8 @@ export default class ConfirmTransaction extends Component {
           />
           <Route path="*" component={ConfirmTransactionSwitch} />
         </Switch>
+      ) : (
+        <Loading />
       )
-      : <Loading />
   }
 }

@@ -32,6 +32,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   }
 
   &__fiat-amount {
+    display: none !important;
     margin-top: .25%;
     font-size: 105%;
     width: 100%;

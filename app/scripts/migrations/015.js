@@ -7,9 +7,9 @@ to a 'failed' stated
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -31,9 +31,12 @@ function transformState (state) {
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
     const transactions = TransactionController.transactions
-    newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.err) return txMeta
-      else if (txMeta.err.message === 'Gave up submitting tx.') txMeta.status = 'failed'
+    newState.TransactionController.transactions = transactions.map(txMeta => {
+      if (!txMeta.err) {
+        return txMeta
+      } else if (txMeta.err.message === 'Gave up submitting tx.') {
+        txMeta.status = 'failed'
+      }
       return txMeta
     })
   }

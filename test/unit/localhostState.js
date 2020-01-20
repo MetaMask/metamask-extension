@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Object} FirstTimeState
  * @property {Object} config Initial configuration parameters
@@ -13,9 +12,9 @@ const initialState = {
   NetworkController: {
     provider: {
       type: 'rpc',
-      rpcTarget: 'http://localhost:8545',
+      rpcTarget: 'http://localhost:12539',
     },
   },
 }
 
-module.exports = initialState
+export default initialState

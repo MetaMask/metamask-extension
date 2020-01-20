@@ -1,10 +1,10 @@
-const {
+import {
   MAINNET_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
-} = require('./enums')
+} from './enums'
 
 const standardNetworkId = {
   '1': MAINNET_CHAIN_ID,
@@ -15,8 +15,11 @@ const standardNetworkId = {
 }
 
 function selectChainId (metamaskState) {
-  const { network, provider: { chainId } } = metamaskState
+  const {
+    network,
+    provider: { chainId },
+  } = metamaskState
   return standardNetworkId[network] || `0x${parseInt(chainId, 10).toString(16)}`
 }
 
-module.exports = selectChainId
+export default selectChainId

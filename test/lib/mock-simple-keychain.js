@@ -1,12 +1,13 @@
-var fakeWallet = {
+const fakeWallet = {
   privKey: '0x123456788890abcdef',
   address: '0xfedcba0987654321',
 }
 const type = 'Simple Key Pair'
 
-module.exports = class MockSimpleKeychain {
-
-  static type () { return type }
+export default class MockSimpleKeychain {
+  static type () {
+    return type
+  }
 
   constructor (opts) {
     this.type = type
@@ -15,18 +16,18 @@ module.exports = class MockSimpleKeychain {
   }
 
   serialize () {
-    return [ fakeWallet.privKey ]
+    return [fakeWallet.privKey]
   }
 
   deserialize (data) {
     if (!Array.isArray(data)) {
       throw new Error('Simple keychain deserialize requires a privKey array.')
     }
-    this.wallets = [ fakeWallet ]
+    this.wallets = [fakeWallet]
   }
 
   addAccounts (n = 1) {
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       this.wallets.push(fakeWallet)
     }
   }
@@ -34,5 +35,4 @@ module.exports = class MockSimpleKeychain {
   getAccounts () {
     return this.wallets.map(w => w.address)
   }
-
 }

@@ -6,9 +6,9 @@ This migration sets transactions who were retried and marked as failed to submit
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -30,8 +30,10 @@ function transformState (state) {
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
-    newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.status === 'failed') return txMeta
+    newState.TransactionController.transactions = transactions.map(txMeta => {
+      if (!txMeta.status === 'failed') {
+        return txMeta
+      }
       if (txMeta.retryCount > 0 && txMeta.retryCount < 2) {
         txMeta.status = 'submitted'
         delete txMeta.err

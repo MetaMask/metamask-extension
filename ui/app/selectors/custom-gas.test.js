@@ -14,7 +14,6 @@ const {
 } = proxyquire('./custom-gas', {})
 
 describe('custom-gas selectors', () => {
-
   describe('getCustomGasPrice()', () => {
     it('should return gas.customData.price', () => {
       const mockState = { gas: { customData: { price: 'mockPrice' } } }
@@ -45,29 +44,42 @@ describe('custom-gas selectors', () => {
 
   describe('getPriceAndTimeEstimates', () => {
     it('should return price and time estimates', () => {
-      const mockState = { gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' } }
-      assert.equal(getPriceAndTimeEstimates(mockState), 'mockPriceAndTimeEstimates')
+      const mockState = {
+        gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' },
+      }
+      assert.equal(
+        getPriceAndTimeEstimates(mockState),
+        'mockPriceAndTimeEstimates'
+      )
     })
   })
 
   describe('getEstimatedGasPrices', () => {
     it('should return price and time estimates', () => {
-      const mockState = { gas: { priceAndTimeEstimates: [
-        { gasprice: 12, somethingElse: 20 },
-        { gasprice: 22, expectedTime: 30 },
-        { gasprice: 32, somethingElse: 40 },
-      ] } }
+      const mockState = {
+        gas: {
+          priceAndTimeEstimates: [
+            { gasprice: 12, somethingElse: 20 },
+            { gasprice: 22, expectedTime: 30 },
+            { gasprice: 32, somethingElse: 40 },
+          ],
+        },
+      }
       assert.deepEqual(getEstimatedGasPrices(mockState), [12, 22, 32])
     })
   })
 
   describe('getEstimatedGasTimes', () => {
     it('should return price and time estimates', () => {
-      const mockState = { gas: { priceAndTimeEstimates: [
-        { somethingElse: 12, expectedTime: 20 },
-        { gasPrice: 22, expectedTime: 30 },
-        { somethingElse: 32, expectedTime: 40 },
-      ] } }
+      const mockState = {
+        gas: {
+          priceAndTimeEstimates: [
+            { somethingElse: 12, expectedTime: 20 },
+            { gasPrice: 22, expectedTime: 30 },
+            { somethingElse: 32, expectedTime: 40 },
+          ],
+        },
+      }
       assert.deepEqual(getEstimatedGasTimes(mockState), [20, 30, 40])
     })
   })
@@ -79,13 +91,13 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.01',
-            feeInPrimaryCurrency: '0.0000525 ETH',
+            feeInPrimaryCurrency: '0.0000525 CFX',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x9502f900',
           },
           {
             gasEstimateType: 'AVERAGE',
-            feeInPrimaryCurrency: '0.000084 ETH',
+            feeInPrimaryCurrency: '0.000084 CFX',
             feeInSecondaryCurrency: '$0.02',
             priceInHexWei: '0xee6b2800',
             timeEstimate: '~5 min 18 sec',
@@ -93,7 +105,7 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.03',
-            feeInPrimaryCurrency: '0.000105 ETH',
+            feeInPrimaryCurrency: '0.000105 CFX',
             timeEstimate: '~3 min 18 sec',
             priceInHexWei: '0x12a05f200',
           },
@@ -129,12 +141,12 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.000105 ETH',
+            feeInPrimaryCurrency: '0.000105 CFX',
             timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
-            feeInPrimaryCurrency: '0.000147 ETH',
+            feeInPrimaryCurrency: '0.000147 CFX',
             feeInSecondaryCurrency: '$0.38',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1a13b8600',
@@ -143,7 +155,7 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
-            feeInPrimaryCurrency: '0.00021 ETH',
+            feeInPrimaryCurrency: '0.00021 CFX',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
@@ -182,13 +194,13 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '',
-            feeInPrimaryCurrency: '0.000105 ETH',
+            feeInPrimaryCurrency: '0.000105 CFX',
             timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             gasEstimateType: 'AVERAGE',
-            feeInPrimaryCurrency: '0.000147 ETH',
+            feeInPrimaryCurrency: '0.000147 CFX',
             feeInSecondaryCurrency: '',
             timeEstimate: '~10 min 6 sec',
             priceInHexWei: '0x1a13b8600',
@@ -196,7 +208,7 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '',
-            feeInPrimaryCurrency: '0.00021 ETH',
+            feeInPrimaryCurrency: '0.00021 CFX',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
@@ -235,13 +247,13 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.000105 ETH',
+            feeInPrimaryCurrency: '0.000105 CFX',
             timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             gasEstimateType: 'AVERAGE',
-            feeInPrimaryCurrency: '0.000147 ETH',
+            feeInPrimaryCurrency: '0.000147 CFX',
             feeInSecondaryCurrency: '$0.38',
             priceInHexWei: '0x1a13b8600',
             timeEstimate: '~10 min 6 sec',
@@ -249,7 +261,7 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
-            feeInPrimaryCurrency: '0.00021 ETH',
+            feeInPrimaryCurrency: '0.00021 CFX',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
@@ -288,13 +300,13 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.000105 ETH',
+            feeInPrimaryCurrency: '0.000105 CFX',
             timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             gasEstimateType: 'AVERAGE',
-            feeInPrimaryCurrency: '0.000147 ETH',
+            feeInPrimaryCurrency: '0.000147 CFX',
             feeInSecondaryCurrency: '$0.38',
             priceInHexWei: '0x1a13b8600',
             timeEstimate: '~10 min 6 sec',
@@ -302,7 +314,7 @@ describe('custom-gas selectors', () => {
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
-            feeInPrimaryCurrency: '0.00021 ETH',
+            feeInPrimaryCurrency: '0.00021 CFX',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
@@ -345,7 +357,6 @@ describe('custom-gas selectors', () => {
         )
       })
     })
-
   })
 
   describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', () => {
@@ -354,19 +365,19 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             feeInSecondaryCurrency: '$0.13',
-            feeInPrimaryCurrency: '0.00052 ETH',
+            feeInPrimaryCurrency: '0.00052 CFX',
             gasEstimateType: 'SLOW',
             priceInHexWei: '0x5d21dba00',
           },
           {
             feeInSecondaryCurrency: '$0.16',
-            feeInPrimaryCurrency: '0.00063 ETH',
+            feeInPrimaryCurrency: '0.00063 CFX',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x6fc23ac00',
           },
           {
             feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.00105 ETH',
+            feeInPrimaryCurrency: '0.00105 CFX',
             gasEstimateType: 'FAST',
             priceInHexWei: '0xba43b7400',
           },
@@ -404,19 +415,19 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             feeInSecondaryCurrency: '$2.68',
-            feeInPrimaryCurrency: '0.00105 ETH',
+            feeInPrimaryCurrency: '0.00105 CFX',
             gasEstimateType: 'SLOW',
             priceInHexWei: '0xba43b7400',
           },
           {
             feeInSecondaryCurrency: '$4.03',
-            feeInPrimaryCurrency: '0.00157 ETH',
+            feeInPrimaryCurrency: '0.00157 CFX',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1176592e00',
           },
           {
             feeInSecondaryCurrency: '$5.37',
-            feeInPrimaryCurrency: '0.0021 ETH',
+            feeInPrimaryCurrency: '0.0021 CFX',
             gasEstimateType: 'FAST',
             priceInHexWei: '0x174876e800',
           },
@@ -454,19 +465,19 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             feeInSecondaryCurrency: '',
-            feeInPrimaryCurrency: '0.00105 ETH',
+            feeInPrimaryCurrency: '0.00105 CFX',
             gasEstimateType: 'SLOW',
             priceInHexWei: '0xba43b7400',
           },
           {
             feeInSecondaryCurrency: '',
-            feeInPrimaryCurrency: '0.00157 ETH',
+            feeInPrimaryCurrency: '0.00157 CFX',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1176592e00',
           },
           {
             feeInSecondaryCurrency: '',
-            feeInPrimaryCurrency: '0.0021 ETH',
+            feeInPrimaryCurrency: '0.0021 CFX',
             gasEstimateType: 'FAST',
             priceInHexWei: '0x174876e800',
           },
@@ -504,19 +515,19 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             feeInSecondaryCurrency: '$2.68',
-            feeInPrimaryCurrency: '0.00105 ETH',
+            feeInPrimaryCurrency: '0.00105 CFX',
             gasEstimateType: 'SLOW',
             priceInHexWei: '0xba43b7400',
           },
           {
             feeInSecondaryCurrency: '$4.03',
-            feeInPrimaryCurrency: '0.00157 ETH',
+            feeInPrimaryCurrency: '0.00157 CFX',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1176592e00',
           },
           {
             feeInSecondaryCurrency: '$5.37',
-            feeInPrimaryCurrency: '0.0021 ETH',
+            feeInPrimaryCurrency: '0.0021 CFX',
             gasEstimateType: 'FAST',
             priceInHexWei: '0x174876e800',
           },
@@ -554,19 +565,19 @@ describe('custom-gas selectors', () => {
         expectedResult: [
           {
             feeInSecondaryCurrency: '$2.68',
-            feeInPrimaryCurrency: '0.00105 ETH',
+            feeInPrimaryCurrency: '0.00105 CFX',
             gasEstimateType: 'SLOW',
             priceInHexWei: '0xba43b7400',
           },
           {
             feeInSecondaryCurrency: '$4.03',
-            feeInPrimaryCurrency: '0.00157 ETH',
+            feeInPrimaryCurrency: '0.00157 CFX',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1176592e00',
           },
           {
             feeInSecondaryCurrency: '$5.37',
-            feeInPrimaryCurrency: '0.0021 ETH',
+            feeInPrimaryCurrency: '0.0021 CFX',
             gasEstimateType: 'FAST',
             priceInHexWei: '0x174876e800',
           },
@@ -609,7 +620,5 @@ describe('custom-gas selectors', () => {
         )
       })
     })
-
   })
-
 })

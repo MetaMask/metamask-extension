@@ -6,9 +6,9 @@ This migration removes the discaimer state from our app, which was integrated in
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {

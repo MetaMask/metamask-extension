@@ -6,9 +6,9 @@ const version = 27
 normalizes txParams on unconfirmed txs
 
 */
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {
@@ -27,7 +27,9 @@ function transformState (state) {
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
       const transactions = newState.TransactionController.transactions
-      newState.TransactionController.transactions = transactions.filter((txMeta) => txMeta.status !== 'rejected')
+      newState.TransactionController.transactions = transactions.filter(
+        txMeta => txMeta.status !== 'rejected'
+      )
     }
   }
 

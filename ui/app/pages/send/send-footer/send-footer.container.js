@@ -23,9 +23,8 @@ import {
   getUnapprovedTxs,
   getSendErrors,
 } from '../send.selectors'
-import {
-  isSendFormInError,
-} from './send-footer.selectors'
+import { getGasIsLoading } from '../../../selectors/selectors'
+import { isSendFormInError } from './send-footer.selectors'
 import {
   addressIsNew,
   constructTxParams,
@@ -42,9 +41,10 @@ function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
-  const gasEstimateType = activeButtonIndex >= 0
-    ? gasButtonInfo[activeButtonIndex].gasEstimateType
-    : 'custom'
+  const gasEstimateType =
+    activeButtonIndex >= 0
+      ? gasButtonInfo[activeButtonIndex].gasEstimateType
+      : 'custom'
 
   return {
     amount: getSendAmount(state),
@@ -62,6 +62,7 @@ function mapStateToProps (state) {
     unapprovedTxs: getUnapprovedTxs(state),
     sendErrors: getSendErrors(state),
     gasEstimateType,
+    gasIsLoading: getGasIsLoading(state),
   }
 }
 

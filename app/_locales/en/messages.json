@@ -12,55 +12,41 @@
     "message": "Show Incoming Transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+    "message": "Select this to use Confluxscan to show incoming transactions in the transactions list"
+  },
+  "cancelledConnectionWithMetaMask": {
+    "message": "Cancelled Connection With ConfluxPortal"
   },
   "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
+    "message": "Chart only available on Conflux networks."
   },
-  "confirmClear": {
-    "message": "Are you sure you want to clear approved websites?"
+  "connectedSites": {
+    "message": "Connected Sites"
   },
-  "connections": {
-    "message": "Connections"
+  "connectingWithMetaMask": {
+    "message": "Connecting With ConfluxPortal..."
   },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
+  "connectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
+  "chooseAnAcount": {
+    "message": "Choose an account"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearApprovalData": {
-    "message": "Remove all sites"
-  },
   "reject": {
     "message": "Reject"
   },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
+  "redirectingBackToDapp": {
+    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
   },
   "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info."
+    "message": "Version, support center, and contact info"
   },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
@@ -100,7 +86,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -124,7 +110,7 @@
     "message": "Add Suggested Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
+    "message": "Add the tokens you've acquired using ConfluxPortal"
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -141,11 +127,11 @@
     "message": "Amount:"
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "An Conflux Wallet in your Browser",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -173,7 +159,7 @@
     "message": "Auto-Logout Timer (minutes)"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "Set the idle time in minutes before MetaMask will automatically log out"
+    "message": "Set the idle time in minutes before ConfluxPortal will automatically log out"
   },
   "average": {
     "message": "Average"
@@ -188,7 +174,7 @@
     "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
   },
   "backupApprovalInfo": {
-    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
+    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install ConfluxPortal, or want to access your wallet on another device."
   },
   "backupNow": {
     "message": "Backup now"
@@ -199,15 +185,8 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Insufficient balance for current gas total"
-  },
   "basic": {
     "message": "Basic"
-  },
-  "betweenMinAndMax": {
-    "message": "must be greater than or equal to $1 and less than or equal to $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Block Explorer"
@@ -232,19 +211,19 @@
     "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+    "message": "ConfluxPortal a fork of Metamask which is designed and built in California. It's alterd to use on Conflux network in Beijing."
   },
   "buyWithWyre": {
-    "message": "Buy ETH with Wyre"
+    "message": "We don't support Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lets you use a credit card to deposit ETH right in to your MetaMask account."
+    "message": "We don't support Wyre"
   },
   "buyCoinSwitch": {
-    "message": "Buy on CoinSwitch"
+    "message": "We don't support CoinSwitch"
   },
   "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
+    "message": "We don't support CoinSwitch"
   },
   "bytes": {
     "message": "Bytes"
@@ -286,7 +265,7 @@
     "message": "Close"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+    "message": "You need to use ConfluxPortal on Google Chrome in order to connect to your Hardware Wallet. It's not fully tested yet. Use at your own risk."
   },
   "confirm": {
     "message": "Confirm"
@@ -309,9 +288,6 @@
   "connect": {
     "message": "Connect"
   },
-  "connectRequest": {
-    "message": "Connect Request"
-  },
   "connectingTo": {
     "message": "Connecting to $1"
   },
@@ -319,7 +295,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Conflux Test Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -328,7 +304,7 @@
     "message": "Connecting to Rinkeby Test Network"
   },
   "connectingToLocalhost": {
-    "message": "Connecting to Localhost 8545"
+    "message": "Connecting to Localhost 12539"
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
@@ -356,9 +332,6 @@
   },
   "copiedExclamation": {
     "message": "Copied!"
-  },
-  "copy": {
-    "message": "Copy"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -412,7 +385,7 @@
     "message": "Custom Spend Limit"
   },
   "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+    "message": "Some of your account data was backed up during a previous installation of ConfluxPortal. This could include your settings, contacts and tokens. Would you like to restore this data now?"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -421,7 +394,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for CFX transactions is Test Net."
   },
   "delete": {
     "message": "Delete"
@@ -433,19 +406,41 @@
     "message": "Deposit"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit CFX"
   },
   "details": {
     "message": "Details"
   },
+  "disconnectAccount": {
+    "message": "Disconnect account"
+  },
+  "disconnectAll": {
+    "message": "Disconnect All"
+  },
+  "disconnectAllModalDescription": {
+    "message": "Are you sure? You will be disconnected from all sites on all accounts."
+  },
+  "disconnectAccountModalDescription": {
+    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
+  },
+  "disconnectAccountQuestion": {
+    "message": "Disconnect account?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "Disconnect from this account?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "Disconnect all accounts?"
+  },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit CFX"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some CFX, the quickest way to get CFX in your new wallet by direct deposit."
   },
-  "dismiss": {
-    "message": "Dismiss"
+  "domainLastConnect": {
+    "message": "Last Connected: $1",
+    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -490,7 +485,7 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
-    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
+    "message": "Be careful of phishing! ConfluxPortal will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
@@ -499,7 +494,7 @@
     "message": "If you ever have questions or see something fishy, email support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask cannot recover your seedphrase."
+    "message": "ConfluxPortal cannot recover your seedphrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -507,11 +502,22 @@
   "endOfFlowMessage10": {
     "message": "All Done"
   },
+  "extensionId": {
+    "message": "Extension ID: $1",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to ConfluxPortal"
+  },
+  "externalExtension": {
+    "message": "External Extension"
+  },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" will close this tab and direct back to $2",
+    "description": "Return the user to the site that initiated onboarding"
+  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Main Ethereum Network."
+    "message": "Conflux don't support ENS yet"
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -526,10 +532,10 @@
     "message": "Enter password to continue"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum Public Address"
+    "message": "Conflux Public Address"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
@@ -578,32 +584,29 @@
   "gasLimit": {
     "message": "Gas Limit"
   },
-  "gasLimitCalculation": {
-    "message": "We calculate the suggested gas limit based on network success rates."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasLimitTooHigh": {
+    "message": "Gas limit must be at most 1000000"
+  },
   "gasUsed": {
     "message": "Gas Used"
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "Gas Price (GDrip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
   },
   "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+    "message": "Gas price specifies the amount of CFX you are willing to pay for each unit of gas."
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
-  },
-  "gasPriceCalculation": {
-    "message": "We calculate the suggested gas prices based on network success rates."
   },
   "general": {
     "message": "General"
@@ -612,21 +615,17 @@
     "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get CFX"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get CFX from a faucet for the $1",
+    "description": "Displays network name for CFX faucet"
   },
   "getHelp": {
     "message": "Get Help."
   },
   "getStarted": {
     "message": "Get Started"
-  },
-  "greaterThanMin": {
-    "message": "must be greater than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -641,7 +640,7 @@
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a hardware wallet you'd like to use with ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -673,7 +672,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created ConfluxPortal account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an Account with Seed Phrase"
@@ -716,7 +715,7 @@
     "message": "Known contract address."
   },
   "invalidAddressRecipientNotEthNetwork": {
-    "message": "Not ETH network, set to lowercase"
+    "message": "Not CFX network, set to lowercase"
   },
   "invalidInput": {
     "message": "Invalid input."
@@ -730,6 +729,18 @@
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
   },
+  "ipfsGateway": {
+    "message": "IPFS Gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "invalidIpfsGateway": {
+    "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -740,21 +751,27 @@
   "max": {
     "message": "Max"
   },
+  "lastConnected": {
+    "message": "Last Connected"
+  },
   "learnMore": {
     "message": "Learn more"
   },
+  "learnAboutRisks": {
+    "message": "Learn about the risks here."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
-  },
-  "lessThanMax": {
-    "message": "must be less than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
+  },
+  "likeToConnect": {
+    "message": "$1 would like to connect to your ConfluxPortal account",
+    "description": "$1 is the name/url of a site/dapp asking to connect to ConfluxPortal"
   },
   "links": {
     "message": "Links"
@@ -772,7 +789,7 @@
     "message": "Load More"
   },
   "localhost": {
-    "message": "Localhost 8545"
+    "message": "Localhost 12539"
   },
   "login": {
     "message": "Log In"
@@ -784,7 +801,7 @@
     "message": "Logout time is too great"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Conflux Main Network (not released yet, fallback to conflux test net)"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."
@@ -799,13 +816,13 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "Connecting you to Ethereum and the Decentralized Web."
+    "message": "Connecting you to Conflux and the Decentralized Web."
   },
   "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
+    "message": "ConfluxPortal Seed Words"
   },
   "metamaskVersion": {
-    "message": "MetaMask Version"
+    "message": "ConfluxPortal Version"
   },
   "missingYourTokens": {
     "message": "Don't see your tokens?"
@@ -820,20 +837,20 @@
     "message": "My Wallet Accounts"
   },
   "myWalletAccountsDescription": {
-    "message": "All of your MetaMask created accounts will automatically be added to this section."
+    "message": "All of your ConfluxPortal created accounts will automatically be added to this section."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using ConfluxPortal, you’ll need CFX in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Can not send negative amounts of CFX."
   },
   "networkName": {
     "message": "Network Name"
@@ -870,7 +887,7 @@
     "message": "New Network"
   },
   "newToMetaMask": {
-    "message": "New to MetaMask?"
+    "message": "New to ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
@@ -879,13 +896,16 @@
     "message": "Protect Your Keys!"
   },
   "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate ConfluxPortal. ConfluxPortal will never ask for your seed phrase!"
   },
   "protectYourKeysMessage2": {
     "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "onlyConnectTrust": {
+    "message": "Only connect with sites you trust."
   },
   "optionalChainId": {
     "message": "ChainID (optional)"
@@ -904,7 +924,7 @@
   },
   "nextNonceWarning": {
     "message": "Nonce is higher than suggested nonce of $1",
-    "description": "The next nonce according to MetaMask's internal logic"
+    "description": "The next nonce according to ConfluxPortal's internal logic"
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
@@ -943,10 +963,10 @@
     "message": "Parameters"
   },
   "participateInMetaMetrics": {
-    "message": "Participate in MetaMetrics"
+    "message": "Participate in MetaMetrics (actually that's a metamask thing not conflux thing, we don't have this for real)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participate in MetaMetrics to help us make MetaMask better"
+    "message": "Participate in MetaMetrics to help us make ConfluxPortal better (actually that's a metamask thing not conflux thing, we don't have this for real)"
   },
   "password": {
     "message": "Password"
@@ -961,9 +981,6 @@
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Paste your seed phrase here!"
-  },
   "pending": {
     "message": "pending"
   },
@@ -977,7 +994,7 @@
     "message": "Primary Currency"
   },
   "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. CFX). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -1032,7 +1049,7 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
-    "message": "Resetting your account will clear your transaction history."
+    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your seed phrase."
   },
   "deleteNetwork": {
     "message": "Delete Network?"
@@ -1077,9 +1094,6 @@
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
   },
-  "revert": {
-    "message": "Revert"
-  },
   "remove": {
     "message": "Remove"
   },
@@ -1091,6 +1105,9 @@
   },
   "readyToConnect": {
     "message": "Ready to Connect?"
+  },
+  "revokeInPermissions": {
+    "message": "* You can view and revoke permissions in ConfluxPortal settings."
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -1132,7 +1149,7 @@
     "message": "Your secret backup phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your CFX forever."
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -1168,13 +1185,13 @@
     "message": "Send Amount"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send CFX"
   },
   "sendTokens": {
     "message": "Send Tokens"
   },
   "sentEther": {
-    "message": "sent ether"
+    "message": "sent CFX"
   },
   "sentTokens": {
     "message": "sent tokens"
@@ -1185,11 +1202,20 @@
   "searchTokens": {
     "message": "Search Tokens"
   },
+  "searchAccounts": {
+    "message": "Search Accounts"
+  },
+  "skipped": {
+    "message": "Skipped"
+  },
+  "noAccountsFound": {
+    "message": "No accounts found for the given search query"
+  },
   "selectAnAccount": {
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select the account to view in ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1265,7 +1291,7 @@
     "message": "Switch Networks"
   },
   "stateLogFileName": {
-    "message": "MetaMask State Logs"
+    "message": "ConfluxPortal State Logs"
   },
   "stateLogs": {
     "message": "State Logs"
@@ -1292,7 +1318,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Conflux account. Log in to dApps, send CFX, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties. (hardware account is not fulled tested, use with your own risk)"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1310,13 +1336,13 @@
     "message": "Symbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be between 0 and 12 characters."
+    "message": "Symbol must be 11 characters or fewer."
   },
   "syncWithThreeBox": {
     "message": "Sync data with 3Box (experimental)"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box. This feature is currenty experimental; use at your own risk."
+    "message": "Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk."
   },
   "syncWithThreeBoxDisabled": {
     "message": "3Box has been disabled due to an error during the initial sync"
@@ -1328,25 +1354,36 @@
     "message": "Sync with mobile"
   },
   "syncWithMobileDesc": {
-    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+    "message": "You can sync your accounts and information with your mobile device. Open the ConfluxPortal mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\" (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "If you just open the MetaMask Mobile app for the first time, just follow the steps in your phone."
+    "message": "If you just open the ConfluxPortal Mobile app for the first time, just follow the steps in your phone. (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scan this code with your MetaMask mobile app"
+    "message": "Scan this code with your ConfluxPortal mobile app (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileBeCareful": {
-    "message": "Make sure nobody else is looking at your screen when you scan this code"
+    "message": "Make sure nobody else is looking at your screen when you scan this code (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
+    "message": "Your data has been synced successfully. Enjoy the ConfluxPortal mobile app! (Conflux version of MetaMask don't support mobile yet)"
   },
   "terms": {
     "message": "Terms of Use"
   },
+  "testnet": {
+    "message": "Conflux Test Network"
+  },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "thisWillAllow": {
+    "message": "This will allow $1 to:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
+  },
+  "thisWillAllowExternalExtension": {
+    "message": "This will allow an external extension with id $1 to:",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to ConfluxPortal"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
@@ -1360,8 +1397,12 @@
   "toWithColon": {
     "message": "To:"
   },
+  "toConnectWith": {
+    "message": "To connect with $1",
+    "description": "$1 is the name or domain of a site/dapp that asking to connect with ConfluxPortal"
+  },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
+    "message": "$1 to CFX via ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "token": {
@@ -1442,7 +1483,7 @@
     "message": "Try again"
   },
   "typePassword": {
-    "message": "Type your MetaMask password"
+    "message": "Type your ConfluxPortal password"
   },
   "unapproved": {
     "message": "Unapproved"
@@ -1489,9 +1530,6 @@
   "userName": {
     "message": "Username"
   },
-  "validFileImport": {
-    "message": "You must select a valid file to import."
-  },
   "viewAccount": {
     "message": "View Account"
   },
@@ -1505,7 +1543,7 @@
     "message": "View at $1"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View on Confluxscan"
   },
   "retryTransaction": {
     "message": "Retry Transaction"
@@ -1520,7 +1558,7 @@
     "message": "Welcome Back!"
   },
   "welcome": {
-    "message": "Welcome to MetaMask"
+    "message": "Welcome to ConfluxPortal"
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."

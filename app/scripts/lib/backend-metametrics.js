@@ -1,9 +1,5 @@
-const {
-  getMetaMetricState,
-} = require('../../../ui/app/selectors/selectors')
-const {
-  sendMetaMetricsEvent,
-} = require('../../../ui/app/helpers/utils/metametrics.util')
+import { getMetaMetricState } from '../../../ui/app/selectors/selectors'
+import { sendMetaMetricsEvent } from '../../../ui/app/helpers/utils/metametrics.util'
 
 const inDevelopment = process.env.NODE_ENV === 'development'
 
@@ -23,4 +19,4 @@ function backEndMetaMetricsEvent (metaMaskState, eventData) {
   }
 }
 
-module.exports = backEndMetaMetricsEvent
+export default backEndMetaMetricsEvent

@@ -1,5 +1,6 @@
 const http = require('http')
 const url = require('url')
+
 const port = 8889
 
 const database = {}
@@ -29,7 +30,7 @@ const requestHandler = (request, response) => {
 
 const server = http.createServer(requestHandler)
 
-server.listen(port, (err) => {
+server.listen(port, err => {
   if (err) {
     return console.log('mock 3box server error: ', err)
   }

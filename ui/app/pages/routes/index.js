@@ -3,21 +3,27 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
-import actions from '../../store/actions'
+import * as actions from '../../store/actions'
 import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
-import {getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
+import {
+  getNetworkIdentifier,
+  preferencesSelector,
+  hasPermissionRequests,
+  getAddressConnectedToCurrentTab,
+} from '../../selectors/selectors'
 import classnames from 'classnames'
 
 // init
 import FirstTimeFlow from '../first-time-flow'
 // accounts
 import SendTransactionScreen from '../send'
-const ConfirmTransaction = require('../confirm-transaction')
+import ConfirmTransaction from '../confirm-transaction'
 
 // slideout menu
-const Sidebar = require('../../components/app/sidebars').default
-const { WALLET_VIEW_SIDEBAR } = require('../../components/app/sidebars/sidebar.constants')
+import Sidebar from '../../components/app/sidebars'
+
+import { WALLET_VIEW_SIDEBAR } from '../../components/app/sidebars/sidebar.constants'
 
 // other views
 import Home from '../home'
@@ -25,30 +31,31 @@ import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
-const RestoreVaultPage = require('../keychains/restore-vault').default
-const RevealSeedConfirmation = require('../keychains/reveal-seed')
-const MobileSyncPage = require('../mobile-sync')
-const AddTokenPage = require('../add-token')
-const ConfirmAddTokenPage = require('../confirm-add-token')
-const ConfirmAddSuggestedTokenPage = require('../confirm-add-suggested-token')
+import PermissionsConnect from '../permissions-connect'
+import ConnectedSites from '../connected-sites'
+import RestoreVaultPage from '../keychains/restore-vault'
+import RevealSeedConfirmation from '../keychains/reveal-seed'
+import MobileSyncPage from '../mobile-sync'
+import AddTokenPage from '../add-token'
+import ConfirmAddTokenPage from '../confirm-add-token'
+import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token'
 import CreateAccountPage from '../create-account'
 
-const Loading = require('../../components/ui/loading-screen')
-const LoadingNetwork = require('../../components/app/loading-network-screen').default
-const NetworkDropdown = require('../../components/app/dropdowns/network-dropdown')
+import Loading from '../../components/ui/loading-screen'
+import LoadingNetwork from '../../components/app/loading-network-screen'
+import NetworkDropdown from '../../components/app/dropdowns/network-dropdown'
 import AccountMenu from '../../components/app/account-menu'
 
 // Global Modals
-const Modal = require('../../components/app/modals').Modal
+import { Modal } from '../../components/app/modals'
+
 // Global Alert
-const Alert = require('../../components/ui/alert')
+import Alert from '../../components/ui/alert'
 
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
 
-import {
-  submittedPendingTransactionsSelector,
-} from '../../selectors/transactions'
+import { submittedPendingTransactionsSelector } from '../../selectors/transactions'
 
 // Routes
 import {
@@ -67,6 +74,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -76,7 +85,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 
 class Routes extends Component {
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
@@ -85,17 +94,46 @@ class Routes extends Component {
 
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
-        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
-        this.context.metricsEvent({}, {
-          currentPath: '',
-          pathname: locationObj.pathname,
-          url,
-          pageOpts: {
-            hideDimensions: true,
-          },
-        })
+        const url = `&url=${encodeURIComponent(
+          'http://www.metamask.io/metametrics' + locationObj.pathname
+        )}`
+        this.context.metricsEvent(
+          {},
+          {
+            currentPath: '',
+            pathname: locationObj.pathname,
+            url,
+            pageOpts: {
+              hideDimensions: true,
+            },
+          }
+        )
       }
     })
+  }
+
+  componentDidMount () {
+    const {
+      addressConnectedToCurrentTab,
+      showAccountDetail,
+      selectedAddress,
+    } = this.props
+    if (
+      addressConnectedToCurrentTab &&
+      addressConnectedToCurrentTab !== selectedAddress
+    ) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    const { addressConnectedToCurrentTab, showAccountDetail } = this.props
+    if (
+      addressConnectedToCurrentTab &&
+      addressConnectedToCurrentTab !== prevProps.addressConnectedToCurrentTab
+    ) {
+      showAccountDetail(addressConnectedToCurrentTab)
+    }
   }
 
   renderRoutes () {
@@ -106,16 +144,53 @@ class Routes extends Component {
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
-        <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
-        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
+        <Initialized
+          path={RESTORE_VAULT_ROUTE}
+          component={RestoreVaultPage}
+          exact
+        />
+        <Authenticated
+          path={REVEAL_SEED_ROUTE}
+          component={RevealSeedConfirmation}
+          exact
+        />
+        <Authenticated
+          path={MOBILE_SYNC_ROUTE}
+          component={MobileSyncPage}
+          exact
+        />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
-        <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
+        <Authenticated
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+          component={ConfirmTransaction}
+        />
+        <Authenticated
+          path={SEND_ROUTE}
+          component={SendTransactionScreen}
+          exact
+        />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
-        <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
+        <Authenticated
+          path={CONFIRM_ADD_TOKEN_ROUTE}
+          component={ConfirmAddTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+          component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated
+          path={`${CONNECT_ROUTE}/:id`}
+          component={PermissionsConnect}
+          exact
+        />
+        <Authenticated
+          path={CONNECTED_ROUTE}
+          component={ConnectedSites}
+          exact
+        />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )
@@ -133,25 +208,33 @@ class Routes extends Component {
 
   onInitializationUnlockPage () {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: INITIALIZE_UNLOCK_ROUTE, exact: true }))
+    return Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_UNLOCK_ROUTE,
+        exact: true,
+      })
+    )
   }
 
   onConfirmPage () {
     const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
-  }
-
-  hasProviderRequests () {
-    const { providerRequests } = this.props
-    return Array.isArray(providerRequests) && providerRequests.length > 0
+    return Boolean(
+      matchPath(location.pathname, {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      })
+    )
   }
 
   hideAppHeader () {
-    const { location } = this.props
+    const { location, hasPermissionsRequests } = this.props
 
-    const isInitializing = Boolean(matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    }))
+    const isInitializing = Boolean(
+      matchPath(location.pathname, {
+        path: INITIALIZE_ROUTE,
+        exact: false,
+      })
+    )
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
       return true
@@ -162,7 +245,18 @@ class Routes extends Component {
     }
 
     if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || this.hasProviderRequests()
+      return this.onConfirmPage() || hasPermissionsRequests
+    }
+
+    const isHandlingPermissionsRequest = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECT_ROUTE,
+        exact: false,
+      })
+    )
+
+    if (hasPermissionsRequests || isHandlingPermissionsRequest) {
+      return true
     }
   }
 
@@ -175,15 +269,16 @@ class Routes extends Component {
       network,
       provider,
       frequentRpcListDetail,
-      currentView,
       setMouseUserState,
       sidebar,
       submittedPendingTransactions,
       isMouseUser,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const loadMessage = loadingMessage || isLoadingNetwork ?
-      this.getConnectingLabel(loadingMessage) : null
+    const isLoadingNetwork = network === 'loading'
+    const loadMessage =
+      loadingMessage || isLoadingNetwork
+        ? this.getConnectingLabel(loadingMessage)
+        : null
     log.debug('Main ui render function')
 
     const {
@@ -194,25 +289,29 @@ class Routes extends Component {
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
 
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
+    const sidebarOnOverlayClose =
+      sidebarType === WALLET_VIEW_SIDEBAR
+        ? () => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Navigation',
+              action: 'Wallet Sidebar',
+              name: 'Closed Sidebare Via Overlay',
+            },
+          })
+        }
+        : null
 
-    const sidebarShouldClose = sidebarTransaction &&
+    const sidebarShouldClose =
+      sidebarTransaction &&
       !sidebarTransaction.status === 'failed' &&
-      !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
+      !submittedPendingTransactions.find(
+        ({ id }) => id === sidebarTransaction.id
+      )
 
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser})}
+        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={e => {
@@ -222,18 +321,13 @@ class Routes extends Component {
         }}
       >
         <Modal />
-        <Alert
-          visible={this.props.alertOpen}
-          msg={alertMessage}
-        />
-        {
-          !this.hideAppHeader() && (
-            <AppHeader
-              hideNetworkIndicator={this.onInitializationUnlockPage()}
-              disabled={this.onConfirmPage()}
-            />
-          )
-        }
+        <Alert visible={this.props.alertOpen} msg={alertMessage} />
+        {!this.hideAppHeader() && (
+          <AppHeader
+            hideNetworkIndicator={this.onInitializationUnlockPage()}
+            disabled={this.onConfirmPage()}
+          />
+        )}
         <Sidebar
           sidebarOpen={sidebarIsOpen}
           sidebarShouldClose={sidebarShouldClose}
@@ -249,9 +343,9 @@ class Routes extends Component {
         />
         <AccountMenu />
         <div className="main-container-wrapper">
-          { isLoading && <Loading loadingMessage={loadMessage} /> }
-          { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
-          { this.renderRoutes() }
+          {isLoading && <Loading loadingMessage={loadMessage} />}
+          {!isLoading && isLoadingNetwork && <LoadingNetwork />}
+          {this.renderRoutes()}
         </div>
       </div>
     )
@@ -260,8 +354,10 @@ class Routes extends Component {
   toggleMetamaskActive () {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
-      var passwordBox = document.querySelector('input[type=password]')
-      if (!passwordBox) return
+      const passwordBox = document.querySelector('input[type=password]')
+      if (!passwordBox) {
+        return
+      }
       passwordBox.focus()
     } else {
       // currently active: deactivate
@@ -332,8 +428,8 @@ Routes.propTypes = {
   textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
+  selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
-  currentView: PropTypes.object,
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
@@ -346,12 +442,18 @@ Routes.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
-  providerRequests: PropTypes.array,
+  hasPermissionsRequests: PropTypes.bool,
   autoLogoutTimeLimit: PropTypes.number,
+  addressConnectedToCurrentTab: PropTypes.string,
+  showAccountDetail: PropTypes.func,
+}
+
+Routes.defaultProps = {
+  selectedAddress: undefined,
 }
 
 function mapStateToProps (state) {
-  const { appState, metamask } = state
+  const { appState } = state
   const {
     sidebar,
     alertOpen,
@@ -371,16 +473,17 @@ function mapStateToProps (state) {
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    currentView: state.appState.currentView,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
+    selectedAddress: state.metamask.selectedAddress,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLogoutTimeLimit,
-    providerRequests: metamask.providerRequests,
+    hasPermissionsRequests: hasPermissionRequests(state),
+    addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }
 }
 
@@ -389,8 +492,10 @@ function mapDispatchToProps (dispatch) {
     lockMetaMask: () => dispatch(actions.lockMetamask(false)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
+    setMouseUserState: isMouseUser =>
+      dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
+    showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
   }
 }
 
@@ -399,7 +504,7 @@ Routes.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(Routes)

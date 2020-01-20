@@ -12,7 +12,9 @@ sinon.spy(ButtonGroup.prototype, 'handleButtonClick')
 sinon.spy(ButtonGroup.prototype, 'renderButtons')
 
 const mockButtons = [
-  <button onClick={childButtonSpies.onClick} key="a"><div className="mockClass" /></button>,
+  <button onClick={childButtonSpies.onClick} key="a">
+    <div className="mockClass" />
+  </button>,
   <button onClick={childButtonSpies.onClick} key="b"></button>,
   <button onClick={childButtonSpies.onClick} key="c"></button>,
 ]
@@ -21,12 +23,16 @@ describe('ButtonGroup Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<ButtonGroup
-      defaultActiveButtonIndex={1}
-      disabled={false}
-      className="someClassName"
-      style={ { color: 'red' } }
-    >{mockButtons}</ButtonGroup>)
+    wrapper = shallow(
+      <ButtonGroup
+        defaultActiveButtonIndex={1}
+        disabled={false}
+        className="someClassName"
+        style={{ color: 'red' }}
+      >
+        {mockButtons}
+      </ButtonGroup>
+    )
   })
 
   afterEach(() => {
@@ -69,13 +75,22 @@ describe('ButtonGroup Component', function () {
       assert.deepEqual(childButtons.get(1), activeChildButton.get(0))
     })
 
-    it('should call handleButtonClick and the respective button\'s onClick method when a button is clicked', () => {
+    it("should call handleButtonClick and the respective button's onClick method when a button is clicked", () => {
       assert.equal(ButtonGroup.prototype.handleButtonClick.callCount, 0)
       assert.equal(childButtonSpies.onClick.callCount, 0)
       const childButtons = wrapper.find('.button-group__button')
-      childButtons.at(0).props().onClick()
-      childButtons.at(1).props().onClick()
-      childButtons.at(2).props().onClick()
+      childButtons
+        .at(0)
+        .props()
+        .onClick()
+      childButtons
+        .at(1)
+        .props()
+        .onClick()
+      childButtons
+        .at(2)
+        .props()
+        .onClick()
       assert.equal(ButtonGroup.prototype.handleButtonClick.callCount, 3)
       assert.equal(childButtonSpies.onClick.callCount, 3)
     })
@@ -98,8 +113,20 @@ describe('ButtonGroup Component', function () {
 
   describe('render', () => {
     it('should render a div with the expected class and style', () => {
-      assert.equal(wrapper.find('div').at(0).props().className, 'someClassName')
-      assert.deepEqual(wrapper.find('div').at(0).props().style, { color: 'red' })
+      assert.equal(
+        wrapper
+          .find('div')
+          .at(0)
+          .props().className,
+        'someClassName'
+      )
+      assert.deepEqual(
+        wrapper
+          .find('div')
+          .at(0)
+          .props().style,
+        { color: 'red' }
+      )
     })
 
     it('should call renderButtons when rendering', () => {

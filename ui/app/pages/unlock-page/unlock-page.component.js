@@ -23,19 +23,16 @@ export default class UnlockPage extends Component {
     showOptInModal: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      password: '',
-      error: null,
-    }
-
-    this.submitting = false
-    this.animationEventEmitter = new EventEmitter()
+  state = {
+    password: '',
+    error: null,
   }
 
-  componentWillMount () {
+  submitting = false
+
+  animationEventEmitter = new EventEmitter()
+
+  UNSAFE_componentWillMount () {
     const { isUnlocked, history } = this.props
 
     if (isUnlocked) {
@@ -69,7 +66,10 @@ export default class UnlockPage extends Component {
         isNewVisit: true,
       })
 
-      if (newState.participateInMetaMetrics === null || newState.participateInMetaMetrics === undefined) {
+      if (
+        newState.participateInMetaMetrics === null ||
+        newState.participateInMetaMetrics === undefined
+      ) {
         showOptInModal()
       }
     } catch ({ message }) {
@@ -128,7 +128,7 @@ export default class UnlockPage extends Component {
         onClick={this.handleSubmit}
         disableRipple
       >
-        { this.context.t('login') }
+        {this.context.t('login')}
       </Button>
     )
   }
@@ -148,14 +148,9 @@ export default class UnlockPage extends Component {
               height="120"
             />
           </div>
-          <h1 className="unlock-page__title">
-            { t('welcomeBack') }
-          </h1>
-          <div>{ t('unlockMessage') }</div>
-          <form
-            className="unlock-page__form"
-            onSubmit={this.handleSubmit}
-          >
+          <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
+          <div>{t('unlockMessage')}</div>
+          <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
               label={t('password')}
@@ -165,23 +160,20 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
-              material
+              theme="material"
               fullWidth
             />
           </form>
-          { this.renderSubmitButton() }
+          {this.renderSubmitButton()}
           <div className="unlock-page__links">
-            <div
-              className="unlock-page__link"
-              onClick={() => onRestore()}
-            >
-              { t('restoreFromSeed') }
+            <div className="unlock-page__link" onClick={() => onRestore()}>
+              {t('restoreFromSeed')}
             </div>
             <div
               className="unlock-page__link unlock-page__link--import"
               onClick={() => onImport()}
             >
-              { t('importUsingSeed') }
+              {t('importUsingSeed')}
             </div>
           </div>
         </div>

@@ -7,9 +7,7 @@ import CurrencyDisplay from '../../../ui/currency-display'
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {
     it('should render properly', () => {
-      const wrapper = shallow(
-        <UserPreferencedCurrencyDisplay />
-      )
+      const wrapper = shallow(<UserPreferencedCurrencyDisplay />)
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
@@ -17,11 +15,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
 
     it('should pass all props to the CurrencyDisplay child component', () => {
       const wrapper = shallow(
-        <UserPreferencedCurrencyDisplay
-          prop1
-          prop2="test"
-          prop3={1}
-        />
+        <UserPreferencedCurrencyDisplay prop1 prop2="test" prop3={1} />
       )
 
       assert.ok(wrapper)

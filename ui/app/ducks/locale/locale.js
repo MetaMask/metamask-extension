@@ -1,16 +1,16 @@
-const extend = require('xtend')
-const actions = require('../../store/actions')
+import { actionConstants } from '../../store/actions'
 
-module.exports = reduceMetamask
+export default reduceMetamask
 
 function reduceMetamask (state, action) {
-  const localeMessagesState = extend({}, state.localeMessages)
+  const localeMessagesState = { ...state.localeMessages }
 
   switch (action.type) {
-    case actions.SET_CURRENT_LOCALE:
-      return extend(localeMessagesState, {
+    case actionConstants.SET_CURRENT_LOCALE:
+      return {
+        ...localeMessagesState,
         current: action.value.messages,
-      })
+      }
     default:
       return localeMessagesState
   }

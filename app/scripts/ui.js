@@ -1,32 +1,35 @@
-
 // this must run before anything else
-require('./lib/freezeGlobals')
+import './lib/freezeGlobals'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const PortStream = require('extension-port-stream')
-const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN, ENVIRONMENT_TYPE_POPUP } = require('./lib/enums')
-const extension = require('extensionizer')
-const ExtensionPlatform = require('./platforms/extension')
-const NotificationManager = require('./lib/notification-manager')
+import PortStream from 'extension-port-stream'
+import { getEnvironmentType } from './lib/util'
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from './lib/enums'
+import extension from 'extensionizer'
+import ExtensionPlatform from './platforms/extension'
+import NotificationManager from './lib/notification-manager'
+
 const notificationManager = new NotificationManager()
-const setupSentry = require('./lib/setupSentry')
-const {EventEmitter} = require('events')
-const Dnode = require('dnode')
-const Eth = require('ethjs')
-const EthQuery = require('eth-query')
-const urlUtil = require('url')
-const launchMetaMaskUi = require('../../ui')
-const StreamProvider = require('web3-stream-provider')
-const {setupMultiplex} = require('./lib/stream-utils.js')
-const log = require('loglevel')
+import setupSentry from './lib/setupSentry'
+import { EventEmitter } from 'events'
+import Dnode from 'dnode'
+import Eth from 'ethjs'
+import EthQuery from './eth-query'
+import urlUtil from 'url'
+import launchMetaMaskUi from '../../ui'
+import StreamProvider from 'web3-stream-provider'
+import { setupMultiplex } from './lib/stream-utils.js'
+import log from 'loglevel'
 
 start().catch(log.error)
 
 async function start () {
-
   // create platform global
   global.platform = new ExtensionPlatform()
 
@@ -64,7 +67,8 @@ async function start () {
   }
 
   function displayCriticalError (container, err) {
-    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+    container.innerHTML =
+      '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
     container.style.height = '80px'
     log.error(err.stack)
     throw err
@@ -88,7 +92,7 @@ async function start () {
 }
 
 async function queryCurrentActiveTab (windowType) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // At the time of writing we only have the `activeTab` permission which means
     // that this query will only succeed in the popup context (i.e. after a "browserAction")
     if (windowType !== ENVIRONMENT_TYPE_POPUP) {
@@ -96,12 +100,15 @@ async function queryCurrentActiveTab (windowType) {
       return
     }
 
-    extension.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    extension.tabs.query({ active: true, currentWindow: true }, tabs => {
       const [activeTab] = tabs
-      const {title, url} = activeTab
+      const { title, url } = activeTab
       const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
       resolve({
-        title, origin, protocol, url,
+        title,
+        origin,
+        protocol,
+        url,
       })
     })
   })
@@ -113,19 +120,22 @@ function initializeUi (activeTab, container, connectionStream, cb) {
       return cb(err)
     }
 
-    launchMetaMaskUi({
-      activeTab,
-      container,
-      backgroundConnection,
-    }, cb)
+    launchMetaMaskUi(
+      {
+        activeTab,
+        container,
+        backgroundConnection,
+      },
+      cb
+    )
   })
 }
 
 /**
  * Establishes a connection to the background and a Web3 provider
  *
- * @param {PortDuplexStream} connectionStream PortStream instance establishing a background connection
- * @param {Function} cb Called when controller connection is established
+ * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {Function} cb - Called when controller connection is established
  */
 function connectToAccountManager (connectionStream, cb) {
   const mx = setupMultiplex(connectionStream)
@@ -136,7 +146,7 @@ function connectToAccountManager (connectionStream, cb) {
 /**
  * Establishes a streamed connection to a Web3 provider
  *
- * @param {PortDuplexStream} connectionStream PortStream instance establishing a background connection
+ * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
 function setupWeb3Connection (connectionStream) {
   const providerStream = new StreamProvider()
@@ -151,8 +161,8 @@ function setupWeb3Connection (connectionStream) {
 /**
  * Establishes a streamed connection to the background account manager
  *
- * @param {PortDuplexStream} connectionStream PortStream instance establishing a background connection
- * @param {Function} cb Called when the remote account manager connection is established
+ * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {Function} cb - Called when the remote account manager connection is established
  */
 function setupControllerConnection (connectionStream, cb) {
   const eventEmitter = new EventEmitter()

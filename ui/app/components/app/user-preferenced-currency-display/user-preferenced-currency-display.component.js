@@ -16,8 +16,14 @@ export default class UserPreferencedCurrencyDisplay extends PureComponent {
     ethLogoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     // Used in container
     type: PropTypes.oneOf([PRIMARY, SECONDARY]),
-    ethNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    fiatNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ethNumberOfDecimals: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    fiatNumberOfDecimals: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
     ethPrefix: PropTypes.string,
     fiatPrefix: PropTypes.string,
     // From container
@@ -28,20 +34,15 @@ export default class UserPreferencedCurrencyDisplay extends PureComponent {
   renderEthLogo () {
     const { currency, showEthLogo, ethLogoHeight = 12 } = this.props
 
-    return currency === ETH && showEthLogo && (
-      <img
-        src="/images/eth.svg"
-        height={ethLogoHeight}
-      />
+    return (
+      currency === ETH &&
+      showEthLogo && <img src="/images/eth.svg" height={ethLogoHeight} />
     )
   }
 
   render () {
     return (
-      <CurrencyDisplay
-        {...this.props}
-        prefixComponent={this.renderEthLogo()}
-      />
+      <CurrencyDisplay {...this.props} prefixComponent={this.renderEthLogo()} />
     )
   }
 }

@@ -1,10 +1,14 @@
-const Sentry = require('@sentry/browser')
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
-const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
-const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
+import * as Sentry from '@sentry/browser'
 
-module.exports = setupSentry
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+import extractEthjsErrorMessage from './extractEthjsErrorMessage'
+
+const SENTRY_DSN_PROD =
+  'https://9f364c1e50ff4c8b96f279b236019359@sentry.conflux-chain.org/10'
+const SENTRY_DSN_DEV =
+  'https://b6d6770834fe4c6bb3912b598d6b53b8@sentry.conflux-chain.org/9'
+
+export default setupSentry
 
 // Setup sentry remote error reporting
 function setupSentry (opts) {
@@ -25,7 +29,7 @@ function setupSentry (opts) {
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: report => rewriteReport(report),
   })
 
   Sentry.configureScope(scope => {
@@ -53,7 +57,7 @@ function setupSentry (opts) {
 }
 
 function simplifyErrorMessages (report) {
-  rewriteErrorMessages(report, (errorMessage) => {
+  rewriteErrorMessages(report, errorMessage => {
     // simplify ethjs error messages
     errorMessage = extractEthjsErrorMessage(errorMessage)
     // simplify 'Transaction Failed: known transaction'
@@ -67,11 +71,15 @@ function simplifyErrorMessages (report) {
 
 function rewriteErrorMessages (report, rewriteFn) {
   // rewrite top level message
-  if (typeof report.message === 'string') report.message = rewriteFn(report.message)
+  if (typeof report.message === 'string') {
+    report.message = rewriteFn(report.message)
+  }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {
-      if (typeof item.value === 'string') item.value = rewriteFn(item.value)
+      if (typeof item.value === 'string') {
+        item.value = rewriteFn(item.value)
+      }
     })
   }
 }
@@ -91,7 +99,9 @@ function rewriteReportUrls (report) {
 
 function toMetamaskUrl (origUrl) {
   const filePath = origUrl.split(location.origin)[1]
-  if (!filePath) return origUrl
+  if (!filePath) {
+    return origUrl
+  }
   const metamaskUrl = `metamask${filePath}`
   return metamaskUrl
 }

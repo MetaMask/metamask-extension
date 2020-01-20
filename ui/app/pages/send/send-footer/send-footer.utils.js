@@ -1,14 +1,22 @@
-const ethAbi = require('ethereumjs-abi')
-const ethUtil = require('ethereumjs-util')
-const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../send.constants')
+import ethAbi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
+import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
 
-function addHexPrefixToObjectValues (obj) {
+export function addHexPrefixToObjectValues (obj) {
   return Object.keys(obj).reduce((newObj, key) => {
     return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
   }, {})
 }
 
-function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPrice }) {
+export function constructTxParams ({
+  selectedToken,
+  data,
+  to,
+  amount,
+  from,
+  gas,
+  gasPrice,
+}) {
   const txParams = {
     data,
     from,
@@ -25,7 +33,7 @@ function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPri
   return addHexPrefixToObjectValues(txParams)
 }
 
-function constructUpdatedTx ({
+export function constructUpdatedTx ({
   amount,
   data,
   editingTransactionId,
@@ -37,7 +45,9 @@ function constructUpdatedTx ({
   unapprovedTxs,
 }) {
   const unapprovedTx = unapprovedTxs[editingTransactionId]
-  const txParamsData = unapprovedTx.txParams.data ? unapprovedTx.txParams.data : data
+  const txParamsData = unapprovedTx.txParams.data
+    ? unapprovedTx.txParams.data
+    : data
 
   const editingTx = {
     ...unapprovedTx,
@@ -55,16 +65,26 @@ function constructUpdatedTx ({
   }
 
   if (selectedToken) {
-    const data = TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
-      ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
-      x => ('00' + x.toString(16)).slice(-2)
-    ).join('')
+    const data =
+      TOKEN_TRANSFER_FUNCTION_SIGNATURE +
+      Array.prototype.map
+        .call(
+          ethAbi.rawEncode(
+            ['address', 'uint256'],
+            [to, ethUtil.addHexPrefix(amount)]
+          ),
+          x => ('00' + x.toString(16)).slice(-2)
+        )
+        .join('')
 
-    Object.assign(editingTx.txParams, addHexPrefixToObjectValues({
-      value: '0',
-      to: selectedToken.address,
-      data,
-    }))
+    Object.assign(
+      editingTx.txParams,
+      addHexPrefixToObjectValues({
+        value: '0',
+        to: selectedToken.address,
+        data,
+      })
+    )
   }
 
   if (typeof editingTx.txParams.data === 'undefined') {
@@ -74,15 +94,10 @@ function constructUpdatedTx ({
   return editingTx
 }
 
-function addressIsNew (toAccounts, newAddress) {
+export function addressIsNew (toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase()
-  const foundMatching = toAccounts.some(({ address }) => address.toLowerCase() === newAddressNormalized)
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized
+  )
   return !foundMatching
-}
-
-module.exports = {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-  addHexPrefixToObjectValues,
 }

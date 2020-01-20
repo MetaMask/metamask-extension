@@ -1,10 +1,10 @@
 const version = 36
-const clone = require('clone')
+import clone from 'clone'
 
 /**
  * The purpose of this migration is to remove the {@code privacyMode} feature flag.
  */
-module.exports = {
+export default {
   version,
   migrate: async function (originalVersionedData) {
     const versionedData = clone(originalVersionedData)

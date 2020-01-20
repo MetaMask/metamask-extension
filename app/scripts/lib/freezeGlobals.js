@@ -1,13 +1,9 @@
-
 /**
  * Freezes the Promise global and prevents its reassignment.
  */
-const deepFreeze = require('deep-freeze-strict')
+import deepFreeze from 'deep-freeze-strict'
 
-if (
-  process.env.IN_TEST !== 'true' &&
-  process.env.METAMASK_ENV !== 'test'
-) {
+if (process.env.IN_TEST !== 'true' && process.env.METAMASK_ENV !== 'test') {
   freeze(global, 'Promise')
 }
 
@@ -20,14 +16,14 @@ if (
  * value is completely immutable. It is, however, better than nothing.
  *
  * @param {Object} target - The target object to freeze a property on.
- * @param {String} key - The key to freeze.
+ * @param {string} key - The key to freeze.
  * @param {any} [value] - The value to freeze, if different from the existing value on the target.
  * @param {boolean} [enumerable=true] - If given a value, whether the property is enumerable.
  */
 function freeze (target, key, value, enumerable = true) {
-
   const opts = {
-    configurable: false, writable: false,
+    configurable: false,
+    writable: false,
   }
 
   if (value !== undefined) {

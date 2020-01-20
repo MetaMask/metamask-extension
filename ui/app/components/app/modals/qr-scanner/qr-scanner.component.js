@@ -70,30 +70,38 @@ export default class QrScanner extends Component {
 
   initCamera () {
     this.codeReader = new BrowserQRCodeReader()
-    this.codeReader.getVideoInputDevices()
+    this.codeReader
+      .getVideoInputDevices()
       .then(() => {
         clearTimeout(this.permissionChecker)
         this.checkPermisisions()
-        this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
+        this.codeReader
+          .decodeFromInputVideoDevice(undefined, 'video')
           .then(content => {
             const result = this.parseContent(content.text)
             if (result.type !== 'unknown') {
               this.props.qrCodeDetected(result)
               this.stopAndClose()
             } else {
-              this.setState({msg: this.context.t('unknownQrCode')})
+              this.setState({ msg: this.context.t('unknownQrCode') })
             }
           })
           .catch(err => {
             if (err && err.name === 'NotAllowedError') {
-              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+              this.setState({
+                msg: this.context.t('youNeedToAllowCameraAccess'),
+              })
               clearTimeout(this.permissionChecker)
               this.needsToReinit = true
               this.checkPermisisions()
             }
           })
-      }).catch(err => {
-        console.error('[QR-SCANNER]: getVideoInputDevices threw an exception: ', err)
+      })
+      .catch(err => {
+        console.error(
+          '[QR-SCANNER]: getVideoInputDevices threw an exception: ',
+          err
+        )
       })
   }
 
@@ -105,23 +113,18 @@ export default class QrScanner extends Component {
     // To parse other type of links
     // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
-
     // Ethereum address links - fox ex. ethereum:0x.....1111
     if (content.split('ethereum:').length > 1) {
-
       type = 'address'
-      values = {'address': content.split('ethereum:')[1] }
+      values = { address: content.split('ethereum:')[1] }
 
-    // Regular ethereum addresses - fox ex. 0x.....1111
+      // Regular ethereum addresses - fox ex. 0x.....1111
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
-
       type = 'address'
-      values = {'address': content }
-
+      values = { address: content }
     }
-    return {type, values}
+    return { type, values }
   }
-
 
   stopAndClose = () => {
     if (this.codeReader) {
@@ -149,7 +152,7 @@ export default class QrScanner extends Component {
             display: this.state.ready ? 'block' : 'none',
           }}
         />
-        { !this.state.ready ? <Spinner color="#F7C06C" /> : null}
+        {!this.state.ready ? <Spinner color="#F7C06C" /> : null}
       </div>
     )
   }
@@ -174,12 +177,8 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__image">
           <img src="images/webcam.svg" width={70} height={70} />
         </div>
-        <div className="qr-scanner__title">
-          { title }
-        </div>
-        <div className="qr-scanner__error">
-          {msg}
-        </div>
+        <div className="qr-scanner__title">{title}</div>
+        <div className="qr-scanner__error">{msg}</div>
         <PageContainerFooter
           onCancel={this.stopAndClose}
           onSubmit={this.tryAgain}
@@ -201,15 +200,9 @@ export default class QrScanner extends Component {
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
-        <div className="qr-scanner__title">
-          { `${t('scanQrCode')}` }
-        </div>
-        <div className="qr-scanner__content">
-          { this.renderVideo() }
-        </div>
-        <div className="qr-scanner__status">
-          {this.state.msg}
-        </div>
+        <div className="qr-scanner__title">{`${t('scanQrCode')}`}</div>
+        <div className="qr-scanner__content">{this.renderVideo()}</div>
+        <div className="qr-scanner__status">{this.state.msg}</div>
       </div>
     )
   }

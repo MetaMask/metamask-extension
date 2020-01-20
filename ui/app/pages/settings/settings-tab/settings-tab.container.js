@@ -1,10 +1,8 @@
 import SettingsTab from './settings-tab.component'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import {
   setCurrentCurrency,
-  displayWarning,
   setUseBlockie,
   updateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
@@ -13,7 +11,10 @@ import {
 import { preferencesSelector } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const { appState: { warning }, metamask } = state
+  const {
+    appState: { warning },
+    metamask,
+  } = state
   const {
     currentCurrency,
     conversionDate,
@@ -37,17 +38,16 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    displayWarning: warning => dispatch(displayWarning(warning)),
     setUseBlockie: value => dispatch(setUseBlockie(value)),
     updateCurrentLocale: key => dispatch(updateCurrentLocale(key)),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
     },
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
+    setParticipateInMetaMetrics: val =>
+      dispatch(setParticipateInMetaMetrics(val)),
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(SettingsTab)
+export default compose(connect(mapStateToProps, mapDispatchToProps))(
+  SettingsTab
+)

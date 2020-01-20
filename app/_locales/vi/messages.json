@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
-  },
-  "clearApprovalData": {
-    "message": "Xóa dữ liệu phê duyệt"
-  },
   "reject": {
     "message": "Từ chối"
-  },
-  "providerRequestInfo": {
-    "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
   },
   "account": {
     "message": "Tài khoản"
@@ -46,13 +37,6 @@
   "balance": {
     "message": "Số dư:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
-  },
-  "betweenMinAndMax": {
-    "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -82,9 +66,6 @@
   },
   "copiedExclamation": {
     "message": "Đã sao chép!"
-  },
-  "copy": {
-    "message": "Sao chép"
   },
   "copyToClipboard": {
     "message": "Đã sao chép vào clipboard"
@@ -160,17 +141,11 @@
   "gasLimit": {
     "message": "Hạn mức ga"
   },
-  "gasLimitCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một hạn mức ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
-  },
   "gasLimitTooLow": {
     "message": "Hạn mức ga phải đạt tối thiểu 21000"
   },
   "gasPrice": {
     "message": "Giá ga (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một giá ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
   "getEther": {
     "message": "Lấy Ether"
@@ -178,10 +153,6 @@
   "getEtherFromFaucet": {
     "message": "Lấy Ether từ vòi với giá $1",
     "description": "Displays network name for Ether faucet"
-  },
-  "greaterThanMin": {
-    "message": "phải nhiều hơn hoặc bằng $1",
-    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "tại đây",
@@ -222,10 +193,6 @@
   },
   "kovan": {
     "message": "Mạng thử nghiệm Kovan"
-  },
-  "lessThanMax": {
-    "message": "phải ít hơn hoặc bằng $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "loading": {
     "message": "Đang tải..."
@@ -284,9 +251,6 @@
     "message": "Dán dãy khóa cá nhân của bạn tại đây:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Dán Mật Khẩu Sinh Khoá (seed phrase) của bạn tại đây!"
-  },
   "privateKey": {
     "message": "Khóa Bí Mật",
     "description": "select this type of file to use to import an account"
@@ -311,9 +275,6 @@
   },
   "required": {
     "message": "Yêu cầu"
-  },
-  "revert": {
-    "message": "Chuyển lại"
   },
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"
@@ -347,9 +308,6 @@
   },
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
-  },
-  "submit": {
-    "message": "Gửi đi"
   },
   "testFaucet": {
     "message": "Vòi nhận tiền ETH ảo để thử nghiệm"

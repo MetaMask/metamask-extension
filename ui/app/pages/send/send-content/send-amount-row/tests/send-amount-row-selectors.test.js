@@ -1,10 +1,7 @@
 import assert from 'assert'
-import {
-  sendAmountIsInError,
-} from '../send-amount-row.selectors.js'
+import { sendAmountIsInError } from '../send-amount-row.selectors.js'
 
 describe('send-amount-row selectors', () => {
-
   describe('sendAmountIsInError()', () => {
     it('should return true if send.errors.amount is truthy', () => {
       const state = {
@@ -30,5 +27,4 @@ describe('send-amount-row selectors', () => {
       assert.equal(sendAmountIsInError(state), false)
     })
   })
-
 })

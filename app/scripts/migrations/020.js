@@ -8,9 +8,9 @@ so that we can version notices in the future.
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -29,8 +29,7 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  if ('metamask' in newState &&
-      !('firstTimeInfo' in newState.metamask)) {
+  if ('metamask' in newState && !('firstTimeInfo' in newState.metamask)) {
     newState.metamask.firstTimeInfo = {
       version: '3.12.0',
       date: Date.now(),
@@ -38,4 +37,3 @@ function transformState (state) {
   }
   return newState
 }
-

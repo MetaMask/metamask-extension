@@ -1,9 +1,8 @@
 const version = 2
 
-const clone = require('clone')
+import clone from 'clone'
 
-
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -12,7 +11,8 @@ module.exports = {
     try {
       if (versionedData.data.config.provider.type === 'etherscan') {
         versionedData.data.config.provider.type = 'rpc'
-        versionedData.data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
+        versionedData.data.config.provider.rpcTarget =
+          'https://rpc.metamask.io/'
       }
     } catch (e) {}
     return Promise.resolve(versionedData)

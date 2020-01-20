@@ -1,4 +1,4 @@
-module.exports = createOriginMiddleware
+export default createOriginMiddleware
 
 /**
  * Returns a middleware that appends the DApp origin to request
@@ -6,7 +6,11 @@ module.exports = createOriginMiddleware
  * @returns {Function}
  */
 function createOriginMiddleware (opts) {
-  return function originMiddleware (/** @type {any} */ req, /** @type {any} */ _, /** @type {Function} */ next) {
+  return function originMiddleware (
+    /** @type {any} */ req,
+    /** @type {any} */ _,
+    /** @type {Function} */ next
+  ) {
     req.origin = opts.origin
     next()
   }

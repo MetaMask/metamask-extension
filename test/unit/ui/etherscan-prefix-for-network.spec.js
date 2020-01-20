@@ -1,8 +1,7 @@
-const assert = require('assert')
-const etherscanNetworkPrefix = require('../../../ui/lib/etherscan-prefix-for-network')
+import assert from 'assert'
+import etherscanNetworkPrefix from '../../../ui/lib/etherscan-prefix-for-network'
 
 describe('Etherscan Network Prefix', () => {
-
   it('returns empy string as default value', () => {
     assert.equal(etherscanNetworkPrefix(), '')
   })
@@ -26,5 +25,4 @@ describe('Etherscan Network Prefix', () => {
   it('returs goerli as prefix for networkId of 5', () => {
     assert.equal(etherscanNetworkPrefix(5), 'goerli.')
   })
-
 })

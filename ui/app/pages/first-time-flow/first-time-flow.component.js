@@ -51,7 +51,10 @@ export default class FirstTimeFlow extends PureComponent {
       seedPhraseBackedUp,
     } = this.props
 
-    if (completedOnboarding && (!showingSeedPhraseBackupAfterOnboarding || seedPhraseBackedUp)) {
+    if (
+      completedOnboarding &&
+      (!showingSeedPhraseBackupAfterOnboarding || seedPhraseBackedUp)
+    ) {
       history.push(DEFAULT_ROUTE)
       return
     }
@@ -107,9 +110,9 @@ export default class FirstTimeFlow extends PureComponent {
         <Switch>
           <Route
             path={INITIALIZE_SEED_PHRASE_ROUTE}
-            render={props => (
+            render={routeProps => (
               <SeedPhrase
-                { ...props }
+                {...routeProps}
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -117,9 +120,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
-            render={props => (
+            render={routeProps => (
               <SeedPhrase
-                { ...props }
+                {...routeProps}
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -127,9 +130,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
-            render={props => (
+            render={routeProps => (
               <CreatePassword
-                { ...props }
+                {...routeProps}
                 isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
@@ -142,11 +145,8 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_UNLOCK_ROUTE}
-            render={props => (
-              <Unlock
-                { ...props }
-                onSubmit={this.handleUnlock}
-              />
+            render={routeProps => (
+              <Unlock {...routeProps} onSubmit={this.handleUnlock} />
             )}
           />
           <Route
@@ -154,21 +154,13 @@ export default class FirstTimeFlow extends PureComponent {
             path={INITIALIZE_END_OF_FLOW_ROUTE}
             component={EndOfFlow}
           />
-          <Route
-            exact
-            path={INITIALIZE_WELCOME_ROUTE}
-            component={Welcome}
-          />
+          <Route exact path={INITIALIZE_WELCOME_ROUTE} component={Welcome} />
           <Route
             exact
             path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}
             component={MetaMetricsOptInScreen}
           />
-          <Route
-            exact
-            path="*"
-            component={FirstTimeFlowSwitch}
-          />
+          <Route exact path="*" component={FirstTimeFlowSwitch} />
         </Switch>
       </div>
     )

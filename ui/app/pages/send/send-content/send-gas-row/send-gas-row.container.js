@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import {
   getConversionRate,
-  getCurrentCurrency,
   getGasTotal,
   getGasPrice,
   getGasLimit,
@@ -9,13 +8,8 @@ import {
   getSendFromBalance,
   getTokenBalance,
 } from '../../send.selectors.js'
-import {
-  getMaxModeOn,
-} from '../send-amount-row/amount-max-button/amount-max-button.selectors'
-import {
-  isBalanceSufficient,
-  calcGasTotal,
-} from '../../send.utils.js'
+import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors'
+import { isBalanceSufficient, calcGasTotal } from '../../send.utils.js'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
   getBasicGasEstimateLoadingStatus,
@@ -31,13 +25,30 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
-import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
-import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
+import {
+  getGasLoadingError,
+  gasFeeIsInError,
+  getGasButtonGroupShown,
+} from './send-gas-row.selectors.js'
+import {
+  showModal,
+  setGasPrice,
+  setGasLimit,
+  setGasTotal,
+  updateSendAmount,
+} from '../../../../store/actions'
+import {
+  getAdvancedInlineGasShown,
+  getCurrentEthBalance,
+  getSelectedToken,
+} from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
 
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(SendGasRow)
 
 function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
@@ -58,8 +69,6 @@ function mapStateToProps (state) {
 
   return {
     balance: getSendFromBalance(state),
-    conversionRate,
-    convertedCurrency: getCurrentCurrency(state),
     gasTotal,
     gasFeeError: gasFeeIsInError(state),
     gasLoadingError: getGasLoadingError(state),
@@ -82,7 +91,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
+    showCustomizeGasModal: () =>
+      dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
     setGasPrice: (newPrice, gasLimit) => {
       dispatch(setGasPrice(newPrice))
       dispatch(setCustomGasPrice(newPrice))

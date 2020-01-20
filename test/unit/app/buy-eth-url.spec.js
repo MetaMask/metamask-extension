@@ -1,10 +1,14 @@
-const assert = require('assert')
-const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
+import assert from 'assert'
+import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 
 describe('buy-eth-url', function () {
   const mainnet = {
     network: '1',
     amount: 5,
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  }
+  const testnet = {
+    network: '2',
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   }
   const ropsten = {
@@ -21,7 +25,14 @@ describe('buy-eth-url', function () {
     const wyreUrl = getBuyEthUrl(mainnet)
 
     assert.equal(wyreUrl, 'https://dash.sendwyre.com/sign-up')
+  })
 
+  it('returns conflux test net facuet for network 2', function () {
+    const ropstenUrl = getBuyEthUrl(testnet)
+    assert.equal(
+      ropstenUrl,
+      'https://wallet.confluxscan.io/faucet/dev/ask?address=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    )
   })
 
   it('returns metamask ropsten faucet for network 3', function () {
@@ -38,6 +49,4 @@ describe('buy-eth-url', function () {
     const kovanUrl = getBuyEthUrl(kovan)
     assert.equal(kovanUrl, 'https://github.com/kovan-testnet/faucet')
   })
-
 })
-

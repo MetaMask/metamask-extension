@@ -1,9 +1,9 @@
 {
   "name": "__MSG_appName__",
   "short_name": "__MSG_appName__",
-  "version": "7.7.1",
+  "version": "0.0.4",
   "manifest_version": 2,
-  "author": "https://metamask.io",
+  "author": "https://conflux-chain.org",
   "description": "__MSG_appDescription__",
   "commands": {
     "_execute_browser_action": {
@@ -26,7 +26,7 @@
   },
   "applications": {
     "gecko": {
-      "id": "webextension@metamask.io",
+      "id": "webextension@conflux-chain.org",
       "strict_min_version": "56.0"
     }
   },
@@ -49,7 +49,7 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "MetaMask",
+    "default_title": "ConfluxPortal",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -79,6 +79,7 @@
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
+    "http://localhost:12539/",
     "https://*.infura.io/",
     "activeTab",
     "webRequest",
@@ -91,7 +92,8 @@
   ],
   "externally_connectable": {
     "matches": [
-      "https://metamask.io/*"
+      "https://metamask.io/*",
+      "https://conflux-chain.org/*"
     ],
     "ids": [
       "*"

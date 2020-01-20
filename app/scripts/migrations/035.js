@@ -7,9 +7,9 @@ Removes the deprecated 'seedWords' state
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {
@@ -21,7 +21,10 @@ module.exports = {
 }
 
 function transformState (state) {
-  if (state.PreferencesController && state.PreferencesController.seedWords !== undefined) {
+  if (
+    state.PreferencesController &&
+    state.PreferencesController.seedWords !== undefined
+  ) {
     delete state.PreferencesController.seedWords
   }
   return state

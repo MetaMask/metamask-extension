@@ -6,10 +6,11 @@ const version = 25
 normalizes txParams on unconfirmed txs
 
 */
-const ethUtil = require('ethereumjs-util')
-const clone = require('clone')
+import ethUtil from 'ethereumjs-util'
 
-module.exports = {
+import clone from 'clone'
+
+export default {
   version,
 
   migrate: async function (originalVersionedData) {
@@ -28,8 +29,10 @@ function transformState (state) {
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
       const transactions = newState.TransactionController.transactions
-      newState.TransactionController.transactions = transactions.map((txMeta) => {
-        if (txMeta.status !== 'unapproved') return txMeta
+      newState.TransactionController.transactions = transactions.map(txMeta => {
+        if (txMeta.status !== 'unapproved') {
+          return txMeta
+        }
         txMeta.txParams = normalizeTxParams(txMeta.txParams)
         return txMeta
       })
@@ -53,8 +56,10 @@ function normalizeTxParams (txParams) {
 
   // apply only keys in the whiteList
   const normalizedTxParams = {}
-  Object.keys(whiteList).forEach((key) => {
-    if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
+  Object.keys(whiteList).forEach(key => {
+    if (txParams[key]) {
+      normalizedTxParams[key] = whiteList[key](txParams[key])
+    }
   })
 
   return normalizedTxParams

@@ -23,7 +23,7 @@ describe('CurrencyInput container', () => {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -38,19 +38,20 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
       },
       // Test # 2
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is false',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is false',
         mockState: {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: false,
             },
@@ -65,19 +66,20 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: true,
           maxModeOn: false,
         },
       },
       // Test # 3
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -92,19 +94,20 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
       },
       // Test # 4
       {
-        comment: 'should return correct props when in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             preferences: {
               showFiatInTestnets: true,
             },
@@ -119,7 +122,7 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           hideFiat: false,
           maxModeOn: false,
         },
@@ -140,7 +143,7 @@ describe('CurrencyInput container', () => {
           stateProps: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
           },
           dispatchProps: {},
           ownProps: {},
@@ -148,9 +151,9 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           // useFiat: true,
-          nativeSuffix: 'ETH',
+          nativeSuffix: 'CFX',
           fiatSuffix: 'USD',
         },
       },
@@ -161,7 +164,7 @@ describe('CurrencyInput container', () => {
           stateProps: {
             conversionRate: 280.45,
             currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
           },
           dispatchProps: {},
           ownProps: { useFiat: true },
@@ -169,18 +172,27 @@ describe('CurrencyInput container', () => {
         expected: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           useFiat: true,
-          nativeSuffix: 'ETH',
+          nativeSuffix: 'CFX',
           fiatSuffix: 'USD',
         },
       },
     ]
 
-    tests.forEach(({ mock: { stateProps, dispatchProps, ownProps }, expected, comment }) => {
-      it(comment, () => {
-        assert.deepEqual(mergeProps(stateProps, dispatchProps, ownProps), expected)
-      })
-    })
+    tests.forEach(
+      ({
+        mock: { stateProps, dispatchProps, ownProps },
+        expected,
+        comment,
+      }) => {
+        it(comment, () => {
+          assert.deepEqual(
+            mergeProps(stateProps, dispatchProps, ownProps),
+            expected
+          )
+        })
+      }
+    )
   })
 })

@@ -1,6 +1,5 @@
 import assert from 'assert'
-import {addCurrencies} from './conversion-util'
-
+import { addCurrencies } from './conversion-util'
 
 describe('conversion utils', () => {
   describe('addCurrencies()', () => {

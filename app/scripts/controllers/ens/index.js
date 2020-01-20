@@ -1,8 +1,8 @@
-const ethUtil = require('ethereumjs-util')
-const ObservableStore = require('obs-store')
-const punycode = require('punycode')
-const log = require('loglevel')
-const Ens = require('./ens')
+import ethUtil from 'ethereumjs-util'
+import ObservableStore from 'obs-store'
+import punycode from 'punycode'
+import log from 'loglevel'
+import Ens from './ens'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
@@ -25,7 +25,7 @@ class EnsController {
     }
 
     this.store = new ObservableStore(initState)
-    networkStore.subscribe((network) => {
+    networkStore.subscribe(network => {
       this.store.putState(initState)
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
@@ -68,7 +68,10 @@ class EnsController {
       return undefined
     }
 
-    if (registeredAddress === ZERO_ADDRESS || registeredAddress === ZERO_X_ERROR_ADDRESS) {
+    if (
+      registeredAddress === ZERO_ADDRESS ||
+      registeredAddress === ZERO_X_ERROR_ADDRESS
+    ) {
       return undefined
     }
 
@@ -91,4 +94,4 @@ class EnsController {
   }
 }
 
-module.exports = EnsController
+export default EnsController

@@ -3,7 +3,7 @@
     "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
-    "featureFlags": {"betaUI": true},
+    "featureFlags": { "betaUI": true },
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
@@ -94,14 +94,14 @@
         "type": "personal_sign"
       }
     },
-    "unapprovedPersonalMsgCount": 1 ,
+    "unapprovedPersonalMsgCount": 1,
     "unapprovedTypedMessages": {
       "8997167822566869": {
         "id": 8997167822566869,
         "msgParams": {
           "data": [
-            {"type": "string", "name": "Message", "value": "Hi, Alice!"},
-            {"type": "uint32", "name": "A number", "value": "1337"}
+            { "type": "string", "name": "Message", "value": "Hi, Alice!" },
+            { "type": "uint32", "name": "A number", "value": "1337" }
           ],
           "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e659"
         },
@@ -111,10 +111,7 @@
       }
     },
     "unapprovedTypedMessagesCount": 1,
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -126,9 +123,7 @@
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0xd85a4b6a394794842887b8284293d69163007bbb"
-        ]
+        "accounts": ["0xd85a4b6a394794842887b8284293d69163007bbb"]
       }
     ],
     "selectedAddress": "0xd85a4b6a394794842887b8284293d69163007bbb",

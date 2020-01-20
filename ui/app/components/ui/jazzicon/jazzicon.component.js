@@ -4,6 +4,7 @@ import isNode from 'detect-node'
 import { findDOMNode } from 'react-dom'
 import jazzicon from 'jazzicon'
 import iconFactoryGenerator from '../../../../lib/icon-factory'
+
 const iconFactory = iconFactoryGenerator(jazzicon)
 
 /**
@@ -59,11 +60,6 @@ export default class Jazzicon extends PureComponent {
   render () {
     const { className, style } = this.props
 
-    return (
-      <div
-        className={className}
-        style={style}
-      />
-    )
+    return <div className={className} style={style} />
   }
 }

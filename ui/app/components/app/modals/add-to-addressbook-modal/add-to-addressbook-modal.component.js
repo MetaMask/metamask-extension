@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Button from '../../../ui/button/button.component'
 
 export default class AddToAddressBookModal extends Component {
-
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -59,10 +58,7 @@ export default class AddToAddressBookModal extends Component {
           />
         </div>
         <div className="add-to-address-book-modal__footer">
-          <Button
-            type="secondary"
-            onClick={this.props.hideModal}
-          >
+          <Button type="secondary" onClick={this.props.hideModal}>
             {t('cancel')}
           </Button>
           <Button

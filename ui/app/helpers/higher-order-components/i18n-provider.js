@@ -1,9 +1,9 @@
-const { Component } = require('react')
-const connect = require('react-redux').connect
-const PropTypes = require('prop-types')
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const { getMessage } = require('../utils/i18n-helper')
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import { getMessage } from '../utils/i18n-helper'
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
@@ -11,7 +11,11 @@ class I18nProvider extends Component {
       return defaultValue
     }
     const { localeMessages: { current, en } = {}, currentLocale } = this.props
-    return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || defaultValue
+    return (
+      getMessage(currentLocale, current, key, ...args) ||
+      getMessage(currentLocale, en, key, ...args) ||
+      defaultValue
+    )
   }
 
   getChildContext () {
@@ -20,12 +24,16 @@ class I18nProvider extends Component {
     return {
       /**
        * Returns a localized message for the given key
-       * @param {string} key The message key
-       * @param {string[]} args A list of message substitution replacements
-       * @return {string|undefined|null} The localized message if available
+       * @param {string} key - The message key
+       * @param {string[]} args - A list of message substitution replacements
+       * @returns {string|undefined|null} - The localized message if available
        */
       t (key, ...args) {
-        return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`
+        return (
+          getMessage(currentLocale, current, key, ...args) ||
+          getMessage(currentLocale, en, key, ...args) ||
+          `[${key}]`
+        )
       },
       tOrDefault: this.tOrDefault,
       tOrKey: (key, ...args) => {
@@ -52,15 +60,14 @@ I18nProvider.childContextTypes = {
 }
 
 const mapStateToProps = state => {
-  const { localeMessages, metamask: { currentLocale } } = state
+  const {
+    localeMessages,
+    metamask: { currentLocale },
+  } = state
   return {
     currentLocale,
     localeMessages,
   }
 }
 
-module.exports = compose(
-  withRouter,
-  connect(mapStateToProps)
-)(I18nProvider)
-
+export default compose(withRouter, connect(mapStateToProps))(I18nProvider)

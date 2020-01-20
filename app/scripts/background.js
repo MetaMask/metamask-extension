@@ -2,48 +2,50 @@
  * @file The entry point for the web extension singleton process.
  */
 
-
 // these need to run before anything else
-require('./lib/freezeGlobals')
-require('./lib/setupFetchDebugging')()
+import './lib/freezeGlobals'
+import setupFetchDebugging from './lib/setupFetchDebugging'
+
+setupFetchDebugging()
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const endOfStream = require('end-of-stream')
-const pump = require('pump')
-const debounce = require('debounce-stream')
-const log = require('loglevel')
-const extension = require('extensionizer')
-const LocalStore = require('./lib/local-store')
-const storeTransform = require('obs-store/lib/transform')
-const asStream = require('obs-store/lib/asStream')
-const ExtensionPlatform = require('./platforms/extension')
-const Migrator = require('./lib/migrator/')
-const migrations = require('./migrations/')
-const PortStream = require('extension-port-stream')
-const createStreamSink = require('./lib/createStreamSink')
-const NotificationManager = require('./lib/notification-manager.js')
-const MetamaskController = require('./metamask-controller')
-const rawFirstTimeState = require('./first-time-state')
-const setupSentry = require('./lib/setupSentry')
-const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
-const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const EdgeEncryptor = require('./edge-encryptor')
-const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
-const getObjStructure = require('./lib/getObjStructure')
-const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+import endOfStream from 'end-of-stream'
+import pump from 'pump'
+import debounce from 'debounce-stream'
+import log from 'loglevel'
+import extension from 'extensionizer'
+import ReadOnlyNetworkStore from './lib/network-store'
+import LocalStore from './lib/local-store'
+import storeTransform from 'obs-store/lib/transform'
+import asStream from 'obs-store/lib/asStream'
+import ExtensionPlatform from './platforms/extension'
+import Migrator from './lib/migrator'
+import migrations from './migrations'
+import PortStream from 'extension-port-stream'
+import createStreamSink from './lib/createStreamSink'
+import NotificationManager from './lib/notification-manager.js'
+import MetamaskController from './metamask-controller'
+import rawFirstTimeState from './first-time-state'
+import setupSentry from './lib/setupSentry'
+import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
+import getObjStructure from './lib/getObjStructure'
+// import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 
-const {
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-} = require('./lib/enums')
+} from './lib/enums'
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
-const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
-
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const firstTimeState = Object.assign(
+  {},
+  rawFirstTimeState,
+  global.METAMASK_TEST_CONFIG
+)
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -54,27 +56,22 @@ global.METAMASK_NOTIFIER = notificationManager
 // setup sentry error reporting
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
-
-// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// Internet Explorer 6-11
-const isIE = !!document.documentMode
-// Edge 20+
-const isEdge = !isIE && !!window.StyleMedia
-
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const requestAccountTabIds = {}
 
 // state persistence
-const localStore = new LocalStore()
+const inTest = process.env.IN_TEST === 'true'
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
 let versionedData
+
+if (inTest || process.env.METAMASK_DEBUG) {
+  global.metamaskGetState = localStore.get.bind(localStore)
+}
 
 // initialization flow
 initialize().catch(log.error)
-
-// setup metamask mesh testing container
-const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
-
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -153,7 +150,7 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
- * @returns {Promise} Setup complete.
+ * @returns {Promise} - Setup complete.
  */
 async function initialize () {
   const initState = await loadStateFromPersistence()
@@ -169,16 +166,17 @@ async function initialize () {
 /**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<MetaMaskState>} - Last data emitted from previous instance of MetaMask.
  */
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+  migrator.on('error', console.warn)
 
   // read from disk
   // first from preferred, async API:
-  versionedData = (await localStore.get()) ||
-                  migrator.generateInitialState(firstTimeState)
+  versionedData =
+    (await localStore.get()) || migrator.generateInitialState(firstTimeState)
 
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
@@ -191,7 +189,7 @@ async function loadStateFromPersistence () {
   }
 
   // report migration errors to sentry
-  migrator.on('error', (err) => {
+  migrator.on('error', err => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(versionedData)
     sentry.captureException(err, {
@@ -227,14 +225,13 @@ async function loadStateFromPersistence () {
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
- * @param {String} initLangCode - The region code for the language preferred by the current user.
- * @returns {Promise} After setup is complete.
+ * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @returns {Promise} - After setup is complete.
  */
 function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
@@ -247,21 +244,31 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
-    encryptor: isEdge ? new EdgeEncryptor() : undefined,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
+    },
+    getOpenMetamaskTabsIds: () => {
+      return openMetamaskTabsIDs
+    },
   })
 
-  const provider = controller.provider
-  setupEnsIpfsResolver({ provider })
-
-  // submit rpc requests to mesh-metrics
-  controller.networkController.on('rpc-req', (data) => {
-    submitMeshMetricsEntry({ type: 'rpc', data })
-  })
+  // setupEnsIpfsResolver({
+  //   getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
+  //     controller.preferencesController
+  //   ),
+  //   provider: controller.provider,
+  // })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') return
+    if (status !== 'failed') {
+      return
+    }
     const txMeta = controller.txController.txStateManager.getTx(txId)
+    if (txMeta.err && txMeta.err.message) {
+      console.error(txMeta.err)
+    }
+
     try {
       reportFailedTxToSentry({ sentry, txMeta })
     } catch (e) {
@@ -275,7 +282,7 @@ function setupController (initState, initLangCode) {
     debounce(1000),
     storeTransform(versionifyData),
     createStreamSink(persistData),
-    (error) => {
+    error => {
       log.error('MetaMask - Persistence pipeline failed', error)
     }
   )
@@ -283,7 +290,7 @@ function setupController (initState, initLangCode) {
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    * @param {Object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
+   * @returns {VersionedData} - The state object wrapped in an object that includes a metadata key.
    */
   function versionifyData (state) {
     versionedData.data = state
@@ -292,10 +299,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing', state)
+      throw new Error('MetaMask - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data', state)
+      throw new Error('MetaMask - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {
@@ -319,12 +326,14 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
-    'trezor-connect',
-  ]
+  const metamaskBlacklistedPorts = ['trezor-connect']
 
   const isClientOpenStatus = () => {
-    return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
+    return (
+      popupIsOpen ||
+      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+      notificationIsOpen
+    )
   }
 
   /**
@@ -351,10 +360,7 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      // construct fake URL for identifying internal messages
-      const metamaskUrl = new URL(window.location)
-      metamaskUrl.hostname = 'metamask'
-      controller.setupTrustedCommunication(portStream, metamaskUrl)
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -384,19 +390,25 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
+
+        remotePort.onMessage.addListener(msg => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            requestAccountTabIds[origin] = tabId
+          }
+        })
+      }
       connectExternal(remotePort)
     }
   }
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const senderUrl = new URL(remotePort.sender.url)
-    let extensionId
-    if (remotePort.sender.id !== extension.runtime.id) {
-      extensionId = remotePort.sender.id
-    }
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //
@@ -408,7 +420,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.providerApprovalController.memStore.on('update', updateBadge)
+  controller.permissionsController.permissions.subscribe(updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -418,10 +430,19 @@ function setupController (initState, initLangCode) {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingProviderRequests = controller.providerApprovalController.memStore.getState().providerRequests.length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests
+    const unapprovedPersonalMsgs =
+      controller.personalMessageManager.unapprovedPersonalMsgCount
+    const unapprovedTypedMsgs =
+      controller.typedMessageManager.unapprovedTypedMessagesCount
+    const pendingPermissionRequests = Object.keys(
+      controller.permissionsController.permissions.state.permissionsRequests
+    ).length
+    const count =
+      unapprovedTxCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgs +
+      unapprovedTypedMsgs +
+      pendingPermissionRequests
     if (count) {
       label = String(count)
     }
@@ -441,7 +462,9 @@ function setupController (initState, initLangCode) {
  */
 function triggerUi () {
   extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+    const currentlyActiveMetamaskTab = Boolean(
+      tabs.find(tab => openMetamaskTabsIDs[tab.id])
+    )
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
       notificationIsOpen = true
@@ -455,21 +478,22 @@ function triggerUi () {
  */
 function openPopup () {
   triggerUi()
-  return new Promise(
-    (resolve) => {
-      const interval = setInterval(() => {
-        if (!notificationIsOpen) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    }
-  )
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (!notificationIsOpen) {
+        clearInterval(interval)
+        resolve()
+      }
+    }, 1000)
+  })
 }
 
 // On first install, open a new tab with MetaMask
-extension.runtime.onInstalled.addListener(({reason}) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+extension.runtime.onInstalled.addListener(({ reason }) => {
+  if (
+    reason === 'install' &&
+    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
+  ) {
     platform.openExtensionInBrowser()
   }
 })

@@ -1,20 +1,22 @@
-const assert = require('assert')
-const Transaction = require('ethereumjs-tx')
-
-
-const { hexToBn, bnToHex } = require('../../../../../app/scripts/lib/util')
-const TxUtils = require('../../../../../app/scripts/controllers/transactions/tx-gas-utils')
-
+import assert from 'assert'
+import Transaction from 'ethereumjs-tx'
+import { hexToBn, bnToHex } from '../../../../../app/scripts/lib/util'
+import TxUtils from '../../../../../app/scripts/controllers/transactions/tx-gas-utils'
 
 describe('txUtils', function () {
   let txUtils
 
   before(function () {
-    txUtils = new TxUtils(new Proxy({}, {
-      get: () => {
-        return () => {}
-      },
-    }))
+    txUtils = new TxUtils(
+      new Proxy(
+        {},
+        {
+          get: () => {
+            return () => {}
+          },
+        }
+      )
+    )
   })
 
   describe('chain Id', function () {
@@ -70,7 +72,11 @@ describe('txUtils', function () {
       // const inputBn = hexToBn(inputHex)
       // const outputBn = hexToBn(output)
       const expectedHex = bnToHex(ceilGasLimitBn)
-      assert.equal(output, expectedHex, 'returns the gas limit recommended ceiling value')
+      assert.equal(
+        output,
+        expectedHex,
+        'returns the gas limit recommended ceiling value'
+      )
     })
   })
 })

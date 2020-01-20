@@ -1,17 +1,18 @@
 // cross-browser connection to extension i18n API
-const log = require('loglevel')
-const Sentry = require('@sentry/browser')
+import log from 'loglevel'
+
+import * as Sentry from '@sentry/browser'
 
 const warned = {}
 const missingMessageErrors = {}
 
 /**
  * Returns a localized message for the given key
- * @param {string} localeCode The code for the current locale
- * @param {object} localeMessages The map of messages for the current locale
- * @param {string} key The message key
- * @param {string[]} substitutions A list of message substitution replacements
- * @return {null|string} The localized message
+ * @param {string} localeCode - The code for the current locale
+ * @param {Object} localeMessages - The map of messages for the current locale
+ * @param {string} key - The message key
+ * @param {string[]} substitutions - A list of message substitution replacements
+ * @returns {null|string} - The localized message
  */
 export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {
@@ -20,7 +21,9 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages[key]) {
     if (localeCode === 'en') {
       if (!missingMessageErrors[key]) {
-        missingMessageErrors[key] = new Error(`Unable to find value of key "${key}" for locale "${localeCode}"`)
+        missingMessageErrors[key] = new Error(
+          `Unable to find value of key "${key}" for locale "${localeCode}"`
+        )
         Sentry.captureException(missingMessageErrors[key])
         log.error(missingMessageErrors[key])
         if (process.env.IN_TEST === 'true') {
@@ -32,7 +35,9 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         warned[localeCode] = {}
       }
       warned[localeCode][key] = true
-      log.warn(`Translator - Unable to find value of key "${key}" for locale "${localeCode}"`)
+      log.warn(
+        `Translator - Unable to find value of key "${key}" for locale "${localeCode}"`
+      )
     }
     return null
   }
@@ -57,4 +62,3 @@ export async function fetchLocale (localeCode) {
     return {}
   }
 }
-

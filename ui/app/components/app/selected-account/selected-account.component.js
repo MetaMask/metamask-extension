@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
 
-const Tooltip = require('../../ui/tooltip-v2.js').default
+import Tooltip from '../../ui/tooltip-v2.js'
 
 class SelectedAccount extends Component {
   state = {
@@ -29,7 +29,9 @@ class SelectedAccount extends Component {
       <div className="selected-account">
         <Tooltip
           position="bottom"
-          title={this.state.copied ? t('copiedExclamation') : t('copyToClipboard')}
+          title={
+            this.state.copied ? t('copiedExclamation') : t('copyToClipboard')
+          }
         >
           <div
             className="selected-account__clickable"
@@ -40,10 +42,10 @@ class SelectedAccount extends Component {
             }}
           >
             <div className="selected-account__name">
-              { selectedIdentity.name }
+              {selectedIdentity.name}
             </div>
             <div className="selected-account__address">
-              { addressSlicer(checksummedAddress) }
+              {addressSlicer(checksummedAddress)}
             </div>
           </div>
         </Tooltip>

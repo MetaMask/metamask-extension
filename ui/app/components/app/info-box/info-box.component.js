@@ -12,12 +12,8 @@ export default class InfoBox extends Component {
     description: PropTypes.string,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      isShowing: true,
-    }
+  state = {
+    isShowing: true,
   }
 
   handleClose () {
@@ -33,17 +29,12 @@ export default class InfoBox extends Component {
   render () {
     const { title, description } = this.props
 
-    return !this.state.isShowing
-      ? null
-      : (
-        <div className="info-box">
-          <div
-            className="info-box__close"
-            onClick={() => this.handleClose()}
-          />
-          <div className="info-box__title">{ title }</div>
-          <div className="info-box__description">{ description }</div>
-        </div>
-      )
+    return !this.state.isShowing ? null : (
+      <div className="info-box">
+        <div className="info-box__close" onClick={() => this.handleClose()} />
+        <div className="info-box__title">{title}</div>
+        <div className="info-box__description">{description}</div>
+      </div>
+    )
   }
 }

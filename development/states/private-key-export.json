@@ -28,16 +28,11 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
-        "accounts": [
-          "07284e146926a4facd0ea60598dc4f001ad620f1"
-        ]
+        "accounts": ["07284e146926a4facd0ea60598dc4f001ad620f1"]
       }
     ],
     "selectedAddress": "0x07284e146926a4facd0ea60598dc4f001ad620f1",

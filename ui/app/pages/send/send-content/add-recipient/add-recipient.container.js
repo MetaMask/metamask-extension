@@ -8,9 +8,7 @@ import {
   getAddressBook,
   getAddressBookEntry,
 } from '../../../../selectors/selectors'
-import {
-  updateSendTo,
-} from '../../../../store/actions'
+import { updateSendTo } from '../../../../store/actions'
 import AddRecipient from './add-recipient.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient)

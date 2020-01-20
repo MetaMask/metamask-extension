@@ -1,6 +1,6 @@
 ## Creating Metrics Events
 
-The `metricsEvent` method is made available to all components via context. This is done in `metamask-extension/ui/app/helpers/higher-order-components/metametrics/metametrics.provider.js`. As such, it can be called in all components by first adding it to the context proptypes:
+The `metricsEvent` method is made available to all components via context. This is done in `conflux-portal/ui/app/helpers/higher-order-components/metametrics/metametrics.provider.js`. As such, it can be called in all components by first adding it to the context proptypes:
 
 ```
 static contextTypes = {
@@ -65,7 +65,7 @@ Custom variables can have custom property names and values can be strings or num
 
 **To include a custom variable, there are a set of necessary steps you must take.**
 
-1. First you must declare a constant equal to the desired name of the custom variable property in `metamask-extension/ui/app/helpers/utils/metametrics.util.js` under `//Custom Variable Declarations`
+1. First you must declare a constant equal to the desired name of the custom variable property in `conflux-portal/ui/app/helpers/utils/metametrics.util.js` under `//Custom Variable Declarations`
 1. Then you must add that name to the `customVariableNameIdMap` declaration
     1. The id must be between 1 and 5
     1. There can be no more than 5 custom variables assigned ids on a given url

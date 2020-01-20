@@ -23,14 +23,10 @@ import {
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
     txData: PropTypes.object,
-    isEtherTransaction: PropTypes.bool,
-    isTokenMethod: PropTypes.bool,
   }
 
   redirectToTransaction () {
-    const {
-      txData,
-    } = this.props
+    const { txData } = this.props
     const { id, txParams: { data } = {}, transactionCategory } = txData
 
     if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY) {

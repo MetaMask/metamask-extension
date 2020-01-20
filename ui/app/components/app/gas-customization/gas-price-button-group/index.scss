@@ -72,6 +72,7 @@
   }
 
   &__button-fiat-price {
+    display: none !important;
     font-size: 13px;
   }
 
@@ -96,6 +97,7 @@
   }
 
   &__secondary-currency {
+    display: none !important;
     font-size: 12px;
     line-height: 12px;
     padding-bottom: 2px;

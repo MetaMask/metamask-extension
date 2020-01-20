@@ -19,20 +19,17 @@ proxyquire('../send-header.container.js', {
   },
   '../../../store/actions': actionSpies,
   './send-header.selectors': {
-    getTitleKey: (s) => `mockTitleKey:${s}`,
+    getTitleKey: s => `mockTitleKey:${s}`,
   },
 })
 
 describe('send-header container', () => {
-
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         titleKey: 'mockTitleKey:mockState',
       })
     })
-
   })
 
   describe('mapDispatchToProps()', () => {
@@ -51,7 +48,5 @@ describe('send-header container', () => {
         assert(actionSpies.clearSend.calledOnce)
       })
     })
-
   })
-
 })

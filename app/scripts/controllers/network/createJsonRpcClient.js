@@ -1,13 +1,14 @@
-const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createFetchMiddleware = require('eth-json-rpc-middleware/fetch')
-const createBlockRefRewriteMiddleware = require('eth-json-rpc-middleware/block-ref-rewrite')
-const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
-const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
-const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
-const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
-const BlockTracker = require('eth-block-tracker')
+import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
+import createFetchMiddleware from '@yqrashawn/cfx-json-rpc-middleware/fetch'
+import createBlockRefRewriteMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-ref-rewrite'
+import createBlockCacheMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-cache'
+import createInflightMiddleware from '@yqrashawn/cfx-json-rpc-middleware/inflight-cache'
+import createBlockTrackerInspectorMiddleware from '@yqrashawn/cfx-json-rpc-middleware/block-tracker-inspector'
+import providerFromMiddleware from '@yqrashawn/cfx-json-rpc-middleware/providerFromMiddleware'
+import BlockTracker from './eth-block-tracker'
+import { createCfxRewriteRequestMiddleware } from './createCfxMiddleware'
 
-module.exports = createJsonRpcClient
+export default createJsonRpcClient
 
 function createJsonRpcClient ({ rpcUrl }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl })
@@ -19,7 +20,8 @@ function createJsonRpcClient ({ rpcUrl }) {
     createBlockCacheMiddleware({ blockTracker }),
     createInflightMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
+    createCfxRewriteRequestMiddleware(),
     fetchMiddleware,
   ])
-  return { networkMiddleware, blockTracker }
+  return { networkMiddleware, blockTracker, rpcUrl }
 }

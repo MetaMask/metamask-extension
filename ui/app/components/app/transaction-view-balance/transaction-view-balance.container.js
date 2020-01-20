@@ -18,7 +18,9 @@ const mapStateToProps = state => {
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const selectedAddress = getSelectedAddress(state)
-  const { metamask: { network } } = state
+  const {
+    metamask: { network },
+  } = state
   const accounts = getMetaMaskAccounts(state)
   const account = accounts[selectedAddress]
   const { balance } = account
@@ -30,7 +32,7 @@ const mapStateToProps = state => {
     nativeCurrency: getNativeCurrency(state),
     assetImage: getSelectedTokenAssetImage(state),
     balanceIsCached: isBalanceCached(state),
-    showFiat: (isMainnet || !!showFiatInTestnets),
+    showFiat: isMainnet || !!showFiatInTestnets,
   }
 }
 

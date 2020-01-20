@@ -39,12 +39,8 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       <Tabs>
-        <Tab name="Details">
-          { detailsComponent }
-        </Tab>
-        <Tab name="Data">
-          { dataComponent }
-        </Tab>
+        <Tab name="Details">{detailsComponent}</Tab>
+        <Tab name="Data">{dataComponent}</Tab>
       </Tabs>
     )
   }
@@ -70,40 +66,30 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       <div className="confirm-page-container-content">
-        {
-          warning && (
-            <ConfirmPageContainerWarning warning={warning} />
-          )
-        }
-        {
-          summaryComponent || (
-            <ConfirmPageContainerSummary
-              className={classnames({
-                'confirm-page-container-summary--border': !detailsComponent || !dataComponent,
-              })}
-              action={action}
-              title={title}
-              titleComponent={titleComponent}
-              subtitle={subtitle}
-              subtitleComponent={subtitleComponent}
-              hideSubtitle={hideSubtitle}
-              identiconAddress={identiconAddress}
-              nonce={nonce}
-              assetImage={assetImage}
-            />
-          )
-        }
-        { this.renderContent() }
-        {
-          (errorKey || errorMessage) && (
-            <div className="confirm-page-container-content__error-container">
-              <ErrorMessage
-                errorMessage={errorMessage}
-                errorKey={errorKey}
-              />
-            </div>
-          )
-        }
+        {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {summaryComponent || (
+          <ConfirmPageContainerSummary
+            className={classnames({
+              'confirm-page-container-summary--border':
+                !detailsComponent || !dataComponent,
+            })}
+            action={action}
+            title={title}
+            titleComponent={titleComponent}
+            subtitle={subtitle}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            identiconAddress={identiconAddress}
+            nonce={nonce}
+            assetImage={assetImage}
+          />
+        )}
+        {this.renderContent()}
+        {(errorKey || errorMessage) && (
+          <div className="confirm-page-container-content__error-container">
+            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+          </div>
+        )}
       </div>
     )
   }

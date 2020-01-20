@@ -3,7 +3,7 @@
     "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
-    "featureFlags": {"betaUI": true},
+    "featureFlags": { "betaUI": true },
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
@@ -73,10 +73,7 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -88,9 +85,7 @@
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
-        ]
+        "accounts": ["0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"]
       }
     ],
     "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",

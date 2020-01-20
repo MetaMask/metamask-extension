@@ -7,12 +7,9 @@ import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 
 describe('SendFromRow Component', function () {
   describe('render', () => {
-    const wrapper = shallow(
-      <SendFromRow
-        from={ { address: 'mockAddress' } }
-      />,
-      { context: { t: str => str + '_t' } }
-    )
+    const wrapper = shallow(<SendFromRow from={{ address: 'mockAddress' }} />, {
+      context: { t: str => str + '_t' },
+    })
 
     it('should render a SendRowWrapper component', () => {
       assert.equal(wrapper.find(SendRowWrapper).length, 1)

@@ -1,6 +1,6 @@
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = function (version, reason, condition) {
+export default function failTxsThat (version, reason, condition) {
   return function (originalVersionedData) {
     const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
@@ -12,7 +12,6 @@ module.exports = function (version, reason, condition) {
       console.warn(`MetaMask Migration #${version}` + err.stack)
     }
     return Promise.resolve(versionedData)
-
   }
 }
 
@@ -22,7 +21,7 @@ function transformState (state, condition, reason) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = TransactionController.transactions
 
-    newState.TransactionController.transactions = transactions.map((txMeta) => {
+    newState.TransactionController.transactions = transactions.map(txMeta => {
       if (!condition(txMeta)) {
         return txMeta
       }
@@ -38,4 +37,3 @@ function transformState (state, condition, reason) {
   }
   return newState
 }
-

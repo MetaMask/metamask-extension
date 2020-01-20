@@ -3,20 +3,24 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 const Tab = props => {
-  const { name, onClick, isActive, tabIndex, className, activeClassName } = props
+  const {
+    name,
+    onClick,
+    isActive,
+    tabIndex,
+    className,
+    activeClassName,
+  } = props
 
   return (
     <li
-      className={classnames(
-        className,
-        { [activeClassName]: isActive },
-      )}
+      className={classnames(className, { [activeClassName]: isActive })}
       onClick={event => {
         event.preventDefault()
         onClick(tabIndex)
       }}
     >
-      { name }
+      {name}
     </li>
   )
 }

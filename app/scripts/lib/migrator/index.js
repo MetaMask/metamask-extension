@@ -1,4 +1,4 @@
-const EventEmitter = require('events')
+import EventEmitter from 'events'
 
 /**
  * @typedef {object} Migration
@@ -13,7 +13,6 @@ const EventEmitter = require('events')
  */
 
 class Migrator extends EventEmitter {
-
   /**
    * @constructor
    * @param {MigratorOptions} opts
@@ -26,7 +25,8 @@ class Migrator extends EventEmitter {
     // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0]
     // use specified defaultVersion or highest migration version
-    this.defaultVersion = opts.defaultVersion || (lastMigration && lastMigration.version) || 0
+    this.defaultVersion =
+      opts.defaultVersion || (lastMigration && lastMigration.version) || 0
   }
 
   // run all pending migrations on meta in place
@@ -40,15 +40,23 @@ class Migrator extends EventEmitter {
       try {
         // attempt migration and validate
         const migratedData = await migration.migrate(versionedData)
-        if (!migratedData.data) throw new Error('Migrator - migration returned empty data')
-        if (migratedData.version !== undefined && migratedData.meta.version !== migration.version) throw new Error('Migrator - Migration did not update version number correctly')
+        if (!migratedData.data) {
+          throw new Error('Migrator - migration returned empty data')
+        }
+        if (
+          migratedData.version !== undefined &&
+          migratedData.meta.version !== migration.version
+        ) {
+          throw new Error(
+            'Migrator - Migration did not update version number correctly'
+          )
+        }
         // accept the migration as good
         versionedData = migratedData
       } catch (err) {
         // rewrite error message to add context without clobbering stack
         const originalErrorMessage = err.message
         err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`
-        console.warn(err.stack)
         // emit error instead of throw so as to not break the run (gracefully fail)
         this.emit('error', err)
         // stop migrating and use state as is
@@ -73,7 +81,7 @@ class Migrator extends EventEmitter {
 
   /**
    * Returns the initial state for the migrator
-   * @param {object} [data] - The data for the initial state
+   * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
   generateInitialState (data) {
@@ -84,7 +92,6 @@ class Migrator extends EventEmitter {
       data,
     }
   }
-
 }
 
-module.exports = Migrator
+export default Migrator

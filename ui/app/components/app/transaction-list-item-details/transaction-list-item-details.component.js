@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import {
-  getBlockExplorerUrlForTx,
-} from '../../../helpers/utils/transactions.util'
+import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
 import SenderToRecipient from '../../ui/sender-to-recipient'
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
@@ -31,7 +29,7 @@ export default class TransactionListItemDetails extends PureComponent {
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
     recipientEns: PropTypes.string,
-    recipientAddress: PropTypes.string.isRequired,
+    recipientAddress: PropTypes.string, // skipped tx don't have recipient address
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -39,40 +37,50 @@ export default class TransactionListItemDetails extends PureComponent {
 
   state = {
     justCopied: false,
-    cancelDisabled: false,
   }
 
   handleEtherscanClick = () => {
-    const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
+    const {
+      transactionGroup: { primaryTransaction },
+      rpcPrefs,
+    } = this.props
     const { hash, metamaskNetworkId } = primaryTransaction
 
     this.context.metricsEvent({
       eventOpts: {
         category: 'Navigation',
         action: 'Activity Log',
-        name: 'Clicked "View on Etherscan"',
+        name: 'Clicked "View on Confluxscan"',
       },
     })
 
-    global.platform.openWindow({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
+    global.platform.openWindow({
+      url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs),
+    })
   }
 
   handleCancel = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
+    const {
+      transactionGroup: { initialTransaction: { id } = {} } = {},
+      onCancel,
+    } = this.props
 
     event.stopPropagation()
     onCancel(id)
   }
 
   handleRetry = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
+    const {
+      transactionGroup: { initialTransaction: { id } = {} } = {},
+      onRetry,
+    } = this.props
 
     event.stopPropagation()
     onRetry(id)
   }
 
   handleCopyTxId = () => {
-    const { transactionGroup} = this.props
+    const { transactionGroup } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
@@ -93,44 +101,41 @@ export default class TransactionListItemDetails extends PureComponent {
   async componentDidMount () {
     const { recipientAddress, tryReverseResolveAddress } = this.props
 
-    tryReverseResolveAddress(recipientAddress)
+    if (recipientAddress) {
+      tryReverseResolveAddress(recipientAddress)
+    }
   }
 
   renderCancel () {
     const { t } = this.context
-    const {
-      showCancel,
-      cancelDisabled,
-    } = this.props
+    const { showCancel, cancelDisabled } = this.props
 
     if (!showCancel) {
       return null
     }
 
-    return cancelDisabled
-      ? (
-        <Tooltip title={t('notEnoughGas')}>
-          <div>
-            <Button
-              type="raised"
-              onClick={this.handleCancel}
-              className="transaction-list-item-details__header-button"
-              disabled
-            >
-              { t('cancel') }
-            </Button>
-          </div>
-        </Tooltip>
-      )
-      : (
-        <Button
-          type="raised"
-          onClick={this.handleCancel}
-          className="transaction-list-item-details__header-button"
-        >
-          { t('cancel') }
-        </Button>
-      )
+    return cancelDisabled ? (
+      <Tooltip title={t('notEnoughGas')}>
+        <div>
+          <Button
+            type="raised"
+            onClick={this.handleCancel}
+            className="transaction-list-item-details__header-button"
+            disabled
+          >
+            {t('cancel')}
+          </Button>
+        </div>
+      </Tooltip>
+    ) : (
+      <Button
+        type="raised"
+        onClick={this.handleCancel}
+        className="transaction-list-item-details__header-button"
+      >
+        {t('cancel')}
+      </Button>
+    )
   }
 
   render () {
@@ -154,21 +159,23 @@ export default class TransactionListItemDetails extends PureComponent {
     return (
       <div className="transaction-list-item-details">
         <div className="transaction-list-item-details__header">
-          <div>{ t('details') }</div>
+          <div>{t('details')}</div>
           <div className="transaction-list-item-details__header-buttons">
-            {
-              showSpeedUp && (
-                <Button
-                  type="raised"
-                  onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
-                >
-                  { t('speedUp') }
-                </Button>
-              )
-            }
-            { this.renderCancel() }
-            <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
+            {showSpeedUp && (
+              <Button
+                type="raised"
+                onClick={this.handleRetry}
+                className="transaction-list-item-details__header-button"
+              >
+                {t('speedUp')}
+              </Button>
+            )}
+            {this.renderCancel()}
+            <Tooltip
+              title={
+                justCopied ? t('copiedTransactionId') : t('copyTransactionId')
+              }
+            >
               <Button
                 type="raised"
                 onClick={this.handleCopyTxId}
@@ -181,7 +188,13 @@ export default class TransactionListItemDetails extends PureComponent {
                 />
               </Button>
             </Tooltip>
-            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
+            <Tooltip
+              title={
+                blockExplorerUrl
+                  ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
+                  : t('viewOnEtherscan')
+              }
+            >
               <Button
                 type="raised"
                 onClick={this.handleEtherscanClick}
@@ -191,8 +204,14 @@ export default class TransactionListItemDetails extends PureComponent {
                 <img src="/images/arrow-popout.svg" />
               </Button>
             </Tooltip>
-            {
-              showRetry && <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+            {showRetry && (
+              <Tooltip
+                title={
+                  blockExplorerUrl
+                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
+                    : t('retryTransaction')
+                }
+              >
                 <Button
                   type="raised"
                   onClick={this.handleRetry}
@@ -201,7 +220,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   <i className="fa fa-refresh"></i>
                 </Button>
               </Tooltip>
-            }
+            )}
           </div>
         </div>
         <div className="transaction-list-item-details__body">

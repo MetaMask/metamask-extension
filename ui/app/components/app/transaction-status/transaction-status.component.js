@@ -14,6 +14,7 @@ import {
   FAILED_STATUS,
   DROPPED_STATUS,
   CANCELLED_STATUS,
+  SKIPPED_STATUS,
 } from '../../../helpers/constants/transactions'
 
 const statusToClassNameHash = {
@@ -24,6 +25,7 @@ const statusToClassNameHash = {
   [SUBMITTED_STATUS]: 'transaction-status--submitted',
   [CONFIRMED_STATUS]: 'transaction-status--confirmed',
   [FAILED_STATUS]: 'transaction-status--failed',
+  [SKIPPED_STATUS]: 'transaction-status--skipped',
   [DROPPED_STATUS]: 'transaction-status--dropped',
   [CANCELLED_STATUS]: 'transaction-status--failed',
 }
@@ -52,13 +54,18 @@ export default class TransactionStatus extends PureComponent {
     const statusText = this.context.t(statusToTextHash[statusKey] || statusKey)
 
     return (
-      <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
-        { statusToTextHash[statusKey] === 'pending' ? <Spinner className="transaction-status__pending-spinner" /> : null }
-        <Tooltip
-          position="top"
-          title={title}
-        >
-          { statusText }
+      <div
+        className={classnames(
+          'transaction-status',
+          className,
+          statusToClassNameHash[statusKey]
+        )}
+      >
+        {statusToTextHash[statusKey] === 'pending' ? (
+          <Spinner className="transaction-status__pending-spinner" />
+        ) : null}
+        <Tooltip position="top" title={title}>
+          {statusText}
         </Tooltip>
       </div>
     )

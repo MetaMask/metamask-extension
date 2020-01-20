@@ -1,18 +1,9 @@
 {
-  "confirmClear": {
-    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
-  },
-  "clearApprovalData": {
-    "message": "ล้างข้อมูลการอนุมัติ"
-  },
   "reject": {
     "message": "ปฏิเสธ"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ต้องการเชื่อมต่อกับบัญชีของคุณ"
-  },
-  "providerRequestInfo": {
-    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ethereum เพื่อให้สามารถโต้ตอบกับบล็อค Ethereum ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ethereum เสมอ"
   },
   "about": {
     "message": "เกี่ยวกับ"
@@ -60,13 +51,6 @@
   },
   "balance": {
     "message": "ยอดคงเหลือ:"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "ยอดคงเหลือไม่พอสำหรับจ่ายค่าแก๊สทั้งหมด"
-  },
-  "betweenMinAndMax": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1 และน้อยกว่าหรือเท่ากับ $2",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "ใช้งาน Blockies Identicon"
@@ -131,9 +115,6 @@
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
-  "copy": {
-    "message": "คัดลอก"
-  },
   "copyToClipboard": {
     "message": "คัดลอกไปคลิปบอร์ด"
   },
@@ -190,9 +171,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
-  },
-  "dismiss": {
-    "message": "ปิด"
   },
   "done": {
     "message": "เสร็จสิ้น"
@@ -262,17 +240,11 @@
   "gasLimit": {
     "message": "วงเงินแก็ส"
   },
-  "gasLimitCalculation": {
-    "message": "เราแนะนำวงเงินแก็สตามความสำเร็จบนเครือข่าย"
-  },
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
   "gasPrice": {
     "message": "ราคาแก๊ส (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "เราแนะนำราคาแก็สตามความสำเร็จบนเครือข่าย"
   },
   "general": {
     "message": "ทั่วไป"
@@ -283,10 +255,6 @@
   "getEtherFromFaucet": {
     "message": "รับอีเธอร์ที่ปล่อยจาก $1",
     "description": "Displays network name for Ether faucet"
-  },
-  "greaterThanMin": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "ที่นี่",
@@ -351,10 +319,6 @@
   },
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
-  },
-  "lessThanMax": {
-    "message": "ต้องน้อยกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
@@ -443,9 +407,6 @@
     "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "วางคำชีดของคุณที่นี่!"
-  },
   "personalAddressDetected": {
     "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
   },
@@ -494,9 +455,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
-  },
-  "revert": {
-    "message": "ย้อนกลับ"
   },
   "rinkeby": {
     "message": "เครือข่ายทดสอบ Rinkeby"
@@ -588,9 +546,6 @@
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
   },
-  "submit": {
-    "message": "ตกลง"
-  },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
   },
@@ -598,7 +553,7 @@
     "message": "เครื่องหมาย"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 12 อักขระ"
+    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
   "syncWithMobileComplete": {
     "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
@@ -661,9 +616,6 @@
   },
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
-  },
-  "validFileImport": {
-    "message": "คุณต้องเลือกไฟล์ที่ถูกต้องเพื่อนำเข้า"
   },
   "viewAccount": {
     "message": "ดูบัญชี"

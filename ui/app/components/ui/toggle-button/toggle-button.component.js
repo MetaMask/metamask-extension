@@ -60,7 +60,9 @@ const ToggleButton = props => {
         thumbAnimateRange={[3, 18]}
         colors={colors}
       />
-      <div className="toggle-button__status-label">{ value ? onLabel : offLabel }</div>
+      <div className="toggle-button__status-label">
+        {value ? onLabel : offLabel}
+      </div>
     </div>
   )
 }

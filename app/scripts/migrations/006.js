@@ -6,10 +6,9 @@ This migration moves KeyringController.selectedAddress to PreferencesController.
 
 */
 
-const extend = require('xtend')
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -30,11 +29,12 @@ function migrateState (state) {
   const keyringSubstate = state.KeyringController
 
   // add new state
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     PreferencesController: {
       selectedAddress: keyringSubstate.selectedAccount,
     },
-  })
+  }
 
   // rm old state
   delete newState.KeyringController.selectedAccount

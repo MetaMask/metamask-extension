@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TokenTracker from 'eth-token-tracker'
+import TokenTracker from '@yqrashawn/cfx-token-tracker'
+import fcAbi from 'cfx-fc-abi'
 
 export default function withTokenTracker (WrappedComponent) {
   return class TokenTrackerWrappedComponent extends Component {
@@ -9,34 +10,37 @@ export default function withTokenTracker (WrappedComponent) {
       token: PropTypes.object.isRequired,
     }
 
-    constructor (props) {
-      super(props)
-
-      this.state = {
-        string: '',
-        symbol: '',
-        balance: '',
-        error: null,
-      }
-
-      this.tracker = null
-      this.updateBalance = this.updateBalance.bind(this)
-      this.setError = this.setError.bind(this)
+    state = {
+      string: '',
+      symbol: '',
+      balance: '',
+      error: null,
     }
+
+    tracker = null
 
     componentDidMount () {
       this.createFreshTokenTracker()
     }
 
     componentDidUpdate (prevProps) {
-      const { userAddress: newAddress, token: { address: newTokenAddress } } = this.props
-      const { userAddress: oldAddress, token: { address: oldTokenAddress } } = prevProps
+      const {
+        userAddress: newAddress,
+        token: { address: newTokenAddress },
+      } = this.props
+      const {
+        userAddress: oldAddress,
+        token: { address: oldTokenAddress },
+      } = prevProps
 
-      if ((oldAddress === newAddress) && (oldTokenAddress === newTokenAddress)) {
+      if (oldAddress === newAddress && oldTokenAddress === newTokenAddress) {
         return
       }
 
-      if ((!oldAddress || !newAddress) && (!oldTokenAddress || !newTokenAddress)) {
+      if (
+        (!oldAddress || !newAddress) &&
+        (!oldTokenAddress || !newTokenAddress)
+      ) {
         return
       }
 
@@ -56,6 +60,10 @@ export default function withTokenTracker (WrappedComponent) {
 
       const { userAddress, token } = this.props
 
+      if (token.symbol === 'FC') {
+        token.abi = fcAbi
+      }
+
       this.tracker = new TokenTracker({
         userAddress,
         provider: global.ethereumProvider,
@@ -66,16 +74,17 @@ export default function withTokenTracker (WrappedComponent) {
       this.tracker.on('update', this.updateBalance)
       this.tracker.on('error', this.setError)
 
-      this.tracker.updateBalances()
+      this.tracker
+        .updateBalances()
         .then(() => this.updateBalance(this.tracker.serialize()))
         .catch(error => this.setState({ error: error.message }))
     }
 
-    setError (error) {
+    setError = error => {
       this.setState({ error })
     }
 
-    updateBalance (tokens = []) {
+    updateBalance = (tokens = []) => {
       if (!this.tracker.running) {
         return
       }
@@ -95,7 +104,7 @@ export default function withTokenTracker (WrappedComponent) {
       const { balance, string, symbol, error } = this.state
       return (
         <WrappedComponent
-          { ...this.props }
+          {...this.props}
           string={string}
           symbol={symbol}
           tokenTrackerBalance={balance}

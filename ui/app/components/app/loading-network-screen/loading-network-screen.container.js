@@ -1,26 +1,18 @@
 import { connect } from 'react-redux'
 import LoadingNetworkScreen from './loading-network-screen.component'
-import actions from '../../../store/actions'
+import * as actions from '../../../store/actions'
 import { getNetworkIdentifier } from '../../../selectors/selectors'
 
 const mapStateToProps = state => {
-  const {
-    loadingMessage,
-    currentView,
-  } = state.appState
-  const {
-    provider,
-    lastSelectedProvider,
-    network,
-  } = state.metamask
+  const { loadingMessage } = state.appState
+  const { provider, lastSelectedProvider, network } = state.metamask
   const { rpcTarget, chainId, ticker, nickname, type } = provider
 
-  const setProviderArgs = type === 'rpc'
-    ? [rpcTarget, chainId, ticker, nickname]
-    : [provider.type]
+  const setProviderArgs =
+    type === 'rpc' ? [rpcTarget, chainId, ticker, nickname] : [provider.type]
 
   return {
-    isLoadingNetwork: network === 'loading' && currentView.name !== 'config',
+    isLoadingNetwork: network === 'loading',
     loadingMessage,
     lastSelectedProvider,
     setProviderArgs,
@@ -31,11 +23,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setProviderType: (type) => {
+    setProviderType: type => {
       dispatch(actions.setProviderType(type))
     },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadingNetworkScreen)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoadingNetworkScreen)

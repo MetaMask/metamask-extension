@@ -7,6 +7,7 @@ export const CONFIRMED_STATUS = 'confirmed'
 export const FAILED_STATUS = 'failed'
 export const DROPPED_STATUS = 'dropped'
 export const CANCELLED_STATUS = 'cancelled'
+export const SKIPPED_STATUS = 'skipped'
 
 export const TOKEN_METHOD_TRANSFER = 'transfer'
 export const TOKEN_METHOD_APPROVE = 'approve'

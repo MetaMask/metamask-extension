@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
@@ -22,15 +23,12 @@ export default class UnitInput extends PureComponent {
   }
 
   static defaultProps = {
+    value: '',
     placeholder: '0',
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      value: props.value || '',
-    }
+  state = {
+    value: this.props.value,
   }
 
   componentDidUpdate (prevProps) {
@@ -68,16 +66,30 @@ export default class UnitInput extends PureComponent {
     const valueString = String(value)
     const valueLength = valueString.length || 1
     const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
-    return (valueLength + decimalPointDeficit + 0.5) + 'ch'
+    return valueLength + decimalPointDeficit + 0.5 + 'ch'
   }
 
   render () {
-    const { error, placeholder, suffix, actionComponent, children, maxModeOn } = this.props
+    let {
+      error,
+      placeholder,
+      suffix,
+      actionComponent,
+      children,
+      maxModeOn,
+    } = this.props
+    if (suffix && suffix.toLocaleLowerCase() === 'eth') {
+      suffix = 'CFX'
+    }
     const { value } = this.state
 
     return (
       <div
-        className={classnames('unit-input', { 'unit-input--error': error }, { 'unit-input__disabled': maxModeOn })}
+        className={classnames(
+          'unit-input',
+          { 'unit-input--error': error },
+          { 'unit-input__disabled': maxModeOn }
+        )}
         onClick={maxModeOn ? null : this.handleFocus}
       >
         <div className="unit-input__inputs">
@@ -85,24 +97,22 @@ export default class UnitInput extends PureComponent {
             <input
               type="number"
               dir="ltr"
-              className={classnames('unit-input__input', { 'unit-input__disabled': maxModeOn })}
+              className={classnames('unit-input__input', {
+                'unit-input__disabled': maxModeOn,
+              })}
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
               onBlur={this.handleBlur}
               style={{ width: this.getInputWidth(value) }}
-              ref={ref => { this.unitInput = ref }}
+              ref={ref => {
+                this.unitInput = ref
+              }}
               disabled={maxModeOn}
             />
-            {
-              suffix && (
-                <div className="unit-input__suffix">
-                  { suffix }
-                </div>
-              )
-            }
+            {suffix && <div className="unit-input__suffix">{suffix}</div>}
           </div>
-          { children }
+          {children}
         </div>
         {actionComponent}
       </div>

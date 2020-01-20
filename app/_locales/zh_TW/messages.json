@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "隱私模式現已根據預設開啟"
-  },
   "chartOnlyAvailableEth": {
-    "message": "圖表僅適用於以太坊網路。"
-  },
-  "confirmClear": {
-    "message": "您確定要清除已批准的網站紀錄？"
+    "message": "圖表僅適用於Conflux測試網路。"
   },
   "contractInteraction": {
     "message": "合約互動"
   },
-  "clearApprovalData": {
-    "message": "清除批准數據"
-  },
   "reject": {
     "message": "拒絕"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 請求訪問帳戶權限"
-  },
-  "providerRequestInfo": {
-    "message": "此網站希望能讀取您的帳戶資訊。請務必確認您信任這個網站、並了解後續可能的交易行為。"
   },
   "about": {
     "message": "關於"
@@ -87,17 +75,17 @@
     "message": "加入建議的代幣"
   },
   "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 MetaMask"
+    "message": "將您已經擁有的代幣顯示於 ConfluxPortal"
   },
   "amount": {
     "message": "數量"
   },
   "appDescription": {
-    "message": "乙太坊瀏覽器擴充插件",
+    "message": "Conflux 瀏覽器擴充插件",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -125,7 +113,7 @@
     "message": "自動登出計時器（分）"
   },
   "autoLogoutTimeLimitDescription": {
-    "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
+    "message": "設定閒置分鐘上限，時間到時 ConfluxPortal 將自動登出"
   },
   "average": {
     "message": "平均"
@@ -140,7 +128,7 @@
     "message": "備份你的秘密還原代碼，安全防護錢包與資金。"
   },
   "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
+    "message": "在裝置遺失、忘記密碼、需要重新安裝 ConfluxPortal、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
   "backupNow": {
     "message": "現在備份"
@@ -151,15 +139,8 @@
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
   },
-  "balanceIsInsufficientGas": {
-    "message": "當前餘額不足以支付 Gas"
-  },
   "basic": {
     "message": "基本"
-  },
-  "betweenMinAndMax": {
-    "message": "必須大於等於 $1 並且小於等於 $2 。",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
@@ -175,19 +156,19 @@
     "message": "您的瀏覽器尚未支援..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask 是在加州設計製造"
+    "message": "ConfluxPortal 是 fork MetaMask 代碼並在其基礎上進行更改從而適配 Conflux, MetaMask 在加利福尼亞設計和制造, 針對 Conflux 的修改在北京設計和制造."
   },
   "buyWithWyre": {
-    "message": "用 Wyre 購買 ETH"
+    "message": "用 Wyre 購買 CFX (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 MetaMask 帳號中直接存入 ETH。"
+    "message": "Wyre 讓你使用信用卡在 ConfluxPortal 帳號中直接存入 CFX。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "buyCoinSwitch": {
-    "message": "在CoinSwitch上购买"
+    "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。"
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "bytes": {
     "message": "位元組"
@@ -226,7 +207,7 @@
     "message": "關閉"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包"
+    "message": "您需要通過 Google Chrome 瀏覽器使用 ConfluxPortal ，連接個人硬件錢包。(硬件錢包沒有經過充分測試, 使用中可能會遇到問題)"
   },
   "confirm": {
     "message": "確認"
@@ -249,9 +230,6 @@
   "connect": {
     "message": "連線"
   },
-  "connectRequest": {
-    "message": "連線請求"
-  },
   "connectingTo": {
     "message": "連線到$1"
   },
@@ -259,7 +237,7 @@
     "message": "連線到 Kovan 測試網路"
   },
   "connectingToMainnet": {
-    "message": "連線到主 Ethereum 網路"
+    "message": "連線到主 Conflux 測試網路"
   },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"
@@ -290,9 +268,6 @@
   },
   "copiedExclamation": {
     "message": "已複製！"
-  },
-  "copy": {
-    "message": "複製"
   },
   "copyAddress": {
     "message": "複製到剪貼簿"
@@ -349,7 +324,7 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設乙太幣交易網路為主網路"
+    "message": "預設CFX交易網路為測試網路"
   },
   "delete": {
     "message": "刪除"
@@ -361,19 +336,16 @@
     "message": "存入"
   },
   "depositEther": {
-    "message": "存入乙太幣"
+    "message": "存入CFX"
   },
   "details": {
     "message": "詳情"
   },
   "directDepositEther": {
-    "message": "直接存入乙太幣"
+    "message": "直接存入CFX"
   },
   "directDepositEtherExplainer": {
-    "message": "如果您已經擁有乙太幣，直接存入功能是讓新錢包最快取得乙太幣的方式。"
-  },
-  "dismiss": {
-    "message": "關閉"
+    "message": "如果您已經擁有CFX，直接存入功能是讓新錢包最快取得CFX的方式。"
   },
   "done": {
     "message": "完成"
@@ -415,16 +387,16 @@
     "message": "不要分享此助記祠給任何人"
   },
   "endOfFlowMessage5": {
-    "message": "小心網路釣魚！MetaMask 永遠不會主動詢問你的助記詞。"
+    "message": "小心網路釣魚！ConfluxPortal 永遠不會主動詢問你的助記詞。"
   },
   "endOfFlowMessage6": {
     "message": "如你需要再次備份助記詞，可至設定 -> 安全。"
   },
   "endOfFlowMessage7": {
-    "message": "如你有任何問題或察覺有異，請寄信給 support@metamask.io"
+    "message": "如你有任何問題或察覺有異，請寄信給 webextension@conflux-chain.org"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask 無法還原你的助記詞。暸解更多"
+    "message": "ConfluxPortal 無法還原你的助記詞。暸解更多"
   },
   "endOfFlowMessage9": {
     "message": "深入瞭解。"
@@ -436,7 +408,7 @@
     "message": "ENS 名稱註冊錯誤"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要以太坊網路。"
+    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要 Conflux 測試網路。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "enterAnAlias": {
     "message": "輸入化名"
@@ -448,10 +420,10 @@
     "message": "請輸入密碼"
   },
   "ethereumPublicAddress": {
-    "message": "以太坊公開位址"
+    "message": "Conflux公開位址"
   },
   "etherscanView": {
-    "message": "在 Etherscan 上查看帳戶"
+    "message": "在 Confluxscan 上查看帳戶"
   },
   "estimatedProcessingTimes": {
     "message": "預估處理時間"
@@ -494,20 +466,20 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 上限。"
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
   },
+  "gasLimitTooHigh": {
+    "message": "Gas 上限至多為 1000000"
+  },
   "gasUsed": {
     "message": "Gas 用量"
   },
   "gasPrice": {
-    "message": "Gas 價格 (GWEI)"
+    "message": "Gas 價格 (GDrip)"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas 價格極低"
@@ -518,9 +490,6 @@
   "gasPriceNoDenom": {
     "message": "Gas 價格"
   },
-  "gasPriceCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 價格"
-  },
   "general": {
     "message": "一般"
   },
@@ -528,21 +497,17 @@
     "message": "貨幣轉換，主要貨幣，語言，區塊鏈哈希頭像"
   },
   "getEther": {
-    "message": "取得乙太幣"
+    "message": "取得CFX"
   },
   "getEtherFromFaucet": {
-    "message": "從水管取得 $1 乙太幣。",
-    "description": "Displays network name for Ether faucet"
+    "message": "從水管取得 $1 CFX。",
+    "description": "Displays network name for Conflux faucet"
   },
   "getHelp": {
     "message": "取得協助"
   },
   "getStarted": {
     "message": "開始使用"
-  },
-  "greaterThanMin": {
-    "message": "必須要大於等於 $1。",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "我們很高興看到你。"
@@ -551,16 +516,16 @@
     "message": "硬體"
   },
   "hardwareWalletConnected": {
-    "message": "硬體錢包已連線"
+    "message": "硬體錢包已連線 (該功能尚未測試, 使用中可能會出現問題)"
   },
   "hardwareWallets": {
-    "message": "連線硬體錢包"
+    "message": "連線硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
   },
   "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
+    "message": "選擇要連線到 ConfluxPortal 的硬體錢包 (該功能尚未測試, 使用中可能會出現問題)"
   },
   "havingTroubleConnecting": {
-    "message": "無法正確連線?"
+    "message": "無法正確連線? (該功能尚未測試, 使用中可能會出現問題)"
   },
   "here": {
     "message": "這裡",
@@ -589,7 +554,7 @@
     "message": "匯入帳戶"
   },
   "importAccountMsg": {
-    "message": " 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
+    "message": " 匯入的帳戶與您原有 ConfluxPortal 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
   },
   "importAccountSeedPhrase": {
     "message": "利用助憶詞還原"
@@ -632,7 +597,7 @@
     "message": "已知合約位址"
   },
   "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 網路，設定至小寫"
+    "message": "非 CFX 網路，設定至小寫"
   },
   "invalidInput": {
     "message": "輸入錯誤。"
@@ -662,10 +627,6 @@
   "ledgerAccountRestriction": {
     "message": "您必須使用最後的帳戶才能產生新帳戶"
   },
-  "lessThanMax": {
-    "message": "必須小於等於 $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
@@ -694,7 +655,7 @@
     "message": "登出"
   },
   "mainnet": {
-    "message": "乙太坊 主網路"
+    "message": "Conflux 主網 (未上線, 選擇後依然連接測試網)"
   },
   "memorizePhrase": {
     "message": "絕對不要忘記您的助憶詞。"
@@ -709,10 +670,10 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask 是乙太坊安全身份識別金庫"
+    "message": "ConfluxPortal 是 Conflux 安全身份識別金庫"
   },
   "metamaskVersion": {
-    "message": "MetaMask 版本"
+    "message": "ConfluxPortal 版本"
   },
   "missingYourTokens": {
     "message": "看不到您的代幣？"
@@ -727,20 +688,20 @@
     "message": "我的錢包帳號"
   },
   "myWalletAccountsDescription": {
-    "message": "所有你在 MetaMask 創建的帳號將自動新增到此區塊。"
+    "message": "所有你在 ConfluxPortal 創建的帳號將自動新增到此區塊。"
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣"
   },
   "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有乙太幣。"
+    "message": "要使用 ConfluxPortal 存取去中心化應用服務時，您的錢包中需要有CFX。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入",
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
-    "message": "不能送出負值的乙太幣"
+    "message": "不能送出負值的CFX"
   },
   "networkName": {
     "message": "網路名稱"
@@ -777,7 +738,7 @@
     "message": "新增網路"
   },
   "newToMetaMask": {
-    "message": "新來到 MetaMask？"
+    "message": "新來到 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
     "message": "不，我已經有助記詞"
@@ -786,10 +747,10 @@
     "message": "保護你的鑰匙！"
   },
   "protectYourKeysMessage1": {
-    "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 MetaMask。MetaMask 永遠不會詢問你的助記詞！"
+    "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 ConfluxPortal。ConfluxPortal 永遠不會詢問你的助記詞！"
   },
   "protectYourKeysMessage2": {
-    "message": "安全存放你的助記詞。如你察覺有異，或你對某網站起疑，請寄信給 support@metamask.io"
+    "message": "安全存放你的助記詞。如你察覺有異，或你對某網站起疑，請寄信給 webextension@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"
@@ -840,10 +801,10 @@
     "message": "參數"
   },
   "participateInMetaMetrics": {
-    "message": "參與 MetaMetrics"
+    "message": "參與 MetaMetrics (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "參與 MetaMetrics 來協助我們打造更好的 MetaMask"
+    "message": "參與 MetaMetrics 來協助我們打造更好的 ConfluxPortal (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "password": {
     "message": "密碼"
@@ -858,9 +819,6 @@
     "message": "請貼上您的私鑰字串:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "請貼上您的助憶詞！"
-  },
   "pending": {
     "message": "等待處理"
   },
@@ -871,7 +829,7 @@
     "message": "主要顯示"
   },
   "primaryCurrencySettingDescription": {
-    "message": "選擇使用乙太幣(ETH)或是法定貨幣(例如：美金)為主要錢幣顯示單位"
+    "message": "選擇使用CFX(CFX)或是法定貨幣(例如：美金)為主要錢幣顯示單位 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -961,9 +919,6 @@
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
   },
-  "revert": {
-    "message": "還原"
-  },
   "remove": {
     "message": "移除"
   },
@@ -1016,7 +971,7 @@
     "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
   },
   "secretBackupPhraseWarning": {
-    "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的乙太幣和代幣。"
+    "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的CFX和代幣。"
   },
   "secretPhrase": {
     "message": "輸入您的12個助憶詞以回復金庫"
@@ -1052,13 +1007,13 @@
     "message": "發送數量"
   },
   "sendETH": {
-    "message": "發送乙太幣"
+    "message": "發送CFX"
   },
   "sendTokens": {
     "message": "發送代幣"
   },
   "sentEther": {
-    "message": "發送乙太幣"
+    "message": "發送CFX"
   },
   "sentTokens": {
     "message": "發送代幣"
@@ -1157,13 +1112,10 @@
     "message": "3. 開始使用！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易乙太幣、ERC20代幣、或迷戀貓等數位資產。"
+    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易CFX、ERC20代幣、或迷戀貓等數位資產。"
   },
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
-  },
-  "submit": {
-    "message": "送出"
   },
   "submitted": {
     "message": "已送出"
@@ -1175,31 +1127,34 @@
     "message": "符號"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "代號必須介於 0 到 12 字元間."
+    "message": "符號不得超過11個字符。"
   },
   "syncWithMobile": {
-    "message": "和移動裝置同步"
+    "message": "和移動裝置同步 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileTitle": {
-    "message": "和移動裝置同步"
+    "message": "和移動裝置同步 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileDesc": {
-    "message": "你可以用移動裝置同步帳號與資訊。開啟 MetaMask 移動 app，至「設定」並點擊「自瀏覽器擴充功能同步」"
+    "message": "你可以用移動裝置同步帳號與資訊。開啟 ConfluxPortal 移動 app，至「設定」並點擊「自瀏覽器擴充功能同步」 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如你是第一次開啟 MetaMask 移動 app，只要跟著手機上的指示操作即可。"
+    "message": "如你是第一次開啟 ConfluxPortal 移動 app，只要跟著手機上的指示操作即可。(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "用你的 MetaMask 移動 app 掃描此代碼"
+    "message": "用你的 ConfluxPortal 移動 app 掃描此代碼 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileBeCareful": {
-    "message": "掃描代碼時確保沒有其他人在看你的螢幕"
+    "message": "掃描代碼時確保沒有其他人在看你的螢幕 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 MetaMask 移動 app！"
+    "message": "你的資料已成功同步。開始活用 ConfluxPortal 移動 app！(Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "terms": {
     "message": "使用條款"
+  },
+  "testnet": {
+    "message": "Conflux 測試網路"
   },
   "testFaucet": {
     "message": "測試水管"
@@ -1214,7 +1169,7 @@
     "message": "目的帳戶"
   },
   "toETHviaShapeShift": {
-    "message": "$1 ETH 透過 ShapeShift",
+    "message": "$1 CFX 透過 ShapeShift (Conflux 版本的 MetaMask 目前不支持該功能)",
     "description": "system will fill in deposit type in start of message"
   },
   "token": {
@@ -1329,9 +1284,6 @@
   "userName": {
     "message": "使用者名稱"
   },
-  "validFileImport": {
-    "message": "您必須選擇一個合法的檔案來匯入."
-  },
   "viewAccount": {
     "message": "查看帳戶"
   },
@@ -1345,7 +1297,7 @@
     "message": "在 $1 瀏覽"
   },
   "viewOnEtherscan": {
-    "message": "在 Etherscan 上瀏覽"
+    "message": "在 Confluxscan 上瀏覽"
   },
   "visitWebSite": {
     "message": "造訪我們的網站"
@@ -1357,7 +1309,7 @@
     "message": "歡迎回來!"
   },
   "welcome": {
-    "message": "歡迎來到 MetaMask"
+    "message": "歡迎來到 ConfluxPortal"
   },
   "writePhrase": {
     "message": "將助憶詞寫在紙上，並保存在安全的場所。若想要更安全，將助憶詞分別寫在不同紙張上並存放在不同的地方。"

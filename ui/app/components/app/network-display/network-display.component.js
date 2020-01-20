@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import {
   MAINNET_CODE,
+  TESTNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
@@ -11,6 +12,7 @@ import {
 
 const networkToClassHash = {
   [MAINNET_CODE]: 'mainnet',
+  [TESTNET_CODE]: 'testnet',
   [ROPSTEN_CODE]: 'ropsten',
   [RINKEBY_CODE]: 'rinkeby',
   [GOERLI_CODE]: 'goerli',
@@ -36,41 +38,52 @@ export default class NetworkDisplay extends Component {
     const { network } = this.props
     const networkClass = networkToClassHash[network]
 
-    return networkClass
-      ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
-      : <div
+    return networkClass ? (
+      <div
+        className={`network-display__icon network-display__icon--${networkClass}`}
+      />
+    ) : (
+      <div
         className="i fa fa-question-circle fa-med"
         style={{
           margin: '0 4px',
           color: 'rgb(125, 128, 130)',
         }}
       />
+    )
   }
 
   render () {
-    const { colored, network, provider: { type, nickname } } = this.props
+    const {
+      colored,
+      network,
+      provider: { type, nickname },
+    } = this.props
     const networkClass = networkToClassHash[network]
 
     return (
       <div
         className={classnames('network-display__container', {
           'network-display__container--colored': colored,
-          ['network-display__container--' + networkClass]: colored && networkClass,
+          ['network-display__container--' + networkClass]:
+            colored && networkClass,
         })}
       >
-        {
-          networkClass
-            ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
-            : <div
-              className="i fa fa-question-circle fa-med"
-              style={{
-                margin: '0 4px',
-                color: 'rgb(125, 128, 130)',
-              }}
-            />
-        }
+        {networkClass ? (
+          <div
+            className={`network-display__icon network-display__icon--${networkClass}`}
+          />
+        ) : (
+          <div
+            className="i fa fa-question-circle fa-med"
+            style={{
+              margin: '0 4px',
+              color: 'rgb(125, 128, 130)',
+            }}
+          />
+        )}
         <div className="network-display__name">
-          { type === 'rpc' && nickname ? nickname : this.context.t(type) }
+          {type === 'rpc' && nickname ? nickname : this.context.t(type)}
         </div>
       </div>
     )

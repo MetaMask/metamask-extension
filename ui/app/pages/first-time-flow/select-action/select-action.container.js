@@ -5,7 +5,7 @@ import { setFirstTimeFlowType } from '../../../store/actions'
 import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
 import Welcome from './select-action.component'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     nextRoute: getFirstTimeFlowTypeRoute(state),
   }

@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Privaatsusrežiim on nüüd vaikimisi lubatud"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabel on saadaval vaid Ethereumi võrkudes."
-  },
-  "confirmClear": {
-    "message": "Kas soovite kindlasti kinnitatud veebisaidid kustutada?"
   },
   "contractInteraction": {
     "message": "Lepingu suhtlus"
   },
-  "clearApprovalData": {
-    "message": "Tühjenda privaatsusandmed"
-  },
   "reject": {
     "message": "Lükka tagasi"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 soovib teie kontoga ühenduse luua"
-  },
-  "providerRequestInfo": {
-    "message": "See sait taotleb juurdepääsu teie praeguse konto aadressi vaatamiseks. Veenduge alati, et usaldate saite, millega suhtlete."
   },
   "about": {
     "message": "Teave"
   },
   "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave."
+    "message": "Versioon, tugikeskus ja kontaktteave"
   },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
@@ -63,7 +51,7 @@
     "message": "Täpsemad"
   },
   "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine."
+    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"
@@ -151,15 +139,8 @@
   "balanceOutdated": {
     "message": "Saldo võib olla aegunud"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Ebapiisav kontojääk praeguse gaasi kogusumma jaoks"
-  },
   "basic": {
     "message": "Põhiseaded"
-  },
-  "betweenMinAndMax": {
-    "message": "peab olema suurem või võrdne $1 ja väiksem või võrdne $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokeeri Explorer"
@@ -252,9 +233,6 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectRequest": {
-    "message": "Ühenduse taotlus"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
@@ -293,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "Kopeeritud!"
-  },
-  "copy": {
-    "message": "Kopeeri"
   },
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
@@ -375,9 +350,6 @@
   "directDepositEtherExplainer": {
     "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
   },
-  "dismiss": {
-    "message": "Loobu"
-  },
   "done": {
     "message": "Valmis"
   },
@@ -427,7 +399,7 @@
     "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile support@metamask.io."
   },
   "endOfFlowMessage8": {
-    "message": "Metamask ei saa teie seemnefraasi taastada. Lisateave."
+    "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
   },
   "endOfFlowMessage9": {
     "message": "Lisateave."
@@ -493,9 +465,6 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasLimitCalculation": {
-    "message": "Arvutame soovituslikku gaasi ülemmäära vastavalt võrgu efektiivsusele."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gaasi ülemmäär on maksimaalne gaasiühikute hulk, mida olete nõus kulutama."
   },
@@ -517,9 +486,6 @@
   "gasPriceNoDenom": {
     "message": "Gaasi hind"
   },
-  "gasPriceCalculation": {
-    "message": "Arvutame soovituslikke gaasihindu vastavalt võrgu efektiivsusele."
-  },
   "general": {
     "message": "Üldine teave"
   },
@@ -538,10 +504,6 @@
   },
   "getStarted": {
     "message": "Alustamine"
-  },
-  "greaterThanMin": {
-    "message": "peab olema $1või suurem.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Meil on hea meel teid näha."
@@ -657,10 +619,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
-  },
-  "lessThanMax": {
-    "message": "peab olema $1või väiksem.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
@@ -860,9 +818,6 @@
     "message": "Kleepige oma privaatne võtmestring siia:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Kleepige oma seemnefraas siia!"
-  },
   "pending": {
     "message": "ootel"
   },
@@ -968,9 +923,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revert": {
-    "message": "Ennista"
   },
   "remove": {
     "message": "Eemalda"
@@ -1176,9 +1128,6 @@
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."
   },
-  "submit": {
-    "message": "Esita"
-  },
   "submitted": {
     "message": "Edastatud"
   },
@@ -1189,7 +1138,7 @@
     "message": "Sümbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sümbol peab olema 0 kuni 12 tähemärki."
+    "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
   "syncWithMobile": {
     "message": "Mobiiliga sünkroonimine"
@@ -1201,7 +1150,7 @@
     "message": "Saate sünkroonida oma kontod ja teabe oma mobiiliseadmega. Avage MetaMaski mobiilirakendus, avage \"Settings\" (Seaded) ja puudutage valikut \"Sync from Browser Extension\" (Sünkroonimine lehitseja laiendusest)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Järgige Metamaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
+    "message": "Järgige MetaMaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
   },
   "syncWithMobileScanThisCode": {
     "message": "Skanneerige see kood MetaMaski mobiilirakendusega"
@@ -1345,9 +1294,6 @@
   },
   "userName": {
     "message": "Kasutajanimi"
-  },
-  "validFileImport": {
-    "message": "Peate valima importimiseks sobiva faili."
   },
   "viewAccount": {
     "message": "Kuva konto"

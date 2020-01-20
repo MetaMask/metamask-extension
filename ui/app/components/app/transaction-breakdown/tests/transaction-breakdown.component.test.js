@@ -20,11 +20,8 @@ describe('TransactionBreakdown Component', () => {
     }
 
     const wrapper = shallow(
-      <TransactionBreakdown
-        transaction={transaction}
-        className="test-class"
-      />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      <TransactionBreakdown transaction={transaction} className="test-class" />,
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-breakdown'))

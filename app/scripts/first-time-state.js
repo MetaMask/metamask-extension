@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Object} FirstTimeState
  * @property {Object} config Initial configuration parameters
@@ -12,4 +11,4 @@ const initialState = {
   config: {},
 }
 
-module.exports = initialState
+export default initialState

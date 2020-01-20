@@ -1,4 +1,3 @@
-
 const version = 22
 
 /*
@@ -7,9 +6,9 @@ This migration adds submittedTime to the txMeta if it is not their
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
@@ -32,9 +31,11 @@ function transformState (state) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
 
-    newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (txMeta.status !== 'submitted' || txMeta.submittedTime) return txMeta
-      txMeta.submittedTime = (new Date()).getTime()
+    newState.TransactionController.transactions = transactions.map(txMeta => {
+      if (txMeta.status !== 'submitted' || txMeta.submittedTime) {
+        return txMeta
+      }
+      txMeta.submittedTime = new Date().getTime()
       return txMeta
     })
   }

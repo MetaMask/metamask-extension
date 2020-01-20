@@ -20,9 +20,24 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       'test/integration/jquery-3.1.0.min.js',
-      { pattern: 'dist/chrome/images/**/*.*', watched: false, included: false, served: true },
-      { pattern: 'dist/chrome/fonts/**/*.*', watched: false, included: false, served: true },
-      { pattern: 'dist/chrome/_locales/**/*.*', watched: false, included: false, served: true },
+      {
+        pattern: 'dist/chrome/images/**/*.*',
+        watched: false,
+        included: false,
+        served: true,
+      },
+      {
+        pattern: 'dist/chrome/fonts/**/*.*',
+        watched: false,
+        included: false,
+        served: true,
+      },
+      {
+        pattern: 'dist/chrome/_locales/**/*.*',
+        watched: false,
+        included: false,
+        served: true,
+      },
     ],
 
     proxies: {
@@ -51,8 +66,8 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: process.env.browsers ?
-      JSON.parse(process.env.browsers)
+    browsers: process.env.browsers
+      ? JSON.parse(process.env.browsers)
       : ['Chrome', 'Firefox'],
 
     // Continuous Integration mode

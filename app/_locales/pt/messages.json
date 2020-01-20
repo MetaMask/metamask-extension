@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearApprovalData": {
-    "message": "Limpar dados de aprovação"
-  },
   "reject": {
     "message": "Rejeitar"
-  },
-  "providerRequestInfo": {
-    "message": "O domínio listado abaixo está tentando solicitar acesso à API Ethereum para que ele possa interagir com o blockchain Ethereum. Sempre verifique se você está no site correto antes de aprovar o acesso à Ethereum."
   },
   "account": {
     "message": "Conta"
@@ -52,13 +43,6 @@
   "balance": {
     "message": "Saldo:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para a quantidade de gas total"
-  },
-  "betweenMinAndMax": {
-    "message": "tem de ser maior ou igual a $1 e menor ou igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -94,9 +78,6 @@
   },
   "copiedExclamation": {
     "message": "Copiado!"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyToClipboard": {
     "message": "Copiar para o clipboard"
@@ -184,17 +165,11 @@
   "gasLimit": {
     "message": "Limite de Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos o limite sugerido do gas com base nas taxas de sucesso da rede."
-  },
   "gasLimitTooLow": {
     "message": "Limite de Gas deve ser no mínimo 21000"
   },
   "gasPrice": {
     "message": "Preço Gas (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos o gas sugerido com base nas taxas de sucesso da rede."
   },
   "getEther": {
     "message": "Obter Ether"
@@ -202,10 +177,6 @@
   "getEtherFromFaucet": {
     "message": "Obter Ether de um faucet por $1",
     "description": "Displays network name for Ether faucet"
-  },
-  "greaterThanMin": {
-    "message": "tem de ser maior ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "aqui",
@@ -264,10 +235,6 @@
   },
   "kovan": {
     "message": "Rede de Teste Kovan"
-  },
-  "lessThanMax": {
-    "message": "tem de ser menor ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Gostaria de adicionar estes tokens?"
@@ -341,9 +308,6 @@
     "message": "Cole aqui a sua chave privada:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Cole aqui a sua frase seed!"
-  },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Introduza o endereço do contrato do token."
   },
@@ -386,9 +350,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revert": {
-    "message": "Reverter"
   },
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"
@@ -447,14 +408,11 @@
   "stateLogsDescription": {
     "message": "Registo de estado podem conter o seu endereço e transações enviadas da sua conta pública."
   },
-  "submit": {
-    "message": "Submeter"
-  },
   "supportCenter": {
     "message": "Visitar o nosso Centro de Suporte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo deve conter entre 0 e 12 characters."
+    "message": "O símbolo deve ter 11 caracteres ou menos."
   },
   "terms": {
     "message": "Termos de Uso"
@@ -493,9 +451,6 @@
   },
   "usedByClients": {
     "message": "Utilizado por vários tipos de clientes"
-  },
-  "validFileImport": {
-    "message": "Deve selecionar um ficheiro válido para importar."
   },
   "viewAccount": {
     "message": "Ver Conta"

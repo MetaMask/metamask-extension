@@ -1,14 +1,16 @@
-module.exports = createDnodeRemoteGetter
+export default createDnodeRemoteGetter
 
 function createDnodeRemoteGetter (dnode) {
   let remote
 
-  dnode.once('remote', (_remote) => {
+  dnode.once('remote', _remote => {
     remote = _remote
   })
 
   async function getRemote () {
-    if (remote) return remote
+    if (remote) {
+      return remote
+    }
     return await new Promise(resolve => dnode.once('remote', resolve))
   }
 

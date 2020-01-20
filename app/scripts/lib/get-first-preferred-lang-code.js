@@ -1,17 +1,17 @@
-const extension = require('extensionizer')
-const promisify = require('pify')
-const allLocales = require('../../_locales/index.json')
+import extension from 'extensionizer'
+import promisify from 'pify'
+import allLocales from '../../_locales/index.json'
 
-const getPreferredLocales = extension.i18n ? promisify(
-  extension.i18n.getAcceptLanguages,
-  { errorFirst: false }
-) : async () => []
+const getPreferredLocales = extension.i18n
+  ? promisify(extension.i18n.getAcceptLanguages, { errorFirst: false })
+  : async () => []
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
 allLocales.forEach(locale => {
   if (locale && locale.code) {
-    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] = locale.code
+    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
+      locale.code
   }
 })
 
@@ -19,7 +19,7 @@ allLocales.forEach(locale => {
  * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
  * users preferred locales, 'en' is returned.
  *
- * @returns {Promise<string>} Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
+ * @returns {Promise<string>} - Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  *
  */
 async function getFirstPreferredLangCode () {
@@ -33,7 +33,7 @@ async function getFirstPreferredLangCode () {
   }
 
   // safeguard for Brave Browser until they implement chrome.i18n.getAcceptLanguages
-  // https://github.com/MetaMask/metamask-extension/issues/4270
+  // https://github.com/Conflux-Chain/conflux-portal/issues/4270
   if (!userPreferredLocaleCodes) {
     userPreferredLocaleCodes = []
   }
@@ -45,5 +45,4 @@ async function getFirstPreferredLangCode () {
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }
 
-module.exports = getFirstPreferredLangCode
-
+export default getFirstPreferredLangCode

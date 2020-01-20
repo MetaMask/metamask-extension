@@ -29,8 +29,8 @@ then
 fi
 
 git \
-    -c user.name='MetaMask Bot' \
-    -c user.email='metamaskbot@users.noreply.github.com' \
+    -c user.name='Conflux Bot' \
+    -c user.email='confluxbot@users.noreply.github.com' \
     commit --message "${CIRCLE_BRANCH/-/ }" \
         CHANGELOG.md app/manifest.json
 

@@ -6,7 +6,7 @@ import { text, boolean } from '@storybook/addon-knobs/react'
 
 // ', 'secondary', 'default', 'warning', 'danger', 'danger-primary', 'link'], 'primary')}
 storiesOf('Button', module)
-  .add('Button - Primary', () =>
+  .add('Button - Primary', () => (
     <Button
       onClick={action('clicked')}
       type="primary"
@@ -14,8 +14,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Secondary', () =>
+  ))
+  .add('Button - Secondary', () => (
     <Button
       onClick={action('clicked')}
       type="secondary"
@@ -23,8 +23,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Default', () =>
+  ))
+  .add('Button - Default', () => (
     <Button
       onClick={action('clicked')}
       type="default"
@@ -32,8 +32,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Warning', () =>
+  ))
+  .add('Button - Warning', () => (
     <Button
       onClick={action('clicked')}
       type="warning"
@@ -41,8 +41,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Danger', () =>
+  ))
+  .add('Button - Danger', () => (
     <Button
       onClick={action('clicked')}
       type="danger"
@@ -50,8 +50,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Danger Primary', () =>
+  ))
+  .add('Button - Danger Primary', () => (
     <Button
       onClick={action('clicked')}
       type="danger-primary"
@@ -59,8 +59,8 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
-  .add('Button - Link', () =>
+  ))
+  .add('Button - Link', () => (
     <Button
       onClick={action('clicked')}
       type="link"
@@ -68,4 +68,4 @@ storiesOf('Button', module)
     >
       {text('text', 'Click me')}
     </Button>
-  )
+  ))

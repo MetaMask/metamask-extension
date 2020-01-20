@@ -13,7 +13,7 @@ export default function Dialog (props) {
       })}
       onClick={onClick}
     >
-      { children }
+      {children}
     </div>
   )
 }

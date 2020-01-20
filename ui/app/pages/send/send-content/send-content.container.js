@@ -1,19 +1,16 @@
 import { connect } from 'react-redux'
 import SendContent from './send-content.component'
-import {
-  accountsWithSendEtherInfoSelector,
-  getSendTo,
-} from '../send.selectors'
-import {
-  getAddressBookEntry,
-} from '../../../selectors/selectors'
-import actions from '../../../store/actions'
+import { accountsWithSendEtherInfoSelector, getSendTo } from '../send.selectors'
+import { getAddressBookEntry } from '../../../selectors/selectors'
+import * as actions from '../../../store/actions'
 
 function mapStateToProps (state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state)
   const to = getSendTo(state)
   return {
-    isOwnedAccount: !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase()),
+    isOwnedAccount: !!ownedAccounts.find(
+      ({ address }) => address.toLowerCase() === to.toLowerCase()
+    ),
     contact: getAddressBookEntry(state, to),
     to,
   }
@@ -21,20 +18,28 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showAddToAddressBookModal: (recipient) => dispatch(actions.showModal({
-      name: 'ADD_TO_ADDRESSBOOK',
-      recipient,
-    })),
+    showAddToAddressBookModal: recipient =>
+      dispatch(
+        actions.showModal({
+          name: 'ADD_TO_ADDRESSBOOK',
+          recipient,
+        })
+      ),
   }
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { to, ...restStateProps } = stateProps
   return {
     ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-    showAddToAddressBookModal: () => dispatchProps.showAddToAddressBookModal(stateProps.to),
+    ...restStateProps,
+    showAddToAddressBookModal: () =>
+      dispatchProps.showAddToAddressBookModal(to),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendContent)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(SendContent)

@@ -13,5 +13,5 @@ const mapStateToProps = (_, ownProps) => {
 
 export default compose(
   withModalProps,
-  connect(mapStateToProps),
+  connect(mapStateToProps)
 )(RejectTransactionsModal)

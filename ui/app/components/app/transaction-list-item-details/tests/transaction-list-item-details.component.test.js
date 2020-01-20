@@ -31,9 +31,12 @@ describe('TransactionListItemDetails Component', () => {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        recipientAddress="0x1"
+        senderAddress="0x2"
+        tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -69,10 +72,13 @@ describe('TransactionListItemDetails Component', () => {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        recipientAddress="0x1"
+        senderAddress="0x2"
+        tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
         showSpeedUp
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -102,9 +108,12 @@ describe('TransactionListItemDetails Component', () => {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        recipientAddress="0x1"
+        senderAddress="0x2"
+        tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
@@ -137,9 +146,12 @@ describe('TransactionListItemDetails Component', () => {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        recipientAddress="0x1"
+        senderAddress="0x2"
+        tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
       />,
-      { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))

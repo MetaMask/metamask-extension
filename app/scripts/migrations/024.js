@@ -1,4 +1,3 @@
-
 const version = 24
 
 /*
@@ -8,9 +7,9 @@ all unapproved transactions
 
 */
 
-const clone = require('clone')
+import clone from 'clone'
 
-module.exports = {
+export default {
   version,
 
   migrate: async function (originalVersionedData) {
@@ -25,17 +24,21 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  if (!newState.TransactionController) return newState
+  if (!newState.TransactionController) {
+    return newState
+  }
   const transactions = newState.TransactionController.transactions
-  newState.TransactionController.transactions = transactions.map((txMeta, _) => {
-    if (
-      txMeta.status === 'unapproved' &&
-      txMeta.txParams &&
-      txMeta.txParams.from
-    ) {
-      txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
+  newState.TransactionController.transactions = transactions.map(
+    (txMeta, _) => {
+      if (
+        txMeta.status === 'unapproved' &&
+        txMeta.txParams &&
+        txMeta.txParams.from
+      ) {
+        txMeta.txParams.from = txMeta.txParams.from.toLowerCase()
+      }
+      return txMeta
     }
-    return txMeta
-  })
+  )
   return newState
 }

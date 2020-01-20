@@ -10,30 +10,28 @@
  * without having to re-open the plugin or even re-build it.
  */
 
-const render = require('react-dom').render
-const h = require('react-hyperscript')
-const Root = require('../ui/app/pages')
-const configureStore = require('../ui/app/store/store')
-const actions = require('../ui/app/store/actions')
+import log from 'loglevel'
+import React from 'react'
+import { render } from 'react-dom'
+import * as qs from 'qs'
+import Selector from './selector'
+import * as actions from '../ui/app/store/actions'
+import Root from '../ui/app/pages'
+import configureStore from '../ui/app/store/store'
+import MetamaskController from '../app/scripts/metamask-controller'
+import firstTimeState from '../app/scripts/first-time-state'
+import ExtensionPlatform from '../app/scripts/platforms/extension'
+
 const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
-const Selector = require('./selector')
-const MetamaskController = require('../app/scripts/metamask-controller')
-const firstTimeState = require('../app/scripts/first-time-state')
-const ExtensionPlatform = require('../app/scripts/platforms/extension')
+
 const noop = function () {}
 
 // the states file is generated before this file is run, but after `lint` is run
 const states = require('./states') /* eslint-disable-line import/no-unresolved */
 
-const log = require('loglevel')
 window.log = log
 log.setLevel('debug')
 
-//
-// Query String
-//
-
-const qs = require('qs')
 const routerPath = window.location.href.split('#')[1]
 let queryString = {}
 let selectedView
@@ -51,7 +49,8 @@ function updateQueryParams (newView) {
   const params = qs.stringify(queryString)
   const locationPaths = window.location.href.split('#')
   const routerPath = locationPaths[1] || ''
-  const newPath = locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
+  const newPath =
+    locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
 
   if (window.location.href !== newPath) {
     window.location.href = newPath
@@ -78,7 +77,7 @@ global.platform = new ExtensionPlatform()
 //
 
 actions._setBackgroundConnection(controller.getApi())
-actions.update = function (stateName) {
+function updateState (stateName) {
   selectedView = stateName
   updateQueryParams(stateName)
   const newState = states[selectedView]
@@ -89,12 +88,16 @@ actions.update = function (stateName) {
 }
 
 function modifyBackgroundConnection (backgroundConnectionModifier) {
-  const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
+  const modifiedBackgroundConnection = Object.assign(
+    {},
+    controller.getApi(),
+    backgroundConnectionModifier
+  )
   actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
 
 // parse opts
-var store = configureStore(firstState)
+const store = configureStore(firstState)
 
 // start app
 startApp()
@@ -106,40 +109,38 @@ function startApp () {
   body.appendChild(container)
 
   render(
-    h('.super-dev-container', [
-
-      h('button', {
-        onClick: (ev) => {
+    <div className="super-dev-container">
+      <button
+        onClick={ev => {
           ev.preventDefault()
-          store.dispatch(actions.update('terms'))
-        },
-        style: {
+          store.dispatch(updateState('terms'))
+        }}
+        style={{
           margin: '19px 19px 0px 19px',
-        },
-      }, 'Reset State'),
-
-      h(Selector, {
-        actions,
-        selectedKey: selectedView,
-        states,
-        store,
-        modifyBackgroundConnection,
-        backGroundConnectionModifiers,
-      }),
-
-      h('#app-content', {
-        style: {
+        }}
+      >
+        Reset State
+      </button>
+      <Selector
+        states={states}
+        selectedKey={selectedView}
+        updateState={updateState}
+        store={store}
+        modifyBackgroundConnection={modifyBackgroundConnection}
+        backGroundConnectionModifiers={backGroundConnectionModifiers}
+      />
+      <div
+        id="app-content"
+        style={{
           height: '500px',
           width: '360px',
           boxShadow: 'grey 0px 2px 9px',
           margin: '20px',
-        },
-      }, [
-        h(Root, {
-          store: store,
-        }),
-      ]),
-
-    ]
-    ), container)
+        }}
+      >
+        <Root store={store} />
+      </div>
+    </div>,
+    container
+  )
 }

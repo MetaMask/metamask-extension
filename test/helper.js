@@ -1,23 +1,34 @@
-const Ganache = require('ganache-core')
-const nock = require('nock')
+// import Ganache from 'ganache-core'
+import CGanache from '@yqrashawn/conflux-local-network-lite'
+import nock from 'nock'
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
-
-nock.disableNetConnect()
-nock.enableNetConnect('localhost')
+import Adapter from 'enzyme-adapter-react-16'
+import log from 'loglevel'
 
 Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
 enableFailureOnUnhandledPromiseRejection()
 
-// ganache server
-const server = Ganache.server()
-server.listen(8545, () => {
-  console.log('Ganache Testrpc is running on "http://localhost:8545"')
+const server = new CGanache({ genBlockInterval: 300 })
+before(done => {
+  server
+    .start()
+    .then(() => {
+      nock.disableNetConnect()
+      nock.enableNetConnect('localhost')
+      done()
+    })
+    .catch(err => {
+      console.error(err)
+    })
 })
 
-// logging util
-var log = require('loglevel')
+// ganache server
+// const server = Ganache.server()
+// server.listen(8545, () => {
+//   console.log('Ganache Testrpc is running on "http://localhost:8545"')
+// })
+
 log.setDefaultLevel(5)
 global.log = log
 
@@ -36,8 +47,12 @@ require('jsdom-global')()
 window.localStorage = {}
 
 // crypto.getRandomValues
-if (!window.crypto) window.crypto = {}
-if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+if (!window.crypto) {
+  window.crypto = {}
+}
+if (!window.crypto.getRandomValues) {
+  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+}
 
 function enableFailureOnUnhandledPromiseRejection () {
   // overwrite node's promise with the stricter Bluebird promise
@@ -58,14 +73,18 @@ function enableFailureOnUnhandledPromiseRejection () {
         throw evt.detail.reason
       })
     } else {
-      var oldOHR = window.onunhandledrejection
+      const oldOHR = window.onunhandledrejection
       window.onunhandledrejection = function (evt) {
-        if (typeof oldOHR === 'function') oldOHR.apply(this, arguments)
+        if (typeof oldOHR === 'function') {
+          oldOHR.apply(this, arguments)
+        }
         throw evt.detail.reason
       }
     }
-  } else if (typeof console !== 'undefined' &&
-      typeof (console.error || console.log) === 'function') {
-    (console.error || console.log)('Unhandled rejections will be ignored!')
+  } else if (
+    typeof console !== 'undefined' &&
+    typeof (console.error || console.log) === 'function'
+  ) {
+    ;(console.error || console.log)('Unhandled rejections will be ignored!')
   }
 }

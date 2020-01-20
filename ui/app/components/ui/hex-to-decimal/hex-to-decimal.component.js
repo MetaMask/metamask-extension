@@ -12,10 +12,6 @@ export default class HexToDecimal extends PureComponent {
     const { className, value } = this.props
     const decimalValue = hexToDecimal(value)
 
-    return (
-      <div className={className}>
-        { decimalValue }
-      </div>
-    )
+    return <div className={className}>{decimalValue}</div>
   }
 }

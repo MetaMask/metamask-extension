@@ -1,18 +1,17 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { toDataUrl } from '../../../../lib/blockies'
-import contractMap from 'eth-contract-metadata'
+import contractMap from '@yqrashawn/cfx-contract-metadata'
+
+import BlockieIdenticon from './blockieIdenticon'
 import { checksumAddress } from '../../../helpers/utils/util'
 import Jazzicon from '../jazzicon'
 
-const getStyles = diameter => (
-  {
-    height: diameter,
-    width: diameter,
-    borderRadius: diameter / 2,
-  }
-)
+const getStyles = diameter => ({
+  height: diameter,
+  width: diameter,
+  borderRadius: diameter / 2,
+})
 
 export default class Identicon extends PureComponent {
   static propTypes = {
@@ -61,17 +60,20 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       >
-        <img
-          src={toDataUrl(address)}
-          height={diameter}
-          width={diameter}
-        />
+        <BlockieIdenticon address={address} diameter={diameter} />
       </div>
     )
   }
 
   render () {
-    const { className, address, image, diameter, useBlockie, addBorder } = this.props
+    const {
+      className,
+      address,
+      image,
+      diameter,
+      useBlockie,
+      addBorder,
+    } = this.props
 
     if (image) {
       return this.renderImage()
@@ -80,13 +82,18 @@ export default class Identicon extends PureComponent {
     if (address) {
       const checksummedAddress = checksumAddress(address)
 
-      if (contractMap[checksummedAddress] && contractMap[checksummedAddress].logo) {
+      if (
+        contractMap[checksummedAddress] &&
+        contractMap[checksummedAddress].logo
+      ) {
         return this.renderJazzicon()
       }
 
       return (
-        <div className={classnames({ 'identicon__address-wrapper': addBorder })}>
-          { useBlockie ? this.renderBlockie() : this.renderJazzicon() }
+        <div
+          className={classnames({ 'identicon__address-wrapper': addBorder })}
+        >
+          {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>
       )
     }

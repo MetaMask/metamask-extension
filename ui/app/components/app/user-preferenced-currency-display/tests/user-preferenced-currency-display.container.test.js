@@ -18,7 +18,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
     it('should return the correct props', () => {
       const mockState = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           preferences: {
             useNativeCurrencyAsPrimaryCurrency: true,
             showFiatInTestnets: false,
@@ -30,7 +30,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
-        nativeCurrency: 'ETH',
+        nativeCurrency: 'CFX',
         useNativeCurrencyAsPrimaryCurrency: true,
         isMainnet: true,
         showFiatInTestnets: false,
@@ -40,7 +40,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
     it('should return the correct props when not in mainnet and showFiatInTestnets is true', () => {
       const mockState = {
         metamask: {
-          nativeCurrency: 'ETH',
+          nativeCurrency: 'CFX',
           preferences: {
             useNativeCurrencyAsPrimaryCurrency: true,
             showFiatInTestnets: true,
@@ -52,7 +52,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
-        nativeCurrency: 'ETH',
+        nativeCurrency: 'CFX',
         useNativeCurrencyAsPrimaryCurrency: true,
         isMainnet: false,
         showFiatInTestnets: true,
@@ -68,7 +68,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: true,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: true,
             showFiatInTestnets: false,
           },
@@ -76,8 +76,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             type: 'PRIMARY',
           },
           result: {
-            currency: 'ETH',
-            nativeCurrency: 'ETH',
+            currency: 'CFX',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 6,
             prefix: undefined,
           },
@@ -85,7 +85,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: true,
             showFiatInTestnets: false,
           },
@@ -94,7 +94,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           },
           result: {
             currency: undefined,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 2,
             prefix: undefined,
           },
@@ -102,7 +102,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: true,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: true,
             showFiatInTestnets: false,
           },
@@ -112,7 +112,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             fiatPrefix: '-',
           },
           result: {
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             currency: undefined,
             numberOfDecimals: 4,
             prefix: '-',
@@ -121,7 +121,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: true,
             showFiatInTestnets: false,
           },
@@ -133,8 +133,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             prefix: 'b',
           },
           result: {
-            currency: 'ETH',
-            nativeCurrency: 'ETH',
+            currency: 'CFX',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 3,
             prefix: 'b',
           },
@@ -142,7 +142,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: false,
             showFiatInTestnets: false,
           },
@@ -150,8 +150,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             type: 'PRIMARY',
           },
           result: {
-            currency: 'ETH',
-            nativeCurrency: 'ETH',
+            currency: 'CFX',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 6,
             prefix: undefined,
           },
@@ -159,7 +159,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: false,
             showFiatInTestnets: true,
           },
@@ -168,7 +168,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           },
           result: {
             currency: undefined,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 2,
             prefix: undefined,
           },
@@ -176,7 +176,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             isMainnet: true,
             showFiatInTestnets: true,
           },
@@ -185,7 +185,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           },
           result: {
             currency: undefined,
-            nativeCurrency: 'ETH',
+            nativeCurrency: 'CFX',
             numberOfDecimals: 2,
             prefix: undefined,
           },
@@ -193,9 +193,12 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       ]
 
       tests.forEach(({ stateProps, ownProps, result }) => {
-        assert.deepEqual(mergeProps({ ...stateProps }, mockDispatchProps, { ...ownProps }), {
-          ...result,
-        })
+        assert.deepEqual(
+          mergeProps({ ...stateProps }, mockDispatchProps, { ...ownProps }),
+          {
+            ...result,
+          }
+        )
       })
     })
   })

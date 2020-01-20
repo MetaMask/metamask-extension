@@ -18,17 +18,24 @@ export default class BasicTabContent extends Component {
 
     return (
       <div className="basic-tab-content">
-        <div className="basic-tab-content__title">{ t('estimatedProcessingTimes') }</div>
-        <div className="basic-tab-content__blurb">{ t('selectAHigherGasFee') }</div>
-        {!gasPriceButtonGroupProps.loading
-          ? <GasPriceButtonGroup
+        <div className="basic-tab-content__title">
+          {t('estimatedProcessingTimes')}
+        </div>
+        <div className="basic-tab-content__blurb">
+          {t('selectAHigherGasFee')}
+        </div>
+        {!gasPriceButtonGroupProps.loading ? (
+          <GasPriceButtonGroup
             className="gas-price-button-group--alt"
             showCheck
             {...gasPriceButtonGroupProps}
           />
-          : <Loading />
-        }
-        <div className="basic-tab-content__footer-blurb">{ t('acceleratingATransaction') }</div>
+        ) : (
+          <Loading />
+        )}
+        <div className="basic-tab-content__footer-blurb">
+          {t('acceleratingATransaction')}
+        </div>
       </div>
     )
   }

@@ -42,22 +42,15 @@
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],
-    "keyringTypes": [
-      "Simple Key Pair",
-      "HD Key Tree"
-    ],
+    "keyringTypes": ["Simple Key Pair", "HD Key Tree"],
     "keyrings": [
       {
         "type": "HD Key Tree",
-        "accounts": [
-          "58bda1f9d87dc7d2bcc6f7c2513efc9d03fca683"
-        ]
+        "accounts": ["58bda1f9d87dc7d2bcc6f7c2513efc9d03fca683"]
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0x9858e7d8b79fc3e6d989636721584498926da38a"
-        ]
+        "accounts": ["0x9858e7d8b79fc3e6d989636721584498926da38a"]
       }
     ],
     "seedWords": null

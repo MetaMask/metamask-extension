@@ -1,9 +1,3 @@
-const selectors = {
-  getMaxModeOn,
-}
-
-module.exports = selectors
-
-function getMaxModeOn (state) {
+export function getMaxModeOn (state) {
   return state.metamask.send.maxModeOn
 }
