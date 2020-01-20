@@ -38,8 +38,8 @@ then
     release_body="$(awk -v version="${tag##v}" -f .circleci/scripts/show-changelog.awk CHANGELOG.md)"
     pushd builds
         hub release create \
-            --attach metamask-chrome-*.zip \
-            --attach metamask-firefox-*.zip \
+            --attach conflux-portal-chrome-*.zip \
+            --attach conflux-portal-firefox-*.zip \
             --message "Version ${tag##v}" \
             --message "$release_body" \
             --commitish "$CIRCLE_SHA1" \
