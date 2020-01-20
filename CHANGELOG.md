@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.0.4 Mon Jan 20 2020
 - [#7823](https://github.com/Conflux-Chain/conflux-portal/pull/7823): Wait until element is clickable before clicking in e2e tests (#7823)
 - [#7833](https://github.com/Conflux-Chain/conflux-portal/pull/7833): Fix prop types for SendGasRow component tests (#7833)
 - [#7835](https://github.com/Conflux-Chain/conflux-portal/pull/7835): Clean up Migrator test cases (#7835)
