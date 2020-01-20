@@ -19,7 +19,8 @@ do
     if grep -E -q '\(#[[:digit:]]+\)' <<< "$subject"
     then
         pr="$(awk '{print $NF}' <<< "$subject" | tr -d '()')"
-        prefix="[$pr]($URL/pull/${pr###}): "
+        # prefix="[$pr]($URL/pull/${pr###}): "
+        prefix=''
         description="$(awk '{NF--; print $0}' <<< "$subject")"
 
     # Merge: the PR ID is parsed from the git subject (which is of the form `Merge pull request
@@ -28,7 +29,8 @@ do
     elif grep -E -q '#[[:digit:]]+\sfrom' <<< "$subject"
     then
         pr="$(awk '{print $4}' <<< "$subject")"
-        prefix="[$pr]($URL/pull/${pr###}): "
+        # prefix="[$pr]($URL/pull/${pr###}): "
+        prefix=''
 
         first_line_of_body="$(git show -s --format="%b" "$commit" | head -n 1 | tr -d '\r')"
         if [[ -z "$first_line_of_body" ]]
