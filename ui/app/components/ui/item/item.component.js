@@ -45,8 +45,8 @@ const Item = ({
   title,
   subtitle,
   more,
-  crypto,
-  cash,
+  nativeCurrency,
+  currentCurrency,
 }) => {
   const isApproved = status === 'approved'
   const isPending = status === 'pending'
@@ -111,8 +111,8 @@ const Item = ({
         )}
       </div>
       <div className={`col amount${isApproved ? ' approved' : ''}`}>
-        <h2>{crypto}</h2>
-        <h3>{cash}</h3>
+        <h2>{nativeCurrency}</h2>
+        <h3>{currentCurrency}</h3>
       </div>
     </div>
   )
@@ -134,8 +134,8 @@ Item.propTypes = {
     PropTypes.node,
   ]).isRequired,
   more: PropTypes.node,
-  crypto: PropTypes.string,
-  cash: PropTypes.string,
+  nativeCurrency: PropTypes.string,
+  currentCurrency: PropTypes.string,
 }
 
 export default Item
