@@ -14,14 +14,12 @@ async function buildWebDriver ({ responsive, port } = {}) {
     extensionUrl,
   } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
   setupFetchMocking(seleniumDriver)
-  await seleniumDriver.get(extensionUrl)
-
-  const driver = new Driver(seleniumDriver, browser)
+  const driver = new Driver(seleniumDriver, browser, extensionUrl)
+  await driver.navigate()
 
   return {
     driver,
     extensionId,
-    extensionUrl,
   }
 }
 

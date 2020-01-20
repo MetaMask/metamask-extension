@@ -8,9 +8,10 @@ class Driver {
    * @param {string} browser - The type of browser this driver is controlling
    * @param {number} timeout
    */
-  constructor (driver, browser, timeout = 10000) {
+  constructor (driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver
     this.browser = browser
+    this.extensionUrl = extensionUrl
     this.timeout = timeout
   }
 
@@ -88,6 +89,12 @@ class Driver {
       )
     }
     assert.ok(!dataTab, 'Found element that should not be present')
+  }
+
+  // Navigation
+
+  async navigate (page = Driver.PAGES.HOME) {
+    return await this.driver.get(`${this.extensionUrl}/${page}.html`)
   }
 
   // Window management
@@ -187,6 +194,12 @@ class Driver {
         !ignoredErrorMessages.some(message => entry.message.includes(message))
     )
   }
+}
+
+Driver.PAGES = {
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  POPUP: 'popup',
 }
 
 module.exports = Driver

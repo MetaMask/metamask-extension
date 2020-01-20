@@ -53,7 +53,7 @@ class FirefoxDriver {
     return {
       driver,
       extensionId,
-      extensionUrl: `moz-extension://${internalExtensionId}/home.html`,
+      extensionUrl: `moz-extension://${internalExtensionId}`,
     }
   }
 
