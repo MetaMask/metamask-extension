@@ -1,11 +1,11 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Item from './item.component'
+import ListItem from './list-item.component'
 import { text } from '@storybook/addon-knobs/react'
 
-storiesOf('Item', module)
-  .add('Item - Send', () => (
-    <Item
+storiesOf('ListItem', module)
+  .add('ListItem - Send', () => (
+    <ListItem
       title={text('title', 'Send DAI')}
       className="Item__flex-grid"
       status="pending"
@@ -18,38 +18,38 @@ storiesOf('Item', module)
           </span>
         )
       }
-      crypto={text('crypto', '- 0.0732 DAI')}
-      cash={text('cash', '- $6.04 USD')}
+      nativeCurrency={text('nativeCurrency', '- 0.0732 DAI')}
+      currentCurrency={text('currentCurrency', '- $6.04 USD')}
     />
   ))
-  .add('Item - Hatch Turtles', () => (
-    <Item
+  .add('ListItem - Hatch Turtles', () => (
+    <ListItem
       title={text('title', 'Hatch Turtles')}
       className="Item__flex-grid"
       // should create a constants and match it with what's in mm
       status="unapproved"
       subtitle={text('subtitle', 'Turtlefarm.com')}
-      crypto={text('crypto', '- 0.0732 ETH')}
-      cash={text('cash', '- $6.00 USD')}
+      nativeCurrency={text('nativeCurrency', '- 0.0732 ETH')}
+      currentCurrency={text('currentCurrency', '- $6.00 USD')}
     />
   ))
-  .add('Item - Approve', () => (
-    <Item
+  .add('ListItem - Approve', () => (
+    <ListItem
       title={text('title', 'Approve spend limit')}
       className="Item__flex-grid"
       status="approved"
       subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
-      crypto={text('crypto', '0.00070 DAI')}
-      cash={text('cash', '$0.02 USD')}
+      nativeCurrency={text('nativeCurrency', '0.00070 DAI')}
+      currentCurrency={text('currentCurrency', '$0.02 USD')}
     />
   ))
-  .add('Item - Failed', () => (
-    <Item
+  .add('ListItem - Failed', () => (
+    <ListItem
       title={text('title', 'Hatch Turtles')}
       className="Item__flex-grid"
       status="failed"
       subtitle={text('subtitle', 'Turtlefarm.com')}
-      crypto={text('crypto', '- 0.0732 ETH')}
-      cash={text('cash', '- $6.00 USD')}
+      nativeCurrency={text('nativeCurrency', '- 0.0732 ETH')}
+      currentCurrency={text('currentCurrency', '- $6.00 USD')}
     />
   ))
