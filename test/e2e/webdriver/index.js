@@ -13,6 +13,8 @@ async function buildWebDriver ({ responsive, port } = {}) {
   const driver = new Driver(seleniumDriver, browser, extensionUrl)
   await driver.navigate()
 
+  await driver.delay(1000)
+
   return {
     driver,
     extensionId,
