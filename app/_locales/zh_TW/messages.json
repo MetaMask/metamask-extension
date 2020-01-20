@@ -393,7 +393,7 @@
     "message": "如你需要再次備份助記詞，可至設定 -> 安全。"
   },
   "endOfFlowMessage7": {
-    "message": "如你有任何問題或察覺有異，請寄信給 webextension@conflux-chain.org"
+    "message": "如你有任何問題或察覺有異，請寄信給 conflux-portal@conflux-chain.org"
   },
   "endOfFlowMessage8": {
     "message": "ConfluxPortal 無法還原你的助記詞。暸解更多"
@@ -750,7 +750,7 @@
     "message": "小心保管你的註記詞—我們接到報告有網站嘗試模仿 ConfluxPortal。ConfluxPortal 永遠不會詢問你的助記詞！"
   },
   "protectYourKeysMessage2": {
-    "message": "安全存放你的助記詞。如你察覺有異，或你對某網站起疑，請寄信給 webextension@conflux-chain.org"
+    "message": "安全存放你的助記詞。如你察覺有異，或你對某網站起疑，請寄信給 conflux-portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "新的 RPC URL"

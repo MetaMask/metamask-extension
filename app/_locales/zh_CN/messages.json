@@ -396,7 +396,7 @@
     "message": "如果您需要再次备份个人种子密语，请通过设置 -> 安全选项完成该操作。"
   },
   "endOfFlowMessage7": {
-    "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 webextension@conflux-chain.org 进行咨询。"
+    "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 conflux-portal@conflux-chain.org 进行咨询。"
   },
   "endOfFlowMessage8": {
     "message": "ConfluxPortal 无法恢复您的种子密语。了解更多。"
@@ -741,7 +741,7 @@
     "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 ConfluxPortal。ConfluxPortal 绝不会要求您提供个人种子密语！"
   },
   "protectYourKeysMessage2": {
-    "message": "请妥善保管您的密语。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 webextension@conflux-chain.org 进行咨询"
+    "message": "请妥善保管您的密语。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 conflux-portal@conflux-chain.org 进行咨询"
   },
   "rpcUrl": {
     "message": "新增 RPC URL"
