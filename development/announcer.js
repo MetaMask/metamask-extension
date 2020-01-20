@@ -14,6 +14,6 @@ const log = changelog
   .split('##')[0]
   .trim()
 
-const msg = `*MetaMask ${version}* now published! It should auto-update soon!\n${log}`
+const msg = `*ConfluxPortal ${version}* now published! It should auto-update soon!\n${log}`
 
 console.log(msg)
