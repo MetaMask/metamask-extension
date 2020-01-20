@@ -121,6 +121,7 @@ export default class TransactionViewBalance extends PureComponent {
             })
             history.push(SEND_ROUTE)
           }}
+          data-testid="transaction-view-send"
         >
           {t('send')}
         </Button>

@@ -7,6 +7,8 @@ set -o pipefail
 
 export PATH="$PATH:./node_modules/.bin"
 
+mocha --no-timeouts test/e2e/tests/*.spec.js
+
 concurrently --kill-others \
   --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
