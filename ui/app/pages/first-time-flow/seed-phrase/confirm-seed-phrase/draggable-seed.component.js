@@ -58,6 +58,7 @@ class DraggableSeed extends Component {
           'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
         })}
         onClick={onClick}
+        data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
       >
         { word }
       </div>
