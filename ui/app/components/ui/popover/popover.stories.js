@@ -95,7 +95,7 @@ storiesOf('PopOver', module)
           <div className="popover-item">
             <div className="col">
               <h3>STATUS</h3>
-              <h4>Confirmed</h4>
+              <h4 className="confirmed">Confirmed</h4>
             </div>
             <div className="col">
               <h3>DATE</h3>

@@ -259,6 +259,9 @@
           font-size: 12px;
           line-height: 160%;
           color: #24292E;
+          &.confirmed {
+            color: #28A745;
+          }
         }
       }
     }
