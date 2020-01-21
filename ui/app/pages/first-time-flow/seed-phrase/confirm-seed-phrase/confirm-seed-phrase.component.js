@@ -38,27 +38,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
     hoveringIndex: -1,
-    isDragging: false,
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    const { seedPhrase } = this.props
-    const {
-      selectedSeedIndices,
-      shuffledSeedWords,
-      pendingSeedIndices,
-      draggingSeedIndex,
-      hoveringIndex,
-      isDragging,
-    } = this.state
-
-    return seedPhrase !== nextProps.seedPhrase ||
-      draggingSeedIndex !== nextState.draggingSeedIndex ||
-      isDragging !== nextState.isDragging ||
-      hoveringIndex !== nextState.hoveringIndex ||
-      selectedSeedIndices.join(' ') !== nextState.selectedSeedIndices.join(' ') ||
-      shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
-      pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
   }
 
   componentDidMount () {
@@ -184,7 +163,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           { this.renderPendingSeeds() }
           { this.renderSelectedSeeds() }
         </div>
-        <div className="confirm-seed-phrase__shuffled-seed-words">
+        <div className="confirm-seed-phrase__shuffled-seed-words" data-testid="seed-phrase-shuffled">
           {
             shuffledSeedWords.map((word, index) => {
               const isSelected = selectedSeedIndices.includes(index)

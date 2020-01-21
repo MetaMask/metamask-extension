@@ -8,9 +8,10 @@ class Driver {
    * @param {string} browser - The type of browser this driver is controlling
    * @param {number} timeout
    */
-  constructor (driver, browser, timeout = 10000) {
+  constructor (driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver
     this.browser = browser
+    this.extensionUrl = extensionUrl
     this.timeout = timeout
   }
 
@@ -82,6 +83,18 @@ class Driver {
       assert(err instanceof webdriverError.NoSuchElementError || err instanceof webdriverError.TimeoutError)
     }
     assert.ok(!dataTab, 'Found element that should not be present')
+  }
+
+  // Navigation
+
+  async navigate (page = Driver.PAGES.HOME) {
+    return await this.driver.get(`${this.extensionUrl}/${page}.html`)
+  }
+
+  // Metrics
+
+  async collectMetrics () {
+    return await this.driver.executeScript(collectMetrics)
   }
 
   // Window management
@@ -171,6 +184,35 @@ class Driver {
     const errorObjects = errorEntries.map(entry => entry.toJSON())
     return errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
   }
+}
+
+function collectMetrics () {
+  const results = {
+    paint: {},
+    navigation: [],
+  }
+
+  performance.getEntriesByType('paint').forEach((paintEntry) => {
+    results.paint[paintEntry.name] = paintEntry.startTime
+  })
+
+  performance.getEntriesByType('navigation').forEach((navigationEntry) => {
+    results.navigation.push({
+      domContentLoaded: navigationEntry.domContentLoadedEventEnd,
+      load: navigationEntry.loadEventEnd,
+      domInteractive: navigationEntry.domInteractive,
+      redirectCount: navigationEntry.redirectCount,
+      type: navigationEntry.type,
+    })
+  })
+
+  return results
+}
+
+Driver.PAGES = {
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  POPUP: 'popup',
 }
 
 module.exports = Driver

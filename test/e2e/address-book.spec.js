@@ -98,8 +98,7 @@ describe('MetaMask', function () {
     })
 
     async function clickWordAndWait (word) {
-      const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
-      await driver.clickElement(By.xpath(xpath))
+      await driver.clickElement(By.css(`[data-testid="seed-phrase-shuffled"] [data-testid="draggable-seed-${word}"]`))
       await driver.delay(tinyDelayMs)
     }
 
