@@ -281,6 +281,9 @@
   "loadingTokens": {
     "message": "Jetonlar yükleniyor..."
   },
+  "unlock": {
+    "message": "Giriş yap"
+  },
   "lock": {
     "message": "Çıkış"
   },

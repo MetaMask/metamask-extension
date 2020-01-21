@@ -239,6 +239,9 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
+  "unlock": {
+    "message": "Log in"
+  },
   "lock": {
     "message": "Uitloggen"
   },
