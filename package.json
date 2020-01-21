@@ -8,6 +8,8 @@
     "doc": "jsdoc -c development/.jsdoc.json",
     "publish-docs": "gh-pages -d docs/jsdocs",
     "start:test": "gulp dev:test",
+    "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
+    "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "gulp build:test",
     "test": "yarn test:unit && yarn lint",
     "localnode": "node development/local-node.js",
