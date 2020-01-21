@@ -143,7 +143,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderBody = () => {
-    const notice = this.context.t('ecryptionPublickKeyNotice')
+    const notice = this.context.t('encryptionPublicKeyNotice')
 
     return (
       <div className="request-encryption-public-key__body">

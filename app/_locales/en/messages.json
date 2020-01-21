@@ -1591,9 +1591,9 @@
     "message": "Provide"
   },
   "encryptionPublicKeyRequest": {
-    "message": "Request ecryption public key"
+    "message": "Request encryption public key"
   },
-  "ecryptionPublickKeyNotice": {
-    "message": "By granted this encryption public key for Dapp you will allow to get encrypted messages and decrypt it via Metamask. This key can be used ONLY for encryption messages that decrypt via your private key. Dapp can't sign transaction or something else via this public key."
+  "encryptionPublicKeyNotice": {
+    "message": "Этот сайт запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения."
   }
 }
