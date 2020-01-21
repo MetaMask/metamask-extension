@@ -38,30 +38,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
     hoveringIndex: -1,
-    isDragging: false,
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    const { seedPhrase } = this.props
-    const {
-      selectedSeedIndices,
-      shuffledSeedWords,
-      pendingSeedIndices,
-      draggingSeedIndex,
-      hoveringIndex,
-      isDragging,
-    } = this.state
-
-    return (
-      seedPhrase !== nextProps.seedPhrase ||
-      draggingSeedIndex !== nextState.draggingSeedIndex ||
-      isDragging !== nextState.isDragging ||
-      hoveringIndex !== nextState.hoveringIndex ||
-      selectedSeedIndices.join(' ') !==
-        nextState.selectedSeedIndices.join(' ') ||
-      shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
-      pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
-    )
   }
 
   componentDidMount () {
