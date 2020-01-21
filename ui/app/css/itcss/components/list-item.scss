@@ -8,8 +8,8 @@
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
-  border-top: 1px solid #E5E5E5;
-  border-bottom: 1px solid #E5E5E5;
+  border-top: 1px solid $mercury;
+  border-bottom: 1px solid $mercury;
   color: #6A737D;
 
   display: flex;
@@ -45,8 +45,8 @@
         margin-right: 8px;
 
         &:hover {
-          color: #037DD6;
-          border-color: #037DD6;
+          color: $lochmara;
+          border-color: $lochmara;
         }
       }
     }

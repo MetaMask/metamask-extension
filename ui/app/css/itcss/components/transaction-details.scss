@@ -1,6 +1,6 @@
 .popover-content {
   .details {
-    border: 1px solid #D2D8DD;
+    border: 1px solid $geyser;
     border-radius: 8px;
     padding: 16px;
 
@@ -13,7 +13,7 @@
 
     hr {
       border: none;
-      border-bottom: 1px solid #D2D8DD;
+      border-bottom: 1px solid $geyser;
       margin: 16px 0;
     }
 

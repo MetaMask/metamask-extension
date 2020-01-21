@@ -99,8 +99,8 @@
       }
 
       .react-tabs__tab--selected {
-        color: #037DD6;
-        border-color: #037DD6;
+        color: $lochmara;
+        border-color: $lochmara;
         border-width: 2px;
       }
     }
@@ -124,7 +124,7 @@
       width: 100%;
       height: 178px;
       background: #F8F9FB;
-      border: 1px solid #D2D8DD;
+      border: 1px solid $geyser;
       box-sizing: border-box;
       border-radius: 6px;
       margin-bottom: 16px;
@@ -145,11 +145,11 @@
           justify-content: flex-start;
           font-size: 12px;
           line-height: 17px;
-          color: #000000;
+          color: black;
           margin-bottom: 8px;
         }
         input[type="number"] {
-          border: 1px solid #D2D8DD;
+          border: 1px solid $geyser;
           box-sizing: border-box;
           border-radius: 6px;
           width: 100%;
@@ -158,7 +158,7 @@
       }
     }
     .save {
-      background: #037DD6;
+      background: $lochmara;
       border-radius: 6px;
       display: block;
       margin-top: auto;
@@ -186,7 +186,7 @@
       margin-bottom: 16px;
       .fees__option {
         padding: 12px;
-        border: 1px solid #D2D8DD;
+        border: 1px solid $geyser;
         border-radius: 6px;
         margin-right: 10px;
         flex-grow: 1;
@@ -194,7 +194,7 @@
         * { pointer-events: none; }
         &.selected {
           background: #F7FCFF;
-          border-color: #037DD6;
+          border-color: $lochmara;
         }
         h3 {
           font-size: 10px;
@@ -228,7 +228,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: stretch;
-      border-top: 1px solid #E5E5E5;
+      border-top: 1px solid $mercury;
       padding: 10px 0;
 
       &:first-child {
@@ -274,7 +274,7 @@
           float: right;
           font-size: 12px;
           line-height: 17px;
-          color: #037DD6;
+          color: $lochmara;
           clear: both;
         }
       }
@@ -282,7 +282,7 @@
         // this needs to be adjusted, the "disc" in the comps is quite a bit larger
         list-style-type: none;
         padding: 0 0 0 18px;
-        color: #037DD6;
+        color: $lochmara;
         // position: relative;
 
         li {
@@ -302,7 +302,7 @@
           .line {
             width: 1px;
             height: 42px;
-            background: #D2D8DD;
+            background: $geyser;
             position: absolute;
             left: -13px;
             top: 10px;
