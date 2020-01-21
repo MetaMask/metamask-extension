@@ -2,6 +2,7 @@
 
 const path = require('path')
 const { promises: fs, constants: fsConstants } = require('fs')
+const ttest = require('ttest')
 const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('./helpers')
 const { PAGES } = require('./webdriver/driver')
@@ -41,6 +42,9 @@ const standardDeviationResult = calculateResult((array) => {
   const squareDiffs = array.map(value => Math.pow(value - average, 2))
   return Math.sqrt(calculateAverage(squareDiffs))
 })
+// 95% margin of error calculated using Student's t-distrbution
+const calculateMarginOfError = (array) => ttest(array).confidence()[1] - calculateAverage(array)
+const marginOfErrorResult = calculateResult((array) => calculateMarginOfError(array))
 
 async function profilePageLoad (pages, numSamples) {
   const results = {}
@@ -68,6 +72,7 @@ async function profilePageLoad (pages, numSamples) {
       max: maxResult(result),
       average: averageResult(result),
       standardDeviation: standardDeviationResult(result),
+      marginOfError: marginOfErrorResult(result),
     }
   }
   return results
