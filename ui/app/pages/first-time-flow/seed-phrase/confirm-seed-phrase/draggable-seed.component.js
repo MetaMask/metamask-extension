@@ -62,6 +62,7 @@ class DraggableSeed extends Component {
             }
           )}
           onClick={onClick}
+          data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
         >
           {word}
         </div>

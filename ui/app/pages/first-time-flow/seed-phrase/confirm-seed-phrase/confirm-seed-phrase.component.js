@@ -175,7 +175,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
           {this.renderPendingSeeds()}
           {this.renderSelectedSeeds()}
         </div>
-        <div className="confirm-seed-phrase__shuffled-seed-words">
+        <div
+          className="confirm-seed-phrase__shuffled-seed-words"
+          data-testid="seed-phrase-shuffled"
+        >
           {shuffledSeedWords.map((word, index) => {
             const isSelected = selectedSeedIndices.includes(index)
 
