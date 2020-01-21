@@ -75,7 +75,6 @@
     "bip39": "^2.2.0",
     "bluebird": "^3.5.0",
     "bn.js": "^4.11.7",
-    "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
     "c3": "^0.6.7",
     "classnames": "^2.2.5",
