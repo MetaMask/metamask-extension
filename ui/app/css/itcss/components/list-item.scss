@@ -33,9 +33,7 @@
         box-sizing: border-box;
         border-radius: 4px;
         background: transparent;
-        font-family: 'Roboto', sans-serif;
-        font-style: normal;
-        font-weight: normal;
+        @extend %font;
         font-size: 10px;
         line-height: 12px;
 
