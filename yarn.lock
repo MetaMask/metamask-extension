@@ -19370,10 +19370,10 @@ messageformat@^2.2.1:
     messageformat-formatters "^2.0.1"
     messageformat-parser "^4.1.2"
 
-metamask-inpage-provider@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.2.tgz#50d9e46b5fdd6610ce185a165004e3c6b762dbb3"
-  integrity sha512-GXoMa7rP+fx9CriCA+RPHjvJJpfy9531eRdMvbDKv0q95/1pvtzYkj6BdzjxtbM91n4zYl6tmeKDILu+le9Qog==
+metamask-inpage-provider@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.3.tgz#856698255c2153b82203402c6b5337ca6363d9b0"
+  integrity sha512-JKbGkkR7qg+Z5Dayg6rpfXXzSVcXcp3BENbk2zgWwp/Aa70Sf9MHC7m364FeyIIio9A2r9OuJKV0Bcwmz0h+xg==
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"
