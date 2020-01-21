@@ -146,6 +146,9 @@
           line-height: 17px;
           color: black;
           margin-bottom: 8px;
+          .fa-info-circle {
+            margin-left: 6px;
+          }
         }
         input[type="number"] {
           border: 1px solid $geyser;
