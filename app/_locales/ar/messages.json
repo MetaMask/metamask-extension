@@ -109,10 +109,10 @@
   "attributions": {
     "message": "الصفات"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
   },
   "average": {
@@ -644,10 +644,7 @@
   "localhost": {
     "message": "المضيف المحلي 8545"
   },
-  "login": {
-    "message": "تسجيل الدخول"
-  },
-  "logout": {
+  "lock": {
     "message": "تسجيل الخروج"
   },
   "mainnet": {

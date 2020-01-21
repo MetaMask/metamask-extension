@@ -109,10 +109,10 @@
   "attributions": {
     "message": "विशेषताएं"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "ऑटो-लॉगआउट टाइमर (मिनट)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "मेटामास्क से स्वचालित रूप से लॉग आउट होने से पहले निष्क्रिय समय को मिनटों में सेट करें"
   },
   "average": {
@@ -648,10 +648,7 @@
   "localhost": {
     "message": "लोकलहोस्ट 8545"
   },
-  "login": {
-    "message": "लॉग इन करें"
-  },
-  "logout": {
+  "lock": {
     "message": "लॉग आउट"
   },
   "mainnet": {

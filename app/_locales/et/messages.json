@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Omistamised"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaatse väljalogimise taimer (minutites)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Seadistage jõudeolek minutites, enne kui MetaMask automaatselt välja logib"
   },
   "average": {
@@ -641,10 +641,7 @@
   "loadMore": {
     "message": "Laadi rohkem"
   },
-  "login": {
-    "message": "Logi sisse"
-  },
-  "logout": {
+  "lock": {
     "message": "Logi välja"
   },
   "mainnet": {

@@ -143,16 +143,16 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Log out and log back in', () => {
+  describe('Lock and unlock', () => {
     it('logs out of the account', async () => {
       await driver.clickElement(By.css('.account-menu__icon .identicon'))
       await driver.delay(regularDelayMs)
 
-      const logoutButton = await driver.findClickableElement(
-        By.css('.account-menu__logout-button')
+      const lockButton = await driver.findClickableElement(
+        By.css('.account-menu__lock-button')
       )
-      assert.equal(await logoutButton.getText(), 'Log out')
-      await logoutButton.click()
+      assert.equal(await lockButton.getText(), 'Lock')
+      await lockButton.click()
       await driver.delay(regularDelayMs)
     })
 

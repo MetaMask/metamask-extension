@@ -106,10 +106,10 @@
   "attributions": {
     "message": "Zásluhy"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
   },
   "average": {
@@ -626,10 +626,7 @@
   "loadMore": {
     "message": "Načítať viac"
   },
-  "login": {
-    "message": "Přihlásit"
-  },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "memorizePhrase": {

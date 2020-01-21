@@ -155,10 +155,10 @@
   "attributions": {
     "message": "Attributions"
   },
-  "autoLogoutTimeLimit": {
-    "message": "Auto-Logout Timer (minutes)"
+  "autoLockTimeLimit": {
+    "message": "Auto-Lock Timer (minutes)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before ConfluxPortal will automatically log out"
   },
   "average": {
@@ -791,14 +791,11 @@
   "localhost": {
     "message": "Localhost 12539"
   },
-  "login": {
-    "message": "Log In"
+  "lock": {
+    "message": "Lock"
   },
-  "logout": {
-    "message": "Log out"
-  },
-  "logoutTimeTooGreat": {
-    "message": "Logout time is too great"
+  "lockTimeTooGreat": {
+    "message": "Lock time is too great"
   },
   "mainnet": {
     "message": "Conflux Main Network (not released yet, fallback to conflux test net)"
@@ -1318,7 +1315,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Conflux account. Log in to dApps, send CFX, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties. (hardware account is not fulled tested, use with your own risk)"
+    "message": "Use your hardware account like you would with any Conflux account. Log in to dApps, send CFX, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties. (hardware account is not fully tested, use with your own risk)"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."

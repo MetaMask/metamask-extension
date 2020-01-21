@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Attribúciók"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automatikus kijelentkezés időzítő (perc)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Adja meg a MetaMask automatikus kijelentkezéséig tartó tétlen állapot idejét percekben "
   },
   "average": {
@@ -644,10 +644,7 @@
   "loadMore": {
     "message": "Továbbiak betöltése"
   },
-  "login": {
-    "message": "Belépés"
-  },
-  "logout": {
+  "lock": {
     "message": "Kilépés"
   },
   "mainnet": {

@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Jangka Waktu Keluar-Otomatis (menit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Atur waktu diam dalam menit sebelum MetaMask mengeluarkan Anda secara otomatis"
   },
   "average": {
@@ -635,10 +635,7 @@
   "loadMore": {
     "message": "Muat Lainnya"
   },
-  "login": {
-    "message": "Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Keluar"
   },
   "mainnet": {

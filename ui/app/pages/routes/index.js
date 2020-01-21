@@ -137,7 +137,7 @@ class Routes extends Component {
   }
 
   renderRoutes () {
-    const { autoLogoutTimeLimit, setLastActiveTime } = this.props
+    const { autoLockTimeLimit, setLastActiveTime } = this.props
 
     const routes = (
       <Switch>
@@ -195,7 +195,7 @@ class Routes extends Component {
       </Switch>
     )
 
-    if (autoLogoutTimeLimit > 0) {
+    if (autoLockTimeLimit > 0) {
       return (
         <IdleTimer onAction={setLastActiveTime} throttle={1000}>
           {routes}
@@ -443,7 +443,7 @@ Routes.propTypes = {
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
   hasPermissionsRequests: PropTypes.bool,
-  autoLogoutTimeLimit: PropTypes.number,
+  autoLockTimeLimit: PropTypes.number,
   addressConnectedToCurrentTab: PropTypes.string,
   showAccountDetail: PropTypes.func,
 }
@@ -462,7 +462,7 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
 
-  const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
+  const { autoLockTimeLimit = 0 } = preferencesSelector(state)
 
   return {
     // state from plugin
@@ -481,7 +481,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
-    autoLogoutTimeLimit,
+    autoLockTimeLimit,
     hasPermissionsRequests: hasPermissionRequests(state),
     addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }

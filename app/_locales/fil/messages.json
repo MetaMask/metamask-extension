@@ -100,10 +100,10 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout Timer (minuto)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "I-set ang idle time na minuto bago awtomatikong mag-log out ang MetaMask"
   },
   "back": {
@@ -595,10 +595,7 @@
   "loadMore": {
     "message": "Mag-load Pa"
   },
-  "login": {
-    "message": "Mag-log In"
-  },
-  "logout": {
+  "lock": {
     "message": "Mag-log out"
   },
   "memorizePhrase": {

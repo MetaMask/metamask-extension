@@ -106,10 +106,10 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador Auto-Cierre (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Establece el tiempo de inactividad en minutos antes de que MetaMask cierre la sesión automáticamente."
   },
   "average": {
@@ -533,10 +533,7 @@
   "loadMore": {
     "message": "Cargar Más"
   },
-  "login": {
-    "message": "Ingresar"
-  },
-  "logout": {
+  "lock": {
     "message": "Cerrar sesión"
   },
   "mainnet": {

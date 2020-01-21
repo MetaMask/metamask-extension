@@ -22,10 +22,10 @@ class AppStateController {
     this.timer = null
 
     preferencesStore.subscribe(state => {
-      this._setInactiveTimeout(state.preferences.autoLogoutTimeLimit)
+      this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
     })
 
-    this._setInactiveTimeout(preferences.autoLogoutTimeLimit)
+    this._setInactiveTimeout(preferences.autoLockTimeLimit)
   }
 
   setMkrMigrationReminderTimestamp (timestamp) {

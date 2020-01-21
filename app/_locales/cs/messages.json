@@ -268,10 +268,10 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "login": {
+  "unlock": {
     "message": "Přihlásit"
   },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "message": {

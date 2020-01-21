@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Sifa"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Kihesabu Muda wa Kuondoka Kwenye Akaunti Kiotomatiki (dakika)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Weka muda katika dakika kabla MetaMask haijaondoa kwenye akaunti kiotomatiki."
   },
   "average": {
@@ -632,10 +632,7 @@
   "loadMore": {
     "message": "Pak zAIDI"
   },
-  "login": {
-    "message": "Ingia kwenye akanuti"
-  },
-  "logout": {
+  "lock": {
     "message": "Toka kwenye akaunti"
   },
   "mainnet": {

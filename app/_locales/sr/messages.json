@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribucije"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
   },
   "average": {
@@ -645,10 +645,7 @@
   "loadMore": {
     "message": "Učitati više"
   },
-  "login": {
-    "message": "Ulogujte se"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjavi se"
   },
   "mainnet": {

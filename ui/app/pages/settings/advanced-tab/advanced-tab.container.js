@@ -7,7 +7,7 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
-  setAutoLogoutTimeLimit,
+  setAutoLockTimeLimit,
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
@@ -27,14 +27,14 @@ export const mapStateToProps = state => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  const { showFiatInTestnets, autoLogoutTimeLimit } = preferencesSelector(state)
+  const { showFiatInTestnets, autoLockTimeLimit } = preferencesSelector(state)
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
-    autoLogoutTimeLimit,
+    autoLockTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
@@ -55,8 +55,8 @@ export const mapDispatchToProps = dispatch => {
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
     },
-    setAutoLogoutTimeLimit: value => {
-      return dispatch(setAutoLogoutTimeLimit(value))
+    setAutoLockTimeLimit: value => {
+      return dispatch(setAutoLockTimeLimit(value))
     },
     setThreeBoxSyncingPermission: newThreeBoxSyncingState => {
       if (newThreeBoxSyncingState) {
