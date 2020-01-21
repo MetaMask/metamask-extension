@@ -1594,6 +1594,6 @@
     "message": "Request encryption public key"
   },
   "encryptionPublicKeyNotice": {
-    "message": "Этот сайт запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения."
+    "message": "This site would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you."
   }
 }
