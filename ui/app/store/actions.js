@@ -1937,8 +1937,8 @@ export function setShowFiatConversionOnTestnetsPreference (value) {
   return setPreference('showFiatInTestnets', value)
 }
 
-export function setAutoLogoutTimeLimit (value) {
-  return setPreference('autoLogoutTimeLimit', value)
+export function setAutoLockTimeLimit (value) {
+  return setPreference('autoLockTimeLimit', value)
 }
 
 export function setCompletedOnboarding () {

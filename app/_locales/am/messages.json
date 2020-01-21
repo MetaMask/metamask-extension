@@ -109,10 +109,10 @@
   "attributions": {
     "message": "አይነታ"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "በራስ ሰር ዘግቶ መውጫ ሰዓት ቆጣሪ (ደቂቃ)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask በራስ ሰር መንገድ ዘግቶ ከመውጣቱ በፊት የቦዘነ ጊዜን በደቂቃዎች ሙላ"
   },
   "average": {
@@ -648,10 +648,7 @@
   "loadMore": {
     "message": "ተጨማሪ ጫን"
   },
-  "login": {
-    "message": "በመለያ ግባ"
-  },
-  "logout": {
+  "lock": {
     "message": "ዘግተህ ውጣ"
   },
   "mainnet": {

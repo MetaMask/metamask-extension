@@ -106,10 +106,10 @@
   "attributions": {
     "message": "Was wir verwenden"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout-Timer (Minuten)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll"
   },
   "average": {
@@ -627,10 +627,7 @@
   "loadMore": {
     "message": "Mehr laden"
   },
-  "login": {
-    "message": "Login"
-  },
-  "logout": {
+  "lock": {
     "message": "Ausloggen"
   },
   "mainnet": {

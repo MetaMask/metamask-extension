@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Požymiai"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automatinio atjungimo laikmatis (minutės)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "Vietinis serveris 8545"
   },
-  "login": {
-    "message": "Prisijungti"
-  },
-  "logout": {
+  "lock": {
     "message": "Atsijungti"
   },
   "mainnet": {

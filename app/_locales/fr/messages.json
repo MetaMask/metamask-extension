@@ -106,10 +106,10 @@
   "attemptToCancelDescription": {
     "message": "Faire une demande d'annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l'annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Minuterie de déconnexion automatique (minutes)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Réglez le temps d'inactivité en minutes avant que MetaMask ne se déconnecte automatiquement."
   },
   "average": {
@@ -636,10 +636,7 @@
   "loadMore": {
     "message": "Charger plus"
   },
-  "login": {
-    "message": "Connexion"
-  },
-  "logout": {
+  "lock": {
     "message": "Déconnexion"
   },
   "mainnet": {

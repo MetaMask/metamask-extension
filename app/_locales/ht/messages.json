@@ -386,10 +386,7 @@
   "loadingTokens": {
     "message": "Telechaje Tokens..."
   },
-  "login": {
-    "message": "Ouvri"
-  },
-  "logout": {
+  "lock": {
     "message": "Dekonekte"
   },
   "mainnet": {

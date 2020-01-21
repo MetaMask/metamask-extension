@@ -281,10 +281,10 @@
   "loadingTokens": {
     "message": "Jetonlar yükleniyor..."
   },
-  "login": {
+  "unlock": {
     "message": "Giriş yap"
   },
-  "logout": {
+  "lock": {
     "message": "Çıkış"
   },
   "mainnet": {

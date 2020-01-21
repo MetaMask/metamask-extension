@@ -109,10 +109,10 @@
   "attributions": {
     "message": "來源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
   },
   "average": {
@@ -645,11 +645,8 @@
   "loadMore": {
     "message": "載入更多"
   },
-  "login": {
-    "message": "登入"
-  },
-  "logout": {
-    "message": "登出"
+  "lock": {
+    "message": "鎖定"
   },
   "mainnet": {
     "message": "乙太坊 主網路"
@@ -1262,6 +1259,9 @@
   },
   "unknownCameraError": {
     "message": "無法存取攝影鏡頭。請再試一次..."
+  },
+  "unlock": {
+    "message": "解鎖"
   },
   "unlockMessage": {
     "message": "去中心化網路世界等待著您"

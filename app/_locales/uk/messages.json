@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Авторство"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматичного виходу (хвилин)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Встановіть час відсутності активності у хвилинах після якого MetaMask буде здійснювати автоматичний вихід"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "Локальний хост 8545"
   },
-  "login": {
-    "message": "Увійти"
-  },
-  "logout": {
+  "lock": {
     "message": "Вийти"
   },
   "mainnet": {

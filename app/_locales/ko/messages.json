@@ -109,10 +109,10 @@
   "attributions": {
     "message": "속성"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "자동 로그아웃 타이머 (분)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask가 자동으로 로그아웃되기 전 유휴 시간을 분 단위로 설정하세요"
   },
   "average": {
@@ -645,10 +645,7 @@
   "localhost": {
     "message": "로컬호스트 8545"
   },
-  "login": {
-    "message": "로그인"
-  },
-  "logout": {
+  "lock": {
     "message": "로그아웃"
   },
   "mainnet": {
