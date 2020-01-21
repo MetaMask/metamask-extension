@@ -10348,7 +10348,7 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^3.4.0, eth-hd-keyring@^3.4.1:
+eth-hd-keyring@^3.4.0, eth-hd-keyring@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.5.0.tgz#3976d83a27b24305481c389178f290d9264e839d"
   integrity sha512-Ix1LcWYxHMxCCSIMz+TLXLtt50zF6ZDd/TRVXthdw91IwOk1ajuf7QHg3bCDcfeUpdf9oEpwIPbL3xjDqEEjYw==
@@ -10474,15 +10474,15 @@ eth-keyring-controller@^5.3.0:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-keyring-controller@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.4.0.tgz#c22711957c04af05bbd69801dbe38717430b27a9"
-  integrity sha512-nrMBo/nhZ1lDBH83JAklN28ci6hOP6XzhB+aQMasm9EddRSU6/dS4nCX5qtjyUA5Bm/UFrSHgZkG4k3eqdvKig==
+eth-keyring-controller@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.5.0.tgz#f8b78f69a0b0005873af2d1a6b2c655d6de51351"
+  integrity sha512-kWaukiHLMYNYtB/1vZyj1r1G6wU8u+DIYVMq8QUyFAxwcBnemsKISVPIXgltgXkuUiB/t9oXsA54bWBredgrVg==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    eth-hd-keyring "^3.4.1"
+    eth-hd-keyring "^3.5.0"
     eth-sig-util "^1.4.0"
     eth-simple-keyring "^3.5.0"
     ethereumjs-util "^5.1.2"
