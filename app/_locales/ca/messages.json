@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribucions"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
   },
   "average": {
@@ -635,10 +635,7 @@
   "localhost": {
     "message": "Host local 8545"
   },
-  "login": {
-    "message": "Inicia sessió"
-  },
-  "logout": {
+  "lock": {
     "message": "Tanca la sessió"
   },
   "mainnet": {
@@ -658,9 +655,6 @@
   },
   "metamaskDescription": {
     "message": "Conectant-te a Ethereum i la web descentralitzada."
-  },
-  "metamaskSeedWords": {
-    "message": "Frase de recuperació de MetaMask"
   },
   "metamaskVersion": {
     "message": "Versió MetaMask"

@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Функции"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
   },
   "average": {
@@ -647,10 +647,7 @@
   "localhost": {
     "message": "Локален хост 8545"
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Излизане"
   },
   "mainnet": {
@@ -670,9 +667,6 @@
   },
   "metamaskDescription": {
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
-  },
-  "metamaskSeedWords": {
-    "message": "Думи зародиш на MetaMask"
   },
   "metamaskVersion": {
     "message": "Версия на MetaMask"

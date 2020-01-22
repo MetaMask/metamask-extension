@@ -109,10 +109,10 @@
   "attributions": {
     "message": "مواصفات"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "Localhost 8545 "
   },
-  "login": {
-    "message": "ورود"
-  },
-  "logout": {
+  "lock": {
     "message": "خروج"
   },
   "mainnet": {
@@ -674,9 +671,6 @@
   },
   "metamaskDescription": {
     "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
-  },
-  "metamaskSeedWords": {
-    "message": "کلمات بازیاب MetaMask"
   },
   "metamaskVersion": {
     "message": "نسخه MetaMask"

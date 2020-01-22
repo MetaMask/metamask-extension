@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribūti"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Iestatiet bezdarbības laiku minūtēs, pēc kura MetaMask veiks automātisku izrakstīšanu"
   },
   "average": {
@@ -647,10 +647,7 @@
   "localhost": {
     "message": "Resursdators 8545"
   },
-  "login": {
-    "message": "Pierakstīties"
-  },
-  "logout": {
+  "lock": {
     "message": "Izrakstīties"
   },
   "mainnet": {
@@ -670,9 +667,6 @@
   },
   "metamaskDescription": {
     "message": "Veido savienojumu ar Ethereum un decentralizēto tīmekli."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask atkopšanas vārdi"
   },
   "metamaskVersion": {
     "message": "MetaMask versija"

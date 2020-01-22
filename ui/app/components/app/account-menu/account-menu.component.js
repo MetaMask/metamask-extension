@@ -315,13 +315,13 @@ export default class AccountMenu extends Component {
         <Item className="account-menu__header">
           { t('myAccounts') }
           <button
-            className="account-menu__logout-button"
+            className="account-menu__lock-button"
             onClick={() => {
               lockMetamask()
               history.push(DEFAULT_ROUTE)
             }}
           >
-            { t('logout') }
+            { t('lock') }
           </button>
         </Item>
         <Divider />

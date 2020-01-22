@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask"
   },
   "average": {
@@ -648,10 +648,7 @@
   "localhost": {
     "message": "Τοπικός Υπολογιστής  8545"
   },
-  "login": {
-    "message": "Σύνδεση"
-  },
-  "logout": {
+  "lock": {
     "message": "Αποσύνδεση"
   },
   "mainnet": {
@@ -671,9 +668,6 @@
   },
   "metamaskDescription": {
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
-  },
-  "metamaskSeedWords": {
-    "message": "Λέξεις Φύτρου MetaMask"
   },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "

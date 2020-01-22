@@ -239,10 +239,10 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
-  "login": {
+  "unlock": {
     "message": "Log in"
   },
-  "logout": {
+  "lock": {
     "message": "Uitloggen"
   },
   "mainnet": {

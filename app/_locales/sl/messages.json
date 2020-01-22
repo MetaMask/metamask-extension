@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Dodelitve"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovnik za samodejno odjavo (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavite, po koliko minutah mirovanja naj se MetaMask samodejno odjavi"
   },
   "average": {
@@ -636,10 +636,7 @@
   "loadMore": {
     "message": "Naloži več"
   },
-  "login": {
-    "message": "Prijava"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjava"
   },
   "mainnet": {
@@ -659,9 +656,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask je varen identitetni sklad za Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Seed Words"
   },
   "metamaskVersion": {
     "message": "Različica"

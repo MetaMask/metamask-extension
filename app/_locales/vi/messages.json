@@ -200,7 +200,7 @@
   "loadingTokens": {
     "message": "Đang tải mã token..."
   },
-  "logout": {
+  "lock": {
     "message": "Thoát"
   },
   "mainnet": {

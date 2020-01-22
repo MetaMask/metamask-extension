@@ -88,7 +88,7 @@ class RevealSeedPage extends Component {
     return (
       <div>
         <label className="reveal-seed__label">{t('yourPrivateSeedPhrase')}</label>
-        <ExportTextContainer text={this.state.seedWords} filename={t('metamaskSeedWords')} />
+        <ExportTextContainer text={this.state.seedWords} />
       </div>
     )
   }
