@@ -668,9 +668,6 @@
   "metamaskDescription": {
     "message": "Veido savienojumu ar Ethereum un decentralizēto tīmekli."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask atkopšanas vārdi"
-  },
   "metamaskVersion": {
     "message": "MetaMask versija"
   },

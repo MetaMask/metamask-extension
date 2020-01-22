@@ -548,9 +548,6 @@
   "metamaskDescription": {
     "message": "MetaMask es una identidad segura en Ethereum"
   },
-  "metamaskSeedWords": {
-    "message": "Palabras semilla de MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
   },

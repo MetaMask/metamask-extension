@@ -672,9 +672,6 @@
   "metamaskDescription": {
     "message": "Prijungiame jus prie „Ethereum“ ir decentralizuotojo žiniatinklio."
   },
-  "metamaskSeedWords": {
-    "message": "„MetaMask“ atkūrimo žodžiai"
-  },
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },

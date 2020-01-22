@@ -669,9 +669,6 @@
   "metamaskDescription": {
     "message": "ከ Ethereum እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask የዘር ቃላት"
-  },
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
   },

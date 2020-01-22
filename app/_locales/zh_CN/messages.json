@@ -663,9 +663,6 @@
   "metamaskDescription": {
     "message": "ConfluxPortal is a secure identity vault for Conflux."
   },
-  "metamaskSeedWords": {
-    "message": "ConfluxPortal 助记词"
-  },
   "metamaskVersion": {
     "message": "ConfluxPortal 版本"
   },

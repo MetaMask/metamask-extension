@@ -650,9 +650,6 @@
   "metamaskDescription": {
     "message": "Menghubungkan Anda ke Ethereum dan Web Terdesentralisasi."
   },
-  "metamaskSeedWords": {
-    "message": "Kata Benih MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },

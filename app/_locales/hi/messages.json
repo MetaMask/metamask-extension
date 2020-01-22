@@ -669,9 +669,6 @@
   "metamaskDescription": {
     "message": "आपको Ethereum और विकेंद्रीकृत वेब से कनेक्ट कर रहे हैं।"
   },
-  "metamaskSeedWords": {
-    "message": "मेटामास्क बीज शब्द"
-  },
   "metamaskVersion": {
     "message": "MetaMask का संस्करण"
   },

@@ -33,11 +33,7 @@ export default class RevealSeedPhrase extends PureComponent {
   }
 
   handleExport = () => {
-    exportAsFile(
-      'MetaMask Secret Backup Phrase',
-      this.props.seedPhrase,
-      'text/plain'
-    )
+    exportAsFile('', this.props.seedPhrase, 'text/plain')
   }
 
   handleNext = () => {

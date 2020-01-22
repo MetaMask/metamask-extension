@@ -657,9 +657,6 @@
   "metamaskDescription": {
     "message": "Te estamos conectando a Ethereum y a la web descentralizada."
   },
-  "metamaskSeedWords": {
-    "message": "Palabras de inicialización de MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
   },

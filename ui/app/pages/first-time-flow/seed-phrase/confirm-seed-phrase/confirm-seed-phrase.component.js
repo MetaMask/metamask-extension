@@ -70,11 +70,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleExport = () => {
-    exportAsFile(
-      'MetaMask Secret Backup Phrase',
-      this.props.seedPhrase,
-      'text/plain'
-    )
+    exportAsFile('', this.props.seedPhrase, 'text/plain')
   }
 
   handleSubmit = async () => {

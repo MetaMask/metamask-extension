@@ -668,9 +668,6 @@
   "metamaskDescription": {
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
   },
-  "metamaskSeedWords": {
-    "message": "Думи зародиш на MetaMask"
-  },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },

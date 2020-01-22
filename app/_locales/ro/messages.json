@@ -659,9 +659,6 @@
   "metamaskDescription": {
     "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
   },
-  "metamaskSeedWords": {
-    "message": "Cuvinte Seed MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },

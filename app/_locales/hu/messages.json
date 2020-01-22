@@ -665,9 +665,6 @@
   "metamaskDescription": {
     "message": "Csatlakozás az Ethereumhoz és a decentralizált hálózathoz."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask seed szavak"
-  },
   "metamaskVersion": {
     "message": "MetaMask verzió"
   },

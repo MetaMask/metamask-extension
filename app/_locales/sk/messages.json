@@ -638,9 +638,6 @@
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Seed slová MetaMask"
-  },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },

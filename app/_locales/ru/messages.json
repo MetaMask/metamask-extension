@@ -896,9 +896,6 @@
   "menu": {
     "message": "Меню"
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask ключевая фраза (сид)"
-  },
   "metamaskVersion": {
     "message": "Версия MetaMask"
   },

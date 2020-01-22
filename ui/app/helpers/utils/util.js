@@ -239,7 +239,22 @@ export function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
+export function getRandomFileName () {
+  let fileName = ''
+  const charBank = [
+    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+  ]
+  const fileNameLength = Math.floor(Math.random() * 7 + 6)
+
+  for (let i = 0; i < fileNameLength; i++) {
+    fileName += charBank[Math.floor(Math.random() * charBank.length)]
+  }
+
+  return fileName
+}
+
 export function exportAsFile (filename, data, type = 'text/csv') {
+  filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
   const blob = new Blob([data], { type })
   if (window.navigator.msSaveOrOpenBlob) {

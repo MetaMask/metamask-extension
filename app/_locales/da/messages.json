@@ -656,9 +656,6 @@
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seedord"
-  },
   "missingYourTokens": {
     "message": "Kan du ikke se dine tokens?"
   },

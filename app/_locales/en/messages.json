@@ -815,9 +815,6 @@
   "metamaskDescription": {
     "message": "Connecting you to Conflux and the Decentralized Web."
   },
-  "metamaskSeedWords": {
-    "message": "ConfluxPortal Seed Words"
-  },
   "metamaskVersion": {
     "message": "ConfluxPortal Version"
   },

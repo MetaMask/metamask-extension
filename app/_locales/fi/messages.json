@@ -669,9 +669,6 @@
   "metamaskDescription": {
     "message": "Sinua yhdistetään Ethereumiin ja hajautettuun verkkoon."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMaskin siemensanat"
-  },
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
