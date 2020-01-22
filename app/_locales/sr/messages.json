@@ -663,9 +663,6 @@
   "metamaskDescription": {
     "message": "Povezivanje na Ethereum i decentralizovani veb."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask reči početne vrednosti"
-  },
   "metamaskVersion": {
     "message": "MetaMask verzija"
   },

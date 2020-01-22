@@ -665,9 +665,6 @@
   "metamaskDescription": {
     "message": "Povezujete se na Ethereum i decentralizirani internet."
   },
-  "metamaskSeedWords": {
-    "message": "Početne riječi za MetaMask"
-  },
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
   },

@@ -666,9 +666,6 @@
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 저장소입니다."
   },
-  "metamaskSeedWords": {
-    "message": "메타마스크 시드 단어"
-  },
   "metamaskVersion": {
     "message": "메타마스크 버전"
   },

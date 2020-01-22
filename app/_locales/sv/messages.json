@@ -656,9 +656,6 @@
   "metamaskDescription": {
     "message": "Ansluter dig mot Ethereum och den decentraliserade webben."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask"
-  },
   "metamaskVersion": {
     "message": "MetaMask-version"
   },

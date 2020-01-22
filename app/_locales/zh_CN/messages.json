@@ -660,9 +660,6 @@
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask 助记词"
-  },
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },

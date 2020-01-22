@@ -672,9 +672,6 @@
   "metamaskDescription": {
     "message": "আপনার Ethereum এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask সীড শব্দসমূহ"
-  },
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },

@@ -669,9 +669,6 @@
   "metamaskDescription": {
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
   },
-  "metamaskSeedWords": {
-    "message": "Λέξεις Φύτρου MetaMask"
-  },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
   },

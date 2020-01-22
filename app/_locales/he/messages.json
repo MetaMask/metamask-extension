@@ -669,9 +669,6 @@
   "metamaskDescription": {
     "message": "מחבר אותך לאתריום ולרשת המבוזרת."
   },
-  "metamaskSeedWords": {
-    "message": "מילות גרעין (Seed) של MetaMask "
-  },
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },

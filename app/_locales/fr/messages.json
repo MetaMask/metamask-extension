@@ -651,9 +651,6 @@
   "metamaskDescription": {
     "message": "MetaMask est un coffre sécurisé pour votre identité sur Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Mots Seed pour MetaMask"
-  },
   "metamaskVersion": {
     "message": "Version de MetaMask"
   },

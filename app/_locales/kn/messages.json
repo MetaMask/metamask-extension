@@ -672,9 +672,6 @@
   "metamaskDescription": {
     "message": "ನಿಮ್ಮನ್ನು ಎಥೆರಿಯಮ್ ಮತ್ತು ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask ಸೀಡ್ ಪದಗಳು"
-  },
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },

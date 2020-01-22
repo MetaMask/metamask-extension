@@ -812,9 +812,6 @@
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
-  },
   "metamaskVersion": {
     "message": "MetaMask Version"
   },

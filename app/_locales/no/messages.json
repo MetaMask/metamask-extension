@@ -662,9 +662,6 @@
   "metamaskDescription": {
     "message": "Kobler deg til Ethereum og det desentraliserte nettet."
   },
-  "metamaskSeedWords": {
-    "message": "Mnemoniske gjenopprettingsfraser for MetaMask "
-  },
   "metamaskVersion": {
     "message": "MetaMask-versjon "
   },

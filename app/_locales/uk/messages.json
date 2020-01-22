@@ -672,9 +672,6 @@
   "metamaskDescription": {
     "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
   },
-  "metamaskSeedWords": {
-    "message": "Початкові слова MetaMask"
-  },
   "metamaskVersion": {
     "message": "Версія MetaMask"
   },

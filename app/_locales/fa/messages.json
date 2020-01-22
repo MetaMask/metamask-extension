@@ -672,9 +672,6 @@
   "metamaskDescription": {
     "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
   },
-  "metamaskSeedWords": {
-    "message": "کلمات بازیاب MetaMask"
-  },
   "metamaskVersion": {
     "message": "نسخه MetaMask"
   },

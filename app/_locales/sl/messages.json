@@ -657,9 +657,6 @@
   "metamaskDescription": {
     "message": "MetaMask je varen identitetni sklad za Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Seed Words"
-  },
   "metamaskVersion": {
     "message": "Različica"
   },

@@ -642,9 +642,6 @@
   "metamaskDescription": {
     "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Parole Seed di MetaMask"
-  },
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },

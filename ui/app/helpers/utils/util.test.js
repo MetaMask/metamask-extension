@@ -254,5 +254,20 @@ describe('util', function () {
         assert(result)
       })
     })
+
+    describe('#getRandomFileName', function () {
+      it('should only return a string containing alphanumeric characters', function () {
+        const result = util.getRandomFileName()
+        assert(result.match(/^[a-zA-Z0-9]*$/g))
+      })
+
+      // 50 samples
+      it('should return a string that is between 6 and 12 characters in length', function () {
+        for (let i = 0; i < 50; i++) {
+          const result = util.getRandomFileName()
+          assert(result.length >= 6 && result.length <= 12)
+        }
+      })
+    })
   })
 })

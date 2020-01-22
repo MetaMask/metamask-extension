@@ -607,9 +607,6 @@
   "metamaskDescription": {
     "message": "Kinokonekta ka sa Ethereum at sa Decentralized Web."
   },
-  "metamaskSeedWords": {
-    "message": "Seed Words ng MetaMask"
-  },
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
   },

@@ -662,9 +662,6 @@
   "metamaskDescription": {
     "message": "Teid ühendatakse Ethereumi ja detsentraliseeritud võrguga."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMaski seemnesõnad"
-  },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },

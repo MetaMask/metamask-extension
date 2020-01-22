@@ -663,9 +663,6 @@
   "metamaskDescription": {
     "message": "MetaMask to bezpieczny portfel dla Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Słowa Seed MetaMask"
-  },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
   },

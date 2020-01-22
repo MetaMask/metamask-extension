@@ -643,9 +643,6 @@
   "metamaskDescription": {
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
   },
-  "metamaskSeedWords": {
-    "message": "Perkataan Benih MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
