@@ -65,10 +65,14 @@ workflows:
             # - test-e2e-firefox
             - test-integration-flat-chrome
             - test-integration-flat-firefox
+      - benchmark:
+          requires:
+            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
             - prep-build
+            - benchmark
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -270,6 +274,27 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+
+  benchmark:
+    docker:
+      - image: circleci/node:10.17-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Run page load benchmark
+          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
 
   job-publish-prerelease:
     docker:

@@ -7,7 +7,7 @@ const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('./helpers')
 const { PAGES } = require('./webdriver/driver')
 
-const DEFAULT_NUM_SAMPLES = 10
+const DEFAULT_NUM_SAMPLES = 20
 const ALL_PAGES = Object.values(PAGES)
 
 async function measurePage (pageName) {
@@ -16,6 +16,7 @@ async function measurePage (pageName) {
     const passwordField = await driver.findElement(By.css('#password'))
     await passwordField.sendKeys('correct horse battery staple')
     await passwordField.sendKeys(Key.ENTER)
+    await driver.findElement(By.css('.account-details__account-name'))
     await driver.navigate(pageName)
     await driver.delay(1000)
     metrics = await driver.collectMetrics()
