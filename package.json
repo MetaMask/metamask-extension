@@ -105,7 +105,6 @@
     "deep-extend": "^0.5.1",
     "deep-freeze-strict": "1.1.1",
     "detect-node": "^2.0.3",
-    "detectrtc": "^1.3.6",
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
     "eth-block-tracker": "^4.4.2",
