@@ -24161,13 +24161,6 @@ rst-selector-parser@^2.2.3:
     lodash.flattendeep "^4.4.0"
     nearley "^2.7.10"
 
-rtcpeerconnection-shim@^1.2.10:
-  version "1.2.13"
-  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.13.tgz#326e316b06e8b96b40f7558c8f582b86dd2c1b46"
-  integrity sha512-Xz4zQLZNs9lFBvqbaHGIjLWtyZ1V82ec5r+WNEo7NlIx3zF5M3ytn9mkkfYeZmpE032cNg3Vvf0rP8kNXUNd9w==
-  dependencies:
-    sdp "^2.6.0"
-
 rtlcss@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/rtlcss/-/rtlcss-2.4.0.tgz#482ea28f2b9fe06dd0ab3057997be9af13da84c1"
@@ -24499,11 +24492,6 @@ scss-tokenizer@^0.2.3:
   dependencies:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
-
-sdp@^2.6.0, sdp@^2.7.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.8.0.tgz#8d914a733b1c19b6d8fd36ba6cd2dfbfbd668b8a"
-  integrity sha512-wRSES07rAwKWAR7aev9UuClT7kdf9ZTdeUK5gTgHue9vlhs19Fbm3ccNEGJO4y2IitH4/JzS4sdzyPl6H2KQLw==
 
 secp256k1@^3.0.1, secp256k1@^3.6.1, secp256k1@^3.6.2:
   version "3.7.1"
@@ -28448,14 +28436,6 @@ webpack@^4.28.0, webpack@^4.32.0:
     terser-webpack-plugin "^1.1.0"
     watchpack "^1.5.0"
     webpack-sources "^1.3.0"
-
-webrtc-adapter@^6.3.0:
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-6.3.2.tgz#7e616e27defe31968b22b01b902db0d0e68ae786"
-  integrity sha512-7pFMXpZCka7ScIQyk8Wo+fOr3OlKLtGd6YHqkHVT74zerpY2Siyds8sxsmkE0bNqsi/J1b0vDzN7WpB34dQzAA==
-  dependencies:
-    rtcpeerconnection-shim "^1.2.10"
-    sdp "^2.7.0"
 
 "webrtcsupport@github:ipfs/webrtcsupport":
   version "2.2.0"
