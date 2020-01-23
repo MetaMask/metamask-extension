@@ -202,6 +202,7 @@
     "@storybook/addon-info": "^5.2.8",
     "@storybook/addon-knobs": "^5.2.8",
     "@storybook/react": "^5.2.8",
+    "@storybook/storybook-deployer": "^2.8.1",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
