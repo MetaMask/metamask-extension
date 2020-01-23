@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { BrowserQRCodeReader } from '@zxing/library'
-import 'webrtc-adapter'
 import Spinner from '../../../ui/spinner'
 import WebcamUtils from '../../../../../lib/webcam-utils'
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component'
