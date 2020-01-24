@@ -38,7 +38,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     markPasswordForgotten()
     history.push(RESTORE_VAULT_ROUTE)
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
     }
   }
