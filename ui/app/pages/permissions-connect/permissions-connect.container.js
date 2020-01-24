@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
 import PropTypes from 'prop-types'
 import PermissionApproval from './permissions-connect.component'
 import {
@@ -63,9 +62,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const PermissionApprovalContainer = compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)(PermissionApproval)
+const PermissionApprovalContainer = connect(mapStateToProps, mapDispatchToProps)(PermissionApproval)
 
 PermissionApprovalContainer.propTypes = {
   history: PropTypes.object.isRequired,
