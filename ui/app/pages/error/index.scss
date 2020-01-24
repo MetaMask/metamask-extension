@@ -1,0 +1,41 @@
+.error-page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+
+  padding: 35px 10px 10px 10px;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    font-size: 42px;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  &__subheader {
+    font-size: 19px;
+    padding: 10px 0;
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+  }
+
+  &__details {
+    font-size: 18px;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 720px;
+    padding-top: 10px;
+  }
+
+  &__stack {
+    overflow-x: auto;
+    background-color: #eee;
+  }
+}
