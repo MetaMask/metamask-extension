@@ -1,6 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 import SignatureRequest from './signature-request.component'
 import { goHome } from '../../../store/actions'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
@@ -66,7 +64,8 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
 )(SignatureRequest)

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
 
 import ConnectedSitesList from './connected-sites-list.component'
 import {
@@ -52,6 +51,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default compose(connect(mapStateToProps, mapDispatchToProps))(
-  ConnectedSitesList
-)
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectedSitesList)

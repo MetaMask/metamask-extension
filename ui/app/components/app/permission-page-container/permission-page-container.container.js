@@ -1,6 +1,4 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
 import PermissionPageContainer from './permission-page-container.component'
 import {
   getPermissionsDescriptions,
@@ -25,7 +23,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps)
-)(PermissionPageContainer)
+export default connect(mapStateToProps)(PermissionPageContainer)

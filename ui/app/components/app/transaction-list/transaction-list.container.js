@@ -1,6 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 import TransactionList from './transaction-list.component'
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -54,7 +52,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
 )(TransactionList)

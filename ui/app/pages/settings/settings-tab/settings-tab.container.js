@@ -1,5 +1,4 @@
 import SettingsTab from './settings-tab.component'
-import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import {
   setCurrentCurrency,
@@ -48,6 +47,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default compose(connect(mapStateToProps, mapDispatchToProps))(
-  SettingsTab
-)
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab)
