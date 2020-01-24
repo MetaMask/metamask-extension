@@ -634,9 +634,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -660,9 +658,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
 
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
 

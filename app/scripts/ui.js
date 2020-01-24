@@ -48,7 +48,7 @@ async function start () {
   }
 
   // identify window type (popup, notification)
-  const windowType = getEnvironmentType(window.location.href)
+  const windowType = getEnvironmentType()
   global.METAMASK_UI_TYPE = windowType
   closePopupIfOpen(windowType)
 

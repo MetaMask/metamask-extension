@@ -31,8 +31,7 @@ const mapStateToProps = state => {
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
 
-  const isPopup =
-    getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
   const firstPermissionsRequest = getFirstPermissionRequest(state)
   const firstPermissionsRequestId =
     firstPermissionsRequest && firstPermissionsRequest.metadata

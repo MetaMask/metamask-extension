@@ -10,7 +10,7 @@ import ExtensionPlatform from './platforms/extension'
 document.addEventListener('DOMContentLoaded', start)
 
 function start () {
-  const windowType = getEnvironmentType(window.location.href)
+  const windowType = getEnvironmentType()
   const hash = window.location.hash.substring(1)
   const suspect = querystring.parse(hash)
 

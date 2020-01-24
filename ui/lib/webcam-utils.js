@@ -9,8 +9,7 @@ import { getEnvironmentType, getPlatform } from '../../app/scripts/lib/util'
 
 class WebcamUtils {
   static async checkStatus () {
-    const isPopup =
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
     const isFirefoxOrBrave =
       getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE)
 

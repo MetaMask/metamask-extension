@@ -389,10 +389,7 @@ export default class AccountMenu extends Component {
                 name: 'Clicked Connect Hardware',
               },
             })
-            if (
-              getEnvironmentType(window.location.href) ===
-              ENVIRONMENT_TYPE_POPUP
-            ) {
+            if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
               global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
             } else {
               history.push(CONNECT_HARDWARE_ROUTE)

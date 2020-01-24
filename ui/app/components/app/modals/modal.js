@@ -236,10 +236,7 @@ const MODALS = {
     contents: <HideTokenConfirmationModal />,
     mobileModalStyle: {
       width: '95%',
-      top:
-        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
-          ? '52vh'
-          : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -273,10 +270,7 @@ const MODALS = {
     ),
     mobileModalStyle: {
       width: '95%',
-      top:
-        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
-          ? '52vh'
-          : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -290,10 +284,7 @@ const MODALS = {
     ),
     mobileModalStyle: {
       width: '95%',
-      top:
-        getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
-          ? '52vh'
-          : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',

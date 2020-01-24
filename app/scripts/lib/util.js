@@ -18,7 +18,7 @@ import {
 /**
  * Used to determine the window type through which the app is being viewed.
  *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
- *  - 'responsive' refers to the main browser window
+ *  - 'fullscreen' refers to the main browser window
  *  - 'notification' refers to the popup that appears in its own window when taking action outside of metamask
  *  - 'background' refers to the background page
  *
