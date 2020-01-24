@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { createRef, Component } from 'react'
 import metamaskLogo from 'metamask-logo'
 import debounce from 'debounce'
 
@@ -21,6 +21,8 @@ export default class Mascot extends Component {
       width,
       height,
     })
+
+    this.mascotContainer = createRef()
 
     this.refollowMouse = debounce(
       this.logo.setFollowMouse.bind(this.logo, true),
@@ -49,9 +51,7 @@ export default class Mascot extends Component {
   }
 
   componentDidMount () {
-    const targetDivId = 'metamask-mascot-container'
-    const container = document.getElementById(targetDivId)
-    container.appendChild(this.logo.container)
+    this.mascotContainer.current.appendChild(this.logo.container)
   }
 
   componentWillUnmount () {
@@ -66,6 +66,6 @@ export default class Mascot extends Component {
     // the event emitter is on `this.props`
     // and we dont get that until render
     this.handleAnimationEvents()
-    return <div id="metamask-mascot-container" style={{ zIndex: 0 }} />
+    return <div ref={this.mascotContainer} style={{ zIndex: 0 }} />
   }
 }
