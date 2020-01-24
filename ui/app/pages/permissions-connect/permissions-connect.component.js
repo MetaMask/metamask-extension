@@ -62,7 +62,7 @@ export default class PermissionConnect extends Component {
   }
 
   removeBeforeUnload = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
       window.removeEventListener('beforeunload', this.beforeUnload)
     }
   }
@@ -102,7 +102,7 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
       setTimeout(async () => {
         const currentTab = await global.platform.currentTab()
         try {
@@ -113,9 +113,9 @@ export default class PermissionConnect extends Component {
           global.platform.closeTab(currentTab.id)
         }
       }, 2000)
-    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       history.push(DEFAULT_ROUTE)
-    } else if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       history.push(CONNECTED_ROUTE)
     }
   }
@@ -134,7 +134,7 @@ export default class PermissionConnect extends Component {
       return history.push(DEFAULT_ROUTE)
     }
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
       window.addEventListener('beforeunload', this.beforeUnload)
     }
   }
