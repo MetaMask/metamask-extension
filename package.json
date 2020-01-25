@@ -88,7 +88,6 @@
     "debounce": "1.1.0",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
-    "detect-node": "^2.0.3",
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
     "eth-block-tracker": "^4.4.2",
