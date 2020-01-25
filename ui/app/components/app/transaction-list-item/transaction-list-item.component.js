@@ -198,7 +198,7 @@ export default class TransactionListItem extends PureComponent {
       ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
       : txParams.to
 
-    const isFullScreen = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_FULLSCREEN
+    const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
     const showEstimatedTime = transactionTimeFeatureActive &&
       (transaction.id === firstPendingTransactionId) &&
       isFullScreen
