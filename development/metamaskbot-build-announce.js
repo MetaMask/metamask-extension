@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs')
 const path = require('path')
-const request = require('request-promise')
+const fetch = require('node-fetch')
 const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
@@ -152,14 +152,15 @@ async function start () {
   console.log(`Announcement:\n${commentBody}`)
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
-  await request({
+  const response = await fetch(POST_COMMENT_URI, {
     method: 'POST',
-    uri: POST_COMMENT_URI,
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
       'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
     },
   })
-
+  if (!response.ok) {
+    throw new Error(`Post comment failed with status '${response.statusText}'`)
+  }
 }
