@@ -58,7 +58,7 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
     "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
