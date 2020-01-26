@@ -1,6 +1,5 @@
 import React from 'react'
 import { addDecorator } from '@storybook/react'
-import { withInfo } from '@storybook/addon-info'
 import { withKnobs } from '@storybook/addon-knobs/react'
 
 const styles = {
@@ -16,6 +15,5 @@ const CenterDecorator = story => (
   </div>
 )
 
-addDecorator((story, context) => withInfo()(story)(context))
 addDecorator(withKnobs)
 addDecorator(CenterDecorator)
