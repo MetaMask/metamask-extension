@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs')
 const path = require('path')
-const request = require('request-promise')
+const fetch = require('node-fetch')
 const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
 
 start().catch(console.error)
@@ -78,7 +78,11 @@ async function start () {
 
   const benchmarkResults = {}
   for (const platform of platforms) {
-    const benchmarkPath = path.resolve(__dirname, '..', path.join('test-artifacts', platform, 'benchmark', 'pageload.json'))
+    const benchmarkPath = path.resolve(
+      __dirname,
+      '..',
+      path.join('test-artifacts', platform, 'benchmark', 'pageload.json')
+    )
     try {
       const data = await fs.readFile(benchmarkPath, 'utf8')
       const benchmark = JSON.parse(data)
@@ -87,7 +91,9 @@ async function start () {
       if (error.code === 'ENOENT') {
         console.log(`No benchmark data found for ${platform}; skipping`)
       } else {
-        console.error(`Error encountered processing benchmark data for '${platform}': '${error}'`)
+        console.error(
+          `Error encountered processing benchmark data for '${platform}': '${error}'`
+        )
       }
     }
   }
@@ -98,8 +104,12 @@ async function start () {
     commentBody = artifactsBody
   } else {
     try {
-      const chromePageLoad = Math.round(parseFloat(benchmarkResults.chrome.notification.average.load))
-      const chromePageLoadMarginOfError = Math.round(parseFloat(benchmarkResults.chrome.notification.marginOfError.load))
+      const chromePageLoad = Math.round(
+        parseFloat(benchmarkResults.chrome.notification.average.load)
+      )
+      const chromePageLoadMarginOfError = Math.round(
+        parseFloat(benchmarkResults.chrome.notification.marginOfError.load)
+      )
       const benchmarkSummary = `Page Load Metrics (${chromePageLoad} ± ${chromePageLoadMarginOfError} ms)`
 
       const allPlatforms = new Set()
@@ -133,14 +143,21 @@ async function start () {
           for (const metric of allMetrics) {
             let metricData = `<td>${metric}</td>`
             for (const measure of allMeasures) {
-              metricData += `<td align="right">${Math.round(parseFloat(benchmarkResults[platform][page][measure][metric]))}</td>`
+              metricData += `<td align="right">${Math.round(
+                parseFloat(benchmarkResults[platform][page][measure][metric])
+              )}</td>`
             }
             metricRows.push(metricData)
           }
-          metricRows[0] = `<td rowspan="${allMetrics.size}">${capitalizeFirstLetter(page)}</td>${metricRows[0]}`
+          metricRows[0] = `<td rowspan="${
+            allMetrics.size
+          }">${capitalizeFirstLetter(page)}</td>${metricRows[0]}`
           pageRows.push(...metricRows)
         }
-        pageRows[0] = `<td rowspan="${allPages.size * allMetrics.size}">${capitalizeFirstLetter(platform)}</td>${pageRows[0]}`
+        pageRows[0] = `<td rowspan="${allPages.size *
+          allMetrics.size}">${capitalizeFirstLetter(platform)}</td>${
+          pageRows[0]
+        }`
         for (const row of pageRows) {
           tableRows.push(`<tr>${row}</tr>`)
         }
@@ -150,7 +167,9 @@ async function start () {
       for (const measure of allMeasures) {
         benchmarkTableHeaders.push(`${capitalizeFirstLetter(measure)} (ms)`)
       }
-      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders.map(header => `<th>${header}</th>`).join('')}</tr></thead>`
+      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders
+        .map(header => `<th>${header}</th>`)
+        .join('')}</tr></thead>`
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`
       const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>`
@@ -166,9 +185,8 @@ async function start () {
   console.log(`Announcement:\n${commentBody}`)
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
-  await request({
+  await fetch(POST_COMMENT_URI, {
     method: 'POST',
-    uri: POST_COMMENT_URI,
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'confluxbot',
