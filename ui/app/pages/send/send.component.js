@@ -6,7 +6,7 @@ import {
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import { getToWarningObject, getToErrorObject } from './send-content/add-recipient/add-recipient'
 import SendHeader from './send-header'
 import AddRecipient from './send-content/add-recipient'
