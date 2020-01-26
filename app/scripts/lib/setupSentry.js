@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser'
+import { Dedupe, ExtraErrorData } from '@sentry/integrations'
 
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 import extractEthjsErrorMessage from './extractEthjsErrorMessage'
@@ -26,6 +27,10 @@ function setupSentry (opts) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    integrations: [
+      new Dedupe(),
+      new ExtraErrorData(),
+    ],
     release,
     beforeSend: (report) => rewriteReport(report),
   })
