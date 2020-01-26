@@ -6,7 +6,7 @@ This migration breaks out the CurrencyController substate
 
 */
 
-import merge from 'deep-extend'
+import { merge } from 'lodash'
 
 import clone from 'clone'
 
