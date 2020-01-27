@@ -92,7 +92,7 @@ export function getSelectedAddress (state) {
 }
 
 function lastSelectedAddressSelector (state, origin) {
-  return state.metamask.selectedAddressHistory[origin] || null
+  return state.metamask.lastSelectedAddressByOrigin[origin] || null
 }
 
 // not using reselect here since the returns are contingent;

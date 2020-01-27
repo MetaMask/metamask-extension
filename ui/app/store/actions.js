@@ -2242,6 +2242,7 @@ export function legacyExposeAccounts (origin, accounts) {
 export function removePermissionsFor (domains) {
   return () => {
     background.removePermissionsFor(domains)
+    background.removeLastSelectedAddressesFor(Object.keys(domains))
   }
 }
 
@@ -2251,6 +2252,7 @@ export function removePermissionsFor (domains) {
 export function clearPermissions () {
   return () => {
     background.clearPermissions()
+    background.clearLastSelectedAddressHistory()
   }
 }
 
