@@ -1,6 +1,5 @@
 
-import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import deepEqual from 'fast-deep-equal'
+import { createSelector } from 'reselect'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
@@ -24,18 +23,12 @@ const accountsPermissionSelector = createSelector(
   }
 )
 
-// comparing caveats should be cheap, at least for now
-const createCaveatEqualSelector = createSelectorCreator(
-  defaultMemoize,
-  (a = {}, b = {}) => deepEqual(a.caveats, b.caveats)
-)
-
 /**
  * Selects the permitted accounts from an eth_accounts permission.
  * Expects input from accountsPermissionsSelector.
  * @returns - An empty array or an array of accounts.
  */
-export const getPermittedAccounts = createCaveatEqualSelector(
+export const getPermittedAccounts = createSelector(
   accountsPermissionSelector, // deep equal check performed on this output
   (accountsPermission = {}) => {
 
