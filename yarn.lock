@@ -6678,12 +6678,12 @@ bytewise@~1.1.0:
     bytewise-core "^1.2.2"
     typewise "^1.0.3"
 
-c3@^0.6.7:
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/c3/-/c3-0.6.10.tgz#465f9bc5fbafb58c33c8ed641b0ec9717b158452"
-  integrity sha512-8HjpD1eSma75HI66hLQ+jD5KEvUMhSiiKfovQlyJk+Wxa1ebRL7Smxgu3ybBHkv9khe9m94TJRHpZ9Svcjo40w==
+c3@^0.7.10:
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/c3/-/c3-0.7.12.tgz#ad6205703bab9c2cbedc0223ba7fb2aabc31e94b"
+  integrity sha512-8gXyKMr9oM171aRGCOqezwEbWwEtIKmEkyvdfgH4oIunSsiTVWyw9Cz6os78LkYPRLMbHDgKcjkQh4EPCrRupQ==
   dependencies:
-    d3 "^5.0.0"
+    d3 "^5.8.0"
 
 cacache@^12.0.2:
   version "12.0.3"
@@ -8766,10 +8766,10 @@ d3-zoom@1:
     d3-selection "1"
     d3-transition "1"
 
-d3@^5.0.0, d3@^5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-5.7.0.tgz#f189d338bdde62acf02f308918e0ec34dd7568f9"
-  integrity sha512-8KEIfx+dFm8PlbJN9PI0suazrZ41QcaAufsKE9PRcqYPWLngHIyWJZX96n6IQKePGgeSu0l7rtlueSSNq8Zc3g==
+d3@^5.15.0, d3@^5.8.0:
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-5.15.0.tgz#ffd44958e6a3cb8a59a84429c45429b8bca5677a"
+  integrity sha512-C+E80SL2nLLtmykZ6klwYj5rPqB5nlfN5LdWEAVdWPppqTD8taoJi2PxLZjPeYT8FFRR2yucXq+kBlOnnvZeLg==
   dependencies:
     d3-array "1"
     d3-axis "1"
