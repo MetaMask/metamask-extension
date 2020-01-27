@@ -25323,10 +25323,10 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
-rpc-cap@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-1.0.1.tgz#c19f6651d9d003256c73831422e0bd60b4fa8b55"
-  integrity sha512-M75F5IfohYkwGvitWmstimP9OL+9h10m1ZRC2zCB1Nli4EPzL8n5re58xlrcOnwOO38FdSSPfcwcCzMuVT8K2g==
+rpc-cap@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-1.0.3.tgz#c58f99ee97a92441f4310f407c0f40fecdbf0e78"
+  integrity sha512-6lheD7UU4IY+OpILTL65E5NQWFPfG1Igd/CAGbnMJY+3szmQ9mUrf4/3bbcvNhu64Q/KYfCstVhxJREmTeFLOg==
   dependencies:
     clone "^2.1.2"
     eth-json-rpc-errors "^2.0.0"

@@ -1235,6 +1235,7 @@ export function showAccountDetail (address) {
       if (err) {
         return dispatch(displayWarning(err.message))
       }
+      background.handleNewAccountSelected(origin, address)
       dispatch(updateTokens(tokens))
       dispatch({
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
@@ -2208,6 +2209,7 @@ export function legacyExposeAccounts (origin, accounts) {
 export function removePermissionsFor (domains) {
   return () => {
     background.removePermissionsFor(domains)
+    background.removeLastSelectedAddressesFor(Object.keys(domains))
   }
 }
 
@@ -2217,6 +2219,7 @@ export function removePermissionsFor (domains) {
 export function clearPermissions () {
   return () => {
     background.clearPermissions()
+    background.clearLastSelectedAddressHistory()
   }
 }
 
