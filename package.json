@@ -201,8 +201,7 @@
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
     "valid-url": "^1.0.9",
-    "web3-stream-provider": "^4.0.0",
-    "xtend": "^4.0.1"
+    "web3-stream-provider": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -216,11 +215,11 @@
     "@metamask/forwarder": "^1.1.0",
     "@metamask/onboarding": "^0.2.0",
     "@sentry/cli": "^1.49.0",
-    "@yqrashawn/conflux-local-network-lite": "^0.9.10",
     "@storybook/addon-actions": "^5.2.8",
     "@storybook/addon-knobs": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@storybook/storybook-deployer": "^2.8.1",
+    "@yqrashawn/conflux-local-network-lite": "^0.9.10",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
