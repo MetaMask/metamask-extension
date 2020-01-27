@@ -14,10 +14,12 @@ const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-I
 class JsonImportSubview extends Component {
   state = {
     fileContents: '',
+    isEmpty: true,
   }
 
   render () {
     const { error } = this.props
+    const enabled = !this.state.isEmpty && this.state.fileContents !== ''
 
     return (
       <div className="new-account-import-form__json">
@@ -40,6 +42,7 @@ class JsonImportSubview extends Component {
           placeholder={this.context.t('enterPassword')}
           id="json-password-box"
           onKeyPress={this.createKeyringOnEnter.bind(this)}
+          onChange={() => this.checkInputEmpty()}
         />
         <div className="new-account-create-form__buttons">
           <Button
@@ -55,6 +58,7 @@ class JsonImportSubview extends Component {
             large
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}
+            disabled={!enabled}
           >
             {this.context.t('import')}
           </Button>
@@ -118,6 +122,16 @@ class JsonImportSubview extends Component {
         }
       })
       .catch(err => err && displayWarning(err.message || err))
+  }
+
+  checkInputEmpty () {
+    const input = document.getElementById('json-password-box')
+    const password = input.value
+    let isEmpty = true
+    if (password !== '') {
+      isEmpty = false
+    }
+    this.setState({ isEmpty })
   }
 }
 
