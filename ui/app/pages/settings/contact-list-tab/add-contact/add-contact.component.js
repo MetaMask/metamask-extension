@@ -9,7 +9,7 @@ import {
 } from '../../../../helpers/utils/util'
 import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
