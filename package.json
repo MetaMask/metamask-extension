@@ -60,7 +60,7 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
     "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
@@ -127,8 +127,7 @@
     "json-rpc-engine": "^5.1.6",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
-    "lodash.debounce": "^4.0.8",
-    "lodash.shuffle": "^4.2.0",
+    "lodash": "^4.17.15",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
     "metamask-inpage-provider": "^4.0.3",
@@ -267,7 +266,6 @@
     "karma-qunit": "^1.2.1",
     "koa": "^2.7.0",
     "lockfile-lint": "^3.0.5",
-    "lodash.assign": "^4.0.6",
     "mocha": "^5.0.0",
     "mocha-eslint": "^4.0.0",
     "mocha-jsdom": "^1.1.0",
