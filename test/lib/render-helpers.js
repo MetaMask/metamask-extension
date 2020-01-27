@@ -1,5 +1,4 @@
 import React from 'react'
-import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { MemoryRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -48,25 +47,4 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   )
 
   return mount(<Wrapper />, createContext())
-}
-
-export function stubComponent (componentClass) {
-
-  const lifecycleMethods = [
-    'render',
-    'componentWillMount',
-    'componentDidMount',
-    'componentWillReceiveProps',
-    'shouldComponentUpdate',
-    'componentWillUpdate',
-    'componentDidUpdate',
-    'componentWillUnmount',
-  ]
-
-  lifecycleMethods.forEach((method) => {
-    if (typeof componentClass.prototype[method] !== 'undefined') {
-      sinon.stub(componentClass.prototype, method).returns(null)
-    }
-  })
-
 }

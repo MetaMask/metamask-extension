@@ -116,8 +116,9 @@ describe('Account Menu', async () => {
 
   describe('Log Out', () => {
     let logout
+
     it('logout', () => {
-      logout = wrapper.find('.account-menu__logout-button')
+      logout = wrapper.find('.account-menu__lock-button')
       assert.equal(logout.length, 1)
     })
 

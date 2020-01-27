@@ -2,9 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import { stubComponent } from '../../../../../test/lib/render-helpers'
 import UnlockPage from '../index'
-import Mascot from '../../../components/ui/mascot'
 
 describe('Unlock Page', () => {
   let wrapper
@@ -21,7 +19,6 @@ describe('Unlock Page', () => {
     showOptInModal: sinon.spy(),
   }
 
-  stubComponent(Mascot)
 
   beforeEach(() => {
 
