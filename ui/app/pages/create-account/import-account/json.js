@@ -10,7 +10,7 @@ const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { getMetaMaskAccounts } = require('../../../selectors/selectors')
 import Button from '../../../components/ui/button'
 
-const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts'
+const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
 class JsonImportSubview extends Component {
   constructor (props) {

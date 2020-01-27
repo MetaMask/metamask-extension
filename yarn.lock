@@ -10038,10 +10038,10 @@ eth-block-tracker@^4.4.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-contract-metadata@^1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.11.0.tgz#4d23a8208d5d53be9d4c0696ed8492b505c6bca1"
-  integrity sha512-Bbvio71M+lH+qXd8XXddpTc8hhjL9m4fNPOxmZFIX8z0/VooUdwV8YmmDAbkU5WVioZi+Jp1XaoO7VwzXnDboA==
+eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.12.1.tgz#41014c8c0123453cee15acbcc14299c4d470c759"
+  integrity sha512-9u2jUcdxaKIv4RvA9RtjyD4+M2yWt4yCulR5bpdQTiG3HUFnN9lHtNL5NIRDpvQVJKerFhexrgEM2WdGP3a6VA==
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
@@ -12180,10 +12180,10 @@ fuse.js@^3.4.4:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
   integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
 
-gaba@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.0.tgz#ccd9f99c56687b5acd39f9e3ceb435b2a59b6aa1"
-  integrity sha512-HoVreAdZssL0jNHuzZ7WP+YKZ0riu44jVDWxhQ9hsgPuzxbVEsz9fO/HDxqAdNZS1Cswayq6+ciZ3HSCFWMKbQ==
+gaba@^1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.3.tgz#4e0e106f3640930f1f06ffe72546903b4c51813e"
+  integrity sha512-zC9CpaksncAT9SSc4QAxozUE+SKIWN+r9YwhjAJoSeh9joqPJsXlJOHg1/CrHABpvN68QdE00wAYSabYM02EqQ==
   dependencies:
     await-semaphore "^0.1.3"
     eth-contract-metadata "^1.11.0"

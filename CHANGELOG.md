@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 7.7.3 Fri Jan 24 2020
+- [#7894](https://github.com/MetaMask/metamask-extension/pull/7894): Update GABA dependency version
+- [#7901](https://github.com/MetaMask/metamask-extension/pull/7901): Use eth-contract-metadata@1.12.1
+- [#7910](https://github.com/MetaMask/metamask-extension/pull/7910): Fixing broken JSON import help link
+
 ## 7.7.2 Fri Jan 10 2020
 - [#7753](https://github.com/MetaMask/metamask-extension/pull/7753): Fix gas estimate for tokens
 - [#7473](https://github.com/MetaMask/metamask-extension/pull/7473): Fix transaction order on transaction confirmation screen
