@@ -100,7 +100,7 @@
     "browserify-derequire": "^0.9.4",
     "c3": "^0.6.7",
     "cfx-fc-abi": "^1.0.0",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "clone": "^2.1.2",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",
