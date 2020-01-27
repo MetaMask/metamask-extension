@@ -83,12 +83,12 @@ workflows:
             - prep-build
       #       - prep-docs
             - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-deps
+      # - job-publish-storybook:
+      #     filters:
+      #       branches:
+      #         only: develop
+      #     requires:
+      #       - prep-deps
       - coveralls-upload:
           requires:
             - test-unit
@@ -355,16 +355,16 @@ jobs:
       #      git config --global user.name "metamaskbot" &&
       #      git config --global user.email "admin@metamask.io" &&
       #      yarn publish-docs
-  job-publish-storybook:
-    docker:
-      - image: circleci/node:10.17-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: storybook:deploy
-          command: yarn storybook:deploy
+  # job-publish-storybook:
+  #   docker:
+  #     - image: circleci/node:10.17-browsers
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: storybook:deploy
+  #         command: yarn storybook:deploy
 
   test-unit:
     docker:
