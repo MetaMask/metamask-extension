@@ -6,7 +6,6 @@ import {
 } from '../../../app/scripts/controllers/permissions/enums'
 
 const permissionsSelector = (state, origin) => {
-  console.log('permissionsSelector', origin)
   return origin && state.metamask.domains && state.metamask.domains[origin]
 }
 
@@ -15,7 +14,6 @@ const accountsPermissionSelector = createSelector(
   permissionsSelector,
   (domain = {}) => {
 
-    console.log('accountsPermissionSelector:domain', domain)
     return (
       Array.isArray(domain.permissions)
         ? domain.permissions.find(
@@ -37,11 +35,10 @@ const createCaveatEqualSelector = createSelectorCreator(
  * Expects input from accountsPermissionsSelector.
  * @returns - An empty array or an array of accounts.
  */
-export const permittedAccountsSelector = createCaveatEqualSelector(
+export const getPermittedAccounts = createCaveatEqualSelector(
   accountsPermissionSelector, // deep equal check performed on this output
   (accountsPermission = {}) => {
 
-    console.log('permittedAccountsSelector:accountsPermission', accountsPermission)
     const accountsCaveat = (
       Array.isArray(accountsPermission.caveats) &&
       accountsPermission.caveats.find(
@@ -49,7 +46,6 @@ export const permittedAccountsSelector = createCaveatEqualSelector(
       )
     )
 
-    console.log('permittedAccountsSelector:accountsCaveat', accountsCaveat)
     return (
       accountsCaveat && Array.isArray(accountsCaveat.value)
         ? accountsCaveat.value

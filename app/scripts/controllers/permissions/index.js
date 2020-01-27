@@ -323,7 +323,7 @@ export class PermissionsController {
 
   /**
    * Removes the given permissions for the given domain.
-   * @param {object} domains { origin: [permissions] }
+   * @param {Object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
 
@@ -356,7 +356,12 @@ export class PermissionsController {
 
     const permittedAccounts = await this.getAccounts(origin)
 
-    if (!account || !permittedAccounts.includes(account)) {
+    // do nothing if the account is not permitted for the origin, or
+    // if it's already first in the array of permitted accounts
+    if (
+      !account || !permittedAccounts.includes(account) ||
+      permittedAccounts[0] === account
+    ) {
       return
     }
 

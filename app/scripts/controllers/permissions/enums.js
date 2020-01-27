@@ -67,4 +67,6 @@ export const SAFE_METHODS = [
   'eth_submitWork',
   'eth_syncing',
   'eth_uninstallFilter',
+  'metamask_watchAsset',
+  'wallet_watchAsset',
 ]

@@ -11,7 +11,10 @@ import {
   formatDate,
   getOriginFromUrl,
 } from '../helpers/utils/util'
-import { permittedAccountsSelector } from './permissions'
+
+import { getPermittedAccounts } from './permissions'
+
+export { getPermittedAccounts } from './permissions'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -98,12 +101,10 @@ function lastSelectedAddressSelector (state, origin) {
 export function getLastSelectedAddress (state, origin) {
   return (
     lastSelectedAddressSelector(state, origin) ||
-    permittedAccountsSelector(state, origin)[0] || // always returns array
+    getPermittedAccounts(state, origin)[0] || // always returns array
     getSelectedAddress(state)
   )
 }
-
-export const getPermittedAccounts = (state, origin) => permittedAccountsSelector(state, origin)
 
 export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
