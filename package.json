@@ -191,7 +191,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
-    "rpc-cap": "^1.0.1",
+    "rpc-cap": "^1.0.3",
     "safe-event-emitter": "^1.0.1",
     "single-call-balance-checker-abi": "^1.0.0",
     "string.prototype.matchall": "^3.0.1",

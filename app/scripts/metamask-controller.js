@@ -214,7 +214,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController(
       {
-        keyringController: this.keyringController,
+        getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
         platform: opts.platform,
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
@@ -527,38 +527,16 @@ export default class MetamaskController extends EventEmitter {
         preferencesController
       ),
       addToken: nodeify(preferencesController.addToken, preferencesController),
-      removeToken: nodeify(
-        preferencesController.removeToken,
-        preferencesController
-      ),
-      removeSuggestedTokens: nodeify(
-        preferencesController.removeSuggestedTokens,
-        preferencesController
-      ),
-      setCurrentAccountTab: nodeify(
-        preferencesController.setCurrentAccountTab,
-        preferencesController
-      ),
-      setAccountLabel: nodeify(
-        preferencesController.setAccountLabel,
-        preferencesController
-      ),
-      setFeatureFlag: nodeify(
-        preferencesController.setFeatureFlag,
-        preferencesController
-      ),
-      setPreference: nodeify(
-        preferencesController.setPreference,
-        preferencesController
-      ),
-      completeOnboarding: nodeify(
-        preferencesController.completeOnboarding,
-        preferencesController
-      ),
-      addKnownMethodData: nodeify(
-        preferencesController.addKnownMethodData,
-        preferencesController
-      ),
+      removeToken: nodeify(preferencesController.removeToken, preferencesController),
+      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
+      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
+      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+      setPreference: nodeify(preferencesController.setPreference, preferencesController),
+      completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
+      addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
+      clearLastSelectedAddressHistory: nodeify(preferencesController.clearLastSelectedAddressHistory, preferencesController),
+      removeLastSelectedAddressesFor: nodeify(preferencesController.removeLastSelectedAddressesFor, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
@@ -665,34 +643,17 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // permissions
-      approvePermissionsRequest: nodeify(
-        permissionsController.approvePermissionsRequest,
-        permissionsController
-      ),
-      clearPermissions: permissionsController.clearPermissions.bind(
-        permissionsController
-      ),
-      getApprovedAccounts: nodeify(
-        permissionsController.getAccounts.bind(permissionsController)
-      ),
-      rejectPermissionsRequest: nodeify(
-        permissionsController.rejectPermissionsRequest,
-        permissionsController
-      ),
-      removePermissionsFor: permissionsController.removePermissionsFor.bind(
-        permissionsController
-      ),
-      updateExposedAccounts: nodeify(
-        permissionsController.updateExposedAccounts,
-        permissionsController
-      ),
-      legacyExposeAccounts: nodeify(
-        permissionsController.legacyExposeAccounts,
-        permissionsController
-      ),
+      approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
+      clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
+      getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
+      rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
+      removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
+      updatePermittedAccounts: nodeify(permissionsController.updatePermittedAccounts, permissionsController),
+      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+      handleNewAccountSelected: nodeify(this.handleNewAccountSelected, this),
 
-      getRequestAccountTabIds: cb => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: cb => cb(null, this.getOpenMetamaskTabsIds()),
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
+      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
     }
   }
 
@@ -1179,6 +1140,18 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
     await this.preferencesController.setSelectedAddress(accounts[0])
+  }
+
+  /**
+   * Handle when a new account is selected for the given origin in the UI.
+   * Stores the address by origin and notifies external providers associated
+   * with the origin.
+   * @param {string} origin - The origin for which the address was selected.
+   * @param {string} address - The new selected address.
+   */
+  async handleNewAccountSelected (origin, address) {
+    this.permissionsController.handleNewAccountSelected(origin, address)
+    this.preferencesController.setLastSelectedAddress(origin, address)
   }
 
   // ---------------------------------------------------------------------------

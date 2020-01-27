@@ -12,6 +12,10 @@ import {
   getOriginFromUrl,
 } from '../helpers/utils/util'
 
+import { getPermittedAccounts } from './permissions'
+
+export { getPermittedAccounts } from './permissions'
+
 export function getNetworkIdentifier (state) {
   const {
     metamask: {
@@ -95,6 +99,21 @@ export function getSelectedAddress (state) {
     state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
   return selectedAddress
+}
+
+function lastSelectedAddressSelector (state, origin) {
+  return state.metamask.lastSelectedAddressByOrigin[origin] || null
+}
+
+// not using reselect here since the returns are contingent;
+// we have no reasons to recompute the permitted accounts if there
+// exists a lastSelectedAddress
+export function getLastSelectedAddress (state, origin) {
+  return (
+    lastSelectedAddressSelector(state, origin) ||
+    getPermittedAccounts(state, origin)[0] || // always returns array
+    getSelectedAddress(state)
+  )
 }
 
 export function getSelectedIdentity (state) {
