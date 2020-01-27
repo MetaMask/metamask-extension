@@ -1,9 +1,10 @@
 import * as Sentry from '@sentry/browser'
 import { Dedupe, ExtraErrorData } from '@sentry/integrations'
 
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
 const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
@@ -17,16 +18,17 @@ function setupSentry (opts) {
   const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG || process.env.IN_TEST) {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_DEV')
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
     sentryTarget = SENTRY_DSN_DEV
   } else {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_PROD')
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_PROD`)
     sentryTarget = SENTRY_DSN_PROD
   }
 
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    environment: METAMASK_ENVIRONMENT,
     integrations: [
       new Dedupe(),
       new ExtraErrorData(),
