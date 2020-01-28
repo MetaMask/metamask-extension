@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
 
 ## 0.0.4 Mon Jan 20 2020
 - [#7823](https://github.com/Conflux-Chain/conflux-portal/pull/7823): Wait until element is clickable before clicking in e2e tests (#7823)
