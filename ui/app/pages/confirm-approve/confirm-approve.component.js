@@ -85,44 +85,38 @@ export default class ConfirmApprove extends Component {
         : ''
     }
 
+    const customData = customPermissionAmount
+      ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
+      : null
+
     return (
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={tokenAddress}
         showAccountInHeader
         title={tokensText}
-        contentComponent={
-          (
-            <ConfirmApproveContent
-              siteImage={siteImage}
-              setCustomAmount={newAmount => {
-                this.setState({ customPermissionAmount: newAmount })
-              }}
-              customTokenAmount={String(customPermissionAmount)}
-              tokenAmount={String(tokenAmount)}
-              origin={origin}
-              tokenSymbol={tokenSymbol}
-              tokenBalance={tokenBalance}
-              showCustomizeGasModal={() => showCustomizeGasModal(txData)}
-              showEditApprovalPermissionModal={showEditApprovalPermissionModal}
-              data={data}
-              toAddress={toAddress}
-              currentCurrency={currentCurrency}
-              ethTransactionTotal={ethTransactionTotal}
-              fiatTransactionTotal={fiatTransactionTotal}
-            />
-          )
-        }
+        contentComponent={(
+          <ConfirmApproveContent
+            siteImage={siteImage}
+            setCustomAmount={(newAmount) => {
+              this.setState({ customPermissionAmount: newAmount })
+            }}
+            customTokenAmount={String(customPermissionAmount)}
+            tokenAmount={String(tokenAmount)}
+            origin={origin}
+            tokenSymbol={tokenSymbol}
+            tokenBalance={tokenBalance}
+            showCustomizeGasModal={() => showCustomizeGasModal(txData)}
+            showEditApprovalPermissionModal={showEditApprovalPermissionModal}
+            data={customData || data}
+            toAddress={toAddress}
+            currentCurrency={currentCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+          />
+        )}
         hideSenderToRecipient
-        customTxParamsData={
-          customPermissionAmount
-            ? getCustomTxParamsData(data, {
-              customPermissionAmount,
-              tokenAmount,
-              decimals,
-            })
-            : null
-        }
+        customTxParamsData={customData}
         {...restProps}
       />
     )
