@@ -76,7 +76,7 @@ export default class ConfirmApprove extends Component {
       : ''
 
     const customData = customPermissionAmount
-      ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
+      ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
       : null
 
     return (
