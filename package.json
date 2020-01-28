@@ -60,7 +60,7 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.12",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
     "pubnub/superagent-proxy": "^2.0.0"
   },
   "dependencies": {
@@ -76,19 +76,17 @@
     "await-semaphore": "^0.1.1",
     "bignumber.js": "^4.1.0",
     "bip39": "^2.2.0",
-    "bluebird": "^3.5.0",
     "bn.js": "^4.11.7",
     "browserify-derequire": "^0.9.4",
-    "c3": "^0.6.7",
-    "classnames": "^2.2.5",
+    "c3": "^0.7.10",
+    "classnames": "^2.2.6",
     "clone": "^2.1.2",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",
-    "d3": "^5.7.0",
+    "d3": "^5.15.0",
     "debounce": "1.1.0",
     "debounce-stream": "^2.0.0",
-    "deep-extend": "^0.5.1",
     "deep-freeze-strict": "1.1.1",
     "detect-node": "^2.0.3",
     "dnode": "^1.2.2",
@@ -128,8 +126,7 @@
     "json-rpc-engine": "^5.1.6",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
-    "lodash.debounce": "^4.0.8",
-    "lodash.shuffle": "^4.2.0",
+    "lodash": "^4.17.15",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
     "metamask-inpage-provider": "^4.0.3",
@@ -175,7 +172,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
-    "rpc-cap": "^1.0.1",
+    "rpc-cap": "^1.0.3",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
@@ -184,8 +181,7 @@
     "textarea-caret": "^3.0.1",
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
-    "web3-stream-provider": "^4.0.0",
-    "xtend": "^4.0.1"
+    "web3-stream-provider": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -269,7 +265,6 @@
     "karma-qunit": "^1.2.1",
     "koa": "^2.7.0",
     "lockfile-lint": "^3.0.5",
-    "lodash.assign": "^4.0.6",
     "mocha": "^5.0.0",
     "mocha-eslint": "^4.0.0",
     "mocha-jsdom": "^1.1.0",
