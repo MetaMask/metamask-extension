@@ -10,11 +10,7 @@ import createMetamaskMiddleware from './createMetamaskMiddleware'
 // import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
-import {
-  createSwappableProxy,
-  createEventEmitterProxy,
-} from 'swappable-obj-proxy'
-import extend from 'extend'
+import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
 
 const networks = { networkList: {} }
 
@@ -286,7 +282,7 @@ export default class NetworkController extends EventEmitter {
     let settings = {
       network: chainId,
     }
-    settings = extend(settings, networks.networkList['rpc'])
+    settings = Object.assign(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
