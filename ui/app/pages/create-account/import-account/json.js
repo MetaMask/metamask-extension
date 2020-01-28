@@ -17,6 +17,8 @@ class JsonImportSubview extends Component {
     isEmpty: true,
   }
 
+  inputRef = React.createRef()
+
   render () {
     const { error } = this.props
     const enabled = !this.state.isEmpty && this.state.fileContents !== ''
@@ -43,6 +45,7 @@ class JsonImportSubview extends Component {
           id="json-password-box"
           onKeyPress={this.createKeyringOnEnter.bind(this)}
           onChange={() => this.checkInputEmpty()}
+          ref={this.inputRef}
         />
         <div className="new-account-create-form__buttons">
           <Button
@@ -94,8 +97,7 @@ class JsonImportSubview extends Component {
       return displayWarning(message)
     }
 
-    const passwordInput = document.getElementById('json-password-box')
-    const password = passwordInput.value
+    const password = this.inputRef.current.value
 
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
@@ -125,8 +127,7 @@ class JsonImportSubview extends Component {
   }
 
   checkInputEmpty () {
-    const input = document.getElementById('json-password-box')
-    const password = input.value
+    const password = this.inputRef.current.value
     let isEmpty = true
     if (password !== '') {
       isEmpty = false

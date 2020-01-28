@@ -23,11 +23,12 @@ class PrivateKeyImportView extends Component {
     error: PropTypes.node,
   }
 
+  inputRef = React.createRef()
+
   state = { isEmpty: true }
 
   createNewKeychain () {
-    const input = document.getElementById('private-key-box')
-    const privateKey = input.value
+    const privateKey = this.inputRef.current.value
     const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
 
     importNewAccount('Private Key', [ privateKey ])
@@ -65,8 +66,7 @@ class PrivateKeyImportView extends Component {
   }
 
   checkInputEmpty () {
-    const input = document.getElementById('private-key-box')
-    const privateKey = input.value
+    const privateKey = this.inputRef.current.value
     let isEmpty = true
     if (privateKey !== '') {
       isEmpty = false
@@ -89,6 +89,7 @@ class PrivateKeyImportView extends Component {
             id="private-key-box"
             onKeyPress={e => this.createKeyringOnEnter(e)}
             onChange={() => this.checkInputEmpty()}
+            ref={this.inputRef}
           />
         </div>
         <div className="new-account-import-form__buttons">
