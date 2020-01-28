@@ -30,7 +30,6 @@ coverage/
 dist
 builds/
 builds.zip
-docs/jsdocs
 
 development/bundle.js
 development/states.js
