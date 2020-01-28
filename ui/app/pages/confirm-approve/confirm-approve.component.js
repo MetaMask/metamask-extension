@@ -75,6 +75,10 @@ export default class ConfirmApprove extends Component {
       ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(9)
       : ''
 
+    const customData = customPermissionAmount
+      ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
+      : null
+
     return (
       <ConfirmTransactionBase
         toAddress={toAddress}
@@ -94,17 +98,14 @@ export default class ConfirmApprove extends Component {
           tokenBalance={tokenBalance}
           showCustomizeGasModal={() => showCustomizeGasModal(txData)}
           showEditApprovalPermissionModal={showEditApprovalPermissionModal}
-          data={data}
+          data={customData || data}
           toAddress={toAddress}
           currentCurrency={currentCurrency}
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />}
         hideSenderToRecipient
-        customTxParamsData={customPermissionAmount
-          ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
-          : null
-        }
+        customTxParamsData={customData}
         {...restProps}
       />
     )
