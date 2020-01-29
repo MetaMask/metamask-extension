@@ -11,6 +11,7 @@ export default class ConfirmApproveContent extends Component {
   }
 
   static propTypes = {
+    decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
@@ -146,6 +147,7 @@ export default class ConfirmApproveContent extends Component {
   render () {
     const { t } = this.context
     const {
+      decimals,
       siteImage,
       tokenAmount,
       customTokenAmount,
@@ -181,16 +183,15 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__edit-submission-button-container">
           <div
             className="confirm-approve-content__medium-link-text cursor-pointer"
-            onClick={() =>
-              showEditApprovalPermissionModal({
-                customTokenAmount,
-                tokenAmount,
-                tokenSymbol,
-                setCustomAmount,
-                tokenBalance,
-                origin,
-              })
-            }
+            onClick={() => showEditApprovalPermissionModal({
+              customTokenAmount,
+              decimals,
+              origin,
+              setCustomAmount,
+              tokenAmount,
+              tokenSymbol,
+              tokenBalance,
+            })}
           >
             {t('editPermission')}
           </div>
@@ -228,34 +229,39 @@ export default class ConfirmApproveContent extends Component {
           })}
         </div>
 
-        {showFullTxDetails ? (
-          <div className="confirm-approve-content__full-tx-content">
-            <div className="confirm-approve-content__permission">
-              {this.renderApproveContentCard({
-                symbol: <img src="/images/user-check.svg" />,
-                title: 'Permission',
-                content: this.renderPermissionContent(),
-                showEdit: true,
-                onEditClick: () =>
-                  showEditApprovalPermissionModal({
-                    customTokenAmount,
-                    tokenAmount,
-                    tokenSymbol,
-                    tokenBalance,
-                    setCustomAmount,
-                  }),
-              })}
-            </div>
-            <div className="confirm-approve-content__data">
-              {this.renderApproveContentCard({
-                symbol: <i className="fa fa-file" />,
-                title: 'Data',
-                content: this.renderDataContent(),
-                noBorder: true,
-              })}
-            </div>
-          </div>
-        ) : null}
+        {
+          showFullTxDetails
+            ? (
+              <div className="confirm-approve-content__full-tx-content">
+                <div className="confirm-approve-content__permission">
+                  {this.renderApproveContentCard({
+                    symbol: <img src="/images/user-check.svg" />,
+                    title: 'Permission',
+                    content: this.renderPermissionContent(),
+                    showEdit: true,
+                    onEditClick: () => showEditApprovalPermissionModal({
+                      customTokenAmount,
+                      decimals,
+                      origin,
+                      setCustomAmount,
+                      tokenAmount,
+                      tokenSymbol,
+                      tokenBalance,
+                    }),
+                  })}
+                </div>
+                <div className="confirm-approve-content__data">
+                  {this.renderApproveContentCard({
+                    symbol: <i className="fa fa-file" />,
+                    title: 'Data',
+                    content: this.renderDataContent(),
+                    noBorder: true,
+                  })}
+                </div>
+              </div>
+            )
+            : null
+        }
       </div>
     )
   }
