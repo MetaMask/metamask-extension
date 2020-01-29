@@ -16,9 +16,6 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
-      # - prep-docs:
-      #    requires:
-      #      - prep-deps
       - prep-scss:
           requires:
             - prep-deps
@@ -81,7 +78,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-      #       - prep-docs
             - all-tests-pass
       # - job-publish-storybook:
       #     filters:
@@ -161,21 +157,6 @@ jobs:
           root: .
           paths:
             - dist-test
-
-  prep-docs:
-    docker:
-      - image: circleci/node:10.17-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: build:dist
-          command: yarn doc
-      - persist_to_workspace:
-          root: .
-          paths:
-            - docs/jsdocs
 
   prep-scss:
     docker:
@@ -349,12 +330,6 @@ jobs:
       - run:
           name: Create GitHub Pull Request to sync master with develop
           command: .circleci/scripts/release-create-master-pr
-      # - run:
-      #    name: github gh-pages docs publish
-      #    command: >
-      #      git config --global user.name "metamaskbot" &&
-      #      git config --global user.email "admin@metamask.io" &&
-      #      yarn publish-docs
   # job-publish-storybook:
   #   docker:
   #     - image: circleci/node:10.17-browsers

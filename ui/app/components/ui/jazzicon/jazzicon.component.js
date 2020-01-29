@@ -1,7 +1,5 @@
-import React, { PureComponent } from 'react'
+import React, { createRef, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import isNode from 'detect-node'
-import { findDOMNode } from 'react-dom'
 import jazzicon from 'jazzicon'
 import iconFactoryGenerator from '../../../../lib/icon-factory'
 
@@ -23,38 +21,34 @@ export default class Jazzicon extends PureComponent {
     diameter: 46,
   }
 
+  container = createRef()
+
   componentDidMount () {
-    if (!isNode) {
-      this.appendJazzicon()
-    }
+    this.appendJazzicon()
   }
 
   componentDidUpdate (prevProps) {
     const { address: prevAddress } = prevProps
     const { address } = this.props
 
-    if (!isNode && address !== prevAddress) {
+    if (address !== prevAddress) {
       this.removeExistingChildren()
       this.appendJazzicon()
     }
   }
 
   removeExistingChildren () {
-    // eslint-disable-next-line react/no-find-dom-node
-    const container = findDOMNode(this)
-    const { children } = container
+    const { children } = this.container.current
 
     for (let i = 0; i < children.length; i++) {
-      container.removeChild(children[i])
+      this.container.current.removeChild(children[i])
     }
   }
 
   appendJazzicon () {
-    // eslint-disable-next-line react/no-find-dom-node
-    const container = findDOMNode(this)
     const { address, diameter } = this.props
     const image = iconFactory.iconForAddress(address, diameter)
-    container.appendChild(image)
+    this.container.current.appendChild(image)
   }
 
   render () {
@@ -63,6 +57,7 @@ export default class Jazzicon extends PureComponent {
     return (
       <div
         className={className}
+        ref={this.container}
         style={style}
       />
     )

@@ -33,10 +33,6 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 ## Contributing
 
-You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
-
-You can re-generate the docs locally by running `yarn doc`, and contributors can update the hosted docs by running `yarn publish-docs`.
-
 ### Running Tests
 
 Run tests with `yarn test`.
