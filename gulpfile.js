@@ -571,9 +571,27 @@ function generateBundler (opts, performBundle) {
     bundler = bundler.external(opts.externalDependencies)
   }
 
+  let environment
+  if (opts.devMode) {
+    environment = 'development'
+  } else if (opts.testing) {
+    environment = 'testing'
+  } else if (process.env.CIRCLE_BRANCH === 'master') {
+    environment = 'production'
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+    environment = 'release-candidate'
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    environment = 'staging'
+  } else if (process.env.CIRCLE_PULL_REQUEST) {
+    environment = 'pull-request'
+  } else {
+    environment = 'other'
+  }
+
   // Inject variables into bundle
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
+    METAMASK_ENVIRONMENT: environment,
     NODE_ENV: opts.devMode ? 'development' : 'production',
     IN_TEST: opts.testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
