@@ -83,7 +83,7 @@
   }
 
   &__approved {
-    h2 { // this needs to be adjusted
+    .list-item__heading { // this needs to be adjusted
       color: #24292E;
     }
   }
