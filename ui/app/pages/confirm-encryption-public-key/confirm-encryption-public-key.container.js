@@ -13,13 +13,17 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 
 function mapStateToProps (state) {
-  const { confirmTransaction } = state
+  const { confirmTransaction,
+    metamask: { domainMetadata = {} },
+  } = state
+
   const {
     txData = {},
   } = confirmTransaction
 
   return {
     txData: txData,
+    domainMetadata: domainMetadata,
     balance: getSelectedAccount(state).balance,
     selectedAccount: getCurrentAccountWithSendEtherInfo(state),
     selectedAddress: getSelectedAddress(state),

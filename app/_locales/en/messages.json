@@ -1620,6 +1620,6 @@
     "message": "Request encryption public key"
   },
   "encryptionPublicKeyNotice": {
-    "message": "This site would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you."
+    "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you."
   }
 }

@@ -652,9 +652,15 @@ export function decryptMsgInline (msgData) {
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.decryptMessageInline`)
       background.decryptMessageInline(msgData, (err, newState) => {
-        log.debug('decryptMsg called back')
-        dispatch(updateMetamaskState(newState))
-        msgData = newState.unapprovedDecryptMsgs[msgData.metamaskId]
+        log.debug('decryptMsgInline called back')
+        if (newState) {
+          msgData = newState.unapprovedDecryptMsgs[msgData.metamaskId]
+          dispatch(updateMetamaskState(newState))
+        } else {
+          log.error('Wrong data for decryptMessageInline')
+          dispatch(displayWarning('Wrong data'))
+          return reject({ 'message': 'Wrong data' })
+        }
         if (err) {
           log.error(err)
           dispatch(displayWarning(err.message))

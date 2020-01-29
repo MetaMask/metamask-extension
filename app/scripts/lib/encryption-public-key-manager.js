@@ -117,6 +117,11 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       status: 'unapproved',
       type: 'encryption_public_key',
     }
+
+    if (_req) {
+      msgData.origin = _req.origin
+    }
+
     this.addMsg(msgData)
 
     // signal update

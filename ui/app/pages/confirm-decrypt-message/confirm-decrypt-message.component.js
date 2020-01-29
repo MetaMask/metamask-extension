@@ -237,28 +237,34 @@ export default class ConfirmDecryptMessage extends Component {
             </div>
           </div>
         </div>
-        <div
-          className={classnames({
-            'request-decrypt-message__message-copy': true,
-            'request-decrypt-message__message-copy--pressed': copyToClipboardPressed,
-          })}
-          onClick={() => this.copyMessage()}
-          onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
-          onMouseUp={() => this.setState({ copyToClipboardPressed: false })}
-        >
-          <Tooltip
-            position="bottom"
-            title={hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard')}
-            wrapperClassName="request-decrypt-message__message-copy-tooltip"
-          >
+        { hasDecrypted ?
+          (
             <div
-              className="request-decrypt-message__message-copy-text"
+              className={classnames({
+                'request-decrypt-message__message-copy': true,
+                'request-decrypt-message__message-copy--pressed': copyToClipboardPressed,
+              })}
+              onClick={() => this.copyMessage()}
+              onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
+              onMouseUp={() => this.setState({ copyToClipboardPressed: false })}
             >
-              {this.context.t('decryptCopy')}
+              <Tooltip
+                position="bottom"
+                title={hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard')}
+                wrapperClassName="request-decrypt-message__message-copy-tooltip"
+              >
+                <div
+                  className="request-decrypt-message__message-copy-text"
+                >
+                  {this.context.t('decryptCopy')}
+                </div>
+                <img src="images/copy-to-clipboard.svg" />
+              </Tooltip>
             </div>
-            <img src="images/copy-to-clipboard.svg" />
-          </Tooltip>
-        </div>
+          )
+          :
+          <div></div>
+        }
       </div>
     )
   }

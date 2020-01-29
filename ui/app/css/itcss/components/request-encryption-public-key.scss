@@ -187,4 +187,36 @@
       margin-right: 1.2rem;
     }
   }
+  
+  &__visual {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    position: relative;
+    margin: 0 20px;
+
+    section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    &-identicon {
+      width: 48px;
+      height: 48px;
+
+      &--default {
+        background-color: #777A87;
+        color: white;
+        width: 48px;
+        height: 48px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+    }
+  }
 }
