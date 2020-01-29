@@ -8906,7 +8906,7 @@ debounce-stream@^2.0.0:
     duplexer "^0.1.1"
     through "^2.3.6"
 
-debounce@1.1.0, debounce@^1.0.0:
+debounce@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.1.0.tgz#6a1a4ee2a9dc4b7c24bb012558dbcdb05b37f408"
   integrity sha512-ZQVKfRVlwRfD150ndzEK8M90ABT+Y/JQKs4Y7U4MXdpuoUkkrr4DwKbVux3YjylA5bUMUj0Nc3pMxPJX6N2QQQ==
