@@ -5,7 +5,7 @@
 import assert from 'assert'
 
 import sinon from 'sinon'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import fetchMock from 'fetch-mock'
 import configureStore from 'redux-mock-store'
@@ -53,7 +53,7 @@ describe('Actions', () => {
           return Promise.resolve(this.object)
         },
       },
-      initState: clone(firstTimeState),
+      initState: cloneDeep(firstTimeState),
     })
 
     metamaskController.threeBoxController = {

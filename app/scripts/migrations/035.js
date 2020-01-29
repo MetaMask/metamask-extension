@@ -7,13 +7,13 @@ Removes the deprecated 'seedWords' state
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     versionedData.data = transformState(versionedData.data)
     return versionedData

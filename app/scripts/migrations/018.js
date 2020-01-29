@@ -6,7 +6,7 @@ This migration updates "transaction state history" to diffs style
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 import txStateHistoryHelper from '../controllers/transactions/lib/tx-state-history-helper'
 
@@ -15,7 +15,7 @@ export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
