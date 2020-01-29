@@ -1,5 +1,5 @@
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import { isValidAddress } from 'ethereumjs-util'
 import {
   CAVEAT_NAMES,
@@ -374,7 +374,7 @@ function cloneObj (obj) {
 
   for (let i = 3; i > 1; i--) {
     try {
-      return clone(obj, false, i)
+      return cloneDeep(obj, false, i)
     } catch (_) {}
   }
   return { ...obj }

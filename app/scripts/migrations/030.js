@@ -7,13 +7,13 @@ removes invalid chaids from preferences and networkController for custom rpcs
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     const newState = transformState(state)

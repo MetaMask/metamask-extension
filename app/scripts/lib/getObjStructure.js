@@ -1,4 +1,4 @@
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default getObjStructure
 
@@ -24,7 +24,7 @@ export default getObjStructure
  *
  */
 function getObjStructure (obj) {
-  const structure = clone(obj)
+  const structure = cloneDeep(obj)
   return deepMap(structure, (value) => {
     return value === null ? 'null' : typeof value
   })
