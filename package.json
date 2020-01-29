@@ -146,7 +146,6 @@
     "multihashes": "^0.4.12",
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
-    "number-to-bn": "^1.7.0",
     "obj-multiplex": "^1.0.0",
     "obs-store": "^4.0.3",
     "percentile": "^1.2.0",
