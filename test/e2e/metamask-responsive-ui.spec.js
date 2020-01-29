@@ -110,11 +110,7 @@ describe('MetaMask', function () {
     })
 
     async function clickWordAndWait (word) {
-      await driver.clickElement(
-        By.css(
-          `[data-testid="seed-phrase-shuffled"] [data-testid="draggable-seed-${word}"]`
-        )
-      )
+      await driver.clickElement(By.css(`[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`))
       await driver.delay(tinyDelayMs)
     }
 
