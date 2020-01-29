@@ -86,6 +86,7 @@ export default class ConfirmApprove extends Component {
         showAccountInHeader
         title={tokensText}
         contentComponent={<ConfirmApproveContent
+          decimals={decimals}
           siteImage={siteImage}
           tokenAddress={tokenAddress}
           setCustomAmount={(newAmount) => {

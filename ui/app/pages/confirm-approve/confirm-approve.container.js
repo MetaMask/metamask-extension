@@ -76,20 +76,22 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showCustomizeGasModal: (txData) => dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData })),
     showEditApprovalPermissionModal: ({
-      tokenAmount,
       customTokenAmount,
-      tokenSymbol,
-      tokenBalance,
-      setCustomAmount,
+      decimals,
       origin,
+      setCustomAmount,
+      tokenAmount,
+      tokenBalance,
+      tokenSymbol,
     }) => dispatch(showModal({
       name: 'EDIT_APPROVAL_PERMISSION',
-      tokenAmount,
       customTokenAmount,
-      tokenSymbol,
-      tokenBalance,
-      setCustomAmount,
+      decimals,
       origin,
+      setCustomAmount,
+      tokenAmount,
+      tokenBalance,
+      tokenSymbol,
     })),
   }
 }
