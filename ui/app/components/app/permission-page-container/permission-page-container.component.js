@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import deepEqual from 'fast-deep-equal'
+import { isEqual } from 'lodash'
 import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
 
@@ -39,9 +39,7 @@ export default class PermissionPageContainer extends Component {
   componentDidUpdate () {
     const newMethodNames = this.getRequestedMethodNames(this.props)
 
-    if (
-      !deepEqual(Object.keys(this.state.selectedPermissions), newMethodNames)
-    ) {
+    if (!isEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
       // this should be a new request, so just overwrite
       this.setState({
         selectedPermissions: this.getRequestedMethodState(newMethodNames),
