@@ -54,7 +54,7 @@ const Item = ({
 
   if (status === 'unapproved') {
     subtitle = (
-      <h3>
+      <h3 className="list-item__subheading">
         <span className="unapproved">Unapproved</span> · {subtitle}
       </h3>
     )
@@ -62,7 +62,7 @@ const Item = ({
 
   if (isFailed) {
     subtitle = (
-      <h3>
+      <h3 className="list-item__subheading">
         <span className="failed">Failed</span> · {subtitle}
       </h3>
     )
@@ -70,7 +70,7 @@ const Item = ({
 
   return (
     <div className={className}>
-      <div className="col icon">
+      <div className="list-item__col">
         {isApproved ? (
           <ApproveIcon />
         ) : isPending ? (
@@ -81,9 +81,9 @@ const Item = ({
           <SendIcon />
         )}
       </div>
-      <div className={`col main${isApproved ? ' approved' : ''}`}>
+      <div className={`list-item__col main${isApproved ? ' list-item__approved' : ''}`}>
         {typeof title === 'string' ? (
-          <h2>
+          <h2 className="list-item__heading">
             { title } {isPending && (
               <span>
                 <Icon
@@ -100,19 +100,19 @@ const Item = ({
           title
         )}
         {typeof subtitle === 'string' ? (
-          <h3>{ subtitle }</h3>
+          <h3 className="list-item__subheading">{ subtitle }</h3>
         ) : (
           subtitle
         )}
         {more && (
-          <div className="more">
+          <div className="list-item__more">
             { more }
           </div>
         )}
       </div>
-      <div className={`col amount${isApproved ? ' approved' : ''}`}>
-        <h2>{nativeCurrency}</h2>
-        <h3>{currentCurrency}</h3>
+      <div className={`list-item__col list-item__amount${isApproved ? ' list-item__approved' : ''}`}>
+        <h2 className="list-item__heading">{nativeCurrency}</h2>
+        <h3 className="list-item__subheading">{currentCurrency}</h3>
       </div>
     </div>
   )

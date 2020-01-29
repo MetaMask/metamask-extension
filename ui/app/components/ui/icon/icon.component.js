@@ -46,7 +46,7 @@ const Icon = ({ className, width, height, color, type }) => {
 }
 
 Icon.defaultProps = {
-  className: 'Icon',
+  className: 'list-item__icon',
 }
 
 Icon.propTypes = {

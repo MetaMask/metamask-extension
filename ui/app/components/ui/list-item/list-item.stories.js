@@ -7,14 +7,14 @@ storiesOf('ListItem', module)
   .add('ListItem - Send', () => (
     <ListItem
       title={text('title', 'Send DAI')}
-      className="list-item__flex-grid"
+      className="list-item"
       status="pending"
       subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
       more={
         (
           <span>
-            <button>Speed up</button>
-            <button>Cancel</button>
+            <button className="list-item__more--button">Speed up</button>
+            <button className="list-item__more--button">Cancel</button>
           </span>
         )
       }
@@ -25,7 +25,7 @@ storiesOf('ListItem', module)
   .add('ListItem - Hatch Turtles', () => (
     <ListItem
       title={text('title', 'Hatch Turtles')}
-      className="list-item__flex-grid"
+      className="list-item"
       // should create a constants and match it with what's in mm
       status="unapproved"
       subtitle={text('subtitle', 'Turtlefarm.com')}
@@ -36,7 +36,7 @@ storiesOf('ListItem', module)
   .add('ListItem - Approve', () => (
     <ListItem
       title={text('title', 'Approve spend limit')}
-      className="list-item__flex-grid"
+      className="list-item"
       status="approved"
       subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
       nativeCurrency={text('nativeCurrency', '0.00070 DAI')}
@@ -46,7 +46,7 @@ storiesOf('ListItem', module)
   .add('ListItem - Failed', () => (
     <ListItem
       title={text('title', 'Hatch Turtles')}
-      className="list-item__flex-grid"
+      className="list-item"
       status="failed"
       subtitle={text('subtitle', 'Turtlefarm.com')}
       nativeCurrency={text('nativeCurrency', '- 0.0732 ETH')}

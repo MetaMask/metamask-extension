@@ -1,4 +1,4 @@
-.list-item__flex-grid {
+.list-item {
   width: 100%;
   min-width: 374px;
   min-height: 86px;
@@ -16,41 +16,36 @@
   justify-content: flex-start;
   align-items: stretch;
 
-  .icon {
-    .Icon {
-      margin: 8px 14px 0 0;
-    }
+  &__icon {
+    margin: 8px 14px 0 0;
   }
 
-  .col {
+  &__col {
     align-self: flex-start;
+  }
 
-    // these will need to be broken out into other components
-    .more {
-      button {
-        border: 1px solid #6A737D;
-        color: #6A737D;
-        box-sizing: border-box;
-        border-radius: 4px;
-        background: transparent;
-        @extend %font;
-        font-size: 10px;
-        line-height: 12px;
-
-        padding: 6px 16px;
-
-        margin-top: 12px;
-        margin-right: 8px;
-
-        &:hover {
-          color: $lochmara;
-          border-color: $lochmara;
-        }
-      }
+  // these will need to be broken out into other components
+  &__more {
+    &--button {
+      border: 1px solid #6A737D;
+      color: #6A737D;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background: transparent;
+      @extend %font;
+      font-size: 10px;
+      line-height: 12px;
+      padding: 6px 16px;
+      margin-top: 12px;
+      margin-right: 8px;
+    }
+    &--button:hover {
+        color: $lochmara;
+        border-color: $lochmara;
     }
   }
 
-  h2 {
+  &__heading {
     font-size: 16px;
     line-height: 160%;
     position: relative;
@@ -73,7 +68,7 @@
     }
   }
 
-  h3 {
+  &__subheading {
     font-size: 12px;
     line-height: 14px;
 
@@ -87,15 +82,13 @@
     }
   }
 
-  .main, .amount {
-    &.approved {
-      h2 {
-        color: #24292E;
-      }
+  &__approved {
+    h2 { // this needs to be adjusted
+      color: #24292E;
     }
   }
 
-  .amount {
+  &__amount {
     margin: 0 0 0 auto;
     text-align: right;
   }
