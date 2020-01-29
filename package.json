@@ -270,7 +270,6 @@
     "remote-redux-devtools": "^0.5.16",
     "remotedev-server": "^0.3.1",
     "resolve-url-loader": "^2.3.0",
-    "rimraf": "^2.6.2",
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "serve-handler": "^6.1.2",
