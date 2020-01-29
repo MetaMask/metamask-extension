@@ -4,7 +4,7 @@ import c from 'classnames'
 import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 import { ellipsify } from '../../send.utils'
 
-import debounce from 'debounce'
+import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
 import networkMap from 'ethjs-ens/lib/network-map.json'
