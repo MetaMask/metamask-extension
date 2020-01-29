@@ -1,3 +1,4 @@
+const fs = require('fs')
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
@@ -23,7 +24,6 @@ const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
-const mkdirp = require('mkdirp')
 const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 
@@ -679,7 +679,7 @@ function configureBundleForSesify ({
   browserifyOpts.fullPaths = true
 
   // record dependencies used in bundle
-  mkdirp.sync('./sesify')
+  fs.mkdirSync('./sesify', { recursive: true })
   browserifyOpts.plugin.push(['deps-dump', {
     filename: `./sesify/deps-${bundleName}.json`,
   }])
