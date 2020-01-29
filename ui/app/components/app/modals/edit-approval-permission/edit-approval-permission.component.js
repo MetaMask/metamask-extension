@@ -20,7 +20,7 @@ export default class EditApprovalPermission extends PureComponent {
     tokenSymbol: PropTypes.string,
     tokenBalance: PropTypes.string,
     setCustomAmount: PropTypes.func,
-    origin: PropTypes.string,
+    origin: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
