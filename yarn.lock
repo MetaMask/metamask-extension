@@ -7621,7 +7621,7 @@ color-support@^1.1.3:
   resolved "https://registry.yarnpkg.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
-color@^0.11.1:
+color@^0.11.3:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/color/-/color-0.11.4.tgz#6d7b5c74fb65e841cd48792ad1ed5e07b904d764"
   integrity sha1-bXtcdPtl6EHNSHkq0e1eB7kE12Q=
@@ -9404,11 +9404,6 @@ detect-newline@2.X, detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
-
-detect-node@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.0.3.tgz#a2033c09cc8e158d37748fbde7507832bd6ce127"
-  integrity sha1-ogM8CcyOFY03dI+951B4Mr1s4Sc=
 
 detect-node@^2.0.4:
   version "2.0.4"
@@ -11812,11 +11807,6 @@ ethjs@^0.4.0:
     ethjs-util "0.1.3"
     js-sha3 "0.5.5"
     number-to-bn "1.7.0"
-
-eve-raphael@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/eve-raphael/-/eve-raphael-0.5.0.tgz#17c754b792beef3fa6684d79cf5a47c63c4cda30"
-  integrity sha1-F8dUt5K+7z+maE15z1pHxjxM2jA=
 
 event-emitter@^0.3.5, event-emitter@~0.3.5:
   version "0.3.5"
@@ -16959,14 +16949,13 @@ jayson@^3.2.0:
     lodash "^4.17.15"
     uuid "^3.2.1"
 
-jazzicon@^1.2.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/jazzicon/-/jazzicon-1.5.0.tgz#d7f36b516023db39ee6eac117f4054e937b65e99"
-  integrity sha1-1/NrUWAj2znubqwRf0BU6Te2Xpk=
+jazzicon@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/jazzicon/-/jazzicon-2.0.0.tgz#a45f10f330ad529d054264759a9e4817292bb440"
+  integrity sha1-pF8Q8zCtUp0FQmR1mp5IFykrtEA=
   dependencies:
-    color "^0.11.1"
-    mersenne-twister "^1.0.1"
-    raphael "^2.2.0"
+    color "^0.11.3"
+    mersenne-twister "^1.1.0"
 
 jed@1.1.1:
   version "1.1.1"
@@ -20130,7 +20119,7 @@ merkle-patricia-tree@^3.0.0:
     rlp "^2.0.0"
     semaphore ">=1.0.1"
 
-mersenne-twister@^1.0.1:
+mersenne-twister@^1.0.1, mersenne-twister@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
@@ -24345,13 +24334,6 @@ range-parser@^1.2.0, range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
-
-raphael@^2.2.0:
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/raphael/-/raphael-2.2.7.tgz#231b19141f8d086986d8faceb66f8b562ee2c810"
-  integrity sha1-IxsZFB+NCGmG2PrOtm+LVi7iyBA=
-  dependencies:
-    eve-raphael "0.5.0"
 
 raw-body@2.4.0:
   version "2.4.0"
