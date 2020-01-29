@@ -3,7 +3,7 @@
     margin-bottom: 12px;
   }
 
-  &__shuffled-seed-words {
+  &__sorted-seed-words {
     max-width: 575px;
   }
 
@@ -20,7 +20,7 @@
     border-radius: 4px;
     cursor: move;
 
-    &--shuffled {
+    &--sorted {
       cursor: pointer;
       margin: 6px;
     }
