@@ -18,7 +18,7 @@ function setupSentry (opts) {
   // detect brave
   const isBrave = Boolean(window.chrome.ipcRenderer)
 
-  if (METAMASK_DEBUG) {
+  if (METAMASK_DEBUG || process.env.IN_TEST) {
     console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_DEV')
     sentryTarget = SENTRY_DSN_DEV
   } else {
