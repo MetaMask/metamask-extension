@@ -100,7 +100,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__small-text">{ t('accessAndSpendNotice', [origin]) }</div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">{ t('amountWithColon') }</div>
-          <div className="confirm-approve-content__medium-text">{ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }</div>
+          <div className="confirm-approve-content__medium-text">{ `${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}` }</div>
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">{ t('toWithColon') }</div>

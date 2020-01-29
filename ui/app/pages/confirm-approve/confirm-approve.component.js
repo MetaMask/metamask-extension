@@ -15,7 +15,7 @@ export default class ConfirmApprove extends Component {
   static propTypes = {
     tokenAddress: PropTypes.string,
     toAddress: PropTypes.string,
-    tokenAmount: PropTypes.number,
+    tokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
@@ -33,7 +33,7 @@ export default class ConfirmApprove extends Component {
   }
 
   static defaultProps = {
-    tokenAmount: 0,
+    tokenAmount: '0',
   }
 
   state = {
@@ -69,14 +69,14 @@ export default class ConfirmApprove extends Component {
     } = this.props
     const { customPermissionAmount } = this.state
 
-    const tokensText = `${tokenAmount} ${tokenSymbol}`
+    const tokensText = `${Number(tokenAmount)} ${tokenSymbol}`
 
     const tokenBalance = tokenTrackerBalance
-      ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(9)
+      ? calcTokenAmount(tokenTrackerBalance, decimals).toString(10)
       : ''
 
     const customData = customPermissionAmount
-      ? getCustomTxParamsData(data, { customPermissionAmount, tokenAmount, decimals })
+      ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
       : null
 
     return (
@@ -92,7 +92,7 @@ export default class ConfirmApprove extends Component {
             this.setState({ customPermissionAmount: newAmount })
           }}
           customTokenAmount={String(customPermissionAmount)}
-          tokenAmount={String(tokenAmount)}
+          tokenAmount={tokenAmount}
           origin={origin}
           tokenSymbol={tokenSymbol}
           tokenBalance={tokenBalance}

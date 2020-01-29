@@ -4,6 +4,7 @@ import Modal from '../../modal'
 import Identicon from '../../../ui/identicon'
 import TextField from '../../../ui/text-field'
 import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 export default class EditApprovalPermission extends PureComponent {
   static propTypes = {
@@ -61,7 +62,7 @@ export default class EditApprovalPermission extends PureComponent {
             <div>{ t('balance') }</div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
-            {`${tokenBalance} ${tokenSymbol}`}
+            {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
           </div>
         </div>
         <div className="edit-approval-permission__edit-section">
@@ -89,7 +90,7 @@ export default class EditApprovalPermission extends PureComponent {
                 'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
               })}>
                 {
-                  tokenAmount < tokenBalance
+                  (new BigNumber(tokenAmount)).lessThan(new BigNumber(tokenBalance))
                     ? t('proposedApprovalLimit')
                     : t('unlimited')
                 }
@@ -98,7 +99,7 @@ export default class EditApprovalPermission extends PureComponent {
                 { t('spendLimitRequestedBy', [origin]) }
               </div>
               <div className="edit-approval-permission__edit-section__option-value" >
-                {`${tokenAmount} ${tokenSymbol}`}
+                {`${Number(tokenAmount)} ${tokenSymbol}`}
               </div>
             </div>
           </div>
@@ -128,7 +129,7 @@ export default class EditApprovalPermission extends PureComponent {
                 <TextField
                   type="number"
                   min="0"
-                  placeholder={ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }
+                  placeholder={ `${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}` }
                   onChange={(event) => {
                     this.setState({ customSpendLimit: event.target.value })
                     if (selectedOptionIsUnlimited) {
