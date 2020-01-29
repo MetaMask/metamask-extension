@@ -184,7 +184,6 @@
     "readable-stream": "^2.3.3",
     "recompose": "^0.25.0",
     "redux": "^3.0.5",
-    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "rpc-cap": "^1.0.3",
