@@ -82,7 +82,6 @@
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",
     "d3": "^5.15.0",
-    "debounce": "1.1.0",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
     "dnode": "^1.2.2",
