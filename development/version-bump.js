@@ -1,7 +1,7 @@
-const clone = require('clone')
+const { cloneDeep } = require('lodash')
 
 async function versionBump (bumpType, changelog, oldManifest) {
-  const manifest = clone(oldManifest)
+  const manifest = cloneDeep(oldManifest)
   const newVersion = newVersionFrom(manifest, bumpType)
 
   manifest.version = newVersion

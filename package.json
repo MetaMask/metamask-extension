@@ -98,7 +98,6 @@
     "c3": "^0.7.10",
     "cfx-fc-abi": "^1.0.0",
     "classnames": "^2.2.6",
-    "clone": "^2.1.2",
     "content-hash": "^2.5.0",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",

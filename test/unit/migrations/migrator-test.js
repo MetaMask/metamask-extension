@@ -1,6 +1,6 @@
 import fs from 'fs'
 import assert from 'assert'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import pify from 'pify'
 import Migrator from '../../../app/scripts/lib/migrator'
 import liveMigrations from '../../../app/scripts/migrations'
@@ -10,23 +10,23 @@ const stubMigrations = [
     version: 1,
     migrate: data => {
       // clone the data just like we do in migrations
-      const clonedData = clone(data)
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 1
       return Promise.resolve(clonedData)
     },
   },
   {
     version: 2,
-    migrate: data => {
-      const clonedData = clone(data)
+    migrate: (data) => {
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 2
       return Promise.resolve(clonedData)
     },
   },
   {
     version: 3,
-    migrate: data => {
-      const clonedData = clone(data)
+    migrate: (data) => {
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 3
       return Promise.resolve(clonedData)
     },

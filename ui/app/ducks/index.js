@@ -1,4 +1,4 @@
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard'
 
 //
@@ -57,7 +57,7 @@ function rootReducer (state, action) {
 }
 
 window.getCleanAppState = function () {
-  const state = clone(window.METAMASK_CACHED_LOG_STATE)
+  const state = cloneDeep(window.METAMASK_CACHED_LOG_STATE)
   // append additional information
   state.version = global.platform.getVersion()
   state.browser = window.navigator.userAgent

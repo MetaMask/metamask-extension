@@ -1,6 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
@@ -104,7 +104,7 @@ describe('MetaMaskController', function () {
           return Promise.resolve(this.object)
         },
       },
-      initState: clone(firstTimeState),
+      initState: cloneDeep(firstTimeState),
       platform: { showTransactionNotification: () => {} },
     })
     // disable diagnostics

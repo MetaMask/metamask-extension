@@ -1,5 +1,5 @@
 import assert from 'assert'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import KeyringController from 'eth-keyring-controller'
 import firstTimeState from '../../../app/scripts/first-time-state'
 import seedPhraseVerifier from '../../../app/scripts/lib/seed-phrase-verifier'
@@ -15,7 +15,7 @@ describe('SeedPhraseVerifier', function () {
 
     beforeEach(async function () {
       keyringController = new KeyringController({
-        initState: clone(firstTimeState),
+        initState: cloneDeep(firstTimeState),
         encryptor: mockEncryptor,
       })
 

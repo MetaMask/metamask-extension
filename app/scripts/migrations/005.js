@@ -6,13 +6,13 @@ This migration moves state from the flat state trie into KeyringController subst
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

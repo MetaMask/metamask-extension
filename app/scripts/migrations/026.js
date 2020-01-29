@@ -7,12 +7,12 @@ This migration moves the identities stored in the KeyringController
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default {
   version,
   migrate (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
