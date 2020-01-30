@@ -109,20 +109,18 @@ module.exports = class TypedMessageManager extends EventEmitter {
     // add origin from request
     if (req) msgParams.origin = req.origin
 
-    // Shahaf
-    if (msgParams) {
-      console.log('msgParams is', msgParams)
-      let parsedMsgParams = JSON.parse(msgParams.data)
-      const encodedFunction = parsedMsgParams.message.callData.encodedFunction
-      const decoded = abiDecoder.decodeMethod(encodedFunction)
+    // Shahaf: a hack to have metatx presented
+    let parsedMsgParams = JSON.parse(msgParams.data)
+    const encodedFunction = parsedMsgParams.message.callData.encodedFunction
+    // Currently only erc20 abi is supported
+    const decoded = abiDecoder.decodeMethod(encodedFunction)
+    if (decoded) {
       let parsedMethodParams = {}
-      console.log('decoded is', decoded)
       for ( const p of decoded.params) {
         parsedMethodParams[p.name] = p.value
       }
       parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams}
       msgParams.data = JSON.stringify(parsedMsgParams)
-      console.log('msgParams is', msgParams)
     }
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
