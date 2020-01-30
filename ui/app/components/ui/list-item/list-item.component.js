@@ -55,7 +55,7 @@ const Item = ({
   if (status === 'unapproved') {
     subtitle = (
       <h3 className="list-item__subheading">
-        <span className="unapproved">Unapproved</span> · {subtitle}
+        <span className="list-item__status--unapproved">Unapproved</span> · {subtitle}
       </h3>
     )
   }
@@ -63,7 +63,7 @@ const Item = ({
   if (isFailed) {
     subtitle = (
       <h3 className="list-item__subheading">
-        <span className="failed">Failed</span> · {subtitle}
+        <span className="list-item__status--failed">Failed</span> · {subtitle}
       </h3>
     )
   }

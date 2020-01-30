@@ -69,14 +69,14 @@
   &__subheading {
     font-size: 12px;
     line-height: 14px;
+  }
 
-    span {
-      &.unapproved {
-        color: #F56821;
-      }
-      &.failed {
-        color: #D73A49;
-      }
+  &__status {
+    &--unapproved {
+      color: #F56821;
+    }
+    &--failed {
+      color: #D73A49;
     }
   }
 
