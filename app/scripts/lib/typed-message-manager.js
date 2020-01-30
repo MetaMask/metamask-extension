@@ -119,7 +119,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
       for ( const p of decoded.params) {
         parsedMethodParams[p.name] = p.value
       }
-      parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams}
+      parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams, rawHex: parsedMsgParams.message.callData.encodedFunction}
       msgParams.data = JSON.stringify(parsedMsgParams)
     }
 
@@ -251,6 +251,12 @@ module.exports = class TypedMessageManager extends EventEmitter {
   prepMsgForSigning (msgParams) {
     delete msgParams.metamaskId
     delete msgParams.version
+
+    let parsedMsgParams = JSON.parse(msgParams.data)
+    if (typeof parsedMsgParams.message.callData.encodedFunction !== 'string') {
+      parsedMsgParams.message.callData.encodedFunction = parsedMsgParams.message.callData.encodedFunction.rawHex
+      msgParams.data = JSON.stringify(parsedMsgParams)
+    }
     return Promise.resolve(msgParams)
   }
 
