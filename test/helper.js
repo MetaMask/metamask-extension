@@ -42,7 +42,12 @@ global.log = log
 //
 
 // fetch
-global.fetch = require('isomorphic-fetch')
+const fetch = require('node-fetch')
+
+global.fetch = fetch
+global.Response = fetch.Response
+global.Headers = fetch.Headers
+global.Request = fetch.Request
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 
 // dom
