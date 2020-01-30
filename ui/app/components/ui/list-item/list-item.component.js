@@ -85,9 +85,9 @@ const Item = ({
         {typeof title === 'string' ? (
           <h2 className="list-item__heading">
             { title } {isPending && (
-              <span>
+              <span className="list-item__heading--wrap">
                 <Icon
-                  className="preloader"
+                  className="list-item__preloader"
                   type="preloader"
                   width={16}
                   height={16}

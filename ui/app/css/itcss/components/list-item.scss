@@ -49,21 +49,21 @@
     position: relative;
 
     // again these styles should be part of a seperate prelaoder stylesheet
-    span {
+    &--wrap {
       display: inline-block;
       position: absolute;
       top: 2px;
       width: 16px;
       height: 16px;
       margin-left: 8px;
-
-      svg {
-        animation-name: spin;
-        animation-duration: 500ms;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-      }
     }
+  }
+
+  &__preloader {
+    animation-name: spin;
+    animation-duration: 500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 
   &__subheading {
