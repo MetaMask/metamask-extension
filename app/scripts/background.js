@@ -254,6 +254,7 @@ function setupController (initState, initLangCode) {
   })
 
   setupEnsIpfsResolver({
+    getCurrentNetwork: controller.getCurrentNetwork,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
     provider: controller.provider,
   })
