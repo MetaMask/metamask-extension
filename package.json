@@ -249,8 +249,6 @@
     "koa": "^2.7.0",
     "lockfile-lint": "^3.0.5",
     "mocha": "^5.0.0",
-    "mocha-jsdom": "^1.1.0",
-    "mocha-sinon": "^2.0.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
