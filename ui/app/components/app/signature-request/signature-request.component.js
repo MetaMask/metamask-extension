@@ -56,8 +56,7 @@ export default class SignatureRequest extends PureComponent {
       sign,
     } = this.props
     const { message, domain = {} } = JSON.parse(data)
-    console.log('data is', data)
-    console.log('message is', message)
+
     return (
       <div className="signature-request page-container">
         <Header selectedAccount={selectedAccount} />
