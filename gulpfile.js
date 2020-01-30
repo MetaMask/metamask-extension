@@ -1,4 +1,3 @@
-const fs = require('fs')
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
@@ -10,7 +9,7 @@ const watch = require('gulp-watch')
 const sourcemaps = require('gulp-sourcemaps')
 const jsoneditor = require('gulp-json-editor')
 const zip = require('gulp-zip')
-const { assign } = require('lodash')
+const assign = require('lodash.assign')
 const livereload = require('gulp-livereload')
 const del = require('del')
 const manifest = require('./app/manifest.json')
@@ -24,11 +23,11 @@ const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
+const mkdirp = require('mkdirp')
 const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
-
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
@@ -192,7 +191,7 @@ gulp.task('manifest:production', function () {
     './dist/chrome/manifest.json',
     './dist/brave/manifest.json',
     './dist/opera/manifest.json',
-  ], { base: './dist/' })
+  ], {base: './dist/'})
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
@@ -209,7 +208,7 @@ gulp.task('manifest:testing', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], { base: './dist/' })
+  ], {base: './dist/'})
 
   // Exclude chromereload script in production:
     .pipe(jsoneditor(function (json) {
@@ -228,7 +227,7 @@ gulp.task('manifest:testing-local', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], { base: './dist/' })
+  ], {base: './dist/'})
 
     .pipe(jsoneditor(function (json) {
       json.background = {
@@ -247,7 +246,7 @@ gulp.task('manifest:dev', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
-  ], { base: './dist/' })
+  ], {base: './dist/'})
 
     .pipe(jsoneditor(function (json) {
       json.background = {
@@ -262,7 +261,7 @@ gulp.task('manifest:dev', function () {
 })
 
 gulp.task('optimize:images', function () {
-  return gulp.src('./dist/**/images/**', { base: './dist/' })
+  return gulp.src('./dist/**/images/**', {base: './dist/'})
     .pipe(imagemin())
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
@@ -429,9 +428,7 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   // compose into larger task
   const subtasks = []
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
-  if (buildPhase2.length) {
-    subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
-  }
+  if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
 
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
@@ -571,27 +568,9 @@ function generateBundler (opts, performBundle) {
     bundler = bundler.external(opts.externalDependencies)
   }
 
-  let environment
-  if (opts.devMode) {
-    environment = 'development'
-  } else if (opts.testing) {
-    environment = 'testing'
-  } else if (process.env.CIRCLE_BRANCH === 'master') {
-    environment = 'production'
-  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
-    environment = 'release-candidate'
-  } else if (process.env.CIRCLE_BRANCH === 'develop') {
-    environment = 'staging'
-  } else if (process.env.CIRCLE_PULL_REQUEST) {
-    environment = 'pull-request'
-  } else {
-    environment = 'other'
-  }
-
   // Inject variables into bundle
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
-    METAMASK_ENVIRONMENT: environment,
     NODE_ENV: opts.devMode ? 'development' : 'production',
     IN_TEST: opts.testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
@@ -697,7 +676,7 @@ function configureBundleForSesify ({
   browserifyOpts.fullPaths = true
 
   // record dependencies used in bundle
-  fs.mkdirSync('./sesify', { recursive: true })
+  mkdirp.sync('./sesify')
   browserifyOpts.plugin.push(['deps-dump', {
     filename: `./sesify/deps-${bundleName}.json`,
   }])

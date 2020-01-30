@@ -24,4 +24,4 @@ class WindowPlatform {
 
 }
 
-export default WindowPlatform
+module.exports = WindowPlatform

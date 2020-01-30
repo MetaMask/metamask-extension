@@ -1,7 +1,9 @@
-import { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { getMessage } from '../utils/i18n-helper'
+const { Component } = require('react')
+const connect = require('react-redux').connect
+const PropTypes = require('prop-types')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const { getMessage } = require('../utils/i18n-helper')
 
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
@@ -18,9 +20,9 @@ class I18nProvider extends Component {
     return {
       /**
        * Returns a localized message for the given key
-       * @param {string} key - The message key
-       * @param {string[]} args - A list of message substitution replacements
-       * @returns {string|undefined|null} - The localized message if available
+       * @param {string} key The message key
+       * @param {string[]} args A list of message substitution replacements
+       * @return {string|undefined|null} The localized message if available
        */
       t (key, ...args) {
         return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`
@@ -57,4 +59,8 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(I18nProvider)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(I18nProvider)
+

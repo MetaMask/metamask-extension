@@ -8,6 +8,7 @@ import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_SELECT_ACTION_ROUTE } from
 export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
+    isInitialized: PropTypes.bool,
     participateInMetaMetrics: PropTypes.bool,
     welcomeScreenSeen: PropTypes.bool,
   }

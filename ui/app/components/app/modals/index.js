@@ -1,3 +1,5 @@
-import Modal from './modal'
+const Modal = require('./modal')
 
-export { Modal }
+module.exports = {
+  Modal,
+}

@@ -1,9 +1,15 @@
-import ObservableStore from 'obs-store'
-import EthQuery from 'eth-query'
-import log from 'loglevel'
-import pify from 'pify'
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI } from './network/enums'
-
+const ObservableStore = require('obs-store')
+const extend = require('xtend')
+const EthQuery = require('eth-query')
+const log = require('loglevel')
+const pify = require('pify')
+const {
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  GOERLI,
+} = require('./network/enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 
@@ -15,7 +21,7 @@ class RecentBlocksController {
    * (indicating that there is a new block to process).
    *
    * @typedef {Object} RecentBlocksController
-   * @param {Object} opts - Contains objects necessary for tracking blocks and querying the blockchain
+   * @param {object} opts Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.blockTracker Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.provider The provider used to create a new EthQuery instance.
    * @property {BlockTracker} blockTracker Points to the passed BlockTracker. On RecentBlocksController construction,
@@ -32,7 +38,7 @@ class RecentBlocksController {
     this.ethQuery = new EthQuery(provider)
     this.historyLength = opts.historyLength || 40
 
-    const initState = Object.assign({
+    const initState = extend({
       recentBlocks: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
@@ -65,18 +71,26 @@ class RecentBlocksController {
   }
 
   /**
+   * Sets store.recentBlocks to an empty array
+   *
+   */
+  resetState () {
+    this.store.updateState({
+      recentBlocks: [],
+    })
+  }
+
+  /**
    * Receives a new block and modifies it with this.mapTransactionsToPrices. Then adds that block to the recentBlocks
    * array in storage. If the recentBlocks array contains the maximum number of blocks, the oldest block is removed.
    *
-   * @param {Object} newBlock - The new block to modify and add to the recentBlocks array
+   * @param {object} newBlock The new block to modify and add to the recentBlocks array
    *
    */
   async processBlock (newBlockNumberHex) {
     const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
-    const newBlock = await this.getBlockByNumber(newBlockNumber)
-    if (!newBlock) {
-      return
-    }
+    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
+    if (!newBlock) return
 
     const block = this.mapTransactionsToPrices(newBlock)
 
@@ -96,7 +110,7 @@ class RecentBlocksController {
    *
    * Unlike this.processBlock, backfillBlock adds the modified new block to the beginning of the recent block array.
    *
-   * @param {Object} newBlock - The new block to modify and add to the beginning of the recentBlocks array
+   * @param {object} newBlock The new block to modify and add to the beginning of the recentBlocks array
    *
    */
   backfillBlock (newBlock) {
@@ -115,17 +129,16 @@ class RecentBlocksController {
    * Receives a block and gets the gasPrice of each of its transactions. These gas prices are added to the block at a
    * new property, and the block's transactions are removed.
    *
-   * @param {Object} newBlock - The block to modify. It's transaction array will be replaced by a gasPrices array.
-   * @returns {Object} - The modified block.
+   * @param {object} newBlock The block to modify. It's transaction array will be replaced by a gasPrices array.
+   * @returns {object} The modified block.
    *
    */
   mapTransactionsToPrices (newBlock) {
-    const block = {
-      ...newBlock,
+    const block = extend(newBlock, {
       gasPrices: newBlock.transactions.map((tx) => {
         return tx.gasPrice
       }),
-    }
+    })
     delete block.transactions
     return block
   }
@@ -138,7 +151,7 @@ class RecentBlocksController {
    *
    * Each iteration over the block numbers is delayed by 100 milliseconds.
    *
-   * @returns {Promise<void>} - Promises undefined
+   * @returns {Promise<void>} Promises undefined
    */
   async backfill () {
     this.blockTracker.once('latest', async (blockNumberHex) => {
@@ -148,10 +161,8 @@ class RecentBlocksController {
       const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber)
-          if (!newBlock) {
-            return
-          }
+          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
+          if (!newBlock) return
 
           this.backfillBlock(newBlock)
         } catch (e) {
@@ -164,8 +175,8 @@ class RecentBlocksController {
   /**
    * Uses EthQuery to get a block that has a given block number.
    *
-   * @param {number} number - The number of the block to get
-   * @returns {Promise<object>} - Promises A block with the passed number
+   * @param {number} number The number of the block to get
+   * @returns {Promise<object>} Promises A block with the passed number
    *
    */
   async getBlockByNumber (number) {
@@ -175,4 +186,4 @@ class RecentBlocksController {
 
 }
 
-export default RecentBlocksController
+module.exports = RecentBlocksController

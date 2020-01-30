@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
 
-import Tooltip from '../../ui/tooltip-v2.js'
+const Tooltip = require('../../ui/tooltip-v2.js').default
 
 class SelectedAccount extends Component {
   state = {

@@ -1,7 +1,9 @@
-import assert from 'assert'
-import freeze from 'deep-freeze-strict'
-import reducers from '../../../ui/app/ducks'
-import { actionConstants } from '../../../ui/app/store/actions'
+const assert = require('assert')
+const freeze = require('deep-freeze-strict')
+const path = require('path')
+
+const actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
+const reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
 
 describe('SET_ACCOUNT_LABEL', function () {
   it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', function () {
@@ -17,7 +19,7 @@ describe('SET_ACCOUNT_LABEL', function () {
     freeze(initialState)
 
     const action = {
-      type: actionConstants.SET_ACCOUNT_LABEL,
+      type: actions.SET_ACCOUNT_LABEL,
       value: {
         account: 'foo',
         label: 'baz',

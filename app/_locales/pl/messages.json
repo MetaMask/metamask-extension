@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "Tryb prywatny jest domyślnie włączony"
+  },
   "chartOnlyAvailableEth": {
     "message": "Wykres dostępny tylko w sieciach Ethereum"
+  },
+  "confirmClear": {
+    "message": "Czy na pewno chcesz usunąć zatwierdzone strony internetowe?"
   },
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
   },
+  "clearApprovalData": {
+    "message": "Usuń dane poufne"
+  },
   "reject": {
     "message": "Odrzuć"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 chce połączyć się z Twoim kontem"
+  },
+  "providerRequestInfo": {
+    "message": "Ta strona prosi o dostęp, aby zobaczyć adres Twojego aktualnego konta. Zawsze upewnij się, że ufasz stronom, z którymi wchodzisz w interakcję."
   },
   "about": {
     "message": "Informacje"
   },
   "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
+    "message": "Wersja, centrum wsparcia i dane kontaktowe."
   },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
@@ -51,7 +63,7 @@
     "message": "Zaawansowane"
   },
   "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
+    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC."
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
@@ -109,10 +121,10 @@
   "attributions": {
     "message": "Atrybuty"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
@@ -139,8 +151,15 @@
   "balanceOutdated": {
     "message": "Saldo może być nieaktualne"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Niewystarczająca ilość środków na opłatę za gaz"
+  },
   "basic": {
     "message": "Podstawy"
+  },
+  "betweenMinAndMax": {
+    "message": "musi być większe lub równe $1 i mniejsze lub równe $2,",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Przeglądaj blok"
@@ -230,6 +249,9 @@
   "connect": {
     "message": "Połącz"
   },
+  "connectRequest": {
+    "message": "Potwierdź żądanie"
+  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
@@ -268,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Skopiowane!"
+  },
+  "copy": {
+    "message": "Skopiuj"
   },
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
@@ -346,6 +371,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
+  },
+  "dismiss": {
+    "message": "Zamknij"
   },
   "done": {
     "message": "Gotowe"
@@ -466,6 +494,9 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
+  "gasLimitCalculation": {
+    "message": "Obliczamy sugerowany limit gazu na podstawie danych z transakcji w sieci."
+  },
   "gasLimitInfoModalContent": {
     "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
   },
@@ -487,6 +518,9 @@
   "gasPriceNoDenom": {
     "message": "Cena gazu"
   },
+  "gasPriceCalculation": {
+    "message": "Obliczamy ceny gazu na podstawie danych z transakcji w sieci."
+  },
   "general": {
     "message": "Ogólne"
   },
@@ -505,6 +539,10 @@
   },
   "getStarted": {
     "message": "Rozpocznij"
+  },
+  "greaterThanMin": {
+    "message": "musi być większe lub równe $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Cieszymy się, że tu jesteś."
@@ -624,6 +662,10 @@
   "ledgerAccountRestriction": {
     "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
   },
+  "lessThanMax": {
+    "message": "musi być mniejsze lub równe $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "Tak, zacznijmy od początku!"
   },
@@ -648,7 +690,10 @@
   "localhost": {
     "message": "Serwer lokalny 8545"
   },
-  "lock": {
+  "login": {
+    "message": "Zaloguj się"
+  },
+  "logout": {
     "message": "Wyloguj się"
   },
   "mainnet": {
@@ -662,6 +707,9 @@
   },
   "metamaskDescription": {
     "message": "MetaMask to bezpieczny portfel dla Ethereum."
+  },
+  "metamaskSeedWords": {
+    "message": "Słowa Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
@@ -813,6 +861,9 @@
     "message": "Tutaj wklej swój prywatny klucz:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Tutaj wklej swoją frazę seed!"
+  },
   "pending": {
     "message": "oczekiwanie"
   },
@@ -918,6 +969,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
+  },
+  "revert": {
+    "message": "Wycofaj"
   },
   "remove": {
     "message": "usuń"
@@ -1123,6 +1177,9 @@
   "storePhrase": {
     "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."
   },
+  "submit": {
+    "message": "Wyślij"
+  },
   "submitted": {
     "message": "Wysłane"
   },
@@ -1130,7 +1187,7 @@
     "message": "Odwiedź nasze Centrum Pomocy"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć maksymalnie 11 znaków."
+    "message": "Symbol musi mieć od 0 do 12 znaków."
   },
   "syncWithMobile": {
     "message": "Synchronizuj z telefonem"
@@ -1283,6 +1340,9 @@
   },
   "userName": {
     "message": "Nazwa użytkownika"
+  },
+  "validFileImport": {
+    "message": "Należy wybrać prawidłowy plik do zaimportowania."
   },
   "viewAccount": {
     "message": "Zobacz konto"

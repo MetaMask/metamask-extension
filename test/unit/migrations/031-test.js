@@ -1,5 +1,5 @@
-import assert from 'assert'
-import migration31 from '../../../app/scripts/migrations/031'
+const assert = require('assert')
+const migration31 = require('../../../app/scripts/migrations/031')
 
 describe('migration #31', () => {
   it('should set completedOnboarding to true if vault exists', done => {
@@ -7,7 +7,7 @@ describe('migration #31', () => {
       'meta': {},
       'data': {
         'PreferencesController': {
-          'tokens': [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }],
+          'tokens': [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}],
           'identities': {
             '0x6d14': {},
             '0x3695': {},
@@ -36,7 +36,7 @@ describe('migration #31', () => {
       'meta': {},
       'data': {
         'PreferencesController': {
-          'tokens': [{ address: '0xa', symbol: 'A', decimals: 4 }, { address: '0xb', symbol: 'B', decimals: 4 }],
+          'tokens': [{address: '0xa', symbol: 'A', decimals: 4}, {address: '0xb', symbol: 'B', decimals: 4}],
           'identities': {
             '0x6d14': {},
             '0x3695': {},

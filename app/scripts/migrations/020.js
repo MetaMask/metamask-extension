@@ -8,13 +8,13 @@ so that we can version notices in the future.
 
 */
 
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

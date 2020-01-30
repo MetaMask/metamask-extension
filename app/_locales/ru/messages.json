@@ -1,6 +1,15 @@
 {
+  "confirmClear": {
+    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
+  },
+  "clearApprovalData": {
+    "message": "Четкие данные об утверждении"
+  },
   "reject": {
     "message": "Отклонить"
+  },
+  "providerRequestInfo": {
+    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
   },
   "account": {
     "message": "Счет"
@@ -45,6 +54,13 @@
   },
   "balance": {
     "message": "Баланс:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Недостаточный баланс для текущего объема газа"
+  },
+  "betweenMinAndMax": {
+    "message": "должно быть больше или равно $1 и меньше или равно $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
@@ -99,6 +115,9 @@
   },
   "copiedExclamation": {
     "message": "Скопировано!"
+  },
+  "copy": {
+    "message": "Скопировать"
   },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
@@ -192,11 +211,17 @@
   "gasLimit": {
     "message": "Лимит газа"
   },
+  "gasLimitCalculation": {
+    "message": "Мы расчитываем предлагаемый лимит газа на основании успешных ставок в сети."
+  },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть как минимум 21000"
   },
   "gasPrice": {
     "message": "Цена за газ (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "Мы расчитываем предлагаемые цены за газ на основании успешных ставок в сети."
   },
   "getEther": {
     "message": "Получить Ether"
@@ -204,6 +229,10 @@
   "getEtherFromFaucet": {
     "message": "Получить Ether из крана для $1",
     "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "должно быть больше или равно $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "тут",
@@ -269,6 +298,10 @@
   "learnMore": {
     "message": "Узнать больше."
   },
+  "lessThanMax": {
+    "message": "должно быть меньше или равно $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "likeToAddTokens": {
     "message": "Вы хотите добавить эти токены?"
   },
@@ -281,7 +314,10 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "lock": {
+  "login": {
+    "message": "Вход"
+  },
+  "logout": {
     "message": "Выход"
   },
   "mainnet": {
@@ -341,6 +377,9 @@
     "message": "Вставьте ваш закрытый ключ тут:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Вставьте вашу ключевую фразу!"
+  },
   "personalAddressDetected": {
     "message": "Обнаружен персональный адрес. Введите адрес контракта токена."
   },
@@ -383,6 +422,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Не восстанавливайте ключевую фразу в общественном месте! Она может быть использована для кражи всех ваших счетов."
+  },
+  "revert": {
+    "message": "Восстановить"
   },
   "rinkeby": {
     "message": "Тестовая сеть Rinkeby"
@@ -450,6 +492,9 @@
   "stateLogError": {
     "message": "Ошибка при получении журнала состояния."
   },
+  "submit": {
+    "message": "Отправить"
+  },
   "submitted": {
     "message": "Отправлена"
   },
@@ -457,7 +502,7 @@
     "message": "Перейти в наш Центр поддержки"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символ должен быть не более 11 символов."
+    "message": "Символ должен быть от 0 до 12 символов."
   },
   "terms": {
     "message": "Условия пользования"
@@ -503,6 +548,9 @@
   "usedByClients": {
     "message": "Используется различными клиентами"
   },
+  "validFileImport": {
+    "message": "Вам нужно выбрать правильный файл для импорта."
+  },
   "viewAccount": {
     "message": "Посмотреть счет"
   },
@@ -521,13 +569,16 @@
   "youSign": {
     "message": "Вы подписываете"
   },
+  "privacyModeDefault": {
+    "message": "Режим конфиденциальности теперь включен по умолчанию"
+  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмма доступна только в сетях Ethereum."
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 запрашивает доступ к вашему аккаунту"
   },
   "about": {
@@ -590,10 +641,10 @@
   "attemptToCancelDescription": {
     "message": "Отправка этой попытки не гарантирует отмену вашей первоначальной транзакции. Если попытка отмены окажется успешной комиссия за исходную транзакцию будет возвращена."
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Таймер автоматического выхода из кошелька (минуты)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Установите время простоя в минутах, прежде чем MetaMask автоматически заблокирует кошелек"
   },
   "average": {
@@ -680,6 +731,9 @@
   "connect": {
     "message": "Подключиться"
   },
+  "connectRequest": {
+    "message": "Запрос на подключение"
+  },
   "connectingTo": {
     "message": "Подключение к $1"
   },
@@ -721,6 +775,9 @@
   },
   "deleteAccount": {
     "message": "Удалить аккаунт"
+  },
+  "dismiss": {
+    "message": "Отклюнить"
   },
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"
@@ -895,6 +952,9 @@
   },
   "menu": {
     "message": "Меню"
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask ключевая фраза (сид)"
   },
   "metamaskVersion": {
     "message": "Версия MetaMask"

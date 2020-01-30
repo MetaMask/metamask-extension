@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import shuffle from 'lodash.shuffle'
 import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
@@ -23,26 +24,46 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   static propTypes = {
-    hideSeedPhraseBackupAfterOnboarding: PropTypes.func,
     history: PropTypes.object,
+    onSubmit: PropTypes.func,
     seedPhrase: PropTypes.string,
+    selectedAddress: PropTypes.string,
     initializeThreeBox: PropTypes.func,
-    setSeedPhraseBackedUp: PropTypes.func,
-    showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
   }
 
   state = {
     selectedSeedIndices: [],
-    sortedSeedWords: [],
+    shuffledSeedWords: [],
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
     hoveringIndex: -1,
+    isDragging: false,
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    const { seedPhrase } = this.props
+    const {
+      selectedSeedIndices,
+      shuffledSeedWords,
+      pendingSeedIndices,
+      draggingSeedIndex,
+      hoveringIndex,
+      isDragging,
+    } = this.state
+
+    return seedPhrase !== nextProps.seedPhrase ||
+      draggingSeedIndex !== nextState.draggingSeedIndex ||
+      isDragging !== nextState.isDragging ||
+      hoveringIndex !== nextState.hoveringIndex ||
+      selectedSeedIndices.join(' ') !== nextState.selectedSeedIndices.join(' ') ||
+      shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
+      pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
   }
 
   componentDidMount () {
     const { seedPhrase = '' } = this.props
-    const sortedSeedWords = (seedPhrase.split(' ') || []).sort()
-    this.setState({ sortedSeedWords })
+    const shuffledSeedWords = shuffle(seedPhrase.split(' ')) || []
+    this.setState({ shuffledSeedWords })
   }
 
   setDraggingSeedIndex = draggingSeedIndex => this.setState({ draggingSeedIndex })
@@ -66,7 +87,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleExport = () => {
-    exportAsFile('', this.props.seedPhrase, 'text/plain')
+    exportAsFile('MetaMask Secret Backup Phrase', this.props.seedPhrase, 'text/plain')
   }
 
   handleSubmit = async () => {
@@ -105,24 +126,24 @@ export default class ConfirmSeedPhrase extends PureComponent {
     }
   }
 
-  handleSelectSeedWord = (index) => {
+  handleSelectSeedWord = (shuffledIndex) => {
     this.setState({
-      selectedSeedIndices: [...this.state.selectedSeedIndices, index],
-      pendingSeedIndices: [...this.state.pendingSeedIndices, index],
+      selectedSeedIndices: [...this.state.selectedSeedIndices, shuffledIndex],
+      pendingSeedIndices: [...this.state.pendingSeedIndices, shuffledIndex],
     })
   }
 
-  handleDeselectSeedWord = (index) => {
+  handleDeselectSeedWord = shuffledIndex => {
     this.setState({
-      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => index !== i),
-      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => index !== i),
+      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => shuffledIndex !== i),
+      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => shuffledIndex !== i),
     })
   }
 
   isValid () {
     const { seedPhrase } = this.props
-    const { selectedSeedIndices, sortedSeedWords } = this.state
-    const selectedSeedWords = selectedSeedIndices.map(i => sortedSeedWords[i])
+    const { selectedSeedIndices, shuffledSeedWords } = this.state
+    const selectedSeedWords = selectedSeedIndices.map(i => shuffledSeedWords[i])
     return seedPhrase === selectedSeedWords.join(' ')
   }
 
@@ -131,7 +152,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
     const { history } = this.props
     const {
       selectedSeedIndices,
-      sortedSeedWords,
+      shuffledSeedWords,
       draggingSeedIndex,
     } = this.state
 
@@ -162,9 +183,9 @@ export default class ConfirmSeedPhrase extends PureComponent {
           { this.renderPendingSeeds() }
           { this.renderSelectedSeeds() }
         </div>
-        <div className="confirm-seed-phrase__sorted-seed-words" data-testid="seed-phrase-sorted">
+        <div className="confirm-seed-phrase__shuffled-seed-words">
           {
-            sortedSeedWords.map((word, index) => {
+            shuffledSeedWords.map((word, index) => {
               const isSelected = selectedSeedIndices.includes(index)
 
               return (
@@ -172,9 +193,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
                   key={index}
                   seedIndex={index}
                   index={index}
+                  draggingSeedIndex={this.state.draggingSeedIndex}
+                  setDraggingSeedIndex={this.setDraggingSeedIndex}
                   setHoveringIndex={this.setHoveringIndex}
                   onDrop={this.onDrop}
-                  className="confirm-seed-phrase__seed-word--sorted"
+                  className="confirm-seed-phrase__seed-word--shuffled"
                   selected={isSelected}
                   onClick={() => {
                     if (!isSelected) {
@@ -202,10 +225,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   renderSelectedSeeds () {
-    const { sortedSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
+    const { shuffledSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index]
-      const word = sortedSeedWords[seedIndex]
+      const word = shuffledSeedWords[seedIndex]
 
       return (
         <DraggableSeed
@@ -227,7 +250,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   renderPendingSeeds () {
     const {
       pendingSeedIndices,
-      sortedSeedWords,
+      shuffledSeedWords,
       draggingSeedIndex,
       hoveringIndex,
     } = this.state
@@ -236,7 +259,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = indices[index]
-      const word = sortedSeedWords[seedIndex]
+      const word = shuffledSeedWords[seedIndex]
 
       return (
         <DraggableSeed

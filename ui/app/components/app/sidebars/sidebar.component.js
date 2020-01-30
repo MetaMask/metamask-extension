@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 import WalletView from '../wallet-view'
 import { WALLET_VIEW_SIDEBAR } from './sidebar.constants'
-import CustomizeGas from '../gas-customization/gas-modal-page-container'
+import CustomizeGas from '../gas-customization/gas-modal-page-container/'
 
 export default class Sidebar extends Component {
 
@@ -15,20 +15,18 @@ export default class Sidebar extends Component {
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
     onOverlayClose: PropTypes.func,
-  }
+  };
 
   renderOverlay () {
     const { onOverlayClose } = this.props
 
-    return (
-      <div
-        className="sidebar-overlay"
-        onClick={() => {
-          onOverlayClose && onOverlayClose()
-          this.props.hideSidebar()
-        }}
-      />
-    )
+    return <div
+      className="sidebar-overlay"
+      onClick={() => {
+        onOverlayClose && onOverlayClose()
+        this.props.hideSidebar()
+      }
+      } />
   }
 
   renderSidebarContent () {

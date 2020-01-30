@@ -1,9 +1,31 @@
 # Changelog
 
 ## Current Develop Branch
-- [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
 
-## 7.7.0 Thu Nov 28 2019
+## 7.7.3 Fri Jan 24 2020
+- [#7894](https://github.com/MetaMask/metamask-extension/pull/7894): Update GABA dependency version
+- [#7901](https://github.com/MetaMask/metamask-extension/pull/7901): Use eth-contract-metadata@1.12.1
+- [#7910](https://github.com/MetaMask/metamask-extension/pull/7910): Fixing broken JSON import help link
+
+## 7.7.2 Fri Jan 10 2020
+- [#7753](https://github.com/MetaMask/metamask-extension/pull/7753): Fix gas estimate for tokens
+- [#7473](https://github.com/MetaMask/metamask-extension/pull/7473): Fix transaction order on transaction confirmation screen
+
+## 7.7.1 Wed Dec 04 2019
+- [#7488](https://github.com/MetaMask/metamask-extension/pull/7488): Fix text overlap when expanding transaction
+- [#7491](https://github.com/MetaMask/metamask-extension/pull/7491): Update gas when asset is changed on send screen
+- [#7500](https://github.com/MetaMask/metamask-extension/pull/7500): Remove unused onClick prop from Dropdown component
+- [#7502](https://github.com/MetaMask/metamask-extension/pull/7502): Fix chainId for non standard networks
+- [#7519](https://github.com/MetaMask/metamask-extension/pull/7519): Fixing hardware connect error display
+- [#7501](https://github.com/MetaMask/metamask-extension/pull/7501): Fix accessibility of first-time-flow terms checkboxes
+- [#7579](https://github.com/MetaMask/metamask-extension/pull/7579): Prevent Maker migration dismissal timeout state from being overwritten
+- [#7581](https://github.com/MetaMask/metamask-extension/pull/7581): Persist Maker migration dismissal timeout
+- [#7484](https://github.com/MetaMask/metamask-extension/pull/7484): Ensure transactions are shown in the order they are received
+- [#7604](https://github.com/MetaMask/metamask-extension/pull/7604): Process URL fragment for ens-ipfs redirects
+- [#7628](https://github.com/MetaMask/metamask-extension/pull/7628): Fix typo that resulted in degrated account menu performance
+- [#7558](https://github.com/MetaMask/metamask-extension/pull/7558): Use localized messages for NotificationModal buttons
+
+## 7.7.0 Thu Nov 28 2019 [WITHDRAWN]
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Connect distinct accounts per site
 - [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
 - [#7482](https://github.com/MetaMask/metamask-extension/pull/7482): Update Wyre ETH purchase url

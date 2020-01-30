@@ -1,6 +1,7 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import {
+import selectors from '../send.selectors.js'
+const {
   accountsWithSendEtherInfoSelector,
   // autoAddToBetaUI,
   getBlockGasLimit,
@@ -9,6 +10,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
+  getCurrentViewContext,
   getNativeCurrency,
   getForceGasMin,
   getGasLimit,
@@ -36,7 +38,7 @@ import {
   getTokenExchangeRate,
   getUnapprovedTxs,
   transactionsSelector,
-} from '../send.selectors.js'
+} = selectors
 import mockState from './send-selectors-test-data'
 
 describe('send selectors', () => {
@@ -175,6 +177,15 @@ describe('send selectors', () => {
       assert.equal(
         getCurrentNetwork(mockState),
         '3'
+      )
+    })
+  })
+
+  describe('getCurrentViewContext()', () => {
+    it('should return the context of the current view', () => {
+      assert.equal(
+        getCurrentViewContext(mockState),
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
       )
     })
   })

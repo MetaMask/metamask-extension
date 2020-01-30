@@ -1,6 +1,5 @@
-import assert from 'assert'
-import migration29 from '../../../app/scripts/migrations/029'
-
+const assert = require('assert')
+const migration29 = require('../../../app/scripts/migrations/029')
 const properTime = (new Date()).getTime()
 const storage = {
   'meta': {},
@@ -29,9 +28,7 @@ describe('storage is migrated successfully where transactions that are submitted
         assert(txMeta1.err.message.includes('too long'), 'error message assigned')
 
         txs.forEach((tx) => {
-          if (tx.id === 1) {
-            return
-          }
+          if (tx.id === 1) return
           assert.notEqual(tx.status, 'failed', 'other tx is not auto failed')
         })
 

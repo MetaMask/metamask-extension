@@ -1,7 +1,6 @@
-import assert from 'assert'
-import TxStateManager from '../../../../../app/scripts/controllers/transactions/tx-state-manager'
-import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
-
+const assert = require('assert')
+const TxStateManager = require('../../../../../app/scripts/controllers/transactions/tx-state-manager')
+const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const noop = () => true
 
 describe('TransactionStateManager', function () {
@@ -56,7 +55,10 @@ describe('TransactionStateManager', function () {
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
-      const noop = () => {
+      const noop = function (err) {
+        if (err) {
+          console.log('Error: ', err)
+        }
         assert(true, 'event listener has been triggered and noop executed')
         done()
       }
@@ -352,13 +354,13 @@ describe('TransactionStateManager', function () {
 
   describe('#_removeTx', function () {
     it('should remove the transaction from the storage', () => {
-      txStateManager._saveTxList([ { id: 1 } ])
+      txStateManager._saveTxList([ {id: 1} ])
       txStateManager._removeTx(1)
       assert(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
     it('should only remove the transaction with ID 1 from the storage', () => {
-      txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
+      txStateManager._saveTxList([ {id: 1}, {id: 2} ])
       txStateManager._removeTx(1)
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })

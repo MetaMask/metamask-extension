@@ -2,31 +2,33 @@ function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
-async function loadFromMock3Box (key) {
-  const res = await fetch('http://localhost:8889?key=' + key)
-  const text = await res.text()
-  return text.length ? JSON.parse(text) : null
+function loadFromMock3Box (key) {
+  return new Promise(async (resolve) => {
+    const res = await fetch('http://localhost:8889?key=' + key)
+    const text = await res.text()
+    resolve(text.length ? JSON.parse(text) : null)
+  })
 }
 
-async function saveToMock3Box (key, newDataAtKey) {
-  const res = await fetch('http://localhost:8889', {
-    method: 'POST',
-    body: JSON.stringify({
-      key,
-      data: newDataAtKey,
-    }),
-  })
+function saveToMock3Box (key, newDataAtKey) {
+  return new Promise(async (resolve) => {
+    const res = await fetch('http://localhost:8889', {
+      method: 'POST',
+      body: JSON.stringify({
+        key,
+        data: newDataAtKey,
+      }),
+    })
 
-  return res.text()
+    resolve(res.text())
+  })
 }
 
 class Mock3Box {
   static openBox (address) {
     this.address = address
     return Promise.resolve({
-      onSyncDone: cb => {
-        setTimeout(cb, 200)
-      },
+      onSyncDone: cb => { setTimeout(cb, 200) },
       openSpace: async (spaceName, config) => {
         const { onSyncDone } = config
         this.spaceName = spaceName

@@ -8,7 +8,7 @@ import ConfirmSendEther from '../confirm-send-ether'
 import ConfirmSendToken from '../confirm-send-token'
 import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
-import ConfirmTokenTransactionBaseContainer from '../confirm-token-transaction-base'
+import ConfirmTokenTransactionBase from '../confirm-token-transaction-base'
 import ConfTx from './conf-tx'
 import {
   DEFAULT_ROUTE,
@@ -30,8 +30,11 @@ export default class ConfirmTransaction extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
+    match: PropTypes.object,
     send: PropTypes.object,
+    unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
+    confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
@@ -42,6 +45,7 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
     fullScreenVsPopupTestGroup: PropTypes.string,
     trackABTest: PropTypes.bool,
+    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {
@@ -71,9 +75,7 @@ export default class ConfirmTransaction extends Component {
       getTokenParams(to)
     }
     const txId = transactionId || paramsTransactionId
-    if (txId) {
-      this.props.setTransactionToConfirm(txId)
-    }
+    if (txId) this.props.setTransactionToConfirm(txId)
 
     if (trackABTest) {
       this.context.metricsEvent({
@@ -148,7 +150,7 @@ export default class ConfirmTransaction extends Component {
           <Route
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TRANSFER_FROM_PATH}`}
-            component={ConfirmTokenTransactionBaseContainer}
+            component={ConfirmTokenTransactionBase}
           />
           <Route
             exact

@@ -1,12 +1,13 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import qrCode from 'qrcode-generator'
-import { connect } from 'react-redux'
-import { isHexPrefixed } from 'ethereumjs-util'
-import ReadOnlyInput from './readonly-input'
-import { checksumAddress } from '../../helpers/utils/util'
+const Component = require('react').Component
+const h = require('react-hyperscript')
+const qrCode = require('qrcode-generator')
+const inherits = require('util').inherits
+const connect = require('react-redux').connect
+const { isHexPrefixed } = require('ethereumjs-util')
+const ReadOnlyInput = require('./readonly-input')
+const { checksumAddress } = require('../../helpers/utils/util')
 
-export default connect(mapStateToProps)(QrCodeView)
+module.exports = connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps (state) {
   return {
@@ -16,63 +17,47 @@ function mapStateToProps (state) {
   }
 }
 
-function QrCodeView (props) {
-  const { message, data } = props.Qr
-  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data)}`
+inherits(QrCodeView, Component)
+
+function QrCodeView () {
+  Component.call(this)
+}
+
+QrCodeView.prototype.render = function () {
+  const props = this.props
+  const { message, data, network } = props.Qr
+  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
 
-  return (
-    <div className="div flex-column flex-center">
-      {
-        Array.isArray(message)
-          ? (
-            <div className="message-container">
-              {props.Qr.message.map((message, index) => (
-                <div className="qr-message" key={index}>
-                  {message}
-                </div>
-              ))}
-            </div>
-          )
-          : message && (
-            <div className="qr-header">
-              {message}
-            </div>
-          )
-      }
-      {
-        props.warning
-          ? (props.warning && (
-            <span className="error flex-center">
-              {props.warning}
-            </span>
-          ))
-          : null
-      }
-      <div
-        className="div qr-wrapper"
-        dangerouslySetInnerHTML={{
-          __html: qrImage.createTableTag(4),
-        }}
-      />
-      <ReadOnlyInput
-        wrapperClass="ellip-address-wrapper"
-        inputClass="qr-ellip-address"
-        value={checksumAddress(data)}
-      />
-    </div>
-  )
+  return h('.div.flex-column.flex-center', [
+    Array.isArray(message)
+      ? h('.message-container', this.renderMultiMessage())
+      : message && h('.qr-header', message),
+
+    this.props.warning ? this.props.warning && h('span.error.flex-center', {
+      style: {
+      },
+    },
+    this.props.warning) : null,
+
+    h('.div.qr-wrapper', {
+      style: {},
+      dangerouslySetInnerHTML: {
+        __html: qrImage.createTableTag(4),
+      },
+    }),
+    h(ReadOnlyInput, {
+      wrapperClass: 'ellip-address-wrapper',
+      inputClass: 'qr-ellip-address',
+      value: checksumAddress(data, network),
+    }),
+  ])
 }
 
-QrCodeView.propTypes = {
-  warning: PropTypes.node,
-  Qr: PropTypes.shape({
-    message: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-    data: PropTypes.string.isRequired,
-  }).isRequired,
+QrCodeView.prototype.renderMultiMessage = function () {
+  var Qr = this.props.Qr
+  var multiMessage = Qr.message.map((message) => h('.qr-message', message))
+  return multiMessage
 }

@@ -6,13 +6,14 @@ This migration breaks out the NoticeController substate
 
 */
 
-import { cloneDeep } from 'lodash'
+const extend = require('xtend')
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -26,12 +27,11 @@ export default {
 }
 
 function transformState (state) {
-  const newState = {
-    ...state,
+  const newState = extend(state, {
     NoticeController: {
       noticesList: state.noticesList || [],
     },
-  }
+  })
   delete newState.noticesList
 
   return newState

@@ -128,7 +128,7 @@ export default class NewAccount extends PureComponent {
     }))
   }
 
-  onTermsKeyPress = ({ key }) => {
+  onTermsKeyPress = ({key}) => {
     if (key === ' ' || key === 'Enter') {
       this.toggleTermsCheck()
     }
@@ -204,8 +204,7 @@ export default class NewAccount extends PureComponent {
               {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
             </div>
             <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-              I have read and agree to the&nbsp;
-              <a
+              I have read and agree to the <a
                 href="https://metamask.io/terms.html"
                 target="_blank"
                 rel="noopener noreferrer"

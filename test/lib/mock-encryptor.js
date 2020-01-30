@@ -1,8 +1,8 @@
-const mockHex = '0xabcdef0123456789'
-const mockKey = Buffer.alloc(32)
+var mockHex = '0xabcdef0123456789'
+var mockKey = Buffer.alloc(32)
 let cacheVal
 
-export default {
+module.exports = {
 
   encrypt (_, dataObj) {
     cacheVal = dataObj

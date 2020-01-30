@@ -1,6 +1,15 @@
 {
+  "confirmClear": {
+    "message": "Naozaj chcete vymazať schválené webové stránky?"
+  },
+  "clearApprovalData": {
+    "message": "Jasné údaje o schválení"
+  },
   "reject": {
     "message": "Odmítnout"
+  },
+  "providerRequestInfo": {
+    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "account": {
     "message": "Účet"
@@ -45,6 +54,13 @@
   },
   "balance": {
     "message": "Zůstatek:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Nedostatek prostředků pro aktuální množství paliva"
+  },
+  "betweenMinAndMax": {
+    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
@@ -96,6 +112,9 @@
   },
   "copiedExclamation": {
     "message": "Zkopírováno!"
+  },
+  "copy": {
+    "message": "Kopírovat"
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
@@ -189,11 +208,17 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
+  "gasLimitCalculation": {
+    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
+  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -201,6 +226,10 @@
   "getEtherFromFaucet": {
     "message": "Získejte Ether z faucetu za $1.",
     "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "musí být větší nebo roven $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "zde",
@@ -256,6 +285,10 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
+  "lessThanMax": {
+    "message": "musí být menší nebo roven $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "likeToAddTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
@@ -268,10 +301,10 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "unlock": {
+  "login": {
     "message": "Přihlásit"
   },
-  "lock": {
+  "logout": {
     "message": "Odhlásit"
   },
   "message": {
@@ -334,6 +367,9 @@
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Svou klíčovou frázi vložte zde!"
+  },
   "personalAddressDetected": {
     "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
   },
@@ -376,6 +412,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
+  },
+  "revert": {
+    "message": "Zvrátit"
   },
   "save": {
     "message": "Uložit"
@@ -437,6 +476,9 @@
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."
   },
+  "submit": {
+    "message": "Odeslat"
+  },
   "submitted": {
     "message": "Odesláno"
   },
@@ -444,7 +486,7 @@
     "message": "Navštivte naše centrum podpory"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí mít 11 nebo méně znaků."
+    "message": "Symbol musí být mezi 0 a 12 znaky."
   },
   "terms": {
     "message": "Podmínky použití"
@@ -492,6 +534,9 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
+  },
+  "validFileImport": {
+    "message": "Musíte vybrat validní soubor k importu."
   },
   "viewAccount": {
     "message": "Zobrazit účet"

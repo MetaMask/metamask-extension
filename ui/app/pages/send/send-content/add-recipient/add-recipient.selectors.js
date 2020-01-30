@@ -1,11 +1,19 @@
-export function getToDropdownOpen (state) {
+const selectors = {
+  getToDropdownOpen,
+  getTokens,
+  sendToIsInError,
+}
+
+module.exports = selectors
+
+function getToDropdownOpen (state) {
   return state.send.toDropdownOpen
 }
 
-export function sendToIsInError (state) {
+function sendToIsInError (state) {
   return Boolean(state.send.errors.to)
 }
 
-export function getTokens (state) {
+function getTokens (state) {
   return state.metamask.tokens
 }

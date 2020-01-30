@@ -1,8 +1,8 @@
-import ethUtil from 'ethereumjs-util'
-import ObservableStore from 'obs-store'
-import punycode from 'punycode'
-import log from 'loglevel'
-import Ens from './ens'
+const ethUtil = require('ethereumjs-util')
+const ObservableStore = require('obs-store')
+const punycode = require('punycode')
+const log = require('loglevel')
+const Ens = require('./ens')
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
@@ -91,4 +91,4 @@ class EnsController {
   }
 }
 
-export default EnsController
+module.exports = EnsController

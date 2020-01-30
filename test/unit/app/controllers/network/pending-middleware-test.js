@@ -1,14 +1,13 @@
-import assert from 'assert'
-import { createPendingNonceMiddleware, createPendingTxMiddleware } from '../../../../../app/scripts/controllers/network/middleware/pending'
-import { txMetaStub } from './stubs'
-
+const assert = require('assert')
+const { createPendingNonceMiddleware, createPendingTxMiddleware } = require('../../../../../app/scripts/controllers/network/middleware/pending')
+const txMetaStub = require('./stubs').txMetaStub
 describe('#createPendingNonceMiddleware', function () {
   const getPendingNonce = async () => '0x2'
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
   const pendingNonceMiddleware = createPendingNonceMiddleware({ getPendingNonce })
 
   it('should call next if not a eth_getTransactionCount request', (done) => {
-    const req = { method: 'eth_getBlockByNumber' }
+    const req = {method: 'eth_getBlockByNumber'}
     const res = {}
     pendingNonceMiddleware(req, res, () => done())
   })
@@ -20,9 +19,7 @@ describe('#createPendingNonceMiddleware', function () {
   it('should fill the result with a the "pending" nonce', (done) => {
     const req = { method: 'eth_getTransactionCount', params: [address, 'pending'] }
     const res = {}
-    pendingNonceMiddleware(req, res, () => {
-      done(new Error('should not have called next'))
-    }, () => {
+    pendingNonceMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
       assert(res.result === '0x2')
       done()
     })
@@ -31,7 +28,7 @@ describe('#createPendingNonceMiddleware', function () {
 
 describe('#createPendingTxMiddleware', function () {
   let returnUndefined = true
-  const getPendingTransactionByHash = () => (returnUndefined ? undefined : txMetaStub)
+  const getPendingTransactionByHash = () => returnUndefined ? undefined : txMetaStub
   const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
   const pendingTxMiddleware = createPendingTxMiddleware({ getPendingTransactionByHash })
   const spec = {
@@ -51,7 +48,7 @@ describe('#createPendingTxMiddleware', function () {
     's': '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   }
   it('should call next if not a eth_getTransactionByHash request', (done) => {
-    const req = { method: 'eth_getBlockByNumber' }
+    const req = {method: 'eth_getBlockByNumber'}
     const res = {}
     pendingTxMiddleware(req, res, () => done())
   })
@@ -66,9 +63,7 @@ describe('#createPendingTxMiddleware', function () {
     returnUndefined = false
     const req = { method: 'eth_getTransactionByHash', params: [address, 'pending'] }
     const res = {}
-    pendingTxMiddleware(req, res, () => {
-      done(new Error('should not have called next'))
-    }, () => {
+    pendingTxMiddleware(req, res, () => { done(new Error('should not have called next')) }, () => {
       /*
       // uncomment this section for debugging help with non matching keys
       const coppy = {...res.result}

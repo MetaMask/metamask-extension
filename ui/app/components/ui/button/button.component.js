@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
@@ -24,35 +24,33 @@ const typeHash = {
   'first-time': CLASSNAME_FIRST_TIME,
 }
 
-const Button = ({ type, submit, large, children, className, ...buttonProps }) => (
-  <button
-    type={submit ? 'submit' : undefined}
-    className={classnames(
-      'button',
-      typeHash[type] || CLASSNAME_DEFAULT,
-      large && CLASSNAME_LARGE,
-      className
-    )}
-    { ...buttonProps }
-  >
-    { children }
-  </button>
-)
+export default class Button extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    large: PropTypes.bool,
+    className: PropTypes.string,
+    children: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+      PropTypes.element,
+    ]),
+  }
 
-Button.propTypes = {
-  type: PropTypes.string,
-  submit: PropTypes.bool,
-  large: PropTypes.bool,
-  className: PropTypes.string,
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-    PropTypes.element,
-  ]),
+  render () {
+    const { type, large, className, ...buttonProps } = this.props
+
+    return (
+      <button
+        className={classnames(
+          'button',
+          typeHash[type] || CLASSNAME_DEFAULT,
+          large && CLASSNAME_LARGE,
+          className
+        )}
+        { ...buttonProps }
+      >
+        { this.props.children }
+      </button>
+    )
+  }
 }
-
-Button.defaultProps = {
-  submit: false,
-}
-
-export default Button

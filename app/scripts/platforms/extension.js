@@ -1,7 +1,8 @@
-import extension from 'extensionizer'
-import { createExplorerLink as explorerLink } from 'etherscan-link'
-import { getEnvironmentType, checkForError } from '../lib/util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+const extension = require('extensionizer')
+const {createExplorerLink: explorerLink} = require('etherscan-link')
+
+const {getEnvironmentType} = require('../lib/util')
+const {ENVIRONMENT_TYPE_BACKGROUND} = require('../lib/enums')
 
 class ExtensionPlatform {
 
@@ -65,45 +66,6 @@ class ExtensionPlatform {
     }
   }
 
-  currentTab () {
-    return new Promise((resolve, reject) => {
-      extension.tabs.getCurrent(tab => {
-        const err = checkForError()
-        if (err) {
-          reject(err)
-        } else {
-          resolve(tab)
-        }
-      })
-    })
-  }
-
-  switchToTab (tabId) {
-    return new Promise((resolve, reject) => {
-      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
-        const err = checkForError()
-        if (err) {
-          reject(err)
-        } else {
-          resolve(tab)
-        }
-      })
-    })
-  }
-
-  closeTab (tabId) {
-    return new Promise((resolve, reject) => {
-      extension.tabs.remove(tabId, () => {
-        const err = checkForError()
-        if (err) {
-          reject(err)
-        } else {
-          resolve()
-        }
-      })
-    })
-  }
-
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()
@@ -148,4 +110,4 @@ class ExtensionPlatform {
   }
 }
 
-export default ExtensionPlatform
+module.exports = ExtensionPlatform

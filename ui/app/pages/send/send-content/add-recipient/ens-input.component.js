@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
 import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
-import { ellipsify } from '../../send.utils'
+import {ellipsify} from '../../send.utils'
 
-import { debounce } from 'lodash'
+import debounce from 'debounce'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
 import networkMap from 'ethjs-ens/lib/network-map.json'
@@ -26,6 +26,7 @@ export default class EnsInput extends Component {
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
+    updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
@@ -36,9 +37,10 @@ export default class EnsInput extends Component {
   }
 
   state = {
+    recipient: null,
     input: '',
     toError: null,
-    ensResolution: undefined,
+    toWarning: null,
   }
 
   componentDidMount () {
@@ -84,12 +86,8 @@ export default class EnsInput extends Component {
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens.lookup(recipient)
       .then((address) => {
-        if (address === ZERO_ADDRESS) {
-          throw new Error(this.context.t('noAddressForName'))
-        }
-        if (address === ZERO_X_ERROR_ADDRESS) {
-          throw new Error(this.context.t('ensRegistrationError'))
-        }
+        if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
+        if (address === ZERO_X_ERROR_ADDRESS) throw new Error(this.context.t('ensRegistrationError'))
         this.props.updateEnsResolution(address)
       })
       .catch((reason) => {
@@ -163,7 +161,6 @@ export default class EnsInput extends Component {
             onPaste={this.onPaste}
             value={selectedAddress || input}
             autoFocus
-            data-testid="ens-input"
           />
           <div
             className={c('ens-input__wrapper__action-icon', {
@@ -233,11 +230,9 @@ export default class EnsInput extends Component {
   }
 
   ensIconContents () {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state
+    const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
 
-    if (toError) {
-      return
-    }
+    if (toError) return
 
     if (loadingEns) {
       return (

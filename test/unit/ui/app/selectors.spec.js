@@ -1,10 +1,10 @@
-import assert from 'assert'
-import * as selectors from '../../../../ui/app/selectors/selectors'
-import mockState from '../../../data/mock-state.json'
-import Eth from 'ethjs'
-import { createTestProviderTools } from '../../../stub/provider'
+const assert = require('assert')
+const selectors = require('../../../../ui/app/selectors/selectors')
+const mockState = require('../../../data/mock-state.json')
+const Eth = require('ethjs')
 
-const provider = createTestProviderTools({ scaffold: {} }).provider
+const { createTestProviderTools } = require('../../../stub/provider')
+const provider = createTestProviderTools({ scaffold: {}}).provider
 
 describe('Selectors', function () {
 
@@ -150,6 +150,11 @@ describe('Selectors', function () {
     global.eth = new Eth(provider)
     const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
     assert(selectedTokenContract.abi)
+  })
+
+  it('#getCurrentViewContext', () => {
+    const currentViewContext = selectors.getCurrentViewContext(mockState)
+    assert.equal(currentViewContext, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
   })
 
   it('#getTotalUnapprovedCount', () => {

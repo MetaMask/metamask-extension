@@ -1,6 +1,6 @@
-import extractEthjsErrorMessage from './extractEthjsErrorMessage'
+const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
 
-export default reportFailedTxToSentry
+module.exports = reportFailedTxToSentry
 
 //
 // utility for formatting failed transaction messages

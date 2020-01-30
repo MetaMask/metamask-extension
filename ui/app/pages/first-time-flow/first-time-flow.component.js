@@ -107,9 +107,9 @@ export default class FirstTimeFlow extends PureComponent {
         <Switch>
           <Route
             path={INITIALIZE_SEED_PHRASE_ROUTE}
-            render={routeProps => (
+            render={props => (
               <SeedPhrase
-                { ...routeProps }
+                { ...props }
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -117,9 +117,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
-            render={routeProps => (
+            render={props => (
               <SeedPhrase
-                { ...routeProps }
+                { ...props }
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -127,9 +127,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
-            render={routeProps => (
+            render={props => (
               <CreatePassword
-                { ...routeProps }
+                { ...props }
                 isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
@@ -142,9 +142,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_UNLOCK_ROUTE}
-            render={routeProps => (
+            render={props => (
               <Unlock
-                { ...routeProps }
+                { ...props }
                 onSubmit={this.handleUnlock}
               />
             )}

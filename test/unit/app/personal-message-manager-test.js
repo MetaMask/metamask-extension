@@ -1,5 +1,6 @@
-import assert from 'assert'
-import PersonalMessageManager from '../../../app/scripts/lib/personal-message-manager'
+const assert = require('assert')
+
+const PersonalMessageManager = require('../../../app/scripts/lib/personal-message-manager')
 
 describe('Personal Message Manager', function () {
   let messageManager
@@ -10,7 +11,7 @@ describe('Personal Message Manager', function () {
 
   describe('#getMsgList', function () {
     it('when new should return empty array', function () {
-      const result = messageManager.messages
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
@@ -21,9 +22,9 @@ describe('Personal Message Manager', function () {
 
   describe('#addMsg', function () {
     it('adds a Msg returned in getMsgList', function () {
-      const Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
+      var Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
-      const result = messageManager.messages
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].id, 1)
@@ -32,10 +33,10 @@ describe('Personal Message Manager', function () {
 
   describe('#setMsgStatusApproved', function () {
     it('sets the Msg status to approved', function () {
-      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.setMsgStatusApproved(1)
-      const result = messageManager.messages
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'approved')
@@ -44,10 +45,10 @@ describe('Personal Message Manager', function () {
 
   describe('#rejectMsg', function () {
     it('sets the Msg status to rejected', function () {
-      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.rejectMsg(1)
-      const result = messageManager.messages
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'rejected')
@@ -59,7 +60,7 @@ describe('Personal Message Manager', function () {
       messageManager.addMsg({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' })
       messageManager.addMsg({ id: '2', status: 'approved', metamaskNetworkId: 'unit test' })
       messageManager._updateMsg({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: 'unit test' })
-      const result = messageManager.getMsg('1')
+      var result = messageManager.getMsg('1')
       assert.equal(result.hash, 'foo')
     })
   })
@@ -86,20 +87,20 @@ describe('Personal Message Manager', function () {
 
   describe('#normalizeMsgData', function () {
     it('converts text to a utf8 hex string', function () {
-      const input = 'hello'
-      const output = messageManager.normalizeMsgData(input)
+      var input = 'hello'
+      var output = messageManager.normalizeMsgData(input)
       assert.equal(output, '0x68656c6c6f', 'predictably hex encoded')
     })
 
     it('tolerates a hex prefix', function () {
-      const input = '0x12'
-      const output = messageManager.normalizeMsgData(input)
+      var input = '0x12'
+      var output = messageManager.normalizeMsgData(input)
       assert.equal(output, '0x12', 'un modified')
     })
 
     it('tolerates normal hex', function () {
-      const input = '12'
-      const output = messageManager.normalizeMsgData(input)
+      var input = '12'
+      var output = messageManager.normalizeMsgData(input)
       assert.equal(output, '0x12', 'adds prefix')
     })
   })

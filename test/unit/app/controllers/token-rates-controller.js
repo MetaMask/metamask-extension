@@ -1,7 +1,7 @@
-import assert from 'assert'
-import sinon from 'sinon'
-import TokenRatesController from '../../../../app/scripts/controllers/token-rates'
-import ObservableStore from 'obs-store'
+const assert = require('assert')
+const sinon = require('sinon')
+const TokenRatesController = require('../../../../app/scripts/controllers/token-rates')
+const ObservableStore = require('obs-store')
 
 describe('TokenRatesController', () => {
   it('should listen for preferences store updates', () => {

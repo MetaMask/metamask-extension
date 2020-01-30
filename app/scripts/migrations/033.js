@@ -7,13 +7,13 @@ Cleans up notices and assocated notice controller code
 
 */
 
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     const newState = transformState(state)

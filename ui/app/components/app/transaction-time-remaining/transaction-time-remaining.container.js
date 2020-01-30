@@ -1,4 +1,6 @@
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import TransactionTimeRemaining from './transaction-time-remaining.component'
 import {
   getTxParams,
@@ -29,7 +31,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(TransactionTimeRemaining)
+export default compose(
+  withRouter,
+  connect(mapStateToProps)
+)(TransactionTimeRemaining)
 
 function calcCustomGasPrice (customGasPriceInHex) {
   return Number(hexWEIToDecGWEI(customGasPriceInHex))

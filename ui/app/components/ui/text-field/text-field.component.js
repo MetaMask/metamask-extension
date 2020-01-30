@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import MaterialTextField from '@material-ui/core/TextField'
+import { default as MaterialTextField } from '@material-ui/core/TextField'
 
 const inputLabelBase = {
   transform: 'none',
@@ -28,24 +28,6 @@ const styles = {
     },
   },
   materialError: {},
-  materialWhitePaddedRoot: {
-    color: '#aeaeae',
-  },
-  materialWhitePaddedInput: {
-    padding: '8px',
-
-    '&::placeholder': {
-      color: '#aeaeae',
-    },
-  },
-  materialWhitePaddedFocused: {
-    color: '#fff',
-  },
-  materialWhitePaddedUnderline: {
-    '&:after': {
-      borderBottom: '2px solid #fff',
-    },
-  },
   // Non-material styles
   formLabel: {
     '&$formLabelFocused': {
@@ -84,99 +66,35 @@ const styles = {
   },
 }
 
-const getMaterialThemeInputProps = ({
-  dir,
-  classes: { materialLabel, materialFocused, materialError, materialUnderline },
-  startAdornment,
-}) => ({
-  InputLabelProps: {
-    FormLabelClasses: {
-      root: materialLabel,
-      focused: materialFocused,
-      error: materialError,
-    },
-  },
-  InputProps: {
-    startAdornment,
-    classes: {
-      underline: materialUnderline,
-    },
-    inputProps: {
-      dir,
-    },
-  },
-})
-
-const getMaterialWhitePaddedThemeInputProps = ({
-  dir,
-  classes: { materialWhitePaddedRoot, materialWhitePaddedFocused, materialWhitePaddedInput, materialWhitePaddedUnderline },
-  startAdornment,
-}) => ({
-  InputProps: {
-    startAdornment,
-    classes: {
-      root: materialWhitePaddedRoot,
-      focused: materialWhitePaddedFocused,
-      input: materialWhitePaddedInput,
-      underline: materialWhitePaddedUnderline,
-    },
-    inputProps: {
-      dir,
-    },
-  },
-})
-
-const getBorderedThemeInputProps = ({
-  dir,
-  classes: { formLabel, formLabelFocused, materialError, largeInputLabel, inputLabel, inputRoot, input, inputFocused },
-  largeLabel,
-  startAdornment,
-}) => ({
-  InputLabelProps: {
-    shrink: true,
-    className: largeLabel ? largeInputLabel : inputLabel,
-    FormLabelClasses: {
-      root: formLabel,
-      focused: formLabelFocused,
-      error: materialError,
-    },
-  },
-  InputProps: {
-    startAdornment,
-    disableUnderline: true,
-    classes: {
-      root: inputRoot,
-      input: input,
-      focused: inputFocused,
-    },
-    inputProps: {
-      dir,
-    },
-  },
-})
-
-const themeToInputProps = {
-  'material': getMaterialThemeInputProps,
-  'bordered': getBorderedThemeInputProps,
-  'material-white-padded': getMaterialWhitePaddedThemeInputProps,
-}
-
-const TextField = ({
-  error,
-  classes,
-  theme,
-  startAdornment,
-  largeLabel,
-  dir,
-  ...textFieldProps
-}) => {
-  const inputProps = themeToInputProps[theme]({ classes, startAdornment, largeLabel, dir })
+const TextField = props => {
+  const { error, classes, material, startAdornment, largeLabel, dir, ...textFieldProps } = props
 
   return (
     <MaterialTextField
       error={Boolean(error)}
       helperText={error}
-      {...inputProps}
+      InputLabelProps={{
+        shrink: material ? undefined : true,
+        className: material ? '' : (largeLabel ? classes.largeInputLabel : classes.inputLabel),
+        FormLabelClasses: {
+          root: material ? classes.materialLabel : classes.formLabel,
+          focused: material ? classes.materialFocused : classes.formLabelFocused,
+          error: classes.materialError,
+        },
+      }}
+      InputProps={{
+        startAdornment: startAdornment || undefined,
+        disableUnderline: !material,
+        classes: {
+          root: material ? '' : classes.inputRoot,
+          input: material ? '' : classes.input,
+          underline: material ? classes.materialUnderline : '',
+          focused: material ? '' : classes.inputFocused,
+        },
+        inputProps: {
+          dir,
+        },
+      }}
       {...textFieldProps}
     />
   )
@@ -185,14 +103,13 @@ const TextField = ({
 TextField.defaultProps = {
   error: null,
   dir: 'auto',
-  theme: 'bordered',
 }
 
 TextField.propTypes = {
   error: PropTypes.string,
   classes: PropTypes.object,
   dir: PropTypes.string,
-  theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
+  material: PropTypes.bool,
   startAdornment: PropTypes.element,
   largeLabel: PropTypes.bool,
 }

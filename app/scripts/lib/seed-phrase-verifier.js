@@ -1,5 +1,5 @@
-import KeyringController from 'eth-keyring-controller'
-import log from 'loglevel'
+const KeyringController = require('eth-keyring-controller')
+const log = require('loglevel')
 
 const seedPhraseVerifier = {
 
@@ -11,9 +11,9 @@ const seedPhraseVerifier = {
    * - The created accounts in the primary keyring are always the same.
    * - The keyring always creates the accounts in the same sequence.
    *
-   * @param {array} createdAccounts - The accounts to restore
-   * @param {string} seedWords - The seed words to verify
-   * @returns {Promise<void>} - Promises undefined
+   * @param {array} createdAccounts The accounts to restore
+   * @param {string} seedWords The seed words to verify
+   * @returns {Promise<void>} Promises undefined
    *
   */
   verifyAccounts (createdAccounts, seedWords) {
@@ -54,4 +54,4 @@ const seedPhraseVerifier = {
   },
 }
 
-export default seedPhraseVerifier
+module.exports = seedPhraseVerifier

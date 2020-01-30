@@ -1,14 +1,11 @@
-import assert from 'assert'
-import versionBump from '../../../development/version-bump'
-import promisify from 'pify'
-import fs from 'fs'
-
+const assert = require('assert')
+const versionBump = require('../../../development/version-bump')
+const promisify = require('pify')
+const fs = require('fs')
 const readFile = promisify(fs.readFile)
-import path from 'path'
-
+const path = require('path')
 const changelogPath = path.join(__dirname, 'sample-changelog.md')
-import manifest from './sample-manifest.json'
-
+const manifest = require('./sample-manifest.json')
 let changelog
 
 

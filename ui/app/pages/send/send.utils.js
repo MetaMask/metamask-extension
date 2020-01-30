@@ -1,15 +1,15 @@
-import {
+const {
   addCurrencies,
   conversionUtil,
   conversionGTE,
   multiplyCurrencies,
   conversionGreaterThan,
   conversionLessThan,
-} from '../../helpers/utils/conversion-util'
-
-import { calcTokenAmount } from '../../helpers/utils/token-util'
-
-import {
+} = require('../../helpers/utils/conversion-util')
+const {
+  calcTokenAmount,
+} = require('../../helpers/utils/token-util')
+const {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -18,12 +18,11 @@ import {
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-} from './send.constants'
+} = require('./send.constants')
+const abi = require('ethereumjs-abi')
+const ethUtil = require('ethereumjs-util')
 
-import abi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
-
-export {
+module.exports = {
   addGasBuffer,
   calcGasTotal,
   calcTokenBalance,
@@ -294,24 +293,18 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
   if (conversionGreaterThan(
     { value: initialGasLimitHex, fromNumericBase: 'hex' },
     { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) {
-    return initialGasLimitHex
-  }
+  )) return initialGasLimitHex
   // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
   if (conversionLessThan(
     { value: bufferedGasLimit, fromNumericBase: 'hex' },
     { value: upperGasLimit, fromNumericBase: 'hex' },
-  )) {
-    return bufferedGasLimit
-  }
+  )) return bufferedGasLimit
   // otherwise use blockGasLimit
   return upperGasLimit
 }
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
-  if (!selectedToken) {
-    return
-  }
+  if (!selectedToken) return
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
     x => ('00' + x.toString(16)).slice(-2)
@@ -332,7 +325,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
+    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }

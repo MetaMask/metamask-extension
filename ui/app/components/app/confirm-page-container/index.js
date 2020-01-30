@@ -6,4 +6,5 @@ export { default as ConfirmPageContainerNavigation } from './confirm-page-contai
 export {
   default as ConfirmPageContainerContent,
   ConfirmPageContainerSummary,
+  ConfirmPageContainerError,
 } from './confirm-page-container-content'

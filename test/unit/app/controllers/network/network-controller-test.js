@@ -1,7 +1,9 @@
-import assert from 'assert'
-import nock from 'nock'
-import NetworkController from '../../../../../app/scripts/controllers/network'
-import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/network/util'
+const assert = require('assert')
+const nock = require('nock')
+const NetworkController = require('../../../../../app/scripts/controllers/network')
+const {
+  getNetworkDisplayName,
+} = require('../../../../../app/scripts/controllers/network/util')
 
 describe('# Network Controller', function () {
   let networkController

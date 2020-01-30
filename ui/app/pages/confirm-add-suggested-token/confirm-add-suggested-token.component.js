@@ -12,6 +12,7 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   static propTypes = {
     history: PropTypes.object,
+    clearPendingTokens: PropTypes.func,
     addToken: PropTypes.func,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,

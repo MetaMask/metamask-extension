@@ -1,10 +1,8 @@
-import assert from 'assert'
-import migration25 from '../../../app/scripts/migrations/025'
-import data from '../../../app/scripts/first-time-state'
-
+const assert = require('assert')
+const migration25 = require('../../../app/scripts/migrations/025')
 const firstTimeState = {
   meta: {},
-  data,
+  data: require('../../../app/scripts/first-time-state'),
 }
 
 const storage = {
@@ -34,12 +32,8 @@ describe('storage is migrated successfully and the txParams.from are lowercase',
       .then((migratedData) => {
         const migratedTransactions = migratedData.data.TransactionController.transactions
         migratedTransactions.forEach((tx) => {
-          if (tx.status === 'unapproved') {
-            assert(!tx.txParams.random)
-          }
-          if (tx.status === 'unapproved') {
-            assert(!tx.txParams.chainId)
-          }
+          if (tx.status === 'unapproved') assert(!tx.txParams.random)
+          if (tx.status === 'unapproved') assert(!tx.txParams.chainId)
         })
         done()
       }).catch(done)

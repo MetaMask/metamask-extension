@@ -1,56 +1,47 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+const inherits = require('util').inherits
+const Component = require('react').Component
+const h = require('react-hyperscript')
 
-function NetworkDropdownIcon (props) {
+
+inherits(NetworkDropdownIcon, Component)
+module.exports = NetworkDropdownIcon
+
+function NetworkDropdownIcon () {
+  Component.call(this)
+}
+
+NetworkDropdownIcon.prototype.render = function () {
   const {
     backgroundColor,
     isSelected,
-    innerBorder,
-    diameter,
+    innerBorder = 'none',
+    diameter = '12',
     loading,
-  } = props
+  } = this.props
 
   return loading
-    ? (
-      <span
-        className="pointer network-indicator"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}
-      >
-        <img alt="" style={{ width: '27px' }} src="images/loading.svg" />
-      </span>
+    ? h('span.pointer.network-indicator', {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+      },
+    }, [
+      h('img', {
+        style: {
+          width: '27px',
+        },
+        src: 'images/loading.svg',
+      }),
+    ])
+    : h(`.menu-icon-circle${isSelected ? '--active' : ''}`, {},
+      h('div', {
+        style: {
+          background: backgroundColor,
+          border: innerBorder,
+          height: `${diameter}px`,
+          width: `${diameter}px`,
+        },
+      })
     )
-    : (
-      <div className={`menu-icon-circle${isSelected ? '--active' : ''}`}>
-        <div
-          style={{
-            background: backgroundColor,
-            border: innerBorder,
-            height: `${diameter}px`,
-            width: `${diameter}px`,
-          }}
-        />
-      </div>
-    )
 }
-
-NetworkDropdownIcon.defaultProps = {
-  backgroundColor: undefined,
-  loading: false,
-  innerBorder: 'none',
-  diameter: '12',
-  isSelected: false,
-}
-
-NetworkDropdownIcon.propTypes = {
-  backgroundColor: PropTypes.string,
-  loading: PropTypes.bool,
-  innerBorder: PropTypes.string,
-  diameter: PropTypes.string,
-  isSelected: PropTypes.bool,
-}
-
-export default NetworkDropdownIcon

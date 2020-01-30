@@ -1,3 +1,2 @@
 import NetworkDisplay from './network-display.container'
-
-export default NetworkDisplay
+module.exports = NetworkDisplay

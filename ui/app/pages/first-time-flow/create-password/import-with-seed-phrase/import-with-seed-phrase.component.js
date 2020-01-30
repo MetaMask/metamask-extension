@@ -1,4 +1,4 @@
-import { validateMnemonic } from 'bip39'
+import {validateMnemonic} from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -49,7 +49,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return words.join(' ')
   }
 
-  UNSAFE_componentWillMount () {
+  componentWillMount () {
     this._onBeforeUnload = () => this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
@@ -175,7 +175,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
-  onTermsKeyPress = ({ key }) => {
+  onTermsKeyPress = ({key}) => {
     if (key === ' ' || key === 'Enter') {
       this.toggleTermsCheck()
     }
@@ -283,8 +283,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-            I have read and agree to the&nbsp;
-            <a
+            I have read and agree to the <a
               href="https://metamask.io/terms.html"
               target="_blank"
               rel="noopener noreferrer"
@@ -297,9 +296,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <Button
           type="primary"
-          submit
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
+          onClick={this.handleImport}
         >
           { t('import') }
         </Button>

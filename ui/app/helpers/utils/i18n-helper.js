@@ -1,18 +1,17 @@
 // cross-browser connection to extension i18n API
-import log from 'loglevel'
-
-import * as Sentry from '@sentry/browser'
+const log = require('loglevel')
+const Sentry = require('@sentry/browser')
 
 const warned = {}
 const missingMessageErrors = {}
 
 /**
  * Returns a localized message for the given key
- * @param {string} localeCode - The code for the current locale
- * @param {Object} localeMessages - The map of messages for the current locale
- * @param {string} key - The message key
- * @param {string[]} substitutions - A list of message substitution replacements
- * @returns {null|string} - The localized message
+ * @param {string} localeCode The code for the current locale
+ * @param {object} localeMessages The map of messages for the current locale
+ * @param {string} key The message key
+ * @param {string[]} substitutions A list of message substitution replacements
+ * @return {null|string} The localized message
  */
 export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {

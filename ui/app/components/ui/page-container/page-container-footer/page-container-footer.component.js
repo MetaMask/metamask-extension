@@ -14,7 +14,6 @@ export default class PageContainerFooter extends Component {
     disabled: PropTypes.bool,
     submitButtonType: PropTypes.string,
     hideCancel: PropTypes.bool,
-    buttonSizeLarge: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -32,32 +31,27 @@ export default class PageContainerFooter extends Component {
       submitButtonType,
       hideCancel,
       cancelButtonType,
-      buttonSizeLarge = false,
     } = this.props
 
     return (
       <div className="page-container__footer">
 
         <header>
-          {!hideCancel && (
-            <Button
-              type={cancelButtonType || 'default'}
-              large={buttonSizeLarge}
-              className="page-container__footer-button"
-              onClick={e => onCancel(e)}
-              data-testid="page-container-footer-cancel"
-            >
-              { cancelText || this.context.t('cancel') }
-            </Button>
-          )}
+          {!hideCancel && <Button
+            type={cancelButtonType || 'default'}
+            large
+            className="page-container__footer-button"
+            onClick={e => onCancel(e)}
+          >
+            { cancelText || this.context.t('cancel') }
+          </Button>}
 
           <Button
             type={submitButtonType || 'secondary'}
-            large={buttonSizeLarge}
+            large
             className="page-container__footer-button"
             disabled={disabled}
             onClick={e => onSubmit(e)}
-            data-testid="page-container-footer-next"
           >
             { submitText || this.context.t('next') }
           </Button>

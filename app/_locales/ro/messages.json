@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "Modul de confidențialitate este activat acum în mod implicit"
+  },
   "chartOnlyAvailableEth": {
     "message": "Grafic disponibil numai pe rețelele Ethereum."
+  },
+  "confirmClear": {
+    "message": "Sunteți sigur că doriți să ștergeți site-urile aprobate?"
   },
   "contractInteraction": {
     "message": "Interacțiune contract"
   },
+  "clearApprovalData": {
+    "message": "Ștergeți datele confidențiale"
+  },
   "reject": {
     "message": "Respingeți"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 ar dori să se conecteze la contul dvs."
+  },
+  "providerRequestInfo": {
+    "message": "Acest site solicită acces pentru a vedea adresa curentă a contului dvs. Asigurați-vă întotdeauna că aveți încredere în site-urile cu care interacționați."
   },
   "about": {
     "message": "Despre"
   },
   "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
+    "message": "Versiune, centru de asistență și date de contact."
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -51,7 +63,7 @@
     "message": "Avansate"
   },
   "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
+    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat."
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
@@ -109,10 +121,10 @@
   "attributions": {
     "message": "Atribuții"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Temporizator deconectare automată (minute)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
   },
   "average": {
@@ -139,8 +151,15 @@
   "balanceOutdated": {
     "message": "Se poate ca soldul să nu fie actualizat"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Sold insuficient pentru actuala valoare totală de gaz."
+  },
   "basic": {
     "message": "De bază"
+  },
+  "betweenMinAndMax": {
+    "message": "trebuie să fie mai mare sau egal cu $1 și mai mic sau egal cu $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Explorator blocuri"
@@ -233,6 +252,9 @@
   "connect": {
     "message": "Conectează-te"
   },
+  "connectRequest": {
+    "message": "Solicitare de conectare"
+  },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
@@ -271,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "Copiat!"
+  },
+  "copy": {
+    "message": "Copiază"
   },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
@@ -349,6 +374,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
+  },
+  "dismiss": {
+    "message": "Închide"
   },
   "done": {
     "message": "Efectuat"
@@ -465,6 +493,9 @@
   "gasLimit": {
     "message": "Limită gas"
   },
+  "gasLimitCalculation": {
+    "message": "Calculăm limita de gas sugerată pe baza ratelor de succes ale rețelei."
+  },
   "gasLimitInfoModalContent": {
     "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
   },
@@ -486,6 +517,9 @@
   "gasPriceNoDenom": {
     "message": "Preț gas"
   },
+  "gasPriceCalculation": {
+    "message": "Calculăm prețurile sugerate pentru gas pe baza ratelor de succes ale rețelei."
+  },
   "generalSettingsDescription": {
     "message": "Schimb valutar, moneda principală, limba, blockies identicon"
   },
@@ -501,6 +535,10 @@
   },
   "getStarted": {
     "message": "Începe"
+  },
+  "greaterThanMin": {
+    "message": "trebuie să fie mai mare sau egal cu $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Ne pare bine să vă vedem."
@@ -617,6 +655,10 @@
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
+  "lessThanMax": {
+    "message": "trebuie să fie mai mic sau egal cu $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "Da, hai să configurăm!"
   },
@@ -638,7 +680,10 @@
   "loadMore": {
     "message": "Încărcați mai multe"
   },
-  "lock": {
+  "login": {
+    "message": "Autentificare"
+  },
+  "logout": {
     "message": "Deconectați-vă"
   },
   "mainnet": {
@@ -658,6 +703,9 @@
   },
   "metamaskDescription": {
     "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
+  },
+  "metamaskSeedWords": {
+    "message": "Cuvinte Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
@@ -809,6 +857,9 @@
     "message": "Lipiți aici șirul de chei private:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Copiați-vă expresia seed aici!"
+  },
   "pending": {
     "message": "în așteptare"
   },
@@ -914,6 +965,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
+  },
+  "revert": {
+    "message": "Reveniți"
   },
   "remove": {
     "message": "Elimină"
@@ -1119,6 +1173,9 @@
   "storePhrase": {
     "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
   },
+  "submit": {
+    "message": "Trimite"
+  },
   "submitted": {
     "message": "Trimis"
   },
@@ -1129,7 +1186,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
+    "message": "Simbolul trebuie să fie între 0 și 12 caractere."
   },
   "syncWithMobile": {
     "message": "Sincronizați cu dispozitivul mobil"
@@ -1279,6 +1336,9 @@
   },
   "userName": {
     "message": "Nume utilizator"
+  },
+  "validFileImport": {
+    "message": "Trebuie să selectați un fișier valabil pentru importare."
   },
   "viewAccount": {
     "message": "Afișați contul"

@@ -32,6 +32,13 @@ export default class ConfirmPageContainer extends Component {
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
+    fiatTransactionAmount: PropTypes.string,
+    fiatTransactionFee: PropTypes.string,
+    fiatTransactionTotal: PropTypes.string,
+    ethTransactionAmount: PropTypes.string,
+    ethTransactionFee: PropTypes.string,
+    ethTransactionTotal: PropTypes.string,
+    onEditGas: PropTypes.func,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
@@ -126,17 +133,15 @@ export default class ConfirmPageContainer extends Component {
         >
           { hideSenderToRecipient
             ? null
-            : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-                assetImage={renderAssetImage ? assetImage : undefined}
-              />
-            )
+            : <SenderToRecipient
+              senderName={fromName}
+              senderAddress={fromAddress}
+              recipientName={toName}
+              recipientAddress={toAddress}
+              recipientEns={toEns}
+              recipientNickname={toNickname}
+              assetImage={renderAssetImage ? assetImage : undefined}
+            />
           }
         </ConfirmPageContainerHeader>
         {

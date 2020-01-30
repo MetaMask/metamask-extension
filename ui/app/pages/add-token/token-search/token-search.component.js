@@ -36,8 +36,12 @@ export default class TokenSearch extends Component {
     error: PropTypes.string,
   }
 
-  state = {
-    searchQuery: '',
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      searchQuery: '',
+    }
   }
 
   handleSearch (searchQuery) {

@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params
   const {
     confirmTransaction,
-    metamask: { currentCurrency, conversionRate, selectedAddressTxList, domainMetadata = {}, selectedAddress },
+    metamask: { currentCurrency, conversionRate, selectedAddressTxList, approvedOrigins, selectedAddress },
   } = state
 
   const {
@@ -43,7 +43,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenData = getTokenData(data)
   const tokenValue = tokenData && getTokenValue(tokenData.params)
   const toAddress = tokenData && getTokenToAddress(tokenData.params)
-  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toString(10)
+  const tokenAmount = tokenData && calcTokenAmount(tokenValue, decimals).toNumber()
   const contractExchangeRate = contractExchangeRateSelector(state)
 
   const { origin } = transaction
@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
     ? origin[0].toUpperCase() + origin.slice(1)
     : ''
 
-  const { icon: siteImage = '' } = domainMetadata[origin] || {}
+  const { siteImage } = approvedOrigins[origin] || {}
   return {
     toAddress,
     tokenAddress,
@@ -76,22 +76,20 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showCustomizeGasModal: (txData) => dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData })),
     showEditApprovalPermissionModal: ({
-      customTokenAmount,
-      decimals,
-      origin,
-      setCustomAmount,
       tokenAmount,
-      tokenBalance,
+      customTokenAmount,
       tokenSymbol,
+      tokenBalance,
+      setCustomAmount,
+      origin,
     }) => dispatch(showModal({
       name: 'EDIT_APPROVAL_PERMISSION',
-      customTokenAmount,
-      decimals,
-      origin,
-      setCustomAmount,
       tokenAmount,
-      tokenBalance,
+      customTokenAmount,
       tokenSymbol,
+      tokenBalance,
+      setCustomAmount,
+      origin,
     })),
   }
 }

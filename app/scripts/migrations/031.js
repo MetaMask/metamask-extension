@@ -1,16 +1,16 @@
 // next version number
 const version = 31
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
 /*
-  * The purpose of this migration is to properly set the completedOnboarding flag based on the state
+  * The purpose of this migration is to properly set the completedOnboarding flag baesd on the state
   * of the KeyringController.
   */
-export default {
+module.exports = {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     const newState = transformState(state)

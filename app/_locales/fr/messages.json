@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "Le mode conversation privée est maintenant activé par défaut"
+  },
   "chartOnlyAvailableEth": {
     "message": "Tableau disponible uniquement sur les réseaux Ethereum."
+  },
+  "confirmClear": {
+    "message": "Êtes-vous sûr de vouloir supprimer les sites Web approuvés?"
   },
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
+  "clearApprovalData": {
+    "message": "Effacer les données d'approbation"
+  },
   "reject": {
     "message": "Rejeter"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 voudrait se connecter à votre compte"
+  },
+  "providerRequestInfo": {
+    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ethereum pour pouvoir interagir avec la chaîne de blocs Ethereum. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ethereum."
   },
   "about": {
     "message": "À propos"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centre d'assistance et coordonnées"
+    "message": "Version, centre d'assistance et coordonnées."
   },
   "acceleratingATransaction": {
     "message": "* Accélérer une transaction en utilisant un prix de l'essence plus élevé augmente ses chances d'être traitée plus rapidement par le réseau, mais ce n'est pas toujours garanti."
@@ -51,7 +63,7 @@
     "message": "Paramètres avancés"
   },
   "advancedSettingsDescription": {
-    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC"
+    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC."
   },
   "advancedOptions": {
     "message": "Options avancées"
@@ -106,10 +118,10 @@
   "attemptToCancelDescription": {
     "message": "Faire une demande d'annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l'annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Minuterie de déconnexion automatique (minutes)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Réglez le temps d'inactivité en minutes avant que MetaMask ne se déconnecte automatiquement."
   },
   "average": {
@@ -136,8 +148,15 @@
   "balanceOutdated": {
     "message": "Le solde peut ne pas être à jour"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Solde insuffisant pour le total actuel de gaz"
+  },
   "basic": {
     "message": "Général"
+  },
+  "betweenMinAndMax": {
+    "message": "doit être supérieur ou égal à $1 et inférieur ou égal à $2",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Afficher le compte à $1",
@@ -221,6 +240,9 @@
   "connect": {
     "message": "Connecter"
   },
+  "connectRequest": {
+    "message": "Demande de connexion"
+  },
   "connectingTo": {
     "message": "Connexion à $1"
   },
@@ -259,6 +281,9 @@
   },
   "copiedExclamation": {
     "message": "Copié!"
+  },
+  "copy": {
+    "message": "Copier"
   },
   "copyAddress": {
     "message": "Copier l'addresse dans le presse-papier"
@@ -337,6 +362,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
+  },
+  "dismiss": {
+    "message": "Ignorer"
   },
   "done": {
     "message": "Terminé"
@@ -457,6 +485,9 @@
   "gasLimit": {
     "message": "Quantité max. de gaz"
   },
+  "gasLimitCalculation": {
+    "message": "Nous calculons la quantité max. de gaz suggérée en fonction du code exécuté."
+  },
   "gasLimitInfoModalContent": {
     "message": "La limite d'essence est la quantité maximale d'unités d'essence que vous êtes prêt à dépenser."
   },
@@ -478,6 +509,9 @@
   "gasPriceNoDenom": {
     "message": "Prix du gaz"
   },
+  "gasPriceCalculation": {
+    "message": "Nous calculons les prix du gaz proposés en fonction des taux de réussite du réseau."
+  },
   "general": {
     "message": "Général"
   },
@@ -496,6 +530,10 @@
   },
   "getStarted": {
     "message": "Démarrer"
+  },
+  "greaterThanMin": {
+    "message": "doit être supérieur ou égal à $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Nous sommes ravis de vous voir."
@@ -590,18 +628,6 @@
   "invalidSeedPhrase": {
     "message": "Phrase Seed invalide"
   },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Entrez l'URL de la gateway CID IPFS à utiliser pour résoudre les contenus ENS."
-  },
-  "invalidIpfsGateway": {
-    "message": "IPFS Gateway Invalide: la valeur doit être une URL valide"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "IPFS Gateway Interdite: veuillez spécifier une gateway CID"
-  },
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
@@ -614,6 +640,10 @@
   },
   "ledgerAccountRestriction": {
     "message": "Vous devez d'abord utiliser le dernier compte que vous avez créé avant de pouvoir en créer un autre."
+  },
+  "lessThanMax": {
+    "message": "doit être inférieur ou égal à $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Oui, passons à la configuration !"
@@ -636,7 +666,10 @@
   "loadMore": {
     "message": "Charger plus"
   },
-  "lock": {
+  "login": {
+    "message": "Connexion"
+  },
+  "logout": {
     "message": "Déconnexion"
   },
   "mainnet": {
@@ -650,6 +683,9 @@
   },
   "metamaskDescription": {
     "message": "MetaMask est un coffre sécurisé pour votre identité sur Ethereum."
+  },
+  "metamaskSeedWords": {
+    "message": "Mots Seed pour MetaMask"
   },
   "metamaskVersion": {
     "message": "Version de MetaMask"
@@ -801,6 +837,9 @@
     "message": "Collez votre clé privée ici:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Collez votre seed phrase ici!"
+  },
   "pending": {
     "message": "En attente"
   },
@@ -906,6 +945,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
+  },
+  "revert": {
+    "message": "Rétablir"
   },
   "remove": {
     "message": "Supprimer"
@@ -1111,6 +1153,9 @@
   "storePhrase": {
     "message": "Stockez cette phrase dans un gestionnaire de mots de passe comme 1Password."
   },
+  "submit": {
+    "message": "Soumettre"
+  },
   "submitted": {
     "message": "Envoyé"
   },
@@ -1121,7 +1166,7 @@
     "message": "Symbole"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Le symbole doit comporter 11 caractères ou moins."
+    "message": "Le symbol doit avoir entre 0 et 12 caractères."
   },
   "syncWithMobile": {
     "message": "Synchroniser avec le mobile"
@@ -1271,6 +1316,9 @@
   },
   "userName": {
     "message": "Nom d'utilisateur"
+  },
+  "validFileImport": {
+    "message": "Vous devez selectionner un fichier valide à importer."
   },
   "viewAccount": {
     "message": "Afficher le compte"

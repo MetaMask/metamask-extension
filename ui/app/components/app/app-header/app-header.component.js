@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import MetaFoxLogo from '../../ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-import NetworkIndicator from '../network'
+const NetworkIndicator = require('../network')
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -89,8 +89,7 @@ export default class AppHeader extends PureComponent {
 
     return (
       <div
-        className={classnames('app-header', { 'app-header--back-drop': isUnlocked })}
-      >
+        className={classnames('app-header', { 'app-header--back-drop': isUnlocked })}>
         <div className="app-header__contents">
           <MetaFoxLogo
             unsetIconHeight

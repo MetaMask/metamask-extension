@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "Mod Privasi kini diaktifkan secara lalai"
+  },
   "chartOnlyAvailableEth": {
     "message": "Carta hanya tersedia di rangkaian Ethereum."
+  },
+  "confirmClear": {
+    "message": "Adakah anda pasti mahu mengosongkan tapak web diluluskan?"
   },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
   },
+  "clearApprovalData": {
+    "message": "Kosongkan Data Privasi"
+  },
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 ingin menyambung kepada akaun anda"
+  },
+  "providerRequestInfo": {
+    "message": "Tapak ini meminta akses untuk melihat alamat akaun semasa anda. Sentiasa pastikan anda mempercayai tapak web yang anda berinteraksi."
   },
   "about": {
     "message": "Mengenai"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
+    "message": "Versi, pusat sokongan, dan maklumat perhubungan."
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -51,7 +63,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
+    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai."
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
@@ -109,10 +121,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
   },
   "average": {
@@ -139,8 +151,15 @@
   "balanceOutdated": {
     "message": "Baki mungkin lapuk"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Baki tidak mencukupi untuk jumlah keseluruhan gas semasa"
+  },
   "basic": {
     "message": "Asas"
+  },
+  "betweenMinAndMax": {
+    "message": "mestilah lebih besar atau sama dengan $1 dan kurang atau sama dengan $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Sekat Explorer"
@@ -230,6 +249,9 @@
   "connect": {
     "message": "Sambung"
   },
+  "connectRequest": {
+    "message": "Sambungkan Permintaan"
+  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
@@ -268,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "Disalin!"
+  },
+  "copy": {
+    "message": "Salin"
   },
   "copyAddress": {
     "message": "Salin alamat kepada papan klip"
@@ -340,6 +365,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
+  },
+  "dismiss": {
+    "message": "Singkirkan"
   },
   "done": {
     "message": "Selesai"
@@ -453,6 +481,9 @@
   "gasLimit": {
     "message": "Had Gas"
   },
+  "gasLimitCalculation": {
+    "message": "Kami mengira had gas yang dicadangkan berdasarkan kadar kejayaan rangkaian."
+  },
   "gasLimitInfoModalContent": {
     "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
   },
@@ -474,6 +505,9 @@
   "gasPriceNoDenom": {
     "message": "Harga Gas"
   },
+  "gasPriceCalculation": {
+    "message": "Kami mengira harga gas disyorkan berdasarkan kadar kejayaan rangkaian."
+  },
   "general": {
     "message": "Am"
   },
@@ -492,6 +526,10 @@
   },
   "getStarted": {
     "message": "Bermula"
+  },
+  "greaterThanMin": {
+    "message": "mestilah melebihi atau bersamaan dengan $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Kami gembira bertemu anda."
@@ -607,6 +645,10 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
+  "lessThanMax": {
+    "message": "mestilah kurang atau bersamaan dengan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"
   },
@@ -628,7 +670,10 @@
   "loadMore": {
     "message": "Muat Lagi"
   },
-  "lock": {
+  "login": {
+    "message": "Log Masuk"
+  },
+  "logout": {
     "message": "Log keluar"
   },
   "mainnet": {
@@ -642,6 +687,9 @@
   },
   "metamaskDescription": {
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
+  },
+  "metamaskSeedWords": {
+    "message": "Perkataan Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -793,6 +841,9 @@
     "message": "Tampal rentetan kekunci persendirian anda di sini:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Tampal ungkapan benih anda di sini!"
+  },
   "pending": {
     "message": "menunggu"
   },
@@ -898,6 +949,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
+  },
+  "revert": {
+    "message": "Undur"
   },
   "remove": {
     "message": "Alih keluar"
@@ -1103,6 +1157,9 @@
   "storePhrase": {
     "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."
   },
+  "submit": {
+    "message": "Serah"
+  },
   "submitted": {
     "message": "Dihantar"
   },
@@ -1113,7 +1170,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mestilah 11 aksara atau kurang."
+    "message": "Simbol mestilah antara 0 hingga 12 aksara."
   },
   "syncWithMobile": {
     "message": "Segerakkan dengan telefon mudah alih"
@@ -1266,6 +1323,9 @@
   },
   "userName": {
     "message": "Nama pengguna"
+  },
+  "validFileImport": {
+    "message": "Anda mesti pilih fail yang sah untuk diimport."
   },
   "viewAccount": {
     "message": "Paparkan Akaun"

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 import SendRowWrapper from '../send-row-wrapper'
 import AmountMaxButton from './amount-max-button'
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input'
@@ -16,6 +16,7 @@ export default class SendAmountRow extends Component {
     ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
+    convertedCurrency: PropTypes.string,
     gasTotal: PropTypes.string,
     inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,

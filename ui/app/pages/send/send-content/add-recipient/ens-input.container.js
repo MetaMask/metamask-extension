@@ -7,7 +7,7 @@ import {
 import {
   getAddressBookEntry,
 } from '../../../../selectors/selectors'
-import { connect } from 'react-redux'
+const connect = require('react-redux').connect
 
 
 export default connect(

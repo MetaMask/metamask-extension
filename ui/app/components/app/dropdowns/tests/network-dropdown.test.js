@@ -12,13 +12,12 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState in false', () => {
     const mockState = {
       metamask: {
-        network: '1',
         provider: {
           type: 'test',
         },
       },
       appState: {
-        networkDropdownOpen: false,
+        networkDropdown: false,
       },
     }
 
@@ -43,7 +42,6 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState is true', () => {
     const mockState = {
       metamask: {
-        network: '1',
         provider: {
           'type': 'test',
         },
@@ -59,7 +57,7 @@ describe('Network Dropdown', () => {
 
     beforeEach(() => {
       wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />,
+        <NetworkDropdown store={store}/>,
       )
     })
 

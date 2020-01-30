@@ -1,21 +1,19 @@
-export default getBuyEthUrl
+module.exports = getBuyEthUrl
 
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
- * @param {Object} opts - Options required to determine the correct url
+ * @param {object} opts Options required to determine the correct url
  * @param {string} opts.network The network for which to return a url
  * @param {string} opts.amount The amount of ETH to buy on coinbase. Only relevant if network === '1'.
  * @param {string} opts.address The address the bought ETH should be sent to.  Only relevant if network === '1'.
- * @returns {string|undefined} - The url at which the user can access ETH, while in the given network. If the passed
+ * @returns {string|undefined} The url at which the user can access ETH, while in the given network. If the passed
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
 function getBuyEthUrl ({ network, amount, address, service }) {
   // default service by network if not specified
-  if (!service) {
-    service = getDefaultServiceForNetwork(network)
-  }
+  if (!service) service = getDefaultServiceForNetwork(network)
 
   switch (service) {
     case 'wyre':
@@ -32,9 +30,8 @@ function getBuyEthUrl ({ network, amount, address, service }) {
       return 'https://github.com/kovan-testnet/faucet'
     case 'goerli-faucet':
       return 'https://goerli-faucet.slock.it/'
-    default:
-      throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
   }
+  throw new Error(`Unknown cryptocurrency exchange or faucet: "${service}"`)
 }
 
 function getDefaultServiceForNetwork (network) {
@@ -49,7 +46,6 @@ function getDefaultServiceForNetwork (network) {
       return 'kovan-faucet'
     case '5':
       return 'goerli-faucet'
-    default:
-      throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
   }
+  throw new Error(`No default cryptocurrency exchange or faucet for networkId: "${network}"`)
 }

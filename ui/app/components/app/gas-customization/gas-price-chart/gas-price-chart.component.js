@@ -24,15 +24,14 @@ export default class GasPriceChart extends Component {
     updateCustomGasPrice: PropTypes.func,
   }
 
-  renderChart () {
-    const {
-      currentPrice,
-      gasPrices,
-      estimatedTimes,
-      gasPricesMax,
-      estimatedTimesMax,
-      updateCustomGasPrice,
-    } = this.props
+  renderChart ({
+    currentPrice,
+    gasPrices,
+    estimatedTimes,
+    gasPricesMax,
+    estimatedTimesMax,
+    updateCustomGasPrice,
+  }) {
     const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax, this.context.t)
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
@@ -96,7 +95,7 @@ export default class GasPriceChart extends Component {
   }
 
   componentDidMount () {
-    this.renderChart()
+    this.renderChart(this.props)
   }
 
   render () {

@@ -6,13 +6,13 @@ This migration sets transactions who were retried and marked as failed to submit
 
 */
 
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -31,9 +31,7 @@ function transformState (state) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.status === 'failed') {
-        return txMeta
-      }
+      if (!txMeta.status === 'failed') return txMeta
       if (txMeta.retryCount > 0 && txMeta.retryCount < 2) {
         txMeta.status = 'submitted'
         delete txMeta.err

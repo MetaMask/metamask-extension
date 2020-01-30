@@ -13,20 +13,21 @@ class DraggableSeed extends Component {
     isOver: PropTypes.bool,
     canDrop: PropTypes.bool,
     // Own Props
-    onClick: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
     setHoveringIndex: PropTypes.func.isRequired,
     index: PropTypes.number,
+    draggingSeedIndex: PropTypes.number,
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
+    droppable: PropTypes.bool,
   }
 
   static defaultProps = {
     className: '',
-    onClick: undefined,
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps) {
     const { isOver, setHoveringIndex } = this.props
     if (isOver && !nextProps.isOver) {
       setHoveringIndex(-1)
@@ -58,7 +59,6 @@ class DraggableSeed extends Component {
           'confirm-seed-phrase__seed-word--drop-hover': isOver && canDrop,
         })}
         onClick={onClick}
-        data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
       >
         { word }
       </div>

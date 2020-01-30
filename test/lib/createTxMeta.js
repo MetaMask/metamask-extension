@@ -1,6 +1,6 @@
-import txStateHistoryHelper from '../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
+const txStateHistoryHelper = require('../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 
-export default createTxMeta
+module.exports = createTxMeta
 
 function createTxMeta (partialMeta) {
   const txMeta = Object.assign({

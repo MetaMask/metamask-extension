@@ -1,6 +1,6 @@
-import assert from 'assert'
-import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
-import testVault from '../../../../data/v17-long-history.json'
+const assert = require('assert')
+const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
+const testVault = require('../../../../data/v17-long-history.json')
 
 describe('Transaction state history helper', function () {
 
@@ -106,9 +106,7 @@ describe('Transaction state history helper', function () {
       assert.equal(result[0].path, expectedEntry1.path)
       assert.equal(result[0].value, expectedEntry1.value)
       assert.equal(result[0].value, expectedEntry1.value)
-      if (note) {
-        assert.equal(result[0].note, note)
-      }
+      if (note) { assert.equal(result[0].note, note) }
 
       assert.ok(result[0].timestamp >= before && result[0].timestamp <= after)
 

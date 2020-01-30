@@ -175,6 +175,7 @@
   },
   "identities": {},
   "send": {
+    "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {},
     "warnings": {}

@@ -1,3 +1,2 @@
-import ExportTextContainer from './export-text-container.component'
-
-export default ExportTextContainer
+const ExportTextContainer = require('./export-text-container.component')
+module.exports = ExportTextContainer

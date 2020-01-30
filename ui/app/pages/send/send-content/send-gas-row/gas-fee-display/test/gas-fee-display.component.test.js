@@ -1,6 +1,6 @@
 import React from 'react'
 import assert from 'assert'
-import { shallow } from 'enzyme'
+import {shallow} from 'enzyme'
 import GasFeeDisplay from '../gas-fee-display.component'
 import UserPreferencedCurrencyDisplay from '../../../../../../components/app/user-preferenced-currency-display'
 import sinon from 'sinon'
@@ -15,16 +15,14 @@ describe('GasFeeDisplay Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow((
-      <GasFeeDisplay
-        conversionRate={20}
-        gasTotal="mockGasTotal"
-        primaryCurrency="mockPrimaryCurrency"
-        convertedCurrency="mockConvertedCurrency"
-        showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
-        onReset={propsMethodSpies.onReset}
-      />
-    ), { context: { t: str => str + '_t' } })
+    wrapper = shallow(<GasFeeDisplay
+      conversionRate={20}
+      gasTotal="mockGasTotal"
+      primaryCurrency="mockPrimaryCurrency"
+      convertedCurrency="mockConvertedCurrency"
+      showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
+      onReset={propsMethodSpies.onReset}
+    />, {context: {t: str => str + '_t'}})
   })
 
   afterEach(() => {

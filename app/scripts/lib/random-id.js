@@ -6,4 +6,4 @@ function createRandomId () {
   return idCounter++
 }
 
-export default createRandomId
+module.exports = createRandomId

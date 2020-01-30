@@ -1,13 +1,13 @@
 const version = 2
 
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
 
-export default {
+module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       if (versionedData.data.config.provider.type === 'etherscan') {

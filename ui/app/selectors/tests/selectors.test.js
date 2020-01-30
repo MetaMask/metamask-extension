@@ -1,5 +1,8 @@
 import assert from 'assert'
-import { getAddressBook } from '../selectors.js'
+import selectors from '../selectors.js'
+const {
+  getAddressBook,
+} = selectors
 import mockState from './selectors-test-data'
 
 describe('selectors', () => {

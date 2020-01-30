@@ -4,7 +4,7 @@
 * numeric base, denomination and currency, and the desired numeric base, denomination and
 * currency. It should return a single value.
 *
-* @param {(number | string | BN)} value - The value to convert.
+* @param {(number | string | BN)} value The value to convert.
 * @param {Object} [options] Options to specify details of the conversion
 * @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
 * @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
@@ -22,12 +22,11 @@
 * the keys are specified in the options parameters and the values are setter functions.
 */
 
-import BigNumber from 'bignumber.js'
-
-import ethUtil, { stripHexPrefix } from 'ethereumjs-util'
-
+const BigNumber = require('bignumber.js')
+const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-import R from 'ramda'
+const R = require('ramda')
+const { stripHexPrefix } = require('ethereumjs-util')
 
 BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
@@ -238,7 +237,7 @@ const toNegative = (n, options = {}) => {
   return multiplyCurrencies(n, -1, options)
 }
 
-export {
+module.exports = {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,

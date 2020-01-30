@@ -48,6 +48,9 @@
   "copiedExclamation": {
     "message": "Copiado!"
   },
+  "copy": {
+    "message": "Copiar"
+  },
   "copyToClipboard": {
     "message": "Copiar para a área de transferência"
   },
@@ -62,6 +65,9 @@
   },
   "details": {
     "message": "Detalhes"
+  },
+  "dismiss": {
+    "message": "Ignorar"
   },
   "done": {
     "message": "Concluído"
@@ -149,6 +155,9 @@
   },
   "settings": {
     "message": "Definições"
+  },
+  "submit": {
+    "message": "Submeter"
   },
   "tips": {
     "message": "Doações"

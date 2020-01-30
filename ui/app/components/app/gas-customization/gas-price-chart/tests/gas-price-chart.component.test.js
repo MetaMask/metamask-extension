@@ -51,7 +51,7 @@ const testProps = {
   gasPrices: [1.5, 2.5, 4, 8],
   estimatedTimes: [100, 80, 40, 10],
   gasPricesMax: 9,
-  estimatedTimesMax: 100,
+  estimatedTimesMax: '100',
   currentPrice: 6,
   updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
 }
@@ -93,10 +93,11 @@ describe('GasPriceChart Component', function () {
   })
 
   describe('componentDidMount', () => {
-    it('should call this.renderChart', () => {
+    it('should call this.renderChart with the components props', () => {
       assert(GasPriceChart.prototype.renderChart.callCount, 1)
       wrapper.instance().componentDidMount()
       assert(GasPriceChart.prototype.renderChart.callCount, 2)
+      assert.deepEqual(GasPriceChart.prototype.renderChart.getCall(1).args, [{...testProps}])
     })
   })
 

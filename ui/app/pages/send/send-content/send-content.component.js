@@ -15,8 +15,11 @@ export default class SendContent extends Component {
 
   static propTypes = {
     updateGas: PropTypes.func,
+    scanQrCode: PropTypes.func,
     showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
+    ownedAccounts: PropTypes.array,
+    addressBook: PropTypes.array,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
   }

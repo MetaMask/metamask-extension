@@ -1,5 +1,6 @@
-import ObservableStore from 'obs-store'
-import { getRandomArrayItem } from '../lib/util'
+const ObservableStore = require('obs-store')
+const extend = require('xtend')
+const { getRandomArrayItem } = require('../lib/util')
 
 /**
  * a/b test descriptions:
@@ -20,7 +21,7 @@ class ABTestController {
    */
   constructor (opts = {}) {
     const { initState } = opts
-    this.store = new ObservableStore(Object.assign({
+    this.store = new ObservableStore(extend({
       abTests: {
         fullScreenVsPopup: this._getRandomizedTestGroupName('fullScreenVsPopup'),
       },
@@ -29,8 +30,8 @@ class ABTestController {
 
   /**
    * Returns the name of the test group to which the current user has been assigned
-   * @param {string} abTestKey - the key of the a/b test
-   * @returns {string} - the name of the assigned test group
+   * @param {string} abTestKey the key of the a/b test
+   * @return {string} the name of the assigned test group
    */
   getAssignedABTestGroupName (abTestKey) {
     return this.store.getState().abTests[abTestKey]
@@ -38,8 +39,8 @@ class ABTestController {
 
   /**
    * Returns a randomly chosen name of a test group from a given a/b test
-   * @param {string} abTestKey - the key of the a/b test
-   * @returns {string} - the name of the randomly selected test group
+   * @param {string} abTestKey the key of the a/b test
+   * @return {string} the name of the randomly selected test group
    * @private
    */
   _getRandomizedTestGroupName (abTestKey) {
@@ -52,5 +53,5 @@ ABTestController.abTestGroupNames = {
   fullScreenVsPopup: ['control', 'fullScreen'],
 }
 
-export default ABTestController
+module.exports = ABTestController
 

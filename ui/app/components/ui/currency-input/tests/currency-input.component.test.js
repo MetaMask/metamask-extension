@@ -162,7 +162,7 @@ describe('CurrencyInput Component', () => {
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange on input changes with the hex value for ETH', () => {
+    it('should call onChange and onBlur on input changes with the hex value for ETH', () => {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -175,6 +175,7 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             onChange={handleChangeSpy}
+            onBlur={handleBlurSpy}
             suffix="ETH"
             nativeCurrency="ETH"
             currentCurrency="usd"
@@ -200,9 +201,14 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
+
+      assert.equal(handleBlurSpy.callCount, 0)
+      input.simulate('blur')
+      assert.equal(handleBlurSpy.callCount, 1)
+      assert.ok(handleBlurSpy.calledWith('de0b6b3a7640000'))
     })
 
-    it('should call onChange on input changes with the hex value for fiat', () => {
+    it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -215,6 +221,7 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             onChange={handleChangeSpy}
+            onBlur={handleBlurSpy}
             suffix="USD"
             nativeCurrency="ETH"
             currentCurrency="usd"
@@ -241,6 +248,11 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
+
+      assert.equal(handleBlurSpy.callCount, 0)
+      input.simulate('blur')
+      assert.equal(handleBlurSpy.callCount, 1)
+      assert.ok(handleBlurSpy.calledWith('f602f2234d0ea'))
     })
 
     it('should change the state and pass in a new decimalValue when props.value changes', () => {
@@ -256,6 +268,7 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             onChange={handleChangeSpy}
+            onBlur={handleBlurSpy}
             suffix="USD"
             nativeCurrency="ETH"
             currentCurrency="usd"
@@ -291,6 +304,7 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             onChange={handleChangeSpy}
+            onBlur={handleBlurSpy}
             nativeSuffix="ETH"
             fiatSuffix="USD"
             nativeCurrency="ETH"
@@ -317,6 +331,11 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
       assert.equal(currencyInputInstance.state.decimalValue, 1)
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
+
+      assert.equal(handleBlurSpy.callCount, 0)
+      input.simulate('blur')
+      assert.equal(handleBlurSpy.callCount, 1)
+      assert.ok(handleBlurSpy.calledWith('de0b6b3a7640000'))
 
       const swap = wrapper.find('.currency-input__swap-component')
       swap.simulate('click')

@@ -1,3 +1,2 @@
 import SelectedAccount from './selected-account.container'
-
-export default SelectedAccount
+module.exports = SelectedAccount

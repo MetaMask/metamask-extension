@@ -1,3 +1,2 @@
 import InfoBox from './info-box.component'
-
-export default InfoBox
+module.exports = InfoBox

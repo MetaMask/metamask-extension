@@ -1,3 +1,2 @@
-import Spinner from './spinner.component'
-
-export default Spinner
+const Spinner = require('./spinner.component')
+module.exports = Spinner

@@ -36,7 +36,7 @@
     align-items: center;
   }
 
-  &__lock-button {
+  &__logout-button {
     border: 1px solid $dusty-gray;
     background-color: transparent;
     color: $white;
@@ -51,25 +51,21 @@
     height: 16px;
   }
 
-  &__accounts-container {
+  &__accounts {
     display: flex;
-    flex-direction: column;
+    flex-flow: column nowrap;
+    overflow-y: auto;
+    max-height: 256px;
+    position: relative;
     z-index: 200;
     scrollbar-width: none;
 
-    max-height: 256px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     @media screen and (max-width: 575px) {
       max-height: 228px;
-    }
-  }
-
-  &__accounts {
-    overflow-y: auto;
-    position: relative;
-
-    &::-webkit-scrollbar {
-      display: none;
     }
 
     .keyring-label {
@@ -79,11 +75,6 @@
       font-weight: normal;
       letter-spacing: .5px;
     }
-  }
-
-  &__no-accounts {
-    font-size: 0.8em;
-    padding: 16px 14px;
   }
 
   &__account {
@@ -183,9 +174,5 @@
     &:hover {
       opacity: 1;
     }
-  }
-
-  &__icon-list {
-    display: flex;
   }
 }

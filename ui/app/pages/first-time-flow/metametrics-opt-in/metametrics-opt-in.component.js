@@ -142,8 +142,7 @@ export default class MetaMetricsOptIn extends Component {
               disabled={false}
             />
             <div className="metametrics-opt-in__bottom-text">
-              This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our&nbsp;
-              <a
+              This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our <a
                 href="https://metamask.io/privacy.html"
                 target="_blank"
                 rel="noopener noreferrer"

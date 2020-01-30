@@ -1,6 +1,5 @@
-import assert from 'assert'
-import migrationTemplate from '../../../app/scripts/migrations/template'
-
+const assert = require('assert')
+const migrationTemplate = require('../../../app/scripts/migrations/template')
 const storage = {
   meta: {},
   data: {},

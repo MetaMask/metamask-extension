@@ -11,7 +11,6 @@ import {
   showModal,
 } from '../../../store/actions'
 import { defaultNetworksData } from './networks-tab.constants'
-
 const defaultNetworks = defaultNetworksData.map(network => ({ ...network, viewOnly: true }))
 
 const mapStateToProps = state => {

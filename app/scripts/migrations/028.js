@@ -6,13 +6,13 @@ const version = 28
 normalizes txParams on unconfirmed txs
 
 */
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     const newState = transformState(state)
@@ -30,7 +30,7 @@ function transformState (state) {
       const tokens = newState.PreferencesController.tokens
       newState.PreferencesController.accountTokens = {}
       for (const identity in identities) {
-        newState.PreferencesController.accountTokens[identity] = { 'mainnet': tokens }
+        newState.PreferencesController.accountTokens[identity] = {'mainnet': tokens}
       }
       newState.PreferencesController.tokens = []
     }

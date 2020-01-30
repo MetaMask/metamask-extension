@@ -16,6 +16,7 @@ export default class ViewContact extends PureComponent {
   }
 
   static propTypes = {
+    removeFromAddressBook: PropTypes.func,
     name: PropTypes.string,
     address: PropTypes.string,
     history: PropTypes.object,

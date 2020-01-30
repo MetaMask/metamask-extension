@@ -1,7 +1,7 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
+const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../../send.constants')
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {

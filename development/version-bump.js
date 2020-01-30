@@ -1,7 +1,7 @@
-const { cloneDeep } = require('lodash')
+const clone = require('clone')
 
 async function versionBump (bumpType, changelog, oldManifest) {
-  const manifest = cloneDeep(oldManifest)
+  const manifest = clone(oldManifest)
   const newVersion = newVersionFrom(manifest, bumpType)
 
   manifest.version = newVersion
@@ -40,8 +40,6 @@ function newVersionFrom (manifest, bumpType) {
     case 'patch':
       segments[2] += 1
       break
-    default:
-      throw new Error(`invalid bumpType ${bumpType}`)
   }
 
   return segments.map(String).join('.')

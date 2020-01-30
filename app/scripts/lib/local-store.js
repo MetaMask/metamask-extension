@@ -1,11 +1,10 @@
-import extension from 'extensionizer'
-import log from 'loglevel'
-import { checkForError } from './util'
+const extension = require('extensionizer')
+const log = require('loglevel')
 
 /**
  * A wrapper around the extension's storage local API
  */
-export default class ExtensionStore {
+module.exports = class ExtensionStore {
   /**
    * @constructor
    */
@@ -18,12 +17,10 @@ export default class ExtensionStore {
 
   /**
    * Returns all of the keys currently saved
-   * @returns {Promise<*>}
+   * @return {Promise<*>}
    */
   async get () {
-    if (!this.isSupported) {
-      return undefined
-    }
+    if (!this.isSupported) return undefined
     const result = await this._get()
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -36,8 +33,8 @@ export default class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {Object} state - The state to set
-   * @returns {Promise<void>}
+   * @param {object} state - The state to set
+   * @return {Promise<void>}
    */
   async set (state) {
     return this._set(state)
@@ -46,7 +43,7 @@ export default class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    * @private
-   * @returns {Object} - the key-value map from local storage
+   * @return {object} the key-value map from local storage
    */
   _get () {
     const local = extension.storage.local
@@ -64,8 +61,8 @@ export default class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {Object} obj - The key to set
-   * @returns {Promise<void>}
+   * @param {object} obj - The key to set
+   * @return {Promise<void>}
    * @private
    */
   _set (obj) {
@@ -85,9 +82,23 @@ export default class ExtensionStore {
 
 /**
  * Returns whether or not the given object contains no keys
- * @param {Object} obj - The object to check
+ * @param {object} obj - The object to check
  * @returns {boolean}
  */
 function isEmpty (obj) {
   return Object.keys(obj).length === 0
+}
+
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) return
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) return lastError
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message)
 }

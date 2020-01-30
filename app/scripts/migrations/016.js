@@ -7,13 +7,13 @@ to a 'failed' stated
 
 */
 
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default {
+module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -33,9 +33,7 @@ function transformState (state) {
     const transactions = newState.TransactionController.transactions
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
-      if (!txMeta.err) {
-        return txMeta
-      }
+      if (!txMeta.err) return txMeta
       if (txMeta.err === 'transaction with the same hash was already imported.') {
         txMeta.status = 'submitted'
         delete txMeta.err

@@ -1,6 +1,6 @@
-import assert from 'assert'
-import ComposableObservableStore from '../../../app/scripts/lib/ComposableObservableStore'
-import ObservableStore from 'obs-store'
+const assert = require('assert')
+const ComposableObservableStore = require('../../../app/scripts/lib/ComposableObservableStore')
+const ObservableStore = require('obs-store')
 
 describe('ComposableObservableStore', () => {
   it('should register initial state', () => {

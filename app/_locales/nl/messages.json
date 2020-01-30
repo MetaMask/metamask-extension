@@ -1,6 +1,15 @@
 {
+  "confirmClear": {
+    "message": "Weet je zeker dat je goedgekeurde websites wilt wissen?"
+  },
+  "clearApprovalData": {
+    "message": "Gegevens over goedkeuring wissen"
+  },
   "reject": {
     "message": "Afwijzen"
+  },
+  "providerRequestInfo": {
+    "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."
   },
   "accountDetails": {
     "message": "Accountgegevens"
@@ -40,6 +49,13 @@
   "balance": {
     "message": "Balans:"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Onvoldoende saldo voor huidig ​​gastotaal"
+  },
+  "betweenMinAndMax": {
+    "message": "moet groter zijn dan of gelijk zijn aan $1 en kleiner dan of gelijk aan $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -75,6 +91,9 @@
   },
   "copiedExclamation": {
     "message": "Gekopieerde!"
+  },
+  "copy": {
+    "message": "Kopiëren"
   },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
@@ -159,11 +178,17 @@
   "gasLimit": {
     "message": "Gaslimiet"
   },
+  "gasLimitCalculation": {
+    "message": "We berekenen de voorgestelde gaslimiet op basis van succespercentages van het netwerk."
+  },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -171,6 +196,10 @@
   "getEtherFromFaucet": {
     "message": "Haal Ether uit een kraan voor de $1",
     "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "moet groter zijn dan of gelijk zijn aan $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "here": {
     "message": "hier",
@@ -230,6 +259,10 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
+  "lessThanMax": {
+    "message": "moet kleiner zijn dan of gelijk zijn aan $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "likeToAddTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
@@ -239,10 +272,10 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
-  "unlock": {
+  "login": {
     "message": "Log in"
   },
-  "lock": {
+  "logout": {
     "message": "Uitloggen"
   },
   "mainnet": {
@@ -298,6 +331,9 @@
     "message": "Plak hier uw privésleutelstring:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Plak je back-up woorden hier!"
+  },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
   },
@@ -340,6 +376,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
+  },
+  "revert": {
+    "message": "terugkeren"
   },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"
@@ -398,11 +437,14 @@
   "stateLogsDescription": {
     "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
   },
+  "submit": {
+    "message": "voorleggen"
+  },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbool moet 11 tekens of minder zijn."
+    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"
@@ -441,6 +483,9 @@
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
+  },
+  "validFileImport": {
+    "message": "U moet een geldig bestand selecteren om te importeren."
   },
   "viewAccount": {
     "message": "Bekijk account"

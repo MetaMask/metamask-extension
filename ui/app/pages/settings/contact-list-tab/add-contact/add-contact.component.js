@@ -4,9 +4,9 @@ import Identicon from '../../../../components/ui/identicon'
 import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import { isValidAddress, isValidENSAddress } from '../../../../helpers/utils/util'
-import EnsInput from '../../../send/send-content/add-recipient/ens-input'
+import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 
 export default class AddContact extends PureComponent {
 
@@ -18,12 +18,12 @@ export default class AddContact extends PureComponent {
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
-    qrCodeData: PropTypes.object, /* eslint-disable-line react/no-unused-prop-types */
+    qrCodeData: PropTypes.object,
     qrCodeDetected: PropTypes.func,
   }
 
   state = {
-    newName: '',
+    nickname: '',
     ethAddress: '',
     ensAddress: '',
     error: '',
@@ -35,7 +35,7 @@ export default class AddContact extends PureComponent {
     this.dValidate = debounce(this.validate, 1000)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
@@ -63,9 +63,7 @@ export default class AddContact extends PureComponent {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => {
-          this.props.scanQrCode()
-        }}
+        scanQrCode={_ => { this.props.scanQrCode() }}
         onChange={this.dValidate}
         onPaste={text => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
@@ -85,14 +83,12 @@ export default class AddContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
-        {this.state.ensAddress && (
-          <div className="address-book__view-contact__group">
-            <Identicon address={this.state.ensAddress} diameter={60} />
-            <div className="address-book__view-contact__group__value">
-              { this.state.ensAddress }
-            </div>
+        {this.state.ensAddress && <div className="address-book__view-contact__group">
+          <Identicon address={this.state.ensAddress} diameter={60} />
+          <div className="address-book__view-contact__group__value">
+            { this.state.ensAddress }
           </div>
-        )}
+        </div>}
         <div className="address-book__add-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">

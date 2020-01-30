@@ -18,4 +18,4 @@ const initialState = {
   },
 }
 
-export default initialState
+module.exports = initialState

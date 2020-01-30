@@ -6,6 +6,7 @@ import {
   setGasLimit,
   setGasPrice,
   createSpeedUpTransaction,
+  createRetryTransaction,
   hideSidebar,
   updateSendAmount,
   setGasTotal,
@@ -15,6 +16,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
+  setCustomTimeEstimate,
   fetchGasEstimates,
   fetchBasicGasAndTimeEstimates,
 } from '../../../../ducks/gas/gas.duck'
@@ -188,7 +190,11 @@ const mapDispatchToProps = dispatch => {
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
     },
+    createRetryTransaction: (txId, gasPrice) => {
+      return dispatch(createRetryTransaction(txId, gasPrice))
+    },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
+    setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
     hideSidebar: () => dispatch(hideSidebar()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),

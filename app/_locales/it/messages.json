@@ -1,21 +1,33 @@
 {
+  "privacyModeDefault": {
+    "message": "La modalità privacy è ora abilitata per impostazione predefinita"
+  },
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
+  },
+  "confirmClear": {
+    "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
+  "clearApprovalData": {
+    "message": "Cancella i dati di approvazione"
+  },
   "reject": {
     "message": "Annulla"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 vorrebbe connettersi al tuo account"
+  },
+  "providerRequestInfo": {
+    "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ethereum in modo che possa interagire con la blockchain di Ethereum. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ethereum."
   },
   "about": {
     "message": "Informazioni"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centro di supporto e contatti"
+    "message": "Version, centro di supporto e contatti."
   },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
@@ -48,7 +60,7 @@
     "message": "Avanzate"
   },
   "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
+    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata."
   },
   "advancedOptions": {
     "message": "Opzioni Avanzate"
@@ -103,10 +115,10 @@
   "attributions": {
     "message": "Attribuzioni"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "Timer di Logout Automatico (minuti)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "Imposta il tempo di inattività dopo il quale MetaMask fa il log out automaticamente"
   },
   "average": {
@@ -133,8 +145,15 @@
   "balanceOutdated": {
     "message": "Il bilancio può essere non aggiornato"
   },
+  "balanceIsInsufficientGas": {
+    "message": "Bilancio insufficiente per il gas totale corrente"
+  },
   "basic": {
     "message": "Base"
+  },
+  "betweenMinAndMax": {
+    "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
@@ -212,6 +231,9 @@
   "connect": {
     "message": "Connetti"
   },
+  "connectRequest": {
+    "message": "Richiesta Connessione"
+  },
   "connectingTo": {
     "message": "Connessione in corso a $1"
   },
@@ -250,6 +272,9 @@
   },
   "copiedExclamation": {
     "message": "Copiato!"
+  },
+  "copy": {
+    "message": "Copia"
   },
   "copyAddress": {
     "message": "Copia l'indirizzo"
@@ -328,6 +353,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
+  },
+  "dismiss": {
+    "message": "Ignora"
   },
   "done": {
     "message": "Finito"
@@ -448,6 +476,9 @@
   "gasLimit": {
     "message": "Gas Limite"
   },
+  "gasLimitCalculation": {
+    "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
+  },
   "gasLimitInfoModalContent": {
     "message": "Il gas limite è il massimo importo di unità di gas che sei disposto a spendere."
   },
@@ -469,6 +500,9 @@
   "gasPriceNoDenom": {
     "message": "Prezzo del Gas"
   },
+  "gasPriceCalculation": {
+    "message": "Calcoliamo il prezzo del gas suggerito in base al successo delle transazioni in rete."
+  },
   "general": {
     "message": "Generale"
   },
@@ -487,6 +521,10 @@
   },
   "getStarted": {
     "message": "Inizia"
+  },
+  "greaterThanMin": {
+    "message": "deve essere maggiore o uguale a $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Siamo contenti di vederti."
@@ -603,6 +641,10 @@
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
   },
+  "lessThanMax": {
+    "message": "deve essere minore o uguale a $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "Si, iniziamo!"
   },
@@ -624,7 +666,10 @@
   "loadMore": {
     "message": "Carica di più"
   },
-  "lock": {
+  "login": {
+    "message": "Accedi"
+  },
+  "logout": {
     "message": "Disconnetti"
   },
   "mainnet": {
@@ -641,6 +686,9 @@
   },
   "metamaskDescription": {
     "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
+  },
+  "metamaskSeedWords": {
+    "message": "Parole Seed di MetaMask"
   },
   "metamaskVersion": {
     "message": "versione di MetaMask"
@@ -785,6 +833,9 @@
     "message": "Incolla la tua chiave privata qui:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "Incolla la tua frase seed qui!"
+  },
   "pending": {
     "message": "in corso"
   },
@@ -890,6 +941,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
+  },
+  "revert": {
+    "message": "Ripristina"
   },
   "remove": {
     "message": "rimuovi"
@@ -1095,6 +1149,9 @@
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
   },
+  "submit": {
+    "message": "Invia"
+  },
   "submitted": {
     "message": "Inviata"
   },
@@ -1259,6 +1316,9 @@
   "userName": {
     "message": "Nome utente"
   },
+  "validFileImport": {
+    "message": "Devi selezionare un file valido da importare."
+  },
   "viewAccount": {
     "message": "Vedi Account"
   },
@@ -1306,6 +1366,24 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prezzo del gas maggiore di zero"
+  },
+  "connections": {
+    "message": "Connessioni"
+  },
+  "connectionsSettingsDescription": {
+    "message": "Siti autorizzati ad accedere ai tuoi accounts"
+  },
+  "addSite": {
+    "message": "Aggiungi Sito"
+  },
+  "addSiteDescription": {
+    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
+  },
+  "connected": {
+    "message": "Connesso"
+  },
+  "connectedDescription": {
+    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
   },
   "contacts": {
     "message": "Contatti"

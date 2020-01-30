@@ -5,19 +5,21 @@ import {
   BASE_TOKEN_GAS_COST,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
+} from '../send.constants'
+const {
+  addCurrencies,
+  subtractCurrencies,
+} = require('../../../helpers/utils/conversion-util')
+
+const {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
-} from '../send.constants'
-import { addCurrencies, subtractCurrencies } from '../../../helpers/utils/conversion-util'
+} = require('../send.constants')
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
-    if (String(a).match(/^0x.+/)) {
-      a = Number(String(a).slice(2))
-    }
-    if (String(b).match(/^0x.+/)) {
-      b = Number(String(b).slice(2))
-    }
+    if (String(a).match(/^0x.+/)) a = Number(String(a).slice(2))
+    if (String(b).match(/^0x.+/)) b = Number(String(b).slice(2))
     return a + b
   }),
   conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
@@ -116,12 +118,12 @@ describe('send utils', () => {
 
   describe('generateTokenTransferData()', () => {
     it('should return undefined if not passed a selected token', () => {
-      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: false }), undefined)
+      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: false}), undefined)
     })
 
     it('should call abi.rawEncode with the correct params', () => {
       stubs.rawEncode.resetHistory()
-      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', selectedToken: true })
+      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', selectedToken: true})
       assert.deepEqual(
         stubs.rawEncode.getCall(0).args,
         [['address', 'uint256'], ['mockAddress', '0xab']]
@@ -130,7 +132,7 @@ describe('send utils', () => {
 
     it('should return encoded token transfer data', () => {
       assert.equal(
-        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: true }),
+        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: true}),
         '0xa9059cbb104c'
       )
     })
@@ -301,7 +303,7 @@ describe('send utils', () => {
       selectedAddress: 'mockAddress',
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
-        ({ to }, cb) => {
+        ({to}, cb) => {
           const err = typeof to === 'string' && to.match(/willFailBecauseOf:/)
             ? new Error(to.match(/:(.+)$/)[1])
             : null
@@ -368,11 +370,11 @@ describe('send utils', () => {
     it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async () => {
       const data = 'mockData'
       const to = ''
-      const result = await estimateGas({ ...baseMockParams, data, to })
+      const result = await estimateGas({...baseMockParams, data, to})
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        { gasPrice: undefined, value: '0xff', data, from: baseExpectedCall.from, gas: baseExpectedCall.gas },
+        { gasPrice: undefined, value: '0xff', data, from: baseExpectedCall.from, gas: baseExpectedCall.gas},
       )
       assert.equal(result, '0xabc16')
     })

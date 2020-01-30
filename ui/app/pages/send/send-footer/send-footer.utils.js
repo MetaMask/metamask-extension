@@ -1,14 +1,14 @@
-import ethAbi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
+const ethAbi = require('ethereumjs-abi')
+const ethUtil = require('ethereumjs-util')
+const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../send.constants')
 
-export function addHexPrefixToObjectValues (obj) {
+function addHexPrefixToObjectValues (obj) {
   return Object.keys(obj).reduce((newObj, key) => {
     return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
   }, {})
 }
 
-export function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPrice }) {
+function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPrice }) {
   const txParams = {
     data,
     from,
@@ -25,7 +25,7 @@ export function constructTxParams ({ selectedToken, data, to, amount, from, gas,
   return addHexPrefixToObjectValues(txParams)
 }
 
-export function constructUpdatedTx ({
+function constructUpdatedTx ({
   amount,
   data,
   editingTransactionId,
@@ -74,8 +74,15 @@ export function constructUpdatedTx ({
   return editingTx
 }
 
-export function addressIsNew (toAccounts, newAddress) {
+function addressIsNew (toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase()
   const foundMatching = toAccounts.some(({ address }) => address.toLowerCase() === newAddressNormalized)
   return !foundMatching
+}
+
+module.exports = {
+  addressIsNew,
+  constructTxParams,
+  constructUpdatedTx,
+  addHexPrefixToObjectValues,
 }

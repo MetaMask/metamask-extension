@@ -1,17 +1,16 @@
-import {
+const {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
-} from '../../send.constants'
-
-import { isValidAddress, isEthNetwork } from '../../../../helpers/utils/util'
+} = require('../../send.constants')
+const { isValidAddress, isEthNetwork } = require('../../../../helpers/utils/util')
 import { checkExistingAddresses } from '../../../add-token/util'
 
-import ethUtil from 'ethereumjs-util'
-import contractMap from 'eth-contract-metadata'
+const ethUtil = require('ethereumjs-util')
+const contractMap = require('eth-contract-metadata')
 
-export function getToErrorObject (to, toError = null, hasHexData = false, _, __, network) {
+function getToErrorObject (to, toError = null, hasHexData = false, _, __, network) {
   if (!to) {
     if (!hasHexData) {
       toError = REQUIRED_ERROR
@@ -23,9 +22,14 @@ export function getToErrorObject (to, toError = null, hasHexData = false, _, __,
   return { to: toError }
 }
 
-export function getToWarningObject (to, toWarning = null, tokens = [], selectedToken = null) {
+function getToWarningObject (to, toWarning = null, tokens = [], selectedToken = null) {
   if (selectedToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR
   }
   return { to: toWarning }
+}
+
+module.exports = {
+  getToErrorObject,
+  getToWarningObject,
 }

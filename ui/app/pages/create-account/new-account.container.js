@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import * as actions from '../../store/actions'
+import actions from '../../store/actions'
 import NewAccountCreateForm from './new-account.component'
 
 const mapStateToProps = state => {
@@ -10,6 +10,7 @@ const mapStateToProps = state => {
   return {
     network,
     address: selectedAddress,
+    numberOfExistingAccounts,
     newAccountNumber,
   }
 }
@@ -17,6 +18,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     toCoinbase: address => dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
+    hideModal: () => dispatch(actions.hideModal()),
     createAccount: newAccountName => {
       return dispatch(actions.addNewAccount())
         .then(newAccountAddress => {
@@ -25,6 +27,8 @@ const mapDispatchToProps = dispatch => {
           }
         })
     },
+    showImportPage: () => dispatch(actions.showImportPage()),
+    showConnectPage: () => dispatch(actions.showConnectPage()),
   }
 }
 

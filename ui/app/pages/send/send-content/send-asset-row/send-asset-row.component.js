@@ -4,7 +4,7 @@ import SendRowWrapper from '../send-row-wrapper'
 import Identicon from '../../../../components/ui/identicon/identicon.component'
 import TokenBalance from '../../../../components/ui/token-balance'
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-import { PRIMARY } from '../../../../helpers/constants/common'
+import {PRIMARY} from '../../../../helpers/constants/common'
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -128,8 +128,7 @@ export default class SendAssetRow extends Component {
 
     return (
       <div
-        key={address}
-        className="send-v2__asset-dropdown__asset"
+        key={address} className="send-v2__asset-dropdown__asset"
         onClick={() => this.selectToken(address)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">

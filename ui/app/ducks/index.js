@@ -1,24 +1,24 @@
-import { cloneDeep } from 'lodash'
-import copyToClipboard from 'copy-to-clipboard'
+const clone = require('clone')
+const extend = require('xtend')
+const copyToClipboard = require('copy-to-clipboard')
 
 //
 // Sub-Reducers take in the complete state and return their sub-state
 //
-import reduceMetamask from './metamask/metamask'
-
-import reduceLocale from './locale/locale'
-import reduceSend from './send/send.duck'
+const reduceMetamask = require('./metamask/metamask')
+const reduceLocale = require('./locale/locale')
+const reduceSend = require('./send/send.duck').default
 import reduceApp from './app/app'
 import reduceConfirmTransaction from './confirm-transaction/confirm-transaction.duck'
 import reduceGas from './gas/gas.duck'
 
 window.METAMASK_CACHED_LOG_STATE = null
 
-export default rootReducer
+module.exports = rootReducer
 
 function rootReducer (state, action) {
   // clone
-  state = { ...state }
+  state = extend(state)
 
   if (action.type === 'GLOBAL_FORCE_UPDATE') {
     return action.value
@@ -57,7 +57,7 @@ function rootReducer (state, action) {
 }
 
 window.getCleanAppState = function () {
-  const state = cloneDeep(window.METAMASK_CACHED_LOG_STATE)
+  const state = clone(window.METAMASK_CACHED_LOG_STATE)
   // append additional information
   state.version = global.platform.getVersion()
   state.browser = window.navigator.userAgent
@@ -67,9 +67,7 @@ window.getCleanAppState = function () {
 window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
-    if (err) {
-      return cb(err)
-    }
+    if (err) return cb(err)
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)
     cb(null, stateString)

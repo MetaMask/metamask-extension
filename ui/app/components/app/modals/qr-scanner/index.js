@@ -1,3 +1,2 @@
 import QrScanner from './qr-scanner.container'
-
-export default QrScanner
+module.exports = QrScanner

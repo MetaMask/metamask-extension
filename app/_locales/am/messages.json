@@ -1,15 +1,27 @@
 {
+  "privacyModeDefault": {
+    "message": "የግላዊነት ኩነት አሁን በንቡር ነቅቷል"
+  },
   "chartOnlyAvailableEth": {
     "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
+  },
+  "confirmClear": {
+    "message": "የተፈቀዱ ድረ ገጾችን ለማጥራት እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
   },
+  "clearApprovalData": {
+    "message": "የግላዊነት ውሂብን አጥራ"
+  },
   "reject": {
     "message": "አይቀበሉ"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
+  },
+  "providerRequestInfo": {
+    "message": "ይህ ድረ ገጽ የእርስዎን መለያ ወቅታዊ አድራሻ ለማየት እየጠየቀ ነው። ምንጊዜም ግንኙነት የሚያደርጉባቸውን ድረ ገጾች የሚያምኗቸው መሆኑን ያረጋግጡ።"
   },
   "about": {
     "message": "ስለ"
@@ -109,10 +121,10 @@
   "attributions": {
     "message": "አይነታ"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "በራስ ሰር ዘግቶ መውጫ ሰዓት ቆጣሪ (ደቂቃ)"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "MetaMask በራስ ሰር መንገድ ዘግቶ ከመውጣቱ በፊት የቦዘነ ጊዜን በደቂቃዎች ሙላ"
   },
   "average": {
@@ -139,8 +151,15 @@
   "balanceOutdated": {
     "message": "ቀሪ ሂሳብ ጊዜው ያለፈበት ሊሆን ይችላል"
   },
+  "balanceIsInsufficientGas": {
+    "message": "አሁን ላለው አጠቃላይ ነዳጅ የማይበቃ ቀሪ ሂሳብ"
+  },
   "basic": {
     "message": "መሠረታዊ"
+  },
+  "betweenMinAndMax": {
+    "message": "ከ$1መብለጥ ወይም እኩል እና ከ$2በታች ወይም እኩል መሆን አለበት።",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "ኤክስፕሎረር አግድ"
@@ -233,6 +252,9 @@
   "connect": {
     "message": "ይገናኙ"
   },
+  "connectRequest": {
+    "message": "የግንኙነት ጥያቄ"
+  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
@@ -271,6 +293,9 @@
   },
   "copiedExclamation": {
     "message": "ተቀድቷል"
+  },
+  "copy": {
+    "message": "ቅዳ"
   },
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
@@ -349,6 +374,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
+  },
+  "dismiss": {
+    "message": "አሰናብት"
   },
   "done": {
     "message": "ተጠናቅቋል"
@@ -469,6 +497,9 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
+  "gasLimitCalculation": {
+    "message": "የተጠቆመውን የነዳጅ ገደብ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
+  },
   "gasLimitInfoModalContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
   },
@@ -490,6 +521,9 @@
   "gasPriceNoDenom": {
     "message": "የነዳጅ ዋጋ"
   },
+  "gasPriceCalculation": {
+    "message": "የተጠቆመውን የነዳጅ ዋጋ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
+  },
   "general": {
     "message": "አጠቃላይ"
   },
@@ -508,6 +542,10 @@
   },
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
+  },
+  "greaterThanMin": {
+    "message": "ከ $1ጋር እኩል መሆን ወይም መብለጥ አለበት።",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "እርስዎን በማየታችን ደስተኛ ነን።"
@@ -627,6 +665,10 @@
   "ledgerAccountRestriction": {
     "message": "አዲስ መለያ ከማከልዎ በፊት የመጨረሻውን መለያዎን መጠቀም አለብዎት።"
   },
+  "lessThanMax": {
+    "message": "ከ $1ያነሰ ወይም እኩል መሆን አለበት።",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
   },
@@ -648,7 +690,10 @@
   "loadMore": {
     "message": "ተጨማሪ ጫን"
   },
-  "lock": {
+  "login": {
+    "message": "በመለያ ግባ"
+  },
+  "logout": {
     "message": "ዘግተህ ውጣ"
   },
   "mainnet": {
@@ -668,6 +713,9 @@
   },
   "metamaskDescription": {
     "message": "ከ Ethereum እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask የዘር ቃላት"
   },
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
@@ -819,6 +867,9 @@
     "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "የዘር ሐረግዎን እዚህ ይለጥፉ!"
+  },
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
   },
@@ -924,6 +975,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
+  },
+  "revert": {
+    "message": "አድህር"
   },
   "remove": {
     "message": "አስወግድ"
@@ -1129,6 +1183,9 @@
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"
   },
+  "submit": {
+    "message": "አስገባ"
+  },
   "submitted": {
     "message": "የቀረበ"
   },
@@ -1139,7 +1196,7 @@
     "message": "ምልክት"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
+    "message": "ምልክቱ ከ0 እስከ 12 ቁምፊዎች መያዝ አለበት።"
   },
   "syncWithMobile": {
     "message": "ከሞባይል ጋር አሳምር"
@@ -1295,6 +1352,9 @@
   },
   "userName": {
     "message": "የተጣቃሚ ስም"
+  },
+  "validFileImport": {
+    "message": "የሚያስመጡትን ትክክለኛ ፋይል መምረጥ አለብዎ፡"
   },
   "viewAccount": {
     "message": "መለያን ይመልከቱ"

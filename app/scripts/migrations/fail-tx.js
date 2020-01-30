@@ -1,8 +1,8 @@
-import { cloneDeep } from 'lodash'
+const clone = require('clone')
 
-export default function failTxsThat (version, reason, condition) {
+module.exports = function (version, reason, condition) {
   return function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

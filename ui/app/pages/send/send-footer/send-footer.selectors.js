@@ -1,5 +1,11 @@
-import { getSendErrors } from '../send.selectors'
+const { getSendErrors } = require('../send.selectors')
 
-export function isSendFormInError (state) {
+const selectors = {
+  isSendFormInError,
+}
+
+module.exports = selectors
+
+function isSendFormInError (state) {
   return Object.values(getSendErrors(state)).some(n => n)
 }

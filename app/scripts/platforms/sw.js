@@ -26,4 +26,4 @@ class SwPlatform {
 
 }
 
-export default SwPlatform
+module.exports = SwPlatform

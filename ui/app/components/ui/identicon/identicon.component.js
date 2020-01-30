@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { toDataUrl } from '../../../../lib/blockies'
 import contractMap from 'eth-contract-metadata'
-
-import BlockieIdenticon from './blockieIdenticon'
 import { checksumAddress } from '../../../helpers/utils/util'
 import Jazzicon from '../jazzicon'
 
@@ -62,9 +61,10 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       >
-        <BlockieIdenticon
-          address={address}
-          diameter={diameter}
+        <img
+          src={toDataUrl(address)}
+          height={diameter}
+          width={diameter}
         />
       </div>
     )

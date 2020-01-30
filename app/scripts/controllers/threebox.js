@@ -1,16 +1,14 @@
-import ObservableStore from 'obs-store'
-
+const ObservableStore = require('obs-store')
 const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
-
-import log from 'loglevel'
-import migrations from '../migrations'
-import Migrator from '../lib/migrator'
-import JsonRpcEngine from 'json-rpc-engine'
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
-import createMetamaskMiddleware from './network/createMetamaskMiddleware'
-import createOriginMiddleware from '../lib/createOriginMiddleware'
+const log = require('loglevel')
+const migrations = require('../migrations/')
+const Migrator = require('../lib/migrator')
+const JsonRpcEngine = require('json-rpc-engine')
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
+const createMetamaskMiddleware = require('./network/createMetamaskMiddleware')
+const createOriginMiddleware = require('../lib/createOriginMiddleware')
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
@@ -30,9 +28,7 @@ class ThreeBoxController {
     this.provider = this._createProvider({
       version,
       getAccounts: async ({ origin }) => {
-        if (origin !== '3Box') {
-          return []
-        }
+        if (origin !== '3Box') { return [] }
         const isUnlocked = getKeyringControllerState().isUnlocked
 
         const accounts = await this.keyringController.getAccounts()
@@ -234,6 +230,10 @@ class ThreeBoxController {
     return this.store.getState().threeBoxSyncingAllowed
   }
 
+  getThreeBoxAddress () {
+    return this.store.getState().threeBoxAddress
+  }
+
   _registerUpdates () {
     if (!this.registeringUpdates) {
       const updatePreferences = this._update3Box.bind(this)
@@ -245,4 +245,4 @@ class ThreeBoxController {
   }
 }
 
-export default ThreeBoxController
+module.exports = ThreeBoxController

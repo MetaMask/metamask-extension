@@ -1,4 +1,4 @@
-export default setupFetchDebugging
+module.exports = setupFetchDebugging
 
 //
 // This is a utility to help resolve cases where `window.fetch` throws a
@@ -7,9 +7,7 @@ export default setupFetchDebugging
 //
 
 function setupFetchDebugging () {
-  if (!global.fetch) {
-    return
-  }
+  if (!global.fetch) return
   const originalFetch = global.fetch
 
   global.fetch = wrappedFetch

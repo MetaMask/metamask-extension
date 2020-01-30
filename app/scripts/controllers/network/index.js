@@ -1,3 +1,2 @@
-import NetworkController from './network'
-
-export default NetworkController
+const NetworkController = require('./network')
+module.exports = NetworkController

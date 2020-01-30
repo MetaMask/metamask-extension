@@ -12,4 +12,4 @@ const initialState = {
   config: {},
 }
 
-export default initialState
+module.exports = initialState

@@ -1,15 +1,27 @@
 {
+  "privacyModeDefault": {
+    "message": "隱私模式現已根據預設開啟"
+  },
   "chartOnlyAvailableEth": {
     "message": "圖表僅適用於以太坊網路。"
+  },
+  "confirmClear": {
+    "message": "您確定要清除已批准的網站紀錄？"
   },
   "contractInteraction": {
     "message": "合約互動"
   },
+  "clearApprovalData": {
+    "message": "清除批准數據"
+  },
   "reject": {
     "message": "拒絕"
   },
-  "likeToConnect": {
+  "providerRequest": {
     "message": "$1 請求訪問帳戶權限"
+  },
+  "providerRequestInfo": {
+    "message": "此網站希望能讀取您的帳戶資訊。請務必確認您信任這個網站、並了解後續可能的交易行為。"
   },
   "about": {
     "message": "關於"
@@ -109,10 +121,10 @@
   "attributions": {
     "message": "來源"
   },
-  "autoLockTimeLimit": {
+  "autoLogoutTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLockTimeLimitDescription": {
+  "autoLogoutTimeLimitDescription": {
     "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
   },
   "average": {
@@ -139,8 +151,15 @@
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
   },
+  "balanceIsInsufficientGas": {
+    "message": "當前餘額不足以支付 Gas"
+  },
   "basic": {
     "message": "基本"
+  },
+  "betweenMinAndMax": {
+    "message": "必須大於等於 $1 並且小於等於 $2 。",
+    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
@@ -230,6 +249,9 @@
   "connect": {
     "message": "連線"
   },
+  "connectRequest": {
+    "message": "連線請求"
+  },
   "connectingTo": {
     "message": "連線到$1"
   },
@@ -268,6 +290,9 @@
   },
   "copiedExclamation": {
     "message": "已複製！"
+  },
+  "copy": {
+    "message": "複製"
   },
   "copyAddress": {
     "message": "複製到剪貼簿"
@@ -346,6 +371,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "如果您已經擁有乙太幣，直接存入功能是讓新錢包最快取得乙太幣的方式。"
+  },
+  "dismiss": {
+    "message": "關閉"
   },
   "done": {
     "message": "完成"
@@ -466,6 +494,9 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
+  "gasLimitCalculation": {
+    "message": "我們根據網路成功率算出建議的 Gas 上限。"
+  },
   "gasLimitInfoModalContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
@@ -487,6 +518,9 @@
   "gasPriceNoDenom": {
     "message": "Gas 價格"
   },
+  "gasPriceCalculation": {
+    "message": "我們根據網路成功率算出建議的 Gas 價格"
+  },
   "general": {
     "message": "一般"
   },
@@ -505,6 +539,10 @@
   },
   "getStarted": {
     "message": "開始使用"
+  },
+  "greaterThanMin": {
+    "message": "必須要大於等於 $1。",
+    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "我們很高興看到你。"
@@ -624,6 +662,10 @@
   "ledgerAccountRestriction": {
     "message": "您必須使用最後的帳戶才能產生新帳戶"
   },
+  "lessThanMax": {
+    "message": "必須小於等於 $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
@@ -645,8 +687,11 @@
   "loadMore": {
     "message": "載入更多"
   },
-  "lock": {
-    "message": "鎖定"
+  "login": {
+    "message": "登入"
+  },
+  "logout": {
+    "message": "登出"
   },
   "mainnet": {
     "message": "乙太坊 主網路"
@@ -813,6 +858,9 @@
     "message": "請貼上您的私鑰字串:",
     "description": "For importing an account from a private key"
   },
+  "pasteSeed": {
+    "message": "請貼上您的助憶詞！"
+  },
   "pending": {
     "message": "等待處理"
   },
@@ -912,6 +960,9 @@
   },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
+  },
+  "revert": {
+    "message": "還原"
   },
   "remove": {
     "message": "移除"
@@ -1111,6 +1162,9 @@
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
   },
+  "submit": {
+    "message": "送出"
+  },
   "submitted": {
     "message": "已送出"
   },
@@ -1121,7 +1175,7 @@
     "message": "符號"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "符號不得超過11個字符。"
+    "message": "代號必須介於 0 到 12 字元間."
   },
   "syncWithMobile": {
     "message": "和移動裝置同步"
@@ -1260,9 +1314,6 @@
   "unknownCameraError": {
     "message": "無法存取攝影鏡頭。請再試一次..."
   },
-  "unlock": {
-    "message": "解鎖"
-  },
   "unlockMessage": {
     "message": "去中心化網路世界等待著您"
   },
@@ -1277,6 +1328,9 @@
   },
   "userName": {
     "message": "使用者名稱"
+  },
+  "validFileImport": {
+    "message": "您必須選擇一個合法的檔案來匯入."
   },
   "viewAccount": {
     "message": "查看帳戶"

@@ -1,9 +1,12 @@
-import EthQuery from 'ethjs-query'
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
-import log from 'loglevel'
-import { addHexPrefix } from 'ethereumjs-util'
-import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
-
+const EthQuery = require('ethjs-query')
+const {
+  hexToBn,
+  BnMultiplyByFraction,
+  bnToHex,
+} = require('../../lib/util')
+const log = require('loglevel')
+const { addHexPrefix } = require('ethereumjs-util')
+const { SEND_ETHER_ACTION_KEY } = require('../../../../ui/app/helpers/constants/transactions.js')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
@@ -22,8 +25,8 @@ class TxGasUtil {
   }
 
   /**
-    @param {Object} txMeta - the txMeta object
-    @returns {Object} - the txMeta object with the gas written to the txParams
+    @param txMeta {Object} - the txMeta object
+    @returns {object} the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)
@@ -50,9 +53,9 @@ class TxGasUtil {
 
   /**
     Estimates the tx's gas usage
-    @param {Object} txMeta - the txMeta object
-    @param {string} blockGasLimitHex - hex string of the block's gas limit
-    @returns {string} - the estimated gas limit as a hex string
+    @param txMeta {Object} - the txMeta object
+    @param blockGasLimitHex {string} - hex string of the block's gas limit
+    @returns {string} the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
     const txParams = txMeta.txParams
@@ -104,9 +107,9 @@ class TxGasUtil {
 
   /**
     Writes the gas on the txParams in the txMeta
-    @param {Object} txMeta - the txMeta object to write to
-    @param {string} blockGasLimitHex - the block gas limit hex
-    @param {string} estimatedGasHex - the estimated gas hex
+    @param txMeta {Object} - the txMeta object to write to
+    @param blockGasLimitHex {string} - the block gas limit hex
+    @param estimatedGasHex {string} - the estimated gas hex
   */
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
@@ -128,9 +131,9 @@ class TxGasUtil {
   /**
     Adds a gas buffer with out exceeding the block gas limit
 
-    @param {string} initialGasLimitHex - the initial gas limit to add the buffer too
-    @param {string} blockGasLimitHex - the block gas limit
-    @returns {string} - the buffered gas limit as a hex string
+    @param initialGasLimitHex {string} - the initial gas limit to add the buffer too
+    @param blockGasLimitHex {string} - the block gas limit
+    @returns {string} the buffered gas limit as a hex string
   */
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
@@ -139,16 +142,12 @@ class TxGasUtil {
     const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
 
     // if initialGasLimit is above blockGasLimit, dont modify it
-    if (initialGasLimitBn.gt(upperGasLimitBn)) {
-      return bnToHex(initialGasLimitBn)
-    }
+    if (initialGasLimitBn.gt(upperGasLimitBn)) return bnToHex(initialGasLimitBn)
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-    if (bufferedGasLimitBn.lt(upperGasLimitBn)) {
-      return bnToHex(bufferedGasLimitBn)
-    }
+    if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
   }
 }
 
-export default TxGasUtil
+module.exports = TxGasUtil

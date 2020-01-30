@@ -27,13 +27,23 @@ export default class ConfirmTransactionBase extends Component {
 
   static propTypes = {
     // react-router props
+    match: PropTypes.object,
     history: PropTypes.object,
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
+    clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
+    currentCurrency: PropTypes.string,
+    editTransaction: PropTypes.func,
+    ethTransactionAmount: PropTypes.string,
+    ethTransactionFee: PropTypes.string,
+    ethTransactionTotal: PropTypes.string,
+    fiatTransactionAmount: PropTypes.string,
+    fiatTransactionFee: PropTypes.string,
+    fiatTransactionTotal: PropTypes.string,
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
@@ -245,17 +255,15 @@ export default class ConfirmTransactionBase extends Component {
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
             {advancedInlineGasShown
-              ? (
-                <AdvancedGasInputs
-                  updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                  updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
-                  customGasPrice={customGas.gasPrice}
-                  customGasLimit={customGas.gasLimit}
-                  insufficientBalance={insufficientBalance}
-                  customPriceIsSafe
-                  isSpeedUp={false}
-                />
-              )
+              ? <AdvancedGasInputs
+                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                customGasPrice={customGas.gasPrice}
+                customGasLimit={customGas.gasLimit}
+                insufficientBalance={insufficientBalance}
+                customPriceIsSafe
+                isSpeedUp={false}
+              />
               : null
             }
           </div>
@@ -270,33 +278,31 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
-          {useNonceField ? (
-            <div>
-              <div className="confirm-detail-row">
-                <div className="confirm-detail-row__label">
-                  { this.context.t('nonceFieldHeading') }
-                </div>
-                <div className="custom-nonce-input">
-                  <TextField
-                    type="number"
-                    min="0"
-                    placeholder={ nextNonce ? nextNonce.toString() : null }
-                    onChange={({ target: { value } }) => {
-                      if (!value.length || Number(value) < 0) {
-                        updateCustomNonce('')
-                      } else {
-                        updateCustomNonce(String(Math.floor(value)))
-                      }
-                      getNextNonce()
-                    }}
-                    fullWidth
-                    margin="dense"
-                    value={ customNonceValue || '' }
-                  />
-                </div>
+          {useNonceField ? <div>
+            <div className="confirm-detail-row">
+              <div className="confirm-detail-row__label">
+                { this.context.t('nonceFieldHeading') }
+              </div>
+              <div className="custom-nonce-input">
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder={ nextNonce ? nextNonce.toString() : null }
+                  onChange={({ target: { value } }) => {
+                    if (!value.length || Number(value) < 0) {
+                      updateCustomNonce('')
+                    } else {
+                      updateCustomNonce(String(Math.floor(value)))
+                    }
+                    getNextNonce()
+                  }}
+                  fullWidth
+                  margin="dense"
+                  value={ customNonceValue || '' }
+                />
               </div>
             </div>
-          ) : null}
+          </div> : null}
         </div>
       )
     )
@@ -584,7 +590,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -603,7 +609,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
 
