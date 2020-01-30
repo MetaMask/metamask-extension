@@ -6,7 +6,7 @@ const supportedTopLevelDomains = ['eth']
 
 module.exports = setupEnsIpfsResolver
 
-function setupEnsIpfsResolver ({ provider }) {
+function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
@@ -23,7 +23,10 @@ function setupEnsIpfsResolver ({ provider }) {
   async function webRequestDidFail (details) {
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
-    if (tabId === -1) return
+    // only attempt ENS resolution on mainnet
+    if (tabId === -1 || getCurrentNetwork() !== '1') {
+      return
+    }
     // parse ens name
     const urlData = urlUtil.parse(url)
     const { hostname: name, path, search, hash: fragment } = urlData
