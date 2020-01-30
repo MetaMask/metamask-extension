@@ -8261,7 +8261,7 @@ cross-spawn@^4:
     lru-cache "^4.0.1"
     which "^1.2.9"
 
-cross-spawn@^5.0.1, cross-spawn@^5.1.0:
+cross-spawn@^5.0.1:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   integrity sha1-6L0O/uWPz/b4+UUQoKVUu/ojVEk=
@@ -11207,9 +11207,9 @@ ethereum-common@^0.0.18:
   integrity sha1-L9w1dvIykDNYl26znaeDIT/5Uj8=
 
 ethereum-ens-network-map@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.0.tgz#43cd7669ce950a789e151001118d4d65f210eeb7"
-  integrity sha1-Q812ac6VCnieFRABEY1NZfIQ7rc=
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.2.tgz#4e27bad18dae7bd95d84edbcac2c9e739fc959b9"
+  integrity sha512-5qwJ5n3YhjSpE6O/WEBXCAb2nagUgyagJ6C0lGUBWC4LjKp/rRzD+pwtDJ6KCiITFEAoX4eIrWOjRy0Sylq5Hg==
 
 ethereumjs-abi@0.6.5, ethereumjs-abi@^0.6.4, ethereumjs-abi@^0.6.5:
   version "0.6.5"
