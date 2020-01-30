@@ -7,6 +7,10 @@ const sigUtil = require('eth-sig-util')
 const log = require('loglevel')
 const jsonschema = require('jsonschema')
 
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
+
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
@@ -104,6 +108,22 @@ module.exports = class TypedMessageManager extends EventEmitter {
     this.validateParams(msgParams)
     // add origin from request
     if (req) msgParams.origin = req.origin
+
+    // Shahaf
+    if (msgParams) {
+      console.log('msgParams is', msgParams)
+      let parsedMsgParams = JSON.parse(msgParams.data)
+      const encodedFunction = parsedMsgParams.message.callData.encodedFunction
+      const decoded = abiDecoder.decodeMethod(encodedFunction)
+      let parsedMethodParams = {}
+      console.log('decoded is', decoded)
+      for ( const p of decoded.params) {
+        parsedMethodParams[p.name] = p.value
+      }
+      parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams}
+      msgParams.data = JSON.stringify(parsedMsgParams)
+      console.log('msgParams is', msgParams)
+    }
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // create txData obj with parameters and meta data

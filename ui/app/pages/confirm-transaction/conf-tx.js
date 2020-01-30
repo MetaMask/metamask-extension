@@ -14,6 +14,10 @@ const SignatureRequestOriginal = require('../../components/app/signature-request
 const Loading = require('../../components/ui/loading-screen')
 const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
 
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
+
 module.exports = compose(
   withRouter,
   connect(mapStateToProps)
@@ -139,6 +143,7 @@ ConfirmTxScreen.prototype.getTxData = function () {
 }
 
 ConfirmTxScreen.prototype.signatureSelect = function (type, version) {
+  console.log('ConfirmTxScreen.prototype.signatureSelect')
   // Temporarily direct only v3 and v4 requests to new code.
   if (type === 'eth_signTypedData' && (version === 'V3' || version === 'V4')) {
     return SignatureRequest
@@ -148,6 +153,7 @@ ConfirmTxScreen.prototype.signatureSelect = function (type, version) {
 }
 
 ConfirmTxScreen.prototype.render = function () {
+  console.log('ConfirmTxScreen.proto.render')
   const props = this.props
   const {
     currentCurrency,
@@ -156,8 +162,23 @@ ConfirmTxScreen.prototype.render = function () {
   } = props
 
   var txData = this.getTxData() || {}
-  const { msgParams, type, msgParams: { version } } = txData
+  let { msgParams, type, msgParams: { version } } = txData
   log.debug('msgParams detected, rendering pending msg')
+  console.log('msgParams detected, rendering pending msg', msgParams)
+
+  // if (msgParams) {
+  //   let parsedMsgParams = JSON.parse(msgParams.data)
+  //   const encodedFunction = parsedMsgParams.message.callData.encodedFunction
+  //   const decoded = abiDecoder.decodeMethod(encodedFunction)
+  //   let parsedMethodParams = {}
+  //   console.log('decoded is', decoded)
+  //   for ( const p of decoded.params) {
+  //     parsedMethodParams[p.name] = p.value
+  //   }
+  //   parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams}
+  //   // msgParams = JSON.stringify(parsedMsgParams)
+  //   console.log('msgParams is', msgParams)
+  // }
 
   return msgParams ? h(this.signatureSelect(type, version), {
     // Properties
@@ -203,6 +224,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   log.info('conf-tx.js: signing typed message')
+  console.log('conf-tx.js: signing typed message', msgData)
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)

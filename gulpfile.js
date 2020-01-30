@@ -473,15 +473,15 @@ gulp.task('dev:extension',
 
 gulp.task('build',
   gulp.series(
-    'clean',
+    // 'clean',
     'build:scss',
     gulpParallel(
-      'build:extension:js:deps:background',
+      // 'build:extension:js:deps:background',
       'build:extension:js:deps:ui',
       'build:extension:js',
       'copy'
     ),
-    'optimize:images'
+    // 'optimize:images'
   )
 )
 

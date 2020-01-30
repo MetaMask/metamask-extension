@@ -55,6 +55,8 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     cancel = cancelMessage
     sign = signMessage
   }
+  console.log('signTypedMessage',signTypedMessage)
+  console.log('signMessage',signMessage)
 
   return {
     ...stateProps,
