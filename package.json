@@ -258,7 +258,6 @@
     "gulp-zip": "^4.0.0",
     "http-server": "^0.11.1",
     "husky": ">=1",
-    "isomorphic-fetch": "^2.2.1",
     "jsdom": "^11.2.0",
     "jsdom-global": "^3.0.2",
     "karma": "^4.1.0",
