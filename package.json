@@ -278,7 +278,6 @@
     "node-sass": "^4.12.0",
     "nodemon": "^2.0.2",
     "nyc": "^13.0.0",
-    "path": "^0.12.7",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "proxyquire": "2.0.1",
