@@ -19751,16 +19751,6 @@ mkdirp@*, mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0
   dependencies:
     minimist "0.0.8"
 
-mocha-jsdom@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/mocha-jsdom/-/mocha-jsdom-1.1.0.tgz#e1576fbd0601cc89d358a213a0e5585d1b7c7a01"
-  integrity sha1-4VdvvQYBzInTWKIToOVYXRt8egE=
-
-mocha-sinon@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/mocha-sinon/-/mocha-sinon-2.0.0.tgz#723a9310e7d737d7b77c7a66821237425b032d48"
-  integrity sha1-cjqTEOfXN9e3fHpmghI3QlsDLUg=
-
 mocha@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.0.0.tgz#cccac988b0bc5477119cba0e43de7af6d6ad8f4e"
