@@ -775,6 +775,10 @@ export default class MetamaskController extends EventEmitter {
     })
   }
 
+  getCurrentNetwork = () => {
+    return this.networkController.store.getState().network
+  }
+
   /**
    * Collects all the information that we want to share
    * with the mobile client for syncing purposes

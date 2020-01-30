@@ -6,7 +6,8 @@ const supportedTopLevelDomains = ['eth']
 
 export default setupEnsIpfsResolver
 
-function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
+function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
+
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
   extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
@@ -25,7 +26,8 @@ function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
   async function webRequestDidFail (details) {
     const { tabId, url } = details
     // ignore requests that are not associated with tabs
-    if (tabId === -1) {
+    // only attempt ENS resolution on mainnet
+    if (tabId === -1 || getCurrentNetwork() !== '1') {
       return
     }
     // parse ens name
