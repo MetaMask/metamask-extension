@@ -5,7 +5,7 @@ const envify = require('envify/custom')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
-const gutil = require('gulp-util')
+const log = require('fancy-log')
 const watch = require('gulp-watch')
 const sourcemaps = require('gulp-sourcemaps')
 const jsoneditor = require('gulp-json-editor')
@@ -626,7 +626,7 @@ function bundleTask (opts) {
     if (!bundler) {
       bundler = generateBundler(opts, performBundle)
       // output build logs to terminal
-      bundler.on('log', gutil.log)
+      bundler.on('log', log)
     }
 
     let buildStream = bundler.bundle()
