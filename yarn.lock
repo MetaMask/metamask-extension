@@ -10815,9 +10815,9 @@ ethereum-common@^0.0.18:
   integrity sha1-L9w1dvIykDNYl26znaeDIT/5Uj8=
 
 ethereum-ens-network-map@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.1.tgz#6ad18217c486fb21ffb39cf51d3f6bc416fcdbca"
-  integrity sha512-pYlPCswXre1Ug5eRhn4kQ9nH7iSsQOLOmFXOKNwfcVUAsr3aSsIJuJI1sHmCSyZZLyvaQmAHeHmO+ZUEmmUK8g==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.2.tgz#4e27bad18dae7bd95d84edbcac2c9e739fc959b9"
+  integrity sha512-5qwJ5n3YhjSpE6O/WEBXCAb2nagUgyagJ6C0lGUBWC4LjKp/rRzD+pwtDJ6KCiITFEAoX4eIrWOjRy0Sylq5Hg==
 
 ethereumjs-abi@0.6.5, ethereumjs-abi@^0.6.4, ethereumjs-abi@^0.6.5:
   version "0.6.5"
