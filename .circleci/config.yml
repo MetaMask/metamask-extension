@@ -193,10 +193,10 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: circleci/node:10.18-browsers
+      - image: koalaman/shellcheck-alpine:stable
     steps:
       - checkout
-      - run: sudo apt-get install shellcheck
+      - run: apk add --no-cache bash jq yarn
       - run:
           name: Shellcheck Lint
           command: yarn lint:shellcheck
