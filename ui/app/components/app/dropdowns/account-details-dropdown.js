@@ -47,7 +47,7 @@ class AccountDetailsDropdown extends Component {
 
   static propTypes = {
     selectedIdentity: PropTypes.object.isRequired,
-    network: PropTypes.number.isRequired,
+    network: PropTypes.string.isRequired,
     keyrings: PropTypes.array.isRequired,
     showAccountDetailModal: PropTypes.func.isRequired,
     viewOnEtherscan: PropTypes.func.isRequired,

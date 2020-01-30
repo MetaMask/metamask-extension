@@ -97,13 +97,15 @@ export default class UnlockPage extends Component {
     this.setState({ password: target.value, error: null })
 
     // tell mascot to look at page action
-    const element = target
-    const boundingRect = element.getBoundingClientRect()
-    const coordinates = getCaretCoordinates(element, element.selectionEnd)
-    this.animationEventEmitter.emit('point', {
-      x: boundingRect.left + coordinates.left - element.scrollLeft,
-      y: boundingRect.top + coordinates.top - element.scrollTop,
-    })
+    if (target.getBoundingClientRect) {
+      const element = target
+      const boundingRect = element.getBoundingClientRect()
+      const coordinates = getCaretCoordinates(element, element.selectionEnd)
+      this.animationEventEmitter.emit('point', {
+        x: boundingRect.left + coordinates.left - element.scrollLeft,
+        y: boundingRect.top + coordinates.top - element.scrollTop,
+      })
+    }
   }
 
   renderSubmitButton () {
