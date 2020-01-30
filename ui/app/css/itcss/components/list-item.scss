@@ -8,7 +8,7 @@
   @extend %font;
   border-top: 1px solid $mercury;
   border-bottom: 1px solid $mercury;
-  color: #6A737D;
+  color: $Grey-500;
 
   display: flex;
   justify-content: flex-start;
@@ -25,8 +25,8 @@
   // these will need to be broken out into other components
   &__more {
     &--button {
-      border: 1px solid #6A737D;
-      color: #6A737D;
+      border: 1px solid $Grey-500;
+      color: $Grey-500;
       box-sizing: border-box;
       border-radius: 4px;
       background: transparent;
@@ -73,16 +73,16 @@
 
   &__status {
     &--unapproved {
-      color: #F56821;
+      color: $flamingo;
     }
     &--failed {
-      color: #D73A49;
+      color: $valencia;
     }
   }
 
   &__approved {
     .list-item__heading { // this needs to be adjusted
-      color: #24292E;
+      color: $shark;
     }
   }
 
