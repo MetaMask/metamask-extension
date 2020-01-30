@@ -29,9 +29,9 @@ const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
 
-const dependencies = Object.keys(
-  (packageJSON && packageJSON.dependencies) || {}
-)
+sass.compiler = require('node-sass')
+
+const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
