@@ -1,13 +1,11 @@
 import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/ducks/metamask/metamask'
-import { actionConstants } from '../../../../../ui/app/store/actions'
-
-const actions = actionConstants
+import { actionConstants as actions } from '../../../../../ui/app/store/actions'
 
 describe('MetaMask Reducers', () => {
 
   it('init state', () => {
-    const initState = reduceMetamask({ metamask: {} }, {})
+    const initState = reduceMetamask(undefined, {})
     assert(initState)
   })
 
@@ -24,11 +22,9 @@ describe('MetaMask Reducers', () => {
 
   it('locks MetaMask', () => {
     const unlockMetaMaskState = {
-      metamask: {
-        isUnlocked: true,
-        isInitialzed: false,
-        selectedAddress: 'test address',
-      },
+      isUnlocked: true,
+      isInitialzed: false,
+      selectedAddress: 'test address',
     }
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
       type: actions.LOCK_METAMASK,
@@ -53,70 +49,6 @@ describe('MetaMask Reducers', () => {
     })
 
     assert.equal(state.provider.type, 'provider type')
-  })
-
-  describe('CompletedTx', () => {
-    const oldState = {
-      metamask: {
-        unapprovedTxs: {
-          1: {
-            id: 1,
-            time: 1538495996507,
-            status: 'unapproved',
-            metamaskNetworkId: 4,
-            loadingDefaults: false,
-            txParams: {
-              from: '0xAddress',
-              to: '0xAddress2',
-              value: '0x16345785d8a0000',
-              gas: '0x5208',
-              gasPrice: '0x3b9aca00',
-            },
-            type: 'standard',
-          },
-          2: {
-            test: 'Should persist',
-          },
-        },
-        unapprovedMsgs: {
-          1: {
-            id: 2,
-            msgParams: {
-              from: '0xAddress',
-              data: '0xData',
-              origin: 'test origin',
-            },
-            time: 1538498521717,
-            status: 'unapproved',
-            type: 'eth_sign',
-          },
-          2: {
-            test: 'Should Persist',
-          },
-        },
-      },
-    }
-
-    it('removes tx from new state if completed in action.', () => {
-
-      const state = reduceMetamask(oldState, {
-        type: actions.COMPLETED_TX,
-        id: 1,
-      })
-
-      assert.equal(Object.keys(state.unapprovedTxs).length, 1)
-      assert.equal(state.unapprovedTxs[2].test, 'Should persist')
-    })
-
-    it('removes msg from new state if completed id in action', () => {
-      const state = reduceMetamask(oldState, {
-        type: actions.COMPLETED_TX,
-        id: 1,
-      })
-
-      assert.equal(Object.keys(state.unapprovedMsgs).length, 1)
-      assert.equal(state.unapprovedTxs[2].test, 'Should persist')
-    })
   })
 
   it('shows account detail', () => {
@@ -342,14 +274,12 @@ describe('MetaMask Reducers', () => {
 
   it('updates value of tx by id', () => {
     const oldState = {
-      metamask: {
-        selectedAddressTxList: [
-          {
-            id: 1,
-            txParams: 'foo',
-          },
-        ],
-      },
+      selectedAddressTxList: [
+        {
+          id: 1,
+          txParams: 'foo',
+        },
+      ],
     }
 
     const state = reduceMetamask(oldState, {

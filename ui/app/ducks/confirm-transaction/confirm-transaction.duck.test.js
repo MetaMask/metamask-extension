@@ -46,40 +46,35 @@ const CLEAR_CONFIRM_TRANSACTION = 'metamask/confirm-transaction/CLEAR_CONFIRM_TR
 describe('Confirm Transaction Duck', () => {
   describe('State changes', () => {
     const mockState = {
-      confirmTransaction: {
-        txData: {
-          id: 1,
-        },
-        tokenData: {
-          name: 'abcToken',
-        },
-        methodData: {
-          name: 'approve',
-        },
-        tokenProps: {
-          tokenDecimals: '3',
-          tokenSymbol: 'ABC',
-        },
-        fiatTransactionAmount: '469.26',
-        fiatTransactionFee: '0.01',
-        fiatTransactionTotal: '1.000021',
-        ethTransactionAmount: '1',
-        ethTransactionFee: '0.000021',
-        ethTransactionTotal: '469.27',
-        hexTransactionAmount: '',
-        hexTransactionFee: '0x1319718a5000',
-        hexTransactionTotal: '',
-        nonce: '0x0',
-        toSmartContract: false,
-        fetchingData: false,
+      txData: {
+        id: 1,
       },
+      tokenData: {
+        name: 'abcToken',
+      },
+      methodData: {
+        name: 'approve',
+      },
+      tokenProps: {
+        tokenDecimals: '3',
+        tokenSymbol: 'ABC',
+      },
+      fiatTransactionAmount: '469.26',
+      fiatTransactionFee: '0.01',
+      fiatTransactionTotal: '1.000021',
+      ethTransactionAmount: '1',
+      ethTransactionFee: '0.000021',
+      ethTransactionTotal: '469.27',
+      hexTransactionAmount: '',
+      hexTransactionFee: '0x1319718a5000',
+      hexTransactionTotal: '',
+      nonce: '0x0',
+      toSmartContract: false,
+      fetchingData: false,
     }
 
     it('should initialize state', () => {
-      assert.deepEqual(
-        ConfirmTransactionReducer({}),
-        initialState
-      )
+      assert.deepEqual(ConfirmTransactionReducer(undefined, {}), initialState)
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', () => {
@@ -88,7 +83,7 @@ describe('Confirm Transaction Duck', () => {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        { ...mockState.confirmTransaction },
+        { ...mockState },
       )
     })
 
@@ -101,9 +96,9 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           txData: {
-            ...mockState.confirmTransaction.txData,
+            ...mockState.txData,
             id: 2,
           },
         }
@@ -116,7 +111,7 @@ describe('Confirm Transaction Duck', () => {
           type: CLEAR_TX_DATA,
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           txData: {},
         }
       )
@@ -131,9 +126,9 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           tokenData: {
-            ...mockState.confirmTransaction.tokenData,
+            ...mockState.tokenData,
             name: 'defToken',
           },
         }
@@ -146,7 +141,7 @@ describe('Confirm Transaction Duck', () => {
           type: CLEAR_TOKEN_DATA,
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           tokenData: {},
         }
       )
@@ -161,9 +156,9 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           methodData: {
-            ...mockState.confirmTransaction.methodData,
+            ...mockState.methodData,
             name: 'transferFrom',
           },
         }
@@ -176,7 +171,7 @@ describe('Confirm Transaction Duck', () => {
           type: CLEAR_METHOD_DATA,
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           methodData: {},
         }
       )
@@ -193,7 +188,7 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           fiatTransactionAmount: '123.45',
           ethTransactionAmount: '.5',
           hexTransactionAmount: '0x1',
@@ -212,7 +207,7 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           fiatTransactionFee: '123.45',
           ethTransactionFee: '.5',
           hexTransactionFee: '0x1',
@@ -231,7 +226,7 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           fiatTransactionTotal: '123.45',
           ethTransactionTotal: '.5',
           hexTransactionTotal: '0x1',
@@ -249,7 +244,7 @@ describe('Confirm Transaction Duck', () => {
           },
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           tokenProps: {
             tokenSymbol: 'DEF',
             tokenDecimals: '1',
@@ -265,7 +260,7 @@ describe('Confirm Transaction Duck', () => {
           payload: '0x1',
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           nonce: '0x1',
         }
       )
@@ -278,7 +273,7 @@ describe('Confirm Transaction Duck', () => {
           payload: true,
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           toSmartContract: true,
         }
       )
@@ -290,7 +285,7 @@ describe('Confirm Transaction Duck', () => {
           type: FETCH_DATA_START,
         }),
         {
-          ...mockState.confirmTransaction,
+          ...mockState,
           fetchingData: true,
         }
       )
@@ -298,24 +293,13 @@ describe('Confirm Transaction Duck', () => {
 
     it('should set fetchingData to false when receiving a FETCH_DATA_END action', () => {
       assert.deepEqual(
-        ConfirmTransactionReducer({ confirmTransaction: { fetchingData: true } }, {
-          type: FETCH_DATA_END,
-        }),
-        {
-          fetchingData: false,
-        }
+        ConfirmTransactionReducer({ fetchingData: true }, { type: FETCH_DATA_END }),
+        { fetchingData: false },
       )
     })
 
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', () => {
-      assert.deepEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: CLEAR_CONFIRM_TRANSACTION,
-        }),
-        {
-          ...initialState,
-        }
-      )
+      assert.deepEqual(ConfirmTransactionReducer(mockState, { type: CLEAR_CONFIRM_TRANSACTION }), initialState)
     })
   })
 
