@@ -1,5 +1,5 @@
 import EthJsEns from 'ethjs-ens'
-import ensNetworkMap from 'ethjs-ens/lib/network-map.json'
+import ensNetworkMap from 'ethereum-ens-network-map'
 
 class Ens {
   static getNetworkEnsSupport (network) {
