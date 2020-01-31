@@ -109,19 +109,23 @@ module.exports = class TypedMessageManager extends EventEmitter {
     // add origin from request
     if (req) msgParams.origin = req.origin
 
-    // Shahaf: a hack to have metatx presented
-    const parsedMsgParams = JSON.parse(msgParams.data)
-    const encodedFunction = parsedMsgParams.message.callData.encodedFunction
-    // Currently only erc20 abi is supported
-    const decoded = abiDecoder.decodeMethod(encodedFunction)
-    if (decoded) {
-      const parsedMethodParams = {}
-      for (const p of decoded.params) {
-        parsedMethodParams[p.name] = p.value
+    try {
+      const parsedMsgParams = JSON.parse(msgParams.data)
+      const encodedFunction = parsedMsgParams.message.callData.encodedFunction
+      // Currently only erc20 abi is supported
+      const decoded = abiDecoder.decodeMethod(encodedFunction)
+      if (decoded) {
+        const parsedMethodParams = {}
+        for (const p of decoded.params) {
+          parsedMethodParams[p.name] = p.value
+        }
+        parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams, rawHex: parsedMsgParams.message.callData.encodedFunction}
+        msgParams.data = JSON.stringify(parsedMsgParams)
       }
-      parsedMsgParams.message.callData.encodedFunction = {method: decoded.name, args: parsedMethodParams, rawHex: parsedMsgParams.message.callData.encodedFunction}
-      msgParams.data = JSON.stringify(parsedMsgParams)
+    } catch (e) {
+      log.warn(e)
     }
+
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // create txData obj with parameters and meta data
@@ -252,10 +256,14 @@ module.exports = class TypedMessageManager extends EventEmitter {
     delete msgParams.metamaskId
     delete msgParams.version
 
-    const parsedMsgParams = JSON.parse(msgParams.data)
-    if (typeof parsedMsgParams.message.callData.encodedFunction !== 'string') {
-      parsedMsgParams.message.callData.encodedFunction = parsedMsgParams.message.callData.encodedFunction.rawHex
-      msgParams.data = JSON.stringify(parsedMsgParams)
+    try {
+      const parsedMsgParams = JSON.parse(msgParams.data)
+      if (typeof parsedMsgParams.message.callData.encodedFunction !== 'string') {
+        parsedMsgParams.message.callData.encodedFunction = parsedMsgParams.message.callData.encodedFunction.rawHex
+        msgParams.data = JSON.stringify(parsedMsgParams)
+      }
+    } catch (e) {
+      log.warn(e)
     }
     return Promise.resolve(msgParams)
   }
