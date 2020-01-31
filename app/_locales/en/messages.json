@@ -1261,6 +1261,12 @@
     "message": "Spend limit requested by $1",
     "description": "Origin of the site requesting the spend limit"
   },
+  "spendLimitTooLarge": {
+    "message": "Spend limit too large"
+  },
+  "spendLimitInvalid": {
+    "message": "Spend limit invalid; must be a positive number"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },

@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 7.7.4 Wed Jan 29 2020
+- [#7918](https://github.com/MetaMask/metamask-extension/pull/7918): Update data on Approve screen after updating custom spend limit
+- [#7919](https://github.com/MetaMask/metamask-extension/pull/7919): Allow editing max spend limit
+- [#7920](https://github.com/MetaMask/metamask-extension/pull/7920): Validate custom spend limit
+- [#7944](https://github.com/MetaMask/metamask-extension/pull/7944): Only resolve ENS on mainnet
+- [#7954](https://github.com/MetaMask/metamask-extension/pull/7954): Update ENS registry addresses
+
 ## 7.7.3 Fri Jan 24 2020
 - [#7894](https://github.com/MetaMask/metamask-extension/pull/7894): Update GABA dependency version
 - [#7901](https://github.com/MetaMask/metamask-extension/pull/7901): Use eth-contract-metadata@1.12.1

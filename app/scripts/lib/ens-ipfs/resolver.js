@@ -52,19 +52,23 @@ function hexValueIsEmpty (value) {
   return [undefined, null, '0x', '0x0', '0x0000000000000000000000000000000000000000000000000000000000000000'].includes(value)
 }
 
+/**
+ * Returns the registry address for the given chain ID
+ * @param {number} chainId the chain ID
+ * @returns {string|null} the registry address if known, null otherwise
+ */
 function getRegistryForChainId (chainId) {
   switch (chainId) {
-    // mainnet
     case 1:
-      return '0x314159265dd8dbb310642f98f50c066173c1259b'
-    // ropsten
+      // falls through
     case 3:
-      return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
-    // rinkeby
+      // falls through
     case 4:
-      return '0xe7410170f87102df0055eb195163a03b7f2bff4a'
-    // goerli
+      // falls through
     case 5:
-      return '0x112234455c3a32fd11230c42e7bccd4a84e02010'
+      // Mainnet, Ropsten, Rinkeby, and Goerli, respectively, use the same address
+      return '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+    default:
+      return null
   }
 }

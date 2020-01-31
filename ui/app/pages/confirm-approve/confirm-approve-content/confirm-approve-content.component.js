@@ -15,6 +15,7 @@ export default class ConfirmApproveContent extends Component {
   static propTypes = {
     amount: PropTypes.string,
     txFeeTotal: PropTypes.string,
+    decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
@@ -100,7 +101,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__small-text">{ t('accessAndSpendNotice', [origin]) }</div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">{ t('amountWithColon') }</div>
-          <div className="confirm-approve-content__medium-text">{ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }</div>
+          <div className="confirm-approve-content__medium-text">{ `${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}` }</div>
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">{ t('toWithColon') }</div>
@@ -124,6 +125,7 @@ export default class ConfirmApproveContent extends Component {
   render () {
     const { t } = this.context
     const {
+      decimals,
       siteImage,
       tokenAmount,
       customTokenAmount,
@@ -159,7 +161,15 @@ export default class ConfirmApproveContent extends Component {
         >
           <div
             className="confirm-approve-content__medium-link-text cursor-pointer"
-            onClick={() => showEditApprovalPermissionModal({ customTokenAmount, tokenAmount, tokenSymbol, setCustomAmount, tokenBalance, origin })}
+            onClick={() => showEditApprovalPermissionModal({
+              customTokenAmount,
+              decimals,
+              origin,
+              setCustomAmount,
+              tokenAmount,
+              tokenSymbol,
+              tokenBalance,
+            })}
           >
             { t('editPermission') }
           </div>
@@ -201,10 +211,12 @@ export default class ConfirmApproveContent extends Component {
                     showEdit: true,
                     onEditClick: () => showEditApprovalPermissionModal({
                       customTokenAmount,
+                      decimals,
+                      origin,
+                      setCustomAmount,
                       tokenAmount,
                       tokenSymbol,
                       tokenBalance,
-                      setCustomAmount,
                     }),
                   })}
                 </div>

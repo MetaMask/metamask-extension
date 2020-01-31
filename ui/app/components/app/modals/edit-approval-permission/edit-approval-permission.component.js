@@ -1,12 +1,18 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import log from 'loglevel'
 import Modal from '../../modal'
 import Identicon from '../../../ui/identicon'
 import TextField from '../../../ui/text-field'
+import { calcTokenAmount } from '../../../../helpers/utils/token-util'
 import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
+
+const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10)
 
 export default class EditApprovalPermission extends PureComponent {
   static propTypes = {
+    decimals: PropTypes.number,
     hideModal: PropTypes.func.isRequired,
     selectedIdentity: PropTypes.object,
     tokenAmount: PropTypes.string,
@@ -14,7 +20,7 @@ export default class EditApprovalPermission extends PureComponent {
     tokenSymbol: PropTypes.string,
     tokenBalance: PropTypes.string,
     setCustomAmount: PropTypes.func,
-    origin: PropTypes.string,
+    origin: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
@@ -26,7 +32,7 @@ export default class EditApprovalPermission extends PureComponent {
     selectedOptionIsUnlimited: !this.props.customTokenAmount,
   }
 
-  renderModalContent () {
+  renderModalContent (error) {
     const { t } = this.context
     const {
       hideModal,
@@ -61,7 +67,7 @@ export default class EditApprovalPermission extends PureComponent {
             <div>{ t('balance') }</div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
-            {`${tokenBalance} ${tokenSymbol}`}
+            {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
           </div>
         </div>
         <div className="edit-approval-permission__edit-section">
@@ -89,7 +95,7 @@ export default class EditApprovalPermission extends PureComponent {
                 'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
               })}>
                 {
-                  tokenAmount < tokenBalance
+                  (new BigNumber(tokenAmount)).lessThan(new BigNumber(tokenBalance))
                     ? t('proposedApprovalLimit')
                     : t('unlimited')
                 }
@@ -98,7 +104,7 @@ export default class EditApprovalPermission extends PureComponent {
                 { t('spendLimitRequestedBy', [origin]) }
               </div>
               <div className="edit-approval-permission__edit-section__option-value" >
-                {`${tokenAmount} ${tokenSymbol}`}
+                {`${Number(tokenAmount)} ${tokenSymbol}`}
               </div>
             </div>
           </div>
@@ -127,8 +133,7 @@ export default class EditApprovalPermission extends PureComponent {
               <div className="edit-approval-permission__edit-section__option-input" >
                 <TextField
                   type="number"
-                  min="0"
-                  placeholder={ `${customTokenAmount || tokenAmount} ${tokenSymbol}` }
+                  placeholder={ `${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}` }
                   onChange={(event) => {
                     this.setState({ customSpendLimit: event.target.value })
                     if (selectedOptionIsUnlimited) {
@@ -138,6 +143,7 @@ export default class EditApprovalPermission extends PureComponent {
                   fullWidth
                   margin="dense"
                   value={ this.state.customSpendLimit }
+                  error={error}
                 />
               </div>
             </div>
@@ -147,10 +153,44 @@ export default class EditApprovalPermission extends PureComponent {
     )
   }
 
+  validateSpendLimit () {
+    const { t } = this.context
+    const { decimals } = this.props
+    const { selectedOptionIsUnlimited, customSpendLimit } = this.state
+
+    if (selectedOptionIsUnlimited || !customSpendLimit) {
+      return
+    }
+
+    let customSpendLimitNumber
+    try {
+      customSpendLimitNumber = new BigNumber(customSpendLimit)
+    } catch (error) {
+      log.debug(`Error converting '${customSpendLimit}' to BigNumber:`, error)
+      return t('spendLimitInvalid')
+    }
+
+    if (customSpendLimitNumber.isNegative()) {
+      return t('spendLimitInvalid')
+    }
+
+    const maxTokenAmount = calcTokenAmount(MAX_UNSIGNED_256_INT, decimals)
+    if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+      return t('spendLimitTooLarge')
+    }
+  }
+
   render () {
     const { t } = this.context
     const { setCustomAmount, hideModal, customTokenAmount } = this.props
     const { selectedOptionIsUnlimited, customSpendLimit } = this.state
+
+    const error = this.validateSpendLimit()
+    const disabled = Boolean(
+      (customSpendLimit === customTokenAmount && !selectedOptionIsUnlimited) ||
+      error
+    )
+
     return (
       <Modal
         onSubmit={() => {
@@ -161,9 +201,9 @@ export default class EditApprovalPermission extends PureComponent {
         submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
-        submitDisabled={ (customSpendLimit === customTokenAmount) && !selectedOptionIsUnlimited }
+        submitDisabled={disabled}
       >
-        { this.renderModalContent() }
+        { this.renderModalContent(error) }
       </Modal>
     )
   }
