@@ -1,30 +1,30 @@
+.popover {
+  &-content {
+    // not sure how this is gonna work in other browsers?
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
 
+    ::-webkit-scrollbar-thumb {
+      -webkit-border-radius: 10px;
+      border-radius: 10px;
+      background: #C4C4C4;
+    }
 
-.popover-content {
-  // not sure how this is gonna work in other browsers?
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
+    position: relative;
+    width: 328px;
+    height: 564px;
 
-  ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
-    background: #C4C4C4;
+    background: white;
+    z-index: 2;
+    left: calc(50% - 328px/2);
+    top: 10px;
   }
 
-  position: relative;
-  width: 328px;
-  height: 564px;
-
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-  background: white;
-  z-index: 2;
-  left: calc(50% - 328px/2);
-  top: 10px;
-
-  .header {
-    h2 {
+  &-header {
+    &__heading {
       @extend %font;
       font-weight: bold;
       font-size: 18px;
@@ -33,7 +33,7 @@
       padding: 20px 0;
       border-bottom: 1px solid #DDDEE9;
     }
-    .close {
+    &__close {
       position: absolute;
       top: 13px;
       right: 6px;
@@ -42,7 +42,7 @@
       display: block;
       padding: 20px;
 
-      > div {
+      &--wrap {
         // border: 1px solid red;
         width: 18px;
         height: 18px;
@@ -53,24 +53,36 @@
         left: 10px;
       }
 
-      .line {
-        width: 18px;
-        height: 2px;
-        background: #4A4A4A;
-        position: absolute;
-        border-radius: 2px;
-
-        &.a, &.b {
+      &--line {
+        &-a, &-b {
+          width: 18px;
+          height: 2px;
+          background: #4A4A4A;
+          position: absolute;
+          border-radius: 2px;
           top: calc(18px / 2);
         }
 
-        &.b {
+        &-b {
           transform: rotate(90deg);
         }
       }
     }
   }
 
+  &-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 20%;
+    z-index: 1;
+  }
+}
+
+.popover-content {
   .react-tabs {
     height: calc(100% - 66px);
 
@@ -318,15 +330,4 @@
       }
     }
   }
-}
-
-.popover-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  opacity: 20%;
-  z-index: 1;
 }

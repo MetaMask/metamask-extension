@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const PopOver = ({ title, children, onClose }) => (
-  <div>
+  <div className="popover-wrap">
     <div className="popover-content">
-      <div className="header">
-        <h2>{title}</h2>
-        <a href="#" className="close" onClick={onClose}>
-          <div>
-            <div className="line a"></div>
-            <div className="line b"></div>
+      <div className="popover-header">
+        <h2 className="popover-header__heading">{title}</h2>
+        <a href="#" className="popover-header__close" onClick={onClose}>
+          <div className="popover-header__close--wrap">
+            <div className="popover-header__close--line-a"></div>
+            <div className="popover-header__close--line-b"></div>
           </div>
         </a>
       </div>
