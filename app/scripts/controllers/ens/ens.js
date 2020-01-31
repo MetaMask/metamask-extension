@@ -1,5 +1,5 @@
 const EthJsEns = require('ethjs-ens')
-const ensNetworkMap = require('ethjs-ens/lib/network-map.json')
+const ensNetworkMap = require('ethereum-ens-network-map')
 
 class Ens {
   static getNetworkEnsSupport (network) {
