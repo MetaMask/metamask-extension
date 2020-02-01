@@ -9,10 +9,13 @@ export default function getRestrictedMethods (permissionsController) {
             res.result = accounts
             end()
           })
-          .catch((err) => {
-            res.error = err
-            end(err)
-          })
+          .catch(
+            /* istanbul ignore next */
+            (err) => {
+              res.error = err
+              end(err)
+            }
+          )
       },
     },
   }

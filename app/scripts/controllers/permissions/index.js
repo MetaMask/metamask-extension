@@ -4,6 +4,7 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
+import { cloneDeep } from 'lodash'
 
 import getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
@@ -134,9 +135,11 @@ export class PermissionsController {
   }
 
   /**
-   * User approval callback. The request can fail if the request is invalid.
+   * User approval callback. Resolves the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
+   * The request will be rejected if finalizePermissionsRequest fails.
    *
-   * @param {Object} approved - the approved request object
+   * @param {Object} approved - The request object approved by the user
    * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
@@ -151,11 +154,20 @@ export class PermissionsController {
 
     try {
 
-      // attempt to finalize the request and resolve it
-      // may modify the approved permissions
-      await this.finalizePermissionsRequest(approved.permissions, accounts)
-      approval.resolve(approved.permissions)
+      if (Object.keys(approved.permissions).length === 0) {
 
+        approval.reject(ethErrors.rpc.invalidRequest({
+          message: 'Must request at least one permission.',
+        }))
+      } else {
+
+        // attempt to finalize the request and resolve it,
+        // settings caveats as necessary
+        approved.permissions = await this.finalizePermissionsRequest(
+          approved.permissions, accounts
+        )
+        approval.resolve(approved.permissions)
+      }
     } catch (err) {
 
       // if finalization fails, reject the request
@@ -168,9 +180,10 @@ export class PermissionsController {
   }
 
   /**
-   * User rejection callback.
+   * User rejection callback. Rejects the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
    *
-   * @param {string} id - the id of the rejected request
+   * @param {string} id - The id of the request rejected by the user
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals.get(id)
@@ -194,6 +207,10 @@ export class PermissionsController {
    */
   async legacyExposeAccounts (origin, accounts) {
 
+    if (!origin || typeof origin !== 'string') {
+      throw new Error('Must provide non-empty string origin.')
+    }
+
     const existingAccounts = await this.getAccounts(origin)
 
     if (existingAccounts.length > 0) {
@@ -202,33 +219,29 @@ export class PermissionsController {
       )
     }
 
-    const permissions = {
-      eth_accounts: {},
+    const permissions = await this.finalizePermissionsRequest(
+      { eth_accounts: {} }, accounts
+    )
+
+    try {
+
+      await new Promise((resolve, reject) => {
+        this.permissions.grantNewPermissions(
+          origin, permissions, {}, err => (err ? reject(err) : resolve())
+        )
+        // don't bother sending an accountsChanged notification for legacy dapps
+      })
+    } catch (error) {
+
+      /* istanbul ignore next: too hard to induce */
+      throw ethErrors.rpc.internal({
+        message: `Failed to add 'eth_accounts' to '${origin}'.`,
+        data: {
+          originalError: error,
+          accounts,
+        },
+      })
     }
-
-    // validate and modify permissions as necessary
-    await this.finalizePermissionsRequest(permissions, accounts)
-
-    await new Promise((resolve, reject) => {
-      this.permissions.grantNewPermissions(
-        origin, permissions, {}, err => (err ? reject(err) : resolve())
-      )
-      // don't bother sending an accountsChanged notification for legacy dapps
-    })
-    .catch(error => {
-
-      if (error.code === 4001) {
-        throw error
-      } else {
-        throw ethErrors.rpc.internal({
-          message: `Failed to add 'eth_accounts' to '${origin}'.`,
-          data: {
-            originalError: error,
-            accounts,
-          },
-        })
-      }
-    })
   }
 
   /**
@@ -258,18 +271,23 @@ export class PermissionsController {
 
   /**
    * Finalizes a permissions request. Throws if request validation fails.
-   * Mutates certain caveats. See function body for details.
+   * Clones the passed-in parameters to prevent inadvertent modification.
+   * Sets (adds or replaces) caveats for the following permissions:
+   * - eth_accounts: the permitted accounts caveat
    *
    * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
+   * @param {string[]} requestedAccounts - The accounts to expose, if any.
    */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
+  async finalizePermissionsRequest (requestedPermissions, requestedAccounts) {
 
-    const { eth_accounts: ethAccounts } = requestedPermissions
+    const finalizedPermissions = cloneDeep(requestedPermissions)
+    const finalizedAccounts = cloneDeep(requestedAccounts)
+
+    const { eth_accounts: ethAccounts } = finalizedPermissions
 
     if (ethAccounts) {
 
-      await this.validatePermittedAccounts(accounts)
+      await this.validatePermittedAccounts(finalizedAccounts)
 
       if (!ethAccounts.caveats) {
         ethAccounts.caveats = []
@@ -283,11 +301,13 @@ export class PermissionsController {
       ethAccounts.caveats.push(
         {
           type: 'filterResponse',
-          value: accounts,
+          value: finalizedAccounts,
           name: CAVEAT_NAMES.exposedAccounts,
         },
       )
     }
+
+    return finalizedPermissions
   }
 
   /**
@@ -371,7 +391,6 @@ export class PermissionsController {
 
     const permittedAccounts = await this.getAccounts(origin)
 
-    // defensive programming
     if (
       !origin || typeof origin !== 'string' ||
       !account || typeof account !== 'string'
@@ -492,5 +511,6 @@ export class PermissionsController {
 }
 
 export function addInternalMethodPrefix (method) {
+  /* istanbul ignore next */
   return WALLET_PREFIX + method
 }
