@@ -1,10 +1,7 @@
 
 ---
 ### MetaMask Browser help pages
-* [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/CHANGELOG.md)
-* [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/MISSION.md)
 * [QA Guide](https://github.com/restarian/metamask-extension/blob/develop/docs/QA_Guide.md)
-* [README](https://github.com/restarian/metamask-extension/blob/develop/docs/README.md)
 * [USER AGREEMENT](https://github.com/restarian/metamask-extension/blob/develop/docs/USER_AGREEMENT.md)
 * **Add-to-chrome**
 * [Add-to-firefox](https://github.com/restarian/metamask-extension/blob/develop/docs/add-to-firefox.md)
@@ -26,6 +23,11 @@
 * [Trezor-emulator](https://github.com/restarian/metamask-extension/blob/develop/docs/trezor-emulator.md)
 * Components
   * [Account-menu](https://github.com/restarian/metamask-extension/blob/develop/docs/components/account-menu.md)
+* Contributing
+  * [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/contributing/MISSION.md)
+* Specification
+  * [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/CHANGELOG.md)
+  * [Package information](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/package_information.md)
 ## Add Custom Build to Chrome
 
 * Open `Settings` > `Extensions`.

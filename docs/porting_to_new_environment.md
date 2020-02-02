@@ -1,10 +1,7 @@
 
 ---
 ### MetaMask Browser help pages
-* [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/CHANGELOG.md)
-* [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/MISSION.md)
 * [QA Guide](https://github.com/restarian/metamask-extension/blob/develop/docs/QA_Guide.md)
-* [README](https://github.com/restarian/metamask-extension/blob/develop/docs/README.md)
 * [USER AGREEMENT](https://github.com/restarian/metamask-extension/blob/develop/docs/USER_AGREEMENT.md)
 * [Add-to-chrome](https://github.com/restarian/metamask-extension/blob/develop/docs/add-to-chrome.md)
 * [Add-to-firefox](https://github.com/restarian/metamask-extension/blob/develop/docs/add-to-firefox.md)
@@ -26,6 +23,11 @@
 * [Trezor-emulator](https://github.com/restarian/metamask-extension/blob/develop/docs/trezor-emulator.md)
 * Components
   * [Account-menu](https://github.com/restarian/metamask-extension/blob/develop/docs/components/account-menu.md)
+* Contributing
+  * [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/contributing/MISSION.md)
+* Specification
+  * [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/CHANGELOG.md)
+  * [Package information](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/package_information.md)
 # Guide to Porting MetaMask to a New Environment
 
 MetaMask has been under continuous development for nearly two years now, and we’ve gradually discovered some useful abstractions that have allowed us to grow more easily. A couple of those layers together allow MetaMask to be ported to new environments and contexts increasingly easily (although it still could be easier, and please let us know if you get stuck!)

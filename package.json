@@ -56,7 +56,7 @@
     "update-changelog": "./development/auto-changelog.sh",
     "rollback": "./development/rollback.sh",
     "generate:migration": "./development/generate-migration.sh",
-    "make_docs": "brace_document --navlink --link --link-dest ../README.md --link-path ../docs/README.md -r -i docs --force-title --title \"MetaMask Browser help pages\" --sort depth"
+    "make_docs": "./node_modules/.bin/brace_document --navlink --link --link-dest ../README.md --link-path ../docs/synopsis.md -r -i docs --force-title --title \"MetaMask Browser help pages\" --sort depth --specification"
   },
   "resolutions": {
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",

@@ -1,10 +1,7 @@
 
 ---
 ### MetaMask Browser help pages
-* [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/CHANGELOG.md)
-* [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/MISSION.md)
 * [QA Guide](https://github.com/restarian/metamask-extension/blob/develop/docs/QA_Guide.md)
-* **README**
 * [USER AGREEMENT](https://github.com/restarian/metamask-extension/blob/develop/docs/USER_AGREEMENT.md)
 * [Add-to-chrome](https://github.com/restarian/metamask-extension/blob/develop/docs/add-to-chrome.md)
 * [Add-to-firefox](https://github.com/restarian/metamask-extension/blob/develop/docs/add-to-firefox.md)
@@ -21,11 +18,16 @@
 * [Send-screen-QA-checklist](https://github.com/restarian/metamask-extension/blob/develop/docs/send-screen-QA-checklist.md)
 * [Sensitive-release](https://github.com/restarian/metamask-extension/blob/develop/docs/sensitive-release.md)
 * [State dump](https://github.com/restarian/metamask-extension/blob/develop/docs/state_dump.md)
-* [Synopsis](https://github.com/restarian/metamask-extension/blob/develop/docs/synopsis.md)
+* **Synopsis**
 * [Translating-guide](https://github.com/restarian/metamask-extension/blob/develop/docs/translating-guide.md)
 * [Trezor-emulator](https://github.com/restarian/metamask-extension/blob/develop/docs/trezor-emulator.md)
 * Components
   * [Account-menu](https://github.com/restarian/metamask-extension/blob/develop/docs/components/account-menu.md)
+* Contributing
+  * [MISSION](https://github.com/restarian/metamask-extension/blob/develop/docs/contributing/MISSION.md)
+* Specification
+  * [CHANGELOG](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/CHANGELOG.md)
+  * [Package information](https://github.com/restarian/metamask-extension/blob/develop/docs/specification/package_information.md)
 # MetaMask Browser Extension
 
 Hey! We are hiring a Senior Mobile Engineer! Apply here: https://boards.greenhouse.io/consensys/jobs/1990589
