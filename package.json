@@ -55,7 +55,8 @@
     "storybook:deploy": "storybook-to-ghpages",
     "update-changelog": "./development/auto-changelog.sh",
     "rollback": "./development/rollback.sh",
-    "generate:migration": "./development/generate-migration.sh"
+    "generate:migration": "./development/generate-migration.sh",
+    "make_docs": "brace_document --navlink --link --link-dest ../README.md --link-path ../docs/README.md -r -i docs --force-title --title \"MetaMask Browser help pages\" --sort depth"
   },
   "resolutions": {
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
@@ -286,5 +287,10 @@
   "engines": {
     "node": "^10.16.0",
     "yarn": "^1.16.0"
+  },
+  "optionalDependencies": {
+    "brace_document": "^1.1.8",
+    "brace_document_link": "^1.1.9",
+    "brace_document_navlink": "^1.1.9"
   }
 }
