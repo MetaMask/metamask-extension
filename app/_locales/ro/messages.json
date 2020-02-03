@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribuții"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizator deconectare automată (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
   },
   "average": {
@@ -638,10 +638,7 @@
   "loadMore": {
     "message": "Încărcați mai multe"
   },
-  "login": {
-    "message": "Autentificare"
-  },
-  "logout": {
+  "lock": {
     "message": "Deconectați-vă"
   },
   "mainnet": {
@@ -661,9 +658,6 @@
   },
   "metamaskDescription": {
     "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
-  },
-  "metamaskSeedWords": {
-    "message": "Cuvinte Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"

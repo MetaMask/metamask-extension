@@ -6,13 +6,13 @@ This migration removes the discaimer state from our app, which was integrated in
 
 */
 
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 
 export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

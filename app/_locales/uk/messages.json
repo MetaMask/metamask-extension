@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Авторство"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматичного виходу (хвилин)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Встановіть час відсутності активності у хвилинах після якого MetaMask буде здійснювати автоматичний вихід"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "Локальний хост 8545"
   },
-  "login": {
-    "message": "Увійти"
-  },
-  "logout": {
+  "lock": {
     "message": "Вийти"
   },
   "mainnet": {
@@ -674,9 +671,6 @@
   },
   "metamaskDescription": {
     "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
-  },
-  "metamaskSeedWords": {
-    "message": "Початкові слова MetaMask"
   },
   "metamaskVersion": {
     "message": "Версія MetaMask"

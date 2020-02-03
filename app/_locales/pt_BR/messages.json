@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribuições"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador de Logout Automático (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Defina o tempo de inatividade em minutos antes de o MetaMask fazer logout automaticamente"
   },
   "average": {
@@ -639,10 +639,7 @@
   "loadMore": {
     "message": "Carregar Mais"
   },
-  "login": {
-    "message": "Entrar"
-  },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {
@@ -659,9 +656,6 @@
   },
   "metamaskDescription": {
     "message": "Conectando você ao Ethereum e à Web Descentralizada."
-  },
-  "metamaskSeedWords": {
-    "message": "Palavras-semente do MetaMask"
   },
   "metamaskVersion": {
     "message": "Versão do MetaMask"

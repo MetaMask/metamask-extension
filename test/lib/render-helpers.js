@@ -1,14 +1,7 @@
-import { shallow, mount } from 'enzyme'
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { shape } from 'prop-types'
-
-export function shallowWithStore (component, store) {
-  const context = {
-    store,
-  }
-  return shallow(component, { context })
-}
+import { mount } from 'enzyme'
+import { MemoryRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 export function mountWithStore (component, store) {
   const context = {
@@ -17,26 +10,40 @@ export function mountWithStore (component, store) {
   return mount(component, { context })
 }
 
-export function mountWithRouter (node) {
+export function mountWithRouter (component, store = {}, pathname = '/') {
 
   // Instantiate router context
   const router = {
-    history: new BrowserRouter().history,
+    history: new MemoryRouter().history,
     route: {
-      location: {},
+      location: {
+        pathname: pathname,
+      },
       match: {},
     },
   }
 
   const createContext = () => ({
-    context: { router, t: () => {} },
-    childContextTypes: { router: shape({}), t: () => {} },
+    context: {
+      router,
+      t: str => str,
+      tOrKey: str => str,
+      metricsEvent: () => {},
+      store,
+    },
+    childContextTypes: {
+      router: PropTypes.object,
+      t: PropTypes.func,
+      tOrKey: PropTypes.func,
+      metricsEvent: PropTypes.func,
+      store: PropTypes.object,
+    },
   })
 
   const Wrapper = () => (
-    <BrowserRouter>
-      {node}
-    </BrowserRouter>
+    <MemoryRouter initialEntries={[{ pathname }]} initialIndex={0}>
+      {component}
+    </MemoryRouter>
   )
 
   return mount(<Wrapper />, createContext())

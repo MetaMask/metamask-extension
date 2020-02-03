@@ -245,10 +245,10 @@
   "loadingTokens": {
     "message": "A carregar Tokens..."
   },
-  "login": {
+  "unlock": {
     "message": "Entrar"
   },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {

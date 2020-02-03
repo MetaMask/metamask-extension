@@ -25,8 +25,8 @@ export default class AdvancedTab extends PureComponent {
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
-    autoLogoutTimeLimit: PropTypes.number,
-    setAutoLogoutTimeLimit: PropTypes.func.isRequired,
+    autoLockTimeLimit: PropTypes.number,
+    setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
@@ -36,8 +36,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   state = {
-    autoLogoutTimeLimit: this.props.autoLogoutTimeLimit,
-    logoutTimeError: '',
+    autoLockTimeLimit: this.props.autoLockTimeLimit,
+    lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
   }
@@ -45,9 +45,9 @@ export default class AdvancedTab extends PureComponent {
   renderMobileSync () {
     const { t } = this.context
     const { history } = this.props
-    //
+
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-mobile-sync">
         <div className="settings-page__content-item">
           <span>{ t('syncWithMobile') }</span>
         </div>
@@ -74,7 +74,7 @@ export default class AdvancedTab extends PureComponent {
     const { displayWarning } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-state-logs">
         <div className="settings-page__content-item">
           <span>{ t('stateLogs') }</span>
           <span className="settings-page__content-description">
@@ -109,7 +109,7 @@ export default class AdvancedTab extends PureComponent {
     const { showResetAccountConfirmationModal } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-reset-account">
         <div className="settings-page__content-item">
           <span>{ t('resetAccount') }</span>
           <span className="settings-page__content-description">
@@ -147,7 +147,7 @@ export default class AdvancedTab extends PureComponent {
     const { sendHexData, setHexDataFeatureFlag } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-hex-data">
         <div className="settings-page__content-item">
           <span>{ t('showHexData') }</span>
           <div className="settings-page__content-description">
@@ -173,7 +173,7 @@ export default class AdvancedTab extends PureComponent {
     const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-advanced-gas-inline">
         <div className="settings-page__content-item">
           <span>{ t('showAdvancedGasInline') }</span>
           <div className="settings-page__content-description">
@@ -202,7 +202,7 @@ export default class AdvancedTab extends PureComponent {
     } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-show-testnet-conversion">
         <div className="settings-page__content-item">
           <span>{ t('showFiatConversionInTestnets') }</span>
           <div className="settings-page__content-description">
@@ -228,7 +228,7 @@ export default class AdvancedTab extends PureComponent {
     const { useNonceField, setUseNonceField } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-custom-nonce">
         <div className="settings-page__content-item">
           <span>{ this.context.t('nonceField') }</span>
           <div className="settings-page__content-description">
@@ -249,38 +249,38 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
-  handleLogoutChange (time) {
+  handleLockChange (time) {
     const { t } = this.context
-    const autoLogoutTimeLimit = Math.max(Number(time), 0)
+    const autoLockTimeLimit = Math.max(Number(time), 0)
 
     this.setState(() => {
-      let logoutTimeError = ''
+      let lockTimeError = ''
 
-      if (autoLogoutTimeLimit > 10080) {
-        logoutTimeError = t('logoutTimeTooGreat')
+      if (autoLockTimeLimit > 10080) {
+        lockTimeError = t('lockTimeTooGreat')
       }
 
       return {
-        autoLogoutTimeLimit,
-        logoutTimeError,
+        autoLockTimeLimit,
+        lockTimeError,
       }
     })
   }
 
-  renderAutoLogoutTimeLimit () {
+  renderAutoLockTimeLimit () {
     const { t } = this.context
-    const { logoutTimeError } = this.state
+    const { lockTimeError } = this.state
     const {
-      autoLogoutTimeLimit,
-      setAutoLogoutTimeLimit,
+      autoLockTimeLimit,
+      setAutoLockTimeLimit,
     } = this.props
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-auto-lock">
         <div className="settings-page__content-item">
-          <span>{ t('autoLogoutTimeLimit') }</span>
+          <span>{ t('autoLockTimeLimit') }</span>
           <div className="settings-page__content-description">
-            { t('autoLogoutTimeLimitDescription') }
+            { t('autoLockTimeLimitDescription') }
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -289,10 +289,10 @@ export default class AdvancedTab extends PureComponent {
               type="number"
               id="autoTimeout"
               placeholder="5"
-              value={this.state.autoLogoutTimeLimit}
-              defaultValue={autoLogoutTimeLimit}
-              onChange={e => this.handleLogoutChange(e.target.value)}
-              error={logoutTimeError}
+              value={this.state.autoLockTimeLimit}
+              defaultValue={autoLockTimeLimit}
+              onChange={e => this.handleLockChange(e.target.value)}
+              error={lockTimeError}
               fullWidth
               margin="dense"
               min={0}
@@ -300,9 +300,9 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="primary"
               className="settings-tab__rpc-save-button"
-              disabled={logoutTimeError !== ''}
+              disabled={lockTimeError !== ''}
               onClick={() => {
-                setAutoLogoutTimeLimit(this.state.autoLogoutTimeLimit)
+                setAutoLockTimeLimit(this.state.autoLockTimeLimit)
               }}
             >
               { t('save') }
@@ -329,7 +329,7 @@ export default class AdvancedTab extends PureComponent {
       description = t('syncWithThreeBoxDisabled')
     }
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-3box">
         <div className="settings-page__content-item">
           <span>{ t('syncWithThreeBox') }</span>
           <div className="settings-page__content-description">
@@ -404,7 +404,7 @@ export default class AdvancedTab extends PureComponent {
     const { ipfsGatewayError } = this.state
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" data-testid="advanced-setting-ipfs-gateway">
         <div className="settings-page__content-item">
           <span>{ t('ipfsGateway') }</span>
           <div className="settings-page__content-description">
@@ -450,7 +450,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderHexDataOptIn() }
         { this.renderShowConversionInTestnets() }
         { this.renderUseNonceOptIn() }
-        { this.renderAutoLogoutTimeLimit() }
+        { this.renderAutoLockTimeLimit() }
         { this.renderThreeBoxControl() }
         { this.renderIpfsGatewayControl() }
       </div>

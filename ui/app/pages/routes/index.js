@@ -124,7 +124,7 @@ class Routes extends Component {
   }
 
   renderRoutes () {
-    const { autoLogoutTimeLimit, setLastActiveTime } = this.props
+    const { autoLockTimeLimit, setLastActiveTime } = this.props
 
     const routes = (
       <Switch>
@@ -147,7 +147,7 @@ class Routes extends Component {
       </Switch>
     )
 
-    if (autoLogoutTimeLimit > 0) {
+    if (autoLockTimeLimit > 0) {
       return (
         <IdleTimer onAction={setLastActiveTime} throttle={1000}>
           {routes}
@@ -205,13 +205,12 @@ class Routes extends Component {
       network,
       provider,
       frequentRpcListDetail,
-      currentView,
       setMouseUserState,
       sidebar,
       submittedPendingTransactions,
       isMouseUser,
     } = this.props
-    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
+    const isLoadingNetwork = network === 'loading'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
@@ -366,7 +365,6 @@ Routes.propTypes = {
   provider: PropTypes.object,
   selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
-  currentView: PropTypes.object,
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
@@ -380,7 +378,7 @@ Routes.propTypes = {
   setMouseUserState: PropTypes.func,
   providerId: PropTypes.string,
   hasPermissionsRequests: PropTypes.bool,
-  autoLogoutTimeLimit: PropTypes.number,
+  autoLockTimeLimit: PropTypes.number,
   addressConnectedToCurrentTab: PropTypes.string,
   showAccountDetail: PropTypes.func,
 }
@@ -399,7 +397,7 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
 
-  const { autoLogoutTimeLimit = 0 } = preferencesSelector(state)
+  const { autoLockTimeLimit = 0 } = preferencesSelector(state)
 
   return {
     // state from plugin
@@ -410,7 +408,6 @@ function mapStateToProps (state) {
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    currentView: state.appState.currentView,
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
@@ -419,7 +416,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
-    autoLogoutTimeLimit,
+    autoLockTimeLimit,
     hasPermissionsRequests: hasPermissionRequests(state),
     addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }

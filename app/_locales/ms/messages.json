@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
   },
   "average": {
@@ -628,10 +628,7 @@
   "loadMore": {
     "message": "Muat Lagi"
   },
-  "login": {
-    "message": "Log Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Log keluar"
   },
   "mainnet": {
@@ -645,9 +642,6 @@
   },
   "metamaskDescription": {
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
-  },
-  "metamaskSeedWords": {
-    "message": "Perkataan Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"

@@ -21,7 +21,7 @@ describe('SendGasRow Component', function () {
       <SendGasRow
         conversionRate={20}
         convertedCurrency="mockConvertedCurrency"
-        gasFeeError="mockGasFeeError"
+        gasFeeError
         gasLoadingError={false}
         gasTotal="mockGasTotal"
         gasButtonGroupShown={false}
@@ -52,7 +52,7 @@ describe('SendGasRow Component', function () {
       } = wrapper.find(SendRowWrapper).props()
 
       assert.equal(label, 'transactionFee_t:')
-      assert.equal(showError, 'mockGasFeeError')
+      assert.equal(showError, true)
       assert.equal(errorType, 'gasFee')
     })
 

@@ -269,6 +269,9 @@ const initialize = () => {
     }
 
     signTypedData.addEventListener('click', () => {
+      const networkId = parseInt(networkDiv.innerHTML)
+      const chainId = parseInt(chainIdDiv.innerHTML) || networkId
+
       const typedData = {
         types: {
           EIP712Domain: [
@@ -291,7 +294,7 @@ const initialize = () => {
         domain: {
           name: 'Ether Mail',
           version: '1',
-          chainId: 3,
+          chainId,
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
         message: {

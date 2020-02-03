@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Atrybuty"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
@@ -648,10 +648,7 @@
   "localhost": {
     "message": "Serwer lokalny 8545"
   },
-  "login": {
-    "message": "Zaloguj się"
-  },
-  "logout": {
+  "lock": {
     "message": "Wyloguj się"
   },
   "mainnet": {
@@ -665,9 +662,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask to bezpieczny portfel dla Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Słowa Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"

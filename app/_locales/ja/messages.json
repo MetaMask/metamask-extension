@@ -106,10 +106,10 @@
   "attributions": {
     "message": "属性"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動ログアウト(分)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMaskが自動的にログアウトするまでのアイドル時間を分単位で設定します。"
   },
   "average": {
@@ -314,10 +314,10 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "login": {
+  "unlock": {
     "message": "ログイン"
   },
-  "logout": {
+  "lock": {
     "message": "ログアウト"
   },
   "mainnet": {

@@ -1,6 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
@@ -10,9 +10,9 @@ import createTxMeta from '../../../lib/createTxMeta'
 import EthQuery from 'eth-query'
 
 const threeBoxSpies = {
-  init: sinon.spy(),
+  init: sinon.stub(),
   getThreeBoxSyncingState: sinon.stub().returns(true),
-  turnThreeBoxSyncingOn: sinon.spy(),
+  turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
 }
 import proxyquire from 'proxyquire'
@@ -94,7 +94,7 @@ describe('MetaMaskController', function () {
           return Promise.resolve(this.object)
         },
       },
-      initState: clone(firstTimeState),
+      initState: cloneDeep(firstTimeState),
       platform: { showTransactionNotification: () => {} },
     })
     // disable diagnostics

@@ -109,10 +109,10 @@
   "attributions": {
     "message": "תכונות"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "טיימר התנתקות אוטומטית (דקות)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "הגדר/י את זמן היעדר הפעילות בדקות לפני ש-MetaMask יתנתק אוטומטית."
   },
   "average": {
@@ -648,10 +648,7 @@
   "loadMore": {
     "message": "טען עוד"
   },
-  "login": {
-    "message": "כניסה"
-  },
-  "logout": {
+  "lock": {
     "message": "התנתקות"
   },
   "mainnet": {
@@ -671,9 +668,6 @@
   },
   "metamaskDescription": {
     "message": "מחבר אותך לאתריום ולרשת המבוזרת."
-  },
-  "metamaskSeedWords": {
-    "message": "מילות גרעין (Seed) של MetaMask "
   },
   "metamaskVersion": {
     "message": "גרסת MetaMask"

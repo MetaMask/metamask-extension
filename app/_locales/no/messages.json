@@ -109,10 +109,10 @@
   "attributions": {
     "message": "Henvisninger"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
   },
   "average": {
@@ -641,10 +641,7 @@
   "localhost": {
     "message": "Lokalvert 8545"
   },
-  "login": {
-    "message": "Logg inn"
-  },
-  "logout": {
+  "lock": {
     "message": "Logg ut "
   },
   "mainnet": {
@@ -664,9 +661,6 @@
   },
   "metamaskDescription": {
     "message": "Kobler deg til Ethereum og det desentraliserte nettet."
-  },
-  "metamaskSeedWords": {
-    "message": "Mnemoniske gjenopprettingsfraser for MetaMask "
   },
   "metamaskVersion": {
     "message": "MetaMask-versjon "

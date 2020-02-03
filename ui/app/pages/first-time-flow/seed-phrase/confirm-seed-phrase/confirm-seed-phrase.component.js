@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import shuffle from 'lodash.shuffle'
 import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
@@ -34,37 +33,16 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   state = {
     selectedSeedIndices: [],
-    shuffledSeedWords: [],
+    sortedSeedWords: [],
     pendingSeedIndices: [],
     draggingSeedIndex: -1,
     hoveringIndex: -1,
-    isDragging: false,
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    const { seedPhrase } = this.props
-    const {
-      selectedSeedIndices,
-      shuffledSeedWords,
-      pendingSeedIndices,
-      draggingSeedIndex,
-      hoveringIndex,
-      isDragging,
-    } = this.state
-
-    return seedPhrase !== nextProps.seedPhrase ||
-      draggingSeedIndex !== nextState.draggingSeedIndex ||
-      isDragging !== nextState.isDragging ||
-      hoveringIndex !== nextState.hoveringIndex ||
-      selectedSeedIndices.join(' ') !== nextState.selectedSeedIndices.join(' ') ||
-      shuffledSeedWords.join(' ') !== nextState.shuffledSeedWords.join(' ') ||
-      pendingSeedIndices.join(' ') !== nextState.pendingSeedIndices.join(' ')
   }
 
   componentDidMount () {
     const { seedPhrase = '' } = this.props
-    const shuffledSeedWords = shuffle(seedPhrase.split(' ')) || []
-    this.setState({ shuffledSeedWords })
+    const sortedSeedWords = (seedPhrase.split(' ') || []).sort()
+    this.setState({ sortedSeedWords })
   }
 
   setDraggingSeedIndex = draggingSeedIndex => this.setState({ draggingSeedIndex })
@@ -88,7 +66,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleExport = () => {
-    exportAsFile('MetaMask Secret Backup Phrase', this.props.seedPhrase, 'text/plain')
+    exportAsFile('', this.props.seedPhrase, 'text/plain')
   }
 
   handleSubmit = async () => {
@@ -127,24 +105,24 @@ export default class ConfirmSeedPhrase extends PureComponent {
     }
   }
 
-  handleSelectSeedWord = (shuffledIndex) => {
+  handleSelectSeedWord = (index) => {
     this.setState({
-      selectedSeedIndices: [...this.state.selectedSeedIndices, shuffledIndex],
-      pendingSeedIndices: [...this.state.pendingSeedIndices, shuffledIndex],
+      selectedSeedIndices: [...this.state.selectedSeedIndices, index],
+      pendingSeedIndices: [...this.state.pendingSeedIndices, index],
     })
   }
 
-  handleDeselectSeedWord = shuffledIndex => {
+  handleDeselectSeedWord = (index) => {
     this.setState({
-      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => shuffledIndex !== i),
-      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => shuffledIndex !== i),
+      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => index !== i),
+      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => index !== i),
     })
   }
 
   isValid () {
     const { seedPhrase } = this.props
-    const { selectedSeedIndices, shuffledSeedWords } = this.state
-    const selectedSeedWords = selectedSeedIndices.map(i => shuffledSeedWords[i])
+    const { selectedSeedIndices, sortedSeedWords } = this.state
+    const selectedSeedWords = selectedSeedIndices.map(i => sortedSeedWords[i])
     return seedPhrase === selectedSeedWords.join(' ')
   }
 
@@ -153,7 +131,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
     const { history } = this.props
     const {
       selectedSeedIndices,
-      shuffledSeedWords,
+      sortedSeedWords,
       draggingSeedIndex,
     } = this.state
 
@@ -184,9 +162,9 @@ export default class ConfirmSeedPhrase extends PureComponent {
           { this.renderPendingSeeds() }
           { this.renderSelectedSeeds() }
         </div>
-        <div className="confirm-seed-phrase__shuffled-seed-words">
+        <div className="confirm-seed-phrase__sorted-seed-words" data-testid="seed-phrase-sorted">
           {
-            shuffledSeedWords.map((word, index) => {
+            sortedSeedWords.map((word, index) => {
               const isSelected = selectedSeedIndices.includes(index)
 
               return (
@@ -196,7 +174,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
                   index={index}
                   setHoveringIndex={this.setHoveringIndex}
                   onDrop={this.onDrop}
-                  className="confirm-seed-phrase__seed-word--shuffled"
+                  className="confirm-seed-phrase__seed-word--sorted"
                   selected={isSelected}
                   onClick={() => {
                     if (!isSelected) {
@@ -224,10 +202,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   renderSelectedSeeds () {
-    const { shuffledSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
+    const { sortedSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index]
-      const word = shuffledSeedWords[seedIndex]
+      const word = sortedSeedWords[seedIndex]
 
       return (
         <DraggableSeed
@@ -249,7 +227,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
   renderPendingSeeds () {
     const {
       pendingSeedIndices,
-      shuffledSeedWords,
+      sortedSeedWords,
       draggingSeedIndex,
       hoveringIndex,
     } = this.state
@@ -258,7 +236,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = indices[index]
-      const word = shuffledSeedWords[seedIndex]
+      const word = sortedSeedWords[seedIndex]
 
       return (
         <DraggableSeed

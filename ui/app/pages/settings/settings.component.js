@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
+import { Switch, Route, matchPath } from 'react-router-dom'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
@@ -244,4 +244,4 @@ class SettingsPage extends PureComponent {
   }
 }
 
-export default withRouter(SettingsPage)
+export default SettingsPage

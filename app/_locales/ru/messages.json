@@ -281,10 +281,7 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Выход"
   },
   "mainnet": {
@@ -593,10 +590,10 @@
   "attemptToCancelDescription": {
     "message": "Отправка этой попытки не гарантирует отмену вашей первоначальной транзакции. Если попытка отмены окажется успешной комиссия за исходную транзакцию будет возвращена."
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматического выхода из кошелька (минуты)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Установите время простоя в минутах, прежде чем MetaMask автоматически заблокирует кошелек"
   },
   "average": {
@@ -898,9 +895,6 @@
   },
   "menu": {
     "message": "Меню"
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask ключевая фраза (сид)"
   },
   "metamaskVersion": {
     "message": "Версия MetaMask"

@@ -4,10 +4,10 @@ import c from 'classnames'
 import { isValidENSAddress, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 import { ellipsify } from '../../send.utils'
 
-import debounce from 'debounce'
+import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
-import networkMap from 'ethjs-ens/lib/network-map.json'
+import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
 
 
@@ -163,6 +163,7 @@ export default class EnsInput extends Component {
             onPaste={this.onPaste}
             value={selectedAddress || input}
             autoFocus
+            data-testid="ens-input"
           />
           <div
             className={c('ens-input__wrapper__action-icon', {

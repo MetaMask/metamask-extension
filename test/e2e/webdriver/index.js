@@ -4,29 +4,30 @@ const ChromeDriver = require('./chrome')
 const FirefoxDriver = require('./firefox')
 const fetchMockResponses = require('../../data/fetch-mocks.json')
 
-async function buildWebDriver ({ browser, extensionPath, responsive, port }) {
+async function buildWebDriver ({ responsive, port } = {}) {
+  const browser = process.env.SELENIUM_BROWSER
+  const extensionPath = `dist/${browser}`
+
+  const { driver: seleniumDriver, extensionId, extensionUrl } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
+  setupFetchMocking(seleniumDriver)
+  const driver = new Driver(seleniumDriver, browser, extensionUrl)
+  await driver.navigate()
+
+  await driver.delay(1000)
+
+  return {
+    driver,
+    extensionId,
+  }
+}
+
+async function buildBrowserWebDriver (browser, webDriverOptions) {
   switch (browser) {
     case Browser.CHROME: {
-      const { driver, extensionId, extensionUrl } = await ChromeDriver.build({ extensionPath, responsive, port })
-      setupFetchMocking(driver)
-      await driver.get(extensionUrl)
-
-      return {
-        driver: new Driver(driver, browser),
-        extensionId,
-        extensionUrl,
-      }
+      return await ChromeDriver.build(webDriverOptions)
     }
     case Browser.FIREFOX: {
-      const { driver, extensionId, extensionUrl } = await FirefoxDriver.build({ extensionPath, responsive, port })
-      setupFetchMocking(driver)
-      await driver.get(extensionUrl)
-
-      return {
-        driver: new Driver(driver, browser),
-        extensionId,
-        extensionUrl,
-      }
+      return await FirefoxDriver.build(webDriverOptions)
     }
     default: {
       throw new Error(`Unrecognized browser: ${browser}`)

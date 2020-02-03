@@ -155,11 +155,11 @@
   "attributions": {
     "message": "Attributions"
   },
-  "autoLogoutTimeLimit": {
-    "message": "Auto-Logout Timer (minutes)"
+  "autoLockTimeLimit": {
+    "message": "Auto-Lock Timer (minutes)"
   },
-  "autoLogoutTimeLimitDescription": {
-    "message": "Set the idle time in minutes before MetaMask will automatically log out"
+  "autoLockTimeLimitDescription": {
+    "message": "Set the idle time in minutes before MetaMask will become locked."
   },
   "average": {
     "message": "Average"
@@ -540,6 +540,38 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "errorCode": {
+    "message": "Code: $1",
+    "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Error Details",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
+  },
+  "errorMessage": {
+    "message": "Message: $1",
+    "description": "Displayed error message for debugging purposes. $1 is the error message"
+  },
+  "errorName": {
+    "message": "Code: $1",
+    "description": "Displayed error name for debugging purposes. $1 is the error name"
+  },
+  "errorPageTitle": {
+    "message": "MetaMask encountered an error",
+    "description": "Title of generic error page"
+  },
+  "errorPageMessage": {
+    "message": "Try again by reloading the page, or contact support at support@metamask.io",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI"
+  },
+  "errorPagePopupMessage": {
+    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
+    "description": "Message displayed on generic error page in the popup UI"
+  },
+  "errorStack": {
+    "message": "Stack:",
+    "description": "Title for error stack, which is displayed for debugging purposes"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
   },
@@ -809,14 +841,11 @@
   "localhost": {
     "message": "Localhost 8545"
   },
-  "login": {
-    "message": "Log In"
+  "lock": {
+    "message": "Lock"
   },
-  "logout": {
-    "message": "Log out"
-  },
-  "logoutTimeTooGreat": {
-    "message": "Logout time is too great"
+  "lockTimeTooGreat": {
+    "message": "Lock time is too great"
   },
   "mainnet": {
     "message": "Main Ethereum Network"
@@ -835,9 +864,6 @@
   },
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
@@ -1305,6 +1331,12 @@
     "message": "Spend limit requested by $1",
     "description": "Origin of the site requesting the spend limit"
   },
+  "spendLimitTooLarge": {
+    "message": "Spend limit too large"
+  },
+  "spendLimitInvalid": {
+    "message": "Spend limit invalid; must be a positive number"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
@@ -1348,7 +1380,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Ethereum account. Connect to dApps, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
   },
   "step3CustodialWallet": {
     "message": "3. You are now ready to securely interact with any DApp."

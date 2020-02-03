@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
 import PropTypes from 'prop-types'
 import { hideSidebar, showModal } from '../../../store/actions'
 import AccountDetails from './account-details.component'
@@ -13,9 +12,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-const AccountDetailsContainer = compose(
-  connect(null, mapDispatchToProps)
-)(AccountDetails)
+const AccountDetailsContainer = connect(null, mapDispatchToProps)(AccountDetails)
 
 AccountDetailsContainer.propTypes = {
   label: PropTypes.string.isRequired,

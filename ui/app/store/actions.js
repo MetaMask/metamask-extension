@@ -36,8 +36,6 @@ export const actionConstants = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
@@ -55,7 +53,6 @@ export const actionConstants = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   // account detail screen
-  SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
@@ -82,11 +79,9 @@ export const actionConstants = {
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
   UPDATE_SEND_ENS_RESOLUTION_ERROR: 'UPDATE_SEND_ENS_RESOLUTION_ERROR',
   // config screen
-  SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
-  SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   TRUSTVAULT_PIN_CHALLENGE: 'TRUSTVAULT_PIN_CHALLENGE',
@@ -386,22 +381,28 @@ export function resetAccount () {
 }
 
 export function removeAccount (address) {
-  return dispatch => {
+  return async dispatch => {
     dispatch(showLoadingIndication())
 
-    return new Promise((resolve, reject) => {
-      background.removeAccount(address, (err, account) => {
-        dispatch(hideLoadingIndication())
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        log.info('Account removed: ' + account)
-        dispatch(showAccountsPage())
-        resolve()
+    try {
+      await new Promise((resolve, reject) => {
+        background.removeAccount(address, (error, account) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve(account)
+        })
       })
-    })
+      await forceUpdateMetamaskState(dispatch)
+    } catch (error) {
+      dispatch(displayWarning(error.message))
+      throw error
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+
+    log.info('Account removed: ' + address)
+    dispatch(showAccountsPage())
   }
 }
 
@@ -567,12 +568,6 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
         return resolve()
       })
     })
-  }
-}
-
-export function showInfoPage () {
-  return {
-    type: actionConstants.SHOW_INFO_PAGE,
   }
 }
 
@@ -1149,14 +1144,6 @@ export function forgotPassword (forgotPasswordState = true) {
   }
 }
 
-
-export function setNewAccountForm (formToSelect) {
-  return {
-    type: actionConstants.SET_NEW_ACCOUNT_FORM,
-    formToSelect,
-  }
-}
-
 export function closeWelcomeScreen () {
   return {
     type: actionConstants.CLOSE_WELCOME_SCREEN,
@@ -1270,6 +1257,7 @@ export function showAccountDetail (address) {
       if (err) {
         return dispatch(displayWarning(err.message))
       }
+      background.handleNewAccountSelected(origin, address)
       dispatch(updateTokens(tokens))
       dispatch({
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
@@ -1291,20 +1279,6 @@ export function showConfTxPage ({ transForward = true, id }) {
     type: actionConstants.SHOW_CONF_TX_PAGE,
     transForward,
     id,
-  }
-}
-
-export function showConfigPage (transitionForward = true) {
-  return {
-    type: actionConstants.SHOW_CONFIG_PAGE,
-    value: transitionForward,
-  }
-}
-
-export function showAddTokenPage (transitionForward = true) {
-  return {
-    type: actionConstants.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
   }
 }
 
@@ -1880,12 +1854,6 @@ export function setAccountLabel (account, label) {
   }
 }
 
-export function showSendPage () {
-  return {
-    type: actionConstants.SHOW_SEND_PAGE,
-  }
-}
-
 export function showSendTokenPage () {
   return {
     type: actionConstants.SHOW_SEND_TOKEN_PAGE,
@@ -2041,8 +2009,8 @@ export function setShowFiatConversionOnTestnetsPreference (value) {
   return setPreference('showFiatInTestnets', value)
 }
 
-export function setAutoLogoutTimeLimit (value) {
-  return setPreference('autoLogoutTimeLimit', value)
+export function setAutoLockTimeLimit (value) {
+  return setPreference('autoLockTimeLimit', value)
 }
 
 export function setCompletedOnboarding () {
@@ -2312,6 +2280,7 @@ export function legacyExposeAccounts (origin, accounts) {
 export function removePermissionsFor (domains) {
   return () => {
     background.removePermissionsFor(domains)
+    background.removeLastSelectedAddressesFor(Object.keys(domains))
   }
 }
 
@@ -2321,6 +2290,7 @@ export function removePermissionsFor (domains) {
 export function clearPermissions () {
   return () => {
     background.clearPermissions()
+    background.clearLastSelectedAddressHistory()
   }
 }
 

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import assert from 'assert'
-import clone from 'clone'
+import { cloneDeep } from 'lodash'
 import pify from 'pify'
 import Migrator from '../../../app/scripts/lib/migrator'
 import liveMigrations from '../../../app/scripts/migrations'
@@ -10,7 +10,7 @@ const stubMigrations = [
     version: 1,
     migrate: (data) => {
       // clone the data just like we do in migrations
-      const clonedData = clone(data)
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 1
       return Promise.resolve(clonedData)
     },
@@ -18,7 +18,7 @@ const stubMigrations = [
   {
     version: 2,
     migrate: (data) => {
-      const clonedData = clone(data)
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 2
       return Promise.resolve(clonedData)
     },
@@ -26,7 +26,7 @@ const stubMigrations = [
   {
     version: 3,
     migrate: (data) => {
-      const clonedData = clone(data)
+      const clonedData = cloneDeep(data)
       clonedData.meta.version = 3
       return Promise.resolve(clonedData)
     },
@@ -60,33 +60,27 @@ describe('liveMigrations require list', () => {
 
 describe('Migrator', () => {
   const migrator = new Migrator({ migrations: stubMigrations })
-  it('migratedData version should be version 3', (done) => {
-    migrator.migrateData(versionedData)
-      .then((migratedData) => {
-        assert.equal(migratedData.meta.version, stubMigrations[2].version)
-        done()
-      }).catch(done)
+  it('migratedData version should be version 3', async () => {
+    const migratedData = await migrator.migrateData(versionedData)
+    assert.equal(migratedData.meta.version, stubMigrations[2].version)
   })
 
-  it('should match the last version in live migrations', (done) => {
+  it('should match the last version in live migrations', async () => {
     const migrator = new Migrator({ migrations: liveMigrations })
-    migrator.migrateData(firstTimeState)
-      .then((migratedData) => {
-        const last = liveMigrations.length - 1
-        assert.equal(migratedData.meta.version, liveMigrations[last].version)
-        done()
-      }).catch(done)
+    const migratedData = await migrator.migrateData(firstTimeState)
+    const last = liveMigrations.length - 1
+    assert.equal(migratedData.meta.version, liveMigrations[last].version)
   })
 
-  it('should emit an error', function (done) {
-    this.timeout(15000)
-    const migrator = new Migrator({ migrations: [{ version: 1, migrate: async () => {
-      throw new Error('test')
-    } } ] })
-    migrator.on('error', () => done())
-    migrator.migrateData({ meta: { version: 0 } })
-      .then(() => {
-      }).catch(done)
+  it('should emit an error', async () => {
+    const migrator = new Migrator({
+      migrations: [{
+        version: 1,
+        async migrate () {
+          throw new Error('test')
+        },
+      }],
+    })
+    await assert.rejects(migrator.migrateData({ meta: { version: 0 } }))
   })
-
 })

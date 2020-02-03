@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import SendRowWrapper from '../send-row-wrapper'
 import AmountMaxButton from './amount-max-button'
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input'

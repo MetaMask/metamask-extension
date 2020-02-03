@@ -6,15 +6,13 @@ This migration breaks out the ShapeShiftController substate
 
 */
 
-import merge from 'deep-extend'
-
-import clone from 'clone'
+import { cloneDeep, merge } from 'lodash'
 
 export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

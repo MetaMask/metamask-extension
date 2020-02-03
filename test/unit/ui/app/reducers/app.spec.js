@@ -146,59 +146,6 @@ describe('App State', () => {
     assert.equal(state.currentView.name, 'restoreVault')
   })
 
-  it('shows config page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_CONFIG_PAGE,
-      value: true,
-    })
-
-    assert.equal(state.currentView.name, 'config')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-  })
-
-  it('shows add token page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_ADD_TOKEN_PAGE,
-      value: true,
-    })
-
-    assert.equal(state.currentView.name, 'add-token')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-  })
-
-  it('sets new account form', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SET_NEW_ACCOUNT_FORM,
-      formToSelect: 'context',
-    })
-
-    assert.equal(state.currentView.name, 'accountDetail')
-    assert.equal(state.currentView.context, 'context')
-  })
-
-  it('shows info page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_INFO_PAGE,
-    })
-
-    assert.equal(state.currentView.name, 'info')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-  })
-
-  it('shows send page', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_SEND_PAGE,
-    })
-
-    assert.equal(state.currentView.name, 'sendTransaction')
-    assert.equal(state.currentView.context, '0xAddress')
-    assert.equal(state.transForward, true)
-    assert.equal(state.warning, null)
-  })
-
   it('shows send token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,

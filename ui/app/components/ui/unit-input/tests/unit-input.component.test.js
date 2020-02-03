@@ -92,27 +92,6 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.state('value'), 123)
     })
 
-    it('should call onBlur on blur with the value', () => {
-      const wrapper = mount(
-        <UnitInput
-          onChange={handleChangeSpy}
-          onBlur={handleBlurSpy}
-        />
-      )
-
-      assert.ok(wrapper)
-      assert.equal(handleChangeSpy.callCount, 0)
-      assert.equal(handleBlurSpy.callCount, 0)
-      const input = wrapper.find('input')
-      input.simulate('change', { target: { value: 123 } })
-      assert.equal(handleChangeSpy.callCount, 1)
-      assert.ok(handleChangeSpy.calledWith(123))
-      assert.equal(wrapper.state('value'), 123)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith(123))
-    })
-
     it('should set the component state value with props.value', () => {
       const wrapper = mount(
         <UnitInput

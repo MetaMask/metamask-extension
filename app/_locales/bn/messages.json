@@ -109,10 +109,10 @@
   "attributions": {
     "message": "গুণাবলী"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "স্বয়ংক্রিয়-লগ আউট টাইমার (মিনিট)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask স্বয়ংক্রিয়ভাবে লগ আউট করার আগে নিষ্ক্রিয় থাকার সময় মিনিটে সেট করুন"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "লোকালহোস্ট 8545"
   },
-  "login": {
-    "message": "লগইন করুন"
-  },
-  "logout": {
+  "lock": {
     "message": "লগ আউট করুন"
   },
   "mainnet": {
@@ -674,9 +671,6 @@
   },
   "metamaskDescription": {
     "message": "আপনার Ethereum এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask সীড শব্দসমূহ"
   },
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"

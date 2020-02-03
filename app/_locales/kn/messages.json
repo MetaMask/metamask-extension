@@ -109,10 +109,10 @@
   "attributions": {
     "message": "ಗುಣಲಕ್ಷಣಗಳು"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "ಸ್ವಯಂ-ಲಾಗ್ಔಟ್‌ ಟೈಮರ್ (ನಿಮಿಷಗಳು)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
   },
   "average": {
@@ -651,10 +651,7 @@
   "localhost": {
     "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545"
   },
-  "login": {
-    "message": "ಲಾಗ್ ಇನ್"
-  },
-  "logout": {
+  "lock": {
     "message": "ಲಾಗ್ ಔಟ್"
   },
   "mainnet": {
@@ -674,9 +671,6 @@
   },
   "metamaskDescription": {
     "message": "ನಿಮ್ಮನ್ನು ಎಥೆರಿಯಮ್ ಮತ್ತು ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask ಸೀಡ್ ಪದಗಳು"
   },
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"

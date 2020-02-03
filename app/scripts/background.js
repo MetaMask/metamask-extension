@@ -31,7 +31,6 @@ import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
 import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
-import setupMetamaskMeshMetrics from './lib/setupMetamaskMeshMetrics'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -67,11 +66,12 @@ const localStore = inTest
   : new LocalStore()
 let versionedData
 
+if (inTest || process.env.METAMASK_DEBUG) {
+  global.metamaskGetState = localStore.get.bind(localStore)
+}
+
 // initialization flow
 initialize().catch(log.error)
-
-// setup metamask mesh testing container
-const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -171,6 +171,7 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+  migrator.on('error', console.warn)
 
   // read from disk
   // first from preferred, async API:
@@ -253,13 +254,9 @@ function setupController (initState, initLangCode) {
   })
 
   setupEnsIpfsResolver({
+    getCurrentNetwork: controller.getCurrentNetwork,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
     provider: controller.provider,
-  })
-
-  // submit rpc requests to mesh-metrics
-  controller.networkController.on('rpc-req', (data) => {
-    submitMeshMetricsEntry({ type: 'rpc', data })
   })
 
   // report failed transactions to Sentry

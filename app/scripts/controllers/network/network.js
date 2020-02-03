@@ -11,7 +11,6 @@ import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
 import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
-import extend from 'extend'
 
 const networks = { networkList: {} }
 
@@ -189,7 +188,6 @@ export default class NetworkController extends EventEmitter {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({
       network: type,
-      onRequest: (req) => this.emit('rpc-req', { network: type, req }),
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig
@@ -219,7 +217,7 @@ export default class NetworkController extends EventEmitter {
     let settings = {
       network: chainId,
     }
-    settings = extend(settings, networks.networkList['rpc'])
+    settings = Object.assign(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }

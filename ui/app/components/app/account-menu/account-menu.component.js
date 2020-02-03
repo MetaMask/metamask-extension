@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
@@ -193,6 +193,12 @@ export default class AccountMenu extends Component {
 
   renderRemoveAccount (keyring, identity) {
     const { t } = this.context
+
+    // Sometimes keyrings aren't loaded yet
+    if (!keyring) {
+      return null
+    }
+
     // Any account that's not from the HD wallet Keyring can be removed
     const { type } = keyring
     const isRemovable = type !== 'HD Key Tree' && type !== 'TrustVault'
@@ -318,13 +324,13 @@ export default class AccountMenu extends Component {
         <Item className="account-menu__header">
           { t('myAccounts') }
           <button
-            className="account-menu__logout-button"
+            className="account-menu__lock-button"
             onClick={() => {
               lockMetamask()
               history.push(DEFAULT_ROUTE)
             }}
           >
-            { t('logout') }
+            { t('lock') }
           </button>
         </Item>
         <Divider />
@@ -392,7 +398,7 @@ export default class AccountMenu extends Component {
                 name: 'Clicked Connect Hardware',
               },
             })
-            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+            if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
               global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
             } else {
               history.push(CONNECT_HARDWARE_ROUTE)
