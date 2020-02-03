@@ -1,18 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import PopOverheader from './popover.header.component'
 
 const PopOver = ({ title, children, onClose }) => (
   <div className="popover-wrap">
     <div className="popover-content">
-      <div className="popover-header">
-        <h2 className="popover-header__heading">{title}</h2>
-        <a href="#" className="popover-header__close" onClick={onClose}>
-          <div className="popover-header__close--wrap">
-            <div className="popover-header__close--line-a"></div>
-            <div className="popover-header__close--line-b"></div>
-          </div>
-        </a>
-      </div>
+      <PopOverheader title={title} onClose={onClose} />
       {children}
     </div>
     <a href="#" className="popover-bg" onClick={onClose} />

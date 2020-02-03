@@ -22,7 +22,6 @@
     align-self: flex-start;
   }
 
-  // these will need to be broken out into other components
   &__more {
     &--button {
       border: 1px solid $Grey-500;
@@ -48,7 +47,6 @@
     line-height: 160%;
     position: relative;
 
-    // again these styles should be part of a seperate prelaoder stylesheet
     &--wrap {
       display: inline-block;
       position: absolute;
