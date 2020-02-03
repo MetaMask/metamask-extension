@@ -2,6 +2,7 @@
 
 const path = require('path')
 const { promises: fs, constants: fsConstants } = require('fs')
+const ttest = require('ttest')
 const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('./helpers')
 const { PAGES } = require('./webdriver/driver')
@@ -23,7 +24,7 @@ async function measurePage (pageName) {
 }
 
 function calculateResult (calc) {
-  return (result) => {
+  return result => {
     const calculatedResult = {}
     for (const key of Object.keys(result)) {
       calculatedResult[key] = calc(result[key])
@@ -31,16 +32,22 @@ function calculateResult (calc) {
     return calculatedResult
   }
 }
-const calculateSum = (array) => array.reduce((sum, val) => sum + val)
-const calculateAverage = (array) => calculateSum(array) / array.length
-const minResult = calculateResult((array) => Math.min(...array))
-const maxResult = calculateResult((array) => Math.max(...array))
+const calculateSum = array => array.reduce((sum, val) => sum + val)
+const calculateAverage = array => calculateSum(array) / array.length
+const minResult = calculateResult(array => Math.min(...array))
+const maxResult = calculateResult(array => Math.max(...array))
 const averageResult = calculateResult(array => calculateAverage(array))
-const standardDeviationResult = calculateResult((array) => {
+const standardDeviationResult = calculateResult(array => {
   const average = calculateAverage(array)
   const squareDiffs = array.map(value => Math.pow(value - average, 2))
   return Math.sqrt(calculateAverage(squareDiffs))
 })
+// 95% margin of error calculated using Student's t-distrbution
+const calculateMarginOfError = array =>
+  ttest(array).confidence()[1] - calculateAverage(array)
+const marginOfErrorResult = calculateResult(array =>
+  calculateMarginOfError(array)
+)
 
 async function profilePageLoad (pages, numSamples) {
   const results = {}
@@ -52,15 +59,28 @@ async function profilePageLoad (pages, numSamples) {
 
     if (runResults.some(result => result.navigation.lenth > 1)) {
       throw new Error(`Multiple navigations not supported`)
-    } else if (runResults.some(result => result.navigation[0].type !== 'navigate')) {
-      throw new Error(`Navigation type ${runResults.find(result => result.navigation[0].type !== 'navigate').navigation[0].type} not supported`)
+    } else if (
+      runResults.some(result => result.navigation[0].type !== 'navigate')
+    ) {
+      throw new Error(
+        `Navigation type ${
+          runResults.find(result => result.navigation[0].type !== 'navigate')
+            .navigation[0].type
+        } not supported`
+      )
     }
 
     const result = {
       firstPaint: runResults.map(result => result.paint['first-paint']),
-      domContentLoaded: runResults.map(result => result.navigation[0] && result.navigation[0].domContentLoaded),
-      load: runResults.map(result => result.navigation[0] && result.navigation[0].load),
-      domInteractive: runResults.map(result => result.navigation[0] && result.navigation[0].domInteractive),
+      domContentLoaded: runResults.map(
+        result => result.navigation[0] && result.navigation[0].domContentLoaded
+      ),
+      load: runResults.map(
+        result => result.navigation[0] && result.navigation[0].load
+      ),
+      domInteractive: runResults.map(
+        result => result.navigation[0] && result.navigation[0].domInteractive
+      ),
     }
 
     results[pageName] = {
@@ -68,6 +88,7 @@ async function profilePageLoad (pages, numSamples) {
       max: maxResult(result),
       average: averageResult(result),
       standardDeviation: standardDeviationResult(result),
+      marginOfError: marginOfErrorResult(result),
     }
   }
   return results
@@ -137,8 +158,10 @@ async function main () {
       }
       outputPath = path.resolve(args[1])
       outputDirectory = path.dirname(outputPath)
-      existingParentDirectory = await getFirstParentDirectoryThatExists(outputDirectory)
-      if (!await isWritable(existingParentDirectory)) {
+      existingParentDirectory = await getFirstParentDirectoryThatExists(
+        outputDirectory
+      )
+      if (!(await isWritable(existingParentDirectory))) {
         throw new Error(`Specified directory is not writable: '${args[1]}'`)
       }
       args.splice(0, 2)
@@ -159,8 +182,7 @@ async function main () {
   }
 }
 
-main()
-  .catch(e => {
-    console.error(e)
-    process.exit(1)
-  })
+main().catch(e => {
+  console.error(e)
+  process.exit(1)
+})
