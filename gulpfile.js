@@ -1,10 +1,11 @@
+const fs = require('fs')
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
-const gutil = require('gulp-util')
+const log = require('fancy-log')
 const watch = require('gulp-watch')
 const sourcemaps = require('gulp-sourcemaps')
 const jsoneditor = require('gulp-json-editor')
@@ -23,11 +24,12 @@ const rename = require('gulp-rename')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
-const mkdirp = require('mkdirp')
 const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 
 const packageJSON = require('./package.json')
+
+sass.compiler = require('node-sass')
 
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
@@ -571,9 +573,27 @@ function generateBundler (opts, performBundle) {
     bundler = bundler.external(opts.externalDependencies)
   }
 
+  let environment
+  if (opts.devMode) {
+    environment = 'development'
+  } else if (opts.testing) {
+    environment = 'testing'
+  } else if (process.env.CIRCLE_BRANCH === 'master') {
+    environment = 'production'
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+    environment = 'release-candidate'
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    environment = 'staging'
+  } else if (process.env.CIRCLE_PULL_REQUEST) {
+    environment = 'pull-request'
+  } else {
+    environment = 'other'
+  }
+
   // Inject variables into bundle
   bundler.transform(envify({
     METAMASK_DEBUG: opts.devMode,
+    METAMASK_ENVIRONMENT: environment,
     NODE_ENV: opts.devMode ? 'development' : 'production',
     IN_TEST: opts.testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
@@ -606,7 +626,7 @@ function bundleTask (opts) {
     if (!bundler) {
       bundler = generateBundler(opts, performBundle)
       // output build logs to terminal
-      bundler.on('log', gutil.log)
+      bundler.on('log', log)
     }
 
     let buildStream = bundler.bundle()
@@ -679,7 +699,7 @@ function configureBundleForSesify ({
   browserifyOpts.fullPaths = true
 
   // record dependencies used in bundle
-  mkdirp.sync('./sesify')
+  fs.mkdirSync('./sesify', { recursive: true })
   browserifyOpts.plugin.push(['deps-dump', {
     filename: `./sesify/deps-${bundleName}.json`,
   }])

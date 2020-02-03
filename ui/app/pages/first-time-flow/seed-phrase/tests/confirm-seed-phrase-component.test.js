@@ -23,7 +23,7 @@ describe('ConfirmSeedPhrase Component', () => {
     })
 
     assert.equal(
-      root.find('.confirm-seed-phrase__seed-word--shuffled').length,
+      root.find('.confirm-seed-phrase__seed-word--sorted').length,
       12,
       'should render 12 seed phrases'
     )
@@ -42,7 +42,7 @@ describe('ConfirmSeedPhrase Component', () => {
       }
     )
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--shuffled')
+    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click')
@@ -59,7 +59,7 @@ describe('ConfirmSeedPhrase Component', () => {
     root.state()
     root.update()
     root.state()
-    root.find('.confirm-seed-phrase__seed-word--shuffled').at(1).simulate('click')
+    root.find('.confirm-seed-phrase__seed-word--sorted').at(1).simulate('click')
     assert.deepEqual(
       root.state().selectedSeedIndices,
       [0, 2],
@@ -80,7 +80,7 @@ describe('ConfirmSeedPhrase Component', () => {
       }
     )
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--shuffled')
+    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click')
@@ -113,7 +113,7 @@ describe('ConfirmSeedPhrase Component', () => {
       }
     )
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--shuffled')
+    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click')
@@ -148,12 +148,12 @@ describe('ConfirmSeedPhrase Component', () => {
       }
     )
 
-    const shuffled = root.state().shuffledSeedWords
-    const seeds = root.find('.confirm-seed-phrase__seed-word--shuffled')
+    const sorted = root.state().sortedSeedWords
+    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
 
     originalSeed.forEach(seed => {
-      const seedIndex = shuffled.findIndex(s => s === seed)
+      const seedIndex = sorted.findIndex(s => s === seed)
       seeds.at(seedIndex).simulate('click')
     })
 
