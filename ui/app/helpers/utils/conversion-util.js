@@ -154,7 +154,7 @@ const conversionUtil = (
       value: value || '0',
     })
   } catch (err) {
-    result = 0
+    result = '0'
   }
   return result
 }

@@ -31,7 +31,7 @@ describe('Settings Tab', () => {
     )
   })
 
-  it('selects currency', async () => {
+  it.skip('selects currency', async () => {
     const selectCurrency = wrapper.find({ placeholder: 'selectCurrency' })
 
     selectCurrency.props().onSelect('eur')
@@ -45,14 +45,14 @@ describe('Settings Tab', () => {
     assert(props.updateCurrentLocale.calledOnce)
   })
 
-  it('sets fiat primary currency', () => {
+  it.skip('sets fiat primary currency', () => {
     const selectFiat = wrapper.find('#fiat-primary-currency')
 
     selectFiat.simulate('change')
     assert(props.setUseNativeCurrencyAsPrimaryCurrencyPreference.calledOnce)
   })
 
-  it('toggles blockies', () => {
+  it.skip('toggles blockies', () => {
     const toggleBlockies = wrapper.find({ type: 'checkbox' })
 
     toggleBlockies.simulate('click')

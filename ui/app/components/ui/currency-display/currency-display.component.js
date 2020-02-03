@@ -33,11 +33,7 @@ export default class CurrencyDisplay extends PureComponent {
     const text = `${prefix || ''}${displayValue}`
     const title = suffix ? `${text} ${suffix}` : text
 
-    let currencyDisplayClass
-
-    if (!suffix) {
-      currencyDisplayClass = 'currency-display-component'
-    }
+    let currencyDisplayClass = 'currency-display-component'
 
     if (isNaN(parseInt(title[0]))) {
       currencyDisplayClass =
