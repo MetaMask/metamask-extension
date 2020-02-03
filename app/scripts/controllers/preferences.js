@@ -64,7 +64,8 @@ class PreferencesController {
 
         lastSelectedAddressByOrigin: {},
       },
-      opts.initState)
+      opts.initState
+    )
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
@@ -385,7 +386,6 @@ class PreferencesController {
    * @param {string} address - The new selected address.
    */
   setLastSelectedAddress (origin, address) {
-
     const { lastSelectedAddressByOrigin } = this.store.getState()
 
     // only update state if it's necessary
@@ -401,7 +401,6 @@ class PreferencesController {
    * @param {Array<string>} origins - The origin to remove the last selected address for.
    */
   removeLastSelectedAddressesFor (origins) {
-
     if (
       !Array.isArray(origins) ||
       (origins.length > 0 && typeof origins[0] !== 'string')

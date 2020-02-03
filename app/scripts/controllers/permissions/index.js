@@ -22,12 +22,10 @@ import {
 
 export class PermissionsController {
   constructor (
-    {
-      platform, notifyDomain, notifyAllDomains, getKeyringAccounts,
-    } = {},
+    { platform, notifyDomain, notifyAllDomains, getKeyringAccounts } = {},
     restoredPermissions = {},
-    restoredState = {}) {
-
+    restoredState = {}
+  ) {
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
@@ -60,18 +58,22 @@ export class PermissionsController {
 
     engine.push(this.permissionsLogController.createMiddleware())
 
-    engine.push(createMethodMiddleware({
-      store: this.store,
-      storeKey: METADATA_STORE_KEY,
-      getAccounts: this.getAccounts.bind(this, origin),
-      requestAccountsPermission: this._requestPermissions.bind(
-        this, origin, { eth_accounts: {} }
-      ),
-    }))
+    engine.push(
+      createMethodMiddleware({
+        store: this.store,
+        storeKey: METADATA_STORE_KEY,
+        getAccounts: this.getAccounts.bind(this, origin),
+        requestAccountsPermission: this._requestPermissions.bind(this, origin, {
+          eth_accounts: {},
+        }),
+      })
+    )
 
-    engine.push(this.permissions.providerMiddlewareFunction.bind(
-      this.permissions, { origin }
-    ))
+    engine.push(
+      this.permissions.providerMiddlewareFunction.bind(this.permissions, {
+        origin,
+      })
+    )
     return asMiddleware(engine)
   }
 
@@ -234,7 +236,6 @@ export class PermissionsController {
    * @param {string[]} accounts - The new account(s) to expose.
    */
   async updatePermittedAccounts (origin, accounts) {
-
     await this.validatePermittedAccounts(accounts)
 
     this.permissions.updateCaveatFor(
@@ -261,7 +262,6 @@ export class PermissionsController {
     const { eth_accounts: ethAccounts } = requestedPermissions
 
     if (ethAccounts) {
-
       await this.validatePermittedAccounts(accounts)
 
       if (!ethAccounts.caveats) {
@@ -288,7 +288,6 @@ export class PermissionsController {
    * @param {string[]} accounts - An array of addresses.
    */
   async validatePermittedAccounts (accounts) {
-
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
@@ -303,7 +302,6 @@ export class PermissionsController {
   }
 
   notifyDomain (origin, payload) {
-
     // if the accounts changed from the perspective of the dapp,
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
@@ -312,7 +310,8 @@ export class PermissionsController {
       Array.isArray(payload.result)
     ) {
       this.permissionsLogController.updateAccountsHistory(
-        origin, payload.result
+        origin,
+        payload.result
       )
     }
 
@@ -335,10 +334,10 @@ export class PermissionsController {
         origin,
         perms.map(methodName => {
           if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
-            )
+            this.notifyDomain(origin, {
+              method: NOTIFICATION_NAMES.accountsChanged,
+              result: [],
+            })
           }
 
           return { parentCapability: methodName }
@@ -354,13 +353,13 @@ export class PermissionsController {
    * @param {string} account - The newly selected account's address.
    */
   async handleNewAccountSelected (origin, account) {
-
     const permittedAccounts = await this.getAccounts(origin)
 
     // do nothing if the account is not permitted for the origin, or
     // if it's already first in the array of permitted accounts
     if (
-      !account || !permittedAccounts.includes(account) ||
+      !account ||
+      !permittedAccounts.includes(account) ||
       permittedAccounts[0] === account
     ) {
       return
@@ -398,33 +397,36 @@ export class PermissionsController {
 
     this.pendingApprovals = {}
 
-    this.permissions = new RpcCap({
+    this.permissions = new RpcCap(
+      {
+        // Supports passthrough methods:
+        safeMethods: SAFE_METHODS,
 
-      // Supports passthrough methods:
-      safeMethods: SAFE_METHODS,
+        // optional prefix for internal methods
+        methodPrefix: WALLET_PREFIX,
 
-      // optional prefix for internal methods
-      methodPrefix: WALLET_PREFIX,
+        restrictedMethods: this._restrictedMethods,
 
-      restrictedMethods: this._restrictedMethods,
+        /**
+         * A promise-returning callback used to determine whether to approve
+         * permissions requests or not.
+         *
+         * Currently only returns a boolean, but eventually should return any
+         * specific parameters or amendments to the permissions.
+         *
+         * @param {string} req - The internal rpc-cap user request object.
+         */
+        requestUserApproval: async req => {
+          const {
+            metadata: { id },
+          } = req
 
-      /**
-       * A promise-returning callback used to determine whether to approve
-       * permissions requests or not.
-       *
-       * Currently only returns a boolean, but eventually should return any
-       * specific parameters or amendments to the permissions.
-       *
-       * @param {string} req - The internal rpc-cap user request object.
-       */
-      requestUserApproval: async (req) => {
-        const { metadata: { id } } = req
+          this._platform.openExtensionInBrowser(`connect/${id}`)
 
-        this._platform.openExtensionInBrowser(`connect/${id}`)
-
-        return new Promise((resolve, reject) => {
-          this.pendingApprovals[id] = { resolve, reject }
-        })
+          return new Promise((resolve, reject) => {
+            this.pendingApprovals[id] = { resolve, reject }
+          })
+        },
       },
       initState
     )
