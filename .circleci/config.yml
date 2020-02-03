@@ -69,7 +69,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            - benchmark
+            # - benchmark
             - all-tests-pass
       - job-publish-release:
           filters:
