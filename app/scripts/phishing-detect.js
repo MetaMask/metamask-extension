@@ -14,7 +14,7 @@ function start () {
   const hash = window.location.hash.substring(1)
   const suspect = querystring.parse(hash)
 
-  document.getElementById('esdbLink').href = `https://etherscamdb.info/domain/${suspect.hostname}`
+  document.getElementById('csdbLink').href = `https://cryptoscamdb.org/search`
 
   global.platform = new ExtensionPlatform()
   global.METAMASK_UI_TYPE = windowType
