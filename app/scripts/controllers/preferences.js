@@ -61,16 +61,10 @@ class PreferencesController {
 
         // ENS decentralized website resolution
         ipfsGateway: 'ipfs.dweb.link',
+
+        lastSelectedAddressByOrigin: {},
       },
-      completedOnboarding: false,
-      metaMetricsId: null,
-      metaMetricsSendCount: 0,
-
-      // ENS decentralized website resolution
-      ipfsGateway: 'ipfs.dweb.link',
-
-      lastSelectedAddressByOrigin: {},
-    }, opts.initState)
+      opts.initState)
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
