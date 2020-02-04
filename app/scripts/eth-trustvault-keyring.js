@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js'
 
 const hdPathString = `m/44'/60'/0'/0`
 const type = 'TrustVault'
-const trustVaultBridgeUrl = 'https://t1tl7x0ii7.execute-api.eu-west-1.amazonaws.com/production/graphql'
-const apiKey = 'da2-ekziyghfhzda7hsapyziwdurwm'
+const trustVaultBridgeUrl = 'https://qhl97vebxf.execute-api.eu-west-1.amazonaws.com/production/graphql'
+const apiKey = 'da2-jvl74etiirgedodmnt6gizwwta'
 const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000
 const UNSUPPORTED_SIGNING_METHOD = 'You are currently using a TrustVault account.\n\nTrustVault does currently not support this transaction type,\nplease choose another account to proceed.'
 
