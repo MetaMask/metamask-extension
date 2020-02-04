@@ -1374,7 +1374,9 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupControllerConnection (outStream) {
     const api = this.getApi()
-    const dnode = Dnode(api)
+    const dnode = Dnode(api, {
+      weak: false,
+    })
     // report new active controller connection
     this.activeControllerConnections++
     this.emit('controllerConnectionChanged', this.activeControllerConnections)
