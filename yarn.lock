@@ -10918,20 +10918,6 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.4.0.tgz#288e73041f2b3f047b4151fb4b5ab5ad5710b9a6"
-  integrity sha512-MMKSSwDWuEfItEM/826LHrs2HVjy57qQQfcgSxIYOCJY0vykw++LH8d6QJOBrGFe+xu/gtbHBRMURrFGdqfevw==
-  dependencies:
-    bip39 "^2.2.0"
-    eth-sig-util "^2.4.4"
-    eth-simple-keyring "^3.4.0"
-    ethereumjs-abi "^0.6.5"
-    ethereumjs-util "^5.1.1"
-    ethereumjs-wallet "^0.6.0"
-    events "^1.1.1"
-    xtend "^4.0.1"
-
 eth-hd-keyring@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.5.0.tgz#3976d83a27b24305481c389178f290d9264e839d"
@@ -11162,18 +11148,6 @@ eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
     ethereumjs-util "^5.1.1"
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
-
-eth-simple-keyring@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.4.0.tgz#01464234b070af42a343a3c451dd58b00ae1a042"
-  integrity sha512-g/ObWqWaTHikrhhm7fNinpkkpEPqBRz02oBXcH81mc3VFkOLb3pjfvNg1Da6Jh+A4wA0kBE4vkiiG7BUwF1zNg==
-  dependencies:
-    eth-sig-util "^2.5.0"
-    ethereumjs-abi "^0.6.5"
-    ethereumjs-util "^5.1.1"
-    ethereumjs-wallet "^0.6.0"
-    events "^1.1.1"
-    xtend "^4.0.1"
 
 eth-simple-keyring@^3.5.0:
   version "3.5.0"
