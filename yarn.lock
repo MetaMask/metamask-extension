@@ -10043,8 +10043,10 @@ eth-contract-metadata@^1.11.0:
   resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.11.0.tgz#4d23a8208d5d53be9d4c0696ed8492b505c6bca1"
   integrity sha512-Bbvio71M+lH+qXd8XXddpTc8hhjL9m4fNPOxmZFIX8z0/VooUdwV8YmmDAbkU5WVioZi+Jp1XaoO7VwzXnDboA==
 
-"eth-cws-keyring@file:../../coolwalletS/eth-cws-keyring":
-  version "1.0.1"
+eth-cws-keyring@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/eth-cws-keyring/-/eth-cws-keyring-1.1.1.tgz#a85264b66094d7f846d8760037dd21636742ff60"
+  integrity sha512-LttOQxZvlXvvX6cjWy6yLskULrQtuZo7ekpfo/2A6ejr/hPAHNHnRXrFPE38fJwtG67uVzz7Z7yMO1pGCa19RA==
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
