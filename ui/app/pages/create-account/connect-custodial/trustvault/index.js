@@ -3,7 +3,6 @@ import { Switch, Route } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getTrustVaultPinChallenge } from '../../../../store/actions'
-import { getCurrentViewContext } from '../../../../selectors/selectors'
 import ConnectTrustVaultEmailForm from './email'
 import ConnectTrustVaultPinForm from './pin'
 
@@ -114,7 +113,7 @@ class ConnectTrustVaultForm extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  displayedForm: getCurrentViewContext(state),
+  displayedForm: state.appState.currentView.context,
 })
 
 const mapDispatchToProps = dispatch => ({
