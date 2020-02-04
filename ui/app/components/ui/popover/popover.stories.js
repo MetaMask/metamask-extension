@@ -8,6 +8,15 @@ import { text } from '@storybook/addon-knobs/react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 // import 'react-tabs/style/react-tabs.css'
 
+const activities = [
+  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
+  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
+  'Transaction confirmed at 09:45 on 8/8/2019.',
+  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
+  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
+  'Transaction confirmed at 09:45 on 8/8/2019.',
+]
+
 const containerStyle = {
   width: 800,
   height: 600,
@@ -89,7 +98,7 @@ storiesOf('PopOver', module)
             </div>
           </div>
           <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
-          <TransactionActivity />
+          <TransactionActivity activities={activities} />
         </div>
       </PopOver>
     </div>

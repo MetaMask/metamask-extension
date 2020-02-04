@@ -1,16 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const activities = [
-  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
-  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
-  'Transaction confirmed at 09:45 on 8/8/2019.',
-  'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
-  'Transaction submitted with gas fee of 0 WEI at 09:47 on 8/8/2019.',
-  'Transaction confirmed at 09:45 on 8/8/2019.',
-]
-
-const TransactionActivity = () => (
+const TransactionActivity = ({ activities }) => (
   <div className="transaction-activity">
     <div className="transaction-activity__header">
       <a className="transaction-activity__etherscan" href="#" onClick={e => e.preventDefault()}>
@@ -35,5 +26,9 @@ const TransactionActivity = () => (
     </ul>
   </div>
 )
+
+TransactionActivity.propTypes = {
+  activities: PropTypes.array
+}
 
 export default TransactionActivity
