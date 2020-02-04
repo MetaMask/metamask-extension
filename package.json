@@ -221,7 +221,7 @@
     "css-loader": "^2.1.1",
     "del": "^3.0.0",
     "deps-dump": "^1.1.0",
-    "envify": "^4.0.0",
+    "envify": "^4.1.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.0.1",
