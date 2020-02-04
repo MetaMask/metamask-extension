@@ -127,6 +127,8 @@ initialize().catch(log.error)
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
+ * @property {Object} EncryptionPublicKeyMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {Object} unapprovedDecryptMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
  * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.

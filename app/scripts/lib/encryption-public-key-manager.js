@@ -26,7 +26,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
    * @typedef {Object} EncryptionPublicKeyManager
-   * @param {Object} opts @deprecated
    * @property {Object} memStore The observable store where EncryptionPublicKey are saved with persistance.
    * @property {Object} memStore.unapprovedEncryptionPublicKeyMsgs A collection of all EncryptionPublicKeys in the 'unapproved' state
    * @property {number} memStore.unapprovedEncryptionPublicKeyMsgCount The count of all EncryptionPublicKeys in this.memStore.unapprobedMsgs
@@ -73,7 +72,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    *
    * @param {Object} address The param for the encryption_public_key call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} When the message has been approved or rejected
+   * @returns {Promise<Buffer>} The raw public key contents
    *
    */
   addUnapprovedMessageAsync (address, req) {

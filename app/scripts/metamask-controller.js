@@ -1191,7 +1191,7 @@ export default class MetamaskController extends EventEmitter {
   * Called when a dapp uses the eth_decryptMessage method.
   *
   * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-  * @param {Function} cb - The callback function called with the signature.
+  * @param {Object} req - (optional) the original request, containing the origin
   * Passed back to the requesting Dapp.
   */
   async newRequestDecryptMessage (msgParams, req) {
@@ -1204,7 +1204,7 @@ export default class MetamaskController extends EventEmitter {
   /**
   * Only decypt message and don't touch transaction state
   *
-  * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
+  * @param {Object} msgParams - The params of the message to decrypt.
   * @returns {Promise<Object>} - A full state update.
   */
   decryptMessageInline (msgParams) {
@@ -1229,26 +1229,23 @@ export default class MetamaskController extends EventEmitter {
   * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
   * @returns {Promise<Object>} - A full state update.
   */
-  decryptMessage (msgParams) {
+  async decryptMessage (msgParams) {
     log.info('MetaMaskController - decryptMessage')
     const msgId = msgParams.metamaskId
     // sets the status op the message to 'approved'
     // and removes the metamaskId for decryption
     try {
-      return this.decryptMessageManager.approveMessage(msgParams)
-        .then((cleanMsgParams) => {
-          const stripped = ethUtil.stripHexPrefix(cleanMsgParams.data)
-          const buff = Buffer.from(stripped, 'hex')
-          cleanMsgParams.data = JSON.parse(buff.toString('utf8'))
-          // decrypt the message
-          return this.keyringController.decryptMessage(cleanMsgParams)
-        })
-        .then((rawMess) => {
-        // tells the listener that the message has been decrypted
-        // and can be returned to the dapp
-          this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess)
-          return this.getState()
-        })
+      const cleanMsgParams = await this.decryptMessageManager.approveMessage(msgParams)
+
+      const stripped = ethUtil.stripHexPrefix(cleanMsgParams.data)
+      const buff = Buffer.from(stripped, 'hex')
+      cleanMsgParams.data = JSON.parse(buff.toString('utf8'))
+
+      // decrypt the message
+      const rawMess = await this.keyringController.decryptMessage(cleanMsgParams)
+      // tells the listener that the message has been decrypted and can be returned to the dapp
+      this.decryptMessageManager.setMsgStatusDecrypted(msgId, rawMess)
+      return this.getState()
     } catch (error) {
       log.info('MetaMaskController - eth_decryptMessage failed.', error)
       this.decryptMessageManager.errorMessage(msgId, error)
@@ -1274,7 +1271,7 @@ export default class MetamaskController extends EventEmitter {
   * Called when a dapp uses the encryption_public_key method.
   *
   * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-  * @param {Function} cb - The callback function called with the signature.
+  * @param {Object} req - (optional) the original request, containing the origin
   * Passed back to the requesting Dapp.
   */
   async newRequestEncryptionPublicKey (msgParams, req) {
@@ -1291,23 +1288,21 @@ export default class MetamaskController extends EventEmitter {
   * @param {Object} msgParams - The params of the message to receive & return to the Dapp.
   * @returns {Promise<Object>} - A full state update.
   */
-  encryptionPublicKey (msgParams) {
+  async encryptionPublicKey (msgParams) {
     log.info('MetaMaskController - encryptionPublicKey')
     const msgId = msgParams.metamaskId
     // sets the status op the message to 'approved'
     // and removes the metamaskId for decryption
     try {
-      return this.encryptionPublicKeyManager.approveMessage(msgParams)
-        .then((params) => {
-          // EncryptionPublicKey message
-          return this.keyringController.getEncryptionPublicKey(params.data)
-        })
-        .then((publicKey) => {
-          // tells the listener that the message has been processed
-          // and can be returned to the dapp
-          this.encryptionPublicKeyManager.setMsgStatusReceived(msgId, publicKey)
-          return this.getState()
-        })
+      const params = await this.encryptionPublicKeyManager.approveMessage(msgParams)
+
+      // EncryptionPublicKey message
+      const publicKey = await this.keyringController.getEncryptionPublicKey(params.data)
+
+      // tells the listener that the message has been processed
+      // and can be returned to the dapp
+      this.encryptionPublicKeyManager.setMsgStatusReceived(msgId, publicKey)
+      return this.getState()
     } catch (error) {
       log.info('MetaMaskController - encryption_public_key failed.', error)
       this.encryptionPublicKeyManager.errorMessage(msgId, error)

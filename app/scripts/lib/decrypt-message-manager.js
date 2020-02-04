@@ -11,8 +11,6 @@ import log from 'loglevel'
  * Represents, and contains data about, an 'eth_decryptMessage' type decryption request. These are created when a
  * decryption for an eth_decryptMessage call is requested.
  *
- * @see {@link https://web3js.readthedocs.io/en/1.0/web3-eth-Decrypt.html#decrypt}
- *
  * @typedef {Object} DecryptMessage
  * @property {number} id An id to track and identify the message object
  * @property {Object} msgParams The parameters to pass to the decryptMessage method once the decryption request is
@@ -31,7 +29,6 @@ export default class DecryptMessageManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *
    * @typedef {Object} DecryptMessageManager
-   * @param {Object} opts @deprecated
    * @property {Object} memStore The observable store where DecryptMessage are saved with persistance.
    * @property {Object} memStore.unapprovedDecryptMsgs A collection of all DecryptMessages in the 'unapproved' state
    * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprobedMsgs
@@ -78,7 +75,7 @@ export default class DecryptMessageManager extends EventEmitter {
    *
    * @param {Object} msgParams The params for the eth_decryptMessage call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} When the message has been approved or rejected
+   * @returns {Promise<Buffer>} The raw decrypted message contents
    *
    */
   addUnapprovedMessageAsync (msgParams, req) {
