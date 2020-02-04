@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#313](https://github.com/poanetwork/nifty-wallet/pull/313) - Change Ethereum classic RPC endpoint
+
 ## 4.11.9 Thu Aug 22 2019
 
 - [#303](https://github.com/poanetwork/nifty-wallet/pull/303): (Feature) Add Pocket Network
