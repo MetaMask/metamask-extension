@@ -91,33 +91,33 @@ storiesOf('PopOver', module)
   .add('PopOver - Approve', () => (
     <div style={containerStyle}>
       <PopOver title={text('title', 'Approve spend limit')} onClose={close}>
-        <div className="container">
+        <div className="popover-container">
           <div className="popover-item">
-            <div className="col">
+            <div className="popover-item__col">
               <h3>STATUS</h3>
               <h4 className="confirmed">Confirmed</h4>
             </div>
-            <div className="col">
+            <div className="popover-item__col">
               <h3>DATE</h3>
               <h4>Sept 20 at 9:08am</h4>
             </div>
           </div>
           <div className="popover-item">
-            <div className="col">
+            <div className="popover-item__col">
               <h3>from</h3>
               <h4>834759....872345</h4>
             </div>
-            <div className="col">
+            <div className="popover-item__col">
               <h3>to</h3>
               <h4>834759....872345</h4>
             </div>
           </div>
           <div className="popover-item">
-            <div className="col">
+            <div className="popover-item__col">
               <h3>nonce</h3>
               <h4>#5</h4>
             </div>
-            <div className="col">
+            <div className="popover-item__col">
               <h3>description</h3>
               <h4>0x may spend up to:<br /> 071,992.54744099 DAI</h4>
             </div>
@@ -138,7 +138,7 @@ storiesOf('PopOver', module)
           </TabList>
 
           <TabPanel>
-            <div className="container">
+            <div className="popover-container">
               <h3>Select a higher fee to accelerate your transaction.</h3>
               <Fees />
               <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
@@ -146,7 +146,7 @@ storiesOf('PopOver', module)
             </div>
           </TabPanel>
           <TabPanel>
-            <div className="container">
+            <div className="popover-container">
               <div className="advanced-input-controls">
                 <div className="col">
                   <div className="advanced-gas-inputs__gas-edit-row__label">Gas Price (GWEI)<i className="fa fa-info-circle"></i></div>
