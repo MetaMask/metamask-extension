@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.11.10 Tue Feb 04 2020
+
 - [#313](https://github.com/poanetwork/nifty-wallet/pull/313) - Change Ethereum classic RPC endpoint
 
 ## 4.11.9 Thu Aug 22 2019
