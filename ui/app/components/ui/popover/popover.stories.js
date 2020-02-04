@@ -16,7 +16,7 @@ const containerStyle = {
 
 const close = e => {
   e.preventDefault()
-  console.log("close window")
+  console.log('close window')
 }
 
 const activities = [
