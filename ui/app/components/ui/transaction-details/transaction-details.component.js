@@ -13,8 +13,8 @@ const TransactionDetails = ({
         Transaction Fee
       </div>
       <div className="col">
-        ${amount}<br />
-        ${fee}
+        {amount}<br />
+        {fee}
       </div>
     </div>
     <hr />
@@ -23,7 +23,7 @@ const TransactionDetails = ({
         <h3>Total amount</h3>
       </div>
       <div className="col">
-        <h3>${amount + fee}</h3>
+        <h3>{amount + fee}</h3>
         <p>{ethCost} ETH</p>
       </div>
     </div>

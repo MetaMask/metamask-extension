@@ -28,7 +28,7 @@ const TransactionActivity = ({ activities }) => (
 )
 
 TransactionActivity.propTypes = {
-  activities: PropTypes.array
+  activities: PropTypes.array,
 }
 
 export default TransactionActivity
