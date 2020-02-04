@@ -232,6 +232,10 @@ class ThreeBoxController {
     return this.store.getState().threeBoxSyncingAllowed
   }
 
+  getThreeBoxAddress () {
+    return this.store.getState().threeBoxAddress
+  }
+
   _registerUpdates () {
     if (!this.registeringUpdates) {
       const updatePreferences = this._update3Box.bind(this)

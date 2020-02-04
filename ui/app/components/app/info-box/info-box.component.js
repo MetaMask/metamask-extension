@@ -12,8 +12,12 @@ export default class InfoBox extends Component {
     description: PropTypes.string,
   }
 
-  state = {
-    isShowing: true,
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isShowing: true,
+    }
   }
 
   handleClose () {

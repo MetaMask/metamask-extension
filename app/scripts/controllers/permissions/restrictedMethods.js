@@ -15,7 +15,6 @@ module.exports = function getRestrictedMethods (permissionsController) {
           })
       },
     },
-
     'account_seed': {
       description: 'View the seed of the selected account',
       method: (_, res, __, end) => {

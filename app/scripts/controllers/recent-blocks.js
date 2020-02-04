@@ -71,6 +71,16 @@ class RecentBlocksController {
   }
 
   /**
+   * Sets store.recentBlocks to an empty array
+   *
+   */
+  resetState () {
+    this.store.updateState({
+      recentBlocks: [],
+    })
+  }
+
+  /**
    * Receives a new block and modifies it with this.mapTransactionsToPrices. Then adds that block to the recentBlocks
    * array in storage. If the recentBlocks array contains the maximum number of blocks, the oldest block is removed.
    *
@@ -79,7 +89,7 @@ class RecentBlocksController {
    */
   async processBlock (newBlockNumberHex) {
     const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
-    const newBlock = await this.getBlockByNumber(newBlockNumber)
+    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
     if (!newBlock) {
       return
     }
@@ -153,7 +163,7 @@ class RecentBlocksController {
       const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
           if (!newBlock) {
             return
           }

@@ -74,7 +74,7 @@ class PermissionsController {
       ),
       getSeed: this.requestSeed.bind(this, origin),
       requestSeedPermission: this._requestPermissions.bind(
-        this, origin, { eth_accounts: {}, account_seed: {} }
+        this, origin, { account_seed: {} }
       ),
     }))
 

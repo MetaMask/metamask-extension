@@ -543,7 +543,3 @@ export function getLastConnectedInfo (state) {
   }, {})
   return lastConnectedInfoData
 }
-
-export function getIpfsGateway (state) {
-  return state.metamask.ipfsGateway
-}

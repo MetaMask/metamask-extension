@@ -6,7 +6,7 @@ const supportedTopLevelDomains = ['eth']
 
 module.exports = setupEnsIpfsResolver
 
-function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
+function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
@@ -40,13 +40,12 @@ function setupEnsIpfsResolver ({ provider, getIpfsGateway }) {
   }
 
   async function attemptResolve ({ tabId, name, path, search, fragment }) {
-    const ipfsGateway = getIpfsGateway()
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
       if (type === 'ipfs-ns') {
-        const resolvedUrl = `https://${hash}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
+        const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })

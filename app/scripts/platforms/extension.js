@@ -66,6 +66,19 @@ class ExtensionPlatform {
     }
   }
 
+  queryTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({}, tabs => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tabs)
+        }
+      })
+    })
+  }
+
   currentTab () {
     return new Promise((resolve, reject) => {
       extension.tabs.getCurrent(tab => {

@@ -254,4 +254,9 @@ module.exports = class NetworkController extends EventEmitter {
     this._provider = provider
     this._blockTracker = blockTracker
   }
+
+  _logBlock (block) {
+    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    this.verifyNetwork()
+  }
 }

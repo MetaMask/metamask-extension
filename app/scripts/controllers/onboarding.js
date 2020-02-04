@@ -54,13 +54,17 @@ class OnboardingController {
     })
   }
 
+  getSeedPhraseBackedUp () {
+    return this.store.getState().seedPhraseBackedUp
+  }
+
   /**
    * Registering a site as having initiated onboarding
    *
    * @param {string} location - The location of the site registering
    * @param {string} tabId - The id of the tab registering
    */
-  registerOnboarding = async (location, tabId) => {
+  async registerOnboarding (location, tabId) {
     if (this.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return

@@ -60,9 +60,6 @@ class PreferencesController {
       completedOnboarding: false,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
-
-      // ENS decentralized website resolution
-      ipfsGateway: 'ipfs.dweb.link',
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -124,12 +121,20 @@ class PreferencesController {
     return metaMetricsId
   }
 
+  getMetaMetricsId () {
+    return this.store.getState().metaMetricsId
+  }
+
   getParticipateInMetaMetrics () {
     return this.store.getState().participateInMetaMetrics
   }
 
   setMetaMetricsSendCount (val) {
     this.store.updateState({ metaMetricsSendCount: val })
+  }
+
+  getMetaMetricsSendCount () {
+    return this.store.getState().metaMetricsSendCount
   }
 
   /**
@@ -203,6 +208,26 @@ class PreferencesController {
     } else {
       next()
     }
+  }
+
+  /**
+   * Getter for the `useBlockie` property
+   *
+   * @returns {boolean} this.store.useBlockie
+   *
+   */
+  getUseBlockie () {
+    return this.store.getState().useBlockie
+  }
+
+  /**
+   * Getter for the `getUseNonceField` property
+   *
+   * @returns {boolean} this.store.getUseNonceField
+   *
+   */
+  getUseNonceField () {
+    return this.store.getState().useNonceField
   }
 
   /**
@@ -577,6 +602,17 @@ class PreferencesController {
   }
 
   /**
+   * A getter for the `featureFlags` property
+   *
+   * @returns {object} A key-boolean map, where keys refer to features and booleans to whether the
+   * user wishes to see that feature
+   *
+   */
+  getFeatureFlags () {
+    return this.store.getState().featureFlags
+  }
+
+  /**
    * Updates the `preferences` property, which is an object. These are user-controlled features
    * found in the settings page.
    * @param {string} preference The preference to enable or disable.
@@ -609,24 +645,6 @@ class PreferencesController {
   completeOnboarding () {
     this.store.updateState({ completedOnboarding: true })
     return Promise.resolve(true)
-  }
-
-  /**
-   * A getter for the `ipfsGateway` property
-   * @returns {string} The current IPFS gateway domain
-   */
-  getIpfsGateway () {
-    return this.store.getState().ipfsGateway
-  }
-
-  /**
-   * A setter for the `ipfsGateway` property
-   * @param {string} domain The new IPFS gateway domain
-   * @returns {Promise<string>} A promise of the update IPFS gateway domain
-   */
-  setIpfsGateway (domain) {
-    this.store.updateState({ ipfsGateway: domain })
-    return Promise.resolve(domain)
   }
 
   //
@@ -671,7 +689,7 @@ class PreferencesController {
   /**
    * A getter for `tokens` and `accountTokens` related states.
    *
-   * @param {string} [selectedAddress] A new hex address for an account
+   * @param {string} selectedAddress A new hex address for an account
    * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
    *
    */

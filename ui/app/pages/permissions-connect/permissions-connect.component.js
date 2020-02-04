@@ -11,6 +11,7 @@ import {
 } from '../../../../app/scripts/lib/enums'
 import { DEFAULT_ROUTE, CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
+import ConfirmSeedPageContainer from '../../components/app/confirm-seed-page-container'
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -86,10 +87,21 @@ export default class PermissionConnect extends Component {
   }
 
   selectAccount = (address) => {
-    this.setState({
-      page: 2,
-      selectedAccountAddress: address,
-    })
+    const data = this.props.permissionsRequest.permissions
+    
+    if (data.hasOwnProperty('account_seed')) {
+      this.setState({
+        page: 3,
+        selectedAccountAddress: address,
+      })
+    }
+    else {
+      this.setState({
+        page: 2,
+        selectedAccountAddress: address,
+      })
+    }
+
   }
 
   redirectFlow (accepted) {
@@ -182,25 +194,45 @@ export default class PermissionConnect extends Component {
               permissionsRequestId={permissionsRequestId}
             />
           )
-          : (
-            <div>
-              <PermissionPageContainer
-                request={permissionsRequest || {}}
-                approvePermissionsRequest={(request, accounts) => {
-                  approvePermissionsRequest(request, accounts)
-                  this.redirectFlow(true)
-                }}
-                rejectPermissionsRequest={requestId => {
-                  rejectPermissionsRequest(requestId)
-                  this.redirectFlow(false)
-                }}
-                selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
-                redirect={page === null}
-                permissionRejected={ permissionAccepted === false }
-              />
-              <PermissionsConnectFooter />
-            </div>
-          )
+          : page === 2
+            ? (
+              <div>
+                <PermissionPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(request, accounts) => {
+                    approvePermissionsRequest(request, accounts)
+                    this.redirectFlow(true)
+                  }}
+                  rejectPermissionsRequest={requestId => {
+                    rejectPermissionsRequest(requestId)
+                    this.redirectFlow(false)
+                  }}
+                  selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
+                  redirect={page === null}
+                  permissionRejected={ permissionAccepted === false }
+                />
+                <PermissionsConnectFooter />
+              </div>
+            )
+            : (
+              <div>
+                <ConfirmSeedPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(request, accounts) => {
+                    approvePermissionsRequest(request, accounts)
+                    this.redirectFlow(true)
+                  }}
+                  rejectPermissionsRequest={requestId => {
+                    rejectPermissionsRequest(requestId)
+                    this.redirectFlow(false)
+                  }}
+                  selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
+                  redirect={page === null}
+                  permissionRejected={ permissionAccepted === false }
+                />
+                <PermissionsConnectFooter />
+              </div>
+            )
         }
       </div>
     )
