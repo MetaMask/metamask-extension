@@ -180,26 +180,6 @@ class ConfigScreen extends Component {
               },
             }),
 
-            h('p', {
-              style: {
-                fontFamily: 'Nunito Regular',
-                fontSize: '14px',
-                lineHeight: '18px',
-              },
-            }, [
-              'Switch to Decentralized Provider (Pocket)',
-            ]),
-
-            h('input', {
-              type: 'checkbox',
-              name: 'pocket-checkbox',
-              checked: this.state.dProvider,
-              onChange: (event) => {
-                event.preventDefault()
-                this.toggleProvider()
-              },
-            }),
-
             h('p.config-title', `Provider`),
 
             h('div', {

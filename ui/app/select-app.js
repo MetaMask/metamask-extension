@@ -3,7 +3,6 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const { HashRouter } = require('react-router-dom')
-const App = require('./app')
 const OldApp = require('../../old-ui/app/app')
 const { autoAddToBetaUI } = require('./selectors')
 const { setFeatureFlag } = require('./actions')
@@ -11,7 +10,6 @@ const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
   return {
-    betaUI: state.metamask.featureFlags.betaUI,
     autoAdd: autoAddToBetaUI(state),
     isUnlocked: state.metamask.isUnlocked,
     isMascara: state.metamask.isMascara,
@@ -60,17 +58,9 @@ SelectedApp.prototype.render = function () {
   // const { betaUI, isMascara, firstTime } = this.props
   // const Selected = betaUI || isMascara || firstTime ? App : OldApp
 
-  const { betaUI, isMascara } = this.props
-
-  return betaUI || isMascara
-  ? h(HashRouter, {
-      hashType: 'noslash',
-    }, [
-      h(I18nProvider, [ h(App) ]),
-    ])
-  : h(HashRouter, {
-      hashType: 'noslash',
-    }, [
-      h(I18nProvider, [ h(OldApp) ]),
-    ])
+  return h(HashRouter, {
+    hashType: 'noslash',
+  }, [
+    h(I18nProvider, [ h(OldApp) ]),
+  ])
 }

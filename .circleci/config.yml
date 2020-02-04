@@ -11,9 +11,9 @@ workflows:
     - prep-docs:
         requires:
         - prep-deps-npm
-    - prep-scss:
-        requires:
-        - prep-deps-npm
+    # - prep-scss:
+    #     requires:
+    #     - prep-deps-npm
     - test-lint:
         requires:
         - prep-deps-npm
@@ -42,11 +42,11 @@ workflows:
     - test-integration-flat-chrome:
         requires:
         - prep-deps-npm
-        - prep-scss
+        # - prep-scss
     - test-integration-flat-firefox:
         requires:
         - prep-deps-npm
-        - prep-scss
+        # - prep-scss
     - all-tests-pass:
         requires:
         - test-lint
@@ -370,12 +370,6 @@ jobs:
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - run:
-        name: Get Scss Cache key
-        # this allows us to checksum against a whole directory
-        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-    - restore_cache:
-        key: scss-cache-{{ checksum "scss_checksum" }}
-    - run:
         name: test:integration:flat
         command: npm run test:flat
 
@@ -388,12 +382,6 @@ jobs:
     - checkout
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
-    - run:
-        name: Get Scss Cache key
-        # this allows us to checksum against a whole directory
-        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-    - restore_cache:
-        key: scss-cache-{{ checksum "scss_checksum" }}
     - run:
         name: test:integration:flat
         command: npm run test:flat
@@ -413,12 +401,6 @@ jobs:
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - run:
-        name: Get Scss Cache key
-        # this allows us to checksum against a whole directory
-        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-    - restore_cache:
-        key: scss-cache-{{ checksum "scss_checksum" }}
-    - run:
         name: test:integration:mascara
         command: npm run test:mascara
 
@@ -431,12 +413,6 @@ jobs:
     - checkout
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
-    - run:
-        name: Get Scss Cache key
-        # this allows us to checksum against a whole directory
-        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-    - restore_cache:
-        key: scss-cache-{{ checksum "scss_checksum" }}
     - run:
         name: test:integration:mascara
         command: npm run test:mascara
