@@ -1,51 +1,54 @@
-.activity {
-  .header {
+.transaction-activity {
+  &__header {
     margin: 16px 0;
-    h3 {
-      font-weight: bold;
-      font-size: 14px;
-      line-height: 20px;
-    }
-    .etherscan {
-      float: right;
-      font-size: 12px;
-      line-height: 17px;
-      color: $lochmara;
-      clear: both;
-    }
   }
-  ul {
-    // this needs to be adjusted, the "disc" in the comps is quite a bit larger
+
+  &__etherscan {
+    float: right;
+    font-size: 12px;
+    line-height: 17px;
+    color: $lochmara;
+    clear: both;
+  }
+
+  &__heading {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  &__list {
     list-style-type: none;
     padding: 0 0 0 18px;
     color: $lochmara;
-    // position: relative;
+  }
 
-    li {
-      position: relative;
-      padding-left: 0px;
-      font-size: 12px;
-      line-height: 125%;
-      margin-bottom: 16px;
-      z-index: 2;
-      &:last-child .line {
-        display: none;
-      }
-      .bullet {
-        position: absolute;
-        left: -16px;
-      }
-      .line {
-        width: 1px;
-        height: 42px;
-        background: $geyser;
-        position: absolute;
-        left: -13px;
-        top: 10px;
-      }
-      span {
-        color: #6A737D;
-      }
+  &__list-item {
+    position: relative;
+    padding-left: 0px;
+    font-size: 12px;
+    line-height: 125%;
+    margin-bottom: 16px;
+    z-index: 2;
+    &:last-child .transaction-activity__line {
+      display: none;
     }
+    span {
+      color: #6A737D;
+    }
+  }
+
+  &__bullet {
+    position: absolute;
+    left: -16px;
+  }
+
+  &__line {
+    width: 1px;
+    height: 42px;
+    background: $geyser;
+    position: absolute;
+    left: -13px;
+    top: 10px;
   }
 }
