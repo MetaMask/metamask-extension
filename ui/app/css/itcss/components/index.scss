@@ -3,6 +3,7 @@
 @import '../../../components/ui/snackbar/index';
 @import '../../../components/ui/popover/index';
 @import '../../../components/ui/list-item/index';
+@import '../../../components/ui/transaction-details/index';
 
 @import './footer.scss';
 
@@ -57,7 +58,5 @@
 @import './new-account.scss';
 
 @import './tooltip.scss';
-
-@import './transaction-details.scss';
 
 @import '../../../components/app/index';
