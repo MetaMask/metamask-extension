@@ -238,5 +238,13 @@
   {
     "code": "zec",
     "name": "Zcash"
+  },
+  {
+    "code": "dai",
+    "name": "DAI"
+  },
+  {
+    "code": "sai",
+    "name": "SAI"
   }
 ]
