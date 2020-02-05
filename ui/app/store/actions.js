@@ -673,7 +673,7 @@ export function decryptMsgInline (decryptedMsgData) {
 
 export function decryptMsg (decryptedMsgData) {
   log.debug('action - decryptMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.decryptMessage`)
@@ -689,7 +689,7 @@ export function decryptMsg (decryptedMsgData) {
         }
 
         dispatch(completedTx(decryptedMsgData.metamaskId))
-		dispatch(closeCurrentNotificationWindow())
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(decryptedMsgData)
       })
@@ -699,7 +699,7 @@ export function decryptMsg (decryptedMsgData) {
 
 export function encryptionPublicKeyMsg (msgData) {
   log.debug('action - encryptionPublicKeyMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.encryptionPublicKey`)
@@ -715,7 +715,7 @@ export function encryptionPublicKeyMsg (msgData) {
         }
 
         dispatch(completedTx(msgData.metamaskId))
-		dispatch(closeCurrentNotificationWindow())
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
