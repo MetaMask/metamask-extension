@@ -1358,10 +1358,10 @@
   },
   "decryptMessageNotice": {
     "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие",
-	"description": "$1 is website or dapp name"
+    "description": "$1 is website or dapp name"
   },
   "decryptMetamask": {
-    "message": "Расшифровать при помощи Metamask"
+    "message": "Расшифровать сообщение"
   },
   "decryptCopy": {
     "message": "Скопировать расшифрованное сообщение"
@@ -1374,6 +1374,6 @@
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения.",
-	"description": "$1 is website or dapp name"
+    "description": "$1 is website or dapp name"
   }
 }

@@ -645,16 +645,15 @@ export function signPersonalMsg (msgData) {
   }
 }
 
-export function decryptMsgInline (msgData) {
+export function decryptMsgInline (decryptedMsgData) {
   log.debug('action - decryptMsgInline')
   return (dispatch) => {
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.decryptMessageInline`)
-      background.decryptMessageInline(msgData, (err, newState) => {
+      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
         log.debug('decryptMsgInline called back')
         if (newState) {
-          msgData = newState.unapprovedDecryptMsgs[msgData.metamaskId]
+          decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
           dispatch(updateMetamaskState(newState))
         } else {
           log.error('Wrong data for decryptMessageInline')
@@ -666,20 +665,19 @@ export function decryptMsgInline (msgData) {
           dispatch(displayWarning(err.message))
           return reject(err)
         }
-        return resolve(msgData)
+        return resolve(decryptedMsgData)
       })
     })
   }
 }
 
-export function decryptMsg (msgData) {
+export function decryptMsg (decryptedMsgData) {
   log.debug('action - decryptMsg')
   return (dispatch, getState) => {
     dispatch(showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.decryptMessage`)
-      background.decryptMessage(msgData, (err, newState) => {
+      background.decryptMessage(decryptedMsgData, (err, newState) => {
         log.debug('decryptMsg called back')
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
@@ -690,14 +688,10 @@ export function decryptMsg (msgData) {
           return reject(err)
         }
 
-        dispatch(completedTx(msgData.metamaskId))
+        dispatch(completedTx(decryptedMsgData.metamaskId))
+		dispatch(closeCurrentNotificationWindow())
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
-
-        return resolve(msgData)
+        return resolve(decryptedMsgData)
       })
     })
   }
@@ -707,7 +701,6 @@ export function encryptionPublicKeyMsg (msgData) {
   log.debug('action - encryptionPublicKeyMsg')
   return (dispatch, getState) => {
     dispatch(showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.encryptionPublicKey`)
       background.encryptionPublicKey(msgData, (err, newState) => {
@@ -722,11 +715,7 @@ export function encryptionPublicKeyMsg (msgData) {
         }
 
         dispatch(completedTx(msgData.metamaskId))
-
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
-        }
+		dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1101,7 +1090,6 @@ export function cancelPersonalMsg (msgData) {
 export function cancelDecryptMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelDecryptMessage(id, (err, newState) => {
@@ -1124,7 +1112,6 @@ export function cancelDecryptMsg (msgData) {
 export function cancelEncryptionPublicKeyMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
-    window.onbeforeunload = null
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelEncryptionPublicKey(id, (err, newState) => {

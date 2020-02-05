@@ -147,7 +147,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { txData } = this.props
 
     const origin = this.props.domainMetadata[txData.origin]
-    const notice = this.context.t('encryptionPublicKeyNotice', ['[' + origin.name + ']'])
+    const notice = this.context.t('encryptionPublicKeyNotice', [origin.name])
 
     return (
       <div className="request-encryption-public-key__body">

@@ -56,15 +56,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mergeProps (stateProps, dispatchProps, ownProps) {
-  return {
-    ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-  }
-}
-
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
+  connect(mapStateToProps, mapDispatchToProps)
 )(ConfirmDecryptMessage)

@@ -1612,10 +1612,10 @@
   },
   "decryptMessageNotice": {
     "message": "$1 would like to read this message to complete your action",
-	"description": "$1 is website or dapp name"
+    "description": "$1 is website or dapp name"
   },
   "decryptMetamask": {
-    "message": "Decrypt with Metamask"
+    "message": "Decrypt message"
   },
   "decryptCopy": {
     "message": "Copy encrypted message"
@@ -1628,6 +1628,6 @@
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
-	"description": "$1 is website or dapp name"
+    "description": "$1 is website or dapp name"
   }
 }

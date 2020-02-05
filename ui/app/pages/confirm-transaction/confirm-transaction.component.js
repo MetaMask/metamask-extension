@@ -10,7 +10,7 @@ import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
 import ConfirmTokenTransactionBaseContainer from '../confirm-token-transaction-base'
 import ConfTx from './conf-tx'
-import ConfinmDecryptMessage from '../confirm-decrypt-message'
+import ConfirmDecryptMessage from '../confirm-decrypt-message'
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key'
 
 import {
@@ -163,7 +163,7 @@ export default class ConfirmTransaction extends Component {
           <Route
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-            component={ConfinmDecryptMessage}
+            component={ConfirmDecryptMessage}
           />
           <Route
             exact

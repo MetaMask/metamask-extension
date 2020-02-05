@@ -166,7 +166,7 @@ export default class ConfirmDecryptMessage extends Component {
     const { txData } = this.props
 
     const origin = this.props.domainMetadata[txData.msgParams.origin]
-    const notice = this.context.t('decryptMessageNotice', ['[' + origin.name + ']'])
+    const notice = this.context.t('decryptMessageNotice', [origin.name])
 
     const {
       hasCopied,
