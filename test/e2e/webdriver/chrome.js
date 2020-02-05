@@ -13,6 +13,11 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs')
     }
     const options = new chrome.Options()
+      .addArguments(
+        '--disable-dev-shm-usage',
+        '--headless',
+        '--no-sandbox',
+      )
       .addArguments(args)
     const builder = new Builder()
       .forBrowser('chrome')
