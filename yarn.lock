@@ -3375,12 +3375,14 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^0.9.10":
-  version "0.9.10"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-0.9.10.tgz#1e84ffa3c2294113acf735786ea78b65c42e6564"
-  integrity sha512-3XFjuSJHnBY5isJNmkEDxjH2QucYmBUt//1NI/EbXeNDMi7GQhg7sawPSjrpw9pmaJmgF8+Vp6PygeFC5I11mQ==
+"@yqrashawn/conflux-local-network-lite@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-1.0.2.tgz#9589f27caab6913a734aa436cfa4edf49252d0c7"
+  integrity sha512-15/YBuW+s40wnDl5c74igoWN1wfsbLUmmlPA4nXmLBfKj0f7eK/J2CceM2v/z8Ew9Fh0y/jbXJFxkoKuhGos6Q==
   dependencies:
     ethereumjs-util "^6.2.0"
+    express "^4.17.1"
+    express-async-errors "^3.1.1"
     got "^10.2.0"
     jayson "^3.2.0"
     js-conflux-sdk "^0.4.0-beta"
@@ -11949,7 +11951,12 @@ explain-error@^1.0.4:
   resolved "https://registry.yarnpkg.com/explain-error/-/explain-error-1.0.4.tgz#a793d3ac0cad4c6ab571e9968fbbab6cb2532929"
   integrity sha1-p5PTrAytTGq1cemWj7urbLJTKSk=
 
-express@^4.10.7, express@^4.13.3, express@^4.14.0, express@^4.17.0:
+express-async-errors@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/express-async-errors/-/express-async-errors-3.1.1.tgz#6053236d61d21ddef4892d6bd1d736889fc9da41"
+  integrity sha512-h6aK1da4tpqWSbyCa3FxB/V6Ehd4EEB15zyQq9qe75OZBp0krinNKuH4rAY+S/U/2I36vdLAUFSjQJ+TFmODng==
+
+express@^4.10.7, express@^4.13.3, express@^4.14.0, express@^4.17.0, express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==
