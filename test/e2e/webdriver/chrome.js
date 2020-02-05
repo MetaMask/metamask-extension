@@ -15,7 +15,6 @@ class ChromeDriver {
     const options = new chrome.Options()
       .addArguments(
         '--disable-dev-shm-usage',
-        '--headless',
         '--no-sandbox',
       )
       .addArguments(args)
