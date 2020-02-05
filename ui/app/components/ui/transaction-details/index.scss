@@ -1,5 +1,5 @@
-.popover-content {
-  .details {
+.popover {
+  &__details {
     border: 1px solid $geyser;
     border-radius: 8px;
     padding: 16px;
@@ -7,32 +7,30 @@
     font-size: 12px;
     line-height: 180%;
     margin-bottom: 16px;
+  }
 
-    hr {
-      border: none;
-      border-bottom: 1px solid $geyser;
-      margin: 16px 0;
+  &__details__rule {
+    border: none;
+    border-bottom: 1px solid $geyser;
+    margin: 16px 0;
+  }
+
+  &__details--amounts, &__details--totals {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  &__details__col {
+    align-self: flex-start;
+    &:last-child {
+      margin: 0 0 0 auto;
+      text-align: right;
     }
+  }
 
-    .details-amounts, .details-totals {
-      display: flex;
-      justify-content: flex-start;
-      align-items: stretch;
-
-      .col {
-        align-self: flex-start;
-        &:last-child {
-          margin: 0 0 0 auto;
-          text-align: right;
-        }
-      }
-    }
-
-    .details-totals {
-      h3 {
-        font-weight: bold;
-        color: #24292E;
-      }
-    }
+  &__details__heading {
+    font-weight: bold;
+    color: #24292E;
   }
 }

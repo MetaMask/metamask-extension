@@ -24,36 +24,36 @@
 
     .react-tabs {
       height: calc(100% - 66px);
+    }
 
-      .react-tabs__tab-panel--selected {
-        height: 100%;
-      }
+    .react-tabs__tab-panel--selected {
+      height: 100%;
+    }
 
-      .react-tabs__tab-list {
-        display: flex;
-        justify-content: flex-start;
-        align-items: stretch;
-        flex-direction: row;
+    .react-tabs__tab-list {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex-direction: row;
+    }
 
-        .react-tabs__tab {
-          flex-grow: 1;
-          text-align: center;
-          font-weight: 500;
-          font-size: 14px;
-          line-height: 140%;
-          display: block;
-          padding: 14px 0;
-          color: #6A737D;
-          border-bottom: 1px solid #C4C4C4;
-          // cursor: pointer;
-        }
+    .react-tabs__tab {
+      flex-grow: 1;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 140%;
+      display: block;
+      padding: 14px 0;
+      color: #6A737D;
+      border-bottom: 1px solid #C4C4C4;
+      // cursor: pointer;
+    }
 
-        .react-tabs__tab--selected {
-          color: $lochmara;
-          border-color: $lochmara;
-          border-width: 2px;
-        }
-      }
+    .react-tabs__tab--selected {
+      color: $lochmara;
+      border-color: $lochmara;
+      border-width: 2px;
     }
   }
 
@@ -74,26 +74,21 @@
         margin: 0 0 0 auto;
         text-align: right;
       }
+    }
 
-      h3 {
-        font-size: 10px;
-        line-height: 180%;
-        /* or 15px */
+    &__heading {
+      font-size: 10px;
+      line-height: 180%;
+      text-transform: uppercase;
+      color: $Grey-500;
+    }
 
-        text-transform: uppercase;
-
-        /* Grey */
-
-        color: #6A737D;
-      }
-
-      h4 {
-        font-size: 12px;
-        line-height: 160%;
-        color: #24292E;
-        &.confirmed {
-          color: #28A745;
-        }
+    &__subheading {
+      font-size: 12px;
+      line-height: 160%;
+      color: #24292E;
+      &.confirmed {
+        color: #28A745;
       }
     }
   }
@@ -156,6 +151,72 @@
     z-index: 1;
   }
 
+  &__advanced-input-controls {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-direction: row;
+    .col {
+      align-self: flex-start;
+      flex-grow: 1;
+      padding: 8px 0;
+      &:first-child {
+        margin-right: 8px;
+      }
+    }
+
+    .advanced-gas-inputs__gas-edit-row__label {
+      justify-content: flex-start;
+      font-size: 12px;
+      line-height: 17px;
+      color: black;
+      margin-bottom: 8px;
+      .fa-info-circle {
+        margin-left: 6px;
+      }
+    }
+
+    input[type="number"] {
+      border: 1px solid $geyser;
+      box-sizing: border-box;
+      border-radius: 6px;
+      width: 100%;
+      padding: 4px;
+    }
+  }
+
+  &__save {
+    background: $lochmara;
+    border-radius: 6px;
+    display: block;
+    margin-top: auto;
+    @extend %font;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    padding: 12px 0;
+    color: #FFFFFF;
+    text-align: center;
+  }
+
+  &__heading {
+    font-size: 12px;
+    line-height: 17px;
+    color: #000;
+    margin: 16px 0;
+  }
+
+  &__chart {
+    width: 100%;
+    height: 178px;
+    background: #F8F9FB;
+    border: 1px solid $geyser;
+    box-sizing: border-box;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
   &-container {
     padding: 0 5px 0 16px;
     margin-top: 5px;
@@ -170,65 +231,5 @@
     justify-content: flex-start;
     align-items: stretch;
     align-content: stretch;
-    .chart {
-      width: 100%;
-      height: 178px;
-      background: #F8F9FB;
-      border: 1px solid $geyser;
-      box-sizing: border-box;
-      border-radius: 6px;
-      margin-bottom: 16px;
-    }
-    .advanced-input-controls {
-      display: flex;
-      justify-content: flex-start;
-      align-items: stretch;
-      flex-direction: row;
-      .col {
-        align-self: flex-start;
-        flex-grow: 1;
-        padding: 8px 0;
-        &:first-child {
-          margin-right: 8px;
-        }
-        .advanced-gas-inputs__gas-edit-row__label {
-          justify-content: flex-start;
-          font-size: 12px;
-          line-height: 17px;
-          color: black;
-          margin-bottom: 8px;
-          .fa-info-circle {
-            margin-left: 6px;
-          }
-        }
-        input[type="number"] {
-          border: 1px solid $geyser;
-          box-sizing: border-box;
-          border-radius: 6px;
-          width: 100%;
-          padding: 4px;
-        }
-      }
-    }
-    .save {
-      background: $lochmara;
-      border-radius: 6px;
-      display: block;
-      margin-top: auto;
-      @extend %font;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      padding: 12px 0;
-      color: #FFFFFF;
-      text-align: center;
-    }
-    > h3 {
-      font-size: 12px;
-      line-height: 17px;
-      color: #000;
-      margin: 16px 0;
-    }
   }
 }

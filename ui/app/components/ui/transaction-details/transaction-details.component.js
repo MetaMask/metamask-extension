@@ -6,24 +6,24 @@ const TransactionDetails = ({
   fee,
   ethCost,
 }) => (
-  <div className="details">
-    <div className="details-amounts">
-      <div className="col">
+  <div className="popover__details">
+    <div className="popover__details--amounts">
+      <div className="popover__details__col">
         Amount<br />
         Transaction Fee
       </div>
-      <div className="col">
+      <div className="popover__details__col">
         {amount}<br />
         {fee}
       </div>
     </div>
-    <hr />
-    <div className="details-totals">
-      <div className="col">
+    <hr className="popover__details__rule" />
+    <div className="popover__details--totals">
+      <div className="popover__details__col">
         <h3>Total amount</h3>
       </div>
-      <div className="col">
-        <h3>{amount + fee}</h3>
+      <div className="popover__details__col">
+        <h3 className="popover__details__heading">{amount + fee}</h3>
         <p>{ethCost} ETH</p>
       </div>
     </div>

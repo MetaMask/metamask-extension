@@ -31,7 +31,7 @@ const close = e => {
 }
 
 const Chart = () => (
-  <div className="chart"></div>
+  <div className="popover__chart"></div>
 )
 
 storiesOf('PopOver', module)
@@ -41,32 +41,32 @@ storiesOf('PopOver', module)
         <div className="popover-container">
           <div className="popover-item">
             <div className="popover-item__col">
-              <h3>STATUS</h3>
-              <h4 className="confirmed">Confirmed</h4>
+              <h3 className="popover-item__heading">STATUS</h3>
+              <h4 className="popover-item__subheading confirmed">Confirmed</h4>
             </div>
             <div className="popover-item__col">
-              <h3>DATE</h3>
-              <h4>Sept 20 at 9:08am</h4>
+              <h3 className="popover-item__heading">DATE</h3>
+              <h4 className="popover-item__subheading">Sept 20 at 9:08am</h4>
             </div>
           </div>
           <div className="popover-item">
             <div className="popover-item__col">
-              <h3>from</h3>
-              <h4>834759....872345</h4>
+              <h3 className="popover-item__heading">from</h3>
+              <h4 className="popover-item__subheading">834759....872345</h4>
             </div>
             <div className="popover-item__col">
-              <h3>to</h3>
-              <h4>834759....872345</h4>
+              <h3 className="popover-item__heading">to</h3>
+              <h4 className="popover-item__subheading">834759....872345</h4>
             </div>
           </div>
           <div className="popover-item">
             <div className="popover-item__col">
               <h3>nonce</h3>
-              <h4>#5</h4>
+              <h4 className="popover-item__subheading">#5</h4>
             </div>
             <div className="popover-item__col">
-              <h3>description</h3>
-              <h4>0x may spend up to:<br /> 071,992.54744099 DAI</h4>
+              <h3 className="popover-item__heading">description</h3>
+              <h4 className="popover-item__subheading">0x may spend up to:<br /> 071,992.54744099 DAI</h4>
             </div>
           </div>
           <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
@@ -86,15 +86,15 @@ storiesOf('PopOver', module)
 
           <TabPanel>
             <div className="popover-container">
-              <h3>Select a higher fee to accelerate your transaction.</h3>
+              <h3 className="popover__heading">Select a higher fee to accelerate your transaction.</h3>
               <TransactionFees />
               <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
-              <button className="save">Save</button>
+              <button className="popover__save">Save</button>
             </div>
           </TabPanel>
           <TabPanel>
             <div className="popover-container">
-              <div className="advanced-input-controls">
+              <div className="popover__advanced-input-controls">
                 <div className="col">
                   <div className="advanced-gas-inputs__gas-edit-row__label">Gas Price (GWEI)<i className="fa fa-info-circle"></i></div>
                   <div className="">
@@ -110,7 +110,7 @@ storiesOf('PopOver', module)
               </div>
               <Chart />
               <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
-              <button className="save">Save</button>
+              <button className="popover__save">Save</button>
             </div>
           </TabPanel>
         </Tabs>
