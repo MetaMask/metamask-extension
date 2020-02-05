@@ -2,7 +2,7 @@ export default function getRestrictedMethods (permissionsController) {
   return {
 
     'eth_accounts': {
-      description: 'View the address of the selected account',
+      description: `View the addresses of the user's selected accounts.`,
       method: (_, res, __, end) => {
         permissionsController.getKeyringAccounts()
           .then((accounts) => {

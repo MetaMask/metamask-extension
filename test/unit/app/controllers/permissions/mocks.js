@@ -32,7 +32,7 @@ export const getNotifyAllDomains = (notifications = {}) => (notification) => {
   })
 }
 
-export const getPermissionsRpcRequest = (id, permissions = {}) => {
+export const getApprovedPermissionsRequest = (id, permissions = {}) => {
   return {
     permissions,
     metadata: { id },
@@ -63,28 +63,43 @@ export const ACCOUNT_ARRAYS = {
   c: [keyringAccounts[1]],
 }
 
+export const CAVEATS = {
+  eth_accounts: (accounts) => {
+    return {
+      type: 'filterResponse',
+      value: accounts,
+      name: CAVEAT_NAMES.exposedAccounts,
+    }
+  },
+}
+
 export const PERMS = {
 
   names: {
-    ethAccounts: 'eth_accounts',
+    eth_accounts: 'eth_accounts',
   },
 
   request: {
-    ethAccounts: () => {
+    eth_accounts: () => {
       return { eth_accounts: {} }
+    },
+    testMethod: () => {
+      return { test_method: {} }
     },
   },
 
   complete: {
-    ethAccounts: (accounts) => {
+    eth_accounts: (accounts) => {
       return {
         eth_accounts: {
-          caveats: [{
-            type: 'filterResponse',
-            value: accounts,
-            name: CAVEAT_NAMES.exposedAccounts,
-          }],
+          caveats: [CAVEATS.eth_accounts(accounts)],
         } }
+    },
+
+    test_method: () => {
+      return {
+        test_method: {},
+      }
     },
   },
 }
@@ -181,4 +196,108 @@ export const ERRORS = {
       }
     },
   },
+
+  createMiddleware: {
+    badOrigin: () => {
+      return {
+        message: 'Must provide non-empty string origin.',
+      }
+    },
+  },
+
+  rpcCap: {
+    unauthorized: () => {
+      return {
+        code: 4100,
+      }
+    },
+  },
+}
+
+export const rpcRequests = {
+  eth_accounts: (origin) => {
+    return {
+      origin,
+      method: 'eth_accounts',
+      params: [],
+    }
+  },
+
+  test_method: (origin, param = false) => {
+    return {
+      origin,
+      method: 'test_method',
+      params: [param],
+    }
+  },
+
+  eth_requestAccounts: (origin) => {
+    return {
+      origin,
+      method: 'eth_requestAccounts',
+      params: [],
+    }
+  },
+
+  requestPermission: (origin, permission) => {
+    return {
+      origin,
+      method: 'wallet_requestPermissions',
+      params: [ PERMS.request[permission]() ],
+    }
+  },
+
+  requestPermissions: (origin, permissions = {}) => {
+    return {
+      origin,
+      method: 'wallet_requestPermissions',
+      params: [ permissions ],
+    }
+  },
+
+  wallet_sendDomainMetadata: (origin, name, ...args) => {
+    return {
+      origin,
+      method: 'wallet_sendDomainMetadata',
+      domainMetadata: {
+        ...args,
+        name,
+      },
+    }
+  },
+}
+
+export function getRestrictedMethods (permissionsController) {
+  return {
+
+    'eth_accounts': {
+      description: `View the addresses of the user's selected accounts.`,
+      method: (_, res, __, end) => {
+        permissionsController.getKeyringAccounts()
+          .then((accounts) => {
+            res.result = accounts
+            end()
+          })
+          .catch(
+            /* istanbul ignore next */
+            (err) => {
+              res.error = err
+              end(err)
+            }
+          )
+      },
+    },
+
+    'test_method': {
+      description: `This method is only for testing.`,
+      method: (req, res, __, end) => {
+        if (req.params[0]) {
+          res.result = 1
+        } else {
+          res.result = 0
+        }
+        end()
+      },
+    },
+  }
 }

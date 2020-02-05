@@ -6,7 +6,7 @@ import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
 import { cloneDeep } from 'lodash'
 
-import getRestrictedMethods from './restrictedMethods'
+import _getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
 
@@ -25,7 +25,8 @@ export class PermissionsController {
 
   constructor (
     {
-      platform, notifyDomain, notifyAllDomains, getKeyringAccounts,
+      platform, notifyDomain, notifyAllDomains,
+      getKeyringAccounts, getRestrictedMethods = _getRestrictedMethods,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -51,6 +52,10 @@ export class PermissionsController {
   }
 
   createMiddleware ({ origin, extensionId }) {
+
+    if (!origin || typeof origin !== 'string') {
+      throw new Error('Must provide non-empty string origin.')
+    }
 
     if (extensionId) {
       this.store.updateState({
