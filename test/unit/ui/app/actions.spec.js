@@ -1,7 +1,3 @@
-/* eslint-disable */
-// Used to inspect long objects
-// util.inspect({JSON}, false, null))
-// import util from 'util'
 import assert from 'assert'
 import sinon from 'sinon'
 import { cloneDeep } from 'lodash'
@@ -14,14 +10,13 @@ import Eth from 'ethjs'
 import KeyringController from 'eth-keyring-controller'
 
 import { createTestProviderTools } from '../../../stub/provider'
-const provider = createTestProviderTools({ scaffold: {} }).provider
-
 import enLocale from '../../../../app/_locales/en/messages.json'
 import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
 import devState from '../../../data/2-state.json'
 
+const provider = createTestProviderTools({ scaffold: {} }).provider
 const middleware = [thunk]
 const mockStore = configureStore(middleware)
 
@@ -45,11 +40,11 @@ describe('Actions', () => {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function(_, object) {
+        encrypt: function (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
-        decrypt: function() {
+        decrypt: function () {
           return Promise.resolve(this.object)
         },
       },
@@ -131,13 +126,9 @@ describe('Actions', () => {
         await store.dispatch(actions.tryUnlockMetamask('test'))
         assert.fail('Should have thrown error')
       } catch (_) {
-        const actions = store.getActions()
-        const warning = actions.filter(
-          action => action.type === 'DISPLAY_WARNING'
-        )
-        const unlockFailed = actions.filter(
-          action => action.type === 'UNLOCK_FAILED'
-        )
+        const actions1 = store.getActions()
+        const warning = actions1.filter(action => action.type === 'DISPLAY_WARNING')
+        const unlockFailed = actions1.filter(action => action.type === 'UNLOCK_FAILED')
         assert.deepEqual(warning, displayWarningError)
         assert.deepEqual(unlockFailed, unlockFailedError)
       }
@@ -463,7 +454,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      checkHardwareStatusSpy.callsFake((deviceName, hdPath, callback) => {
+      checkHardwareStatusSpy.callsFake((_, __, callback) => {
         callback(new Error('error'))
       })
 
@@ -502,7 +493,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      forgetDeviceSpy.callsFake((deviceName, callback) => {
+      forgetDeviceSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -541,7 +532,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      connectHardwareSpy.callsFake((deviceName, page, hdPath, callback) => {
+      connectHardwareSpy.callsFake((_, __, ___, callback) => {
         callback(new Error('error'))
       })
 
@@ -585,11 +576,9 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      unlockHardwareWalletAccountSpy.callsFake(
-        (deviceName, page, hdPath, callback) => {
-          callback(new Error('error'))
-        }
-      )
+      unlockHardwareWalletAccountSpy.callsFake((_, __, ___, callback) => {
+        callback(new Error('error'))
+      })
 
       try {
         await store.dispatch(actions.unlockHardwareWalletAccount())
@@ -656,7 +645,9 @@ describe('Actions', () => {
     })
 
     it('calls signMsg in background', () => {
-      const store = mockStore()
+      const store = mockStore({
+        metamask: {},
+      })
 
       signMessageSpy = sinon.spy(background, 'signMessage')
       store.dispatch(actions.signMsg(msgParams))
@@ -664,7 +655,9 @@ describe('Actions', () => {
     })
 
     it('errors when signMessage in background throws', async () => {
-      const store = mockStore()
+      const store = mockStore({
+        metamask: {},
+      })
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'UPDATE_METAMASK_STATE', value: undefined },
@@ -708,7 +701,9 @@ describe('Actions', () => {
     })
 
     it('calls signPersonalMessage', () => {
-      const store = mockStore()
+      const store = mockStore({
+        metamask: {},
+      })
 
       signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
 
@@ -745,21 +740,21 @@ describe('Actions', () => {
     const msgParamsV3 = {
       from: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       data: JSON.stringify({
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
+        'types': {
+          'EIP712Domain': [
+            { 'name': 'name', 'type': 'string' },
+            { 'name': 'version', 'type': 'string' },
+            { 'name': 'chainId', 'type': 'uint256' },
+            { 'name': 'verifyingContract', 'type': 'address' },
           ],
-          Person: [
-            { name: 'name', type: 'string' },
-            { name: 'wallet', type: 'address' },
+          'Person': [
+            { 'name': 'name', 'type': 'string' },
+            { 'name': 'wallet', 'type': 'address' },
           ],
-          Mail: [
-            { name: 'from', type: 'Person' },
-            { name: 'to', type: 'Person' },
-            { name: 'contents', type: 'string' },
+          'Mail': [
+            { 'name': 'from', 'type': 'Person' },
+            { 'name': 'to', 'type': 'Person' },
+            { 'name': 'contents', 'type': 'string' },
           ],
         },
         primaryType: 'Mail',
@@ -989,7 +984,7 @@ describe('Actions', () => {
       const store = mockStore()
 
       updateTransactionSpy = sinon.stub(background, 'updateTransaction')
-      updateTransactionSpy.callsFake((res, callback) => {
+      updateTransactionSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
@@ -1386,14 +1381,7 @@ describe('Actions', () => {
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/marketinfo/btc_eth')
-        .reply(200, {
-          pair: 'BTC_ETH',
-          rate: 25.68289016,
-          minerFee: 0.00176,
-          limit: 0.67748474,
-          minimum: 0.00013569,
-          maxLimit: 0.67758573,
-        })
+        .reply(200, { pair: 'BTC_ETH', rate: 25.68289016, minerFee: 0.00176, limit: 0.67748474, minimum: 0.00013569, maxLimit: 0.67758573 })
 
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
@@ -1565,10 +1553,7 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        {
-          type: 'SET_CURRENT_LOCALE',
-          value: { locale: 'en', messages: enLocale },
-        },
+        { type: 'SET_CURRENT_LOCALE', value: { locale: 'en', messages: enLocale } },
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 

@@ -1,3 +1,6 @@
+import copyToClipboard from 'copy-to-clipboard'
+import log from 'loglevel'
+import { clone } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 import Root from './app/pages'
@@ -6,13 +9,10 @@ import configureStore from './app/store/store'
 import txHelper from './lib/tx-helper'
 import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
-import log from 'loglevel'
-
-export default launchMetamaskUi
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
-function launchMetamaskUi (opts, cb) {
+export default function launchMetamaskUi (opts, cb) {
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
@@ -20,9 +20,11 @@ function launchMetamaskUi (opts, cb) {
     if (err) {
       return cb(err)
     }
-    startApp(metamaskState, backgroundConnection, opts).then(store => {
-      cb(null, store)
-    })
+    startApp(metamaskState, backgroundConnection, opts)
+      .then((store) => {
+        setupDebuggingHelpers(store)
+        cb(null, store)
+      })
   })
 }
 
@@ -54,9 +56,6 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
-
-    // Which blockchain we are using:
-    networkVersion: opts.networkVersion,
   })
 
   // if unconfirmed txs, start on txConf page
@@ -105,4 +104,38 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   render(<Root store={store} />, opts.container)
 
   return store
+}
+
+function setupDebuggingHelpers (store) {
+  window.getCleanAppState = function () {
+    const state = clone(store.getState())
+    state.version = global.platform.getVersion()
+    state.browser = window.navigator.userAgent
+    return state
+  }
+}
+
+window.logStateString = function (cb) {
+  const state = window.getCleanAppState()
+  global.platform.getPlatformInfo((err, platform) => {
+    if (err) {
+      return cb(err)
+    }
+    state.platform = platform
+    const stateString = JSON.stringify(state, null, 2)
+    cb(null, stateString)
+  })
+}
+
+window.logState = function (toClipboard) {
+  return window.logStateString((err, result) => {
+    if (err) {
+      console.error(err.message)
+    } else if (toClipboard) {
+      copyToClipboard(result)
+      console.log('State log copied')
+    } else {
+      console.log(result)
+    }
+  })
 }

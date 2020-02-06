@@ -13,12 +13,15 @@ import Loading from '../../components/ui/loading-screen'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 function mapStateToProps (state) {
-  const { metamask } = state
+  const { metamask, appState } = state
   const {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
+  const {
+    txId,
+  } = appState
 
   return {
     identities: state.metamask.identities,
@@ -26,7 +29,7 @@ function mapStateToProps (state) {
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
-    index: state.appState.currentView.context,
+    index: txId,
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,

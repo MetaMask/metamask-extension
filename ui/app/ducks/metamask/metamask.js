@@ -1,68 +1,58 @@
-import { actionConstants } from '../../store/actions'
+import { actionConstants as actions } from '../../store/actions'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
-const actions = actionConstants
-
-export default reduceMetamask
-
-function reduceMetamask (state, action) {
-  let newState
-
-  // clone + defaults
-  const metamaskState = Object.assign(
-    {
-      isInitialized: false,
-      isUnlocked: false,
-      isAccountMenuOpen: false,
-      isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
-      rpcTarget: 'https://rawtestrpc.metamask.io/',
-      identities: {},
-      unapprovedTxs: {},
-      frequentRpcList: [],
-      addressBook: [],
-      selectedTokenAddress: null,
-      contractExchangeRates: {},
-      tokenExchangeRates: {},
-      tokens: [],
-      pendingTokens: {},
-      customNonceValue: '',
-      send: {
-        gasLimit: null,
-        gasPrice: null,
-        gasTotal: null,
-        tokenBalance: '0x0',
-        from: '',
-        to: '',
-        amount: '0',
-        memo: '',
-        errors: {},
-        maxModeOn: false,
-        editingTransactionId: null,
-        forceGasMin: null,
-        toNickname: '',
-        ensResolution: null,
-        ensResolutionError: '',
-      },
-      coinOptions: {},
-      useBlockie: false,
-      featureFlags: {},
-      networkEndpointType: undefined,
-      welcomeScreenSeen: false,
-      currentLocale: '',
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-        showFiatInTestnets: false,
-      },
-      firstTimeFlowType: null,
-      completedOnboarding: false,
-      knownMethodData: {},
-      participateInMetaMetrics: null,
-      metaMetricsSendCount: 0,
-      nextNonce: null,
+export default function reduceMetamask (state = {}, action) {
+  const metamaskState = Object.assign({
+    isInitialized: false,
+    isUnlocked: false,
+    isAccountMenuOpen: false,
+    isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
+    rpcTarget: 'https://rawtestrpc.metamask.io/',
+    identities: {},
+    unapprovedTxs: {},
+    frequentRpcList: [],
+    addressBook: [],
+    selectedTokenAddress: null,
+    contractExchangeRates: {},
+    tokenExchangeRates: {},
+    tokens: [],
+    pendingTokens: {},
+    customNonceValue: '',
+    send: {
+      gasLimit: null,
+      gasPrice: null,
+      gasTotal: null,
+      tokenBalance: '0x0',
+      from: '',
+      to: '',
+      amount: '0',
+      memo: '',
+      errors: {},
+      maxModeOn: false,
+      editingTransactionId: null,
+      forceGasMin: null,
+      toNickname: '',
+      ensResolution: null,
+      ensResolutionError: '',
     },
-    state.metamask
-  )
+    coinOptions: {},
+    useBlockie: false,
+    featureFlags: {},
+    networkEndpointType: undefined,
+    welcomeScreenSeen: false,
+    currentLocale: '',
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+      showFiatInTestnets: false,
+    },
+    firstTimeFlowType: null,
+    completedOnboarding: false,
+    knownMethodData: {},
+    participateInMetaMetrics: null,
+    metaMetricsSendCount: 0,
+    nextNonce: null,
+  }, state)
 
   switch (action.type) {
     case actions.UPDATE_METAMASK_STATE:
@@ -99,25 +89,6 @@ function reduceMetamask (state, action) {
         },
       }
 
-    case actions.COMPLETED_TX:
-      const stringId = String(action.id)
-      newState = {
-        ...metamaskState,
-        unapprovedTxs: {},
-        unapprovedMsgs: {},
-      }
-      for (const id in metamaskState.unapprovedTxs) {
-        if (id !== stringId) {
-          newState.unapprovedTxs[id] = metamaskState.unapprovedTxs[id]
-        }
-      }
-      for (const id in metamaskState.unapprovedMsgs) {
-        if (id !== stringId) {
-          newState.unapprovedMsgs[id] = metamaskState.unapprovedMsgs[id]
-        }
-      }
-      return newState
-
     case actions.SHOW_ACCOUNT_DETAIL:
       return {
         ...metamaskState,
@@ -126,8 +97,8 @@ function reduceMetamask (state, action) {
         selectedAddress: action.value,
       }
 
-    case actions.SET_SELECTED_TOKEN:
-      newState = {
+    case actions.SET_SELECTED_TOKEN: {
+      const newState = {
         ...metamaskState,
         selectedTokenAddress: action.value,
       }
@@ -151,6 +122,7 @@ function reduceMetamask (state, action) {
 
       newState.send = newSend
       return newState
+    }
 
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
