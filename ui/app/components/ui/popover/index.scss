@@ -1,6 +1,5 @@
 .popover {
   &-content {
-    // not sure how this is gonna work in other browsers?
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -47,7 +46,6 @@
       padding: 14px 0;
       color: #6A737D;
       border-bottom: 1px solid #C4C4C4;
-      // cursor: pointer;
     }
 
     .react-tabs__tab--selected {
@@ -113,7 +111,6 @@
       padding: 20px;
 
       &--wrap {
-        // border: 1px solid red;
         width: 18px;
         height: 18px;
         transform: rotate(45deg);
@@ -226,7 +223,6 @@
     overflow-y: scroll;
     position: relative;
     display: flex;
-    // align-items: stretch;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
