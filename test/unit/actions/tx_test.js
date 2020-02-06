@@ -10,9 +10,6 @@ describe('tx confirmation screen', function () {
   const txId = 1457634084250832
   const initialState = {
     appState: {
-      currentView: {
-        name: 'confTx',
-      },
     },
     metamask: {
       unapprovedTxs: {
@@ -43,14 +40,12 @@ describe('tx confirmation screen', function () {
       done()
     })
 
-    it('creates COMPLETED_TX with the cancelled transaction ID', function (done) {
-      store.dispatch(actions.cancelTx({ id: txId }))
-        .then(() => {
-          const storeActions = store.getActions()
-          const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
-          assert.equal(completedTxAction.value, txId)
-          done()
-        })
+    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
+      await store.dispatch(actions.cancelTx({ id: txId }))
+      const storeActions = store.getActions()
+      const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
+      const { id } = completedTxAction.value
+      assert.equal(id, txId)
     })
   })
 })

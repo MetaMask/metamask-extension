@@ -43,7 +43,9 @@ async function start () {
   // provide app state to append to error logs
   function getState () {
     // get app state
-    const state = window.getCleanAppState()
+    const state = window.getCleanAppState
+      ? window.getCleanAppState()
+      : {}
     // remove unnecessary data
     delete state.localeMessages
     delete state.metamask.recentBlocks

@@ -13,6 +13,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import WebcamUtils from '../../lib/webcam-utils'
+import txHelper from '../../lib/tx-helper'
 
 export const actionConstants = {
   GO_HOME: 'GO_HOME',
@@ -752,7 +753,7 @@ export function signTx (txData) {
         return dispatch(displayWarning(err.message))
       }
     })
-    dispatch(showConfTxPage({}))
+    dispatch(showConfTxPage())
   }
 }
 
@@ -932,7 +933,7 @@ export function signTokenTx (tokenAddress, toAddress, amount, txData) {
         dispatch(hideLoadingIndication())
         dispatch(displayWarning(err.message))
       })
-    dispatch(showConfTxPage({}))
+    dispatch(showConfTxPage())
   }
 }
 
@@ -951,9 +952,7 @@ const updateMetamaskStateFromBackground = () => {
 }
 
 export function updateTransaction (txData) {
-  log.info('actions: updateTx: ' + JSON.stringify(txData))
   return dispatch => {
-    log.debug(`actions calling background.updateTx`)
     dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -980,9 +979,7 @@ export function updateTransaction (txData) {
 }
 
 export function updateAndApproveTx (txData) {
-  log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
@@ -1018,9 +1015,24 @@ export function updateAndApproveTx (txData) {
 }
 
 export function completedTx (id) {
-  return {
-    type: actionConstants.COMPLETED_TX,
-    value: id,
+  return (dispatch, getState) => {
+    const state = getState()
+    const {
+      unapprovedTxs,
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedTypedMessages,
+      network,
+    } = state.metamask
+    const unconfirmedActions = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
+    const otherUnconfirmedActions = unconfirmedActions.filter(tx => tx.id !== id)
+    dispatch({
+      type: actionConstants.COMPLETED_TX,
+      value: {
+        id,
+        unconfirmedActionsCount: otherUnconfirmedActions.length,
+      },
+    })
   }
 }
 
@@ -1043,7 +1055,6 @@ export function cancelMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
-      log.debug(`background.cancelMessage`)
       background.cancelMessage(msgData.id, (err, newState) => {
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
@@ -1151,7 +1162,6 @@ export function cancelTypedMsg (msgData) {
 
 export function cancelTx (txData) {
   return (dispatch) => {
-    log.debug(`background.cancelTransaction`)
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, err => {
@@ -1370,7 +1380,7 @@ export function showAccountsPage () {
   }
 }
 
-export function showConfTxPage ({ transForward = true, id }) {
+export function showConfTxPage ({ transForward = true, id } = {}) {
   return {
     type: actionConstants.SHOW_CONF_TX_PAGE,
     transForward,

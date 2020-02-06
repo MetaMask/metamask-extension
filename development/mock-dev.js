@@ -13,11 +13,13 @@
 import log from 'loglevel'
 import React from 'react'
 import { render } from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
 import * as qs from 'qs'
 import Selector from './selector'
 import * as actions from '../ui/app/store/actions'
 import Root from '../ui/app/pages'
-import configureStore from '../ui/app/store/store'
+import rootReducer from '../ui/app/ducks'
 import MetamaskController from '../app/scripts/metamask-controller'
 import firstTimeState from '../app/scripts/first-time-state'
 import ExtensionPlatform from '../app/scripts/platforms/extension'
@@ -92,7 +94,14 @@ function modifyBackgroundConnection (backgroundConnectionModifier) {
 }
 
 // parse opts
-const store = configureStore(firstState)
+const store = createStore(
+  (state, action) =>
+    (action.type === 'GLOBAL_FORCE_UPDATE'
+      ? action.value
+      : rootReducer(state, action)),
+  firstState,
+  applyMiddleware(thunkMiddleware),
+)
 
 // start app
 startApp()
