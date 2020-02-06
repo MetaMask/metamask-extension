@@ -123,7 +123,7 @@
     "lodash": "^4.17.15",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
-    "metamask-inpage-provider": "^4.0.3",
+    "metamask-inpage-provider": "^4.0.4",
     "metamask-logo": "^2.1.4",
     "multihashes": "^0.4.12",
     "nanoid": "^2.1.6",
