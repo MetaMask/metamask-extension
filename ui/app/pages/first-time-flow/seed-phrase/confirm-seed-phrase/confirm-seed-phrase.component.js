@@ -279,9 +279,5 @@ function insert (list, value, target, removeOld) {
     })
   }
 
-  if (nextList.length > 12) {
-    nextList.pop()
-  }
-
   return nextList
 }
