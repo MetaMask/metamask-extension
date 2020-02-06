@@ -43,7 +43,7 @@ class RestoreVaultPage extends Component {
     let seedPhraseError = null
 
     const wordCount = this.parseSeedPhrase(seedPhrase).split(new RegExp('\\s')).length
-    if (seedPhrase && wordCount % 3 != 0) {
+    if (seedPhrase && (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)) {
       seedPhraseError = this.context.t('seedPhraseReq')
     }
 

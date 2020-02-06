@@ -74,7 +74,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     if (seedPhrase) {
       const parsedSeedPhrase = this.parseSeedPhrase(seedPhrase)
       const wordCount = parsedSeedPhrase.split(new RegExp('\\s')).length
-      if (wordCount % 3 != 0) {
+      if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
       } else if (!validateMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
