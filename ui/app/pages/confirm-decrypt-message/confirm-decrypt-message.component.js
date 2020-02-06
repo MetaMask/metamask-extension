@@ -171,7 +171,9 @@ export default class ConfirmDecryptMessage extends Component {
     const {
       hasCopied,
       hasDecrypted,
+      hasError,
       rawMessage,
+      errorMessage,
       copyToClipboardPressed,
     } = this.state
 
@@ -205,26 +207,27 @@ export default class ConfirmDecryptMessage extends Component {
           <div
             className="request-decrypt-message__message-text"
           >
-            { !hasDecrypted ? txData.msgParams.data : rawMessage }
+            { !hasDecrypted && !hasError ? txData.msgParams.data : rawMessage }
+            { !hasError ? '' : errorMessage }
           </div>
           <div
             className={classnames({
               'request-decrypt-message__message-cover': true,
-              'request-decrypt-message__message-lock--pressed': hasDecrypted,
+              'request-decrypt-message__message-lock--pressed': hasDecrypted || hasError,
             })}
           >
           </div>
           <div
             className={classnames({
               'request-decrypt-message__message-lock': true,
-              'request-decrypt-message__message-lock--pressed': hasDecrypted,
+              'request-decrypt-message__message-lock--pressed': hasDecrypted || hasError,
             })}
             onClick={(event) => {
-              this.props.decryptMessageInline(txData, event).then((result, err) => {
-                if (!err) {
+              this.props.decryptMessageInline(txData, event).then((result) => {
+                if (!result.error) {
                   this.setState({ hasDecrypted: true, rawMessage: result.rawData })
                 } else {
-                  this.setState({ hasDecrypted: true, rawMessage: err })
+                  this.setState({ hasError: true, errorMessage: this.context.t('decryptInlineError', [result.error]) })
                 }
               })
             }}

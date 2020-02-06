@@ -1620,6 +1620,10 @@
   "decryptCopy": {
     "message": "Copy encrypted message"
   },
+  "decryptInlineError": {
+    "message": "This message cannot be decrypted due to error: $1",
+    "description": "$1 is error message"
+  },
   "provide": {
     "message": "Provide"
   },

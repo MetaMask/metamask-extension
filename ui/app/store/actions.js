@@ -652,19 +652,15 @@ export function decryptMsgInline (decryptedMsgData) {
       log.debug(`actions calling background.decryptMessageInline`)
       background.decryptMessageInline(decryptedMsgData, (err, newState) => {
         log.debug('decryptMsgInline called back')
-        if (newState) {
-          decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-          dispatch(updateMetamaskState(newState))
-        } else {
-          log.error('Wrong data for decryptMessageInline')
-          dispatch(displayWarning('Wrong data'))
-          return reject({ 'message': 'Wrong data' })
-        }
+        dispatch(updateMetamaskState(newState))
+
         if (err) {
           log.error(err)
           dispatch(displayWarning(err.message))
           return reject(err)
         }
+
+        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
         return resolve(decryptedMsgData)
       })
     })
@@ -690,7 +686,7 @@ export function decryptMsg (decryptedMsgData) {
 
         dispatch(completedTx(decryptedMsgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
-
+        console.log(decryptedMsgData)
         return resolve(decryptedMsgData)
       })
     })

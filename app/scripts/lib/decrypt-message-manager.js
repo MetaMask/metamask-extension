@@ -90,6 +90,8 @@ export default class DecryptMessageManager extends EventEmitter {
             return resolve(data.rawData)
           case 'rejected':
             return reject(ethErrors.provider.userRejectedRequest('MetaMask Message for Decryption: User denied message decryption.'))
+          case 'errored':
+            return reject(new Error('This message cannot be decrypted'))
           default:
             return reject(new Error(`MetaMask Message for Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
@@ -250,7 +252,7 @@ export default class DecryptMessageManager extends EventEmitter {
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
-    if (status === 'rejected' || status === 'decrypted') {
+    if (status === 'rejected' || status === 'decrypted' || status === 'errored') {
       this.emit(`${msgId}:finished`, msg)
     }
   }
