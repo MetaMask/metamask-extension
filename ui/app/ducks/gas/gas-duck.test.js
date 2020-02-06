@@ -93,9 +93,7 @@ describe('Gas Duck', () => {
   })
 
   const mockState = {
-    gas: {
-      mockProp: 123,
-    },
+    mockProp: 123,
   }
   const initState = {
     customData: {
@@ -140,10 +138,7 @@ describe('Gas Duck', () => {
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {
-      assert.deepEqual(
-        GasReducer({}),
-        initState
-      )
+      assert.deepEqual(GasReducer(undefined, {}), initState)
     })
 
     it('should return state unchanged if it does not match a dispatched actions type', () => {
@@ -152,49 +147,36 @@ describe('Gas Duck', () => {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        Object.assign({}, mockState.gas)
+        mockState,
       )
     })
 
     it('should set basicEstimateIsLoading to true when receiving a BASIC_GAS_ESTIMATE_LOADING_STARTED action', () => {
       assert.deepEqual(
-        GasReducer(mockState, {
-          type: BASIC_GAS_ESTIMATE_LOADING_STARTED,
-        }),
-        Object.assign({ basicEstimateIsLoading: true }, mockState.gas)
+        GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_STARTED }),
+        { basicEstimateIsLoading: true, ...mockState },
       )
     })
 
     it('should set basicEstimateIsLoading to false when receiving a BASIC_GAS_ESTIMATE_LOADING_FINISHED action', () => {
       assert.deepEqual(
-        GasReducer(mockState, {
-          type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
-        }),
-        Object.assign({ basicEstimateIsLoading: false }, mockState.gas)
+        GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }),
+        { basicEstimateIsLoading: false, ...mockState },
       )
     })
 
     it('should set gasEstimatesLoading to true when receiving a GAS_ESTIMATE_LOADING_STARTED action', () => {
       assert.deepEqual(
-        GasReducer(mockState, {
-          type: GAS_ESTIMATE_LOADING_STARTED,
-        }),
-        Object.assign({ gasEstimatesLoading: true }, mockState.gas)
+        GasReducer(mockState, { type: GAS_ESTIMATE_LOADING_STARTED }),
+        { gasEstimatesLoading: true, ...mockState }
       )
     })
 
     it('should set gasEstimatesLoading to false when receiving a GAS_ESTIMATE_LOADING_FINISHED action', () => {
       assert.deepEqual(
-        GasReducer(mockState, {
-          type: GAS_ESTIMATE_LOADING_FINISHED,
-        }),
-        Object.assign({ gasEstimatesLoading: false }, mockState.gas)
+        GasReducer(mockState, { type: GAS_ESTIMATE_LOADING_FINISHED }),
+        { gasEstimatesLoading: false, ...mockState },
       )
-    })
-
-    it('should return a new object (and not just modify the existing state object)', () => {
-      assert.deepEqual(GasReducer(mockState), mockState.gas)
-      assert.notEqual(GasReducer(mockState), mockState.gas)
     })
 
     it('should set basicEstimates when receiving a SET_BASIC_GAS_ESTIMATE_DATA action', () => {
@@ -203,7 +185,7 @@ describe('Gas Duck', () => {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: { someProp: 'someData123' },
         }),
-        Object.assign({ basicEstimates: { someProp: 'someData123' } }, mockState.gas)
+        { basicEstimates: { someProp: 'someData123' }, ...mockState },
       )
     })
 
@@ -213,7 +195,7 @@ describe('Gas Duck', () => {
           type: SET_PRICE_AND_TIME_ESTIMATES,
           value: { someProp: 'someData123' },
         }),
-        Object.assign({ priceAndTimeEstimates: { someProp: 'someData123' } }, mockState.gas)
+        { priceAndTimeEstimates: { someProp: 'someData123' }, ...mockState },
       )
     })
 
@@ -223,7 +205,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_PRICE,
           value: 4321,
         }),
-        Object.assign({ customData: { price: 4321 } }, mockState.gas)
+        { customData: { price: 4321 }, ...mockState },
       )
     })
 
@@ -233,7 +215,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_LIMIT,
           value: 9876,
         }),
-        Object.assign({ customData: { limit: 9876 } }, mockState.gas)
+        { customData: { limit: 9876 }, ...mockState },
       )
     })
 
@@ -243,7 +225,7 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_TOTAL,
           value: 10000,
         }),
-        Object.assign({ customData: { total: 10000 } }, mockState.gas)
+        { customData: { total: 10000 }, ...mockState },
       )
     })
 
@@ -253,7 +235,7 @@ describe('Gas Duck', () => {
           type: SET_API_ESTIMATES_LAST_RETRIEVED,
           value: 1500000000000,
         }),
-        Object.assign({ priceAndTimeEstimatesLastRetrieved: 1500000000000 }, mockState.gas)
+        { priceAndTimeEstimatesLastRetrieved: 1500000000000, ...mockState },
       )
     })
 
@@ -263,7 +245,7 @@ describe('Gas Duck', () => {
           type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED,
           value: 1700000000000,
         }),
-        Object.assign({ basicPriceAndTimeEstimatesLastRetrieved: 1700000000000 }, mockState.gas)
+        { basicPriceAndTimeEstimatesLastRetrieved: 1700000000000, ...mockState },
       )
     })
 
@@ -273,35 +255,27 @@ describe('Gas Duck', () => {
           type: SET_CUSTOM_GAS_ERRORS,
           value: { someError: 'error_error' },
         }),
-        Object.assign({ errors: { someError: 'error_error' } }, mockState.gas)
+        { errors: { someError: 'error_error' }, ...mockState },
       )
     })
 
     it('should return the initial state in response to a RESET_CUSTOM_GAS_STATE action', () => {
       assert.deepEqual(
-        GasReducer(mockState, {
-          type: RESET_CUSTOM_GAS_STATE,
-        }),
-        Object.assign({}, initState)
+        GasReducer(mockState, { type: RESET_CUSTOM_GAS_STATE }),
+        initState,
       )
     })
   })
 
   describe('basicGasEstimatesLoadingStarted', () => {
     it('should create the correct action', () => {
-      assert.deepEqual(
-        basicGasEstimatesLoadingStarted(),
-        { type: BASIC_GAS_ESTIMATE_LOADING_STARTED }
-      )
+      assert.deepEqual(basicGasEstimatesLoadingStarted(), { type: BASIC_GAS_ESTIMATE_LOADING_STARTED })
     })
   })
 
   describe('basicGasEstimatesLoadingFinished', () => {
     it('should create the correct action', () => {
-      assert.deepEqual(
-        basicGasEstimatesLoadingFinished(),
-        { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }
-      )
+      assert.deepEqual(basicGasEstimatesLoadingFinished(), { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED })
     })
   })
 
@@ -309,11 +283,9 @@ describe('Gas Duck', () => {
     it('should call fetch with the expected params', async () => {
       const mockDistpatch = sinon.spy()
 
-      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
-        {},
-        initState,
-        { basicPriceAEstimatesLastRetrieved: 1000000 }
-      ) }))
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({
+        gas: { ...initState, basicPriceAEstimatesLastRetrieved: 1000000 },
+      }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]

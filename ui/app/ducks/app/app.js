@@ -1,33 +1,9 @@
-import txHelper from '../../../lib/tx-helper'
-import log from 'loglevel'
-import { actionConstants } from '../../store/actions'
-
-const actions = actionConstants
+import { actionConstants as actions } from '../../store/actions'
 
 // Actions
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
-export default function reduceApp (state, action) {
-  log.debug('App Reducer got ' + action.type)
-  // clone and defaults
-  const selectedAddress = state.metamask.selectedAddress
-  const hasUnconfActions = checkUnconfActions(state)
-  let name = 'accounts'
-  if (selectedAddress) {
-    name = 'accountDetail'
-  }
-
-  if (hasUnconfActions) {
-    log.debug('pending txs detected, defaulting to conf-tx view.')
-    name = 'confTx'
-  }
-
-  const defaultView = {
-    name,
-    detailView: null,
-    context: selectedAddress,
-  }
-
+export default function reduceApp (state = {}, action) {
   // default state
   const appState = Object.assign({
     shouldClose: false,
@@ -52,7 +28,6 @@ export default function reduceApp (state, action) {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
-    currentView: defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -79,7 +54,7 @@ export default function reduceApp (state, action) {
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
-  }, state.appState)
+  }, state)
 
   switch (action.type) {
     // dropdown methods
@@ -157,7 +132,7 @@ export default function reduceApp (state, action) {
       return {
         ...appState,
         modal: Object.assign(
-          state.appState.modal,
+          appState.modal,
           { open: false },
           { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState },
@@ -172,26 +147,14 @@ export default function reduceApp (state, action) {
       }
 
     case actions.FORGOT_PASSWORD:
-      const newState = {
+      return {
         ...appState,
         forgottenPassword: action.value,
       }
 
-      if (action.value) {
-        newState.currentView = {
-          name: 'restoreVault',
-        }
-      }
-
-      return newState
-
     case actions.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
-        currentView: {
-          name: 'sendToken',
-          context: appState.currentView.context,
-        },
         transForward: true,
         warning: null,
       }
@@ -211,7 +174,6 @@ export default function reduceApp (state, action) {
     case actions.LOCK_METAMASK:
       return {
         ...appState,
-        currentView: defaultView,
         transForward: false,
         warning: null,
       }
@@ -221,10 +183,6 @@ export default function reduceApp (state, action) {
     case actions.GO_HOME:
       return {
         ...appState,
-        currentView: {
-          ...appState.currentView,
-          name: 'accountDetail',
-        },
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',
@@ -238,10 +196,6 @@ export default function reduceApp (state, action) {
       return {
         ...appState,
         forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
-        currentView: {
-          name: 'accountDetail',
-          context: action.value,
-        },
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',
@@ -253,9 +207,6 @@ export default function reduceApp (state, action) {
     case actions.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
-        currentView: {
-          name: 'accounts',
-        },
         transForward: true,
         isLoading: false,
         warning: null,
@@ -266,44 +217,28 @@ export default function reduceApp (state, action) {
     case actions.SHOW_CONF_TX_PAGE:
       return {
         ...appState,
-        currentView: {
-          name: 'confTx',
-          context: action.id ? indexForPending(state, action.id) : 0,
-        },
+        txId: action.id,
         transForward: action.transForward,
         warning: null,
         isLoading: false,
       }
 
     case actions.COMPLETED_TX:
-      log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      const otherUnconfActions = getUnconfActionList(state)
-        .filter(tx => tx.id !== action.value)
-      const hasOtherUnconfActions = otherUnconfActions.length > 0
-
-      if (hasOtherUnconfActions) {
-        log.debug('reducer detected txs - rendering confTx view')
+      if (action.value.unconfirmedActionsCount > 0) {
         return {
           ...appState,
           transForward: false,
-          currentView: {
-            name: 'confTx',
-            context: 0,
-          },
+          txId: null,
           warning: null,
         }
       } else {
-        log.debug('attempting to close popup')
         return {
           ...appState,
           // indicate notification should close
           shouldClose: true,
           transForward: false,
           warning: null,
-          currentView: {
-            name: 'accountDetail',
-            context: state.metamask.selectedAddress,
-          },
+          txId: null,
           accountDetail: {
             subview: 'transactions',
           },
@@ -313,10 +248,6 @@ export default function reduceApp (state, action) {
     case actions.TRANSACTION_ERROR:
       return {
         ...appState,
-        currentView: {
-          name: 'confTx',
-          errorMessage: 'There was a problem submitting this transaction.',
-        },
       }
 
     case actions.UNLOCK_FAILED:
@@ -421,10 +352,6 @@ export default function reduceApp (state, action) {
     case actions.SHOW_QR_VIEW:
       return {
         ...appState,
-        currentView: {
-          name: 'qr',
-          context: appState.currentView.context,
-        },
         transForward: true,
         Qr: {
           message: action.value.message,
@@ -524,26 +451,4 @@ export function setThreeBoxLastUpdated (lastUpdated) {
     type: SET_THREEBOX_LAST_UPDATED,
     value: lastUpdated,
   }
-}
-
-// Helpers
-function checkUnconfActions (state) {
-  const unconfActionList = getUnconfActionList(state)
-  const hasUnconfActions = unconfActionList.length > 0
-  return hasUnconfActions
-}
-
-function getUnconfActionList (state) {
-  const { unapprovedTxs, unapprovedMsgs,
-    unapprovedPersonalMsgs, unapprovedTypedMessages, network } = state.metamask
-
-  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-  return unconfActionList
-}
-
-function indexForPending (state, txId) {
-  const unconfTxList = getUnconfActionList(state)
-  const match = unconfTxList.find((tx) => tx.id === txId)
-  const index = unconfTxList.indexOf(match)
-  return index
 }

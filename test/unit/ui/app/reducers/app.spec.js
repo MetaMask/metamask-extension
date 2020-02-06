@@ -7,13 +7,11 @@ const actions = actionConstants
 describe('App State', () => {
 
   const metamaskState = {
-    metamask: {
-      selectedAddress: '0xAddress',
-      identities: {
-        '0xAddress': {
-          name: 'account 1',
-          address: '0xAddress',
-        },
+    selectedAddress: '0xAddress',
+    identities: {
+      '0xAddress': {
+        name: 'account 1',
+        address: '0xAddress',
       },
     },
   }
@@ -24,7 +22,7 @@ describe('App State', () => {
     assert(initState)
   })
 
-  it('sets networkd dropdown to true', () => {
+  it('sets networkDropdownOpen dropdown to true', () => {
     const state = reduceApp(metamaskState, {
       type: actions.NETWORK_DROPDOWN_OPEN,
     })
@@ -32,7 +30,7 @@ describe('App State', () => {
     assert.equal(state.networkDropdownOpen, true)
   })
 
-  it('sets networkd dropdown to false', () => {
+  it('sets networkDropdownOpen dropdown to false', () => {
     const dropdown = { networkDropdowopen: true }
     const state = { ...metamaskState, ...dropdown }
     const newState = reduceApp(state, {
@@ -129,7 +127,7 @@ describe('App State', () => {
     assert.equal(newState.modal.modalState.name, null)
   })
 
-  it('tansitions forwards', () => {
+  it('transitions forwards', () => {
     const state = reduceApp(metamaskState, {
       type: actions.TRANSITION_FORWARD,
     })
@@ -137,22 +135,11 @@ describe('App State', () => {
     assert.equal(state.transForward, true)
   })
 
-  it('sets forgot password', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.FORGOT_PASSWORD,
-      value: true,
-    })
-
-    assert.equal(state.currentView.name, 'restoreVault')
-  })
-
   it('shows send token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,
     })
 
-    assert.equal(state.currentView.name, 'sendToken')
-    assert.equal(state.currentView.context, '0xAddress')
     assert.equal(state.transForward, true)
     assert.equal(state.warning, null)
   })
@@ -173,8 +160,6 @@ describe('App State', () => {
       type: actions.LOCK_METAMASK,
     })
 
-    assert.equal(state.currentView.name, 'accountDetail')
-    assert.equal(state.currentView.context, '0xAddress')
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
   })
@@ -184,7 +169,6 @@ describe('App State', () => {
       type: actions.GO_HOME,
     })
 
-    assert.equal(state.currentView.name, 'accountDetail')
     assert.equal(state.accountDetail.subview, 'transactions')
     assert.equal(state.accountDetail.accountExport, 'none')
     assert.equal(state.accountDetail.privateKey, '')
@@ -199,8 +183,6 @@ describe('App State', () => {
       value: 'context address',
     })
     assert.equal(state.forgottenPassword, null) // default
-    assert.equal(state.currentView.name, 'accountDetail')
-    assert.equal(state.currentView.context, 'context address')
     assert.equal(state.accountDetail.subview, 'transactions') // default
     assert.equal(state.accountDetail.accountExport, 'none') // default
     assert.equal(state.accountDetail.privateKey, '') // default
@@ -213,7 +195,6 @@ describe('App State', () => {
       type: actions.SHOW_ACCOUNTS_PAGE,
     })
 
-    assert.equal(state.currentView.name, 'accounts')
     assert.equal(state.transForward, true)
     assert.equal(state.isLoading, false)
     assert.equal(state.warning, null)
@@ -232,17 +213,14 @@ describe('App State', () => {
         },
       },
     }
-    const oldState = {
-      metamask: { ...metamaskState.metamask, ...txs },
-    }
+    const oldState = { ...metamaskState, ...txs }
     const state = reduceApp(oldState, {
       type: actions.SHOW_CONF_TX_PAGE,
       id: 2,
       transForward: false,
     })
 
-    assert.equal(state.currentView.name, 'confTx')
-    assert.equal(state.currentView.context, 1)
+    assert.equal(state.txId, 2)
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.isLoading, false)
@@ -261,17 +239,16 @@ describe('App State', () => {
       },
     }
 
-    const oldState = {
-      metamask: { ...metamaskState, ...txs },
-    }
+    const oldState = { ...metamaskState, ...txs }
 
     const state = reduceApp(oldState, {
       type: actions.COMPLETED_TX,
-      value: 1,
+      value: {
+        id: 1,
+      },
     })
 
-    assert.equal(state.currentView.name, 'confTx')
-    assert.equal(state.currentView.context, 0)
+    assert.equal(state.txId, null)
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
   })
@@ -279,23 +256,15 @@ describe('App State', () => {
   it('returns to account detail page when no unconf actions completed tx', () => {
     const state = reduceApp(metamaskState, {
       type: actions.COMPLETED_TX,
+      value: {
+        unconfirmedActionsCount: 0,
+      },
     })
 
-    assert.equal(state.currentView.name, 'accountDetail')
-    assert.equal(state.currentView.context, '0xAddress')
     assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.accountDetail.subview, 'transactions')
 
-  })
-
-  it('sets error message in confTx view', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.TRANSACTION_ERROR,
-    })
-
-    assert.equal(state.currentView.name, 'confTx')
-    assert.equal(state.currentView.errorMessage, 'There was a problem submitting this transaction.')
   })
 
   it('sets default warning when unlock fails', () => {
@@ -423,13 +392,11 @@ describe('App State', () => {
     }
 
     const appState = {
-      appState: {
-        buyView: {
-          buyAddress: '0xAddress',
-          amount: '12.00',
-          formView: {
-            coinOptions,
-          },
+      buyView: {
+        buyAddress: '0xAddress',
+        amount: '12.00',
+        formView: {
+          coinOptions,
         },
       },
     }
@@ -477,10 +444,8 @@ describe('App State', () => {
 
   it('shows qr view', () => {
     const appState = {
-      appState: {
-        currentView: {
-          context: 'accounts',
-        },
+      currentView: {
+        context: 'accounts',
       },
     }
 
@@ -493,8 +458,6 @@ describe('App State', () => {
       },
     })
 
-    assert.equal(state.currentView.name, 'qr')
-    assert.equal(state.currentView.context, 'accounts')
     assert.equal(state.transForward, true)
     assert.equal(state.Qr.message, 'message')
     assert.equal(state.Qr.data, 'data')
