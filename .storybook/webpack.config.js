@@ -31,7 +31,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      './fonts/Font_Awesome': path.resolve(__dirname, '../fonts/Font_Awesome'),
+      './fonts/Font_Awesome': path.resolve(__dirname, '../app/fonts/Font_Awesome'),
     },
   },
 }
