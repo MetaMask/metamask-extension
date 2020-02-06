@@ -36,7 +36,7 @@ import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import MetamaskInpageProvider from 'metamask-inpage-provider'
 
-// TODO:deprecate:2020-01-13
+// TODO:deprecate:Q1-2020
 import 'web3/dist/web3.min.js'
 
 import setupDappAutoReload from './lib/auto-reload.js'
@@ -70,7 +70,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 //
-// TODO:deprecate:2020-01-13
+// TODO:deprecate:Q1-2020
 //
 
 // setup web3
@@ -95,7 +95,7 @@ proxiedInpageProvider._web3Ref = web3.eth
 setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 
 //
-// end deprecate:2020-01-13
+// end deprecate:Q1-2020
 //
 
 window.ethereum = proxiedInpageProvider

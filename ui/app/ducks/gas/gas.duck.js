@@ -28,7 +28,6 @@ const SET_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_API_ESTIMATES_LAST_RE
 const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_API_ESTIMATES_LAST_RETRIEVED'
 const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
-// TODO: determine if this approach to initState is consistent with conventional ducks pattern
 const initState = {
   customData: {
     price: null,
@@ -57,96 +56,94 @@ const initState = {
 }
 
 // Reducer
-export default function reducer ({ gas: gasState = initState }, action = {}) {
-  const newState = clone(gasState)
-
+export default function reducer (state = initState, action) {
   switch (action.type) {
     case BASIC_GAS_ESTIMATE_LOADING_STARTED:
       return {
-        ...newState,
+        ...state,
         basicEstimateIsLoading: true,
       }
     case BASIC_GAS_ESTIMATE_LOADING_FINISHED:
       return {
-        ...newState,
+        ...state,
         basicEstimateIsLoading: false,
       }
     case GAS_ESTIMATE_LOADING_STARTED:
       return {
-        ...newState,
+        ...state,
         gasEstimatesLoading: true,
       }
     case GAS_ESTIMATE_LOADING_FINISHED:
       return {
-        ...newState,
+        ...state,
         gasEstimatesLoading: false,
       }
     case SET_BASIC_GAS_ESTIMATE_DATA:
       return {
-        ...newState,
+        ...state,
         basicEstimates: action.value,
       }
     case SET_CUSTOM_GAS_PRICE:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           price: action.value,
         },
       }
     case SET_CUSTOM_GAS_LIMIT:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           limit: action.value,
         },
       }
     case SET_CUSTOM_GAS_TOTAL:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           total: action.value,
         },
       }
     case SET_PRICE_AND_TIME_ESTIMATES:
       return {
-        ...newState,
+        ...state,
         priceAndTimeEstimates: action.value,
       }
     case SET_CUSTOM_GAS_ERRORS:
       return {
-        ...newState,
+        ...state,
         errors: {
-          ...newState.errors,
+          ...state.errors,
           ...action.value,
         },
       }
     case SET_API_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         priceAndTimeEstimatesLastRetrieved: action.value,
       }
     case SET_BASIC_API_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         basicPriceAndTimeEstimatesLastRetrieved: action.value,
       }
     case SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         basicPriceEstimatesLastRetrieved: action.value,
       }
     case RESET_CUSTOM_DATA:
       return {
-        ...newState,
+        ...state,
         customData: clone(initState.customData),
       }
     case RESET_CUSTOM_GAS_STATE:
       return clone(initState)
     default:
-      return newState
+      return state
   }
 }
 
