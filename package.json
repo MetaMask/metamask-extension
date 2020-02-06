@@ -49,12 +49,10 @@
     "devtools:redux": "remotedev --hostname=localhost --port=8000",
     "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
     "announce": "node development/announcer.js",
-    "version:bump": "node development/run-version-bump.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "storybook:build": "build-storybook -c .storybook -o .out",
     "storybook:deploy": "storybook-to-ghpages",
     "update-changelog": "./development/auto-changelog.sh",
-    "rollback": "./development/rollback.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
