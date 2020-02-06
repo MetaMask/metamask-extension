@@ -68,7 +68,6 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
-- [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
 - [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
