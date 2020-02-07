@@ -1,12 +1,15 @@
-
 import { ethErrors, ERROR_CODES } from 'eth-json-rpc-errors'
+import { cloneDeep } from 'lodash'
+import EventEmitter from 'events'
 
 import {
-  // SAFE_METHODS,
-  // WALLET_PREFIX,
-  // METADATA_STORE_KEY,
-  // LOG_STORE_KEY,
-  // HISTORY_STORE_KEY,
+  PermissionsController,
+} from '../../../../../app/scripts/controllers/permissions'
+
+import _getRestrictedMethods
+  from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
+
+import {
   CAVEAT_NAMES,
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
@@ -20,7 +23,26 @@ export const keyringAccounts = [
 
 export const DUMMY_ACCOUNT = '0xabc'
 
-export const getKeyringAccounts = async () => keyringAccounts
+const platform = {
+  openExtensionInBrowser: noop,
+}
+
+async function getKeyringAccounts () {
+  return keyringAccounts
+}
+
+export function getPermController (
+  notifyDomain = noop,
+  notifyAllDomains = noop,
+) {
+  return new PermissionsController({
+    platform,
+    getKeyringAccounts,
+    notifyDomain,
+    notifyAllDomains,
+    getRestrictedMethods,
+  })
+}
 
 export const getNotifyDomain = (notifications = {}) => (origin, notification) => {
   notifications[origin].push(notification)
@@ -32,15 +54,43 @@ export const getNotifyAllDomains = (notifications = {}) => (notification) => {
   })
 }
 
+export function getEventEmitter () {
+  return new EventEmitter()
+}
+
+export function grantPermissions (permController, origin, permissions) {
+  permController.permissions.grantNewPermissions(
+    origin, permissions, {}, noop
+  )
+}
+
+// returns a Promise-wrapped middleware function with convenient default args
+export function getPermissionsMiddleware (permController, origin, extensionId) {
+  const middleware = permController.createMiddleware({ origin, extensionId })
+  return (req, res = {}, next = noop, end) => {
+    return new Promise((resolve, reject) => {
+
+      end = end || _end
+
+      middleware(req, res, next, end)
+
+      // emulates json-rpc-engine error handling
+      function _end (err) {
+        if (err || res.error) {
+          reject(err || res.error)
+        } else {
+          resolve(res)
+        }
+      }
+    })
+  }
+}
+
 export const getApprovedPermissionsRequest = (id, permissions = {}) => {
   return {
     permissions,
     metadata: { id },
   }
-}
-
-export const platform = {
-  openExtensionInBrowser: noop,
 }
 
 export const REQUEST_IDS = {
@@ -50,7 +100,6 @@ export const REQUEST_IDS = {
 }
 
 export const ORIGINS = {
-  metamask: 'MetaMask',
   a: 'foo.xyz',
   b: 'bar.abc',
   c: 'baz.def',
@@ -73,22 +122,30 @@ export const CAVEATS = {
   },
 }
 
+export const PERM_NAMES = {
+  eth_accounts: 'eth_accounts',
+  test_method: 'test_method',
+}
+
 export const PERMS = {
 
-  names: {
-    eth_accounts: 'eth_accounts',
+  internalMethods: {
+    request: 'wallet_requestPermissions',
   },
 
-  request: {
+  requests: {
     eth_accounts: () => {
       return { eth_accounts: {} }
     },
-    testMethod: () => {
+    test_method: () => {
       return { test_method: {} }
+    },
+    does_not_exist: () => {
+      return { does_not_exist: {} }
     },
   },
 
-  complete: {
+  finalizedRequests: {
     eth_accounts: (accounts) => {
       return {
         eth_accounts: {
@@ -99,6 +156,25 @@ export const PERMS = {
     test_method: () => {
       return {
         test_method: {},
+      }
+    },
+  },
+
+  /** i.e. members of res.result for successful:
+   * - wallet_requestPermissions
+   * - wallet_getPermissions
+   */
+  granted: {
+    eth_accounts: (accounts) => {
+      return {
+        parentCapability: PERM_NAMES.eth_accounts,
+        caveats: [CAVEATS.eth_accounts(accounts)],
+      }
+    },
+
+    test_method: () => {
+      return {
+        parentCapability: PERM_NAMES.test_method,
       }
     },
   },
@@ -117,6 +193,13 @@ export const NOTIFICATIONS = {
     return {
       method: NOTIFICATION_NAMES.accountsChanged,
       result: accounts,
+    }
+  },
+
+  test: () => {
+    return {
+      method: 'test_notification',
+      result: true,
     }
   },
 }
@@ -212,9 +295,29 @@ export const ERRORS = {
       }
     },
   },
+
+  logAccountExposure: {
+    invalidParams: () => {
+      return {
+        message: 'Must provide non-empty string origin and array of accounts.',
+      }
+    },
+  },
 }
 
 export const rpcRequests = {
+  custom: (origin, method, params = [], id) => {
+    const out = {
+      origin,
+      method,
+      params,
+    }
+    if (id !== undefined) {
+      out.id = id
+    }
+    return out
+  },
+
   eth_accounts: (origin) => {
     return {
       origin,
@@ -239,11 +342,11 @@ export const rpcRequests = {
     }
   },
 
-  requestPermission: (origin, permission) => {
+  requestPermission: (origin, permissionName) => {
     return {
       origin,
       method: 'wallet_requestPermissions',
-      params: [ PERMS.request[permission]() ],
+      params: [ PERMS.requests[permissionName]() ],
     }
   },
 
@@ -267,26 +370,15 @@ export const rpcRequests = {
   },
 }
 
-export function getRestrictedMethods (permissionsController) {
+export const restrictedMethods = [
+  'eth_accounts',
+  'test_method',
+]
+
+export function getRestrictedMethods (instance) {
   return {
 
-    'eth_accounts': {
-      description: `View the addresses of the user's selected accounts.`,
-      method: (_, res, __, end) => {
-        permissionsController.getKeyringAccounts()
-          .then((accounts) => {
-            res.result = accounts
-            end()
-          })
-          .catch(
-            /* istanbul ignore next */
-            (err) => {
-              res.error = err
-              end(err)
-            }
-          )
-      },
-    },
+    ..._getRestrictedMethods(instance),
 
     'test_method': {
       description: `This method is only for testing.`,
@@ -300,4 +392,108 @@ export function getRestrictedMethods (permissionsController) {
       },
     },
   }
+}
+
+export function getRequestLogEntry (request, isInternal) {
+  return {
+    id: request.id,
+    method: request.method,
+    methodType: isInternal ? 'internal' : 'restricted',
+    origin: request.origin,
+    request: cloneDeep(request),
+    requestTime: Date.now(),
+    response: null,
+    responseTime: null,
+    success: null,
+  }
+}
+
+export function addResponseToLogEntry (entry, response, time) {
+  entry.response = cloneDeep(response)
+  entry.responseTime = time
+  entry.success = !response.error
+}
+
+export const EXPECTED_HISTORIES = {
+  case1: [
+    {
+      [ORIGINS.a]: {
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 1,
+          accounts: {
+            [ACCOUNT_ARRAYS.a[0]]: 1,
+            [ACCOUNT_ARRAYS.a[1]]: 1,
+          },
+        },
+      },
+    },
+    {
+      [ORIGINS.a]: {
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 2,
+          accounts: {
+            [ACCOUNT_ARRAYS.a[0]]: 2,
+            [ACCOUNT_ARRAYS.a[1]]: 1,
+          },
+        },
+      },
+    },
+  ],
+  case2: [
+    {
+      [ORIGINS.a]: {
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 1,
+          accounts: {},
+        },
+      },
+    },
+  ],
+  case3: [
+    {
+      [ORIGINS.a]: {
+        [PERM_NAMES.test_method]: { lastApproved: 1 },
+      },
+      [ORIGINS.b]: {
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 1,
+          accounts: {
+            [ACCOUNT_ARRAYS.b[0]]: 1,
+          },
+        },
+      },
+      [ORIGINS.c]: {
+        [PERM_NAMES.test_method]: { lastApproved: 1 },
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 1,
+          accounts: {
+            [ACCOUNT_ARRAYS.c[0]]: 1,
+          },
+        },
+      },
+    },
+    {
+      [ORIGINS.a]: {
+        [PERM_NAMES.test_method]: { lastApproved: 2 },
+      },
+      [ORIGINS.b]: {
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 1,
+          accounts: {
+            [ACCOUNT_ARRAYS.b[0]]: 1,
+          },
+        },
+      },
+      [ORIGINS.c]: {
+        [PERM_NAMES.test_method]: { lastApproved: 1 },
+        [PERM_NAMES.eth_accounts]: {
+          lastApproved: 2,
+          accounts: {
+            [ACCOUNT_ARRAYS.c[0]]: 1,
+            [ACCOUNT_ARRAYS.b[0]]: 2,
+          },
+        },
+      },
+    },
+  ],
 }

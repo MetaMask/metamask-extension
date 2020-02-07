@@ -146,7 +146,7 @@ describe('MetaMask', function () {
       await domains[0].click()
 
       const permissionDescription = await driver.findElement(By.css('.connected-sites-list__permission-description'))
-      assert.equal(await permissionDescription.getText(), 'View the address of the selected account')
+      assert.equal(await permissionDescription.getText(), `View the addresses of the user's chosen accounts.`)
     })
 
     it('can get accounts within the dapp', async function () {
