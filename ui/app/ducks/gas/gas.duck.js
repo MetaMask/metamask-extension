@@ -216,7 +216,7 @@ export function fetchBasicGasEstimates () {
 
 async function fetchExternalBasicGasEstimates (
   dispatch,
-  { rpcUrl = 'http://13.67.73.51:12537' }
+  { rpcUrl = 'http://testnet-jsonrpc.conflux-chain.org:12537' }
 ) {
   const [response, estimateGasResult] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json', {
@@ -314,7 +314,7 @@ export function fetchBasicGasAndTimeEstimates () {
 
 async function fetchExternalBasicGasAndTimeEstimates (
   dispatch,
-  { rpcUrl = 'http://13.67.73.51:12537' }
+  { rpcUrl = 'http://testnet-jsonrpc.conflux-chain.org:12537' }
 ) {
   const [response, estimateGasResult] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json', {
