@@ -10226,6 +10226,13 @@ eth-json-rpc-errors@^2.0.0:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
+eth-json-rpc-errors@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-2.0.1.tgz#e7a4c4e3c76913dff26dbc021966c72b2822e0f2"
+  integrity sha512-ldF9fdzkdHAgTWmqh/bgHi7uH+8icAyjcEdFOBGD32zTWd7J66VDo0rBaiaQPowXitiyAcs1R23Mje1gkdIofA==
+  dependencies:
+    fast-safe-stringify "^2.0.6"
+
 eth-json-rpc-filters@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.1.1.tgz#15277c66790236d85f798f4d7dc6bab99a798cd2"
@@ -18868,12 +18875,11 @@ mersenne-twister@^1.0.1, mersenne-twister@^1.1.0:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@^4.0.4:
+metamask-inpage-provider@MetaMask/metamask-inpage-provider#class-conversion:
   version "4.0.4"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.4.tgz#697121873bf686a1fddc671832d9adbceda4c9ae"
-  integrity sha512-DCuqQ1NpAScesjvJac+8k4SbKzgcbmP78sAvo96i04qIszzH0LMg0dZLEViTz6/uqM7nU6JO3NIAcNF3iA2Lpw==
+  resolved "https://codeload.github.com/MetaMask/metamask-inpage-provider/tar.gz/1ef35db919d88e843f845e2b84e7dbd0f8f83b7a"
   dependencies:
-    eth-json-rpc-errors "^2.0.0"
+    eth-json-rpc-errors "^2.0.1"
     fast-deep-equal "^2.0.1"
     json-rpc-engine "^5.1.5"
     json-rpc-middleware-stream "^2.1.1"
