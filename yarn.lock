@@ -3342,10 +3342,10 @@
   resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-contract-metadata/-/cfx-contract-metadata-0.0.3.tgz#84d85462481c74d686b068dae32a2eb246f86c8a"
   integrity sha512-aSvIpJVc+/d6TWSHBsji/lK8zpKIV3XNtdnC6RGRt7K3P3C20E3+vXHVB75UcuVTNpBJnd6rXkSsk6bxRP5luQ==
 
-"@yqrashawn/cfx-json-rpc-middleware@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.2.tgz#421fbaaeb80a7fb0fef9485d1ed5f7e662cebf52"
-  integrity sha512-CmjEO0yzo4/XWNeKe2aBunkw6y5L2IJiV+zC8KFp2g3oMpcANDsGFRv72XLPmgceE+ayEOXReItCrtHkXmT4PQ==
+"@yqrashawn/cfx-json-rpc-middleware@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-json-rpc-middleware/-/cfx-json-rpc-middleware-4.4.3.tgz#4a895eb093d93557544bb67a808ec19de4a23f8a"
+  integrity sha512-nh4R2EjcSs9pAbgbwORiHhcCqI7A7nA7bpP4UOKqTcucPH/JfiVTWWX2hO5ILumZnWCkP7Vd0Jng7I8lfLqc1A==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
@@ -10918,7 +10918,7 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^3.5.0:
+eth-hd-keyring@^3.4.0, eth-hd-keyring@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.5.0.tgz#3976d83a27b24305481c389178f290d9264e839d"
   integrity sha512-Ix1LcWYxHMxCCSIMz+TLXLtt50zF6ZDd/TRVXthdw91IwOk1ajuf7QHg3bCDcfeUpdf9oEpwIPbL3xjDqEEjYw==
@@ -11149,7 +11149,7 @@ eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
 
-eth-simple-keyring@^3.5.0:
+eth-simple-keyring@^3.4.0, eth-simple-keyring@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-3.5.0.tgz#c7fa285ca58d31ef44bc7db678b689f9ffd7b453"
   integrity sha512-z9IPt9aoMWAw5Zc3Jk/HKbWPJNc7ivZ5ECNtl3ZoQUGRnwoWO71W5+liVPJtXFNacGOOGsBfqTqrXL9C4EnYYQ==
