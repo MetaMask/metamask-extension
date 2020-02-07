@@ -55,6 +55,14 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": ["eslint --ext js,json --fix"]
+  },
   "resolutions": {
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
     "pubnub/superagent-proxy": "^2.0.0"
@@ -114,10 +122,12 @@
     "fuse.js": "^3.2.0",
     "gaba": "^1.9.3",
     "human-standard-token-abi": "^2.0.0",
+    "husky": "^4.2.1",
     "jazzicon": "^2.0.0",
     "json-rpc-engine": "^5.1.6",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
+    "lint-staged": "^10.0.7",
     "lodash": "^4.17.15",
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
