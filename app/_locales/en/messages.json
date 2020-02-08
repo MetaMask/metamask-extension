@@ -1187,7 +1187,7 @@
     "message": "Separate each word with a single space"
   },
   "seedPhraseReq": {
-    "message": "Seed phrases are 12 words long"
+    "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
   },
   "selectCurrency": {
     "message": "Select Currency"
