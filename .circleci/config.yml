@@ -16,6 +16,9 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - prep-build-storybook:
+          requires:
+            - prep-deps
       - prep-scss:
           requires:
             - prep-deps
@@ -79,12 +82,12 @@ workflows:
             - prep-deps
             - prep-build
             - all-tests-pass
-      # - job-publish-storybook:
-      #     filters:
-      #       branches:
-      #         only: develop
-      #     requires:
-      #       - prep-deps
+      - job-publish-storybook:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-storybook
       - coveralls-upload:
           requires:
             - test-unit
@@ -157,6 +160,21 @@ jobs:
           root: .
           paths:
             - dist-test
+
+  prep-build-storybook:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Storybook
+          command: yarn storybook:build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .out
 
   prep-scss:
     docker:
@@ -330,16 +348,22 @@ jobs:
       - run:
           name: Create GitHub Pull Request to sync master with develop
           command: .circleci/scripts/release-create-master-pr
-  # job-publish-storybook:
-  #   docker:
-  #     - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: storybook:deploy
-  #         command: yarn storybook:deploy
+
+  job-publish-storybook:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5e:a3:2d:35:b6:25:b5:87:b1:41:11:0d:77:50:96:73"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: storybook:deploy
+          command: |
+            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
+            yarn storybook:deploy
 
   test-unit:
     docker:
