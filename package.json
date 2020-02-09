@@ -18,7 +18,6 @@
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive mocha test/unit-global/*",
-    "test:single": "mocha --require test/env.js --require test/helper.js",
     "test:integration": "yarn test:integration:build && yarn test:flat",
     "test:integration:build": "gulp build:scss",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
