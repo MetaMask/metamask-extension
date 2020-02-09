@@ -53,24 +53,24 @@ describe('Using MetaMask with an existing account', function () {
     await driver.quit()
   })
 
-  describe('First time flow starting from an existing seed phrase', () => {
-    it('clicks the continue button on the welcome screen', async () => {
+  describe('First time flow starting from an existing seed phrase', function () {
+    it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Import Wallet" option', async () => {
+    it('clicks the "Import Wallet" option', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async () => {
+    it('imports a seed phrase', async function () {
       const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
@@ -86,14 +86,14 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through the success screen', async () => {
+    it('clicks through the success screen', async function () {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
   })
 
-  describe('Send ETH from inside MetaMask', () => {
+  describe('Send ETH from inside MetaMask', function () {
     it('starts a send transaction', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
       await driver.delay(regularDelayMs)

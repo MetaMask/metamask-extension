@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import SelectAction from '../index'
 
-describe('Selection Action', () => {
+describe('Selection Action', function () {
   let wrapper
 
   const props = {
@@ -15,18 +15,18 @@ describe('Selection Action', () => {
     },
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mountWithRouter(
       <SelectAction.WrappedComponent {...props} />
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.setFirstTimeFlowType.resetHistory()
     props.history.push.resetHistory()
   })
 
-  it('clicks import wallet to route to import FTF', () => {
+  it('clicks import wallet to route to import FTF', function () {
     const importWalletButton = wrapper.find('.btn-primary.first-time-flow__button').at(0)
     importWalletButton.simulate('click')
 
@@ -35,7 +35,7 @@ describe('Selection Action', () => {
     assert(props.history.push.calledOnce)
   })
 
-  it('clicks create wallet to route to create FTF ', () => {
+  it('clicks create wallet to route to create FTF ', function () {
     const createWalletButton = wrapper.find('.btn-primary.first-time-flow__button').at(1)
     createWalletButton.simulate('click')
 

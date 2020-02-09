@@ -5,12 +5,12 @@ import sinon from 'sinon'
 import Button from '../../../button'
 import PageFooter from '../page-container-footer.component'
 
-describe('Page Footer', () => {
+describe('Page Footer', function () {
   let wrapper
   const onCancel = sinon.spy()
   const onSubmit = sinon.spy()
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow((
       <PageFooter
         onCancel={onCancel}
@@ -23,11 +23,11 @@ describe('Page Footer', () => {
     ))
   })
 
-  it('renders page container footer', () => {
+  it('renders page container footer', function () {
     assert.equal(wrapper.find('.page-container__footer').length, 1)
   })
 
-  it('should render a footer inside page-container__footer when given children', () => {
+  it('should render a footer inside page-container__footer when given children', function () {
     const wrapper = shallow(
       <PageFooter>
         <div>Works</div>
@@ -38,42 +38,42 @@ describe('Page Footer', () => {
     assert.equal(wrapper.find('.page-container__footer footer').length, 1)
   })
 
-  it('renders two button components', () => {
+  it('renders two button components', function () {
     assert.equal(wrapper.find(Button).length, 2)
   })
 
-  describe('Cancel Button', () => {
+  describe('Cancel Button', function () {
 
-    it('has button type of default', () => {
+    it('has button type of default', function () {
       assert.equal(wrapper.find('.page-container__footer-button').first().prop('type'), 'default')
     })
 
-    it('has children text of Cancel', () => {
+    it('has children text of Cancel', function () {
       assert.equal(wrapper.find('.page-container__footer-button').first().prop('children'), 'Cancel')
     })
 
-    it('should call cancel when click is simulated', () => {
+    it('should call cancel when click is simulated', function () {
       wrapper.find('.page-container__footer-button').first().prop('onClick')()
       assert.equal(onCancel.callCount, 1)
     })
 
   })
 
-  describe('Submit Button', () => {
+  describe('Submit Button', function () {
 
-    it('assigns button type based on props', () => {
+    it('assigns button type based on props', function () {
       assert.equal(wrapper.find('.page-container__footer-button').last().prop('type'), 'Test Type')
     })
 
-    it('has disabled prop', () => {
+    it('has disabled prop', function () {
       assert.equal(wrapper.find('.page-container__footer-button').last().prop('disabled'), false)
     })
 
-    it('has children text when submitText prop exists', () => {
+    it('has children text when submitText prop exists', function () {
       assert.equal(wrapper.find('.page-container__footer-button').last().prop('children'), 'Submit')
     })
 
-    it('should call submit when click is simulated', () => {
+    it('should call submit when click is simulated', function () {
       wrapper.find('.page-container__footer-button').last().prop('onClick')()
       assert.equal(onSubmit.callCount, 1)
     })

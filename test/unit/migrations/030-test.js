@@ -23,8 +23,8 @@ const storage = {
   },
 }
 
-describe('storage is migrated successfully', () => {
-  it('should work', (done) => {
+describe('storage is migrated successfully', function () {
+  it('should work', function (done) {
     migrationTemplate.migrate(storage)
       .then((migratedData) => {
         assert.equal(migratedData.meta.version, 30)

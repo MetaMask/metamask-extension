@@ -8,10 +8,10 @@ import {
   submittedPendingTransactionsSelector,
 } from '../transactions'
 
-describe('Transaction Selectors', () => {
+describe('Transaction Selectors', function () {
 
-  describe('unapprovedMessagesSelector', () => {
-    it('returns eth sign msg from unapprovedMsgs', () => {
+  describe('unapprovedMessagesSelector', function () {
+    it('returns eth sign msg from unapprovedMsgs', function () {
 
       const msg = {
         id: 1,
@@ -39,7 +39,7 @@ describe('Transaction Selectors', () => {
       assert.deepEqual(msgSelector, [msg])
     })
 
-    it('returns personal sign from unapprovedPersonalMsgsSelector', () => {
+    it('returns personal sign from unapprovedPersonalMsgsSelector', function () {
 
       const msg = {
         id: 1,
@@ -67,7 +67,7 @@ describe('Transaction Selectors', () => {
       assert.deepEqual(msgSelector, [msg])
     })
 
-    it('returns typed message from unapprovedTypedMessagesSelector', () => {
+    it('returns typed message from unapprovedTypedMessagesSelector', function () {
 
       const msg = {
         id: 1,
@@ -98,9 +98,9 @@ describe('Transaction Selectors', () => {
     })
   })
 
-  describe('transactionsSelector', () => {
+  describe('transactionsSelector', function () {
 
-    it('selectedAddressTxList', () => {
+    it('selectedAddressTxList', function () {
 
       const state = {
         metamask: {
@@ -136,7 +136,7 @@ describe('Transaction Selectors', () => {
       assert.deepEqual(txSelector, orderedTxlist)
     })
 
-    it('returns token tx from selectedAddressTxList when selectedTokenAddress is valid', () => {
+    it('returns token tx from selectedAddressTxList when selectedTokenAddress is valid', function () {
 
       const state = {
         metamask: {
@@ -177,9 +177,9 @@ describe('Transaction Selectors', () => {
 
   })
 
-  describe('nonceSortedTransactionsSelector', () => {
+  describe('nonceSortedTransactionsSelector', function () {
 
-    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
+    it('returns transaction group nonce sorted tx from from selectedTxList wit', function () {
 
       const tx1 = {
         id: 0,
@@ -236,7 +236,7 @@ describe('Transaction Selectors', () => {
     })
   })
 
-  describe('Sorting Transactions Selectors', () => {
+  describe('Sorting Transactions Selectors', function () {
 
     const submittedTx = {
       id: 0,
@@ -296,7 +296,7 @@ describe('Transaction Selectors', () => {
       },
     }
 
-    it('nonceSortedPendingTransactionsSelector', () => {
+    it('nonceSortedPendingTransactionsSelector', function () {
 
       const expectedResult = [
         {
@@ -328,7 +328,7 @@ describe('Transaction Selectors', () => {
       assert.deepEqual(nonceSortedPendingTransactionsSelector(state), expectedResult)
     })
 
-    it('nonceSortedCompletedTransactionsSelector', () => {
+    it('nonceSortedCompletedTransactionsSelector', function () {
 
       const expectedResult = [
         {
@@ -344,7 +344,7 @@ describe('Transaction Selectors', () => {
       assert.deepEqual(nonceSortedCompletedTransactionsSelector(state), expectedResult)
     })
 
-    it('submittedPendingTransactionsSelector', () => {
+    it('submittedPendingTransactionsSelector', function () {
 
       const expectedResult = [ submittedTx ]
       assert.deepEqual(submittedPendingTransactionsSelector(state), expectedResult)

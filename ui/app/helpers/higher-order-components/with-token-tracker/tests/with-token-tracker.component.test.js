@@ -10,10 +10,10 @@ const { createTestProviderTools } = require('../../../../../../test/stub/provide
 
 const provider = createTestProviderTools({ scaffold: {} }).provider
 
-describe('WithTokenTracker HOC', () => {
+describe('WithTokenTracker HOC', function () {
   let wrapper
 
-  beforeEach(() => {
+  beforeEach(function () {
     const TokenTracker = withTokenTracker(TokenBalance)
     wrapper = shallow(
       <TokenTracker
@@ -27,12 +27,12 @@ describe('WithTokenTracker HOC', () => {
     )
   })
 
-  it('#setError', () => {
+  it('#setError', function () {
     wrapper.instance().setError('test')
     assert.equal(wrapper.props().error, 'test')
   })
 
-  it('#updateBalance', () => {
+  it('#updateBalance', function () {
     wrapper.instance().tracker = new TokenTracker({
       provider,
     })

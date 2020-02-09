@@ -6,7 +6,7 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import MenuBar from '../index'
 import { Provider } from 'react-redux'
 
-describe('MenuBar', () => {
+describe('MenuBar', function () {
   let wrapper
 
   const mockStore = {
@@ -38,11 +38,11 @@ describe('MenuBar', () => {
 
   const store = configureStore()(mockStore)
 
-  afterEach(() => {
+  afterEach(function () {
     sinon.restore()
   })
 
-  it('shows side bar when sidbarOpen is set to false', () => {
+  it('shows side bar when sidbarOpen is set to false', function () {
     const props = {
       showSidebar: sinon.spy(),
     }
@@ -58,7 +58,7 @@ describe('MenuBar', () => {
     assert(props.showSidebar.calledOnce)
   })
 
-  it('hides side when sidebarOpen is set to true', () => {
+  it('hides side when sidebarOpen is set to true', function () {
     const props = {
       showSidebar: sinon.spy(),
       hideSidebar: sinon.spy(),
@@ -76,13 +76,13 @@ describe('MenuBar', () => {
     assert(props.hideSidebar.calledOnce)
   })
 
-  it('opens account detail menu when account options is clicked', () => {
+  it('opens account detail menu when account options is clicked', function () {
     const accountOptions = wrapper.find('.menu-bar__open-in-browser')
     accountOptions.simulate('click')
     assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, true)
   })
 
-  it('sets accountDetailsMenuOpen to false when closed', () => {
+  it('sets accountDetailsMenuOpen to false when closed', function () {
     wrapper.find('MenuBar').instance().setState({ accountDetailsMenuOpen: true })
     wrapper.update()
 

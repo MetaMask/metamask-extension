@@ -12,7 +12,7 @@ describe('nodeify', function () {
 
   it('should retain original context', function (done) {
     const nodified = nodeify(obj.promiseFunc, obj)
-    nodified('baz', function (err, res) {
+    nodified('baz', (err, res) => {
       if (!err) {
         assert.equal(res, 'barbaz')
         done()
@@ -36,7 +36,7 @@ describe('nodeify', function () {
     const nodified = nodeify(async () => {
       throw new Error('boom!')
     }, obj)
-    process.prependOnceListener('uncaughtException', function (err) {
+    process.prependOnceListener('uncaughtException', (err) => {
       assert.ok(err, 'got expected error')
       assert.ok(err.message.includes('boom!'), 'got expected error message')
       done()

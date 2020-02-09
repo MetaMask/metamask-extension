@@ -3,8 +3,8 @@ import nock from 'nock'
 
 import fetchWithTimeout from '../../../app/scripts/lib/fetch-with-timeout'
 
-describe('fetchWithTimeout', () => {
-  it('fetches a url', async () => {
+describe('fetchWithTimeout', function () {
+  it('fetches a url', async function () {
     nock('https://api.infura.io')
       .get('/money')
       .reply(200, '{"hodl": false}')
@@ -16,7 +16,7 @@ describe('fetchWithTimeout', () => {
     })
   })
 
-  it('throws when the request hits a custom timeout', async () => {
+  it('throws when the request hits a custom timeout', async function () {
     nock('https://api.infura.io')
       .get('/moon')
       .delay(2000)
@@ -34,7 +34,7 @@ describe('fetchWithTimeout', () => {
     }
   })
 
-  it('should abort the request when the custom timeout is hit', async () => {
+  it('should abort the request when the custom timeout is hit', async function () {
     nock('https://api.infura.io')
       .get('/moon')
       .delay(2000)

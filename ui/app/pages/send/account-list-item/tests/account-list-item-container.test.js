@@ -24,11 +24,11 @@ proxyquire('../account-list-item.container.js', {
   },
 })
 
-describe('account-list-item container', () => {
+describe('account-list-item container', function () {
 
-  describe('mapStateToProps()', () => {
+  describe('mapStateToProps()', function () {
 
-    it('should map the correct properties to props', () => {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: true, showFiatInTestnets: false }), {
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
@@ -36,7 +36,7 @@ describe('account-list-item container', () => {
       })
     })
 
-    it('should map the correct properties to props when in mainnet and showFiatInTestnet is true', () => {
+    it('should map the correct properties to props when in mainnet and showFiatInTestnet is true', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: true, showFiatInTestnets: true }), {
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
@@ -44,7 +44,7 @@ describe('account-list-item container', () => {
       })
     })
 
-    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is true', () => {
+    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is true', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: false, showFiatInTestnets: true }), {
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
@@ -52,7 +52,7 @@ describe('account-list-item container', () => {
       })
     })
 
-    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is false', () => {
+    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is false', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: false, showFiatInTestnets: false }), {
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',

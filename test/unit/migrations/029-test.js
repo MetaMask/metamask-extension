@@ -17,8 +17,8 @@ const storage = {
   },
 }
 
-describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
-  it('should auto fail transactions more than 12 hours old', (done) => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', function () {
+  it('should auto fail transactions more than 12 hours old', function (done) {
     migration29.migrate(storage)
       .then((migratedData) => {
         const txs = migratedData.data.TransactionController.transactions

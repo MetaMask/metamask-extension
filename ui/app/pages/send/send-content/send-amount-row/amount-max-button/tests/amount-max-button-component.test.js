@@ -17,7 +17,7 @@ describe('AmountMaxButton Component', function () {
   let wrapper
   let instance
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow((
       <AmountMaxButton
         balance="mockBalance"
@@ -37,15 +37,15 @@ describe('AmountMaxButton Component', function () {
     instance = wrapper.instance()
   })
 
-  afterEach(() => {
+  afterEach(function () {
     propsMethodSpies.setAmountToMax.resetHistory()
     propsMethodSpies.setMaxModeTo.resetHistory()
     AmountMaxButton.prototype.setMaxAmount.resetHistory()
   })
 
-  describe('setMaxAmount', () => {
+  describe('setMaxAmount', function () {
 
-    it('should call setAmountToMax with the correct params', () => {
+    it('should call setAmountToMax with the correct params', function () {
       assert.equal(propsMethodSpies.setAmountToMax.callCount, 0)
       instance.setMaxAmount()
       assert.equal(propsMethodSpies.setAmountToMax.callCount, 1)
@@ -62,12 +62,12 @@ describe('AmountMaxButton Component', function () {
 
   })
 
-  describe('render', () => {
-    it('should render an element with a send-v2__amount-max class', () => {
+  describe('render', function () {
+    it('should render an element with a send-v2__amount-max class', function () {
       assert(wrapper.exists('.send-v2__amount-max'))
     })
 
-    it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', () => {
+    it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', function () {
       const {
         onClick,
       } = wrapper.find('.send-v2__amount-max').props()
@@ -83,7 +83,7 @@ describe('AmountMaxButton Component', function () {
       )
     })
 
-    it('should render the expected text when maxModeOn is false', () => {
+    it('should render the expected text when maxModeOn is false', function () {
       wrapper.setProps({ maxModeOn: false })
       assert.equal(wrapper.find('.send-v2__amount-max').text(), 'max_t')
     })

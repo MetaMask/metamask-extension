@@ -52,24 +52,24 @@ describe('Using MetaMask with an existing account', function () {
     await driver.quit()
   })
 
-  describe('First time flow starting from an existing seed phrase', () => {
-    it('clicks the continue button on the welcome screen', async () => {
+  describe('First time flow starting from an existing seed phrase', function () {
+    it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Import Wallet" option', async () => {
+    it('clicks the "Import Wallet" option', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async () => {
+    it('imports a seed phrase', async function () {
       const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
@@ -85,7 +85,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through the success screen', async () => {
+    it('clicks through the success screen', async function () {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
@@ -93,9 +93,9 @@ describe('Using MetaMask with an existing account', function () {
   })
 
 
-  describe('opens dapp', () => {
+  describe('opens dapp', function () {
 
-    it('switches to mainnet', async () => {
+    it('switches to mainnet', async function () {
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
@@ -103,7 +103,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(largeDelayMs * 2)
     })
 
-    it('connects to dapp', async () => {
+    it('connects to dapp', async function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
@@ -126,10 +126,10 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('testing web3 methods', async () => {
+  describe('testing web3 methods', function () {
 
 
-    it('testing hexa methods', async () => {
+    it('testing hexa methods', async function () {
 
 
       const List = await driver.findClickableElements(By.className('hexaNumberMethods'))
@@ -151,7 +151,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing booleanMethods', async () => {
+    it('testing booleanMethods', async function () {
 
       const List = await driver.findClickableElement(By.className('booleanMethods'))
 
@@ -174,7 +174,7 @@ describe('Using MetaMask with an existing account', function () {
 
     })
 
-    it('testing  transactionMethods', async () => {
+    it('testing  transactionMethods', async function () {
 
       const List = await driver.findClickableElement(By.className('transactionMethods'))
 
@@ -216,7 +216,7 @@ describe('Using MetaMask with an existing account', function () {
 
     })
 
-    it('testing blockMethods', async () => {
+    it('testing blockMethods', async function () {
 
       const List = await driver.findClickableElement(By.className('blockMethods'))
 
@@ -242,7 +242,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     })
 
-    it('testing methods', async () => {
+    it('testing methods', async function () {
 
       const List = await driver.findClickableElement(By.className('methods'))
       let parsedData

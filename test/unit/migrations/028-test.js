@@ -14,8 +14,8 @@ const oldStorage = {
   },
 }
 
-describe('migration #28', () => {
-  it('should add corresponding tokens to accountTokens', (done) => {
+describe('migration #28', function () {
+  it('should add corresponding tokens to accountTokens', function (done) {
     migration28.migrate(oldStorage)
       .then((newStorage) => {
         const newTokens = newStorage.data.PreferencesController.tokens
@@ -33,7 +33,7 @@ describe('migration #28', () => {
       .catch(done)
   })
 
-  it('should successfully migrate first time state', (done) => {
+  it('should successfully migrate first time state', function (done) {
     migration28.migrate({
       meta: {},
       data: require('../../../app/scripts/first-time-state'),

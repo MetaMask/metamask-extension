@@ -56,24 +56,24 @@ describe('Using MetaMask with an existing account', function () {
     await driver.quit()
   })
 
-  describe('First time flow starting from an existing seed phrase', () => {
-    it('clicks the continue button on the welcome screen', async () => {
+  describe('First time flow starting from an existing seed phrase', function () {
+    it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Import Wallet" option', async () => {
+    it('clicks the "Import Wallet" option', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async () => {
+    it('imports a seed phrase', async function () {
       const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
@@ -89,15 +89,15 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('clicks through the success screen', async () => {
+    it('clicks through the success screen', async function () {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
     })
   })
 
-  describe('Show account information', () => {
-    it('shows the correct account address', async () => {
+  describe('Show account information', function () {
+    it('shows the correct account address', async function () {
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       await driver.delay(regularDelayMs)
@@ -109,7 +109,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('shows a QR code for the account', async () => {
+    it('shows a QR code for the account', async function () {
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       const detailModal = await driver.findElement(By.css('span .modal'))
@@ -121,8 +121,8 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Lock and unlock', () => {
-    it('logs out of the account', async () => {
+  describe('Lock and unlock', function () {
+    it('logs out of the account', async function () {
       await driver.clickElement(By.css('.account-menu__icon .identicon'))
       await driver.delay(regularDelayMs)
 
@@ -132,7 +132,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('accepts the account password after lock', async () => {
+    it('accepts the account password after lock', async function () {
       const passwordField = await driver.findElement(By.id('password'))
       await passwordField.sendKeys('correct horse battery staple')
       await passwordField.sendKeys(Key.ENTER)
@@ -140,8 +140,8 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Add an account', () => {
-    it('switches to localhost', async () => {
+  describe('Add an account', function () {
+    it('switches to localhost', async function () {
       await driver.clickElement(By.css('.network-name'))
       await driver.delay(regularDelayMs)
 
@@ -149,7 +149,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('choose Create Account from the account menu', async () => {
+    it('choose Create Account from the account menu', async function () {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -157,7 +157,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('set account name', async () => {
+    it('set account name', async function () {
       const [accountName] = await driver.findElements(By.css('.new-account-create-form input'))
       await accountName.sendKeys('2nd account')
       await driver.delay(regularDelayMs)
@@ -166,15 +166,15 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('should show the correct account name', async () => {
+    it('should show the correct account name', async function () {
       const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await driver.delay(regularDelayMs)
     })
   })
 
-  describe('Switch back to original account', () => {
-    it('chooses the original account from the account menu', async () => {
+  describe('Switch back to original account', function () {
+    it('chooses the original account from the account menu', async function () {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -183,7 +183,7 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Send ETH from inside MetaMask', () => {
+  describe('Send ETH from inside MetaMask', function () {
     it('starts a send transaction', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
       await driver.delay(regularDelayMs)
@@ -225,8 +225,8 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Imports an account with private key', () => {
-    it('choose Create Account from the account menu', async () => {
+  describe('Imports an account with private key', function () {
+    it('choose Create Account from the account menu', async function () {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -234,7 +234,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('enter private key', async () => {
+    it('enter private key', async function () {
       const privateKeyInput = await driver.findElement(By.css('#private-key-box'))
       await privateKeyInput.sendKeys(testPrivateKey2)
       await driver.delay(regularDelayMs)
@@ -242,21 +242,21 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('should show the correct account name', async () => {
+    it('should show the correct account name', async function () {
       const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), 'Account 4')
       await driver.delay(regularDelayMs)
     })
 
-    it('should show the imported label', async () => {
+    it('should show the imported label', async function () {
       const [importedLabel] = await driver.findElements(By.css('.account-details__keyring-label'))
       assert.equal(await importedLabel.getText(), 'IMPORTED')
       await driver.delay(regularDelayMs)
     })
   })
 
-  describe('Imports and removes an account', () => {
-    it('choose Create Account from the account menu', async () => {
+  describe('Imports and removes an account', function () {
+    it('choose Create Account from the account menu', async function () {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)
 
@@ -264,7 +264,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('enter private key', async () => {
+    it('enter private key', async function () {
       const privateKeyInput = await driver.findElement(By.css('#private-key-box'))
       await privateKeyInput.sendKeys(testPrivateKey3)
       await driver.delay(regularDelayMs)
@@ -272,7 +272,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('should open the remove account modal', async () => {
+    it('should open the remove account modal', async function () {
       const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
       assert.equal(await accountName.getText(), 'Account 5')
       await driver.delay(regularDelayMs)
@@ -289,7 +289,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.findElement(By.css('.confirm-remove-account__account'))
     })
 
-    it('should remove the account', async () => {
+    it('should remove the account', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Remove')]`))
 
       await driver.delay(regularDelayMs)
@@ -303,13 +303,13 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Connects to a Hardware wallet', () => {
-    it('choose Connect Hardware Wallet from the account menu', async () => {
+  describe('Connects to a Hardware wallet', function () {
+    it('choose Connect Hardware Wallet from the account menu', async function () {
       await driver.clickElement(By.xpath(`//div[contains(text(), 'Connect Hardware Wallet')]`))
       await driver.delay(regularDelayMs)
     })
 
-    it('should open the TREZOR Connect popup', async () => {
+    it('should open the TREZOR Connect popup', async function () {
       await driver.clickElement(By.css('.hw-connect__btn:nth-of-type(2)'))
       await driver.delay(regularDelayMs)
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
