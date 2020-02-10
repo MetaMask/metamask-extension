@@ -70,8 +70,7 @@ const initialize = () => {
 
   let onboarding
   try {
-    // this is metamask's onboarding package, we don't have one right now
-    // https://github.com/MetaMask/metamask-onboarding/blob/master/src/index.js
+    // https://github.com/yqrashawn/conflux-portal-onboarding/blob/master/src/index.js
     onboarding = new ConfluxPortalOnboarding({ forwarderOrigin })
   } catch (error) {
     console.error(error)
@@ -99,7 +98,7 @@ const initialize = () => {
   const onClickInstall = () => {
     onboardButton.innerText = 'Onboarding in progress'
     onboardButton.disabled = true
-    // https://github.com/MetaMask/metamask-onboarding/blob/master/src/index.js#L109
+    // https://github.com/yqrashawn/conflux-portal-onboarding/blob/master/src/index.js#L109
     onboarding.startOnboarding()
   }
 

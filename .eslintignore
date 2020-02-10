@@ -23,4 +23,4 @@ test/e2e/contract-test/sha3.min.js
 
 package-lock.json
 
-test/e2e/contract-test/metamask-onboarding.bundle.js
+test/e2e/contract-test/conflux-portal-onboarding.bundle.js

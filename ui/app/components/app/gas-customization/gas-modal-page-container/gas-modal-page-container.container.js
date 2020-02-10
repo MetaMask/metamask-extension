@@ -102,7 +102,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate
   )
 
-  const hideBasic = state.appState.modal.modalState.props.hideBasic
+  // const hideBasic = state.appState.modal.modalState.props.hideBasic
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
@@ -134,7 +134,7 @@ const mapStateToProps = (state, ownProps) => {
     })
 
   return {
-    hideBasic: true,
+    hideBasic: true, // TODO: support smarter gas price estimation based on gas station
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
