@@ -324,8 +324,6 @@ export default function reduceMetamask (state = {}, action) {
       }
 
     case actions.SET_USE_IN3:
-      console.log('metamask.js')
-      console.log(!metamaskState.useIn3)
       return {
         ...metamaskState,
         useIn3: !metamaskState.useIn3,

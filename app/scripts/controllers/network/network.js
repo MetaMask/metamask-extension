@@ -19,7 +19,7 @@ import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI, INFURA, IN3 } from
 
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
-const IN3_PROVIDER_TYPES = [KOVAN, MAINNET, GOERLI]
+const IN3_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
 const RPC_PROVIDER_TYPES = [INFURA, IN3]
 
@@ -176,17 +176,14 @@ export default class NetworkController extends EventEmitter {
   _configureProvider (opts) {
     // eslint-disable-next-line no-unused-vars
     const { type, rpcTarget, chainId, ticker, nickname, rpcPrefs, rpcType } = opts
-    console.log(opts)
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     const isIn3 = IN3_PROVIDER_TYPES.includes(type)
 
     if (isInfura && rpcType !== IN3) {
-      console.log('Infura')
       this._configureInfuraProvider(opts)
     // in3
     } else if (isIn3 && rpcType === IN3) {
-      console.log('In3')
       this._configureIn3Provider(opts)
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()

@@ -1511,8 +1511,8 @@ describe('Actions', () => {
     it('calls setUseIn3 in background', () => {
       const store = mockStore()
 
-      store.dispatch(actions.setUseIn3())
-      assert(setUseIn3Spy.called)
+      store.dispatch(actions.setUseIn3(true))
+      assert(setUseIn3Spy.calledOnce)
     })
 
     it('errors when setUseIn3 in background throws', () => {

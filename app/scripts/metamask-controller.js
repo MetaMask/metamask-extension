@@ -1821,9 +1821,6 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.networkController.setProviderType(cfg.type, cfg.rpcTarget, cfg.ticker, cfg.nickname, cfg.rpcPrefs, INFURA)
       }
-      console.log('metamask-controller.js')
-      console.log(this.preferencesController.store.getState())
-      console.log(this.networkController.store.getState())
       cb(useIn3, null)
     } catch (err) {
       cb(null, err)

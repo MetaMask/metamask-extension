@@ -105,8 +105,6 @@ class PreferencesController {
    */
   setUseIn3 (val) {
     this.store.updateState({ useIn3: val })
-    console.log('preferences.js')
-    console.log(this.store.getState())
   }
 
   /**

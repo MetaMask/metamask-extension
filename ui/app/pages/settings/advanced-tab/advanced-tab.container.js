@@ -29,8 +29,6 @@ export const mapStateToProps = state => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  console.log('adanved-tab.container.js')
-  console.log(metamask)
   const { showFiatInTestnets, autoLockTimeLimit } = preferencesSelector(state)
 
   return {
