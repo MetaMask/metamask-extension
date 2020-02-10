@@ -211,7 +211,7 @@ jobs:
 
   test-lint-shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine:stable
+      - image: koalaman/shellcheck-alpine@sha256:169a51b086af0ab181e32801c15deb78944bb433d4f2c0a21cc30d4e60547065
     steps:
       - checkout
       - run: apk add --no-cache bash jq yarn
