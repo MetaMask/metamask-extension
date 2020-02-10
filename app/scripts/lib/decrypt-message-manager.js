@@ -159,7 +159,7 @@ export default class DecryptMessageManager extends EventEmitter {
 
   /**
    * Approves a DecryptMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
-   * with any the message params modified for proper decryption.
+   * with the message params modified for proper decryption.
    *
    * @param {Object} msgParams The msgParams to be used when eth_decryptMsg is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
