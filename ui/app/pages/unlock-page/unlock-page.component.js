@@ -14,7 +14,7 @@ export default class UnlockPage extends Component {
   }
 
   static propTypes = {
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
     isUnlocked: PropTypes.bool,
     onImport: PropTypes.func,
     onRestore: PropTypes.func,
