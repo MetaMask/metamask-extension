@@ -1497,6 +1497,40 @@ describe('Actions', () => {
     })
   })
 
+  describe('#setUseIn3', () => {
+    let setUseIn3Spy
+
+    beforeEach(() => {
+      setUseIn3Spy = sinon.stub(background, 'setUseIn3Network')
+    })
+
+    afterEach(() => {
+      setUseIn3Spy.restore()
+    })
+
+    it('calls setUseIn3 in background', () => {
+      const store = mockStore()
+
+      store.dispatch(actions.setUseIn3())
+      assert(setUseIn3Spy.called)
+    })
+
+    it('errors when setUseIn3 in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'useIn3 must be boolean' },
+      ]
+
+      setUseIn3Spy.callsFake((_, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setUseIn3())
+      assert.deepEqual(store.getActions(), expectedActions)
+    })
+  })
+
   describe('#updateCurrentLocale', () => {
     let setCurrentLocaleSpy
 

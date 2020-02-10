@@ -140,6 +140,7 @@
     },
     "coinOptions": {},
     "useBlockie": false,
+    "useIn3": false,
     "featureFlags": {
       "betaUI": true,
       "skipAnnounceBetaUI": true

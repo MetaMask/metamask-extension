@@ -1550,6 +1550,12 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "useIn3": {
+    "message": "Use In3 Network"
+  },
+  "useIn3Description": {
+    "message": "Substitutes Infura for In3, a decentralized alternative."
+  },
   "userName": {
     "message": "Username"
   },

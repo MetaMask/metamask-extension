@@ -10,6 +10,7 @@ import {
   setAutoLockTimeLimit,
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
+  setUseIn3,
   setUseNonceField,
   setIpfsGateway,
 } from '../../../store/actions'
@@ -24,9 +25,12 @@ export const mapStateToProps = state => {
     } = {},
     threeBoxSyncingAllowed,
     threeBoxDisabled,
+    useIn3,
     useNonceField,
     ipfsGateway,
   } = metamask
+  console.log('adanved-tab.container.js')
+  console.log(metamask)
   const { showFiatInTestnets, autoLockTimeLimit } = preferencesSelector(state)
 
   return {
@@ -37,6 +41,7 @@ export const mapStateToProps = state => {
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
+    useIn3,
     useNonceField,
     ipfsGateway,
   }
@@ -51,6 +56,9 @@ export const mapDispatchToProps = dispatch => {
     setUseNonceField: value => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: value => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
+    },
+    setUseIn3: value => {
+      return dispatch(setUseIn3(value))
     },
     setAutoLockTimeLimit: value => {
       return dispatch(setAutoLockTimeLimit(value))

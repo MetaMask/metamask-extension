@@ -110,6 +110,7 @@
       "suggestedTokens": {},
       "tokens": [],
       "useBlockie": false,
+      "useIn3": false,
       "useNonceField": false
     },
     "config": {},
