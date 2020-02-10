@@ -26,6 +26,7 @@ temp
 .DS_Store
 app/.DS_Store
 
+.out/
 coverage/
 dist
 builds/

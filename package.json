@@ -18,7 +18,6 @@
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive mocha test/unit-global/*",
-    "test:single": "mocha --require test/env.js --require test/helper.js",
     "test:integration": "yarn test:integration:build && yarn test:flat",
     "test:integration:build": "gulp build:scss",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
@@ -51,7 +50,7 @@
     "announce": "node development/announcer.js",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "storybook:build": "build-storybook -c .storybook -o .out",
-    "storybook:deploy": "storybook-to-ghpages",
+    "storybook:deploy": "storybook-to-ghpages --existing-output-dir .out --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
