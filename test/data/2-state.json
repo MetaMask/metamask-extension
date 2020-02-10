@@ -39,6 +39,7 @@
   "currentAccountTab": "history",
   "tokens": [],
   "useBlockie": false,
+  "useIn3": false,
   "featureFlags": {},
   "currentLocale": null,
   "identities": {

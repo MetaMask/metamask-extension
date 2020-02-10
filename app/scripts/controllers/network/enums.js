@@ -16,3 +16,6 @@ export const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 export const KOVAN_DISPLAY_NAME = 'Kovan'
 export const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 export const GOERLI_DISPLAY_NAME = 'Goerli'
+
+export const INFURA = 'infura'
+export const IN3 = 'in3'

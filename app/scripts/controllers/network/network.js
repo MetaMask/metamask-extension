@@ -8,15 +8,20 @@ import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
 import log from 'loglevel'
 import createMetamaskMiddleware from './createMetamaskMiddleware'
 import createInfuraClient from './createInfuraClient'
+import createIn3Client from './createIn3Client'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
 import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
 
 const networks = { networkList: {} }
 
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI } from './enums'
+import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI, INFURA, IN3 } from './enums'
 
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+
+const IN3_PROVIDER_TYPES = [KOVAN, MAINNET, GOERLI]
+
+const RPC_PROVIDER_TYPES = [INFURA, IN3]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -61,8 +66,8 @@ export default class NetworkController extends EventEmitter {
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
-    const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget, chainId, ticker, nickname })
+    const { type, rpcTarget, chainId, ticker, nickname, rpcPrefs, rpcType } = this.providerStore.getState()
+    this._configureProvider({ type, rpcTarget, chainId, ticker, nickname, rpcPrefs, rpcType })
     this.lookupNetwork()
   }
 
@@ -125,8 +130,8 @@ export default class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
-    const providerConfig = {
+  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '', rpcPrefs = {}) {
+    this.providerConfig = {
       type: 'rpc',
       rpcTarget,
       chainId,
@@ -134,14 +139,15 @@ export default class NetworkController extends EventEmitter {
       nickname,
       rpcPrefs,
     }
-    this.providerConfig = providerConfig
   }
 
-  async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
+  setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '', rpcPrefs = {}, rpcType = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
     assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
-    const providerConfig = { type, rpcTarget, ticker, nickname }
-    this.providerConfig = providerConfig
+    if (!RPC_PROVIDER_TYPES.includes(rpcType)) {
+      rpcType = this.getProviderConfig().rpcType
+    }
+    this.providerConfig = { type, rpcTarget, ticker, nickname, rpcPrefs, rpcType }
   }
 
   resetConnection () {
@@ -168,12 +174,20 @@ export default class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget, chainId, ticker, nickname } = opts
+    // eslint-disable-next-line no-unused-vars
+    const { type, rpcTarget, chainId, ticker, nickname, rpcPrefs, rpcType } = opts
+    console.log(opts)
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    if (isInfura) {
+    const isIn3 = IN3_PROVIDER_TYPES.includes(type)
+
+    if (isInfura && rpcType !== IN3) {
+      console.log('Infura')
       this._configureInfuraProvider(opts)
-    // other type-based rpc endpoints
+    // in3
+    } else if (isIn3 && rpcType === IN3) {
+      console.log('In3')
+      this._configureIn3Provider(opts)
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
@@ -187,6 +201,19 @@ export default class NetworkController extends EventEmitter {
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({
+      network: type,
+    })
+    this._setNetworkClient(networkClient)
+    // setup networkConfig
+    const settings = {
+      ticker: 'ETH',
+    }
+    this.networkConfig.putState(settings)
+  }
+
+  _configureIn3Provider ({ type }) {
+    log.info('NetworkController - configureIn3Provider', type)
+    const networkClient = createIn3Client({
       network: type,
     })
     this._setNetworkClient(networkClient)

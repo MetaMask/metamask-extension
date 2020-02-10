@@ -30,6 +30,8 @@ export default class AdvancedTab extends PureComponent {
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
+    useIn3: PropTypes.bool,
+    setUseIn3: PropTypes.func.isRequired,
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
@@ -358,6 +360,32 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  renderIn3Switch () {
+    const { t } = this.context
+    const { useIn3, setUseIn3 } = this.props
+
+    return (
+      <div className="settings-page__content-row" data-testid="advanced-setting-enable-in3">
+        <div className="settings-page__content-item">
+          <span>{ t('useIn3') }</span>
+          <div className="settings-page__content-description">
+            { t('useIn3Description') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useIn3}
+              onToggle={value => setUseIn3(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   handleIpfsGatewayChange (url) {
     const { t } = this.context
 
@@ -452,6 +480,7 @@ export default class AdvancedTab extends PureComponent {
         { this.renderUseNonceOptIn() }
         { this.renderAutoLockTimeLimit() }
         { this.renderThreeBoxControl() }
+        { this.renderIn3Switch() }
         { this.renderIpfsGatewayControl() }
       </div>
     )
