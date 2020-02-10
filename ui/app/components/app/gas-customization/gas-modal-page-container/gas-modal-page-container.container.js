@@ -134,7 +134,7 @@ const mapStateToProps = (state, ownProps) => {
     })
 
   return {
-    hideBasic,
+    hideBasic: true,
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,

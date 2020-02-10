@@ -749,7 +749,7 @@ function bundleTask (opts) {
       buildStream = buildStream.pipe(
         terser({
           mangle: {
-            reserved: ['MetamaskInpageProvider'],
+            reserved: ['ConfluxPortalInpageProvider'],
           },
         })
       )

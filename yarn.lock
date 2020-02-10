@@ -2154,13 +2154,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/onboarding@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.0.tgz#9594f6a9a1c779083d71434b9f5e6a973af941f7"
-  integrity sha512-QoMV1Gf1j3LxFhSb5gxudHOIywQQ/su8vPQ1ByC7ocQCVlZb1JqZ/+TYyoIzR2OTi1NPelhYHT3UMdhPozIAhA==
-  dependencies:
-    bowser "^2.5.4"
-
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -3392,6 +3385,28 @@
     sleep-promise "^8.0.1"
     tmp "^0.1.0"
     unzip-stream "^0.3.0"
+
+"@yqrashawn/conflux-portal-inpage-provider@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.4.tgz#810e78b510a9c6d07e567f4d2e8269823a05d516"
+  integrity sha512-vfFaZP1gc5JIAnBjMAZT7fNSS3sro+rtuT0Pq317+QB1I/08DV3kRcWf4TjRgrDXIAVefbW+jPahzBrcMckoIA==
+  dependencies:
+    eth-json-rpc-errors "^2.0.0"
+    fast-deep-equal "^2.0.1"
+    json-rpc-engine "^5.1.5"
+    json-rpc-middleware-stream "^2.1.1"
+    loglevel "^1.6.1"
+    obj-multiplex "^1.0.0"
+    obs-store "^4.0.3"
+    pump "^3.0.0"
+    safe-event-emitter "^1.0.1"
+
+"@yqrashawn/conflux-portal-onboarding@^0.2.0-alpha":
+  version "0.2.0-alpha"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-onboarding/-/conflux-portal-onboarding-0.2.0-alpha.tgz#5a67e6ef0830a5fcfb9af8d5350e9581c028edcf"
+  integrity sha512-hqc50B9rZxP5DwURAcssQUgHlLSm7tV9uSZaSp9tU1bqtTEYH49w9IVWwnHdOx7nJoJxFCB8j6ZUTr8sxqtt/A==
+  dependencies:
+    bowser "^2.5.4"
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -6110,9 +6125,9 @@ borc@^2.1.0:
     json-text-sequence "~0.1.0"
 
 bowser@^2.5.4:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.7.0.tgz#96eab1fa07fab08c1ec4c75977a7c8ddf8e0fe1f"
-  integrity sha512-aIlMvstvu8x+34KEiOHD3AsBgdrzg6sxALYiukOWhFvGMbQI6TRP/iY0LMhUrHs56aD6P1G0Z7h45PUJaa5m9w==
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.9.0.tgz#3bed854233b419b9a7422d9ee3e85504373821c9"
+  integrity sha512-2ld76tuLBNFekRgmJfT2+3j5MIrP6bFict8WAIT3beq+srz1gcKNAdNKMqHqauQt63NmAa88HfP1/Ypa9Er3HA==
 
 boxen@1.3.0, boxen@^1.2.1:
   version "1.3.0"
@@ -19340,9 +19355,9 @@ loglevel@^1.4.1, loglevel@^1.5.0:
   integrity sha1-rgyqVhERSYxboTcj1vtjHSQAOTQ=
 
 loglevel@^1.6.1:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.3.tgz#77f2eb64be55a404c9fd04ad16d57c1d6d6b1280"
-  integrity sha512-LoEDv5pgpvWgPF4kNYuIp0qqSJVWak/dML0RY74xlzMZiT9w77teNAwKYKWBTYjlokMirg+o3jBwp+vlLrcfAA==
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.6.tgz#0ee6300cc058db6b3551fa1c4bf73b83bb771312"
+  integrity sha512-Sgr5lbboAUBo3eXCSPL4/KoVz3ROKquOjcctxmHIt+vol2DrqTQe3SwkKKuYhEiWB5kYa13YyopJ69deJ1irzQ==
 
 logplease@^1.2.14, logplease@~1.2.14, logplease@~1.2.15:
   version "1.2.15"
@@ -19935,21 +19950,6 @@ messageformat@^2.2.1:
     make-plural "^4.3.0"
     messageformat-formatters "^2.0.1"
     messageformat-parser "^4.1.2"
-
-metamask-inpage-provider@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.3.tgz#856698255c2153b82203402c6b5337ca6363d9b0"
-  integrity sha512-JKbGkkR7qg+Z5Dayg6rpfXXzSVcXcp3BENbk2zgWwp/Aa70Sf9MHC7m364FeyIIio9A2r9OuJKV0Bcwmz0h+xg==
-  dependencies:
-    eth-json-rpc-errors "^2.0.0"
-    fast-deep-equal "^2.0.1"
-    json-rpc-engine "^5.1.5"
-    json-rpc-middleware-stream "^2.1.1"
-    loglevel "^1.6.1"
-    obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
-    pump "^3.0.0"
-    safe-event-emitter "^1.0.1"
 
 metamask-logo@^2.1.4:
   version "2.1.4"

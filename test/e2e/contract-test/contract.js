@@ -1,4 +1,4 @@
-/*global confluxJS, conflux, MetamaskOnboarding, HumanStandardTokenContractCode PiggyBankContractCode keccak256*/
+/*global confluxJS, conflux, ConfluxPortalOnboarding, HumanStandardTokenContractCode PiggyBankContractCode keccak256*/
 
 /*
 The `piggybankContract` is compiled from:
@@ -72,7 +72,7 @@ const initialize = () => {
   try {
     // this is metamask's onboarding package, we don't have one right now
     // https://github.com/MetaMask/metamask-onboarding/blob/master/src/index.js
-    onboarding = new MetamaskOnboarding({ forwarderOrigin })
+    onboarding = new ConfluxPortalOnboarding({ forwarderOrigin })
   } catch (error) {
     console.error(error)
   }
@@ -213,7 +213,10 @@ const initialize = () => {
         console.log(piggybankContract.deposit())
         const depositResult = await piggybankContract
           .deposit()
-          .sendTransaction({ value: '0x3782dace9d900000', from: accounts[0] })
+          .sendTransaction({ value: '0x3782dace9d900000', from: accounts[0],
+            gas: 300000,
+            gasPrice: 10000000000,
+          })
           .confirmed()
         console.log(depositResult)
         contractStatus.innerHTML = 'Deposit completed'
@@ -222,7 +225,7 @@ const initialize = () => {
       withdrawButton.onclick = async () => {
         const withdrawResult = await piggybankContract
           .withdraw('0xde0b6b3a7640000')
-          .sendTransaction({ from: accounts[0] })
+          .sendTransaction({ from: accounts[0], gas: 300000, gasPrice: 10000000000 })
           .confirmed()
         console.log(withdrawResult)
         contractStatus.innerHTML = 'Withdrawn'
@@ -691,6 +694,7 @@ const initialize = () => {
   }
 
   updateButtons()
+
   if (isMetaMaskInstalled()) {
     conflux.autoRefreshOnNetworkChange = false
     conflux.on('networkChanged', networkId => {

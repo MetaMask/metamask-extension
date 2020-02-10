@@ -23,7 +23,7 @@ function start () {
   const connectionStream = new PortStream(extensionPort)
   const mx = setupMultiplex(connectionStream)
   setupControllerConnection(
-    mx.createStream('controller'),
+    mx.createStream('confluxPortalController'),
     (err, metaMaskController) => {
       if (err) {
         return

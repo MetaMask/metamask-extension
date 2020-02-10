@@ -942,7 +942,7 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
 
       streamTest = createThoughStream((chunk, _, cb) => {
-        if (chunk.name !== 'phishing') {
+        if (chunk.name !== 'confluxPortalPhishing') {
           return cb()
         }
         assert.equal(
@@ -974,7 +974,7 @@ describe('MetaMaskController', function () {
         tab: {},
       }
       streamTest = createThoughStream((chunk, _, cb) => {
-        assert.equal(chunk.name, 'controller')
+        assert.equal(chunk.name, 'confluxPortalController')
         cb()
         done()
       })

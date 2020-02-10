@@ -32,7 +32,7 @@ cleanContextForImports()
 
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import MetamaskInpageProvider from './metamask-inpage-provider.js'
+import ConfluxPortalInpageProvider from '@yqrashawn/conflux-portal-inpage-provider'
 
 import ConfluxJS from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
 // import ConfluxJS from 'js-conflux-sdk'
@@ -53,7 +53,7 @@ const metamaskStream = new LocalMessageDuplexStream({
 })
 
 // compose the inpage provider
-const inpageProvider = new MetamaskInpageProvider(metamaskStream)
+const inpageProvider = new ConfluxPortalInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
