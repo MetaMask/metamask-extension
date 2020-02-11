@@ -4,20 +4,21 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendHeader from '../send-header.component.js'
-
 import PageContainerHeader from '../../../../components/ui/page-container/page-container-header'
-
-const propsMethodSpies = {
-  clearSend: sinon.spy(),
-}
-const historySpies = {
-  push: sinon.spy(),
-}
-
-sinon.spy(SendHeader.prototype, 'onClose')
 
 describe('SendHeader Component', function () {
   let wrapper
+
+  const propsMethodSpies = {
+    clearSend: sinon.spy(),
+  }
+  const historySpies = {
+    push: sinon.spy(),
+  }
+
+  before(function () {
+    sinon.spy(SendHeader.prototype, 'onClose')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -33,6 +34,10 @@ describe('SendHeader Component', function () {
     propsMethodSpies.clearSend.resetHistory()
     historySpies.push.resetHistory()
     SendHeader.prototype.onClose.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   describe('onClose', function () {

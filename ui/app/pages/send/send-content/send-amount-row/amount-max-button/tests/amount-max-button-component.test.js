@@ -4,18 +4,20 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import AmountMaxButton from '../amount-max-button.component.js'
 
-const propsMethodSpies = {
-  setAmountToMax: sinon.spy(),
-  setMaxModeTo: sinon.spy(),
-}
-
-const MOCK_EVENT = { preventDefault: () => {} }
-
-sinon.spy(AmountMaxButton.prototype, 'setMaxAmount')
-
 describe('AmountMaxButton Component', function () {
   let wrapper
   let instance
+
+  const propsMethodSpies = {
+    setAmountToMax: sinon.spy(),
+    setMaxModeTo: sinon.spy(),
+  }
+
+  const MOCK_EVENT = { preventDefault: () => {} }
+
+  before(function () {
+    sinon.spy(AmountMaxButton.prototype, 'setMaxAmount')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -41,6 +43,10 @@ describe('AmountMaxButton Component', function () {
     propsMethodSpies.setAmountToMax.resetHistory()
     propsMethodSpies.setMaxModeTo.resetHistory()
     AmountMaxButton.prototype.setMaxAmount.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   describe('setMaxAmount', function () {
