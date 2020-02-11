@@ -38,11 +38,12 @@ export default function createMethodMiddleware ({
 
         // get the accounts again
         accounts = await getAccounts()
-        /* istanbul ignore else: too hard to induce */
+        /* istanbul ignore else: too hard to induce, see below comment */
         if (accounts.length > 0) {
           res.result = accounts
         } else {
-          // this should never happen
+          // this should never happen, because it should be caught in the
+          // above catch clause
           res.error = ethErrors.rpc.internal(
             'Accounts unexpectedly unavailable. Please report this bug.'
           )

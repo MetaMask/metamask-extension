@@ -212,7 +212,7 @@ export default class PermissionsLogController {
   logAccountExposure (origin, accounts) {
 
     if (
-      !origin || typeof origin !== 'string' ||
+      typeof origin !== 'string' || !origin.length ||
       !Array.isArray(accounts) || accounts.length === 0
     ) {
       throw new Error(
@@ -262,7 +262,7 @@ export default class PermissionsLogController {
       // Special handling for eth_accounts, in order to record the time the
       // accounts were last seen or approved by the origin.
       newEntries = result
-        .map(perm => {
+        .map((perm) => {
 
           if (perm.parentCapability === 'eth_accounts') {
             accounts = this.getAccountsFromPermission(perm)

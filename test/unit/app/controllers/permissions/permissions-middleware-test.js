@@ -73,15 +73,15 @@ const validatePermission = (perm, name, origin, caveats) => {
   assert.deepEqual(caveats, perm.caveats, 'unexpected permission caveats')
 }
 
-describe('permissions middleware', () => {
+describe('permissions middleware', function () {
 
-  describe('wallet_requestPermissions', () => {
+  describe('wallet_requestPermissions', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermController()
     })
 
-    it('grants permissions on user approval', async () => {
+    it('grants permissions on user approval', async function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
@@ -126,7 +126,7 @@ describe('permissions middleware', () => {
       assert.deepEqual(aAccounts, ACCOUNT_ARRAYS.a, 'origin does not have correct accounts')
     })
 
-    it('rejects permissions on user rejection', async () => {
+    it('rejects permissions on user rejection', async function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
@@ -166,13 +166,13 @@ describe('permissions middleware', () => {
     })
   })
 
-  describe('restricted methods', () => {
+  describe('restricted methods', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermController()
     })
 
-    it('prevents restricted method access for unpermitted domain', async () => {
+    it('prevents restricted method access for unpermitted domain', async function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
@@ -197,7 +197,7 @@ describe('permissions middleware', () => {
         })
     })
 
-    it('allows restricted method access for permitted domain', async () => {
+    it('allows restricted method access for permitted domain', async function () {
 
       const bMiddleware = getPermissionsMiddleware(permController, ORIGINS.b)
 
@@ -219,13 +219,13 @@ describe('permissions middleware', () => {
     })
   })
 
-  describe('eth_accounts', () => {
+  describe('eth_accounts', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermController()
     })
 
-    it('returns empty array for non-permitted domain', async () => {
+    it('returns empty array for non-permitted domain', async function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
@@ -248,7 +248,7 @@ describe('permissions middleware', () => {
         })
     })
 
-    it('returns correct accounts for permitted domain', async () => {
+    it('returns correct accounts for permitted domain', async function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
@@ -274,14 +274,14 @@ describe('permissions middleware', () => {
     })
   })
 
-  describe('eth_requestAccounts', () => {
+  describe('eth_requestAccounts', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermController()
       initEventEmitter()
     })
 
-    it('requests accounts for unpermitted origin, and approves on user approval', async () => {
+    it('requests accounts for unpermitted origin, and approves on user approval', async function () {
 
       const pendingApprovalPromise = getWatchPropertyPromise(permController, 'pendingApprovals')
 
@@ -341,7 +341,7 @@ describe('permissions middleware', () => {
       assert.deepEqual(aAccounts, ACCOUNT_ARRAYS.a, 'origin does not have correct accounts')
     })
 
-    it('requests accounts for unpermitted origin, and rejects on user rejection', async () => {
+    it('requests accounts for unpermitted origin, and rejects on user rejection', async function () {
 
       const pendingApprovalPromise = getWatchPropertyPromise(permController, 'pendingApprovals')
 
@@ -384,7 +384,7 @@ describe('permissions middleware', () => {
       assert.deepEqual(aAccounts, [], 'origin does not have correct accounts')
     })
 
-    it('just returns accounts for permitted domain', async () => {
+    it('just returns accounts for permitted domain', async function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
@@ -410,13 +410,13 @@ describe('permissions middleware', () => {
     })
   })
 
-  describe('wallet_sendDomainMetadata', () => {
+  describe('wallet_sendDomainMetadata', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermController()
     })
 
-    it('records domain metadata', async () => {
+    it('records domain metadata', async function () {
 
       const name = 'BAZ'
 
@@ -443,7 +443,7 @@ describe('permissions middleware', () => {
         })
     })
 
-    it('records domain metadata and preserves extensionId', async () => {
+    it('records domain metadata and preserves extensionId', async function () {
 
       const extensionId = 'fooExtension'
 
@@ -472,7 +472,7 @@ describe('permissions middleware', () => {
         })
     })
 
-    it('does not record domain metadata if no name', async () => {
+    it('does not record domain metadata if no name', async function () {
 
       const name = null
 
@@ -498,7 +498,7 @@ describe('permissions middleware', () => {
         })
     })
 
-    it('does not record domain metadata if no metadata', async () => {
+    it('does not record domain metadata if no metadata', async function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 

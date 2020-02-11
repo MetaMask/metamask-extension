@@ -49,7 +49,7 @@ export const getNotifyDomain = (notifications = {}) => (origin, notification) =>
 }
 
 export const getNotifyAllDomains = (notifications = {}) => (notification) => {
-  Object.keys(notifications).forEach(origin => {
+  Object.keys(notifications).forEach((origin) => {
     notifications[origin].push(notification)
   })
 }

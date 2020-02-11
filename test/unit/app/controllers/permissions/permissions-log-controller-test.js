@@ -67,16 +67,16 @@ const getSavedMockNext = (arr) => (handler) => {
   arr.push(handler)
 }
 
-describe('permissions log', () => {
+describe('permissions log', function () {
 
-  describe('activity log', () => {
+  describe('activity log', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermLog()
       initMiddleware()
     })
 
-    it('records activity for restricted methods', () => {
+    it('records activity for restricted methods', function () {
 
       let log, req, res
 
@@ -156,7 +156,7 @@ describe('permissions log', () => {
       assert.equal(entry4, log[3], 'fourth log entry should remain')
     })
 
-    it('handles responses added out of order', () => {
+    it('handles responses added out of order', function () {
 
       let log
 
@@ -224,7 +224,7 @@ describe('permissions log', () => {
       )
     })
 
-    it('handles a lack of response', () => {
+    it('handles a lack of response', function () {
 
       let req = rpcRequests.test_method(ORIGINS.a)
       req.id = REQUEST_IDS.a
@@ -262,7 +262,7 @@ describe('permissions log', () => {
       assert.equal(entry2, log[1], 'second log entry remains')
     })
 
-    it('ignores expected methods', () => {
+    it('ignores expected methods', function () {
 
       let log = permLog.getActivityLog()
       assert.equal(log.length, 0, 'log should be empty')
@@ -280,7 +280,7 @@ describe('permissions log', () => {
       assert.equal(log.length, 0, 'log should still be empty')
     })
 
-    it('enforces log limit', () => {
+    it('enforces log limit', function () {
 
       const req = rpcRequests.test_method(ORIGINS.a)
       const res = { foo: 'bar' }
@@ -329,19 +329,19 @@ describe('permissions log', () => {
     })
   })
 
-  describe('permissions history', () => {
+  describe('permissions history', function () {
 
-    beforeEach(() => {
+    beforeEach(function () {
       initPermLog()
       initMiddleware()
       initClock()
     })
 
-    afterEach(() => {
+    afterEach(function () {
       tearDownClock()
     })
 
-    it('only updates history on responses', () => {
+    it('only updates history on responses', function () {
 
       let permHistory
 
@@ -370,7 +370,7 @@ describe('permissions log', () => {
       )
     })
 
-    it('ignores malformed permissions requests', () => {
+    it('ignores malformed permissions requests', function () {
 
       const req = rpcRequests.requestPermission(
         ORIGINS.a, PERM_NAMES.test_method
@@ -384,7 +384,7 @@ describe('permissions log', () => {
       assert.deepEqual(permLog.getHistory(), {}, 'history should not have been updated')
     })
 
-    it('records and updates account history as expected', async () => {
+    it('records and updates account history as expected', async function () {
 
       let permHistory
 
@@ -424,7 +424,7 @@ describe('permissions log', () => {
       )
     })
 
-    it('handles eth_accounts response without caveats', async () => {
+    it('handles eth_accounts response without caveats', async function () {
 
       const req = rpcRequests.requestPermission(
         ORIGINS.a, PERM_NAMES.eth_accounts
@@ -444,7 +444,7 @@ describe('permissions log', () => {
       )
     })
 
-    it('handles extra caveats for eth_accounts', async () => {
+    it('handles extra caveats for eth_accounts', async function () {
 
       const req = rpcRequests.requestPermission(
         ORIGINS.a, PERM_NAMES.eth_accounts
@@ -467,7 +467,7 @@ describe('permissions log', () => {
 
     // wallet_requestPermissions returns all permissions approved for the
     // requesting origin, including old ones
-    it('handles unrequested permissions on the response', async () => {
+    it('handles unrequested permissions on the response', async function () {
 
       const req = rpcRequests.requestPermission(
         ORIGINS.a, PERM_NAMES.eth_accounts
@@ -490,7 +490,7 @@ describe('permissions log', () => {
       )
     })
 
-    it('records and updates history for multiple origins, regardless of response order', async () => {
+    it('records and updates history for multiple origins, regardless of response order', async function () {
 
       let permHistory
 
@@ -534,7 +534,7 @@ describe('permissions log', () => {
       })
 
       // make requests and process responses out of order
-      round1.forEach(x => {
+      round1.forEach((x) => {
         logMiddleware({ ...x.req }, { ...x.res }, getSavedMockNext(handlers1))
       })
 
@@ -582,7 +582,7 @@ describe('permissions log', () => {
       })
 
       // make requests
-      round2.forEach(x => {
+      round2.forEach((x) => {
         logMiddleware({ ...x.req }, { ...x.res })
       })
 
@@ -596,13 +596,11 @@ describe('permissions log', () => {
     })
   })
 
-  describe('instance method edge cases', () => {
+  describe('instance method edge cases', function () {
 
-    beforeEach(() => {
+    it('logAccountExposure errors on invalid params', function () {
+
       initPermLog()
-    })
-
-    it('logAccountExposure errors on invalid params', () => {
 
       assert.throws(
         () => {

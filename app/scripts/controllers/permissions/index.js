@@ -6,7 +6,6 @@ import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
 import { cloneDeep } from 'lodash'
 
-import _getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
 
@@ -24,10 +23,10 @@ import {
 export class PermissionsController {
 
   constructor (
-    /* istanbul ignore next */
+    /* istanbul ignore next: shows up as ignored branch */
     {
       platform, notifyDomain, notifyAllDomains,
-      getKeyringAccounts, getRestrictedMethods = _getRestrictedMethods,
+      getKeyringAccounts, getRestrictedMethods,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -54,7 +53,7 @@ export class PermissionsController {
 
   createMiddleware ({ origin, extensionId }) {
 
-    if (!origin || typeof origin !== 'string') {
+    if (typeof origin !== 'string' || !origin.length) {
       throw new Error('Must provide non-empty string origin.')
     }
 
@@ -216,7 +215,7 @@ export class PermissionsController {
   async legacyExposeAccounts (origin, accounts) {
 
     // accounts are validated by finalizePermissionsRequest
-    if (!origin || typeof origin !== 'string') {
+    if (typeof origin !== 'string' || !origin.length) {
       throw new Error('Must provide non-empty string origin.')
     }
 
@@ -238,8 +237,6 @@ export class PermissionsController {
         this.permissions.grantNewPermissions(
           origin, permissions, {}, _end
         )
-
-        // don't bother sending an accountsChanged notification for legacy dapps
 
         function _end (err) {
           /* istanbul ignore if */
@@ -378,7 +375,8 @@ export class PermissionsController {
 
   /**
    * Removes the given permissions for the given domain.
-   * Should only be called after confirming that the permissions exist.
+   * Should only be called after confirming that the permissions exist, to
+   * avoid sending unnecessary notifications.
    *
    * @param {Object} domains { origin: [permissions] }
    */
@@ -414,8 +412,8 @@ export class PermissionsController {
     const permittedAccounts = await this.getAccounts(origin)
 
     if (
-      !origin || typeof origin !== 'string' ||
-      !account || typeof account !== 'string'
+      typeof origin !== 'string' || !origin.length ||
+      typeof account !== 'string' || !account.length
     ) {
       throw new Error('Should provide non-empty origin and account strings.')
     }

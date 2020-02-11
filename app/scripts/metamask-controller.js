@@ -45,6 +45,7 @@ import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
 import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
+import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import getBuyEthUrl from './lib/buy-eth-url'
@@ -211,6 +212,7 @@ export default class MetamaskController extends EventEmitter {
       platform: opts.platform,
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
+      getRestrictedMethods,
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
