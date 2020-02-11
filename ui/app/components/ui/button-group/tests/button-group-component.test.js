@@ -4,21 +4,23 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import ButtonGroup from '../button-group.component.js'
 
-const childButtonSpies = {
-  onClick: sinon.spy(),
-}
-
-sinon.spy(ButtonGroup.prototype, 'handleButtonClick')
-sinon.spy(ButtonGroup.prototype, 'renderButtons')
-
-const mockButtons = [
-  <button onClick={childButtonSpies.onClick} key="a"><div className="mockClass" /></button>,
-  <button onClick={childButtonSpies.onClick} key="b"></button>,
-  <button onClick={childButtonSpies.onClick} key="c"></button>,
-]
-
 describe('ButtonGroup Component', function () {
   let wrapper
+
+  const childButtonSpies = {
+    onClick: sinon.spy(),
+  }
+
+  const mockButtons = [
+    <button onClick={childButtonSpies.onClick} key="a"><div className="mockClass" /></button>,
+    <button onClick={childButtonSpies.onClick} key="b"></button>,
+    <button onClick={childButtonSpies.onClick} key="c"></button>,
+  ]
+
+  before(function () {
+    sinon.spy(ButtonGroup.prototype, 'handleButtonClick')
+    sinon.spy(ButtonGroup.prototype, 'renderButtons')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -37,6 +39,10 @@ describe('ButtonGroup Component', function () {
     childButtonSpies.onClick.resetHistory()
     ButtonGroup.prototype.handleButtonClick.resetHistory()
     ButtonGroup.prototype.renderButtons.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   describe('componentDidUpdate', function () {

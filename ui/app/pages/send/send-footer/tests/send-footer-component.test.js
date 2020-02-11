@@ -4,25 +4,26 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendFooter from '../send-footer.component.js'
-
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
-
-const propsMethodSpies = {
-  addToAddressBookIfNew: sinon.spy(),
-  clearSend: sinon.spy(),
-  sign: sinon.spy(),
-  update: sinon.spy(),
-}
-const historySpies = {
-  push: sinon.spy(),
-}
-const MOCK_EVENT = { preventDefault: () => {} }
-
-sinon.spy(SendFooter.prototype, 'onCancel')
-sinon.spy(SendFooter.prototype, 'onSubmit')
 
 describe('SendFooter Component', function () {
   let wrapper
+
+  const propsMethodSpies = {
+    addToAddressBookIfNew: sinon.spy(),
+    clearSend: sinon.spy(),
+    sign: sinon.spy(),
+    update: sinon.spy(),
+  }
+  const historySpies = {
+    push: sinon.spy(),
+  }
+  const MOCK_EVENT = { preventDefault: () => {} }
+
+  before(function () {
+    sinon.spy(SendFooter.prototype, 'onCancel')
+    sinon.spy(SendFooter.prototype, 'onSubmit')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -60,6 +61,10 @@ describe('SendFooter Component', function () {
     historySpies.push.resetHistory()
     SendFooter.prototype.onCancel.resetHistory()
     SendFooter.prototype.onSubmit.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   describe('onCancel', function () {

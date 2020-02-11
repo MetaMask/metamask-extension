@@ -3,18 +3,19 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import SendDropdownList from '../send-dropdown-list.component.js'
-
 import AccountListItem from '../../../account-list-item/account-list-item.container'
-
-const propsMethodSpies = {
-  closeDropdown: sinon.spy(),
-  onSelect: sinon.spy(),
-}
-
-sinon.spy(SendDropdownList.prototype, 'getListItemIcon')
 
 describe('SendDropdownList Component', function () {
   let wrapper
+
+  const propsMethodSpies = {
+    closeDropdown: sinon.spy(),
+    onSelect: sinon.spy(),
+  }
+
+  before(function () {
+    sinon.spy(SendDropdownList.prototype, 'getListItemIcon')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -35,6 +36,10 @@ describe('SendDropdownList Component', function () {
     propsMethodSpies.closeDropdown.resetHistory()
     propsMethodSpies.onSelect.resetHistory()
     SendDropdownList.prototype.getListItemIcon.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   describe('getListItemIcon', function () {

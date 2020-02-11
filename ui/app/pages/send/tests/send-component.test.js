@@ -10,34 +10,36 @@ import SendHeader from '../send-header/send-header.container'
 import SendContent from '../send-content/send-content.container'
 import SendFooter from '../send-footer/send-footer.container'
 
-const mockBasicGasEstimates = {
-  blockTime: 'mockBlockTime',
-}
-
-const propsMethodSpies = {
-  updateAndSetGasLimit: sinon.spy(),
-  updateSendErrors: sinon.spy(),
-  updateSendTokenBalance: sinon.spy(),
-  resetSendState: sinon.spy(),
-  fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
-  fetchGasEstimates: sinon.spy(),
-  updateToNicknameIfNecessary: sinon.spy(),
-}
-const utilsMethodStubs = {
-  getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
-  getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
-  doesAmountErrorRequireUpdate: sinon.stub().callsFake(obj => obj.balance !== obj.prevBalance),
-}
-
-const SendTransactionScreen = proxyquire('../send.component.js', {
-  './send.utils': utilsMethodStubs,
-}).default
-
-sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
-sinon.spy(SendTransactionScreen.prototype, 'updateGas')
-
 describe('Send Component', function () {
   let wrapper
+
+  const mockBasicGasEstimates = {
+    blockTime: 'mockBlockTime',
+  }
+
+  const propsMethodSpies = {
+    updateAndSetGasLimit: sinon.spy(),
+    updateSendErrors: sinon.spy(),
+    updateSendTokenBalance: sinon.spy(),
+    resetSendState: sinon.spy(),
+    fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
+    fetchGasEstimates: sinon.spy(),
+    updateToNicknameIfNecessary: sinon.spy(),
+  }
+  const utilsMethodStubs = {
+    getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
+    getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
+    doesAmountErrorRequireUpdate: sinon.stub().callsFake(obj => obj.balance !== obj.prevBalance),
+  }
+
+  const SendTransactionScreen = proxyquire('../send.component.js', {
+    './send.utils': utilsMethodStubs,
+  }).default
+
+  before(function () {
+    sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
+    sinon.spy(SendTransactionScreen.prototype, 'updateGas')
+  })
 
   beforeEach(function () {
     wrapper = shallow((
@@ -87,6 +89,10 @@ describe('Send Component', function () {
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
     propsMethodSpies.updateToNicknameIfNecessary.resetHistory()
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   it('should call componentDidMount', function () {
