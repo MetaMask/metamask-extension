@@ -35,6 +35,8 @@ describe('TransactionListItemDetails Component', () => {
         senderAddress="0x2"
         tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
+        senderNickname="sender-nickname"
+        recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
@@ -77,6 +79,8 @@ describe('TransactionListItemDetails Component', () => {
         tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
         showSpeedUp
+        senderNickname="sender-nickname"
+        recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
@@ -112,6 +116,8 @@ describe('TransactionListItemDetails Component', () => {
         senderAddress="0x2"
         tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
+        senderNickname="sender-nickname"
+        recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
@@ -150,6 +156,8 @@ describe('TransactionListItemDetails Component', () => {
         senderAddress="0x2"
         tryReverseResolveAddress={() => {}}
         transactionGroup={transactionGroup}
+        senderNickname="sender-nickname"
+        recipientNickname="recipient-nickname"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
