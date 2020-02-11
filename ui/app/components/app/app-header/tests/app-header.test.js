@@ -5,7 +5,7 @@ import { shallow } from 'enzyme'
 import MetaFoxLogo from '../../../ui/metafox-logo'
 import AppHeader from '../index'
 
-describe('App Header', () => {
+describe('App Header', function () {
   let wrapper
 
   const props = {
@@ -25,7 +25,7 @@ describe('App Header', () => {
     isUnlocked: true,
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow(
       <AppHeader.WrappedComponent {...props} />, {
         context: {
@@ -36,12 +36,12 @@ describe('App Header', () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.toggleAccountMenu.resetHistory()
   })
 
-  describe('App Header Logo', () => {
-    it('routes to default route when logo is clicked', () => {
+  describe('App Header Logo', function () {
+    it('routes to default route when logo is clicked', function () {
       const appLogo = wrapper.find(MetaFoxLogo)
       appLogo.simulate('click')
       assert(props.history.push.calledOnce)
@@ -49,8 +49,8 @@ describe('App Header', () => {
     })
   })
 
-  describe('Network', () => {
-    it('shows network dropdown when networkDropdownOpen is false', () => {
+  describe('Network', function () {
+    it('shows network dropdown when networkDropdownOpen is false', function () {
       const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
@@ -61,7 +61,7 @@ describe('App Header', () => {
       assert(props.showNetworkDropdown.calledOnce)
     })
 
-    it('hides network dropdown when networkDropdownOpen is true', () => {
+    it('hides network dropdown when networkDropdownOpen is true', function () {
       wrapper.setProps({ networkDropdownOpen: true })
       const network = wrapper.find({ network: 'test' })
 
@@ -73,22 +73,22 @@ describe('App Header', () => {
       assert(props.hideNetworkDropdown.calledOnce)
     })
 
-    it('hides network indicator', () => {
+    it('hides network indicator', function () {
       wrapper.setProps({ hideNetworkIndicator: true })
       const network = wrapper.find({ network: 'test' })
       assert.equal(network.length, 0)
     })
   })
 
-  describe('Account Menu', () => {
+  describe('Account Menu', function () {
 
-    it('toggles account menu', () => {
+    it('toggles account menu', function () {
       const accountMenu = wrapper.find('.account-menu__icon')
       accountMenu.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
     })
 
-    it('does not toggle account menu when disabled', () => {
+    it('does not toggle account menu when disabled', function () {
       wrapper.setProps({ disabled: true })
       const accountMenu = wrapper.find('.account-menu__icon')
       accountMenu.simulate('click')

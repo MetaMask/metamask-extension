@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import SecurityTab from '../index'
 
-describe('Security Tab', () => {
+describe('Security Tab', function () {
   let wrapper
 
   const props = {
@@ -21,7 +21,7 @@ describe('Security Tab', () => {
     participateInMetaMetrics: false,
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mount(
       <SecurityTab.WrappedComponent {...props} />, {
         context: {
@@ -32,7 +32,7 @@ describe('Security Tab', () => {
     )
   })
 
-  it('navigates to reveal seed words page', () => {
+  it('navigates to reveal seed words page', function () {
     const seedWords = wrapper.find('.button.btn-danger.btn--large')
 
     seedWords.simulate('click')
@@ -40,13 +40,13 @@ describe('Security Tab', () => {
     assert.equal(props.history.push.getCall(0).args[0], '/seed')
   })
 
-  it('toggles incoming txs', () => {
+  it('toggles incoming txs', function () {
     const incomingTxs = wrapper.find({ type: 'checkbox' }).at(0)
     incomingTxs.simulate('click')
     assert(props.setShowIncomingTransactionsFeatureFlag.calledOnce)
   })
 
-  it('toggles metaMetrics', () => {
+  it('toggles metaMetrics', function () {
     const metaMetrics = wrapper.find({ type: 'checkbox' }).at(1)
 
     metaMetrics.simulate('click')

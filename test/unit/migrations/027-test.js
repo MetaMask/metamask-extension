@@ -23,8 +23,8 @@ while (transactions.length < 9) {
 
 oldStorage.data.TransactionController.transactions = transactions
 
-describe('migration #27', () => {
-  it('should remove rejected transactions', (done) => {
+describe('migration #27', function () {
+  it('should remove rejected transactions', function (done) {
     migration27.migrate(oldStorage)
       .then((newStorage) => {
         const newTransactions = newStorage.data.TransactionController.transactions
@@ -39,7 +39,7 @@ describe('migration #27', () => {
       .catch(done)
   })
 
-  it('should successfully migrate first time state', (done) => {
+  it('should successfully migrate first time state', function (done) {
     migration27.migrate({
       meta: {},
       data: require('../../../app/scripts/first-time-state'),

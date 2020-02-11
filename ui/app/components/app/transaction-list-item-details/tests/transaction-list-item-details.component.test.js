@@ -7,8 +7,8 @@ import SenderToRecipient from '../../../ui/sender-to-recipient'
 import TransactionBreakdown from '../../transaction-breakdown'
 import TransactionActivityLog from '../../transaction-activity-log'
 
-describe('TransactionListItemDetails Component', () => {
-  it('should render properly', () => {
+describe('TransactionListItemDetails Component', function () {
+  it('should render properly', function () {
     const transaction = {
       history: [],
       id: 1,
@@ -48,7 +48,7 @@ describe('TransactionListItemDetails Component', () => {
     assert.equal(wrapper.find(TransactionActivityLog).length, 1)
   })
 
-  it('should render a retry button', () => {
+  it('should render a retry button', function () {
     const transaction = {
       history: [],
       id: 1,
@@ -89,7 +89,7 @@ describe('TransactionListItemDetails Component', () => {
     assert.equal(wrapper.find(Button).length, 3)
   })
 
-  it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', () => {
+  it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', function () {
     const transaction = {
       history: [],
       id: 1,
@@ -128,7 +128,7 @@ describe('TransactionListItemDetails Component', () => {
     assert.strictEqual(buttons.at(1).prop('disabled'), true)
   })
 
-  it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', () => {
+  it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', function () {
     const transaction = {
       history: [],
       id: 1,

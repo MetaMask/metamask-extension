@@ -16,7 +16,7 @@ sinon.spy(SendDropdownList.prototype, 'getListItemIcon')
 describe('SendDropdownList Component', function () {
   let wrapper
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow((
       <SendDropdownList
         accounts={[
@@ -31,21 +31,21 @@ describe('SendDropdownList Component', function () {
     ), { context: { t: str => str + '_t' } })
   })
 
-  afterEach(() => {
+  afterEach(function () {
     propsMethodSpies.closeDropdown.resetHistory()
     propsMethodSpies.onSelect.resetHistory()
     SendDropdownList.prototype.getListItemIcon.resetHistory()
   })
 
-  describe('getListItemIcon', () => {
-    it('should return check icon if the passed addresses are the same', () => {
+  describe('getListItemIcon', function () {
+    it('should return check icon if the passed addresses are the same', function () {
       assert.deepEqual(
         wrapper.instance().getListItemIcon('mockAccount0', 'mockAccount0'),
         <i className="fa fa-check fa-lg" style={ { color: '#02c9b1' } } />
       )
     })
 
-    it('should return null if the passed addresses are different', () => {
+    it('should return null if the passed addresses are different', function () {
       assert.equal(
         wrapper.instance().getListItemIcon('mockAccount0', 'mockAccount1'),
         null
@@ -53,29 +53,29 @@ describe('SendDropdownList Component', function () {
     })
   })
 
-  describe('render', () => {
-    it('should render a single div with two children', () => {
+  describe('render', function () {
+    it('should render a single div with two children', function () {
       assert(wrapper.is('div'))
       assert.equal(wrapper.children().length, 2)
     })
 
-    it('should render the children with the correct classes', () => {
+    it('should render the children with the correct classes', function () {
       assert(wrapper.childAt(0).hasClass('send-v2__from-dropdown__close-area'))
       assert(wrapper.childAt(1).hasClass('send-v2__from-dropdown__list'))
     })
 
-    it('should call closeDropdown onClick of the send-v2__from-dropdown__close-area', () => {
+    it('should call closeDropdown onClick of the send-v2__from-dropdown__close-area', function () {
       assert.equal(propsMethodSpies.closeDropdown.callCount, 0)
       wrapper.childAt(0).props().onClick()
       assert.equal(propsMethodSpies.closeDropdown.callCount, 1)
     })
 
-    it('should render an AccountListItem for each item in accounts', () => {
+    it('should render an AccountListItem for each item in accounts', function () {
       assert.equal(wrapper.childAt(1).children().length, 3)
       assert(wrapper.childAt(1).children().every(AccountListItem))
     })
 
-    it('should pass the correct props to the AccountListItem', () => {
+    it('should pass the correct props to the AccountListItem', function () {
       wrapper.childAt(1).children().forEach((accountListItem, index) => {
         const {
           account,
@@ -98,7 +98,7 @@ describe('SendDropdownList Component', function () {
       })
     })
 
-    it('should call this.getListItemIcon for each AccountListItem', () => {
+    it('should call this.getListItemIcon for each AccountListItem', function () {
       assert.equal(SendDropdownList.prototype.getListItemIcon.callCount, 3)
       const getListItemIconCalls = SendDropdownList.prototype.getListItemIcon.getCalls()
       assert(getListItemIconCalls.every(({ args }, index) => args[0] === 'mockAccount' + index))

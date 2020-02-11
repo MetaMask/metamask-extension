@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import AccountDetailsModal from '../account-details-modal'
 
-describe('Account Details Modal', () => {
+describe('Account Details Modal', function () {
   let wrapper
 
   global.platform = { openWindow: sinon.spy() }
@@ -36,7 +36,7 @@ describe('Account Details Modal', () => {
     },
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow(
       <AccountDetailsModal.WrappedComponent {...props} />, {
         context: {
@@ -46,7 +46,7 @@ describe('Account Details Modal', () => {
     )
   })
 
-  it('sets account label when changing default account label', () => {
+  it('sets account label when changing default account label', function () {
     const accountLabel = wrapper.find('.account-modal__name').first()
     accountLabel.simulate('submit', 'New Label')
 
@@ -54,7 +54,7 @@ describe('Account Details Modal', () => {
     assert.equal(props.setAccountLabel.getCall(0).args[1], 'New Label')
   })
 
-  it('opens new window when view block explorer is clicked', () => {
+  it('opens new window when view block explorer is clicked', function () {
     const modalButton = wrapper.find('.account-modal__button')
     const etherscanLink = modalButton.first()
 
@@ -62,7 +62,7 @@ describe('Account Details Modal', () => {
     assert(global.platform.openWindow.calledOnce)
   })
 
-  it('shows export private key modal when clicked', () => {
+  it('shows export private key modal when clicked', function () {
     const modalButton = wrapper.find('.account-modal__button')
     const etherscanLink = modalButton.last()
 
@@ -70,7 +70,7 @@ describe('Account Details Modal', () => {
     assert(props.showExportPrivateKeyModal.calledOnce)
   })
 
-  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', () => {
+  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', function () {
     const blockExplorerUrl = 'https://block.explorer'
     wrapper.setProps({ rpcPrefs: { blockExplorerUrl } })
 

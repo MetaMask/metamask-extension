@@ -25,8 +25,8 @@ describe('txUtils', function () {
     })
   })
 
-  describe('#normalizeTxParams', () => {
-    it('should normalize txParams', () => {
+  describe('#normalizeTxParams', function () {
+    it('should normalize txParams', function () {
       const txParams = {
         chainId: '0x1',
         from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
@@ -50,7 +50,7 @@ describe('txUtils', function () {
     })
   })
 
-  describe('#validateRecipient', () => {
+  describe('#validateRecipient', function () {
     it('removes recipient for txParams with 0x when contract data is provided', function () {
       const zeroRecipientandDataTxParams = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -73,7 +73,7 @@ describe('txUtils', function () {
   })
 
 
-  describe('#validateFrom', () => {
+  describe('#validateFrom', function () {
     it('should error when from is not a hex string', function () {
 
       // where from is undefined

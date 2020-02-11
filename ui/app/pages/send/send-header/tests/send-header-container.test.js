@@ -23,35 +23,25 @@ proxyquire('../send-header.container.js', {
   },
 })
 
-describe('send-header container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
+describe('send-header container', function () {
+  describe('mapStateToProps()', function () {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         titleKey: 'mockTitleKey:mockState',
       })
     })
-
   })
 
-  describe('mapDispatchToProps()', () => {
-    let dispatchSpy
-    let mapDispatchToPropsObject
+  describe('mapDispatchToProps()', function () {
+    describe('clearSend()', function () {
+      it('should dispatch an action', function () {
+        const dispatchSpy = sinon.spy()
+        const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
 
-    beforeEach(() => {
-      dispatchSpy = sinon.spy()
-      mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
-    })
-
-    describe('clearSend()', () => {
-      it('should dispatch an action', () => {
         mapDispatchToPropsObject.clearSend()
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.clearSend.calledOnce)
       })
     })
-
   })
-
 })

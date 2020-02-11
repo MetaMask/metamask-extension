@@ -4,9 +4,9 @@ import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
 import UnitInput from '../unit-input.component'
 
-describe('UnitInput Component', () => {
-  describe('rendering', () => {
-    it('should render properly without a suffix', () => {
+describe('UnitInput Component', function () {
+  describe('rendering', function () {
+    it('should render properly without a suffix', function () {
       const wrapper = shallow(
         <UnitInput />
       )
@@ -15,7 +15,7 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.find('.unit-input__suffix').length, 0)
     })
 
-    it('should render properly with a suffix', () => {
+    it('should render properly with a suffix', function () {
       const wrapper = shallow(
         <UnitInput
           suffix="ETH"
@@ -27,7 +27,7 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
     })
 
-    it('should render properly with a child omponent', () => {
+    it('should render properly with a child omponent', function () {
       const wrapper = shallow(
         <UnitInput>
           <div className="testing">
@@ -41,7 +41,7 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.find('.testing').text(), 'TESTCOMPONENT')
     })
 
-    it('should render with an error class when props.error === true', () => {
+    it('should render with an error class when props.error === true', function () {
       const wrapper = shallow(
         <UnitInput
           error
@@ -53,16 +53,16 @@ describe('UnitInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should focus the input on component click', () => {
+    it('should focus the input on component click', function () {
       const wrapper = mount(
         <UnitInput />
       )
@@ -76,7 +76,7 @@ describe('UnitInput Component', () => {
       assert.equal(handleFocusSpy.callCount, 1)
     })
 
-    it('should call onChange on input changes with the value', () => {
+    it('should call onChange on input changes with the value', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}
@@ -92,7 +92,7 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.state('value'), 123)
     })
 
-    it('should set the component state value with props.value', () => {
+    it('should set the component state value with props.value', function () {
       const wrapper = mount(
         <UnitInput
           value={123}
@@ -103,7 +103,7 @@ describe('UnitInput Component', () => {
       assert.equal(wrapper.state('value'), 123)
     })
 
-    it('should update the component state value with props.value', () => {
+    it('should update the component state value with props.value', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}

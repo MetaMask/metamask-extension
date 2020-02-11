@@ -15,8 +15,8 @@ const storage = {
   },
 }
 
-describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
-  it('should add submittedTime key on the txMeta if appropriate', (done) => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', function () {
+  it('should add submittedTime key on the txMeta if appropriate', function (done) {
     migration22.migrate(storage)
       .then((migratedData) => {
         const [txMeta1, txMeta2, txMeta3] = migratedData.data.TransactionController.transactions

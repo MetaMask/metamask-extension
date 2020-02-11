@@ -9,11 +9,11 @@ import TokenInput from '../token-input.component'
 import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
-describe('TokenInput Component', () => {
+describe('TokenInput Component', function () {
   const t = key => `translate ${key}`
 
-  describe('rendering', () => {
-    it('should render properly without a token', () => {
+  describe('rendering', function () {
+    it('should render properly without a token', function () {
       const wrapper = shallow(
         <TokenInput />,
         { context: { t } }
@@ -23,7 +23,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find(UnitInput).length, 1)
     })
 
-    it('should render properly with a token', () => {
+    it('should render properly with a token', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -57,7 +57,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
     })
 
-    it('should render properly with a token and selectedTokenExchangeRate', () => {
+    it('should render properly with a token and selectedTokenExchangeRate', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -91,7 +91,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should render properly with a token value for ETH', () => {
+    it('should render properly with a token value for ETH', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -125,7 +125,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '2ETH')
     })
 
-    it('should render properly with a token value for fiat', () => {
+    it('should render properly with a token value for fiat', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -160,7 +160,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
     })
 
-    it('should render properly with a token value for fiat, but hideConversion is true', () => {
+    it('should render properly with a token value for fiat, but hideConversion is true', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -203,16 +203,16 @@ describe('TokenInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange on input changes with the hex value for ETH', () => {
+    it('should call onChange on input changes with the hex value for ETH', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -254,7 +254,7 @@ describe('TokenInput Component', () => {
       assert.equal(tokenInputInstance.state.hexValue, '2710')
     })
 
-    it('should call onChange on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -297,7 +297,7 @@ describe('TokenInput Component', () => {
       assert.equal(tokenInputInstance.state.hexValue, '2710')
     })
 
-    it('should change the state and pass in a new decimalValue when props.value changes', () => {
+    it('should change the state and pass in a new decimalValue when props.value changes', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',

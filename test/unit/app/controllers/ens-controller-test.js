@@ -9,7 +9,7 @@ const ZERO_X_ERROR_ADDRESS = '0x'
 
 describe('EnsController', function () {
   describe('#constructor', function () {
-    it('should construct the controller given a provider and a network', async () => {
+    it('should construct the controller given a provider and a network', async function () {
       const provider = new HttpProvider('https://ropsten.infura.io')
       const currentNetworkId = '3'
       const networkStore = new ObservableStore(currentNetworkId)
@@ -21,7 +21,7 @@ describe('EnsController', function () {
       assert.ok(ens._ens)
     })
 
-    it('should construct the controller given an existing ENS instance', async () => {
+    it('should construct the controller given an existing ENS instance', async function () {
       const networkStore = {
         subscribe: sinon.spy(),
       }
@@ -35,7 +35,7 @@ describe('EnsController', function () {
   })
 
   describe('#reverseResolveName', function () {
-    it('should resolve to an ENS name', async () => {
+    it('should resolve to an ENS name', async function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const networkStore = {
         subscribe: sinon.spy(),
@@ -52,7 +52,7 @@ describe('EnsController', function () {
       assert.equal(name, 'peaksignal.eth')
     })
 
-    it('should only resolve an ENS name once', async () => {
+    it('should only resolve an ENS name once', async function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const reverse = sinon.stub().withArgs(address).returns('peaksignal.eth')
       const lookup = sinon.stub().withArgs('peaksignal.eth').returns(address)
@@ -73,7 +73,7 @@ describe('EnsController', function () {
       assert.ok(reverse.calledOnce)
     })
 
-    it('should fail if the name is registered to a different address than the reverse-resolved', async () => {
+    it('should fail if the name is registered to a different address than the reverse-resolved', async function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const networkStore = {
         subscribe: sinon.spy(),
@@ -90,7 +90,7 @@ describe('EnsController', function () {
       assert.strictEqual(name, undefined)
     })
 
-    it('should throw an error when the lookup resolves to the zero address', async () => {
+    it('should throw an error when the lookup resolves to the zero address', async function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const networkStore = {
         subscribe: sinon.spy(),
@@ -111,7 +111,7 @@ describe('EnsController', function () {
       }
     })
 
-    it('should throw an error the lookup resolves to the zero x address', async () => {
+    it('should throw an error the lookup resolves to the zero x address', async function () {
       const address = '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'
       const networkStore = {
         subscribe: sinon.spy(),

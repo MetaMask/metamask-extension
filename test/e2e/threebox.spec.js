@@ -54,26 +54,26 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('set up data to be restored by 3box', () => {
+  describe('set up data to be restored by 3box', function () {
 
-    describe('First time flow starting from an existing seed phrase', () => {
-      it('clicks the continue button on the welcome screen', async () => {
+    describe('First time flow starting from an existing seed phrase', function () {
+      it('clicks the continue button on the welcome screen', async function () {
         await driver.findElement(By.css('.welcome-page__header'))
         await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         await driver.delay(largeDelayMs)
       })
 
-      it('clicks the "Import Wallet" option', async () => {
+      it('clicks the "Import Wallet" option', async function () {
         await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
         await driver.delay(largeDelayMs)
       })
 
-      it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
         await driver.clickElement(By.css('.btn-default'))
         await driver.delay(largeDelayMs)
       })
 
-      it('imports a seed phrase', async () => {
+      it('imports a seed phrase', async function () {
         const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver.delay(regularDelayMs)
@@ -89,44 +89,44 @@ describe('MetaMask', function () {
         await driver.delay(regularDelayMs)
       })
 
-      it('clicks through the success screen', async () => {
+      it('clicks through the success screen', async function () {
         await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
         await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await driver.delay(regularDelayMs)
       })
 
-      it('balance renders', async () => {
+      it('balance renders', async function () {
         const balance = await driver.findElement(By.css('.balance-display .token-amount'))
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver.delay(regularDelayMs)
       })
     })
 
-    describe('turns on threebox syncing', () => {
-      it('goes to the settings screen', async () => {
+    describe('turns on threebox syncing', function () {
+      it('goes to the settings screen', async function () {
         await driver.clickElement(By.css('.account-menu__icon'))
         await driver.delay(regularDelayMs)
 
         await driver.clickElement(By.xpath(`//div[contains(text(), 'Settings')]`))
       })
 
-      it('turns on threebox syncing', async () => {
+      it('turns on threebox syncing', async function () {
         await driver.clickElement(By.xpath(`//div[contains(text(), 'Advanced')]`))
         await driver.clickElement(By.css('[data-testid="advanced-setting-3box"] .toggle-button div'))
       })
 
     })
 
-    describe('updates settings and address book', () => {
-      it('adds an address to the contact list', async () => {
+    describe('updates settings and address book', function () {
+      it('navigates to General settings', async function () {
         await driver.clickElement(By.xpath(`//div[contains(text(), 'General')]`))
       })
 
-      it('turns on use of blockies', async () => {
+      it('turns on use of blockies', async function () {
         await driver.clickElement(By.css('.toggle-button > div'))
       })
 
-      it('adds an address to the contact list', async () => {
+      it('adds an address to the contact list', async function () {
         await driver.clickElement(By.xpath(`//div[contains(text(), 'Contacts')]`))
 
         await driver.clickElement(By.css('.address-book-add-button__button'))
@@ -150,7 +150,7 @@ describe('MetaMask', function () {
 
   })
 
-  describe('restoration from 3box', () => {
+  describe('restoration from 3box', function () {
     let driver2
 
     before(async function () {
@@ -162,24 +162,24 @@ describe('MetaMask', function () {
       await driver2.quit()
     })
 
-    describe('First time flow starting from an existing seed phrase', () => {
-      it('clicks the continue button on the welcome screen', async () => {
+    describe('First time flow starting from an existing seed phrase', function () {
+      it('clicks the continue button on the welcome screen', async function () {
         await driver2.findElement(By.css('.welcome-page__header'))
         await driver2.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         await driver2.delay(largeDelayMs)
       })
 
-      it('clicks the "Import Wallet" option', async () => {
+      it('clicks the "Import Wallet" option', async function () {
         await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
         await driver2.delay(largeDelayMs)
       })
 
-      it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
         await driver2.clickElement(By.css('.btn-default'))
         await driver2.delay(largeDelayMs)
       })
 
-      it('imports a seed phrase', async () => {
+      it('imports a seed phrase', async function () {
         const [seedTextArea] = await driver2.findElements(By.css('textarea.first-time-flow__textarea'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver2.delay(regularDelayMs)
@@ -195,40 +195,40 @@ describe('MetaMask', function () {
         await driver2.delay(regularDelayMs)
       })
 
-      it('clicks through the success screen', async () => {
+      it('clicks through the success screen', async function () {
         await driver2.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
         await driver2.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
         await driver2.delay(regularDelayMs)
       })
 
-      it('balance renders', async () => {
+      it('balance renders', async function () {
         const balance = await driver2.findElement(By.css('.balance-display .token-amount'))
         await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver2.delay(regularDelayMs)
       })
     })
 
-    describe('restores 3box data', () => {
-      it('confirms the 3box restore notification', async () => {
+    describe('restores 3box data', function () {
+      it('confirms the 3box restore notification', async function () {
         await driver2.clickElement(By.css('.home-notification__accept-button'))
       })
 
       // TODO: Fix tests from here forward; they're using the wrong driver
-      it('goes to the settings screen', async () => {
+      it('goes to the settings screen', async function () {
         await driver.clickElement(By.css('.account-menu__icon'))
         await driver.delay(regularDelayMs)
 
         await driver.clickElement(By.xpath(`//div[contains(text(), 'Settings')]`))
       })
 
-      it('finds the blockies toggle turned on', async () => {
+      it('finds the blockies toggle turned on', async function () {
         await driver.delay(regularDelayMs)
         const toggleLabel = await driver.findElement(By.css('.toggle-button__status-label'))
         const toggleLabelText = await toggleLabel.getText()
         assert.equal(toggleLabelText, 'ON')
       })
 
-      it('finds the restored address in the contact list', async () => {
+      it('finds the restored address in the contact list', async function () {
         await driver.clickElement(By.xpath(`//div[contains(text(), 'Contacts')]`))
         await driver.delay(regularDelayMs)
 

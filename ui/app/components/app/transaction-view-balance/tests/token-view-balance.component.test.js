@@ -18,13 +18,13 @@ const historySpies = {
 const t = (str1, str2) => (str2 ? str1 + str2 : str1)
 const metricsEvent = () => ({})
 
-describe('TransactionViewBalance Component', () => {
-  afterEach(() => {
+describe('TransactionViewBalance Component', function () {
+  afterEach(function () {
     propsMethodSpies.showDepositModal.resetHistory()
     historySpies.push.resetHistory()
   })
 
-  it('should render ETH balance properly', () => {
+  it('should render ETH balance properly', function () {
     const wrapper = shallow((
       <TransactionViewBalance
         showDepositModal={propsMethodSpies.showDepositModal}
@@ -50,7 +50,7 @@ describe('TransactionViewBalance Component', () => {
     assert.equal(historySpies.push.getCall(0).args[0], SEND_ROUTE)
   })
 
-  it('should render token balance properly', () => {
+  it('should render token balance properly', function () {
     const token = {
       address: '0x35865238f0bec9d5ce6abff0fdaebe7b853dfcc5',
       decimals: '2',

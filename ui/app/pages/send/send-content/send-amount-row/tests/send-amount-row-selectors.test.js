@@ -3,10 +3,10 @@ import {
   sendAmountIsInError,
 } from '../send-amount-row.selectors.js'
 
-describe('send-amount-row selectors', () => {
+describe('send-amount-row selectors', function () {
 
-  describe('sendAmountIsInError()', () => {
-    it('should return true if send.errors.amount is truthy', () => {
+  describe('sendAmountIsInError()', function () {
+    it('should return true if send.errors.amount is truthy', function () {
       const state = {
         send: {
           errors: {
@@ -18,7 +18,7 @@ describe('send-amount-row selectors', () => {
       assert.equal(sendAmountIsInError(state), true)
     })
 
-    it('should return false if send.errors.amount is falsy', () => {
+    it('should return false if send.errors.amount is falsy', function () {
       const state = {
         send: {
           errors: {

@@ -3,8 +3,8 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import CurrencyDisplay from '../currency-display.component'
 
-describe('CurrencyDisplay Component', () => {
-  it('should render text with a className', () => {
+describe('CurrencyDisplay Component', function () {
+  it('should render text with a className', function () {
     const wrapper = shallow((
       <CurrencyDisplay
         displayValue="$123.45"
@@ -16,7 +16,7 @@ describe('CurrencyDisplay Component', () => {
     assert.equal(wrapper.text(), '$123.45')
   })
 
-  it('should render text with a prefix', () => {
+  it('should render text with a prefix', function () {
     const wrapper = shallow((
       <CurrencyDisplay
         displayValue="$123.45"
