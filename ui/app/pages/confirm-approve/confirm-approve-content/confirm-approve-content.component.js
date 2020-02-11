@@ -20,10 +20,7 @@ export default class ConfirmApproveContent extends Component {
     showEditApprovalPermissionModal: PropTypes.func,
     origin: PropTypes.string,
     setCustomAmount: PropTypes.func,
-    tokenBalance: PropTypes.oneOf([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
-    ]),
+    tokenBalance: PropTypes.string,
     data: PropTypes.string,
     toAddress: PropTypes.string,
     currentCurrency: PropTypes.string,

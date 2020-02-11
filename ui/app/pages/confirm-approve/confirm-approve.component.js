@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import ConfirmTransactionBase from '../confirm-transaction-base'
 import ConfirmApproveContent from './confirm-approve-content'
 import { getCustomTxParamsData } from './confirm-approve.util'
-import { calcTokenAmount } from '../../helpers/utils/token-util'
+import {
+  calcTokenAmount,
+} from '../../helpers/utils/token-util'
 
 export default class ConfirmApprove extends Component {
   static contextTypes = {
@@ -69,21 +71,9 @@ export default class ConfirmApprove extends Component {
 
     const tokensText = `${Number(tokenAmount)} ${tokenSymbol}`
 
-    let tokenBalance
-
-    if (Array.isArray(tokenTrackerBalance)) {
-      tokenBalance = tokenTrackerBalance.map(balance =>
-        (balance
-          ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(
-            10
-          )
-          : '')
-      )
-    } else {
-      tokenBalance = tokenTrackerBalance
-        ? Number(calcTokenAmount(tokenTrackerBalance, decimals)).toPrecision(10)
-        : ''
-    }
+    const tokenBalance = tokenTrackerBalance
+      ? calcTokenAmount(tokenTrackerBalance, decimals).toString(10)
+      : ''
 
     const customData = customPermissionAmount
       ? getCustomTxParamsData(data, { customPermissionAmount, decimals })

@@ -3355,19 +3355,6 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/cfx-token-tracker@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/cfx-token-tracker/-/cfx-token-tracker-1.1.4.tgz#61d9a95d69c86d4e30bb377559132f044770c73b"
-  integrity sha512-DMFSVPm7oQD8dHIUpc0Ge4M5qqpA15DRinuAwW0bJlTsNo7tCVmEbogERCt9jRWE1k7S1dTMYXwpu96FqM3k6A==
-  dependencies:
-    deep-equal "^1.1.0"
-    eth-block-tracker "^4.4.2"
-    ethjs "^0.3.6"
-    ethjs-contract "^0.2.1"
-    ethjs-query "^0.3.7"
-    human-standard-token-abi "^1.0.2"
-    safe-event-emitter "^1.0.1"
-
 "@yqrashawn/conflux-local-network-lite@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-1.0.2.tgz#9589f27caab6913a734aa436cfa4edf49252d0c7"
@@ -3386,10 +3373,10 @@
     tmp "^0.1.0"
     unzip-stream "^0.3.0"
 
-"@yqrashawn/conflux-portal-inpage-provider@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.4.tgz#810e78b510a9c6d07e567f4d2e8269823a05d516"
-  integrity sha512-vfFaZP1gc5JIAnBjMAZT7fNSS3sro+rtuT0Pq317+QB1I/08DV3kRcWf4TjRgrDXIAVefbW+jPahzBrcMckoIA==
+"@yqrashawn/conflux-portal-inpage-provider@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.6.tgz#3c48075153d8665aefbb7d621e771ff03d429020"
+  integrity sha512-CbqX93qkdXrVLjoWbgsOUsQQBion/FLckygm9dTcZ89FXOmr1yHnsZRv1ds26jye35isAX2eNrtLYhPTftpEwQ==
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"
@@ -6981,11 +6968,6 @@ cephes@^1.1.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/cephes/-/cephes-1.2.0.tgz#4d246b622bc488ab8c982a1f702f0c9f49705d96"
   integrity sha512-twuUuJRrIrsELHz6foJtZlqrz6FC36zoHZJvvThsrM1UWPKxyoilw1Rka6Hk0AmPFKHKUoGwGfAtvNZNtNZu0g==
-
-cfx-fc-abi@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/cfx-fc-abi/-/cfx-fc-abi-1.0.0.tgz#4818cefb768692eedba2f32526c2b9d44efea6c1"
-  integrity sha512-R7Irt+Y0wRzDqoLHddTHgwfhDqV/o7aEFQoDsueL0mX+3FipomMZEBgkvUqlGbeZP6fA1iHfENAwb1BturPW4g==
 
 chai-checkmark@^1.0.1:
   version "1.0.1"
@@ -11176,12 +11158,12 @@ eth-simple-keyring@^3.4.0, eth-simple-keyring@^3.5.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
-eth-token-tracker@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/eth-token-tracker/-/eth-token-tracker-1.1.10.tgz#3899a33cc442c0405e3923e71e0eff530bd1258b"
-  integrity sha512-rmY/hoTK4I1ta0bEp3xeLKPxbFDcDgjWBGXKOrdCLmSNY8zKsymQzrfUF01b6olahxxs7hAf++f52Vk+TfOlzg==
+eth-token-tracker@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/eth-token-tracker/-/eth-token-tracker-1.1.11.tgz#7f6fb455591a407b08a917809438239cc7632fde"
+  integrity sha512-TyTFt4bAVMXuA1ukz+H2cjKxqqVXXO0lL09EA6i3f7IjL9yNJJj3PyFp6n6HRACJgbCTcmEM37oNT4LMoZiwlQ==
   dependencies:
-    deep-equal "^1.0.1"
+    deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
     ethjs "^0.3.6"
     ethjs-contract "^0.2.1"

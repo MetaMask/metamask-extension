@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import TokenCell from './token-cell'
-import fcAbi from 'cfx-fc-abi'
-import TokenTracker from '@yqrashawn/cfx-token-tracker'
+import TokenTracker from 'eth-token-tracker'
 import { connect } from 'react-redux'
 import { getSelectedAddress } from '../../selectors/selectors'
 import log from 'loglevel'
@@ -60,12 +59,7 @@ class TokenList extends Component {
     this.tracker = new TokenTracker({
       userAddress,
       provider: global.ethereumProvider,
-      tokens: this.props.tokens.map(token => {
-        if (token.symbol === 'FC') {
-          token.abi = fcAbi
-        }
-        return token
-      }),
+      tokens: this.props.tokens,
       pollingInterval: 8000,
     })
 

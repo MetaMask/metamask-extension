@@ -32,7 +32,7 @@ The `piggybankContract` is compiled from:
 
 const forwarderOrigin = 'http://localhost:9010'
 
-const isMetaMaskInstalled = () => {
+const isConfluxPortalInstalled = () => {
   return Boolean(window.conflux && window.conflux.isConfluxPortal)
 }
 
@@ -93,7 +93,7 @@ const initialize = () => {
     cfxSignData,
   ]
 
-  const isMetaMaskConnected = () => accounts && accounts.length > 0
+  const isConfluxPortalConnected = () => accounts && accounts.length > 0
 
   const onClickInstall = () => {
     onboardButton.innerText = 'Onboarding in progress'
@@ -108,7 +108,7 @@ const initialize = () => {
 
   const updateButtons = () => {
     const accountButtonsDisabled =
-      !isMetaMaskInstalled() || !isMetaMaskConnected()
+      !isConfluxPortalInstalled() || !isConfluxPortalConnected()
     if (accountButtonsDisabled) {
       for (const button of accountButtons) {
         button.disabled = true
@@ -122,11 +122,11 @@ const initialize = () => {
       signTypedData.disabled = false
     }
 
-    if (!isMetaMaskInstalled()) {
-      onboardButton.innerText = 'Click here to install MetaMask!'
+    if (!isConfluxPortalInstalled()) {
+      onboardButton.innerText = 'Click here to install Conflux Portal!'
       onboardButton.onclick = onClickInstall
       onboardButton.disabled = false
-    } else if (isMetaMaskConnected()) {
+    } else if (isConfluxPortalConnected()) {
       onboardButton.innerText = 'Connected'
       onboardButton.disabled = true
       if (onboarding) {
@@ -694,7 +694,7 @@ const initialize = () => {
 
   updateButtons()
 
-  if (isMetaMaskInstalled()) {
+  if (isConfluxPortalInstalled()) {
     conflux.autoRefreshOnNetworkChange = false
     conflux.on('networkChanged', networkId => {
       networkDiv.innerHTML = networkId

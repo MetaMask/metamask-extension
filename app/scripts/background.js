@@ -156,7 +156,7 @@ async function initialize () {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
-  log.debug('MetaMask initialization complete.')
+  log.debug('Conflux Portal initialization complete.')
 }
 
 //
@@ -185,7 +185,7 @@ async function loadStateFromPersistence () {
   if (versionedData && !versionedData.data) {
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
+    sentry.captureMessage('Conflux Portal - Empty vault found - unable to recover')
   }
 
   // report migration errors to sentry
@@ -201,7 +201,7 @@ async function loadStateFromPersistence () {
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined')
+    throw new Error('Conflux Portal - migrator returned undefined')
   }
 
   // write to disk
@@ -210,7 +210,7 @@ async function loadStateFromPersistence () {
   } else {
     // throw in setTimeout so as to not block boot
     setTimeout(() => {
-      throw new Error('MetaMask - Localstore not supported')
+      throw new Error('Conflux Portal - Localstore not supported')
     })
   }
 
@@ -282,7 +282,7 @@ function setupController (initState, initLangCode) {
     storeTransform(versionifyData),
     createStreamSink(persistData),
     error => {
-      log.error('MetaMask - Persistence pipeline failed', error)
+      log.error('Conflux Portal - Persistence pipeline failed', error)
     }
   )
 
@@ -298,10 +298,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing')
+      throw new Error('Conflux Portal - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data')
+      throw new Error('Conflux Portal - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {
