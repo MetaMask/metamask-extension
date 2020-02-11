@@ -9,8 +9,8 @@ import AmountMaxButton from '../amount-max-button/amount-max-button.container'
 import UserPreferencedTokenInput from '../../../../../components/app/user-preferenced-token-input'
 
 describe('SendAmountRow Component', function () {
-  describe('validateAmount', () => {
-    it('should call updateSendAmountError with the correct params', () => {
+  describe('validateAmount', function () {
+    it('should call updateSendAmountError with the correct params', function () {
       const { instance, propsMethodSpies: { updateSendAmountError } } = shallowRenderSendAmountRow()
 
       assert.equal(updateSendAmountError.callCount, 0)
@@ -29,7 +29,7 @@ describe('SendAmountRow Component', function () {
       }))
     })
 
-    it('should call updateGasFeeError if selectedToken is truthy', () => {
+    it('should call updateGasFeeError if selectedToken is truthy', function () {
       const { instance, propsMethodSpies: { updateGasFeeError } } = shallowRenderSendAmountRow()
 
       assert.equal(updateGasFeeError.callCount, 0)
@@ -47,7 +47,7 @@ describe('SendAmountRow Component', function () {
       }))
     })
 
-    it('should call not updateGasFeeError if selectedToken is falsey', () => {
+    it('should call not updateGasFeeError if selectedToken is falsey', function () {
       const { wrapper, instance, propsMethodSpies: { updateGasFeeError } } = shallowRenderSendAmountRow()
 
       wrapper.setProps({ selectedToken: null })
@@ -60,8 +60,9 @@ describe('SendAmountRow Component', function () {
     })
   })
 
-  describe('updateAmount', () => {
-    it('should call setMaxModeTo', () => {
+  describe('updateAmount', function () {
+
+    it('should call setMaxModeTo', function () {
       const { instance, propsMethodSpies: { setMaxModeTo } } = shallowRenderSendAmountRow()
 
       assert.equal(setMaxModeTo.callCount, 0)
@@ -71,7 +72,7 @@ describe('SendAmountRow Component', function () {
       assert.ok(setMaxModeTo.calledOnceWithExactly(false))
     })
 
-    it('should call updateSendAmount', () => {
+    it('should call updateSendAmount', function () {
       const { instance, propsMethodSpies: { updateSendAmount } } = shallowRenderSendAmountRow()
 
       assert.equal(updateSendAmount.callCount, 0)
@@ -82,14 +83,14 @@ describe('SendAmountRow Component', function () {
     })
   })
 
-  describe('render', () => {
-    it('should render a SendRowWrapper component', () => {
+  describe('render', function () {
+    it('should render a SendRowWrapper component', function () {
       const { wrapper } = shallowRenderSendAmountRow()
 
       assert.equal(wrapper.find(SendRowWrapper).length, 1)
     })
 
-    it('should pass the correct props to SendRowWrapper', () => {
+    it('should pass the correct props to SendRowWrapper', function () {
       const { wrapper } = shallowRenderSendAmountRow()
       const {
         errorType,
@@ -102,19 +103,19 @@ describe('SendAmountRow Component', function () {
       assert.equal(showError, false)
     })
 
-    it('should render an AmountMaxButton as the first child of the SendRowWrapper', () => {
+    it('should render an AmountMaxButton as the first child of the SendRowWrapper', function () {
       const { wrapper } = shallowRenderSendAmountRow()
 
       assert(wrapper.find(SendRowWrapper).childAt(0).is(AmountMaxButton))
     })
 
-    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
+    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', function () {
       const { wrapper } = shallowRenderSendAmountRow()
 
       assert(wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput))
     })
 
-    it('should render the UserPreferencedTokenInput with the correct props', () => {
+    it('should render the UserPreferencedTokenInput with the correct props', function () {
       const { wrapper, instanceSpies: { updateGas, updateAmount, validateAmount } } = shallowRenderSendAmountRow()
       const {
         onChange,

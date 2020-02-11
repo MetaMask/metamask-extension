@@ -51,8 +51,8 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('Going through the first time flow, but skipping the seed phrase challenge', () => {
-    it('clicks the continue button on the welcome screen', async () => {
+  describe('Going through the first time flow, but skipping the seed phrase challenge', function () {
+    it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(
         By.xpath(
@@ -62,25 +62,19 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "Create New Wallet" option', async () => {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
-      )
+    it('clicks the "Create New Wallet" option', async function () {
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
       await driver.clickElement(By.css('.btn-default'))
       await driver.delay(largeDelayMs)
     })
 
-    it('accepts a secure password', async () => {
-      const passwordBox = await driver.findElement(
-        By.css('.first-time-flow__form #create-password')
-      )
-      const passwordBoxConfirm = await driver.findElement(
-        By.css('.first-time-flow__form #confirm-password')
-      )
+    it('accepts a secure password', async function () {
+      const passwordBox = await driver.findElement(By.css('.first-time-flow__form #create-password'))
+      const passwordBoxConfirm = await driver.findElement(By.css('.first-time-flow__form #confirm-password'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -90,19 +84,15 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('skips the seed phrase challenge', async () => {
-      await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`
-        )
-      )
+    it('skips the seed phrase challenge', async function () {
+      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
     })
 
-    it('gets the current accounts address', async () => {
+    it('gets the current accounts address', async function () {
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
@@ -114,12 +104,12 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('provider listening for events', () => {
+  describe('provider listening for events', function () {
     let extension
     let popup
     let dapp
 
-    it('connects to the dapp', async () => {
+    it('connects to the dapp', async function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
@@ -158,13 +148,13 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('has the ganache network id within the dapp', async () => {
+    it('has the ganache network id within the dapp', async function () {
       const networkDiv = await driver.findElement(By.css('#network'))
       await driver.delay(regularDelayMs)
       assert.equal(await networkDiv.getText(), '5777')
     })
 
-    it('changes the network', async () => {
+    it('changes the network', async function () {
       await driver.switchToWindow(extension)
 
       await driver.clickElement(By.css('.network-name'))
@@ -174,19 +164,19 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs)
     })
 
-    it('sets the network div within the dapp', async () => {
+    it('sets the network div within the dapp', async function () {
       await driver.switchToWindow(dapp)
       const networkDiv = await driver.findElement(By.css('#network'))
       assert.equal(await networkDiv.getText(), '3')
     })
 
-    it('sets the chainId div within the dapp', async () => {
+    it('sets the chainId div within the dapp', async function () {
       await driver.switchToWindow(dapp)
       const chainIdDiv = await driver.findElement(By.css('#chainId'))
       assert.equal(await chainIdDiv.getText(), '0x3')
     })
 
-    it('sets the account div within the dapp', async () => {
+    it('sets the account div within the dapp', async function () {
       await driver.switchToWindow(dapp)
       const accountsDiv = await driver.findElement(By.css('#accounts'))
       assert.equal(await accountsDiv.getText(), publicAddress.toLowerCase())

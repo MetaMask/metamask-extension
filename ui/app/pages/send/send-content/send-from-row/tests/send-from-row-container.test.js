@@ -15,9 +15,9 @@ proxyquire('../send-from-row.container.js', {
   },
 })
 
-describe('send-from-row container', () => {
-  describe('mapStateToProps()', () => {
-    it('should map the correct properties to props', () => {
+describe('send-from-row container', function () {
+  describe('mapStateToProps()', function () {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         from: 'mockFrom:mockState',
       })

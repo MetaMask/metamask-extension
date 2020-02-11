@@ -52,13 +52,13 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('successfuly signs typed data', () => {
+  describe('successfuly signs typed data', function () {
     let extension
     let popup
     let dapp
     let windowHandles
 
-    it('accepts the account password after lock', async () => {
+    it('accepts the account password after lock', async function () {
       await driver.delay(1000)
       const passwordField = await driver.findElement(By.id('password'))
       await passwordField.sendKeys('correct horse battery staple')
@@ -66,7 +66,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs * 4)
     })
 
-    it('connects to the dapp', async () => {
+    it('connects to the dapp', async function () {
       await driver.openNewPage('http://127.0.0.1:8080/')
       await driver.delay(regularDelayMs)
 
@@ -104,11 +104,8 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp)
     })
 
-    it('creates a sign typed data signature request', async () => {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Sign')]`),
-        10000
-      )
+    it('creates a sign typed data signature request', async function () {
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
       await driver.delay(largeDelayMs)
 
       await driver.delay(regularDelayMs)
@@ -141,18 +138,15 @@ describe('MetaMask', function () {
       )
     })
 
-    it('signs the transaction', async () => {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Sign')]`),
-        10000
-      )
+    it('signs the transaction', async function () {
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
       await driver.delay(regularDelayMs)
 
       extension = windowHandles[0]
       await driver.switchToWindow(extension)
     })
 
-    it('gets the current accounts address', async () => {
+    it('gets the current accounts address', async function () {
       await driver.clickElement(By.css('.account-details__details-button'))
       await driver.delay(regularDelayMs)
 

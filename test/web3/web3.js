@@ -9,21 +9,17 @@ web3.currentProvider.enable().then(() => {
     console.log(methodGroup)
     Object.keys(methodGroup).forEach(methodKey => {
       const methodButton = document.getElementById(methodKey)
-      methodButton.addEventListener('click', function () {
-        window.conflux.sendAsync(
-          {
-            method: methodKey,
-            params: methodGroup[methodKey][1],
-          },
-          function (err, result) {
-            if (err) {
-              console.log(err)
-              console.log(methodKey)
-            } else {
-              document.getElementById('results').innerHTML = JSON.stringify(
-                result
-              )
-            }
+      methodButton.addEventListener('click', () => {
+
+        window.conflux.sendAsync({
+          method: methodKey,
+          params: methodGroup[methodKey][1],
+        }, (err, result) => {
+          if (err) {
+            console.log(err)
+            console.log(methodKey)
+          } else {
+            document.getElementById('results').innerHTML = JSON.stringify(result)
           }
         )
       })

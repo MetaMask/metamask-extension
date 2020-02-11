@@ -5,9 +5,10 @@ import {
   getGasButtonGroupShown,
 } from '../send-gas-row.selectors.js'
 
-describe('send-gas-row selectors', () => {
-  describe('getGasLoadingError()', () => {
-    it('should return send.errors.gasLoading', () => {
+describe('send-gas-row selectors', function () {
+
+  describe('getGasLoadingError()', function () {
+    it('should return send.errors.gasLoading', function () {
       const state = {
         send: {
           errors: {
@@ -20,8 +21,8 @@ describe('send-gas-row selectors', () => {
     })
   })
 
-  describe('gasFeeIsInError()', () => {
-    it('should return true if send.errors.gasFee is truthy', () => {
+  describe('gasFeeIsInError()', function () {
+    it('should return true if send.errors.gasFee is truthy', function () {
       const state = {
         send: {
           errors: {
@@ -33,7 +34,7 @@ describe('send-gas-row selectors', () => {
       assert.equal(gasFeeIsInError(state), true)
     })
 
-    it('should return false send.errors.gasFee is falsely', () => {
+    it('should return false send.errors.gasFee is falsely', function () {
       const state = {
         send: {
           errors: {
@@ -46,8 +47,8 @@ describe('send-gas-row selectors', () => {
     })
   })
 
-  describe('getGasButtonGroupShown()', () => {
-    it('should return send.gasButtonGroupShown', () => {
+  describe('getGasButtonGroupShown()', function () {
+    it('should return send.gasButtonGroupShown', function () {
       const state = {
         send: {
           gasButtonGroupShown: 'foobar',

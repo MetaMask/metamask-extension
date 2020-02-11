@@ -9,16 +9,18 @@ import CurrencyInput from '../currency-input.component'
 import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
-describe('CurrencyInput Component', () => {
-  describe('rendering', () => {
-    it('should render properly without a suffix', () => {
-      const wrapper = shallow(<CurrencyInput />)
+describe('CurrencyInput Component', function () {
+  describe('rendering', function () {
+    it('should render properly without a suffix', function () {
+      const wrapper = shallow(
+        <CurrencyInput />
+      )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(UnitInput).length, 1)
     })
 
-    it('should render properly with a suffix', () => {
+    it('should render properly with a suffix', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -44,7 +46,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should render properly with an CFX value', () => {
+    it('should render properly with an CFX value', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -83,7 +85,7 @@ describe('CurrencyInput Component', () => {
       )
     })
 
-    it('should render properly with a fiat value', () => {
+    it('should render properly with a fiat value', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -123,7 +125,7 @@ describe('CurrencyInput Component', () => {
       // )
     })
 
-    it('should render properly with a native value when hideFiat is true', () => {
+    it('should render properly with a native value when hideFiat is true', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -169,16 +171,16 @@ describe('CurrencyInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for CFX', () => {
+    it('should call onChange on input changes with the hex value for CFX', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -233,7 +235,7 @@ describe('CurrencyInput Component', () => {
       assert.ok(handleBlurSpy.calledWith('de0b6b3a7640000'))
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -286,7 +288,7 @@ describe('CurrencyInput Component', () => {
       assert.ok(handleBlurSpy.calledWith('f602f2234d0ea'))
     })
 
-    it('should change the state and pass in a new decimalValue when props.value changes', () => {
+    it('should change the state and pass in a new decimalValue when props.value changes', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',
@@ -322,7 +324,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.find(UnitInput).props().value, 2)
     })
 
-    it('should swap selected currency when swap icon is clicked', () => {
+    it('should swap selected currency when swap icon is clicked', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'CFX',

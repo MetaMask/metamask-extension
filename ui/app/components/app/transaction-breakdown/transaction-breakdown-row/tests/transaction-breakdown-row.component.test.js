@@ -4,8 +4,8 @@ import { shallow } from 'enzyme'
 import TransactionBreakdownRow from '../transaction-breakdown-row.component'
 import Button from '../../../../ui/button'
 
-describe('TransactionBreakdownRow Component', () => {
-  it('should render text properly', () => {
+describe('TransactionBreakdownRow Component', function () {
+  it('should render text properly', function () {
     const wrapper = shallow(
       <TransactionBreakdownRow title="test" className="test-class">
         Test
@@ -24,7 +24,7 @@ describe('TransactionBreakdownRow Component', () => {
     )
   })
 
-  it('should render components properly', () => {
+  it('should render components properly', function () {
     const wrapper = shallow(
       <TransactionBreakdownRow title="test" className="test-class">
         <Button onClick={() => {}}>Button</Button>

@@ -2,10 +2,11 @@ import assert from 'assert'
 import migration23 from '../../../app/scripts/migrations/023'
 
 const storage = {
-  meta: {},
-  data: {
-    TransactionController: {
-      transactions: [],
+  'meta': {},
+  'data': {
+    'TransactionController': {
+      'transactions': [
+      ],
     },
   },
 }
@@ -25,14 +26,19 @@ const txStates = [
   'dropped',
 ]
 
-const deletableTxStates = ['confirmed', 'rejected', 'failed', 'dropped']
+const deletableTxStates = [
+  'confirmed',
+  'rejected',
+  'failed',
+  'dropped',
+]
 
 let nonDeletableCount = 0
 
 let status
 while (transactions.length <= 100) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  if (!deletableTxStates.find(s => s === status)) {
+  if (!deletableTxStates.find((s) => s === status)) {
     nonDeletableCount++
   }
   transactions.push({ status })
@@ -48,69 +54,47 @@ while (transactions20.length < 20) {
   transactions20.push({ status })
 }
 
+
 storage.data.TransactionController.transactions = transactions
 
-describe('storage is migrated successfully and the proper transactions are remove from state', () => {
-  it('should remove transactions that are unneeded', done => {
-    migration23
-      .migrate(storage)
-      .then(migratedData => {
+describe('storage is migrated successfully and the proper transactions are remove from state', function () {
+  it('should remove transactions that are unneeded', function (done) {
+    migration23.migrate(storage)
+      .then((migratedData) => {
         let leftoverNonDeletableTxCount = 0
-        const migratedTransactions =
-          migratedData.data.TransactionController.transactions
-        migratedTransactions.forEach(tx => {
-          if (!deletableTxStates.find(s => s === tx.status)) {
+        const migratedTransactions = migratedData.data.TransactionController.transactions
+        migratedTransactions.forEach((tx) => {
+          if (!deletableTxStates.find((s) => s === tx.status)) {
             leftoverNonDeletableTxCount++
           }
         })
-        assert.equal(
-          leftoverNonDeletableTxCount,
-          nonDeletableCount,
-          'migration shouldnt delete transactions we want to keep'
-        )
-        assert(
-          migratedTransactions.length >= 40,
-          `should be equal or greater to 40 if they are non deletable states got ${migratedTransactions.length} transactions`
-        )
+        assert.equal(leftoverNonDeletableTxCount, nonDeletableCount, 'migration shouldnt delete transactions we want to keep')
+        assert((migratedTransactions.length >= 40), `should be equal or greater to 40 if they are non deletable states got ${migratedTransactions.length} transactions`)
         done()
-      })
-      .catch(done)
+      }).catch(done)
   })
 
-  it('should not remove any transactions because 40 is the expectable limit', done => {
+  it('should not remove any transactions because 40 is the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions40
-    migration23
-      .migrate(storage)
-      .then(migratedData => {
-        const migratedTransactions =
-          migratedData.data.TransactionController.transactions
+    migration23.migrate(storage)
+      .then((migratedData) => {
+        const migratedTransactions = migratedData.data.TransactionController.transactions
 
-        assert.equal(
-          migratedTransactions.length,
-          40,
-          'migration shouldnt delete when at limit'
-        )
+        assert.equal(migratedTransactions.length, 40, 'migration shouldnt delete when at limit')
         done()
-      })
-      .catch(done)
+      }).catch(done)
   })
 
-  it('should not remove any transactions because 20 txs is under the expectable limit', done => {
+  it('should not remove any transactions because 20 txs is under the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions20
-    migration23
-      .migrate(storage)
-      .then(migratedData => {
-        const migratedTransactions =
-          migratedData.data.TransactionController.transactions
-        assert.equal(
-          migratedTransactions.length,
-          20,
-          'migration shouldnt delete when under limit'
-        )
+    migration23.migrate(storage)
+      .then((migratedData) => {
+        const migratedTransactions = migratedData.data.TransactionController.transactions
+        assert.equal(migratedTransactions.length, 20, 'migration shouldnt delete when under limit')
         done()
-      })
-      .catch(done)
+      }).catch(done)
   })
+
 })

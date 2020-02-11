@@ -91,5 +91,6 @@ module.exports = {
     }],
     'babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
+    'mocha/no-skipped-tests': 'off',
   },
 }

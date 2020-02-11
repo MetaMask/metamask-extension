@@ -4,16 +4,18 @@ import { shallow } from 'enzyme'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display.component'
 import CurrencyDisplay from '../../../ui/currency-display'
 
-describe('UserPreferencedCurrencyDisplay Component', () => {
-  describe('rendering', () => {
-    it('should render properly', () => {
-      const wrapper = shallow(<UserPreferencedCurrencyDisplay />)
+describe('UserPreferencedCurrencyDisplay Component', function () {
+  describe('rendering', function () {
+    it('should render properly', function () {
+      const wrapper = shallow(
+        <UserPreferencedCurrencyDisplay />
+      )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should pass all props to the CurrencyDisplay child component', () => {
+    it('should pass all props to the CurrencyDisplay child component', function () {
       const wrapper = shallow(
         <UserPreferencedCurrencyDisplay prop1 prop2="test" prop3={1} />
       )

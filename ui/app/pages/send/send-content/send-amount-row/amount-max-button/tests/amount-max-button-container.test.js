@@ -38,9 +38,11 @@ proxyquire('../amount-max-button.container.js', {
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })
 
-describe('amount-max-button container', () => {
-  describe('mapStateToProps()', () => {
-    it('should map the correct properties to props', () => {
+describe('amount-max-button container', function () {
+
+  describe('mapStateToProps()', function () {
+
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',
         buttonDataLoading: 'mockButtonDataLoading:mockState',
@@ -52,17 +54,17 @@ describe('amount-max-button container', () => {
     })
   })
 
-  describe('mapDispatchToProps()', () => {
+  describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
 
-    beforeEach(() => {
+    beforeEach(function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
     })
 
-    describe('setAmountToMax()', () => {
-      it('should dispatch an action', () => {
+    describe('setAmountToMax()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.setAmountToMax({ val: 11, foo: 'bar' })
         assert(dispatchSpy.calledTwice)
         assert(duckActionSpies.updateSendErrors.calledOnce)
@@ -74,8 +76,8 @@ describe('amount-max-button container', () => {
       })
     })
 
-    describe('setMaxModeTo()', () => {
-      it('should dispatch an action', () => {
+    describe('setMaxModeTo()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.setMaxModeTo('mockVal')
         assert(dispatchSpy.calledOnce)
         assert.equal(actionSpies.setMaxModeTo.getCall(0).args[0], 'mockVal')

@@ -20,8 +20,8 @@ const state = {
     ],
   },
 }
-describe('Selected Token Selector', () => {
-  it('selects token info from tokens based on selectedTokenAddress in state', () => {
+describe('Selected Token Selector', function () {
+  it('selects token info from tokens based on selectedTokenAddress in state', function () {
     const tokenInfo = selectedTokenSelector(state)
     assert.equal(tokenInfo, metaToken)
   })

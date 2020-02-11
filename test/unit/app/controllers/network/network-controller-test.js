@@ -3,34 +3,32 @@ import nock from 'nock'
 import NetworkController from '../../../../../app/scripts/controllers/network'
 import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/network/util'
 
-describe('# Network Controller', function () {
-  let networkController
-  const noop = () => {}
-  const networkControllerProviderConfig = {
-    getAccounts: noop,
-  }
+describe('NetworkController', function () {
+  describe('controller', function () {
+    let networkController
+    const noop = () => {}
+    const networkControllerProviderConfig = {
+      getAccounts: noop,
+    }
 
-  beforeEach(function () {
-    nock('https://rinkeby.infura.io')
-      .persist()
-      .post('/metamask')
-      .reply(200)
+    beforeEach(function () {
+      nock('https://rinkeby.infura.io')
+        .persist()
+        .post('/metamask')
+        .reply(200)
 
-    networkController = new NetworkController()
+      networkController = new NetworkController()
+      networkController.initializeProvider(networkControllerProviderConfig)
+    })
 
-    networkController.initializeProvider(networkControllerProviderConfig)
-  })
+    afterEach(function () {
+      nock.cleanAll()
+    })
 
-  afterEach(function () {
-    nock.cleanAll()
-  })
-
-  describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
-        const providerProxy = networkController.getProviderAndBlockTracker()
-          .provider
+        const providerProxy = networkController.getProviderAndBlockTracker().provider
         assert.equal(providerProxy.test, undefined)
         providerProxy.setTarget({ test: true })
         assert.equal(providerProxy.test, true)
@@ -64,47 +62,38 @@ describe('# Network Controller', function () {
       })
     })
   })
-})
 
-describe('Network utils', () => {
-  it('getNetworkDisplayName should return the correct network name', () => {
-    const tests = [
-      {
-        input: 3,
-        expected: 'Ropsten',
-      },
-      {
-        input: 4,
-        expected: 'Rinkeby',
-      },
-      {
-        input: 42,
-        expected: 'Kovan',
-      },
-      {
-        input: 'ropsten',
-        expected: 'Ropsten',
-      },
-      {
-        input: 'rinkeby',
-        expected: 'Rinkeby',
-      },
-      {
-        input: 'kovan',
-        expected: 'Kovan',
-      },
-      {
-        input: 'mainnet',
-        expected: 'Main Conflux Network',
-      },
-      {
-        input: 'goerli',
-        expected: 'Goerli',
-      },
-    ]
+  describe('utils', function () {
+    it('getNetworkDisplayName should return the correct network name', function () {
+      const tests = [
+        {
+          input: 3,
+          expected: 'Ropsten',
+        }, {
+          input: 4,
+          expected: 'Rinkeby',
+        }, {
+          input: 42,
+          expected: 'Kovan',
+        }, {
+          input: 'ropsten',
+          expected: 'Ropsten',
+        }, {
+          input: 'rinkeby',
+          expected: 'Rinkeby',
+        }, {
+          input: 'kovan',
+          expected: 'Kovan',
+        }, {
+          input: 'mainnet',
+          expected: 'Main Conflux Network',
+        }, {
+          input: 'goerli',
+          expected: 'Goerli',
+        },
+      ]
 
-    tests.forEach(({ input, expected }) =>
-      assert.equal(getNetworkDisplayName(input), expected)
-    )
+      tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
+    })
   })
 })

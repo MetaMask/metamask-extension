@@ -6,10 +6,10 @@ import NetworkDropdown from '../network-dropdown'
 import { DropdownMenuItem } from '../components/dropdown'
 import NetworkDropdownIcon from '../components/network-dropdown-icon'
 
-describe('Network Dropdown', () => {
+describe('Network Dropdown', function () {
   let wrapper
 
-  describe('NetworkDropdown in appState in false', () => {
+  describe('NetworkDropdown in appState in false', function () {
     const mockState = {
       metamask: {
         network: '1',
@@ -24,20 +24,20 @@ describe('Network Dropdown', () => {
 
     const store = createMockStore(mockState)
 
-    beforeEach(() => {
+    beforeEach(function () {
       wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
-    it('checks for network droppo class', () => {
+    it('checks for network droppo class', function () {
       assert.equal(wrapper.find('.network-droppo').length, 1)
     })
 
-    it('renders only one child when networkDropdown is false in state', () => {
+    it('renders only one child when networkDropdown is false in state', function () {
       assert.equal(wrapper.children().length, 1)
     })
   })
 
-  describe('NetworkDropdown in appState is true', () => {
+  describe('NetworkDropdown in appState is true', function () {
     const mockState = {
       metamask: {
         network: '1',
@@ -52,15 +52,15 @@ describe('Network Dropdown', () => {
     }
     const store = createMockStore(mockState)
 
-    beforeEach(() => {
+    beforeEach(function () {
       wrapper = mountWithRouter(<NetworkDropdown store={store} />)
     })
 
-    it('renders 5 DropDownMenuItems ', () => {
+    it('renders 5 DropDownMenuItems ', function () {
       assert.equal(wrapper.find(DropdownMenuItem).length, 5)
     })
 
-    it('checks background color for first NetworkDropdownIcon', () => {
+    it('checks background color for first NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -70,7 +70,7 @@ describe('Network Dropdown', () => {
       ) // Main Conflux Network Teal
     })
 
-    it('checks background color for second NetworkDropdownIcon', () => {
+    it('checks background color for second NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -80,7 +80,7 @@ describe('Network Dropdown', () => {
       ) // Ropsten Red
     })
 
-    it.skip('checks background color for third NetworkDropdownIcon', () => {
+    it.skip('checks background color for third NetworkDropdownIcon skip', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -90,7 +90,7 @@ describe('Network Dropdown', () => {
       ) // Kovan Purple
     })
 
-    it.skip('checks background color for fourth NetworkDropdownIcon', () => {
+    it.skip('checks background color for fourth NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -100,7 +100,7 @@ describe('Network Dropdown', () => {
       ) // Rinkeby Yellow
     })
 
-    it.skip('checks background color for fifth NetworkDropdownIcon', () => {
+    it.skip('checks background color for fifth NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -110,7 +110,7 @@ describe('Network Dropdown', () => {
       ) // Goerli Blue
     })
 
-    it('checks background color for third NetworkDropdownIcon', () => {
+    it('checks background color for third NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)
@@ -120,7 +120,7 @@ describe('Network Dropdown', () => {
       )
     })
 
-    it('checks dropdown for frequestRPCList from  state ', () => {
+    it('checks dropdown for frequestRPCList from  state ', function () {
       assert.equal(
         wrapper
           .find(DropdownMenuItem)
@@ -130,7 +130,7 @@ describe('Network Dropdown', () => {
       )
     })
 
-    it('checks background border for forth NetworkDropdownIcon', () => {
+    it('checks background border for forth NetworkDropdownIcon', function () {
       assert.equal(
         wrapper
           .find(NetworkDropdownIcon)

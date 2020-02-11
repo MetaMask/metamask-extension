@@ -43,8 +43,8 @@ sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 describe('Send Component', function () {
   let wrapper
 
-  beforeEach(() => {
-    wrapper = shallow(
+  beforeEach(function () {
+    wrapper = shallow((
       <SendTransactionScreen
         amount="mockAmount"
         amountConversionRate="mockAmountConversionRate"
@@ -83,10 +83,10 @@ describe('Send Component', function () {
           propsMethodSpies.updateToNicknameIfNecessary
         }
       />
-    )
+    ))
   })
 
-  afterEach(() => {
+  afterEach(function () {
     SendTransactionScreen.prototype.componentDidMount.resetHistory()
     SendTransactionScreen.prototype.updateGas.resetHistory()
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
@@ -99,19 +99,19 @@ describe('Send Component', function () {
     propsMethodSpies.updateToNicknameIfNecessary.resetHistory()
   })
 
-  it('should call componentDidMount', () => {
+  it('should call componentDidMount', function () {
     assert(SendTransactionScreen.prototype.componentDidMount.calledOnce)
   })
 
-  describe('componentDidMount', () => {
-    it('should call props.fetchBasicGasAndTimeEstimates', () => {
+  describe('componentDidMount', function () {
+    it('should call props.fetchBasicGasAndTimeEstimates', function () {
       propsMethodSpies.fetchBasicGasEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
       assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
 
-    it('should call this.updateGas', async () => {
+    it('should call this.updateGas', async function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendErrors.resetHistory()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
@@ -121,8 +121,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('componentWillUnmount', () => {
-    it('should call this.props.resetSendState', () => {
+  describe('componentWillUnmount', function () {
+    it('should call this.props.resetSendState', function () {
       propsMethodSpies.resetSendState.resetHistory()
       assert.equal(propsMethodSpies.resetSendState.callCount, 0)
       wrapper.instance().componentWillUnmount()
@@ -130,8 +130,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('componentDidUpdate', () => {
-    it('should call doesAmountErrorRequireUpdate with the expected params', () => {
+  describe('componentDidUpdate', function () {
+    it('should call doesAmountErrorRequireUpdate with the expected params', function () {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -157,7 +157,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getAmountErrorObject if doesAmountErrorRequireUpdate returns false', () => {
+    it('should not call getAmountErrorObject if doesAmountErrorRequireUpdate returns false', function () {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -167,7 +167,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getAmountErrorObject.callCount, 0)
     })
 
-    it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', () => {
+    it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', function () {
       utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -194,7 +194,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', () => {
+    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
@@ -219,7 +219,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', () => {
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
@@ -227,7 +227,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
-    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', () => {
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function () {
       utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
@@ -238,7 +238,7 @@ describe('Send Component', function () {
       assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
     })
 
-    it('should call updateSendErrors with the expected params if selectedToken is falsy', () => {
+    it('should call updateSendErrors with the expected params if selectedToken is falsy', function () {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
@@ -253,7 +253,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should call updateSendErrors with the expected params if selectedToken is truthy', () => {
+    it('should call updateSendErrors with the expected params if selectedToken is truthy', function () {
       propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.setProps({
         selectedToken: {
@@ -274,7 +274,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', () => {
+    it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -292,7 +292,7 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
-    it('should not call updateSendTokenBalance or this.updateGas if network === loading', () => {
+    it('should not call updateSendTokenBalance or this.updateGas if network === loading', function () {
       wrapper.setProps({ network: 'loading' })
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
@@ -311,7 +311,7 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
     })
 
-    it('should call updateSendTokenBalance and this.updateGas with the correct params', () => {
+    it('should call updateSendTokenBalance and this.updateGas with the correct params', function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -345,7 +345,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateGas when selectedToken.address is changed', () => {
+    it('should call updateGas when selectedToken.address is changed', function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().componentDidUpdate({
@@ -360,8 +360,8 @@ describe('Send Component', function () {
     })
   })
 
-  describe('updateGas', () => {
-    it('should call updateAndSetGasLimit with the correct params if no to prop is passed', () => {
+  describe('updateGas', function () {
+    it('should call updateAndSetGasLimit with the correct params if no to prop is passed', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas()
       assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
@@ -386,7 +386,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasLimit with the correct params if a to prop is passed', () => {
+    it('should call updateAndSetGasLimit with the correct params if a to prop is passed', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
@@ -396,7 +396,7 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasLimit with to set to lowercase if passed', () => {
+    it('should call updateAndSetGasLimit with to set to lowercase if passed', function () {
       propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
       assert.equal(
@@ -406,17 +406,17 @@ describe('Send Component', function () {
     })
   })
 
-  describe('render', () => {
-    it('should render a page-container class', () => {
+  describe('render', function () {
+    it('should render a page-container class', function () {
       assert.equal(wrapper.find('.page-container').length, 1)
     })
 
-    it('should render SendHeader and AddRecipient', () => {
+    it('should render SendHeader and AddRecipient', function () {
       assert.equal(wrapper.find(SendHeader).length, 1)
       assert.equal(wrapper.find(AddRecipient).length, 1)
     })
 
-    it('should pass the history prop to SendHeader and SendFooter', () => {
+    it('should pass the history prop to SendHeader and SendFooter', function () {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
@@ -428,7 +428,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should pass showHexData to SendContent', () => {
+    it('should pass showHexData to SendContent', function () {
       wrapper.setProps({
         to: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
       })
@@ -436,18 +436,18 @@ describe('Send Component', function () {
     })
   })
 
-  describe('validate when input change', () => {
+  describe('validate when input change', function () {
     let clock
 
-    beforeEach(() => {
+    beforeEach(function () {
       clock = sinon.useFakeTimers()
     })
 
-    afterEach(() => {
+    afterEach(function () {
       clock.restore()
     })
 
-    it('should validate when input changes', () => {
+    it('should validate when input changes', function () {
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
         '0x80F061544cC398520615B5d3e7A3BedD70cd4510'
@@ -460,7 +460,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should validate when input changes and has error', () => {
+    it('should validate when input changes and has error', function () {
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
         '0x80F061544cC398520615B5d3e7a3BedD70cd4510'
@@ -474,7 +474,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should validate when input changes and has error', () => {
+    it('should validate when input changes and has error on a bad network', function () {
       wrapper.setProps({ network: 'bad' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -489,7 +489,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should synchronously validate when input changes to ""', () => {
+    it('should synchronously validate when input changes to ""', function () {
       wrapper.setProps({ network: 'bad' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
@@ -511,7 +511,7 @@ describe('Send Component', function () {
       })
     })
 
-    it('should warn when send to a known token contract address', () => {
+    it('should warn when send to a known token contract address', function () {
       wrapper.setProps({ address: '0x888', decimals: 18, symbol: '888' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(

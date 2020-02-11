@@ -1,32 +1,31 @@
 import assert from 'assert'
 import migration37 from '../../../app/scripts/migrations/037'
 
-describe('migration #37', () => {
-  it('should update the version metadata', done => {
+describe('migration #37', function () {
+  it('should update the version metadata', function (done) {
     const oldStorage = {
-      meta: {
-        version: 36,
+      'meta': {
+        'version': 36,
       },
-      data: {},
+      'data': {},
     }
 
-    migration37
-      .migrate(oldStorage)
-      .then(newStorage => {
+    migration37.migrate(oldStorage)
+      .then((newStorage) => {
         assert.deepEqual(newStorage.meta, {
-          version: 37,
+          'version': 37,
         })
         done()
       })
       .catch(done)
   })
 
-  it('should transform old state to new format', done => {
+  it('should transform old state to new format', function (done) {
     const oldStorage = {
-      meta: {},
-      data: {
-        AddressBookController: {
-          addressBook: {
+      'meta': {},
+      'data': {
+        'AddressBookController': {
+          'addressBook': {
             '0x1De7e54679bfF0c23856FbF547b2394e723FCA91': {
               address: '0x1De7e54679bfF0c23856FbF547b2394e723FCA91',
               chainId: '4',
@@ -51,9 +50,8 @@ describe('migration #37', () => {
       },
     }
 
-    migration37
-      .migrate(oldStorage)
-      .then(newStorage => {
+    migration37.migrate(oldStorage)
+      .then((newStorage) => {
         assert.deepEqual(newStorage.data.AddressBookController.addressBook, {
           '4': {
             '0x1De7e54679bfF0c23856FbF547b2394e723FCA91': {
@@ -86,12 +84,12 @@ describe('migration #37', () => {
       .catch(done)
   })
 
-  it('ens validation test', done => {
+  it('ens validation test', function (done) {
     const oldStorage = {
-      meta: {},
-      data: {
-        AddressBookController: {
-          addressBook: {
+      'meta': {},
+      'data': {
+        'AddressBookController': {
+          'addressBook': {
             '0x1De7e54679bfF0c23856FbF547b2394e723FCA91': {
               address: '0x1De7e54679bfF0c23856FbF547b2394e723FCA91',
               chainId: '4',
@@ -103,9 +101,8 @@ describe('migration #37', () => {
       },
     }
 
-    migration37
-      .migrate(oldStorage)
-      .then(newStorage => {
+    migration37.migrate(oldStorage)
+      .then((newStorage) => {
         assert.deepEqual(newStorage.data.AddressBookController.addressBook, {
           '4': {
             '0x1De7e54679bfF0c23856FbF547b2394e723FCA91': {

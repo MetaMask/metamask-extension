@@ -30,17 +30,18 @@ proxyquire('../send.container.js', {
   },
 })
 
-describe('send container', () => {
-  describe('mapDispatchToProps()', () => {
+describe('send container', function () {
+
+  describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
 
-    beforeEach(() => {
+    beforeEach(function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
     })
 
-    describe('updateAndSetGasLimit()', () => {
+    describe('updateAndSetGasLimit()', function () {
       const mockProps = {
         blockGasLimit: 'mockBlockGasLimit',
         editingTransactionId: '0x2',
@@ -54,23 +55,14 @@ describe('send container', () => {
         data: undefined,
       }
 
-      it('should dispatch a setGasTotal action when editingTransactionId is truthy', () => {
+      it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
         mapDispatchToPropsObject.updateAndSetGasLimit(mockProps)
         assert(dispatchSpy.calledOnce)
         assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
       })
 
-      it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
-        const {
-          gasPrice,
-          selectedAddress,
-          selectedToken,
-          recentBlocks,
-          blockGasLimit,
-          to,
-          value,
-          data,
-        } = mockProps
+      it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
+        const { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data } = mockProps
         mapDispatchToPropsObject.updateAndSetGasLimit(
           Object.assign({}, mockProps, { editingTransactionId: false })
         )
@@ -88,17 +80,15 @@ describe('send container', () => {
       })
     })
 
-    describe('updateSendTokenBalance()', () => {
+    describe('updateSendTokenBalance()', function () {
       const mockProps = {
         address: '0x10',
         tokenContract: '0x00a',
         selectedToken: { address: '0x1' },
       }
 
-      it('should dispatch an action', () => {
-        mapDispatchToPropsObject.updateSendTokenBalance(
-          Object.assign({}, mockProps)
-        )
+      it('should dispatch an action', function () {
+        mapDispatchToPropsObject.updateSendTokenBalance(Object.assign({}, mockProps))
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],
@@ -107,8 +97,8 @@ describe('send container', () => {
       })
     })
 
-    describe('updateSendErrors()', () => {
-      it('should dispatch an action', () => {
+    describe('updateSendErrors()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendErrors('mockError')
         assert(dispatchSpy.calledOnce)
         assert.equal(
@@ -118,8 +108,8 @@ describe('send container', () => {
       })
     })
 
-    describe('resetSendState()', () => {
-      it('should dispatch an action', () => {
+    describe('resetSendState()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.resetSendState()
         assert(dispatchSpy.calledOnce)
         assert.equal(duckActionSpies.resetSendState.getCall(0).args.length, 0)

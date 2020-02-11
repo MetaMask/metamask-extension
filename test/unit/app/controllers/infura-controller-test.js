@@ -12,18 +12,18 @@ describe('infura-controller', function () {
     goerli: 'ok',
   }
 
-  before(async function () {
-    infuraController = new InfuraController()
-    sandbox = sinon.createSandbox()
-    sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
-    networkStatus = await infuraController.checkInfuraNetworkStatus()
-  })
-
-  after(function () {
-    sandbox.restore()
-  })
-
   describe('Network status queries', function () {
+    before(async function () {
+      infuraController = new InfuraController()
+      sandbox = sinon.createSandbox()
+      sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
+      networkStatus = await infuraController.checkInfuraNetworkStatus()
+    })
+
+    after(function () {
+      sandbox.restore()
+    })
+
     describe('Mainnet', function () {
       it('should have Mainnet', function () {
         assert.equal(Object.keys(networkStatus)[0], 'mainnet')

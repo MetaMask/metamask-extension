@@ -12,9 +12,9 @@ proxyquire('../transaction-activity-log.container.js', {
   },
 })
 
-describe('TransactionActivityLog container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props', () => {
+describe('TransactionActivityLog container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props', function () {
       const mockState = {
         metamask: {
           conversionRate: 280.45,

@@ -6,7 +6,7 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import AccountMenu from '../index'
 import { Provider } from 'react-redux'
 
-describe('Account Menu', async () => {
+describe('Account Menu', function () {
 
   let wrapper
 
@@ -63,7 +63,7 @@ describe('Account Menu', async () => {
 
   }
 
-  before(() => {
+  before(function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <AccountMenu.WrappedComponent {...props} />
@@ -71,23 +71,23 @@ describe('Account Menu', async () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.toggleAccountMenu.resetHistory()
     props.history.push.resetHistory()
   })
 
-  describe('Render Content', () => {
-    it('returns account name from identities', () => {
+  describe('Render Content', function () {
+    it('returns account name from identities', function () {
       const accountName = wrapper.find('.account-menu__name')
       assert.equal(accountName.length, 2)
     })
 
-    it('renders user preference currency display balance from account balance', () => {
+    it('renders user preference currency display balance from account balance', function () {
       const accountBalance = wrapper.find('.currency-display-component.account-menu__balance')
       assert.equal(accountBalance.length, 2)
     })
 
-    it('simulate click', () => {
+    it('simulate click', function () {
       const click = wrapper.find('.account-menu__account.menu__item--clickable')
       click.first().simulate('click')
 
@@ -95,12 +95,12 @@ describe('Account Menu', async () => {
       assert.equal(props.showAccountDetail.getCall(0).args[0], '0xAddress')
     })
 
-    it('render imported account label', () => {
+    it('render imported account label', function () {
       const importedAccount = wrapper.find('.keyring-label.allcaps')
       assert.equal(importedAccount.text(), 'imported')
     })
 
-    it('remove account', () => {
+    it('remove account', function () {
       const removeAccount = wrapper.find('.remove-account-icon')
       removeAccount.simulate('click', {
         preventDefault: () => {},
@@ -114,93 +114,93 @@ describe('Account Menu', async () => {
     })
   })
 
-  describe('Log Out', () => {
+  describe('Log Out', function () {
     let logout
 
-    it('logout', () => {
+    it('logout', function () {
       logout = wrapper.find('.account-menu__lock-button')
       assert.equal(logout.length, 1)
     })
 
-    it('simulate click', () => {
+    it('simulate click', function () {
       logout.simulate('click')
       assert(props.lockMetamask.calledOnce)
       assert.equal(props.history.push.getCall(0).args[0], '/')
     })
   })
 
-  describe('Create Account', () => {
+  describe('Create Account', function () {
     let createAccount
 
-    it('renders create account item', () => {
+    it('renders create account item', function () {
       createAccount = wrapper.find({ text: 'createAccount' })
       assert.equal(createAccount.length, 1)
     })
 
-    it('calls toggle menu and push new-account route to history', () => {
+    it('calls toggle menu and push new-account route to history', function () {
       createAccount.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
       assert.equal(props.history.push.getCall(0).args[0], '/new-account')
     })
   })
 
-  describe('Import Account', () => {
+  describe('Import Account', function () {
     let importAccount
 
-    it('renders import account item', () => {
+    it('renders import account item', function () {
       importAccount = wrapper.find({ text: 'importAccount' })
       assert.equal(importAccount.length, 1)
     })
 
-    it('calls toggle menu and push /new-account/import route to history', () => {
+    it('calls toggle menu and push /new-account/import route to history', function () {
       importAccount.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
       assert(props.history.push.getCall(0).args[0], '/new-account/import')
     })
   })
 
-  describe('Connect Hardware Wallet', () => {
+  describe('Connect Hardware Wallet', function () {
 
     let connectHardwareWallet
 
-    it('renders import account item', () => {
+    it('renders import account item', function () {
       connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' })
       assert.equal(connectHardwareWallet.length, 1)
     })
 
-    it('calls toggle menu and push /new-account/connect route to history', () => {
+    it('calls toggle menu and push /new-account/connect route to history', function () {
       connectHardwareWallet.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
       assert.equal(props.history.push.getCall(0).args[0], '/new-account/connect')
     })
   })
 
-  describe('Info & Help', () => {
+  describe('Info & Help', function () {
 
     let infoHelp
 
-    it('renders import account item', () => {
+    it('renders import account item', function () {
       infoHelp = wrapper.find({ text: 'infoHelp' })
       assert.equal(infoHelp.length, 1)
     })
 
-    it('calls toggle menu and push /new-account/connect route to history', () => {
+    it('calls toggle menu and push /new-account/connect route to history', function () {
       infoHelp.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
       assert.equal(props.history.push.getCall(0).args[0], '/settings/about-us')
     })
   })
 
-  describe('Settings', () => {
+  describe('Settings', function () {
 
     let settings
 
-    it('renders import account item', () => {
+    it('renders import account item', function () {
       settings = wrapper.find({ text: 'settings' })
       assert.equal(settings.length, 1)
     })
 
-    it('calls toggle menu and push /new-account/connect route to history', () => {
+    it('calls toggle menu and push /new-account/connect route to history', function () {
       settings.simulate('click')
       assert(props.toggleAccountMenu.calledOnce)
       assert.equal(props.history.push.getCall(0).args[0], '/settings')

@@ -13,8 +13,8 @@ proxyquire('../currency-input.container.js', {
   },
 })
 
-describe('CurrencyInput container', () => {
-  describe('mapStateToProps()', () => {
+describe('CurrencyInput container', function () {
+  describe('mapStateToProps()', function () {
     const tests = [
       // Test # 1
       {
@@ -130,11 +130,13 @@ describe('CurrencyInput container', () => {
     ]
 
     tests.forEach(({ mockState, expected, comment }) => {
-      it(comment, () => assert.deepEqual(mapStateToProps(mockState), expected))
+      it(comment, function () {
+        return assert.deepEqual(mapStateToProps(mockState), expected)
+      })
     })
   })
 
-  describe('mergeProps()', () => {
+  describe('mergeProps()', function () {
     const tests = [
       // Test # 1
       {
@@ -180,19 +182,10 @@ describe('CurrencyInput container', () => {
       },
     ]
 
-    tests.forEach(
-      ({
-        mock: { stateProps, dispatchProps, ownProps },
-        expected,
-        comment,
-      }) => {
-        it(comment, () => {
-          assert.deepEqual(
-            mergeProps(stateProps, dispatchProps, ownProps),
-            expected
-          )
-        })
-      }
-    )
+    tests.forEach(({ mock: { stateProps, dispatchProps, ownProps }, expected, comment }) => {
+      it(comment, function () {
+        assert.deepEqual(mergeProps(stateProps, dispatchProps, ownProps), expected)
+      })
+    })
   })
 })
