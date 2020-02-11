@@ -1829,10 +1829,10 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
-"@metamask/eslint-config@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.0.0.tgz#046012398bb27f56395355c96ef07152925043b7"
-  integrity sha512-MmxM2sknVhIHyXCjR6LcK57OPJ30gTEX5v/jwC+qXuw4GIgUAPbxFp3AFmFRAJwty3RMjJSbRJ7YlamMq67U8w==
+"@metamask/eslint-config@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.1.0.tgz#03c6fbec8ba3d95fa017d8b98ab5d0701f7458a4"
+  integrity sha512-yFFHIxFn3cBd9brIW/+0fJGq16hT0xUyElP0YxiZHaY7j2T/l+X/414L9kqBOuPfPa9bIKulIcJJOfcrMJZp9w==
 
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
