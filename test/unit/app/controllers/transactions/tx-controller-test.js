@@ -61,22 +61,10 @@ describe('Transaction Controller', function () {
   describe('#getState', function () {
     it('should return a state object with the right keys and datat types', function () {
       const exposedState = txController.getState()
-      assert(
-        'unapprovedTxs' in exposedState,
-        'state should have the key unapprovedTxs'
-      )
-      assert(
-        'selectedAddressTxList' in exposedState,
-        'state should have the key selectedAddressTxList'
-      )
-      assert(
-        typeof exposedState.unapprovedTxs === 'object',
-        'should be an object'
-      )
-      assert(
-        Array.isArray(exposedState.selectedAddressTxList),
-        'should be an array'
-      )
+      assert('unapprovedTxs' in exposedState, 'state should have the key unapprovedTxs')
+      assert('selectedAddressTxList' in exposedState, 'state should have the key selectedAddressTxList')
+      assert(exposedState && typeof exposedState.unapprovedTxs === 'object', 'should be an object')
+      assert(Array.isArray(exposedState.selectedAddressTxList), 'should be an array')
     })
   })
 

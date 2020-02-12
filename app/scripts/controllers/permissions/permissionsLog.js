@@ -314,6 +314,7 @@ export default class PermissionsLogController {
   getRequestedMethods (request) {
     if (
       !request.params ||
+      !request.params[0] ||
       typeof request.params[0] !== 'object' ||
       Array.isArray(request.params[0])
     ) {
@@ -372,7 +373,7 @@ function getAccountToTimeMap (accounts, time) {
 function getLastIndexOfObjectArray (array, key, value) {
   if (Array.isArray(array) && array.length > 0) {
     for (let i = array.length - 1; i >= 0; i--) {
-      if (typeof array[i] !== 'object') {
+      if (!array[i] || typeof array[i] !== 'object') {
         throw new Error(`Encountered non-Object element at index ${i}`)
       }
 
