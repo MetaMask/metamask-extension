@@ -262,7 +262,7 @@
     "koa": "^2.7.0",
     "lint-staged": ">=8",
     "lockfile-lint": "^3.0.5",
-    "mocha": "^5.0.0",
+    "mocha": "^7.0.1",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
