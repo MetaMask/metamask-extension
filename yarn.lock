@@ -10258,6 +10258,13 @@ eth-json-rpc-errors@^2.0.0:
   dependencies:
     fast-safe-stringify "^2.0.6"
 
+eth-json-rpc-errors@^2.0.1, eth-json-rpc-errors@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-2.0.2.tgz#c1965de0301fe941c058e928bebaba2e1285e3c4"
+  integrity sha512-uBCRM2w2ewusRHGxN8JhcuOb2RN3ueAOYH/0BhqdFmQkZx5lj5+fLKTz0mIVOzd4FG5/kUksCzCD7eTEim6gaA==
+  dependencies:
+    fast-safe-stringify "^2.0.6"
+
 eth-json-rpc-filters@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.1.1.tgz#15277c66790236d85f798f4d7dc6bab99a798cd2"
@@ -12398,7 +12405,7 @@ fuse.js@^3.4.6:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.6.tgz#545c3411fed88bf2e27c457cab6e73e7af697a45"
   integrity sha512-H6aJY4UpLFwxj1+5nAvufom5b2BT2v45P1MkPvdGIK8fWjQx/7o6tTT1+ALV0yawQvbmvCF0ufl2et8eJ7v7Cg==
 
-gaba@^1.6.0, gaba@^1.9.3:
+gaba@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.9.3.tgz#4e0e106f3640930f1f06ffe72546903b4c51813e"
   integrity sha512-zC9CpaksncAT9SSc4QAxozUE+SKIWN+r9YwhjAJoSeh9joqPJsXlJOHg1/CrHABpvN68QdE00wAYSabYM02EqQ==
@@ -16588,6 +16595,16 @@ json-rpc-engine@^5.1.3, json-rpc-engine@^5.1.5, json-rpc-engine@^5.1.6:
     promise-to-callback "^1.0.0"
     safe-event-emitter "^1.0.1"
 
+json-rpc-engine@^5.1.8:
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-5.1.8.tgz#5ba0147ce571899bbaa7133ffbc05317c34a3c7f"
+  integrity sha512-vTBSDEPJV1fPAsbm2g5sEuPjsgLdiab2f1CTn2PyRr8nxggUpA996PDlNQDsM0gnrA99F8KIBLq2nIKrOFl1Mg==
+  dependencies:
+    async "^2.0.1"
+    eth-json-rpc-errors "^2.0.1"
+    promise-to-callback "^1.0.0"
+    safe-event-emitter "^1.0.1"
+
 json-rpc-error@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/json-rpc-error/-/json-rpc-error-2.0.0.tgz#a7af9c202838b5e905c7250e547f1aff77258a02"
@@ -18916,12 +18933,12 @@ mersenne-twister@^1.0.1, mersenne-twister@^1.1.0:
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
 
-metamask-inpage-provider@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.0.4.tgz#697121873bf686a1fddc671832d9adbceda4c9ae"
-  integrity sha512-DCuqQ1NpAScesjvJac+8k4SbKzgcbmP78sAvo96i04qIszzH0LMg0dZLEViTz6/uqM7nU6JO3NIAcNF3iA2Lpw==
+metamask-inpage-provider@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.1.2.tgz#8068004d51160dc5869c5aa881074284b8db03da"
+  integrity sha512-HLCW4DdvubLGntez5yB6kOqvptnpgUcUaRenEwzqN+hHQMnA2+1mNLp5IYks30kvX/fI2ACJgekFwIRDFWA9gQ==
   dependencies:
-    eth-json-rpc-errors "^2.0.0"
+    eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
     json-rpc-engine "^5.1.5"
     json-rpc-middleware-stream "^2.1.1"
@@ -24599,18 +24616,18 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
-rpc-cap@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-1.0.3.tgz#c58f99ee97a92441f4310f407c0f40fecdbf0e78"
-  integrity sha512-6lheD7UU4IY+OpILTL65E5NQWFPfG1Igd/CAGbnMJY+3szmQ9mUrf4/3bbcvNhu64Q/KYfCstVhxJREmTeFLOg==
+rpc-cap@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-1.0.5.tgz#6f5ec41a7f0f85eb9aca8ccc7e618625109e6430"
+  integrity sha512-uZLjb609EbR+STeiLg27CVRWSKn/iKWeSkVYH5D1dj34ffpYcq6ByQBT7IN0AXozLUxmLulgpETB3gOS7fsH2w==
   dependencies:
     clone "^2.1.2"
-    eth-json-rpc-errors "^2.0.0"
+    eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
-    gaba "^1.6.0"
+    gaba "^1.9.3"
     intersect-objects "^1.0.0"
     is-subset "^0.1.1"
-    json-rpc-engine "^5.1.3"
+    json-rpc-engine "^5.1.8"
     obs-store "^4.0.3"
     uuid "^3.3.2"
 
