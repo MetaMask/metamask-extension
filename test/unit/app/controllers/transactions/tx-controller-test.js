@@ -57,7 +57,7 @@ describe('Transaction Controller', function () {
       const exposedState = txController.getState()
       assert('unapprovedTxs' in exposedState, 'state should have the key unapprovedTxs')
       assert('selectedAddressTxList' in exposedState, 'state should have the key selectedAddressTxList')
-      assert(typeof exposedState.unapprovedTxs === 'object', 'should be an object')
+      assert(exposedState && typeof exposedState.unapprovedTxs === 'object', 'should be an object')
       assert(Array.isArray(exposedState.selectedAddressTxList), 'should be an array')
     })
   })
