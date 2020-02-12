@@ -32,22 +32,6 @@ describe('nodeify', function () {
     }
   })
 
-  it('no callback - should asyncly throw an error if underlying function does', function (done) {
-    const nodified = nodeify(async () => {
-      throw new Error('boom!')
-    }, obj)
-    process.prependOnceListener('uncaughtException', (err) => {
-      assert.ok(err, 'got expected error')
-      assert.ok(err.message.includes('boom!'), 'got expected error message')
-      done()
-    })
-    try {
-      nodified('baz')
-    } catch (err) {
-      done(new Error('should not have thrown an error synchronously'))
-    }
-  })
-
   it('sync functions - returns value', function (done) {
     const nodified = nodeify(() => 42)
     try {
