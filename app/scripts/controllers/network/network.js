@@ -11,17 +11,19 @@ import createInfuraClient from './createInfuraClient'
 import createIn3Client from './createIn3Client'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
-import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
+import { createEventEmitterProxy, createSwappableProxy } from 'swappable-obj-proxy'
+import {
+  IN3,
+  INFURA,
+  IN3_PROVIDER_TYPES,
+  INFURA_PROVIDER_TYPES,
+  LOCALHOST,
+  MAINNET,
+  RINKEBY,
+  RPC_PROVIDER_TYPES,
+} from './enums'
 
 const networks = { networkList: {} }
-
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI, INFURA, IN3 } from './enums'
-
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-
-const IN3_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
-
-const RPC_PROVIDER_TYPES = [INFURA, IN3]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -177,14 +179,10 @@ export default class NetworkController extends EventEmitter {
     // eslint-disable-next-line no-unused-vars
     const { type, rpcTarget, chainId, ticker, nickname, rpcPrefs, rpcType } = opts
     // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    const isIn3 = IN3_PROVIDER_TYPES.includes(type)
-
-    if (isInfura && rpcType !== IN3) {
-      this._configureInfuraProvider(opts)
-    // in3
-    } else if (isIn3 && rpcType === IN3) {
-      this._configureIn3Provider(opts)
+    if (rpcType === IN3 && IN3_PROVIDER_TYPES.includes(type)) {
+      this._configureIn3Provider({ type, rpcTarget, chainId, ticker, nickname, rpcPrefs, IN3 })
+    } else if (INFURA_PROVIDER_TYPES.includes(type)) {
+      this._configureInfuraProvider({ type, rpcTarget, chainId, ticker, nickname, rpcPrefs, INFURA })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints

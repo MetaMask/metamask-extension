@@ -202,13 +202,16 @@ class NetworkDropdown extends Component {
   }
 
   render () {
-    const { provider: { type: providerType, rpcTarget: activeNetwork }, setNetworksTabAddMode } = this.props
+    const { provider: { type: providerType, rpcTarget: activeNetwork, rpcType: rpcType }, setNetworksTabAddMode } = this.props
     const rpcListDetail = this.props.frequentRpcListDetail
     const isOpen = this.props.networkDropdownOpen
     const dropdownMenuItemStyle = {
       fontSize: '16px',
       lineHeight: '20px',
       padding: '12px 0',
+    }
+    const hidden = {
+      display: 'none',
     }
 
     return (
@@ -240,6 +243,9 @@ class NetworkDropdown extends Component {
             {this.context.t('networks')}
           </div>
           <div className="network-dropdown-divider" />
+          <div className="network-dropdown-content" style={{ 'text-align': 'center', fontSize: '16px' }}>
+            Provider: {rpcType}
+          </div>
           <div className="network-dropdown-content">
             {this.context.t('defaultNetwork')}
           </div>
@@ -271,7 +277,7 @@ class NetworkDropdown extends Component {
           key="ropsten"
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => this.handleClick('ropsten')}
-          style={dropdownMenuItemStyle}
+          style={ rpcType === 'in3' ? hidden : dropdownMenuItemStyle }
         >
           {
             providerType === 'ropsten'
@@ -317,7 +323,7 @@ class NetworkDropdown extends Component {
           key="rinkeby"
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => this.handleClick('rinkeby')}
-          style={dropdownMenuItemStyle}
+          style={ rpcType === 'in3' ? hidden : dropdownMenuItemStyle }
         >
           {
             providerType === 'rinkeby'

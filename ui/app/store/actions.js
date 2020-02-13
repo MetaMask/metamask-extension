@@ -1632,12 +1632,12 @@ export function closeCurrentNotificationWindow () {
       !hasUnconfirmedTransactions(getState())) {
       global.platform.closeCurrentWindow()
 
-      dispatch(closeNotifacationWindow())
+      dispatch(closeNotificationWindow())
     }
   }
 }
 
-export function closeNotifacationWindow () {
+export function closeNotificationWindow () {
   return {
     type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   }
@@ -1920,8 +1920,6 @@ export function setPreference (preference, value) {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
-        console.log(err)
-        console.log(updatedPreferences)
         dispatch(hideLoadingIndication())
         if (err) {
           dispatch(displayWarning(err.message))
@@ -1959,12 +1957,16 @@ export function setUseIn3 (value) {
       return 'error'
     }
     background.setUseIn3Network(value, (result, error) => {
-      if (!error) {
+      if (result !== undefined && result !== null) {
         dispatch({
           type: actionConstants.SET_USE_IN3,
           value: result,
         })
       } else {
+        dispatch({
+          type: actionConstants.SET_USE_IN3,
+          value: false,
+        })
         dispatch(displayWarning(error.message))
       }
       dispatch(hideLoadingIndication())

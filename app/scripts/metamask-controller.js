@@ -429,7 +429,6 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi () {
     const keyringController = this.keyringController
-    const networkController = this.networkController
     const onboardingController = this.onboardingController
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
@@ -474,7 +473,8 @@ export default class MetamaskController extends EventEmitter {
       submitPassword: nodeify(this.submitPassword, this),
 
       // network management
-      setProviderType: nodeify(networkController.setProviderType, networkController),
+      // setProviderType: nodeify(networkController.setProviderType, networkController),
+      setProviderType: this.setProvider.bind(this),
       setCustomRpc: nodeify(this.setCustomRpc, this),
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
@@ -1808,7 +1808,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets whether or not to use IN3 NEtwork provider instead of infura
+   * Wrapper for networkController.setProviderType that enforces rpcType, respecting preferences selection
+   */
+  setProvider (type, rpcTarget = '', ticker = 'ETH', nickname = '', rpcPrefs = {}, rpcType = '') {
+    const useIn3 = rpcType === 'in3' ? true : this.preferencesController.getUseIn3()
+    if (useIn3) {
+      this.networkController.setProviderType(type, rpcTarget, ticker, nickname, rpcPrefs, IN3)
+    } else {
+      this.networkController.setProviderType(type, rpcTarget, ticker, nickname, rpcPrefs, INFURA)
+    }
+  }
+
+  /**
+   * Sets whether or not to use IN3 Network provider instead of infura
    * @param {boolean} useIn3 - True for IN3, false for Infura.
    * @param {Function} cb - A callback function called when complete.
    */

@@ -98,6 +98,13 @@ class PreferencesController {
   }
 
   /**
+   * Getter for the `useIn3` property
+   */
+  getUseIn3 () {
+    return this.store.getState().useIn3
+  }
+
+  /**
    * Setter for the `useIn3` property
    *
    * @param {boolean} val - True to use In3 instead of Infura
