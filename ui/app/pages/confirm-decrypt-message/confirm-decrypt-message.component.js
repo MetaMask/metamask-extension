@@ -53,9 +53,9 @@ export default class ConfirmDecryptMessage extends Component {
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
-        category: 'Transactions',
+        category: 'Messages',
         action: 'Decrypt Message Request',
-        name: 'Cancel Decrypt Message Request Via Notification Close',
+        name: 'Cancel Via Notification Close',
       },
     })
     clearConfirmTransaction()
@@ -72,7 +72,7 @@ export default class ConfirmDecryptMessage extends Component {
     copyToClipboard(this.state.rawMessage)
     this.context.metricsEvent({
       eventOpts: {
-        category: 'Transactions',
+        category: 'Messages',
         action: 'Decrypt Message Copy',
         name: 'Copy',
       },
@@ -286,7 +286,7 @@ export default class ConfirmDecryptMessage extends Component {
             await this.props.cancelDecryptMessage(txData, event)
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Transactions',
+                category: 'Messages',
                 action: 'Decrypt Message Request',
                 name: 'Cancel',
               },
@@ -306,7 +306,7 @@ export default class ConfirmDecryptMessage extends Component {
             await this.props.decryptMessage(txData, event)
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Transactions',
+                category: 'Messages',
                 action: 'Decrypt Message Request',
                 name: 'Confirm',
               },

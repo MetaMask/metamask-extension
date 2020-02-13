@@ -47,9 +47,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { metricsEvent } = this.context
     metricsEvent({
       eventOpts: {
-        category: 'Transactions',
+        category: 'Messages',
         action: 'Encryption public key Request',
-        name: 'Cancel Encryption public key Request Via Notification Close',
+        name: 'Cancel Via Notification Close',
       },
     })
     clearConfirmTransaction()
@@ -191,7 +191,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             await this.props.cancelEncryptionPublicKey(txData, event)
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Transactions',
+                category: 'Messages',
                 action: 'Encryption public key Request',
                 name: 'Cancel',
               },
@@ -211,7 +211,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             await this.props.encryptionPublicKey(txData, event)
             this.context.metricsEvent({
               eventOpts: {
-                category: 'Transactions',
+                category: 'Messages',
                 action: 'Encryption public key Request',
                 name: 'Confirm',
               },
