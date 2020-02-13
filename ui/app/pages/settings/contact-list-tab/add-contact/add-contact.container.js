@@ -3,12 +3,8 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  addToAddressBook,
-  showQrScanner,
-  qrCodeDetected,
-} from '../../../../store/actions'
-import { CONTACT_ADD_ROUTE } from '../../../../helpers/constants/routes'
-import { getQrCodeData } from '../../../send/send.selectors'
+  getQrCodeData,
+} from '../../../send/send.selectors'
 
 const mapStateToProps = state => {
   return {
@@ -18,10 +14,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addToAddressBook: (recipient, nickname) =>
-      dispatch(addToAddressBook(recipient, nickname)),
-    scanQrCode: () => dispatch(showQrScanner(CONTACT_ADD_ROUTE)),
-    qrCodeDetected: data => dispatch(qrCodeDetected(data)),
+    addToAddressBook: (recipient, nickname) => dispatch(addToAddressBook(recipient, nickname)),
+    scanQrCode: () => dispatch(showQrScanner()),
+    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
   }
 }
 

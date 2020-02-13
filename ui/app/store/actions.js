@@ -15,7 +15,6 @@ import log from 'loglevel'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
-import WebcamUtils from '../../lib/webcam-utils'
 import txHelper from '../../lib/tx-helper'
 
 export const actionConstants = {
@@ -559,30 +558,11 @@ export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
   }
 }
 
-export function showQrScanner (ROUTE) {
-  return dispatch => {
-    return WebcamUtils.checkStatus()
-      .then(status => {
-        if (!status.environmentReady) {
-          // We need to switch to fullscreen mode to ask for permission
-          global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
-        } else {
-          dispatch(
-            showModal({
-              name: 'QR_SCANNER',
-            })
-          )
-        }
-      })
-      .catch(e => {
-        dispatch(
-          showModal({
-            name: 'QR_SCANNER',
-            error: true,
-            errorType: e.type,
-          })
-        )
-      })
+export function showQrScanner () {
+  return (dispatch) => {
+    dispatch(showModal({
+      name: 'QR_SCANNER',
+    }))
   }
 }
 
