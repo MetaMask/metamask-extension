@@ -15,6 +15,7 @@ export default class ConfirmAddSuggestedToken extends Component {
     addToken: PropTypes.func,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
+    tokens: PropTypes.array,
   }
 
   componentDidMount () {
@@ -32,9 +33,10 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, pendingTokens, removeSuggestedTokens, history } = this.props
+    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
+    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens);
 
     return (
       <div className="page-container">
@@ -45,6 +47,11 @@ export default class ConfirmAddSuggestedToken extends Component {
           <div className="page-container__subtitle">
             { this.context.t('likeToAddTokens') }
           </div>
+          { hasTokenDuplicates ?
+              <div className="warning">
+                { this.context.t('knownTokenWarning') }
+              </div> : null
+          }
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
@@ -118,4 +125,15 @@ export default class ConfirmAddSuggestedToken extends Component {
       </div>
     )
   }
+
+  checkTokenDuplicates(pendingTokens, tokens) {
+    const pending = Object.keys(pendingTokens)
+    const existing = tokens.map(token => token.address)
+    const dupes = pending.filter((proposed) => {
+      return existing.includes(proposed);
+    })
+
+    return dupes.length > 0;
+  }
+
 }
