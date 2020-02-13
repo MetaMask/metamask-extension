@@ -5,18 +5,18 @@ import configureMockStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import Welcome from '../index'
 
-describe('Welcome', () => {
+describe('Welcome', function () {
   const mockStore = {
     metamask: {},
   }
 
   const store = configureMockStore()(mockStore)
 
-  after(() => {
+  after(function () {
     sinon.restore()
   })
 
-  it('routes to select action when participateInMetaMetrics is not initialized', () => {
+  it('routes to select action when participateInMetaMetrics is not initialized', function () {
 
     const props = {
       history: {
@@ -34,7 +34,7 @@ describe('Welcome', () => {
 
   })
 
-  it('routes to correct password when participateInMetaMetrics is initialized', () => {
+  it('routes to correct password when participateInMetaMetrics is initialized', function () {
 
     const props = {
       welcomeScreenSeen: true,

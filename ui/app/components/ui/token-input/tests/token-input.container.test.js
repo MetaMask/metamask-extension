@@ -13,9 +13,9 @@ proxyquire('../token-input.container.js', {
   },
 })
 
-describe('TokenInput container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props when send is empty', () => {
+describe('TokenInput container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props when send is empty', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -50,7 +50,7 @@ describe('TokenInput container', () => {
       })
     })
 
-    it('should return the correct props when selectedTokenAddress is not found and send is populated', () => {
+    it('should return the correct props when selectedTokenAddress is not found and send is populated', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -85,7 +85,7 @@ describe('TokenInput container', () => {
       })
     })
 
-    it('should return the correct props when contractExchangeRates is populated', () => {
+    it('should return the correct props when contractExchangeRates is populated', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -122,7 +122,7 @@ describe('TokenInput container', () => {
       })
     })
 
-    it('should return the correct props when not in mainnet and showFiatInTestnets is false', () => {
+    it('should return the correct props when not in mainnet and showFiatInTestnets is false', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -157,7 +157,7 @@ describe('TokenInput container', () => {
       })
     })
 
-    it('should return the correct props when not in mainnet and showFiatInTestnets is true', () => {
+    it('should return the correct props when not in mainnet and showFiatInTestnets is true', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -192,7 +192,7 @@ describe('TokenInput container', () => {
       })
     })
 
-    it('should return the correct props when in mainnet and showFiatInTestnets is true', () => {
+    it('should return the correct props when in mainnet and showFiatInTestnets is true', function () {
       const mockState = {
         metamask: {
           currentCurrency: 'usd',
@@ -228,8 +228,8 @@ describe('TokenInput container', () => {
     })
   })
 
-  describe('mergeProps()', () => {
-    it('should return the correct props', () => {
+  describe('mergeProps()', function () {
+    it('should return the correct props', function () {
       const mockStateProps = {
         currentCurrency: 'usd',
         selectedToken: {

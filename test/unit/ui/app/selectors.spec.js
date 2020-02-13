@@ -109,50 +109,50 @@ describe('Selectors', function () {
     assert.equal(currentAccountwithSendEther.name, 'Test Account')
   })
 
-  it('#getGasIsLoading', () => {
+  it('#getGasIsLoading', function () {
     const gasIsLoading = selectors.getGasIsLoading(mockState)
     assert.equal(gasIsLoading, false)
   })
 
-  describe('Send From', () => {
-    it('#getSendFrom', () => {
+  describe('Send From', function () {
+    it('#getSendFrom', function () {
       const sendFrom = selectors.getSendFrom(mockState)
       assert.equal(sendFrom, '0xc42edfcc21ed14dda456aa0756c153f7985d8813')
     })
 
-    it('#getForceGasMin', () => {
+    it('#getForceGasMin', function () {
       const forceGasMin = selectors.getForceGasMin(mockState)
       assert.equal(forceGasMin, null)
     })
 
-    it('#getSendAmount', () => {
+    it('#getSendAmount', function () {
       const sendAmount = selectors.getSendAmount(mockState)
       assert.equal(sendAmount, '1bc16d674ec80000')
     })
 
-    it('#getSendMaxModeState', () => {
+    it('#getSendMaxModeState', function () {
       const sendMaxModeState = selectors.getSendMaxModeState(mockState)
       assert.equal(sendMaxModeState, false)
     })
   })
 
-  it('#getCurrentCurrency', () => {
+  it('#getCurrentCurrency', function () {
     const currentCurrency = selectors.getCurrentCurrency(mockState)
     assert.equal(currentCurrency, 'usd')
   })
 
-  it('#getSelectedTokenToFiatRate', () => {
+  it('#getSelectedTokenToFiatRate', function () {
     const selectedTokenToFiatRate = selectors.getSelectedTokenToFiatRate(mockState)
     assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 
-  it('#getSelectedTokenContract', () => {
+  it('#getSelectedTokenContract', function () {
     global.eth = new Eth(provider)
     const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
     assert(selectedTokenContract.abi)
   })
 
-  it('#getTotalUnapprovedCount', () => {
+  it('#getTotalUnapprovedCount', function () {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState)
     assert.equal(totalUnapprovedCount, 1)
   })

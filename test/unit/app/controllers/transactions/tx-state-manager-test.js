@@ -30,7 +30,7 @@ describe('TransactionStateManager', function () {
       assert.equal(result[0].status, 'signed')
     })
 
-    it('should emit a signed event to signal the exciton of callback', (done) => {
+    it('should emit a signed event to signal the exciton of callback', function (done) {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       const noop = function () {
         assert(true, 'event listener has been triggered and noop executed')
@@ -53,7 +53,7 @@ describe('TransactionStateManager', function () {
       assert.equal(result.length, 0)
     })
 
-    it('should emit a rejected event to signal the exciton of callback', (done) => {
+    it('should emit a rejected event to signal the exciton of callback', function (done) {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = () => {
@@ -303,7 +303,6 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { status: (status) => status !== 'confirmed' }
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-
     })
   })
 
@@ -346,18 +345,17 @@ describe('TransactionStateManager', function () {
 
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0)
       assert.equal(txFromOtherNetworks.length, 2)
-
     })
   })
 
   describe('#_removeTx', function () {
-    it('should remove the transaction from the storage', () => {
+    it('should remove the transaction from the storage', function () {
       txStateManager._saveTxList([ { id: 1 } ])
       txStateManager._removeTx(1)
       assert(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
-    it('should only remove the transaction with ID 1 from the storage', () => {
+    it('should only remove the transaction with ID 1 from the storage', function () {
       txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
       txStateManager._removeTx(1)
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')

@@ -5,8 +5,8 @@ import { shallow } from 'enzyme'
 import AdvancedTab from '../advanced-tab.component'
 import TextField from '../../../../components/ui/text-field'
 
-describe('AdvancedTab Component', () => {
-  it('should render correctly when threeBoxFeatureFlag', () => {
+describe('AdvancedTab Component', function () {
+  it('should render correctly when threeBoxFeatureFlag', function () {
     const root = shallow(
       <AdvancedTab
         ipfsGateway=""
@@ -27,7 +27,7 @@ describe('AdvancedTab Component', () => {
     assert.equal(root.find('.settings-page__content-row').length, 10)
   })
 
-  it('should update autoLockTimeLimit', () => {
+  it('should update autoLockTimeLimit', function () {
     const setAutoLockTimeLimitSpy = sinon.spy()
     const root = shallow(
       <AdvancedTab

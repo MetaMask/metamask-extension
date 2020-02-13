@@ -28,8 +28,8 @@ while (transactions.length <= 10) {
 
 storage.data.TransactionController.transactions = transactions
 
-describe('storage is migrated successfully and the txParams.from are lowercase', () => {
-  it('should lowercase the from for unapproved txs', (done) => {
+describe('storage is migrated successfully and the txParams.from are lowercase', function () {
+  it('should lowercase the from for unapproved txs', function (done) {
     migration25.migrate(storage)
       .then((migratedData) => {
         const migratedTransactions = migratedData.data.TransactionController.transactions
@@ -45,7 +45,7 @@ describe('storage is migrated successfully and the txParams.from are lowercase',
       }).catch(done)
   })
 
-  it('should migrate first time state', (done) => {
+  it('should migrate first time state', function (done) {
     migration25.migrate(firstTimeState)
       .then((migratedData) => {
         assert.equal(migratedData.meta.version, 25)

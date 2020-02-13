@@ -4,29 +4,21 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 import { Menu, Item, Divider, CloseArea } from '../components/menu'
 
-describe('Dropdown Menu Components', () => {
-
-  describe('Menu', () => {
-    let wrapper
-
-    beforeEach(() => {
-      wrapper = shallow(
+describe('Dropdown Menu Components', function () {
+  describe('Menu', function () {
+    it('adds prop className to menu', function () {
+      const wrapper = shallow(
         <Menu className="Test Class" isShowing />
       )
-    })
-
-    it('adds prop className to menu', () => {
       assert.equal(wrapper.find('.menu').prop('className'), 'menu Test Class')
     })
-
   })
 
-  describe('Item', () => {
+  describe('Item', function () {
     let wrapper
-
     const onClickSpy = sinon.spy()
 
-    beforeEach(() => {
+    beforeEach(function () {
       wrapper = shallow(
         <Item
           icon="test icon"
@@ -37,53 +29,41 @@ describe('Dropdown Menu Components', () => {
       )
     })
 
-    it('add className based on props', () => {
+    it('add className based on props', function () {
       assert.equal(wrapper.find('.menu__item').prop('className'), 'menu__item test foo1 menu__item--clickable')
     })
 
-    it('simulates onClick called', () => {
+    it('simulates onClick called', function () {
       wrapper.find('.menu__item').prop('onClick')()
       assert.equal(onClickSpy.callCount, 1)
     })
 
-    it('adds icon based on icon props', () => {
+    it('adds icon based on icon props', function () {
       assert.equal(wrapper.find('.menu__item__icon').text(), 'test icon')
     })
 
-    it('adds html text based on text props', () => {
+    it('adds html text based on text props', function () {
       assert.equal(wrapper.find('.menu__item__text').text(), 'test text')
     })
   })
 
-  describe('Divider', () => {
-    let wrapper
-
-    before(() => {
-      wrapper = shallow(<Divider />)
-    })
-
-    it('renders menu divider', () => {
+  describe('Divider', function () {
+    it('renders menu divider', function () {
+      const wrapper = shallow(<Divider />)
       assert.equal(wrapper.find('.menu__divider').length, 1)
     })
   })
 
-  describe('CloseArea', () => {
-    let wrapper
-
-    const onClickSpy = sinon.spy()
-
-    beforeEach(() => {
-      wrapper = shallow((
+  describe('CloseArea', function () {
+    it('simulates click', function () {
+      const onClickSpy = sinon.spy()
+      const wrapper = shallow((
         <CloseArea
           onClick={onClickSpy}
         />
       ))
-    })
-
-    it('simulates click', () => {
       wrapper.prop('onClick')()
-      assert.equal(onClickSpy.callCount, 1)
+      assert.ok(onClickSpy.calledOnce)
     })
   })
-
 })

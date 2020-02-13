@@ -39,9 +39,9 @@ import {
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
-describe('send selectors', () => {
+describe('send selectors', function () {
   const tempGlobalEth = Object.assign({}, global.eth)
-  beforeEach(() => {
+  beforeEach(function () {
     global.eth = {
       contract: sinon.stub().returns({
         at: address => 'mockAt:' + address,
@@ -49,12 +49,12 @@ describe('send selectors', () => {
     }
   })
 
-  afterEach(() => {
+  afterEach(function () {
     global.eth = tempGlobalEth
   })
 
-  describe('accountsWithSendEtherInfoSelector()', () => {
-    it('should return an array of account objects with name info from identities', () => {
+  describe('accountsWithSendEtherInfoSelector()', function () {
+    it('should return an array of account objects with name info from identities', function () {
       assert.deepEqual(
         accountsWithSendEtherInfoSelector(mockState),
         [
@@ -100,15 +100,15 @@ describe('send selectors', () => {
   //   })
   // })
 
-  describe('getAmountConversionRate()', () => {
-    it('should return the token conversion rate if a token is selected', () => {
+  describe('getAmountConversionRate()', function () {
+    it('should return the token conversion rate if a token is selected', function () {
       assert.equal(
         getAmountConversionRate(mockState),
         2401.76400654
       )
     })
 
-    it('should return the eth conversion rate if no token is selected', () => {
+    it('should return the eth conversion rate if no token is selected', function () {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, { selectedTokenAddress: null }),
       }
@@ -119,8 +119,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getBlockGasLimit', () => {
-    it('should return the current block gas limit', () => {
+  describe('getBlockGasLimit', function () {
+    it('should return the current block gas limit', function () {
       assert.deepEqual(
         getBlockGasLimit(mockState),
         '0x4c1878'
@@ -128,8 +128,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getConversionRate()', () => {
-    it('should return the eth conversion rate', () => {
+  describe('getConversionRate()', function () {
+    it('should return the eth conversion rate', function () {
       assert.deepEqual(
         getConversionRate(mockState),
         1200.88200327
@@ -137,8 +137,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getCurrentAccountWithSendEtherInfo()', () => {
-    it('should return the currently selected account with identity info', () => {
+  describe('getCurrentAccountWithSendEtherInfo()', function () {
+    it('should return the currently selected account with identity info', function () {
       assert.deepEqual(
         getCurrentAccountWithSendEtherInfo(mockState),
         {
@@ -152,8 +152,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getCurrentCurrency()', () => {
-    it('should return the currently selected currency', () => {
+  describe('getCurrentCurrency()', function () {
+    it('should return the currently selected currency', function () {
       assert.equal(
         getCurrentCurrency(mockState),
         'USD'
@@ -161,8 +161,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getNativeCurrency()', () => {
-    it('should return the ticker symbol of the selected network', () => {
+  describe('getNativeCurrency()', function () {
+    it('should return the ticker symbol of the selected network', function () {
       assert.equal(
         getNativeCurrency(mockState),
         'ETH'
@@ -170,8 +170,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getCurrentNetwork()', () => {
-    it('should return the id of the currently selected network', () => {
+  describe('getCurrentNetwork()', function () {
+    it('should return the id of the currently selected network', function () {
       assert.equal(
         getCurrentNetwork(mockState),
         '3'
@@ -179,8 +179,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getForceGasMin()', () => {
-    it('should get the send.forceGasMin property', () => {
+  describe('getForceGasMin()', function () {
+    it('should get the send.forceGasMin property', function () {
       assert.equal(
         getForceGasMin(mockState),
         true
@@ -188,8 +188,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getGasLimit()', () => {
-    it('should return the send.gasLimit', () => {
+  describe('getGasLimit()', function () {
+    it('should return the send.gasLimit', function () {
       assert.equal(
         getGasLimit(mockState),
         '0xFFFF'
@@ -197,8 +197,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getGasPrice()', () => {
-    it('should return the send.gasPrice', () => {
+  describe('getGasPrice()', function () {
+    it('should return the send.gasPrice', function () {
       assert.equal(
         getGasPrice(mockState),
         '0xaa'
@@ -206,8 +206,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getGasTotal()', () => {
-    it('should return the send.gasTotal', () => {
+  describe('getGasTotal()', function () {
+    it('should return the send.gasTotal', function () {
       assert.equal(
         getGasTotal(mockState),
         'a9ff56'
@@ -215,8 +215,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getPrimaryCurrency()', () => {
-    it('should return the symbol of the selected token', () => {
+  describe('getPrimaryCurrency()', function () {
+    it('should return the symbol of the selected token', function () {
       assert.equal(
         getPrimaryCurrency(mockState),
         'DEF'
@@ -224,8 +224,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getRecentBlocks()', () => {
-    it('should return the recent blocks', () => {
+  describe('getRecentBlocks()', function () {
+    it('should return the recent blocks', function () {
       assert.deepEqual(
         getRecentBlocks(mockState),
         ['mockBlock1', 'mockBlock2', 'mockBlock3']
@@ -233,8 +233,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedAccount()', () => {
-    it('should return the currently selected account', () => {
+  describe('getSelectedAccount()', function () {
+    it('should return the currently selected account', function () {
       assert.deepEqual(
         getSelectedAccount(mockState),
         {
@@ -248,8 +248,8 @@ describe('send selectors', () => {
   })
 
 
-  describe('getSelectedIdentity()', () => {
-    it('should return the identity object of the currently selected address', () => {
+  describe('getSelectedIdentity()', function () {
+    it('should return the identity object of the currently selected address', function () {
       assert.deepEqual(
         getSelectedIdentity(mockState),
         {
@@ -260,8 +260,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedToken()', () => {
-    it('should return the currently selected token if selected', () => {
+  describe('getSelectedToken()', function () {
+    it('should return the currently selected token if selected', function () {
       assert.deepEqual(
         getSelectedToken(mockState),
         {
@@ -272,7 +272,7 @@ describe('send selectors', () => {
       )
     })
 
-    it('should return the send token if none is currently selected, but a send token exists', () => {
+    it('should return the send token if none is currently selected, but a send token exists', function () {
       const mockSendToken = {
         address: '0x123456708414189a58339873ab429b6c47ab92d3',
         decimals: 4,
@@ -293,15 +293,15 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedTokenContract()', () => {
-    it('should return the contract at the selected token address', () => {
+  describe('getSelectedTokenContract()', function () {
+    it('should return the contract at the selected token address', function () {
       assert.equal(
         getSelectedTokenContract(mockState),
         'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3'
       )
     })
 
-    it('should return null if no token is selected', () => {
+    it('should return null if no token is selected', function () {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false })
       assert.equal(
         getSelectedTokenContract(Object.assign({}, mockState, { metamask: modifiedMetamaskState })),
@@ -310,8 +310,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedTokenExchangeRate()', () => {
-    it('should return the exchange rate for the selected token', () => {
+  describe('getSelectedTokenExchangeRate()', function () {
+    it('should return the exchange rate for the selected token', function () {
       assert.equal(
         getSelectedTokenExchangeRate(mockState),
         2.0
@@ -319,8 +319,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSelectedTokenToFiatRate()', () => {
-    it('should return rate for converting the selected token to fiat', () => {
+  describe('getSelectedTokenToFiatRate()', function () {
+    it('should return rate for converting the selected token to fiat', function () {
       assert.equal(
         getSelectedTokenToFiatRate(mockState),
         2401.76400654
@@ -328,8 +328,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendAmount()', () => {
-    it('should return the send.amount', () => {
+  describe('getSendAmount()', function () {
+    it('should return the send.amount', function () {
       assert.equal(
         getSendAmount(mockState),
         '0x080'
@@ -337,8 +337,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendEditingTransactionId()', () => {
-    it('should return the send.editingTransactionId', () => {
+  describe('getSendEditingTransactionId()', function () {
+    it('should return the send.editingTransactionId', function () {
       assert.equal(
         getSendEditingTransactionId(mockState),
         97531
@@ -346,8 +346,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendErrors()', () => {
-    it('should return the send.errors', () => {
+  describe('getSendErrors()', function () {
+    it('should return the send.errors', function () {
       assert.deepEqual(
         getSendErrors(mockState),
         { someError: null }
@@ -355,8 +355,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendHexDataFeatureFlagState()', () => {
-    it('should return the sendHexData feature flag state', () => {
+  describe('getSendHexDataFeatureFlagState()', function () {
+    it('should return the sendHexData feature flag state', function () {
       assert.deepEqual(
         getSendHexDataFeatureFlagState(mockState),
         true
@@ -364,8 +364,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendFrom()', () => {
-    it('should return the send.from', () => {
+  describe('getSendFrom()', function () {
+    it('should return the send.from', function () {
       assert.deepEqual(
         getSendFrom(mockState),
         {
@@ -376,15 +376,15 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendFromBalance()', () => {
-    it('should get the send.from balance if it exists', () => {
+  describe('getSendFromBalance()', function () {
+    it('should get the send.from balance if it exists', function () {
       assert.equal(
         getSendFromBalance(mockState),
         '0x5f4e3d2c1'
       )
     })
 
-    it('should get the selected account balance if the send.from does not exist', () => {
+    it('should get the selected account balance if the send.from does not exist', function () {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -399,8 +399,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendFromObject()', () => {
-    it('should return send.from if it exists', () => {
+  describe('getSendFromObject()', function () {
+    it('should return send.from if it exists', function () {
       assert.deepEqual(
         getSendFromObject(mockState),
         {
@@ -410,7 +410,7 @@ describe('send selectors', () => {
       )
     })
 
-    it('should return the current account with send ether info if send.from does not exist', () => {
+    it('should return the current account with send ether info if send.from does not exist', function () {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -431,8 +431,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendMaxModeState()', () => {
-    it('should return send.maxModeOn', () => {
+  describe('getSendMaxModeState()', function () {
+    it('should return send.maxModeOn', function () {
       assert.equal(
         getSendMaxModeState(mockState),
         false
@@ -440,8 +440,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendTo()', () => {
-    it('should return send.to', () => {
+  describe('getSendTo()', function () {
+    it('should return send.to', function () {
       assert.equal(
         getSendTo(mockState),
         '0x987fedabc'
@@ -449,8 +449,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getSendToAccounts()', () => {
-    it('should return an array including all the users accounts and the address book', () => {
+  describe('getSendToAccounts()', function () {
+    it('should return an array including all the users accounts and the address book', function () {
       assert.deepEqual(
         getSendToAccounts(mockState),
         [
@@ -492,8 +492,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getTokenBalance()', () => {
-    it('should', () => {
+  describe('getTokenBalance()', function () {
+    it('should', function () {
       assert.equal(
         getTokenBalance(mockState),
         3434
@@ -501,8 +501,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getTokenExchangeRate()', () => {
-    it('should return the passed tokens exchange rates', () => {
+  describe('getTokenExchangeRate()', function () {
+    it('should return the passed tokens exchange rates', function () {
       assert.equal(
         getTokenExchangeRate(mockState, 'GHI'),
         31.01
@@ -510,8 +510,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getUnapprovedTxs()', () => {
-    it('should return the unapproved txs', () => {
+  describe('getUnapprovedTxs()', function () {
+    it('should return the unapproved txs', function () {
       assert.deepEqual(
         getUnapprovedTxs(mockState),
         {
@@ -541,8 +541,8 @@ describe('send selectors', () => {
     })
   })
 
-  describe('transactionsSelector()', () => {
-    it('should return the selected addresses selected token transactions', () => {
+  describe('transactionsSelector()', function () {
+    it('should return the selected addresses selected token transactions', function () {
       assert.deepEqual(
         transactionsSelector(mockState),
         [
@@ -564,7 +564,7 @@ describe('send selectors', () => {
       )
     })
 
-    it('should return all transactions if no token is selected', () => {
+    it('should return all transactions if no token is selected', function () {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false })
       const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
       assert.deepEqual(
@@ -614,7 +614,7 @@ describe('send selectors', () => {
       )
     })
 
-    it('should return shapeshift transactions if current network is 1', () => {
+    it('should return shapeshift transactions if current network is 1', function () {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false, network: '1' })
       const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
       assert.deepEqual(

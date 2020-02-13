@@ -1,8 +1,8 @@
 import assert from 'assert'
 import migration37 from '../../../app/scripts/migrations/037'
 
-describe('migration #37', () => {
-  it('should update the version metadata', (done) => {
+describe('migration #37', function () {
+  it('should update the version metadata', function (done) {
     const oldStorage = {
       'meta': {
         'version': 36,
@@ -20,7 +20,7 @@ describe('migration #37', () => {
       .catch(done)
   })
 
-  it('should transform old state to new format', (done) => {
+  it('should transform old state to new format', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -84,7 +84,7 @@ describe('migration #37', () => {
       .catch(done)
   })
 
-  it('ens validation test', (done) => {
+  it('ens validation test', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {

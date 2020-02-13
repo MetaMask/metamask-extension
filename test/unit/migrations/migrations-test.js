@@ -19,8 +19,8 @@ let vault5, vault6, vault7, vault8, vault9 // vault10, vault11
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
 const newTestRpc = 'https://testrpc.metamask.io/'
 
-describe('wallet1 is migrated successfully', () => {
-  it('should convert providers', () => {
+describe('wallet1 is migrated successfully', function () {
+  it('should convert providers', function () {
     wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
 
     return migration2.migrate(wallet1)

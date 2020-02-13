@@ -9,9 +9,9 @@ import CurrencyInput from '../currency-input.component'
 import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
-describe('CurrencyInput Component', () => {
-  describe('rendering', () => {
-    it('should render properly without a suffix', () => {
+describe('CurrencyInput Component', function () {
+  describe('rendering', function () {
+    it('should render properly without a suffix', function () {
       const wrapper = shallow(
         <CurrencyInput />
       )
@@ -20,7 +20,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find(UnitInput).length, 1)
     })
 
-    it('should render properly with a suffix', () => {
+    it('should render properly with a suffix', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -46,7 +46,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should render properly with an ETH value', () => {
+    it('should render properly with an ETH value', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -79,7 +79,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
     })
 
-    it('should render properly with a fiat value', () => {
+    it('should render properly with a fiat value', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -113,7 +113,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
     })
 
-    it('should render properly with a native value when hideFiat is true', () => {
+    it('should render properly with a native value when hideFiat is true', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -153,16 +153,16 @@ describe('CurrencyInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange on input changes with the hex value for ETH', () => {
+    it('should call onChange on input changes with the hex value for ETH', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -202,7 +202,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
     })
 
-    it('should call onChange on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -243,7 +243,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
     })
 
-    it('should change the state and pass in a new decimalValue when props.value changes', () => {
+    it('should change the state and pass in a new decimalValue when props.value changes', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -278,7 +278,7 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.find(UnitInput).props().value, 2)
     })
 
-    it('should swap selected currency when swap icon is clicked', () => {
+    it('should swap selected currency when swap icon is clicked', function () {
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',

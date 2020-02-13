@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import MetaMetricsOptIn from '../index'
 
-describe('MetaMetrics Opt In', () => {
+describe('MetaMetrics Opt In', function () {
   let wrapper
 
   const props = {
@@ -13,7 +13,7 @@ describe('MetaMetrics Opt In', () => {
     participateInMetaMetrics: null,
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mount(
       <MetaMetricsOptIn.WrappedComponent {...props} />, {
         context: {
@@ -23,12 +23,12 @@ describe('MetaMetrics Opt In', () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.setParticipateInMetaMetrics.resetHistory()
     props.hideModal.resetHistory()
   })
 
-  it('passes false to setParticipateInMetaMetrics and hides modal', (done) => {
+  it('passes false to setParticipateInMetaMetrics and hides modal', function (done) {
     const noThanks = wrapper.find('.btn-default.page-container__footer-button')
     noThanks.simulate('click')
 
@@ -40,7 +40,7 @@ describe('MetaMetrics Opt In', () => {
     })
   })
 
-  it('passes true to setParticipateInMetaMetrics and hides modal', (done) => {
+  it('passes true to setParticipateInMetaMetrics and hides modal', function (done) {
     const iAgree = wrapper.find('.btn-primary.page-container__footer-button')
     iAgree.simulate('click')
 

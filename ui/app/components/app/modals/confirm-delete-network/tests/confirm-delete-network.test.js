@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import ConfirmDeleteNetwork from '../index'
 
-describe('Confirm Delete Network', () => {
+describe('Confirm Delete Network', function () {
   let wrapper
 
   const props = {
@@ -14,7 +14,7 @@ describe('Confirm Delete Network', () => {
     target: '',
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mount(
       <ConfirmDeleteNetwork.WrappedComponent {...props} />, {
         context: {
@@ -24,18 +24,18 @@ describe('Confirm Delete Network', () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.hideModal.resetHistory()
     props.delRpcTarget.resetHistory()
     props.onConfirm.resetHistory()
   })
 
-  it('renders delete network modal title', () => {
+  it('renders delete network modal title', function () {
     const modalTitle = wrapper.find('.modal-content__title')
     assert.equal(modalTitle.text(), 'deleteNetwork')
   })
 
-  it('clicks cancel to hide modal', () => {
+  it('clicks cancel to hide modal', function () {
     const cancelButton = wrapper.find('.button.btn-default.modal-container__footer-button')
     cancelButton.simulate('click')
 
@@ -43,7 +43,7 @@ describe('Confirm Delete Network', () => {
 
   })
 
-  it('clicks delete to delete the target and hides modal', () => {
+  it('clicks delete to delete the target and hides modal', function () {
     const deleteButton = wrapper.find('.button.btn-danger.modal-container__footer-button')
 
     deleteButton.simulate('click')

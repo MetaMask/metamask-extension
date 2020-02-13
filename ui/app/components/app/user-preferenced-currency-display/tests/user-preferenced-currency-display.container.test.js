@@ -13,9 +13,9 @@ proxyquire('../user-preferenced-currency-display.container.js', {
   },
 })
 
-describe('UserPreferencedCurrencyDisplay container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props', () => {
+describe('UserPreferencedCurrencyDisplay container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props', function () {
       const mockState = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -37,7 +37,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       })
     })
 
-    it('should return the correct props when not in mainnet and showFiatInTestnets is true', () => {
+    it('should return the correct props when not in mainnet and showFiatInTestnets is true', function () {
       const mockState = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -60,8 +60,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
     })
   })
 
-  describe('mergeProps()', () => {
-    it('should return the correct props', () => {
+  describe('mergeProps()', function () {
+    it('should return the correct props', function () {
       const mockDispatchProps = {}
 
       const tests = [

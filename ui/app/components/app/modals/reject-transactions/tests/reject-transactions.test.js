@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import RejectTransactionsModal from '../index'
 
-describe('Reject Transactions Model', () => {
+describe('Reject Transactions Model', function () {
   let wrapper
 
   const props = {
@@ -13,7 +13,7 @@ describe('Reject Transactions Model', () => {
     unapprovedTxCount: 2,
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mount(
       <RejectTransactionsModal.WrappedComponent {...props} />, {
         context: {
@@ -23,18 +23,18 @@ describe('Reject Transactions Model', () => {
     )
   })
 
-  afterEach(() => {
+  afterEach(function () {
     props.hideModal.resetHistory()
   })
 
-  it('hides modal when cancel button is clicked', () => {
+  it('hides modal when cancel button is clicked', function () {
     const cancelButton = wrapper.find('.btn-default.modal-container__footer-button')
     cancelButton.simulate('click')
 
     assert(props.hideModal.calledOnce)
   })
 
-  it('onSubmit is called and hides modal when reject all clicked', (done) => {
+  it('onSubmit is called and hides modal when reject all clicked', function (done) {
     const rejectAllButton = wrapper.find('.btn-secondary.modal-container__footer-button')
     rejectAllButton.simulate('click')
 

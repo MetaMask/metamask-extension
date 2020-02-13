@@ -8,7 +8,7 @@ import { mount } from 'enzyme'
 import TokenCell from '../token-cell'
 import Identicon from '../../ui/identicon'
 
-describe('Token Cell', () => {
+describe('Token Cell', function () {
   let wrapper
 
   const state = {
@@ -33,7 +33,7 @@ describe('Token Cell', () => {
   const mockStore = configureMockStore(middlewares)
   const store = mockStore(state)
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mount(
       <Provider store={store}>
         <TokenCell
@@ -48,21 +48,21 @@ describe('Token Cell', () => {
     )
   })
 
-  it('renders Identicon with props from token cell', () => {
+  it('renders Identicon with props from token cell', function () {
     assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
     assert.equal(wrapper.find(Identicon).prop('network'), 'test')
     assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
   })
 
-  it('renders token balance', () => {
+  it('renders token balance', function () {
     assert.equal(wrapper.find('.token-list-item__token-balance').text(), '5.000')
   })
 
-  it('renders token symbol', () => {
+  it('renders token symbol', function () {
     assert.equal(wrapper.find('.token-list-item__token-symbol').text(), 'TEST')
   })
 
-  it('renders converted fiat amount', () => {
+  it('renders converted fiat amount', function () {
     assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
   })
 
