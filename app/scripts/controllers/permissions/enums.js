@@ -69,6 +69,6 @@ export const SAFE_METHODS = [
   'eth_uninstallFilter',
   'metamask_watchAsset',
   'wallet_watchAsset',
-  'encryption_public_key',
-  'eth_decryptMessage',
+  'eth_getEncryptionPublicKey',
+  'eth_decrypt',
 ]

@@ -134,9 +134,9 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    if (type === 'eth_decryptMessage') {
+    if (type === 'eth_decrypt') {
       return DECRYPT_REQUEST_KEY
-    } else if (type === 'encryption_public_key') {
+    } else if (type === 'eth_getEncryptionPublicKey') {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
     } else {
       return SIGNATURE_REQUEST_KEY

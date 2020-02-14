@@ -8,8 +8,8 @@ const hexRe = /^[0-9A-Fa-f]+$/g
 import log from 'loglevel'
 
 /**
- * Represents, and contains data about, an 'eth_decryptMessage' type decryption request. These are created when a
- * decryption for an eth_decryptMessage call is requested.
+ * Represents, and contains data about, an 'eth_decrypt' type decryption request. These are created when a
+ * decryption for an eth_decrypt call is requested.
  *
  * @typedef {Object} DecryptMessage
  * @property {number} id An id to track and identify the message object
@@ -20,7 +20,7 @@ import log from 'loglevel'
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the decryption request is 'unapproved', 'approved', 'decrypted' or 'rejected'
  * @property {string} type The json-prc decryption method for which a decryption request has been made. A 'Message' will
- * always have a 'eth_decryptMessage' type.
+ * always have a 'eth_decrypt' type.
  *
  */
 
@@ -73,7 +73,7 @@ export default class DecryptMessageManager extends EventEmitter {
    * the new DecryptMessage to this.messages, and to save the unapproved DecryptMessages from that list to
    * this.memStore.
    *
-   * @param {Object} msgParams The params for the eth_decryptMessage call to be made after the message is approved.
+   * @param {Object} msgParams The params for the eth_decrypt call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The raw decrypted message contents
    *
@@ -124,7 +124,7 @@ export default class DecryptMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_decryptMessage',
+      type: 'eth_decrypt',
     }
     this.addMsg(msgData)
 
