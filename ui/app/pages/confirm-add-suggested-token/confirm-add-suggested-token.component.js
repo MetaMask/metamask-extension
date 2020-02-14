@@ -15,6 +15,7 @@ export default class ConfirmAddSuggestedToken extends Component {
     addToken: PropTypes.func,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
+    tokens: PropTypes.array,
   }
 
   componentDidMount () {
@@ -32,9 +33,11 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, pendingTokens, removeSuggestedTokens, history } = this.props
+    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
+    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
+    const reusesName = this.checkNameReuse(pendingTokens, tokens)
 
     return (
       <div className="page-container">
@@ -45,6 +48,20 @@ export default class ConfirmAddSuggestedToken extends Component {
           <div className="page-container__subtitle">
             { this.context.t('likeToAddTokens') }
           </div>
+          { hasTokenDuplicates ?
+            (
+              <div className="warning">
+                { this.context.t('knownTokenWarning') }
+              </div>
+            ) : null
+          }
+          { reusesName ?
+            (
+              <div className="warning">
+                { this.context.t('reusedTokenNameWarning') }
+              </div>
+            ) : null
+          }
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
@@ -118,4 +135,32 @@ export default class ConfirmAddSuggestedToken extends Component {
       </div>
     )
   }
+
+  checkTokenDuplicates (pendingTokens, tokens) {
+    const pending = Object.keys(pendingTokens)
+    const existing = tokens.map(token => token.address)
+    const dupes = pending.filter((proposed) => {
+      return existing.includes(proposed)
+    })
+
+    return dupes.length > 0
+  }
+
+  /**
+   * Returns true if any pendingTokens both:
+   * - Share a symbol with an existing `tokens` member.
+   * - Does not share an address with that same `tokens` member.
+   * This should be flagged as possibly deceptive or confusing.
+   */
+  checkNameReuse (pendingTokens, tokens) {
+    const duplicates = Object.keys(pendingTokens)
+      .map((addr) => pendingTokens[addr])
+      .filter((token) => {
+        const dupes = tokens.filter(old => old.symbol === token.symbol)
+          .filter(old => old.address !== token.address)
+        return dupes.length > 0
+      })
+    return duplicates.length > 0
+  }
+
 }

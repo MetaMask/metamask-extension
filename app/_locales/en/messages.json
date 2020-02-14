@@ -743,6 +743,12 @@
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
+  "knownTokenWarning": {
+    "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent."
+  },
+  "reusedTokenNameWarning": {
+    "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Not ETH network, set to lowercase"
   },
