@@ -185,7 +185,9 @@ async function loadStateFromPersistence () {
   if (versionedData && !versionedData.data) {
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState)
-    sentry.captureMessage('Conflux Portal - Empty vault found - unable to recover')
+    sentry.captureMessage(
+      'Conflux Portal - Empty vault found - unable to recover'
+    )
   }
 
   // report migration errors to sentry

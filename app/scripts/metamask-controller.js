@@ -214,7 +214,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController(
       {
-        getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
+        getKeyringAccounts: this.keyringController.getAccounts.bind(
+          this.keyringController
+        ),
         platform: opts.platform,
         notifyDomain: this.notifyConnections.bind(this),
         notifyAllDomains: this.notifyAllConnections.bind(this),
@@ -527,16 +529,46 @@ export default class MetamaskController extends EventEmitter {
         preferencesController
       ),
       addToken: nodeify(preferencesController.addToken, preferencesController),
-      removeToken: nodeify(preferencesController.removeToken, preferencesController),
-      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
-      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
-      setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
-      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
-      setPreference: nodeify(preferencesController.setPreference, preferencesController),
-      completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
-      addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-      clearLastSelectedAddressHistory: nodeify(preferencesController.clearLastSelectedAddressHistory, preferencesController),
-      removeLastSelectedAddressesFor: nodeify(preferencesController.removeLastSelectedAddressesFor, preferencesController),
+      removeToken: nodeify(
+        preferencesController.removeToken,
+        preferencesController
+      ),
+      removeSuggestedTokens: nodeify(
+        preferencesController.removeSuggestedTokens,
+        preferencesController
+      ),
+      setCurrentAccountTab: nodeify(
+        preferencesController.setCurrentAccountTab,
+        preferencesController
+      ),
+      setAccountLabel: nodeify(
+        preferencesController.setAccountLabel,
+        preferencesController
+      ),
+      setFeatureFlag: nodeify(
+        preferencesController.setFeatureFlag,
+        preferencesController
+      ),
+      setPreference: nodeify(
+        preferencesController.setPreference,
+        preferencesController
+      ),
+      completeOnboarding: nodeify(
+        preferencesController.completeOnboarding,
+        preferencesController
+      ),
+      addKnownMethodData: nodeify(
+        preferencesController.addKnownMethodData,
+        preferencesController
+      ),
+      clearLastSelectedAddressHistory: nodeify(
+        preferencesController.clearLastSelectedAddressHistory,
+        preferencesController
+      ),
+      removeLastSelectedAddressesFor: nodeify(
+        preferencesController.removeLastSelectedAddressesFor,
+        preferencesController
+      ),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
@@ -643,17 +675,35 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // permissions
-      approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
-      clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
-      getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
-      rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
-      removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
-      updatePermittedAccounts: nodeify(permissionsController.updatePermittedAccounts, permissionsController),
-      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+      approvePermissionsRequest: nodeify(
+        permissionsController.approvePermissionsRequest,
+        permissionsController
+      ),
+      clearPermissions: permissionsController.clearPermissions.bind(
+        permissionsController
+      ),
+      getApprovedAccounts: nodeify(
+        permissionsController.getAccounts.bind(permissionsController)
+      ),
+      rejectPermissionsRequest: nodeify(
+        permissionsController.rejectPermissionsRequest,
+        permissionsController
+      ),
+      removePermissionsFor: permissionsController.removePermissionsFor.bind(
+        permissionsController
+      ),
+      updatePermittedAccounts: nodeify(
+        permissionsController.updatePermittedAccounts,
+        permissionsController
+      ),
+      legacyExposeAccounts: nodeify(
+        permissionsController.legacyExposeAccounts,
+        permissionsController
+      ),
       handleNewAccountSelected: nodeify(this.handleNewAccountSelected, this),
 
-      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
+      getRequestAccountTabIds: cb => cb(null, this.getRequestAccountTabIds()),
+      getOpenMetamaskTabsIds: cb => cb(null, this.getOpenMetamaskTabsIds()),
     }
   }
 
@@ -1476,7 +1526,10 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('confluxPortalProvider'), sender)
+    this.setupProviderConnection(
+      mux.createStream('confluxPortalProvider'),
+      sender
+    )
     this.setupPublicConfig(mux.createStream('confluxPortalPublicConfig'))
   }
 
@@ -1494,7 +1547,11 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mux.createStream('confluxPortalController'))
-    this.setupProviderConnection(mux.createStream('confluxPortalProvider'), sender, true)
+    this.setupProviderConnection(
+      mux.createStream('confluxPortalProvider'),
+      sender,
+      true
+    )
   }
 
   /**

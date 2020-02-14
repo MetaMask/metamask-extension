@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   parser: 'babel-eslint',
   parserOptions: {
     'sourceType': 'module',
@@ -20,17 +21,16 @@ module.exports = {
   extends: [
     '@metamask/eslint-config',
     '@metamask/eslint-config/config/nodejs',
+    '@metamask/eslint-config/config/mocha',
     'plugin:react/recommended',
   ],
 
   env: {
     'browser': true,
-    'mocha': true,
   },
 
   plugins: [
     'babel',
-    'mocha',
     'chai',
     'react',
     'json',
@@ -90,6 +90,6 @@ module.exports = {
       'prop': 'parens-new-line',
     }],
     'babel/semi': ['error', 'never'],
-    'mocha/no-exclusive-tests': 'error',
+    'mocha/no-setup-in-describe': 'off',
   },
 }

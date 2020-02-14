@@ -20,10 +20,14 @@ function setupSentry (opts) {
   const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG || process.env.IN_TEST) {
-    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`
+    )
     sentryTarget = SENTRY_DSN_DEV
   } else {
-    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_PROD`)
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_PROD`
+    )
     sentryTarget = SENTRY_DSN_PROD
   }
 
@@ -31,10 +35,7 @@ function setupSentry (opts) {
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     environment: METAMASK_ENVIRONMENT,
-    integrations: [
-      new Dedupe(),
-      new ExtraErrorData(),
-    ],
+    integrations: [new Dedupe(), new ExtraErrorData()],
     release,
     beforeSend: report => rewriteReport(report),
   })

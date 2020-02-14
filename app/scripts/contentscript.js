@@ -85,7 +85,11 @@ async function setupStreams () {
 
   // forward communication across inpage-background for these channels only
   forwardTrafficBetweenMuxers('confluxPortalProvider', pageMux, extensionMux)
-  forwardTrafficBetweenMuxers('confluxPortalPublicConfig', pageMux, extensionMux)
+  forwardTrafficBetweenMuxers(
+    'confluxPortalPublicConfig',
+    pageMux,
+    extensionMux
+  )
 
   // connect "phishing" channel to warning system
   const phishingStream = extensionMux.createStream('confluxPortalPhishing')

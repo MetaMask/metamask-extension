@@ -10,7 +10,10 @@ import createMetamaskMiddleware from './createMetamaskMiddleware'
 // import createInfuraClient from './createInfuraClient'
 import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
-import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
+import {
+  createSwappableProxy,
+  createEventEmitterProxy,
+} from 'swappable-obj-proxy'
 
 const networks = { networkList: {} }
 

@@ -58,7 +58,9 @@ function generateHistoryEntry (previousState, newState, note) {
 */
 function replayHistory (_shortHistory) {
   const shortHistory = cloneDeep(_shortHistory)
-  return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
+  return shortHistory.reduce(
+    (val, entry) => jsonDiffer.applyPatch(val, entry).newDocument
+  )
 }
 
 /**
