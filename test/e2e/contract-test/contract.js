@@ -57,6 +57,8 @@ const initialize = () => {
   )
   const signTypedData = document.getElementById('signTypedData')
   const signTypedDataResults = document.getElementById('signTypedDataResult')
+  const sendSignedTypedData = document.getElementById('sendSignedTypedData')
+  const sendSignedTypedDataResult = document.getElementById('sendSignedTypedDataResult')
   const cfxSignData = document.getElementById('cfxSignData')
   const cfxSignDataResults = document.getElementById('cfxSignDataResult')
   const getAccountsButton = document.getElementById('getAccounts')
@@ -676,9 +678,23 @@ const initialize = () => {
             console.log(err)
           } else {
             signTypedDataResults.innerHTML = JSON.stringify(result)
+            sendSignedTypedData.disabled = false
           }
         }
       )
+    })
+    sendSignedTypedData.addEventListener('click', async () => {
+      const signedData = JSON.parse(signTypedDataResults.innerHTML).result
+      const txResult = await confluxJS
+        .sendTransaction({
+          from: accounts[0],
+          to: accounts[0],
+          data: signedData,
+          gas: 21000,
+          gasPrice: 10000000000,
+        })
+        .confirmed()
+      sendSignedTypedDataResult.innerText = JSON.stringify(txResult, 2)
     })
 
     getAccountsButton.addEventListener('click', async () => {
