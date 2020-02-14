@@ -3,6 +3,10 @@
 ## Current Develop Branch
 
 ## 7.7.5 Fri Feb 14 2020
+- [#8053](https://github.com/MetaMask/metamask-extension/pull/8053): Inline the source text not the binary encoding for inpage script
+- [#8049](https://github.com/MetaMask/metamask-extension/pull/8049): Add warning to watchAsset API when editing a known token
+- [#8051](https://github.com/MetaMask/metamask-extension/pull/8051): Update Wyre ETH purchase url
+- [#8059](https://github.com/MetaMask/metamask-extension/pull/8059): Attempt ENS resolution on any valid domain name
 
 ## 7.7.4 Wed Jan 29 2020
 - [#7918](https://github.com/MetaMask/metamask-extension/pull/7918): Update data on Approve screen after updating custom spend limit
