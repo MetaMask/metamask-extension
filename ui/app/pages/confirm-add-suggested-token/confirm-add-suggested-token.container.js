@@ -5,11 +5,12 @@ import { withRouter } from 'react-router-dom'
 import { addToken, removeSuggestedTokens } from '../../store/actions'
 
 const mapStateToProps = ({ metamask }) => {
-  const { pendingTokens, suggestedTokens } = metamask
+  const { pendingTokens, suggestedTokens, tokens } = metamask
   const params = { ...pendingTokens, ...suggestedTokens }
 
   return {
     pendingTokens: params,
+    tokens,
   }
 }
 
