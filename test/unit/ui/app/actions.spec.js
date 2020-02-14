@@ -21,7 +21,7 @@ const mockStore = configureStore(middleware)
 
 describe('Actions', function () {
 
-  const noop = () => {}
+  const noop = function () {}
 
   const currentNetworkId = 42
 
@@ -1450,40 +1450,6 @@ describe('Actions', function () {
       })
 
       store.dispatch(actions.setUseBlockie())
-      assert.deepEqual(store.getActions(), expectedActions)
-    })
-  })
-
-  describe('#setUseIn3', () => {
-    let setUseIn3Spy
-
-    beforeEach(function () {
-      setUseIn3Spy = sinon.stub(background, 'setUseIn3Network')
-    })
-
-    afterEach(function () {
-      setUseIn3Spy.restore()
-    })
-
-    it('calls setUseIn3 in background', function () {
-      const store = mockStore()
-
-      store.dispatch(actions.setUseIn3(true))
-      assert(setUseIn3Spy.calledOnce)
-    })
-
-    it('errors when setUseIn3 in background throws', function () {
-      const store = mockStore()
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'useIn3 must be boolean' },
-      ]
-
-      setUseIn3Spy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      store.dispatch(actions.setUseIn3())
       assert.deepEqual(store.getActions(), expectedActions)
     })
   })
