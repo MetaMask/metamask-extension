@@ -1457,22 +1457,22 @@ describe('Actions', function () {
   describe('#setUseIn3', () => {
     let setUseIn3Spy
 
-    beforeEach(() => {
+    beforeEach(function () {
       setUseIn3Spy = sinon.stub(background, 'setUseIn3Network')
     })
 
-    afterEach(() => {
+    afterEach(function () {
       setUseIn3Spy.restore()
     })
 
-    it('calls setUseIn3 in background', () => {
+    it('calls setUseIn3 in background', function () {
       const store = mockStore()
 
       store.dispatch(actions.setUseIn3(true))
       assert(setUseIn3Spy.calledOnce)
     })
 
-    it('errors when setUseIn3 in background throws', () => {
+    it('errors when setUseIn3 in background throws', function () {
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
