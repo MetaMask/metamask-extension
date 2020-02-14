@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.7.5 Fri Feb 14 2020
+
 ## 7.7.4 Wed Jan 29 2020
 - [#7918](https://github.com/MetaMask/metamask-extension/pull/7918): Update data on Approve screen after updating custom spend limit
 - [#7919](https://github.com/MetaMask/metamask-extension/pull/7919): Allow editing max spend limit
