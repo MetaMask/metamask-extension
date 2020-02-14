@@ -6,7 +6,7 @@ import AccountListItem from '../../../account-list-item'
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 
 describe('SendFromRow Component', function () {
-  describe('render', () => {
+  describe('render', function () {
     const wrapper = shallow(
       <SendFromRow
         from={ { address: 'mockAddress' } }
@@ -14,16 +14,16 @@ describe('SendFromRow Component', function () {
       { context: { t: str => str + '_t' } }
     )
 
-    it('should render a SendRowWrapper component', () => {
+    it('should render a SendRowWrapper component', function () {
       assert.equal(wrapper.find(SendRowWrapper).length, 1)
     })
 
-    it('should pass the correct props to SendRowWrapper', () => {
+    it('should pass the correct props to SendRowWrapper', function () {
       const { label } = wrapper.find(SendRowWrapper).props()
       assert.equal(label, 'from_t:')
     })
 
-    it('should render the FromDropdown with the correct props', () => {
+    it('should render the FromDropdown with the correct props', function () {
       const { account } = wrapper.find(AccountListItem).props()
       assert.deepEqual(account, { address: 'mockAddress' })
     })

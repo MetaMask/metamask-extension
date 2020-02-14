@@ -5,39 +5,25 @@ import configureMockStore from 'redux-mock-store'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import MetaMetricsOptIn from '../index'
 
-describe('MetaMetricsOptIn', () => {
-  let wrapper
-
-  const props = {
-    history: {
-      push: sinon.spy(),
-    },
-    setParticipateInMetaMetrics: sinon.stub().resolves(),
-    participateInMetaMetrics: false,
-  }
-
-  const mockStore = {
-    metamask: {},
-  }
-
-  const store = configureMockStore()(mockStore)
-
-  beforeEach(() => {
-    wrapper = mountWithRouter(
+describe('MetaMetricsOptIn', function () {
+  it('opt out of MetaMetrics', function () {
+    const props = {
+      history: {
+        push: sinon.spy(),
+      },
+      setParticipateInMetaMetrics: sinon.stub().resolves(),
+      participateInMetaMetrics: false,
+    }
+    const store = configureMockStore()({
+      metamask: {},
+    })
+    const wrapper = mountWithRouter(
       <MetaMetricsOptIn.WrappedComponent {...props} />, store
     )
-  })
-
-  afterEach(() => {
-    props.setParticipateInMetaMetrics.resetHistory()
-  })
-
-  it('opt out of metametrics', () => {
     const noThanksButton = wrapper.find('.btn-default.page-container__footer-button')
     noThanksButton.simulate('click')
 
-    assert(props.setParticipateInMetaMetrics.calledOnce)
-    assert.equal(props.setParticipateInMetaMetrics.getCall(0).args[0], false)
+    assert.ok(props.setParticipateInMetaMetrics.calledOnceWithExactly(false))
+    props.setParticipateInMetaMetrics.resetHistory()
   })
-
 })

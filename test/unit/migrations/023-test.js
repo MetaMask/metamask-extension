@@ -57,8 +57,8 @@ while (transactions20.length < 20) {
 
 storage.data.TransactionController.transactions = transactions
 
-describe('storage is migrated successfully and the proper transactions are remove from state', () => {
-  it('should remove transactions that are unneeded', (done) => {
+describe('storage is migrated successfully and the proper transactions are remove from state', function () {
+  it('should remove transactions that are unneeded', function (done) {
     migration23.migrate(storage)
       .then((migratedData) => {
         let leftoverNonDeletableTxCount = 0
@@ -74,7 +74,7 @@ describe('storage is migrated successfully and the proper transactions are remov
       }).catch(done)
   })
 
-  it('should not remove any transactions because 40 is the expectable limit', (done) => {
+  it('should not remove any transactions because 40 is the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions40
     migration23.migrate(storage)
@@ -86,7 +86,7 @@ describe('storage is migrated successfully and the proper transactions are remov
       }).catch(done)
   })
 
-  it('should not remove any transactions because 20 txs is under the expectable limit', (done) => {
+  it('should not remove any transactions because 20 txs is under the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions20
     migration23.migrate(storage)

@@ -8,7 +8,7 @@ describe('preferences controller', function () {
   let preferencesController
   let network
 
-  beforeEach(() => {
+  beforeEach(function () {
     network = { providerStore: new ObservableStore({ type: 'mainnet' }) }
     preferencesController = new PreferencesController({ network })
   })
@@ -346,7 +346,7 @@ describe('preferences controller', function () {
     let stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
     const sandbox = sinon.createSandbox()
 
-    beforeEach(() => {
+    beforeEach(function () {
       req = { params: {} }
       res = {}
       asy = { next: () => {}, end: () => {} }
@@ -354,7 +354,7 @@ describe('preferences controller', function () {
       stubEnd = sandbox.stub(asy, 'end').returns(0)
       stubHandleWatchAssetERC20 = sandbox.stub(preferencesController, '_handleWatchAssetERC20')
     })
-    after(() => {
+    after(function () {
       sandbox.restore()
     })
 
@@ -404,10 +404,10 @@ describe('preferences controller', function () {
     let req
 
     const sandbox = sinon.createSandbox()
-    beforeEach(() => {
+    beforeEach(function () {
       req = { params: { type: 'ERC20' } }
     })
-    after(() => {
+    after(function () {
       sandbox.restore()
     })
 
@@ -514,7 +514,7 @@ describe('preferences controller', function () {
   })
 
   describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', () => {
+    it('should update the rpcDetails properly', function () {
       preferencesController.store.updateState({ frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}] })
       preferencesController.updateRpc({ rpcUrl: 'test', chainId: 1 })
       preferencesController.updateRpc({ rpcUrl: 'test/1', chainId: 1 })

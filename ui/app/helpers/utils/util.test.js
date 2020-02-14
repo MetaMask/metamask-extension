@@ -121,18 +121,18 @@ describe('util', function () {
   })
 
   describe('#formatBalance', function () {
-    it('when given nothing', function () {
+    it('should return None when given nothing', function () {
       const result = util.formatBalance()
       assert.equal(result, 'None', 'should return "None"')
     })
 
-    it('should return eth as string followed by ETH', function () {
+    it('should return 1.0000 ETH', function () {
       const input = new ethUtil.BN(ethInWei, 10).toJSON()
       const result = util.formatBalance(input, 4)
       assert.equal(result, '1.0000 ETH')
     })
 
-    it('should return eth as string followed by ETH', function () {
+    it('should return 0.500 ETH', function () {
       const input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
       const result = util.formatBalance(input, 3)
       assert.equal(result, '0.500 ETH')

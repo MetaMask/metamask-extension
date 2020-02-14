@@ -25,7 +25,7 @@ describe('tx confirmation screen', function () {
   const store = mockStore(initialState)
 
   describe('cancelTx', function () {
-    before(function (done) {
+    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
       actions._setBackgroundConnection({
         approveTransaction (_, cb) {
           cb('An error!')
@@ -37,10 +37,7 @@ describe('tx confirmation screen', function () {
           cb()
         },
       })
-      done()
-    })
 
-    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
       await store.dispatch(actions.cancelTx({ id: txId }))
       const storeActions = store.getActions()
       const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)

@@ -17,7 +17,7 @@ const accounts = {
   },
 }
 
-describe('Balance Controller', () => {
+describe('Balance Controller', function () {
 
   let balanceController
 
@@ -29,7 +29,7 @@ describe('Balance Controller', () => {
     }
   })
 
-  beforeEach(() => {
+  beforeEach(function () {
     balanceController = new BalanceController({
       address: TEST_ADDRESS,
       accountTracker: new AccountTracker({

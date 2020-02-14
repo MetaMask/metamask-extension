@@ -13,45 +13,45 @@ const {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
 } = proxyquire('./custom-gas', {})
 
-describe('custom-gas selectors', () => {
+describe('custom-gas selectors', function () {
 
-  describe('getCustomGasPrice()', () => {
-    it('should return gas.customData.price', () => {
+  describe('getCustomGasPrice()', function () {
+    it('should return gas.customData.price', function () {
       const mockState = { gas: { customData: { price: 'mockPrice' } } }
       assert.equal(getCustomGasPrice(mockState), 'mockPrice')
     })
   })
 
-  describe('getCustomGasLimit()', () => {
-    it('should return gas.customData.limit', () => {
+  describe('getCustomGasLimit()', function () {
+    it('should return gas.customData.limit', function () {
       const mockState = { gas: { customData: { limit: 'mockLimit' } } }
       assert.equal(getCustomGasLimit(mockState), 'mockLimit')
     })
   })
 
-  describe('getCustomGasTotal()', () => {
-    it('should return gas.customData.total', () => {
+  describe('getCustomGasTotal()', function () {
+    it('should return gas.customData.total', function () {
       const mockState = { gas: { customData: { total: 'mockTotal' } } }
       assert.equal(getCustomGasTotal(mockState), 'mockTotal')
     })
   })
 
-  describe('getCustomGasErrors()', () => {
-    it('should return gas.errors', () => {
+  describe('getCustomGasErrors()', function () {
+    it('should return gas.errors', function () {
       const mockState = { gas: { errors: 'mockErrors' } }
       assert.equal(getCustomGasErrors(mockState), 'mockErrors')
     })
   })
 
-  describe('getPriceAndTimeEstimates', () => {
-    it('should return price and time estimates', () => {
+  describe('getPriceAndTimeEstimates', function () {
+    it('should return price and time estimates', function () {
       const mockState = { gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' } }
       assert.equal(getPriceAndTimeEstimates(mockState), 'mockPriceAndTimeEstimates')
     })
   })
 
-  describe('getEstimatedGasPrices', () => {
-    it('should return price and time estimates', () => {
+  describe('getEstimatedGasPrices', function () {
+    it('should return price and time estimates', function () {
       const mockState = { gas: { priceAndTimeEstimates: [
         { gasprice: 12, somethingElse: 20 },
         { gasprice: 22, expectedTime: 30 },
@@ -61,8 +61,8 @@ describe('custom-gas selectors', () => {
     })
   })
 
-  describe('getEstimatedGasTimes', () => {
-    it('should return price and time estimates', () => {
+  describe('getEstimatedGasTimes', function () {
+    it('should return price and time estimates', function () {
       const mockState = { gas: { priceAndTimeEstimates: [
         { somethingElse: 12, expectedTime: 20 },
         { gasPrice: 22, expectedTime: 30 },
@@ -72,7 +72,7 @@ describe('custom-gas selectors', () => {
     })
   })
 
-  describe('getRenderableBasicEstimateData()', () => {
+  describe('getRenderableBasicEstimateData()', function () {
     const tests = [
       {
         expectedResult: [
@@ -337,7 +337,7 @@ describe('custom-gas selectors', () => {
         },
       },
     ]
-    it('should return renderable data about basic estimates', () => {
+    it('should return renderable data about basic estimates', function () {
       tests.forEach(test => {
         assert.deepEqual(
           getRenderableBasicEstimateData(test.mockState, '0x5208'),
@@ -348,7 +348,7 @@ describe('custom-gas selectors', () => {
 
   })
 
-  describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', () => {
+  describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', function () {
     const tests = [
       {
         expectedResult: [
@@ -601,7 +601,7 @@ describe('custom-gas selectors', () => {
         },
       },
     ]
-    it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
+    it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
       tests.forEach(test => {
         assert.deepEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),

@@ -45,19 +45,15 @@ describe('PendingBalanceCalculator', function () {
   })
 
   describe('if you have no pending txs and one ether', function () {
-
-    beforeEach(function () {
-      balanceCalculator = generateBalanceCalcWith([], etherBn)
-    })
-
     it('returns the network balance', async function () {
+      balanceCalculator = generateBalanceCalcWith([], etherBn)
       const result = await balanceCalculator.getBalance()
       assert.equal(result, ether, `gave ${result} needed ${ether}`)
     })
   })
 
   describe('if you have a one ether pending tx and one ether', function () {
-    beforeEach(function () {
+    it('returns the subtracted result', async function () {
       const txGen = new MockTxGen()
       pendingTxs = txGen.generate({
         status: 'submitted',
@@ -69,14 +65,11 @@ describe('PendingBalanceCalculator', function () {
       }, { count: 1 })
 
       balanceCalculator = generateBalanceCalcWith(pendingTxs, etherBn)
-    })
 
-    it('returns the subtracted result', async function () {
       const result = await balanceCalculator.getBalance()
       assert.equal(result, '0x0', `gave ${result} needed '0x0'`)
       return true
     })
-
   })
 })
 

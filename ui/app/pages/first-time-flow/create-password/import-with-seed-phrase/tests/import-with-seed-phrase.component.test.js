@@ -14,8 +14,8 @@ function shallowRender (props = {}, context = {}) {
   })
 }
 
-describe('ImportWithSeedPhrase Component', () => {
-  it('should render without error', () => {
+describe('ImportWithSeedPhrase Component', function () {
+  it('should render without error', function () {
     const root = shallowRender({
       onSubmit: sinon.spy(),
     })
@@ -23,8 +23,8 @@ describe('ImportWithSeedPhrase Component', () => {
     assert.equal(textareaCount, 1, 'should render 12 seed phrases')
   })
 
-  describe('parseSeedPhrase', () => {
-    it('should handle a regular seed phrase', () => {
+  describe('parseSeedPhrase', function () {
+    it('should handle a regular seed phrase', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       })
@@ -34,7 +34,7 @@ describe('ImportWithSeedPhrase Component', () => {
       assert.deepEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz')
     })
 
-    it('should trim extraneous whitespace from the given seed phrase', () => {
+    it('should trim extraneous whitespace from the given seed phrase', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       })
@@ -44,7 +44,7 @@ describe('ImportWithSeedPhrase Component', () => {
       assert.deepEqual(parseSeedPhrase('  foo   bar   baz  '), 'foo bar baz')
     })
 
-    it('should return an empty string when given a whitespace-only string', () => {
+    it('should return an empty string when given a whitespace-only string', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       })
@@ -54,7 +54,7 @@ describe('ImportWithSeedPhrase Component', () => {
       assert.deepEqual(parseSeedPhrase('   '), '')
     })
 
-    it('should return an empty string when given a string with only symbols', () => {
+    it('should return an empty string when given a string with only symbols', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       })
@@ -64,7 +64,7 @@ describe('ImportWithSeedPhrase Component', () => {
       assert.deepEqual(parseSeedPhrase('$'), '')
     })
 
-    it('should return an empty string for both null and undefined', () => {
+    it('should return an empty string for both null and undefined', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       })

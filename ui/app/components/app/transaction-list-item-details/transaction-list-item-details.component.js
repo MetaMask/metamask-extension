@@ -35,6 +35,8 @@ export default class TransactionListItemDetails extends PureComponent {
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
+    senderNickname: PropTypes.string.isRequired,
+    recipientNickname: PropTypes.string.isRequired,
   }
 
   state = {
@@ -146,6 +148,8 @@ export default class TransactionListItemDetails extends PureComponent {
       rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
       isEarliestNonce,
+      senderNickname,
+      recipientNickname,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
@@ -212,6 +216,8 @@ export default class TransactionListItemDetails extends PureComponent {
               addressOnly
               recipientEns={recipientEns}
               recipientAddress={recipientAddress}
+              recipientNickname={recipientNickname}
+              senderName={senderNickname}
               senderAddress={senderAddress}
               onRecipientClick={() => {
                 this.context.metricsEvent({

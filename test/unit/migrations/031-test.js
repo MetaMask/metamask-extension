@@ -1,8 +1,8 @@
 import assert from 'assert'
 import migration31 from '../../../app/scripts/migrations/031'
 
-describe('migration #31', () => {
-  it('should set completedOnboarding to true if vault exists', done => {
+describe('migration #31', function () {
+  it('should set completedOnboarding to true if vault exists', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -31,7 +31,7 @@ describe('migration #31', () => {
       .catch(done)
   })
 
-  it('should set completedOnboarding to false if vault does not exist', done => {
+  it('should set completedOnboarding to false if vault does not exist', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {

@@ -12,9 +12,9 @@ proxyquire('../user-preferenced-currency-input.container.js', {
   },
 })
 
-describe('UserPreferencedCurrencyInput container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props', () => {
+describe('UserPreferencedCurrencyInput container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props', function () {
       const mockState = {
         metamask: {
           preferences: {
