@@ -257,7 +257,7 @@ export default class MetamaskController extends EventEmitter {
           const metamaskState = await this.getState()
           backEndMetaMetricsEvent(metamaskState, {
             customVariables: {
-              errorMessage: txMeta.simulationFails.reason,
+              errorMessage: txMeta.simulationFails?.reason,
             },
             eventOpts: {
               category: 'backend',
