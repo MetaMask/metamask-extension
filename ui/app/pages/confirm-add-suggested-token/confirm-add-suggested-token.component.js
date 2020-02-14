@@ -36,8 +36,8 @@ export default class ConfirmAddSuggestedToken extends Component {
     const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
-    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens);
-    const reusesName = this.checkNameReuse(pendingTokens, tokens);
+    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
+    const reusesName = this.checkNameReuse(pendingTokens, tokens)
 
     return (
       <div className="page-container">
@@ -49,14 +49,18 @@ export default class ConfirmAddSuggestedToken extends Component {
             { this.context.t('likeToAddTokens') }
           </div>
           { hasTokenDuplicates ?
+            (
               <div className="warning">
                 { this.context.t('knownTokenWarning') }
-              </div> : null
+              </div>
+            ) : null
           }
           { reusesName ?
+            (
               <div className="warning">
                 { this.context.t('reusedTokenNameWarning') }
-              </div> : null
+              </div>
+            ) : null
           }
         </div>
         <div className="page-container__content">
@@ -132,14 +136,14 @@ export default class ConfirmAddSuggestedToken extends Component {
     )
   }
 
-  checkTokenDuplicates(pendingTokens, tokens) {
+  checkTokenDuplicates (pendingTokens, tokens) {
     const pending = Object.keys(pendingTokens)
     const existing = tokens.map(token => token.address)
     const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
+      return existing.includes(proposed)
     })
 
-    return dupes.length > 0;
+    return dupes.length > 0
   }
 
   /**
@@ -148,15 +152,15 @@ export default class ConfirmAddSuggestedToken extends Component {
    * - Does not share an address with that same `tokens` member.
    * This should be flagged as possibly deceptive or confusing.
    */
-  checkNameReuse(pendingTokens, tokens) {
+  checkNameReuse (pendingTokens, tokens) {
     const duplicates = Object.keys(pendingTokens)
       .map((addr) => pendingTokens[addr])
       .filter((token) => {
         const dupes = tokens.filter(old => old.symbol === token.symbol)
-          .filter(old => old.address !== token.address);
-        return dupes.length > 0;
+          .filter(old => old.address !== token.address)
+        return dupes.length > 0
       })
-    return duplicates.length > 0;
+    return duplicates.length > 0
   }
 
 }
