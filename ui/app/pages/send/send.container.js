@@ -53,10 +53,6 @@ import {
   isValidENSAddress,
 } from '../../helpers/utils/util'
 
-import {
-  SEND_ROUTE,
-} from '../../helpers/constants/routes'
-
 function mapStateToProps (state) {
   return {
     addressBook: getAddressBook(state),
@@ -111,7 +107,7 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
-    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
+    scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
