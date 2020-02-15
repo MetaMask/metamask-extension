@@ -210,6 +210,7 @@ class TransactionController extends EventEmitter {
     }
 
     txUtils.validateTxParams(normalizedTxParams)
+
     // construct txMeta
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     let txMeta = this.txStateManager.generateTxMeta({

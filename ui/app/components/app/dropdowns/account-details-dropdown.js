@@ -19,7 +19,7 @@ function mapStateToProps (state) {
   return {
     selectedIdentity: getSelectedIdentity(state),
     network: state.metamask.network,
-    keyrings: state.metamask.keyrings,
+    keyrings: state.metamask.accountrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
   }
 }

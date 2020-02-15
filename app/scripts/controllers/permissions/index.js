@@ -9,8 +9,9 @@ const {
   getExternalRestrictedMethods,
   pluginRestrictedMethodDescriptions,
 } = require('./restrictedMethods')
+
 const createMethodMiddleware = require('./methodMiddleware')
-const createLoggerMiddleware = require('./loggerMiddleware')
+const createLoggerMiddleware = require('./permissionsLog')
 
 const {
   SAFE_METHODS, // methods that do not require any permissions to use
@@ -32,10 +33,12 @@ const pluginNotInstalledError = serializeError(
 class PermissionsController {
 
   constructor ({
-    openPopup, closePopup, keyringController, assetsController,
-    setupProvider, getApi, notifyDomain,
-    notifyAllDomains,
-  } = {}, restoredState = {}
+    openPopup, closePopup, pluginAccountsController,
+    pluginsController, assetsController, accountsController,
+    setupProvider, pluginRestrictedMethods, getApi, metamaskEventMethods,
+    notifyDomain, notifyAllDomains, addPrompt,
+  } = {},
+  restoredState = {}
   ) {
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
@@ -46,14 +49,15 @@ class PermissionsController {
     this.notifyAllDomains = notifyAllDomains
     this._openPopup = openPopup
     this._closePopup = closePopup
-    this.keyringController = keyringController
-    this.assetsController = assetsController
     this.setupProvider = setupProvider
-    this.externalRestrictedMethods = getExternalRestrictedMethods(
-      this, this.assetsController
-    )
+    this.pluginsController = pluginsController
+    this.pluginAccountsController = pluginAccountsController
+    this.assetsController = assetsController
+    this.accountsController = accountsController
+    this.externalRestrictedMethods = getExternalRestrictedMethods(this, addPrompt)
+    this.pluginRestrictedMethods = pluginRestrictedMethods
     this.getApi = getApi
-    this.pluginRestrictedMethods = {}
+    this.metamaskEventMethods = metamaskEventMethods
   }
 
   //=============================================================================
@@ -428,7 +432,7 @@ class PermissionsController {
     }
 
     // assert accounts exist
-    const allAccounts = await this.keyringController.getAccounts()
+    const allAccounts = await this.accountsController.getAccounts()
     accounts.forEach(acc => {
       if (!allAccounts.includes(acc)) {
         throw new Error(`Unknown account: ${acc}`)

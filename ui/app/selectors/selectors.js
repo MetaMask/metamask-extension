@@ -1,5 +1,6 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+import { RESOURCE_KEYS } from '../../../app/scripts/lib/enums'
 
 const abi = require('human-standard-token-abi')
 const {
@@ -65,6 +66,8 @@ const selectors = {
   getAddressBookEntry,
   getAddressBookEntryName,
   getFeatureFlags,
+  getResourceTokens,
+  getResourceAccounts,
 }
 
 module.exports = selectors
@@ -84,7 +87,7 @@ function getCurrentKeyring (state) {
 
   const simpleAddress = stripHexPrefix(identity.address).toLowerCase()
 
-  const keyring = state.metamask.keyrings.find((kr) => {
+  const keyring = state.metamask.accountrings.find((kr) => {
     return kr.accounts.includes(simpleAddress) ||
       kr.accounts.includes(identity.address)
   })
@@ -425,4 +428,14 @@ function getKnownMethodData (state, data) {
 
 function getFeatureFlags (state) {
   return state.metamask.featureFlags
+}
+
+function getResourceTokens (state) {
+  const resources = state.metamask[RESOURCE_KEYS.ASSETS]
+  return resources.filter(resource => resource.identifier)
+}
+
+function getResourceAccounts (state) {
+  const resources = state.metamask[RESOURCE_KEYS.PLUGIN_ACCOUNTS]
+  return resources.filter(resource => resource.address)
 }

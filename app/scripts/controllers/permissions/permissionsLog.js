@@ -63,11 +63,15 @@ module.exports = function createLoggerMiddleware ({
   }
 
   function commitActivity (entry) {
+
     const logs = store.getState()[logStoreKey]
-    if (logs.length > LOG_LIMIT - 2) {
-      logs.pop()
-    }
+
     logs.push(entry)
+
+    if (logs.length > LOG_LIMIT) {
+      logs.shift()
+    }
+
     store.updateState({ [logStoreKey]: logs })
   }
 

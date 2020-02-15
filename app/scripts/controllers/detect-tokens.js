@@ -23,6 +23,7 @@ class DetectTokensController {
     this.interval = interval
     this.network = network
     this.keyringMemStore = keyringMemStore
+    this.tokenAddresses = []
   }
 
   /**

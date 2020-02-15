@@ -80,6 +80,7 @@ NetworkDropdown.prototype.render = function () {
 
   return h(Dropdown, {
     isOpen,
+    onClick: () => {},
     onClickOutside: (event) => {
       const { classList } = event.target
       const isInClassList = className => classList.contains(className)

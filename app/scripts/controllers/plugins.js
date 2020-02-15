@@ -67,8 +67,6 @@ class PluginsController extends EventEmitter {
 
     this.setupProvider = opts.setupProvider
 
-    this._networkController = opts._networkController
-    this._blockTracker = opts._blockTracker
     this._getAccounts = opts._getAccounts
     this._removeAllPermissionsFor = opts._removeAllPermissionsFor
     this._getPermissionsFor = opts._getPermissionsFor
@@ -82,6 +80,7 @@ class PluginsController extends EventEmitter {
 
     this.rpcMessageHandlers = new Map()
     this.apiRequestHandlers = new Map()
+    this.accountMessageHandlers = new Map()
     this.metamaskEventListeners = new Map()
     this.adding = {}
   }
@@ -190,6 +189,7 @@ class PluginsController extends EventEmitter {
     this._removeAllMetaMaskEventListeners()
     this.rpcMessageHandlers.clear()
     this.apiRequestHandlers.clear()
+    this.accountMessageHandlers.clear()
     const pluginNames = Object.keys(this.store.getState().plugins)
     this.store.updateState({
       plugins: {},
@@ -595,10 +595,12 @@ class PluginsController extends EventEmitter {
 
     const registerRpcMessageHandler = this._registerRpcMessageHandler.bind(this, pluginName)
     const registerApiRequestHandler = this._registerApiRequestHandler.bind(this, pluginName)
+    const registerAccountMessageHandler = this._registerAccountMessageHandler.bind(this, pluginName)
 
     const apisToProvide = {
       onMetaMaskEvent,
       registerRpcMessageHandler,
+      registerAccountMessageHandler,
       registerApiRequestHandler,
       getAppKey: () => this.getAppKeyForDomain(pluginName),
       onUnlock: this.onUnlock,
@@ -612,6 +614,10 @@ class PluginsController extends EventEmitter {
 
   _registerRpcMessageHandler (pluginName, handler) {
     this.rpcMessageHandlers.set(pluginName, handler)
+  }
+
+  _registerAccountMessageHandler (pluginName, handler) {
+    this.accountMessageHandlers.set(pluginName, handler)
   }
 
   _registerApiRequestHandler (pluginName, handler) {

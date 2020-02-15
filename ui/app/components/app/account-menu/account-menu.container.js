@@ -17,7 +17,7 @@ import AccountMenu from './account-menu.component'
 
 function mapStateToProps (state) {
   const { metamask: {
-    selectedAddress, isAccountMenuOpen, keyrings, identities, isUnlocked,
+    selectedAddress, isAccountMenuOpen, accountrings, identities, isUnlocked,
   } } = state
 
   return {
@@ -26,7 +26,7 @@ function mapStateToProps (state) {
     identities,
     isAccountMenuOpen,
     isUnlocked,
-    keyrings,
+    keyrings: accountrings,
     selectedAddress,
   }
 }

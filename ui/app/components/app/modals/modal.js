@@ -32,6 +32,7 @@ import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-contai
 import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
 import EditApprovalPermission from './edit-approval-permission'
+import ShowPrompt from './show-prompt'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -414,6 +415,19 @@ const MODALS = {
 
   REJECT_TRANSACTIONS: {
     contents: h(RejectTransactions),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  SHOW_PROMPT: {
+    contents: h(ShowPrompt),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

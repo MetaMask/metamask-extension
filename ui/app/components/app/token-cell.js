@@ -69,7 +69,7 @@ TokenCell.prototype.render = function () {
   let currentTokenInFiat
   let formattedFiat = ''
 
-  const identifier = this.props.identifier || `${network}:${address}`
+  const identifier = this.props.identifier || address || `${network}:${address}`
   const pluginIconSeed = `${fromDomain}:${identifier}`
 
   if (contractExchangeRates[address]) {

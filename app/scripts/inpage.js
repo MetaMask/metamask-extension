@@ -66,3 +66,9 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 window.ethereum = proxiedInpageProvider
+
+inpageProvider._publicConfigStore.subscribe(function (state) {
+  if (state.onboardingcomplete) {
+    window.postMessage('onboardingcomplete', '*')
+  }
+})

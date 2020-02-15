@@ -39,14 +39,14 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps
-            - prep-scss
+      # - test-integration-flat-chrome:
+      #     requires:
+      #       - prep-deps
+      #       - prep-scss
+      # - test-integration-flat-firefox:
+      #     requires:
+      #       - prep-deps
+      #       - prep-scss
       - all-tests-pass:
           requires:
             - test-lint
@@ -56,8 +56,8 @@ workflows:
             - test-mozilla-lint
             # - test-e2e-chrome
             # - test-e2e-firefox
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
+            # - test-integration-flat-chrome
+            # - test-integration-flat-firefox
       - job-publish-prerelease:
           requires:
             - prep-deps

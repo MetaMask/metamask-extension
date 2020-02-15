@@ -191,7 +191,7 @@ export default class TransactionListItem extends PureComponent {
       firstPendingTransactionId,
       transactionTimeFeatureActive,
     } = this.props
-    const { txParams = {} } = transaction
+    const { txParams = {} } = primaryTransaction
     const { showTransactionDetails } = this.state
     const fromAddress = txParams.from
     const toAddress = tokenData

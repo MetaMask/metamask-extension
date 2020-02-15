@@ -15,6 +15,11 @@ const RINKEBY_CHAIN_ID = '0x4'
 const KOVAN_CHAIN_ID = '0x2a'
 const GOERLI_CHAIN_ID = '0x5'
 
+const RESOURCE_KEYS = {
+  ASSETS: 'resources:assets',
+  PLUGIN_ACCOUNTS: 'resources:pluginAccounts',
+}
+
 module.exports = {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -30,4 +35,5 @@ module.exports = {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
+  RESOURCE_KEYS,
 }

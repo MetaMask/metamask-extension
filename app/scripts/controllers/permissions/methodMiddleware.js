@@ -33,6 +33,13 @@ module.exports = function createRequestMiddleware ({
 
       // account-related methods
 
+      // intercepting eth_accounts requests for backwards compatibility,
+      // i.e. return an empty array instead of an error
+      case 'eth_accounts':
+
+        res.result = await getAccounts()
+        return
+
       // completely handled here
       case 'eth_requestAccounts':
 

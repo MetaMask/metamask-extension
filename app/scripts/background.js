@@ -1,4 +1,4 @@
-/**
+/*
  * @file The entry point for the web extension singleton process.
  */
 

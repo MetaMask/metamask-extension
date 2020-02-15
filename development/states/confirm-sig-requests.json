@@ -131,6 +131,23 @@
         ]
       }
     ],
+    "accountrings": [
+      {
+        "type": "HD Key Tree",
+        "accounts": [
+          "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+          "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb",
+          "0x2f8d4a878cfa04a6e60d46362f5644deab66572d"
+        ]
+      },
+      {
+        "type": "Simple Key Pair",
+        "accounts": [
+          "0xd85a4b6a394794842887b8284293d69163007bbb"
+        ]
+      }
+    ],
+    "resources": [],
     "selectedAddress": "0xd85a4b6a394794842887b8284293d69163007bbb",
     "currentCurrency": "USD",
     "provider": {

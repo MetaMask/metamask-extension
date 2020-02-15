@@ -65,15 +65,14 @@ const pluginRestrictedMethodDescriptions = {
   newUnapprovedTx: 'Be notified with details of your new transactions',
 }
 
-function getExternalRestrictedMethods (
-  permissionsController, assetsController
-) {
+function getExternalRestrictedMethods (permissionsController, addPrompt) {
+  const { assetsController, pluginAccountsController } = permissionsController
 
   return {
     'eth_accounts': {
       description: 'View Ethereum accounts',
       method: (_, res, __, end) => {
-        permissionsController.keyringController.getAccounts()
+        permissionsController.accountsController.getAccounts()
           .then((accounts) => {
             res.result = accounts
             end()
@@ -88,29 +87,14 @@ function getExternalRestrictedMethods (
     'wallet_manageAssets': {
       description: 'Display custom assets in your wallet.',
       method: (req, res, _next, end, engine) => {
-        const [method, opts] = req.params
-        const requestor = engine.domain
-        try {
-          switch (method) {
-            case 'addAsset':
-              res.result = assetsController.addAsset(requestor, opts)
-              return end()
-            case 'updateAsset':
-              res.result = assetsController.updateAsset(requestor, opts)
-              return end()
-            case 'removeAsset':
-              res.result = assetsController.removeAsset(requestor, opts)
-              return end()
-            default:
-              res.error = ethErrors.rpc.methodNotFound({
-                data: `${req.method}:${method}`,
-              })
-              end(res.error)
-          }
-        } catch (err) {
-          res.error = err
-          end(err)
-        }
+        assetsController.handleRpcRequest(req, res, _next, end, engine)
+      },
+    },
+
+    'wallet_manageIdentities': {
+      description: 'Provide accounts to your wallet and be responsible for their security.',
+      method: (req, res, _next, end, engine) => {
+        pluginAccountsController.handleRpcRequest(req, res, _next, end, engine)
       },
     },
 
@@ -126,9 +110,19 @@ function getExternalRestrictedMethods (
 
     'confirm': {
       description: 'Display confirmations for user action.',
-      method: (req, res, _next, end, engine) => {
+      method: async (req, res, _next, end, engine) => {
         const requestor = engine.domain
-        res.result = confirm(`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        res.result = await confirm(`MetaMask Confirmation\n${requestor} asks:\n${req.params[0]}`)
+        end()
+      },
+    },
+
+    'customPrompt': {
+      description: 'Prompt you for input via a custom popup.',
+      method: async (req, res, _next, end, engine) => {
+        const requestor = engine.domain
+        const result = await addPrompt(`MetaMask Notice: ${requestor}`, req.params[0])
+        res.result = result || true // JsonRpcEngine throws if no result or error
         end()
       },
     },

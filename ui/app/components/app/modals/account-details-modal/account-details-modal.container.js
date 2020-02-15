@@ -7,7 +7,7 @@ const mapStateToProps = (state) => {
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
-    keyrings: state.metamask.keyrings,
+    keyrings: state.metamask.accountrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
   }
 }

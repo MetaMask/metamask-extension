@@ -37,7 +37,7 @@ function mapStateToProps (state) {
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     accounts: selectors.getMetaMaskAccounts(state),
-    keyrings: state.metamask.keyrings,
+    keyrings: state.metamask.accountrings,
     selectedAddress: selectors.getSelectedAddress(state),
     selectedAccount: selectors.getSelectedAccount(state),
     selectedTokenAddress: state.metamask.selectedTokenAddress,
@@ -140,7 +140,7 @@ WalletView.prototype.render = function () {
   if (keyring) {
     type = keyring.type
     if (type !== 'HD Key Tree') {
-      if (type.toLowerCase().search('hardware') !== -1) {
+      if (type && type.toLowerCase().search('hardware') !== -1) {
         label = this.context.t('hardware')
       } else {
         label = this.context.t('imported')
