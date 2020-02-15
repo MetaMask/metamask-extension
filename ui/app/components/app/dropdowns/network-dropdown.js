@@ -39,7 +39,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.delRpcTarget(target))
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setNetworksTabAddMode: isInAddMode => dispatch(actions.setNetworksTabAddMode(isInAddMode)),
+    setNetworksTabAddMode: (isInAddMode) => dispatch(actions.setNetworksTabAddMode(isInAddMode)),
   }
 }
 
@@ -216,7 +216,7 @@ class NetworkDropdown extends Component {
         isOpen={isOpen}
         onClickOutside={(event) => {
           const { classList } = event.target
-          const isInClassList = className => classList.contains(className)
+          const isInClassList = (className) => classList.contains(className)
           const notToggleElementIndex = R.findIndex(isInClassList)(notToggleElementClassnames)
 
           if (notToggleElementIndex === -1) {

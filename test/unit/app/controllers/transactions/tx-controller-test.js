@@ -683,7 +683,7 @@ describe('Transaction Controller', function () {
       ])
 
       assert(txController.pendingTxTracker.getPendingTransactions().length, 2)
-      const states = txController.pendingTxTracker.getPendingTransactions().map(tx => tx.status)
+      const states = txController.pendingTxTracker.getPendingTransactions().map((tx) => tx.status)
       assert(states.includes('approved'), 'includes approved')
       assert(states.includes('submitted'), 'includes submitted')
     })

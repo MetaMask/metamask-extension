@@ -40,7 +40,7 @@ describe('Account Details Modal', function () {
     wrapper = shallow(
       <AccountDetailsModal.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

@@ -103,7 +103,7 @@ class MetaMetricsProvider extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const txData = txDataSelector(state) || {}
 
   return {

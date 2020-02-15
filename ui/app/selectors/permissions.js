@@ -16,7 +16,7 @@ const accountsPermissionSelector = createSelector(
     return (
       Array.isArray(domain.permissions)
         ? domain.permissions.find(
-          perm => perm.parentCapability === 'eth_accounts'
+          (perm) => perm.parentCapability === 'eth_accounts'
         )
         : {}
     )
@@ -35,7 +35,7 @@ export const getPermittedAccounts = createSelector(
     const accountsCaveat = (
       Array.isArray(accountsPermission.caveats) &&
       accountsPermission.caveats.find(
-        c => c.name === CAVEAT_NAMES.exposedAccounts
+        (c) => c.name === CAVEAT_NAMES.exposedAccounts
       )
     )
 

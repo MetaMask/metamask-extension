@@ -149,8 +149,8 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskAccounts,
   (keyrings, identities, accounts) => keyrings
     .reduce((list, keyring) => list.concat(keyring.accounts), [])
-    .filter(address => !!identities[address])
-    .map(address => ({ ...identities[address], ...accounts[address] }))
+    .filter((address) => !!identities[address])
+    .map((address) => ({ ...identities[address], ...accounts[address] }))
 )
 
 export function isBalanceCached (state) {
@@ -221,7 +221,7 @@ export function getAddressBook (state) {
 
 export function getAddressBookEntry (state, address) {
   const addressBook = getAddressBook(state)
-  const entry = addressBook.find(contact => contact.address === checksumAddress(address))
+  const entry = addressBook.find((contact) => contact.address === checksumAddress(address))
   return entry
 }
 
@@ -249,7 +249,7 @@ export function accountsWithSendEtherInfoSelector (state) {
 
 export function getAccountsWithLabels (state) {
   const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
-  const accountsWithLabels = accountsWithoutLabel.map(account => {
+  const accountsWithLabels = accountsWithoutLabel.map((account) => {
     const { address, name, balance } = account
     return {
       address,
@@ -397,7 +397,7 @@ export function getMetaMetricState (state) {
 
 export function getRpcPrefsForCurrentProvider (state) {
   const { frequentRpcListDetail, provider } = state.metamask
-  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
+  const selectRpcInfo = frequentRpcListDetail.find((rpcInfo) => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
 }
@@ -439,14 +439,14 @@ export function getAddressConnectedDomainMap (state) {
   const addressConnectedIconMap = {}
 
   if (domains) {
-    Object.keys(domains).forEach(domainKey => {
+    Object.keys(domains).forEach((domainKey) => {
       const { permissions } = domains[domainKey]
       const { icon, name } = domainMetadata[domainKey] || {}
-      permissions.forEach(perm => {
+      permissions.forEach((perm) => {
         const caveats = perm.caveats || []
-        const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
+        const exposedAccountCaveat = caveats.find((caveat) => caveat.name === 'exposedAccounts')
         if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
-          exposedAccountCaveat.value.forEach(address => {
+          exposedAccountCaveat.value.forEach((address) => {
             const nameToRender = name || domainKey
             addressConnectedIconMap[address] = addressConnectedIconMap[address]
               ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
@@ -464,11 +464,11 @@ export function getDomainToConnectedAddressMap (state) {
   const { domains = {} } = state.metamask
 
   const domainToConnectedAddressMap = mapObjectValues(domains, (_, { permissions }) => {
-    const ethAccountsPermissions = permissions.filter(permission => permission.parentCapability === 'eth_accounts')
-    const ethAccountsPermissionsExposedAccountAddresses = ethAccountsPermissions.map(permission => {
+    const ethAccountsPermissions = permissions.filter((permission) => permission.parentCapability === 'eth_accounts')
+    const ethAccountsPermissionsExposedAccountAddresses = ethAccountsPermissions.map((permission) => {
       const caveats = permission.caveats
-      const exposedAccountsCaveats = caveats.filter(caveat => caveat.name === 'exposedAccounts')
-      const exposedAccountsAddresses = exposedAccountsCaveats.map(caveat => caveat.value[0])
+      const exposedAccountsCaveats = caveats.filter((caveat) => caveat.name === 'exposedAccounts')
+      const exposedAccountsAddresses = exposedAccountsCaveats.map((caveat) => caveat.value[0])
       return exposedAccountsAddresses
     })
     const allAddressesConnectedToDomain = ethAccountsPermissionsExposedAccountAddresses.reduce((acc, arrayOfAddresses) => {
@@ -499,9 +499,9 @@ export function getRenderablePermissionsDomains (state) {
 
   const renderableDomains = Object.keys(domains).reduce((acc, domainKey) => {
     const { permissions } = domains[domainKey]
-    const permissionsWithCaveatsForSelectedAddress = permissions.filter(perm => {
+    const permissionsWithCaveatsForSelectedAddress = permissions.filter((perm) => {
       const caveats = perm.caveats || []
-      const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
+      const exposedAccountCaveat = caveats.find((caveat) => caveat.name === 'exposedAccounts')
       const exposedAccountCaveatValue = exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length
         ? exposedAccountCaveat.value[0]
         : {}
@@ -509,7 +509,7 @@ export function getRenderablePermissionsDomains (state) {
     })
 
     if (permissionsWithCaveatsForSelectedAddress.length) {
-      const permissionKeys = permissions.map(permission => permission.parentCapability)
+      const permissionKeys = permissions.map((permission) => permission.parentCapability)
       const {
         name,
         icon,
@@ -530,7 +530,7 @@ export function getRenderablePermissionsDomains (state) {
         icon,
         key: domainKey,
         lastConnectedTime,
-        permissionDescriptions: permissionKeys.map(permissionKey => permissionsDescriptions[permissionKey]),
+        permissionDescriptions: permissionKeys.map((permissionKey) => permissionsDescriptions[permissionKey]),
         extensionId,
       }]
     } else {

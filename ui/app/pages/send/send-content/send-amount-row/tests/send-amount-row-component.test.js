@@ -163,7 +163,7 @@ function shallowRenderSendAmountRow () {
       updateSendAmountError={updateSendAmountError}
       updateGas={() => {}}
     />
-  ), { context: { t: str => str + '_t' } })
+  ), { context: { t: (str) => str + '_t' } })
   const instance = wrapper.instance()
   const updateAmount = sinon.spy(instance, 'updateAmount')
   const updateGas = sinon.spy(instance, 'updateGas')

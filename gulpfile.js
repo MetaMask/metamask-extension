@@ -33,7 +33,7 @@ sass.compiler = require('node-sass')
 
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
@@ -77,38 +77,38 @@ const copyDevTaskNames = []
 
 createCopyTasks('locales', {
   source: './app/_locales/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/_locales`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/_locales`),
 })
 createCopyTasks('images', {
   source: './app/images/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images`),
 })
 createCopyTasks('contractImages', {
   source: './node_modules/eth-contract-metadata/images/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contract`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images/contract`),
 })
 createCopyTasks('fonts', {
   source: './app/fonts/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/fonts`),
 })
 createCopyTasks('vendor', {
   source: './app/vendor/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/vendor`),
 })
 createCopyTasks('css', {
   source: './ui/app/css/output/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 createCopyTasks('reload', {
   devOnly: true,
   source: './app/scripts/',
   pattern: '/chromereload.js',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 createCopyTasks('html', {
   source: './app/',
   pattern: '/*.html',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 
 // copy extension
@@ -116,7 +116,7 @@ createCopyTasks('html', {
 createCopyTasks('manifest', {
   source: './app/',
   pattern: '/*.json',
-  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
+  destinations: browserPlatforms.map((platform) => `./dist/${platform}`),
 })
 
 function createCopyTasks (label, opts) {
@@ -235,7 +235,7 @@ gulp.task('manifest:testing-local', function () {
     .pipe(jsoneditor(function (json) {
       json.background = {
         ...json.background,
-        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+        scripts: json.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
       }
       json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
       return json
@@ -254,7 +254,7 @@ gulp.task('manifest:dev', function () {
     .pipe(jsoneditor(function (json) {
       json.background = {
         ...json.background,
-        scripts: json.background.scripts.filter(scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
+        scripts: json.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
       }
       json.permissions = [...json.permissions, 'webRequestBlocking']
       return json
@@ -378,7 +378,7 @@ createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' 
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
 
 function createTasksForBuildJsDeps ({ key, filename }) {
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
+  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
 
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
@@ -400,10 +400,10 @@ function createTasksForBuildJsDeps ({ key, filename }) {
 function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, testing, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
-  const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
+  const nonInpageFiles = buildJsFiles.filter((file) => file !== 'inpage')
   const buildPhase1 = ['inpage']
   const buildPhase2 = nonInpageFiles
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
+  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
     sourceMapDir: '../sourcemaps',
@@ -430,9 +430,9 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   })
   // compose into larger task
   const subtasks = []
-  subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
+  subtasks.push(gulp.parallel(buildPhase1.map((file) => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) {
-    subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
+    subtasks.push(gulp.parallel(buildPhase2.map((file) => `${taskPrefix}:${file}`)))
   }
 
   gulp.task(taskPrefix, gulp.series(subtasks))

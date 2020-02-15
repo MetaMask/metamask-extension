@@ -11,9 +11,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setFirstTimeFlowType: type => dispatch(setFirstTimeFlowType(type)),
+    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
   }
 }
 

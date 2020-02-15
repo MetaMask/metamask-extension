@@ -18,7 +18,7 @@ describe('SendContent Component', function () {
       <SendContent
         showHexData
       />,
-      { context: { t: str => str + '_t' } }
+      { context: { t: (str) => str + '_t' } }
     )
   })
 

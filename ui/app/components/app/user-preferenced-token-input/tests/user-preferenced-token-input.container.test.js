@@ -5,7 +5,7 @@ let mapStateToProps
 
 proxyquire('../user-preferenced-token-input.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },

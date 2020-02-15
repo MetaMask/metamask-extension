@@ -40,31 +40,31 @@ const BIG_NUMBER_ETH_MULTIPLIER = new BigNumber('1')
 
 // Setter Maps
 const toBigNumber = {
-  hex: n => new BigNumber(stripHexPrefix(n), 16),
-  dec: n => new BigNumber(String(n), 10),
-  BN: n => new BigNumber(n.toString(16), 16),
+  hex: (n) => new BigNumber(stripHexPrefix(n), 16),
+  dec: (n) => new BigNumber(String(n), 10),
+  BN: (n) => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
-  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
-  GWEI: bigNumber => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
-  ETH: bigNumber => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
+  WEI: (bigNumber) => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
+  GWEI: (bigNumber) => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
+  ETH: (bigNumber) => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
-  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
-  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
-  ETH: bigNumber => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
+  WEI: (bigNumber) => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
+  GWEI: (bigNumber) => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
+  ETH: (bigNumber) => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
 }
 const baseChange = {
-  hex: n => n.toString(16),
-  dec: n => (new BigNumber(n)).toString(10),
-  BN: n => new BN(n.toString(16)),
+  hex: (n) => n.toString(16),
+  dec: (n) => (new BigNumber(n)).toString(10),
+  BN: (n) => new BN(n.toString(16)),
 }
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
 const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
-const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
+const invertConversionRate = (conversionRate) => () => new BigNumber(1.0).div(conversionRate)
 const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
 
 // Predicates

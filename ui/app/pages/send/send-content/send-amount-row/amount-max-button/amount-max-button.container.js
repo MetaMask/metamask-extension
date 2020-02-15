@@ -33,13 +33,13 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setAmountToMax: maxAmountDataObject => {
+    setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },
     clearMaxAmount: () => {
       dispatch(updateSendAmount('0'))
     },
-    setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
+    setMaxModeTo: (bool) => dispatch(setMaxModeTo(bool)),
   }
 }

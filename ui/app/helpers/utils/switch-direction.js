@@ -8,8 +8,8 @@ const switchDirection = async (direction) => {
   }
   let updatedLink
   Array.from(document.getElementsByTagName('link'))
-    .filter(link => link.rel === 'stylesheet')
-    .forEach(link => {
+    .filter((link) => link.rel === 'stylesheet')
+    .forEach((link) => {
       if (link.title === direction && link.disabled) {
         link.disabled = false
         updatedLink = link

@@ -90,7 +90,7 @@ export default class TransactionListItem extends PureComponent {
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
-  handleCancel = id => {
+  handleCancel = (id) => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { id: initialTransactionId },
@@ -108,7 +108,7 @@ export default class TransactionListItem extends PureComponent {
    * transaction.
    * @param {number} id - Transaction id
    */
-  handleRetry = id => {
+  handleRetry = (id) => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { txParams: { to } = {}, id: initialTransactionId },
@@ -134,7 +134,7 @@ export default class TransactionListItem extends PureComponent {
     })
 
     return fetchBasicGasAndTimeEstimates()
-      .then(basicEstimates => fetchGasEstimates(basicEstimates.blockTime))
+      .then((basicEstimates) => fetchGasEstimates(basicEstimates.blockTime))
       .then(retryTransaction(retryId, gasPrice))
   }
 

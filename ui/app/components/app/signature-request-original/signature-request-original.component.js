@@ -272,7 +272,7 @@ export default class SignatureRequestOriginal extends Component {
           type="default"
           large
           className="request-signature__footer__cancel-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await cancel(event)
             this.context.metricsEvent({
@@ -292,7 +292,7 @@ export default class SignatureRequestOriginal extends Component {
           type="secondary"
           large
           className="request-signature__footer__sign-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await sign(event)
             this.context.metricsEvent({

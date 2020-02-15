@@ -231,5 +231,5 @@ async function domIsReady () {
     return
   }
   // wait for load
-  return new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+  return new Promise((resolve) => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }

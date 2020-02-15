@@ -314,7 +314,7 @@ function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selecte
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    x => ('00' + x.toString(16)).slice(-2)
+    (x) => ('00' + x.toString(16)).slice(-2)
   ).join('')
 }
 
@@ -338,7 +338,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
 }
 
 function getToAddressForGasUpdate (...addresses) {
-  return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
+  return [...addresses, ''].find((str) => str !== undefined && str !== null).toLowerCase()
 }
 
 function removeLeadingZeroes (str) {

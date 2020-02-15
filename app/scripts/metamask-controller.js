@@ -697,11 +697,11 @@ export default class MetamaskController extends EventEmitter {
 
     // Filter ERC20 tokens
     const filteredAccountTokens = {}
-    Object.keys(accountTokens).forEach(address => {
+    Object.keys(accountTokens).forEach((address) => {
       const checksummedAddress = ethUtil.toChecksumAddress(address)
       filteredAccountTokens[checksummedAddress] = {}
       Object.keys(accountTokens[address]).forEach(
-        networkType => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
+        (networkType) => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
           accountTokens[address][networkType] :
           accountTokens[address][networkType].filter(({ address }) => {
             const tokenAddress = ethUtil.toChecksumAddress(address)
@@ -724,7 +724,7 @@ export default class MetamaskController extends EventEmitter {
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
+      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map((address) => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
@@ -734,7 +734,7 @@ export default class MetamaskController extends EventEmitter {
 
     let transactions = this.txController.store.getState().transactions
     // delete tx for other accounts that we're not importing
-    transactions = transactions.filter(tx => {
+    transactions = transactions.filter((tx) => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
       return (
         accounts.hd.includes(checksummedTxFrom)
@@ -762,7 +762,7 @@ export default class MetamaskController extends EventEmitter {
     const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
-    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter((keyring) => keyring.type !== 'Simple Key Pair')
     if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
@@ -855,7 +855,7 @@ export default class MetamaskController extends EventEmitter {
     // Merge with existing accounts
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts()
-    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())))]
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
   }
@@ -895,7 +895,7 @@ export default class MetamaskController extends EventEmitter {
     const keyState = await this.keyringController.addNewAccount(keyring)
     const newAccounts = await this.keyringController.getAccounts()
     this.preferencesController.setAddresses(newAccounts)
-    newAccounts.forEach(address => {
+    newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         // Set the account label to Trezor 1 /  Ledger 1, etc
         this.preferencesController.setAccountLabel(address, `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${parseInt(index, 10) + 1}`)
@@ -1580,7 +1580,7 @@ export default class MetamaskController extends EventEmitter {
       return
     }
 
-    Object.values(connections).forEach(conn => {
+    Object.values(connections).forEach((conn) => {
       conn.engine && conn.engine.emit('notification', payload)
     })
   }
@@ -1599,8 +1599,8 @@ export default class MetamaskController extends EventEmitter {
       return
     }
 
-    Object.values(this.connections).forEach(origin => {
-      Object.values(origin).forEach(conn => {
+    Object.values(this.connections).forEach((origin) => {
+      Object.values(origin).forEach((conn) => {
         conn.engine && conn.engine.emit('notification', payload)
       })
     })
@@ -1671,13 +1671,13 @@ export default class MetamaskController extends EventEmitter {
         return GWEI_BN
       }
       return block.gasPrices
-        .map(hexPrefix => hexPrefix.substr(2))
-        .map(hex => new BN(hex, 16))
+        .map((hexPrefix) => hexPrefix.substr(2))
+        .map((hex) => new BN(hex, 16))
         .sort((a, b) => {
           return a.gt(b) ? 1 : -1
         })[0]
     })
-      .map(number => number.div(GWEI_BN).toNumber())
+      .map((number) => number.div(GWEI_BN).toNumber())
 
     const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)

@@ -79,7 +79,7 @@ export default class DepositEtherModal extends Component {
   render () {
     const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
 
-    const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
+    const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
 
     return (

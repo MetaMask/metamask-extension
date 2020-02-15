@@ -11,7 +11,7 @@ describe('SendFromRow Component', function () {
       <SendFromRow
         from={ { address: 'mockAddress' } }
       />,
-      { context: { t: str => str + '_t' } }
+      { context: { t: (str) => str + '_t' } }
     )
 
     it('should render a SendRowWrapper component', function () {

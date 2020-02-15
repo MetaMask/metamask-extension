@@ -5,17 +5,17 @@ import DisconnectAccount from './disconnect-account.component'
 import { getCurrentAccountWithSendEtherInfo } from '../../../../selectors/selectors'
 import { removePermissionsFor } from '../../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ...(state.appState.modal.modalState.props || {}),
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     disconnectAccount: (domainKey, domain) => {
-      const permissionMethodNames = domain.permissions.map(perm => perm.parentCapability)
+      const permissionMethodNames = domain.permissions.map((perm) => perm.parentCapability)
       dispatch(removePermissionsFor({ [domainKey]: permissionMethodNames }))
     },
   }

@@ -25,7 +25,7 @@ describe('Settings Tab', function () {
     wrapper = mount(
       <SettingsTab.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

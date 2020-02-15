@@ -4,7 +4,7 @@ import CurrencyDisplay from './currency-display.component'
 import { getValueFromWeiHex, formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 import { GWEI } from '../../../helpers/constants/common'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
 
   return {

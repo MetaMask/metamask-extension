@@ -16,7 +16,7 @@ class Driver {
   }
 
   async delay (time) {
-    await new Promise(resolve => setTimeout(resolve, time))
+    await new Promise((resolve) => setTimeout(resolve, time))
   }
 
   async wait (condition, timeout = this.timeout) {
@@ -180,9 +180,9 @@ class Driver {
       'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
     ]
     const browserLogs = await this.driver.manage().logs().get('browser')
-    const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
-    const errorObjects = errorEntries.map(entry => entry.toJSON())
-    return errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+    const errorEntries = browserLogs.filter((entry) => !ignoredLogTypes.includes(entry.level.toString()))
+    const errorObjects = errorEntries.map((entry) => entry.toJSON())
+    return errorObjects.filter((entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message)))
   }
 }
 

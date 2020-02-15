@@ -9,7 +9,7 @@ function shallowRender (props = {}, context = {}) {
     <ConfirmSeedPhrase {...props} />,
     {
       context: {
-        t: str => str + '_t',
+        t: (str) => str + '_t',
         ...context,
       },
     }
@@ -152,8 +152,8 @@ describe('ConfirmSeedPhrase Component', function () {
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
 
-    originalSeed.forEach(seed => {
-      const seedIndex = sorted.findIndex(s => s === seed)
+    originalSeed.forEach((seed) => {
+      const seedIndex = sorted.findIndex((s) => s === seed)
       seeds.at(seedIndex).simulate('click')
     })
 
@@ -161,7 +161,7 @@ describe('ConfirmSeedPhrase Component', function () {
 
     root.find('.first-time-flow__button').simulate('click')
 
-    await (new Promise(resolve => setTimeout(resolve, 100)))
+    await (new Promise((resolve) => setTimeout(resolve, 100)))
 
     assert.deepEqual(metricsEventSpy.args[0][0], {
       eventOpts: {

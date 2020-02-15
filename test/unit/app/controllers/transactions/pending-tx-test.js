@@ -226,7 +226,7 @@ describe('PendingTransactionTracker', function () {
     it('should emit \'tx:warning\' if it encountered a real error', function (done) {
       pendingTxTracker.once('tx:warning', (txMeta, err) => {
         if (err.message === 'im some real error') {
-          const matchingTx = txList.find(tx => tx.id === txMeta.id)
+          const matchingTx = txList.find((tx) => tx.id === txMeta.id)
           matchingTx.resolve()
         } else {
           done(err)

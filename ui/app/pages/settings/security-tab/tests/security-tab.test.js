@@ -25,7 +25,7 @@ describe('Security Tab', function () {
     wrapper = mount(
       <SecurityTab.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
           metricsEvent: () => {},
         },
       }

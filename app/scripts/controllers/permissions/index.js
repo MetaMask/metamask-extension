@@ -197,7 +197,7 @@ export class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err => (err ? resolve() : reject(err)))
+        this.permissions.grantNewPermissions(origin, permissions, {}, (err) => (err ? resolve() : reject(err)))
       })
     } catch (err) {
       error = err
@@ -263,7 +263,7 @@ export class PermissionsController {
       }
 
       // caveat names are unique, and we will only construct this caveat here
-      ethAccounts.caveats = ethAccounts.caveats.filter(c => (
+      ethAccounts.caveats = ethAccounts.caveats.filter((c) => (
         c.name !== CAVEAT_NAMES.exposedAccounts
       ))
 
@@ -291,7 +291,7 @@ export class PermissionsController {
 
     // assert accounts exist
     const allAccounts = await this.getKeyringAccounts()
-    accounts.forEach(acc => {
+    accounts.forEach((acc) => {
       if (!allAccounts.includes(acc)) {
         throw new Error(`Unknown account: ${acc}`)
       }
@@ -331,7 +331,7 @@ export class PermissionsController {
 
       this.permissions.removePermissionsFor(
         origin,
-        perms.map(methodName => {
+        perms.map((methodName) => {
 
           if (methodName === 'eth_accounts') {
             this.notifyDomain(
@@ -366,7 +366,7 @@ export class PermissionsController {
     }
 
     const newPermittedAccounts = [account].concat(
-      permittedAccounts.filter(_account => _account !== account)
+      permittedAccounts.filter((_account) => _account !== account)
     )
 
     // update permitted accounts to ensure that accounts are returned

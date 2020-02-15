@@ -51,11 +51,11 @@ export default class MobileSyncPage extends Component {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
-      .then(seedWords => {
+      .then((seedWords) => {
         this.startKeysGeneration()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
       })
-      .catch(error => this.setState({ error: error.message }))
+      .catch((error) => this.setState({ error: error.message }))
   }
 
   startKeysGeneration () {
@@ -288,7 +288,7 @@ export default class MobileSyncPage extends Component {
     const { t } = this.context
 
     return (
-      <form onSubmit={event => this.handleSubmit(event)}>
+      <form onSubmit={(event) => this.handleSubmit(event)}>
         <label className="input-label" htmlFor="password-box">
           {t('enterPasswordContinue')}
         </label>
@@ -298,7 +298,7 @@ export default class MobileSyncPage extends Component {
             placeholder={t('password')}
             id="password-box"
             value={this.state.password}
-            onChange={event => this.setState({ password: event.target.value })}
+            onChange={(event) => this.setState({ password: event.target.value })}
             className={classnames('form-control', {
               'form-control--error': this.state.error,
             })}
@@ -369,7 +369,7 @@ export default class MobileSyncPage extends Component {
           type="secondary"
           large
           className="new-account-create-form__button"
-          onClick={event => this.handleSubmit(event)}
+          onClick={(event) => this.handleSubmit(event)}
           disabled={password === ''}
         >
           {t('next')}

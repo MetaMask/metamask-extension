@@ -18,7 +18,7 @@ export default function ReadOnlyInput (props) {
         className={inputClass}
         value={value}
         readOnly
-        onFocus={event => event.target.select()}
+        onFocus={(event) => event.target.select()}
         onClick={onClick}
       />
     </div>

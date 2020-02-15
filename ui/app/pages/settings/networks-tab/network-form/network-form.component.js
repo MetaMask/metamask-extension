@@ -212,7 +212,7 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  isValidWhenAppended = url => {
+  isValidWhenAppended = (url) => {
     const appendedRpc = `http://${url}`
     return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
   }
@@ -253,7 +253,7 @@ export default class NetworkForm extends PureComponent {
       errors,
     } = this.state
 
-    const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some(x => x) || !rpcUrl
+    const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some((x) => x) || !rpcUrl
     const deletable = !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly
 
     return (

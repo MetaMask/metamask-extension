@@ -29,7 +29,7 @@ describe('Send Component', function () {
   const utilsMethodStubs = {
     getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
     getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
-    doesAmountErrorRequireUpdate: sinon.stub().callsFake(obj => obj.balance !== obj.prevBalance),
+    doesAmountErrorRequireUpdate: sinon.stub().callsFake((obj) => obj.balance !== obj.prevBalance),
   }
 
   const SendTransactionScreen = proxyquire('../send.component.js', {

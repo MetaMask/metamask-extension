@@ -27,7 +27,7 @@ describe('fetchWithTimeout', function () {
     })
 
     try {
-      await fetch('https://api.infura.io/moon').then(r => r.json())
+      await fetch('https://api.infura.io/moon').then((r) => r.json())
       assert.fail('Request should throw')
     } catch (e) {
       assert.ok(e)
@@ -45,7 +45,7 @@ describe('fetchWithTimeout', function () {
     })
 
     try {
-      await fetch('https://api.infura.io/moon').then(r => r.json())
+      await fetch('https://api.infura.io/moon').then((r) => r.json())
       assert.fail('Request should be aborted')
     } catch (e) {
       assert.deepEqual(e.message, 'Aborted')

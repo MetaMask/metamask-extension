@@ -7,7 +7,7 @@ import CancelTransactionGasFee from '../cancel-transaction-gas-fee'
 import Modal from '../../../modal'
 
 describe('CancelTransaction Component', function () {
-  const t = key => key
+  const t = (key) => key
 
   it('should render a CancelTransaction modal', function () {
     const wrapper = shallow(
