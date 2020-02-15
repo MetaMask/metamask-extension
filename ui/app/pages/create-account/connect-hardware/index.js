@@ -22,7 +22,7 @@ class ConnectHardwareForm extends Component {
     const { accounts } = nextProps
     const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase()
-      const balanceValue = accounts[normalizedAddress] && accounts[normalizedAddress].balance || null
+      const balanceValue = (accounts[normalizedAddress] && accounts[normalizedAddress].balance) || null
       a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
       return a
     })
@@ -103,7 +103,7 @@ class ConnectHardwareForm extends Component {
           // Map accounts with balances
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
-            const balanceValue = this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance || null
+            const balanceValue = (this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance) || null
             account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
             return account
           })

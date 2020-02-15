@@ -72,9 +72,9 @@ export default class PermissionConnect extends Component {
     const { originName, page } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && page !== null) {
-      const permissionDataForDomain = domains && domains[originName] || {}
+      const permissionDataForDomain = (domains && domains[originName]) || {}
       const permissionsForDomain = permissionDataForDomain.permissions || []
-      const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
+      const prevPermissionDataForDomain = (prevProps.domains && prevProps.domains[originName]) || {}
       const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
       const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
       if (addedAPermission) {

@@ -195,7 +195,7 @@ export default class TransactionListItem extends PureComponent {
     const { showTransactionDetails } = this.state
     const fromAddress = txParams.from
     const toAddress = tokenData
-      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+      ? (tokenData.params && tokenData.params[0] && tokenData.params[0].value) || txParams.to
       : txParams.to
 
     const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN

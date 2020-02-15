@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
-      blockExplorerUrl: rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl || '',
+      blockExplorerUrl: (rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl) || '',
     }
   })
 
@@ -43,7 +43,7 @@ const mapStateToProps = (state) => {
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
     selectedNetwork = networksToRender.find((network) => {
-      return network.rpcUrl === provider.rpcTarget || network.providerType !== 'rpc' && network.providerType === provider.type
+      return network.rpcUrl === provider.rpcTarget || (network.providerType !== 'rpc' && network.providerType === provider.type)
     }) || {}
     networkDefaultedToProvider = true
   }

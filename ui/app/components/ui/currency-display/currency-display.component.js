@@ -23,7 +23,7 @@ export default class CurrencyDisplay extends PureComponent {
       <div
         className={classnames('currency-display-component', className)}
         style={style}
-        title={!hideTitle && title || null}
+        title={(!hideTitle && title) || null}
       >
         { prefixComponent }
         <span className="currency-display-component__text">{ text }</span>

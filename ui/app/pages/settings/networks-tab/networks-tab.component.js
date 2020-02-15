@@ -195,7 +195,7 @@ export default class NetworksTab extends PureComponent {
                 rpcUrls={networksToRender.map((network) => network.rpcUrl)}
                 setRpcTarget={setRpcTarget}
                 editRpc={editRpc}
-                networkName={label || labelKey && t(labelKey) || ''}
+                networkName={label || (labelKey && t(labelKey)) || ''}
                 rpcUrl={rpcUrl}
                 chainId={chainId}
                 ticker={ticker}
