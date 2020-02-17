@@ -67,7 +67,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 
 // setup conflux web
 
-if (typeof window.web3 !== 'undefined') {
+if (typeof window.confluxJS !== 'undefined') {
   throw new Error(`ConfluxPortal detected another js-conflux-sdk.
      ConfluxPortal will not work reliably with another js-conflux-sdk extension.
      This usually happens if you have two MetaMasks installed,
