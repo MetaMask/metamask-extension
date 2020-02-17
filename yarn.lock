@@ -3064,10 +3064,10 @@
     tmp "^0.1.0"
     unzip-stream "^0.3.0"
 
-"@yqrashawn/conflux-portal-inpage-provider@^4.0.6":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.6.tgz#3c48075153d8665aefbb7d621e771ff03d429020"
-  integrity sha512-CbqX93qkdXrVLjoWbgsOUsQQBion/FLckygm9dTcZ89FXOmr1yHnsZRv1ds26jye35isAX2eNrtLYhPTftpEwQ==
+"@yqrashawn/conflux-portal-inpage-provider@^4.0.7":
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-portal-inpage-provider/-/conflux-portal-inpage-provider-4.0.7.tgz#47e2fa969e0d7141ba38ca473be079e09c5b739b"
+  integrity sha512-duFaJHCVNy5/7Kho3D3LxLKnElLIpZAdo/4oH+31MZhkUXgzLeIF+bi3uDZtAsB80lb+d2rAo6CB1Gzrb1Ow3Q==
   dependencies:
     eth-json-rpc-errors "^2.0.0"
     fast-deep-equal "^2.0.1"
