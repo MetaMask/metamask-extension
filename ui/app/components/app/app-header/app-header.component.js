@@ -103,7 +103,7 @@ export default class AppHeader extends PureComponent {
                   <NetworkIndicator
                     network={network}
                     provider={provider}
-                    onClick={event => this.handleNetworkIndicatorClick(event)}
+                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
                     disabled={disabled}
                   />
                 </div>

@@ -24,7 +24,7 @@ describe('migration #31', function () {
     }
 
     migration31.migrate(oldStorage)
-      .then(newStorage => {
+      .then((newStorage) => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, true)
         done()
       })
@@ -47,7 +47,7 @@ describe('migration #31', function () {
     }
 
     migration31.migrate(oldStorage)
-      .then(newStorage => {
+      .then((newStorage) => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, false)
         done()
       })

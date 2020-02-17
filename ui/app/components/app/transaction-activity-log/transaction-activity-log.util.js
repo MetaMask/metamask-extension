@@ -86,7 +86,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
     } else if (Array.isArray(base)) {
       const events = []
 
-      base.forEach(entry => {
+      base.forEach((entry) => {
         const { op, path, value, timestamp: entryTimestamp } = entry
         // Not all sub-entries in a history entry have a timestamp. If the sub-entry does not have a
         // timestamp, the first sub-entry in a history entry should.
@@ -194,7 +194,7 @@ function filterSortedActivities (activities) {
   )))
   let addedDroppedActivity = false
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     if (activity.eventKey === TRANSACTION_DROPPED_EVENT) {
       if (!hasConfirmedActivity && !addedDroppedActivity) {
         filteredActivities.push(activity)

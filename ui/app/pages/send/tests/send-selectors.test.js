@@ -44,7 +44,7 @@ describe('send selectors', function () {
   beforeEach(function () {
     global.eth = {
       contract: sinon.stub().returns({
-        at: address => 'mockAt:' + address,
+        at: (address) => 'mockAt:' + address,
       }),
     }
   })

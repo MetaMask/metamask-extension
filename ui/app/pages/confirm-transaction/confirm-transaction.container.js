@@ -53,9 +53,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setTransactionToConfirm: transactionId => {
+    setTransactionToConfirm: (transactionId) => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),

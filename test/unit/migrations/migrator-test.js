@@ -44,7 +44,7 @@ const firstTimeState = {
 describe('migrations', function () {
   describe('liveMigrations require list', function () {
     it('should include all the migrations', async function () {
-      const fileNames = await pify(cb => fs.readdir('./app/scripts/migrations/', cb))()
+      const fileNames = await pify((cb) => fs.readdir('./app/scripts/migrations/', cb))()
       const migrationNumbers = fileNames.reduce((agg, filename) => {
         const name = filename.split('.')[0]
         if (/^\d+$/.test(name)) {

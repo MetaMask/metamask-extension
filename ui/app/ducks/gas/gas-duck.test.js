@@ -66,12 +66,12 @@ describe('Gas Duck', function () {
     { expectedTime: 1.1, expectedWait: 0.6, gasprice: 19.9, somethingElse: 'foobar' },
     { expectedTime: 1, expectedWait: 0.5, gasprice: 20, somethingElse: 'foobar' },
   ]
-  const fakeFetch = (url) => new Promise(resolve => {
+  const fakeFetch = (url) => new Promise((resolve) => {
     const dataToResolve = url.match(/ethgasAPI/)
       ? mockEthGasApiResponse
       : mockPredictTableResponse
     resolve({
-      json: () => new Promise(resolve => resolve(dataToResolve)),
+      json: () => new Promise((resolve) => resolve(dataToResolve)),
     })
   })
 
@@ -648,7 +648,7 @@ describe('Gas Duck', function () {
       const { type: thirdDispatchCallType, value: priceAndTimeEstimateResult } = mockDistpatch.getCall(2).args[0]
       assert.equal(thirdDispatchCallType, SET_PRICE_AND_TIME_ESTIMATES)
       assert(priceAndTimeEstimateResult.length < mockPredictTableResponse.length * 3 - 2)
-      assert(!priceAndTimeEstimateResult.find(d => d.expectedTime > 100))
+      assert(!priceAndTimeEstimateResult.find((d) => d.expectedTime > 100))
       assert(!priceAndTimeEstimateResult.find((d, _, a) => a[a + 1] && d.expectedTime > a[a + 1].expectedTime))
       assert(!priceAndTimeEstimateResult.find((d, _, a) => a[a + 1] && d.gasprice > a[a + 1].gasprice))
 

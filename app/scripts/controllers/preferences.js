@@ -408,7 +408,7 @@ class PreferencesController {
 
     const { lastSelectedAddressByOrigin } = this.store.getState()
 
-    origins.forEach(origin => {
+    origins.forEach((origin) => {
       delete lastSelectedAddressByOrigin[origin]
     })
     this.store.updateState({ lastSelectedAddressByOrigin })
@@ -472,7 +472,7 @@ class PreferencesController {
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
+    const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
     delete assetImages[rawAddress]
     this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
@@ -758,7 +758,7 @@ class PreferencesController {
     const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
     return this.openPopup().then(() => {
-      const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
+      const tokenAddresses = this.getTokens().filter((token) => token.address === normalizeAddress(rawAddress))
       return tokenAddresses.length > 0
     })
   }

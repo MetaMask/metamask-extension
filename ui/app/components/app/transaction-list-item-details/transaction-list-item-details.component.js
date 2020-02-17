@@ -58,14 +58,14 @@ export default class TransactionListItemDetails extends PureComponent {
     global.platform.openWindow({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
   }
 
-  handleCancel = event => {
+  handleCancel = (event) => {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
 
     event.stopPropagation()
     onCancel(id)
   }
 
-  handleRetry = event => {
+  handleRetry = (event) => {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
 
     event.stopPropagation()

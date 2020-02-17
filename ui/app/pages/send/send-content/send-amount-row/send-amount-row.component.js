@@ -92,7 +92,7 @@ export default class SendAmountRow extends Component {
 
     return (
       <Component
-        onChange={newAmount => {
+        onChange={(newAmount) => {
           this.validateAmount(newAmount)
           this.updateGas(newAmount)
           this.updateAmount(newAmount)

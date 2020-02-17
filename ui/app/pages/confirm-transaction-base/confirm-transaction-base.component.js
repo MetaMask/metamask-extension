@@ -247,8 +247,8 @@ export default class ConfirmTransactionBase extends Component {
             {advancedInlineGasShown
               ? (
                 <AdvancedGasInputs
-                  updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                  updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                  updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                  updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
                   customGasPrice={customGas.gasPrice}
                   customGasLimit={customGas.gasLimit}
                   insufficientBalance={insufficientBalance}
@@ -491,7 +491,7 @@ export default class ConfirmTransactionBase extends Component {
                   updateCustomNonce('')
                 })
               })
-              .catch(error => {
+              .catch((error) => {
                 this.setState({
                   submitting: false,
                   submitError: error.message,

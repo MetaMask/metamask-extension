@@ -62,10 +62,10 @@ export default function withTokenTracker (WrappedComponent) {
 
       this.tracker.updateBalances()
         .then(() => this.updateBalance(this.tracker.serialize()))
-        .catch(error => this.setState({ error: error.message }))
+        .catch((error) => this.setState({ error: error.message }))
     }
 
-    setError = error => {
+    setError = (error) => {
       this.setState({ error })
     }
 

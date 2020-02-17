@@ -16,7 +16,7 @@ class AppStateController {
     }, initState))
     this.timer = null
 
-    preferencesStore.subscribe(state => {
+    preferencesStore.subscribe((state) => {
       this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
     })
 

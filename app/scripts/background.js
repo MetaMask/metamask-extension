@@ -389,7 +389,7 @@ function setupController (initState, initLangCode) {
         const url = new URL(remotePort.sender.url)
         const origin = url.hostname
 
-        remotePort.onMessage.addListener(msg => {
+        remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
             requestAccountTabIds[origin] = tabId
           }
@@ -446,8 +446,8 @@ function setupController (initState, initLangCode) {
  * Opens the browser popup for user confirmation
  */
 function triggerUi () {
-  extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+  extension.tabs.query({ active: true }, (tabs) => {
+    const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
       notificationIsOpen = true

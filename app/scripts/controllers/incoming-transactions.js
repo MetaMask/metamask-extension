@@ -165,7 +165,7 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
-    newTxs.forEach(tx => {
+    newTxs.forEach((tx) => {
       newIncomingTransactions[tx.hash] = tx
     })
 
@@ -222,7 +222,7 @@ class IncomingTransactionsController {
         }
       })
 
-      const incomingTxs = remoteTxs.filter(tx => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
+      const incomingTxs = remoteTxs.filter((tx) => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber = null

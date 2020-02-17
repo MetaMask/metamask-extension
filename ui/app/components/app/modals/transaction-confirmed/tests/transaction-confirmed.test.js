@@ -13,7 +13,7 @@ describe('Transaction Confirmed', function () {
     const wrapper = mount(
       <TransactionConfirmed.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

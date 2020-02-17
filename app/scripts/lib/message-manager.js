@@ -61,7 +61,7 @@ export default class MessageManager extends EventEmitter {
    *
    */
   getUnapprovedMsgs () {
-    return this.messages.filter(msg => msg.status === 'unapproved')
+    return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg; return result
       }, {})
@@ -145,7 +145,7 @@ export default class MessageManager extends EventEmitter {
    *
    */
   getMsg (msgId) {
-    return this.messages.find(msg => msg.id === msgId)
+    return this.messages.find((msg) => msg.id === msgId)
   }
 
   /**

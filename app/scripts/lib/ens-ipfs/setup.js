@@ -9,7 +9,7 @@ export default setupEnsIpfsResolver
 function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
 
   // install listener
-  const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
+  const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`)
   extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame'] })
 
   // return api object

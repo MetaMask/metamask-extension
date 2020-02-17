@@ -38,7 +38,7 @@ describe('Using MetaMask with an existing account', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map(err => err.message)
+        const errorReports = errors.map((err) => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
         console.error(new Error(errorMessage))
       }
@@ -116,7 +116,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const extension = windowHandles[0]
       const popup = await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles)
-      const dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+      const dapp = windowHandles.find((handle) => handle !== extension && handle !== popup)
 
       await driver.delay(regularDelayMs)
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))

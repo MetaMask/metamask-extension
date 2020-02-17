@@ -40,8 +40,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
-    updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
+    setMaxModeTo: (bool) => dispatch(setMaxModeTo(bool)),
+    updateSendAmount: (newAmount) => dispatch(updateSendAmount(newAmount)),
     updateGasFeeError: (amountDataObject) => {
       dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
     },

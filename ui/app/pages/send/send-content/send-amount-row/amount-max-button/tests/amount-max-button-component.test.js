@@ -32,7 +32,7 @@ describe('AmountMaxButton Component', function () {
       />
     ), {
       context: {
-        t: str => str + '_t',
+        t: (str) => str + '_t',
         metricsEvent: () => {},
       },
     })

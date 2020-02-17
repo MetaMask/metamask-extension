@@ -9,7 +9,7 @@ const getPreferredLocales = extension.i18n ? promisify(
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
-allLocales.forEach(locale => {
+allLocales.forEach((locale) => {
   if (locale && locale.code) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] = locale.code
   }
@@ -39,8 +39,8 @@ async function getFirstPreferredLangCode () {
   }
 
   const firstPreferredLangCode = userPreferredLocaleCodes
-    .map(code => code.toLowerCase().replace('_', '-'))
-    .find(code => existingLocaleCodes.hasOwnProperty(code))
+    .map((code) => code.toLowerCase().replace('_', '-'))
+    .find((code) => existingLocaleCodes.hasOwnProperty(code))
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }

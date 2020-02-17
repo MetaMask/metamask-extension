@@ -20,7 +20,7 @@ class ConnectHardwareForm extends Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     const { accounts } = nextProps
-    const newAccounts = this.state.accounts.map(a => {
+    const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase()
       const balanceValue = accounts[normalizedAddress] && accounts[normalizedAddress].balance || null
       a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
@@ -35,7 +35,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async device => {
+    ['trezor', 'ledger'].forEach(async (device) => {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({ unlocked: true })
@@ -69,7 +69,7 @@ class ConnectHardwareForm extends Component {
   showTemporaryAlert () {
     this.props.showAlert(this.context.t('hardwareWalletConnected'))
     // Autohide the alert after 5 seconds
-    setTimeout(_ => {
+    setTimeout((_) => {
       this.props.hideAlert()
     }, 5000)
   }
@@ -77,7 +77,7 @@ class ConnectHardwareForm extends Component {
   getPage = (device, page, hdPath) => {
     this.props
       .connectHardware(device, page, hdPath)
-      .then(accounts => {
+      .then((accounts) => {
         if (accounts.length) {
 
           // If we just loaded the accounts for the first time
@@ -95,13 +95,13 @@ class ConnectHardwareForm extends Component {
               }
             })
           // If the page doesn't contain the selected account, let's deselect it
-          } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
+          } else if (!accounts.filter((a) => a.index.toString() === this.state.selectedAccount).length) {
             newState.selectedAccount = null
           }
 
 
           // Map accounts with balances
-          newState.accounts = accounts.map(account => {
+          newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
             const balanceValue = this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance || null
             account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
@@ -111,7 +111,7 @@ class ConnectHardwareForm extends Component {
           this.setState(newState)
         }
       })
-      .catch(e => {
+      .catch((e) => {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
@@ -123,14 +123,14 @@ class ConnectHardwareForm extends Component {
 
   onForgetDevice = (device) => {
     this.props.forgetDevice(device)
-      .then(_ => {
+      .then((_) => {
         this.setState({
           error: null,
           selectedAccount: null,
           accounts: [],
           unlocked: false,
         })
-      }).catch(e => {
+      }).catch((e) => {
         this.setState({ error: e.message })
       })
   }
@@ -142,7 +142,7 @@ class ConnectHardwareForm extends Component {
     }
 
     this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
-      .then(_ => {
+      .then((_) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Accounts',
@@ -151,7 +151,7 @@ class ConnectHardwareForm extends Component {
           },
         })
         this.props.history.push(DEFAULT_ROUTE)
-      }).catch(e => {
+      }).catch((e) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Accounts',
@@ -236,7 +236,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { network, selectedAddress },
   } = state
@@ -253,7 +253,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }))

@@ -26,8 +26,8 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   const createContext = () => ({
     context: {
       router,
-      t: str => str,
-      tOrKey: str => str,
+      t: (str) => str,
+      tOrKey: (str) => str,
       metricsEvent: () => {},
       store,
     },

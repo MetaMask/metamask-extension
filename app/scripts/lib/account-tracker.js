@@ -57,7 +57,7 @@ class AccountTracker {
     this._blockTracker = opts.blockTracker
     // blockTracker.currentBlock may be null
     this._currentBlockNumber = this._blockTracker.getCurrentBlock()
-    this._blockTracker.once('latest', blockNumber => {
+    this._blockTracker.once('latest', (blockNumber) => {
       this._currentBlockNumber = blockNumber
     })
     // bind function for easier listener syntax
@@ -124,7 +124,7 @@ class AccountTracker {
   addAccounts (addresses) {
     const accounts = this.store.getState().accounts
     // add initial state for addresses
-    addresses.forEach(address => {
+    addresses.forEach((address) => {
       accounts[address] = {}
     })
     // save accounts state
@@ -145,7 +145,7 @@ class AccountTracker {
   removeAccount (addresses) {
     const accounts = this.store.getState().accounts
     // remove each state object
-    addresses.forEach(address => {
+    addresses.forEach((address) => {
       delete accounts[address]
     })
     // save accounts state

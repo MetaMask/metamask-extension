@@ -5,13 +5,13 @@ import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
 describe('TransactionAction Component', function () {
-  const t = key => key
+  const t = (key) => key
 
 
   describe('Outgoing transaction', function () {
     beforeEach(function () {
       global.eth = {
-        getCode: sinon.stub().callsFake(address => {
+        getCode: sinon.stub().callsFake((address) => {
           const code = address === 'approveAddress' ? 'contract' : '0x'
           return Promise.resolve(code)
         }),

@@ -27,7 +27,7 @@ describe('Advanced Gas Inputs', function () {
         {...props}
       />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       })
   })

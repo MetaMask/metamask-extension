@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
   const selectedAddress = getSelectedAddress(state)
   const selectedAccountBalance = accounts[selectedAddress].balance
   const isDeposit = transactionCategory === 'incoming'
-  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
+  const selectRpcInfo = frequentRpcListDetail.find((rpcInfo) => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs } = selectRpcInfo || {}
 
   const hasEnoughCancelGas = primaryTransaction.txParams && isBalanceSufficient({
@@ -58,12 +58,12 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
-    setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
-    getContractMethodData: methodData => dispatch(getContractMethodData(methodData)),
+    setSelectedToken: (tokenAddress) => dispatch(setSelectedToken(tokenAddress)),
+    getContractMethodData: (methodData) => dispatch(getContractMethodData(methodData)),
     retryTransaction: (transaction, gasPrice) => {
       dispatch(setCustomGasPriceForRetry(gasPrice || transaction.txParams.gasPrice))
       dispatch(setCustomGasLimit(transaction.txParams.gas))
@@ -100,7 +100,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     primaryTransaction,
     retryTransaction: (transactionId, gasPrice) => {
       const { transactionGroup: { transactions = [] } } = ownProps
-      const transaction = transactions.find(tx => tx.id === transactionId) || {}
+      const transaction = transactions.find((tx) => tx.id === transactionId) || {}
       const increasedGasPrice = increaseLastGasPrice(gasPrice)
       retryTransaction(transaction, increasedGasPrice)
     },

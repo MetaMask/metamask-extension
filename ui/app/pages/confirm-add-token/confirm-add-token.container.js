@@ -10,9 +10,9 @@ const mapStateToProps = ({ metamask }) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTokens: tokens => dispatch(addTokens(tokens)),
+    addTokens: (tokens) => dispatch(addTokens(tokens)),
     clearPendingTokens: () => dispatch(clearPendingTokens()),
   }
 }

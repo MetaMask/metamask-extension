@@ -280,7 +280,7 @@ export default function reduceMetamask (state = {}, action) {
     case actions.UPDATE_TRANSACTION_PARAMS:
       const { id: txId, value } = action
       let { selectedAddressTxList } = metamaskState
-      selectedAddressTxList = selectedAddressTxList.map(tx => {
+      selectedAddressTxList = selectedAddressTxList.map((tx) => {
         if (tx.id === txId) {
           const newTx = Object.assign({}, tx)
           newTx.txParams = value

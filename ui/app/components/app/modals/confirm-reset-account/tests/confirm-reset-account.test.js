@@ -16,7 +16,7 @@ describe('Confirm Reset Account', function () {
     wrapper = mount(
       <ConfirmResetAccount.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

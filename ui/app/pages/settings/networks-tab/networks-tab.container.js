@@ -12,9 +12,9 @@ import {
 } from '../../../store/actions'
 import { defaultNetworksData } from './networks-tab.constants'
 
-const defaultNetworks = defaultNetworksData.map(network => ({ ...network, viewOnly: true }))
+const defaultNetworks = defaultNetworksData.map((network) => ({ ...network, viewOnly: true }))
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     frequentRpcListDetail,
     provider,
@@ -24,7 +24,7 @@ const mapStateToProps = state => {
     networksTabIsInAddMode,
   } = state.appState
 
-  const frequentRpcNetworkListDetails = frequentRpcListDetail.map(rpc => {
+  const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
       iconColor: '#6A737D',
@@ -37,12 +37,12 @@ const mapStateToProps = state => {
   })
 
   const networksToRender = [ ...defaultNetworks, ...frequentRpcNetworkListDetails ]
-  let selectedNetwork = networksToRender.find(network => network.rpcUrl === networksTabSelectedRpcUrl) || {}
+  let selectedNetwork = networksToRender.find((network) => network.rpcUrl === networksTabSelectedRpcUrl) || {}
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl)
 
   let networkDefaultedToProvider = false
   if (!networkIsSelected && !networksTabIsInAddMode) {
-    selectedNetwork = networksToRender.find(network => {
+    selectedNetwork = networksToRender.find((network) => {
       return network.rpcUrl === provider.rpcTarget || network.providerType !== 'rpc' && network.providerType === provider.type
     }) || {}
     networkDefaultedToProvider = true
@@ -59,17 +59,17 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setSelectedSettingsRpcUrl: newRpcUrl => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
+    setSelectedSettingsRpcUrl: (newRpcUrl) => dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
       dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs))
     },
     showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
       return dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }))
     },
-    displayWarning: warning => dispatch(displayWarning(warning)),
-    setNetworksTabAddMode: isInAddMode => dispatch(setNetworksTabAddMode(isInAddMode)),
+    displayWarning: (warning) => dispatch(displayWarning(warning)),
+    setNetworksTabAddMode: (isInAddMode) => dispatch(setNetworksTabAddMode(isInAddMode)),
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
       dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs))
     },

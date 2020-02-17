@@ -49,7 +49,7 @@ describe('SendFooter Component', function () {
         update={propsMethodSpies.update}
         sendErrors={{}}
       />
-    ), { context: { t: str => str, metricsEvent: () => ({}) } })
+    ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
   })
 
   afterEach(function () {
@@ -225,7 +225,7 @@ describe('SendFooter Component', function () {
           unapprovedTxs={{}}
           update={propsMethodSpies.update}
         />
-      ), { context: { t: str => str, metricsEvent: () => ({}) } })
+      ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
     })
 
     afterEach(function () {

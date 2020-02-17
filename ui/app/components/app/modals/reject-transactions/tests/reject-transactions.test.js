@@ -17,7 +17,7 @@ describe('Reject Transactions Model', function () {
     wrapper = mount(
       <RejectTransactionsModal.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ConfirmPageContainerNavigation = props => {
+const ConfirmPageContainerNavigation = (props) => {
   const { onNextTx, totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = props
 
   return (

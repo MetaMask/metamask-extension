@@ -102,15 +102,15 @@ export default class EnsInput extends Component {
       })
   }
 
-  onPaste = event => {
-    event.clipboardData.items[0].getAsString(text => {
+  onPaste = (event) => {
+    event.clipboardData.items[0].getAsString((text) => {
       if (isValidAddress(text)) {
         this.props.onPaste(text)
       }
     })
   }
 
-  onChange = e => {
+  onChange = (e) => {
     const { network, onChange, updateEnsResolution, updateEnsResolutionError, onValidAddressTyped } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
@@ -261,7 +261,7 @@ export default class EnsInput extends Component {
         <i
           className="fa fa-check-circle fa-lg cursor-pointer"
           style={{ color: 'green' }}
-          onClick={event => {
+          onClick={(event) => {
             event.preventDefault()
             event.stopPropagation()
             copyToClipboard(ensResolution)

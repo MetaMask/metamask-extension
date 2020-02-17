@@ -31,7 +31,7 @@ class Alert extends Component {
       className: 'hidden',
     })
 
-    setTimeout(_ => {
+    setTimeout((_) => {
       this.setState({ visible: false })
     }, 500)
 

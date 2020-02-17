@@ -17,7 +17,7 @@ class SimpleDropdown extends Component {
 
   getDisplayValue () {
     const { selectedOption, options } = this.props
-    const matchesOption = option => option.value === selectedOption
+    const matchesOption = (option) => option.value === selectedOption
     const matchingOption = R.find(matchesOption)(options)
     return matchingOption
       ? matchingOption.displayValue || matchingOption.value
@@ -41,7 +41,7 @@ class SimpleDropdown extends Component {
       <div>
         <div
           className="simple-dropdown__close-area"
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation()
             this.handleClose()
           }}

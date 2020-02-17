@@ -218,7 +218,7 @@ async function fetchExternalBasicGasEstimates (dispatch) {
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
-  ].map(price => (new BigNumber(price)).div(10).toNumber())
+  ].map((price) => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
     safeLow,
@@ -286,7 +286,7 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
-  ].map(price => (new BigNumber(price)).div(10).toNumber())
+  ].map((price) => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
     average,
@@ -350,11 +350,11 @@ function quartiles (data) {
 }
 
 function inliersByIQR (data, prop) {
-  const { lowerQuartile, upperQuartile } = quartiles(data.map(d => (prop ? d[prop] : d)))
+  const { lowerQuartile, upperQuartile } = quartiles(data.map((d) => (prop ? d[prop] : d)))
   const IQR = upperQuartile - lowerQuartile
   const lowerBound = lowerQuartile - 1.5 * IQR
   const upperBound = upperQuartile + 1.5 * IQR
-  return data.filter(d => {
+  return data.filter((d) => {
     const value = prop ? d[prop] : d
     return value >= lowerBound && value <= upperBound
   })
@@ -385,8 +385,8 @@ export function fetchGasEstimates (blockTime) {
         'method': 'GET',
         'mode': 'cors' }
       )
-        .then(r => r.json())
-        .then(r => {
+        .then((r) => r.json())
+        .then((r) => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
           const estimatedTimeWithUniquePrices = uniqBy(({ expectedTime }) => expectedTime, estimatedPricesAndTimes)
 
@@ -439,7 +439,7 @@ export function fetchGasEstimates (blockTime) {
         : loadLocalStorageData('GAS_API_ESTIMATES')
       )
 
-    return promiseToFetch.then(estimates => {
+    return promiseToFetch.then((estimates) => {
       dispatch(setPricesAndTimeEstimates(estimates))
       dispatch(gasEstimatesLoadingFinished())
     })

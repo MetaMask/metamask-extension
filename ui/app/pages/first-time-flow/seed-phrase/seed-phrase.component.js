@@ -29,7 +29,7 @@ export default class SeedPhrase extends PureComponent {
 
     if (!seedPhrase) {
       verifySeedPhrase()
-        .then(verifiedSeedPhrase => {
+        .then((verifiedSeedPhrase) => {
           if (!verifiedSeedPhrase) {
             history.push(DEFAULT_ROUTE)
           } else {
@@ -51,7 +51,7 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE}
-              render={routeProps => (
+              render={(routeProps) => (
                 <ConfirmSeedPhrase
                   { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
@@ -61,7 +61,7 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_SEED_PHRASE_ROUTE}
-              render={routeProps => (
+              render={(routeProps) => (
                 <RevealSeedPhrase
                   { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
@@ -71,7 +71,7 @@ export default class SeedPhrase extends PureComponent {
             <Route
               exact
               path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
-              render={routeProps => (
+              render={(routeProps) => (
                 <RevealSeedPhrase
                   { ...routeProps }
                   seedPhrase={seedPhrase || verifiedSeedPhrase}

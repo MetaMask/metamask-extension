@@ -44,6 +44,7 @@ module.exports = {
   },
 
   rules: {
+    'arrow-parens': 'error',
     'import/default': 'error',
     'import/export': 'error',
     'import/named': 'error',

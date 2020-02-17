@@ -49,10 +49,10 @@ export default class GasModalPageContainer extends Component {
     const promise = this.props.hideBasic
       ? Promise.resolve(this.props.blockTime)
       : this.props.fetchBasicGasAndTimeEstimates()
-        .then(basicEstimates => basicEstimates.blockTime)
+        .then((basicEstimates) => basicEstimates.blockTime)
 
     promise
-      .then(blockTime => {
+      .then((blockTime) => {
         this.props.fetchGasEstimates(blockTime)
       })
   }

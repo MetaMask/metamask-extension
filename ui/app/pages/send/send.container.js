@@ -105,7 +105,7 @@ function mapDispatchToProps (dispatch) {
         address,
       }))
     },
-    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
+    updateSendErrors: (newError) => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
