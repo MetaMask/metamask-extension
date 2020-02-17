@@ -22854,6 +22854,11 @@ realms-shim@^1.2.1:
   resolved "https://registry.yarnpkg.com/realms-shim/-/realms-shim-1.2.1.tgz#7d6afb2ad4007296b527a0b731fefd7b6620652d"
   integrity sha512-IS1OrGSFt3k1Sv4Re2NxNrul5XCnc7XRGpaLiBKPU97RKcxVg2NbcZm2YoG5kLo9Emk5YG1gGv9zlNtplQSrMA==
 
+realms-shim@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/realms-shim/-/realms-shim-1.2.2.tgz#bdf828ee316afa4c9ea2aab364d55b8ad7eb5904"
+  integrity sha512-NOskQ7IJEnHN4Dhu462Pf0Kl8YHSPjt6V+fVvrGSCs/SfAa433CLTyJ632DFsZC2ENBQ9p6tEZ3w+1Vkycuwyg==
+
 recast@^0.11.17:
   version "0.11.23"
   resolved "https://registry.yarnpkg.com/recast/-/recast-0.11.23.tgz#451fd3004ab1e4df9b4e4b66376b2a21912462d3"
@@ -24323,14 +24328,14 @@ servify@^0.1.12:
     request "^2.79.0"
     xhr "^2.3.3"
 
-ses@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.6.4.tgz#ad1f33cf8486d925f43205a37a478136d97e997f"
-  integrity sha512-EEGe8FIUSMtkqJn6bjoplpsc9UjivPwqy1XKUdnHUR99SIkXlho8HzXX7mWL1mlwzvqMt5nvqMPE7fLDRmFZpA==
+ses@^0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.6.5.tgz#7032f9cb24d1403b52672669a79075fc6c9d1006"
+  integrity sha512-/lwDzNdPsDqmraY90GLZvLOw+XNYuV/aBt8nH8bfjhWAxAeNQeUjXHy/jVMwRiPGR/kf+fPKdFKNIFVJZyqGYw==
   dependencies:
     "@agoric/make-hardener" "^0.0.6"
     esm "^3.2.25"
-    realms-shim "^1.2.1"
+    realms-shim "^1.2.2"
 
 sesify-tofu@^2.0.4:
   version "2.0.4"

@@ -180,7 +180,7 @@
     "rpc-cap": "^1.0.5",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
-    "ses": "^0.6.4",
+    "ses": "^0.6.5",
     "single-call-balance-checker-abi": "^1.0.0",
     "string.prototype.matchall": "^3.0.1",
     "swappable-obj-proxy": "^1.1.0",
