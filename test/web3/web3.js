@@ -9,8 +9,8 @@ web3.currentProvider.enable().then(() => {
     console.log(methodGroup)
     Object.keys(methodGroup).forEach(methodKey => {
       const methodButton = document.getElementById(methodKey)
-      methodButton.addEventListener('click', () => {
 
+      methodButton.addEventListener('click', () => {
         window.conflux.sendAsync({
           method: methodKey,
           params: methodGroup[methodKey][1],
@@ -21,7 +21,7 @@ web3.currentProvider.enable().then(() => {
           } else {
             document.getElementById('results').innerHTML = JSON.stringify(result)
           }
-        )
+        })
       })
     })
   })

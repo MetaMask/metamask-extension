@@ -32,7 +32,9 @@ process.on('exit', () => {
 Enzyme.configure({ adapter: new Adapter() })
 
 const server = new CGanache({ genBlockInterval: 300 })
-before(done => {
+
+// eslint-disable-next-line mocha/no-hooks-for-single-case, mocha/no-top-level-hooks
+before(function (done) {
   server
     .start()
     .then(() => {
