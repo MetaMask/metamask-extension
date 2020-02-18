@@ -234,7 +234,7 @@
     "gulp-terser-js": "^5.0.0",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.1",
     "jsdom": "^11.2.0",
     "jsdom-global": "^3.0.2",
     "karma": "^4.1.0",
