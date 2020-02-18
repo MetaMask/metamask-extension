@@ -1,5 +1,4 @@
 import assert from 'assert'
-import sinon from 'sinon'
 import ethUtil from 'ethereumjs-util'
 import * as util from './util'
 
@@ -8,14 +7,6 @@ describe('util', function () {
   for (let i = 0; i < 18; i++) {
     ethInWei += '0'
   }
-
-  beforeEach(function () {
-    this.sinon = sinon.createSandbox()
-  })
-
-  afterEach(function () {
-    this.sinon.restore()
-  })
 
   describe('#parseBalance', function () {
     it('should render 0.01 eth correctly', function () {
