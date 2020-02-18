@@ -48,8 +48,8 @@ ConnectTrustVaultEmailForm.propTypes = {
 
 const mapStateToProps = ({ metamask: { network } }) => ({ network })
 
-const mapDispatchToProps = dispatch => ({
-  showAlert: msg => dispatch(showAlert(msg)),
+const mapDispatchToProps = (dispatch) => ({
+  showAlert: (msg) => dispatch(showAlert(msg)),
   hideAlert: () => dispatch(hideAlert()),
 })
 

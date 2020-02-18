@@ -15,7 +15,7 @@ class ConnectTrustVaultPinForm extends PureComponent {
     this.props.goToHomePage()
     this.props.showAlert(this.context.t('custodialWalletConnected'))
     // Autohide the alert after 1.5 seconds and redirect to home page
-    setTimeout(_ => {
+    setTimeout((_) => {
       this.props.hideAlert()
     }, 2500)
   }
@@ -78,13 +78,13 @@ ConnectTrustVaultPinForm.propTypes = {
   email: PropTypes.string,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   network: state.metamask.network,
   pinChallenge: state.appState.trustVault.pinChallenge,
 })
 
-const mapDispatchToProps = dispatch => ({
-  showAlert: msg => dispatch(showAlert(msg)),
+const mapDispatchToProps = (dispatch) => ({
+  showAlert: (msg) => dispatch(showAlert(msg)),
   hideAlert: () => dispatch(hideAlert()),
   connectCustodialWallet: (deviceName, auth) => dispatch(connectCustodialWallet(deviceName, auth)),
   submitTrustVaultPinChallenge: (email, firstPin, secondPin, sessionToken) =>

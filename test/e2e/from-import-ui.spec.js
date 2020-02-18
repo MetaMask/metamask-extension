@@ -304,7 +304,7 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Connects to a Hardware wallet', function () {
-    it('choose Connect Hardware Wallet from the account menu', async () => {
+    it('choose Connect Hardware Wallet from the account menu', async function () {
       await driver.clickElement(By.xpath(`//div[contains(text(), 'Connect External Wallet')]`))
       await driver.delay(regularDelayMs)
       await driver.delay(regularDelayMs)

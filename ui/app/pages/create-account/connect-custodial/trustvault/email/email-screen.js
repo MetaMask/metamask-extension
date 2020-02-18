@@ -12,7 +12,7 @@ export class EmailScreen extends PureComponent {
 
   renderBackButton () {
     return (
-      <div className="sw-connect__back" onClick={_ => this.props.history.push(CONNECT_HARDWARE_ROUTE)}>
+      <div className="sw-connect__back" onClick={(_) => this.props.history.push(CONNECT_HARDWARE_ROUTE)}>
         <div className="sw-connect__list__back-caret" />
         <div className="sw-connect__list__back-caret__back">{this.context.t('back')}</div>
       </div>
@@ -24,7 +24,7 @@ export class EmailScreen extends PureComponent {
       <Button
         className="sw-connect__connect-btn"
         type="primary"
-        onClick={_ => this.props.getTrustVaultPinChallenge(this.state.email)}
+        onClick={(_) => this.props.getTrustVaultPinChallenge(this.state.email)}
         disabled={!this.state.email}
       >
         {this.context.t('next')}
@@ -41,8 +41,8 @@ export class EmailScreen extends PureComponent {
           placeholder="Email address"
           largeLabel
           fullWidth
-          onChange={event => this.setState({ email: event.target.value })}
-          onKeyDown={event => {
+          onChange={(event) => this.setState({ email: event.target.value })}
+          onKeyDown={(event) => {
             if (event.keyCode === ENTER_KEY) {
               this.props.getTrustVaultPinChallenge(this.state.email)
             }

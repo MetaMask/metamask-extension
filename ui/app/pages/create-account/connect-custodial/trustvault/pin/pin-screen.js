@@ -57,7 +57,7 @@ export class PinScreen extends PureComponent {
         key={key}
         filled={ () => Boolean(this.state.firstPin)}
         maxLength={2}
-        setRef={(element => {
+        setRef={((element) => {
           this.firstPinInput = element
         })}
         keyPress={(e) => {
@@ -144,7 +144,7 @@ export class PinScreen extends PureComponent {
       <div className="sw-connect__pin-input__footer">
         <span
           className="sw-connect__pin-input__footer__msg"
-          onClick={ _ => this.props.onCancelLogin()}
+          onClick={ (_) => this.props.onCancelLogin()}
         >
           {`${this.context.t('not')} ${this.props.email}?`}
         </span>

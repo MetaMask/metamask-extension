@@ -889,7 +889,7 @@ export default class MetamaskController extends EventEmitter {
     // Merge with existing accounts
     // and make sure addresses are not repeated
     const [accounts, oldAccounts] = await Promise.all([keyring.getAccounts(), this.keyringController.getAccounts()])
-    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.toLowerCase())))]
+    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map((a) => a.toLowerCase())))]
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
   }

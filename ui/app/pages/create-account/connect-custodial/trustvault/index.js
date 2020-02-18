@@ -27,7 +27,7 @@ class ConnectTrustVaultForm extends PureComponent {
     }
   }
 
-  getTrustVaultPinChallenge = async email => {
+  getTrustVaultPinChallenge = async (email) => {
     try {
       const pinChallenge = await this.props.getTrustVaultPinChallenge(email)
       this.setState({
@@ -112,12 +112,12 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   displayedForm: state.appState.currentView.context,
 })
 
-const mapDispatchToProps = dispatch => ({
-  getTrustVaultPinChallenge: email => dispatch(getTrustVaultPinChallenge(email)),
+const mapDispatchToProps = (dispatch) => ({
+  getTrustVaultPinChallenge: (email) => dispatch(getTrustVaultPinChallenge(email)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(

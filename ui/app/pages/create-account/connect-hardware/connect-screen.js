@@ -35,7 +35,7 @@ class ConnectScreen extends Component {
         className={classnames('sw-connect__btn', {
           'selected': this.state.selectedDevice === TRUSTVAULT,
         })}
-        onClick={_ => this.setState({ selectedDevice: TRUSTVAULT })}
+        onClick={(_) => this.setState({ selectedDevice: TRUSTVAULT })}
       >
         <img
           className="sw-connect__btn__img"
@@ -210,7 +210,7 @@ class ConnectScreen extends Component {
     return (
       <div
         className="sw-tutorial"
-        ref={node => {
+        ref={(node) => {
           this.referenceNode = node
         }}
       >

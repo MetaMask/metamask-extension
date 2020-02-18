@@ -182,8 +182,8 @@ export default class TrustvaultKeyring extends EventEmitter {
 
   async _getAccounts () {
     const accounts = (await this._request(this._getAccountsQuery, {})).userWallet.getAccounts
-    this.addressNameMap = accounts.map(account => ({ name: account.accountName, address: account.address }))
-    return accounts.map(account => account.address.toLowerCase())
+    this.addressNameMap = accounts.map((account) => ({ name: account.accountName, address: account.address }))
+    return accounts.map((account) => account.address.toLowerCase())
   }
 
   async _request (constructQuery, queryContext) {
@@ -287,7 +287,7 @@ export default class TrustvaultKeyring extends EventEmitter {
     }
     log.info('options POST', options)
     const response = await fetch(trustVaultBridgeUrl, options)
-      .then(response => response.json())
+      .then((response) => response.json())
     log.info('response', response)
     const { data, errors } = response
     return {
@@ -437,6 +437,6 @@ export default class TrustvaultKeyring extends EventEmitter {
   }
 
   _timeout (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }

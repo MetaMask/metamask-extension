@@ -288,7 +288,7 @@ class PreferencesController {
       let name
       const identityCount = Object.keys(identities).length
       if (namesMap && namesMap.length > 0) {
-        const matchedAddressEntry = namesMap.find(a => a.address.toLowerCase() === address.toLowerCase())
+        const matchedAddressEntry = namesMap.find((a) => a.address.toLowerCase() === address.toLowerCase())
         name = matchedAddressEntry ? matchedAddressEntry.name : `Account ${identityCount + 1 - namesMap.length}`
       } else {
         name = `Account ${identityCount + 1}`

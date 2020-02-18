@@ -170,8 +170,8 @@ describe('Account Menu', function () {
 
     it('calls toggle menu and push /new-account/connect route to history', function () {
       connectExternalWallet.simulate('click')
-      connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' })
-      assert.equal(connectHardwareWallet.length, 1)
+      connectExternalWallet = wrapper.find({ text: 'connectExternalWallet' })
+      assert.equal(connectExternalWallet.length, 1)
     })
   })
 

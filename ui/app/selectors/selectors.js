@@ -58,7 +58,7 @@ export function getAccountType (state) {
 
 export function getSelectedAccountType (state, address) {
   let accountType
-  state.metamask.keyrings.forEach(keyrings => {
+  state.metamask.keyrings.forEach((keyrings) => {
     if (keyrings.accounts.includes(address)) {
       accountType = keyrings.type
     }
