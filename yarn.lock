@@ -1351,25 +1351,25 @@
     normalize-path "^2.0.1"
     through2 "^2.0.3"
 
-"@hapi/accept@3.x.x":
+"@hapi/accept@^3.2.4":
   version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-3.2.2.tgz#3a033af67be8196c23f8f51aa8756687b972c7cb"
-  integrity sha512-UtXlTT59srtMr7ZRBzK2CvyWqFwlf78hPt9jEXqkwfbwiwRH1PRv/qkS8lgr5ZyoG6kfpU3xTgt2X91Yfe/6Yg==
+  resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-3.2.4.tgz#687510529493fe1d7d47954c31aff360d9364bd1"
+  integrity sha512-soThGB+QMgfxlh0Vzhzlf3ZOEOPk5biEwcOXhkF0Eedqx8VnhGiggL9UYHrIsOb1rUg3Be3K8kp0iDL2wbVSOQ==
   dependencies:
     "@hapi/boom" "7.x.x"
-    "@hapi/hoek" "6.x.x"
+    "@hapi/hoek" "8.x.x"
 
 "@hapi/address@2.x.x":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.0.0.tgz#9f05469c88cb2fd3dcd624776b54ee95c312126a"
   integrity sha512-mV6T0IYqb0xL1UALPFplXYQmR0twnXG0M6jUswpquqT2sD12BOiCiLy3EvMp/Fy7s3DZElC4/aPjEjo2jeZpvw==
 
-"@hapi/ammo@3.x.x", "@hapi/ammo@^3.1.0":
+"@hapi/ammo@3.x.x", "@hapi/ammo@^3.1.0", "@hapi/ammo@^3.1.2":
   version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@hapi/ammo/-/ammo-3.1.0.tgz#a3281ecb68bf7af2ffa6d0f7656536a7d23700ed"
-  integrity sha512-iFQBEfm3WwWy8JdPQ8l6qXVLPtzmjITVfaxwl6dfoP8kKv6i2Uk43Ax+ShkNfOVyfEnNggqL2IyZTY3DaaRGNg==
+  resolved "https://registry.yarnpkg.com/@hapi/ammo/-/ammo-3.1.2.tgz#a9edf5d48d99b75fdcd7ab3dabf9059942a06961"
+  integrity sha512-ej9OtFmiZv1qr45g1bxEZNGyaR4jRpyMxU6VhbxjaYThymvOwsyIsUKMZnP5Qw2tfYFuwqCJuIBHGpeIbdX9gQ==
   dependencies:
-    "@hapi/hoek" "6.x.x"
+    "@hapi/hoek" "8.x.x"
 
 "@hapi/b64@4.x.x":
   version "4.2.0"
@@ -1398,13 +1398,13 @@
   resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-1.3.2.tgz#0a7095adea067243ce3283e1b56b8a8f453b242a"
   integrity sha512-1dVNHT76Uu5N3eJNTYcvxee+jzX4Z9lfciqRRHCU27ihbUcYi+iSc2iml5Ke1LXe1SyJCLA0+14Jh4tXJgOppA==
 
-"@hapi/call@5.x.x":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@hapi/call/-/call-5.1.0.tgz#91e4c434318003173d96d211d90d35736a33945e"
-  integrity sha512-CiVEXjD/jiIHBqufBW3pdedshEMjRmHtff7m1puot8j4MUmuKRbLlh0DB8fv6QqH/7/55pH1qgFj300r0WpyMw==
+"@hapi/call@^5.1.3":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@hapi/call/-/call-5.1.3.tgz#217af45e3bc3d38b03aa5c9edfe1be939eee3741"
+  integrity sha512-5DfWpMk7qZiYhvBhM5oUiT4GQ/O8a2rFR121/PdwA/eZ2C1EsuD547ZggMKAR5bZ+FtxOf0fdM20zzcXzq2mZA==
   dependencies:
     "@hapi/boom" "7.x.x"
-    "@hapi/hoek" "6.x.x"
+    "@hapi/hoek" "8.x.x"
 
 "@hapi/catbox-memory@4.x.x":
   version "4.1.0"
@@ -1424,10 +1424,10 @@
     "@hapi/joi" "15.x.x"
     "@hapi/podium" "3.x.x"
 
-"@hapi/content@4.x.x", "@hapi/content@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@hapi/content/-/content-4.1.0.tgz#5265516949ca081e85a43e97c1058ff53fc69714"
-  integrity sha512-hv2Czsl49hnWDEfRZOFow/BmYbKyfEknmk3k83gOp6moFn5ceHB4xVcna8OwsGfy8dxO81lhpPy+JgQEaU4SWw==
+"@hapi/content@^4.1.0", "@hapi/content@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@hapi/content/-/content-4.1.1.tgz#179673d1e2b7eb36c564d8f9605d019bd2252cbf"
+  integrity sha512-3TWvmwpVPxFSF3KBjKZ8yDqIKKZZIm7VurDSweYpXYENZrJH3C1hd1+qEQW9wQaUaI76pPBLGrXl6I3B7i3ipA==
   dependencies:
     "@hapi/boom" "7.x.x"
 
@@ -1445,25 +1445,25 @@
 
 "@hapi/hapi@^18.3.1":
   version "18.4.1"
-  resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-18.3.1.tgz#936d1e24551b11486eabd6a4974bea4ec2127669"
-  integrity sha512-gBiU9isWWezrg0ucX95Ph6AY6fUKZub3FxKapaleoFBJDOUcxTYiQR6Lha2zvHalIFoTl3K04O3Yr/5pD17QkQ==
+  resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-18.4.1.tgz#023fbc131074b1cb2cd7f6766d65f4b0e92df788"
+  integrity sha512-9HjVGa0Z4Qv9jk9AVoUdJMQLA+KuZ+liKWyEEkVBx3e3H1F0JM6aGbPkY9jRfwsITBWGBU2iXazn65SFKSi/tg==
   dependencies:
-    "@hapi/accept" "3.x.x"
-    "@hapi/ammo" "3.x.x"
+    "@hapi/accept" "^3.2.4"
+    "@hapi/ammo" "^3.1.2"
     "@hapi/boom" "7.x.x"
     "@hapi/bounce" "1.x.x"
-    "@hapi/call" "5.x.x"
+    "@hapi/call" "^5.1.3"
     "@hapi/catbox" "10.x.x"
     "@hapi/catbox-memory" "4.x.x"
     "@hapi/heavy" "6.x.x"
-    "@hapi/hoek" "6.x.x"
+    "@hapi/hoek" "8.x.x"
     "@hapi/joi" "15.x.x"
     "@hapi/mimos" "4.x.x"
     "@hapi/podium" "3.x.x"
     "@hapi/shot" "4.x.x"
     "@hapi/somever" "2.x.x"
     "@hapi/statehood" "6.x.x"
-    "@hapi/subtext" "6.x.x"
+    "@hapi/subtext" "^6.1.3"
     "@hapi/teamwork" "3.x.x"
     "@hapi/topo" "3.x.x"
 
@@ -1539,15 +1539,15 @@
     "@hapi/hoek" "6.x.x"
     "@hapi/vise" "3.x.x"
 
-"@hapi/pez@4.x.x":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@hapi/pez/-/pez-4.1.0.tgz#97a88e5d19e756efbd24e5f583d59fa8db1d6cba"
-  integrity sha512-c+AxL8/cCj+7FB+tzJ5FhWKYP8zF7/7mA3Ft3a5y7h6YT26qzhj5d2JY27jur30KaZbrZAd4ofXXkqvE/IpJlA==
+"@hapi/pez@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@hapi/pez/-/pez-4.1.2.tgz#14984d0c31fed348f10c962968a21d9761f55503"
+  integrity sha512-8zSdJ8cZrJLFldTgwjU9Fb1JebID+aBCrCsycgqKYe0OZtM2r3Yv3aAwW5z97VsZWCROC1Vx6Mdn4rujh5Ktcg==
   dependencies:
     "@hapi/b64" "4.x.x"
     "@hapi/boom" "7.x.x"
-    "@hapi/content" "4.x.x"
-    "@hapi/hoek" "6.x.x"
+    "@hapi/content" "^4.1.1"
+    "@hapi/hoek" "8.x.x"
     "@hapi/nigel" "3.x.x"
 
 "@hapi/podium@3.x.x":
@@ -1587,17 +1587,17 @@
     "@hapi/iron" "5.x.x"
     "@hapi/joi" "15.x.x"
 
-"@hapi/subtext@6.x.x":
+"@hapi/subtext@^6.1.3":
   version "6.1.3"
-  resolved "https://registry.yarnpkg.com/@hapi/subtext/-/subtext-6.1.2.tgz#87754f0c25b4e2676575a3686541e5b555b0c717"
-  integrity sha512-G1kqD1E2QdxpvpL26WieIyo3z0qCa/sAGSa2TJI/PYPWCR9rL0rqFvhWY774xPZ4uK1PV3TIaJcx8AruAvxclg==
+  resolved "https://registry.yarnpkg.com/@hapi/subtext/-/subtext-6.1.3.tgz#bbd07771ae2a4e73ac360c93ed74ac641718b9c6"
+  integrity sha512-qWN6NbiHNzohVcJMeAlpku/vzbyH4zIpnnMPMPioQMwIxbPFKeNViDCNI6fVBbMPBiw/xB4FjqiJkRG5P9eWWg==
   dependencies:
     "@hapi/boom" "7.x.x"
     "@hapi/bourne" "1.x.x"
-    "@hapi/content" "4.x.x"
+    "@hapi/content" "^4.1.1"
     "@hapi/file" "1.x.x"
     "@hapi/hoek" "8.x.x"
-    "@hapi/pez" "4.x.x"
+    "@hapi/pez" "^4.1.2"
     "@hapi/wreck" "15.x.x"
 
 "@hapi/teamwork@3.x.x":
