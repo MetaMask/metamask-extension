@@ -652,7 +652,7 @@ class TransactionController extends EventEmitter {
   */
   async _determineTransactionCategory (txParams) {
     const { data, to } = txParams
-    const { name } = data && abiDecoder.decodeMethod(data) || {}
+    const { name } = (data && abiDecoder.decodeMethod(data)) || {}
     const tokenMethodName = [
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,

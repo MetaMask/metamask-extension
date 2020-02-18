@@ -145,7 +145,7 @@ function composeUrl (config) {
   const e_n = composeParamAddition(eventOpts.name, 'e_n')
   const new_visit = isNewVisit ? `&new_visit=1` : ''
 
-  const cvar = customVariables && composeCustomVarParamAddition(customVariables) || ''
+  const cvar = (customVariables && composeCustomVarParamAddition(customVariables)) || ''
 
   const action_name = ''
 
@@ -156,13 +156,13 @@ function composeUrl (config) {
     environmentType,
     activeCurrency,
     accountType,
-    numberOfTokens: customVariables && customVariables.numberOfTokens || numberOfTokens,
-    numberOfAccounts: customVariables && customVariables.numberOfAccounts || numberOfAccounts,
+    numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
+    numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''
   const url = configUrl || currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = (url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}` || ''
+  const pv_id = ((url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}`) || ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId

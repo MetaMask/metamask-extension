@@ -90,7 +90,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
         const { op, path, value, timestamp: entryTimestamp } = entry
         // Not all sub-entries in a history entry have a timestamp. If the sub-entry does not have a
         // timestamp, the first sub-entry in a history entry should.
-        const timestamp = entryTimestamp || base[0] && base[0].timestamp
+        const timestamp = entryTimestamp || (base[0] && base[0].timestamp)
 
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {

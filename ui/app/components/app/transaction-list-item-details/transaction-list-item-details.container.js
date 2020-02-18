@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     const entry = addressBook.find((contact) => {
       return address.toLowerCase() === contact.address.toLowerCase()
     })
-    return entry && entry.name || ''
+    return (entry && entry.name) || ''
   }
 
   return {

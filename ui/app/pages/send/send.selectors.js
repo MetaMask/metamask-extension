@@ -115,7 +115,7 @@ export function getSelectedTokenExchangeRate (state) {
   const selectedToken = getSelectedToken(state) || {}
   const { symbol = '' } = selectedToken
   const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates && tokenExchangeRates[pair] || {}
+  const { rate: tokenExchangeRate = 0 } = (tokenExchangeRates && tokenExchangeRates[pair]) || {}
 
   return tokenExchangeRate
 }

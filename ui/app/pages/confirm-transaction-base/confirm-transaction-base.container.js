@@ -77,7 +77,7 @@ const mapStateToProps = (state, ownProps) => {
     gas: gasLimit,
     value: amount,
     data,
-  } = transaction && transaction.txParams || txParams
+  } = (transaction && transaction.txParams) || txParams
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 

@@ -118,12 +118,12 @@ const tokenDecimalsSelector = createSelector(
 
 const tokenDataParamsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => tokenData && tokenData.params || []
+  (tokenData) => (tokenData && tokenData.params) || []
 )
 
 const txParamsSelector = createSelector(
   txDataSelector,
-  (txData) => txData && txData.txParams || {}
+  (txData) => (txData && txData.txParams) || {}
 )
 
 export const tokenAddressSelector = createSelector(
