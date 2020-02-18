@@ -286,9 +286,10 @@ export default class TrustvaultKeyring extends EventEmitter {
       body: JSON.stringify(body),
     };
     log.info("options POST", options);
-    const response = await fetch(trustVaultBridgeUrl, options);
+    const response = await fetch(trustVaultBridgeUrl, options)
+          .then(response => response.json());
     log.info("response", response);
-    const { data, errors } = JSON.parse(response);
+    const { data, errors } = response;
     return {
       data,
       error: errors && errors[0],
