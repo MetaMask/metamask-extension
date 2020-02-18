@@ -20,7 +20,7 @@ export default class CreateAccountPage extends Component {
     if (location && pathname) {
       hardWareRoute = (pathname === '/new-account/connect' || pathname === '/new-account/connect/trustvault') ? pathname : '/new-account/connect'
     }
-    const getClassNames = path => classnames('new-account__tabs__tab', {
+    const getClassNames = (path) => classnames('new-account__tabs__tab', {
       'new-account__tabs__selected': matchPath(pathname, {
         path: path === CONNECT_HARDWARE_ROUTE ? hardWareRoute : path,
         exact: true,
