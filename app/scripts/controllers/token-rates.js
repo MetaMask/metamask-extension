@@ -33,13 +33,13 @@ class TokenRatesController {
     }
     const contractExchangeRates = {}
     const nativeCurrency = this.currency ? this.currency.state.nativeCurrency.toLowerCase() : 'eth'
-    const pairs = this._tokens.map(token => token.address).join(',')
+    const pairs = this._tokens.map((token) => token.address).join(',')
     const query = `contract_addresses=${pairs}&vs_currencies=${nativeCurrency}`
     if (this._tokens.length > 0) {
       try {
         const response = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`)
         const prices = await response.json()
-        this._tokens.forEach(token => {
+        this._tokens.forEach((token) => {
           const price = prices[token.address.toLowerCase()] || prices[ethUtil.toChecksumAddress(token.address)]
           contractExchangeRates[normalizeAddress(token.address)] = price ? price[nativeCurrency] : 0
         })

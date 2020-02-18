@@ -159,7 +159,7 @@ describe('Account Menu', function () {
     })
   })
 
-  describe('Connect External Wallet', () => {
+  describe('Connect External Wallet', function () {
 
     let connectExternalWallet
 
@@ -170,8 +170,8 @@ describe('Account Menu', function () {
 
     it('calls toggle menu and push /new-account/connect route to history', function () {
       connectExternalWallet.simulate('click')
-      assert(props.toggleAccountMenu.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], '/new-account/connect')
+      connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' })
+      assert.equal(connectHardwareWallet.length, 1)
     })
   })
 

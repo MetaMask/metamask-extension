@@ -34,14 +34,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   let currency, numberOfDecimals, prefix
 
-  if (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency ||
-    type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency) {
+  if ((type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)) {
     // Display ETH
     currency = nativeCurrency || ETH
     numberOfDecimals = propsNumberOfDecimals || ethNumberOfDecimals || 6
     prefix = propsPrefix || ethPrefix
-  } else if (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency ||
-    type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency) {
+  } else if ((type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)) {
     // Display Fiat
     numberOfDecimals = propsNumberOfDecimals || fiatNumberOfDecimals || 2
     prefix = propsPrefix || fiatPrefix

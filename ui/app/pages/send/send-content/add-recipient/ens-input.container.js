@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 
 
 export default connect(
-  state => {
+  (state) => {
     const selectedAddress = getSendTo(state)
     return {
       network: getCurrentNetwork(state),

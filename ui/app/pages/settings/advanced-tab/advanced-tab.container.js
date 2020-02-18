@@ -15,7 +15,7 @@ import {
 } from '../../../store/actions'
 import { preferencesSelector } from '../../../selectors/selectors'
 
-export const mapStateToProps = state => {
+export const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
@@ -42,27 +42,27 @@ export const mapStateToProps = state => {
   }
 }
 
-export const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = (dispatch) => {
   return {
-    setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: warning => dispatch(displayWarning(warning)),
+    setHexDataFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    displayWarning: (warning) => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
-    setUseNonceField: value => dispatch(setUseNonceField(value)),
-    setShowFiatConversionOnTestnetsPreference: value => {
+    setAdvancedInlineGasFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
+    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
+    setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
     },
-    setAutoLockTimeLimit: value => {
+    setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value))
     },
-    setThreeBoxSyncingPermission: newThreeBoxSyncingState => {
+    setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
       if (newThreeBoxSyncingState) {
         dispatch(turnThreeBoxSyncingOnAndInitialize())
       } else {
         dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState))
       }
     },
-    setIpfsGateway: value => {
+    setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value))
     },
   }

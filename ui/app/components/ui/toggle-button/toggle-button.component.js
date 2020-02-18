@@ -45,7 +45,7 @@ const colors = {
   },
 }
 
-const ToggleButton = props => {
+const ToggleButton = (props) => {
   const { value, onToggle, offLabel, onLabel } = props
 
   return (

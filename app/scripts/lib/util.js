@@ -44,7 +44,7 @@ const getEnvironmentType = (url = window.location.href) => {
  * @returns {string} - the platform ENUM
  *
  */
-const getPlatform = _ => {
+const getPlatform = (_) => {
   const ua = navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
@@ -135,7 +135,7 @@ function getRandomArrayItem (array) {
 
 function mapObjectValues (object, cb) {
   const mappedObject = {}
-  Object.keys(object).forEach(key => {
+  Object.keys(object).forEach((key) => {
     mappedObject[key] = cb(key, object[key])
   })
   return mappedObject

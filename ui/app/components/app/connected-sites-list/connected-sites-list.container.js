@@ -14,7 +14,7 @@ import {
 } from '../../../selectors/selectors'
 import { getOriginFromUrl } from '../../../helpers/utils/util'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const addressConnectedToCurrentTab = getAddressConnectedToCurrentTab(state)
   const { openMetaMaskTabs } = state.appState
   const { title, url, id } = state.activeTab
@@ -36,7 +36,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showDisconnectAccountModal: (domainKey, domain) => {
       dispatch(showModal({ name: 'DISCONNECT_ACCOUNT', domainKey, domain }))

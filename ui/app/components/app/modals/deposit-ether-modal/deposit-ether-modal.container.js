@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    toFaucet: network => dispatch(buyEth({ network })),
+    toFaucet: (network) => dispatch(buyEth({ network })),
   }
 }
 

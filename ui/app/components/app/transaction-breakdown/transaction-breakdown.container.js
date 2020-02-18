@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
 
-  const hexGasTotal = gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice }) || '0x0'
+  const hexGasTotal = (gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice })) || '0x0'
   const totalInHex = sumHexes(hexGasTotal, value)
 
   return {

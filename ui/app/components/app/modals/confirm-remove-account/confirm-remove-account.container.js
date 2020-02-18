@@ -4,13 +4,13 @@ import ConfirmRemoveAccount from './confirm-remove-account.component'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import { removeAccount } from '../../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     network: state.metamask.network,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     removeAccount: (address) => dispatch(removeAccount(address)),
   }

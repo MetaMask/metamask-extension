@@ -16,7 +16,7 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequests = getPermissionsRequests(state)
 
   const permissionsRequest = permissionsRequests
-    .find(permissionsRequest => permissionsRequest.metadata.id === permissionsRequestId)
+    .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
 
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
@@ -29,7 +29,7 @@ const mapStateToProps = (state, ownProps) => {
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
 
-  Object.keys(addressLastConnectedMap).forEach(key => {
+  Object.keys(addressLastConnectedMap).forEach((key) => {
     addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
   })
 
@@ -46,10 +46,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     approvePermissionsRequest: (request, accounts) => dispatch(approvePermissionsRequest(request, accounts)),
-    rejectPermissionsRequest: requestId => dispatch(rejectPermissionsRequest(requestId)),
+    rejectPermissionsRequest: (requestId) => dispatch(rejectPermissionsRequest(requestId)),
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(showModal({
         name: 'NEW_ACCOUNT',

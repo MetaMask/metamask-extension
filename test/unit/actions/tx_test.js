@@ -10,9 +10,6 @@ describe('tx confirmation screen', function () {
   const txId = 1457634084250832
   const initialState = {
     appState: {
-      currentView: {
-        name: 'confTx',
-      },
     },
     metamask: {
       unapprovedTxs: {
@@ -28,7 +25,7 @@ describe('tx confirmation screen', function () {
   const store = mockStore(initialState)
 
   describe('cancelTx', function () {
-    before(function (done) {
+    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
       actions._setBackgroundConnection({
         approveTransaction (_, cb) {
           cb('An error!')
@@ -40,17 +37,12 @@ describe('tx confirmation screen', function () {
           cb()
         },
       })
-      done()
-    })
 
-    it('creates COMPLETED_TX with the cancelled transaction ID', function (done) {
-      store.dispatch(actions.cancelTx({ id: txId }))
-        .then(() => {
-          const storeActions = store.getActions()
-          const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
-          assert.equal(completedTxAction.value, txId)
-          done()
-        })
+      await store.dispatch(actions.cancelTx({ id: txId }))
+      const storeActions = store.getActions()
+      const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
+      const { id } = completedTxAction.value
+      assert.equal(id, txId)
     })
   })
 })

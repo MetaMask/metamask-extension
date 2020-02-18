@@ -40,7 +40,7 @@ class EditableLabel extends Component {
             this.handleSubmit()
           }
         }}
-        onChange={event => this.setState({ value: event.target.value })}
+        onChange={(event) => this.setState({ value: event.target.value })}
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error': value === '',
         })}

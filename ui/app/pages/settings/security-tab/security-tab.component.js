@@ -33,7 +33,7 @@ export default class SecurityTab extends PureComponent {
             <Button
               type="danger"
               large
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 this.context.metricsEvent({
                   eventOpts: {
@@ -69,7 +69,7 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={participateInMetaMetrics}
-              onToggle={value => setParticipateInMetaMetrics(!value)}
+              onToggle={(value) => setParticipateInMetaMetrics(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -95,7 +95,7 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showIncomingTransactions}
-              onToggle={value => setShowIncomingTransactionsFeatureFlag(!value)}
+              onToggle={(value) => setShowIncomingTransactionsFeatureFlag(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />

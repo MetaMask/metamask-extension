@@ -13,11 +13,11 @@ proxyquire('../send-row-error-message.container.js', {
   '../../../send.selectors': { getSendErrors: (s) => `mockErrors:${s}` },
 })
 
-describe('send-row-error-message container', () => {
+describe('send-row-error-message container', function () {
 
-  describe('mapStateToProps()', () => {
+  describe('mapStateToProps()', function () {
 
-    it('should map the correct properties to props', () => {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState', { errorType: 'someType' }), {
         errors: 'mockErrors:mockState',
         errorType: 'someType' })

@@ -116,7 +116,7 @@ export default class PermissionsLogController {
       }
 
       // call next with a return handler for capturing the response
-      next(cb => {
+      next((cb) => {
 
         const time = Date.now()
         this.logActivityResponse(requestId, res, time)
@@ -234,7 +234,7 @@ export default class PermissionsLogController {
       // accounts were last seen or approved by the origin.
       newEntries = result
         ? result
-          .map(perm => {
+          .map((perm) => {
 
             if (perm.parentCapability === 'eth_accounts') {
               accounts = this.getAccountsFromPermission(perm)
@@ -325,6 +325,7 @@ export default class PermissionsLogController {
   getRequestedMethods (request) {
     if (
       !request.params ||
+      !request.params[0] ||
       typeof request.params[0] !== 'object' ||
       Array.isArray(request.params[0])
     ) {
@@ -392,7 +393,7 @@ function getLastIndexOfObjectArray (array, key, value) {
 
     for (let i = array.length - 1; i >= 0; i--) {
 
-      if (typeof array[i] !== 'object') {
+      if (!array[i] || typeof array[i] !== 'object') {
         throw new Error(`Encountered non-Object element at index ${i}`)
       }
 

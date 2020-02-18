@@ -1,8 +1,8 @@
 import assert from 'assert'
 import migration31 from '../../../app/scripts/migrations/031'
 
-describe('migration #31', () => {
-  it('should set completedOnboarding to true if vault exists', done => {
+describe('migration #31', function () {
+  it('should set completedOnboarding to true if vault exists', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -24,14 +24,14 @@ describe('migration #31', () => {
     }
 
     migration31.migrate(oldStorage)
-      .then(newStorage => {
+      .then((newStorage) => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, true)
         done()
       })
       .catch(done)
   })
 
-  it('should set completedOnboarding to false if vault does not exist', done => {
+  it('should set completedOnboarding to false if vault does not exist', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -47,7 +47,7 @@ describe('migration #31', () => {
     }
 
     migration31.migrate(oldStorage)
-      .then(newStorage => {
+      .then((newStorage) => {
         assert.equal(newStorage.data.PreferencesController.completedOnboarding, false)
         done()
       })

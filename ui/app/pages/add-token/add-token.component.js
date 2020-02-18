@@ -49,7 +49,7 @@ class AddToken extends Component {
       let selectedTokens = {}
       let customToken = {}
 
-      pendingTokenKeys.forEach(tokenAddress => {
+      pendingTokenKeys.forEach((tokenAddress) => {
         const token = pendingTokens[tokenAddress]
         const { isCustom } = token
 
@@ -228,7 +228,7 @@ class AddToken extends Component {
           label={this.context.t('tokenContractAddress')}
           type="text"
           value={customAddress}
-          onChange={e => this.handleCustomAddressChange(e.target.value)}
+          onChange={(e) => this.handleCustomAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
           margin="normal"
@@ -252,7 +252,7 @@ class AddToken extends Component {
           )}
           type="text"
           value={customSymbol}
-          onChange={e => this.handleCustomSymbolChange(e.target.value)}
+          onChange={(e) => this.handleCustomSymbolChange(e.target.value)}
           error={customSymbolError}
           fullWidth
           margin="normal"
@@ -263,7 +263,7 @@ class AddToken extends Component {
           label={this.context.t('decimal')}
           type="number"
           value={customDecimals}
-          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
+          onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
           error={customDecimalsError}
           fullWidth
           margin="normal"
@@ -286,7 +286,7 @@ class AddToken extends Component {
           <TokenList
             results={searchResults}
             selectedTokens={selectedTokens}
-            onToggleToken={token => this.handleToggleToken(token)}
+            onToggleToken={(token) => this.handleToggleToken(token)}
           />
         </div>
       </div>

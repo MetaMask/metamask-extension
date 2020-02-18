@@ -3,7 +3,7 @@ import LoadingNetworkScreen from './loading-network-screen.component'
 import * as actions from '../../../store/actions'
 import { getNetworkIdentifier } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     loadingMessage,
   } = state.appState
@@ -28,7 +28,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))

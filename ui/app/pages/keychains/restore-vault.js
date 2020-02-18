@@ -42,7 +42,8 @@ class RestoreVaultPage extends Component {
   handleSeedPhraseChange (seedPhrase) {
     let seedPhraseError = null
 
-    if (seedPhrase && this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+    const wordCount = this.parseSeedPhrase(seedPhrase).split(new RegExp('\\s')).length
+    if (seedPhrase && (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)) {
       seedPhraseError = this.context.t('seedPhraseReq')
     }
 
@@ -124,7 +125,7 @@ class RestoreVaultPage extends Component {
           <div className="import-account">
             <a
               className="import-account__back-button"
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault()
                 this.props.leaveImportSeedScreenState()
                 this.props.history.goBack()
@@ -143,7 +144,7 @@ class RestoreVaultPage extends Component {
               <label className="import-account__input-label">Wallet Seed</label>
               <textarea
                 className="import-account__secret-phrase"
-                onChange={e => this.handleSeedPhraseChange(e.target.value)}
+                onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                 value={this.state.seedPhrase}
                 placeholder={this.context.t('separateEachWord')}
               />
@@ -157,7 +158,7 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.password}
-              onChange={event => this.handlePasswordChange(event.target.value)}
+              onChange={(event) => this.handlePasswordChange(event.target.value)}
               error={passwordError}
               autoComplete="new-password"
               margin="normal"
@@ -169,7 +170,7 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.confirmPassword}
-              onChange={event => this.handleConfirmPasswordChange(event.target.value)}
+              onChange={(event) => this.handleConfirmPasswordChange(event.target.value)}
               error={confirmPasswordError}
               autoComplete="confirm-password"
               margin="normal"
@@ -192,7 +193,7 @@ class RestoreVaultPage extends Component {
 
 export default connect(
   ({ appState: { isLoading } }) => ({ isLoading }),
-  dispatch => ({
+  (dispatch) => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())
     },

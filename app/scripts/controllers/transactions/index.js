@@ -652,12 +652,12 @@ class TransactionController extends EventEmitter {
   */
   async _determineTransactionCategory (txParams) {
     const { data, to } = txParams
-    const { name } = data && abiDecoder.decodeMethod(data) || {}
+    const { name } = (data && abiDecoder.decodeMethod(data)) || {}
     const tokenMethodName = [
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,
       TOKEN_METHOD_TRANSFER_FROM,
-    ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
+    ].find((tokenMethodName) => tokenMethodName === name && name.toLowerCase())
 
     let result
     if (txParams.data && tokenMethodName) {

@@ -50,7 +50,7 @@ class CachedBalancesController {
     const { cachedBalances } = this.store.getState()
     const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] }
 
-    Object.keys(newAccounts).forEach(accountID => {
+    Object.keys(newAccounts).forEach((accountID) => {
       const account = newAccounts[accountID]
 
       if (account.balance) {

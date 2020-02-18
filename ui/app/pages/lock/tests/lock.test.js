@@ -4,9 +4,9 @@ import sinon from 'sinon'
 import { mountWithRouter } from '../../../../../test/lib/render-helpers'
 import Lock from '../index'
 
-describe('Lock', () => {
+describe('Lock', function () {
 
-  it('replaces history with default route when isUnlocked false', () => {
+  it('replaces history with default route when isUnlocked false', function () {
 
     const props = {
       isUnlocked: false,
@@ -23,7 +23,7 @@ describe('Lock', () => {
 
   })
 
-  it('locks and pushes history with default route when isUnlocked true', (done) => {
+  it('locks and pushes history with default route when isUnlocked true', function (done) {
 
     const props = {
       isUnlocked: true,

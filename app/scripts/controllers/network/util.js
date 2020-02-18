@@ -27,7 +27,7 @@ const networkToNameMap = {
   [GOERLI_CODE]: GOERLI_DISPLAY_NAME,
 }
 
-export const getNetworkDisplayName = key => networkToNameMap[key]
+export const getNetworkDisplayName = (key) => networkToNameMap[key]
 
 export function formatTxMetaForRpcResult (txMeta) {
   return {

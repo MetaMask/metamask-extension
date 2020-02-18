@@ -3,21 +3,15 @@ import sinon from 'sinon'
 import InfuraController from '../../../../app/scripts/controllers/infura'
 
 describe('infura-controller', function () {
-  let infuraController, sandbox, networkStatus
+  let infuraController, networkStatus
   const response = { 'mainnet': 'degraded', 'ropsten': 'ok', 'kovan': 'ok', 'rinkeby': 'down', 'goerli': 'ok' }
 
-  before(async function () {
-    infuraController = new InfuraController()
-    sandbox = sinon.createSandbox()
-    sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
-    networkStatus = await infuraController.checkInfuraNetworkStatus()
-  })
-
-  after(function () {
-    sandbox.restore()
-  })
-
   describe('Network status queries', function () {
+    before(async function () {
+      infuraController = new InfuraController()
+      sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
+      networkStatus = await infuraController.checkInfuraNetworkStatus()
+    })
 
     describe('Mainnet', function () {
       it('should have Mainnet', function () {

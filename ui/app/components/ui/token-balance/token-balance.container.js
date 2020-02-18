@@ -4,7 +4,7 @@ import withTokenTracker from '../../../helpers/higher-order-components/with-toke
 import TokenBalance from './token-balance.component'
 import { getSelectedAddress } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     userAddress: getSelectedAddress(state),
   }

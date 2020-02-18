@@ -6,7 +6,7 @@ import DetectTokensController from '../../../../app/scripts/controllers/detect-t
 import NetworkController from '../../../../app/scripts/controllers/network/network'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
 
-describe('DetectTokensController', () => {
+describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox()
   let clock, keyringMemStore, network, preferences, controller
 
@@ -16,7 +16,7 @@ describe('DetectTokensController', () => {
     getAccounts: noop,
   }
 
-  beforeEach(async () => {
+  beforeEach(async function () {
 
 
     nock('https://api.infura.io')
@@ -32,19 +32,19 @@ describe('DetectTokensController', () => {
 
   })
 
-  after(() => {
+  after(function () {
     sandbox.restore()
     nock.cleanAll()
   })
 
-  it('should poll on correct interval', async () => {
+  it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval')
     new DetectTokensController({ interval: 1337 }) // eslint-disable-line no-new
     assert.strictEqual(stub.getCall(0).args[1], 1337)
     stub.restore()
   })
 
-  it('should be called on every polling period', async () => {
+  it('should be called on every polling period', async function () {
     clock = sandbox.useFakeTimers()
     const network = new NetworkController()
     network.initializeProvider(networkControllerProviderConfig)
@@ -66,7 +66,7 @@ describe('DetectTokensController', () => {
     sandbox.assert.calledThrice(stub)
   })
 
-  it('should not check tokens while in test network', async () => {
+  it('should not check tokens while in test network', async function () {
     controller.isOpen = true
     controller.isUnlocked = true
 
@@ -78,7 +78,7 @@ describe('DetectTokensController', () => {
     sandbox.assert.notCalled(stub)
   })
 
-  it('should only check and add tokens while in main network', async () => {
+  it('should only check and add tokens while in main network', async function () {
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = true
@@ -94,7 +94,7 @@ describe('DetectTokensController', () => {
       { address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK' }])
   })
 
-  it('should not detect same token while in main network', async () => {
+  it('should not detect same token while in main network', async function () {
     preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
@@ -111,7 +111,7 @@ describe('DetectTokensController', () => {
       { address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK' }])
   })
 
-  it('should trigger detect new tokens when change address', async () => {
+  it('should trigger detect new tokens when change address', async function () {
     controller.isOpen = true
     controller.isUnlocked = true
     const stub = sandbox.stub(controller, 'detectNewTokens')
@@ -119,7 +119,7 @@ describe('DetectTokensController', () => {
     sandbox.assert.called(stub)
   })
 
-  it('should trigger detect new tokens when submit password', async () => {
+  it('should trigger detect new tokens when submit password', async function () {
     controller.isOpen = true
     controller.selectedAddress = '0x0'
     const stub = sandbox.stub(controller, 'detectNewTokens')
@@ -127,7 +127,7 @@ describe('DetectTokensController', () => {
     sandbox.assert.called(stub)
   })
 
-  it('should not trigger detect new tokens when not open or not unlocked', async () => {
+  it('should not trigger detect new tokens when not open or not unlocked', async function () {
     controller.isOpen = true
     controller.isUnlocked = false
     const stub = sandbox.stub(controller, 'detectTokenBalance')

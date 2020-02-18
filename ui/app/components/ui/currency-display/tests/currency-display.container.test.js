@@ -13,9 +13,9 @@ proxyquire('../currency-display.container.js', {
   },
 })
 
-describe('CurrencyDisplay container', () => {
-  describe('mapStateToProps()', () => {
-    it('should return the correct props', () => {
+describe('CurrencyDisplay container', function () {
+  describe('mapStateToProps()', function () {
+    it('should return the correct props', function () {
       const mockState = {
         metamask: {
           conversionRate: 280.45,
@@ -32,8 +32,8 @@ describe('CurrencyDisplay container', () => {
     })
   })
 
-  describe('mergeProps()', () => {
-    it('should return the correct props', () => {
+  describe('mergeProps()', function () {
+    it('should return the correct props', function () {
       const mockStateProps = {
         conversionRate: 280.45,
         currentCurrency: 'usd',

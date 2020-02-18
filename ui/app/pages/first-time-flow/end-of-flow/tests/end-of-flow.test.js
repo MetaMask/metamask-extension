@@ -5,7 +5,7 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import EndOfFlowScreen from '../index'
 
-describe('End of Flow Screen', () => {
+describe('End of Flow Screen', function () {
   let wrapper
 
   const props = {
@@ -15,24 +15,23 @@ describe('End of Flow Screen', () => {
     completeOnboarding: sinon.spy(),
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = mountWithRouter(
       <EndOfFlowScreen.WrappedComponent {...props} />
     )
   })
 
-  it('renders', () => {
+  it('renders', function () {
     assert.equal(wrapper.length, 1)
   })
 
-  it('', (done) => {
+  it('should navigate to the default route on click', function (done) {
     const endOfFlowButton = wrapper.find('.btn-primary.first-time-flow__button')
     endOfFlowButton.simulate('click')
 
     setImmediate(() => {
       assert(props.completeOnboarding.calledOnce)
-      assert(props.history.push.calledOnce)
-      assert.equal(props.history.push.getCall(0).args[0], DEFAULT_ROUTE)
+      assert(props.history.push.calledOnceWithExactly(DEFAULT_ROUTE))
       done()
     })
   })

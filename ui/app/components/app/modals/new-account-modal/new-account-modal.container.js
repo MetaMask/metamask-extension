@@ -11,9 +11,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    createAccount: newAccountName => {
+    createAccount: (newAccountName) => {
       return dispatch(actions.addNewAccount())
-        .then(newAccountAddress => {
+        .then((newAccountAddress) => {
           if (newAccountName) {
             dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
           }
@@ -36,7 +36,7 @@ function mergeProps (stateProps, dispatchProps) {
     ...dispatchProps,
     onSave: (newAccountName) => {
       return createAccount(newAccountName)
-        .then(newAccountAddress => onCreateNewAccount(newAccountAddress))
+        .then((newAccountAddress) => onCreateNewAccount(newAccountAddress))
     },
   }
 }

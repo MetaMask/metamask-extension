@@ -303,7 +303,6 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-
   describe('Connects to a Hardware wallet', function () {
     it('choose Connect Hardware Wallet from the account menu', async () => {
       await driver.clickElement(By.xpath(`//div[contains(text(), 'Connect External Wallet')]`))

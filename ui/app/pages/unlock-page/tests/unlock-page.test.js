@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import UnlockPage from '../index'
 
-describe('Unlock Page', () => {
+describe('Unlock Page', function () {
   let wrapper
 
   const props = {
@@ -20,27 +20,27 @@ describe('Unlock Page', () => {
   }
 
 
-  beforeEach(() => {
+  beforeEach(function () {
 
     wrapper = mount(
       <UnlockPage.WrappedComponent{...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )
 
   })
 
-  after(() => {
+  after(function () {
     sinon.restore()
   })
 
-  it('renders', () => {
+  it('renders', function () {
     assert.equal(wrapper.length, 1)
   })
 
-  it('changes password and submits', () => {
+  it('changes password and submits', function () {
     const passwordField = wrapper.find({ type: 'password', id: 'password' })
     const loginButton = wrapper.find({ type: 'submit' }).last()
 
@@ -53,7 +53,7 @@ describe('Unlock Page', () => {
     assert(props.onSubmit.calledOnce)
   })
 
-  it('clicks imports seed button', () => {
+  it('clicks imports seed button', function () {
     const importSeedButton = wrapper.find('.unlock-page__link--import')
 
     importSeedButton.simulate('click')
@@ -61,7 +61,7 @@ describe('Unlock Page', () => {
 
   })
 
-  it('clicks restore', () => {
+  it('clicks restore', function () {
     const restoreFromSeedButton = wrapper.find('.unlock-page__link').at(0)
     restoreFromSeedButton.simulate('click')
     assert(props.onRestore.calledOnce)

@@ -26,7 +26,7 @@ export default class TransactionActivityLog extends PureComponent {
     isEarliestNonce: PropTypes.bool,
   }
 
-  handleActivityClick = hash => {
+  handleActivityClick = (hash) => {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 

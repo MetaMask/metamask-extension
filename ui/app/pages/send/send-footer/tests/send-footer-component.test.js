@@ -4,27 +4,28 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendFooter from '../send-footer.component.js'
-
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
-
-const propsMethodSpies = {
-  addToAddressBookIfNew: sinon.spy(),
-  clearSend: sinon.spy(),
-  sign: sinon.spy(),
-  update: sinon.spy(),
-}
-const historySpies = {
-  push: sinon.spy(),
-}
-const MOCK_EVENT = { preventDefault: () => {} }
-
-sinon.spy(SendFooter.prototype, 'onCancel')
-sinon.spy(SendFooter.prototype, 'onSubmit')
 
 describe('SendFooter Component', function () {
   let wrapper
 
-  beforeEach(() => {
+  const propsMethodSpies = {
+    addToAddressBookIfNew: sinon.spy(),
+    clearSend: sinon.spy(),
+    sign: sinon.spy(),
+    update: sinon.spy(),
+  }
+  const historySpies = {
+    push: sinon.spy(),
+  }
+  const MOCK_EVENT = { preventDefault: () => {} }
+
+  before(function () {
+    sinon.spy(SendFooter.prototype, 'onCancel')
+    sinon.spy(SendFooter.prototype, 'onSubmit')
+  })
+
+  beforeEach(function () {
     wrapper = shallow((
       <SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
@@ -48,10 +49,10 @@ describe('SendFooter Component', function () {
         update={propsMethodSpies.update}
         sendErrors={{}}
       />
-    ), { context: { t: str => str, metricsEvent: () => ({}) } })
+    ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
   })
 
-  afterEach(() => {
+  afterEach(function () {
     propsMethodSpies.clearSend.resetHistory()
     propsMethodSpies.addToAddressBookIfNew.resetHistory()
     propsMethodSpies.clearSend.resetHistory()
@@ -62,14 +63,18 @@ describe('SendFooter Component', function () {
     SendFooter.prototype.onSubmit.resetHistory()
   })
 
-  describe('onCancel', () => {
-    it('should call clearSend', () => {
+  after(function () {
+    sinon.restore()
+  })
+
+  describe('onCancel', function () {
+    it('should call clearSend', function () {
       assert.equal(propsMethodSpies.clearSend.callCount, 0)
       wrapper.instance().onCancel()
       assert.equal(propsMethodSpies.clearSend.callCount, 1)
     })
 
-    it('should call history.push', () => {
+    it('should call history.push', function () {
       assert.equal(historySpies.push.callCount, 0)
       wrapper.instance().onCancel()
       assert.equal(historySpies.push.callCount, 1)
@@ -78,7 +83,7 @@ describe('SendFooter Component', function () {
   })
 
 
-  describe('formShouldBeDisabled()', () => {
+  describe('formShouldBeDisabled()', function () {
     const config = {
       'should return true if inError is truthy': {
         inError: true,
@@ -123,15 +128,15 @@ describe('SendFooter Component', function () {
 
     }
     Object.entries(config).map(([description, obj]) => {
-      it(description, () => {
+      it(description, function () {
         wrapper.setProps(obj)
         assert.equal(wrapper.instance().formShouldBeDisabled(), obj.expectedResult)
       })
     })
   })
 
-  describe('onSubmit', () => {
-    it('should call addToAddressBookIfNew with the correct params', () => {
+  describe('onSubmit', function () {
+    it('should call addToAddressBookIfNew with the correct params', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
       assert.deepEqual(
@@ -140,7 +145,7 @@ describe('SendFooter Component', function () {
       )
     })
 
-    it('should call props.update if editingTransactionId is truthy', () => {
+    it('should call props.update if editingTransactionId is truthy', function () {
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
       assert.deepEqual(
@@ -159,11 +164,11 @@ describe('SendFooter Component', function () {
       )
     })
 
-    it('should not call props.sign if editingTransactionId is truthy', () => {
+    it('should not call props.sign if editingTransactionId is truthy', function () {
       assert.equal(propsMethodSpies.sign.callCount, 0)
     })
 
-    it('should call props.sign if editingTransactionId is falsy', () => {
+    it('should call props.sign if editingTransactionId is falsy', function () {
       wrapper.setProps({ editingTransactionId: null })
       wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
@@ -181,11 +186,11 @@ describe('SendFooter Component', function () {
       )
     })
 
-    it('should not call props.update if editingTransactionId is falsy', () => {
+    it('should not call props.update if editingTransactionId is falsy', function () {
       assert.equal(propsMethodSpies.update.callCount, 0)
     })
 
-    it('should call history.push', done => {
+    it('should call history.push', function (done) {
       Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT))
         .then(() => {
           assert.equal(historySpies.push.callCount, 1)
@@ -195,8 +200,8 @@ describe('SendFooter Component', function () {
     })
   })
 
-  describe('render', () => {
-    beforeEach(() => {
+  describe('render', function () {
+    beforeEach(function () {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true)
       wrapper = shallow((
         <SendFooter
@@ -220,18 +225,18 @@ describe('SendFooter Component', function () {
           unapprovedTxs={{}}
           update={propsMethodSpies.update}
         />
-      ), { context: { t: str => str, metricsEvent: () => ({}) } })
+      ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
     })
 
-    afterEach(() => {
+    afterEach(function () {
       SendFooter.prototype.formShouldBeDisabled.restore()
     })
 
-    it('should render a PageContainerFooter component', () => {
+    it('should render a PageContainerFooter component', function () {
       assert.equal(wrapper.find(PageContainerFooter).length, 1)
     })
 
-    it('should pass the correct props to PageContainerFooter', () => {
+    it('should pass the correct props to PageContainerFooter', function () {
       const {
         onCancel,
         onSubmit,

@@ -8,9 +8,9 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
 } from './transaction-activity-log.constants'
 
-const matchesEventKey = matchEventKey => ({ eventKey }) => eventKey === matchEventKey
+const matchesEventKey = (matchEventKey) => ({ eventKey }) => eventKey === matchEventKey
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),

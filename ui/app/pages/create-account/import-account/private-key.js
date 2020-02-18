@@ -55,7 +55,7 @@ class PrivateKeyImportView extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err))
   }
 
   createKeyringOnEnter = (event) => {
@@ -87,7 +87,7 @@ class PrivateKeyImportView extends Component {
             className="new-account-import-form__input-password"
             type="password"
             id="private-key-box"
-            onKeyPress={e => this.createKeyringOnEnter(e)}
+            onKeyPress={(e) => this.createKeyringOnEnter(e)}
             onChange={() => this.checkInputEmpty()}
             ref={this.inputRef}
           />

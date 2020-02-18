@@ -66,7 +66,7 @@ export default class TokenInput extends PureComponent {
     return Number(decimalValueString) ? decimalValueString : ''
   }
 
-  handleChange = decimalValue => {
+  handleChange = (decimalValue) => {
     const { selectedToken: { decimals } = {}, onChange } = this.props
 
     const multiplier = Math.pow(10, Number(decimals || 0))

@@ -67,7 +67,7 @@ export default class EditContact extends PureComponent {
               id="nickname"
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={e => this.setState({ newName: e.target.value })}
+              onChange={(e) => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -82,7 +82,7 @@ export default class EditContact extends PureComponent {
               id="address"
               value={this.state.newAddress}
               error={this.state.error}
-              onChange={e => this.setState({ newAddress: e.target.value })}
+              onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -97,7 +97,7 @@ export default class EditContact extends PureComponent {
               id="memo"
               placeholder={memo}
               value={this.state.newMemo}
-              onChange={e => this.setState({ newMemo: e.target.value })}
+              onChange={(e) => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"
               multiline
