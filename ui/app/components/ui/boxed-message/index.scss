@@ -1,0 +1,18 @@
+.boxed-message {
+  &__container {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 18px 12px;
+    display: flex;
+    @extend %font;
+    font-size: 12px;
+  }
+
+  &__icon {
+
+  }
+
+  &__message {
+    margin-left: 10px;
+  }
+}

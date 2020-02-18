@@ -1,0 +1,21 @@
+.styled-message {
+  &--success {
+    border-color: $success-green;
+    background: $success-light-green;
+  }
+
+  &--danger {
+    border-color: $danger-red;
+    background: $danger-light-red;
+  }
+
+  &--info {
+    border-color: $info-blue;
+    background: $info-light-blue;
+  }
+
+  &--warning {
+    border-color: $warning-yellow;
+    background: $warning-light-yellow;
+  }
+}
