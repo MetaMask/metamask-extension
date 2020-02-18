@@ -314,7 +314,7 @@ describe('TrustVault Keyring Tests', function () {
       }
     })
   })
-  
+
   describe('_signTransaction', function () {
     const sandbox = sinon.createSandbox()
 
