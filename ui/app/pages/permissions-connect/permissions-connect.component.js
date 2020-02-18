@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
@@ -9,7 +10,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
-import { DEFAULT_ROUTE, CONNECTED_ROUTE } from '../../helpers/constants/routes'
+import {
+  DEFAULT_ROUTE,
+  CONNECTED_ROUTE,
+} from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
 export default class PermissionConnect extends Component {
@@ -29,6 +33,9 @@ export default class PermissionConnect extends Component {
     permissionsRequestId: PropTypes.string,
     domains: PropTypes.object,
     history: PropTypes.object.isRequired,
+    connectPath: PropTypes.string.isRequired,
+    confirmPermissionPath: PropTypes.string.isRequired,
+    page: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -46,7 +53,7 @@ export default class PermissionConnect extends Component {
   }
 
   state = {
-    page: 1,
+    redirecting: false,
     selectedAccountAddress: '',
     permissionAccepted: null,
     originName: this.props.originName,
@@ -68,8 +75,8 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequest } = this.props
-    const { originName, page } = this.state
+    const { domains, permissionsRequest, page } = this.props
+    const { originName } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && page !== null) {
       const permissionDataForDomain = (domains && domains[originName]) || {}
@@ -87,9 +94,9 @@ export default class PermissionConnect extends Component {
 
   selectAccount = (address) => {
     this.setState({
-      page: 2,
       selectedAccountAddress: address,
     })
+    this.props.history.push(this.props.confirmPermissionPath)
   }
 
   redirectFlow (accepted) {
@@ -97,7 +104,7 @@ export default class PermissionConnect extends Component {
     const { originName } = this.state
 
     this.setState({
-      page: null,
+      redirecting: true,
       permissionAccepted: accepted,
     })
     this.removeBeforeUnload()
@@ -150,8 +157,11 @@ export default class PermissionConnect extends Component {
       permissionsRequest,
       addressLastConnectedMap,
       permissionsRequestId,
+      connectPath,
+      confirmPermissionPath,
+      page,
     } = this.props
-    const { page, selectedAccountAddress, permissionAccepted, originName } = this.state
+    const { selectedAccountAddress, permissionAccepted, originName, redirecting } = this.state
 
     return (
       <div className="permissions-connect">
@@ -159,49 +169,56 @@ export default class PermissionConnect extends Component {
           ? <PermissionsConnectHeader page={page} />
           : null
         }
-        { page === 1
-          ? (
-            <ChooseAccount
-              accounts={accounts}
-              originName={originName}
-              nativeCurrency={nativeCurrency}
-              selectAccount={(address) => this.selectAccount(address)}
-              selectNewAccountViaModal={() => {
-                showNewAccountModal({
-                  onCreateNewAccount: this.selectAccount,
-                  newAccountNumber,
-                })
-              }}
-              addressLastConnectedMap={addressLastConnectedMap}
-              cancelPermissionsRequest={(requestId) => {
-                if (requestId) {
-                  rejectPermissionsRequest(requestId)
-                  this.redirectFlow(false)
-                }
-              }}
-              permissionsRequestId={permissionsRequestId}
-            />
-          )
-          : (
-            <div>
-              <PermissionPageContainer
-                request={permissionsRequest || {}}
-                approvePermissionsRequest={(request, accounts) => {
-                  approvePermissionsRequest(request, accounts)
-                  this.redirectFlow(true)
+        <Switch>
+          <Route
+            path={connectPath}
+            exact
+            render={() => (
+              <ChooseAccount
+                accounts={accounts}
+                originName={originName}
+                nativeCurrency={nativeCurrency}
+                selectAccount={(address) => this.selectAccount(address)}
+                selectNewAccountViaModal={() => {
+                  showNewAccountModal({
+                    onCreateNewAccount: this.selectAccount,
+                    newAccountNumber,
+                  })
                 }}
-                rejectPermissionsRequest={(requestId) => {
-                  rejectPermissionsRequest(requestId)
-                  this.redirectFlow(false)
+                addressLastConnectedMap={addressLastConnectedMap}
+                cancelPermissionsRequest={(requestId) => {
+                  if (requestId) {
+                    rejectPermissionsRequest(requestId)
+                    this.redirectFlow(false)
+                  }
                 }}
-                selectedIdentity={accounts.find((account) => account.address === selectedAccountAddress)}
-                redirect={page === null}
-                permissionRejected={ permissionAccepted === false }
+                permissionsRequestId={permissionsRequestId}
               />
-              <PermissionsConnectFooter />
-            </div>
-          )
-        }
+            )}
+          />
+          <Route
+            path={confirmPermissionPath}
+            render={() => (
+              <div>
+                <PermissionPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(request, accounts) => {
+                    approvePermissionsRequest(request, accounts)
+                    this.redirectFlow(true)
+                  }}
+                  rejectPermissionsRequest={(requestId) => {
+                    rejectPermissionsRequest(requestId)
+                    this.redirectFlow(false)
+                  }}
+                  selectedIdentity={accounts.find((account) => account.address === selectedAccountAddress)}
+                  redirect={redirecting}
+                  permissionRejected={ permissionAccepted === false }
+                />
+                <PermissionsConnectFooter />
+              </div>
+            )}
+          />
+        </Switch>
       </div>
     )
   }
