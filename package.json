@@ -258,7 +258,6 @@
     "react-test-renderer": "^16.12.0",
     "read-installed": "^4.0.3",
     "redux-mock-store": "^1.5.4",
-    "redux-test-utils": "^0.2.2",
     "remote-redux-devtools": "^0.5.16",
     "remotedev-server": "^0.3.1",
     "resolve-url-loader": "^2.3.0",
