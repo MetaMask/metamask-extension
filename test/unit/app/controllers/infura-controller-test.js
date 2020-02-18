@@ -4,20 +4,12 @@ import InfuraController from '../../../../app/scripts/controllers/infura'
 
 describe.skip('infura-controller', function () {
   let infuraController, networkStatus
-  const response = {
-    mainnet: 'degraded',
-    ropsten: 'ok',
-    kovan: 'ok',
-    rinkeby: 'down',
-    goerli: 'ok',
-  }
+  const response = { 'mainnet': 'degraded', 'ropsten': 'ok', 'kovan': 'ok', 'rinkeby': 'down', 'goerli': 'ok' }
 
   describe('Network status queries', function () {
     before(async function () {
       infuraController = new InfuraController()
-      sinon
-        .stub(infuraController, 'checkInfuraNetworkStatus')
-        .resolves(response)
+      sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
       networkStatus = await infuraController.checkInfuraNetworkStatus()
     })
 
