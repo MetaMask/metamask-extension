@@ -1181,12 +1181,12 @@ export function cancelPersonalMsg (msgData) {
 
 export const cancelMsg = cancelPersonalMsg
 
-export function cancelDecryptMsg (msgData) {
+export function cancelEncryptionPublicKeyMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       const id = msgData.id
-      background.cancelDecryptMessage(id, (err, newState) => {
+      background.cancelEncryptionPublicKey(id, (err, newState) => {
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
@@ -1203,12 +1203,12 @@ export function cancelDecryptMsg (msgData) {
   }
 }
 
-export function cancelEncryptionPublicKeyMsg (msgData) {
+export function cancelDecryptMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       const id = msgData.id
-      background.cancelEncryptionPublicKey(id, (err, newState) => {
+      background.cancelDecryptMessage(id, (err, newState) => {
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
