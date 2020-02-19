@@ -235,8 +235,8 @@ async function fetchExternalBasicGasEstimates (
     }),
   ])
 
-  let { result: estimateGasTimes10 } = await estimateGasResult.json()
-  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // this unit is gdrip * 10
+  const { result: estimateGasDrip } = await estimateGasResult.json()
+  const estimateGasGdripTimes10 = parseInt(estimateGasDrip * 10 / 1e8, 16) || 100 // this unit is gdrip * 10
 
   const {
     safeLow: safeLowTimes10,
@@ -249,7 +249,7 @@ async function fetchExternalBasicGasEstimates (
 
   const [average, fast, fastest, safeLow] = [
     // averageTimes10,
-    estimateGasTimes10,
+    estimateGasGdripTimes10,
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
@@ -333,8 +333,8 @@ async function fetchExternalBasicGasAndTimeEstimates (
     }),
   ])
 
-  let { result: estimateGasTimes10 } = await estimateGasResult.json()
-  estimateGasTimes10 = parseInt(estimateGasTimes10, 16) || 100 // the unit is gdrip * 10
+  const { result: estimateGasDrip } = await estimateGasResult.json()
+  const estimateGasGdripTimes10 = parseInt(estimateGasDrip * 10 / 1e8, 16) || 100 // this unit is gdrip * 10
 
   const {
     // average: averageTimes10,
@@ -351,7 +351,7 @@ async function fetchExternalBasicGasAndTimeEstimates (
   } = await response.json()
   const [average, fast, fastest, safeLow] = [
     // averageTimes10,
-    estimateGasTimes10,
+    estimateGasGdripTimes10,
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
