@@ -326,11 +326,13 @@ export function getTotalUnapprovedCount ({ metamask }) {
     unapprovedTxs = {},
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedDecryptMsgCount,
+    unapprovedEncryptionPublicKeyMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount
+    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
 }
 
 export function getIsMainnet (state) {

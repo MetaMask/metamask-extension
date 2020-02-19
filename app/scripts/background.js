@@ -127,6 +127,10 @@ initialize().catch(log.error)
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
+ * @property {Object} EncryptionPublicKeyMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
+ * @property {Object} unapprovedDecryptMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
  * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
@@ -413,6 +417,8 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.decryptMessageManager.on('updateBadge', updateBadge)
+  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
   controller.permissionsController.permissions.subscribe(updateBadge)
 
@@ -424,10 +430,13 @@ function setupController (initState, initLangCode) {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
+    const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
+    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
+    const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
+    const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingPermissionRequests
+    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
+                 unapprovedTypedMessagesCount + pendingPermissionRequests
     if (count) {
       label = String(count)
     }

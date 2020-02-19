@@ -631,6 +631,80 @@ export function signPersonalMsg (msgData) {
   }
 }
 
+export function decryptMsgInline (decryptedMsgData) {
+  log.debug('action - decryptMsgInline')
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessageInline`)
+      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsgInline called back')
+        dispatch(updateMetamaskState(newState))
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function decryptMsg (decryptedMsgData) {
+  log.debug('action - decryptMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessage`)
+      background.decryptMessage(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(decryptedMsgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+        console.log(decryptedMsgData)
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function encryptionPublicKeyMsg (msgData) {
+  log.debug('action - encryptionPublicKeyMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.encryptionPublicKey`)
+      background.encryptionPublicKey(msgData, (err, newState) => {
+        log.debug('encryptionPublicKeyMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(msgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
@@ -989,6 +1063,50 @@ export function cancelPersonalMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
+export function cancelDecryptMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelDecryptMessage(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
+export function cancelEncryptionPublicKeyMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelEncryptionPublicKey(id, (err, newState) => {
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
