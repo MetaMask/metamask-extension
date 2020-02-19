@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
-import Transaction from 'js-conflux-sdk/src/Transaction'
+import { Transaction } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
 import EthQuery from '../../ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'

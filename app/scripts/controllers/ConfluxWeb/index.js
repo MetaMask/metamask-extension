@@ -1,4 +1,4 @@
-const ConfluxWeb = require('js-conflux-sdk')
+import { Conflux } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
 
 class FakeContract {
   constructor (cfx, abi) {
@@ -11,7 +11,7 @@ class FakeContract {
   }
 }
 
-module.exports = class Web3 extends ConfluxWeb {
+export default class Web3 extends Conflux {
   constructor () {
     if (arguments[0] && arguments[0]._confluxWebProvider) {
       super(arguments[0]._confluxWebProvider)
@@ -22,13 +22,13 @@ module.exports = class Web3 extends ConfluxWeb {
 
   setProvider () {
     if (arguments[0] && arguments[0]._confluxWebProvider) {
-      return ConfluxWeb.prototype.setProvider.call(
+      return Conflux.prototype.setProvider.call(
         this,
         arguments[0]._confluxWebProvider.url,
         { ...arguments[0]._confluxWebProvider }
       )
     } else {
-      return ConfluxWeb.prototype.setProvider.call(this, ...arguments)
+      return Conflux.prototype.setProvider.call(this, ...arguments)
     }
   }
 

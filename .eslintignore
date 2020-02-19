@@ -13,6 +13,7 @@ development/states.js
 app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
 app/vendor/**
+app/scripts/controllers/threebox.js
 
 ui/lib/blockies.js
 

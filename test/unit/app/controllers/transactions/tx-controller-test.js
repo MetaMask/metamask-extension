@@ -49,7 +49,7 @@ describe('Transaction Controller', function () {
       blockTracker: blockTrackerStub,
       signTransaction: ethTx =>
         new Promise(resolve => {
-          ethTx.sign(fromAccount.key)
+          ethTx.sign(`0x${fromAccount.key.toString('hex')}`)
           resolve()
         }),
       getPermittedAccounts: () => {},

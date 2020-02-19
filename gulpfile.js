@@ -37,7 +37,8 @@ const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
-  background: ['3box'],
+  // background: ['3box'],
+  background: [],
   ui: [...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies],
 }
 
