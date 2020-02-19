@@ -186,7 +186,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           type="default"
           large
           className="request-encryption-public-key__footer__cancel-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await this.props.cancelEncryptionPublicKey(txData, event)
             this.context.metricsEvent({
@@ -206,7 +206,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           type="secondary"
           large
           className="request-encryption-public-key__footer__sign-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await this.props.encryptionPublicKey(txData, event)
             this.context.metricsEvent({
