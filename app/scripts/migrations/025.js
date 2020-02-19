@@ -45,13 +45,13 @@ function transformState (state) {
 function normalizeTxParams (txParams) {
   // functions that handle normalizing of that key in txParams
   const whiteList = {
-    from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+    from: (from) => ethUtil.addHexPrefix(from).toLowerCase(),
     to: () => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
-    nonce: nonce => ethUtil.addHexPrefix(nonce),
-    value: value => ethUtil.addHexPrefix(value),
-    data: data => ethUtil.addHexPrefix(data),
-    gas: gas => ethUtil.addHexPrefix(gas),
-    gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    nonce: (nonce) => ethUtil.addHexPrefix(nonce),
+    value: (value) => ethUtil.addHexPrefix(value),
+    data: (data) => ethUtil.addHexPrefix(data),
+    gas: (gas) => ethUtil.addHexPrefix(gas),
+    gasPrice: (gasPrice) => ethUtil.addHexPrefix(gasPrice),
   }
 
   // apply only keys in the whiteList

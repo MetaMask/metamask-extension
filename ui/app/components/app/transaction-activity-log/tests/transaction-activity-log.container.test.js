@@ -5,7 +5,7 @@ let mapStateToProps
 
 proxyquire('../transaction-activity-log.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },

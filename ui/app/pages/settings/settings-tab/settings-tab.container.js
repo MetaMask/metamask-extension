@@ -9,7 +9,7 @@ import {
 } from '../../../store/actions'
 import { preferencesSelector } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
   const {
     currentCurrency,
@@ -31,12 +31,12 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    setUseBlockie: value => dispatch(setUseBlockie(value)),
-    updateCurrentLocale: key => dispatch(updateCurrentLocale(key)),
-    setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
+    setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
+    setUseBlockie: (value) => dispatch(setUseBlockie(value)),
+    updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
+    setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
     },
     setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),

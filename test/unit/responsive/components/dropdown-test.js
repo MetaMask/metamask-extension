@@ -1,7 +1,8 @@
 import React from 'react'
 import assert from 'assert'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 import sinon from 'sinon'
-import { createMockStore } from 'redux-test-utils'
 import { mountWithStore } from '../../../lib/render-helpers'
 import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
 
@@ -13,6 +14,8 @@ const mockState = {
 describe('Dropdown components', function () {
   let onClickOutside
   let onClick
+
+  const createMockStore = configureMockStore([thunk])
 
   const dropdownComponentProps = {
     isOpen: true,

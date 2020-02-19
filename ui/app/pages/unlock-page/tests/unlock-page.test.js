@@ -25,7 +25,7 @@ describe('Unlock Page', function () {
     wrapper = mount(
       <UnlockPage.WrappedComponent{...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

@@ -37,7 +37,7 @@ function setupSentry (opts) {
     beforeSend: (report) => rewriteReport(report),
   })
 
-  Sentry.configureScope(scope => {
+  Sentry.configureScope((scope) => {
     scope.setExtra('isBrave', isBrave)
   })
 
@@ -81,7 +81,7 @@ function rewriteErrorMessages (report, rewriteFn) {
   }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
+    report.exception.values.forEach((item) => {
       if (typeof item.value === 'string') {
         item.value = rewriteFn(item.value)
       }
@@ -94,8 +94,8 @@ function rewriteReportUrls (report) {
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
-      item.stacktrace.frames.forEach(frame => {
+    report.exception.values.forEach((item) => {
+      item.stacktrace.frames.forEach((frame) => {
         frame.filename = toMetamaskUrl(frame.filename)
       })
     })

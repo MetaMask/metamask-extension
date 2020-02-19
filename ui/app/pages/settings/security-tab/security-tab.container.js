@@ -7,7 +7,7 @@ import {
   setParticipateInMetaMetrics,
 } from '../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
@@ -23,10 +23,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
-    setShowIncomingTransactionsFeatureFlag: shouldShow => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+    setShowIncomingTransactionsFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
   }
 }
 

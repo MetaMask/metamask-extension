@@ -67,7 +67,7 @@ class ExtensionPlatform {
 
   currentTab () {
     return new Promise((resolve, reject) => {
-      extension.tabs.getCurrent(tab => {
+      extension.tabs.getCurrent((tab) => {
         const err = checkForError()
         if (err) {
           reject(err)

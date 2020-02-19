@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
   }

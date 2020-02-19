@@ -207,7 +207,7 @@ class TransactionStateManager extends EventEmitter {
     // commit txMeta to state
     const txId = txMeta.id
     const txList = this.getFullTxList()
-    const index = txList.findIndex(txData => txData.id === txId)
+    const index = txList.findIndex((txData) => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
   }

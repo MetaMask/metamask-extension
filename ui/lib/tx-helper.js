@@ -5,7 +5,7 @@ export default function txHelper (unapprovedTxs, unapprovedMsgs, personalMsgs, d
   log.debug('tx-helper called with params:')
   log.debug({ unapprovedTxs, unapprovedMsgs, personalMsgs, decryptMsgs, encryptionPublicKeyMsgs, typedMessages, network })
 
-  const txValues = network ? valuesFor(unapprovedTxs).filter(txMeta => txMeta.metamaskNetworkId === network) : valuesFor(unapprovedTxs)
+  const txValues = network ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.metamaskNetworkId === network) : valuesFor(unapprovedTxs)
   log.debug(`tx helper found ${txValues.length} unapproved txs`)
 
   const msgValues = valuesFor(unapprovedMsgs)

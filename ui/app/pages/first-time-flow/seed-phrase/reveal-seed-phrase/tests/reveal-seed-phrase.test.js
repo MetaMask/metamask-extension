@@ -22,7 +22,7 @@ describe('Reveal Seed Phrase', function () {
     wrapper = mount(
       <RevealSeedPhrase.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
           metricsEvent: () => {},
         },
       }

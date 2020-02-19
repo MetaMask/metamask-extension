@@ -46,7 +46,7 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-modal__name"
           defaultValue={name}
-          onSubmit={label => setAccountLabel(address, label)}
+          onSubmit={(label) => setAccountLabel(address, label)}
         />
 
         <QrView

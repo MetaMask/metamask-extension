@@ -14,7 +14,7 @@ import {
 } from '../../../selectors/selectors'
 import { showModal } from '../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const selectedAddress = getSelectedAddress(state)
@@ -34,7 +34,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showDepositModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   }

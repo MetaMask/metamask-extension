@@ -10,7 +10,7 @@ import {
   preferencesSelector,
 } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
   const accounts = getMetaMaskAccounts(state)

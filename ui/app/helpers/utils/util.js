@@ -1,6 +1,7 @@
 import abi from 'human-standard-token-abi'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
+import punycode from 'punycode'
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate (date, format = 'M/d/y \'at\' T') {
@@ -62,8 +63,14 @@ export function isValidAddress (address) {
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
-export function isValidENSAddress (address) {
-  return address.match(/^.{3,}\.(eth|test|xyz)$/)
+export function isValidDomainName (address) {
+  const match = punycode.toASCII(address)
+    .toLowerCase()
+    // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
+    // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
+    // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
+    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/)
+  return match !== null
 }
 
 export function isAllOneCase (address) {

@@ -45,11 +45,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
     this.setState({ sortedSeedWords })
   }
 
-  setDraggingSeedIndex = draggingSeedIndex => this.setState({ draggingSeedIndex })
+  setDraggingSeedIndex = (draggingSeedIndex) => this.setState({ draggingSeedIndex })
 
-  setHoveringIndex = hoveringIndex => this.setState({ hoveringIndex })
+  setHoveringIndex = (hoveringIndex) => this.setState({ hoveringIndex })
 
-  onDrop = targetIndex => {
+  onDrop = (targetIndex) => {
     const {
       selectedSeedIndices,
       draggingSeedIndex,
@@ -114,15 +114,15 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   handleDeselectSeedWord = (index) => {
     this.setState({
-      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => index !== i),
-      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => index !== i),
+      selectedSeedIndices: this.state.selectedSeedIndices.filter((i) => index !== i),
+      pendingSeedIndices: this.state.pendingSeedIndices.filter((i) => index !== i),
     })
   }
 
   isValid () {
     const { seedPhrase } = this.props
     const { selectedSeedIndices, sortedSeedWords } = this.state
-    const selectedSeedWords = selectedSeedIndices.map(i => sortedSeedWords[i])
+    const selectedSeedWords = selectedSeedIndices.map((i) => sortedSeedWords[i])
     return seedPhrase === selectedSeedWords.join(' ')
   }
 
@@ -139,7 +139,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
       <div className="confirm-seed-phrase">
         <div className="confirm-seed-phrase__back-button">
           <a
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               history.push(INITIALIZE_SEED_PHRASE_ROUTE)
             }}

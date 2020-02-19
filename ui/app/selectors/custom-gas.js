@@ -129,7 +129,7 @@ export function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecima
 
 export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
     formatETHFee
   )(estimate, gasLimit)
@@ -138,7 +138,7 @@ export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
 
 export function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency])
@@ -173,7 +173,7 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
   const formattedSec = `${seconds ? seconds + ' sec' : ''}`
   const formattedCombined = formattedMin && formattedSec
     ? `${symbol}${formattedMin} ${formattedSec}`
-    : symbol + [formattedMin, formattedSec].find(t => t)
+    : symbol + [formattedMin, formattedSec].find((t) => t)
 
   return formattedCombined
 }
@@ -197,7 +197,7 @@ export function priceEstimateToWei (priceEstimate) {
 
 export function getGasPriceInHexWei (price) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     priceEstimateToWei,
     addHexPrefix
   )(price)

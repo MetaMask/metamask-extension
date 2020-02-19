@@ -1,6 +1,7 @@
 import React from 'react'
 import assert from 'assert'
-import { createMockStore } from 'redux-test-utils'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import NetworkDropdown from '../network-dropdown'
 import { DropdownMenuItem } from '../components/dropdown'
@@ -8,6 +9,7 @@ import NetworkDropdownIcon from '../components/network-dropdown-icon'
 
 describe('Network Dropdown', function () {
   let wrapper
+  const createMockStore = configureMockStore([thunk])
 
   describe('NetworkDropdown in appState in false', function () {
     const mockState = {

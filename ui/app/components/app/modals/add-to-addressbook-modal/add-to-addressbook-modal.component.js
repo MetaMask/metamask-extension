@@ -24,13 +24,13 @@ export default class AddToAddressBookModal extends Component {
     hideModal()
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       alias: e.target.value,
     })
   }
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSave()
     }

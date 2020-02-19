@@ -13,7 +13,7 @@ describe('SendRowErrorMessage Component', function () {
           errors={{ error1: 'abc', error2: 'def' }}
           errorType="error3"
         />
-      ), { context: { t: str => str + '_t' } })
+      ), { context: { t: (str) => str + '_t' } })
     })
 
     it('should render null if the passed errors do not contain an error of errorType', function () {

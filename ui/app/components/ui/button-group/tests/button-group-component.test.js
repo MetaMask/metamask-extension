@@ -92,7 +92,7 @@ describe('ButtonGroup Component', function () {
 
     it('should render all child buttons as disabled if props.disabled is true', function () {
       const childButtons = wrapper.find('.button-group__button')
-      childButtons.forEach(button => {
+      childButtons.forEach((button) => {
         assert.equal(button.props().disabled, undefined)
       })
       wrapper.setProps({ disabled: true })

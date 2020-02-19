@@ -482,7 +482,7 @@ describe('Confirm Transaction Duck', function () {
     beforeEach(function () {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          address => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x')
+          (address) => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x')
         ),
       }
     })

@@ -138,7 +138,7 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   checkTokenDuplicates (pendingTokens, tokens) {
     const pending = Object.keys(pendingTokens)
-    const existing = tokens.map(token => token.address)
+    const existing = tokens.map((token) => token.address)
     const dupes = pending.filter((proposed) => {
       return existing.includes(proposed)
     })
@@ -156,8 +156,8 @@ export default class ConfirmAddSuggestedToken extends Component {
     const duplicates = Object.keys(pendingTokens)
       .map((addr) => pendingTokens[addr])
       .filter((token) => {
-        const dupes = tokens.filter(old => old.symbol === token.symbol)
-          .filter(old => old.address !== token.address)
+        const dupes = tokens.filter((old) => old.symbol === token.symbol)
+          .filter((old) => old.address !== token.address)
         return dupes.length > 0
       })
     return duplicates.length > 0

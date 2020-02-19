@@ -7,7 +7,7 @@ import BlockieIdenticon from './blockieIdenticon'
 import { checksumAddress } from '../../../helpers/utils/util'
 import Jazzicon from '../jazzicon'
 
-const getStyles = diameter => (
+const getStyles = (diameter) => (
   {
     height: diameter,
     width: diameter,

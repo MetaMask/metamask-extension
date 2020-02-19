@@ -17,7 +17,7 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   }
 })
 
-const localeOptions = locales.map(locale => {
+const localeOptions = locales.map((locale) => {
   return {
     displayValue: `${locale.name}`,
     key: locale.code,
@@ -63,7 +63,7 @@ export default class SettingsTab extends PureComponent {
               placeholder={t('selectCurrency')}
               options={currencyOptions}
               selectedOption={currentCurrency}
-              onSelect={newCurrency => setCurrentCurrency(newCurrency)}
+              onSelect={(newCurrency) => setCurrentCurrency(newCurrency)}
             />
           </div>
         </div>
@@ -74,7 +74,7 @@ export default class SettingsTab extends PureComponent {
   renderCurrentLocale () {
     const { t } = this.context
     const { updateCurrentLocale, currentLocale } = this.props
-    const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
+    const currentLocaleMeta = locales.find((locale) => locale.code === currentLocale)
     const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : ''
 
     return (
@@ -93,7 +93,7 @@ export default class SettingsTab extends PureComponent {
               placeholder={t('selectLocale')}
               options={localeOptions}
               selectedOption={currentLocale}
-              onSelect={async newLocale => updateCurrentLocale(newLocale)}
+              onSelect={async (newLocale) => updateCurrentLocale(newLocale)}
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useBlockie}
-              onToggle={value => setUseBlockie(!value)}
+              onToggle={(value) => setUseBlockie(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />

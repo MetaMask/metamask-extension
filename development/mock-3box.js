@@ -1,5 +1,5 @@
 function delay (time) {
-  return new Promise(resolve => setTimeout(resolve, time))
+  return new Promise((resolve) => setTimeout(resolve, time))
 }
 
 async function loadFromMock3Box (key) {
@@ -24,7 +24,7 @@ class Mock3Box {
   static openBox (address) {
     this.address = address
     return Promise.resolve({
-      onSyncDone: cb => {
+      onSyncDone: (cb) => {
         setTimeout(cb, 200)
       },
       openSpace: async (spaceName, config) => {

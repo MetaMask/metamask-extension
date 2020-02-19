@@ -90,7 +90,7 @@ export default class TransactionListItem extends PureComponent {
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
-  handleCancel = id => {
+  handleCancel = (id) => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { id: initialTransactionId },
@@ -108,7 +108,7 @@ export default class TransactionListItem extends PureComponent {
    * transaction.
    * @param {number} id - Transaction id
    */
-  handleRetry = id => {
+  handleRetry = (id) => {
     const {
       primaryTransaction: { txParams: { gasPrice } } = {},
       transaction: { txParams: { to } = {}, id: initialTransactionId },
@@ -134,7 +134,7 @@ export default class TransactionListItem extends PureComponent {
     })
 
     return fetchBasicGasAndTimeEstimates()
-      .then(basicEstimates => fetchGasEstimates(basicEstimates.blockTime))
+      .then((basicEstimates) => fetchGasEstimates(basicEstimates.blockTime))
       .then(retryTransaction(retryId, gasPrice))
   }
 
@@ -195,7 +195,7 @@ export default class TransactionListItem extends PureComponent {
     const { showTransactionDetails } = this.state
     const fromAddress = txParams.from
     const toAddress = tokenData
-      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+      ? (tokenData.params && tokenData.params[0] && tokenData.params[0].value) || txParams.to
       : txParams.to
 
     const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN

@@ -34,7 +34,7 @@ export default class SendAssetRow extends Component {
 
   closeDropdown = () => this.setState({ isShowingDropdown: false })
 
-  selectToken = address => {
+  selectToken = (address) => {
     this.setState({
       isShowingDropdown: false,
     }, () => {
@@ -87,7 +87,7 @@ export default class SendAssetRow extends Component {
         />
         <div className="send-v2__asset-dropdown__list">
           { this.renderEth() }
-          { this.props.tokens.map(token => this.renderAsset(token)) }
+          { this.props.tokens.map((token) => this.renderAsset(token)) }
         </div>
       </div>
     )
