@@ -1185,6 +1185,9 @@
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
   },
+  "selectAll": {
+    "message": "Select all"
+  },
   "selectCurrency": {
     "message": "Select Currency"
   },
