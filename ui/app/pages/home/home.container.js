@@ -15,7 +15,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
 const mapStateToProps = (state) => {
-  const { activeTab, metamask, appState } = state
+  const { metamask, appState } = state
   const {
     suggestedTokens,
     seedPhraseBackedUp,
@@ -37,7 +37,6 @@ const mapStateToProps = (state) => {
     forgottenPassword,
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
-    activeTab,
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
     threeBoxSynced,
