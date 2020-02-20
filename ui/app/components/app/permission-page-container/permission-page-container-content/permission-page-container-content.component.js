@@ -12,7 +12,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     selectedPermissions: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
-    selectedAccount: PropTypes.object,
+    selectedIdentities: PropTypes.array,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
   }
@@ -20,7 +20,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   static defaultProps = {
     redirect: null,
     permissionRejected: null,
-    selectedAccount: {},
+    selectedIdentities: [],
   }
 
   static contextTypes = {
@@ -42,7 +42,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderPermissionApprovalVisual = () => {
     const {
-      requestMetadata, domainMetadata, selectedAccount, redirect, permissionRejected,
+      requestMetadata, domainMetadata, selectedIdentities, redirect, permissionRejected,
     } = this.props
 
     return (
@@ -62,12 +62,12 @@ export default class PermissionPageContainerContent extends PureComponent {
             <div className="permission-approval-visual__identicon-border">
               <Identicon
                 className="permission-approval-visual__identicon"
-                address={selectedAccount.address}
+                address={selectedIdentities[0].address}
                 diameter={54}
               />
             </div>
           </div>
-          { redirect ? null : this.renderAccountInfo(selectedAccount) }
+          { redirect ? null : this.renderAccountInfo(selectedIdentities[0]) }
         </section>
       </div>
     )

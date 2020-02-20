@@ -1,0 +1,26 @@
+.check-box {
+  cursor: pointer;
+
+  &--checked {
+    background: $curious-blue;
+    border: 2px solid $curious-blue;
+    border-radius: 2px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      color: $white;
+    }
+  }
+
+  &--un-checked {
+    background: $white;
+    border: 2px solid $Grey-100;
+    border-radius: 2px;
+    width: 18px;
+    height: 18px;
+  }
+}
