@@ -2,7 +2,257 @@
 
 ## Current Develop Branch
 
+## 0.0.8 Tue Feb 20 2020
+- update/cleanup packages (#46)
+- update readme.md (#45)
+- Fix: average estimate gas price unit (#47)
+
+## 0.0.7 Tue Feb 17 2020
+- Fix: release file blob
+- Fix: circle ci artifact url
+- Docs: issue templates, codeowners, docs, support emails
+- Docs: move docs to conflux-portal-docs
+- Fix: MetaMask -> ConfluxPortal in announcement script
+- Fix: disable misleading changelog prefix
+- Fix: shelllint
+- Add page navigation to e2e web driver (#7867)
+- Revert the revert of "Use common test build during CI (#7196)" (#7404) (#7870)
+- Add `withFixtures` helper and simple-send test (#7862)
+- Add 1 second pause at the beginning of each e2e test run (#7872)
+- Remove unnecessary `shouldComponentUpdate` (#7875)
+- Fix intermittent e2e test failure (#7873)
+- Add benchmark script (#7869)
+- Update inpage provider (#7878)
+- Remove unused browser-passworder dependency from package.json (#7879)
+- Add margin of error metric (#7877)
+- Change "Log In/Out" terminology to "Unlock/Lock" (#7853)
+- Add mechanism to randomize seed phrase filename (#7863)
+- Use shared MetaMask ESLint config (#7882)
+- Remove unnecessary WebRTC shim (#7886)
+- Replace DetectRTC package with standard web APIs (#7887)
+- Add benchmark to CI (#7871)
+- Use ref in Mascot component rather than reaching into DOM directly (#7893)
+- Remove unnecessary `withRouter` and `compose` calls (#7890)
+- Remove unnecessary get environment type parameter (#7891)
+- Add top-level error page (#7889)
+- Update GABA dependency version (#7894)
+- Replace `request-promise` with `node-fetch` (#7899)
+- Update Sentry to v5.x (#7880)
+- Minimum changes to get storybook working (#7884)
+- Fixing broken JSON import help link (#7910)
+- Remove xtend from the dependencies list (#7902)
+- Update `classnames` to `v2.2.6` (#7906)
+- Replace bluebird with Node.js API for unhandled rejections (#7904)
+- Comment out `storybook-deploy` step (#7913)
+- Switch to full lodash package, and update lodash (#7907)
+- Update `c3` and `d3` (#7905)
+- Replace `deep-extend` with `merge` from `lodash` (#7908)
+- Improve LoginPerSite UX/devX and permissions logging (#7649)
+- disable import button on Import Account screen for empty string/file (#7912)
+- Update data on Approve screen after updating custom spend limit (#7918)
+- Remove usage of unlisted extend dependency (#7903)
+- Remove JSDoc tools (#7897)
+- Update jazzicon component (#7898)
+- Allow editing max spend limit (#7919)
+- Report errors in tests to `test-metamask` Sentry project (#7924)
+- Bump Node version to 10.18 (#7925)
+- Remove top-level symlinks (#7927)
+- Replace `clone` dependency with `cloneDeep` from lodash (#7926)
+- Remove redux-logger from mock-store (#7930)
+- Delete unused .dockerignore file (#7929)
+- Replace `debounce` package with `debounce` function from `lodash` (#7931)
+- Remove unused promise-filter dependency (#7932)
+- Validate custom spend limit (#7920)
+- Delete outdated team page (#7928)
+- Replace mkdirp with built-in functionality (#7934)
+- Sorting seed phrase confirmation buttons alphabetically (#7933)
+- Replace fast-deep-equal with isEqual from lodash (#7935)
+- Move devDeps into devDeps (#7936)
+- Remove unused number-to-bn package (#7937)
+- Add Sentry environment (#7923)
+- Move polyfill-crypto.getrandomvalues to devDeps (#7938)
+- Fix: syntax error
+- Remove unused fs-extra and fs-promise devDependencies (#7939)
+- Remove unused rimraf devDependency (#7940)
+- Remove unnecessary 'path' dependency (#7942)
+- Only resolve ENS on mainnet (#7944)
+- Remove unused mocha-eslint dependency (#7943)
+- Inline isomorphic-fetch test helper (#7945)
+- Remove dead link to team page in README (#7946)
+- Remove mocha-jsdom and mocha-sinon (#7947)
+- Explicitly set Sass compiler for gulp-sass (#7948)
+- ci: Update shellcheck version used in CI (#7951)
+- Move issue template and contributing doc to .github (#7952)
+- Remove gulp-eslint and gulp-util dependency (#7949)
+- Update ENS registry addresses (#7954)
+- Bump tree-kill version to fix high-severity vulnerability (#7956)
+- Bump node-sass to fix low-severity vulnerability (#7955)
+- Remove cross-env (#7950)
+- Various component tests and some conditional statements (#7765)
+- Update ethereum-ens-network-map in lockfile (#7959)
+- Use ethereum-ens-network-map for network support (#7960)
+- Fix: lint
+- Fix: unit tests
+- Fix: settings network tab react dup key error
+- Fix: no need to pass benchmark test to release for now
+- Fix: speedup tx
+- Updating deprecated Etherscam link  (#7464)
+- Use envify@4.1.0 (#7983)
+- Use eth-json-rpc-infura@4.0.2 (#7981)
+- Use eth-keyring-controller@5.5.0 (#7980)
+- Use gulp@4.0.2 (#7982)
+- Remove redundant eth-*-keyring versions from yarn.lock (#7984)
+- Fixes #5706 - Adds Dai/Sai to currency display (#7986)
+- Add: testnet to http://testnet-jsonrpc.conflux-chain.org:12537/
+- Fix: sign typed data
+- Fix: conflicts with metamask, add testnet chainid
+- Fix: test:lint
+- Master => develop (#34)
+- Fix: use fc's balanceOf instead of stateOf, treat fc as a normal… (#37)
+- Add: example of sending signed typed data
+- Fix SendAmountRow tests (#7968)
+- Revert CircleCI Node image (#7996)
+- Remove last remaining usages of `npm run` (#7994)
+- update inpage-provider; minor fixes (#7997)
+- Delete multi_vault_planning.md (#7988)
+- Delete video_script.txt (#7989)
+- Delete send-screen-QA-checklist.md (#7998)
+- Use combineReducers for rootReducer (#7964)
+- Delete adding-new-networks.md (#7999)
+- Use readOnly (#7995)
+- Delete developing-on-deps.md (#8004)
+- Delete limited_site_access.md (#8007)
+- Update README.md (#8005)
+- Add support for 24 word seed phrases (#7987)
+- Remove version bump scripts (#8006)
+- Browser tests (#8010)
+- Enable Storybook deploy on CI (#8009)
+- Ensure we pass history to UnlockPage component (#8017)
+- Use image hash for ShellCheck Docker image (#8022)
+- Use contact name instead of address during send flow (#7971)
+- Add: use metamask's new mocha eslint rule
+- Update ESLint rules for test suite (#8023)
+- Update sinon and proxyquire (#8027)
+- Update mocha version (#8028)
+- Add: yarn.lock
+- fix faulty null checks
+- update packages
+- Refactor QR scanner to move all error handling within component (#7885)
+- Add: html title metamask -> portal
+- add title to transaction action component (#8050)
+- Inline the source text not the binary encoding for inpage script (#8053)
+- Add warning to watchAsset API when editing a known token (#8049)
+- Update Wyre ETH purchase url (#8051)
+- Fix: global detect
+- Fix: lint
+- Add: storybook deploy
+- Add: update inpage provider to 4.0.7
+- misc updates
+
 ## 0.0.6 Tue Feb 11 2020
+- Fix: release file blob
+- Fix: circle ci artifact url
+- Docs: issue templates, codeowners, docs, support emails
+- Docs: move docs to conflux-portal-docs
+- Fix: MetaMask -> ConfluxPortal in announcement script
+- Fix: disable misleading changelog prefix
+- Fix: shelllint
+- Add page navigation to e2e web driver (#7867)
+- Revert the revert of "Use common test build during CI (#7196)" (#7404) (#7870)
+- Add `withFixtures` helper and simple-send test (#7862)
+- Add 1 second pause at the beginning of each e2e test run (#7872)
+- Remove unnecessary `shouldComponentUpdate` (#7875)
+- Fix intermittent e2e test failure (#7873)
+- Add benchmark script (#7869)
+- Update inpage provider (#7878)
+- Remove unused browser-passworder dependency from package.json (#7879)
+- Add margin of error metric (#7877)
+- Change "Log In/Out" terminology to "Unlock/Lock" (#7853)
+- Add mechanism to randomize seed phrase filename (#7863)
+- Use shared MetaMask ESLint config (#7882)
+- Remove unnecessary WebRTC shim (#7886)
+- Replace DetectRTC package with standard web APIs (#7887)
+- Add benchmark to CI (#7871)
+- Use ref in Mascot component rather than reaching into DOM directly (#7893)
+- Remove unnecessary `withRouter` and `compose` calls (#7890)
+- Remove unnecessary get environment type parameter (#7891)
+- Add top-level error page (#7889)
+- Update GABA dependency version (#7894)
+- Replace `request-promise` with `node-fetch` (#7899)
+- Update Sentry to v5.x (#7880)
+- Minimum changes to get storybook working (#7884)
+- Fixing broken JSON import help link (#7910)
+- Remove xtend from the dependencies list (#7902)
+- Update `classnames` to `v2.2.6` (#7906)
+- Replace bluebird with Node.js API for unhandled rejections (#7904)
+- Comment out `storybook-deploy` step (#7913)
+- Switch to full lodash package, and update lodash (#7907)
+- Update `c3` and `d3` (#7905)
+- Replace `deep-extend` with `merge` from `lodash` (#7908)
+- Improve LoginPerSite UX/devX and permissions logging (#7649)
+- disable import button on Import Account screen for empty string/file (#7912)
+- Update data on Approve screen after updating custom spend limit (#7918)
+- Remove usage of unlisted extend dependency (#7903)
+- Remove JSDoc tools (#7897)
+- Update jazzicon component (#7898)
+- Allow editing max spend limit (#7919)
+- Report errors in tests to `test-metamask` Sentry project (#7924)
+- Bump Node version to 10.18 (#7925)
+- Remove top-level symlinks (#7927)
+- Replace `clone` dependency with `cloneDeep` from lodash (#7926)
+- Remove redux-logger from mock-store (#7930)
+- Delete unused .dockerignore file (#7929)
+- Replace `debounce` package with `debounce` function from `lodash` (#7931)
+- Remove unused promise-filter dependency (#7932)
+- Validate custom spend limit (#7920)
+- Delete outdated team page (#7928)
+- Replace mkdirp with built-in functionality (#7934)
+- Sorting seed phrase confirmation buttons alphabetically (#7933)
+- Replace fast-deep-equal with isEqual from lodash (#7935)
+- Move devDeps into devDeps (#7936)
+- Remove unused number-to-bn package (#7937)
+- Add Sentry environment (#7923)
+- Move polyfill-crypto.getrandomvalues to devDeps (#7938)
+- Fix: syntax error
+- Remove unused fs-extra and fs-promise devDependencies (#7939)
+- Remove unused rimraf devDependency (#7940)
+- Remove unnecessary 'path' dependency (#7942)
+- Only resolve ENS on mainnet (#7944)
+- Remove unused mocha-eslint dependency (#7943)
+- Inline isomorphic-fetch test helper (#7945)
+- Remove dead link to team page in README (#7946)
+- Remove mocha-jsdom and mocha-sinon (#7947)
+- Explicitly set Sass compiler for gulp-sass (#7948)
+- ci: Update shellcheck version used in CI (#7951)
+- Move issue template and contributing doc to .github (#7952)
+- Remove gulp-eslint and gulp-util dependency (#7949)
+- Update ENS registry addresses (#7954)
+- Bump tree-kill version to fix high-severity vulnerability (#7956)
+- Bump node-sass to fix low-severity vulnerability (#7955)
+- Remove cross-env (#7950)
+- Various component tests and some conditional statements (#7765)
+- Update ethereum-ens-network-map in lockfile (#7959)
+- Use ethereum-ens-network-map for network support (#7960)
+- Fix: lint
+- Fix: unit tests
+- Fix: settings network tab react dup key error
+- Fix: no need to pass benchmark test to release for now
+- Fix: speedup tx
+- Updating deprecated Etherscam link  (#7464)
+- Use envify@4.1.0 (#7983)
+- Use eth-json-rpc-infura@4.0.2 (#7981)
+- Use eth-keyring-controller@5.5.0 (#7980)
+- Use gulp@4.0.2 (#7982)
+- Remove redundant eth-*-keyring versions from yarn.lock (#7984)
+- Fixes #5706 - Adds Dai/Sai to currency display (#7986)
+- Add: testnet to http://testnet-jsonrpc.conflux-chain.org:12537/
+- Fix: sign typed data
+- Fix: conflicts with metamask, add testnet chainid
+- Fix: test:lint
+- Master => develop (#34)
+- Fix: use fc's balanceOf instead of stateOf, treat fc as a normal… (#37)
+- Master => develop (#34)
+- Fix: use fc's balanceOf instead of stateOf, treat fc as a normal… (#37)
 
 ## 0.0.5 Mon Feb 10 2020
 - [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
@@ -108,9 +358,9 @@
 - Master => develop (#34)
 
 ## 0.0.4 Mon Jan 20 2020
-- [#7823](https://github.com/Conflux-Chain/conflux-portal/pull/7823): Wait until element is clickable before clicking in e2e tests (#7823)
-- [#7833](https://github.com/Conflux-Chain/conflux-portal/pull/7833): Fix prop types for SendGasRow component tests (#7833)
-- [#7835](https://github.com/Conflux-Chain/conflux-portal/pull/7835): Clean up Migrator test cases (#7835)
+- [#7823](https://github.com/MetaMask/metamask-extension/pull/7823): Wait until element is clickable before clicking in e2e tests (#7823)
+- [#7833](https://github.com/MetaMask/metamask-extension/pull/7833): Fix prop types for SendGasRow component tests (#7833)
+- [#7835](https://github.com/MetaMask/metamask-extension/pull/7835): Clean up Migrator test cases (#7835)
 - Add: release 0.0.3, add docs comparing with metamask
 - Clean: logs
 - Add: github pages, renaming
@@ -120,23 +370,23 @@
 - Fix: token list
 - Add: update announce script
 - Add: build-announce depends or different repo
-- [#7837](https://github.com/Conflux-Chain/conflux-portal/pull/7837): Fix prop types for NetworkDropdown tests (#7837)
-- [#7836](https://github.com/Conflux-Chain/conflux-portal/pull/7836): Fix prop types for GasPriceChart tests (#7836)
-- [#7834](https://github.com/Conflux-Chain/conflux-portal/pull/7834): Add required props for TransactionListItemDetails tests (#7834)
-- [#7838](https://github.com/Conflux-Chain/conflux-portal/pull/7838): Remove extraneous console output from TransactionStateManager tests (#7838)
-- [#7843](https://github.com/Conflux-Chain/conflux-portal/pull/7843): Remove unused current view related things (#7843)
-- [#7840](https://github.com/Conflux-Chain/conflux-portal/pull/7840): Force background state update after removing an account (#7840)
-- [#7817](https://github.com/Conflux-Chain/conflux-portal/pull/7817): Refactor Network dropdown component (#7817)
-- [#7841](https://github.com/Conflux-Chain/conflux-portal/pull/7841): Refactor building of e2e web driver (#7841)
-- [#7849](https://github.com/Conflux-Chain/conflux-portal/pull/7849): Fix propTypes and test props for SignatureRequest component (#7849)
-- [#7851](https://github.com/Conflux-Chain/conflux-portal/pull/7851): Fix propTypes and test props for Dropdown components (#7851)
-- [#7850](https://github.com/Conflux-Chain/conflux-portal/pull/7850): Fix props for BasicTabContent component tests (#7850)
-- [#7848](https://github.com/Conflux-Chain/conflux-portal/pull/7848): Fix propTypes for TransactionBreakdown component (#7848)
-- [#7856](https://github.com/Conflux-Chain/conflux-portal/pull/7856): deps - update nonce-tracker (#7856)
-- [#7854](https://github.com/Conflux-Chain/conflux-portal/pull/7854): Inline networkStore to avoid having too many event listeners (#7854)
-- [#7859](https://github.com/Conflux-Chain/conflux-portal/pull/7859): Switch signature-request e2e tests to using ganache (#7859)
-- [#7860](https://github.com/Conflux-Chain/conflux-portal/pull/7860): Allow exporting state during e2e tests (#7860)
-- [#7855](https://github.com/Conflux-Chain/conflux-portal/pull/7855): Clean up "JSON File" import strategy test output (#7855)
+- [#7837](https://github.com/MetaMask/metamask-extension/pull/7837): Fix prop types for NetworkDropdown tests (#7837)
+- [#7836](https://github.com/MetaMask/metamask-extension/pull/7836): Fix prop types for GasPriceChart tests (#7836)
+- [#7834](https://github.com/MetaMask/metamask-extension/pull/7834): Add required props for TransactionListItemDetails tests (#7834)
+- [#7838](https://github.com/MetaMask/metamask-extension/pull/7838): Remove extraneous console output from TransactionStateManager tests (#7838)
+- [#7843](https://github.com/MetaMask/metamask-extension/pull/7843): Remove unused current view related things (#7843)
+- [#7840](https://github.com/MetaMask/metamask-extension/pull/7840): Force background state update after removing an account (#7840)
+- [#7817](https://github.com/MetaMask/metamask-extension/pull/7817): Refactor Network dropdown component (#7817)
+- [#7841](https://github.com/MetaMask/metamask-extension/pull/7841): Refactor building of e2e web driver (#7841)
+- [#7849](https://github.com/MetaMask/metamask-extension/pull/7849): Fix propTypes and test props for SignatureRequest component (#7849)
+- [#7851](https://github.com/MetaMask/metamask-extension/pull/7851): Fix propTypes and test props for Dropdown components (#7851)
+- [#7850](https://github.com/MetaMask/metamask-extension/pull/7850): Fix props for BasicTabContent component tests (#7850)
+- [#7848](https://github.com/MetaMask/metamask-extension/pull/7848): Fix propTypes for TransactionBreakdown component (#7848)
+- [#7856](https://github.com/MetaMask/metamask-extension/pull/7856): deps - update nonce-tracker (#7856)
+- [#7854](https://github.com/MetaMask/metamask-extension/pull/7854): Inline networkStore to avoid having too many event listeners (#7854)
+- [#7859](https://github.com/MetaMask/metamask-extension/pull/7859): Switch signature-request e2e tests to using ganache (#7859)
+- [#7860](https://github.com/MetaMask/metamask-extension/pull/7860): Allow exporting state during e2e tests (#7860)
+- [#7855](https://github.com/MetaMask/metamask-extension/pull/7855): Clean up "JSON File" import strategy test output (#7855)
 
 ## 0.0.3 Thu Feb 16 2020
 - remove preset default gas and default gas price in injected web3
