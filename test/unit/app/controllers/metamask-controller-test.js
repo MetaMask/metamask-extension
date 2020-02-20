@@ -102,6 +102,7 @@ describe('MetaMaskController', function () {
     // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
+    sandbox.spy(metamaskController.txController, 'newUnapprovedTransaction')
   })
 
   afterEach(function () {
@@ -790,6 +791,88 @@ describe('MetaMaskController', function () {
       metamaskController.setupUntrustedCommunication(streamTest, phishingMessageSender)
       await promise
       streamTest.end()
+    })
+
+    it('adds a tabId and origin to requests', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: { id: 456 },
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        setTimeout(() => {
+          assert.deepStrictEqual(
+            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
+            [
+              'mock tx params',
+              {
+                ...message,
+                origin: 'mycrypto.com',
+                tabId: 456,
+              },
+            ]
+          )
+          done()
+        })
+      })
+    })
+
+    it('should add only origin to request if tabId not provided', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        setTimeout(() => {
+          assert.deepStrictEqual(
+            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
+            [
+              'mock tx params',
+              {
+                ...message,
+                origin: 'mycrypto.com',
+              },
+            ]
+          )
+          done()
+        })
+      })
     })
   })
 
