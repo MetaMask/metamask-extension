@@ -15,7 +15,6 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
-  // getLastSelectedAddress,
   // getPermittedAccounts,
 } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
@@ -34,8 +33,8 @@ function mapStateToProps (state) {
   /**
    * TODO:LoginPerSite:ui
    * - propagate the relevant props below after computing them
+   * - use `selectedAccountIsPermitted` for the account connection
    */
-  // const lastSelectedAddress = getLastSelectedAddress(state, origin)
   // const permittedAccounts = getPermittedAccounts(state, origin)
   // const selectedAccountIsPermitted = permittedAccounts.includes(selectedAddress)
 

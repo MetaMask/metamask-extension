@@ -10,7 +10,6 @@ import {
   getNetworkIdentifier,
   preferencesSelector,
   hasPermissionRequests,
-  getAddressConnectedToCurrentTab,
 } from '../../selectors/selectors'
 import classnames from 'classnames'
 
@@ -107,20 +106,6 @@ class Routes extends Component {
         })
       }
     })
-  }
-
-  componentDidMount () {
-    const { addressConnectedToCurrentTab, showAccountDetail, selectedAddress } = this.props
-    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== selectedAddress) {
-      showAccountDetail(addressConnectedToCurrentTab)
-    }
-  }
-
-  componentDidUpdate (prevProps) {
-    const { addressConnectedToCurrentTab, showAccountDetail } = this.props
-    if (addressConnectedToCurrentTab && addressConnectedToCurrentTab !== prevProps.addressConnectedToCurrentTab) {
-      showAccountDetail(addressConnectedToCurrentTab)
-    }
   }
 
   renderRoutes () {
@@ -418,7 +403,6 @@ function mapStateToProps (state) {
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
     hasPermissionsRequests: hasPermissionRequests(state),
-    addressConnectedToCurrentTab: getAddressConnectedToCurrentTab(state),
   }
 }
 

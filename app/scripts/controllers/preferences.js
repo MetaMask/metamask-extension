@@ -61,8 +61,6 @@ class PreferencesController {
 
       // ENS decentralized website resolution
       ipfsGateway: 'ipfs.dweb.link',
-
-      lastSelectedAddressByOrigin: {},
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -369,56 +367,6 @@ class PreferencesController {
    */
   getSelectedAddress () {
     return this.store.getState().selectedAddress
-  }
-
-  /**
-   * Update the last selected address for the given origin.
-   *
-   * @param {string} origin - The origin for which the address was selected.
-   * @param {string} address - The new selected address.
-   */
-  setLastSelectedAddress (origin, address) {
-
-    const { lastSelectedAddressByOrigin } = this.store.getState()
-
-    // only update state if it's necessary
-    if (lastSelectedAddressByOrigin[origin] !== address) {
-      lastSelectedAddressByOrigin[origin] = address
-      this.store.updateState({ lastSelectedAddressByOrigin })
-    }
-  }
-
-  /**
-   * Remove the selected address history for the given origin.
-   *
-   * @param {Array<string>} origins - The origin to remove the last selected address for.
-   */
-  removeLastSelectedAddressesFor (origins) {
-
-    if (
-      !Array.isArray(origins) ||
-      (origins.length > 0 && typeof origins[0] !== 'string')
-    ) {
-      throw new Error('Expected array of strings')
-    }
-
-    if (origins.length === 0) {
-      return
-    }
-
-    const { lastSelectedAddressByOrigin } = this.store.getState()
-
-    origins.forEach((origin) => {
-      delete lastSelectedAddressByOrigin[origin]
-    })
-    this.store.updateState({ lastSelectedAddressByOrigin })
-  }
-
-  /**
-   * Clears the selected address history.
-   */
-  clearLastSelectedAddressHistory () {
-    this.store.updateState({ lastSelectedAddressByOrigin: {} })
   }
 
   /**
