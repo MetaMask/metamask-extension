@@ -16,6 +16,7 @@ class AccountsDropdownItemView extends Component {
     identity: PropTypes.object.isRequired,
     actions: PropTypes.objectOf(PropTypes.func),
     closeMenu: PropTypes.func,
+    network: PropTypes.string,
   }
 
   constructor (props) {
@@ -117,7 +118,7 @@ class AccountsDropdownItemView extends Component {
     this.props.actions.showAccountDetail(address)
     if (ifHardwareAcc(keyring)) {
       if (isLedger(keyring.type)) {
-        const hdPaths = getHdPaths()
+        const hdPaths = getHdPaths(this.props.network)
         return new Promise((resolve, reject) => {
           this.props.actions.connectHardwareAndUnlockAddress(LEDGER, hdPaths[1].value, address)
           .then(_ => resolve())

@@ -26,9 +26,9 @@ class AccountList extends Component {
     }
 
     renderHdPathSelector = () => {
-      const { onPathChange, selectedPath } = this.props
+      const { onPathChange, selectedPath, network } = this.props
 
-      const options = getHdPaths()
+      const options = getHdPaths(network)
       return (
         <div>
           <h3 className="hw-connect__hdPath__title">Select HD Path</h3>

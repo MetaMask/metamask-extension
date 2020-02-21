@@ -46,10 +46,11 @@ class ConnectHardwareForm extends Component {
 
   async checkIfUnlocked () {
     [TREZOR, LEDGER].forEach(async device => {
-      const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
+      const hdPath = this._setHdPath(device)
+      const unlocked = await this.props.checkHardwareStatus(device, hdPath)
       if (unlocked) {
         this.setState({unlocked: true})
-        this.getPage(device, 0, this.props.defaultHdPaths[device])
+        this.getPage(device, 0, hdPath)
       }
     })
   }
@@ -66,8 +67,10 @@ class ConnectHardwareForm extends Component {
       return null
     }
 
+    const hdPath = this._setHdPath(device)
+
     // Default values
-    this.getPage(device, 0, this.props.defaultHdPaths[device])
+    this.getPage(device, 0, hdPath)
   }
 
   onPathChange = (path) => {
@@ -238,6 +241,18 @@ class ConnectHardwareForm extends Component {
       </div>
     )
   }
+
+  _setHdPath (device) {
+    let hdPath
+    const {network, customHdPaths, defaultHdPaths} = this.props
+    const networkInteger = parseInt(network, 10)
+    if (customHdPaths.hasOwnProperty(networkInteger)) {
+      hdPath = customHdPaths[networkInteger][device]
+    } else {
+      hdPath = defaultHdPaths[device]
+    }
+    return hdPath
+  }
 }
 
 ConnectHardwareForm.propTypes = {
@@ -257,6 +272,7 @@ ConnectHardwareForm.propTypes = {
   accounts: PropTypes.object,
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
+  customHdPaths: PropTypes.object,
 }
 
 const mapStateToProps = state => {
@@ -266,7 +282,7 @@ const mapStateToProps = state => {
   const accounts = getMetaMaskAccounts(state)
   const numberOfExistingAccounts = Object.keys(identities).length
   const {
-    appState: { defaultHdPaths },
+    appState: { defaultHdPaths, customHdPaths },
   } = state
 
   return {
@@ -275,6 +291,7 @@ const mapStateToProps = state => {
     address: selectedAddress,
     numberOfExistingAccounts,
     defaultHdPaths,
+    customHdPaths,
   }
 }
 

@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const customHdPaths = require('../../../old-ui/app/components/connect-hardware/util.js')
 const log = require('loglevel')
 
 module.exports = reduceApp
@@ -75,6 +76,7 @@ function reduceApp (state, action) {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
     },
+    customHdPaths: customHdPaths,
   }, state.appState)
 
   let curPendingTxIndex = appState.currentView.pendingTxIndex || 0
