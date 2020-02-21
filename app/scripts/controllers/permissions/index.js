@@ -215,6 +215,11 @@ export class PermissionsController {
           },
         })
       }
+    } else {
+      this.notifyDomain(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        result: accounts,
+      })
     }
   }
 
