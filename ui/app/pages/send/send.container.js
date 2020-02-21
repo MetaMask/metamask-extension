@@ -28,6 +28,9 @@ import {
   getSelectedAddress,
   getAddressBook,
 } from '../../selectors/selectors'
+import {
+  networkTransactionsSelector,
+} from '../../selectors/transactions'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
@@ -51,17 +54,27 @@ import {
 } from './send.utils.js'
 import {
   isValidDomainName,
+  getTxById,
 } from '../../helpers/utils/util'
 
 function mapStateToProps (state) {
+
+  let fromAddress
+  const editingTransactionId = getSendEditingTransactionId(state)
+  if (editingTransactionId) {
+    const transactions = networkTransactionsSelector(state)
+    const tx = getTxById(transactions, editingTransactionId)
+    fromAddress = tx && tx.txParams && tx.txParams.from
+  }
+
   return {
     addressBook: getAddressBook(state),
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
-    editingTransactionId: getSendEditingTransactionId(state),
-    from: getSendFromObject(state),
+    editingTransactionId,
+    from: getSendFromObject(state, fromAddress),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),

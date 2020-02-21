@@ -20,13 +20,19 @@ import {
 const mapStateToProps = (state, ownProps) => {
   const { match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
-  const { confirmTransaction, metamask: { currentCurrency, conversionRate, selectedAddressTxList } } = state
+  const {
+    confirmTransaction,
+    metamask: { currentCurrency, conversionRate, currentNetworkTxList },
+  } = state
 
   const {
     txData: { id: transactionId, txParams: { to: tokenAddress, data } = {} } = {},
   } = confirmTransaction
 
-  const transaction = selectedAddressTxList.find(({ id }) => id === (Number(paramsTransactionId) || transactionId)) || {}
+  const transaction = (
+    currentNetworkTxList.find(({ id }) => id === (Number(paramsTransactionId) ||
+    transactionId)) || {}
+  )
 
   const {
     ethTransactionTotal,

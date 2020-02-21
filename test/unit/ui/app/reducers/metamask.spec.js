@@ -274,7 +274,7 @@ describe('MetaMask Reducers', function () {
 
   it('updates value of tx by id', function () {
     const oldState = {
-      selectedAddressTxList: [
+      currentNetworkTxList: [
         {
           id: 1,
           txParams: 'foo',
@@ -288,7 +288,7 @@ describe('MetaMask Reducers', function () {
       value: 'bar',
     })
 
-    assert.equal(state.selectedAddressTxList[0].txParams, 'bar')
+    assert.equal(state.currentNetworkTxList[0].txParams, 'bar')
   })
 
   it('sets blockies', function () {

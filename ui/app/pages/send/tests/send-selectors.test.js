@@ -2,11 +2,16 @@ import assert from 'assert'
 import sinon from 'sinon'
 import {
   accountsWithSendEtherInfoSelector,
+  getCurrentAccountWithSendEtherInfo,
+} from '../../../selectors/selectors'
+import {
+  transactionsSelector,
+} from '../../../selectors/transactions'
+import {
   // autoAddToBetaUI,
   getBlockGasLimit,
   getAmountConversionRate,
   getConversionRate,
-  getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
   getNativeCurrency,
@@ -35,7 +40,6 @@ import {
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
-  transactionsSelector,
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 

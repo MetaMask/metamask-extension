@@ -24,6 +24,10 @@ import {
   getSendErrors,
 } from '../send.selectors'
 import { getGasIsLoading } from '../../../selectors/selectors'
+import { networkTransactionsSelector } from '../../../selectors/transactions'
+import {
+  getTxById,
+} from '../../../helpers/utils/util'
 import {
   isSendFormInError,
 } from './send-footer.selectors'
@@ -40,6 +44,7 @@ import {
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
 function mapStateToProps (state) {
+
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
@@ -47,11 +52,19 @@ function mapStateToProps (state) {
     ? gasButtonInfo[activeButtonIndex].gasEstimateType
     : 'custom'
 
+  let fromAddress
+  const editingTransactionId = getSendEditingTransactionId(state)
+  if (editingTransactionId) {
+    const transactions = networkTransactionsSelector(state)
+    const tx = getTxById(transactions, editingTransactionId)
+    fromAddress = tx && tx.txParams && tx.txParams.from
+  }
+
   return {
     amount: getSendAmount(state),
     data: getSendHexData(state),
-    editingTransactionId: getSendEditingTransactionId(state),
-    from: getSendFromObject(state),
+    editingTransactionId,
+    from: getSendFromObject(state, fromAddress),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),

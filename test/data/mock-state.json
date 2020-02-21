@@ -157,7 +157,7 @@
       "forceGasMin": null,
       "toNickname": ""
     },
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "id": 3387511061307736,
         "time": 1528133130531,

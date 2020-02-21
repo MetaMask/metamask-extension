@@ -91,7 +91,7 @@ export default {
       },
     },
     'transactions': {},
-    'selectedAddressTxList': [
+    'currentNetworkTxList': [
       {
         'id': 'mockTokenTx1',
         'txParams': {
