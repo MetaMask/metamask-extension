@@ -389,7 +389,6 @@ function mapStateToProps (state) {
     submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     network: state.metamask.network,
     provider: state.metamask.provider,
-    selectedAddress: state.metamask.selectedAddress,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
@@ -406,7 +405,6 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
   }
 }
 

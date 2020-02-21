@@ -748,11 +748,10 @@ class TransactionController extends EventEmitter {
   _updateMemstore () {
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
-      from: this.getSelectedAddress(),
+    const currentNetworkTxList = this.txStateManager.getFilteredTxList({
       metamaskNetworkId: this.getNetwork(),
     })
-    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
 }
 

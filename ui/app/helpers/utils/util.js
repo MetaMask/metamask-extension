@@ -287,3 +287,7 @@ export function getOriginFromUrl (url) {
   const origin = url.hostname
   return origin
 }
+
+export function getTxById (transactions = [], targetId) {
+  return transactions.find(({ id }) => JSON.stringify(id) === targetId)
+}

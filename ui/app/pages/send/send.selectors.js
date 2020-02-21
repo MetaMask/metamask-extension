@@ -1,21 +1,17 @@
-import { valuesFor } from '../../helpers/utils/util'
 import abi from 'human-standard-token-abi'
 import { multiplyCurrencies } from '../../helpers/utils/conversion-util'
-import { getMetaMaskAccounts, getSelectedAddress, getAddressBook } from '../../selectors/selectors'
+import {
+  accountsWithSendEtherInfoSelector,
+  getAddressBook,
+  getCurrentAccountWithSendEtherInfo,
+  getTargetAccountWithSendEtherInfo,
+  getMetaMaskAccounts,
+  getSelectedAddress,
+} from '../../selectors/selectors'
 import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
 import {
   getAveragePriceEstimateInHexWEI,
 } from '../../selectors/custom-gas'
-
-export function accountsWithSendEtherInfoSelector (state) {
-  const accounts = getMetaMaskAccounts(state)
-  const { identities } = state.metamask
-  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
-    return Object.assign({}, account, identities[key])
-  })
-
-  return accountsWithSendEtherInfo
-}
 
 export function getAmountConversionRate (state) {
   return getSelectedToken(state)
@@ -29,13 +25,6 @@ export function getBlockGasLimit (state) {
 
 export function getConversionRate (state) {
   return state.metamask.conversionRate
-}
-
-export function getCurrentAccountWithSendEtherInfo (state) {
-  const currentAddress = getSelectedAddress(state)
-  const accounts = accountsWithSendEtherInfoSelector(state)
-
-  return accounts.find(({ address }) => address === currentAddress)
 }
 
 export function getCurrentCurrency (state) {
@@ -162,7 +151,10 @@ export function getSendFromBalance (state) {
   return from.balance
 }
 
-export function getSendFromObject (state) {
+export function getSendFromObject (state, address) {
+  if (address) {
+    return getTargetAccountWithSendEtherInfo(state, address)
+  }
   return getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
 }
 
@@ -205,21 +197,6 @@ export function getTokenExchangeRate (state, tokenSymbol) {
 
 export function getUnapprovedTxs (state) {
   return state.metamask.unapprovedTxs
-}
-
-export function transactionsSelector (state) {
-  const { network, selectedTokenAddress } = state.metamask
-  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
-  const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
-
-  return selectedTokenAddress
-    ? txsToRender
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : txsToRender
-      .sort((a, b) => b.time - a.time)
 }
 
 export function getQrCodeData (state) {

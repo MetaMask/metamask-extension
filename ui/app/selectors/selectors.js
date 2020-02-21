@@ -253,6 +253,11 @@ export function getCurrentAccountWithSendEtherInfo (state) {
   return accounts.find(({ address }) => address === currentAddress)
 }
 
+export function getTargetAccountWithSendEtherInfo (state, targetAddress) {
+  const accounts = accountsWithSendEtherInfoSelector(state)
+  return accounts.find(({ address }) => address === targetAddress)
+}
+
 export function getCurrentEthBalance (state) {
   return getCurrentAccountWithSendEtherInfo(state).balance
 }

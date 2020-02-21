@@ -100,14 +100,14 @@ describe('Transaction Selectors', function () {
 
   describe('transactionsSelector', function () {
 
-    it('selectedAddressTxList', function () {
+    it('currentNetworkTxList', function () {
 
       const state = {
         metamask: {
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddressTxList: [
+          currentNetworkTxList: [
             {
               id: 0,
               time: 0,
@@ -128,7 +128,7 @@ describe('Transaction Selectors', function () {
         },
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxlist = state.metamask.currentNetworkTxList.sort((a, b) => b.time - a.time)
 
       const txSelector = transactionsSelector(state)
 
@@ -136,7 +136,7 @@ describe('Transaction Selectors', function () {
       assert.deepEqual(txSelector, orderedTxlist)
     })
 
-    it('returns token tx from selectedAddressTxList when selectedTokenAddress is valid', function () {
+    it('returns token tx from currentNetworkTxList when selectedTokenAddress is valid', function () {
 
       const state = {
         metamask: {
@@ -144,7 +144,7 @@ describe('Transaction Selectors', function () {
             showIncomingTransactions: false,
           },
           selectedTokenAddress: '0xToken',
-          selectedAddressTxList: [
+          currentNetworkTxList: [
             {
               id: 0,
               time: 0,
@@ -166,7 +166,7 @@ describe('Transaction Selectors', function () {
 
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxlist = state.metamask.currentNetworkTxList.sort((a, b) => b.time - a.time)
 
       const txSelector = transactionsSelector(state)
 
@@ -206,7 +206,7 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddressTxList: [
+          currentNetworkTxList: [
             tx1,
             tx2,
           ],
@@ -287,7 +287,7 @@ describe('Transaction Selectors', function () {
         featureFlags: {
           showIncomingTransactions: false,
         },
-        selectedAddressTxList: [
+        currentNetworkTxList: [
           submittedTx,
           unapprovedTx,
           approvedTx,
