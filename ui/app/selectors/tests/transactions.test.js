@@ -110,6 +110,7 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
+          selectedAddress: '0xAddress',
           currentNetworkTxList: [
             {
               id: 0,
@@ -149,6 +150,7 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
+          selectedAddress: '0xAddress',
           selectedTokenAddress: '0xToken',
           currentNetworkTxList: [
             {
@@ -212,6 +214,7 @@ describe('Transaction Selectors', function () {
           provider: {
             nickname: 'mainnet',
           },
+          selectedAddress: '0xAddress',
           featureFlags: {
             showIncomingTransactions: false,
           },
@@ -296,6 +299,7 @@ describe('Transaction Selectors', function () {
         provider: {
           nickname: 'mainnet',
         },
+        selectedAddress: '0xAddress',
         featureFlags: {
           showIncomingTransactions: false,
         },

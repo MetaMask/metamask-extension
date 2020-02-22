@@ -291,3 +291,7 @@ export function getOriginFromUrl (url) {
 export function getTxById (transactions = [], targetId) {
   return transactions.find(({ id }) => JSON.stringify(id) === targetId)
 }
+
+export function getAccountByAddress (accounts = [], targetAddress) {
+  return accounts.find(({ address }) => address === targetAddress)
+}

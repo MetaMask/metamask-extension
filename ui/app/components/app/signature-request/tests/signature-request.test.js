@@ -6,6 +6,7 @@ import SignatureRequest from '../signature-request.component'
 
 describe('Signature Request Component', function () {
   describe('render', function () {
+    const fromAddress = '0x123456789abcdef'
     it('should render a div with one child', function () {
       const wrapper = shallow((
         <SignatureRequest
@@ -15,9 +16,10 @@ describe('Signature Request Component', function () {
           txData={{
             msgParams: {
               data: '{"message": {"from": {"name": "hello"}}}',
-              from: '0x123456789abcdef',
+              from: fromAddress,
             },
           }}
+          fromAccount={{ address: fromAddress }}
         />
       ))
 

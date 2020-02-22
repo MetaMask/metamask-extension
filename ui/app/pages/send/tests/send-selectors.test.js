@@ -8,7 +8,6 @@ import {
   transactionsSelector,
 } from '../../../selectors/transactions'
 import {
-  // autoAddToBetaUI,
   getBlockGasLimit,
   getAmountConversionRate,
   getConversionRate,
@@ -554,6 +553,7 @@ describe('send selectors', function () {
             id: 'mockTokenTx1',
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
             time: 1700000000000,
           },
@@ -561,6 +561,7 @@ describe('send selectors', function () {
             id: 'mockTokenTx3',
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
             time: 1500000000000,
           },
@@ -579,6 +580,7 @@ describe('send selectors', function () {
             time: 1700000000000,
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           {
@@ -590,6 +592,7 @@ describe('send selectors', function () {
             time: 1600000000000,
             txParams: {
               to: '0xafaketokenaddress',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           {
@@ -601,6 +604,7 @@ describe('send selectors', function () {
             time: 1500000000000,
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           {
@@ -612,14 +616,17 @@ describe('send selectors', function () {
             time: 1400000000000,
             txParams: {
               to: '0xd85a4b6a394794842887b8284293d69163007bbb',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
         ]
       )
     })
 
-    it('should return shapeshift transactions if current network is 1', function () {
-      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false, network: '1' })
+    it('should return shapeshift transactions if current network is mainnet', function () {
+      const modifiedMetamaskState = Object.assign({}, mockState.metamask, {
+        selectedTokenAddress: false, provider: { nickname: 'mainnet' }
+      })
       const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
       assert.deepEqual(
         transactionsSelector(modifiedState),
@@ -629,6 +636,7 @@ describe('send selectors', function () {
             time: 1700000000000,
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           { id: 'shapeShiftTx1', 'time': 1675000000000 },
@@ -641,6 +649,7 @@ describe('send selectors', function () {
             time: 1600000000000,
             txParams: {
               to: '0xafaketokenaddress',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           { id: 'shapeShiftTx2', 'time': 1575000000000 },
@@ -653,6 +662,7 @@ describe('send selectors', function () {
             time: 1500000000000,
             txParams: {
               to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
           { id: 'shapeShiftTx3', 'time': 1475000000000 },
@@ -665,6 +675,7 @@ describe('send selectors', function () {
             time: 1400000000000,
             txParams: {
               to: '0xd85a4b6a394794842887b8284293d69163007bbb',
+              from: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
         ]

@@ -56,7 +56,7 @@ class ConfirmTxScreen extends Component {
     unapprovedTypedMessages: PropTypes.object,
     match: PropTypes.shape({
       params: PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
       }),
     }),
 
