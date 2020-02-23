@@ -41,13 +41,13 @@ class ContractImportView extends Component {
     })
   }
 
-  abiOnChange (abi) {
+  abiOnChange (abi, APIInputDisabled) {
     this.props.hideWarning()
     try {
       if (abi) {
         this.setState({
-          abi: JSON.stringify(abi),
-          abiInputDisabled: true,
+          abi: abi,
+          abiInputDisabled: APIInputDisabled || false,
           importDisabled: false,
         })
       }
@@ -124,7 +124,15 @@ class ContractImportView extends Component {
       return
     }
     getFullABI(web3.eth, contractAddr, network, type)
-      .then(finalABI => this.abiOnChange(finalABI))
+      .then(finalABI => {
+        if (finalABI) {
+          finalABI = JSON.stringify(finalABI)
+          const APIInputDisabled = true
+          return this.abiOnChange(finalABI, APIInputDisabled)
+        } else {
+          return null
+        }
+      })
       .catch(e => {
         this.clearAbi()
         log.debug(e)
