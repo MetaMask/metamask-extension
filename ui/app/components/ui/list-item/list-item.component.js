@@ -74,11 +74,11 @@ const Item = ({
         {isApproved ? (
           <ApproveIcon />
         ) : isPending ? (
-          <InteractionIcon />
+          <SendIcon />
         ) : isFailed ? (
           <FailIcon />
         ) : (
-          <SendIcon />
+          <InteractionIcon />
         )}
       </div>
       <div className={`list-item__col main${isApproved ? ' list-item__approved' : ''}`}>
