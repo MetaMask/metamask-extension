@@ -5,7 +5,7 @@ import { compose } from 'recompose'
 import AppHeader from './app-header.component'
 import * as actions from '../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { appState, metamask } = state
   const { networkDropdownOpen } = appState
   const {
@@ -26,7 +26,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),

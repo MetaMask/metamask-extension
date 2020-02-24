@@ -19,7 +19,7 @@ describe('AdvancedTab Component', function () {
       />,
       {
         context: {
-          t: s => `_${s}`,
+          t: (s) => `_${s}`,
         },
       }
     )
@@ -41,7 +41,7 @@ describe('AdvancedTab Component', function () {
       />,
       {
         context: {
-          t: s => `_${s}`,
+          t: (s) => `_${s}`,
         },
       }
     )

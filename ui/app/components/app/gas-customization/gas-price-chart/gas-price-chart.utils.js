@@ -261,7 +261,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
       contents: function (d) {
         const titleFormat = this.config.tooltip_format_title
         let text
-        d.forEach(el => {
+        d.forEach((el) => {
           if (el && (el.value || el.value === 0) && !text) {
             text = "<table class='" + 'custom-tooltip' + "'>" + "<tr><th colspan='2'>" + titleFormat(el.x) + '</th></tr>'
           }

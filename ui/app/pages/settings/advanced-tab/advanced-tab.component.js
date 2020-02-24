@@ -58,7 +58,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 history.push(MOBILE_SYNC_ROUTE)
               }}
@@ -124,7 +124,7 @@ export default class AdvancedTab extends PureComponent {
               type="warning"
               large
               className="settings-tab__button--red"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 this.context.metricsEvent({
                   eventOpts: {
@@ -160,7 +160,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={sendHexData}
-              onToggle={value => setHexDataFeatureFlag(!value)}
+              onToggle={(value) => setHexDataFeatureFlag(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -186,7 +186,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={advancedInlineGas}
-              onToggle={value => setAdvancedInlineGasFeatureFlag(!value)}
+              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -215,7 +215,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showFiatInTestnets}
-              onToggle={value => setShowFiatConversionOnTestnetsPreference(!value)}
+              onToggle={(value) => setShowFiatConversionOnTestnetsPreference(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -241,7 +241,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useNonceField}
-              onToggle={value => setUseNonceField(!value)}
+              onToggle={(value) => setUseNonceField(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -293,7 +293,7 @@ export default class AdvancedTab extends PureComponent {
               placeholder="5"
               value={this.state.autoLockTimeLimit}
               defaultValue={autoLockTimeLimit}
-              onChange={e => this.handleLockChange(e.target.value)}
+              onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
               margin="dense"
@@ -346,7 +346,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={allowed}
-              onToggle={value => {
+              onToggle={(value) => {
                 if (!threeBoxDisabled) {
                   setThreeBoxSyncingPermission(!value)
                 }
@@ -376,7 +376,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useIn3}
-              onToggle={value => setUseIn3(!value)}
+              onToggle={(value) => setUseIn3(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -444,7 +444,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="text"
               value={this.state.ipfsGateway}
-              onChange={e => this.handleIpfsGatewayChange(e.target.value)}
+              onChange={(e) => this.handleIpfsGatewayChange(e.target.value)}
               error={ipfsGatewayError}
               fullWidth
               margin="dense"

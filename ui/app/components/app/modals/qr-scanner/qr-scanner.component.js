@@ -85,7 +85,7 @@ export default class QrScanner extends Component {
       const { permissions } = await WebcamUtils.checkStatus()
       if (permissions) {
         // Let the video stream load first...
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        await new Promise((resolve) => setTimeout(resolve, 2000))
         if (!this.mounted) {
           return
         }

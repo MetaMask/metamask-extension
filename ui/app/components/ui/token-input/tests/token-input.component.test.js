@@ -10,7 +10,7 @@ import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
 describe('TokenInput Component', function () {
-  const t = key => `translate ${key}`
+  const t = (key) => `translate ${key}`
 
   describe('rendering', function () {
     it('should render properly without a token', function () {

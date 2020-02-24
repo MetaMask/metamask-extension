@@ -36,7 +36,7 @@ describe('AccountListItem Component', function () {
           handleClick={propsMethodSpies.handleClick}
           icon={<i className="mockIcon" />}
         />
-      ), { context: { t: str => str + '_t' } })
+      ), { context: { t: (str) => str + '_t' } })
     })
 
     afterEach(function () {

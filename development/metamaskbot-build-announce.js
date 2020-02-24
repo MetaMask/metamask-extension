@@ -33,14 +33,14 @@ async function start () {
 
   // links to extension builds
   const platforms = ['chrome', 'firefox', 'opera']
-  const buildLinks = platforms.map(platform => {
+  const buildLinks = platforms.map((platform) => {
     const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`
     return `<a href="${url}">${platform}</a>`
   }).join(', ')
 
   // links to bundle browser builds
   const bundles = ['background', 'ui', 'inpage', 'contentscript', 'ui-libs', 'bg-libs', 'phishing-detect']
-  const bundleLinks = bundles.map(bundle => {
+  const bundleLinks = bundles.map((bundle) => {
     const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
     return `<a href="${url}">${bundle}</a>`
   }).join(', ')
@@ -58,7 +58,7 @@ async function start () {
     `dep viz: ${depVizLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
   ]
-  const hiddenContent = `<ul>` + contentRows.map(row => `<li>${row}</li>`).join('\n') + `</ul>`
+  const hiddenContent = `<ul>` + contentRows.map((row) => `<li>${row}</li>`).join('\n') + `</ul>`
   const exposedContent = `Builds ready [${SHORT_SHA1}]`
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`
 
@@ -136,7 +136,7 @@ async function start () {
       for (const measure of allMeasures) {
         benchmarkTableHeaders.push(`${capitalizeFirstLetter(measure)} (ms)`)
       }
-      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders.map(header => `<th>${header}</th>`).join('')}</tr></thead>`
+      const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders.map((header) => `<th>${header}</th>`).join('')}</tr></thead>`
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`
       const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>`

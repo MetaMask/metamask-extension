@@ -33,7 +33,7 @@ describe('Migration to delete notice controller', function () {
 
   it('removes notice controller from state', function () {
     migration33.migrate(oldStorage)
-      .then(newStorage => {
+      .then((newStorage) => {
         assert.equal(newStorage.data.NoticeController, undefined)
       })
   })

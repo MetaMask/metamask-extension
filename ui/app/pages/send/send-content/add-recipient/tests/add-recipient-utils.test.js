@@ -9,7 +9,7 @@ import {
 } from '../../../send.constants'
 
 const stubs = {
-  isValidAddress: sinon.stub().callsFake(to => Boolean(to.match(/^[0xabcdef123456798]+$/))),
+  isValidAddress: sinon.stub().callsFake((to) => Boolean(to.match(/^[0xabcdef123456798]+$/))),
 }
 
 const toRowUtils = proxyquire('../add-recipient.js', {

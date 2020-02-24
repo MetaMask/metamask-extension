@@ -11,7 +11,7 @@ describe('TransactionStatus Component', function () {
         statusKey="approved"
         title="test-title"
       />,
-      { context: { t: str => str.toUpperCase() } }
+      { context: { t: (str) => str.toUpperCase() } }
     )
 
     assert.ok(wrapper)
@@ -24,7 +24,7 @@ describe('TransactionStatus Component', function () {
       <TransactionStatus
         statusKey="submitted"
       />,
-      { context: { t: str => str.toUpperCase() } }
+      { context: { t: (str) => str.toUpperCase() } }
     )
 
     assert.ok(wrapper)

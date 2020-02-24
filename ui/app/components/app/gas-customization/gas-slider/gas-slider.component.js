@@ -33,7 +33,7 @@ export default class GasSlider extends Component {
           min={min}
           value={value}
           id="gasSlider"
-          onChange={event => onChange(event.target.value)}
+          onChange={(event) => onChange(event.target.value)}
         />
         <div className="gas-slider__bar">
           <div className="gas-slider__colored" />

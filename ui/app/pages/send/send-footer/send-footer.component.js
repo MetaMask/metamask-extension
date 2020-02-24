@@ -112,7 +112,7 @@ export default class SendFooter extends Component {
     const { inError, sendErrors } = this.props
     const { metricsEvent } = this.context
     if (!prevProps.inError && inError) {
-      const errorField = Object.keys(sendErrors).find(key => sendErrors[key])
+      const errorField = Object.keys(sendErrors).find((key) => sendErrors[key])
       const errorMessage = sendErrors[errorField]
 
       metricsEvent({
@@ -133,7 +133,7 @@ export default class SendFooter extends Component {
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
-        onSubmit={e => this.onSubmit(e)}
+        onSubmit={(e) => this.onSubmit(e)}
         disabled={this.formShouldBeDisabled()}
       />
     )

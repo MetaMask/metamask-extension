@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 let index = 0
 let extraSheet
 
-const insertRule = css => {
+const insertRule = (css) => {
 
   if (!extraSheet) {
     // First time, create an extra stylesheet for adding rules
@@ -20,7 +20,7 @@ const insertRule = css => {
   return extraSheet
 }
 
-const insertKeyframesRule = keyframes => {
+const insertKeyframesRule = (keyframes) => {
   // random name
   const name = 'anim_' + (++index) + (+new Date())
   let css = '@' + 'keyframes ' + name + ' {'
@@ -212,7 +212,7 @@ class FadeModal extends Component {
         <div className="modal" style={modalStyle}>
           <div
             className="content"
-            ref={el => (this.content = el)}
+            ref={(el) => (this.content = el)}
             tabIndex="-1"
             style={contentStyle}
           >

@@ -15,7 +15,7 @@ describe('Reveal Seed Page', function () {
     const wrapper = mount(
       <RevealSeedPage.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

@@ -18,7 +18,7 @@ describe('Confirm Delete Network', function () {
     wrapper = mount(
       <ConfirmDeleteNetwork.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
         },
       }
     )

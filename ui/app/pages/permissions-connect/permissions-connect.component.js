@@ -72,9 +72,9 @@ export default class PermissionConnect extends Component {
     const { originName, page } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && page !== null) {
-      const permissionDataForDomain = domains && domains[originName] || {}
+      const permissionDataForDomain = (domains && domains[originName]) || {}
       const permissionsForDomain = permissionDataForDomain.permissions || []
-      const prevPermissionDataForDomain = prevProps.domains && prevProps.domains[originName] || {}
+      const prevPermissionDataForDomain = (prevProps.domains && prevProps.domains[originName]) || {}
       const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
       const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
       if (addedAPermission) {
@@ -173,7 +173,7 @@ export default class PermissionConnect extends Component {
                 })
               }}
               addressLastConnectedMap={addressLastConnectedMap}
-              cancelPermissionsRequest={requestId => {
+              cancelPermissionsRequest={(requestId) => {
                 if (requestId) {
                   rejectPermissionsRequest(requestId)
                   this.redirectFlow(false)
@@ -190,11 +190,11 @@ export default class PermissionConnect extends Component {
                   approvePermissionsRequest(request, accounts)
                   this.redirectFlow(true)
                 }}
-                rejectPermissionsRequest={requestId => {
+                rejectPermissionsRequest={(requestId) => {
                   rejectPermissionsRequest(requestId)
                   this.redirectFlow(false)
                 }}
-                selectedIdentity={accounts.find(account => account.address === selectedAccountAddress)}
+                selectedIdentity={accounts.find((account) => account.address === selectedAccountAddress)}
                 redirect={page === null}
                 permissionRejected={ permissionAccepted === false }
               />

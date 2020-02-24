@@ -155,13 +155,13 @@ export function goHome () {
 // async actions
 
 export function tryUnlockMetamask (password) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
     dispatch(unlockInProgress())
     log.debug(`background.submitPassword`)
 
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, error => {
+      background.submitPassword(password, (error) => {
         if (error) {
           return reject(error)
         }
@@ -175,7 +175,7 @@ export function tryUnlockMetamask (password) {
       })
       .then(() => {
         return new Promise((resolve, reject) => {
-          background.verifySeedPhrase(err => {
+          background.verifySeedPhrase((err) => {
             if (err) {
               dispatch(displayWarning(err.message))
               return reject(err)
@@ -189,7 +189,7 @@ export function tryUnlockMetamask (password) {
         dispatch(transitionForward())
         dispatch(hideLoadingIndication())
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(unlockFailed(err.message))
         dispatch(hideLoadingIndication())
         return Promise.reject(err)
@@ -223,7 +223,7 @@ export function createNewVaultAndRestore (password, seed) {
         dispatch(hideLoadingIndication())
         return vault
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(displayWarning(err.message))
         dispatch(hideLoadingIndication())
         return Promise.reject(err)
@@ -232,7 +232,7 @@ export function createNewVaultAndRestore (password, seed) {
 }
 
 export function createNewVaultAndGetSeedPhrase (password) {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
 
     try {
@@ -249,7 +249,7 @@ export function createNewVaultAndGetSeedPhrase (password) {
 }
 
 export function unlockAndGetSeedPhrase (password) {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
 
     try {
@@ -268,7 +268,7 @@ export function unlockAndGetSeedPhrase (password) {
 
 export function submitPassword (password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, error => {
+    background.submitPassword(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -280,7 +280,7 @@ export function submitPassword (password) {
 
 export function createNewVault (password) {
   return new Promise((resolve, reject) => {
-    background.createNewVaultAndKeychain(password, error => {
+    background.createNewVaultAndKeychain(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -292,7 +292,7 @@ export function createNewVault (password) {
 
 export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, error => {
+    background.submitPassword(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -315,7 +315,7 @@ export function verifySeedPhrase () {
 }
 
 export function requestRevealSeedWords (password) {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.submitPassword`)
 
@@ -346,7 +346,7 @@ export function tryReverseResolveAddress (address) {
 }
 
 export function fetchInfoToSync () {
-  return dispatch => {
+  return (dispatch) => {
     log.debug(`background.fetchInfoToSync`)
     return new Promise((resolve, reject) => {
       background.fetchInfoToSync((err, result) => {
@@ -361,7 +361,7 @@ export function fetchInfoToSync () {
 }
 
 export function resetAccount () {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -381,7 +381,7 @@ export function resetAccount () {
 }
 
 export function removeAccount (address) {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
 
     try {
@@ -457,7 +457,7 @@ export function addNewAccount () {
           dispatch(displayWarning(err.message))
           return reject(err)
         }
-        const newAccountAddress = Object.keys(newIdentities).find(address => !oldIdentities[address])
+        const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
 
         dispatch(hideLoadingIndication())
 
@@ -632,6 +632,80 @@ export function signPersonalMsg (msgData) {
   }
 }
 
+export function decryptMsgInline (decryptedMsgData) {
+  log.debug('action - decryptMsgInline')
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessageInline`)
+      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsgInline called back')
+        dispatch(updateMetamaskState(newState))
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function decryptMsg (decryptedMsgData) {
+  log.debug('action - decryptMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessage`)
+      background.decryptMessage(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(decryptedMsgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+        console.log(decryptedMsgData)
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function encryptionPublicKeyMsg (msgData) {
+  log.debug('action - encryptionPublicKeyMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.encryptionPublicKey`)
+      background.encryptionPublicKey(msgData, (err, newState) => {
+        log.debug('encryptionPublicKeyMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(msgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
@@ -711,13 +785,13 @@ export function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-      .then(gas => {
+      .then((gas) => {
         dispatch(setGasLimit(gas))
         dispatch(setCustomGasLimit(gas))
         dispatch(updateSendErrors({ gasLoadingError: null }))
         dispatch(gasLoadingFinished())
       })
-      .catch(err => {
+      .catch((err) => {
         log.error(err)
         dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
         dispatch(gasLoadingFinished())
@@ -747,13 +821,13 @@ export function updateSendTokenBalance ({
       ? tokenContract.balanceOf(address)
       : Promise.resolve()
     return tokenBalancePromise
-      .then(usersToken => {
+      .then((usersToken) => {
         if (usersToken) {
           const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
           dispatch(setSendTokenBalance(newTokenBalance))
         }
       })
-      .catch(err => {
+      .catch((err) => {
         log.error(err)
         updateSendErrors({ tokenBalance: 'tokenBalanceError' })
       })
@@ -837,11 +911,11 @@ export function updateSendEnsResolutionError (errorMessage) {
 }
 
 export function signTokenTx (tokenAddress, toAddress, amount, txData) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
     token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
-      .catch(err => {
+      .catch((err) => {
         dispatch(hideLoadingIndication())
         dispatch(displayWarning(err.message))
       })
@@ -864,7 +938,7 @@ const updateMetamaskStateFromBackground = () => {
 }
 
 export function updateTransaction (txData) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -881,7 +955,7 @@ export function updateTransaction (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
         dispatch(showConfTxPage({ id: txData.id }))
         dispatch(hideLoadingIndication())
@@ -894,7 +968,7 @@ export function updateAndApproveTx (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.updateAndApproveTransaction(txData, err => {
+      background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams))
         dispatch(clearSend())
 
@@ -909,7 +983,7 @@ export function updateAndApproveTx (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
         dispatch(clearSend())
         dispatch(completedTx(txData.id))
@@ -937,7 +1011,7 @@ export function completedTx (id) {
       network,
     } = state.metamask
     const unconfirmedActions = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-    const otherUnconfirmedActions = unconfirmedActions.filter(tx => tx.id !== id)
+    const otherUnconfirmedActions = unconfirmedActions.filter((tx) => tx.id !== id)
     dispatch({
       type: actionConstants.COMPLETED_TX,
       value: {
@@ -1006,6 +1080,50 @@ export function cancelPersonalMsg (msgData) {
   }
 }
 
+export function cancelDecryptMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelDecryptMessage(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
+export function cancelEncryptionPublicKeyMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelEncryptionPublicKey(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 export function cancelTypedMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
@@ -1032,7 +1150,7 @@ export function cancelTx (txData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, err => {
+      background.cancelTransaction(txData.id, (err) => {
         if (err) {
           return reject(err)
         }
@@ -1041,7 +1159,7 @@ export function cancelTx (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
         dispatch(clearSend())
         dispatch(completedTx(txData.id))
@@ -1100,8 +1218,8 @@ export function markPasswordForgotten () {
 }
 
 export function unMarkPasswordForgotten () {
-  return dispatch => {
-    return new Promise(resolve => {
+  return (dispatch) => {
+    return new Promise((resolve) => {
       background.unMarkPasswordForgotten(() => {
         dispatch(forgotPassword(false))
         resolve()
@@ -1164,7 +1282,7 @@ export function updateMetamaskState (newState) {
 
 const backgroundSetLocked = () => {
   return new Promise((resolve, reject) => {
-    background.setLocked(error => {
+    background.setLocked((error) => {
       if (error) {
         return reject(error)
       }
@@ -1176,16 +1294,16 @@ const backgroundSetLocked = () => {
 export function lockMetamask () {
   log.debug(`background.setLocked`)
 
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
 
     return backgroundSetLocked()
       .then(() => updateMetamaskStateFromBackground())
-      .catch(error => {
+      .catch((error) => {
         dispatch(displayWarning(error.message))
         return Promise.reject(error)
       })
-      .then(newState => {
+      .then((newState) => {
         dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
         dispatch({ type: actionConstants.LOCK_METAMASK })
@@ -1291,7 +1409,7 @@ export function removeToken (address) {
 }
 
 export function addTokens (tokens) {
-  return dispatch => {
+  return (dispatch) => {
     if (Array.isArray(tokens)) {
       dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
@@ -1327,7 +1445,7 @@ export function removeSuggestedTokens () {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(suggestedTokens => dispatch(updateMetamaskState({ ...suggestedTokens })))
+      .then((suggestedTokens) => dispatch(updateMetamaskState({ ...suggestedTokens })))
   }
 }
 
@@ -1354,7 +1472,7 @@ export function retryTransaction (txId, gasPrice) {
   log.debug(`background.retryTransaction`)
   let newTxId
 
-  return dispatch => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
@@ -1368,7 +1486,7 @@ export function retryTransaction (txId, gasPrice) {
         resolve(newState)
       })
     })
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId)
   }
 }
@@ -1377,7 +1495,7 @@ export function createCancelTransaction (txId, customGasPrice) {
   log.debug('background.cancelTransaction')
   let newTxId
 
-  return dispatch => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
@@ -1391,7 +1509,7 @@ export function createCancelTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId)
   }
 }
@@ -1400,7 +1518,7 @@ export function createSpeedUpTransaction (txId, customGasPrice) {
   log.debug('background.createSpeedUpTransaction')
   let newTx
 
-  return dispatch => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
@@ -1413,7 +1531,7 @@ export function createSpeedUpTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTx)
   }
 }
@@ -1422,7 +1540,7 @@ export function createRetryTransaction (txId, customGasPrice) {
   log.debug('background.createRetryTransaction')
   let newTx
 
-  return dispatch => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
         if (err) {
@@ -1435,7 +1553,7 @@ export function createRetryTransaction (txId, customGasPrice) {
         resolve(newState)
       })
     })
-      .then(newState => dispatch(updateMetamaskState(newState)))
+      .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTx)
   }
 }
@@ -1901,7 +2019,7 @@ export function updateFeatureFlags (updatedFeatureFlags) {
 }
 
 export function setPreference (preference, value) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
@@ -1964,7 +2082,7 @@ export function setAutoLockTimeLimit (value) {
 }
 
 export function setCompletedOnboarding () {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
 
     try {

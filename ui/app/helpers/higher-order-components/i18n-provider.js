@@ -49,7 +49,7 @@ I18nProvider.childContextTypes = {
   tOrKey: PropTypes.func,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { localeMessages, metamask: { currentLocale } } = state
   return {
     currentLocale,

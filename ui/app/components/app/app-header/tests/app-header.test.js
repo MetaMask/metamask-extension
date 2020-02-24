@@ -29,7 +29,7 @@ describe('App Header', function () {
     wrapper = shallow(
       <AppHeader.WrappedComponent {...props} />, {
         context: {
-          t: str => str,
+          t: (str) => str,
           metricsEvent: () => {},
         },
       }

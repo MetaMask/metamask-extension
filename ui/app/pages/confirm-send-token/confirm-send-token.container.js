@@ -7,7 +7,7 @@ import { setSelectedToken, updateSend, showSendTokenPage } from '../../store/act
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors/confirm-transaction'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)
 
   return {
@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: ({ txData, tokenData, tokenProps }) => {
       const { txParams: { to: tokenAddress, gas: gasLimit, gasPrice } = {}, id } = txData

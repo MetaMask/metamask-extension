@@ -50,7 +50,7 @@ import {
   calcGasTotal,
 } from './send.utils.js'
 import {
-  isValidENSAddress,
+  isValidDomainName,
 } from '../../helpers/utils/util'
 
 function mapStateToProps (state) {
@@ -105,7 +105,7 @@ function mapDispatchToProps (dispatch) {
         address,
       }))
     },
-    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
+    updateSendErrors: (newError) => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
@@ -114,7 +114,7 @@ function mapDispatchToProps (dispatch) {
     updateSendEnsResolution: (ensResolution) => dispatch(updateSendEnsResolution(ensResolution)),
     updateSendEnsResolutionError: (message) => dispatch(updateSendEnsResolutionError(message)),
     updateToNicknameIfNecessary: (to, toNickname, addressBook) => {
-      if (isValidENSAddress(toNickname)) {
+      if (isValidDomainName(toNickname)) {
         const addressBookEntry = addressBook.find(({ address }) => to === address) || {}
         if (!addressBookEntry.name !== toNickname) {
           dispatch(updateSendTo(to, addressBookEntry.name || ''))

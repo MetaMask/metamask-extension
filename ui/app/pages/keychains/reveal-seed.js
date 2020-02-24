@@ -30,8 +30,8 @@ class RevealSeedPage extends Component {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
-      .then(seedWords => this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }))
-      .catch(error => this.setState({ error: error.message }))
+      .then((seedWords) => this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }))
+      .catch((error) => this.setState({ error: error.message }))
   }
 
   renderWarning () {
@@ -60,7 +60,7 @@ class RevealSeedPage extends Component {
     const { t } = this.context
 
     return (
-      <form onSubmit={event => this.handleSubmit(event)}>
+      <form onSubmit={(event) => this.handleSubmit(event)}>
         <label className="input-label" htmlFor="password-box">{t('enterPasswordContinue')}</label>
         <div className="input-group">
           <input
@@ -68,7 +68,7 @@ class RevealSeedPage extends Component {
             placeholder={t('password')}
             id="password-box"
             value={this.state.password}
-            onChange={event => this.setState({ password: event.target.value })}
+            onChange={(event) => this.setState({ password: event.target.value })}
             className={classnames('form-control', { 'form-control--error': this.state.error })}
           />
         </div>
@@ -115,7 +115,7 @@ class RevealSeedPage extends Component {
             type="secondary"
             large
             className="page-container__footer-button"
-            onClick={event => this.handleSubmit(event)}
+            onClick={(event) => this.handleSubmit(event)}
             disabled={this.state.password === ''}
           >
             {this.context.t('next')}
@@ -172,9 +172,9 @@ RevealSeedPage.contextTypes = {
   t: PropTypes.func,
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
+    requestRevealSeedWords: (password) => dispatch(requestRevealSeedWords(password)),
   }
 }
 

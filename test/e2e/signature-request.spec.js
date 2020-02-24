@@ -35,7 +35,7 @@ describe('MetaMask', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map(err => err.message)
+        const errorReports = errors.map((err) => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
         console.error(new Error(errorMessage))
       }
@@ -78,7 +78,7 @@ describe('MetaMask', function () {
 
       extension = windowHandles[0]
       dapp = await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles)
-      popup = windowHandles.find(handle => handle !== extension && handle !== dapp)
+      popup = windowHandles.find((handle) => handle !== extension && handle !== dapp)
 
       await driver.switchToWindow(popup)
 

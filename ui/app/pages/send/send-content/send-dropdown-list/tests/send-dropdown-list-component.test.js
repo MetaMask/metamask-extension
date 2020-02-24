@@ -29,7 +29,7 @@ describe('SendDropdownList Component', function () {
         onSelect={propsMethodSpies.onSelect}
         activeAddress="mockAddress2"
       />
-    ), { context: { t: str => str + '_t' } })
+    ), { context: { t: (str) => str + '_t' } })
   })
 
   afterEach(function () {

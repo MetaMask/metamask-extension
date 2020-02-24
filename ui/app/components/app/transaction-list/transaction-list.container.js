@@ -23,9 +23,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateNetworkNonce: address => dispatch(updateNetworkNonce(address)),
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
   }

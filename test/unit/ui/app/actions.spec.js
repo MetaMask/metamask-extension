@@ -119,7 +119,7 @@ describe('Actions', function () {
       const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
 
       verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
-      verifySeedPhraseSpy.callsFake(callback => {
+      verifySeedPhraseSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -128,8 +128,8 @@ describe('Actions', function () {
         assert.fail('Should have thrown error')
       } catch (_) {
         const actions1 = store.getActions()
-        const warning = actions1.filter(action => action.type === 'DISPLAY_WARNING')
-        const unlockFailed = actions1.filter(action => action.type === 'UNLOCK_FAILED')
+        const warning = actions1.filter((action) => action.type === 'DISPLAY_WARNING')
+        const unlockFailed = actions1.filter((action) => action.type === 'UNLOCK_FAILED')
         assert.deepEqual(warning, displayWarningError)
         assert.deepEqual(unlockFailed, unlockFailedError)
       }
@@ -245,7 +245,7 @@ describe('Actions', function () {
       assert(removeAccountSpy.calledOnce)
       const actionTypes = store
         .getActions()
-        .map(action => action.type)
+        .map((action) => action.type)
       assert.deepEqual(actionTypes, expectedActions)
     })
 
@@ -269,7 +269,7 @@ describe('Actions', function () {
       } catch (_) {
         const actionTypes = store
           .getActions()
-          .map(action => action.type)
+          .map((action) => action.type)
         assert.deepEqual(actionTypes, expectedActions)
       }
 
@@ -995,7 +995,7 @@ describe('Actions', function () {
         { type: 'LOCK_METAMASK' },
       ]
       backgroundSetLockedSpy = sinon.stub(background, 'setLocked')
-      backgroundSetLockedSpy.callsFake(callback => {
+      backgroundSetLockedSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -1375,7 +1375,7 @@ describe('Actions', function () {
   describe('#setCompletedOnboarding', function () {
     it('completes onboarding', async function () {
       const completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
-      completeOnboardingSpy.callsFake(cb => cb())
+      completeOnboardingSpy.callsFake((cb) => cb())
       const store = mockStore()
       await store.dispatch(actions.setCompletedOnboarding())
       assert.equal(completeOnboardingSpy.callCount, 1)
