@@ -2454,10 +2454,10 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
-"@metamask/eslint-config@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.0.0.tgz#046012398bb27f56395355c96ef07152925043b7"
-  integrity sha512-MmxM2sknVhIHyXCjR6LcK57OPJ30gTEX5v/jwC+qXuw4GIgUAPbxFp3AFmFRAJwty3RMjJSbRJ7YlamMq67U8w==
+"@metamask/eslint-config@^1.1.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.2.0.tgz#6fe809a02d2e5b3b8008f02c0eb1e4baa5ba06d3"
+  integrity sha512-i3LEEGiyL539I7ULBUeJj6u95W3Oay3HtE7Vs8xzDTu5abyK9kBf4zHkLD45Vn0rjNZSPmgNFHuhD7GGXGSEiQ==
 
 "@metamask/eth-ledger-bridge-keyring@^0.2.6":
   version "0.2.6"

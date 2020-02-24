@@ -25,9 +25,8 @@ const containerStyle = {
   position: 'relative',
 }
 
-const close = e => {
-  e.preventDefault()
-  console.log('close window')
+const preventDefault = (event) => {
+  event.preventDefault()
 }
 
 const Chart = () => (
@@ -37,7 +36,7 @@ const Chart = () => (
 storiesOf('PopOver', module)
   .add('PopOver - Approve', () => (
     <div style={containerStyle}>
-      <PopOver title={text('title', 'Approve spend limit')} onClose={close}>
+      <PopOver title={text('title', 'Approve spend limit')} onClose={preventDefault}>
         <div className="popover-container">
           <div className="popover-item">
             <div className="popover-item__col">

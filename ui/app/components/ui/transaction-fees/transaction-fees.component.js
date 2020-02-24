@@ -1,13 +1,23 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const onClick = event => {
+const onClick = (event) => {
   event.preventDefault()
   event.stopPropagation()
 }
 
-const FeesLink = (props) => <a href='#' onClick={onClick} className="fees__option">
-  {props.children}
-</a>
+const FeesLink = ({ children }) => (
+  <a href="#" onClick={onClick} className="fees__option">
+    {children}
+  </a>
+)
+
+FeesLink.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+}
 
 const TransactionFees = () => (
   <div className="fees">

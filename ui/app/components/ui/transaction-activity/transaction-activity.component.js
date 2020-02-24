@@ -1,10 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+const preventDefault = (event) => {
+  event.preventDefault()
+}
+
 const TransactionActivity = ({ activities }) => (
   <div className="transaction-activity">
     <div className="transaction-activity__header">
-      <a className="transaction-activity__etherscan" href="#" onClick={e => e.preventDefault()}>
+      <a className="transaction-activity__etherscan" href="#" onClick={preventDefault}>
         View on Etherscan
       </a>
       <h3 className="transaction-activity__heading">Activity</h3>
