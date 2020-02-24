@@ -52,9 +52,30 @@ export default class PermissionPageContainerContent extends PureComponent {
           { redirect ? null : <h1>{domainMetadata.name}</h1> }
           { redirect ? null : <h2>{requestMetadata.origin}</h2> }
         </section>
-        { permissionRejected
-          ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
-          : <span className="permission-approval-visual__check" />
+        { redirect
+          ? permissionRejected
+            ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
+            : <span className="permission-approval-visual__check" />
+          : null
+        }
+        { redirect
+          ? <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
+          : null
+        }
+        { redirect
+          ? (
+            <section>
+              <div className="permission-approval-visual__identicon-container">
+                <div className="permission-approval-visual__identicon-border" />
+                <Identicon
+                  className="permission-approval-visual__identicon"
+                  address={selectedIdentities[0].address}
+                  diameter={54}
+                />
+              </div>
+            </section>
+          )
+          : null
         }
         <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
         <section>
@@ -117,7 +138,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   }
 
   render () {
-    const { domainMetadata, redirect, permissionRejected } = this.props
+    const { domainMetadata, redirect, permissionRejected, selectedIdentities } = this.props
     const { t } = this.context
 
     let titleArgs
@@ -128,7 +149,12 @@ export default class PermissionPageContainerContent extends PureComponent {
     } else if (domainMetadata.extensionId) {
       titleArgs = [ 'externalExtension', [domainMetadata.extensionId] ]
     } else {
-      titleArgs = [ 'likeToConnect', [domainMetadata.name] ]
+      titleArgs = [
+        'likeToConnect', [
+          domainMetadata.name,
+          `${selectedIdentities[0].label} (...${selectedIdentities[0].address.slice(selectedIdentities[0].address.length - 4)})`,
+        ],
+      ]
     }
 
     return (
@@ -136,10 +162,10 @@ export default class PermissionPageContainerContent extends PureComponent {
         'permission-approval-container__content--redirect': redirect,
       })}
       >
+        {this.renderPermissionApprovalVisual()}
         <div className="permission-approval-container__title">
           { t(...titleArgs) }
         </div>
-        {this.renderPermissionApprovalVisual()}
         { !redirect
           ? (
             <section className="permission-approval-container__permissions-container">
