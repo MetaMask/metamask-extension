@@ -18,8 +18,7 @@
     @extend %header--18;
     line-height: 25px;
     text-align: center;
-    position: fixed;
-    left: 0;
+    margin-top: 32px;
     width: 100%;
   }
 
@@ -79,7 +78,7 @@
     }
 
     &__revoke-note {
-      margin-top: 24px;
+      margin-top: 60px;
     }
 
     &__checkbox {
@@ -103,8 +102,6 @@
       flex-direction: row;
       justify-content: space-evenly;
       position: relative;
-      margin: 0 32px;
-      margin-top: 40px;
 
       section {
         display: flex;
