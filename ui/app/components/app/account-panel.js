@@ -10,8 +10,14 @@ export default class AccountPanel extends Component {
     isFauceting: PropTypes.bool,
   }
 
+  static defaultProps = {
+    identity: {},
+    account: {},
+    isFauceting: false,
+  }
+
   render () {
-    const { identity = {}, account = {}, isFauceting = false } = this.props
+    const { identity, account, isFauceting } = this.props
 
     const panelState = {
       key: `accountPanel${identity.address}`,
