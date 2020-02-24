@@ -61,7 +61,7 @@ storiesOf('PopOver', module)
           </div>
           <div className="popover-item">
             <div className="popover-item__col">
-              <h3>nonce</h3>
+              <h3 className="popover-item__heading">nonce</h3>
               <h4 className="popover-item__subheading">#5</h4>
             </div>
             <div className="popover-item__col">
