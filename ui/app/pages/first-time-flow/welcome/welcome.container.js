@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { closeWelcomeScreen } from '../../../store/actions'
 import Welcome from './welcome.component'
 

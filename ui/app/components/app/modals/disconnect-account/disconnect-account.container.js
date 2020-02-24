@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import DisconnectAccount from './disconnect-account.component'
 import { getCurrentAccountWithSendEtherInfo } from '../../../../selectors/selectors'

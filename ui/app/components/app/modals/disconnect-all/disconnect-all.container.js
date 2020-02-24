@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import DisconnectAll from './disconnect-all.component'

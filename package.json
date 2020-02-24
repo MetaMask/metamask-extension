@@ -154,7 +154,6 @@
     "react-transition-group": "^1.2.1",
     "react-trigger-change": "^1.0.2",
     "readable-stream": "^2.3.3",
-    "recompose": "^0.25.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
