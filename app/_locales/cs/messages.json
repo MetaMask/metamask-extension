@@ -55,6 +55,7 @@
   "balance": {
     "message": "Zůstatek:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Nedostatek prostředků pro aktuální množství paliva"
   },
@@ -62,6 +63,8 @@
     "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
   },
@@ -208,17 +211,11 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
-  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -301,10 +298,10 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "login": {
+  "unlock": {
     "message": "Přihlásit"
   },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "message": {
@@ -413,9 +410,6 @@
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
   },
-  "revert": {
-    "message": "Zvrátit"
-  },
   "save": {
     "message": "Uložit"
   },
@@ -486,7 +480,7 @@
     "message": "Navštivte naše centrum podpory"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+    "message": "Symbol musí mít 11 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"

@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atrybuty"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo może być nieaktualne"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Niewystarczająca ilość środków na opłatę za gaz"
   },
   "basic": {
     "message": "Podstawy"
@@ -494,9 +491,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitCalculation": {
-    "message": "Obliczamy sugerowany limit gazu na podstawie danych z transakcji w sieci."
-  },
   "gasLimitInfoModalContent": {
     "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gazu"
-  },
-  "gasPriceCalculation": {
-    "message": "Obliczamy ceny gazu na podstawie danych z transakcji w sieci."
   },
   "general": {
     "message": "Ogólne"
@@ -690,10 +681,7 @@
   "localhost": {
     "message": "Serwer lokalny 8545"
   },
-  "login": {
-    "message": "Zaloguj się"
-  },
-  "logout": {
+  "lock": {
     "message": "Wyloguj się"
   },
   "mainnet": {
@@ -707,9 +695,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask to bezpieczny portfel dla Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Słowa Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
@@ -970,9 +955,6 @@
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
   },
-  "revert": {
-    "message": "Wycofaj"
-  },
   "remove": {
     "message": "usuń"
   },
@@ -1187,7 +1169,7 @@
     "message": "Odwiedź nasze Centrum Pomocy"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć od 0 do 12 znaków."
+    "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
   "syncWithMobile": {
     "message": "Synchronizuj z telefonem"

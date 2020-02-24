@@ -43,6 +43,7 @@ class EditableLabel extends Component {
           if (event.key === 'Enter') {
             this.handleSubmit()
           }
+<<<<<<< HEAD
         },
         onChange: event => this.setState({ value: event.target.value }),
         className: classnames({ 'editable-label__input--error': value === '' }),
@@ -53,6 +54,19 @@ class EditableLabel extends Component {
         }),
       ]),
     ])
+=======
+        }}
+        onChange={(event) => this.setState({ value: event.target.value })}
+        className={classnames('large-input', 'editable-label__input', {
+          'editable-label__input--error': value === '',
+        })}
+      />
+    ), (
+      <div className="editable-label__icon-wrapper" key={2}>
+        <i className="fa fa-check editable-label__icon" onClick={() => this.handleSubmit()} />
+      </div>
+    )]
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   }
 
   renderReadonly () {
@@ -80,6 +94,7 @@ class EditableLabel extends Component {
   }
 }
 
+<<<<<<< HEAD
 EditableLabel.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
@@ -87,3 +102,6 @@ EditableLabel.propTypes = {
 }
 
 module.exports = EditableLabel
+=======
+export default EditableLabel
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

@@ -15,15 +15,16 @@ const historySpies = {
   push: sinon.spy(),
 }
 
-const t = (str1, str2) => str2 ? str1 + str2 : str1
+const t = (str1, str2) => (str2 ? str1 + str2 : str1)
 const metricsEvent = () => ({})
 
-describe('TransactionViewBalance Component', () => {
-  afterEach(() => {
+describe('TransactionViewBalance Component', function () {
+  afterEach(function () {
     propsMethodSpies.showDepositModal.resetHistory()
     historySpies.push.resetHistory()
   })
 
+<<<<<<< HEAD
   it('should render ETH balance properly', () => {
     const wrapper = shallow(<TransactionViewBalance
       showDepositModal={propsMethodSpies.showDepositModal}
@@ -33,6 +34,19 @@ describe('TransactionViewBalance Component', () => {
       fiatBalance={456}
       currentCurrency="usd"
     />, { context: { t, metricsEvent } })
+=======
+  it('should render ETH balance properly', function () {
+    const wrapper = shallow((
+      <TransactionViewBalance
+        showDepositModal={propsMethodSpies.showDepositModal}
+        history={historySpies}
+        network="3"
+        ethBalance={123}
+        fiatBalance={456}
+        currentCurrency="usd"
+      />
+    ), { context: { t, metricsEvent } })
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     assert.equal(wrapper.find('.transaction-view-balance').length, 1)
     assert.equal(wrapper.find('.transaction-view-balance__button').length, 2)
@@ -48,7 +62,7 @@ describe('TransactionViewBalance Component', () => {
     assert.equal(historySpies.push.getCall(0).args[0], SEND_ROUTE)
   })
 
-  it('should render token balance properly', () => {
+  it('should render token balance properly', function () {
     const token = {
       address: '0x35865238f0bec9d5ce6abff0fdaebe7b853dfcc5',
       decimals: '2',

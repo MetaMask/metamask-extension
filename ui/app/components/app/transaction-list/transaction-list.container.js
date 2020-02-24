@@ -1,6 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 import TransactionList from './transaction-list.component'
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -25,9 +23,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateNetworkNonce: address => dispatch(updateNetworkNonce(address)),
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
   }
@@ -45,7 +43,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
-)(TransactionList)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransactionList)

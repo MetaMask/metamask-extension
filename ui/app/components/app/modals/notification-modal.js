@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../store/actions')
+=======
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { hideModal } from '../../../store/actions'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 class NotificationModal extends Component {
   static contextProps = {
@@ -68,10 +75,9 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
-  t: PropTypes.func,
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideModal: () => {
       dispatch(actions.hideModal())
@@ -83,5 +89,5 @@ NotificationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(null, mapDispatchToProps)(NotificationModal)
+export default connect(null, mapDispatchToProps)(NotificationModal)
 

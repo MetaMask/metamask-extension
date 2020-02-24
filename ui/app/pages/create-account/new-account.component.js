@@ -4,20 +4,21 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
 export default class NewAccountCreateForm extends Component {
-  constructor (props, context) {
-    super(props)
-    const { newAccountNumber = 0 } = props
+  static defaultProps = {
+    newAccountNumber: 0,
+  }
 
-    this.state = {
-      newAccountName: '',
-      defaultAccountName: context.t('newAccountNumberName', [newAccountNumber]),
-    }
+  state = {
+    newAccountName: '',
+    defaultAccountName: this.context.t('newAccountNumberName', [
+      this.props.newAccountNumber,
+    ]),
   }
 
   render () {
     const { newAccountName, defaultAccountName } = this.state
     const { history, createAccount } = this.props
-    const createClick = _ => {
+    const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.metricsEvent({
@@ -52,7 +53,7 @@ export default class NewAccountCreateForm extends Component {
           <input className="new-account-create-form__input"
             value={newAccountName}
             placeholder={defaultAccountName}
-            onChange={event => this.setState({ newAccountName: event.target.value })}
+            onChange={(event) => this.setState({ newAccountName: event.target.value })}
           />
         </div>
         <div className="new-account-create-form__buttons">
@@ -75,14 +76,9 @@ export default class NewAccountCreateForm extends Component {
 }
 
 NewAccountCreateForm.propTypes = {
-  hideModal: PropTypes.func,
-  showImportPage: PropTypes.func,
-  showConnectPage: PropTypes.func,
   createAccount: PropTypes.func,
-  numberOfExistingAccounts: PropTypes.number,
   newAccountNumber: PropTypes.number,
   history: PropTypes.object,
-  t: PropTypes.func,
 }
 
 NewAccountCreateForm.contextTypes = {

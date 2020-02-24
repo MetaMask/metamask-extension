@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Dodelitve"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovnik za samodejno odjavo (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavite, po koliko minutah mirovanja naj se MetaMask samodejno odjavi"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Stanje morda ni posodobljeno"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nezadnosten znesek za trenutni gas"
   },
   "basic": {
     "message": "Osnovno"
@@ -494,9 +491,6 @@
   "functionType": {
     "message": "Vrsta funkcije"
   },
-  "gasLimitCalculation": {
-    "message": "Priporočen gas limit je izračunan glede na omrežje."
-  },
   "gasLimitInfoModalContent": {
     "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas price"
-  },
-  "gasPriceCalculation": {
-    "message": "Priporočen gas price je izračunan glede na omrežje."
   },
   "general": {
     "message": "Splošno"
@@ -678,10 +669,7 @@
   "loadMore": {
     "message": "Naloži več"
   },
-  "login": {
-    "message": "Prijava"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjava"
   },
   "mainnet": {
@@ -701,9 +689,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask je varen identitetni sklad za Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Seed Words"
   },
   "metamaskVersion": {
     "message": "Različica"
@@ -961,9 +946,6 @@
   "revealSeedWordsWarning": {
     "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune."
   },
-  "revert": {
-    "message": "Obnovi"
-  },
   "remove": {
     "message": "izbriši"
   },
@@ -1181,7 +1163,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora imeti med 0 in 12 znakov."
+    "message": "Simbol mora biti največ 11 znakov ali manj."
   },
   "syncWithMobile": {
     "message": "Sinhroniziraj z mobilnimi telefonom"

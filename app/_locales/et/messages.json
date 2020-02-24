@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Omistamised"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaatse väljalogimise taimer (minutites)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Seadistage jõudeolek minutites, enne kui MetaMask automaatselt välja logib"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo võib olla aegunud"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Ebapiisav kontojääk praeguse gaasi kogusumma jaoks"
   },
   "basic": {
     "message": "Põhiseaded"
@@ -493,9 +490,6 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasLimitCalculation": {
-    "message": "Arvutame soovituslikku gaasi ülemmäära vastavalt võrgu efektiivsusele."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gaasi ülemmäär on maksimaalne gaasiühikute hulk, mida olete nõus kulutama."
   },
@@ -516,9 +510,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaasi hind"
-  },
-  "gasPriceCalculation": {
-    "message": "Arvutame soovituslikke gaasihindu vastavalt võrgu efektiivsusele."
   },
   "general": {
     "message": "Üldine teave"
@@ -683,10 +674,7 @@
   "loadMore": {
     "message": "Laadi rohkem"
   },
-  "login": {
-    "message": "Logi sisse"
-  },
-  "logout": {
+  "lock": {
     "message": "Logi välja"
   },
   "mainnet": {
@@ -706,9 +694,6 @@
   },
   "metamaskDescription": {
     "message": "Teid ühendatakse Ethereumi ja detsentraliseeritud võrguga."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMaski seemnesõnad"
   },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
@@ -969,9 +954,6 @@
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
   },
-  "revert": {
-    "message": "Ennista"
-  },
   "remove": {
     "message": "Eemalda"
   },
@@ -1189,7 +1171,7 @@
     "message": "Sümbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sümbol peab olema 0 kuni 12 tähemärki."
+    "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
   "syncWithMobile": {
     "message": "Mobiiliga sünkroonimine"

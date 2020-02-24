@@ -85,6 +85,7 @@ export default class ConfirmApprove extends Component {
         identiconAddress={tokenAddress}
         showAccountInHeader
         title={tokensText}
+<<<<<<< HEAD
         contentComponent={<ConfirmApproveContent
           decimals={decimals}
           siteImage={siteImage}
@@ -105,6 +106,29 @@ export default class ConfirmApprove extends Component {
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
         />}
+=======
+        contentComponent={(
+          <ConfirmApproveContent
+            decimals={decimals}
+            siteImage={siteImage}
+            setCustomAmount={(newAmount) => {
+              this.setState({ customPermissionAmount: newAmount })
+            }}
+            customTokenAmount={String(customPermissionAmount)}
+            tokenAmount={tokenAmount}
+            origin={origin}
+            tokenSymbol={tokenSymbol}
+            tokenBalance={tokenBalance}
+            showCustomizeGasModal={() => showCustomizeGasModal(txData)}
+            showEditApprovalPermissionModal={showEditApprovalPermissionModal}
+            data={customData || data}
+            toAddress={toAddress}
+            currentCurrency={currentCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+          />
+        )}
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
         hideSenderToRecipient
         customTxParamsData={customData}
         {...restProps}

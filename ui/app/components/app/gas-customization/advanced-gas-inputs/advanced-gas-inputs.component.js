@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {

@@ -1,14 +1,14 @@
-const Config = require('./recipient-blacklist.js')
+import Config from './recipient-blacklist.js'
 
 /** @module*/
-module.exports = {
+export default {
   checkAccount,
 }
 
 /**
  * Checks if a specified account on a specified network is blacklisted.
-  @param networkId {number}
-  @param account {string}
+  @param {number} networkId
+  @param {string} account
 */
 function checkAccount (networkId, account) {
 

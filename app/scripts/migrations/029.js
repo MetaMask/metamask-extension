@@ -1,6 +1,6 @@
 // next version number
 const version = 29
-const failTxsThat = require('./fail-tx')
+import failTxsThat from './fail-tx'
 
 // time
 const seconds = 1000
@@ -14,7 +14,7 @@ normalizes txParams on unconfirmed txs
 
 */
 
-module.exports = {
+export default {
   version,
 
   migrate: failTxsThat(version, 'Stuck in approved state for too long.', (txMeta) => {

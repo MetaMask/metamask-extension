@@ -121,10 +121,10 @@
   "attributions": {
     "message": "來源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "當前餘額不足以支付 Gas"
   },
   "basic": {
     "message": "基本"
@@ -494,9 +491,6 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 上限。"
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas 價格"
-  },
-  "gasPriceCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 價格"
   },
   "general": {
     "message": "一般"
@@ -687,11 +678,8 @@
   "loadMore": {
     "message": "載入更多"
   },
-  "login": {
-    "message": "登入"
-  },
-  "logout": {
-    "message": "登出"
+  "lock": {
+    "message": "鎖定"
   },
   "mainnet": {
     "message": "乙太坊 主網路"
@@ -961,9 +949,6 @@
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
   },
-  "revert": {
-    "message": "還原"
-  },
   "remove": {
     "message": "移除"
   },
@@ -1175,7 +1160,7 @@
     "message": "符號"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "代號必須介於 0 到 12 字元間."
+    "message": "符號不得超過11個字符。"
   },
   "syncWithMobile": {
     "message": "和移動裝置同步"
@@ -1313,6 +1298,9 @@
   },
   "unknownCameraError": {
     "message": "無法存取攝影鏡頭。請再試一次..."
+  },
+  "unlock": {
+    "message": "解鎖"
   },
   "unlockMessage": {
     "message": "去中心化網路世界等待著您"

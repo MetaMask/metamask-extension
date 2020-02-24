@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Tillskrivningar"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldot kanske inte är uppdaterat"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Otillräckligt saldo för aktuell totalsumma för gas"
   },
   "basic": {
     "message": "Grunder"
@@ -487,9 +484,6 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitCalculation": {
-    "message": "Vi beräknar den föreslagna gasgränsen baserat på nätverket framgångsgrad."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
   },
@@ -510,9 +504,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspris"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi beräknar de föreslagna gaspriserna baserat på nätverkets resultat."
   },
   "general": {
     "message": "Allmänt"
@@ -680,10 +671,7 @@
   "loadMore": {
     "message": "Ladda mer"
   },
-  "login": {
-    "message": "Logga in"
-  },
-  "logout": {
+  "lock": {
     "message": "Logga ut"
   },
   "mainnet": {
@@ -700,9 +688,6 @@
   },
   "metamaskDescription": {
     "message": "Ansluter dig mot Ethereum och den decentraliserade webben."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask"
   },
   "metamaskVersion": {
     "message": "MetaMask-version"
@@ -963,9 +948,6 @@
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
   },
-  "revert": {
-    "message": "Återställ"
-  },
   "remove": {
     "message": "Ta bort"
   },
@@ -1180,7 +1162,7 @@
     "message": "Besök vårt supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolen måste vara mellan 0 och 12 tecken."
+    "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "syncWithMobile": {
     "message": "Synka med mobil"

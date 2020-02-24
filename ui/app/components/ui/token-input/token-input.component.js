@@ -20,7 +20,6 @@ export default class TokenInput extends PureComponent {
   static propTypes = {
     currentCurrency: PropTypes.string,
     onChange: PropTypes.func,
-    onBlur: PropTypes.func,
     value: PropTypes.string,
     suffix: PropTypes.string,
     showFiat: PropTypes.bool,
@@ -67,7 +66,7 @@ export default class TokenInput extends PureComponent {
     return Number(decimalValueString) ? decimalValueString : ''
   }
 
-  handleChange = decimalValue => {
+  handleChange = (decimalValue) => {
     const { selectedToken: { decimals } = {}, onChange } = this.props
 
     const multiplier = Math.pow(10, Number(decimals || 0))
@@ -77,10 +76,13 @@ export default class TokenInput extends PureComponent {
     onChange(hexValue)
   }
 
+<<<<<<< HEAD
   handleBlur = () => {
     this.props.onBlur && this.props.onBlur(this.state.hexValue)
   }
 
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   renderConversionComponent () {
     const { selectedTokenExchangeRate, showFiat, currentCurrency, hideConversion } = this.props
     const { decimalValue } = this.state
@@ -135,7 +137,6 @@ export default class TokenInput extends PureComponent {
         {...restProps}
         suffix={suffix}
         onChange={this.handleChange}
-        onBlur={this.handleBlur}
         value={decimalValue}
       >
         { this.renderConversionComponent() }

@@ -76,6 +76,7 @@
   "balance": {
     "message": "Balans"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Ensifizan balans pou total gaz aktyèl la"
   },
@@ -83,6 +84,8 @@
     "message": "dwe plis pase oswa egal a $ 1 mwens ke oswa egal a $ 2.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Itilize Blockies Identicon"
   },
@@ -280,9 +283,6 @@
   "gasLimit": {
     "message": "Limit gaz"
   },
-  "gasLimitCalculation": {
-    "message": "Nou kalkile gaz limit sijere a ki baze sou pousantaj siksè rezo a."
-  },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
@@ -291,9 +291,6 @@
   },
   "gasPrice": {
     "message": "Pri gaz (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Nou kalkile pri yo gaz ki sijere ki baze sou pousantaj siksè rezo."
   },
   "getEther": {
     "message": "Jwenn Ether"
@@ -419,10 +416,7 @@
   "loadingTokens": {
     "message": "Telechaje Tokens..."
   },
-  "login": {
-    "message": "Ouvri"
-  },
-  "logout": {
+  "lock": {
     "message": "Dekonekte"
   },
   "mainnet": {
@@ -436,9 +430,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask sekirize idantite pou Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seed Mo"
   },
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
@@ -615,9 +606,6 @@
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
-  "revert": {
-    "message": "Retounen"
-  },
   "remove": {
     "message": "retire"
   },
@@ -766,7 +754,7 @@
     "message": "Vizite Sant Sipò Nou"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Senbòl yo dwe ant 0 ak 12 karaktè."
+    "message": "Senbòl yo dwe 11 karaktè oswa mwens."
   },
   "terms": {
     "message": "Tèm pou itilize"

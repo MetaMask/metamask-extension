@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Henvisninger"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldoen kan utløpe"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Utilstrekkelig dekning for nåværende datakrafttotal"
   },
   "basic": {
     "message": "Enkle"
@@ -490,9 +487,6 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitCalculation": {
-    "message": "Vi kalkulerer den foreslåtte gassgrensen baser på nettverkets suksessrater."
-  },
   "gasLimitInfoModalContent": {
     "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
   },
@@ -513,9 +507,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Datakraft"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi kalkulerer den foreslåtte datakraftprisen basert på sukssesspriser for nettverk. "
   },
   "general": {
     "message": "Generell"
@@ -683,10 +674,7 @@
   "localhost": {
     "message": "Lokalvert 8545"
   },
-  "login": {
-    "message": "Logg inn"
-  },
-  "logout": {
+  "lock": {
     "message": "Logg ut "
   },
   "mainnet": {
@@ -706,9 +694,6 @@
   },
   "metamaskDescription": {
     "message": "Kobler deg til Ethereum og det desentraliserte nettet."
-  },
-  "metamaskSeedWords": {
-    "message": "Mnemoniske gjenopprettingsfraser for MetaMask "
   },
   "metamaskVersion": {
     "message": "MetaMask-versjon "
@@ -969,9 +954,6 @@
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
   },
-  "revert": {
-    "message": "Tilbakestill "
-  },
   "remove": {
     "message": "Fjern"
   },
@@ -1174,7 +1156,7 @@
     "message": "Besøk brukerstøtte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symboler må være på mellom 0 og 12 tegn. "
+    "message": "Symbolet må være 11 tegn eller færre."
   },
   "syncWithMobile": {
     "message": "Synkroniser med mobil "

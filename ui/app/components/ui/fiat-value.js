@@ -1,35 +1,49 @@
+<<<<<<< HEAD
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const formatBalance = require('../../helpers/utils/util').formatBalance
+=======
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { formatBalance } from '../../helpers/utils/util'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-module.exports = FiatValue
+export default class FiatValue extends Component {
+  static propTypes = {
+    conversionRate: PropTypes.number.isRequired,
+    currentCurrency: PropTypes.string,
+    style: PropTypes.object,
+    value: PropTypes.string.isRequired,
+  }
 
-inherits(FiatValue, Component)
-function FiatValue () {
-  Component.call(this)
-}
+  render () {
+    const { conversionRate, currentCurrency, style } = this.props
+    const renderedCurrency = currentCurrency || ''
 
-FiatValue.prototype.render = function () {
-  const props = this.props
-  const { conversionRate, currentCurrency, style } = props
-  const renderedCurrency = currentCurrency || ''
+    const value = formatBalance(this.props.value, 6)
 
-  const value = formatBalance(props.value, 6)
+    if (value === 'None') {
+      return value
+    }
+    let fiatDisplayNumber, fiatTooltipNumber
+    const splitBalance = value.split(' ')
 
+<<<<<<< HEAD
   if (value === 'None') return value
   var fiatDisplayNumber, fiatTooltipNumber
   var splitBalance = value.split(' ')
+=======
+    if (conversionRate !== 0) {
+      fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
+      fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
+    } else {
+      fiatDisplayNumber = 'N/A'
+    }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-  if (conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
-  } else {
-    fiatDisplayNumber = 'N/A'
-    fiatTooltipNumber = 'Unknown'
+    return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase(), style)
   }
-
-  return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase(), style)
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix, styleOveride = {}) {

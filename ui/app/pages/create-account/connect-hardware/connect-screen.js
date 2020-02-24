@@ -38,6 +38,7 @@ class ConnectScreen extends Component {
       )
     }
 
+<<<<<<< HEAD
     renderButtons () {
       return (
         h('div', {}, [
@@ -73,6 +74,41 @@ class ConnectScreen extends Component {
         ])
       )
     }
+=======
+  renderConnectToTrezorButton () {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          'selected': this.state.selectedDevice === 'trezor',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'trezor' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/trezor-logo.svg"
+          alt=""
+        />
+      </button>
+    )
+  }
+
+  renderConnectToLedgerButton () {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          'selected': this.state.selectedDevice === 'ledger',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'ledger' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/ledger-logo.svg"
+          alt=""
+        />
+      </button>
+    )
+  }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     renderHeader () {
       return (
@@ -95,6 +131,7 @@ class ConnectScreen extends Component {
       return h('div.hw-connect__get-hw__msg', { dangerouslySetInnerHTML: {__html: response }})
     }
 
+<<<<<<< HEAD
     renderTrezorAffiliateLink () {
       return h('div.hw-connect__get-hw', {}, [
         h('p.hw-connect__get-hw__msg', {}, this.context.t('dontHaveAHardwareWallet')),
@@ -105,6 +142,32 @@ class ConnectScreen extends Component {
 
     scrollToTutorial = () => {
       if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})
+=======
+    const text = this.context.t('orderOneHere')
+    const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+
+    return (
+      <div
+        className="hw-connect__get-hw__msg"
+        dangerouslySetInnerHTML={{ __html: response }}
+      />
+    )
+  }
+
+  renderTrezorAffiliateLink () {
+    return (
+      <div className="hw-connect__get-hw">
+        <p className="hw-connect__get-hw__msg">{this.context.t('dontHaveAHardwareWallet')}</p>
+        {this.getAffiliateLinks()}
+      </div>
+    )
+  }
+
+
+  scrollToTutorial = () => {
+    if (this.referenceNode) {
+      this.referenceNode.scrollIntoView({ behavior: 'smooth' })
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     }
 
     renderLearnMore () {
@@ -118,6 +181,7 @@ class ConnectScreen extends Component {
       )
     }
 
+<<<<<<< HEAD
     renderTutorialSteps () {
       const steps = [
         {
@@ -152,6 +216,47 @@ class ConnectScreen extends Component {
       ))
       )
     }
+=======
+  renderTutorialSteps () {
+    const steps = [
+      {
+        asset: 'hardware-wallet-step-1',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1HardwareWallet'),
+        message: this.context.t('step1HardwareWalletMsg'),
+      },
+      {
+        asset: 'hardware-wallet-step-2',
+        dimensions: { width: '300px', height: '100px' },
+        title: this.context.t('step2HardwareWallet'),
+        message: this.context.t('step2HardwareWalletMsg'),
+      },
+      {
+        asset: 'hardware-wallet-step-3',
+        dimensions: { width: '120px', height: '90px' },
+        title: this.context.t('step3HardwareWallet'),
+        message: this.context.t('step3HardwareWalletMsg'),
+      },
+    ]
+
+    return (
+      <div
+        className="hw-tutorial"
+        ref={(node) => {
+          this.referenceNode = node
+        }}
+      >
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            <img className="hw-connect__step-asset" src={`images/${step.asset}.svg`} {...step.dimensions} alt="" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     renderFooter () {
       return (
@@ -199,5 +304,5 @@ ConnectScreen.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = ConnectScreen
+export default ConnectScreen
 

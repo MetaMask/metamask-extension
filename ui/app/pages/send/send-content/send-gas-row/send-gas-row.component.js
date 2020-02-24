@@ -9,8 +9,6 @@ export default class SendGasRow extends Component {
 
   static propTypes = {
     balance: PropTypes.string,
-    conversionRate: PropTypes.number,
-    convertedCurrency: PropTypes.string,
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
@@ -33,7 +31,7 @@ export default class SendGasRow extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
+  }
 
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context
@@ -71,8 +69,6 @@ export default class SendGasRow extends Component {
 
   renderContent () {
     const {
-      conversionRate,
-      convertedCurrency,
       gasLoadingError,
       gasTotal,
       showCustomizeGasModal,
@@ -89,6 +85,7 @@ export default class SendGasRow extends Component {
     } = this.props
     const { metricsEvent } = this.context
 
+<<<<<<< HEAD
     const gasPriceButtonGroup = <div>
       <GasPriceButtonGroup
         className="gas-price-button-group--small"
@@ -103,11 +100,43 @@ export default class SendGasRow extends Component {
             },
           })
           await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+=======
+    const gasPriceButtonGroup = (
+      <div>
+        <GasPriceButtonGroup
+          className="gas-price-button-group--small"
+          showCheck={false}
+          {...gasPriceButtonGroupProps}
+          handleGasPriceSelection={async (...args) => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Edit Screen',
+                name: 'Changed Gas Button',
+              },
+            })
+            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            if (maxModeOn) {
+              this.setMaxAmount()
+            }
+          }}
+        />
+        { this.renderAdvancedOptionsButton() }
+      </div>
+    )
+    const gasFeeDisplay = (
+      <GasFeeDisplay
+        gasLoadingError={gasLoadingError}
+        gasTotal={gasTotal}
+        onReset={() => {
+          resetGasButtons()
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
           if (maxModeOn) {
             this.setMaxAmount()
           }
         }}
       />
+<<<<<<< HEAD
       { this.renderAdvancedOptionsButton() }
     </div>
     const gasFeeDisplay = <GasFeeDisplay
@@ -135,6 +164,23 @@ export default class SendGasRow extends Component {
       />
       { this.renderAdvancedOptionsButton() }
     </div>
+=======
+    )
+    const advancedGasInputs = (
+      <div>
+        <AdvancedGasInputs
+          updateCustomGasPrice={(newGasPrice) => setGasPrice(newGasPrice, gasLimit)}
+          updateCustomGasLimit={(newGasLimit) => setGasLimit(newGasLimit, gasPrice)}
+          customGasPrice={gasPrice}
+          customGasLimit={gasLimit}
+          insufficientBalance={insufficientBalance}
+          customPriceIsSafe
+          isSpeedUp={false}
+        />
+        { this.renderAdvancedOptionsButton() }
+      </div>
+    )
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     if (advancedInlineGasShown) {
       return advancedGasInputs

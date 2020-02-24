@@ -2,9 +2,6 @@ import { connect } from 'react-redux'
 import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-const {
-  getSelectedAddress,
-} = require('../../selectors/selectors')
 
 import {
   getAmountConversionRate,
@@ -18,7 +15,6 @@ import {
   getRecentBlocks,
   getSelectedToken,
   getSelectedTokenContract,
-  getSelectedTokenToFiatRate,
   getSendAmount,
   getSendEditingTransactionId,
   getSendHexDataFeatureFlagState,
@@ -27,10 +23,9 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
 } from './send.selectors'
 import {
+  getSelectedAddress,
   getAddressBook,
 } from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
@@ -58,12 +53,9 @@ import {
   isValidDomainName,
 } from '../../helpers/utils/util'
 
-import {
-  SEND_ROUTE,
-} from '../../helpers/constants/routes'
-
 function mapStateToProps (state) {
   return {
+    addressBook: getAddressBook(state),
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
@@ -75,20 +67,16 @@ function mapStateToProps (state) {
     gasTotal: getGasTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
+    qrCodeData: getQrCodeData(state),
     recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
-    ensResolution: getSendEnsResolution(state),
-    ensResolutionError: getSendEnsResolutionError(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
-    tokenToFiatRate: getSelectedTokenToFiatRate(state),
-    qrCodeData: getQrCodeData(state),
-    addressBook: getAddressBook(state),
   }
 }
 
@@ -117,9 +105,9 @@ function mapDispatchToProps (dispatch) {
         address,
       }))
     },
-    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
+    updateSendErrors: (newError) => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
-    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
+    scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),

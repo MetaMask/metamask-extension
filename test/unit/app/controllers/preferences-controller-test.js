@@ -1,14 +1,22 @@
+<<<<<<< HEAD
 const assert = require('assert')
 const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 const sinon = require('sinon')
+=======
+import assert from 'assert'
+import ObservableStore from 'obs-store'
+import PreferencesController from '../../../../app/scripts/controllers/preferences'
+import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
+import sinon from 'sinon'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 describe('preferences controller', function () {
   let preferencesController
   let network
 
-  beforeEach(() => {
-    network = {providerStore: new ObservableStore({ type: 'mainnet' })}
+  beforeEach(function () {
+    network = { providerStore: new ObservableStore({ type: 'mainnet' }) }
     preferencesController = new PreferencesController({ network })
   })
 
@@ -19,7 +27,7 @@ describe('preferences controller', function () {
         '0x7e57e2',
       ])
 
-      const {identities} = preferencesController.store.getState()
+      const { identities } = preferencesController.store.getState()
       assert.deepEqual(identities, {
         '0xda22le': {
           name: 'Account 1',
@@ -56,7 +64,7 @@ describe('preferences controller', function () {
         '0x7e57e277',
       ])
 
-      const {identities} = preferencesController.store.getState()
+      const { identities } = preferencesController.store.getState()
       assert.deepEqual(identities, {
         '0xda22le77': {
           name: 'Account 1',
@@ -245,7 +253,7 @@ describe('preferences controller', function () {
       assert.equal(tokens.length, 1, 'one token removed')
 
       const [token1] = tokens
-      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
+      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
     })
 
     it('should remove a token from its state on corresponding address', async function () {
@@ -263,7 +271,7 @@ describe('preferences controller', function () {
       assert.equal(tokensFirst.length, 1, 'one token removed in account')
 
       const [token1] = tokensFirst
-      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
+      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
 
       await preferencesController.setSelectedAddress('0x7e57e3')
       const tokensSecond = preferencesController.getTokens()
@@ -285,7 +293,7 @@ describe('preferences controller', function () {
       assert.equal(tokensFirst.length, 1, 'one token removed in network')
 
       const [token1] = tokensFirst
-      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
+      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
 
       network.providerStore.updateState({ type: 'rinkeby' })
       const tokensSecond = preferencesController.getTokens()
@@ -345,31 +353,43 @@ describe('preferences controller', function () {
     var stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
     const sandbox = sinon.createSandbox()
 
-    beforeEach(() => {
-      req = {params: {}}
+    beforeEach(function () {
+      req = { params: {} }
       res = {}
-      asy = {next: () => {}, end: () => {}}
+      asy = { next: () => {}, end: () => {} }
       stubNext = sandbox.stub(asy, 'next')
       stubEnd = sandbox.stub(asy, 'end').returns(0)
       stubHandleWatchAssetERC20 = sandbox.stub(preferencesController, '_handleWatchAssetERC20')
     })
-    after(() => {
+    after(function () {
       sandbox.restore()
     })
 
     it('shouldn not do anything if method not corresponds', async function () {
+<<<<<<< HEAD
       const asy = {next: () => {}, end: () => {}}
       var stubNext = sandbox.stub(asy, 'next')
       var stubEnd = sandbox.stub(asy, 'end').returns(0)
+=======
+      const asy = { next: () => {}, end: () => {} }
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
       req.method = 'metamask'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.notCalled(stubEnd)
       sandbox.assert.called(stubNext)
     })
     it('should do something if method is supported', async function () {
+<<<<<<< HEAD
       const asy = {next: () => {}, end: () => {}}
       var stubNext = sandbox.stub(asy, 'next')
       var stubEnd = sandbox.stub(asy, 'end').returns(0)
+=======
+      const asy = { next: () => {}, end: () => {} }
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
       req.method = 'metamask_watchAsset'
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
@@ -391,7 +411,7 @@ describe('preferences controller', function () {
       assert.deepEqual(res, {})
     })
     it('should trigger handle add asset if type supported', async function () {
-      const asy = {next: () => {}, end: () => {}}
+      const asy = { next: () => {}, end: () => {} }
       req.method = 'metamask_watchAsset'
       req.params.type = 'ERC20'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
@@ -403,10 +423,10 @@ describe('preferences controller', function () {
     var req
 
     const sandbox = sinon.createSandbox()
-    beforeEach(() => {
-      req = {params: {type: 'ERC20'}}
+    beforeEach(function () {
+      req = { params: { type: 'ERC20' } }
     })
-    after(() => {
+    after(function () {
       sandbox.restore()
     })
 
@@ -455,6 +475,7 @@ describe('preferences controller', function () {
     })
     it('should validate ERC20 asset correctly', async function () {
       const validateSpy = sandbox.spy(preferencesController._validateERC20AssetParams)
+<<<<<<< HEAD
       try { validateSpy({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0}) } catch (e) {}
       assert.equal(validateSpy.threw(), false, 'correct options object')
       const validateSpyAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
@@ -477,6 +498,46 @@ describe('preferences controller', function () {
       assert.equal(validateSpyInvalidDecimals2.threw(), true, 'options object with decimals more than 36')
       const validateSpyInvalidAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyInvalidAddress({rawAddress: '0x123', symbol: 'ABC', decimals: 0}) } catch (e) {}
+=======
+      try {
+        validateSpy({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0 })
+      } catch (e) {}
+      assert.equal(validateSpy.threw(), false, 'correct options object')
+      const validateSpyAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyAddress({ symbol: 'ABC', decimals: 0 })
+      } catch (e) {}
+      assert.equal(validateSpyAddress.threw(), true, 'options object with no address')
+      const validateSpySymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpySymbol({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0 })
+      } catch (e) {}
+      assert.equal(validateSpySymbol.threw(), true, 'options object with no symbol')
+      const validateSpyDecimals = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyDecimals({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC' })
+      } catch (e) {}
+      assert.equal(validateSpyDecimals.threw(), true, 'options object with no decimals')
+      const validateSpyInvalidSymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyInvalidSymbol({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0 })
+      } catch (e) {}
+      assert.equal(validateSpyInvalidSymbol.threw(), true, 'options object with invalid symbol')
+      const validateSpyInvalidDecimals1 = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyInvalidDecimals1({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: -1 })
+      } catch (e) {}
+      assert.equal(validateSpyInvalidDecimals1.threw(), true, 'options object with decimals less than zero')
+      const validateSpyInvalidDecimals2 = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyInvalidDecimals2({ rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 38 })
+      } catch (e) {}
+      assert.equal(validateSpyInvalidDecimals2.threw(), true, 'options object with decimals more than 36')
+      const validateSpyInvalidAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
+      try {
+        validateSpyInvalidAddress({ rawAddress: '0x123', symbol: 'ABC', decimals: 0 })
+      } catch (e) {}
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
       assert.equal(validateSpyInvalidAddress.threw(), true, 'options object with address invalid')
     })
   })
@@ -497,8 +558,8 @@ describe('preferences controller', function () {
   })
 
   describe('#updateRpc', function () {
-    it('should update the rpcDetails properly', () => {
-      preferencesController.store.updateState({frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}]})
+    it('should update the rpcDetails properly', function () {
+      preferencesController.store.updateState({ frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}] })
       preferencesController.updateRpc({ rpcUrl: 'test', chainId: 1 })
       preferencesController.updateRpc({ rpcUrl: 'test/1', chainId: 1 })
       preferencesController.updateRpc({ rpcUrl: 'test/2', chainId: 1 })

@@ -62,7 +62,7 @@ export default class FirstTimeFlow extends PureComponent {
     }
   }
 
-  handleCreateNewAccount = async password => {
+  handleCreateNewAccount = async (password) => {
     const { createNewAccount } = this.props
 
     try {
@@ -85,7 +85,7 @@ export default class FirstTimeFlow extends PureComponent {
     }
   }
 
-  handleUnlock = async password => {
+  handleUnlock = async (password) => {
     const { unlockAccount, history, nextRoute } = this.props
 
     try {
@@ -107,9 +107,9 @@ export default class FirstTimeFlow extends PureComponent {
         <Switch>
           <Route
             path={INITIALIZE_SEED_PHRASE_ROUTE}
-            render={props => (
+            render={(routeProps) => (
               <SeedPhrase
-                { ...props }
+                { ...routeProps }
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -117,9 +117,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
-            render={props => (
+            render={(routeProps) => (
               <SeedPhrase
-                { ...props }
+                { ...routeProps }
                 seedPhrase={seedPhrase}
                 verifySeedPhrase={verifySeedPhrase}
               />
@@ -127,9 +127,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
-            render={props => (
+            render={(routeProps) => (
               <CreatePassword
-                { ...props }
+                { ...routeProps }
                 isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
@@ -142,9 +142,9 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_UNLOCK_ROUTE}
-            render={props => (
+            render={(routeProps) => (
               <Unlock
-                { ...props }
+                { ...routeProps }
                 onSubmit={this.handleUnlock}
               />
             )}

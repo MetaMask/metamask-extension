@@ -55,7 +55,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
     id,
     hash,
     history = [],
-    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice},
+    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice },
     xReceipt: { status } = {},
     type,
   } = transaction
@@ -86,11 +86,11 @@ export function getActivities (transaction, isFirstTransaction = false) {
     } else if (Array.isArray(base)) {
       const events = []
 
-      base.forEach(entry => {
+      base.forEach((entry) => {
         const { op, path, value, timestamp: entryTimestamp } = entry
         // Not all sub-entries in a history entry have a timestamp. If the sub-entry does not have a
         // timestamp, the first sub-entry in a history entry should.
-        const timestamp = entryTimestamp || base[0] && base[0].timestamp
+        const timestamp = entryTimestamp || (base[0] && base[0].timestamp)
 
         if (path in eventPathsHash && op === REPLACE_OP) {
           switch (path) {
@@ -194,7 +194,7 @@ function filterSortedActivities (activities) {
   )))
   let addedDroppedActivity = false
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     if (activity.eventKey === TRANSACTION_DROPPED_EVENT) {
       if (!hasConfirmedActivity && !addedDroppedActivity) {
         filteredActivities.push(activity)

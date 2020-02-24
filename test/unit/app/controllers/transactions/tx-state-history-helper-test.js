@@ -1,6 +1,6 @@
-const assert = require('assert')
-const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
-const testVault = require('../../../../data/v17-long-history.json')
+import assert from 'assert'
+import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
+import testVault from '../../../../data/v17-long-history.json'
 
 describe('Transaction state history helper', function () {
 

@@ -1,15 +1,17 @@
-const abi = require('human-standard-token-abi')
-const ethUtil = require('ethereumjs-util')
-const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
+import abi from 'human-standard-token-abi'
+import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
 import punycode from 'punycode'
+<<<<<<< HEAD
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-function formatDate (date, format = 'M/d/y \'at\' T') {
+export function formatDate (date, format = 'M/d/y \'at\' T') {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
@@ -31,6 +33,7 @@ for (var currency in valueTable) {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
 }
 
+<<<<<<< HEAD
 module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
@@ -66,6 +69,9 @@ module.exports = {
 }
 
 function isEthNetwork (netId) {
+=======
+export function isEthNetwork (netId) {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
     return true
   }
@@ -73,14 +79,28 @@ function isEthNetwork (netId) {
   return false
 }
 
+<<<<<<< HEAD
 function valuesFor (obj) {
   if (!obj) return []
+=======
+export function valuesFor (obj) {
+  if (!obj) {
+    return []
+  }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   return Object.keys(obj)
     .map(function (key) { return obj[key] })
 }
 
+<<<<<<< HEAD
 function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
   if (!address) return ''
+=======
+export function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+  if (!address) {
+    return ''
+  }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   let checked = checksumAddress(address)
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
@@ -88,6 +108,7 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
   return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
 }
 
+<<<<<<< HEAD
 function miniAddressSummary (address) {
   if (!address) return ''
   var checked = checksumAddress(address)
@@ -101,6 +122,17 @@ function isValidAddress (address) {
 }
 
 function isValidDomainName (address) {
+=======
+export function isValidAddress (address) {
+  const prefixed = ethUtil.addHexPrefix(address)
+  if (address === '0x0000000000000000000000000000000000000000') {
+    return false
+  }
+  return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+export function isValidDomainName (address) {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   const match = punycode.toASCII(address)
     .toLowerCase()
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
@@ -108,6 +140,7 @@ function isValidDomainName (address) {
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
     .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/)
   return match !== null
+<<<<<<< HEAD
 }
 
 function isInvalidChecksumAddress (address) {
@@ -120,19 +153,42 @@ function isAllOneCase (address) {
   if (!address) return true
   var lower = address.toLowerCase()
   var upper = address.toUpperCase()
+=======
+}
+
+export function isAllOneCase (address) {
+  if (!address) {
+    return true
+  }
+  const lower = address.toLowerCase()
+  const upper = address.toUpperCase()
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   return address === lower || address === upper
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
+<<<<<<< HEAD
 function numericBalance (balance) {
   if (!balance) return new ethUtil.BN(0, 16)
   var stripped = ethUtil.stripHexPrefix(balance)
+=======
+export function numericBalance (balance) {
+  if (!balance) {
+    return new ethUtil.BN(0, 16)
+  }
+  const stripped = ethUtil.stripHexPrefix(balance)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   return new ethUtil.BN(stripped, 16)
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
+<<<<<<< HEAD
 function parseBalance (balance) {
   var beforeDecimal, afterDecimal
+=======
+export function parseBalance (balance) {
+  let afterDecimal
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   const wei = numericBalance(balance)
   var weiString = wei.toString()
   const trailingZeros = /0+$/
@@ -145,11 +201,19 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
+<<<<<<< HEAD
 function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
   var formatted = 'None'
+=======
+export function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ETH') {
+  const parsed = needsParse ? parseBalance(balance) : balance.split('.')
+  const beforeDecimal = parsed[0]
+  let afterDecimal = parsed[1]
+  let formatted = 'None'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
@@ -168,12 +232,21 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, ticker = 'ET
 }
 
 
+<<<<<<< HEAD
 function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var balance = formattedBalance.split(' ')[0]
   var label = formattedBalance.split(' ')[1]
   var beforeDecimal = balance.split('.')[0]
   var afterDecimal = balance.split('.')[1]
   var shortBalance = shortenBalance(balance, decimalsToKeep)
+=======
+export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
+  let balance = formattedBalance.split(' ')[0]
+  const label = formattedBalance.split(' ')[1]
+  const beforeDecimal = balance.split('.')[0]
+  const afterDecimal = balance.split('.')[1]
+  const shortBalance = shortenBalance(balance, decimalsToKeep)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') {
     // eslint-disable-next-line eqeqeq
@@ -189,9 +262,15 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   return { balance, label, shortBalance }
 }
 
+<<<<<<< HEAD
 function shortenBalance (balance, decimalsToKeep = 1) {
   var truncatedValue
   var convertedBalance = parseFloat(balance)
+=======
+export function shortenBalance (balance, decimalsToKeep = 1) {
+  let truncatedValue
+  const convertedBalance = parseFloat(balance)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   if (convertedBalance > 1000000) {
     truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
     return `${truncatedValue}m`
@@ -214,21 +293,24 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   }
 }
 
+<<<<<<< HEAD
 function dataSize (data) {
   var size = data ? ethUtil.stripHexPrefix(data).length : 0
   return size + ' bytes'
 }
 
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 // Takes a BN and an ethereum currency name,
 // returns a BN in wei
-function normalizeToWei (amount, currency) {
+export function normalizeToWei (amount, currency) {
   try {
     return amount.mul(bnTable.wei).div(bnTable[currency])
   } catch (e) {}
   return amount
 }
 
-function normalizeEthStringToWei (str) {
+export function normalizeEthStringToWei (str) {
   const parts = str.split('.')
   let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
   if (parts[1]) {
@@ -245,6 +327,7 @@ function normalizeEthStringToWei (str) {
   return eth
 }
 
+<<<<<<< HEAD
 var multiple = new ethUtil.BN('10000', 10)
 function normalizeNumberToWei (n, currency) {
   var enlarged = n * 10000
@@ -267,30 +350,41 @@ function readableDate (ms) {
 }
 
 function isHex (str) {
+=======
+const multiple = new ethUtil.BN('10000', 10)
+export function normalizeNumberToWei (n, currency) {
+  const enlarged = n * 10000
+  const amount = new ethUtil.BN(String(enlarged), 10)
+  return normalizeToWei(amount, currency).div(multiple)
+}
+
+export function isHex (str) {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
 }
 
-function bnMultiplyByFraction (targetBN, numerator, denominator) {
-  const numBN = new ethUtil.BN(numerator)
-  const denomBN = new ethUtil.BN(denominator)
-  return targetBN.mul(numBN).div(denomBN)
-}
-
-function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16)) {
-  const gasBn = hexToBn(gas)
-  const gasPriceBn = hexToBn(gasPrice)
-  const txFeeBn = gasBn.mul(gasPriceBn)
-
-  return txFeeBn.toString(16)
-}
-
-function getContractAtAddress (tokenAddress) {
+export function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-function exportAsFile (filename, data, type = 'text/csv') {
+export function getRandomFileName () {
+  let fileName = ''
+  const charBank = [
+    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+  ]
+  const fileNameLength = Math.floor((Math.random() * 7) + 6)
+
+  for (let i = 0; i < fileNameLength; i++) {
+    fileName += charBank[Math.floor(Math.random() * charBank.length)]
+  }
+
+  return fileName
+}
+
+export function exportAsFile (filename, data, type = 'text/csv') {
+  filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], {type})
+  const blob = new Blob([data], { type })
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
@@ -304,27 +398,23 @@ function exportAsFile (filename, data, type = 'text/csv') {
   }
 }
 
-function allNull (obj) {
-  return Object.entries(obj).every(([_, value]) => value === null)
-}
-
-function getTokenAddressFromTokenObject (token) {
+export function getTokenAddressFromTokenObject (token) {
   return Object.values(token)[0].address.toLowerCase()
 }
 
 /**
  * Safely checksumms a potentially-null address
  *
- * @param {String} [address] - address to checksum
- * @returns {String} - checksummed address
+ * @param {string} [address] - address to checksum
+ * @returns {string} - checksummed address
  *
  */
-function checksumAddress (address) {
+export function checksumAddress (address) {
   const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
   return checksummed
 }
 
-function addressSlicer (address = '') {
+export function addressSlicer (address = '') {
   if (address.length < 11) {
     return address
   }
@@ -332,9 +422,18 @@ function addressSlicer (address = '') {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-function isValidAddressHead (address) {
+export function isValidAddressHead (address) {
   const addressLengthIsLessThanFull = address.length < 42
   const addressIsHex = isHex(address)
 
   return addressLengthIsLessThanFull && addressIsHex
 }
+<<<<<<< HEAD
+=======
+
+export function getOriginFromUrl (url) {
+  url = new URL(url)
+  const origin = url.hostname
+  return origin
+}
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribuições"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador de Logout Automático (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Defina o tempo de inatividade em minutos antes de o MetaMask fazer logout automaticamente"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "O saldo pode estar desatualizado"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente pelo total de Gas atual"
   },
   "basic": {
     "message": "Básicas"
@@ -491,9 +488,6 @@
   "gasLimit": {
     "message": "Limite de Gás"
   },
-  "gasLimitCalculation": {
-    "message": "Nós calculamos o limite de gás sugerido com base nas taxas de sucesso da rede."
-  },
   "gasLimitInfoModalContent": {
     "message": "O limite de gás é a quantidade máxima de unidades de gás que você está disposto a gastar."
   },
@@ -514,9 +508,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Preço do Gás"
-  },
-  "gasPriceCalculation": {
-    "message": "Nós calculamos os preços de gás sugeridos com base nas taxas de sucesso da rede."
   },
   "general": {
     "message": "Geral"
@@ -681,10 +672,7 @@
   "loadMore": {
     "message": "Carregar Mais"
   },
-  "login": {
-    "message": "Entrar"
-  },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {
@@ -701,9 +689,6 @@
   },
   "metamaskDescription": {
     "message": "Conectando você ao Ethereum e à Web Descentralizada."
-  },
-  "metamaskSeedWords": {
-    "message": "Palavras-semente do MetaMask"
   },
   "metamaskVersion": {
     "message": "Versão do MetaMask"
@@ -964,9 +949,6 @@
   "revealSeedWordsWarning": {
     "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
   },
-  "revert": {
-    "message": "Reverter"
-  },
   "remove": {
     "message": "Remover"
   },
@@ -1184,7 +1166,7 @@
     "message": "Símbolo"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "O símbolo deve ter entre 0 e 12 caracteres."
+    "message": "O símbolo deve ter 11 caracteres ou menos."
   },
   "syncWithMobile": {
     "message": "Sincronizar com o celular"

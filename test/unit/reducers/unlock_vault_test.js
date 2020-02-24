@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // var jsdom = require('mocha-jsdom')
 var assert = require('assert')
 // var freeze = require('deep-freeze-strict')
@@ -6,18 +7,13 @@ var sinon = require('sinon')
 
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'store', 'actions.js'))
 var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'ducks', 'index.js'))
+=======
+import assert from 'assert'
+import * as actions from '../../../ui/app/store/actions'
+import reducers from '../../../ui/app/ducks'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 describe('#unlockMetamask(selectedAccount)', function () {
-  beforeEach(function () {
-    // sinon allows stubbing methods that are easily verified
-    this.sinon = sinon.createSandbox()
-  })
-
-  afterEach(function () {
-    // sinon requires cleanup otherwise it will overwrite context
-    this.sinon.restore()
-  })
-
   describe('after an error', function () {
     it('clears warning', function () {
       const warning = 'this is the wrong warning'

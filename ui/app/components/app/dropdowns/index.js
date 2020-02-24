@@ -1,11 +1,11 @@
 // Reusable Dropdown Components
 // TODO: Refactor into separate components
-const Dropdown = require('./components/dropdown').Dropdown
+import { Dropdown } from './components/dropdown'
 
 // App-Specific Instances
-const NetworkDropdown = require('./network-dropdown').default
+import NetworkDropdown from './network-dropdown'
 
-module.exports = {
+export default {
   NetworkDropdown,
   Dropdown,
 }

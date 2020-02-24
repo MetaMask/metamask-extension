@@ -4,7 +4,7 @@ import SendRowWrapper from '../send-row-wrapper'
 import Identicon from '../../../../components/ui/identicon/identicon.component'
 import TokenBalance from '../../../../components/ui/token-balance'
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-import {PRIMARY} from '../../../../helpers/constants/common'
+import { PRIMARY } from '../../../../helpers/constants/common'
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -34,7 +34,7 @@ export default class SendAssetRow extends Component {
 
   closeDropdown = () => this.setState({ isShowingDropdown: false })
 
-  selectToken = address => {
+  selectToken = (address) => {
     this.setState({
       isShowingDropdown: false,
     }, () => {
@@ -87,7 +87,7 @@ export default class SendAssetRow extends Component {
         />
         <div className="send-v2__asset-dropdown__list">
           { this.renderEth() }
-          { this.props.tokens.map(token => this.renderAsset(token)) }
+          { this.props.tokens.map((token) => this.renderAsset(token)) }
         </div>
       </div>
     )

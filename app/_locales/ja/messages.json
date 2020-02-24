@@ -118,10 +118,10 @@
   "attributions": {
     "message": "属性"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動ログアウト(分)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMaskが自動的にログアウトするまでのアイドル時間を分単位で設定します。"
   },
   "average": {
@@ -133,6 +133,7 @@
   "balance": {
     "message": "残高:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "現在のガス総量に対して残高が不足しています"
   },
@@ -140,6 +141,8 @@
     "message": " $1以上 $2以下にして下さい。",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
   },
@@ -259,17 +262,11 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスリミットを提案しています。"
-  },
   "gasLimitTooLow": {
     "message": "ガスリミットは最低21000です。"
   },
   "gasPrice": {
     "message": "ガスプライス (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスプライスを提案しています。"
   },
   "getEther": {
     "message": "Etherを取得する"
@@ -350,10 +347,10 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "login": {
+  "unlock": {
     "message": "ログイン"
   },
-  "logout": {
+  "lock": {
     "message": "ログアウト"
   },
   "mainnet": {
@@ -455,9 +452,6 @@
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
-  },
-  "revert": {
-    "message": "元に戻す"
   },
   "rinkeby": {
     "message": "Rinkebyテストネットワーク"

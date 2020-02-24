@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // var jsdom = require('mocha-jsdom')
 var assert = require('assert')
 var freeze = require('deep-freeze-strict')
@@ -25,6 +26,12 @@ describe('SET_SELECTED_ACCOUNT', function () {
     assert.equal(resultingState.appState.activeAddress, action.value)
   })
 })
+=======
+import assert from 'assert'
+import freeze from 'deep-freeze-strict'
+import reducers from '../../../ui/app/ducks'
+import { actionConstants } from '../../../ui/app/store/actions'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 describe('SHOW_ACCOUNT_DETAIL', function () {
   it('updates metamask state', function () {
@@ -36,7 +43,7 @@ describe('SHOW_ACCOUNT_DETAIL', function () {
     freeze(initialState)
 
     const action = {
-      type: actions.SHOW_ACCOUNT_DETAIL,
+      type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: 'bar',
     }
     freeze(action)

@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador de cierre de sesión automático (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Configura tu tiempo de inactividad en minutos para controlar cuándo MetaMask cerrará tu sesión de forma automática"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "El saldo puede estar anticuado"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para el total actual de gas"
   },
   "basic": {
     "message": "Básicas"
@@ -494,9 +491,6 @@
   "gasLimit": {
     "message": "Limite de gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido según las tasas de éxito en la red."
-  },
   "gasLimitInfoModalContent": {
     "message": "El límite de gas es la cantidad máxima de unidades de gas que estás dispuesto a gastar."
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Precio del gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos los precios de gas sugeridos según las tasas de ganancia en la red."
   },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, blockies identicon"
@@ -681,10 +672,7 @@
   "loadMore": {
     "message": "Cargar más"
   },
-  "login": {
-    "message": "Iniciar sesión"
-  },
-  "logout": {
+  "lock": {
     "message": "Cerrar sesión"
   },
   "mainnet": {
@@ -701,9 +689,6 @@
   },
   "metamaskDescription": {
     "message": "Te estamos conectando a Ethereum y a la web descentralizada."
-  },
-  "metamaskSeedWords": {
-    "message": "Palabras de inicialización de MetaMask"
   },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
@@ -964,9 +949,6 @@
   "revealSeedWordsWarning": {
     "message": "Alguien podría utilizar estas palabras para robar todas tus cuentas."
   },
-  "revert": {
-    "message": "Revertir"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -1184,7 +1166,7 @@
     "message": "Símbolo"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "El símbolo debe tener entre 0 y 12 caracteres."
+    "message": "El símbolo debe tener 11 caracteres o menos."
   },
   "syncWithMobile": {
     "message": "Sincronizar con un dispositivo móvil"

@@ -46,6 +46,7 @@
   "balance": {
     "message": "Số dư:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
   },
@@ -53,6 +54,8 @@
     "message": "phải nhiều hơn hoặc bằng $1 và ít hơn hoặc bằng $2.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -160,17 +163,11 @@
   "gasLimit": {
     "message": "Hạn mức ga"
   },
-  "gasLimitCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một hạn mức ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
-  },
   "gasLimitTooLow": {
     "message": "Hạn mức ga phải đạt tối thiểu 21000"
   },
   "gasPrice": {
     "message": "Giá ga (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một giá ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
   "getEther": {
     "message": "Lấy Ether"
@@ -233,7 +230,7 @@
   "loadingTokens": {
     "message": "Đang tải mã token..."
   },
-  "logout": {
+  "lock": {
     "message": "Thoát"
   },
   "mainnet": {
@@ -311,9 +308,6 @@
   },
   "required": {
     "message": "Yêu cầu"
-  },
-  "revert": {
-    "message": "Chuyển lại"
   },
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"

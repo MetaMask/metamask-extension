@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
@@ -8,11 +9,23 @@ const actions = require('../../../store/actions')
 const FileInput = require('react-simple-file-input').default
 const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
 const { getMetaMaskAccounts } = require('../../../selectors/selectors')
+=======
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import FileInput from 'react-simple-file-input'
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { getMetaMaskAccounts } from '../../../selectors/selectors'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 import Button from '../../../components/ui/button'
 
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
 class JsonImportSubview extends Component {
+<<<<<<< HEAD
   constructor (props) {
     super(props)
 
@@ -20,10 +33,18 @@ class JsonImportSubview extends Component {
       file: null,
       fileContents: '',
     }
+=======
+  state = {
+    fileContents: '',
+    isEmpty: true,
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   }
+
+  inputRef = React.createRef()
 
   render () {
     const { error } = this.props
+    const enabled = !this.state.isEmpty && this.state.fileContents !== ''
 
     return (
       h('div.new-account-import-form__json', [
@@ -43,6 +64,7 @@ class JsonImportSubview extends Component {
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
+<<<<<<< HEAD
           },
         }),
 
@@ -73,6 +95,44 @@ class JsonImportSubview extends Component {
 
         error ? h('span.error', error) : null,
       ])
+=======
+          }}
+        />
+        <input
+          className="new-account-import-form__input-password"
+          type="password"
+          placeholder={this.context.t('enterPassword')}
+          id="json-password-box"
+          onKeyPress={this.createKeyringOnEnter.bind(this)}
+          onChange={() => this.checkInputEmpty()}
+          ref={this.inputRef}
+        />
+        <div className="new-account-create-form__buttons">
+          <Button
+            type="default"
+            large
+            className="new-account-create-form__button"
+            onClick={() => this.props.history.push(DEFAULT_ROUTE)}
+          >
+            {this.context.t('cancel')}
+          </Button>
+          <Button
+            type="secondary"
+            large
+            className="new-account-create-form__button"
+            onClick={() => this.createNewKeychain()}
+            disabled={!enabled}
+          >
+            {this.context.t('import')}
+          </Button>
+        </div>
+        {
+          error
+            ? <span className="error">{error}</span>
+            : null
+        }
+      </div>
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     )
   }
 
@@ -103,8 +163,7 @@ class JsonImportSubview extends Component {
       return displayWarning(message)
     }
 
-    const passwordInput = document.getElementById('json-password-box')
-    const password = passwordInput.value
+    const password = this.inputRef.current.value
 
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
@@ -130,33 +189,39 @@ class JsonImportSubview extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err))
+  }
+
+  checkInputEmpty () {
+    const password = this.inputRef.current.value
+    let isEmpty = true
+    if (password !== '') {
+      isEmpty = false
+    }
+    this.setState({ isEmpty })
   }
 }
 
 JsonImportSubview.propTypes = {
   error: PropTypes.string,
-  goHome: PropTypes.func,
   displayWarning: PropTypes.func,
   firstAddress: PropTypes.string,
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
   setSelectedAddress: PropTypes.func,
-  t: PropTypes.func,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    goHome: () => dispatch(actions.goHome()),
-    displayWarning: warning => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
+    displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
+    importNewJsonAccount: (options) => dispatch(actions.importNewAccount('JSON File', options)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
 }
@@ -166,7 +231,7 @@ JsonImportSubview.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(JsonImportSubview)

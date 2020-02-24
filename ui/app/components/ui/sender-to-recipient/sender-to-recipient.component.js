@@ -21,7 +21,6 @@ export default class SenderToRecipient extends PureComponent {
     recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientNickname: PropTypes.string,
-    t: PropTypes.func,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
     addressOnly: PropTypes.bool,
     assetImage: PropTypes.string,
@@ -80,7 +79,7 @@ export default class SenderToRecipient extends PureComponent {
         <div className="sender-to-recipient__name">
           {
             addressOnly
-              ? <span>{`${t('from')}: ${checksummedSenderAddress}`}</span>
+              ? <span>{`${t('from')}: ${senderName || checksummedSenderAddress}`}</span>
               : senderName
           }
         </div>

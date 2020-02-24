@@ -61,6 +61,7 @@
   "balance": {
     "message": "ยอดคงเหลือ:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "ยอดคงเหลือไม่พอสำหรับจ่ายค่าแก๊สทั้งหมด"
   },
@@ -68,6 +69,8 @@
     "message": "ต้องมากกว่าหรือเท่ากับ $1 และน้อยกว่าหรือเท่ากับ $2",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "ใช้งาน Blockies Identicon"
   },
@@ -262,17 +265,11 @@
   "gasLimit": {
     "message": "วงเงินแก็ส"
   },
-  "gasLimitCalculation": {
-    "message": "เราแนะนำวงเงินแก็สตามความสำเร็จบนเครือข่าย"
-  },
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
   "gasPrice": {
     "message": "ราคาแก๊ส (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "เราแนะนำราคาแก็สตามความสำเร็จบนเครือข่าย"
   },
   "general": {
     "message": "ทั่วไป"
@@ -365,10 +362,7 @@
   "loadingTokens": {
     "message": "กำลังโหลดโทเค็น..."
   },
-  "login": {
-    "message": "เข้าสู่ระบบ"
-  },
-  "logout": {
+  "lock": {
     "message": "ออกจากระบบ"
   },
   "mainnet": {
@@ -495,9 +489,6 @@
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
   },
-  "revert": {
-    "message": "ย้อนกลับ"
-  },
   "rinkeby": {
     "message": "เครือข่ายทดสอบ Rinkeby"
   },
@@ -598,7 +589,7 @@
     "message": "เครื่องหมาย"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 12 อักขระ"
+    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
   "syncWithMobileComplete": {
     "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"

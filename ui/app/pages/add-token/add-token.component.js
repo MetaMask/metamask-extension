@@ -28,6 +28,7 @@ class AddToken extends Component {
     identities: PropTypes.object,
   }
 
+<<<<<<< HEAD
   constructor (props) {
     super(props)
 
@@ -45,6 +46,20 @@ class AddToken extends Component {
       displayedTab: SEARCH_TAB,
       forceEditSymbol: false,
     }
+=======
+  state = {
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
+    searchResults: [],
+    selectedTokens: {},
+    tokenSelectorError: null,
+    customAddressError: null,
+    customSymbolError: null,
+    customDecimalsError: null,
+    autoFilled: false,
+    forceEditSymbol: false,
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   }
 
   componentDidMount () {
@@ -56,7 +71,7 @@ class AddToken extends Component {
       let selectedTokens = {}
       let customToken = {}
 
-      pendingTokenKeys.forEach(tokenAddress => {
+      pendingTokenKeys.forEach((tokenAddress) => {
         const token = pendingTokens[tokenAddress]
         const { isCustom } = token
 
@@ -236,7 +251,7 @@ class AddToken extends Component {
           label={this.context.t('tokenContractAddress')}
           type="text"
           value={customAddress}
-          onChange={e => this.handleCustomAddressChange(e.target.value)}
+          onChange={(e) => this.handleCustomAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
           margin="normal"
@@ -260,7 +275,7 @@ class AddToken extends Component {
           )}
           type="text"
           value={customSymbol}
-          onChange={e => this.handleCustomSymbolChange(e.target.value)}
+          onChange={(e) => this.handleCustomSymbolChange(e.target.value)}
           error={customSymbolError}
           fullWidth
           margin="normal"
@@ -271,7 +286,7 @@ class AddToken extends Component {
           label={this.context.t('decimal')}
           type="number"
           value={customDecimals}
-          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
+          onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
           error={customDecimalsError}
           fullWidth
           margin="normal"
@@ -294,7 +309,7 @@ class AddToken extends Component {
           <TokenList
             results={searchResults}
             selectedTokens={selectedTokens}
-            onToggleToken={token => this.handleToggleToken(token)}
+            onToggleToken={(token) => this.handleToggleToken(token)}
           />
         </div>
       </div>

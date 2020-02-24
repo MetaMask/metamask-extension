@@ -49,6 +49,7 @@
   "balance": {
     "message": "Balans:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Onvoldoende saldo voor huidig ​​gastotaal"
   },
@@ -56,6 +57,8 @@
     "message": "moet groter zijn dan of gelijk zijn aan $1 en kleiner dan of gelijk aan $2.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -178,17 +181,11 @@
   "gasLimit": {
     "message": "Gaslimiet"
   },
-  "gasLimitCalculation": {
-    "message": "We berekenen de voorgestelde gaslimiet op basis van succespercentages van het netwerk."
-  },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -272,10 +269,10 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
-  "login": {
+  "unlock": {
     "message": "Log in"
   },
-  "logout": {
+  "lock": {
     "message": "Uitloggen"
   },
   "mainnet": {
@@ -377,9 +374,6 @@
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
   },
-  "revert": {
-    "message": "terugkeren"
-  },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"
   },
@@ -444,7 +438,7 @@
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
+    "message": "Symbool moet 11 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"

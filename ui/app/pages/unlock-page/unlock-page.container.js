@@ -13,17 +13,17 @@ import {
 } from '../../store/actions'
 import UnlockPage from './unlock-page.component'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { metamask: { isUnlocked } } = state
   return {
     isUnlocked,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     forgotPassword: () => dispatch(forgotPassword()),
-    tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     showOptInModal: () => dispatch(showModal({ name: 'METAMETRICS_OPT_IN_MODAL' })),
@@ -38,12 +38,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     markPasswordForgotten()
     history.push(RESTORE_VAULT_ROUTE)
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE)
     }
   }
 
-  const onSubmit = async password => {
+  const onSubmit = async (password) => {
     await tryUnlockMetamask(password)
     history.push(DEFAULT_ROUTE)
   }
@@ -55,6 +55,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onImport,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
+    history,
   }
 }
 

@@ -1,12 +1,12 @@
-const assert = require('assert')
-const ObservableStore = require('obs-store')
-const PollingBlockTracker = require('eth-block-tracker')
+import assert from 'assert'
+import ObservableStore from 'obs-store'
+import PollingBlockTracker from 'eth-block-tracker'
+import BalanceController from '../../../../app/scripts/controllers/balance'
+import AccountTracker from '../../../../app/scripts/lib/account-tracker'
+import TransactionController from '../../../../app/scripts/controllers/transactions'
+import { createTestProviderTools } from '../../../stub/provider'
 
-const BalanceController = require('../../../../app/scripts/controllers/balance')
-const AccountTracker = require('../../../../app/scripts/lib/account-tracker')
-const TransactionController = require('../../../../app/scripts/controllers/transactions')
-const { createTestProviderTools } = require('../../../stub/provider')
-const provider = createTestProviderTools({ scaffold: {}}).provider
+const provider = createTestProviderTools({ scaffold: {} }).provider
 
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 
@@ -17,7 +17,7 @@ const accounts = {
   },
 }
 
-describe('Balance Controller', () => {
+describe('Balance Controller', function () {
 
   let balanceController
 
@@ -29,7 +29,7 @@ describe('Balance Controller', () => {
     }
   })
 
-  beforeEach(() => {
+  beforeEach(function () {
     balanceController = new BalanceController({
       address: TEST_ADDRESS,
       accountTracker: new AccountTracker({

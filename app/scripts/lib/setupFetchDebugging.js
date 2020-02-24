@@ -1,4 +1,4 @@
-module.exports = setupFetchDebugging
+export default setupFetchDebugging
 
 //
 // This is a utility to help resolve cases where `window.fetch` throws a

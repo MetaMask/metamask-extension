@@ -5,16 +5,15 @@ import { closeWelcomeScreen } from '../../../store/actions'
 import Welcome from './welcome.component'
 
 const mapStateToProps = ({ metamask }) => {
-  const { welcomeScreenSeen, isInitialized, participateInMetaMetrics } = metamask
+  const { welcomeScreenSeen, participateInMetaMetrics } = metamask
 
   return {
     welcomeScreenSeen,
-    isInitialized,
     participateInMetaMetrics,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     closeWelcomeScreen: () => dispatch(closeWelcomeScreen()),
   }

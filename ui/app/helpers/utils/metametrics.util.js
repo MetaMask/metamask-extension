@@ -1,6 +1,6 @@
 /* eslint camelcase: 0 */
 
-const ethUtil = require('ethereumjs-util')
+import ethUtil from 'ethereumjs-util'
 
 const inDevelopment = process.env.NODE_ENV === 'development'
 
@@ -116,7 +116,7 @@ function composeParamAddition (paramValue, paramName) {
   * @property {string} config.url The url to track an event at. Overrides `currentPath`
   * @property {boolean} config.excludeMetaMetricsId Whether or not the tracked event data should be associated with a metametrics id
   * @property {boolean} config.isNewVisit Whether or not the event should be tracked as a new visit/user sessions
-  * @returns {String} Returns a url to be passed to fetch to make the appropriate request to matomo.
+  * @returns {string} - Returns a url to be passed to fetch to make the appropriate request to matomo.
   *   Example: https://chromeextensionmm.innocraft.cloud/piwik.php?idsite=1&rec=1&apiv=1&e_c=Navigation&e_a=Home&e_n=Clicked%20Send:%20Eth&urlref=http%3A%2F%2Fwww.metamask.io%2Fmetametrics%2Fhome.html%23send&dimension5=3&dimension6=fullscreen&dimension7=ETH&dimension8=default&dimension9=0&dimension10=3&url=http%3A%2F%2Fwww.metamask.io%2Fmetametrics%2Fhome.html%23&_id=49c10aff19795e9a&rand=7906028754863992&pv_id=53acad&uid=49c1
   */
 function composeUrl (config) {
@@ -145,7 +145,7 @@ function composeUrl (config) {
   const e_n = composeParamAddition(eventOpts.name, 'e_n')
   const new_visit = isNewVisit ? `&new_visit=1` : ''
 
-  const cvar = customVariables && composeCustomVarParamAddition(customVariables) || ''
+  const cvar = (customVariables && composeCustomVarParamAddition(customVariables)) || ''
 
   const action_name = ''
 
@@ -156,13 +156,13 @@ function composeUrl (config) {
     environmentType,
     activeCurrency,
     accountType,
-    numberOfTokens: customVariables && customVariables.numberOfTokens || numberOfTokens,
-    numberOfAccounts: customVariables && customVariables.numberOfAccounts || numberOfAccounts,
+    numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
+    numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''
   const url = configUrl || currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = (url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}` || ''
+  const pv_id = ((url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}`) || ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId
@@ -172,8 +172,8 @@ function composeUrl (config) {
   return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
 }
 
-export function sendMetaMetricsEvent (config, permissionPreferences) {
-  return fetch(composeUrl(config, permissionPreferences), {
+export function sendMetaMetricsEvent (config) {
+  return fetch(composeUrl(config), {
     'headers': {},
     'method': 'GET',
   })

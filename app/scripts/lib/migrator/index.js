@@ -1,4 +1,4 @@
-const EventEmitter = require('events')
+import EventEmitter from 'events'
 
 /**
  * @typedef {object} Migration
@@ -48,7 +48,6 @@ class Migrator extends EventEmitter {
         // rewrite error message to add context without clobbering stack
         const originalErrorMessage = err.message
         err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`
-        console.warn(err.stack)
         // emit error instead of throw so as to not break the run (gracefully fail)
         this.emit('error', err)
         // stop migrating and use state as is
@@ -73,7 +72,7 @@ class Migrator extends EventEmitter {
 
   /**
    * Returns the initial state for the migrator
-   * @param {object} [data] - The data for the initial state
+   * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
   generateInitialState (data) {
@@ -87,4 +86,4 @@ class Migrator extends EventEmitter {
 
 }
 
-module.exports = Migrator
+export default Migrator

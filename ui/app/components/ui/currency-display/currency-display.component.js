@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { GWEI } from '../../../helpers/constants/common'
+
 
 export default class CurrencyDisplay extends PureComponent {
   static propTypes = {
@@ -11,12 +11,6 @@ export default class CurrencyDisplay extends PureComponent {
     prefixComponent: PropTypes.node,
     style: PropTypes.object,
     suffix: PropTypes.string,
-    // Used in container
-    currency: PropTypes.string,
-    denomination: PropTypes.oneOf([GWEI]),
-    value: PropTypes.string,
-    numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    hideLabel: PropTypes.bool,
     hideTitle: PropTypes.bool,
   }
 
@@ -29,7 +23,7 @@ export default class CurrencyDisplay extends PureComponent {
       <div
         className={classnames('currency-display-component', className)}
         style={style}
-        title={!hideTitle && title || null}
+        title={(!hideTitle && title) || null}
       >
         { prefixComponent }
         <span className="currency-display-component__text">{ text }</span>

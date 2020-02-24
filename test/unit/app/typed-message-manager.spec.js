@@ -3,14 +3,14 @@ import sinon from 'sinon'
 import NetworkController from '../../../app/scripts/controllers/network/index'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
-describe('Typed Message Manager', () => {
+describe('Typed Message Manager', function () {
   let typedMessageManager, msgParamsV1, msgParamsV3, typedMsgs, messages, msgId, numberMsgId
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
   const networkController = new NetworkController()
   sinon.stub(networkController, 'getNetworkState').returns('1')
 
-  beforeEach(() => {
+  beforeEach(function () {
     typedMessageManager = new TypedMessageManager({
       networkController,
     })
@@ -28,6 +28,7 @@ describe('Typed Message Manager', () => {
       data: JSON.stringify({
         'types': {
           'EIP712Domain': [
+<<<<<<< HEAD
             {'name': 'name', 'type': 'string' },
             {'name': 'version', 'type': 'string' },
             {'name': 'chainId', ' type': 'uint256' },
@@ -36,11 +37,21 @@ describe('Typed Message Manager', () => {
           'Person': [
             {'name': 'name', 'type': 'string' },
             {'name': 'wallet', ' type': 'address' },
+=======
+            { 'name': 'name', 'type': 'string' },
+            { 'name': 'version', 'type': 'string' },
+            { 'name': 'chainId', 'type': 'uint256' },
+            { 'name': 'verifyingContract', 'type': 'address' },
+          ],
+          'Person': [
+            { 'name': 'name', 'type': 'string' },
+            { 'name': 'wallet', 'type': 'address' },
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
           ],
           'Mail': [
-            {'name': 'from', 'type': 'Person' },
-            {'name': 'to', 'type': 'Person' },
-            {'name': 'contents', 'type': 'string' },
+            { 'name': 'from', 'type': 'Person' },
+            { 'name': 'to', 'type': 'Person' },
+            { 'name': 'contents', 'type': 'string' },
           ],
         },
         'primaryType': 'Mail',
@@ -72,8 +83,13 @@ describe('Typed Message Manager', () => {
     numberMsgId = parseInt(msgId)
   })
 
+<<<<<<< HEAD
   it('supports version 1 of signedTypedData', () => {
     typedMessageManager.addUnapprovedMessage(msgParamsV1, 'V1')
+=======
+  it('supports version 1 of signedTypedData', function () {
+    typedMessageManager.addUnapprovedMessage(msgParamsV1, null, 'V1')
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     assert.equal(messages[messages.length - 1].msgParams.data, msgParamsV1.data)
   })
 

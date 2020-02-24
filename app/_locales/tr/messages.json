@@ -55,6 +55,7 @@
   "balance": {
     "message": "Bakiye:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Toplam gas için yetersiz bakiye"
   },
@@ -62,6 +63,8 @@
     "message": "$1'e eşit veya daha büyük olmalı ve $2'den küçük veya eşit olmalı",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
   },
@@ -211,17 +214,11 @@
   "gasLimit": {
     "message": "Gas Limiti"
   },
-  "gasLimitCalculation": {
-    "message": "Önerilen gas limitini ağ başarı oranını baz alarak hesaplıyoruz."
-  },
   "gasLimitTooLow": {
     "message": "Gas limiti en az 21000 olmalıdır"
   },
   "gasPrice": {
     "message": "Gas Fiyatı (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Önerilen gas fiyatını ağ başarı oranını baz alarak hesaplıyoruz."
   },
   "getEther": {
     "message": "Ether Al"
@@ -310,10 +307,10 @@
   "loadingTokens": {
     "message": "Jetonlar yükleniyor..."
   },
-  "login": {
+  "unlock": {
     "message": "Giriş yap"
   },
-  "logout": {
+  "lock": {
     "message": "Çıkış"
   },
   "mainnet": {
@@ -425,9 +422,6 @@
   "revealSeedWordsWarning": {
     "message": "Açık bir yerde kaynak kelimeliriniz geri getirmeyin! Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
   },
-  "revert": {
-    "message": "Geri döndür"
-  },
   "rinkeby": {
     "message": "Rinkeby Test Ağı"
   },
@@ -504,7 +498,7 @@
     "message": "Destek merkezimizi ziyaret edin"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sembol 0 ve 12 karakter aralığında olmalıdır."
+    "message": "Sembol 11 karakter veya daha az olmalıdır."
   },
   "terms": {
     "message": "Kullanım şartları"

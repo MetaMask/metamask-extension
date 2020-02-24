@@ -9,7 +9,6 @@ import {
 
 import {
   updateCustomNonce,
-  clearSend,
   cancelTx,
   cancelTxs,
   updateAndApproveTx,
@@ -39,10 +38,10 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {})
 
 let customNonceValue = ''
-const customNonceMerge = txData => customNonceValue ? ({
+const customNonceMerge = (txData) => (customNonceValue ? ({
   ...txData,
   customNonceValue,
-}) : txData
+}) : txData)
 
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
@@ -55,9 +54,12 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
+<<<<<<< HEAD
     currentCurrency,
     selectedAddress,
     selectedAddressTxList,
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     assetImages,
     network,
     unapprovedTxs,
@@ -71,7 +73,11 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
+<<<<<<< HEAD
   const transaction = Object.values(selectedAddressTxList).find(
+=======
+  const transaction = Object.values(unapprovedTxs).find(
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     ({ id }) => id === (transactionId || Number(paramsTransactionId))
   ) || {}
   const {
@@ -81,7 +87,7 @@ const mapStateToProps = (state, ownProps) => {
     gas: gasLimit,
     value: amount,
     data,
-  } = transaction && transaction.txParams || txParams
+  } = (transaction && transaction.txParams) || txParams
   const accounts = getMetaMaskAccounts(state)
   const assetImage = assetImages[txParamsToAddress]
 
@@ -104,12 +110,6 @@ const mapStateToProps = (state, ownProps) => {
   const transactionStatus = transaction ? transaction.status : ''
 
   const {
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -120,7 +120,11 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+<<<<<<< HEAD
     .filter(key => unapprovedTxs[key].metamaskNetworkId === network)
+=======
+    .filter((key) => unapprovedTxs[key].metamaskNetworkId === network)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
@@ -152,12 +156,6 @@ const mapStateToProps = (state, ownProps) => {
     toEns,
     toName,
     toNickname,
-    ethTransactionAmount,
-    ethTransactionFee,
-    ethTransactionTotal,
-    fiatTransactionAmount,
-    fiatTransactionFee,
-    fiatTransactionTotal,
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
@@ -166,7 +164,6 @@ const mapStateToProps = (state, ownProps) => {
     methodData,
     tokenProps,
     isTxReprice,
-    currentCurrency,
     conversionRate,
     transactionStatus,
     nonce,
@@ -190,17 +187,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = (dispatch) => {
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address))
     },
-    updateCustomNonce: value => {
+    updateCustomNonce: (value) => {
       customNonceValue = value
       dispatch(updateCustomNonce(value))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
@@ -215,8 +211,8 @@ export const mapDispatchToProps = dispatch => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: txData => dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
+    sendTransaction: (txData) => dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
   }
 }
@@ -282,7 +278,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     showCustomizeGasModal: () => dispatchShowCustomizeGasModal({
       txData,
-      onSubmit: customGas => dispatchUpdateGasAndCalculate(customGas),
+      onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),

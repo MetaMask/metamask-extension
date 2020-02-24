@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import infuraCurrencies from '../../../helpers/constants/infura-conversion.json'
+import availableCurrencies from '../../../helpers/constants/available-conversions'
 import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
 import ToggleButton from '../../../components/ui/toggle-button'
 import locales from '../../../../../app/_locales/index.json'
 
-const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
-  return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
+const sortedCurrencies = availableCurrencies.sort((a, b) => {
+  return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
 })
 
-const infuraCurrencyOptions = sortedCurrencies.map(({ quote: { code, name } }) => {
+const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   return {
     displayValue: `${code.toUpperCase()} - ${name}`,
     key: code,
@@ -17,7 +17,7 @@ const infuraCurrencyOptions = sortedCurrencies.map(({ quote: { code, name } }) =
   }
 })
 
-const localeOptions = locales.map(locale => {
+const localeOptions = locales.map((locale) => {
   return {
     displayValue: `${locale.name}`,
     key: locale.code,
@@ -34,9 +34,7 @@ export default class SettingsTab extends PureComponent {
   static propTypes = {
     setUseBlockie: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
-    displayWarning: PropTypes.func,
     warning: PropTypes.string,
-    history: PropTypes.object,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
@@ -63,9 +61,9 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <SimpleDropdown
               placeholder={t('selectCurrency')}
-              options={infuraCurrencyOptions}
+              options={currencyOptions}
               selectedOption={currentCurrency}
-              onSelect={newCurrency => setCurrentCurrency(newCurrency)}
+              onSelect={(newCurrency) => setCurrentCurrency(newCurrency)}
             />
           </div>
         </div>
@@ -76,7 +74,7 @@ export default class SettingsTab extends PureComponent {
   renderCurrentLocale () {
     const { t } = this.context
     const { updateCurrentLocale, currentLocale } = this.props
-    const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
+    const currentLocaleMeta = locales.find((locale) => locale.code === currentLocale)
     const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : ''
 
     return (
@@ -95,7 +93,7 @@ export default class SettingsTab extends PureComponent {
               placeholder={t('selectLocale')}
               options={localeOptions}
               selectedOption={currentLocale}
-              onSelect={async newLocale => updateCurrentLocale(newLocale)}
+              onSelect={async (newLocale) => updateCurrentLocale(newLocale)}
             />
           </div>
         </div>
@@ -117,7 +115,7 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useBlockie}
-              onToggle={value => setUseBlockie(!value)}
+              onToggle={(value) => setUseBlockie(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />

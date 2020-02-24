@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Функции"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Балансът може да е остарял"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатъчен баланс за текущия общ газ"
   },
   "basic": {
     "message": "Основни"
@@ -493,9 +490,6 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitCalculation": {
-    "message": "Изчисляваме препоръчителния лимит за газ въз основа на степента на успех на мрежата."
-  },
   "gasLimitInfoModalContent": {
     "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
   },
@@ -516,9 +510,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Цена на газа"
-  },
-  "gasPriceCalculation": {
-    "message": "Изчисляваме предложените цени на газ въз основа на успеваемостта на мрежата."
   },
   "general": {
     "message": "Общ"
@@ -689,10 +680,7 @@
   "localhost": {
     "message": "Локален хост 8545"
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Излизане"
   },
   "mainnet": {
@@ -712,9 +700,6 @@
   },
   "metamaskDescription": {
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
-  },
-  "metamaskSeedWords": {
-    "message": "Думи зародиш на MetaMask"
   },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
@@ -975,9 +960,6 @@
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
   },
-  "revert": {
-    "message": "Обръщане"
-  },
   "remove": {
     "message": "Премахване"
   },
@@ -1195,7 +1177,7 @@
     "message": "Символ"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символът трябва да е между 0 и 12 знака."
+    "message": "Символът трябва да е 11 символа или по-малко."
   },
   "syncWithMobile": {
     "message": "Синхронизиране с мобилни устройства"

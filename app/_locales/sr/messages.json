@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribucije"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo je možda zastario"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljan iznos za trenutni ukupni gas"
   },
   "basic": {
     "message": "Основна"
@@ -494,9 +491,6 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženi limit za gas na osnovu stope uspešnosti mreže."
-  },
   "gasLimitInfoModalContent": {
     "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gas-a"
-  },
-  "gasPriceCalculation": {
-    "message": "Preračunavamo predložene cene za gas na osnovu stope uspešnosti mreže."
   },
   "general": {
     "message": "Opšte"
@@ -687,10 +678,7 @@
   "loadMore": {
     "message": "Učitati više"
   },
-  "login": {
-    "message": "Ulogujte se"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjavi se"
   },
   "mainnet": {
@@ -707,9 +695,6 @@
   },
   "metamaskDescription": {
     "message": "Povezivanje na Ethereum i decentralizovani veb."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask reči početne vrednosti"
   },
   "metamaskVersion": {
     "message": "MetaMask verzija"
@@ -970,9 +955,6 @@
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
   },
-  "revert": {
-    "message": "Vrati"
-  },
   "remove": {
     "message": "Уклони"
   },
@@ -1190,7 +1172,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora da bude između 0 i 12 karaktera."
+    "message": "Simbol mora biti 11 znakova ili manje."
   },
   "syncWithMobile": {
     "message": "Sinhronizacija sa mobilnim telefonom"

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
 
 ## 7.7.5 Fri Feb 14 2020
 - [#8053](https://github.com/MetaMask/metamask-extension/pull/8053): Inline the source text not the binary encoding for inpage script

@@ -18,6 +18,8 @@
   "unapprovedMsgCount": 0,
   "unapprovedPersonalMsgs": {},
   "unapprovedPersonalMsgCount": 0,
+  "unapprovedDecryptMsgs": {},
+  "unapprovedDecryptMsgCount": 0,
   "unapprovedTypedMessages": {},
   "unapprovedTypedMessagesCount": 0,
   "isUnlocked": true,
@@ -39,6 +41,7 @@
   "currentAccountTab": "history",
   "tokens": [],
   "useBlockie": false,
+  "useIn3": false,
   "featureFlags": {},
   "currentLocale": null,
   "identities": {

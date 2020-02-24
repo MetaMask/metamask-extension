@@ -1,8 +1,8 @@
-module.exports = {
+export default {
   'metamask': {
     'isInitialized': true,
     'isUnlocked': true,
-    'featureFlags': {'sendHexData': true},
+    'featureFlags': { 'sendHexData': true },
     'rpcTarget': 'https://rawtestrpc.metamask.io/',
     'identities': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -132,6 +132,10 @@ module.exports = {
     'unapprovedMsgCount': 0,
     'unapprovedPersonalMsgs': {},
     'unapprovedPersonalMsgCount': 0,
+    'unapprovedDecryptMsgs': {},
+    'unapprovedDecryptMsgCount': 0,
+    'unapprovedEncryptionPublicKeyMsgs': {},
+    'unapprovedEncryptionPublicKeyMsgCount': 0,
     'keyringTypes': [
       'Simple Key Pair',
       'HD Key Tree',

@@ -3,10 +3,10 @@
   to mingle with my tests
 */
 
-module.exports = {}
+export default {}
 
 // for pending middlewares test
-module.exports.txMetaStub = {
+export const txMetaStub = {
   'estimatedGas': '0x5208',
   'firstRetryBlockNumber': '0x51a402',
   'gasLimitSpecified': true,

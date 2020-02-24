@@ -169,11 +169,11 @@
   "attributions": {
     "message": "Attributions"
   },
-  "autoLogoutTimeLimit": {
-    "message": "Auto-Logout Timer (minutes)"
+  "autoLockTimeLimit": {
+    "message": "Auto-Lock Timer (minutes)"
   },
-  "autoLogoutTimeLimitDescription": {
-    "message": "Set the idle time in minutes before MetaMask will automatically log out"
+  "autoLockTimeLimitDescription": {
+    "message": "Set the idle time in minutes before MetaMask will become locked."
   },
   "average": {
     "message": "Average"
@@ -198,9 +198,6 @@
   },
   "balanceOutdated": {
     "message": "Balance may be outdated"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Insufficient balance for current gas total"
   },
   "basic": {
     "message": "Basic"
@@ -238,7 +235,7 @@
     "message": "Buy ETH with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lets you use a credit card to deposit ETH right in to your MetaMask account."
+    "message": "Wyre lets you use a debit card to deposit ETH right in to your MetaMask account."
   },
   "buyCoinSwitch": {
     "message": "Buy on CoinSwitch"
@@ -412,7 +409,7 @@
     "message": "Custom Spend Limit"
   },
   "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -525,6 +522,38 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "errorCode": {
+    "message": "Code: $1",
+    "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Error Details",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
+  },
+  "errorMessage": {
+    "message": "Message: $1",
+    "description": "Displayed error message for debugging purposes. $1 is the error message"
+  },
+  "errorName": {
+    "message": "Code: $1",
+    "description": "Displayed error name for debugging purposes. $1 is the error name"
+  },
+  "errorPageTitle": {
+    "message": "MetaMask encountered an error",
+    "description": "Title of generic error page"
+  },
+  "errorPageMessage": {
+    "message": "Try again by reloading the page, or contact support at support@metamask.io",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI"
+  },
+  "errorPagePopupMessage": {
+    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
+    "description": "Message displayed on generic error page in the popup UI"
+  },
+  "errorStack": {
+    "message": "Stack:",
+    "description": "Title for error stack, which is displayed for debugging purposes"
+  },
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
   },
@@ -578,9 +607,6 @@
   "gasLimit": {
     "message": "Gas Limit"
   },
-  "gasLimitCalculation": {
-    "message": "We calculate the suggested gas limit based on network success rates."
-  },
   "gasLimitInfoModalContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
@@ -601,9 +627,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
-  },
-  "gasPriceCalculation": {
-    "message": "We calculate the suggested gas prices based on network success rates."
   },
   "general": {
     "message": "General"
@@ -736,6 +759,18 @@
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
   },
+  "ipfsGateway": {
+    "message": "IPFS Gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "invalidIpfsGateway": {
+    "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -780,14 +815,11 @@
   "localhost": {
     "message": "Localhost 8545"
   },
-  "login": {
-    "message": "Log In"
+  "lock": {
+    "message": "Lock"
   },
-  "logout": {
-    "message": "Log out"
-  },
-  "logoutTimeTooGreat": {
-    "message": "Logout time is too great"
+  "lockTimeTooGreat": {
+    "message": "Lock time is too great"
   },
   "mainnet": {
     "message": "Main Ethereum Network"
@@ -806,9 +838,6 @@
   },
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
@@ -1038,7 +1067,7 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
-    "message": "Resetting your account will clear your transaction history."
+    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your seed phrase."
   },
   "deleteNetwork": {
     "message": "Delete Network?"
@@ -1082,9 +1111,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
-  },
-  "revert": {
-    "message": "Revert"
   },
   "remove": {
     "message": "Remove"
@@ -1153,7 +1179,7 @@
     "message": "Separate each word with a single space"
   },
   "seedPhraseReq": {
-    "message": "Seed phrases are 12 words long"
+    "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
   },
   "selectCurrency": {
     "message": "Select Currency"
@@ -1190,6 +1216,12 @@
   },
   "searchTokens": {
     "message": "Search Tokens"
+  },
+  "searchAccounts": {
+    "message": "Search Accounts"
+  },
+  "noAccountsFound": {
+    "message": "No accounts found for the given search query"
   },
   "selectAnAccount": {
     "message": "Select an Account"
@@ -1304,7 +1336,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Ethereum account. Connect to dApps, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1322,13 +1354,13 @@
     "message": "Symbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be between 0 and 12 characters."
+    "message": "Symbol must be 11 characters or fewer."
   },
   "syncWithThreeBox": {
     "message": "Sync data with 3Box (experimental)"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Turn on to have your settings backed up with 3Box. This feature is currenty experimental; use at your own risk."
+    "message": "Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk."
   },
   "syncWithThreeBoxDisabled": {
     "message": "3Box has been disabled due to an error during the initial sync"
@@ -1352,7 +1384,7 @@
     "message": "Make sure nobody else is looking at your screen when you scan this code"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
+    "message": "Your data has been synced successfully. Enjoy the MetaMask mobile app!"
   },
   "terms": {
     "message": "Terms of Use"
@@ -1360,6 +1392,17 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+<<<<<<< HEAD
+=======
+  "thisWillAllow": {
+    "message": "This will allow $1 to:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
+  },
+  "thisWillAllowExternalExtension": {
+    "message": "This will allow an external extension with id $1 to:",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+  },
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
   },
@@ -1498,6 +1541,12 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "useIn3": {
+    "message": "Use In3 Network"
+  },
+  "useIn3Description": {
+    "message": "Substitutes Infura for In3, a decentralized alternative."
+  },
   "userName": {
     "message": "Username"
   },
@@ -1554,5 +1603,35 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "decryptRequest": {
+    "message": "Decrypt request"
+  },
+  "decrypt": {
+    "message": "Decrypt"
+  },
+  "decryptMessageNotice": {
+    "message": "$1 would like to read this message to complete your action",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Decrypt message"
+  },
+  "decryptCopy": {
+    "message": "Copy encrypted message"
+  },
+  "decryptInlineError": {
+    "message": "This message cannot be decrypted due to error: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Provide"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Request encryption public key"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
+    "description": "$1 is website or dapp name"
   }
 }

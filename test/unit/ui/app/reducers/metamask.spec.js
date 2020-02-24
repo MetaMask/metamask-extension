@@ -1,15 +1,15 @@
 import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/ducks/metamask/metamask'
-import * as actions from '../../../../../ui/app/store/actions'
+import { actionConstants as actions } from '../../../../../ui/app/store/actions'
 
-describe('MetaMask Reducers', () => {
+describe('MetaMask Reducers', function () {
 
-  it('init state', () => {
-    const initState = reduceMetamask({metamask: {}}, {})
+  it('init state', function () {
+    const initState = reduceMetamask(undefined, {})
     assert(initState)
   })
 
-  it('unlocks MetaMask', () => {
+  it('unlocks MetaMask', function () {
     const state = reduceMetamask({}, {
       type: actions.UNLOCK_METAMASK,
       value: 'test address',
@@ -20,13 +20,11 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.selectedAddress, 'test address')
   })
 
-  it('locks MetaMask', () => {
+  it('locks MetaMask', function () {
     const unlockMetaMaskState = {
-      metamask: {
-        isUnlocked: true,
-        isInitialzed: false,
-        selectedAddress: 'test address',
-      },
+      isUnlocked: true,
+      isInitialzed: false,
+      selectedAddress: 'test address',
     }
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
       type: actions.LOCK_METAMASK,
@@ -35,16 +33,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(lockMetaMask.isUnlocked, false)
   })
 
-  it('sets frequent rpc list', () => {
-    const state = reduceMetamask({}, {
-      type: actions.SET_RPC_LIST,
-      value: 'https://custom.rpc',
-    })
-
-    assert.equal(state.frequentRpcList, 'https://custom.rpc')
-  })
-
-  it('sets rpc target', () => {
+  it('sets rpc target', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_RPC_TARGET,
       value: 'https://custom.rpc',
@@ -53,7 +42,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.provider.rpcTarget, 'https://custom.rpc')
   })
 
-  it('sets provider type', () => {
+  it('sets provider type', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_PROVIDER_TYPE,
       value: 'provider type',
@@ -62,71 +51,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.provider.type, 'provider type')
   })
 
-  describe('CompletedTx', () => {
-    const oldState = {
-      metamask: {
-        unapprovedTxs: {
-          1: {
-            id: 1,
-            time: 1538495996507,
-            status: 'unapproved',
-            metamaskNetworkId: 4,
-            loadingDefaults: false,
-            txParams: {
-              from: '0xAddress',
-              to: '0xAddress2',
-              value: '0x16345785d8a0000',
-              gas: '0x5208',
-              gasPrice: '0x3b9aca00',
-            },
-            type: 'standard',
-          },
-          2: {
-            test: 'Should persist',
-          },
-        },
-        unapprovedMsgs: {
-          1: {
-            id: 2,
-            msgParams: {
-              from: '0xAddress',
-              data: '0xData',
-              origin: 'test origin',
-            },
-            time: 1538498521717,
-            status: 'unapproved',
-            type: 'eth_sign',
-          },
-          2: {
-            test: 'Should Persist',
-          },
-        },
-      },
-    }
-
-    it('removes tx from new state if completed in action.', () => {
-
-      const state = reduceMetamask(oldState, {
-        type: actions.COMPLETED_TX,
-        id: 1,
-      })
-
-      assert.equal(Object.keys(state.unapprovedTxs).length, 1)
-      assert.equal(state.unapprovedTxs[2].test, 'Should persist')
-    })
-
-    it('removes msg from new state if completed id in action', () => {
-      const state = reduceMetamask(oldState, {
-        type: actions.COMPLETED_TX,
-        id: 1,
-      })
-
-      assert.equal(Object.keys(state.unapprovedMsgs).length, 1)
-      assert.equal(state.unapprovedTxs[2].test, 'Should persist')
-    })
-  })
-
-  it('shows account detail', () => {
+  it('shows account detail', function () {
 
     const state = reduceMetamask({}, {
       type: actions.SHOW_ACCOUNT_DETAIL,
@@ -138,7 +63,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.selectedAddress, 'test address')
   })
 
-  it('sets select ', () => {
+  it('sets select ', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_SELECTED_TOKEN,
       value: 'test token',
@@ -147,7 +72,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.selectedTokenAddress, 'test token')
   })
 
-  it('sets account label', () => {
+  it('sets account label', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_ACCOUNT_LABEL,
       value: {
@@ -159,7 +84,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(state.identities, { 'test account': { name: 'test label' } })
   })
 
-  it('sets current fiat', () => {
+  it('sets current fiat', function () {
     const value = {
       currentCurrency: 'yen',
       conversionRate: 3.14,
@@ -176,7 +101,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.conversionDate, value.conversionDate)
   })
 
-  it('updates tokens', () => {
+  it('updates tokens', function () {
     const newTokens = {
       'address': '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       'decimals': 18,
@@ -191,7 +116,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(state.tokens, newTokens)
   })
 
-  it('updates send gas limit', () => {
+  it('updates send gas limit', function () {
 
     const state = reduceMetamask({}, {
       type: actions.UPDATE_GAS_LIMIT,
@@ -201,7 +126,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.gasLimit, '0xGasLimit')
   })
 
-  it('updates send gas price', () => {
+  it('updates send gas price', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_GAS_PRICE,
       value: '0xGasPrice',
@@ -210,7 +135,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.gasPrice, '0xGasPrice')
   })
 
-  it('toggles account menu ', () => {
+  it('toggles account menu ', function () {
     const state = reduceMetamask({}, {
       type: actions.TOGGLE_ACCOUNT_MENU,
     })
@@ -218,7 +143,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.isAccountMenuOpen, true)
   })
 
-  it('updates gas total', () => {
+  it('updates gas total', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_GAS_TOTAL,
       value: '0xGasTotal',
@@ -227,7 +152,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.gasTotal, '0xGasTotal')
   })
 
-  it('updates send token balance', () => {
+  it('updates send token balance', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_TOKEN_BALANCE,
       value: '0xTokenBalance',
@@ -236,7 +161,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.tokenBalance, '0xTokenBalance')
   })
 
-  it('updates data', () => {
+  it('updates data', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_HEX_DATA,
       value: '0xData',
@@ -245,7 +170,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.data, '0xData')
   })
 
-  it('updates send to', () => {
+  it('updates send to', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_TO,
       value: {
@@ -258,16 +183,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.toNickname, 'nickname')
   })
 
-  it('update send from', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_SEND_FROM,
-      value: '0xAddress',
-    })
-
-    assert.equal(state.send.from, '0xAddress')
-  })
-
-  it('update send amount', () => {
+  it('update send amount', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_AMOUNT,
       value: '0xAmount',
@@ -276,16 +192,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.amount, '0xAmount')
   })
 
-  it('update send memo', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_SEND_MEMO,
-      value: '0xMemo',
-    })
-
-    assert.equal(state.send.memo, '0xMemo')
-  })
-
-  it('updates max mode', () => {
+  it('updates max mode', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_MAX_MODE,
       value: true,
@@ -294,7 +201,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.send.maxModeOn, true)
   })
 
-  it('update send', () => {
+  it('update send', function () {
     const value = {
       gasLimit: '0xGasLimit',
       gasPrice: '0xGasPrice',
@@ -321,7 +228,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(sendState.send, value)
   })
 
-  it('clears send', () => {
+  it('clears send', function () {
     const initStateSend = {
       send:
       { gasLimit: null,
@@ -365,16 +272,14 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(state.send, initStateSend.send)
   })
 
-  it('updates value of tx by id', () => {
+  it('updates value of tx by id', function () {
     const oldState = {
-      metamask: {
-        selectedAddressTxList: [
-          {
-            id: 1,
-            txParams: 'foo',
-          },
-        ],
-      },
+      selectedAddressTxList: [
+        {
+          id: 1,
+          txParams: 'foo',
+        },
+      ],
     }
 
     const state = reduceMetamask(oldState, {
@@ -386,7 +291,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.selectedAddressTxList[0].txParams, 'bar')
   })
 
-  it('updates pair for shapeshift', () => {
+  it('updates pair for shapeshift', function () {
     const state = reduceMetamask({}, {
       type: actions.PAIR_UPDATE,
       value: {
@@ -399,24 +304,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.tokenExchangeRates['test pair'].pair, 'test pair')
   })
 
-  it('upates pair and coin options for shapeshift subview', () => {
-    const state = reduceMetamask({}, {
-      type: actions.SHAPESHIFT_SUBVIEW,
-      value: {
-        marketinfo: {
-          pair: 'test pair',
-        },
-        coinOptions: {
-          foo: 'bar',
-        },
-      },
-    })
-
-    assert.equal(state.coinOptions.foo, 'bar')
-    assert.equal(state.tokenExchangeRates['test pair'].pair, 'test pair')
-  })
-
-  it('sets blockies', () => {
+  it('sets blockies', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_USE_BLOCKIE,
       value: true,
@@ -425,7 +313,16 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.useBlockie, true)
   })
 
-  it('updates an arbitrary feature flag', () => {
+  it('sets use In3', function () {
+    const state = reduceMetamask({}, {
+      type: actions.SET_USE_IN3,
+      value: true,
+    })
+
+    assert.equal(state.useIn3, true)
+  })
+
+  it('updates an arbitrary feature flag', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_FEATURE_FLAGS,
       value: {
@@ -436,16 +333,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.featureFlags.foo, true)
   })
 
-  it('updates network endpoint type', () => {
-    const state = reduceMetamask({}, {
-      type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
-      value: 'endpoint',
-    })
-
-    assert.equal(state.networkEndpointType, 'endpoint')
-  })
-
-  it('close welcome screen', () => {
+  it('close welcome screen', function () {
     const state = reduceMetamask({}, {
       type: actions.CLOSE_WELCOME_SCREEN,
     })
@@ -453,7 +341,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.welcomeScreenSeen, true)
   })
 
-  it('sets current locale', () => {
+  it('sets current locale', function () {
     const state = reduceMetamask({}, {
       type: actions.SET_CURRENT_LOCALE,
       value: { locale: 'ge' },
@@ -462,7 +350,7 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.currentLocale, 'ge')
   })
 
-  it('sets pending tokens ', () => {
+  it('sets pending tokens ', function () {
     const payload = {
       'address': '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       'decimals': 18,
@@ -477,7 +365,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(pendingTokensState.pendingTokens, payload)
   })
 
-  it('clears pending tokens', () => {
+  it('clears pending tokens', function () {
     const payload = {
       'address': '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       'decimals': 18,
@@ -495,7 +383,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(state.pendingTokens, {})
   })
 
-  it('update ensResolution', () => {
+  it('update ensResolution', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_ENS_RESOLUTION,
       payload: '0x1337',
@@ -505,7 +393,7 @@ describe('MetaMask Reducers', () => {
     assert.deepEqual(state.send.ensResolutionError, '')
   })
 
-  it('update ensResolutionError', () => {
+  it('update ensResolutionError', function () {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_SEND_ENS_RESOLUTION_ERROR,
       payload: 'ens name not found',

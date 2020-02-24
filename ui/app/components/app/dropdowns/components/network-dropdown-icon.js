@@ -45,3 +45,24 @@ NetworkDropdownIcon.prototype.render = function () {
       })
     )
 }
+<<<<<<< HEAD
+=======
+
+NetworkDropdownIcon.defaultProps = {
+  backgroundColor: undefined,
+  loading: false,
+  innerBorder: 'none',
+  diameter: '12',
+  isSelected: false,
+}
+
+NetworkDropdownIcon.propTypes = {
+  backgroundColor: PropTypes.string,
+  loading: PropTypes.bool,
+  innerBorder: PropTypes.string,
+  diameter: PropTypes.string,
+  isSelected: PropTypes.bool,
+}
+
+export default NetworkDropdownIcon
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

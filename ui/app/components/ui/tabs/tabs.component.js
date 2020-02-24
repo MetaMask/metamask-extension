@@ -2,17 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 export default class Tabs extends Component {
+  static defaultProps = {
+    defaultActiveTabIndex: 0,
+  }
+
   static propTypes = {
     defaultActiveTabIndex: PropTypes.number,
     children: PropTypes.node,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      activeTabIndex: props.defaultActiveTabIndex || 0,
-    }
+  state = {
+    activeTabIndex: this.props.defaultActiveTabIndex,
   }
 
   handleTabClick (tabIndex) {
@@ -30,7 +30,7 @@ export default class Tabs extends Component {
 
     return React.Children.map(this.props.children, (child, index) => {
       return child && React.cloneElement(child, {
-        onClick: index => this.handleTabClick(index),
+        onClick: (index) => this.handleTabClick(index),
         tabIndex: index,
         isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
         key: index,

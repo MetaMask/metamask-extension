@@ -3,10 +3,10 @@ import {
   getMaxModeOn,
 } from '../amount-max-button.selectors.js'
 
-describe('amount-max-button selectors', () => {
+describe('amount-max-button selectors', function () {
 
-  describe('getMaxModeOn()', () => {
-    it('should', () => {
+  describe('getMaxModeOn()', function () {
+    it('should', function () {
       const state = {
         metamask: {
           send: {

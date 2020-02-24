@@ -51,27 +51,31 @@ proxyquire('../send-footer.container.js', {
   },
 })
 
-describe('send-footer container', () => {
+describe('send-footer container', function () {
 
+<<<<<<< HEAD
   describe('mapDispatchToProps()', () => {
+=======
+  describe('mapDispatchToProps()', function () {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     let dispatchSpy
     let mapDispatchToPropsObject
 
-    beforeEach(() => {
+    beforeEach(function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
     })
 
-    describe('clearSend()', () => {
-      it('should dispatch an action', () => {
+    describe('clearSend()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.clearSend()
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.clearSend.calledOnce)
       })
     })
 
-    describe('sign()', () => {
-      it('should dispatch a signTokenTx action if selectedToken is defined', () => {
+    describe('sign()', function () {
+      it('should dispatch a signTokenTx action if selectedToken is defined', function () {
         mapDispatchToPropsObject.sign({
           selectedToken: {
             address: '0xabc',
@@ -103,7 +107,7 @@ describe('send-footer container', () => {
         )
       })
 
-      it('should dispatch a sign action if selectedToken is not defined', () => {
+      it('should dispatch a sign action if selectedToken is not defined', function () {
         utilsStubs.constructTxParams.resetHistory()
         mapDispatchToPropsObject.sign({
           to: 'mockTo',
@@ -132,8 +136,8 @@ describe('send-footer container', () => {
       })
     })
 
-    describe('update()', () => {
-      it('should dispatch an updateTransaction action', () => {
+    describe('update()', function () {
+      it('should dispatch an updateTransaction action', function () {
         mapDispatchToPropsObject.update({
           to: 'mockTo',
           amount: 'mockAmount',
@@ -163,8 +167,8 @@ describe('send-footer container', () => {
       })
     })
 
-    describe('addToAddressBookIfNew()', () => {
-      it('should dispatch an action', () => {
+    describe('addToAddressBookIfNew()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.addToAddressBookIfNew('mockNewAddress', 'mockToAccounts', 'mockNickname')
         assert(dispatchSpy.calledOnce)
         assert.equal(utilsStubs.addressIsNew.getCall(0).args[0], 'mockToAccounts')

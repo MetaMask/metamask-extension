@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const assert = require('assert')
 
 const h = require('react-hyperscript')
@@ -7,6 +8,15 @@ const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app
 
 const { createMockStore } = require('redux-test-utils')
 const { mountWithStore } = require('../../../lib/render-helpers')
+=======
+import React from 'react'
+import assert from 'assert'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import sinon from 'sinon'
+import { mountWithStore } from '../../../lib/render-helpers'
+import { Dropdown } from '../../../../ui/app/components/app/dropdowns/components/dropdown'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 const mockState = {
   metamask: {
@@ -15,8 +25,9 @@ const mockState = {
 
 describe('Dropdown components', function () {
   let onClickOutside
-  let closeMenu
   let onClick
+
+  const createMockStore = configureMockStore([thunk])
 
   const dropdownComponentProps = {
     isOpen: true,
@@ -35,10 +46,10 @@ describe('Dropdown components', function () {
   let component
   beforeEach(function () {
     onClickOutside = sinon.spy()
-    closeMenu = sinon.spy()
     onClick = sinon.spy()
 
     store = createMockStore(mockState)
+<<<<<<< HEAD
     component = mountWithStore(h(
       Dropdown,
       dropdownComponentProps,
@@ -56,6 +67,21 @@ describe('Dropdown components', function () {
           onClick,
         }, 'Item 2'),
       ]
+=======
+    component = mountWithStore((
+      <Dropdown {...dropdownComponentProps}>
+        <style>
+          {
+            `
+              .drop-menu-item:hover { background:rgb(235, 235, 235); }
+              .drop-menu-item i { margin: 11px; }
+            `
+          }
+        </style>
+        <li onClick={onClick}>Item 1</li>
+        <li onClick={onClick}>Item 2</li>
+      </Dropdown>
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     ), store)
     dropdownComponent = component
   })
@@ -65,17 +91,10 @@ describe('Dropdown components', function () {
     assert.equal(items.length, 2)
   })
 
-  it('closes when item clicked', function () {
-    const items = dropdownComponent.find('li')
-    const node = items.at(0)
-    node.simulate('click')
-    assert.equal(node.props().closeMenu, closeMenu)
-  })
-
   it('invokes click handler when item clicked', function () {
     const items = dropdownComponent.find('li')
     const node = items.at(0)
     node.simulate('click')
-    assert.equal(onClick.calledOnce, true)
+    assert.ok(onClick.calledOnce)
   })
 })

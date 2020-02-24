@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const Spinner = ({ className = '', color = '#000000' }) => {
   return (
     <div className={`spinner ${className}`}>
-      <svg className="lds-spinner" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style={{background: 'none'}}>
+      <svg className="lds-spinner" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style={{ background: 'none' }}>
         <g transform="rotate(0 50 50)">
           <rect x={45} y={0} rx={0} ry={0} width={10} height={30} fill={color}>
             <animate attributeName="opacity" values="1;0" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite" />
@@ -75,4 +75,4 @@ Spinner.propTypes = {
   color: PropTypes.string,
 }
 
-module.exports = Spinner
+export default Spinner

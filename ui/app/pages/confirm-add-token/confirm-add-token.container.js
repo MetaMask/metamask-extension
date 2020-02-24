@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import ConfirmAddToken from './confirm-add-token.component'
 
-const { addTokens, clearPendingTokens } = require('../../store/actions')
+import { addTokens, clearPendingTokens } from '../../store/actions'
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens } = metamask
@@ -10,9 +10,9 @@ const mapStateToProps = ({ metamask }) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addTokens: tokens => dispatch(addTokens(tokens)),
+    addTokens: (tokens) => dispatch(addTokens(tokens)),
     clearPendingTokens: () => dispatch(clearPendingTokens()),
   }
 }

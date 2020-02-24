@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribuții"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizator deconectare automată (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Se poate ca soldul să nu fie actualizat"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Sold insuficient pentru actuala valoare totală de gaz."
   },
   "basic": {
     "message": "De bază"
@@ -493,9 +490,6 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculăm limita de gas sugerată pe baza ratelor de succes ale rețelei."
-  },
   "gasLimitInfoModalContent": {
     "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
   },
@@ -516,9 +510,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Preț gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculăm prețurile sugerate pentru gas pe baza ratelor de succes ale rețelei."
   },
   "generalSettingsDescription": {
     "message": "Schimb valutar, moneda principală, limba, blockies identicon"
@@ -680,10 +671,7 @@
   "loadMore": {
     "message": "Încărcați mai multe"
   },
-  "login": {
-    "message": "Autentificare"
-  },
-  "logout": {
+  "lock": {
     "message": "Deconectați-vă"
   },
   "mainnet": {
@@ -703,9 +691,6 @@
   },
   "metamaskDescription": {
     "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
-  },
-  "metamaskSeedWords": {
-    "message": "Cuvinte Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
@@ -966,9 +951,6 @@
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
   },
-  "revert": {
-    "message": "Reveniți"
-  },
   "remove": {
     "message": "Elimină"
   },
@@ -1186,7 +1168,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolul trebuie să fie între 0 și 12 caractere."
+    "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
   },
   "syncWithMobile": {
     "message": "Sincronizați cu dispozitivul mobil"

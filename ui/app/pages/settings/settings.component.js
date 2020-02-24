@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Route, matchPath, withRouter } from 'react-router-dom'
+import { Switch, Route, matchPath } from 'react-router-dom'
 import TabBar from '../../components/app/tab-bar'
 import c from 'classnames'
 import SettingsTab from './settings-tab'
@@ -36,12 +36,10 @@ class SettingsPage extends PureComponent {
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
     isPopupView: PropTypes.bool,
-    location: PropTypes.object,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
-    t: PropTypes.func,
   }
 
   static contextTypes = {
@@ -161,13 +159,13 @@ class SettingsPage extends PureComponent {
           { content: t('networks'), description: t('networkSettingsDescription'), key: NETWORKS_ROUTE },
           { content: t('about'), description: t('aboutSettingsDescription'), key: ABOUT_US_ROUTE },
         ]}
-        isActive={key => {
+        isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true
           }
           return matchPath(currentPath, { path: key, exact: true })
         }}
-        onSelect={key => history.push(key)}
+        onSelect={(key) => history.push(key)}
       />
     )
   }
@@ -248,4 +246,4 @@ class SettingsPage extends PureComponent {
   }
 }
 
-export default withRouter(SettingsPage)
+export default SettingsPage

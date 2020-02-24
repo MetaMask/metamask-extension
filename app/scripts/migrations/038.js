@@ -1,15 +1,15 @@
 const version = 38
-const clone = require('clone')
-const ABTestController = require('../controllers/ab-test')
-const { getRandomArrayItem } = require('../lib/util')
+import { cloneDeep } from 'lodash'
+import ABTestController from '../controllers/ab-test'
+import { getRandomArrayItem } from '../lib/util'
 
 /**
  * The purpose of this migration is to assign all users to a test group for the fullScreenVsPopup a/b test
  */
-module.exports = {
+export default {
   version,
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     versionedData.data = transformState(state)

@@ -62,6 +62,7 @@ const GP = GasModalPageContainer.prototype
 describe('GasModalPageContainer Component', function () {
   let wrapper
 
+<<<<<<< HEAD
   beforeEach(() => {
     wrapper = shallow(<GasModalPageContainer
       cancelAndClose={propsMethodSpies.cancelAndClose}
@@ -80,21 +81,43 @@ describe('GasModalPageContainer Component', function () {
       insufficientBalance={false}
       disableSave={false}
     />)
+=======
+  beforeEach(function () {
+    wrapper = shallow((
+      <GasModalPageContainer
+        cancelAndClose={propsMethodSpies.cancelAndClose}
+        onSubmit={propsMethodSpies.onSubmit}
+        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+        updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+        customGasPrice={21}
+        customGasLimit={54321}
+        gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+        infoRowProps={mockInfoRowProps}
+        currentTimeEstimate="1 min 31 sec"
+        customGasPriceInHex="mockCustomGasPriceInHex"
+        customGasLimitInHex="mockCustomGasLimitInHex"
+        insufficientBalance={false}
+        disableSave={false}
+      />
+    ))
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   })
 
-  afterEach(() => {
+  afterEach(function () {
     propsMethodSpies.cancelAndClose.resetHistory()
   })
 
-  describe('componentDidMount', () => {
-    it('should call props.fetchBasicGasAndTimeEstimates', () => {
+  describe('componentDidMount', function () {
+    it('should call props.fetchBasicGasAndTimeEstimates', function () {
       propsMethodSpies.fetchBasicGasAndTimeEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
       assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 1)
     })
 
-    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasAndTimeEstimates', async () => {
+    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasAndTimeEstimates', async function () {
       propsMethodSpies.fetchGasEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
@@ -104,12 +127,12 @@ describe('GasModalPageContainer Component', function () {
     })
   })
 
-  describe('render', () => {
-    it('should render a PageContainer compenent', () => {
+  describe('render', function () {
+    it('should render a PageContainer compenent', function () {
       assert.equal(wrapper.find(PageContainer).length, 1)
     })
 
-    it('should pass correct props to PageContainer', () => {
+    it('should pass correct props to PageContainer', function () {
       const {
         title,
         subtitle,
@@ -120,7 +143,7 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(disabled, false)
     })
 
-    it('should pass the correct onCancel and onClose methods to PageContainer', () => {
+    it('should pass the correct onCancel and onClose methods to PageContainer', function () {
       const {
         onCancel,
         onClose,
@@ -132,32 +155,41 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(propsMethodSpies.cancelAndClose.callCount, 2)
     })
 
-    it('should pass the correct renderTabs property to PageContainer', () => {
+    it('should pass the correct renderTabs property to PageContainer', function () {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
+<<<<<<< HEAD
       const renderTabsWrapperTester = shallow(<GasModalPageContainer
         fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
         fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
       />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+=======
+      const renderTabsWrapperTester = shallow((
+        <GasModalPageContainer
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        />
+      ), { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } })
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()
     })
   })
 
-  describe('renderTabs', () => {
-    beforeEach(() => {
+  describe('renderTabs', function () {
+    beforeEach(function () {
       sinon.spy(GP, 'renderBasicTabContent')
       sinon.spy(GP, 'renderAdvancedTabContent')
       sinon.spy(GP, 'renderInfoRows')
     })
 
-    afterEach(() => {
+    afterEach(function () {
       GP.renderBasicTabContent.restore()
       GP.renderAdvancedTabContent.restore()
       GP.renderInfoRows.restore()
     })
 
-    it('should render a Tabs component with "Basic" and "Advanced" tabs', () => {
+    it('should render a Tabs component with "Basic" and "Advanced" tabs', function () {
       const renderTabsResult = wrapper.instance().renderTabs()
       const renderedTabs = shallow(renderTabsResult)
       assert.equal(renderedTabs.props().className, 'tabs')
@@ -172,7 +204,7 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(tabs.at(1).childAt(0).props().className, 'gas-modal-content')
     })
 
-    it('should call renderInfoRows with the expected props', () => {
+    it('should call renderInfoRows with the expected props', function () {
       assert.equal(GP.renderInfoRows.callCount, 0)
 
       wrapper.instance().renderTabs()
@@ -183,6 +215,7 @@ describe('GasModalPageContainer Component', function () {
       assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee'])
     })
 
+<<<<<<< HEAD
     it('should not render the basic tab if hideBasic is true', () => {
       wrapper = shallow(<GasModalPageContainer
         cancelAndClose={propsMethodSpies.cancelAndClose}
@@ -202,6 +235,29 @@ describe('GasModalPageContainer Component', function () {
         disableSave={false}
         hideBasic
       />)
+=======
+    it('should not render the basic tab if hideBasic is true', function () {
+      wrapper = shallow((
+        <GasModalPageContainer
+          cancelAndClose={propsMethodSpies.cancelAndClose}
+          onSubmit={propsMethodSpies.onSubmit}
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+          updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+          updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+          customGasPrice={21}
+          customGasLimit={54321}
+          gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+          infoRowProps={mockInfoRowProps}
+          currentTimeEstimate="1 min 31 sec"
+          customGasPriceInHex="mockCustomGasPriceInHex"
+          customGasLimitInHex="mockCustomGasLimitInHex"
+          insufficientBalance={false}
+          disableSave={false}
+          hideBasic
+        />
+      ))
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
       const renderTabsResult = wrapper.instance().renderTabs()
 
       const renderedTabs = shallow(renderTabsResult)
@@ -211,8 +267,8 @@ describe('GasModalPageContainer Component', function () {
     })
   })
 
-  describe('renderBasicTabContent', () => {
-    it('should render', () => {
+  describe('renderBasicTabContent', function () {
+    it('should render', function () {
       const renderBasicTabContentResult = wrapper.instance().renderBasicTabContent(mockGasPriceButtonGroupProps)
 
       assert.deepEqual(
@@ -222,8 +278,8 @@ describe('GasModalPageContainer Component', function () {
     })
   })
 
-  describe('renderInfoRows', () => {
-    it('should render the info rows with the passed data', () => {
+  describe('renderInfoRows', function () {
+    it('should render the info rows with the passed data', function () {
       const baseClassName = 'gas-modal-content__info-row'
       const renderedInfoRowsContainer = shallow(wrapper.instance().renderInfoRows(
         'mockNewTotalFiat',

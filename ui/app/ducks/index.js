@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const clone = require('clone')
 const extend = require('xtend')
 const copyToClipboard = require('copy-to-clipboard')
@@ -86,3 +87,22 @@ window.logState = function (toClipboard) {
     }
   })
 }
+=======
+import { combineReducers } from 'redux'
+import metamaskReducer from './metamask/metamask'
+import localeMessagesReducer from './locale/locale'
+import sendReducer from './send/send.duck'
+import appStateReducer from './app/app'
+import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
+import gasReducer from './gas/gas.duck'
+
+export default combineReducers({
+  activeTab: (s) => (s === undefined ? null : s),
+  metamask: metamaskReducer,
+  appState: appStateReducer,
+  send: sendReducer,
+  confirmTransaction: confirmTransactionReducer,
+  gas: gasReducer,
+  localeMessages: localeMessagesReducer,
+})
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

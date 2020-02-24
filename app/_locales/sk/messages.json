@@ -118,10 +118,10 @@
   "attributions": {
     "message": "Zásluhy"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
   },
   "average": {
@@ -147,9 +147,6 @@
   },
   "balanceOutdated": {
     "message": "Zostatok môže byť neaktuálny"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
   },
   "basic": {
     "message": "Základné"
@@ -488,9 +485,6 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
-  },
   "gasLimitInfoModalContent": {
     "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
   },
@@ -511,9 +505,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena GAS"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "general": {
     "message": "Všeobecne"
@@ -668,10 +659,7 @@
   "loadMore": {
     "message": "Načítať viac"
   },
-  "login": {
-    "message": "Přihlásit"
-  },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "memorizePhrase": {
@@ -682,9 +670,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Seed slová MetaMask"
   },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
@@ -944,9 +929,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "remove": {
     "message": "Odstrániť"

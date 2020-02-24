@@ -1,19 +1,11 @@
-const selectors = {
-  gasFeeIsInError,
-  getGasLoadingError,
-  getGasButtonGroupShown,
-}
-
-module.exports = selectors
-
-function getGasLoadingError (state) {
+export function getGasLoadingError (state) {
   return state.send.errors.gasLoading
 }
 
-function gasFeeIsInError (state) {
+export function gasFeeIsInError (state) {
   return Boolean(state.send.errors.gasFee)
 }
 
-function getGasButtonGroupShown (state) {
+export function getGasButtonGroupShown (state) {
   return state.send.gasButtonGroupShown
 }

@@ -115,10 +115,10 @@
   "attributions": {
     "message": "Attribuzioni"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer di Logout Automatico (minuti)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Imposta il tempo di inattività dopo il quale MetaMask fa il log out automaticamente"
   },
   "average": {
@@ -144,9 +144,6 @@
   },
   "balanceOutdated": {
     "message": "Il bilancio può essere non aggiornato"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Bilancio insufficiente per il gas totale corrente"
   },
   "basic": {
     "message": "Base"
@@ -476,9 +473,6 @@
   "gasLimit": {
     "message": "Gas Limite"
   },
-  "gasLimitCalculation": {
-    "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
-  },
   "gasLimitInfoModalContent": {
     "message": "Il gas limite è il massimo importo di unità di gas che sei disposto a spendere."
   },
@@ -499,9 +493,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Prezzo del Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calcoliamo il prezzo del gas suggerito in base al successo delle transazioni in rete."
   },
   "general": {
     "message": "Generale"
@@ -666,10 +657,7 @@
   "loadMore": {
     "message": "Carica di più"
   },
-  "login": {
-    "message": "Accedi"
-  },
-  "logout": {
+  "lock": {
     "message": "Disconnetti"
   },
   "mainnet": {
@@ -686,9 +674,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Parole Seed di MetaMask"
   },
   "metamaskVersion": {
     "message": "versione di MetaMask"
@@ -941,9 +926,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
-  },
-  "revert": {
-    "message": "Ripristina"
   },
   "remove": {
     "message": "rimuovi"

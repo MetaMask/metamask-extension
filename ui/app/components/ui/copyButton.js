@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
@@ -6,6 +7,13 @@ const copyToClipboard = require('copy-to-clipboard')
 const connect = require('react-redux').connect
 
 const Tooltip = require('./tooltip')
+=======
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
+import copyToClipboard from 'copy-to-clipboard'
+import Tooltip from './tooltip'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 CopyButton.contextTypes = {
   t: PropTypes.func,
@@ -38,6 +46,7 @@ CopyButton.prototype.render = function () {
     },
   }, [
 
+<<<<<<< HEAD
     h(Tooltip, {
       title: message,
     }, [
@@ -53,10 +62,17 @@ CopyButton.prototype.render = function () {
         },
       }),
     ]),
+=======
+  render () {
+    const { title, value } = this.props
+    const { copied } = this.state
+    const message = copied ? this.context.t('copiedButton') : title || this.context.t('copyButton')
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
   ])
 }
 
+<<<<<<< HEAD
 CopyButton.prototype.debounceRestore = function () {
   this.setState({ copied: true })
   clearTimeout(this.timeout)
@@ -64,3 +80,6 @@ CopyButton.prototype.debounceRestore = function () {
     this.setState({ copied: false })
   }, 850)
 }
+=======
+export default CopyButton
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

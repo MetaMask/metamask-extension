@@ -121,10 +121,10 @@
   "attributions": {
     "message": "ಗುಣಲಕ್ಷಣಗಳು"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "ಸ್ವಯಂ-ಲಾಗ್ಔಟ್‌ ಟೈಮರ್ (ನಿಮಿಷಗಳು)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "ಮೊಬಲಗು ಹಳೆಯದಾಗಿರಬಹುದು"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "ಪ್ರಸ್ತುತ ಗ್ಯಾಸ್ ಟೋಟಲ್‌ಗಾಗಿ ಸಾಕಷ್ಟು ಮೊಬಲಗು ಇಲ್ಲ"
   },
   "basic": {
     "message": "ಮೂಲ"
@@ -497,9 +494,6 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitCalculation": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಯಶಸ್ಸಿನ ದರಗಳ ಆಧಾರದ ಮೇಲೆ ನಾವು ಸೂಚಿಸಲಾದ ಗ್ಯಾಸ್ ಮಿತಿಯನ್ನು ಲೆಕ್ಕಾಚಾರ ಮಾಡುತ್ತೇವೆ."
-  },
   "gasLimitInfoModalContent": {
     "message": "ಗ್ಯಾಸ್‌ ಮಿತಿ ಎಂದರೆ ನೀವು ಖರ್ಚು ಮಾಡಲು ಸಿದ್ಧವಿರುವ ಗ್ಯಾಸ್‌ನ ಗರಿಷ್ಠ ಪ್ರಮಾಣ."
   },
@@ -520,9 +514,6 @@
   },
   "gasPriceNoDenom": {
     "message": "ಗ್ಯಾಸ್ ದರ"
-  },
-  "gasPriceCalculation": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಯಶಸ್ಸಿನ ದರಗಳ ಆಧಾರದ ಮೇಲೆ ನಾವು ಸೂಚಿಸಿದ ಗ್ಯಾಸ್ ದರಗಳನ್ನು ಲೆಕ್ಕ ಹಾಕುತ್ತೇವೆ."
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
@@ -693,10 +684,7 @@
   "localhost": {
     "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545"
   },
-  "login": {
-    "message": "ಲಾಗ್ ಇನ್"
-  },
-  "logout": {
+  "lock": {
     "message": "ಲಾಗ್ ಔಟ್"
   },
   "mainnet": {
@@ -716,9 +704,6 @@
   },
   "metamaskDescription": {
     "message": "ನಿಮ್ಮನ್ನು ಎಥೆರಿಯಮ್ ಮತ್ತು ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask ಸೀಡ್ ಪದಗಳು"
   },
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
@@ -978,9 +963,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
-  },
-  "revert": {
-    "message": "ಹಿಂತಿರುಗಿಸಿ"
   },
   "remove": {
     "message": "ತೆಗೆದುಹಾಕು"

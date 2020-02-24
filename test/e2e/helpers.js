@@ -1,24 +1,13 @@
-const fs = require('fs')
 const path = require('path')
-const mkdirp = require('mkdirp')
-const pify = require('pify')
-const assert = require('assert')
-
-const {
-  delay,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-} = require('./func')
-const { until } = require('selenium-webdriver')
-const fetchMockResponses = require('./fetch-mocks.json')
+const Ganache = require('./ganache')
+const FixtureServer = require('./fixture-server')
+const { buildWebDriver } = require('./webdriver')
 
 const tinyDelayMs = 200
 const regularDelayMs = tinyDelayMs * 2
 const largeDelayMs = regularDelayMs * 2
 
+<<<<<<< HEAD
 module.exports = {
   assertElementNotPresent,
   checkBrowserForConsoleErrors,
@@ -170,92 +159,36 @@ async function findElements (driver, by, timeout = 10000) {
 async function openNewPage (driver, url) {
   await driver.executeScript('window.open()')
   await delay(1000)
+=======
+async function withFixtures (options, callback) {
+  const { fixtures, ganacheOptions, driverOptions } = options
+  const fixtureServer = new FixtureServer()
+  const ganacheServer = new Ganache()
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-  const handles = await driver.getAllWindowHandles()
-  const lastHandle = handles[handles.length - 1]
-  await driver.switchTo().window(lastHandle)
-
-  await driver.get(url)
-  await delay(1000)
-}
-
-async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
-  let timeElapsed = 0
-  async function _pollWindowHandles () {
-    const windowHandles = await driver.getAllWindowHandles()
-    if (windowHandles.length === x) {
-      return
-    }
-    await delay(delayStep)
-    timeElapsed += delayStep
-    if (timeElapsed > timeout) {
-      throw new Error('waitUntilXWindowHandles timed out polling window handles')
-    } else {
-      await _pollWindowHandles()
-    }
-  }
-  return await _pollWindowHandles()
-}
-
-async function switchToWindowWithTitle (driver, title, windowHandles) {
-  if (!windowHandles) {
-    windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window with title: ' + title)
-  }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const handleTitle = await driver.getTitle()
-
-  if (handleTitle === title) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithTitle(driver, title, windowHandles.slice(1))
-  }
-}
-
-/**
- * Closes all windows except those in the given list of exceptions
- * @param {object} driver the WebDriver instance
- * @param {string|Array<string>} exceptions the list of window handle exceptions
- * @param {Array?} windowHandles the full list of window handles
- * @returns {Promise<void>}
- */
-async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
-  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
-  windowHandles = windowHandles || await driver.getAllWindowHandles()
-  const lastWindowHandle = windowHandles.pop()
-  if (!exceptions.includes(lastWindowHandle)) {
-    await driver.switchTo().window(lastWindowHandle)
-    await delay(1000)
-    await driver.close()
-    await delay(1000)
-  }
-  return windowHandles.length && await closeAllWindowHandlesExcept(driver, exceptions, windowHandles)
-}
-
-async function assertElementNotPresent (webdriver, driver, by) {
-  let dataTab
+  let webDriver
   try {
-    dataTab = await findElement(driver, by, 4000)
-  } catch (err) {
-    assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
+    await ganacheServer.start(ganacheOptions)
+    await fixtureServer.start()
+    await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures))
+    const { driver } = await buildWebDriver(driverOptions)
+    webDriver = driver
+
+    await callback({
+      driver,
+    })
+  } finally {
+    await fixtureServer.stop()
+    await ganacheServer.quit()
+    if (webDriver) {
+      await webDriver.quit()
+    }
   }
-  assert.ok(!dataTab, 'Found element that should not be present')
 }
 
-async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
-  if (!windowHandles) {
-    windowHandles = await driver.getAllWindowHandles()
-  } else if (windowHandles.length === 0) {
-    throw new Error('No window that matches: ' + regexp)
-  }
-  const firstHandle = windowHandles[0]
-  await driver.switchTo().window(firstHandle)
-  const windowUrl = await driver.getCurrentUrl()
-  if (windowUrl.match(regexp)) {
-    return firstHandle
-  } else {
-    return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
-  }
+module.exports = {
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  withFixtures,
 }

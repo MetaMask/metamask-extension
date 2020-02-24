@@ -118,10 +118,10 @@
   "attributions": {
     "message": "Was wir verwenden"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout-Timer (Minuten)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll"
   },
   "average": {
@@ -147,9 +147,6 @@
   },
   "balanceOutdated": {
     "message": "Kontostand könnte überholt sein"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Guthaben unzureichend für den aktuellen gesamten Gasbetrag"
   },
   "basic": {
     "message": "Grundlegend"
@@ -328,7 +325,7 @@
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
   "customToken": {
-    "message": "Custom-Tohen"
+    "message": "Custom-Token"
   },
   "customRPC": {
     "message": "Spezieller RPC"
@@ -482,9 +479,6 @@
   "gasLimit": {
     "message": "Gaslimit"
   },
-  "gasLimitCalculation": {
-    "message": "Wir berechnen das empfohlene Gaslimit basierend auf der Erfolgsrate des Netzwerks."
-  },
   "gasLimitInfoModalContent": {
     "message": "Die Gasgrenze ist die Höchstmenge an Gaseinheiten, die Sie auszugeben bereit sind."
   },
@@ -505,9 +499,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspreis"
-  },
-  "gasPriceCalculation": {
-    "message": "Wir berechnen den empfohlenen Gaspreis basierend auf der Erfolgsrate des Netzwerks."
   },
   "general": {
     "message": "Allgemein"
@@ -669,10 +660,7 @@
   "loadMore": {
     "message": "Mehr laden"
   },
-  "login": {
-    "message": "Login"
-  },
-  "logout": {
+  "lock": {
     "message": "Ausloggen"
   },
   "mainnet": {
@@ -692,9 +680,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask-Seed-Wörter"
   },
   "metamaskVersion": {
     "message": "MetaMask-Version"
@@ -945,9 +930,6 @@
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
   },
-  "revert": {
-    "message": "Rückgängig machen"
-  },
   "remove": {
     "message": "Entfernen"
   },
@@ -1162,7 +1144,7 @@
     "message": "Gehe zu unserem Support Center"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Das Symbol muss zwischen 0 und 12 Zeichen haben."
+    "message": "Das Symbol darf maximal 11 Zeichen lang sein."
   },
   "syncWithMobile": {
     "message": "Mit Mobilgerät synchronisieren"

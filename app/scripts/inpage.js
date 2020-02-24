@@ -32,6 +32,7 @@ const restoreContextAfterImports = () => {
 }
 
 cleanContextForImports()
+<<<<<<< HEAD
 require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
@@ -40,6 +41,17 @@ const MetamaskInpageProvider = require('metamask-inpage-provider')
 const createStandardProvider = require('./createStandardProvider').default
 
 let warned = false
+=======
+
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+import MetamaskInpageProvider from 'metamask-inpage-provider'
+
+// TODO:deprecate:Q1-2020
+import 'web3/dist/web3.min.js'
+
+import setupDappAutoReload from './lib/auto-reload.js'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 restoreContextAfterImports()
 
@@ -152,7 +164,13 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
+<<<<<<< HEAD
 window.ethereum = createStandardProvider(proxiedInpageProvider)
+=======
+//
+// TODO:deprecate:Q1-2020
+//
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 //
 // setup web3
@@ -174,10 +192,19 @@ log.debug('MetaMask - injected web3')
 
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
+<<<<<<< HEAD
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
+=======
+// setup dapp auto reload AND proxy web3
+setupDappAutoReload(web3, inpageProvider._publicConfigStore)
+
+//
+// end deprecate:Q1-2020
+//
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
   if (state.onboardingcomplete) {

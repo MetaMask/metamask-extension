@@ -121,10 +121,10 @@
   "attributions": {
     "message": "مواصفات"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "صورت حساب ممکن انقضاء شده باشد"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "بیلانس ناکافی برای مجموع گاز فعلی"
   },
   "basic": {
     "message": "پایه"
@@ -497,9 +494,6 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitCalculation": {
-    "message": "ما محدوده پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
-  },
   "gasLimitInfoModalContent": {
     "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
   },
@@ -520,9 +514,6 @@
   },
   "gasPriceNoDenom": {
     "message": "قیمت گاز"
-  },
-  "gasPriceCalculation": {
-    "message": "ما قیمت های پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
   },
   "general": {
     "message": "عمومی"
@@ -693,10 +684,7 @@
   "localhost": {
     "message": "Localhost 8545 "
   },
-  "login": {
-    "message": "ورود"
-  },
-  "logout": {
+  "lock": {
     "message": "خروج"
   },
   "mainnet": {
@@ -716,9 +704,6 @@
   },
   "metamaskDescription": {
     "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
-  },
-  "metamaskSeedWords": {
-    "message": "کلمات بازیاب MetaMask"
   },
   "metamaskVersion": {
     "message": "نسخه MetaMask"
@@ -979,9 +964,6 @@
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
   },
-  "revert": {
-    "message": "برگشت"
-  },
   "remove": {
     "message": "پاک کردن"
   },
@@ -1199,7 +1181,7 @@
     "message": "سمبول"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "سمبول باید بین 0 و 12 حرف باشد"
+    "message": "نماد باید 11 کاراکتر یا کمتر باشد."
   },
   "syncWithMobile": {
     "message": "همگام سازی با موبایل"

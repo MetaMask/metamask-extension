@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Baki mungkin lapuk"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Baki tidak mencukupi untuk jumlah keseluruhan gas semasa"
   },
   "basic": {
     "message": "Asas"
@@ -481,9 +478,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Kami mengira had gas yang dicadangkan berdasarkan kadar kejayaan rangkaian."
-  },
   "gasLimitInfoModalContent": {
     "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
   },
@@ -504,9 +498,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Harga Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Kami mengira harga gas disyorkan berdasarkan kadar kejayaan rangkaian."
   },
   "general": {
     "message": "Am"
@@ -670,10 +661,7 @@
   "loadMore": {
     "message": "Muat Lagi"
   },
-  "login": {
-    "message": "Log Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Log keluar"
   },
   "mainnet": {
@@ -687,9 +675,6 @@
   },
   "metamaskDescription": {
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
-  },
-  "metamaskSeedWords": {
-    "message": "Perkataan Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -950,9 +935,6 @@
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
   },
-  "revert": {
-    "message": "Undur"
-  },
   "remove": {
     "message": "Alih keluar"
   },
@@ -1170,7 +1152,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mestilah antara 0 hingga 12 aksara."
+    "message": "Simbol mestilah 11 aksara atau kurang."
   },
   "syncWithMobile": {
     "message": "Segerakkan dengan telefon mudah alih"

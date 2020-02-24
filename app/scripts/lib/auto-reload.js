@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 module.exports = setupDappAutoReload
+=======
+
+// TODO:deprecate:Q1-2020
+
+export default setupDappAutoReload
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
@@ -13,7 +20,11 @@ function setupDappAutoReload (web3, observable) {
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
+<<<<<<< HEAD
         console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider\nhttps://medium.com/metamask/4a899ad6e59e')
+=======
+        console.warn(`MetaMask: In Q1 2020, MetaMask will no longer inject web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
         hasBeenWarned = true
       }
       // return value normally

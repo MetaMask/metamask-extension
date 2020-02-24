@@ -1,5 +1,6 @@
-const assert = require('assert')
-const migration23 = require('../../../app/scripts/migrations/023')
+import assert from 'assert'
+import migration23 from '../../../app/scripts/migrations/023'
+
 const storage = {
   'meta': {},
   'data': {
@@ -37,25 +38,32 @@ let nonDeletableCount = 0
 let status
 while (transactions.length <= 100) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
+<<<<<<< HEAD
   if (!deletableTxStates.find((s) => s === status)) nonDeletableCount++
   transactions.push({status})
+=======
+  if (!deletableTxStates.find((s) => s === status)) {
+    nonDeletableCount++
+  }
+  transactions.push({ status })
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 }
 
 while (transactions40.length < 40) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  transactions40.push({status})
+  transactions40.push({ status })
 }
 
 while (transactions20.length < 20) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
-  transactions20.push({status})
+  transactions20.push({ status })
 }
 
 
 storage.data.TransactionController.transactions = transactions
 
-describe('storage is migrated successfully and the proper transactions are remove from state', () => {
-  it('should remove transactions that are unneeded', (done) => {
+describe('storage is migrated successfully and the proper transactions are remove from state', function () {
+  it('should remove transactions that are unneeded', function (done) {
     migration23.migrate(storage)
       .then((migratedData) => {
         let leftoverNonDeletableTxCount = 0
@@ -71,7 +79,7 @@ describe('storage is migrated successfully and the proper transactions are remov
       }).catch(done)
   })
 
-  it('should not remove any transactions because 40 is the expectable limit', (done) => {
+  it('should not remove any transactions because 40 is the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions40
     migration23.migrate(storage)
@@ -83,7 +91,7 @@ describe('storage is migrated successfully and the proper transactions are remov
       }).catch(done)
   })
 
-  it('should not remove any transactions because 20 txs is under the expectable limit', (done) => {
+  it('should not remove any transactions because 20 txs is under the expectable limit', function (done) {
     storage.meta.version = 22
     storage.data.TransactionController.transactions = transactions20
     migration23.migrate(storage)

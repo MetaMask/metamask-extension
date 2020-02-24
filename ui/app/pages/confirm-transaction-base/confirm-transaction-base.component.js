@@ -27,23 +27,13 @@ export default class ConfirmTransactionBase extends Component {
 
   static propTypes = {
     // react-router props
-    match: PropTypes.object,
     history: PropTypes.object,
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
-    clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
-    editTransaction: PropTypes.func,
-    ethTransactionAmount: PropTypes.string,
-    ethTransactionFee: PropTypes.string,
-    ethTransactionTotal: PropTypes.string,
-    fiatTransactionAmount: PropTypes.string,
-    fiatTransactionFee: PropTypes.string,
-    fiatTransactionTotal: PropTypes.string,
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
@@ -255,6 +245,7 @@ export default class ConfirmTransactionBase extends Component {
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
             {advancedInlineGasShown
+<<<<<<< HEAD
               ? <AdvancedGasInputs
                 updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
                 updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
@@ -264,6 +255,19 @@ export default class ConfirmTransactionBase extends Component {
                 customPriceIsSafe
                 isSpeedUp={false}
               />
+=======
+              ? (
+                <AdvancedGasInputs
+                  updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                  updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                  customGasPrice={customGas.gasPrice}
+                  customGasLimit={customGas.gasLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                />
+              )
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
               : null
             }
           </div>
@@ -497,7 +501,7 @@ export default class ConfirmTransactionBase extends Component {
                   updateCustomNonce('')
                 })
               })
-              .catch(error => {
+              .catch((error) => {
                 this.setState({
                   submitting: false,
                   submitError: error.message,
@@ -590,7 +594,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -609,7 +613,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
 

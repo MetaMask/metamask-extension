@@ -121,10 +121,10 @@
   "attributions": {
     "message": "አይነታ"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "በራስ ሰር ዘግቶ መውጫ ሰዓት ቆጣሪ (ደቂቃ)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask በራስ ሰር መንገድ ዘግቶ ከመውጣቱ በፊት የቦዘነ ጊዜን በደቂቃዎች ሙላ"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "ቀሪ ሂሳብ ጊዜው ያለፈበት ሊሆን ይችላል"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "አሁን ላለው አጠቃላይ ነዳጅ የማይበቃ ቀሪ ሂሳብ"
   },
   "basic": {
     "message": "መሠረታዊ"
@@ -497,9 +494,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ገደብ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
-  },
   "gasLimitInfoModalContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
   },
@@ -520,9 +514,6 @@
   },
   "gasPriceNoDenom": {
     "message": "የነዳጅ ዋጋ"
-  },
-  "gasPriceCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ዋጋ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
   },
   "general": {
     "message": "አጠቃላይ"
@@ -690,10 +681,7 @@
   "loadMore": {
     "message": "ተጨማሪ ጫን"
   },
-  "login": {
-    "message": "በመለያ ግባ"
-  },
-  "logout": {
+  "lock": {
     "message": "ዘግተህ ውጣ"
   },
   "mainnet": {
@@ -713,9 +701,6 @@
   },
   "metamaskDescription": {
     "message": "ከ Ethereum እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask የዘር ቃላት"
   },
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
@@ -976,9 +961,6 @@
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
   },
-  "revert": {
-    "message": "አድህር"
-  },
   "remove": {
     "message": "አስወግድ"
   },
@@ -1196,7 +1178,7 @@
     "message": "ምልክት"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ ከ0 እስከ 12 ቁምፊዎች መያዝ አለበት።"
+    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "syncWithMobile": {
     "message": "ከሞባይል ጋር አሳምር"

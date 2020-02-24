@@ -15,8 +15,12 @@ const mapStateToProps = ({ metamask }) => {
   }
 }
 
+<<<<<<< HEAD
 
 const mapDispatchToProps = dispatch => {
+=======
+const mapDispatchToProps = (dispatch) => {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   return {
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
   }

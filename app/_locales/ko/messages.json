@@ -121,10 +121,10 @@
   "attributions": {
     "message": "속성"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "자동 로그아웃 타이머 (분)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask가 자동으로 로그아웃되기 전 유휴 시간을 분 단위로 설정하세요"
   },
   "average": {
@@ -151,6 +151,7 @@
   "balanceOutdated": {
     "message": "잔액이 오래된 정보일 수 있습니다"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "현재 가스 총합에 대해 잔액이 부족합니다"
   },
@@ -158,6 +159,8 @@
     "message": "$1 이상 $2 이하여야 합니다.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockExplorerUrl": {
     "message": "익스플로러 차단"
   },
@@ -494,9 +497,6 @@
   "gasLimit": {
     "message": "가스 한도"
   },
-  "gasLimitCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 한도를 계산합니다."
-  },
   "gasLimitInfoModalContent": {
     "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 수량입니다."
   },
@@ -517,9 +517,6 @@
   },
   "gasPriceNoDenom": {
     "message": "가스 가격"
-  },
-  "gasPriceCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 가격을 계산합니다."
   },
   "general": {
     "message": "일반"
@@ -687,10 +684,7 @@
   "localhost": {
     "message": "로컬호스트 8545"
   },
-  "login": {
-    "message": "로그인"
-  },
-  "logout": {
+  "lock": {
     "message": "로그아웃"
   },
   "mainnet": {
@@ -710,9 +704,6 @@
   },
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 저장소입니다."
-  },
-  "metamaskSeedWords": {
-    "message": "메타마스크 시드 단어"
   },
   "metamaskVersion": {
     "message": "메타마스크 버전"
@@ -969,9 +960,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "이 단어 모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
-  },
-  "revert": {
-    "message": "되돌림"
   },
   "remove": {
     "message": "제거"

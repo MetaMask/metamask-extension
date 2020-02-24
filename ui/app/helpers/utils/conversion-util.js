@@ -4,7 +4,7 @@
 * numeric base, denomination and currency, and the desired numeric base, denomination and
 * currency. It should return a single value.
 *
-* @param {(number | string | BN)} value The value to convert.
+* @param {(number | string | BN)} value - The value to convert.
 * @param {Object} [options] Options to specify details of the conversion
 * @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
 * @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
@@ -22,11 +22,12 @@
 * the keys are specified in the options parameters and the values are setter functions.
 */
 
-const BigNumber = require('bignumber.js')
-const ethUtil = require('ethereumjs-util')
+import BigNumber from 'bignumber.js'
+
+import ethUtil, { stripHexPrefix } from 'ethereumjs-util'
+
 const BN = ethUtil.BN
-const R = require('ramda')
-const { stripHexPrefix } = require('ethereumjs-util')
+import R from 'ramda'
 
 BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
@@ -39,31 +40,31 @@ const BIG_NUMBER_ETH_MULTIPLIER = new BigNumber('1')
 
 // Setter Maps
 const toBigNumber = {
-  hex: n => new BigNumber(stripHexPrefix(n), 16),
-  dec: n => new BigNumber(String(n), 10),
-  BN: n => new BigNumber(n.toString(16), 16),
+  hex: (n) => new BigNumber(stripHexPrefix(n), 16),
+  dec: (n) => new BigNumber(String(n), 10),
+  BN: (n) => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
-  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
-  GWEI: bigNumber => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
-  ETH: bigNumber => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
+  WEI: (bigNumber) => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
+  GWEI: (bigNumber) => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
+  ETH: (bigNumber) => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
-  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
-  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
-  ETH: bigNumber => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
+  WEI: (bigNumber) => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
+  GWEI: (bigNumber) => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
+  ETH: (bigNumber) => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
 }
 const baseChange = {
-  hex: n => n.toString(16),
-  dec: n => (new BigNumber(n)).toString(10),
-  BN: n => new BN(n.toString(16)),
+  hex: (n) => n.toString(16),
+  dec: (n) => (new BigNumber(n)).toString(10),
+  BN: (n) => new BN(n.toString(16)),
 }
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
 const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
-const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
+const invertConversionRate = (conversionRate) => () => new BigNumber(1.0).div(conversionRate)
 const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
 
 // Predicates
@@ -237,7 +238,7 @@ const toNegative = (n, options = {}) => {
   return multiplyCurrencies(n, -1, options)
 }
 
-module.exports = {
+export {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,

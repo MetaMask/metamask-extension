@@ -1,5 +1,4 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
+import ObservableStore from 'obs-store'
 
 class AppStateController {
   /**
@@ -7,21 +6,21 @@ class AppStateController {
    * @param opts
    */
   constructor (opts = {}) {
-    const {initState, onInactiveTimeout, preferencesStore} = opts
-    const {preferences} = preferencesStore.getState()
+    const { initState, onInactiveTimeout, preferencesStore } = opts
+    const { preferences } = preferencesStore.getState()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(extend({
+    this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
       mkrMigrationReminderTimestamp: null,
     }, initState))
     this.timer = null
 
-    preferencesStore.subscribe(state => {
-      this._setInactiveTimeout(state.preferences.autoLogoutTimeLimit)
+    preferencesStore.subscribe((state) => {
+      this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
     })
 
-    this._setInactiveTimeout(preferences.autoLogoutTimeLimit)
+    this._setInactiveTimeout(preferences.autoLockTimeLimit)
   }
 
   setMkrMigrationReminderTimestamp (timestamp) {
@@ -32,7 +31,7 @@ class AppStateController {
 
   /**
    * Sets the last active time to the current time
-   * @return {void}
+   * @returns {void}
    */
   setLastActiveTime () {
     this._resetTimer()
@@ -40,8 +39,8 @@ class AppStateController {
 
   /**
    * Sets the inactive timeout for the app
-   * @param {number} timeoutMinutes the inactive timeout in minutes
-   * @return {void}
+   * @param {number} timeoutMinutes - the inactive timeout in minutes
+   * @returns {void}
    * @private
    */
   _setInactiveTimeout (timeoutMinutes) {
@@ -58,11 +57,11 @@ class AppStateController {
    * If the {@code timeoutMinutes} state is falsy (i.e., zero) then a new
    * timer will not be created.
    *
-   * @return {void}
+   * @returns {void}
    * @private
    */
   _resetTimer () {
-    const {timeoutMinutes} = this.store.getState()
+    const { timeoutMinutes } = this.store.getState()
 
     if (this.timer) {
       clearTimeout(this.timer)
@@ -76,5 +75,5 @@ class AppStateController {
   }
 }
 
-module.exports = AppStateController
+export default AppStateController
 

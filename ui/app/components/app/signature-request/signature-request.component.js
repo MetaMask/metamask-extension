@@ -14,7 +14,7 @@ export default class SignatureRequest extends PureComponent {
       address: PropTypes.string,
       balance: PropTypes.string,
       name: PropTypes.string,
-    }).isRequired,
+    }),
 
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
@@ -29,7 +29,7 @@ export default class SignatureRequest extends PureComponent {
   componentDidMount () {
     const { clearConfirmTransaction, cancel } = this.props
     const { metricsEvent } = this.context
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', (event) => {
         metricsEvent({
           eventOpts: {
@@ -51,7 +51,7 @@ export default class SignatureRequest extends PureComponent {
   render () {
     const {
       selectedAccount,
-      txData: { msgParams: { data, origin, from: senderWallet }},
+      txData: { msgParams: { data, origin, from: senderWallet } },
       cancel,
       sign,
     } = this.props

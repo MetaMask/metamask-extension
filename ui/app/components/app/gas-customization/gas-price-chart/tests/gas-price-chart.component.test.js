@@ -51,7 +51,7 @@ const testProps = {
   gasPrices: [1.5, 2.5, 4, 8],
   estimatedTimes: [100, 80, 40, 10],
   gasPricesMax: 9,
-  estimatedTimesMax: '100',
+  estimatedTimesMax: 100,
   currentPrice: 6,
   updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
 }
@@ -77,38 +77,37 @@ sinon.spy(GasPriceChart.prototype, 'renderChart')
 describe('GasPriceChart Component', function () {
   let wrapper
 
-  beforeEach(() => {
+  beforeEach(function () {
     wrapper = shallow(<GasPriceChart {...testProps} />)
   })
 
-  describe('render()', () => {
-    it('should render', () => {
+  describe('render()', function () {
+    it('should render', function () {
       assert(wrapper.hasClass('gas-price-chart'))
     })
 
-    it('should render the chart div', () => {
+    it('should render the chart div', function () {
       assert(wrapper.childAt(0).hasClass('gas-price-chart__root'))
       assert.equal(wrapper.childAt(0).props().id, 'chart')
     })
   })
 
-  describe('componentDidMount', () => {
-    it('should call this.renderChart with the components props', () => {
+  describe('componentDidMount', function () {
+    it('should call this.renderChart', function () {
       assert(GasPriceChart.prototype.renderChart.callCount, 1)
       wrapper.instance().componentDidMount()
       assert(GasPriceChart.prototype.renderChart.callCount, 2)
-      assert.deepEqual(GasPriceChart.prototype.renderChart.getCall(1).args, [{...testProps}])
     })
   })
 
-  describe('componentDidUpdate', () => {
-    it('should call handleChartUpdate if props.currentPrice has changed', () => {
+  describe('componentDidUpdate', function () {
+    it('should call handleChartUpdate if props.currentPrice has changed', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().componentDidUpdate({ currentPrice: 7 })
       assert.equal(gasPriceChartUtilsSpies.handleChartUpdate.callCount, 1)
     })
 
-    it('should call handleChartUpdate with the correct props', () => {
+    it('should call handleChartUpdate with the correct props', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().componentDidUpdate({ currentPrice: 7 })
       assert.deepEqual(gasPriceChartUtilsSpies.handleChartUpdate.getCall(0).args, [{
@@ -119,15 +118,15 @@ describe('GasPriceChart Component', function () {
       }])
     })
 
-    it('should not call handleChartUpdate if props.currentPrice has not changed', () => {
+    it('should not call handleChartUpdate if props.currentPrice has not changed', function () {
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().componentDidUpdate({ currentPrice: 6 })
       assert.equal(gasPriceChartUtilsSpies.handleChartUpdate.callCount, 0)
     })
   })
 
-  describe('renderChart', () => {
-    it('should call setTickPosition 4 times, with the expected props', async () => {
+  describe('renderChart', function () {
+    it('should call setTickPosition 4 times, with the expected props', async function () {
       await timeout(0)
       gasPriceChartUtilsSpies.setTickPosition.resetHistory()
       assert.equal(gasPriceChartUtilsSpies.setTickPosition.callCount, 0)
@@ -140,7 +139,7 @@ describe('GasPriceChart Component', function () {
       assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(3).args, ['x', 1, 3, -8])
     })
 
-    it('should call handleChartUpdate with the correct props', async () => {
+    it('should call handleChartUpdate with the correct props', async function () {
       await timeout(0)
       gasPriceChartUtilsSpies.handleChartUpdate.resetHistory()
       wrapper.instance().renderChart(testProps)
@@ -153,7 +152,7 @@ describe('GasPriceChart Component', function () {
       }])
     })
 
-    it('should add three events to the chart', async () => {
+    it('should add three events to the chart', async function () {
       await timeout(0)
       selectReturnSpies.on.resetHistory()
       assert.equal(selectReturnSpies.on.callCount, 0)
@@ -169,7 +168,7 @@ describe('GasPriceChart Component', function () {
       assert.equal(thirdOnEventArgs[0], 'mousemove')
     })
 
-    it('should hide the data UI on mouseout', async () => {
+    it('should hide the data UI on mouseout', async function () {
       await timeout(0)
       selectReturnSpies.on.resetHistory()
       wrapper.instance().renderChart(testProps)
@@ -182,7 +181,7 @@ describe('GasPriceChart Component', function () {
       assert.deepEqual(gasPriceChartUtilsSpies.hideDataUI.getCall(0).args, [{ mockChart: true }, '#overlayed-circle'])
     })
 
-    it('should updateCustomGasPrice on click', async () => {
+    it('should updateCustomGasPrice on click', async function () {
       await timeout(0)
       selectReturnSpies.on.resetHistory()
       wrapper.instance().renderChart(testProps)
@@ -195,7 +194,7 @@ describe('GasPriceChart Component', function () {
       assert.equal(propsMethodSpies.updateCustomGasPrice.getCall(0).args[0], 'mockX')
     })
 
-    it('should handle mousemove', async () => {
+    it('should handle mousemove', async function () {
       await timeout(0)
       selectReturnSpies.on.resetHistory()
       wrapper.instance().renderChart(testProps)

@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const MenuDroppo = require('../../menu-droppo')
 const extend = require('xtend')
+=======
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import MenuDroppo from '../../menu-droppo'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-class Dropdown extends Component {
+export class Dropdown extends Component {
   render () {
     const {
       containerClassName,
@@ -16,7 +22,7 @@ class Dropdown extends Component {
       useCssTransition,
     } = this.props
 
-    const innerStyleDefaults = extend({
+    const innerStyleDefaults = Object.assign({
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'rgba(0, 0, 0, 0.8)',
@@ -66,7 +72,7 @@ Dropdown.propTypes = {
   containerClassName: PropTypes.string,
 }
 
-class DropdownMenuItem extends Component {
+export class DropdownMenuItem extends Component {
   render () {
     const { onClick, closeMenu, children, style } = this.props
 
@@ -99,9 +105,4 @@ DropdownMenuItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object,
-}
-
-module.exports = {
-  Dropdown,
-  DropdownMenuItem,
 }

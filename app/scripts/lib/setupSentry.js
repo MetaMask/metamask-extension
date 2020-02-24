@@ -1,10 +1,14 @@
-const Sentry = require('@sentry/browser')
+import * as Sentry from '@sentry/browser'
+import { Dedupe, ExtraErrorData } from '@sentry/integrations'
+
+import extractEthjsErrorMessage from './extractEthjsErrorMessage'
+
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
+const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
 const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
-module.exports = setupSentry
+export default setupSentry
 
 // Setup sentry remote error reporting
 function setupSentry (opts) {
@@ -13,22 +17,27 @@ function setupSentry (opts) {
   // detect brave
   const isBrave = Boolean(window.chrome.ipcRenderer)
 
-  if (METAMASK_DEBUG) {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_DEV')
+  if (METAMASK_DEBUG || process.env.IN_TEST) {
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
     sentryTarget = SENTRY_DSN_DEV
   } else {
-    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_PROD')
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_PROD`)
     sentryTarget = SENTRY_DSN_PROD
   }
 
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    environment: METAMASK_ENVIRONMENT,
+    integrations: [
+      new Dedupe(),
+      new ExtraErrorData(),
+    ],
     release,
     beforeSend: (report) => rewriteReport(report),
   })
 
-  Sentry.configureScope(scope => {
+  Sentry.configureScope((scope) => {
     scope.setExtra('isBrave', isBrave)
   })
 
@@ -70,8 +79,15 @@ function rewriteErrorMessages (report, rewriteFn) {
   if (typeof report.message === 'string') report.message = rewriteFn(report.message)
   // rewrite each exception message
   if (report.exception && report.exception.values) {
+<<<<<<< HEAD
     report.exception.values.forEach(item => {
       if (typeof item.value === 'string') item.value = rewriteFn(item.value)
+=======
+    report.exception.values.forEach((item) => {
+      if (typeof item.value === 'string') {
+        item.value = rewriteFn(item.value)
+      }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     })
   }
 }
@@ -81,8 +97,8 @@ function rewriteReportUrls (report) {
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
-      item.stacktrace.frames.forEach(frame => {
+    report.exception.values.forEach((item) => {
+      item.stacktrace.frames.forEach((frame) => {
         frame.filename = toMetamaskUrl(frame.filename)
       })
     })

@@ -2,16 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 import Identicon from '../../../../components/ui/identicon'
-import {isValidAddress} from '../../../../helpers/utils/util'
+import { isValidAddress } from '../../../../helpers/utils/util'
 import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
-import {ellipsify} from '../../send.utils'
+import { ellipsify } from '../../send.utils'
 
 export default class AddRecipient extends Component {
 
   static propTypes = {
-    className: PropTypes.string,
     query: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
@@ -21,9 +20,6 @@ export default class AddRecipient extends Component {
     toError: PropTypes.string,
     toWarning: PropTypes.string,
     ensResolutionError: PropTypes.string,
-    selectedToken: PropTypes.object,
-    hasHexData: PropTypes.bool,
-    tokens: PropTypes.array,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,

@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const genAccountLink = require('../../../../lib/account-link.js')
 const Select = require('react-select').default
+=======
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import Select from 'react-select'
+import genAccountLink from '../../../../lib/account-link.js'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {
@@ -188,7 +195,6 @@ AccountList.propTypes = {
   getPage: PropTypes.func.isRequired,
   network: PropTypes.string,
   selectedAccount: PropTypes.string,
-  history: PropTypes.object,
   onUnlockAccount: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
@@ -198,4 +204,4 @@ AccountList.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = AccountList
+export default AccountList

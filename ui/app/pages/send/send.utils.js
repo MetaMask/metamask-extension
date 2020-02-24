@@ -1,15 +1,15 @@
-const {
+import {
   addCurrencies,
   conversionUtil,
   conversionGTE,
   multiplyCurrencies,
   conversionGreaterThan,
   conversionLessThan,
-} = require('../../helpers/utils/conversion-util')
-const {
-  calcTokenAmount,
-} = require('../../helpers/utils/token-util')
-const {
+} from '../../helpers/utils/conversion-util'
+
+import { calcTokenAmount } from '../../helpers/utils/token-util'
+
+import {
   BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -18,11 +18,12 @@ const {
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-} = require('./send.constants')
-const abi = require('ethereumjs-abi')
-const ethUtil = require('ethereumjs-util')
+} from './send.constants'
 
-module.exports = {
+import abi from 'ethereumjs-abi'
+import ethUtil from 'ethereumjs-util'
+
+export {
   addGasBuffer,
   calcGasTotal,
   calcTokenBalance,
@@ -307,7 +308,7 @@ function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selecte
   if (!selectedToken) return
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    x => ('00' + x.toString(16)).slice(-2)
+    (x) => ('00' + x.toString(16)).slice(-2)
   ).join('')
 }
 
@@ -325,13 +326,13 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
     })
   })
-    .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
 
 function getToAddressForGasUpdate (...addresses) {
-  return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
+  return [...addresses, ''].find((str) => str !== undefined && str !== null).toLowerCase()
 }
 
 function removeLeadingZeroes (str) {

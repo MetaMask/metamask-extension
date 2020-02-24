@@ -8,8 +8,11 @@ import ConfirmSendEther from '../confirm-send-ether'
 import ConfirmSendToken from '../confirm-send-token'
 import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
-import ConfirmTokenTransactionBase from '../confirm-token-transaction-base'
+import ConfirmTokenTransactionBaseContainer from '../confirm-token-transaction-base'
 import ConfTx from './conf-tx'
+import ConfirmDecryptMessage from '../confirm-decrypt-message'
+import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key'
+
 import {
   DEFAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -20,6 +23,8 @@ import {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../helpers/constants/routes'
 
 export default class ConfirmTransaction extends Component {
@@ -30,11 +35,8 @@ export default class ConfirmTransaction extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    match: PropTypes.object,
     send: PropTypes.object,
-    unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
-    confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     transaction: PropTypes.object,
@@ -45,7 +47,6 @@ export default class ConfirmTransaction extends Component {
     isTokenMethodAction: PropTypes.bool,
     fullScreenVsPopupTestGroup: PropTypes.string,
     trackABTest: PropTypes.bool,
-    conversionRate: PropTypes.number,
   }
 
   componentDidMount () {
@@ -150,12 +151,22 @@ export default class ConfirmTransaction extends Component {
           <Route
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TRANSFER_FROM_PATH}`}
-            component={ConfirmTokenTransactionBase}
+            component={ConfirmTokenTransactionBaseContainer}
           />
           <Route
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
             component={ConfTx}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+            component={ConfirmDecryptMessage}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+            component={ConfirmEncryptionPublicKey}
           />
           <Route path="*" component={ConfirmTransactionSwitch} />
         </Switch>

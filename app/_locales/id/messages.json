@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Jangka Waktu Keluar-Otomatis (menit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Atur waktu diam dalam menit sebelum MetaMask mengeluarkan Anda secara otomatis"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo mungkin kedaluwarsa"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo tidak cukup untuk total bensin saat ini"
   },
   "basic": {
     "message": "Dasar"
@@ -484,9 +481,6 @@
   "gasLimit": {
     "message": "Batas Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Kami menghitung batas gas yang disarankan berdasarkan tingkat kesuksesan jaringan."
-  },
   "gasLimitInfoModalContent": {
     "message": "Limit Bensin adalah jumlah maksimal satuan bensin yang Anda bersedia gunakan."
   },
@@ -507,9 +501,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Harga Bensin"
-  },
-  "gasPriceCalculation": {
-    "message": "Kami menghitung harga bensin yang disarankan berdasarkan tingkat keberhasilan jaringan."
   },
   "general": {
     "message": "Umum"
@@ -677,10 +668,7 @@
   "loadMore": {
     "message": "Muat Lainnya"
   },
-  "login": {
-    "message": "Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Keluar"
   },
   "mainnet": {
@@ -694,9 +682,6 @@
   },
   "metamaskDescription": {
     "message": "Menghubungkan Anda ke Ethereum dan Web Terdesentralisasi."
-  },
-  "metamaskSeedWords": {
-    "message": "Kata Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -956,9 +941,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
-  },
-  "revert": {
-    "message": "Urungkan"
   },
   "remove": {
     "message": "Hapus"

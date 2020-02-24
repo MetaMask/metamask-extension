@@ -4,7 +4,7 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import ClearApprovedOriginsComponent from './clear-approved-origins.component'
 import { clearApprovedOrigins } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     clearApprovedOrigins: () => dispatch(clearApprovedOrigins()),
   }

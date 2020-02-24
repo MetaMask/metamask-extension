@@ -5,7 +5,7 @@ let mapStateToProps
 
 proxyquire('../send-from-row.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },
@@ -15,9 +15,9 @@ proxyquire('../send-from-row.container.js', {
   },
 })
 
-describe('send-from-row container', () => {
-  describe('mapStateToProps()', () => {
-    it('should map the correct properties to props', () => {
+describe('send-from-row container', function () {
+  describe('mapStateToProps()', function () {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         from: 'mockFrom:mockState',
       })

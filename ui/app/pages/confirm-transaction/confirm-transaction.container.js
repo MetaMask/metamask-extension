@@ -25,9 +25,7 @@ const mapStateToProps = (state, ownProps) => {
       send,
       unapprovedTxs,
       abTests: { fullScreenVsPopup },
-      conversionRate,
     },
-    confirmTransaction,
   } = state
   const { match: { params = {} } } = ownProps
   const { id } = params
@@ -44,23 +42,20 @@ const mapStateToProps = (state, ownProps) => {
   return {
     totalUnapprovedCount: totalUnconfirmed,
     send,
-    confirmTransaction,
     unapprovedTxs,
     id,
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
-    unconfirmedTransactions,
     transaction,
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
     trackABTest,
     fullScreenVsPopupTestGroup: fullScreenVsPopup,
-    conversionRate,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setTransactionToConfirm: transactionId => {
+    setTransactionToConfirm: (transactionId) => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),

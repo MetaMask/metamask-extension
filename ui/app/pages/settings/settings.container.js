@@ -47,7 +47,7 @@ const mapStateToProps = (state, ownProps) => {
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE))
   const isEditMyAccountsContactPage = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 
-  const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+  const isPopupView = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
 
   let backRoute

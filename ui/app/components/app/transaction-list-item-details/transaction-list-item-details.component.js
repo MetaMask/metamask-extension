@@ -35,6 +35,8 @@ export default class TransactionListItemDetails extends PureComponent {
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
+    senderNickname: PropTypes.string.isRequired,
+    recipientNickname: PropTypes.string.isRequired,
   }
 
   state = {
@@ -57,14 +59,14 @@ export default class TransactionListItemDetails extends PureComponent {
     global.platform.openWindow({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
   }
 
-  handleCancel = event => {
+  handleCancel = (event) => {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
 
     event.stopPropagation()
     onCancel(id)
   }
 
-  handleRetry = event => {
+  handleRetry = (event) => {
     const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
 
     event.stopPropagation()
@@ -72,7 +74,7 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleCopyTxId = () => {
-    const { transactionGroup} = this.props
+    const { transactionGroup } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
@@ -147,6 +149,8 @@ export default class TransactionListItemDetails extends PureComponent {
       rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
       isEarliestNonce,
+      senderNickname,
+      recipientNickname,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
@@ -211,6 +215,8 @@ export default class TransactionListItemDetails extends PureComponent {
               addressOnly
               recipientEns={recipientEns}
               recipientAddress={recipientAddress}
+              recipientNickname={recipientNickname}
+              senderName={senderNickname}
               senderAddress={senderAddress}
               onRecipientClick={() => {
                 this.context.metricsEvent({

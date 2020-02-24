@@ -121,10 +121,10 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "Το υπόλοιπο μπορεί να μην είναι ενημερωμένο"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Ανεπαρκές υπόλοιπο για το τρέχον σύνολο καυσίμου"
   },
   "basic": {
     "message": "Βασικά"
@@ -494,9 +491,6 @@
   "gasLimit": {
     "message": "Όριο Καυσίμου"
   },
-  "gasLimitCalculation": {
-    "message": "Υπολογίζουμε το προτεινόμενο όριο καυσίμου με βάση τα ποσοστά επιτυχίας του δικτύου."
-  },
   "gasLimitInfoModalContent": {
     "message": "Το όριο αερίου είναι το μέγιστο ποσό μονάδων αερίου τι οποίες είστε διατεθειμένοι να δαπανήσετε."
   },
@@ -517,9 +511,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Τιμή Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Υπολογίζουμε τις προτεινόμενες τιμές αερίου με βάση τα ποσοστά επιτυχίας του δικτύου."
   },
   "general": {
     "message": "Γενικά"
@@ -690,10 +681,7 @@
   "localhost": {
     "message": "Τοπικός Υπολογιστής  8545"
   },
-  "login": {
-    "message": "Σύνδεση"
-  },
-  "logout": {
+  "lock": {
     "message": "Αποσύνδεση"
   },
   "mainnet": {
@@ -713,9 +701,6 @@
   },
   "metamaskDescription": {
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
-  },
-  "metamaskSeedWords": {
-    "message": "Λέξεις Φύτρου MetaMask"
   },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
@@ -976,9 +961,6 @@
   "revealSeedWordsWarning": {
     "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
   },
-  "revert": {
-    "message": "Αναστροφή"
-  },
   "remove": {
     "message": "Κατάργηση"
   },
@@ -1196,7 +1178,7 @@
     "message": "Σύμβολο"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Το σύμβολο θα πρέπει να είναι μεταξύ 0 και 12 χαρακτήρες."
+    "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 11 χαρακτήρες."
   },
   "syncWithMobile": {
     "message": "Συγχρονισμός με κινητό"

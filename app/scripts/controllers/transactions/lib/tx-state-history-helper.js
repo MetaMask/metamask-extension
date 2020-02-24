@@ -1,7 +1,8 @@
-const jsonDiffer = require('fast-json-patch')
-const clone = require('clone')
+import jsonDiffer from 'fast-json-patch'
+import { cloneDeep } from 'lodash'
+
 /** @module*/
-module.exports = {
+export default {
   generateHistoryEntry,
   replayHistory,
   snapshotFromTxMeta,
@@ -10,7 +11,7 @@ module.exports = {
 
 /**
   converts non-initial history entries into diffs
-  @param longHistory {array}
+  @param {array} longHistory
   @returns {array}
 */
 function migrateFromSnapshotsToDiffs (longHistory) {
@@ -31,9 +32,9 @@ function migrateFromSnapshotsToDiffs (longHistory) {
     path (the key and if a nested object then each key will be seperated with a `/`)
     value
   with the first entry having the note and a timestamp when the change took place
-  @param previousState {object} - the previous state of the object
-  @param newState {object} - the update object
-  @param note {string} - a optional note for the state change
+  @param {Object} previousState - the previous state of the object
+  @param {Object} newState - the update object
+  @param {string} [note] - a optional note for the state change
   @returns {array}
 */
 function generateHistoryEntry (previousState, newState, note) {
@@ -49,20 +50,20 @@ function generateHistoryEntry (previousState, newState, note) {
 
 /**
   Recovers previous txMeta state obj
-  @returns {object}
+  @returns {Object}
 */
 function replayHistory (_shortHistory) {
-  const shortHistory = clone(_shortHistory)
+  const shortHistory = cloneDeep(_shortHistory)
   return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
 }
 
 /**
-  @param txMeta {Object}
-  @returns {object} a clone object of the txMeta with out history
+  @param {Object} txMeta
+  @returns {Object} - a clone object of the txMeta with out history
 */
 function snapshotFromTxMeta (txMeta) {
   // create txMeta snapshot for history
-  const snapshot = clone(txMeta)
+  const snapshot = cloneDeep(txMeta)
   // dont include previous history in this snapshot
   delete snapshot.history
   return snapshot

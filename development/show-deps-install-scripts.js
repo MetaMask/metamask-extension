@@ -12,8 +12,15 @@ readInstalled('./', { dev: true }, function (err, data) {
     const packageScripts = packageData.scripts || {}
     const scriptKeys = Reflect.ownKeys(packageScripts)
 
+<<<<<<< HEAD
     const hasInstallScript = installScripts.some(installKey => scriptKeys.includes(installKey))
     if (!hasInstallScript) return
+=======
+    const hasInstallScript = installScripts.some((installKey) => scriptKeys.includes(installKey))
+    if (!hasInstallScript) {
+      return
+    }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     const matchingScripts = {}
     if (packageScripts.preinstall) matchingScripts.preinstall = packageScripts.preinstall

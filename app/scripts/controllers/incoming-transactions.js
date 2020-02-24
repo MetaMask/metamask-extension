@@ -1,10 +1,11 @@
-const ObservableStore = require('obs-store')
-const log = require('loglevel')
-const BN = require('bn.js')
-const createId = require('../lib/random-id')
-const { bnToHex } = require('../lib/util')
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import BN from 'bn.js'
+import createId from '../lib/random-id'
+import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
-const {
+
+import {
   MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
@@ -15,7 +16,8 @@ const {
   KOVAN,
   GOERLI,
   MAINNET,
-} = require('./network/enums')
+} from './network/enums'
+
 const networkTypeToIdMap = {
   [ROPSTEN]: String(ROPSTEN_CODE),
   [RINKEBY]: String(RINKEBY_CODE),
@@ -163,7 +165,13 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
+<<<<<<< HEAD
     newTxs.forEach(tx => { newIncomingTransactions[tx.hash] = tx })
+=======
+    newTxs.forEach((tx) => {
+      newIncomingTransactions[tx.hash] = tx
+    })
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
     this.store.updateState({
       incomingTxLastFetchedBlocksByNetwork: {
@@ -218,7 +226,7 @@ class IncomingTransactionsController {
         }
       })
 
-      const incomingTxs = remoteTxs.filter(tx => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
+      const incomingTxs = remoteTxs.filter((tx) => tx.txParams.to && tx.txParams.to.toLowerCase() === address.toLowerCase())
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber = null
@@ -265,7 +273,7 @@ class IncomingTransactionsController {
   }
 }
 
-module.exports = IncomingTransactionsController
+export default IncomingTransactionsController
 
 function pairwise (fn) {
   let first = true

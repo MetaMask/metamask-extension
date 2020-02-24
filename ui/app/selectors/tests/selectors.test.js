@@ -1,14 +1,11 @@
 import assert from 'assert'
-import selectors from '../selectors.js'
-const {
-  getAddressBook,
-} = selectors
+import { getAddressBook } from '../selectors.js'
 import mockState from './selectors-test-data'
 
-describe('selectors', () => {
+describe('selectors', function () {
 
-  describe('getAddressBook()', () => {
-    it('should return the address book', () => {
+  describe('getAddressBook()', function () {
+    it('should return the address book', function () {
       assert.deepEqual(
         getAddressBook(mockState),
         [

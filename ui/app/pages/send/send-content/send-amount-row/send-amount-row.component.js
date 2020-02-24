@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+<<<<<<< HEAD
 import debounce from 'lodash.debounce'
+=======
+import { debounce } from 'lodash'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 import SendRowWrapper from '../send-row-wrapper'
 import AmountMaxButton from './amount-max-button'
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input'
@@ -16,7 +20,6 @@ export default class SendAmountRow extends Component {
     ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
-    convertedCurrency: PropTypes.string,
     gasTotal: PropTypes.string,
     inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,
@@ -93,7 +96,11 @@ export default class SendAmountRow extends Component {
 
     return (
       <Component
+<<<<<<< HEAD
         onChange={newAmount => {
+=======
+        onChange={(newAmount) => {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
           this.validateAmount(newAmount)
           this.updateGas(newAmount)
           this.updateAmount(newAmount)

@@ -5,7 +5,7 @@ import NetworkDisplay from '../../network-display'
 
 export default class SignatureRequestHeader extends PureComponent {
   static propTypes = {
-    selectedAccount: PropTypes.object.isRequired,
+    selectedAccount: PropTypes.object,
   }
 
   render () {

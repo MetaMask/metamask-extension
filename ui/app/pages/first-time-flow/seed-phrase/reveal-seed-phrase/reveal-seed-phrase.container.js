@@ -5,7 +5,7 @@ import {
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),

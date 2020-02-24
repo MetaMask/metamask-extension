@@ -1,23 +1,44 @@
-const Ganache = require('ganache-core')
-const nock = require('nock')
+import Ganache from 'ganache-core'
+import nock from 'nock'
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
+import Adapter from 'enzyme-adapter-react-16'
+import log from 'loglevel'
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
 
+// catch rejections that are still unhandled when tests exit
+const unhandledRejections = new Map()
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Unhandled rejection:', reason)
+  unhandledRejections.set(promise, reason)
+})
+process.on('rejectionHandled', (promise) => {
+  console.log(`handled: ${unhandledRejections.get(promise)}`)
+  unhandledRejections.delete(promise)
+})
+
+process.on('exit', () => {
+  if (unhandledRejections.size > 0) {
+    console.error(`Found ${unhandledRejections.size} unhandled rejections:`)
+    for (const reason of unhandledRejections.values()) {
+      console.error('Unhandled rejection: ', reason)
+    }
+    process.exit(1)
+  }
+})
+
 Enzyme.configure({ adapter: new Adapter() })
-// disallow promises from swallowing errors
-enableFailureOnUnhandledPromiseRejection()
 
 // ganache server
 const server = Ganache.server()
-server.listen(8545, () => {
-  console.log('Ganache Testrpc is running on "http://localhost:8545"')
-})
+server.listen(8545, () => {})
 
+<<<<<<< HEAD
 // logging util
 var log = require('loglevel')
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 log.setDefaultLevel(5)
 global.log = log
 
@@ -26,7 +47,12 @@ global.log = log
 //
 
 // fetch
-global.fetch = require('isomorphic-fetch')
+const fetch = require('node-fetch')
+
+global.fetch = fetch
+global.Response = fetch.Response
+global.Headers = fetch.Headers
+global.Request = fetch.Request
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 
 // dom
@@ -35,7 +61,11 @@ require('jsdom-global')()
 // localStorage
 window.localStorage = {}
 
+// override metamask-logo
+window.requestAnimationFrame = () => {}
+
 // crypto.getRandomValues
+<<<<<<< HEAD
 if (!window.crypto) window.crypto = {}
 if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 
@@ -68,4 +98,11 @@ function enableFailureOnUnhandledPromiseRejection () {
       typeof (console.error || console.log) === 'function') {
     (console.error || console.log)('Unhandled rejections will be ignored!')
   }
+=======
+if (!window.crypto) {
+  window.crypto = {}
+}
+if (!window.crypto.getRandomValues) {
+  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 }

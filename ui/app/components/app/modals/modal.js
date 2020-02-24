@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -8,20 +9,39 @@ const { resetCustomData: resetCustomGasData } = require('../../../ducks/gas/gas.
 const isMobileView = require('../../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
+=======
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck'
+import isMobileView from '../../../../lib/is-mobile-view'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 // Modal Components
 const DepositEtherModal = require('./deposit-ether-modal')
 import AccountDetailsModal from './account-details-modal'
+<<<<<<< HEAD
 const ExportPrivateKeyModal = require('./export-private-key-modal')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
+=======
+import ExportPrivateKeyModal from './export-private-key-modal'
+import HideTokenConfirmationModal from './hide-token-confirmation-modal'
+import NotifcationModal from './notification-modal'
+import QRScanner from './qr-scanner'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
 import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
 
+import FadeModal from './fade-modal'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
@@ -163,7 +183,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -210,7 +230,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -227,7 +247,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -416,12 +436,15 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-// Global Modal Component
-inherits(Modal, Component)
-function Modal () {
-  Component.call(this)
-}
+class Modal extends Component {
+  static propTypes = {
+    active: PropTypes.bool.isRequired,
+    hideModal: PropTypes.func.isRequired,
+    hideWarning: PropTypes.func.isRequired,
+    modalState: PropTypes.object.isRequired,
+  }
 
+<<<<<<< HEAD
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
@@ -451,26 +474,53 @@ Modal.prototype.render = function () {
     children,
   )
 }
+=======
+  hide () {
+    this.modalRef.hide()
+  }
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-Modal.prototype.componentWillReceiveProps = function (nextProps) {
-  if (nextProps.active) {
-    this.show()
-  } else if (this.props.active) {
-    this.hide()
+  show () {
+    this.modalRef.show()
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps, _) {
+    if (nextProps.active) {
+      this.show()
+    } else if (this.props.active) {
+      this.hide()
+    }
+  }
+
+  render () {
+    const modal = MODALS[this.props.modalState.name || 'DEFAULT']
+    const { contents: children, disableBackdropClick = false } = modal
+    const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
+    const contentStyle = modal.contentStyle || {}
+
+    return (
+      <FadeModal
+        keyboard={false}
+        onHide={() => {
+          if (modal.onHide) {
+            modal.onHide({
+              hideWarning: this.props.hideWarning,
+            })
+          }
+          this.props.hideModal(modal.customOnHideOpts)
+        }}
+        ref={(ref) => {
+          this.modalRef = ref
+        }}
+        modalStyle={modalStyle}
+        contentStyle={contentStyle}
+        backdropStyle={BACKDROPSTYLE}
+        closeOnClick={!disableBackdropClick}
+      >
+        {children}
+      </FadeModal>
+    )
   }
 }
 
-Modal.prototype.onHide = function (customOnHideOpts) {
-  if (this.props.onHideCallback) {
-    this.props.onHideCallback()
-  }
-  this.props.hideModal(customOnHideOpts)
-}
-
-Modal.prototype.hide = function () {
-  this.modalRef.hide()
-}
-
-Modal.prototype.show = function () {
-  this.modalRef.show()
-}
+export default connect(mapStateToProps, mapDispatchToProps)(Modal)

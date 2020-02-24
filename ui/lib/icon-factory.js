@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const { checksumAddress } = require('../app/helpers/utils/util')
 const contractMap = require('eth-contract-metadata')
+=======
+let iconFactory
+import { isValidAddress } from 'ethereumjs-util'
+import { checksumAddress } from '../app/helpers/utils/util'
+import contractMap from 'eth-contract-metadata'
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
-module.exports = function (jazzicon) {
+export default function iconFactoryGenerator (jazzicon) {
   if (!iconFactory) {
     iconFactory = new IconFactory(jazzicon)
   }

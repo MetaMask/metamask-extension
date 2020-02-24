@@ -121,10 +121,10 @@
   "attributions": {
     "message": "الصفات"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
   },
   "average": {
@@ -150,9 +150,6 @@
   },
   "balanceOutdated": {
     "message": "قد يكون الرصيد لاغياً"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "لا يكفي الرصيد الحالي لإجمالي الغاز"
   },
   "basic": {
     "message": "الأساسية"
@@ -493,9 +490,6 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasLimitCalculation": {
-    "message": "نحسب حد الغاز المقترح بناءً على معدلات نجاح الشبكة."
-  },
   "gasLimitInfoModalContent": {
     "message": "حد عملة جاس هو الحد الأقصى لمقدار وحدات جاس التي ترغب في إنفاقها."
   },
@@ -516,9 +510,6 @@
   },
   "gasPriceNoDenom": {
     "message": "سعر عملة جاس"
-  },
-  "gasPriceCalculation": {
-    "message": "نحسب أسعار جاس المقترحة على أساس معدلات نجاح الشبكة."
   },
   "general": {
     "message": "عام"
@@ -686,10 +677,7 @@
   "localhost": {
     "message": "المضيف المحلي 8545"
   },
-  "login": {
-    "message": "تسجيل الدخول"
-  },
-  "logout": {
+  "lock": {
     "message": "تسجيل الخروج"
   },
   "mainnet": {
@@ -709,9 +697,6 @@
   },
   "metamaskDescription": {
     "message": "إيصالك بالإيثيريوم وبالشبكة اللامركزية."
-  },
-  "metamaskSeedWords": {
-    "message": "كلمات MetaMask البذرية"
   },
   "metamaskVersion": {
     "message": "إصدار MetaMask "
@@ -972,9 +957,6 @@
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
   },
-  "revert": {
-    "message": "الرجوع"
-  },
   "remove": {
     "message": "إزالة"
   },
@@ -1192,7 +1174,7 @@
     "message": "رمز"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "يجب أن يتراوح الرمز ما بين 0 و 12 أحرف."
+    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
   },
   "syncWithMobile": {
     "message": "مزامنة مع الهاتف المحمول"

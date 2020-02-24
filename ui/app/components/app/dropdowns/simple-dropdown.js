@@ -14,7 +14,7 @@ class SimpleDropdown extends Component {
 
   getDisplayValue () {
     const { selectedOption, options } = this.props
-    const matchesOption = option => option.value === selectedOption
+    const matchesOption = (option) => option.value === selectedOption
     const matchingOption = R.find(matchesOption)(options)
     return matchingOption
       ? matchingOption.displayValue || matchingOption.value
@@ -33,6 +33,7 @@ class SimpleDropdown extends Component {
   renderOptions () {
     const { options, onSelect, selectedOption } = this.props
 
+<<<<<<< HEAD
     return h('div', [
       h('div.simple-dropdown__close-area', {
         onClick: event => {
@@ -50,6 +51,26 @@ class SimpleDropdown extends Component {
               }),
               key: option.value,
               onClick: () => {
+=======
+    return (
+      <div>
+        <div
+          className="simple-dropdown__close-area"
+          onClick={(event) => {
+            event.stopPropagation()
+            this.handleClose()
+          }}
+        />
+        <div className="simple-dropdown__options">
+          {options.map((option) => (
+            <div
+              className={classnames('simple-dropdown__option', {
+                'simple-dropdown__option--selected': option.value === selectedOption,
+              })}
+              key={option.value}
+              onClick={(event) => {
+                event.stopPropagation()
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
                 if (option.value !== selectedOption) {
                   onSelect(option.value)
                 }
@@ -82,6 +103,7 @@ class SimpleDropdown extends Component {
   }
 }
 
+<<<<<<< HEAD
 SimpleDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
@@ -90,3 +112,6 @@ SimpleDropdown.propTypes = {
 }
 
 module.exports = SimpleDropdown
+=======
+export default SimpleDropdown
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc

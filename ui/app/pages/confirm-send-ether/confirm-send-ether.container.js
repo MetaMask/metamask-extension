@@ -5,7 +5,7 @@ import { updateSend } from '../../store/actions'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import ConfirmSendEther from './confirm-send-ether.component'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { confirmTransaction: { txData: { txParams } = {} } } = state
 
   return {
@@ -13,9 +13,9 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    editTransaction: txData => {
+    editTransaction: (txData) => {
       const { id, txParams } = txData
       const {
         gas: gasLimit,

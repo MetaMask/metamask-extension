@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import {
   getConversionRate,
-  getCurrentCurrency,
   getGasTotal,
   getGasPrice,
   getGasLimit,
@@ -58,8 +57,6 @@ function mapStateToProps (state) {
 
   return {
     balance: getSendFromBalance(state),
-    conversionRate,
-    convertedCurrency: getCurrentCurrency(state),
     gasTotal,
     gasFeeError: gasFeeIsInError(state),
     gasLoadingError: getGasLoadingError(state),
@@ -97,7 +94,7 @@ function mapDispatchToProps (dispatch) {
         dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
       }
     },
-    setAmountToMax: maxAmountDataObject => {
+    setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },

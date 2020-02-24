@@ -13,14 +13,16 @@ export default class ConfirmApproveContent extends Component {
   }
 
   static propTypes = {
+<<<<<<< HEAD
     amount: PropTypes.string,
     txFeeTotal: PropTypes.string,
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
-    tokenAddress: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
     showEditApprovalPermissionModal: PropTypes.func,
     origin: PropTypes.string,

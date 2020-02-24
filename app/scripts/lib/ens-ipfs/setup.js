@@ -1,16 +1,20 @@
-const urlUtil = require('url')
-const extension = require('extensionizer')
-const resolveEnsToIpfsContentId = require('./resolver.js')
+import urlUtil from 'url'
+import extension from 'extensionizer'
+import resolveEnsToIpfsContentId from './resolver.js'
 
 const supportedTopLevelDomains = ['eth']
 
-module.exports = setupEnsIpfsResolver
+export default setupEnsIpfsResolver
 
+<<<<<<< HEAD
 function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
+=======
+function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
 
   // install listener
-  const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
+  const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`)
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame'] })
 
   // return api object
   return {
@@ -39,12 +43,20 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
   }
 
   async function attemptResolve ({ tabId, name, path, search, fragment }) {
+<<<<<<< HEAD
+=======
+    const ipfsGateway = getIpfsGateway()
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
     try {
-      const {type, hash} = await resolveEnsToIpfsContentId({ provider, name })
+      const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
       if (type === 'ipfs-ns') {
+<<<<<<< HEAD
         const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}${fragment || ''}`
+=======
+        const resolvedUrl = `https://${hash}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })

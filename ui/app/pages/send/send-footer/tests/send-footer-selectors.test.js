@@ -9,15 +9,15 @@ const {
   },
 })
 
-describe('send-footer selectors', () => {
+describe('send-footer selectors', function () {
 
-  describe('getTitleKey()', () => {
-    it('should return true if any of the values of the object returned by getSendErrors are truthy', () => {
-      assert.equal(isSendFormInError({ errors: { a: 'abc', b: false} }), true)
+  describe('getTitleKey()', function () {
+    it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
+      assert.equal(isSendFormInError({ errors: { a: 'abc', b: false } }), true)
     })
 
-    it('should return false if all of the values of the object returned by getSendErrors are falsy', () => {
-      assert.equal(isSendFormInError({ errors: { a: false, b: null} }), false)
+    it('should return false if all of the values of the object returned by getSendErrors are falsy', function () {
+      assert.equal(isSendFormInError({ errors: { a: false, b: null } }), false)
     })
   })
 

@@ -12,7 +12,6 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   static propTypes = {
     history: PropTypes.object,
-    clearPendingTokens: PropTypes.func,
     addToken: PropTypes.func,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
@@ -139,7 +138,11 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   checkTokenDuplicates (pendingTokens, tokens) {
     const pending = Object.keys(pendingTokens)
+<<<<<<< HEAD
     const existing = tokens.map(token => token.address)
+=======
+    const existing = tokens.map((token) => token.address)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
     const dupes = pending.filter((proposed) => {
       return existing.includes(proposed)
     })
@@ -157,8 +160,13 @@ export default class ConfirmAddSuggestedToken extends Component {
     const duplicates = Object.keys(pendingTokens)
       .map((addr) => pendingTokens[addr])
       .filter((token) => {
+<<<<<<< HEAD
         const dupes = tokens.filter(old => old.symbol === token.symbol)
           .filter(old => old.address !== token.address)
+=======
+        const dupes = tokens.filter((old) => old.symbol === token.symbol)
+          .filter((old) => old.address !== token.address)
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
         return dupes.length > 0
       })
     return duplicates.length > 0

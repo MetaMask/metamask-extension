@@ -52,6 +52,7 @@
   "balance": {
     "message": "Saldo:"
   },
+<<<<<<< HEAD
   "balanceIsInsufficientGas": {
     "message": "Saldo insuficiente para a quantidade de gas total"
   },
@@ -59,6 +60,8 @@
     "message": "tem de ser maior ou igual a $1 e menor ou igual a $2.",
     "description": "helper for inputting hex as decimal input"
   },
+=======
+>>>>>>> eebc504b0f23d7c7b725e111a89665a2ac7d50dc
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -184,17 +187,11 @@
   "gasLimit": {
     "message": "Limite de Gas"
   },
-  "gasLimitCalculation": {
-    "message": "Calculamos o limite sugerido do gas com base nas taxas de sucesso da rede."
-  },
   "gasLimitTooLow": {
     "message": "Limite de Gas deve ser no mínimo 21000"
   },
   "gasPrice": {
     "message": "Preço Gas (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos o gas sugerido com base nas taxas de sucesso da rede."
   },
   "getEther": {
     "message": "Obter Ether"
@@ -278,10 +275,10 @@
   "loadingTokens": {
     "message": "A carregar Tokens..."
   },
-  "login": {
+  "unlock": {
     "message": "Entrar"
   },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {
@@ -387,9 +384,6 @@
   "revealSeedWordsWarning": {
     "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
   },
-  "revert": {
-    "message": "Reverter"
-  },
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"
   },
@@ -454,7 +448,7 @@
     "message": "Visitar o nosso Centro de Suporte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo deve conter entre 0 e 12 characters."
+    "message": "O símbolo deve ter 11 caracteres ou menos."
   },
   "terms": {
     "message": "Termos de Uso"
