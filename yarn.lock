@@ -23501,11 +23501,6 @@ react-toggle-button@^2.2.0:
     prop-types "^15.6.0"
     react-motion "^0.5.2"
 
-react-tooltip-component@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/react-tooltip-component/-/react-tooltip-component-0.3.0.tgz#fb3ec78c3270fe919692bc31f1404108bcf4785e"
-  integrity sha1-+z7HjDJw/pGWkrwx8UBBCLz0eF4=
-
 react-transition-group@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-1.2.1.tgz#e11f72b257f921b213229a774df46612346c7ca6"
