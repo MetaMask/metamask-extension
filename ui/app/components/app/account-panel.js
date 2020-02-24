@@ -11,8 +11,7 @@ export default class AccountPanel extends Component {
   }
 
   render () {
-    const state = this.props
-    const { identity = {}, account = {}, isFauceting = false } = state
+    const { identity = {}, account = {}, isFauceting = false } = this.props
 
     const panelState = {
       key: `accountPanel${identity.address}`,
