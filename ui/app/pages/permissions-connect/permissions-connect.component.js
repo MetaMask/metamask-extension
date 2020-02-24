@@ -175,27 +175,30 @@ export default class PermissionConnect extends Component {
             path={connectPath}
             exact
             render={() => (
-              <ChooseAccount
-                accounts={accounts}
-                originName={originName}
-                nativeCurrency={nativeCurrency}
-                selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                selectNewAccountViaModal={(handleAccountClick) => {
-                  showNewAccountModal({
-                    onCreateNewAccount: (address) => handleAccountClick(address),
-                    newAccountNumber,
-                  })
-                }}
-                addressLastConnectedMap={addressLastConnectedMap}
-                cancelPermissionsRequest={(requestId) => {
-                  if (requestId) {
-                    rejectPermissionsRequest(requestId)
-                    this.redirectFlow(false)
-                  }
-                }}
-                permissionsRequestId={permissionsRequestId}
-                selectedAccountAddresses={selectedAccountAddresses}
-              />
+              <div>
+                <ChooseAccount
+                  accounts={accounts}
+                  originName={originName}
+                  nativeCurrency={nativeCurrency}
+                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                  selectNewAccountViaModal={(handleAccountClick) => {
+                    showNewAccountModal({
+                      onCreateNewAccount: (address) => handleAccountClick(address),
+                      newAccountNumber,
+                    })
+                  }}
+                  addressLastConnectedMap={addressLastConnectedMap}
+                  cancelPermissionsRequest={(requestId) => {
+                    if (requestId) {
+                      rejectPermissionsRequest(requestId)
+                      this.redirectFlow(false)
+                    }
+                  }}
+                  permissionsRequestId={permissionsRequestId}
+                  selectedAccountAddresses={selectedAccountAddresses}
+                />
+                <PermissionsConnectFooter />
+              </div>
             )}
           />
           <Route
