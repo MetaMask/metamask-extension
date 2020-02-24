@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { setFirstTimeFlowType } from '../../../store/actions'
 import { getFirstTimeFlowTypeRoute } from '../first-time-flow.selectors'
 import Welcome from './select-action.component'

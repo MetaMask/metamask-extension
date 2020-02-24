@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import ethUtil from 'ethereumjs-util'
 import { multiplyCurrencies } from '../../../../helpers/utils/conversion-util'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'

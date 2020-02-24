@@ -1,5 +1,5 @@
 import Settings from './settings.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { getAddressBookEntryName } from '../../selectors/selectors'

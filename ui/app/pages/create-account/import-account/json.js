@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import FileInput from 'react-simple-file-input'

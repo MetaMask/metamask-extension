@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import DaiMigrationNotification from './dai-migration-notification.component'
 import withTokenTracker from '../../../helpers/higher-order-components/with-token-tracker'
 import { getSelectedAddress, getDaiV1Token } from '../../../selectors/selectors'

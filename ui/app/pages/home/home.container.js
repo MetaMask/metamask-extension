@@ -1,5 +1,5 @@
 import Home from './home.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
