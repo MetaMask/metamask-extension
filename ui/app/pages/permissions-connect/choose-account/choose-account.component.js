@@ -167,7 +167,7 @@ export default class ChooseAccount extends Component {
     return (
       <div className="permissions-connect-choose-account">
         <div className="permissions-connect-choose-account__title">
-          { t('chooseAnAcount') }
+          { t('selectYourAccounts') }
         </div>
         <div className="permissions-connect-choose-account__text">
           { t('toConnectWith', [originName]) }
