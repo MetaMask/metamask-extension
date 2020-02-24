@@ -14,7 +14,7 @@
     width: calc(100% / 3);
     * { pointer-events: none; }
 
-    &--selected {
+    &:hover {
       background: #F7FCFF;
       border-color: $lochmara;
     }
