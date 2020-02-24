@@ -31,7 +31,6 @@ module.exports = {
 
   plugins: [
     'babel',
-    'chai',
     'react',
     'json',
     'import',
