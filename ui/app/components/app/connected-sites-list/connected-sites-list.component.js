@@ -30,7 +30,7 @@ export default class ConnectedSitesList extends Component {
     expandedDomain: '',
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const { getOpenMetamaskTabsIds } = this.props
     getOpenMetamaskTabsIds()
   }

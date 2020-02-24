@@ -11,6 +11,21 @@ export default class TokenCell extends Component {
     metricsEvent: PropTypes.func,
   }
 
+  static propTypes = {
+    address: PropTypes.string,
+    symbol: PropTypes.string,
+    string: PropTypes.string,
+    network: PropTypes.string,
+    setSelectedToken: PropTypes.func.isRequired,
+    selectedTokenAddress: PropTypes.string,
+    contractExchangeRates: PropTypes.object,
+    conversionRate: PropTypes.number,
+    hideSidebar: PropTypes.bool,
+    sidebarOpen: PropTypes.bool,
+    currentCurrency: PropTypes.string,
+    image: PropTypes.string,
+  }
+
   state = {
     tokenMenuOpen: false,
   }
@@ -46,7 +61,6 @@ export default class TokenCell extends Component {
       hideSidebar,
       sidebarOpen,
       currentCurrency,
-      // userAddress,
       image,
     } = props
     let currentTokenToFiatRate

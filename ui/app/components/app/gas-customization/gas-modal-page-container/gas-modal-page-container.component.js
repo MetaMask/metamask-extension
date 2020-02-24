@@ -27,6 +27,8 @@ export default class GasModalPageContainer extends Component {
       originalTotalEth: PropTypes.string,
       newTotalFiat: PropTypes.string,
       newTotalEth: PropTypes.string,
+      sendAmount: PropTypes.string,
+      transactionFee: PropTypes.string,
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,

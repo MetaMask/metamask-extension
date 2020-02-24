@@ -103,6 +103,7 @@ class AccountList extends Component {
                 className="hw-account-list__item__link"
                 href={genAccountLink(account.address, this.props.network)}
                 target="_blank"
+                rel="noopener noreferrer"
                 title={this.context.t('etherscanView')}
               >
                 <img src="images/popout.svg" alt="" />

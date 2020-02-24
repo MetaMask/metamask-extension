@@ -93,4 +93,10 @@ module.exports = {
     'babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
   },
+
+  settings: {
+    'react': {
+      'version': 'detect',
+    },
+  },
 }

@@ -211,7 +211,7 @@ export default class NewAccount extends PureComponent {
                 rel="noopener noreferrer"
               >
                 <span className="first-time-flow__link-text">
-                  { 'Terms of Use' }
+                  { t('terms') }
                 </span>
               </a>
             </span>

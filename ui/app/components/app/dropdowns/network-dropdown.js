@@ -51,6 +51,8 @@ class NetworkDropdown extends Component {
 
   static propTypes = {
     provider: PropTypes.shape({
+      nickname: PropTypes.string,
+      rpcTarget: PropTypes.string,
       type: PropTypes.string,
       ticker: PropTypes.string,
     }).isRequired,
@@ -62,6 +64,7 @@ class NetworkDropdown extends Component {
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
+    delRpcTarget: PropTypes.func.isRequired,
   }
 
   handleClick (newProviderType) {
