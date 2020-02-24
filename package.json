@@ -243,7 +243,7 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-qunit": "^1.2.1",
     "koa": "^2.7.0",
-    "lockfile-lint": "^3.0.5",
+    "lockfile-lint": "^4.0.0",
     "mocha": "^7.0.1",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
