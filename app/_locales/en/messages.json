@@ -1185,6 +1185,9 @@
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
   },
+  "selectingAllWillAllow": {
+    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
+  },
   "selectAll": {
     "message": "Select all"
   },

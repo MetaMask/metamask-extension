@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Identicon from '../../../components/ui/identicon'
 import Button from '../../../components/ui/button'
 import CheckBox from '../../../components/ui/check-box'
+import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
 
@@ -138,6 +139,7 @@ export default class ChooseAccount extends Component {
   }
 
   renderAccountsListHeader () {
+    const { t } = this.context
     const { selectNewAccountViaModal } = this.props
     return (
       <div className="permissions-connect-choose-account__accounts-list-header">
@@ -148,7 +150,16 @@ export default class ChooseAccount extends Component {
             onClick={() => (this.allAreSelected() ? this.deSelectAll() : this.selectAll())}
           />
           <div className="permissions-connect-choose-account__text--grey">{ this.context.t('selectAll') }</div>
-          <i className="fa fa-info-circle" />
+          <Tooltip
+            position="bottom"
+            html={(
+              <div style={{ width: 129, height: 112, padding: 4 }}>
+                {t('selectingAllWillAllow')}
+              </div>
+            )}
+          >
+            <i className="fa fa-info-circle" />
+          </Tooltip>
         </div>
         <div
           className="permissions-connect-choose-account__text--blue"
