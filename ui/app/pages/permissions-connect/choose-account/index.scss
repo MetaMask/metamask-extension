@@ -29,6 +29,8 @@
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 8px;
+    max-height: 338px;
+    overflow-y: scroll;
 
     @media screen and (max-width: 575px) {
       width: 100%;
