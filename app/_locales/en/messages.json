@@ -804,6 +804,10 @@
     "message": "$1 would like to connect to $2",
     "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask, $2 is the name of the account to be connected to and last 4 digits of the account address"
   },
+  "likeToConnectMultiple": {
+    "message": "$1 would like to connect to $2 accounts",
+    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask, $2 is the number of accounts to connect to"
+  },
   "links": {
     "message": "Links"
   },
