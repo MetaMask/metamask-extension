@@ -41,9 +41,6 @@
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
   },
-  "chooseAnAcount": {
-    "message": "Choose an account"
-  },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
