@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { updateSend } from '../../store/actions'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'

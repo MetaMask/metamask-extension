@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, getContractMethodData } from '../../../store/actions'
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import WalletView from './wallet-view.component'
 import { hideSidebar, setSelectedToken } from '../../../store/actions'
 import { getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'

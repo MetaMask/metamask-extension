@@ -1,13 +1,23 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../ui/identicon'
 import { addressSummary, formatBalance } from '../../helpers/utils/util'
 
 export default class AccountPanel extends Component {
+  static propTypes = {
+    identity: PropTypes.object,
+    account: PropTypes.object,
+    isFauceting: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    identity: {},
+    account: {},
+    isFauceting: false,
+  }
+
   render () {
-    const state = this.props
-    const identity = state.identity || {}
-    const account = state.account || {}
-    const isFauceting = state.isFauceting
+    const { identity, account, isFauceting } = this.props
 
     const panelState = {
       key: `accountPanel${identity.address}`,
@@ -29,7 +39,7 @@ export default class AccountPanel extends Component {
         onClick={panelState.onClick}
       >
         <div className="identicon-wrapper flex-column select-none">
-          <Identicon address={panelState.identiconKey} imageify={state.imageifyIdenticons} />
+          <Identicon address={panelState.identiconKey} />
           <span className="font-small">{panelState.identiconLabel.substring(0, 7) + '...'}</span>
         </div>
         <div className="identity-data flex-column flex-justify-center flex-grow select-none">
