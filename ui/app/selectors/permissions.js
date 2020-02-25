@@ -1,19 +1,8 @@
-import {
-  createSelectorCreator,
-  defaultMemoize,
-} from 'reselect'
-import { isEqual } from 'lodash'
+import { createSelector } from 'reselect'
 
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
-
-// selector creators
-
-const createAllDomainAccountsSelector = createSelectorCreator(
-  defaultMemoize,
-  allDomainsEqualByAccounts,
-)
 
 // selectors
 
@@ -37,7 +26,7 @@ export function getPermittedAccounts (state, origin) {
  * @param {Object} state - The current state.
  * @returns {Object} Permitted accounts by origin.
  */
-export const getPermittedAccountsMap = createAllDomainAccountsSelector(
+export const getPermittedAccountsMap = createSelector(
   allDomainsSelector,
   (domains = {}) => {
     return Object.keys(domains).reduce((acc, domainKey) => {
@@ -88,43 +77,4 @@ function allDomainsSelector (state) {
 
 function domainSelector (state, origin) {
   return origin && state.metamask.domains && state.metamask.domains[origin]
-}
-
-// selector creator helpers
-
-function accountPermissionEqual (a, b) {
-
-  const aAccounts = getAccountsFromPermission(a)
-  const bAccounts = getAccountsFromPermission(b)
-
-  return isEqual(aAccounts, bAccounts)
-}
-
-function domainEqualByAccounts (a, b) {
-
-  const aPerm = getAccountsPermissionFromDomain(a)
-  const bPerm = getAccountsPermissionFromDomain(b)
-
-  return accountPermissionEqual(aPerm, bPerm)
-}
-
-function allDomainsEqualByAccounts (a, b) {
-
-  if (!(a && b)) {
-    return false
-  }
-
-  const aDomains = Object.keys(a)
-  const bDomains = Object.keys(b)
-
-  if (!isEqual(aDomains, bDomains)) {
-    return false
-  }
-
-  aDomains.forEach((domain) => {
-    if (!domainEqualByAccounts(a[domain], b[domain])) {
-      return false
-    }
-  })
-  return true
 }
