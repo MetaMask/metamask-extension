@@ -39,6 +39,7 @@ if (process.env.IN_TEST === 'true') {
 
 const defaultProviderConfig = {
   type: defaultProviderConfigType,
+  rpcType: INFURA,
 }
 
 const defaultNetworkConfig = {
