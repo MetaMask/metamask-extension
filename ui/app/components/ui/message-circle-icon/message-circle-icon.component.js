@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import CircleIcon from '../circle-icon'
 
-import success from '../../../../../images/icons/green-circle-check.svg'
-import danger from '../../../../../images/icons/red-triangle-exclaim.svg'
-import info from '../../../../../images/icons/blue-circle-info.svg'
-import warning from '../../../../../images/icons/yellow-bell.svg'
+import success from '../../../../../app/images/icons/green-circle-check.svg'
+import danger from '../../../../../app/images/icons/red-triangle-exclaim.svg'
+import info from '../../../../../app/images/icons/blue-circle-info.svg'
+import warning from '../../../../../app/images/icons/yellow-bell.svg'
 
 const typeConfig = {
   success: {

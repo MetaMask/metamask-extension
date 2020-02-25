@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import CircleIcon from './circle-icon.component'
-import img from '../../../../../images/eth_logo.svg'
+import img from '../../../../../app/images/eth_logo.svg'
 
 storiesOf('CircleIcon', module)
   .add('Eth Logo example', () => (
