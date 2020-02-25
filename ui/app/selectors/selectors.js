@@ -437,9 +437,9 @@ export function getAddressConnectedDomainMap (state) {
   return addressConnectedIconMap
 }
 
-export function getPermittedAccountsForCurrentTab (state) {	
-  const permittedAccountsMap = getPermittedAccountsMap(state)	
-  const originOfCurrentTab = getOriginOfCurrentTab(state)	
+export function getPermittedAccountsForCurrentTab (state) {
+  const permittedAccountsMap = getPermittedAccountsMap(state)
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
   return permittedAccountsMap[originOfCurrentTab] || []
 }
 
