@@ -55,6 +55,7 @@ class NetworkDropdown extends Component {
       rpcTarget: PropTypes.string,
       type: PropTypes.string,
       ticker: PropTypes.string,
+      rpcType: PropTypes.string,
     }).isRequired,
     setProviderType: PropTypes.func.isRequired,
     network: PropTypes.string.isRequired,
