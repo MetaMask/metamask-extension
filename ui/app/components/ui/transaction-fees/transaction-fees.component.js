@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const onClick = (event) => {
+const preventDefault = (event) => {
   event.preventDefault()
-  event.stopPropagation()
 }
 
 const FeesLink = ({ children }) => (
-  <a href="#" onClick={onClick} className="fees__option">
+  <a href="#" onClick={preventDefault} className="fees__option">
     {children}
   </a>
 )
