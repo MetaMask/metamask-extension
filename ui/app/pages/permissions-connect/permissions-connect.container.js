@@ -43,11 +43,13 @@ const mapStateToProps = (state, ownProps) => {
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`
 
-  let page = null
+  let page = ''
   if (pathname === connectPath) {
     page = '1'
   } else if (pathname === confirmPermissionPath) {
     page = '2'
+  } else {
+    throw new Error('Incorrect path for permissions-connect component')
   }
 
   return {

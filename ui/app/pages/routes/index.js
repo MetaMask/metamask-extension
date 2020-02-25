@@ -141,7 +141,7 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated path={`${CONNECT_ROUTE}/:id?`} component={PermissionsConnect} />
+        <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} />
         <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>

@@ -36,6 +36,7 @@ export default class PermissionConnect extends Component {
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
+    redirecting: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -46,6 +47,7 @@ export default class PermissionConnect extends Component {
     requestAccountTabs: {},
     permissionsRequestId: '',
     domains: {},
+    redirecting: false,
   }
 
   static contextTypes = {
@@ -75,10 +77,10 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequest, page } = this.props
+    const { domains, permissionsRequest, redirecting } = this.props
     const { originName } = this.state
 
-    if (!permissionsRequest && prevProps.permissionsRequest && page !== null) {
+    if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const permissionDataForDomain = (domains && domains[originName]) || {}
       const permissionsForDomain = permissionDataForDomain.permissions || []
       const prevPermissionDataForDomain = (prevProps.domains && prevProps.domains[originName]) || {}
@@ -95,8 +97,7 @@ export default class PermissionConnect extends Component {
   selectAccount = (address) => {
     this.setState({
       selectedAccountAddress: address,
-    })
-    this.props.history.push(this.props.confirmPermissionPath)
+    }, () => this.props.history.push(this.props.confirmPermissionPath))
   }
 
   redirectFlow (accepted) {
@@ -165,7 +166,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        { page !== null
+        { !redirecting
           ? <PermissionsConnectHeader page={page} />
           : null
         }
@@ -198,6 +199,7 @@ export default class PermissionConnect extends Component {
           />
           <Route
             path={confirmPermissionPath}
+            exact
             render={() => (
               <div>
                 <PermissionPageContainer
