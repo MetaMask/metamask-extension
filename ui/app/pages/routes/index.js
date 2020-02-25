@@ -348,7 +348,6 @@ Routes.propTypes = {
   textDirection: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
-  selectedAddress: PropTypes.string,
   frequentRpcListDetail: PropTypes.array,
   sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
@@ -364,12 +363,6 @@ Routes.propTypes = {
   providerId: PropTypes.string,
   hasPermissionsRequests: PropTypes.bool,
   autoLockTimeLimit: PropTypes.number,
-  addressConnectedToCurrentTab: PropTypes.string,
-  showAccountDetail: PropTypes.func,
-}
-
-Routes.defaultProps = {
-  selectedAddress: undefined,
 }
 
 function mapStateToProps (state) {

@@ -3,33 +3,19 @@ import {
   defaultMemoize,
 } from 'reselect'
 import { isEqual } from 'lodash'
+
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
 
 // selector creators
 
-const createDomainAccountsSelector = createSelectorCreator(
-  defaultMemoize,
-  domainEqualByAccounts,
-)
-
 const createAllDomainAccountsSelector = createSelectorCreator(
   defaultMemoize,
   allDomainsEqualByAccounts,
 )
 
-const createAccountPermissionSelector = createSelectorCreator(
-  defaultMemoize,
-  accountPermissionEqual,
-)
-
 // selectors
-
-const accountsPermissionSelector = createDomainAccountsSelector(
-  domainSelector,
-  (domain = {}) => getAccountsPermissionFromDomain(domain)
-)
 
 /**
  * Selects the permitted accounts from the eth_accounts permission given state
@@ -38,10 +24,13 @@ const accountsPermissionSelector = createDomainAccountsSelector(
  * @param {string} origin - The origin/domain to get the permitted accounts for.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
-export const getPermittedAccounts = createAccountPermissionSelector(
-  accountsPermissionSelector,
-  (accountsPermission = {}) => getAccountsFromPermission(accountsPermission),
-)
+export function getPermittedAccounts (state, origin) {
+  return getAccountsFromPermission(
+    getAccountsPermissionFromDomain(
+      domainSelector(state, origin)
+    )
+  )
+}
 
 /**
  * Returns a map of permitted accounts by origin for all origins.
@@ -84,7 +73,7 @@ function getAccountsFromPermission (accountsPermission) {
   )
 }
 
-function getAccountsCaveatFromPermission (accountsPermission) {
+function getAccountsCaveatFromPermission (accountsPermission = {}) {
   return (
     Array.isArray(accountsPermission.caveats) &&
     accountsPermission.caveats.find(
@@ -121,15 +110,15 @@ function domainEqualByAccounts (a, b) {
 
 function allDomainsEqualByAccounts (a, b) {
 
-  const aDomains = Object.keys(a).sort()
-  const bDomains = Object.keys(b).sort()
+  const aDomains = Object.keys(a)
+  const bDomains = Object.keys(b)
 
   if (!isEqual(aDomains, bDomains)) {
     return false
   }
 
   aDomains.forEach((domain) => {
-    if(!domainEqualByAccounts(a[domain], b[domain])) {
+    if (!domainEqualByAccounts(a[domain], b[domain])) {
       return false
     }
   })
