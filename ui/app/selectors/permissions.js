@@ -110,6 +110,10 @@ function domainEqualByAccounts (a, b) {
 
 function allDomainsEqualByAccounts (a, b) {
 
+  if (!(a && b)) {
+    return false
+  }
+
   const aDomains = Object.keys(a)
   const bDomains = Object.keys(b)
 
