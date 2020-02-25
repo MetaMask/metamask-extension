@@ -30,9 +30,6 @@
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
-  "chooseAnAcount": {
-    "message": "Choose an account"
-  },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
