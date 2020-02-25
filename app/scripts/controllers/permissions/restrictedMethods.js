@@ -10,7 +10,6 @@ export default function getRestrictedMethods (permissionsController) {
             end()
           })
           .catch(
-            /* istanbul ignore next */
             (err) => {
               res.error = err
               end(err)

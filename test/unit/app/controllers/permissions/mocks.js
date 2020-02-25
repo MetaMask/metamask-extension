@@ -31,16 +31,14 @@ async function getKeyringAccounts () {
   return keyringAccounts
 }
 
-export function getPermController (
-  notifyDomain = noop,
-  notifyAllDomains = noop,
-) {
+export function getPermController (opts = {}) {
   return new PermissionsController({
     platform,
     getKeyringAccounts,
-    notifyDomain,
-    notifyAllDomains,
+    notifyDomain: noop,
+    notifyAllDomains: noop,
     getRestrictedMethods,
+    ...opts,
   })
 }
 

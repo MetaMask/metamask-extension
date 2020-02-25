@@ -6,6 +6,9 @@ import {
   WALLET_PREFIX,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
+import getRestrictedMethods
+  from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
+
 import {
   addInternalMethodPrefix,
 } from '../../../../../app/scripts/controllers/permissions'
@@ -40,10 +43,10 @@ const initNotifications = () => {
 }
 
 const initPermController = () => {
-  permController = getPermController(
-    getNotifyDomain(notifications),
-    getNotifyAllDomains(notifications),
-  )
+  permController = getPermController({
+    notifyDomain: getNotifyDomain(notifications),
+    notifyAllDomains: getNotifyAllDomains(notifications),
+  })
 }
 
 const mockRequestUserApproval = (id) => {
@@ -567,6 +570,7 @@ describe('permissions controller', function () {
 
     beforeEach(function () {
       initPermController()
+      initNotifications()
     })
 
     it('successfully exposes accounts and updates permissions history', async function () {
@@ -596,6 +600,13 @@ describe('permissions controller', function () {
         ACCOUNT_ARRAYS.a,
         'eth_accounts entry accounts should be as expected'
       )
+
+      // notification should also have been sent
+      assert.deepEqual(
+        notifications[ORIGINS.a][0],
+        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a),
+        'first origin should have correct notification'
+      )
     })
 
     it('throws if called on origin with existing exposed accounts', async function () {
@@ -619,6 +630,10 @@ describe('permissions controller', function () {
         permissionsHistory, {},
         'should not have modified history'
       )
+      assert.deepEqual(
+        notifications[ORIGINS.a], [],
+        'should not have sent notification'
+      )
     })
 
     it('throws if called with bad accounts', async function () {
@@ -633,6 +648,10 @@ describe('permissions controller', function () {
       assert.deepEqual(
         permissionsHistory, {},
         'should not have modified history'
+      )
+      assert.deepEqual(
+        notifications[ORIGINS.a], [],
+        'should not have sent notification'
       )
     })
 
@@ -649,6 +668,12 @@ describe('permissions controller', function () {
         permissionsHistory, {},
         'should not have modified history'
       )
+      Object.keys(notifications).forEach((domain) => {
+        assert.deepEqual(
+          notifications[domain], [],
+          'should not have sent notification'
+        )
+      })
     })
   })
 
@@ -1137,6 +1162,30 @@ describe('permissions controller', function () {
       const str = 'foo'
       const res = addInternalMethodPrefix(str)
       assert.equal(res, WALLET_PREFIX + str, 'should prefix correctly')
+    })
+
+    it('eth_accounts restricted method failure', async function () {
+      const restrictedMethods = getRestrictedMethods({
+        getKeyringAccounts: async () => {
+          throw new Error('foo')
+        },
+      })
+
+      const res = {}
+      restrictedMethods.eth_accounts.method(null, res, null, (err) => {
+
+        const fooError = new Error('foo')
+
+        assert.deepEqual(
+          err, fooError,
+          'error should be as expected'
+        )
+
+        assert.deepEqual(
+          res, { error: fooError },
+          'response should have correct error and no message'
+        )
+      })
     })
   })
 })

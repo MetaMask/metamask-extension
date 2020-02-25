@@ -23,7 +23,6 @@ import {
 export class PermissionsController {
 
   constructor (
-    /* istanbul ignore next: shows up as ignored branch */
     {
       platform, notifyDomain, notifyAllDomains,
       getKeyringAccounts, getRestrictedMethods,
@@ -239,7 +238,6 @@ export class PermissionsController {
         )
 
         function _end (err) {
-          /* istanbul ignore if */
           if (err) {
             reject(err)
           } else {
@@ -248,11 +246,14 @@ export class PermissionsController {
         }
       })
 
-      // log that the accounts were exposed
+      this.notifyDomain(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        result: accounts,
+      })
       this.permissionsLog.logAccountExposure(origin, accounts)
+
     } catch (error) {
 
-      /* istanbul ignore next: too hard to induce */
       throw ethErrors.rpc.internal({
         message: `Failed to add 'eth_accounts' to '${origin}'.`,
         data: {
@@ -433,8 +434,6 @@ export class PermissionsController {
 
     // update permitted accounts to ensure that accounts are returned
     // in the same order every time
-    // await because the accounts may not have changed when this function
-    // returns even if the caller awaits
     await this.updatePermittedAccounts(origin, newPermittedAccounts)
   }
 

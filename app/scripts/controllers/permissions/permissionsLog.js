@@ -293,7 +293,6 @@ export default class PermissionsLogController {
         }, {})
     }
 
-    /* istanbul ignore else */
     if (Object.keys(newEntries).length > 0) {
       this.commitNewHistory(origin, newEntries)
     }
