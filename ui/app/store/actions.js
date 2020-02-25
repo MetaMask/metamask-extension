@@ -123,6 +123,7 @@ export const actionConstants = {
   // Network
   SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
+  SET_USE_IN3: 'SET_USE_IN3',
 
   SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
 
@@ -1734,12 +1735,12 @@ export function closeCurrentNotificationWindow () {
       !hasUnconfirmedTransactions(getState())) {
       global.platform.closeCurrentWindow()
 
-      dispatch(closeNotifacationWindow())
+      dispatch(closeNotificationWindow())
     }
   }
 }
 
-export function closeNotifacationWindow () {
+export function closeNotificationWindow () {
   return {
     type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   }
@@ -2023,7 +2024,6 @@ export function setPreference (preference, value) {
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
         dispatch(hideLoadingIndication())
-
         if (err) {
           dispatch(displayWarning(err.message))
           return reject(err)
@@ -2049,6 +2049,32 @@ export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
 
 export function setShowFiatConversionOnTestnetsPreference (value) {
   return setPreference('showFiatInTestnets', value)
+}
+
+export function setUseIn3 (value) {
+  log.debug(`background.setUseIn3Network: ${value}`)
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    if (typeof value !== 'boolean') {
+      dispatch(displayWarning('useIn3 must be boolean'))
+      return 'error'
+    }
+    background.setUseIn3Network(value, (result, error) => {
+      if (result !== undefined && result !== null) {
+        dispatch({
+          type: actionConstants.SET_USE_IN3,
+          value: result,
+        })
+      } else {
+        dispatch({
+          type: actionConstants.SET_USE_IN3,
+          value: false,
+        })
+        dispatch(displayWarning(error.message))
+      }
+      dispatch(hideLoadingIndication())
+    })
+  }
 }
 
 export function setAutoLockTimeLimit (value) {

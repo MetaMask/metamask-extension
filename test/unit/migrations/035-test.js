@@ -68,6 +68,7 @@ describe('migration #35', function () {
           tokens: [],
           suggestedTokens: {},
           useBlockie: false,
+          useIn3: false,
           knownMethodData: {},
           participateInMetaMetrics: null,
           firstTimeFlowType: null,

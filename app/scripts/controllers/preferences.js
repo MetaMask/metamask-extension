@@ -16,6 +16,7 @@ class PreferencesController {
    * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
+   * @property {boolean} store.useIn3 True to use In3 instead of Infura
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
@@ -35,6 +36,7 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
+      useIn3: false,
       useNonceField: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -93,6 +95,23 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  /**
+   * Getter for the `useIn3` property
+   */
+  getUseIn3 () {
+    return this.store.getState().useIn3
+  }
+
+  /**
+   * Setter for the `useIn3` property
+   *
+   * @param {boolean} val - True to use In3 instead of Infura
+   *
+   */
+  setUseIn3 (val) {
+    this.store.updateState({ useIn3: val })
   }
 
   /**

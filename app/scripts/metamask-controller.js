@@ -71,6 +71,7 @@ import {
 } from 'gaba'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
+import { IN3, INFURA } from './controllers/network/enums'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -437,7 +438,6 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi () {
     const keyringController = this.keyringController
-    const networkController = this.networkController
     const onboardingController = this.onboardingController
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
@@ -459,23 +459,22 @@ export default class MetamaskController extends EventEmitter {
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
-
       // coinbase
       buyEth: this.buyEth.bind(this),
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
+
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       resetAccount: nodeify(this.resetAccount, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
-
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
+
       forgetDevice: nodeify(this.forgetDevice, this),
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
-
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
 
@@ -483,10 +482,12 @@ export default class MetamaskController extends EventEmitter {
       submitPassword: nodeify(this.submitPassword, this),
 
       // network management
-      setProviderType: nodeify(networkController.setProviderType, networkController),
+      // setProviderType: nodeify(networkController.setProviderType, networkController),
+      setProviderType: this.setProvider.bind(this),
       setCustomRpc: nodeify(this.setCustomRpc, this),
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
+      setUseIn3Network: this.setUseIn3Network.bind(this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
@@ -1966,6 +1967,38 @@ export default class MetamaskController extends EventEmitter {
 
   async initializeThreeBox () {
     await this.threeBoxController.init()
+  }
+
+  /**
+   * Wrapper for networkController.setProviderType that enforces rpcType, respecting preferences selection
+   */
+  setProvider (type, rpcTarget = '', ticker = 'ETH', nickname = '', rpcPrefs = {}, rpcType = '') {
+    const useIn3 = rpcType === 'in3' ? true : this.preferencesController.getUseIn3()
+    if (useIn3) {
+      this.networkController.setProviderType(type, rpcTarget, ticker, nickname, rpcPrefs, IN3)
+    } else {
+      this.networkController.setProviderType(type, rpcTarget, ticker, nickname, rpcPrefs, INFURA)
+    }
+  }
+
+  /**
+   * Sets whether or not to use IN3 Network provider instead of infura
+   * @param {boolean} useIn3 - True for IN3, false for Infura.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setUseIn3Network (useIn3, cb) {
+    try {
+      this.preferencesController.setUseIn3(useIn3)
+      const cfg = this.networkController.getProviderConfig()
+      if (useIn3) {
+        this.networkController.setProviderType(cfg.type, cfg.rpcTarget, cfg.ticker, cfg.nickname, cfg.rpcPrefs, IN3)
+      } else {
+        this.networkController.setProviderType(cfg.type, cfg.rpcTarget, cfg.ticker, cfg.nickname, cfg.rpcPrefs, INFURA)
+      }
+      cb(useIn3, null)
+    } catch (err) {
+      cb(null, err)
+    }
   }
 
   /**

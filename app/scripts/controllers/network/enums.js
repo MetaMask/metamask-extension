@@ -16,3 +16,9 @@ export const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 export const KOVAN_DISPLAY_NAME = 'Kovan'
 export const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 export const GOERLI_DISPLAY_NAME = 'Goerli'
+
+export const INFURA = 'infura'
+export const IN3 = 'in3'
+export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+export const IN3_PROVIDER_TYPES = [KOVAN, MAINNET, GOERLI]
+export const RPC_PROVIDER_TYPES = [INFURA, IN3]

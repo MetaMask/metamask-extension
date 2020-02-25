@@ -337,6 +337,19 @@ describe('MetaMaskController', function () {
 
   })
 
+  describe('preferencesControllerIn3', function () {
+
+    it('defaults useIn3 to false', function () {
+      assert.equal(metamaskController.preferencesController.store.getState().useIn3, false)
+    })
+
+    it('setUseIn3 to true', function () {
+      metamaskController.setUseIn3Network(true, noop)
+      assert.equal(metamaskController.preferencesController.store.getState().useIn3, true)
+    })
+
+  })
+
   describe('#selectFirstIdentity', function () {
     let identities, address
 

@@ -21,7 +21,7 @@ const mockStore = configureStore(middleware)
 
 describe('Actions', function () {
 
-  const noop = () => {}
+  const noop = function () {}
 
   const currentNetworkId = 42
 

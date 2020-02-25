@@ -38,6 +38,7 @@ export default function reduceMetamask (state = {}, action) {
     },
     coinOptions: {},
     useBlockie: false,
+    useIn3: false,
     featureFlags: {},
     networkEndpointType: undefined,
     welcomeScreenSeen: false,
@@ -320,6 +321,12 @@ export default function reduceMetamask (state = {}, action) {
       return {
         ...metamaskState,
         useBlockie: action.value,
+      }
+
+    case actions.SET_USE_IN3:
+      return {
+        ...metamaskState,
+        useIn3: !metamaskState.useIn3,
       }
 
     case actions.UPDATE_FEATURE_FLAGS:
