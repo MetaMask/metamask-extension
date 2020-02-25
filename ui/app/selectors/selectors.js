@@ -440,7 +440,7 @@ export function getAddressConnectedDomainMap (state) {
 export function getPermittedAccountsForCurrentTab (state) {	
   const permittedAccountsMap = getPermittedAccountsMap(state)	
   const originOfCurrentTab = getOriginOfCurrentTab(state)	
-  return permittedAccountsMap[originOfCurrentTab]	|| []
+  return permittedAccountsMap[originOfCurrentTab] || []
 }
 
 export function getRenderablePermissionsDomains (state) {
