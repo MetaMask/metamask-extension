@@ -1,48 +1,80 @@
-
 import { createSelector } from 'reselect'
+
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
 
-const permissionsSelector = (state, origin) => {
-  return origin && state.metamask.domains && state.metamask.domains[origin]
-}
-
-// all permissions for the origin probably too expensive for deep equality check
-const accountsPermissionSelector = createSelector(
-  permissionsSelector,
-  (domain = {}) => {
-
-    return (
-      Array.isArray(domain.permissions)
-        ? domain.permissions.find(
-          (perm) => perm.parentCapability === 'eth_accounts'
-        )
-        : {}
-    )
-  }
-)
+// selectors
 
 /**
- * Selects the permitted accounts from an eth_accounts permission.
- * Expects input from accountsPermissionsSelector.
- * @returns - An empty array or an array of accounts.
+ * Selects the permitted accounts from the eth_accounts permission given state
+ * and an origin.
+ * @param {Object} state - The current state.
+ * @param {string} origin - The origin/domain to get the permitted accounts for.
+ * @returns {Array<string>} An empty array or an array of accounts.
  */
-export const getPermittedAccounts = createSelector(
-  accountsPermissionSelector, // deep equal check performed on this output
-  (accountsPermission = {}) => {
+export function getPermittedAccounts (state, origin) {
+  return getAccountsFromPermission(
+    getAccountsPermissionFromDomain(
+      domainSelector(state, origin)
+    )
+  )
+}
 
-    const accountsCaveat = (
-      Array.isArray(accountsPermission.caveats) &&
-      accountsPermission.caveats.find(
-        (c) => c.name === CAVEAT_NAMES.exposedAccounts
+/**
+ * Returns a map of permitted accounts by origin for all origins.
+ * @param {Object} state - The current state.
+ * @returns {Object} Permitted accounts by origin.
+ */
+export const getPermittedAccountsMap = createSelector(
+  allDomainsSelector,
+  (domains = {}) => {
+    return Object.keys(domains).reduce((acc, domainKey) => {
+      const accounts = getAccountsFromPermission(
+        getAccountsPermissionFromDomain(domains[domainKey])
       )
-    )
-
-    return (
-      accountsCaveat && Array.isArray(accountsCaveat.value)
-        ? accountsCaveat.value
-        : []
-    )
+      if (accounts.length > 0) {
+        acc[domainKey] = accounts
+      }
+      return acc
+    }, {})
   }
 )
+
+// selector helpers
+
+function getAccountsPermissionFromDomain (domain = {}) {
+  return (
+    Array.isArray(domain.permissions)
+      ? domain.permissions.find(
+        (perm) => perm.parentCapability === 'eth_accounts'
+      )
+      : {}
+  )
+}
+
+function getAccountsFromPermission (accountsPermission) {
+  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission)
+  return (
+    accountsCaveat && Array.isArray(accountsCaveat.value)
+      ? accountsCaveat.value
+      : []
+  )
+}
+
+function getAccountsCaveatFromPermission (accountsPermission = {}) {
+  return (
+    Array.isArray(accountsPermission.caveats) &&
+    accountsPermission.caveats.find(
+      (c) => c.name === CAVEAT_NAMES.exposedAccounts
+    )
+  )
+}
+
+function allDomainsSelector (state) {
+  return state.metamask.domains
+}
+
+function domainSelector (state, origin) {
+  return origin && state.metamask.domains && state.metamask.domains[origin]
+}

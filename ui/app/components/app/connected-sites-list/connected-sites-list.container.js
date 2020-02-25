@@ -9,19 +9,19 @@ import {
 import {
   getRenderablePermissionsDomains,
   getPermissionsDomains,
-  getAddressConnectedToCurrentTab,
   getSelectedAddress,
+  getPermittedAccountsForCurrentTab,
 } from '../../../selectors/selectors'
 import { getOriginFromUrl } from '../../../helpers/utils/util'
 
 const mapStateToProps = (state) => {
-  const addressConnectedToCurrentTab = getAddressConnectedToCurrentTab(state)
   const { openMetaMaskTabs } = state.appState
   const { title, url, id } = state.activeTab
+  const permittedAccounts = getPermittedAccountsForCurrentTab(state)
 
   let tabToConnect
 
-  if (!addressConnectedToCurrentTab && url && !openMetaMaskTabs[id]) {
+  if (url && permittedAccounts.length === 0 && !openMetaMaskTabs[id]) {
     tabToConnect = {
       title,
       origin: getOriginFromUrl(url),
