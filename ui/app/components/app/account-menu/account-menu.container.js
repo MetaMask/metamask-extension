@@ -30,14 +30,6 @@ function mapStateToProps (state) {
   const origin = getOriginOfCurrentTab(state)
   const selectedAddress = getSelectedAddress(state)
 
-  /**
-   * TODO:LoginPerSite:ui
-   * - propagate the relevant props below after computing them
-   * - use `selectedAccountIsPermitted` for the account connection
-   */
-  // const permittedAccounts = getPermittedAccounts(state, origin)
-  // const selectedAccountIsPermitted = permittedAccounts.includes(selectedAddress)
-
   return {
     isAccountMenuOpen,
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
