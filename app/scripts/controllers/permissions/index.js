@@ -203,7 +203,7 @@ export class PermissionsController {
   }
 
   /**
-   * WARNING: Dangerous method.
+   * @deprecated
    * Grants the given origin the eth_accounts permission for the given account(s).
    * This method should ONLY be called as a result of direct user action in the UI,
    * with the intention of supporting legacy dapps that don't support EIP 1102.

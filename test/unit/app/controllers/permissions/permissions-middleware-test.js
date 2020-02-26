@@ -1,70 +1,36 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 
 import {
   METADATA_STORE_KEY,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
 import {
-  getPermController,
-  getEventEmitter,
-  grantPermissions,
-  getPermissionsMiddleware,
+  getters,
+  getConstants,
   getApprovedPermissionsRequest,
-  rpcRequests,
-  ACCOUNT_ARRAYS,
-  CAVEATS,
-  ERRORS,
-  ORIGINS,
-  PERM_NAMES,
-  PERMS,
+  getPermController,
+  getPermissionsMiddleware,
+  getUserApprovalPromise,
+  grantPermissions,
 } from './mocks'
 
-let permController, eventEmitter
+const {
+  CAVEATS,
+  ERRORS,
+  PERMS,
+  RPC_REQUESTS,
+} = getters
+
+const {
+  ACCOUNT_ARRAYS,
+  ORIGINS,
+  PERM_NAMES,
+} = getConstants()
+
+let permController
 
 const initPermController = () => {
   permController = getPermController()
-}
-
-const initEventEmitter = () => {
-  eventEmitter = getEventEmitter()
-}
-
-// specify an object and an key with a target object value on that object,
-// get a Promise that resolves once something is set on the target
-const getWatchPropertyPromise = (object, key) => {
-
-  const handler = {
-    set (_obj, prop, _value) {
-      eventEmitter.emit(`set:${key}`, prop)
-      return Reflect.set(...arguments)
-    },
-  }
-
-  object[key] = new Proxy(object[key], handler)
-
-  return new Promise((resolve) => {
-    eventEmitter.once(`set:${key}`, () => resolve())
-  })
-}
-
-// specify a name to identify the object and, optionally, an object,
-// get a Proxy that emits an event when something is set on the target
-const getWatchableObject = (name, object = {}) => {
-  const handler = {
-    set (_obj, prop, _value) {
-      eventEmitter.emit(`set:${name}:${prop}`)
-      return Reflect.set(...arguments)
-    },
-  }
-  return new Proxy(object, handler)
-}
-
-// get a Promise that resolves once the given prop is set on the object with
-// the given name, to be called after getWatchableObject
-const getWatchObjectPromise = (name, prop) => {
-  return new Promise((resolve) => {
-    eventEmitter.once(`set:${name}:${prop}`, () => resolve())
-  })
 }
 
 const validatePermission = (perm, name, origin, caveats) => {
@@ -85,7 +51,7 @@ describe('permissions middleware', function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.requestPermission(
+      const req = RPC_REQUESTS.requestPermission(
         ORIGINS.a, PERM_NAMES.eth_accounts
       )
       const res = {}
@@ -130,7 +96,7 @@ describe('permissions middleware', function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.requestPermission(
+      const req = RPC_REQUESTS.requestPermission(
         ORIGINS.a, PERM_NAMES.eth_accounts
       )
       const res = {}
@@ -176,7 +142,7 @@ describe('permissions middleware', function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.test_method(ORIGINS.a)
+      const req = RPC_REQUESTS.test_method(ORIGINS.a)
       const res = {}
 
       const expectedError = ERRORS.rpcCap.unauthorized()
@@ -203,7 +169,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(permController, ORIGINS.b, PERMS.finalizedRequests.test_method())
 
-      const req = rpcRequests.test_method(ORIGINS.b, true)
+      const req = RPC_REQUESTS.test_method(ORIGINS.b, true)
       const res = {}
 
       assert.doesNotReject(
@@ -229,7 +195,7 @@ describe('permissions middleware', function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.eth_accounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
       const res = {}
 
       assert.doesNotReject(
@@ -254,7 +220,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(permController, ORIGINS.a, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a))
 
-      const req = rpcRequests.eth_accounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
       const res = {}
 
       assert.doesNotReject(
@@ -278,25 +244,23 @@ describe('permissions middleware', function () {
 
     beforeEach(function () {
       initPermController()
-      initEventEmitter()
     })
 
     it('requests accounts for unpermitted origin, and approves on user approval', async function () {
 
-      const pendingApprovalPromise = getWatchPropertyPromise(permController, 'pendingApprovals')
+      const userApprovalPromise = getUserApprovalPromise(permController)
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.eth_requestAccounts(ORIGINS.a)
-      const res = getWatchableObject('response')
-      const resultPromise = getWatchObjectPromise('response', 'result')
+      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.a)
+      const res = {}
 
-      assert.doesNotReject(
+      const middlewarePromise = assert.doesNotReject(
         aMiddleware(req, res),
         'should not reject permissions request'
       )
 
-      await pendingApprovalPromise
+      await userApprovalPromise
 
       assert.equal(
         Object.keys(permController.pendingApprovals).length, 1,
@@ -323,7 +287,7 @@ describe('permissions middleware', function () {
         [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
       )
 
-      await resultPromise
+      await middlewarePromise
 
       // we should also see the accounts on the response
       assert.ok(
@@ -343,14 +307,12 @@ describe('permissions middleware', function () {
 
     it('requests accounts for unpermitted origin, and rejects on user rejection', async function () {
 
-      const pendingApprovalPromise = getWatchPropertyPromise(permController, 'pendingApprovals')
+      const userApprovalPromise = getUserApprovalPromise(permController)
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      const req = rpcRequests.eth_requestAccounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.a)
       const res = {}
-      // const res = getWatchableObject('response')
-      // const errorPromise = getWatchObjectPromise('response', 'error')
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
 
@@ -369,7 +331,7 @@ describe('permissions middleware', function () {
           )
         })
 
-      await pendingApprovalPromise
+      await userApprovalPromise
 
       assert.equal(
         Object.keys(permController.pendingApprovals).length, 1,
@@ -390,7 +352,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(permController, ORIGINS.c, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c))
 
-      const req = rpcRequests.eth_requestAccounts(ORIGINS.c)
+      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
       const res = {}
 
       assert.doesNotReject(
@@ -422,7 +384,7 @@ describe('permissions middleware', function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
-      const req = rpcRequests.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
       const res = {}
 
       assert.doesNotReject(
@@ -451,7 +413,7 @@ describe('permissions middleware', function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c, extensionId)
 
-      const req = rpcRequests.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
       const res = {}
 
       assert.doesNotReject(
@@ -478,7 +440,7 @@ describe('permissions middleware', function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
-      const req = rpcRequests.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
       const res = {}
 
       assert.doesNotReject(
@@ -502,7 +464,7 @@ describe('permissions middleware', function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
-      const req = rpcRequests.wallet_sendDomainMetadata(ORIGINS.c)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c)
       delete req.domainMetadata
       const res = {}
 

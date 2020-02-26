@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 
 export function validateActivityEntry (
   entry, req, res, methodType, success

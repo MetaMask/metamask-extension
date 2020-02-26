@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import { find } from 'lodash'
 
 import {
@@ -14,20 +14,28 @@ import {
 } from '../../../../../app/scripts/controllers/permissions'
 
 import {
-  getPermController,
-  grantPermissions,
+  getters,
+  getConstants,
+  getApprovedPermissionsRequest,
   getNotifyDomain,
   getNotifyAllDomains,
-  getApprovedPermissionsRequest,
+  getPermController,
+  grantPermissions,
+} from './mocks'
+
+const {
+  ERRORS,
+  NOTIFICATIONS,
+  PERMS,
+} = getters
+
+const {
   ACCOUNT_ARRAYS,
   DUMMY_ACCOUNT,
-  ERRORS,
   ORIGINS,
   PERM_NAMES,
-  PERMS,
-  NOTIFICATIONS,
   REQUEST_IDS,
-} from './mocks'
+} = getConstants()
 
 let permController
 
