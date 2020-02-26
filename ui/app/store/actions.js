@@ -89,9 +89,6 @@ export const actionConstants = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
-  PAIR_UPDATE: 'PAIR_UPDATE',
-  SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
-  HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
 
@@ -1801,18 +1798,6 @@ export function setHardwareWalletDefaultHdPath ({ device, path }) {
 export function hideLoadingIndication () {
   return {
     type: actionConstants.HIDE_LOADING,
-  }
-}
-
-export function showSubLoadingIndication () {
-  return {
-    type: actionConstants.SHOW_SUB_LOADING_INDICATION,
-  }
-}
-
-export function hideSubLoadingIndication () {
-  return {
-    type: actionConstants.HIDE_SUB_LOADING_INDICATION,
   }
 }
 

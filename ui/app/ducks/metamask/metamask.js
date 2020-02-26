@@ -294,16 +294,6 @@ export default function reduceMetamask (state = {}, action) {
         selectedAddressTxList,
       }
 
-    case actions.PAIR_UPDATE:
-      const { value: { marketinfo: pairMarketInfo } } = action
-      return {
-        ...metamaskState,
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pairMarketInfo.pair]: pairMarketInfo,
-        },
-      }
-
     case actions.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,

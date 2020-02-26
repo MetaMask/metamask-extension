@@ -330,23 +330,6 @@ describe('App State', function () {
     assert.equal(state.isLoading, false)
   })
 
-  it('shows sub loading indicator', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_SUB_LOADING_INDICATION,
-    })
-
-    assert.equal(state.isSubLoading, true)
-  })
-
-  it('hides sub loading indicator', function () {
-    const oldState = { ...metamaskState, isSubLoading: true }
-    const state = reduceApp(oldState, {
-      type: actions.HIDE_SUB_LOADING_INDICATION,
-    })
-
-    assert.equal(state.isSubLoading, false)
-  })
-
   it('displays warning', function () {
     const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,

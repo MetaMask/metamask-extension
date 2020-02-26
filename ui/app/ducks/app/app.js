@@ -285,18 +285,6 @@ export default function reduceApp (state = {}, action) {
         isLoading: false,
       }
 
-    case actions.SHOW_SUB_LOADING_INDICATION:
-      return {
-        ...appState,
-        isSubLoading: true,
-      }
-
-    case actions.HIDE_SUB_LOADING_INDICATION:
-      return {
-        ...appState,
-        isSubLoading: false,
-      }
-
     case actions.DISPLAY_WARNING:
       return {
         ...appState,
