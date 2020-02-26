@@ -841,9 +841,6 @@
   "privateNetwork": {
     "message": "Privatna mreža"
   },
-  "qrCode": {
-    "message": "Prikaži QR šifru"
-  },
   "queue": {
     "message": "Ред"
   },

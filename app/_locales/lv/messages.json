@@ -846,9 +846,6 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "qrCode": {
-    "message": "Rādīt QR kodu"
-  },
   "queue": {
     "message": "Rinda"
   },

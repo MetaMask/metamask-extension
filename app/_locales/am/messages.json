@@ -847,9 +847,6 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
-  "qrCode": {
-    "message": "QR ኮድ ያሳዩ"
-  },
   "queue": {
     "message": "ወረፋ"
   },

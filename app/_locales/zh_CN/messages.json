@@ -832,9 +832,6 @@
   "privateNetwork": {
     "message": "私有网络"
   },
-  "qrCode": {
-    "message": "显示二维码"
-  },
   "queue": {
     "message": "队列"
   },

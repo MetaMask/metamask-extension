@@ -850,9 +850,6 @@
   "privateNetwork": {
     "message": "Приватна мережа"
   },
-  "qrCode": {
-    "message": "Показати QR код"
-  },
   "queue": {
     "message": "Черга"
   },

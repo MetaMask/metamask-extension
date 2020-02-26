@@ -847,9 +847,6 @@
   "privateNetwork": {
     "message": "निजी नेटवर्क"
   },
-  "qrCode": {
-    "message": "QR Code दिखाएं "
-  },
   "queue": {
     "message": "सूची"
   },

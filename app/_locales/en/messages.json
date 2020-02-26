@@ -1041,9 +1041,6 @@
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
   },
-  "qrCode": {
-    "message": "Show QR Code"
-  },
   "queue": {
     "message": "Queue"
   },

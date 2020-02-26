@@ -850,9 +850,6 @@
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
-  "qrCode": {
-    "message": "QR ಕೋಡ್ ತೋರಿಸಿ"
-  },
   "queue": {
     "message": "ಸರತಿ"
   },

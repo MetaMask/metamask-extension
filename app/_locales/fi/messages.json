@@ -847,9 +847,6 @@
   "privateNetwork": {
     "message": "Yksityinen verkko"
   },
-  "qrCode": {
-    "message": "Näytä QR-koodi"
-  },
   "queue": {
     "message": "Jono"
   },

@@ -821,9 +821,6 @@
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
   },
-  "qrCode": {
-    "message": "Tunjuk Kod QR"
-  },
   "queue": {
     "message": "Baris Gilir"
   },

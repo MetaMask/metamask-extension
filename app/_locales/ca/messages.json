@@ -831,9 +831,6 @@
   "privateNetwork": {
     "message": "Xarxa privada"
   },
-  "qrCode": {
-    "message": "Mostra el codi QR"
-  },
   "queue": {
     "message": "Cua"
   },

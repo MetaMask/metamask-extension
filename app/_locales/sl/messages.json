@@ -835,9 +835,6 @@
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },
-  "qrCode": {
-    "message": "Prikaži QR kodo"
-  },
   "queue": {
     "message": "Čakalna vrsta"
   },

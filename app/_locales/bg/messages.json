@@ -846,9 +846,6 @@
   "privateNetwork": {
     "message": "Частна мрежа"
   },
-  "qrCode": {
-    "message": "Показване на QR кода"
-  },
   "queue": {
     "message": "Опашка"
   },

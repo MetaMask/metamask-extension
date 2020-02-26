@@ -813,9 +813,6 @@
   "privateNetwork": {
     "message": "Rete Privata"
   },
-  "qrCode": {
-    "message": "Mostra Codice QR"
-  },
   "queue": {
     "message": "Coda"
   },

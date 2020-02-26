@@ -841,9 +841,6 @@
   "privateNetwork": {
     "message": "Sieć prywatna"
   },
-  "qrCode": {
-    "message": "Pokaż kod QR"
-  },
   "queue": {
     "message": "Kolejka"
   },

@@ -828,9 +828,6 @@
   "privateNetwork": {
     "message": "Jaringan Privat"
   },
-  "qrCode": {
-    "message": "Tampilkan Kode QR"
-  },
   "queue": {
     "message": "Antrean"
   },

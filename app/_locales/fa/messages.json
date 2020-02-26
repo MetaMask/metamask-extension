@@ -850,9 +850,6 @@
   "privateNetwork": {
     "message": "شبکه شخصی"
   },
-  "qrCode": {
-    "message": "نمایش کد QR"
-  },
   "queue": {
     "message": "صف"
   },

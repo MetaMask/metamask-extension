@@ -324,9 +324,6 @@
   "privateNetwork": {
     "message": "Rede Privada"
   },
-  "qrCode": {
-    "message": "Mostrar Código QR"
-  },
   "readdToken": {
     "message": "Pode adicionar este token de novo clicando na opção “Adicionar token” no menu de opções da sua conta."
   },

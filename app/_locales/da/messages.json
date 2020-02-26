@@ -828,9 +828,6 @@
   "privateNetwork": {
     "message": "Privat netværk"
   },
-  "qrCode": {
-    "message": "Vis QR Kode"
-  },
   "queue": {
     "message": "Kø"
   },

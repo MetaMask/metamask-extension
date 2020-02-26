@@ -834,9 +834,6 @@
   "privateNetwork": {
     "message": "Privat nätverk"
   },
-  "qrCode": {
-    "message": "Visa QR-kod"
-  },
   "queue": {
     "message": "Utskriftskö"
   },
