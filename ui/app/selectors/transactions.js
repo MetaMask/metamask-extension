@@ -12,10 +12,15 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import { selectedTokenAddressSelector } from './tokens'
 import { getFastPriceEstimateInHexWEI } from './custom-gas'
-import { getSelectedToken } from './selectors'
+import { getSelectedToken, getIsMainnet } from './selectors'
 import txHelper from '../../lib/tx-helper'
 
-export const shapeShiftTxListSelector = (state) => state.metamask.shapeShiftTxList
+export const shapeShiftTxListSelector = (state) => {
+  if (getIsMainnet(state)) {
+    return state.metamask.shapeShiftTxList
+  }
+  return []
+}
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags

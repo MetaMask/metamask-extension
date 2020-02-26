@@ -320,45 +320,6 @@ export default function reduceApp (state = {}, action) {
         },
       }
 
-    case actions.PAIR_UPDATE:
-      return {
-        ...appState,
-        buyView: {
-          subview: 'ShapeShift',
-          formView: {
-            coinbase: false,
-            shapeshift: true,
-            marketinfo: action.value.marketinfo,
-            coinOptions: appState.buyView.formView.coinOptions,
-          },
-          buyAddress: appState.buyView.buyAddress,
-          amount: appState.buyView.amount,
-          warning: null,
-        },
-      }
-
-    case actions.SHOW_QR:
-      return {
-        ...appState,
-        qrRequested: true,
-        transForward: true,
-
-        Qr: {
-          message: action.value.message,
-          data: action.value.data,
-        },
-      }
-
-    case actions.SHOW_QR_VIEW:
-      return {
-        ...appState,
-        transForward: true,
-        Qr: {
-          message: action.value.message,
-          data: action.value.data,
-        },
-      }
-
     case actions.SET_MOUSE_USER_STATE:
       return {
         ...appState,

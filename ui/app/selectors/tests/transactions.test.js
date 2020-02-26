@@ -104,6 +104,9 @@ describe('Transaction Selectors', function () {
 
       const state = {
         metamask: {
+          provider: {
+            nickname: 'mainnet',
+          },
           featureFlags: {
             showIncomingTransactions: false,
           },
@@ -140,6 +143,9 @@ describe('Transaction Selectors', function () {
 
       const state = {
         metamask: {
+          provider: {
+            nickname: 'mainnet',
+          },
           featureFlags: {
             showIncomingTransactions: false,
           },
@@ -203,6 +209,9 @@ describe('Transaction Selectors', function () {
 
       const state = {
         metamask: {
+          provider: {
+            nickname: 'mainnet',
+          },
           featureFlags: {
             showIncomingTransactions: false,
           },
@@ -284,6 +293,9 @@ describe('Transaction Selectors', function () {
 
     const state = {
       metamask: {
+        provider: {
+          nickname: 'mainnet',
+        },
         featureFlags: {
           showIncomingTransactions: false,
         },

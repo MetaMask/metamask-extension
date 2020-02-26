@@ -1053,10 +1053,7 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522347459106},
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq"},"time":1522345459106}
-    ],
+    "shapeShiftTxList": [],
     "send": {},
     "currentLocale": "en",
     "preferences": {
