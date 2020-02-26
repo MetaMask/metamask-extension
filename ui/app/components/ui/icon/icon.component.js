@@ -41,11 +41,8 @@ const Icon = ({ className, width, height, color, type }) => {
       </svg>
     ),
     copy: (
-      // this asset needs to be updated (it should *not* be 3 <rect>'s, it should be two unique vectors)
-      <svg className={className} width={width} height={height} viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="8" height="8" fill="white" stroke={color} />
-        <rect x="1" y="1" width="9" height="9" fill="white" />
-        <rect x="2.5" y="2.5" width="8" height="8" fill="white" stroke={color} />
+      <svg width={width} height={height} viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" clipRule="evenodd" d="M0 0H1H9V1H1V9H0V0ZM2 2H11V11H2V2ZM3 3H10V10H3V3Z" fill={color} />
       </svg>
     ),
   }
