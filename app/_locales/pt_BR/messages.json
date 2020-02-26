@@ -835,9 +835,6 @@
   "privateNetwork": {
     "message": "Rede Particular"
   },
-  "qrCode": {
-    "message": "Mostrar QR Code"
-  },
   "queue": {
     "message": "Fila"
   },

@@ -838,9 +838,6 @@
   "privateNetwork": {
     "message": "私有網路"
   },
-  "qrCode": {
-    "message": "顯示 QR Code"
-  },
   "queue": {
     "message": "佇列"
   },

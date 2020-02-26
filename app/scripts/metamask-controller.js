@@ -66,7 +66,6 @@ import contractMap from 'eth-contract-metadata'
 import {
   AddressBookController,
   CurrencyRateController,
-  ShapeShiftController,
   PhishingController,
 } from 'gaba'
 
@@ -276,8 +275,6 @@ export default class MetamaskController extends EventEmitter {
       this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
     })
 
-    this.shapeshiftController = new ShapeShiftController(undefined, initState.ShapeShiftController)
-
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
@@ -297,7 +294,6 @@ export default class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
-      ShapeShiftController: this.shapeshiftController,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
@@ -326,7 +322,6 @@ export default class MetamaskController extends EventEmitter {
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
-      ShapeshiftController: this.shapeshiftController,
       InfuraController: this.infuraController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,

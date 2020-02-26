@@ -513,9 +513,6 @@
   "privateNetwork": {
     "message": "Rezo Prive"
   },
-  "qrCode": {
-    "message": "Montre QR Kòd"
-  },
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
   },

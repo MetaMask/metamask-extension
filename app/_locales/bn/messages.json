@@ -850,9 +850,6 @@
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"
   },
-  "qrCode": {
-    "message": "QR কোড দেখান"
-  },
   "queue": {
     "message": "অপেক্ষমাণ"
   },

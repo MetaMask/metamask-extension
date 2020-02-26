@@ -837,9 +837,6 @@
   "privateNetwork": {
     "message": "Rețea privată"
   },
-  "qrCode": {
-    "message": "Afișare cod QR"
-  },
   "queue": {
     "message": "Coadă"
   },

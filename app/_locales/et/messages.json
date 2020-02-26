@@ -840,9 +840,6 @@
   "privateNetwork": {
     "message": "Privaatvõrk"
   },
-  "qrCode": {
-    "message": "Kuva QR-kood"
-  },
   "queue": {
     "message": "Järjekord"
   },

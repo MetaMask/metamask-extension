@@ -847,9 +847,6 @@
   "privateNetwork": {
     "message": "רשת פרטית"
   },
-  "qrCode": {
-    "message": "הצג קוד QR"
-  },
   "queue": {
     "message": "תור"
   },

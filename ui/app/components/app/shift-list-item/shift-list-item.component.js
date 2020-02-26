@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { createExplorerLink as explorerLink } from 'etherscan-link'
-import * as actions from '../../../store/actions'
 import { formatDate, addressSummary } from '../../../helpers/utils/util'
 import CopyButton from '../../ui/copyButton'
 import EthBalance from '../../ui/eth-balance'
-import Tooltip from '../../ui/tooltip'
 
 export default class ShiftListItem extends Component {
   static contextTypes = {
@@ -19,7 +17,6 @@ export default class ShiftListItem extends Component {
 
   static propTypes = {
     depositType: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
     depositAddress: PropTypes.string.isRequired,
     conversionRate: PropTypes.any,
     currentCurrency: PropTypes.any,
@@ -39,23 +36,9 @@ export default class ShiftListItem extends Component {
         return (
           <div className="flex-row">
             <CopyButton value={this.props.depositAddress} />
-            <Tooltip title={this.context.t('qrCode')}>
-              <i
-                className="fa fa-qrcode pointer pop-hover"
-                onClick={() => {
-                  this.props.dispatch(actions.reshowQrCode(this.props.depositAddress, this.props.depositType))
-                }}
-                style={{
-                  margin: '5px',
-                  marginLeft: '23px',
-                  marginRight: '12px',
-                  fontSize: '20px',
-                  color: '#F7861C',
-                }}
-              />
-            </Tooltip>
           </div>
         )
+
       case 'received':
         return <div className="flex-row" />
 

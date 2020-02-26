@@ -847,9 +847,6 @@
   "privateNetwork": {
     "message": "Ιδιωτικό Δίκτυο"
   },
-  "qrCode": {
-    "message": "Εμφάνιση κωδικού QR"
-  },
   "queue": {
     "message": "Ουρά"
   },

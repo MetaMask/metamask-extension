@@ -13,7 +13,6 @@ describe('Account Details Modal', function () {
     hideModal: sinon.spy(),
     setAccountLabel: sinon.spy(),
     showExportPrivateKeyModal: sinon.spy(),
-    showQrView: sinon.spy(),
     network: 'test',
     rpcPrefs: {},
     selectedIdentity: {

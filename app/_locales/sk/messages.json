@@ -816,9 +816,6 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "qrCode": {
-    "message": "Ukázat QR kód"
-  },
   "queue": {
     "message": "Poradie"
   },

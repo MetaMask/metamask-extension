@@ -850,9 +850,6 @@
   "privateNetwork": {
     "message": "Privatus tinklas"
   },
-  "qrCode": {
-    "message": "Rodyti QR kodą"
-  },
   "queue": {
     "message": "Eilė"
   },

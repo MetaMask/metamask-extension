@@ -843,9 +843,6 @@
   "privateNetwork": {
     "message": "Magánhálózat"
   },
-  "qrCode": {
-    "message": "QR kód megmutatása"
-  },
   "queue": {
     "message": "Nyomtatólista"
   },

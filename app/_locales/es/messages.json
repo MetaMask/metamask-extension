@@ -678,9 +678,6 @@
   "privateNetwork": {
     "message": "Red privada"
   },
-  "qrCode": {
-    "message": "Mostrar codigo QR"
-  },
   "queue": {
     "message": "Cola"
   },

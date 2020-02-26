@@ -841,9 +841,6 @@
   "privateNetwork": {
     "message": "프라이빗 네트워크"
   },
-  "qrCode": {
-    "message": "QR 코드 보기"
-  },
   "queue": {
     "message": "큐"
   },

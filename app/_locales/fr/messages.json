@@ -829,9 +829,6 @@
   "privateNetwork": {
     "message": "Réseau privé"
   },
-  "qrCode": {
-    "message": "Afficher le QR Code"
-  },
   "queue": {
     "message": "File d'attente"
   },

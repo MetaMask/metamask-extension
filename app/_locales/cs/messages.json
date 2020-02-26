@@ -350,9 +350,6 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "qrCode": {
-    "message": "Ukázat QR kód"
-  },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },

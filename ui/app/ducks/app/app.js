@@ -285,18 +285,6 @@ export default function reduceApp (state = {}, action) {
         isLoading: false,
       }
 
-    case actions.SHOW_SUB_LOADING_INDICATION:
-      return {
-        ...appState,
-        isSubLoading: true,
-      }
-
-    case actions.HIDE_SUB_LOADING_INDICATION:
-      return {
-        ...appState,
-        isSubLoading: false,
-      }
-
     case actions.DISPLAY_WARNING:
       return {
         ...appState,
@@ -317,45 +305,6 @@ export default function reduceApp (state = {}, action) {
           subview: 'export',
           accountExport: 'completed',
           privateKey: action.value,
-        },
-      }
-
-    case actions.PAIR_UPDATE:
-      return {
-        ...appState,
-        buyView: {
-          subview: 'ShapeShift',
-          formView: {
-            coinbase: false,
-            shapeshift: true,
-            marketinfo: action.value.marketinfo,
-            coinOptions: appState.buyView.formView.coinOptions,
-          },
-          buyAddress: appState.buyView.buyAddress,
-          amount: appState.buyView.amount,
-          warning: null,
-        },
-      }
-
-    case actions.SHOW_QR:
-      return {
-        ...appState,
-        qrRequested: true,
-        transForward: true,
-
-        Qr: {
-          message: action.value.message,
-          data: action.value.data,
-        },
-      }
-
-    case actions.SHOW_QR_VIEW:
-      return {
-        ...appState,
-        transForward: true,
-        Qr: {
-          message: action.value.message,
-          data: action.value.data,
         },
       }
 

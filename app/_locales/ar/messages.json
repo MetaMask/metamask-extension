@@ -843,9 +843,6 @@
   "privateNetwork": {
     "message": "شبكة خاصة"
   },
-  "qrCode": {
-    "message": "عرض رمز الاستجابة السريعة (QR)"
-  },
   "queue": {
     "message": "اللائحة"
   },

@@ -366,9 +366,6 @@
   "privateNetwork": {
     "message": "Özel Ağ"
   },
-  "qrCode": {
-    "message": "QR Kodunu göster"
-  },
   "readdToken": {
     "message": "Gelecekte Bu jetonu hesap seçenekleri menüsünde “Jeton ekle”'ye giderek geri ekleyebilirsiniz."
   },

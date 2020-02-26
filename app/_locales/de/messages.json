@@ -816,9 +816,6 @@
   "privateNetwork": {
     "message": "Privates Netzwerk"
   },
-  "qrCode": {
-    "message": "QR Code anzeigen"
-  },
   "queue": {
     "message": "Warteschlange"
   },

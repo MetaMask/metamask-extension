@@ -774,9 +774,6 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "qrCode": {
-    "message": "Ipakita ang QR Code"
-  },
   "queue": {
     "message": "I-queue"
   },

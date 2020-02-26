@@ -89,12 +89,6 @@ export const actionConstants = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
-  PAIR_UPDATE: 'PAIR_UPDATE',
-  SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
-  HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
-  // QR STUFF:
-  SHOW_QR: 'SHOW_QR',
-  SHOW_QR_VIEW: 'SHOW_QR_VIEW',
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
 
@@ -1807,18 +1801,6 @@ export function hideLoadingIndication () {
   }
 }
 
-export function showSubLoadingIndication () {
-  return {
-    type: actionConstants.SHOW_SUB_LOADING_INDICATION,
-  }
-}
-
-export function hideSubLoadingIndication () {
-  return {
-    type: actionConstants.HIDE_SUB_LOADING_INDICATION,
-  }
-}
-
 export function displayWarning (text) {
   return {
     type: actionConstants.DISPLAY_WARNING,
@@ -1909,86 +1891,6 @@ export function buyEth (opts) {
     dispatch({
       type: actionConstants.BUY_ETH,
     })
-  }
-}
-
-export function pairUpdate (coin) {
-  return (dispatch) => {
-    dispatch(showSubLoadingIndication())
-    dispatch(hideWarning())
-    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
-      dispatch(hideSubLoadingIndication())
-      if (mktResponse.error) {
-        return dispatch(displayWarning(mktResponse.error))
-      }
-      dispatch({
-        type: actionConstants.PAIR_UPDATE,
-        value: {
-          marketinfo: mktResponse,
-        },
-      })
-    })
-  }
-}
-
-export function showQrView (data, message) {
-  return {
-    type: actionConstants.SHOW_QR_VIEW,
-    value: {
-      message: message,
-      data: data,
-    },
-  }
-}
-export function reshowQrCode (data, coin) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
-      if (mktResponse.error) {
-        return dispatch(displayWarning(mktResponse.error))
-      }
-
-      const message = [
-        `Deposit your ${coin} to the address below:`,
-        `Deposit Limit: ${mktResponse.limit}`,
-        `Deposit Minimum:${mktResponse.minimum}`,
-      ]
-
-      dispatch(hideLoadingIndication())
-      return dispatch(showQrView(data, message))
-    })
-  }
-}
-
-export function shapeShiftRequest (query, options = {}, cb) {
-  let queryResponse, method
-  options.method ? method = options.method : method = 'GET'
-
-  const requestListner = function () {
-    try {
-      queryResponse = JSON.parse(this.responseText)
-      if (cb) {
-        cb(queryResponse)
-      }
-      return queryResponse
-    } catch (e) {
-      if (cb) {
-        cb({ error: e })
-      }
-      return e
-    }
-  }
-
-  const shapShiftReq = new XMLHttpRequest()
-  shapShiftReq.addEventListener('load', requestListner)
-  shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
-
-  if (options.method === 'POST') {
-    const jsonObj = JSON.stringify(options.data)
-    shapShiftReq.setRequestHeader('Content-Type', 'application/json')
-    return shapShiftReq.send(jsonObj)
-  } else {
-    return shapShiftReq.send()
   }
 }
 
