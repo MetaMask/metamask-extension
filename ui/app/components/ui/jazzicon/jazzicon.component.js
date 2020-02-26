@@ -28,10 +28,10 @@ export default class Jazzicon extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const { address: prevAddress } = prevProps
-    const { address } = this.props
+    const { address: prevAddress, diameter: prevDiameter } = prevProps
+    const { address, diameter } = this.props
 
-    if (address !== prevAddress) {
+    if (address !== prevAddress || diameter !== prevDiameter) {
       this.removeExistingChildren()
       this.appendJazzicon()
     }
