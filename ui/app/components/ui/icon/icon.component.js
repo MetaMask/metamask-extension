@@ -47,7 +47,7 @@ const Icon = ({ className, width, height, color, type }) => {
         <rect x="1" y="1" width="9" height="9" fill="white" />
         <rect x="2.5" y="2.5" width="8" height="8" fill="white" stroke={color} />
       </svg>
-    )
+    ),
   }
 
   return svgs[type]
