@@ -6,6 +6,7 @@ import TransactionActivity from '../transaction-activity'
 import TransactionFees from '../transaction-fees'
 import { text } from '@storybook/addon-knobs/react'
 import Icon from '../icon/icon.component'
+import Tooltip from '../tooltip'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
@@ -43,14 +44,17 @@ storiesOf('PopOver', module)
               <h3 className="popover-item__heading">STATUS</h3>
               <h4 className="popover-item__subheading confirmed">
                 Confirmed
-                <span className="popover-item__icon">
-                  <Icon
-                    type="copy"
-                    width={11}
-                    height={11}
-                    color="#6A737D"
-                  />
-                </span>
+                <Tooltip position="right" title="Copy Transaction ID">
+                  <a href="#" className="popover-item__icon">
+                    <Icon
+                      className="copy"
+                      type="copy"
+                      width={11}
+                      height={11}
+                      color="#6A737D"
+                    />
+                  </a>
+                </Tooltip>
               </h4>
             </div>
             <div className="popover-item__col">
