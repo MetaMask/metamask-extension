@@ -67,7 +67,7 @@
     "tokens": [],
     "transactions": {},
     "incomingTransactions": {},
-    "selectedAddressTxList": [],
+    "currentNetworkTxList": [],
     "unapprovedTxs": {},
     "unapprovedMsgs": {
       "8927167822566864": {

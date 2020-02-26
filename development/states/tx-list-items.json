@@ -3,7 +3,9 @@
     "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
-    "featureFlags": {"betaUI": true},
+    "featureFlags": {
+      "betaUI": true
+    },
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
@@ -68,7 +70,7 @@
     "tokens": [],
     "transactions": {},
     "incomingTransactions": {},
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "err": {
           "message": "Error: intrinsic gas too low",
@@ -226,7 +228,7 @@
         "time": 1522378334455,
         "txParams": {
           "chainId": "0x3",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0x0",
           "gasPrice": "0x77359400",
           "nonce": "0x3",
@@ -241,7 +243,7 @@
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0x0",
@@ -506,7 +508,7 @@
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0xd3e1",
           "gasPrice": "0x5f5e100",
           "nonce": "0x6",
@@ -714,7 +716,7 @@
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0xd3e1",
           "gasPrice": "0x5f5e100",
           "nonce": "0x2",
@@ -729,7 +731,7 @@
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0xcf08",
@@ -908,7 +910,7 @@
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0xcf08",

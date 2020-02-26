@@ -625,7 +625,7 @@ describe('send selectors', function () {
 
     it('should return shapeshift transactions if current network is mainnet', function () {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, {
-        selectedTokenAddress: false, provider: { nickname: 'mainnet' }
+        selectedTokenAddress: false, provider: { nickname: 'mainnet' },
       })
       const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
       assert.deepEqual(

@@ -169,7 +169,7 @@
       }
     },
     "currentBlockGasLimit": "0x731e25",
-    "selectedAddressTxList": [],
+    "currentNetworkTxList": [],
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
