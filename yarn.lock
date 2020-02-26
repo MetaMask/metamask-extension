@@ -6423,6 +6423,11 @@ caw@^2.0.0, caw@^2.0.1:
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
 
+cbor-sync@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/cbor-sync/-/cbor-sync-1.0.4.tgz#5a11a1ab75c2a14d1af1b237fd84aa8c1593662f"
+  integrity sha512-GWlXN4wiz0vdWWXBU71Dvc1q3aBo0HytqwAZnXF1wOwjqNnDWA1vZ1gDMFLlqohak31VQzmhiYfiCX5QSSfagA==
+
 ccount@^1.0.0, ccount@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.0.4.tgz#9cf2de494ca84060a2a8d2854edd6dfb0445f386"
@@ -22550,15 +22555,16 @@ public-encrypt@^4.0.0:
     parse-asn1 "^5.0.0"
     randombytes "^2.0.1"
 
-pubnub@4.24.4:
-  version "4.24.4"
-  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-4.24.4.tgz#6874b1836539765a1c1ec8c264f6b233ed28192a"
-  integrity sha512-otRny/9au/Xf0uAfPUrVwUPdFIE7nZv6+7TLcG8+wiZESgi7EgiGZ9VXAoe6istBj6hfZe0vj3+XCbkZHLHklw==
+pubnub@4.27.3:
+  version "4.27.3"
+  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-4.27.3.tgz#f9afafd79b7f8448d12ecfca22acace603f33557"
+  integrity sha512-Wl8MrwMJPJSUCLHhxhQSKdNbpopNPgCVNL5ogDw/fZ8OUn0/6o/V6HTPTAkyurD3LnPCw7M1A7kdBFmpy+Iitw==
   dependencies:
     agentkeepalive "^3.5.2"
+    cbor-sync "^1.0.4"
     lil-uuid "^0.1.1"
     superagent "^3.8.1"
-    superagent-proxy "^1.0.3"
+    superagent-proxy "^2.0.0"
 
 pull-abortable@^4.1.0, pull-abortable@^4.1.1:
   version "4.1.1"
@@ -26720,7 +26726,7 @@ summary@0.3.x:
   resolved "https://registry.yarnpkg.com/summary/-/summary-0.3.2.tgz#3d7439b30dab3449dfd66840a822838d4a4a8561"
   integrity sha1-PXQ5sw2rNEnf1mhAqCKDjUpKhWE=
 
-superagent-proxy@^1.0.3, superagent-proxy@^2.0.0:
+superagent-proxy@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/superagent-proxy/-/superagent-proxy-2.0.0.tgz#9f57515cd660e2e9ce55c0e6bd70f92eb07c3ee0"
   integrity sha512-TktJma5jPdiH1BNN+reF/RMW3b8aBTCV7KlLFV0uYcREgNf3pvo7Rdt564OcFHwkGb3mYEhHuWPBhSbOwiNaYw==

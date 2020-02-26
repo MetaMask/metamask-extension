@@ -55,8 +55,7 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15",
-    "pubnub/superagent-proxy": "^2.0.0"
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -132,7 +131,7 @@
     "post-message-stream": "^3.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
-    "pubnub": "4.24.4",
+    "pubnub": "4.27.3",
     "pump": "^3.0.0",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.1",
