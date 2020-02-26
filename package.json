@@ -179,9 +179,10 @@
     "@metamask/forwarder": "^1.1.0",
     "@metamask/onboarding": "^0.2.0",
     "@sentry/cli": "^1.49.0",
-    "@storybook/addon-actions": "^5.2.8",
-    "@storybook/addon-knobs": "^5.2.8",
-    "@storybook/react": "^5.2.8",
+    "@storybook/addon-actions": "^5.3.14",
+    "@storybook/addon-knobs": "^5.3.14",
+    "@storybook/core": "^5.3.14",
+    "@storybook/react": "^5.3.14",
     "@storybook/storybook-deployer": "^2.8.1",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",
@@ -255,6 +256,7 @@
     "react-test-renderer": "^16.12.0",
     "read-installed": "^4.0.3",
     "redux-mock-store": "^1.5.4",
+    "regenerator-runtime": "^0.13.3",
     "remote-redux-devtools": "^0.5.16",
     "remotedev-server": "^0.3.1",
     "resolve-url-loader": "^2.3.0",
@@ -275,7 +277,8 @@
     "ttest": "^2.1.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.1"
+    "watchify": "^3.11.1",
+    "webpack": "^4.41.6"
   },
   "engines": {
     "node": "^10.16.0",
