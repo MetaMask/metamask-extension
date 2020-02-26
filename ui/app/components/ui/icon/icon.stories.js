@@ -4,6 +4,14 @@ import Icon from './icon.component'
 import { color, number } from '@storybook/addon-knobs/react'
 
 storiesOf('Icon', module)
+  .add('Icon - Copy', () => (
+    <Icon
+      type="copy"
+      width={number('width', 28,)}
+      height={number('height', 28)}
+      color={color('color', '#2F80ED')}
+    />
+  ))
   .add('Icon - Send', () => (
     <Icon
       type="send"

@@ -5,9 +5,9 @@ import TransactionDetails from '../transaction-details'
 import TransactionActivity from '../transaction-activity'
 import TransactionFees from '../transaction-fees'
 import { text } from '@storybook/addon-knobs/react'
+import Icon from '../icon/icon.component'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-// import 'react-tabs/style/react-tabs.css'
 
 const activities = [
   'Transaction created with a value of 0.000023 ETH at 09:50 on 8/8/2019.',
@@ -41,7 +41,17 @@ storiesOf('PopOver', module)
           <div className="popover-item">
             <div className="popover-item__col">
               <h3 className="popover-item__heading">STATUS</h3>
-              <h4 className="popover-item__subheading confirmed">Confirmed</h4>
+              <h4 className="popover-item__subheading confirmed">
+                Confirmed
+                <span className="popover-item__icon">
+                  <Icon
+                    type="copy"
+                    width={11}
+                    height={11}
+                    color="#6A737D"
+                  />
+                </span>
+              </h4>
             </div>
             <div className="popover-item__col">
               <h3 className="popover-item__heading">DATE</h3>
