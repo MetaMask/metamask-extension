@@ -500,8 +500,6 @@ export default class MetamaskController extends EventEmitter {
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-      clearLastSelectedAddressHistory: nodeify(preferencesController.clearLastSelectedAddressHistory, preferencesController),
-      removeLastSelectedAddressesFor: nodeify(preferencesController.removeLastSelectedAddressesFor, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
@@ -1055,7 +1053,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async handleNewAccountSelected (origin, address) {
     this.permissionsController.handleNewAccountSelected(origin, address)
-    this.preferencesController.setLastSelectedAddress(origin, address)
   }
 
   // ---------------------------------------------------------------------------
