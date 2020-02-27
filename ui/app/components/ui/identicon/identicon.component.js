@@ -26,7 +26,12 @@ export default class Identicon extends PureComponent {
   }
 
   static defaultProps = {
+    addBorder: false,
+    address: undefined,
+    className: undefined,
     diameter: 46,
+    image: undefined,
+    useBlockie: false,
   }
 
   renderImage () {
