@@ -13,7 +13,6 @@ const zip = require('gulp-zip')
 const { assign } = require('lodash')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const manifest = require('./app/manifest.json')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
@@ -32,11 +31,6 @@ const packageJSON = require('./package.json')
 const baseManifest = require('./app/manifest/_base.json')
 
 sass.compiler = require('node-sass')
-
-
-const tasks = {}
-module.exports = tasks
-
 
 const dependencies = Object.keys((packageJSON && packageJSON.dependencies) || {})
 const materialUIDependencies = ['@material-ui/core']
@@ -69,15 +63,15 @@ function gulpParallel (...args) {
 // tasks
 //
 
-tasks.clean = function clean () {
+gulp.task('clean', () => {
   return del(['./dist/*'])
-}
+})
 
 // browser reload
 
-tasks['dev:reload'] = function devReload () {
+gulp.task('reload', function devReload () {
   livereload.listen({ port: 35729 })
-}
+})
 
 
 // manifest tinkering
@@ -87,7 +81,7 @@ const copyTaskNames = []
 const copyDevTaskNames = []
 
 
-gulp.task('copy:manifest', async () => {
+gulp.task('manifest:prod', async () => {
   return Promise.all(browserPlatforms.map(async (platform) => {
     const platformModifications = require(`./app/manifest/${platform}.json`)
     const result = mergeDeep(clone(baseManifest), platformModifications)
@@ -100,7 +94,7 @@ const scriptsToExcludeFromBackgroundDevBuild = {
 }
 
 // dev: remove bg-libs, add chromereload, add perms
-gulp.task('manifest:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
+gulp.task('manifest:env:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
   const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
   scripts.push('chromereload.js')
   manifest.background = {
@@ -111,7 +105,7 @@ gulp.task('manifest:dev', createTaskForModifyManifestForEnvironment(function (ma
 }))
 
 // testing-local: remove bg-libs, add perms
-gulp.task('manifest:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
+gulp.task('manifest:env:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
   const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
   scripts.push('chromereload.js')
   manifest.background = {
@@ -122,9 +116,25 @@ gulp.task('manifest:testing-local', createTaskForModifyManifestForEnvironment(fu
 }))
 
 // testing: add permissions
-gulp.task('manifest:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
+gulp.task('manifest:env:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
   manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
 }))
+
+// high level manifest tasks
+gulp.task('manifest:dev', gulp.series(
+  'manifest:prod',
+  'manifest:env:dev',
+))
+
+gulp.task('manifest:testing-local', gulp.series(
+  'manifest:prod',
+  'manifest:env:testing-local',
+))
+
+gulp.task('manifest:testing', gulp.series(
+  'manifest:prod',
+  'manifest:env:testing',
+))
 
 // helper for modifying each platform's manifest.json in place
 function createTaskForModifyManifestForEnvironment (transformFn) {
@@ -192,44 +202,14 @@ const copyTargetsDev = [
   },
 ]
 
-// temporary manifest breakout
-tasks['prod:manifest'] = gulp.series(
-  'copy:manifest',
-)
-
-tasks['dev:manifest'] = gulp.series(
-  'copy:manifest',
-  'manifest:dev',
-)
-
-tasks['test:manifest'] = gulp.series(
-  'copy:manifest',
-  'manifest:testing-local'
-)
-
 // static assets
 
-// actual copy tasks
-tasks['copy:actual:prod'] = gulp.parallel(...copyTargets.map(target => {
+gulp.task('copy:prod', gulp.parallel(...copyTargets.map(target => {
   return function copyStaticAssets () { return performCopy(target) }
-}))
-tasks['copy:actual:dev'] = gulp.parallel(...copyTargetsDev.map(target => {
+})))
+gulp.task('copy:dev', gulp.parallel(...copyTargetsDev.map(target => {
   return function copyStaticAssets () { return performCopy(target) }
-}))
-
-// wrapped copy tests to add in manifests
-tasks['prod:copy'] = tasks['copy'] = gulp.series(
-  tasks['copy:actual:prod'],
-  tasks['prod:manifest'],
-)
-tasks['dev:copy'] = gulp.series(
-  tasks['copy:actual:dev'],
-  tasks['dev:manifest'],
-)
-tasks['test:copy'] = gulp.series(
-  tasks['copy:actual:dev'],
-  tasks['test:manifest'],
-)
+})))
 
 function performCopy (target) {
   // stream from source
@@ -241,54 +221,6 @@ function performCopy (target) {
     stream = stream.pipe(gulp.dest(destination))
   })
   return stream
-}
-
-// creates one task for prod, one for dev, unless dev only
-
-function createCopyTasks (label, opts) {
-  if (!opts.devOnly) {
-    const copyTaskName = `copy:${label}`
-    copyTask(copyTaskName, opts)
-    copyTaskNames.push(copyTaskName)
-  }
-  const copyDevTaskName = `dev:copy:${label}`
-  copyTask(copyDevTaskName, Object.assign({ devMode: true }, opts))
-  copyDevTaskNames.push(copyDevTaskName)
-}
-
-// creates task
-// adds watch in devMode
-// gulp.src -> destination: gulp.dest
-
-function copyTask (taskName, opts) {
-  const source = opts.source
-  const destination = opts.destination
-  const destinations = opts.destinations || [destination]
-  const pattern = opts.pattern || '/**/*'
-  const devMode = opts.devMode
-
-  return gulp.task(taskName, function () {
-    if (devMode) {
-      watch(source + pattern, (event) => {
-        livereload.changed(event.path)
-        performCopy()
-      })
-    }
-
-    return performCopy()
-  })
-
-  function performCopy () {
-    // stream from source
-    let stream = gulp.src(source + pattern, { base: source })
-
-    // copy to destinations
-    destinations.forEach(function (destination) {
-      stream = stream.pipe(gulp.dest(destination))
-    })
-
-    return stream
-  }
 }
 
 gulp.task('optimize:images', function () {
@@ -449,57 +381,64 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 gulp.task('dev:test',
   gulp.series(
-    tasks['clean'],
+    'clean',
     'dev:scss',
     gulp.parallel(
       'dev:test-extension:js',
-      tasks['test:copy'],
-      tasks['dev:reload']
+      'copy:dev',
+      'manifest:testing',
+      'reload',
     )
   )
 )
 
 gulp.task('dev:extension',
   gulp.series(
-    tasks['clean'],
+    'clean',
     'dev:scss',
     gulp.parallel(
       'dev:extension:js',
-      tasks['dev:copy'],
-      tasks['dev:reload']
+      'copy:dev',
+      'manifest:dev',
+      'reload'
     )
   )
 )
 
-tasks.build = gulp.series(
-  tasks['clean'],
-  'build:scss',
-  gulpParallel(
-    'build:extension:js:deps:background',
-    'build:extension:js:deps:ui',
-    'build:extension:js',
-    'copy'
-  ),
-  'optimize:images'
+gulp.task('build',
+  gulp.series(
+    'clean',
+    'build:scss',
+    gulpParallel(
+      'build:extension:js:deps:background',
+      'build:extension:js:deps:ui',
+      'build:extension:js',
+      'copy:prod',
+      'manifest:prod',
+    ),
+    'optimize:images'
+  )
 )
 
 gulp.task('build:test',
   gulp.series(
-    tasks['clean'],
+    'clean',
     'build:scss',
     gulpParallel(
       'build:extension:js:deps:background',
       'build:extension:js:deps:ui',
       'build:test:extension:js',
-      'copy'
+      'copy:prod',
+      'manifest:testing',
     ),
-    'manifest:testing'
   )
 )
 
-tasks.dist = gulp.series(
-  tasks['build'],
-  'zip',
+gulp.task('dist',
+  gulp.series(
+    'build',
+    'zip',
+  )
 )
 
 // task generators
@@ -507,7 +446,7 @@ tasks.dist = gulp.series(
 function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-      .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+      .pipe(zip(`metamask-${target}-${baseManifest.version}.zip`))
       .pipe(gulp.dest('builds'))
   }
 }
