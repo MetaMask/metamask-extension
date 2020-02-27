@@ -3,6 +3,7 @@
 ## Current Master
 
 - [#317](https://github.com/poanetwork/nifty-wallet/pull/317) - Fix path to derive accounts in HD wallets for RSK, ETC
+- [#318](https://github.com/poanetwork/nifty-wallet/pull/318) - (Fix) pasting of ABI for contract type account
 
 ## 4.11.10 Tue Feb 04 2020
 
