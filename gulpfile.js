@@ -31,6 +31,11 @@ const packageJSON = require('./package.json')
 
 sass.compiler = require('node-sass')
 
+
+const tasks = {}
+module.exports = tasks
+
+
 const dependencies = Object.keys((packageJSON && packageJSON.dependencies) || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
@@ -45,123 +50,46 @@ const externalDependenciesMap = {
   ],
 }
 
-function gulpParallel (...args) {
-  return function spawnGulpChildProcess (cb) {
-    return gulpMultiProcess(args, cb, true)
-  }
-}
-
 const browserPlatforms = [
   'firefox',
   'chrome',
   'brave',
   'opera',
 ]
-const commonPlatforms = [
-  // browser extensions
-  ...browserPlatforms,
-]
+
+function gulpParallel (...args) {
+  return function spawnGulpChildProcess (cb) {
+    return gulpMultiProcess(args, cb, true)
+  }
+}
+
+//
+// tasks
+//
+
+tasks.clean = function clean () {
+  return del(['./dist/*'])
+}
 
 // browser reload
 
-gulp.task('dev:reload', function () {
-  livereload.listen({
-    port: 35729,
-  })
-})
+tasks['dev:reload'] = function devReload () {
+  livereload.listen({ port: 35729 })
+}
 
-// copy universal
 
+// manifest tinkering
+
+// still used by manifest
 const copyTaskNames = []
 const copyDevTaskNames = []
 
-createCopyTasks('locales', {
-  source: './app/_locales/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/_locales`),
-})
-createCopyTasks('images', {
-  source: './app/images/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images`),
-})
-createCopyTasks('contractImages', {
-  source: './node_modules/eth-contract-metadata/images/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images/contract`),
-})
-createCopyTasks('fonts', {
-  source: './app/fonts/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/fonts`),
-})
-createCopyTasks('vendor', {
-  source: './app/vendor/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/vendor`),
-})
-createCopyTasks('css', {
-  source: './ui/app/css/output/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
-})
-createCopyTasks('reload', {
-  devOnly: true,
-  source: './app/scripts/',
-  pattern: '/chromereload.js',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
-})
-createCopyTasks('html', {
-  source: './app/',
-  pattern: '/*.html',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
-})
-
-// copy extension
 
 createCopyTasks('manifest', {
   source: './app/',
   pattern: '/*.json',
   destinations: browserPlatforms.map((platform) => `./dist/${platform}`),
 })
-
-function createCopyTasks (label, opts) {
-  if (!opts.devOnly) {
-    const copyTaskName = `copy:${label}`
-    copyTask(copyTaskName, opts)
-    copyTaskNames.push(copyTaskName)
-  }
-  const copyDevTaskName = `dev:copy:${label}`
-  copyTask(copyDevTaskName, Object.assign({ devMode: true }, opts))
-  copyDevTaskNames.push(copyDevTaskName)
-}
-
-function copyTask (taskName, opts) {
-  const source = opts.source
-  const destination = opts.destination
-  const destinations = opts.destinations || [destination]
-  const pattern = opts.pattern || '/**/*'
-  const devMode = opts.devMode
-
-  return gulp.task(taskName, function () {
-    if (devMode) {
-      watch(source + pattern, (event) => {
-        livereload.changed(event.path)
-        performCopy()
-      })
-    }
-
-    return performCopy()
-  })
-
-  function performCopy () {
-    // stream from source
-    let stream = gulp.src(source + pattern, { base: source })
-
-    // copy to destinations
-    destinations.forEach(function (destination) {
-      stream = stream.pipe(gulp.dest(destination))
-    })
-
-    return stream
-  }
-}
-
-// manifest tinkering
 
 gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
@@ -263,38 +191,160 @@ gulp.task('manifest:dev', function () {
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
+// copy universal
+
+const copyTargets = [
+  {
+    src: './app/_locales/',
+    dest: `_locales`,
+  },
+  {
+    src: './app/images/',
+    dest: `images`,
+  },
+  {
+    src: './node_modules/eth-contract-metadata/images/',
+    dest: `images/contract`,
+  },
+  {
+    src: './app/fonts/',
+    dest: `fonts`,
+  },
+  {
+    src: './app/vendor/',
+    dest: `vendor`,
+  },
+  {
+    src: './ui/app/css/output/',
+    dest: ``,
+  },
+  {
+    src: './app/',
+    pattern: '/*.html',
+    dest: ``,
+  },
+]
+
+const copyTargetsDev = [
+  ...copyTargets,
+  {
+    src: './app/scripts/',
+    pattern: '/chromereload.js',
+    dest: ``,
+  },
+]
+
+// temporary manifest breakout
+tasks['prod:manifest'] = gulp.series(
+  'copy:manifest',
+  'manifest:production',
+  'manifest:chrome',
+  'manifest:opera'
+)
+
+tasks['dev:manifest'] = gulp.series(
+  'copy:manifest',
+  'manifest:dev',
+  'manifest:chrome',
+  'manifest:opera'
+)
+
+tasks['test:manifest'] = gulp.series(
+  'copy:manifest',
+  'manifest:chrome',
+  'manifest:opera',
+  'manifest:testing-local'
+)
+
+// static assets
+
+// actual copy tasks
+tasks['copy:actual:prod'] = gulp.parallel(...copyTargets.map(target => {
+  return function copyStaticAssets () { return performCopy(target) }
+}))
+tasks['copy:actual:dev'] = gulp.parallel(...copyTargetsDev.map(target => {
+  return function copyStaticAssets () { return performCopy(target) }
+}))
+
+// wrapped copy tests to add in manifests
+tasks['prod:copy'] = tasks['copy'] = gulp.series(
+  tasks['copy:actual:prod'],
+  tasks['prod:manifest'],
+)
+tasks['dev:copy'] = gulp.series(
+  tasks['copy:actual:dev'],
+  tasks['dev:manifest'],
+)
+tasks['test:copy'] = gulp.series(
+  tasks['copy:actual:dev'],
+  tasks['test:manifest'],
+)
+
+function performCopy (target) {
+  // stream from source
+  const pattern = target.pattern || '/**/*'
+  let stream = gulp.src(target.src + pattern, { base: target.src })
+  // copy to destinations
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}/${target.dest}`)
+  destinations.forEach(function (destination) {
+    stream = stream.pipe(gulp.dest(destination))
+  })
+  return stream
+}
+
+// creates one task for prod, one for dev, unless dev only
+
+function createCopyTasks (label, opts) {
+  if (!opts.devOnly) {
+    const copyTaskName = `copy:${label}`
+    copyTask(copyTaskName, opts)
+    copyTaskNames.push(copyTaskName)
+  }
+  const copyDevTaskName = `dev:copy:${label}`
+  copyTask(copyDevTaskName, Object.assign({ devMode: true }, opts))
+  copyDevTaskNames.push(copyDevTaskName)
+}
+
+// creates task
+// adds watch in devMode
+// gulp.src -> destination: gulp.dest
+
+function copyTask (taskName, opts) {
+  const source = opts.source
+  const destination = opts.destination
+  const destinations = opts.destinations || [destination]
+  const pattern = opts.pattern || '/**/*'
+  const devMode = opts.devMode
+
+  return gulp.task(taskName, function () {
+    if (devMode) {
+      watch(source + pattern, (event) => {
+        livereload.changed(event.path)
+        performCopy()
+      })
+    }
+
+    return performCopy()
+  })
+
+  function performCopy () {
+    // stream from source
+    let stream = gulp.src(source + pattern, { base: source })
+
+    // copy to destinations
+    destinations.forEach(function (destination) {
+      stream = stream.pipe(gulp.dest(destination))
+    })
+
+    return stream
+  }
+}
+
 gulp.task('optimize:images', function () {
   return gulp.src('./dist/**/images/**', { base: './dist/' })
     .pipe(imagemin())
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
-
-gulp.task('copy',
-  gulp.series(
-    gulp.parallel(...copyTaskNames),
-    'manifest:production',
-    'manifest:chrome',
-    'manifest:opera'
-  )
-)
-
-gulp.task('dev:copy',
-  gulp.series(
-    gulp.parallel(...copyDevTaskNames),
-    'manifest:dev',
-    'manifest:chrome',
-    'manifest:opera'
-  )
-)
-
-gulp.task('test:copy',
-  gulp.series(
-    gulp.parallel(...copyDevTaskNames),
-    'manifest:chrome',
-    'manifest:opera',
-    'manifest:testing-local'
-  )
-)
 
 // scss compilation and autoprefixing tasks
 
@@ -438,12 +488,6 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   gulp.task(taskPrefix, gulp.series(subtasks))
 }
 
-// clean dist
-
-gulp.task('clean', function clean () {
-  return del(['./dist/*'])
-})
-
 // zip tasks for distribution
 gulp.task('zip:chrome', zipTask('chrome'))
 gulp.task('zip:firefox', zipTask('firefox'))
@@ -454,45 +498,43 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 gulp.task('dev:test',
   gulp.series(
-    'clean',
+    tasks['clean'],
     'dev:scss',
     gulp.parallel(
       'dev:test-extension:js',
-      'test:copy',
-      'dev:reload'
+      tasks['test:copy'],
+      tasks['dev:reload']
     )
   )
 )
 
 gulp.task('dev:extension',
   gulp.series(
-    'clean',
+    tasks['clean'],
     'dev:scss',
     gulp.parallel(
       'dev:extension:js',
-      'dev:copy',
-      'dev:reload'
+      tasks['dev:copy'],
+      tasks['dev:reload']
     )
   )
 )
 
-gulp.task('build',
-  gulp.series(
-    'clean',
-    'build:scss',
-    gulpParallel(
-      'build:extension:js:deps:background',
-      'build:extension:js:deps:ui',
-      'build:extension:js',
-      'copy'
-    ),
-    'optimize:images'
-  )
+tasks.build = gulp.series(
+  tasks['clean'],
+  'build:scss',
+  gulpParallel(
+    'build:extension:js:deps:background',
+    'build:extension:js:deps:ui',
+    'build:extension:js',
+    'copy'
+  ),
+  'optimize:images'
 )
 
 gulp.task('build:test',
   gulp.series(
-    'clean',
+    tasks['clean'],
     'build:scss',
     gulpParallel(
       'build:extension:js:deps:background',
@@ -504,11 +546,9 @@ gulp.task('build:test',
   )
 )
 
-gulp.task('dist',
-  gulp.series(
-    'build',
-    'zip'
-  )
+tasks.dist = gulp.series(
+  tasks['build'],
+  'zip',
 )
 
 // task generators
