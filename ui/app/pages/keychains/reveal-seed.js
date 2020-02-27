@@ -102,7 +102,7 @@ class RevealSeedPage extends Component {
   renderPasswordPromptFooter () {
     return (
       <div className="page-container__footer">
-        <header>
+        <footer>
           <Button
             type="default"
             large
@@ -120,7 +120,7 @@ class RevealSeedPage extends Component {
           >
             {this.context.t('next')}
           </Button>
-        </header>
+        </footer>
       </div>
     )
   }

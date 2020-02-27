@@ -38,7 +38,7 @@ export default class PageContainerFooter extends Component {
     return (
       <div className="page-container__footer">
 
-        <header>
+        <footer>
           {!hideCancel && (
             <Button
               type={cancelButtonType || 'default'}
@@ -61,12 +61,12 @@ export default class PageContainerFooter extends Component {
           >
             { submitText || this.context.t('next') }
           </Button>
-        </header>
+        </footer>
 
         {children && (
-          <footer>
+          <div className="page-container__footer-secondary">
             {children}
-          </footer>
+          </div>
         )}
 
       </div>

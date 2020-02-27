@@ -55,7 +55,7 @@
     border-top: 1px solid $geyser;
     flex: 0 0 auto;
 
-    header {
+    footer {
       display: flex;
       flex-flow: row;
       justify-content: center;
@@ -63,7 +63,7 @@
       flex: 0 0 auto;
     }
 
-    footer {
+    &-secondary {
       display: flex;
       flex-flow: row;
       justify-content: space-around;
