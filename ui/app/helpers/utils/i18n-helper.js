@@ -44,10 +44,11 @@ export const getMessage = (localeCode, localeMessages, key, substitutions, react
   const requiresWrappers = phrase.match(/\{\{.+?\}\}/)
 
   const hasSubstitutions = Boolean(substitutions && substitutions.length)
-  const hasReactSubstitutions = hasSubstitutions && substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
+  const hasReactSubstitutions = hasSubstitutions &&
+    substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
 
   // perform substitutions
-  if (hasReactSubstitutions || requiresWrappers) {
+  if (hasSubstitutions || requiresWrappers) {
     const parts = phrase.split(/(\$\d|\{\{.+?\}\})/g)
 
     const wrappedAndSubStitutedParts = parts.map((part) => {
@@ -66,13 +67,9 @@ export const getMessage = (localeCode, localeMessages, key, substitutions, react
       }
     })
 
-    phrase = React.createElement('span', null, ...wrappedAndSubStitutedParts)
-  } else if (hasSubstitutions) {
-    phrase = entry.message
-    substitutions.forEach((substitution, index) => {
-      const regex = new RegExp(`\\$${index + 1}`, 'g')
-      phrase = phrase.replace(regex, substitution)
-    })
+    phrase = hasReactSubstitutions || requiresWrappers
+      ? <span> { wrappedAndSubStitutedParts } </span>
+      : wrappedAndSubStitutedParts.join('')
   }
 
   return phrase
