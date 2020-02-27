@@ -1,6 +1,7 @@
 import React from 'react'
 import { addDecorator, addParameters } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs/react'
+import '../ui/app/css/index.scss'
 
 addParameters({
   backgrounds: [
