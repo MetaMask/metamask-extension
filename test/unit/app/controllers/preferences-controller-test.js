@@ -543,5 +543,17 @@ describe('preferences controller', function () {
       assert.deepEqual(preferencesController.store.getState().frequentRpcListDetail, [])
     })
   })
-})
 
+  describe('setUsePhishDetect', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState()
+      assert.equal(state.usePhishDetect, true)
+    })
+
+    it('should set the usePhishDetect property in state', function () {
+      assert.equal(preferencesController.store.getState().usePhishDetect, true)
+      preferencesController.setUsePhishDetect(false)
+      assert.equal(preferencesController.store.getState().usePhishDetect, false)
+    })
+  })
+})

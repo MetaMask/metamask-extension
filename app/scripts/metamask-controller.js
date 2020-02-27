@@ -446,6 +446,7 @@ export default class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
+      setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
@@ -1470,9 +1471,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender} sender - The sender of the messages on this stream
    */
   setupUntrustedCommunication (connectionStream, sender) {
+    const { usePhishDetect } = this.preferencesController.store.getState()
     const hostname = (new URL(sender.url)).hostname
-    // Check if new connection is blacklisted
-    if (this.phishingController.test(hostname)) {
+    // Check if new connection is blacklisted if phishing detection is on
+    if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
       this.sendPhishingWarning(connectionStream, hostname)
       return
@@ -1982,6 +1984,20 @@ export default class MetamaskController extends EventEmitter {
   setUseNonceField (val, cb) {
     try {
       this.preferencesController.setUseNonceField(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets whether or not to use phishing detection.
+   * @param {boolean} val
+   * @param {Function} cb
+   */
+  setUsePhishDetect (val, cb) {
+    try {
+      this.preferencesController.setUsePhishDetect(val)
       cb(null)
     } catch (err) {
       cb(err)

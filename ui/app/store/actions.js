@@ -2125,6 +2125,19 @@ export function setUseNonceField (val) {
   }
 }
 
+export function setUsePhishDetect (val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    log.debug(`background.setUsePhishDetect`)
+    background.setUsePhishDetect(val, (err) => {
+      dispatch(hideLoadingIndication())
+      if (err) {
+        return dispatch(displayWarning(err.message))
+      }
+    })
+  }
+}
+
 export function setIpfsGateway (val) {
   return (dispatch) => {
     dispatch(showLoadingIndication())

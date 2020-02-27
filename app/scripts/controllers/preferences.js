@@ -36,6 +36,7 @@ class PreferencesController {
       suggestedTokens: {},
       useBlockie: false,
       useNonceField: false,
+      usePhishDetect: true,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -101,6 +102,16 @@ class PreferencesController {
    */
   setUseNonceField (val) {
     this.store.updateState({ useNonceField: val })
+  }
+
+  /**
+   * Setter for the `usePhishDetect` property
+   *
+   * @param {boolean} val - Whether or not the user prefers phishing domain protection
+   *
+   */
+  setUsePhishDetect (val) {
+    this.store.updateState({ usePhishDetect: val })
   }
 
   /**
