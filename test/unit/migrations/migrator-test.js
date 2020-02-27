@@ -1,7 +1,6 @@
 import fs from 'fs'
 import assert from 'assert'
 import { cloneDeep } from 'lodash'
-import pify from 'pify'
 import Migrator from '../../../app/scripts/lib/migrator'
 import liveMigrations from '../../../app/scripts/migrations'
 
@@ -43,19 +42,45 @@ const firstTimeState = {
 
 describe('migrations', function () {
   describe('liveMigrations require list', function () {
-    it('should include all the migrations', async function () {
-      const fileNames = await pify((cb) => fs.readdir('./app/scripts/migrations/', cb))()
-      const migrationNumbers = fileNames.reduce((agg, filename) => {
-        const name = filename.split('.')[0]
-        if (/^\d+$/.test(name)) {
-          agg.push(name)
-        }
-        return agg
-      }, []).map((num) => parseInt(num))
 
+    let migrationNumbers
+
+    before(function () {
+      const fileNames = fs.readdirSync('./app/scripts/migrations/')
+      migrationNumbers = fileNames
+        .reduce((acc, filename) => {
+          const name = filename.split('.')[0]
+          if (/^\d+$/.test(name)) {
+            acc.push(name)
+          }
+          return acc
+        }, [])
+        .map((num) => parseInt(num))
+    })
+
+    it('should include all migrations', function () {
       migrationNumbers.forEach((num) => {
         const migration = liveMigrations.find((m) => m.version === num)
-        assert(migration, `migration should be include in the index missing migration ${num}`)
+        assert(migration, `migration not included in 'migrations/index.js': ${num}`)
+      })
+    })
+
+    it('should have tests for all migrations', function () {
+      const fileNames = fs.readdirSync('./test/unit/migrations/')
+      const testNumbers = fileNames
+        .reduce((acc, filename) => {
+          const name = filename.split('-test.')[0]
+          if (/^\d+$/.test(name)) {
+            acc.push(name)
+          }
+          return acc
+        }, [])
+        .map((num) => parseInt(num))
+
+      migrationNumbers.forEach((num) => {
+        if (num >= 33) {
+          assert.ok(testNumbers.includes(num), `no test found for migration: ${num}`)
+        }
       })
     })
   })
