@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 const Tab = (props) => {
-  const { name, onClick, isActive, tabIndex, className, activeClassName } = props
+  const { name, onClick, isActive, tabIndex, className } = props
 
   return (
     <li
       className={classnames(
+        'tab',
         className,
-        { [activeClassName]: isActive },
+        { 'tab--active': isActive },
       )}
       onClick={(event) => {
         event.preventDefault()
@@ -22,17 +23,16 @@ const Tab = (props) => {
 }
 
 Tab.propTypes = {
+  className: PropTypes.string,
+  isActive: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  isActive: PropTypes.bool,
-  tabIndex: PropTypes.number,
-  className: PropTypes.string,
-  activeClassName: PropTypes.string,
+  tabIndex: PropTypes.number.isRequired,
 }
 
 Tab.defaultProps = {
-  className: 'tab',
-  activeClassName: 'tab--active',
+  className: undefined,
+  onClick: undefined,
 }
 
 export default Tab
