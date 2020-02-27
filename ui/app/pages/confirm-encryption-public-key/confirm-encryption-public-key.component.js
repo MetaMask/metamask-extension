@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import AccountListItem from '../send/account-list-item/account-list-item.component'
+import Button from '../../components/ui/button'
+import Identicon from '../../components/ui/identicon'
+
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import Identicon from '../../components/ui/identicon'
-import AccountListItem from '../send/account-list-item/account-list-item.component'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import Button from '../../components/ui/button'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class ConfirmEncryptionPublicKey extends Component {
@@ -16,20 +17,19 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   static propTypes = {
-    balance: PropTypes.string,
+    fromAccount: PropTypes.shape({
+      address: PropTypes.string,
+      balance: PropTypes.string,
+      name: PropTypes.string,
+    }).isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
-    selectedAccount: PropTypes.object,
     txData: PropTypes.object,
     domainMetadata: PropTypes.object,
-  }
-
-  state = {
-    selectedAccount: this.props.selectedAccount,
   }
 
   componentDidMount = () => {
@@ -79,7 +79,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderAccount = () => {
-    const { selectedAccount } = this.state
+    const { fromAccount } = this.props
 
     return (
       <div className="request-encryption-public-key__account">
@@ -89,7 +89,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
         <div className="request-encryption-public-key__account-item">
           <AccountListItem
-            account={selectedAccount}
+            account={fromAccount}
             displayBalance={false}
           />
         </div>
@@ -98,7 +98,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderBalance = () => {
-    const { balance, conversionRate } = this.props
+    const { fromAccount: { balance }, conversionRate } = this.props
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',

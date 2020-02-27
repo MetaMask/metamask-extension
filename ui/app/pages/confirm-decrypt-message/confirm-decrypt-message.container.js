@@ -1,15 +1,19 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { goHome, decryptMsg, cancelDecryptMsg, decryptMsgInline } from '../../store/actions'
 
 import {
-  getSelectedAccount,
-  getCurrentAccountWithSendEtherInfo,
-  getSelectedAddress,
+  goHome,
+  decryptMsg,
+  cancelDecryptMsg,
+  decryptMsgInline,
+} from '../../store/actions'
+import {
+  accountsWithSendEtherInfoSelector,
   conversionRateSelector,
 } from '../../selectors/selectors.js'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
+import { getAccountByAddress } from '../../helpers/utils/util'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 
 function mapStateToProps (state) {
@@ -21,12 +25,15 @@ function mapStateToProps (state) {
     txData = {},
   } = confirmTransaction
 
+  const { msgParams: { from } } = txData
+
+  const allAccounts = accountsWithSendEtherInfoSelector(state)
+  const fromAccount = getAccountByAddress(allAccounts, from)
+
   return {
     txData: txData,
-    domainMetadata: domainMetadata,
-    balance: getSelectedAccount(state).balance,
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
-    selectedAddress: getSelectedAddress(state),
+    domainMetadata,
+    fromAccount,
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
