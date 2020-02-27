@@ -106,7 +106,7 @@ export default class ConfirmAddSuggestedToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <header>
+          <footer>
             <Button
               type="default"
               large
@@ -130,7 +130,7 @@ export default class ConfirmAddSuggestedToken extends Component {
             >
               { this.context.t('addToken') }
             </Button>
-          </header>
+          </footer>
         </div>
       </div>
     )
