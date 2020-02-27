@@ -1553,6 +1553,12 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "usePhishingDetection": {
+    "message": "Use Phishing Detection"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
   "userName": {
     "message": "Username"
   },

@@ -110,7 +110,8 @@
       "suggestedTokens": {},
       "tokens": [],
       "useBlockie": false,
-      "useNonceField": false
+      "useNonceField": false,
+      "usePhishDetect": true
     },
     "config": {},
     "firstTimeInfo": {
