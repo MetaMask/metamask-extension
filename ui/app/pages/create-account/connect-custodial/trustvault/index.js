@@ -112,14 +112,10 @@ class ConnectTrustVaultForm extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
-  displayedForm: state.appState.currentView.context,
-})
-
 const mapDispatchToProps = (dispatch) => ({
   getTrustVaultPinChallenge: (email) => dispatch(getTrustVaultPinChallenge(email)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(
   ConnectTrustVaultForm
 )

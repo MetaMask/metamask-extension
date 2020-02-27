@@ -597,7 +597,7 @@
       position: absolute;
     
     }
-    &__ios{
+    &__app{
       font-size: 10px;
       color: grey;
       width: 250px;
@@ -623,6 +623,7 @@
       position: absolute;
       margin-top: 34px;
       margin-left: 90px;
+      cursor: pointer;
     }
   }
   &__learn-more {
@@ -659,11 +660,13 @@
       
       &__back{
         margin-top: -2px;
-        color: #037DD6
+        color: #037DD6;
+        cursor: pointer;
       }
       &__back:hover{
         margin-top: -2px;
-        color: #2f9ae0
+        color: #2f9ae0;
+        cursor: pointer;
       }
     }
   }

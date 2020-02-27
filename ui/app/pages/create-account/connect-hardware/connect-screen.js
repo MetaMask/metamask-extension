@@ -138,7 +138,7 @@ class ConnectScreen extends Component {
     const links = {
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
-      trustvault: `<a class='sw-connect__get-sw__link' href='https://trustology.io/get-started/'>here</a>`,
+      trustvault: `<a class='sw-connect__get-sw__link' href='https://trustology.io/get-started/' target='_blank'>here</a>`,
     }
 
     const text = this.context.t('orderOneHere')

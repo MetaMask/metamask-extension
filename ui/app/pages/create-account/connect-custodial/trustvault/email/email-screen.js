@@ -14,7 +14,7 @@ export class EmailScreen extends PureComponent {
     return (
       <div className="sw-connect__back" onClick={(_) => this.props.history.push(CONNECT_HARDWARE_ROUTE)}>
         <div className="sw-connect__list__back-caret" />
-        <div className="sw-connect__list__back-caret__back">{this.context.t('back')}</div>
+        <a className="sw-connect__list__back-caret__back">{this.context.t('back')}</a>
       </div>
     )
   }
@@ -56,9 +56,9 @@ export class EmailScreen extends PureComponent {
       <div className="sw-connect__info-box">
         <img className="sw-connect__info-box__info-icon" src="images/tvInfo.png" />
         <div className="sw-connect__info-box__not-user">{this.context.t('trustVaultNotUser')}</div>
-        <div className="sw-connect__info-box__ios">{this.context.t('trustVaultIos')}</div>
+        <div className="sw-connect__info-box__app">{this.context.t('trustVaultIos')}</div>
         <div className="sw-connect__info-box__get-started">{this.context.t('trustVaultGetStarted')}</div>
-        <div
+        <a
           className="sw-connect__info-box__link"
           onClick={() => {
             global.platform.openWindow({
@@ -67,7 +67,7 @@ export class EmailScreen extends PureComponent {
           }}
         >
           {this.context.t('here')}
-        </div>
+        </a>
       </div>
     )
   }
