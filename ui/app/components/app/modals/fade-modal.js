@@ -129,10 +129,7 @@ class FadeModal extends Component {
     modalStyle: PropTypes.object,
     onShow: PropTypes.func,
     onHide: PropTypes.func,
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
+    children: PropTypes.node,
   }
 
   static defaultProps = {
