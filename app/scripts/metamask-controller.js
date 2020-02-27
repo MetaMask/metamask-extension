@@ -50,7 +50,7 @@ import accountImporter from './account-import-strategies'
 import getBuyEthUrl from './lib/buy-eth-url'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
-import { version } from '../manifest.json'
+import { version } from '../manifest/_base.json'
 import ethUtil, { BN } from 'ethereumjs-util'
 
 const GWEI_BN = new BN('1000000000')
