@@ -265,7 +265,7 @@
     "serve-handler": "^6.1.2",
     "sesify": "^4.2.1",
     "sesify-viz": "^3.0.5",
-    "sinon": "^8.1.1",
+    "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.0.1",
     "string.prototype.matchall": "^4.0.2",
