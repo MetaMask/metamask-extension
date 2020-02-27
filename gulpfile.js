@@ -27,6 +27,8 @@ const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 const clone = require('clone')
 const mergeDeep = require('merge-deep')
+const pump = require('pump')
+const mkdirp = require('mkdirp')
 const packageJSON = require('./package.json')
 const baseManifest = require('./app/manifest/_base.json')
 
@@ -76,16 +78,13 @@ gulp.task('reload', function devReload () {
 
 // manifest tinkering
 
-// still used by manifest
-const copyTaskNames = []
-const copyDevTaskNames = []
-
-
 gulp.task('manifest:prod', async () => {
   return Promise.all(browserPlatforms.map(async (platform) => {
     const platformModifications = require(`./app/manifest/${platform}.json`)
     const result = mergeDeep(clone(baseManifest), platformModifications)
-    return writeJson(result, `./dist/${platform}/manifest.json`)
+    const dir = `./dist/${platform}`
+    await mkdirp(dir)
+    await writeJson(result, `${dir}/manifest.json`)
   }))
 })
 
@@ -163,32 +162,32 @@ async function writeJson (obj, path) {
 
 const copyTargets = [
   {
-    src: './app/_locales/',
+    src: `./app/_locales/`,
     dest: `_locales`,
   },
   {
-    src: './app/images/',
+    src: `./app/images/`,
     dest: `images`,
   },
   {
-    src: './node_modules/eth-contract-metadata/images/',
+    src: `./node_modules/eth-contract-metadata/images/`,
     dest: `images/contract`,
   },
   {
-    src: './app/fonts/',
+    src: `./app/fonts/`,
     dest: `fonts`,
   },
   {
-    src: './app/vendor/',
+    src: `./app/vendor/`,
     dest: `vendor`,
   },
   {
-    src: './ui/app/css/output/',
+    src: `./ui/app/css/output/`,
     dest: ``,
   },
   {
-    src: './app/',
-    pattern: '/*.html',
+    src: `./app/`,
+    pattern: `/*.html`,
     dest: ``,
   },
 ]
@@ -248,36 +247,30 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
   return function () {
     if (devMode) {
       watch(pattern, async (event) => {
-        const stream = buildScss()
+        const stream = buildScss(devMode)
         await endOfStream(stream)
         livereload.changed(event.path)
       })
-      return buildScssWithSourceMaps()
     }
-    return buildScss()
+    return buildScss(devMode)
   }
 
-  function buildScssWithSourceMaps () {
-    return gulp.src(src)
-      .pipe(sourcemaps.init())
-      .pipe(sass().on('error', sass.logError))
-      .pipe(sourcemaps.write())
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-      .pipe(rtlcss())
-      .pipe(rename({ suffix: '-rtl' }))
-      .pipe(sourcemaps.write())
-      .pipe(gulp.dest(dest))
-  }
-
-  function buildScss () {
-    return gulp.src(src)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(autoprefixer())
-      .pipe(gulp.dest(dest))
-      .pipe(rtlcss())
-      .pipe(rename({ suffix: '-rtl' }))
-      .pipe(gulp.dest(dest))
+  function buildScss (devMode) {
+    return pump(...[
+      // pre-process
+      gulp.src(src),
+      devMode && sourcemaps.init(),
+      sass().on('error', sass.logError),
+      devMode && sourcemaps.write(),
+      autoprefixer(),
+      // standard
+      gulp.dest(dest),
+      // right-to-left
+      rtlcss(),
+      rename({ suffix: '-rtl' }),
+      devMode && sourcemaps.write(),
+      gulp.dest(dest),
+    ].filter(Boolean))
   }
 }
 
