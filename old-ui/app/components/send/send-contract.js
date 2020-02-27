@@ -161,9 +161,10 @@ class SendTransactionScreen extends PersistentForm {
 						options={this.state.options}
 						style={{ marginBottom: '10px' }}
 						onChange={(opt) => {
+							const isConstantMethod = opt.metadata && (opt.metadata.constant || opt.metadata.stateMutability === 'view')
 							this.setState({
 								methodSelected: opt.value,
-								isConstantMethod: opt.metadata.constant,
+								isConstantMethod: isConstantMethod,
 								methodABI: opt.metadata,
 								outputValues: {},
 								inputValues: {},
