@@ -1,4 +1,5 @@
 // cross-browser connection to extension i18n API
+import React from 'react'
 import log from 'loglevel'
 
 import * as Sentry from '@sentry/browser'
@@ -14,7 +15,7 @@ const missingMessageErrors = {}
  * @param {string[]} substitutions - A list of message substitution replacements
  * @returns {null|string} - The localized message
  */
-export const getMessage = (localeCode, localeMessages, key, substitutions) => {
+export const getMessage = (localeCode, localeMessages, key, substitutions, reactWrappers) => {
   if (!localeMessages) {
     return null
   }
@@ -39,13 +40,41 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   }
   const entry = localeMessages[key]
   let phrase = entry.message
+
+  const requiresWrappers = phrase.match(/\{\{.+?\}\}/)
+
+  const hasSubstitutions = Boolean(substitutions && substitutions.length)
+  const hasReactSubstitutions = hasSubstitutions && substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
+
   // perform substitutions
-  if (substitutions && substitutions.length) {
+  if (hasReactSubstitutions || requiresWrappers) {
+    const parts = phrase.split(/(\$\d|\{\{.+?\}\})/g)
+
+    const wrappedAndSubStitutedParts = parts.map((part) => {
+      if (part.match(/\{\{.+?\}\}/)) {
+
+        const wrapper = reactWrappers.shift()
+        return React.cloneElement(
+          wrapper,
+          wrapper.props,
+          [ part.match(/[^{}]+/) ]
+        )
+      } else if (part.match(/\$\d/)) {
+        return substitutions.shift()
+      } else {
+        return part
+      }
+    })
+
+    phrase = React.createElement('span', null, ...wrappedAndSubStitutedParts)
+  } else if (hasSubstitutions) {
+    phrase = entry.message
     substitutions.forEach((substitution, index) => {
       const regex = new RegExp(`\\$${index + 1}`, 'g')
       phrase = phrase.replace(regex, substitution)
     })
   }
+
   return phrase
 }
 
