@@ -26,6 +26,7 @@ const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
 const CONNECT_ROUTE = '/connect'
+const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
 const CONNECTED_ROUTE = '/connected'
 
 const INITIALIZE_ROUTE = '/initialize'
@@ -101,5 +102,6 @@ export {
   NETWORKS_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
+  CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,
 }
