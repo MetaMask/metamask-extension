@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fsAsync = fs.promises
 const watchify = require('watchify')
 const browserify = require('browserify')
 const envify = require('envify/custom')
@@ -8,7 +9,6 @@ const buffer = require('vinyl-buffer')
 const log = require('fancy-log')
 const watch = require('gulp-watch')
 const sourcemaps = require('gulp-sourcemaps')
-const jsoneditor = require('gulp-json-editor')
 const zip = require('gulp-zip')
 const { assign } = require('lodash')
 const livereload = require('gulp-livereload')
@@ -26,8 +26,10 @@ const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
 const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
-
+const clone = require('clone')
+const mergeDeep = require('merge-deep')
 const packageJSON = require('./package.json')
+const baseManifest = require('./app/manifest/_base.json')
 
 sass.compiler = require('node-sass')
 
@@ -85,111 +87,67 @@ const copyTaskNames = []
 const copyDevTaskNames = []
 
 
-createCopyTasks('manifest', {
-  source: './app/',
-  pattern: '/*.json',
-  destinations: browserPlatforms.map((platform) => `./dist/${platform}`),
-})
-
-gulp.task('manifest:chrome', function () {
-  return gulp.src('./dist/chrome/manifest.json')
-    .pipe(jsoneditor(function (json) {
-      delete json.applications
-      json.minimum_chrome_version = '58'
-      return json
-    }))
-    .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
-})
-
-gulp.task('manifest:opera', function () {
-  return gulp.src('./dist/opera/manifest.json')
-    .pipe(jsoneditor(function (json) {
-      json.permissions = [
-        'storage',
-        'tabs',
-        'clipboardWrite',
-        'clipboardRead',
-        'http://localhost:8545/',
-      ]
-      return json
-    }))
-    .pipe(gulp.dest('./dist/opera', { overwrite: true }))
-})
-
-gulp.task('manifest:production', function () {
-  return gulp.src([
-    './dist/firefox/manifest.json',
-    './dist/chrome/manifest.json',
-    './dist/brave/manifest.json',
-    './dist/opera/manifest.json',
-  ], { base: './dist/' })
-
-  // Exclude chromereload script in production:
-    .pipe(jsoneditor(function (json) {
-      json.background.scripts = json.background.scripts.filter((script) => {
-        return !script.includes('chromereload')
-      })
-      return json
-    }))
-
-    .pipe(gulp.dest('./dist/', { overwrite: true }))
-})
-
-gulp.task('manifest:testing', function () {
-  return gulp.src([
-    './dist/firefox/manifest.json',
-    './dist/chrome/manifest.json',
-  ], { base: './dist/' })
-
-  // Exclude chromereload script in production:
-    .pipe(jsoneditor(function (json) {
-      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
-      return json
-    }))
-
-    .pipe(gulp.dest('./dist/', { overwrite: true }))
+gulp.task('copy:manifest', async () => {
+  return Promise.all(browserPlatforms.map(async (platform) => {
+    const platformModifications = require(`./app/manifest/${platform}.json`)
+    const result = mergeDeep(clone(baseManifest), platformModifications)
+    return writeJson(result, `./dist/${platform}/manifest.json`)
+  }))
 })
 
 const scriptsToExcludeFromBackgroundDevBuild = {
   'bg-libs.js': true,
 }
 
-gulp.task('manifest:testing-local', function () {
-  return gulp.src([
-    './dist/firefox/manifest.json',
-    './dist/chrome/manifest.json',
-  ], { base: './dist/' })
+// dev: remove bg-libs, add chromereload, add perms
+gulp.task('manifest:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
+  const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
+  scripts.push('chromereload.js')
+  manifest.background = {
+    ...manifest.background,
+    scripts,
+  }
+  manifest.permissions = [...manifest.permissions, 'webRequestBlocking']
+}))
 
-    .pipe(jsoneditor(function (json) {
-      json.background = {
-        ...json.background,
-        scripts: json.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
-      }
-      json.permissions = [...json.permissions, 'webRequestBlocking', 'http://localhost/*']
-      return json
+// testing-local: remove bg-libs, add perms
+gulp.task('manifest:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
+  const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
+  scripts.push('chromereload.js')
+  manifest.background = {
+    ...manifest.background,
+    scripts,
+  }
+  manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
+}))
+
+// testing: add permissions
+gulp.task('manifest:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
+  manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
+}))
+
+// helper for modifying each platform's manifest.json in place
+function createTaskForModifyManifestForEnvironment (transformFn) {
+  return () => {
+    return Promise.all(platforms.map(async (platform) => {
+      const path = `./dist/firefox/manifest.json`
+      const manifest = await readJson(path)
+      transformFn(manifest)
+      await writeJson(mainfest, path)
     }))
+  }
+}
 
-    .pipe(gulp.dest('./dist/', { overwrite: true }))
-})
+// helper for reading and deserializing json from fs
+async function readJson (path) {
+  return JSON.parse(await fsAsync.readFile(path, 'utf8'))
+}
 
+// helper for serializing and writing json to fs
+async function writeJson (obj, path) {
+  return fsAsync.writeFile(path, JSON.stringify(obj, null, 2))
+}
 
-gulp.task('manifest:dev', function () {
-  return gulp.src([
-    './dist/firefox/manifest.json',
-    './dist/chrome/manifest.json',
-  ], { base: './dist/' })
-
-    .pipe(jsoneditor(function (json) {
-      json.background = {
-        ...json.background,
-        scripts: json.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]),
-      }
-      json.permissions = [...json.permissions, 'webRequestBlocking']
-      return json
-    }))
-
-    .pipe(gulp.dest('./dist/', { overwrite: true }))
-})
 
 // copy universal
 
@@ -237,22 +195,15 @@ const copyTargetsDev = [
 // temporary manifest breakout
 tasks['prod:manifest'] = gulp.series(
   'copy:manifest',
-  'manifest:production',
-  'manifest:chrome',
-  'manifest:opera'
 )
 
 tasks['dev:manifest'] = gulp.series(
   'copy:manifest',
   'manifest:dev',
-  'manifest:chrome',
-  'manifest:opera'
 )
 
 tasks['test:manifest'] = gulp.series(
   'copy:manifest',
-  'manifest:chrome',
-  'manifest:opera',
   'manifest:testing-local'
 )
 
