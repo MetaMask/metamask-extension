@@ -15,7 +15,7 @@ const missingMessageErrors = {}
  * @param {string[]} substitutions - A list of message substitution replacements
  * @returns {null|string} - The localized message
  */
-export const getMessage = (localeCode, localeMessages, key, substitutions, reactWrappers) => {
+export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (!localeMessages) {
     return null
   }
@@ -41,35 +41,19 @@ export const getMessage = (localeCode, localeMessages, key, substitutions, react
   const entry = localeMessages[key]
   let phrase = entry.message
 
-  const requiresWrappers = phrase.match(/\{\{.+?\}\}/)
-
   const hasSubstitutions = Boolean(substitutions && substitutions.length)
   const hasReactSubstitutions = hasSubstitutions &&
     substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
 
   // perform substitutions
-  if (hasSubstitutions || requiresWrappers) {
-    const parts = phrase.split(/(\$\d|\{\{.+?\}\})/g)
+  if (hasSubstitutions) {
+    const parts = phrase.split(/(\$\d)/g)
 
-    const wrappedAndSubStitutedParts = parts.map((part) => {
-      if (part.match(/\{\{.+?\}\}/)) {
+    const substitutedParts = parts.map((part) => (part.match(/\$\d/) ? substitutions.shift() : part))
 
-        const wrapper = reactWrappers.shift()
-        return React.cloneElement(
-          wrapper,
-          wrapper.props,
-          [ part.match(/[^{}]+/) ]
-        )
-      } else if (part.match(/\$\d/)) {
-        return substitutions.shift()
-      } else {
-        return part
-      }
-    })
-
-    phrase = hasReactSubstitutions || requiresWrappers
-      ? <span> { wrappedAndSubStitutedParts } </span>
-      : wrappedAndSubStitutedParts.join('')
+    phrase = hasReactSubstitutions
+      ? <span> { substitutedParts } </span>
+      : substitutedParts.join('')
   }
 
   return phrase

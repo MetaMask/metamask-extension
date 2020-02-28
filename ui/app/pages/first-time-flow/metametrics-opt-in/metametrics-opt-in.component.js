@@ -143,13 +143,14 @@ export default class MetaMetricsOptIn extends Component {
               disabled={false}
             />
             <div className="metametrics-opt-in__bottom-text">
-              { t('gdprMessage', null, [
+              { t('gdprMessage', [
                 <a
                   key="metametrics-bottom-text-wrapper"
                   href="https://metamask.io/privacy.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                /> ])
+                >{ t('gdprMessagePrivacyPolicy') }
+                </a> ])
               }
             </div>
           </div>
