@@ -97,11 +97,10 @@ function createScriptTasks ({ browserPlatforms }) {
 
 
   function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, testing, bundleTaskOpts = {} }) {
-    // inpage must be built before all other scripts:
     const rootDir = './app/scripts'
-    const nonInpageFiles = buildJsFiles.filter((file) => file !== 'inpage')
-    const buildPhase1 = ['inpage']
-    const buildPhase2 = nonInpageFiles
+    // inpage must be built before contentscript
+    const buildPhase2 = ['contentscript']
+    const buildPhase1 = buildJsFiles.filter((file) => !buildPhase2.includes(file))
     const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
     bundleTaskOpts = Object.assign({
       buildSourceMaps: true,
