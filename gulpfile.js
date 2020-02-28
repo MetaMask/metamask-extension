@@ -1,5 +1,5 @@
 const gulp = require('gulp')
-const zip = require('gulp-zip')
+const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
 // const imagemin = require('gulp-imagemin')
@@ -37,12 +37,10 @@ createTask('reload', function devReload () {
 })
 
 
-createStaticAssetTasks({ browserPlatforms })
-createManifestTasks({ browserPlatforms })
-createStyleTasks()
-
-// scripts
-createScriptTasks({ browserPlatforms })
+const staticTasks = createStaticAssetTasks({ browserPlatforms })
+const manifestTasks = createManifestTasks({ browserPlatforms })
+const styleTasks = createStyleTasks()
+const scriptTasks = createScriptTasks({ browserPlatforms })
 
 // createTask('optimize:images', function () {
 //   return gulp.src('./dist/**/images/**', { base: './dist/' })
@@ -52,7 +50,7 @@ createScriptTasks({ browserPlatforms })
 
 
 // zip tasks for distribution
-createTask('zip', taskParallel(
+const zip = createTask('zip', taskParallel(
   zipTask('chrome'),
   zipTask('firefox'),
   zipTask('opera'),
@@ -60,65 +58,55 @@ createTask('zip', taskParallel(
 
 // high level tasks
 
-createTask('dev:test',
+const dev = createTask('dev',
   taskSeries(
     clean,
-    'styles:dev',
+    styleTasks.dev,
     taskParallel(
-      'scripts:core:test-live',
-      'static:dev',
-      'manifest:testing',
-      'reload',
-    )
-  )
-)
-
-createTask('dev:extension',
-  taskSeries(
-    clean,
-    'styles:dev',
-    taskParallel(
-      'scripts:core:dev',
-      'static:dev',
-      'manifest:dev',
+      scriptTasks.dev,
+      staticTasks.dev,
+      manifestTasks.dev,
       'reload'
     )
   )
 )
 
-createTask('build',
+const testDev = createTask('testDev',
   taskSeries(
     clean,
-    'styles:prod',
+    styleTasks.dev,
     taskParallel(
-      'scripts:deps:background',
-      'scripts:deps:ui',
-      'scripts:core:prod',
-      'static:prod',
-      'manifest:prod',
-    ),
-    // 'optimize:images'
+      scriptTasks.testDev,
+      staticTasks.dev,
+      manifestTasks.testing,
+      'reload',
+    )
   )
 )
 
-createTask('build:test',
+const prod = createTask('prod',
   taskSeries(
     clean,
-    'styles:prod',
+    styleTasks.prod,
     taskParallel(
-      'scripts:deps:background',
-      'scripts:deps:ui',
-      'scripts:core:test',
-      'static:prod',
-      'manifest:testing',
+      scriptTasks.prod,
+      staticTasks.prod,
+      manifestTasks.prod,
     ),
+    // 'optimize:images',
+    zip,
   )
 )
 
-createTask('dist',
+const test = createTask('test',
   taskSeries(
-    'build',
-    'zip',
+    clean,
+    styleTasks.prod,
+    taskParallel(
+      scriptTasks.test,
+      staticTasks.prod,
+      manifestTasks.testing,
+    ),
   )
 )
 
@@ -127,9 +115,9 @@ createTask('dist',
 function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-      .pipe(zip(`metamask-${target}-${baseManifest.version}.zip`))
+      .pipe(gulpZip(`metamask-${target}-${baseManifest.version}.zip`))
       .pipe(gulp.dest('builds'))
   }
 }
 
-runTask('dist')
+runTask('prod')

@@ -19,20 +19,20 @@ module.exports = createStyleTasks
 
 function createStyleTasks () {
 
-  createTask('styles:prod', createScssBuildTask({
+  const prod = createTask('styles:prod', createScssBuildTask({
     src: 'ui/app/css/index.scss',
     dest: 'ui/app/css/output',
     devMode: false,
   }))
 
-  createTask('styles:dev', createScssBuildTask({
+  const dev = createTask('styles:dev', createScssBuildTask({
     src: 'ui/app/css/index.scss',
     dest: 'ui/app/css/output',
     devMode: true,
     pattern: 'ui/app/**/*.scss',
   }))
 
-  createTask('lint-scss', function () {
+  const lint = createTask('lint-scss', function () {
     return gulp
       .src('ui/app/css/itcss/**/*.scss')
       .pipe(gulpStylelint({
@@ -42,6 +42,8 @@ function createStyleTasks () {
         fix: true,
       }))
   })
+
+  return { prod, dev, lint }
 
 }
 

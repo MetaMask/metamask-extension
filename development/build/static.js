@@ -47,12 +47,14 @@ const copyTargetsDev = [
 
 function createStaticAssetTasks ({ browserPlatforms }) {
 
-  createTask('static:prod', taskParallel(...copyTargets.map(target => {
+  const prod = createTask('static:prod', taskParallel(...copyTargets.map(target => {
     return function copyStaticAssets () { return performCopy(target) }
   })))
-  createTask('static:dev', taskParallel(...copyTargetsDev.map(target => {
+  const dev = createTask('static:dev', taskParallel(...copyTargetsDev.map(target => {
     return function copyStaticAssets () { return performCopy(target) }
   })))
+
+  return { dev, prod }
 
   function performCopy (target) {
     // stream from source

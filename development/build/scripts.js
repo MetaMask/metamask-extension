@@ -43,13 +43,38 @@ const buildJsFiles = [
 
 function createScriptTasks ({ browserPlatforms }) {
 
-  // bundle tasks
-  createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' })
-  createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:dev', devMode: true })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:prod' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test', testing: 'true' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test-live', testing: 'true', devMode: true })
+  // internal tasks
+  const core = {
+    dev: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:dev', devMode: true }),
+    prod: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:prod' }),
+    test: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test', testing: 'true' }),
+    testLive: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test-live', testing: 'true', devMode: true }),
+  }
+  const deps = {
+    background: createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' }),
+    ui: createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' }),
+  }
+
+  // high level tasks
+
+  const prod = taskParallel(
+    deps.background,
+    deps.ui,
+    core.prod,
+  )
+
+  const dev = core.dev
+
+  const testDev = core.testLive
+
+  const test = taskParallel(
+    deps.background,
+    deps.ui,
+    core.test,
+  )
+
+  return { prod, dev, testDev, test }
+
 
   function createTasksForBuildJsDeps ({ key, filename }) {
     const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
@@ -61,7 +86,7 @@ function createScriptTasks ({ browserPlatforms }) {
       devMode: false,
     })
 
-    createTask(`scripts:deps:${key}`, bundleTask(Object.assign({
+    return createTask(`scripts:deps:${key}`, bundleTask(Object.assign({
       label: filename,
       filename: `${filename}.js`,
       destinations,
@@ -87,10 +112,7 @@ function createScriptTasks ({ browserPlatforms }) {
       devMode,
       testing,
     }, bundleTaskOpts)
-    createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
-  }
 
-  function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
     // bundle task for each file
     const jsFiles = [].concat(buildPhase1, buildPhase2)
     jsFiles.forEach((jsFile) => {
@@ -109,9 +131,8 @@ function createScriptTasks ({ browserPlatforms }) {
       subtasks.push(taskParallel(...buildPhase2.map((file) => `${taskPrefix}:${file}`)))
     }
 
-    createTask(taskPrefix, taskSeries(...subtasks))
+    return createTask(taskPrefix, taskSeries(...subtasks))
   }
-
 
   function bundleTask (opts) {
     let bundler

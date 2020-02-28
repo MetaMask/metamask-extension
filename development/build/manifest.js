@@ -16,7 +16,7 @@ const scriptsToExcludeFromBackgroundDevBuild = {
 
 function createManifestTasks ({ browserPlatforms }) {
 
-  createTask('manifest:prod', async () => {
+  const prod = createTask('manifest:prod', async () => {
     return Promise.all(browserPlatforms.map(async (platform) => {
       const platformModifications = await readJson(`${__dirname}/../../app/manifest/${platform}.json`)
       const result = mergeDeep(clone(baseManifest), platformModifications)
@@ -54,21 +54,22 @@ function createManifestTasks ({ browserPlatforms }) {
   }))
 
   // high level manifest tasks
-  createTask('manifest:dev', taskSeries(
+  const dev = createTask('manifest:dev', taskSeries(
     'manifest:prod',
     'manifest:env:dev',
   ))
 
-  createTask('manifest:testing-local', taskSeries(
+  const testingLocal = createTask('manifest:testing-local', taskSeries(
     'manifest:prod',
     'manifest:env:testing-local',
   ))
 
-  createTask('manifest:testing', taskSeries(
+  const testing = createTask('manifest:testing', taskSeries(
     'manifest:prod',
     'manifest:env:testing',
   ))
 
+  return { prod, dev, testingLocal, testing }
 }
 
 // helper for modifying each platform's manifest.json in place
