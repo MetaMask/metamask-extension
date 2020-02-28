@@ -31,7 +31,6 @@ import Authenticated from '../../helpers/higher-order-components/authenticated'
 import Initialized from '../../helpers/higher-order-components/initialized'
 import Lock from '../lock'
 import PermissionsConnect from '../permissions-connect'
-import ConnectedSites from '../connected-sites'
 import RestoreVaultPage from '../keychains/restore-vault'
 import RevealSeedConfirmation from '../keychains/reveal-seed'
 import MobileSyncPage from '../mobile-sync'
@@ -76,7 +75,6 @@ import {
   INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   CONNECT_ROUTE,
-  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 // enums
@@ -127,7 +125,6 @@ class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} />
-        <Authenticated path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
       </Switch>
     )

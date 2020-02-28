@@ -1,0 +1,127 @@
+.connected-sites {
+  position: relative;
+  width: 90vw;
+  max-width: 330px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.214);
+  border-radius: 8px;
+  font-family: Roboto, 'sans-serif';
+  color: #24292E;
+  padding: 24px;
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    i {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    h1 {
+      text-align: center;
+      flex: 1;
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+
+  &__back-button {
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  &__description {
+    font-size: 12px;
+    line-height: 17px;
+    text-align: center;
+    color: #6A737D;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #D2D8DD;
+
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  &__content {
+    &-rows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 1px solid #D2D8DD;
+    }
+
+    &-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 16px;
+
+      &:last-of-type {
+        margin-bottom: 16px;
+      }
+    }
+  }
+
+  &__domain-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  &__domain-name {
+    margin-left: 6px;
+  }
+
+  &__options {
+    cursor: pointer;
+  }
+
+  &__footer {
+    margin-top: 16px;
+
+    a {
+      cursor: pointer;
+      color: #037DD6;
+      font-size: 12px;
+      line-height: 17px;
+    }
+  }
+}
+
+.connected-sites-options {
+  position: absolute;
+  background: #FFFFFF;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.214);
+  border-radius: 8px;
+  min-width: 200px;
+  color: #24292E;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 16px 0;
+    cursor: pointer;
+
+    &:first-of-type {
+      border-bottom: 1px solid #D2D8DD;
+    }
+
+    &-icon {
+      margin-right: 8px;
+    }
+  }
+}

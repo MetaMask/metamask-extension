@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import Tooltip from '../../ui/tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
+import ConnectedSitesModal from '../connected-sites-modal'
 
 export default class AccountDetails extends Component {
   static contextTypes = {
@@ -19,7 +20,6 @@ export default class AccountDetails extends Component {
   static propTypes = {
     hideSidebar: PropTypes.func,
     showAccountDetailModal: PropTypes.func,
-    showConnectedSites: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     checksummedAddress: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -28,6 +28,7 @@ export default class AccountDetails extends Component {
   state = {
     hasCopied: false,
     copyToClipboardPressed: false,
+    showConnectedSites: false,
   }
 
   copyAddress () {
@@ -43,13 +44,18 @@ export default class AccountDetails extends Component {
     setTimeout(() => this.setState({ hasCopied: false }), 3000)
   }
 
+  toggleConnectedSitesModal = () => {
+    this.setState((prevState) => ({
+      showConnectedSites: !prevState.showConnectedSites,
+    }))
+  }
+
   render () {
     const { t } = this.context
 
     const {
       hideSidebar,
       showAccountDetailModal,
-      showConnectedSites,
       label,
       checksummedAddress,
       name,
@@ -58,6 +64,7 @@ export default class AccountDetails extends Component {
     const {
       hasCopied,
       copyToClipboardPressed,
+      showConnectedSites,
     } = this.state
 
     return (
@@ -76,9 +83,15 @@ export default class AccountDetails extends Component {
               <button className="btn-secondary account-details__details-button" onClick={showAccountDetailModal} >
                 {t('details')}
               </button>
-              <button className="btn-secondary account-details__details-button" onClick={showConnectedSites}>
+              <button className="btn-secondary account-details__details-button" onClick={this.toggleConnectedSitesModal}>
                 {t('connectedSites')}
               </button>
+              { showConnectedSites ? (
+                <ConnectedSitesModal
+                  accountName={name}
+                  onClose={this.toggleConnectedSitesModal}
+                />
+              ) : null }
             </div>
           </div>
         </div>

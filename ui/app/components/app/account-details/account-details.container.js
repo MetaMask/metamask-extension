@@ -18,7 +18,6 @@ AccountDetailsContainer.propTypes = {
   label: PropTypes.string.isRequired,
   checksummedAddress: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  showConnectedSites: PropTypes.func.isRequired,
 }
 
 export default AccountDetailsContainer
