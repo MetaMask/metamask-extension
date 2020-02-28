@@ -8,7 +8,7 @@ export default class Tabs extends Component {
 
   static propTypes = {
     defaultActiveTabIndex: PropTypes.number,
-    children: PropTypes.node,
+    children: PropTypes.node.isRequired,
   }
 
   state = {
