@@ -20,10 +20,9 @@ const terser = require('gulp-terser-js')
 const pify = require('pify')
 const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
-const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 const sesify = require('sesify')
-const imagemin = require('gulp-imagemin')
+// const imagemin = require('gulp-imagemin')
 const { makeStringTransform } = require('browserify-transform-tools')
 const clone = require('clone')
 const mergeDeep = require('merge-deep')
@@ -31,6 +30,7 @@ const pump = require('pump')
 const mkdirp = require('mkdirp')
 const packageJSON = require('./package.json')
 const baseManifest = require('./app/manifest/_base.json')
+const { createTask, taskSeries, taskParallel, runTask } = require('./development/build/task')
 
 sass.compiler = require('node-sass')
 
@@ -55,30 +55,24 @@ const browserPlatforms = [
   'opera',
 ]
 
-function gulpParallel (...args) {
-  return function spawnGulpChildProcess (cb) {
-    return gulpMultiProcess(args, cb, true)
-  }
-}
-
 //
 // tasks
 //
 
-gulp.task('clean', () => {
+createTask('clean', () => {
   return del(['./dist/*'])
 })
 
 // browser reload
 
-gulp.task('reload', function devReload () {
+createTask('reload', function devReload () {
   livereload.listen({ port: 35729 })
 })
 
 
 // manifest tinkering
 
-gulp.task('manifest:prod', async () => {
+createTask('manifest:prod', async () => {
   return Promise.all(browserPlatforms.map(async (platform) => {
     const platformModifications = require(`./app/manifest/${platform}.json`)
     const result = mergeDeep(clone(baseManifest), platformModifications)
@@ -93,7 +87,7 @@ const scriptsToExcludeFromBackgroundDevBuild = {
 }
 
 // dev: remove bg-libs, add chromereload, add perms
-gulp.task('manifest:env:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
+createTask('manifest:env:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
   const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
   scripts.push('chromereload.js')
   manifest.background = {
@@ -104,7 +98,7 @@ gulp.task('manifest:env:dev', createTaskForModifyManifestForEnvironment(function
 }))
 
 // testing-local: remove bg-libs, add perms
-gulp.task('manifest:env:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
+createTask('manifest:env:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
   const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
   scripts.push('chromereload.js')
   manifest.background = {
@@ -115,22 +109,22 @@ gulp.task('manifest:env:testing-local', createTaskForModifyManifestForEnvironmen
 }))
 
 // testing: add permissions
-gulp.task('manifest:env:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
+createTask('manifest:env:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
   manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
 }))
 
 // high level manifest tasks
-gulp.task('manifest:dev', gulp.series(
+createTask('manifest:dev', taskSeries(
   'manifest:prod',
   'manifest:env:dev',
 ))
 
-gulp.task('manifest:testing-local', gulp.series(
+createTask('manifest:testing-local', taskSeries(
   'manifest:prod',
   'manifest:env:testing-local',
 ))
 
-gulp.task('manifest:testing', gulp.series(
+createTask('manifest:testing', taskSeries(
   'manifest:prod',
   'manifest:env:testing',
 ))
@@ -203,10 +197,10 @@ const copyTargetsDev = [
 
 // static assets
 
-gulp.task('copy:prod', gulp.parallel(...copyTargets.map(target => {
+createTask('copy:prod', taskParallel(...copyTargets.map(target => {
   return function copyStaticAssets () { return performCopy(target) }
 })))
-gulp.task('copy:dev', gulp.parallel(...copyTargetsDev.map(target => {
+createTask('copy:dev', taskParallel(...copyTargetsDev.map(target => {
   return function copyStaticAssets () { return performCopy(target) }
 })))
 
@@ -222,21 +216,21 @@ function performCopy (target) {
   return stream
 }
 
-gulp.task('optimize:images', function () {
-  return gulp.src('./dist/**/images/**', { base: './dist/' })
-    .pipe(imagemin())
-    .pipe(gulp.dest('./dist/', { overwrite: true }))
-})
+// createTask('optimize:images', function () {
+//   return gulp.src('./dist/**/images/**', { base: './dist/' })
+//     .pipe(imagemin())
+//     .pipe(gulp.dest('./dist/', { overwrite: true }))
+// })
 
 // scss compilation and autoprefixing tasks
 
-gulp.task('build:scss', createScssBuildTask({
+createTask('build:scss', createScssBuildTask({
   src: 'ui/app/css/index.scss',
   dest: 'ui/app/css/output',
   devMode: false,
 }))
 
-gulp.task('dev:scss', createScssBuildTask({
+createTask('dev:scss', createScssBuildTask({
   src: 'ui/app/css/index.scss',
   dest: 'ui/app/css/output',
   devMode: true,
@@ -274,7 +268,7 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
   }
 }
 
-gulp.task('lint-scss', function () {
+createTask('lint-scss', function () {
   return gulp
     .src('ui/app/css/itcss/**/*.scss')
     .pipe(gulpStylelint({
@@ -313,7 +307,7 @@ function createTasksForBuildJsDeps ({ key, filename }) {
     devMode: false,
   })
 
-  gulp.task(`build:extension:js:deps:${key}`, bundleTask(Object.assign({
+  createTask(`build:extension:js:deps:${key}`, bundleTask(Object.assign({
     label: filename,
     filename: `${filename}.js`,
     destinations,
@@ -346,7 +340,7 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   // bundle task for each file
   const jsFiles = [].concat(buildPhase1, buildPhase2)
   jsFiles.forEach((jsFile) => {
-    gulp.task(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
+    createTask(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
@@ -356,27 +350,27 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
   })
   // compose into larger task
   const subtasks = []
-  subtasks.push(gulp.parallel(buildPhase1.map((file) => `${taskPrefix}:${file}`)))
+  subtasks.push(taskParallel(...buildPhase1.map((file) => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) {
-    subtasks.push(gulp.parallel(buildPhase2.map((file) => `${taskPrefix}:${file}`)))
+    subtasks.push(taskParallel(...buildPhase2.map((file) => `${taskPrefix}:${file}`)))
   }
 
-  gulp.task(taskPrefix, gulp.series(subtasks))
+  createTask(taskPrefix, taskSeries(...subtasks))
 }
 
 // zip tasks for distribution
-gulp.task('zip:chrome', zipTask('chrome'))
-gulp.task('zip:firefox', zipTask('firefox'))
-gulp.task('zip:opera', zipTask('opera'))
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:opera'))
+createTask('zip:chrome', zipTask('chrome'))
+createTask('zip:firefox', zipTask('firefox'))
+createTask('zip:opera', zipTask('opera'))
+createTask('zip', taskParallel('zip:chrome', 'zip:firefox', 'zip:opera'))
 
 // high level tasks
 
-gulp.task('dev:test',
-  gulp.series(
+createTask('dev:test',
+  taskSeries(
     'clean',
     'dev:scss',
-    gulp.parallel(
+    taskParallel(
       'dev:test-extension:js',
       'copy:dev',
       'manifest:testing',
@@ -385,11 +379,11 @@ gulp.task('dev:test',
   )
 )
 
-gulp.task('dev:extension',
-  gulp.series(
+createTask('dev:extension',
+  taskSeries(
     'clean',
     'dev:scss',
-    gulp.parallel(
+    taskParallel(
       'dev:extension:js',
       'copy:dev',
       'manifest:dev',
@@ -398,26 +392,26 @@ gulp.task('dev:extension',
   )
 )
 
-gulp.task('build',
-  gulp.series(
+createTask('build',
+  taskSeries(
     'clean',
     'build:scss',
-    gulpParallel(
+    taskParallel(
       'build:extension:js:deps:background',
       'build:extension:js:deps:ui',
       'build:extension:js',
       'copy:prod',
       'manifest:prod',
     ),
-    'optimize:images'
+    // 'optimize:images'
   )
 )
 
-gulp.task('build:test',
-  gulp.series(
+createTask('build:test',
+  taskSeries(
     'clean',
     'build:scss',
-    gulpParallel(
+    taskParallel(
       'build:extension:js:deps:background',
       'build:extension:js:deps:ui',
       'build:test:extension:js',
@@ -427,8 +421,8 @@ gulp.task('build:test',
   )
 )
 
-gulp.task('dist',
-  gulp.series(
+createTask('dist',
+  taskSeries(
     'build',
     'zip',
   )
@@ -645,3 +639,7 @@ function configureBundleForSesify ({
 function beep () {
   process.stdout.write('\x07')
 }
+
+
+// temp
+runTask('dist')
