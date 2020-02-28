@@ -32,6 +32,10 @@ export default class ConfirmEncryptionPublicKey extends Component {
     domainMetadata: PropTypes.object,
   }
 
+  state = {
+    fromAccount: this.props.fromAccount,
+  }
+
   componentDidMount = () => {
     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
@@ -79,7 +83,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderAccount = () => {
-    const { fromAccount } = this.props
+    const { fromAccount } = this.state
 
     return (
       <div className="request-encryption-public-key__account">
@@ -98,7 +102,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderBalance = () => {
-    const { fromAccount: { balance }, conversionRate } = this.props
+    const { conversionRate } = this.props
+    const { fromAccount: { balance } } = this.state
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',

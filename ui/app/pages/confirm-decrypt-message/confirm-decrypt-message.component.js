@@ -37,8 +37,9 @@ export default class ConfirmDecryptMessage extends Component {
   }
 
   state = {
-    hasCopied: false,
+    fromAccount: this.props.fromAccount,
     copyToClipboardPressed: false,
+    hasCopied: false,
   }
 
   componentDidMount = () => {
@@ -101,7 +102,7 @@ export default class ConfirmDecryptMessage extends Component {
   }
 
   renderAccount = () => {
-    const { fromAccount } = this.props
+    const { fromAccount } = this.state
 
     return (
       <div className="request-decrypt-message__account">
@@ -120,7 +121,8 @@ export default class ConfirmDecryptMessage extends Component {
   }
 
   renderBalance = () => {
-    const { fromAccount: { balance }, conversionRate } = this.props
+    const { conversionRate } = this.props
+    const { fromAccount: { balance } } = this.state
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
