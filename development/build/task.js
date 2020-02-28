@@ -2,26 +2,28 @@ const gulp = require('gulp')
 const pify = require('pify')
 const isStream = require('isstream')
 const endOfStream = pify(require('end-of-stream'))
-
+const EventEmitter = require('events')
 
 const tasks = {}
+const taskEvents = new EventEmitter()
 
-module.exports = { tasks, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult }
+module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult }
 
 async function runTask (name) {
   await tasks[name]()
-  console.log('done')
+  taskEvents.emit('complete')
 }
 
 function createTask (name, taskFn) {
   const task = async (...args) => {
     const start = Date.now()
+    taskEvents.emit('start', [name, start])
     // await task done
     const result = taskFn()
     await endOfTaskResult(result)
     // log stats
     const end = Date.now()
-    console.log(`${JSON.stringify([start, end, name])}`)
+    taskEvents.emit('end', [name, start, end])
   }
   tasks[name] = task
   // temporary, for entry point
