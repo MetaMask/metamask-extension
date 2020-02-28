@@ -8,7 +8,6 @@ import FirstTimeFlow from '../first-time-flow'
 import SendTransactionScreen from '../send'
 import ConfirmTransaction from '../confirm-transaction'
 import Sidebar from '../../components/app/sidebars'
-import { WALLET_VIEW_SIDEBAR } from '../../components/app/sidebars/sidebar.constants'
 import Home from '../home'
 import Settings from '../settings'
 import Authenticated from '../../helpers/higher-order-components/authenticated'
@@ -205,18 +204,6 @@ export default class Routes extends Component {
     } = sidebar
     const { transaction: sidebarTransaction } = props || {}
 
-    const sidebarOnOverlayClose = sidebarType === WALLET_VIEW_SIDEBAR
-      ? () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
-            action: 'Wallet Sidebar',
-            name: 'Closed Sidebare Via Overlay',
-          },
-        })
-      }
-      : null
-
     const sidebarShouldClose = sidebarTransaction &&
       !sidebarTransaction.status === 'failed' &&
       !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)
@@ -250,7 +237,6 @@ export default class Routes extends Component {
           transitionName={sidebarTransitionName}
           type={sidebarType}
           sidebarProps={sidebar.props}
-          onOverlayClose={sidebarOnOverlayClose}
         />
         <NetworkDropdown
           provider={provider}

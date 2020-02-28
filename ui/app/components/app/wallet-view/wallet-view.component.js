@@ -18,25 +18,16 @@ export default class WalletView extends Component {
   }
 
   static propTypes = {
-    hideSidebar: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     identities: PropTypes.object.isRequired,
     keyrings: PropTypes.array.isRequired,
     responsiveDisplayClassname: PropTypes.string,
     selectedAddress: PropTypes.string.isRequired,
-    sidebarOpen: PropTypes.bool.isRequired,
   }
 
   showConnectedSites = () => {
-    const {
-      sidebarOpen,
-      hideSidebar,
-      history,
-    } = this.props
+    const { history } = this.props
     history.push(CONNECTED_ROUTE)
-    if (sidebarOpen) {
-      hideSidebar()
-    }
   }
 
   render () {

@@ -3,7 +3,14 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 const Tab = (props) => {
-  const { name, onClick, isActive, tabIndex, className } = props
+  const {
+    className,
+    'data-testid': dataTestId,
+    isActive,
+    name,
+    onClick,
+    tabIndex,
+  } = props
 
   return (
     <li
@@ -12,6 +19,7 @@ const Tab = (props) => {
         className,
         { 'tab--active': isActive },
       )}
+      data-testid={dataTestId}
       onClick={(event) => {
         event.preventDefault()
         onClick(tabIndex)
@@ -24,6 +32,7 @@ const Tab = (props) => {
 
 Tab.propTypes = {
   className: PropTypes.string,
+  'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,

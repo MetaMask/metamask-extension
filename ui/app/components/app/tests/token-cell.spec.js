@@ -22,11 +22,6 @@ describe('Token Cell', function () {
       },
       conversionRate: 7.00,
     },
-    appState: {
-      sidebar: {
-        isOpen: true,
-      },
-    },
   }
 
   const middlewares = [thunk]

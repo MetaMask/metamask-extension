@@ -205,10 +205,10 @@ describe('MetaMask', function () {
 
     it('confirms the transaction', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await driver.delay(largeDelayMs)
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
