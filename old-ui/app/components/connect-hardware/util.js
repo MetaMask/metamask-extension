@@ -1,4 +1,5 @@
 import { LEDGER, TREZOR } from './enum'
+import { RSK_CODE, RSK_TESTNET_CODE, CLASSIC_CODE } from '../../../../app/scripts/controllers/network/enums'
 
 function isLedger (device) {
 	return device && device.toLowerCase().includes(LEDGER)
@@ -49,22 +50,23 @@ const hdETCTrezorPath = `m/44'/61'/0'/0`
 const hdETCLedgerPath = `m/44'/61'/0'/0/0`
 const hdETCLedgerLivePath = `m/44'/61'`
 
-const customHdPaths = {
-  30: {
-    trezor: hdRSKMainnetTrezorPath,
-    ledger: hdRSKMainnetLedgerPath,
-    ledgeLive: hdRSKMainnetLedgerLivePath,
-  },
-  31: {
-    trezor: hdRSKTestnetTrezorPath,
-    ledger: hdRSKTestnetLedgerPath,
-    ledgeLive: hdRSKTestnetLedgerLivePath,
-  },
-  61: {
-    trezor: hdETCTrezorPath,
-    ledger: hdETCLedgerPath,
-    ledgeLive: hdETCLedgerLivePath,
-  },
+const customHdPaths = {}
+customHdPaths[RSK_CODE] = {
+  trezor: hdRSKMainnetTrezorPath,
+  ledger: hdRSKMainnetLedgerPath,
+  ledgeLive: hdRSKMainnetLedgerLivePath,
+}
+
+customHdPaths[RSK_TESTNET_CODE] = {
+  trezor: hdRSKTestnetTrezorPath,
+  ledger: hdRSKTestnetLedgerPath,
+  ledgeLive: hdRSKTestnetLedgerLivePath,
+}
+
+customHdPaths[CLASSIC_CODE] = {
+  trezor: hdETCTrezorPath,
+  ledger: hdETCLedgerPath,
+  ledgeLive: hdETCLedgerLivePath,
 }
 
 module.exports = {
