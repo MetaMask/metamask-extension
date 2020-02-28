@@ -49,7 +49,10 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   if (hasSubstitutions) {
     const parts = phrase.split(/(\$\d)/g)
 
-    const substitutedParts = parts.map((part) => (part.match(/\$\d/) ? substitutions.shift() : part))
+    const substitutedParts = parts.map((part) => {
+      const subMatch = part.match(/\$(\d)/)
+      return subMatch ? substitutions[Number(subMatch[1]) - 1] : part
+    })
 
     phrase = hasReactSubstitutions
       ? <span> { substitutedParts } </span>
