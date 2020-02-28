@@ -10,14 +10,6 @@ export default class TransactionView extends PureComponent {
     t: PropTypes.func,
   }
 
-  static propTypes = {
-    children: PropTypes.node,
-  }
-
-  static defaultProps = {
-    children: null,
-  }
-
   render () {
     return (
       <div className="transaction-view">
@@ -28,9 +20,7 @@ export default class TransactionView extends PureComponent {
         <div className="transaction-view__balance-wrapper">
           <TransactionViewBalance />
         </div>
-        <TransactionList>
-          { this.props.children }
-        </TransactionList>
+        <TransactionList />
       </div>
     )
   }

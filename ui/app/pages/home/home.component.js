@@ -85,10 +85,9 @@ export default class Home extends PureComponent {
     }
   }
 
-  render () {
+  renderNotifications () {
     const { t } = this.context
     const {
-      forgottenPassword,
       history,
       hasDaiV1Token,
       shouldShowSeedPhraseReminder,
@@ -99,6 +98,64 @@ export default class Home extends PureComponent {
       setShowRestorePromptToFalse,
       showRestorePrompt,
       threeBoxLastUpdated,
+    } = this.props
+
+    return (
+      <MultipleNotifications>
+        {
+          shouldShowSeedPhraseReminder
+            ? (
+              <HomeNotification
+                descriptionText={t('backupApprovalNotice')}
+                acceptText={t('backupNow')}
+                onAccept={() => {
+                  if (isPopup) {
+                    global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                  } else {
+                    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                  }
+                }}
+                infoText={t('backupApprovalInfo')}
+                key="home-backupApprovalNotice"
+              />
+            )
+            : null
+        }
+        {
+          threeBoxLastUpdated && showRestorePrompt
+            ? (
+              <HomeNotification
+                descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
+                acceptText={t('restore')}
+                ignoreText={t('noThanks')}
+                infoText={t('dataBackupFoundInfo')}
+                onAccept={() => {
+                  restoreFromThreeBox(selectedAddress)
+                    .then(() => {
+                      turnThreeBoxSyncingOn()
+                    })
+                }}
+                onIgnore={() => {
+                  setShowRestorePromptToFalse()
+                }}
+                key="home-privacyModeDefault"
+              />
+            )
+            : null
+        }
+        {
+          hasDaiV1Token
+            ? <DaiMigrationNotification />
+            : null
+        }
+      </MultipleNotifications>
+    )
+  }
+
+  render () {
+    const {
+      forgottenPassword,
+      history,
     } = this.props
 
     if (forgottenPassword) {
@@ -114,58 +171,10 @@ export default class Home extends PureComponent {
           />
           { !history.location.pathname.match(/^\/confirm-transaction/)
             ? (
-              <TransactionView>
-                <MultipleNotifications>
-                  {
-                    shouldShowSeedPhraseReminder
-                      ? (
-                        <HomeNotification
-                          descriptionText={t('backupApprovalNotice')}
-                          acceptText={t('backupNow')}
-                          onAccept={() => {
-                            if (isPopup) {
-                              global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                            } else {
-                              history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                            }
-                          }}
-                          infoText={t('backupApprovalInfo')}
-                          key="home-backupApprovalNotice"
-                        />
-                      )
-                      : null
-                  }
-                  {
-                    threeBoxLastUpdated && showRestorePrompt
-                      ? (
-                        <HomeNotification
-                          descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
-                          acceptText={t('restore')}
-                          ignoreText={t('noThanks')}
-                          infoText={t('dataBackupFoundInfo')}
-                          onAccept={() => {
-                            restoreFromThreeBox(selectedAddress)
-                              .then(() => {
-                                turnThreeBoxSyncingOn()
-                              })
-                          }}
-                          onIgnore={() => {
-                            setShowRestorePromptToFalse()
-                          }}
-                          key="home-privacyModeDefault"
-                        />
-                      )
-                      : null
-                  }
-                  {
-                    hasDaiV1Token
-                      ? <DaiMigrationNotification />
-                      : null
-                  }
-                </MultipleNotifications>
-              </TransactionView>
+              <TransactionView />
             )
             : null }
+          { this.renderNotifications() }
         </div>
       </div>
     )
