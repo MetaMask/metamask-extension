@@ -107,7 +107,7 @@ export default class Home extends PureComponent {
 
     return (
       <div className="main-container">
-        <div className="account-and-transaction-details">
+        <div className="home__container">
           <Media
             query="(min-width: 576px)"
             render={() => <WalletView />}
