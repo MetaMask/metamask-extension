@@ -46,10 +46,10 @@ function createScriptTasks ({ browserPlatforms }) {
   // bundle tasks
   createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' })
   createTasksForBuildJsDeps({ filename: 'ui-libs', key: 'ui' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:test-extension:js', devMode: true, testing: 'true' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
-  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:test:extension:js', testing: 'true' })
+  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:dev', devMode: true })
+  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:prod' })
+  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test', testing: 'true' })
+  createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test-live', testing: 'true', devMode: true })
 
   function createTasksForBuildJsDeps ({ key, filename }) {
     const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
@@ -61,7 +61,7 @@ function createScriptTasks ({ browserPlatforms }) {
       devMode: false,
     })
 
-    createTask(`build:extension:js:deps:${key}`, bundleTask(Object.assign({
+    createTask(`scripts:deps:${key}`, bundleTask(Object.assign({
       label: filename,
       filename: `${filename}.js`,
       destinations,

@@ -63,10 +63,10 @@ createTask('zip', taskParallel(
 createTask('dev:test',
   taskSeries(
     clean,
-    'dev:scss',
+    'styles:dev',
     taskParallel(
-      'dev:test-extension:js',
-      'copy:dev',
+      'scripts:core:test-live',
+      'static:dev',
       'manifest:testing',
       'reload',
     )
@@ -76,10 +76,10 @@ createTask('dev:test',
 createTask('dev:extension',
   taskSeries(
     clean,
-    'dev:scss',
+    'styles:dev',
     taskParallel(
-      'dev:extension:js',
-      'copy:dev',
+      'scripts:core:dev',
+      'static:dev',
       'manifest:dev',
       'reload'
     )
@@ -89,12 +89,12 @@ createTask('dev:extension',
 createTask('build',
   taskSeries(
     clean,
-    'build:scss',
+    'styles:prod',
     taskParallel(
-      'build:extension:js:deps:background',
-      'build:extension:js:deps:ui',
-      'build:extension:js',
-      'copy:prod',
+      'scripts:deps:background',
+      'scripts:deps:ui',
+      'scripts:core:prod',
+      'static:prod',
       'manifest:prod',
     ),
     // 'optimize:images'
@@ -104,12 +104,12 @@ createTask('build',
 createTask('build:test',
   taskSeries(
     clean,
-    'build:scss',
+    'styles:prod',
     taskParallel(
-      'build:extension:js:deps:background',
-      'build:extension:js:deps:ui',
-      'build:test:extension:js',
-      'copy:prod',
+      'scripts:deps:background',
+      'scripts:deps:ui',
+      'scripts:core:test',
+      'static:prod',
       'manifest:testing',
     ),
   )

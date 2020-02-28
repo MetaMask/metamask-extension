@@ -19,13 +19,13 @@ module.exports = createStyleTasks
 
 function createStyleTasks () {
 
-  createTask('build:scss', createScssBuildTask({
+  createTask('styles:prod', createScssBuildTask({
     src: 'ui/app/css/index.scss',
     dest: 'ui/app/css/output',
     devMode: false,
   }))
 
-  createTask('dev:scss', createScssBuildTask({
+  createTask('styles:dev', createScssBuildTask({
     src: 'ui/app/css/index.scss',
     dest: 'ui/app/css/output',
     devMode: true,
