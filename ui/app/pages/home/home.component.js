@@ -7,7 +7,9 @@ import HomeNotification from '../../components/app/home-notification'
 import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
-import TransactionView from '../../components/app/transaction-view'
+import TransactionList from '../../components/app/transaction-list'
+import TransactionViewBalance from '../../components/app/transaction-view-balance'
+import MenuBar from '../../components/app/menu-bar'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -167,13 +169,30 @@ export default class Home extends PureComponent {
         <div className="home__container">
           <Media
             query="(min-width: 576px)"
-            render={() => <WalletView />}
-          />
-          { !history.location.pathname.match(/^\/confirm-transaction/)
-            ? (
-              <TransactionView />
-            )
-            : null }
+          >
+            {
+              (isWideViewport) => (
+                <>
+                  { isWideViewport ? <WalletView /> : null }
+                  {
+                    !history.location.pathname.match(/^\/confirm-transaction/)
+                      ? (
+                        <div className="home__main-view">
+                          {
+                            !isWideViewport ? <MenuBar /> : null
+                          }
+                          <div className="home__balance-wrapper">
+                            <TransactionViewBalance />
+                          </div>
+                          <TransactionList />
+                        </div>
+                      )
+                      : null
+                  }
+                </>
+              )
+            }
+          </Media>
           { this.renderNotifications() }
         </div>
       </div>
