@@ -1,3 +1,6 @@
+const randomColor = require('randomcolor')
+const chalk = require('chalk')
+
 module.exports = { setupTaskDisplay, displayChart }
 
 const SYMBOLS = {
@@ -40,15 +43,28 @@ function displayChart (data) {
   const first = Math.min(...data.map(entry => entry[1]))
   const last = Math.max(...data.map(entry => entry[2]))
 
+  // get colors
+  const colors = randomColor({ count: data.length })
+
+  // some heading before the bars
+  console.log(`\nbuild completed. task timeline:`)
+
   // build bars for bounds
-  data.map((entry) => {
+  data.map((entry, index) => {
     const [label, start, end] = entry
     const [start2, end2] = [start, end].map(value => adjust(value, first, last, 40))
     const barString = barBuilder(start2, end2)
-    console.log(barString, `${label} ${(end-start)/1e3}`)
+    const color = colors[index]
+    const coloredBarString = colorize(color, barString)
+    console.log(coloredBarString, `${label} ${(end-start)/1e3}`)
     // console.log(barString, `${label} ${(end-start)/1e3} ${start} ${end} ${start2} ${end2}`)
   })
 
+}
+
+function colorize (color, string) {
+  const colorizer = (typeof chalk[color] === 'function') ? chalk[color] : chalk.hex(color)
+  return colorizer(string)
 }
 
 // scale number within bounds
