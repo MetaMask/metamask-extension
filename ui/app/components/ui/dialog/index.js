@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import c from 'classnames'
+import classnames from 'classnames'
 
 export default function Dialog (props) {
   const { children, type, className, onClick } = props
   return (
     <div
-      className={c('dialog', className, {
+      className={classnames('dialog', className, {
         'dialog--message': type === 'message',
         'dialog--error': type === 'error',
         'dialog--warning': type === 'warning',
