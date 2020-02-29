@@ -20,7 +20,7 @@ export default class TokenCell extends Component {
     selectedTokenAddress: PropTypes.string,
     contractExchangeRates: PropTypes.object,
     conversionRate: PropTypes.number,
-    hideSidebar: PropTypes.bool,
+    hideSidebar: PropTypes.func.isRequired,
     sidebarOpen: PropTypes.bool,
     currentCurrency: PropTypes.string,
     image: PropTypes.string,
