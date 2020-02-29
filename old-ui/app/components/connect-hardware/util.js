@@ -38,13 +38,13 @@ function getHdPaths (network) {
   return hdPaths
 }
 
-const hdRSKMainnetTrezorPath = `m/44’/137’/0’/0`
-const hdRSKMainnetLedgerPath = `m/44’/137’/0’/0`
-const hdRSKMainnetLedgerLivePath = `m/44’/137’/0’/0`
+const hdRSKMainnetTrezorPath = `m/44'/137'/0'/0`
+const hdRSKMainnetLedgerPath = `m/44'/137'/0'/0`
+const hdRSKMainnetLedgerLivePath = `m/44'/137'/0'/0`
 
-const hdRSKTestnetTrezorPath = `m/44’/37310’/0’/0`
-const hdRSKTestnetLedgerPath = `m/44’/37310’/0’/0`
-const hdRSKTestnetLedgerLivePath = `m/44’/37310’/0’/0`
+const hdRSKTestnetTrezorPath = `m/44'/37310'/0'/0`
+const hdRSKTestnetLedgerPath = `m/44'/37310'/0'/0`
+const hdRSKTestnetLedgerLivePath = `m/44'/37310'/0'/0`
 
 const hdETCTrezorPath = `m/44'/61'/0'/0`
 const hdETCLedgerPath = `m/44'/61'/0'/0/0`

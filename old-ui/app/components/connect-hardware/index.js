@@ -204,7 +204,7 @@ class ConnectHardwareForm extends Component {
     return (
       <AccountList
         onPathChange={this.onPathChange}
-        selectedPath={this.props.defaultHdPaths[this.state.device]}
+        selectedPath={this._setHdPath(this.state.device)}
         device={this.state.device}
         accounts={this.state.accounts}
         selectedAccount={this.state.selectedAccount}
