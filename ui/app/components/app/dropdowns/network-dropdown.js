@@ -126,7 +126,6 @@ class NetworkDropdown extends Component {
   }
 
   renderCommonRpc (rpcListDetail, provider) {
-    const props = this.props
     const reversedRpcListDetail = rpcListDetail.slice().reverse()
 
     return reversedRpcListDetail.map((entry) => {
@@ -143,7 +142,7 @@ class NetworkDropdown extends Component {
           <DropdownMenuItem
             key={`common${rpc}`}
             closeMenu={() => this.props.hideNetworkDropdown()}
-            onClick={() => props.setRpcTarget(rpc, chainId, ticker, nickname)}
+            onClick={() => this.props.setRpcTarget(rpc, chainId, ticker, nickname)}
             style={{
               fontSize: '16px',
               lineHeight: '20px',
@@ -170,7 +169,7 @@ class NetworkDropdown extends Component {
               className="fa fa-times delete"
               onClick={(e) => {
                 e.stopPropagation()
-                props.delRpcTarget(rpc)
+                this.props.delRpcTarget(rpc)
               }}
             />
           </DropdownMenuItem>
