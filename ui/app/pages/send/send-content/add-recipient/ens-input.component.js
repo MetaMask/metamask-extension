@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import c from 'classnames'
+import classnames from 'classnames'
 import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 import { ellipsify } from '../../send.utils'
 
@@ -146,9 +146,9 @@ export default class EnsInput extends Component {
     }
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={classnames('ens-input', className)}>
         <div
-          className={c('ens-input__wrapper', {
+          className={classnames('ens-input__wrapper', {
             'ens-input__wrapper__status-icon--error': false,
             'ens-input__wrapper__status-icon--valid': false,
           })}
@@ -166,7 +166,7 @@ export default class EnsInput extends Component {
             data-testid="ens-input"
           />
           <div
-            className={c('ens-input__wrapper__action-icon', {
+            className={classnames('ens-input__wrapper__action-icon', {
               'ens-input__wrapper__action-icon--erase': input,
               'ens-input__wrapper__action-icon--qrcode': !input,
             })}
@@ -190,7 +190,7 @@ export default class EnsInput extends Component {
 
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={classnames('ens-input', className)}>
         <div
           className="ens-input__wrapper ens-input__wrapper--valid"
         >
