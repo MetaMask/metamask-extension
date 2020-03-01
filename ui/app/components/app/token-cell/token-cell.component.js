@@ -48,7 +48,6 @@ export default class TokenCell extends Component {
 
   render () {
     const { tokenMenuOpen } = this.state
-    const props = this.props
     const {
       address,
       symbol,
@@ -62,7 +61,7 @@ export default class TokenCell extends Component {
       sidebarOpen,
       currentCurrency,
       image,
-    } = props
+    } = this.props
     let currentTokenToFiatRate
     let currentTokenInFiat
     let formattedFiat = ''

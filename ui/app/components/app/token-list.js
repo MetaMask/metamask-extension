@@ -132,8 +132,7 @@ class TokenList extends Component {
 
   render () {
     const { userAddress, assetImages } = this.props
-    const state = this.state
-    const { tokens, isLoading, error } = state
+    const { tokens, isLoading, error } = this.state
     if (isLoading) {
       return (
         <div
