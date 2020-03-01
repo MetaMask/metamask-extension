@@ -60,8 +60,6 @@ Icon.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   color: PropTypes.string,
-  borderWidth: PropTypes.number,
-  borderRadius: PropTypes.number,
 }
 
 export default Icon
