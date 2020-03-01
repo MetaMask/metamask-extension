@@ -59,7 +59,7 @@ Icon.propTypes = {
   type: PropTypes.string.isRequired,
   width: PropTypes.number,
   height: PropTypes.number,
-  color: PropTypes.string,
+  color: PropTypes.string.isRequired,
 }
 
 export default Icon
