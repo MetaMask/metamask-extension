@@ -2,6 +2,11 @@ import extension from 'extensionizer'
 import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+import pify from 'pify'
+
+const PIFY_OPTS = {
+  errorFirst: false,
+}
 
 class ExtensionPlatform {
 
@@ -82,7 +87,14 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser (route = null, queryString = null) {
+  /**
+   * Opens the extension in a new browser tab.
+   *
+   * @param {string} [route] - The route to add to the extension URL.
+   * @param {string} [queryString] - The query string to add to the extension URL.
+   * @returns {tabs.Tab} Object with information about the opened tab.
+   */
+  async openExtensionInBrowser (route = null, queryString = null) {
     let extensionURL = extension.runtime.getURL('home.html')
 
     if (queryString) {
@@ -92,10 +104,14 @@ class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`
     }
+
     this.openTab({ url: extensionURL })
+
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
+
+    return await this.openWindow({ url: extensionURL })
   }
 
   getPlatformInfo (cb) {
@@ -223,7 +239,7 @@ class ExtensionPlatform {
 
   _viewOnEtherscan (txId) {
     if (txId.startsWith('http://')) {
-      extension.tabs.create({ url: txId })
+      this.openWindow({ url: txId })
     }
   }
 }

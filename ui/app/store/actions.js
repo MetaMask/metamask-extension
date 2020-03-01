@@ -2392,7 +2392,7 @@ export function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
   }
 }
 
-export function getOpenMetamaskTabsIds () {
+export function getOpenMetamaskTabIds () {
   return async (dispatch) => {
     const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds()
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
