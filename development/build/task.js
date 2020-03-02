@@ -1,12 +1,13 @@
 const pify = require('pify')
+const EventEmitter = require('events')
 const isStream = require('isstream')
 const endOfStream = pify(require('end-of-stream'))
-const EventEmitter = require('events')
+const execProcess = pify(require('child_process').exec)
 
 const tasks = {}
 const taskEvents = new EventEmitter()
 
-module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult }
+module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult, childThread }
 
 async function runTask (taskName) {
   if (!(taskName in tasks)) {
@@ -24,21 +25,35 @@ async function runTask (taskName) {
 }
 
 function createTask (taskName, taskFn) {
-  const task = async () => {
-    const start = Date.now()
-    taskEvents.emit('start', [taskName, start])
-    // await task done
-    const result = taskFn()
-    await endOfTaskResult(result)
-    // log stats
-    const end = Date.now()
-    taskEvents.emit('end', [taskName, start, end])
-  }
   if (taskName in tasks) {
     throw new Error(`MetaMask build: task "${taskName}" already exists. Refusing to redefine`)
   }
+  const task = instrumentForTaskStats(taskName, async () => {
+    // await task done
+    const result = taskFn()
+    await endOfTaskResult(result)
+  })
+  task.taskName = taskName
   tasks[taskName] = task
   return task
+}
+
+function childThread (task) {
+  const taskName = typeof task === 'string' ? task : task.taskName
+  if (!taskName) throw new Error(`MetaMask build: childThread unable to identify task name`)
+  return instrumentForTaskStats(taskName, async () => {
+    await execProcess(`yarn build ${taskName}`)
+  })
+}
+
+function instrumentForTaskStats (taskName, asyncFn) {
+  return async () => {
+    const start = Date.now()
+    taskEvents.emit('start', [taskName, start])
+    await asyncFn()
+    const end = Date.now()
+    taskEvents.emit('end', [taskName, start, end])
+  }
 }
 
 function taskSeries (...subtasks) {

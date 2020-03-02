@@ -14,7 +14,7 @@ const terser = require('gulp-terser-js')
 const { makeStringTransform } = require('browserify-transform-tools')
 
 
-const { createTask, taskParallel, taskSeries } = require('./task')
+const { createTask, taskParallel, taskSeries, childThread } = require('./task')
 const packageJSON = require('../../package.json')
 
 module.exports = createScriptTasks
@@ -127,9 +127,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     })
     // compose into larger task
     const subtasks = []
-    subtasks.push(taskParallel(...buildPhase1.map((file) => `${taskPrefix}:${file}`)))
+    subtasks.push(taskParallel(...buildPhase1.map((file) => childThread(`${taskPrefix}:${file}`))))
     if (buildPhase2.length) {
-      subtasks.push(taskParallel(...buildPhase2.map((file) => `${taskPrefix}:${file}`)))
+      subtasks.push(taskParallel(...buildPhase2.map((file) => childThread(`${taskPrefix}:${file}`))))
     }
 
     return taskSeries(...subtasks)
