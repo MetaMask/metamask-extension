@@ -139,4 +139,4 @@ if (!(taskName in entryTasks)) {
   throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
 }
 console.log(`running task "${taskName}"...`)
-entryTasks[taskName]()
+runTask(taskName)
