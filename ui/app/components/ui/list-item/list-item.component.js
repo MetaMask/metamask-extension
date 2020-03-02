@@ -44,7 +44,7 @@ const Item = ({
   status,
   title,
   subtitle,
-  more,
+  children,
   nativeCurrency,
   currentCurrency,
 }) => {
@@ -104,9 +104,9 @@ const Item = ({
         ) : (
           subtitle
         )}
-        {more && (
+        {children && (
           <div className="list-item__more">
-            { more }
+            { children }
           </div>
         )}
       </div>
@@ -133,7 +133,7 @@ Item.propTypes = {
     PropTypes.string,
     PropTypes.node,
   ]).isRequired,
-  more: PropTypes.node,
+  children: PropTypes.node,
   nativeCurrency: PropTypes.string,
   currentCurrency: PropTypes.string,
 }
