@@ -3,7 +3,7 @@
 ## Current Develop Branch
 
 ## 7.7.6 Mon Mar 02 2020
-- [#8154](https://github.com/MetaMask/metamask-extension/pull/8154): Use @metamask/eth-ledger-bridge-keyring@0.2.2
+- [#8154](https://github.com/MetaMask/metamask-extension/pull/8154): Prevent signing from incorrect Ledger account
 
 ## 7.7.5 Fri Feb 14 2020
 - [#8053](https://github.com/MetaMask/metamask-extension/pull/8053): Inline the source text not the binary encoding for inpage script
