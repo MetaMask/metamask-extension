@@ -1,4 +1,5 @@
 const gulp = require('gulp')
+const watch = require('gulp-watch')
 const { createTask, taskParallel } = require('./task')
 
 module.exports = createStaticAssetTasks
@@ -45,7 +46,7 @@ const copyTargetsDev = [
   },
 ]
 
-function createStaticAssetTasks ({ browserPlatforms }) {
+function createStaticAssetTasks ({ livereload, browserPlatforms }) {
 
   const prod = createTask('static:prod', taskParallel(...copyTargets.map((target) => {
     return function copyStaticAssets () {
@@ -54,11 +55,20 @@ function createStaticAssetTasks ({ browserPlatforms }) {
   })))
   const dev = createTask('static:dev', taskParallel(...copyTargetsDev.map((target) => {
     return function copyStaticAssets () {
-      return performCopy(target)
+      return setupLiveCopy(target)
     }
   })))
 
   return { dev, prod }
+
+  function setupLiveCopy (target) {
+    const pattern = target.pattern || '/**/*'
+    watch(target.src + pattern, (event) => {
+      livereload.changed(event.path)
+      performCopy(target)
+    })
+    performCopy(target)
+  }
 
   function performCopy (target) {
     // stream from source

@@ -2,18 +2,24 @@ const pify = require('pify')
 const EventEmitter = require('events')
 const isStream = require('isstream')
 const endOfStream = pify(require('end-of-stream'))
-const execProcess = pify(require('child_process').exec)
+const { spawn } = require('child_process')
 
 const tasks = {}
 const taskEvents = new EventEmitter()
 
 module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult, childThread }
 
-async function runTask (taskName) {
+const { setupTaskDisplay } = require('./display')
+
+
+async function runTask (taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
     throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
   }
-  console.log(`running task "${taskName}"...`)
+  if (!skipStats) {
+    setupTaskDisplay(taskEvents)
+    console.log(`running task "${taskName}"...`)
+  }
   try {
     await tasks[taskName]()
   } catch (err) {
@@ -44,7 +50,22 @@ function childThread (task) {
     throw new Error(`MetaMask build: childThread unable to identify task name`)
   }
   return instrumentForTaskStats(taskName, async () => {
-    await execProcess(`yarn build ${taskName}`)
+    const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'])
+    // forward logs to main process
+    // skip the first stdout event (announcing the process command)
+    childProcess.stdout.once('data', () => {
+      childProcess.stdout.on('data', (data) => process.stdout.write(`${taskName}: ${data}`))
+    })
+    childProcess.stderr.on('data', (data) => process.stderr.write(`${taskName}: ${data}`))
+    // await end of process
+    await new Promise((resolve, reject) => {
+      childProcess.once('close', (errCode) => {
+        if (errCode !== 0) {
+          reject(new Error(`MetaMask build: childThread for task "${taskName}" encountered an error`))
+        }
+        resolve()
+      })
+    })
   })
 }
 

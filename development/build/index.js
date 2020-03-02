@@ -5,16 +5,12 @@ const del = require('del')
 // const imagemin = require('gulp-imagemin')
 const baseManifest = require('../../app/manifest/_base.json')
 
-const { createTask, taskEvents, taskSeries, taskParallel, runTask } = require('./task')
-const { setupTaskDisplay } = require('./display')
+const { createTask, taskSeries, taskParallel, runTask } = require('./task')
 
 const createManifestTasks = require('./manifest')
 const createScriptTasks = require('./scripts')
 const createStyleTasks = require('./styles')
 const createStaticAssetTasks = require('./static')
-
-setupTaskDisplay(taskEvents)
-
 
 const browserPlatforms = [
   'firefox',
@@ -128,4 +124,6 @@ const taskName = process.argv[2]
 if (!taskName) {
   throw new Error(`MetaMask build: No task name specified`)
 }
-runTask(taskName)
+const skipStats = process.argv[3] === '--skip-stats'
+
+runTask(taskName, { skipStats })
