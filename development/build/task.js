@@ -13,7 +13,13 @@ async function runTask (taskName) {
     throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
   }
   console.log(`running task "${taskName}"...`)
-  await tasks[taskName]()
+  try {
+    await tasks[taskName]()
+  } catch (err) {
+    console.error(`MetaMask build: Encountered an error while running task "${taskName}".`)
+    console.error(err)
+    process.exit(1)
+  }
   taskEvents.emit('complete')
 }
 
