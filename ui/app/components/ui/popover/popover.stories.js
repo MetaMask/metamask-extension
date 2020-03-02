@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import PopOver from './popover.component'
+import Popover from './popover.component'
 import TransactionDetails from '../transaction-details'
 import TransactionActivity from '../transaction-activity'
 import TransactionFees from '../transaction-fees'
@@ -34,10 +34,10 @@ const Chart = () => (
   <div className="popover__chart"></div>
 )
 
-storiesOf('PopOver', module)
-  .add('PopOver - Approve', () => (
+storiesOf('Popover', module)
+  .add('Popover - Approve', () => (
     <div style={containerStyle}>
-      <PopOver title={text('title', 'Approve spend limit')} onClose={preventDefault}>
+      <Popover title={text('title', 'Approve spend limit')} onClose={preventDefault}>
         <div className="popover-container">
           <div className="popover-item">
             <div className="popover-item__col">
@@ -85,12 +85,12 @@ storiesOf('PopOver', module)
           <TransactionDetails amount={0.00} fee={0.04} ethCost={0.000185} />
           <TransactionActivity activities={activities} />
         </div>
-      </PopOver>
+      </Popover>
     </div>
   ))
-  .add('PopOver - Speed Up', () => (
+  .add('Popover - Speed Up', () => (
     <div style={containerStyle}>
-      <PopOver title={text('title', 'Speed up')} onClose={close}>
+      <Popover title={text('title', 'Speed up')} onClose={close}>
         <Tabs>
           <TabList>
             <Tab>Basic</Tab>
@@ -127,6 +127,6 @@ storiesOf('PopOver', module)
             </div>
           </TabPanel>
         </Tabs>
-      </PopOver>
+      </Popover>
     </div>
   ))
