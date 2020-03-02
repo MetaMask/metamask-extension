@@ -3,14 +3,15 @@ const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
 // const imagemin = require('gulp-imagemin')
-const baseManifest = require('./app/manifest/_base.json')
-const { createTask, taskEvents, taskSeries, taskParallel, runTask } = require('./development/build/task')
-const { setupTaskDisplay } = require('./development/build/display')
+const baseManifest = require('../../app/manifest/_base.json')
 
-const createManifestTasks = require('./development/build/manifest')
-const createScriptTasks = require('./development/build/scripts')
-const createStyleTasks = require('./development/build/styles')
-const createStaticAssetTasks = require('./development/build/static')
+const { createTask, taskEvents, taskSeries, taskParallel, runTask } = require('./task')
+const { setupTaskDisplay } = require('./display')
+
+const createManifestTasks = require('./manifest')
+const createScriptTasks = require('./scripts')
+const createStyleTasks = require('./styles')
+const createStaticAssetTasks = require('./static')
 
 setupTaskDisplay(taskEvents)
 
@@ -56,7 +57,9 @@ const zip = createTask('zip', taskParallel(
   zipTask('opera'),
 ))
 
-// high level tasks
+// entry tasks
+
+const styles = styleTasks.prod
 
 const dev = createTask('dev',
   taskSeries(
@@ -120,4 +123,20 @@ function zipTask (target) {
   }
 }
 
-runTask('prod')
+// runTask('prod')
+
+const entryTasks = {
+  dev, testDev, test, prod, styles
+}
+
+
+// get task name and execute
+const taskName = process.argv[2]
+if (!taskName) {
+  throw new Error(`MetaMask build: No task name specified`)
+}
+if (!(taskName in entryTasks)) {
+  throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
+}
+console.log(`running task "${taskName}"...`)
+entryTasks[taskName]()

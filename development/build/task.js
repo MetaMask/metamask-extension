@@ -1,4 +1,3 @@
-const gulp = require('gulp')
 const pify = require('pify')
 const isStream = require('isstream')
 const endOfStream = pify(require('end-of-stream'))
@@ -26,8 +25,6 @@ function createTask (name, taskFn) {
     taskEvents.emit('end', [name, start, end])
   }
   tasks[name] = task
-  // temporary, for entry point
-  gulp.task(name, task)
   return task
 }
 
