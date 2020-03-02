@@ -213,6 +213,7 @@ export default class MetamaskController extends EventEmitter {
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
       getRestrictedMethods,
+      getUnlockPromise: this.getUnlockPromise.bind(this),
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -352,9 +353,7 @@ export default class MetamaskController extends EventEmitter {
         if (origin === 'metamask') {
           const selectedAddress = this.preferencesController.getSelectedAddress()
           return selectedAddress ? [selectedAddress] : []
-        } else if (
-          this.keyringController.memStore.getState().isUnlocked
-        ) {
+        } else if (this.isUnlocked()) {
           return await this.permissionsController.getAccounts(origin)
         }
         return [] // changing this is a breaking change
@@ -1730,9 +1729,8 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyConnections (origin, payload) {
 
-    const { isUnlocked } = this.getState()
     const connections = this.connections[origin]
-    if (!isUnlocked || !connections) {
+    if (!this.isUnlocked() || !connections) {
       return
     }
 
@@ -1750,8 +1748,7 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyAllConnections (payload) {
 
-    const { isUnlocked } = this.getState()
-    if (!isUnlocked) {
+    if (!this.isUnlocked()) {
       return
     }
 
@@ -1791,6 +1788,30 @@ export default class MetamaskController extends EventEmitter {
    */
   privateSendUpdate () {
     this.emit('update', this.getState())
+  }
+
+  /**
+   * Get a Promise that resolves when the extension is unlocked.
+   * This Promise will never reject.
+   *
+   * @returns {Promise<void>} A promise that resolves when the extension is
+   * unlocked, or immediately if the extension is already unlocked.
+   */
+  getUnlockPromise () {
+    return new Promise((resolve) => {
+      if (this.isUnlocked()) {
+        resolve()
+      } else {
+        this.once('unlock', resolve)
+      }
+    })
+  }
+
+  /**
+   * @returns {boolean} Whether the extension is unlocked.
+   */
+  isUnlocked () {
+    return this.keyringController.memStore.getState().isUnlocked
   }
 
   //=============================================================================
@@ -2083,7 +2104,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
   }
 
