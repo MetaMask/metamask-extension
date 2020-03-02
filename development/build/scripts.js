@@ -130,7 +130,7 @@ function createScriptTasks ({ browserPlatforms }) {
       subtasks.push(taskParallel(...buildPhase2.map((file) => `${taskPrefix}:${file}`)))
     }
 
-    return createTask(taskPrefix, taskSeries(...subtasks))
+    return taskSeries(...subtasks)
   }
 
   function bundleTask (opts) {
