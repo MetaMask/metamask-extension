@@ -44,11 +44,7 @@ Button.propTypes = {
   submit: PropTypes.bool,
   large: PropTypes.bool,
   className: PropTypes.string,
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-    PropTypes.element,
-  ]),
+  children: PropTypes.node,
 }
 
 Button.defaultProps = {

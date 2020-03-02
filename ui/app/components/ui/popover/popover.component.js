@@ -14,10 +14,7 @@ const PopOver = ({ title, children, onClose }) => (
 
 PopOver.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
+  children: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
 }
 

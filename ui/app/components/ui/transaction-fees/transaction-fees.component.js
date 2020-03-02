@@ -12,10 +12,7 @@ const FeesLink = ({ children }) => (
 )
 
 FeesLink.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 const TransactionFees = () => (
