@@ -44,6 +44,8 @@ export class PermissionsController {
       restrictedMethods: Object.keys(this._restrictedMethods),
       store: this.store,
     })
+    this.pendingApprovals = new Map()
+    this.pendingApprovalOrigins = new Set()
     this._initializePermissions(restoredPermissions)
   }
 
@@ -137,7 +139,7 @@ export class PermissionsController {
   async approvePermissionsRequest (approved, accounts) {
 
     const { id } = approved.metadata
-    const approval = this.pendingApprovals[id]
+    const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
       log.warn(`Permissions request with id '${id}' not found`)
@@ -158,7 +160,7 @@ export class PermissionsController {
       }))
     }
 
-    delete this.pendingApprovals[id]
+    this._removePendingApproval(id)
   }
 
   /**
@@ -167,7 +169,7 @@ export class PermissionsController {
    * @param {string} id - the id of the rejected request
    */
   async rejectPermissionsRequest (id) {
-    const approval = this.pendingApprovals[id]
+    const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
       log.warn(`Permissions request with id '${id}' not found`)
@@ -175,7 +177,7 @@ export class PermissionsController {
     }
 
     approval.reject(ethErrors.provider.userRejectedRequest())
-    delete this.pendingApprovals[id]
+    this._removePendingApproval(id)
   }
 
   /**
@@ -386,6 +388,38 @@ export class PermissionsController {
   }
 
   /**
+   * Adds a pending approval.
+   * @param {string} id - The id of the pending approval.
+   * @param {string} origin - The origin of the pending approval.
+   * @param {Function} resolve - The function resolving the pending approval Promise.
+   * @param {Function} reject - The function rejecting the pending approval Promise.
+   */
+  _addPendingApproval (id, origin, resolve, reject) {
+
+    if (
+      this.pendingApprovalOrigins.has(origin) ||
+      this.pendingApprovals.has(id)
+    ) {
+      throw new Error(
+        `Pending approval with id ${id} or origin ${origin} already exists.`
+      )
+    }
+
+    this.pendingApprovals.set(id, { origin, resolve, reject })
+    this.pendingApprovalOrigins.add(origin)
+  }
+
+  /**
+   * Removes the pending approval with the given id.
+   * @param {string} id - The id of the pending approval to remove.
+   */
+  _removePendingApproval (id) {
+    const { origin } = this.pendingApprovals.get(id)
+    this.pendingApprovalOrigins.delete(origin)
+    this.pendingApprovals.delete(id)
+  }
+
+  /**
    * A convenience method for retrieving a login object
    * or creating a new one if needed.
    *
@@ -395,8 +429,6 @@ export class PermissionsController {
 
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
-
-    this.pendingApprovals = {}
 
     this.permissions = new RpcCap({
 
@@ -418,12 +450,18 @@ export class PermissionsController {
        * @param {string} req - The internal rpc-cap user request object.
        */
       requestUserApproval: async (req) => {
-        const { metadata: { id } } = req
+        const { origin, metadata: { id } } = req
+
+        if (this.pendingApprovalOrigins.has(origin)) {
+          throw ethErrors.rpc.resourceUnavailable(
+            'Permission request already pending; please wait.'
+          )
+        }
 
         this._platform.openExtensionInBrowser(`connect/${id}`)
 
         return new Promise((resolve, reject) => {
-          this.pendingApprovals[id] = { resolve, reject }
+          this._addPendingApproval(id, origin, resolve, reject)
         })
       },
     }, initState)
