@@ -59,9 +59,9 @@ const zip = createTask('zip', taskParallel(
 
 // entry tasks
 
-const styles = styleTasks.prod
+createTask('styles', styleTasks.prod)
 
-const dev = createTask('dev',
+createTask('dev',
   taskSeries(
     clean,
     styleTasks.dev,
@@ -74,7 +74,7 @@ const dev = createTask('dev',
   )
 )
 
-const testDev = createTask('testDev',
+createTask('testDev',
   taskSeries(
     clean,
     styleTasks.dev,
@@ -87,7 +87,7 @@ const testDev = createTask('testDev',
   )
 )
 
-const prod = createTask('prod',
+createTask('prod',
   taskSeries(
     clean,
     styleTasks.prod,
@@ -101,7 +101,7 @@ const prod = createTask('prod',
   )
 )
 
-const test = createTask('test',
+createTask('test',
   taskSeries(
     clean,
     styleTasks.prod,
@@ -123,20 +123,9 @@ function zipTask (target) {
   }
 }
 
-// runTask('prod')
-
-const entryTasks = {
-  dev, testDev, test, prod, styles,
-}
-
-
 // get task name and execute
 const taskName = process.argv[2]
 if (!taskName) {
   throw new Error(`MetaMask build: No task name specified`)
 }
-if (!(taskName in entryTasks)) {
-  throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
-}
-console.log(`running task "${taskName}"...`)
 runTask(taskName)

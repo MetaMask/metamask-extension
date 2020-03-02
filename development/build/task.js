@@ -8,23 +8,30 @@ const taskEvents = new EventEmitter()
 
 module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult }
 
-async function runTask (name) {
-  await tasks[name]()
+async function runTask (taskName) {
+  if (!(taskName in tasks)) {
+    throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`)
+  }
+  console.log(`running task "${taskName}"...`)
+  await tasks[taskName]()
   taskEvents.emit('complete')
 }
 
-function createTask (name, taskFn) {
+function createTask (taskName, taskFn) {
   const task = async () => {
     const start = Date.now()
-    taskEvents.emit('start', [name, start])
+    taskEvents.emit('start', [taskName, start])
     // await task done
     const result = taskFn()
     await endOfTaskResult(result)
     // log stats
     const end = Date.now()
-    taskEvents.emit('end', [name, start, end])
+    taskEvents.emit('end', [taskName, start, end])
   }
-  tasks[name] = task
+  if (taskName in tasks) {
+    throw new Error(`MetaMask build: task "${taskName}" already exists. Refusing to redefine`)
+  }
+  tasks[taskName] = task
   return task
 }
 
