@@ -1,5 +1,5 @@
 const gulp = require('gulp')
-const { createTask, taskParallel, taskSeries } = require('./task')
+const { createTask, taskParallel } = require('./task')
 
 module.exports = createStaticAssetTasks
 
@@ -47,11 +47,15 @@ const copyTargetsDev = [
 
 function createStaticAssetTasks ({ browserPlatforms }) {
 
-  const prod = createTask('static:prod', taskParallel(...copyTargets.map(target => {
-    return function copyStaticAssets () { return performCopy(target) }
+  const prod = createTask('static:prod', taskParallel(...copyTargets.map((target) => {
+    return function copyStaticAssets () {
+      return performCopy(target)
+    }
   })))
-  const dev = createTask('static:dev', taskParallel(...copyTargetsDev.map(target => {
-    return function copyStaticAssets () { return performCopy(target) }
+  const dev = createTask('static:dev', taskParallel(...copyTargetsDev.map((target) => {
+    return function copyStaticAssets () {
+      return performCopy(target)
+    }
   })))
 
   return { dev, prod }
@@ -61,7 +65,7 @@ function createStaticAssetTasks ({ browserPlatforms }) {
     const pattern = target.pattern || '/**/*'
     let stream = gulp.src(target.src + pattern, { base: target.src })
     // copy to destinations
-    const destinations = browserPlatforms.map(platform => `./dist/${platform}/${target.dest}`)
+    const destinations = browserPlatforms.map((platform) => `./dist/${platform}/${target.dest}`)
     destinations.forEach(function (destination) {
       stream = stream.pipe(gulp.dest(destination))
     })

@@ -10,14 +10,14 @@ const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
 const endOfStream = pify(require('end-of-stream'))
 const pump = require('pump')
-const { createTask, taskParallel, taskSeries } = require('./task')
+const { createTask } = require('./task')
 
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks
 
 
-function createStyleTasks () {
+function createStyleTasks ({ livereload }) {
 
   const prod = createTask('styles:prod', createScssBuildTask({
     src: 'ui/app/css/index.scss',
@@ -45,35 +45,37 @@ function createStyleTasks () {
 
   return { prod, dev, lint }
 
-}
 
-function createScssBuildTask ({ src, dest, devMode, pattern }) {
-  return function () {
-    if (devMode) {
-      watch(pattern, async (event) => {
-        const stream = buildScss(devMode)
-        await endOfStream(stream)
-        livereload.changed(event.path)
-      })
+  function createScssBuildTask ({ src, dest, devMode, pattern }) {
+    return function () {
+      if (devMode) {
+        watch(pattern, async (event) => {
+          const stream = buildScss(devMode)
+          await endOfStream(stream)
+          livereload.changed(event.path)
+        })
+      }
+      return buildScss(devMode)
     }
-    return buildScss(devMode)
+
+    function buildScss (devMode) {
+      return pump(...[
+        // pre-process
+        gulp.src(src),
+        devMode && sourcemaps.init(),
+        sass().on('error', sass.logError),
+        devMode && sourcemaps.write(),
+        autoprefixer(),
+        // standard
+        gulp.dest(dest),
+        // right-to-left
+        rtlcss(),
+        rename({ suffix: '-rtl' }),
+        devMode && sourcemaps.write(),
+        gulp.dest(dest),
+      ].filter(Boolean))
+    }
   }
 
-  function buildScss (devMode) {
-    return pump(...[
-      // pre-process
-      gulp.src(src),
-      devMode && sourcemaps.init(),
-      sass().on('error', sass.logError),
-      devMode && sourcemaps.write(),
-      autoprefixer(),
-      // standard
-      gulp.dest(dest),
-      // right-to-left
-      rtlcss(),
-      rename({ suffix: '-rtl' }),
-      devMode && sourcemaps.write(),
-      gulp.dest(dest),
-    ].filter(Boolean))
-  }
+
 }

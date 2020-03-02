@@ -23,7 +23,7 @@ const SYMBOLS = {
 
 function setupTaskDisplay (taskEvents) {
   const taskData = []
-  taskEvents.on('start', ([name, start]) => {
+  taskEvents.on('start', ([name]) => {
     console.log(`Starting '${name}'...`)
   })
   taskEvents.on('end', ([name, start, end]) => {
@@ -37,11 +37,11 @@ function setupTaskDisplay (taskEvents) {
 
 function displayChart (data) {
   // sort tasks by start time
-  data.sort((a,b,) => a[1] - b[1])
+  data.sort((a, b,) => a[1] - b[1])
 
   // get bounds
-  const first = Math.min(...data.map(entry => entry[1]))
-  const last = Math.max(...data.map(entry => entry[2]))
+  const first = Math.min(...data.map((entry) => entry[1]))
+  const last = Math.max(...data.map((entry) => entry[2]))
 
   // get colors
   const colors = randomColor({ count: data.length })
@@ -52,11 +52,11 @@ function displayChart (data) {
   // build bars for bounds
   data.map((entry, index) => {
     const [label, start, end] = entry
-    const [start2, end2] = [start, end].map(value => adjust(value, first, last, 40))
+    const [start2, end2] = [start, end].map((value) => adjust(value, first, last, 40))
     const barString = barBuilder(start2, end2)
     const color = colors[index]
     const coloredBarString = colorize(color, barString)
-    const duration = ((end-start)/1e3).toFixed(1)
+    const duration = ((end - start) / 1e3).toFixed(1)
     console.log(coloredBarString, `${label} ${duration}s`)
   })
 
@@ -75,16 +75,19 @@ function adjust (value, first, last, size) {
 }
 
 // draw bars
-const barBuilder = (start, end) => {
-  let [spaceInt, spaceRest] = splitNumber(start)
+function barBuilder (start, end) {
+  const [spaceInt, spaceRest] = splitNumber(start)
   const barBodyLength = end - spaceInt
   let [barInt, barRest] = splitNumber(barBodyLength)
   // console.log(`${barBodyLength} ${barInt}`)
   // We are handling zero value as a special case
   // to print at least something on the screen
-  if (barInt === 0 && barRest === 0) barRest = 0.001
+  if (barInt === 0 && barRest === 0) {
+    barInt = 0
+    barRest = 0.001
+  }
 
-  const spaceFull =  SYMBOLS.Space.repeat(spaceInt)
+  const spaceFull = SYMBOLS.Space.repeat(spaceInt)
   const spacePartial = getSymbolNormalRight(spaceRest)
   const barFull = SYMBOLS.Full.repeat(barInt)
   const barPartial = getSymbolNormal(barRest)
@@ -94,17 +97,17 @@ const barBuilder = (start, end) => {
 }
 
 // get integer and remainder
-const splitNumber = (value = 0) => {
+function splitNumber (value = 0) {
   const [int, rest = '0'] = value.toString().split('.')
   const int2 = parseInt(int, 10)
-  let rest2 = parseInt(rest, 10) / Math.pow(10, rest.length)
+  const rest2 = parseInt(rest, 10) / Math.pow(10, rest.length)
   return [int2, rest2]
 }
 
 // get partial block char for value (left-adjusted)
-const getSymbolNormal = value => {
+function getSymbolNormal (value) {
   // round to closest supported value
-  const possibleValues = [0, 1/8, 1/4, 3/8, 1/2, 5/8, 3/4, 7/8, 1]
+  const possibleValues = [0, 1 / 8, 1 / 4, 3 / 8, 1 / 2, 5 / 8, 3 / 4, 7 / 8, 1]
   const rounded = possibleValues.reduce((prev, curr) => {
     return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
   })
@@ -132,9 +135,9 @@ const getSymbolNormal = value => {
 }
 
 // get partial block char for value (right-adjusted)
-const getSymbolNormalRight = value => {
+function getSymbolNormalRight (value) {
   // round to closest supported value (not much :/)
-  const possibleValues = [0, 1/2, 7/8, 1]
+  const possibleValues = [0, 1 / 2, 7 / 8, 1]
   const rounded = possibleValues.reduce((prev, curr) => {
     return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
   })

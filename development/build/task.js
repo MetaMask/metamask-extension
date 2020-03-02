@@ -14,7 +14,7 @@ async function runTask (name) {
 }
 
 function createTask (name, taskFn) {
-  const task = async (...args) => {
+  const task = async () => {
     const start = Date.now()
     taskEvents.emit('start', [name, start])
     // await task done
@@ -41,16 +41,20 @@ function taskSeries (...subtasks) {
 function taskParallel (...subtasks) {
   return async () => {
     const realTasks = subtasks.map(materializeTask)
-    await Promise.all(realTasks.map(subtask => subtask()))
+    await Promise.all(realTasks.map((subtask) => subtask()))
   }
 }
 
 function materializeTask (taskValue) {
   if (typeof taskValue !== 'string') {
-    if (typeof taskValue !== 'function') throw new Error(`invalid task value: "${taskValue}" (${typeof taskValue})`)
+    if (typeof taskValue !== 'function') {
+      throw new Error(`invalid task value: "${taskValue}" (${typeof taskValue})`)
+    }
     return taskValue
   }
-  if (!(taskValue in tasks)) throw new Error(`no such task "${taskValue}"`)
+  if (!(taskValue in tasks)) {
+    throw new Error(`no such task "${taskValue}"`)
+  }
   return tasks[taskValue]
 }
 

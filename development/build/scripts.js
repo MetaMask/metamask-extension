@@ -1,3 +1,5 @@
+const fs = require('fs')
+const endOfStream = require('end-of-stream')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
@@ -41,7 +43,7 @@ const buildJsFiles = [
   'phishing-detect',
 ]
 
-function createScriptTasks ({ browserPlatforms }) {
+function createScriptTasks ({ browserPlatforms, livereload }) {
 
   // internal tasks
   const core = {

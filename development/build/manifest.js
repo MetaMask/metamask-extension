@@ -2,11 +2,12 @@ const clone = require('clone')
 const mergeDeep = require('merge-deep')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
+
 const fsAsync = fs.promises
 const baseManifest = require('../../app/manifest/_base.json')
 
 
-const { createTask, taskParallel, taskSeries } = require('./task')
+const { createTask, taskSeries } = require('./task')
 
 module.exports = createManifestTasks
 
@@ -70,18 +71,19 @@ function createManifestTasks ({ browserPlatforms }) {
   ))
 
   return { prod, dev, testingLocal, testing }
-}
 
-// helper for modifying each platform's manifest.json in place
-function createTaskForModifyManifestForEnvironment (transformFn) {
-  return () => {
-    return Promise.all(platforms.map(async (platform) => {
-      const path = `./dist/firefox/manifest.json`
-      const manifest = await readJson(path)
-      transformFn(manifest)
-      await writeJson(mainfest, path)
-    }))
+  // helper for modifying each platform's manifest.json in place
+  function createTaskForModifyManifestForEnvironment (transformFn) {
+    return () => {
+      return Promise.all(browserPlatforms.map(async (platform) => {
+        const path = `./dist/${platform}/manifest.json`
+        const manifest = await readJson(path)
+        transformFn(manifest)
+        await writeJson(manifest, path)
+      }))
+    }
   }
+
 }
 
 // helper for reading and deserializing json from fs

@@ -38,10 +38,10 @@ createTask('reload', function devReload () {
 })
 
 
-const staticTasks = createStaticAssetTasks({ browserPlatforms })
-const manifestTasks = createManifestTasks({ browserPlatforms })
-const styleTasks = createStyleTasks()
-const scriptTasks = createScriptTasks({ browserPlatforms })
+const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })
+const manifestTasks = createManifestTasks({ livereload, browserPlatforms })
+const styleTasks = createStyleTasks({ livereload })
+const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
 
 // createTask('optimize:images', function () {
 //   return gulp.src('./dist/**/images/**', { base: './dist/' })
@@ -126,7 +126,7 @@ function zipTask (target) {
 // runTask('prod')
 
 const entryTasks = {
-  dev, testDev, test, prod, styles
+  dev, testDev, test, prod, styles,
 }
 
 
