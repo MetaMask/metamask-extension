@@ -56,8 +56,8 @@ function displayChart (data) {
     const barString = barBuilder(start2, end2)
     const color = colors[index]
     const coloredBarString = colorize(color, barString)
-    console.log(coloredBarString, `${label} ${(end-start)/1e3}`)
-    // console.log(barString, `${label} ${(end-start)/1e3} ${start} ${end} ${start2} ${end2}`)
+    const duration = ((end-start)/1e3).toFixed(1)
+    console.log(coloredBarString, `${label} ${duration}s`)
   })
 
 }
