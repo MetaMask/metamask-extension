@@ -40,7 +40,9 @@ function createTask (taskName, taskFn) {
 
 function childThread (task) {
   const taskName = typeof task === 'string' ? task : task.taskName
-  if (!taskName) throw new Error(`MetaMask build: childThread unable to identify task name`)
+  if (!taskName) {
+    throw new Error(`MetaMask build: childThread unable to identify task name`)
+  }
   return instrumentForTaskStats(taskName, async () => {
     await execProcess(`yarn build ${taskName}`)
   })
