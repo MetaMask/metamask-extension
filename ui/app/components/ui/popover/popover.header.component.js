@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const PopoverHeader = ({ title, onClose }) => (
-  <div className="popover-header">
+  <header className="popover-header">
     <h2 className="popover-header__heading">{title}</h2>
     <button className="popover-header__close" onClick={onClose}>
       <div className="popover-header__close-wrap">
@@ -10,7 +10,7 @@ const PopoverHeader = ({ title, onClose }) => (
         <div className="popover-header__close-line-b"></div>
       </div>
     </button>
-  </div>
+  </header>
 )
 
 PopoverHeader.propTypes = {
