@@ -1,4 +1,3 @@
-const gulp = require('gulp')
 const watch = require('gulp-watch')
 // const endOfStream = require('pify')(require('end-of-stream'))
 const pify = require('pify')
@@ -75,7 +74,7 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
   }
 
   async function performCopy (target) {
-    await Promise.all(browserPlatforms.map(async platform => {
+    await Promise.all(browserPlatforms.map(async (platform) => {
       if (target.pattern) {
         await exec(`cp ${target.src}${target.pattern} ./dist/${platform}/${target.dest}`)
       } else {

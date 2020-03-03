@@ -1,5 +1,4 @@
 const fs = require('fs')
-const endOfStream = require('end-of-stream')
 const gulp = require('gulp')
 const watch = require('gulp-watch')
 const source = require('vinyl-source-stream')
@@ -90,7 +89,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       'phishing-detect',
     ]
 
-    const standardSubtasks = standardBundles.map(filename => {
+    const standardSubtasks = standardBundles.map((filename) => {
       return createTask(`${taskPrefix}:${filename}`,
         createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing })
       )
@@ -118,7 +117,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     // make each bundle run in a separate process
-    const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => childThread(subtask))
+    const allSubtasks = [...standardSubtasks, contentscriptSubtask].map((subtask) => childThread(subtask))
     // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
     return taskParallel(initiateLiveReload, ...allSubtasks)
@@ -345,7 +344,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     if (opts.devMode) {
       bundler = watchify(bundler)
       // on any file update, re-runs the bundler
-      bundler.on('update', async (ids) => {
+      bundler.on('update', () => {
         performBundle()
       })
     }
