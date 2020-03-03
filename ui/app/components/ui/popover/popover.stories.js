@@ -4,7 +4,7 @@ import TransactionDetails from '../transaction-details'
 import TransactionActivity from '../transaction-activity'
 import TransactionFees from '../transaction-fees'
 import { text } from '@storybook/addon-knobs/react'
-import Icon from '../icon/icon.component'
+import Copy from '../icon/copy-icon.component'
 import Tooltip from '../tooltip'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
@@ -48,9 +48,8 @@ export const approve = () => (
               Confirmed
               <Tooltip position="right" title="Copy Transaction ID">
                 <a href="#" className="popover-item__icon">
-                  <Icon
+                  <Copy
                     className="copy"
-                    type="copy"
                     width={11}
                     height={11}
                     color="#6A737D"

@@ -1,11 +1,14 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import Icon from '../icon'
+import Approve from '../icon/approve-icon.component'
+import Interaction from '../icon/interaction-icon.component'
+import Preloader from '../icon/preloader-icon.component'
+import Send from '../icon/send-icon.component'
 
 const SendIcon = () => (
-  <Icon
-    type="send"
+  <Send
+    className="list-item__icon"
     width={28}
     height={28}
     color="#2F80ED"
@@ -13,8 +16,8 @@ const SendIcon = () => (
 )
 
 const InteractionIcon = () => (
-  <Icon
-    type="interaction"
+  <Interaction
+    className="list-item__icon"
     width={28}
     height={28}
     color="#2F80ED"
@@ -22,8 +25,8 @@ const InteractionIcon = () => (
 )
 
 const ApproveIcon = () => (
-  <Icon
-    type="approve"
+  <Approve
+    className="list-item__icon"
     width={28}
     height={28}
     color="#2F80ED"
@@ -31,8 +34,8 @@ const ApproveIcon = () => (
 )
 
 const FailIcon = () => (
-  <Icon
-    type="interaction"
+  <Interaction
+    className="list-item__icon"
     width={28}
     height={28}
     color="#D73A49"
@@ -86,9 +89,8 @@ const Item = ({
           <h2 className="list-item__heading">
             { title } {isPending && (
               <span className="list-item__heading-wrap">
-                <Icon
+                <Preloader
                   className="list-item__preloader"
-                  type="preloader"
                   width={16}
                   height={16}
                   color="#D73A49"
