@@ -1849,6 +1849,17 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.1.0.tgz#03c6fbec8ba3d95fa017d8b98ab5d0701f7458a4"
   integrity sha512-yFFHIxFn3cBd9brIW/+0fJGq16hT0xUyElP0YxiZHaY7j2T/l+X/414L9kqBOuPfPa9bIKulIcJJOfcrMJZp9w==
 
+"@metamask/eth-ledger-bridge-keyring@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.2.2.tgz#f75dd45edf17c48b02e49a96b3413e6abf14b7ef"
+  integrity sha512-c1Gfn01qIqNikx8eFz1jq2KU9Vcfpgkp62v8kYgiWebwkyxuzBKlDWMoC3JCwAV5ezl05M6MQi1EAwrcsIbUOA==
+  dependencies:
+    eth-sig-util "^1.4.2"
+    ethereumjs-tx "^1.3.4"
+    ethereumjs-util "^5.1.5"
+    events "^2.0.0"
+    hdkey "0.8.0"
+
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
@@ -10408,17 +10419,6 @@ eth-keyring-controller@^5.3.0, eth-keyring-controller@^5.5.0:
     ethereumjs-util "^5.1.2"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
-
-eth-ledger-bridge-keyring@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.2.0.tgz#715de14da24496c35cdb433022a20bd21b984f7e"
-  integrity sha512-js8jhe5fIwnOib3ja8Nk8BWpwVYQreh+Hrq/0ry7iO26TH+SdH/gaBIJD2toyICIUYPYU9wpUw9RABsarxbNiQ==
-  dependencies:
-    eth-sig-util "^1.4.2"
-    ethereumjs-tx "^1.3.4"
-    ethereumjs-util "^5.1.5"
-    events "^2.0.0"
-    hdkey "0.8.0"
 
 eth-lib@0.2.7:
   version "0.2.7"
