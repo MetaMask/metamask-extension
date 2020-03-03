@@ -1,5 +1,9 @@
 const gulp = require('gulp')
 const watch = require('gulp-watch')
+// const endOfStream = require('pify')(require('end-of-stream'))
+const pify = require('pify')
+const { exec } = pify(require('child_process'))
+
 const { createTask, taskParallel } = require('./task')
 
 module.exports = createStaticAssetTasks
@@ -32,7 +36,7 @@ const copyTargets = [
   },
   {
     src: `./app/`,
-    pattern: `/*.html`,
+    pattern: `*.html`,
     dest: ``,
   },
 ]
@@ -70,16 +74,14 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
     performCopy(target)
   }
 
-  function performCopy (target) {
-    // stream from source
-    const pattern = target.pattern || '/**/*'
-    let stream = gulp.src(target.src + pattern, { base: target.src })
-    // copy to destinations
-    const destinations = browserPlatforms.map((platform) => `./dist/${platform}/${target.dest}`)
-    destinations.forEach(function (destination) {
-      stream = stream.pipe(gulp.dest(destination))
-    })
-    return stream
+  async function performCopy (target) {
+    await Promise.all(browserPlatforms.map(async platform => {
+      if (target.pattern) {
+        await exec(`cp ${target.src}${target.pattern} ./dist/${platform}/${target.dest}`)
+      } else {
+        await exec(`cp -r ${target.src} ./dist/${platform}/${target.dest}`)
+      }
+    }))
   }
 
 }
