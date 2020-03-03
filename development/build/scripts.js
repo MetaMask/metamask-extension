@@ -1,6 +1,7 @@
 const fs = require('fs')
 const endOfStream = require('end-of-stream')
 const gulp = require('gulp')
+const watch = require('gulp-watch')
 const source = require('vinyl-source-stream')
 const buffer = require('vinyl-buffer')
 const log = require('fancy-log')
@@ -34,23 +35,17 @@ const externalDependenciesMap = {
   ],
 }
 
-// build js
-const buildJsFiles = [
-  'inpage',
-  'contentscript',
-  'background',
-  'ui',
-  'phishing-detect',
-]
-
 function createScriptTasks ({ browserPlatforms, livereload }) {
 
   // internal tasks
   const core = {
-    dev: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:dev', devMode: true }),
-    prod: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:prod' }),
-    test: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test', testing: 'true' }),
-    testLive: createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'scripts:core:test-live', testing: 'true', devMode: true }),
+    // dev tasks (live reload)
+    dev: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:dev', devMode: true }),
+    testDev: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:test-live', devMode: true, testing: true }),
+    // built for CI tests
+    test: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:test', testing: true }),
+    // production
+    prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
   }
   const deps = {
     background: createTasksForBuildJsDeps({ filename: 'bg-libs', key: 'background' }),
@@ -66,8 +61,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   )
 
   const dev = core.dev
-
-  const testDev = core.testLive
+  const testDev = core.testDev
 
   const test = taskParallel(
     deps.background,
@@ -79,61 +73,91 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
 
   function createTasksForBuildJsDeps ({ key, filename }) {
-    const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
-
-    const bundleTaskOpts = Object.assign({
-      buildSourceMaps: true,
-      sourceMapDir: '../sourcemaps',
-      minifyBuild: true,
-      devMode: false,
-    })
-
-    return createTask(`scripts:deps:${key}`, bundleTask(Object.assign({
+    return createTask(`scripts:deps:${key}`, bundleTask({
       label: filename,
       filename: `${filename}.js`,
-      destinations,
       buildLib: true,
       dependenciesToBundle: externalDependenciesMap[key],
-    }, bundleTaskOpts)))
+      devMode: false,
+    }))
   }
 
 
-  function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, testing, bundleTaskOpts = {} }) {
-    const rootDir = './app/scripts'
-    // inpage must be built before contentscript
-    const buildPhase2 = ['contentscript']
-    const buildPhase1 = buildJsFiles.filter((file) => !buildPhase2.includes(file))
-    const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
-    bundleTaskOpts = Object.assign({
-      buildSourceMaps: true,
-      sourceMapDir: '../sourcemaps',
-      minifyBuild: !devMode,
-      buildWithFullPaths: devMode,
-      watch: devMode,
-      devMode,
-      testing,
-    }, bundleTaskOpts)
+  function createTasksForBuildJsExtension ({ taskPrefix, devMode, testing }) {
+    const standardBundles = [
+      'background',
+      'ui',
+      'phishing-detect',
+    ]
 
-    // bundle task for each file
-    const jsFiles = [].concat(buildPhase1, buildPhase2)
-    jsFiles.forEach((jsFile) => {
-      createTask(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
-        label: jsFile,
-        filename: `${jsFile}.js`,
-        filepath: `${rootDir}/${jsFile}.js`,
-        externalDependencies: bundleTaskOpts.devMode ? undefined : externalDependenciesMap[jsFile],
-        destinations,
-      }, bundleTaskOpts)))
+    const standardSubtasks = standardBundles.map(filename => {
+      return createTask(`${taskPrefix}:${filename}`,
+        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing })
+      )
     })
-    // compose into larger task
-    const subtasks = []
-    subtasks.push(taskParallel(...buildPhase1.map((file) => childThread(`${taskPrefix}:${file}`))))
-    if (buildPhase2.length) {
-      subtasks.push(taskParallel(...buildPhase2.map((file) => childThread(`${taskPrefix}:${file}`))))
+    // inpage must be built before contentscript
+    // because inpage bundle result is included inside contentscript
+    const contentscriptSubtask = createTask(`${taskPrefix}:contentscript`,
+      createTaskForBuildJsExtensionContentscript({ devMode, testing })
+    )
+
+    // task for initiating livereload
+    const initiateLiveReload = () => {
+      if (devMode) {
+        // trigger live reload when the bundles are updated
+        // this is not ideal, but overcomes the limitations:
+        // - run from the main process (not child process tasks)
+        // - after the first build has completed (thus the timeout)
+        // - build tasks never "complete" when run with livereload + child process
+        setTimeout(() => {
+          watch('./dist/*/*.js', (event) => {
+            livereload.changed(event.path)
+          })
+        }, 75e3)
+      }
     }
 
-    return taskSeries(...subtasks)
+    // make each bundle run in a separate process
+    const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => childThread(subtask))
+    // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
+    // make a parent task that runs each task in a child thread
+    return taskParallel(initiateLiveReload, ...allSubtasks)
   }
+
+  function createBundleTaskForBuildJsExtensionNormal ({ filename, devMode, testing }) {
+    return bundleTask({
+      label: filename,
+      filename: `${filename}.js`,
+      filepath: `./app/scripts/${filename}.js`,
+      externalDependencies: devMode ? undefined : externalDependenciesMap[filename],
+      devMode,
+      testing,
+    })
+  }
+
+  function createTaskForBuildJsExtensionContentscript ({ devMode, testing }) {
+    const inpage = 'inpage'
+    const contentscript = 'contentscript'
+    return taskSeries(
+      bundleTask({
+        label: inpage,
+        filename: `${inpage}.js`,
+        filepath: `./app/scripts/${inpage}.js`,
+        externalDependencies: devMode ? undefined : externalDependenciesMap[inpage],
+        devMode,
+        testing,
+      }),
+      bundleTask({
+        label: contentscript,
+        filename: `${contentscript}.js`,
+        filepath: `./app/scripts/${contentscript}.js`,
+        externalDependencies: devMode ? undefined : externalDependenciesMap[contentscript],
+        devMode,
+        testing,
+      })
+    )
+  }
+
 
   function bundleTask (opts) {
     let bundler
@@ -149,12 +173,13 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         bundler.on('log', log)
       }
 
-      let buildStream = bundler.bundle()
+      const bundleStream = bundler.bundle()
+      let buildStream = bundleStream
 
       // handle errors
       buildStream.on('error', (err) => {
         beep()
-        if (opts.watch) {
+        if (opts.devMode) {
           console.warn(err.stack)
         } else {
           throw err
@@ -169,14 +194,12 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         .pipe(buffer())
 
       // Initialize Source Maps
-      if (opts.buildSourceMaps) {
-        buildStream = buildStream
-          // loads map from browserify file
-          .pipe(sourcemaps.init({ loadMaps: true }))
-      }
+      buildStream = buildStream
+        // loads map from browserify file
+        .pipe(sourcemaps.init({ loadMaps: true }))
 
       // Minification
-      if (opts.minifyBuild) {
+      if (!opts.devMode) {
         buildStream = buildStream
           .pipe(terser({
             mangle: {
@@ -186,25 +209,23 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       }
 
       // Finalize Source Maps
-      if (opts.buildSourceMaps) {
-        if (opts.devMode) {
-          // Use inline source maps for development due to Chrome DevTools bug
-          // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-          buildStream = buildStream
-            .pipe(sourcemaps.write())
-        } else {
-          buildStream = buildStream
-            .pipe(sourcemaps.write(opts.sourceMapDir))
-        }
+      if (opts.devMode) {
+        // Use inline source maps for development due to Chrome DevTools bug
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+        buildStream = buildStream
+          .pipe(sourcemaps.write())
+      } else {
+        buildStream = buildStream
+          .pipe(sourcemaps.write('../sourcemaps'))
       }
 
       // write completed bundles
-      opts.destinations.forEach((dest) => {
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}`
         buildStream = buildStream.pipe(gulp.dest(dest))
       })
 
       return buildStream
-
     }
   }
 
@@ -244,7 +265,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       plugin: [],
       transform: [],
       debug: opts.buildSourceMaps,
-      fullPaths: opts.buildWithFullPaths,
+      fullPaths: opts.devMode,
     })
 
     const bundleName = opts.filename.split('.')[0]
@@ -313,20 +334,19 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       METAMASK_DEBUG: opts.devMode,
       METAMASK_ENVIRONMENT: environment,
       NODE_ENV: opts.devMode ? 'development' : 'production',
-      IN_TEST: opts.testing,
+      IN_TEST: opts.testing ? 'true' : false,
       PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
       PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     }), {
       global: true,
     })
 
-    if (opts.watch) {
+    // Live reload - minimal rebundle on change
+    if (opts.devMode) {
       bundler = watchify(bundler)
       // on any file update, re-runs the bundler
       bundler.on('update', async (ids) => {
-        const stream = performBundle()
-        await endOfStream(stream)
-        livereload.changed(`${ids}`)
+        performBundle()
       })
     }
 
