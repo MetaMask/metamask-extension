@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 7.7.6 Mon Mar 02 2020
+- [#8154](https://github.com/MetaMask/metamask-extension/pull/8154): Prevent signing from incorrect Ledger account
+
 ## 7.7.5 Fri Feb 14 2020
 - [#8053](https://github.com/MetaMask/metamask-extension/pull/8053): Inline the source text not the binary encoding for inpage script
 - [#8049](https://github.com/MetaMask/metamask-extension/pull/8049): Add warning to watchAsset API when editing a known token
