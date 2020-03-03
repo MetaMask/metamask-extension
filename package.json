@@ -186,7 +186,6 @@
     "@storybook/core": "^5.3.14",
     "@storybook/react": "^5.3.14",
     "@storybook/storybook-deployer": "^2.8.1",
-    "@storybook/addon-info": "^5.3.14",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
