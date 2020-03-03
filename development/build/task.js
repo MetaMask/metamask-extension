@@ -84,7 +84,7 @@ function taskSeries (...subtasks) {
     const realTasks = subtasks.map(materializeTask)
     for (const subtask of realTasks) {
       // console.log(`subtask: "${subtask}" (${typeof subtask})`)
-      await subtask()
+      await endOfTaskResult(subtask())
     }
   }
 }
@@ -92,7 +92,7 @@ function taskSeries (...subtasks) {
 function taskParallel (...subtasks) {
   return async () => {
     const realTasks = subtasks.map(materializeTask)
-    await Promise.all(realTasks.map((subtask) => subtask()))
+    await Promise.all(realTasks.map((subtask) => endOfTaskResult(subtask())))
   }
 }
 
