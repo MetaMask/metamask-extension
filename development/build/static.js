@@ -31,6 +31,7 @@ const copyTargets = [
   },
   {
     src: `./ui/app/css/output/`,
+    pattern: `*.css`,
     dest: ``,
   },
   {
