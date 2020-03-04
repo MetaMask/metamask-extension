@@ -47,14 +47,14 @@ export const approve = () => (
             <h4 className="popover-item__subheading confirmed">
               Confirmed
               <Tooltip position="right" title="Copy Transaction ID">
-                <a href="#" className="popover-item__icon">
+                <button className="popover-item__icon" onClick={preventDefault}>
                   <Copy
-                    className="copy"
+                    className="popover-item__copy"
                     width={11}
                     height={11}
                     color="#6A737D"
                   />
-                </a>
+                </button>
               </Tooltip>
             </h4>
           </div>

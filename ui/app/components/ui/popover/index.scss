@@ -85,12 +85,18 @@
       font-size: 12px;
       line-height: 160%;
       color: #24292E;
+      position: relative;
       &.confirmed {
         color: #28A745;
       }
     }
     &__icon {
-      padding: 4px;
+      position: absolute;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      padding-left: 8px;
+      padding-right: 8px;
+      background: none;
     }
   }
 
