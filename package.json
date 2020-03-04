@@ -62,7 +62,7 @@
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@material-ui/core": "1.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^0.2.2",
+    "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@sentry/browser": "^5.11.1",
     "@sentry/integrations": "^5.11.1",
     "@zxing/library": "^0.8.0",
