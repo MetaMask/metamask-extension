@@ -33,6 +33,9 @@ const mapStateToProps = (state) => {
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: (rpc.rpcPrefs && rpc.rpcPrefs.blockExplorerUrl) || '',
+      rpcPrefs: {
+        gasPriceSource: (rpc.rpcPrefs && rpc.rpcPrefs.gasPriceSource) || false,
+      },
     }
   })
 

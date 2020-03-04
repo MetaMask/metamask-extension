@@ -345,6 +345,21 @@ export function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }
 
+export function gasPriceSourceFromRPC (state) {
+  const {
+    provider,
+    frequentRpcListDetail,
+  } = state.metamask
+
+  const networkSelected =
+    frequentRpcListDetail.find((network) => network.rpcUrl === provider.rpcTarget)
+
+  if (networkSelected && networkSelected.rpcPrefs) {
+    return networkSelected.rpcPrefs.gasPriceSource || false
+  }
+  return false
+}
+
 export function getUseNonceField (state) {
   return Boolean(state.metamask.useNonceField)
 }

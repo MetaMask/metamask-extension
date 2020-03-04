@@ -502,7 +502,7 @@ class PreferencesController {
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
-      const { rpcUrl, chainId, ticker, nickname, rpcPrefs = {} } = newRpcDetails
+      const { rpcUrl, chainId, ticker, nickname, rpcPrefs } = newRpcDetails
       return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs)
     }
     return Promise.resolve(rpcList)

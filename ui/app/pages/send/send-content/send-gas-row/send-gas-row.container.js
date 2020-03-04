@@ -3,6 +3,7 @@ import {
   getConversionRate,
   getGasTotal,
   getGasPrice,
+  getGasPriceRPC,
   getGasLimit,
   getSendAmount,
   getSendFromBalance,
@@ -29,10 +30,11 @@ import {
   resetCustomData,
   setCustomGasPrice,
   setCustomGasLimit,
+  setGasPriceRPC,
 } from '../../../../ducks/gas/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
+import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken, gasPriceSourceFromRPC } from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
 
 
@@ -41,6 +43,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasR
 function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
+
   const gasLimit = getGasLimit(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
 
@@ -68,6 +71,8 @@ function mapStateToProps (state) {
     },
     gasButtonGroupShown: getGasButtonGroupShown(state),
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
+    gasPriceSourceFromRPC: gasPriceSourceFromRPC(state),
+    getGasPriceRPC: getGasPriceRPC(state),
     gasPrice,
     gasLimit,
     insufficientBalance,
@@ -82,6 +87,7 @@ function mapDispatchToProps (dispatch) {
     showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
     setGasPrice: (newPrice, gasLimit) => {
       dispatch(setGasPrice(newPrice))
+      dispatch(setGasPriceRPC(newPrice))
       dispatch(setCustomGasPrice(newPrice))
       if (gasLimit) {
         dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))

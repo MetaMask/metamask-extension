@@ -4,7 +4,7 @@ import SendRowWrapper from '../send-row-wrapper'
 import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
 import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs'
-
+import { hexToDecimal } from '../../../../helpers/utils/conversions.util'
 export default class SendGasRow extends Component {
 
   static propTypes = {
@@ -22,6 +22,9 @@ export default class SendGasRow extends Component {
     gasPriceButtonGroupProps: PropTypes.object,
     gasButtonGroupShown: PropTypes.bool,
     advancedInlineGasShown: PropTypes.bool,
+    gasPriceSourceFromRPC: PropTypes.bool,
+    getGasPriceRPC: PropTypes.func,
+    gasPriceSource: PropTypes.bool,
     resetGasButtons: PropTypes.func,
     gasPrice: PropTypes.string,
     gasLimit: PropTypes.string,
@@ -31,6 +34,10 @@ export default class SendGasRow extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+  }
+
+  state = {
+    initGasPrice: false,
   }
 
   renderAdvancedOptionsButton () {
@@ -49,8 +56,16 @@ export default class SendGasRow extends Component {
           })
           showCustomizeGasModal()
         }}
-      >
-        { this.context.t('advancedOptions') }
+      > { this.context.t('advancedOptions') }
+      </div>
+    )
+  }
+
+  renderGasPriceSource (gasPrice) {
+    const { t } = this.context
+    return (
+      <div className="advanced-gas-options-btn">
+        {t('gasPriceSource')} - Wei: { hexToDecimal(gasPrice) }
       </div>
     )
   }
@@ -80,6 +95,8 @@ export default class SendGasRow extends Component {
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
       advancedInlineGasShown,
+      gasPriceSourceFromRPC,
+      getGasPriceRPC,
       maxModeOn,
       resetGasButtons,
       setGasPrice,
@@ -89,6 +106,14 @@ export default class SendGasRow extends Component {
       insufficientBalance,
     } = this.props
     const { metricsEvent } = this.context
+
+    if (gasPriceSourceFromRPC && !this.state.initGasPrice) {
+      this.setState({ initGasPrice: true })
+      getGasPriceRPC().then((gas) => {
+        const _gasPrice = '0x' + gas.toString(16)
+        setGasPrice(_gasPrice)
+      }).catch(console.error)
+    }
 
     const gasPriceButtonGroup = (
       <div>
@@ -141,13 +166,23 @@ export default class SendGasRow extends Component {
       </div>
     )
 
-    if (advancedInlineGasShown) {
-      return advancedGasInputs
-    } else if (gasButtonGroupShown) {
-      return gasPriceButtonGroup
+    if (gasPriceSourceFromRPC) {
+      return (
+        <div>
+          { this.renderAdvancedOptionsButton() }
+          { this.renderGasPriceSource(gasPrice) }
+        </div>
+      )
     } else {
-      return gasFeeDisplay
+      if (advancedInlineGasShown) {
+        return advancedGasInputs
+      } else if (gasButtonGroupShown) {
+        return gasPriceButtonGroup
+      } else {
+        return gasFeeDisplay
+      }
     }
+
   }
 
   render () {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import validUrl from 'valid-url'
 import TextField from '../../../../components/ui/text-field'
 import Button from '../../../../components/ui/button'
+import ToggleButton from '../../../../components/ui/toggle-button'
 
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
@@ -34,6 +35,9 @@ export default class NetworkForm extends PureComponent {
     networkName: this.props.networkName,
     blockExplorerUrl: this.props.blockExplorerUrl,
     errors: {},
+    rpcPrefs: {
+      gasPriceSource: (this.props.rpcPrefs && this.props.rpcPrefs.gasPriceSource),
+    },
   }
 
   componentDidUpdate (prevProps) {
@@ -45,6 +49,7 @@ export default class NetworkForm extends PureComponent {
       networkName,
       networksTabIsInAddMode,
       blockExplorerUrl,
+      rpcPrefs,
     } = this.props
 
     if (!prevAddMode && networksTabIsInAddMode) {
@@ -55,9 +60,13 @@ export default class NetworkForm extends PureComponent {
         networkName: '',
         blockExplorerUrl: '',
         errors: {},
+        rpcPrefs: {
+          ...rpcPrefs,
+        },
       })
     } else if (prevRpcUrl !== rpcUrl) {
-      this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
+      const gasPriceSource = (rpcPrefs && rpcPrefs.gasPriceSource) || false
+      this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {}, rpcPrefs: { gasPriceSource } })
     }
   }
 
@@ -70,6 +79,9 @@ export default class NetworkForm extends PureComponent {
       networkName: '',
       blockExplorerUrl: '',
       errors: {},
+      rpcPrefs: {
+        gasPriceSource: false,
+      },
     })
   }
 
@@ -80,9 +92,12 @@ export default class NetworkForm extends PureComponent {
       ticker,
       networkName,
       blockExplorerUrl,
+      rpcPrefs = {
+        gasPriceSource: false,
+      },
     } = this.props
 
-    this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {} })
+    this.setState({ rpcUrl, chainId, ticker, networkName, blockExplorerUrl, errors: {}, rpcPrefs })
   }
 
   onSubmit = () => {
@@ -90,7 +105,7 @@ export default class NetworkForm extends PureComponent {
       setRpcTarget,
       rpcUrl: propsRpcUrl,
       editRpc,
-      rpcPrefs = {},
+      rpcPrefs,
       onClear,
       networksTabIsInAddMode,
     } = this.props
@@ -101,16 +116,22 @@ export default class NetworkForm extends PureComponent {
       ticker,
       blockExplorerUrl,
     } = this.state
+
+    const gasPriceSource = this.state.rpcPrefs.gasPriceSource
+
     if (propsRpcUrl && rpcUrl !== propsRpcUrl) {
       editRpc(propsRpcUrl, rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
+        gasPriceSource,
       })
     } else {
       setRpcTarget(rpcUrl, chainId, ticker, networkName, {
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
         ...rpcPrefs,
+        gasPriceSource,
       })
+
     }
 
     if (networksTabIsInAddMode) {
@@ -149,14 +170,17 @@ export default class NetworkForm extends PureComponent {
       ticker,
       networkName,
       blockExplorerUrl,
+      rpcPrefs,
     } = this.props
-
     const {
       rpcUrl: stateRpcUrl,
       chainId: stateChainId,
       ticker: stateTicker,
       networkName: stateNetworkName,
       blockExplorerUrl: stateBlockExplorerUrl,
+      rpcPrefs: {
+        gasPriceSource: stateGasPriceSource,
+      },
     } = this.state
 
     return (
@@ -164,7 +188,8 @@ export default class NetworkForm extends PureComponent {
       stateChainId === chainId &&
       stateTicker === ticker &&
       stateNetworkName === networkName &&
-      stateBlockExplorerUrl === blockExplorerUrl
+      stateBlockExplorerUrl === blockExplorerUrl &&
+      stateGasPriceSource === ((rpcPrefs && rpcPrefs.gasPriceSource) || false)
     )
   }
 
@@ -189,10 +214,31 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  setStateWithValue = (stateKey, validator) => {
+  renderToogleButton (fieldKey, onChange, value) {
+    const { t } = this.context
+
+    return (
+      <div className="gasSource">
+        <ToggleButton
+          id={fieldKey}
+          value={value}
+          onToggle={onChange}
+          offLabel={t('off')}
+          onLabel={t('on')}
+        />
+        <span>{t(fieldKey)}</span>
+      </div>
+    )
+  }
+
+  setStateWithValue = (stateKey) => {
     return (e) => {
-      validator && validator(e.target.value, stateKey)
-      this.setState({ [stateKey]: e.target.value })
+      const value = e.hasOwnProperty('target') ? e.target.value : !e // if is toogle button invert old state
+      if (stateKey === 'gasPriceSource') {
+        this.setState({ rpcPrefs: { ...this.state.rpcPrefs, [stateKey]: value } })
+      } else {
+        this.setState({ [stateKey]: value })
+      }
     }
   }
 
@@ -251,6 +297,7 @@ export default class NetworkForm extends PureComponent {
       ticker,
       blockExplorerUrl,
       errors,
+      rpcPrefs,
     } = this.state
 
     const isSubmitDisabled = viewOnly || this.stateIsUnchanged() || Object.values(errors).some((x) => x) || !rpcUrl
@@ -291,6 +338,14 @@ export default class NetworkForm extends PureComponent {
           blockExplorerUrl,
           'optionalBlockExplorerUrl',
         )}
+        {
+          this.renderToogleButton(
+            'gasPriceSource',
+            this.setStateWithValue('gasPriceSource'),
+            rpcPrefs.gasPriceSource
+          )
+        }
+
         <div className="network-form__footer">
           {
             deletable && (

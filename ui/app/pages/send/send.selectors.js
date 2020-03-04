@@ -6,6 +6,8 @@ import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
 import {
   getAveragePriceEstimateInHexWEI,
 } from '../../selectors/custom-gas'
+import HttpProvider from 'ethjs-provider-http'
+import EthQuery from 'ethjs-query'
 
 export function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
@@ -60,6 +62,11 @@ export function getGasLimit (state) {
 
 export function getGasPrice (state) {
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
+}
+
+export function getGasPriceRPC (state) {
+  const eth = new EthQuery(new HttpProvider(state.metamask.provider.rpcTarget))
+  return () => eth.gasPrice()
 }
 
 export function getGasPriceFromRecentBlocks (state) {
