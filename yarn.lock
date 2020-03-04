@@ -1985,10 +1985,10 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
-"@metamask/eth-ledger-bridge-keyring@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.2.5.tgz#2e1753b02fe3e644985c689d79c9f0cca1ba2c77"
-  integrity sha512-DWR+wZFE33iGDvrJ02f4BE6Ha4mzWtKfQTxNAcKOeFWl3HUdK3dkK/vd4sH2XGqJp5t+cZiHTQxMsDssk8o7oQ==
+"@metamask/eth-ledger-bridge-keyring@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.2.6.tgz#2721c118a5eeb3685d372d0258f2a3b03dd01315"
+  integrity sha512-7OtX24lHSCioFZM+x4ZCsndT1wkI7cf8+ua3UntYqHFSRu/SDf6xVNBuD8isvWidNbVdcJKhfJuO3vFCDNsPBw==
   dependencies:
     eth-sig-util "^1.4.2"
     ethereumjs-tx "^1.3.4"
