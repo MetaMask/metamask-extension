@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.7.7 Wed Mar 04 2020
+
 ## 7.7.6 Mon Mar 02 2020
 - [#8154](https://github.com/MetaMask/metamask-extension/pull/8154): Prevent signing from incorrect Ledger account
 
