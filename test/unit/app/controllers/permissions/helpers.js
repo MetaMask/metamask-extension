@@ -1,5 +1,32 @@
 import { strict as assert } from 'assert'
 
+import { noop } from './mocks'
+
+export function grantPermissions (permController, origin, permissions) {
+  permController.permissions.grantNewPermissions(
+    origin, permissions, {}, noop
+  )
+}
+
+/**
+ * Sets the underlying rpc-cap requestUserApproval function such that we can
+ * await it being called.
+ * @returns {Promise<void>} A Promise that resolves once a pending approval
+ * has been set.
+ */
+export function getUserApprovalPromise (permController) {
+  return new Promise((resolveForCaller) => {
+    permController.permissions.requestUserApproval = async (req) => {
+      const { metadata: { id } } = req
+
+      return new Promise((resolve, reject) => {
+        permController.pendingApprovals[id] = { resolve, reject }
+        resolveForCaller()
+      })
+    }
+  })
+}
+
 export function validateActivityEntry (
   entry, req, res, methodType, success
 ) {

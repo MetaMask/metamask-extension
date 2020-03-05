@@ -297,6 +297,7 @@ export class PermissionsController {
    *
    * @param {Object} requestedPermissions - The requested permissions.
    * @param {string[]} requestedAccounts - The accounts to expose, if any.
+   * @returns {Object} The finalized permissions request object.
    */
   async finalizePermissionsRequest (requestedPermissions, requestedAccounts) {
 

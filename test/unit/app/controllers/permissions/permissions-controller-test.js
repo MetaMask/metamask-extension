@@ -10,17 +10,20 @@ import getRestrictedMethods
   from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
 
 import {
+  PermissionsController,
   addInternalMethodPrefix,
 } from '../../../../../app/scripts/controllers/permissions'
 
 import {
+  grantPermissions,
+} from './helpers'
+
+import {
+  constants,
   getters,
-  getConstants,
-  getApprovedPermissionsRequest,
   getNotifyDomain,
   getNotifyAllDomains,
-  getPermController,
-  grantPermissions,
+  getPermControllerOpts,
 } from './mocks'
 
 const {
@@ -35,29 +38,24 @@ const {
   ORIGINS,
   PERM_NAMES,
   REQUEST_IDS,
-} = getConstants()
-
-let permController
-
-const notifications = Object.values(ORIGINS).reduce((acc, domain) => {
-  acc[domain] = []
-  return acc
-}, {})
+} = constants
 
 const initNotifications = () => {
-  Object.values(ORIGINS).forEach((domain) => {
-    notifications[domain] = []
-  })
+  return Object.values(ORIGINS).reduce((acc, domain) => {
+    acc[domain] = []
+    return acc
+  }, {})
 }
 
-const initPermController = () => {
-  permController = getPermController({
+const initPermController = (notifications = initNotifications()) => {
+  return new PermissionsController({
+    ...getPermControllerOpts(),
     notifyDomain: getNotifyDomain(notifications),
     notifyAllDomains: getNotifyAllDomains(notifications),
   })
 }
 
-const mockRequestUserApproval = (id) => {
+const getMockRequestUserApprovalFunction = (permController) => (id) => {
   return new Promise((resolve, reject) => {
     permController.pendingApprovals[id] = { resolve, reject }
   })
@@ -67,8 +65,10 @@ describe('permissions controller', function () {
 
   describe('getAccounts', function () {
 
-    before(async function () {
-      initPermController()
+    let permController
+
+    beforeEach(function () {
+      permController = initPermController()
       grantPermissions(
         permController, ORIGINS.a,
         PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
@@ -109,8 +109,8 @@ describe('permissions controller', function () {
 
     it('notifies all appropriate domains and removes permissions', async function () {
 
-      initPermController()
-      initNotifications()
+      const notifications = initNotifications()
+      const permController = initPermController(notifications)
 
       grantPermissions(
         permController, ORIGINS.a,
@@ -177,12 +177,11 @@ describe('permissions controller', function () {
 
   describe('removePermissionsFor', function () {
 
-    before(function () {
-      initPermController()
-    })
+    let permController, notifications
 
-    beforeEach(async function () {
-      initNotifications()
+    beforeEach(function () {
+      notifications = initNotifications()
+      permController = initPermController(notifications)
       grantPermissions(
         permController, ORIGINS.a,
         PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
@@ -326,11 +325,10 @@ describe('permissions controller', function () {
 
   describe('validatePermittedAccounts', function () {
 
-    before(function () {
-      initPermController()
-    })
+    let permController
 
-    beforeEach(async function () {
+    beforeEach(function () {
+      permController = initPermController()
       grantPermissions(
         permController, ORIGINS.a,
         PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
@@ -413,12 +411,11 @@ describe('permissions controller', function () {
 
   describe('updatePermittedAccounts', function () {
 
-    before(function () {
-      initPermController()
-    })
+    let permController, notifications
 
-    beforeEach(async function () {
-      initNotifications()
+    beforeEach(function () {
+      notifications = initNotifications()
+      permController = initPermController(notifications)
       grantPermissions(
         permController, ORIGINS.a,
         PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
@@ -523,8 +520,10 @@ describe('permissions controller', function () {
 
   describe('finalizePermissionsRequest', function () {
 
-    before(function () {
-      initPermController()
+    let permController
+
+    beforeEach(function () {
+      permController = initPermController()
     })
 
     it('throws on non-keyring accounts', async function () {
@@ -573,12 +572,11 @@ describe('permissions controller', function () {
 
   describe('legacyExposeAccounts', function () {
 
-    // most failures for this method are either covered by finalizePermissionsRequest
-    // tests or too difficult to induce in rpc-cap to be worth the trouble
+    let permController, notifications
 
     beforeEach(function () {
-      initPermController()
-      initNotifications()
+      notifications = initNotifications()
+      permController = initPermController(notifications)
     })
 
     it('successfully exposes accounts and updates permissions history', async function () {
@@ -687,12 +685,11 @@ describe('permissions controller', function () {
 
   describe('handleNewAccountSelected', function () {
 
-    before(function () {
-      initPermController()
-    })
+    let permController, notifications
 
-    beforeEach(async function () {
-      initNotifications()
+    beforeEach(function () {
+      notifications = initNotifications()
+      permController = initPermController(notifications)
       grantPermissions(
         permController, ORIGINS.a,
         PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
@@ -770,8 +767,13 @@ describe('permissions controller', function () {
 
   describe('approvePermissionsRequest', function () {
 
+    let permController, mockRequestUserApproval
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
+      mockRequestUserApproval = getMockRequestUserApprovalFunction(
+        permController
+      )
     })
 
     it('does nothing if called on non-existing request', async function () {
@@ -785,7 +787,7 @@ describe('permissions controller', function () {
         throw new Error('should not be reached')
       }
 
-      const request = getApprovedPermissionsRequest(REQUEST_IDS.a, null)
+      const request = PERMS.approvedRequest(REQUEST_IDS.a, null)
 
       assert.doesNotReject(
         permController.approvePermissionsRequest(request, null),
@@ -804,7 +806,7 @@ describe('permissions controller', function () {
 
       // bad accounts param
 
-      request = getApprovedPermissionsRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
+      request = PERMS.approvedRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
 
       assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
@@ -822,7 +824,7 @@ describe('permissions controller', function () {
 
       // no permissions
 
-      request = getApprovedPermissionsRequest(REQUEST_IDS.a, {})
+      request = PERMS.approvedRequest(REQUEST_IDS.a, {})
 
       assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
@@ -840,7 +842,7 @@ describe('permissions controller', function () {
 
     it('approves valid request', async function () {
 
-      const request = getApprovedPermissionsRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
+      const request = PERMS.approvedRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
 
       let perms
 
@@ -866,9 +868,9 @@ describe('permissions controller', function () {
 
     it('approves valid requests regardless of order', async function () {
 
-      const request1 = getApprovedPermissionsRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
-      const request2 = getApprovedPermissionsRequest(REQUEST_IDS.b, PERMS.requests.eth_accounts())
-      const request3 = getApprovedPermissionsRequest(REQUEST_IDS.c, PERMS.requests.eth_accounts())
+      const request1 = PERMS.approvedRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
+      const request2 = PERMS.approvedRequest(REQUEST_IDS.b, PERMS.requests.eth_accounts())
+      const request3 = PERMS.approvedRequest(REQUEST_IDS.c, PERMS.requests.eth_accounts())
 
       let perms1, perms2
 
@@ -911,8 +913,13 @@ describe('permissions controller', function () {
 
   describe('rejectPermissionsRequest', function () {
 
+    let permController, mockRequestUserApproval
+
     beforeEach(async function () {
-      initPermController()
+      permController = initPermController()
+      mockRequestUserApproval = getMockRequestUserApprovalFunction(
+        permController
+      )
     })
 
     it('does nothing if called on non-existing request', async function () {
@@ -978,8 +985,10 @@ describe('permissions controller', function () {
 
   describe('_requestPermissions', function () {
 
-    beforeEach(async function () {
-      initPermController()
+    let permController
+
+    beforeEach(function () {
+      permController = initPermController()
     })
 
     it('requests the given permissions and grants them on user approval', async function () {
@@ -1015,7 +1024,7 @@ describe('permissions controller', function () {
       )
 
       const id = Object.keys(permController.pendingApprovals)[0]
-      const request = getApprovedPermissionsRequest(id, PERMS.requests.eth_accounts())
+      const request = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
     })
@@ -1071,8 +1080,10 @@ describe('permissions controller', function () {
   // see permissions-middleware-test for testing the middleware itself
   describe('createMiddleware', function () {
 
-    before(function () {
-      initPermController()
+    let permController
+
+    beforeEach(function () {
+      permController = initPermController()
     })
 
     it('should throw on bad origin', function () {
@@ -1150,9 +1161,11 @@ describe('permissions controller', function () {
 
   describe('miscellanea and edge cases', function () {
 
-    beforeEach(async function () {
-      initPermController()
-      initNotifications()
+    let permController, notifications
+
+    beforeEach(function () {
+      notifications = initNotifications()
+      permController = initPermController(notifications)
     })
 
     it('notifyDomain handles notifications other than accountsChanged', async function () {

@@ -5,13 +5,19 @@ import {
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
 import {
-  getters,
-  getConstants,
-  getApprovedPermissionsRequest,
-  getPermController,
-  getPermissionsMiddleware,
+  PermissionsController,
+} from '../../../../../app/scripts/controllers/permissions'
+
+import {
   getUserApprovalPromise,
   grantPermissions,
+} from './helpers'
+
+import {
+  constants,
+  getters,
+  getPermControllerOpts,
+  getPermissionsMiddleware,
 } from './mocks'
 
 const {
@@ -25,13 +31,7 @@ const {
   ACCOUNT_ARRAYS,
   ORIGINS,
   PERM_NAMES,
-} = getConstants()
-
-let permController
-
-const initPermController = () => {
-  permController = getPermController()
-}
+} = constants
 
 const validatePermission = (perm, name, origin, caveats) => {
   assert.equal(name, perm.parentCapability, 'unexpected permission name')
@@ -39,12 +39,20 @@ const validatePermission = (perm, name, origin, caveats) => {
   assert.deepEqual(caveats, perm.caveats, 'unexpected permission caveats')
 }
 
+const initPermController = () => {
+  return new PermissionsController({
+    ...getPermControllerOpts(),
+  })
+}
+
 describe('permissions middleware', function () {
 
   describe('wallet_requestPermissions', function () {
 
+    let permController
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
     })
 
     it('grants permissions on user approval', async function () {
@@ -67,7 +75,7 @@ describe('permissions middleware', function () {
       )
 
       const id = Object.keys(permController.pendingApprovals)[0]
-      const approvedReq = getApprovedPermissionsRequest(id, PERMS.requests.eth_accounts())
+      const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
 
@@ -134,8 +142,10 @@ describe('permissions middleware', function () {
 
   describe('restricted methods', function () {
 
+    let permController
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
     })
 
     it('prevents restricted method access for unpermitted domain', async function () {
@@ -187,8 +197,10 @@ describe('permissions middleware', function () {
 
   describe('eth_accounts', function () {
 
+    let permController
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
     })
 
     it('returns empty array for non-permitted domain', async function () {
@@ -218,7 +230,10 @@ describe('permissions middleware', function () {
 
       const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
 
-      grantPermissions(permController, ORIGINS.a, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a))
+      grantPermissions(
+        permController, ORIGINS.a,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
+      )
 
       const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
       const res = {}
@@ -242,8 +257,10 @@ describe('permissions middleware', function () {
 
   describe('eth_requestAccounts', function () {
 
+    let permController
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
     })
 
     it('requests accounts for unpermitted origin, and approves on user approval', async function () {
@@ -268,7 +285,7 @@ describe('permissions middleware', function () {
       )
 
       const id = Object.keys(permController.pendingApprovals)[0]
-      const approvedReq = getApprovedPermissionsRequest(id, PERMS.requests.eth_accounts())
+      const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
 
@@ -346,11 +363,14 @@ describe('permissions middleware', function () {
       assert.deepEqual(aAccounts, [], 'origin does not have correct accounts')
     })
 
-    it('just returns accounts for permitted domain', async function () {
+    it('directly returns accounts for permitted domain', async function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
-      grantPermissions(permController, ORIGINS.c, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c))
+      grantPermissions(
+        permController, ORIGINS.c,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+      )
 
       const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
       const res = {}
@@ -374,8 +394,10 @@ describe('permissions middleware', function () {
 
   describe('wallet_sendDomainMetadata', function () {
 
+    let permController
+
     beforeEach(function () {
-      initPermController()
+      permController = initPermController()
     })
 
     it('records domain metadata', async function () {

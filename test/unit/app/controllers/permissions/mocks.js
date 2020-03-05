@@ -1,9 +1,5 @@
 import { ethErrors, ERROR_CODES } from 'eth-json-rpc-errors'
-import { cloneDeep } from 'lodash'
-
-import {
-  PermissionsController,
-} from '../../../../../app/scripts/controllers/permissions'
+import deepFreeze from 'deep-freeze-strict'
 
 import _getRestrictedMethods
   from '../../../../../app/scripts/controllers/permissions/restrictedMethods'
@@ -15,50 +11,58 @@ import {
 
 export const noop = () => {}
 
-export const keyringAccounts = [
-  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-  '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-]
-
-export const DUMMY_ACCOUNT = '0xabc'
+/**
+ * Mock Permissions Controller and Middleware
+ */
 
 const platform = {
   openExtensionInBrowser: noop,
 }
 
-async function getKeyringAccounts () {
-  return [ ...keyringAccounts ]
+const keyringAccounts = deepFreeze([
+  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+])
+
+const getKeyringAccounts = async () => [ ...keyringAccounts ]
+
+// perm controller initialization helper
+const getRestrictedMethods = (permController) => {
+  return {
+
+    // the actual, production restricted methods
+    ..._getRestrictedMethods(permController),
+
+    // our own dummy method for testing
+    'test_method': {
+      description: `This method is only for testing.`,
+      method: (req, res, __, end) => {
+        if (req.params[0]) {
+          res.result = 1
+        } else {
+          res.result = 0
+        }
+        end()
+      },
+    },
+  }
 }
 
-export function getPermController (opts = {}) {
-  return new PermissionsController({
+/**
+ * @returns {Object} A PermissionsController constructor options object.
+ */
+export function getPermControllerOpts () {
+  return {
     platform,
     getKeyringAccounts,
     notifyDomain: noop,
     notifyAllDomains: noop,
     getRestrictedMethods,
-    ...opts,
-  })
-}
-
-export const getNotifyDomain = (notifications = {}) => (origin, notification) => {
-  notifications[origin].push(notification)
-}
-
-export const getNotifyAllDomains = (notifications = {}) => (notification) => {
-  Object.keys(notifications).forEach((origin) => {
-    notifications[origin].push(notification)
-  })
-}
-
-export function grantPermissions (permController, origin, permissions) {
-  permController.permissions.grantNewPermissions(
-    origin, permissions, {}, noop
-  )
+  }
 }
 
 /**
- * @returns {Function} A Promise-wrapped middleware function with convenient default args
+ * @returns {Function} A Promise-wrapped middleware function with convenient default args.
  */
 export function getPermissionsMiddleware (permController, origin, extensionId) {
   const middleware = permController.createMiddleware({ origin, extensionId })
@@ -82,68 +86,31 @@ export function getPermissionsMiddleware (permController, origin, extensionId) {
 }
 
 /**
- * Sets the underlying rpc-cap requestUserApproval function such that we can
- * await it being called.
- * @returns {Promise<void>}
+ * @param {Object} notifications - An object that will store notifications produced
+ * by the permissions controller.
+ * @returns {Function} A function passed to the permissions controller at initialization,
+ * for recording notifications.
  */
-export function getUserApprovalPromise (permController) {
-  return new Promise((callerResolve) => {
-    permController.permissions.requestUserApproval = async (req) => {
-      const { metadata: { id } } = req
+export const getNotifyDomain = (notifications = {}) => (origin, notification) => {
+  notifications[origin].push(notification)
+}
 
-      return new Promise((resolve, reject) => {
-        permController.pendingApprovals[id] = { resolve, reject }
-        callerResolve()
-      })
-    }
+/**
+ * @param {Object} notifications - An object that will store notifications produced
+ * by the permissions controller.
+ * @returns {Function} A function passed to the permissions controller at initialization,
+ * for recording notifications.
+ */
+export const getNotifyAllDomains = (notifications = {}) => (notification) => {
+  Object.keys(notifications).forEach((origin) => {
+    notifications[origin].push(notification)
   })
 }
 
-export function getApprovedPermissionsRequest (id, permissions = {}) {
-  return {
-    permissions,
-    metadata: { id },
-  }
-}
-
-export function getRestrictedMethods (instance) {
-  return {
-
-    ..._getRestrictedMethods(instance),
-
-    'test_method': {
-      description: `This method is only for testing.`,
-      method: (req, res, __, end) => {
-        if (req.params[0]) {
-          res.result = 1
-        } else {
-          res.result = 0
-        }
-        end()
-      },
-    },
-  }
-}
-
-export function getRequestLogEntry (request, isInternal) {
-  return {
-    id: request.id,
-    method: request.method,
-    methodType: isInternal ? 'internal' : 'restricted',
-    origin: request.origin,
-    request: cloneDeep(request),
-    requestTime: Date.now(),
-    response: null,
-    responseTime: null,
-    success: null,
-  }
-}
-
-export function addResponseToLogEntry (entry, response, time) {
-  entry.response = cloneDeep(response)
-  entry.responseTime = time
-  entry.success = !response.error
-}
+/**
+ * Constants and Mock Objects
+ * - e.g. permissions, caveats, and permission requests
+ */
 
 const ORIGINS = {
   a: 'foo.xyz',
@@ -174,6 +141,13 @@ const CAVEATS = {
 }
 
 const PERMS = {
+  approvedRequest: (id, permissions = {}) => {
+    return {
+      permissions: { ...permissions },
+      metadata: { id },
+    }
+  },
+
   requests: {
     eth_accounts: () => {
       return { eth_accounts: {} }
@@ -221,7 +195,11 @@ const PERMS = {
   },
 }
 
-export const getters = {
+/**
+ * Objects with function values for getting correctly formatted permissions,
+ * caveats, errors, permissions requests etc.
+ */
+export const getters = deepFreeze({
 
   CAVEATS,
 
@@ -416,110 +394,113 @@ export const getters = {
       }
     },
   },
-}
+})
 
-export function getConstants () {
-  return {
+/**
+ * Objects with immutable mock values.
+ */
+export const constants = deepFreeze({
 
-    REQUEST_IDS: {
-      a: '1',
-      b: '2',
-      c: '3',
-    },
+  DUMMY_ACCOUNT: '0xabc',
 
-    ORIGINS: { ...ORIGINS },
+  REQUEST_IDS: {
+    a: '1',
+    b: '2',
+    c: '3',
+  },
 
-    ACCOUNT_ARRAYS: { ...ACCOUNT_ARRAYS },
+  ORIGINS: { ...ORIGINS },
 
-    PERM_NAMES: { ...PERM_NAMES },
+  ACCOUNT_ARRAYS: { ...ACCOUNT_ARRAYS },
 
-    RESTRICTED_METHODS: [
-      'eth_accounts',
-      'test_method',
+  PERM_NAMES: { ...PERM_NAMES },
+
+  RESTRICTED_METHODS: [
+    'eth_accounts',
+    'test_method',
+  ],
+
+  EXPECTED_HISTORIES: {
+    case1: [
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 1,
+            accounts: {
+              [ACCOUNT_ARRAYS.a[0]]: 1,
+              [ACCOUNT_ARRAYS.a[1]]: 1,
+            },
+          },
+        },
+      },
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 2,
+            accounts: {
+              [ACCOUNT_ARRAYS.a[0]]: 2,
+              [ACCOUNT_ARRAYS.a[1]]: 1,
+            },
+          },
+        },
+      },
     ],
-
-    EXPECTED_HISTORIES: {
-      case1: [
-        {
-          [ORIGINS.a]: {
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 1,
-              accounts: {
-                [ACCOUNT_ARRAYS.a[0]]: 1,
-                [ACCOUNT_ARRAYS.a[1]]: 1,
-              },
+    case2: [
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 1,
+            accounts: {},
+          },
+        },
+      },
+    ],
+    case3: [
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.test_method]: { lastApproved: 1 },
+        },
+        [ORIGINS.b]: {
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 1,
+            accounts: {
+              [ACCOUNT_ARRAYS.b[0]]: 1,
             },
           },
         },
-        {
-          [ORIGINS.a]: {
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 2,
-              accounts: {
-                [ACCOUNT_ARRAYS.a[0]]: 2,
-                [ACCOUNT_ARRAYS.a[1]]: 1,
-              },
+        [ORIGINS.c]: {
+          [PERM_NAMES.test_method]: { lastApproved: 1 },
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 1,
+            accounts: {
+              [ACCOUNT_ARRAYS.c[0]]: 1,
             },
           },
         },
-      ],
-      case2: [
-        {
-          [ORIGINS.a]: {
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 1,
-              accounts: {},
+      },
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.test_method]: { lastApproved: 2 },
+        },
+        [ORIGINS.b]: {
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 1,
+            accounts: {
+              [ACCOUNT_ARRAYS.b[0]]: 1,
             },
           },
         },
-      ],
-      case3: [
-        {
-          [ORIGINS.a]: {
-            [PERM_NAMES.test_method]: { lastApproved: 1 },
-          },
-          [ORIGINS.b]: {
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 1,
-              accounts: {
-                [ACCOUNT_ARRAYS.b[0]]: 1,
-              },
-            },
-          },
-          [ORIGINS.c]: {
-            [PERM_NAMES.test_method]: { lastApproved: 1 },
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 1,
-              accounts: {
-                [ACCOUNT_ARRAYS.c[0]]: 1,
-              },
+        [ORIGINS.c]: {
+          [PERM_NAMES.test_method]: { lastApproved: 1 },
+          [PERM_NAMES.eth_accounts]: {
+            lastApproved: 2,
+            accounts: {
+              [ACCOUNT_ARRAYS.c[0]]: 1,
+              [ACCOUNT_ARRAYS.b[0]]: 2,
             },
           },
         },
-        {
-          [ORIGINS.a]: {
-            [PERM_NAMES.test_method]: { lastApproved: 2 },
-          },
-          [ORIGINS.b]: {
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 1,
-              accounts: {
-                [ACCOUNT_ARRAYS.b[0]]: 1,
-              },
-            },
-          },
-          [ORIGINS.c]: {
-            [PERM_NAMES.test_method]: { lastApproved: 1 },
-            [PERM_NAMES.eth_accounts]: {
-              lastApproved: 2,
-              accounts: {
-                [ACCOUNT_ARRAYS.c[0]]: 1,
-                [ACCOUNT_ARRAYS.b[0]]: 2,
-              },
-            },
-          },
-        },
-      ],
-    },
-  }
-}
+      },
+    ],
+  },
+})

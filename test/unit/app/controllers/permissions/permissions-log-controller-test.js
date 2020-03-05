@@ -16,7 +16,7 @@ import {
 } from './helpers'
 
 import {
-  getConstants,
+  constants,
   getters,
   noop,
 } from './mocks'
@@ -34,14 +34,13 @@ const {
   PERM_NAMES,
   REQUEST_IDS,
   RESTRICTED_METHODS,
-} = getConstants()
+} = constants
 
-let permLog, store, logMiddleware, clock
+let clock
 
 const initPermLog = () => {
-  store = new ObservableStore()
-  permLog = new PermissionsLogController({
-    store,
+  return new PermissionsLogController({
+    store: new ObservableStore(),
     restrictedMethods: RESTRICTED_METHODS,
   })
 }
@@ -52,15 +51,11 @@ const mockNext = (handler) => {
   }
 }
 
-const getPermLogMiddleware = () => {
+const initMiddleware = (permLog) => {
   const middleware = permLog.createMiddleware()
   return (req, res, next = mockNext) => {
     middleware(req, res, next)
   }
-}
-
-const initMiddleware = () => {
-  logMiddleware = getPermLogMiddleware()
 }
 
 const initClock = () => {
@@ -79,9 +74,11 @@ describe('permissions log', function () {
 
   describe('activity log', function () {
 
+    let permLog, logMiddleware
+
     beforeEach(function () {
-      initPermLog()
-      initMiddleware()
+      permLog = initPermLog()
+      logMiddleware = initMiddleware(permLog)
     })
 
     it('records activity for restricted methods', function () {
@@ -339,9 +336,11 @@ describe('permissions log', function () {
 
   describe('permissions history', function () {
 
+    let permLog, logMiddleware
+
     beforeEach(function () {
-      initPermLog()
-      initMiddleware()
+      permLog = initPermLog()
+      logMiddleware = initMiddleware(permLog)
       initClock()
     })
 
@@ -608,7 +607,7 @@ describe('permissions log', function () {
 
     it('logAccountExposure errors on invalid params', function () {
 
-      initPermLog()
+      const permLog = initPermLog()
 
       assert.throws(
         () => {
