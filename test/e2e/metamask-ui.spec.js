@@ -553,11 +553,11 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       let transactions = await findElements(driver, By.css('.transaction-list-item'))
-      await transactions[3].click()
+      await transactions[0].click()
       await delay(regularDelayMs)
       try {
         transactions = await findElements(driver, By.css('.transaction-list-item'), 1000)
-        await transactions[3].click()
+        await transactions[0].click()
       } catch (e) {
         console.log(e)
       }
@@ -631,24 +631,24 @@ describe('MetaMask', function () {
 
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('3'), true, 'correct transaction in focus')
+      assert.equal(navigationText.includes('2'), true, 'correct (same) transaction in focus')
     })
 
-    it('confirms a transaction', async () => {
+    it('rejects a transaction', async () => {
       await delay(tinyDelayMs)
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject')]`), 10000)
       await confirmButton.click()
       await delay(largeDelayMs * 2)
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       await delay(tinyDelayMs)
       const navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('4'), true, 'transaction confirmed')
+      assert.equal(navigationText.includes('4'), true, 'transaction rejected')
     })
 
-    it('rejects a transaction', async () => {
+    it('confirms a transaction', async () => {
       await delay(tinyDelayMs / 2)
-      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject')]`), 10000)
+      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await delay(tinyDelayMs / 2)
       await rejectButton.click()
       await delay(regularDelayMs)
@@ -657,7 +657,7 @@ describe('MetaMask', function () {
       await delay(tinyDelayMs / 2)
       const navigationText = await navigationElement.getText()
       await delay(tinyDelayMs / 2)
-      assert.equal(navigationText.includes('3'), true, 'transaction rejected')
+      assert.equal(navigationText.includes('3'), true, 'transaction confirmed')
     })
 
     it('rejects the rest of the transactions', async () => {
@@ -965,6 +965,7 @@ describe('MetaMask', function () {
 
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await driver.wait(until.elementIsEnabled(nextScreen))
       await nextScreen.click()
       await delay(regularDelayMs)
     })

@@ -28,6 +28,7 @@ export default class SendFooter extends Component {
     update: PropTypes.func,
     sendErrors: PropTypes.object,
     gasEstimateType: PropTypes.string,
+    gasIsLoading: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -102,10 +103,10 @@ export default class SendFooter extends Component {
   }
 
   formShouldBeDisabled () {
-    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit } = this.props
+    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
-    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow
+    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow || gasIsLoading
     return shouldBeDisabled
   }
 

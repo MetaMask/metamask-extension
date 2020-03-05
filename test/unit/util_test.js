@@ -103,6 +103,64 @@ describe('util', function () {
     })
   })
 
+  describe('isValidDomainName', function () {
+    it('should return true when given a valid domain name', function () {
+      assert.strictEqual(util.isValidDomainName('foo.bar'), true)
+    })
+
+    it('should return true when given a valid subdomain', function () {
+      assert.strictEqual(util.isValidDomainName('foo.foo.bar'), true)
+    })
+
+    it('should return true when given a single-character domain', function () {
+      assert.strictEqual(util.isValidDomainName('f.bar'), true)
+    })
+
+    it('should return true when given a unicode TLD', function () {
+      assert.strictEqual(util.isValidDomainName('台灣.中国'), true)
+    })
+
+    it('should return false when given a domain with unacceptable ASCII characters', function () {
+      assert.strictEqual(util.isValidDomainName('$.bar'), false)
+    })
+
+    it('should return false when given a TLD that starts with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo.-bar'), false)
+    })
+
+    it('should return false when given a TLD that ends with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo.bar-'), false)
+    })
+
+    it('should return false when given a domain name with a chunk that starts with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('-foo.bar'), false)
+    })
+
+    it('should return false when given a domain name with a chunk that ends with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo-.bar'), false)
+    })
+
+    it('should return false when given a bare TLD', function () {
+      assert.strictEqual(util.isValidDomainName('bar'), false)
+    })
+
+    it('should return false when given a domain that starts with a period', function () {
+      assert.strictEqual(util.isValidDomainName('.bar'), false)
+    })
+
+    it('should return false when given a subdomain that starts with a period', function () {
+      assert.strictEqual(util.isValidDomainName('.foo.bar'), false)
+    })
+
+    it('should return false when given a domain that ends with a period', function () {
+      assert.strictEqual(util.isValidDomainName('bar.'), false)
+    })
+
+    it('should return false when given a 1-character TLD', function () {
+      assert.strictEqual(util.isValidDomainName('foo.b'), false)
+    })
+  })
+
   describe('#numericBalance', function () {
     it('should return a BN 0 if given nothing', function () {
       var result = util.numericBalance()

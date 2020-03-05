@@ -81,22 +81,34 @@ describe('SendFooter Component', function () {
       'should return true if inError is truthy': {
         inError: true,
         expectedResult: true,
+        gasIsLoading: false,
       },
       'should return true if gasTotal is falsy': {
         inError: false,
         gasTotal: false,
         expectedResult: true,
+        gasIsLoading: false,
       },
       'should return true if to is truthy': {
         to: '0xsomevalidAddress',
         inError: false,
         gasTotal: false,
         expectedResult: true,
+        gasIsLoading: false,
       },
       'should return true if selectedToken is truthy and tokenBalance is falsy': {
         selectedToken: true,
         tokenBalance: null,
         expectedResult: true,
+        gasIsLoading: false,
+      },
+      'should return true if gasIsLoading is truthy but all other params are falsy': {
+        inError: false,
+        gasTotal: null,
+        selectedToken: null,
+        tokenBalance: 0,
+        expectedResult: true,
+        gasIsLoading: true,
       },
       'should return false if inError is false and all other params are truthy': {
         inError: false,
@@ -104,7 +116,9 @@ describe('SendFooter Component', function () {
         selectedToken: true,
         tokenBalance: 123,
         expectedResult: false,
+        gasIsLoading: false,
       },
+
     }
     Object.entries(config).map(([description, obj]) => {
       it(description, () => {

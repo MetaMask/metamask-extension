@@ -2,6 +2,35 @@
 
 ## Current Develop Branch
 
+## 7.7.7 Wed Mar 04 2020
+- [#8162](https://github.com/MetaMask/metamask-extension/pull/8162): Remove invalid Ledger accounts
+- [#8163](https://github.com/MetaMask/metamask-extension/pull/8163): Fix account index check
+
+## 7.7.6 Mon Mar 02 2020
+- [#8154](https://github.com/MetaMask/metamask-extension/pull/8154): Prevent signing from incorrect Ledger account
+
+## 7.7.5 Fri Feb 14 2020
+- [#8053](https://github.com/MetaMask/metamask-extension/pull/8053): Inline the source text not the binary encoding for inpage script
+- [#8049](https://github.com/MetaMask/metamask-extension/pull/8049): Add warning to watchAsset API when editing a known token
+- [#8051](https://github.com/MetaMask/metamask-extension/pull/8051): Update Wyre ETH purchase url
+- [#8059](https://github.com/MetaMask/metamask-extension/pull/8059): Attempt ENS resolution on any valid domain name
+
+## 7.7.4 Wed Jan 29 2020
+- [#7918](https://github.com/MetaMask/metamask-extension/pull/7918): Update data on Approve screen after updating custom spend limit
+- [#7919](https://github.com/MetaMask/metamask-extension/pull/7919): Allow editing max spend limit
+- [#7920](https://github.com/MetaMask/metamask-extension/pull/7920): Validate custom spend limit
+- [#7944](https://github.com/MetaMask/metamask-extension/pull/7944): Only resolve ENS on mainnet
+- [#7954](https://github.com/MetaMask/metamask-extension/pull/7954): Update ENS registry addresses
+
+## 7.7.3 Fri Jan 24 2020
+- [#7894](https://github.com/MetaMask/metamask-extension/pull/7894): Update GABA dependency version
+- [#7901](https://github.com/MetaMask/metamask-extension/pull/7901): Use eth-contract-metadata@1.12.1
+- [#7910](https://github.com/MetaMask/metamask-extension/pull/7910): Fixing broken JSON import help link
+
+## 7.7.2 Fri Jan 10 2020
+- [#7753](https://github.com/MetaMask/metamask-extension/pull/7753): Fix gas estimate for tokens
+- [#7473](https://github.com/MetaMask/metamask-extension/pull/7473): Fix transaction order on transaction confirmation screen
+
 ## 7.7.1 Wed Dec 04 2019
 - [#7488](https://github.com/MetaMask/metamask-extension/pull/7488): Fix text overlap when expanding transaction
 - [#7491](https://github.com/MetaMask/metamask-extension/pull/7491): Update gas when asset is changed on send screen

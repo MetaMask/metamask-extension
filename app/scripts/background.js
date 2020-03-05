@@ -251,7 +251,10 @@ function setupController (initState, initLangCode) {
   })
 
   const provider = controller.provider
-  setupEnsIpfsResolver({ provider })
+  setupEnsIpfsResolver({
+    getCurrentNetwork: controller.getCurrentNetwork,
+    provider,
+  })
 
   // submit rpc requests to mesh-metrics
   controller.networkController.on('rpc-req', (data) => {

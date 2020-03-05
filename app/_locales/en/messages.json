@@ -715,6 +715,12 @@
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
+  "knownTokenWarning": {
+    "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent."
+  },
+  "reusedTokenNameWarning": {
+    "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Not ETH network, set to lowercase"
   },
@@ -1260,6 +1266,12 @@
   "spendLimitRequestedBy": {
     "message": "Spend limit requested by $1",
     "description": "Origin of the site requesting the spend limit"
+  },
+  "spendLimitTooLarge": {
+    "message": "Spend limit too large"
+  },
+  "spendLimitInvalid": {
+    "message": "Spend limit invalid; must be a positive number"
   },
   "switchNetworks": {
     "message": "Switch Networks"

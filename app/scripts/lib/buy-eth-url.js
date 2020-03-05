@@ -17,7 +17,7 @@ function getBuyEthUrl ({ network, amount, address, service }) {
 
   switch (service) {
     case 'wyre':
-      return `https://dash.sendwyre.com/sign-up`
+      return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`
     case 'coinswitch':
       return `https://metamask.coinswitch.co/?address=${address}&to=eth`
     case 'coinbase':

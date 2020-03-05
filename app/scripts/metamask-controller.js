@@ -53,7 +53,7 @@ const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
-const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
+const LedgerBridgeKeyring = require('@metamask/eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const contractMap = require('eth-contract-metadata')
@@ -673,6 +673,10 @@ module.exports = class MetamaskController extends EventEmitter {
         })
       }
     })
+  }
+
+  getCurrentNetwork = () => {
+    return this.networkController.store.getState().network
   }
 
   /**
