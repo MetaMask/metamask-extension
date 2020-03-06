@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+
 import {
   goHome,
   encryptionPublicKeyMsg,
@@ -8,10 +9,10 @@ import {
 } from '../../store/actions'
 
 import {
-  accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-} from '../../selectors/selectors.js'
-import { getAccountByAddress } from '../../helpers/utils/util'
+  getTargetAccountWithSendEtherInfo,
+} from '../../selectors/selectors'
+
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 
@@ -26,8 +27,7 @@ function mapStateToProps (state) {
 
   const { msgParams: from } = txData
 
-  const allAccounts = accountsWithSendEtherInfoSelector(state)
-  const fromAccount = getAccountByAddress(allAccounts, from)
+  const fromAccount = getTargetAccountWithSendEtherInfo(state, from)
 
   return {
     txData: txData,

@@ -50,9 +50,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
-    fromAccount,
-    ...dispatchProps,
     ...ownProps,
+    ...dispatchProps,
+    fromAccount,
     txData,
     cancel,
     sign,

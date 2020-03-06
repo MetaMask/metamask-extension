@@ -11,7 +11,7 @@ export default class SignatureRequest extends PureComponent {
   static propTypes = {
     txData: PropTypes.object.isRequired,
     fromAccount: PropTypes.shape({
-      address: PropTypes.string,
+      address: PropTypes.string.isRequired,
       balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,

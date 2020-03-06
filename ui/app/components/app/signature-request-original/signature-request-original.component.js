@@ -20,8 +20,8 @@ export default class SignatureRequestOriginal extends Component {
 
   static propTypes = {
     fromAccount: PropTypes.shape({
-      address: PropTypes.string,
-      balance: PropTypes.string,
+      address: PropTypes.string.isRequired,
+      balance: PropTypes.string.isRequired,
       name: PropTypes.string,
     }).isRequired,
     cancel: PropTypes.func.isRequired,

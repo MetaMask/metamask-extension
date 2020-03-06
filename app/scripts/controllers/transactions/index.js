@@ -119,7 +119,6 @@ class TransactionController extends EventEmitter {
       this._onBootCleanUp()
       this._updateMemstore()
     })
-    this.preferencesStore.subscribe(() => this._updateMemstore())
 
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock()

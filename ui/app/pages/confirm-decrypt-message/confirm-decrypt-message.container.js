@@ -9,11 +9,10 @@ import {
   decryptMsgInline,
 } from '../../store/actions'
 import {
-  accountsWithSendEtherInfoSelector,
+  getTargetAccountWithSendEtherInfo,
   conversionRateSelector,
-} from '../../selectors/selectors.js'
+} from '../../selectors/selectors'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import { getAccountByAddress } from '../../helpers/utils/util'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 
 function mapStateToProps (state) {
@@ -27,8 +26,7 @@ function mapStateToProps (state) {
 
   const { msgParams: { from } } = txData
 
-  const allAccounts = accountsWithSendEtherInfoSelector(state)
-  const fromAccount = getAccountByAddress(allAccounts, from)
+  const fromAccount = getTargetAccountWithSendEtherInfo(state, from)
 
   return {
     txData: txData,
