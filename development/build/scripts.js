@@ -262,7 +262,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     const browserifyOpts = assign({}, watchify.args, {
       plugin: [],
       transform: [],
-      debug: opts.buildSourceMaps,
+      debug: true,
       fullPaths: opts.devMode,
     })
 
