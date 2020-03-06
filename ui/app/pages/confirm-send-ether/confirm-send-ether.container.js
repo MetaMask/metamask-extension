@@ -18,6 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     editTransaction: (txData) => {
       const { id, txParams } = txData
       const {
+        from,
         gas: gasLimit,
         gasPrice,
         to,
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
       } = txParams
 
       dispatch(updateSend({
+        from,
         gasLimit,
         gasPrice,
         gasTotal: null,
