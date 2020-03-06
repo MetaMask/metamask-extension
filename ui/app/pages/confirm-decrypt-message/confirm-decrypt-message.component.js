@@ -22,7 +22,7 @@ export default class ConfirmDecryptMessage extends Component {
   static propTypes = {
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
-      balance: PropTypes.string.isRequired,
+      balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
