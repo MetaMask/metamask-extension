@@ -172,8 +172,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         bundler.on('log', log)
       }
 
-      const bundleStream = bundler.bundle()
-      let buildStream = bundleStream
+      let buildStream = bundler.bundle()
 
       // handle errors
       buildStream.on('error', (err) => {
