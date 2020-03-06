@@ -499,8 +499,6 @@ describe('permissions log', function () {
 
     it('does not update history if no new permissions are approved', async function () {
 
-      let permHistory
-
       let req = RPC_REQUESTS.requestPermission(
         ORIGINS.a, PERM_NAMES.test_method
       )
@@ -514,10 +512,8 @@ describe('permissions log', function () {
 
       // validate history
 
-      permHistory = permLog.getHistory()
-
       assert.deepEqual(
-        permHistory,
+        permLog.getHistory(),
         EXPECTED_HISTORIES.case4[0],
         'should have correct history'
       )
