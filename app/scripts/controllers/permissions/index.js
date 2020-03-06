@@ -164,6 +164,7 @@ export class PermissionsController {
         approval.reject(ethErrors.rpc.invalidRequest({
           message: 'Must request at least one permission.',
         }))
+
       } else {
 
         // attempt to finalize the request and resolve it,
@@ -516,7 +517,7 @@ export class PermissionsController {
 
         if (this.pendingApprovalOrigins.has(origin)) {
           throw ethErrors.rpc.resourceUnavailable(
-            'Permission request already pending; please wait.'
+            'Permissions request already pending; please wait.'
           )
         }
 

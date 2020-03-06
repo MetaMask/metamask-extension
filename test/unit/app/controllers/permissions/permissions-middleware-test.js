@@ -70,11 +70,11 @@ describe('permissions middleware', function () {
       )
 
       assert.equal(
-        Object.keys(permController.pendingApprovals).length, 1,
+        permController.pendingApprovals.size, 1,
         'perm controller should have single pending approval',
       )
 
-      const id = Object.keys(permController.pendingApprovals)[0]
+      const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
@@ -122,21 +122,121 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.message === expectedError.message
             ),
-            'response has no result and correct error'
+            'response has expected error and no result'
           )
         })
 
       assert.equal(
-        Object.keys(permController.pendingApprovals).length, 1,
+        permController.pendingApprovals.size, 1,
         'perm controller should have single pending approval',
       )
 
-      const id = Object.keys(permController.pendingApprovals)[0]
+      const id = permController.pendingApprovals.keys().next().value
 
       await permController.rejectPermissionsRequest(id)
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(aAccounts, [], 'origin does not have correct accounts')
+    })
+
+    it('accepts only a single pending permissions request per origin', async function () {
+
+      const expectedError = ERRORS.pendingApprovals.requestAlreadyPending()
+
+      // two middlewares for two origins
+
+      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const bMiddleware = getPermissionsMiddleware(permController, ORIGINS.b)
+
+      // create and start processing first request for first origin
+
+      const reqA1 = RPC_REQUESTS.requestPermission(
+        ORIGINS.a, PERM_NAMES.test_method
+      )
+      const resA1 = {}
+
+      assert.doesNotReject(
+        aMiddleware(reqA1, resA1),
+        'should not reject permissions request'
+      )
+
+      // create and start processing first request for second origin
+
+      const reqB1 = RPC_REQUESTS.requestPermission(
+        ORIGINS.b, PERM_NAMES.test_method
+      )
+      const resB1 = {}
+
+      assert.doesNotReject(
+        bMiddleware(reqB1, resB1),
+        'should not reject permissions request'
+      )
+
+      assert.equal(
+        permController.pendingApprovals.size, 2,
+        'perm controller should have expected number of pending approvals',
+      )
+
+      // create and start processing second request for first origin,
+      // which should throw
+
+      const reqA2 = RPC_REQUESTS.requestPermission(
+        ORIGINS.a, PERM_NAMES.test_method
+      )
+      const resA2 = {}
+
+      assert.rejects(
+        aMiddleware(reqA2, resA2),
+        expectedError,
+        'request should be rejected with correct error',
+      )
+        .then(() => {
+          assert.ok(
+            (
+              !resA2.result && resA2.error &&
+            resA2.error.message === expectedError.message
+            ),
+            'response has expected error and no result'
+          )
+        })
+
+      // first requests for both origins should remain
+
+      assert.equal(
+        permController.pendingApprovals.size, 2,
+        'perm controller should have expected number of pending approvals',
+      )
+
+      // now, remaining pending requests should be approved without issue
+
+      for (const id of permController.pendingApprovals.keys()) {
+        await permController.approvePermissionsRequest(
+          PERMS.approvedRequest(id, PERMS.requests.test_method())
+        )
+      }
+
+      assert.ok(
+        resA1.result && !resA1.error,
+        'first response should have result and no error'
+      )
+      assert.equal(
+        resA1.result.length, 1,
+        'first origin should have single approved permission'
+      )
+
+      assert.ok(
+        resB1.result && !resB1.error,
+        'second response should have result and no error'
+      )
+      assert.equal(
+        resB1.result.length, 1,
+        'second origin should have single approved permission'
+      )
+
+      assert.equal(
+        permController.pendingApprovals.size, 0,
+        'perm controller should have expected number of pending approvals',
+      )
     })
   })
 
@@ -168,7 +268,7 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.code === expectedError.code
             ),
-            'response has no result and correct error'
+            'response has expected error and no result'
           )
         })
     })
@@ -280,11 +380,11 @@ describe('permissions middleware', function () {
       await userApprovalPromise
 
       assert.equal(
-        Object.keys(permController.pendingApprovals).length, 1,
+        permController.pendingApprovals.size, 1,
         'perm controller should have single pending approval',
       )
 
-      const id = Object.keys(permController.pendingApprovals)[0]
+      const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
@@ -344,18 +444,18 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.message === expectedError.message
             ),
-            'response has no result and correct error'
+            'response has expected error and no result'
           )
         })
 
       await userApprovalPromise
 
       assert.equal(
-        Object.keys(permController.pendingApprovals).length, 1,
+        permController.pendingApprovals.size, 1,
         'perm controller should have single pending approval',
       )
 
-      const id = Object.keys(permController.pendingApprovals)[0]
+      const id = permController.pendingApprovals.keys().next().value
 
       await permController.rejectPermissionsRequest(id)
 

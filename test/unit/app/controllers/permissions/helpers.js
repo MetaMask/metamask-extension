@@ -17,10 +17,10 @@ export function grantPermissions (permController, origin, permissions) {
 export function getUserApprovalPromise (permController) {
   return new Promise((resolveForCaller) => {
     permController.permissions.requestUserApproval = async (req) => {
-      const { metadata: { id } } = req
+      const { origin, metadata: { id } } = req
 
       return new Promise((resolve, reject) => {
-        permController.pendingApprovals[id] = { resolve, reject }
+        permController.pendingApprovals.set(id, { origin, resolve, reject })
         resolveForCaller()
       })
     }

@@ -304,6 +304,19 @@ export const getters = deepFreeze({
         }
       },
     },
+
+    pendingApprovals: {
+      duplicateOriginOrId: (id, origin) => {
+        return {
+          message: `Pending approval with id ${id} or origin ${origin} already exists.`,
+        }
+      },
+      requestAlreadyPending: () => {
+        return {
+          message: 'Permissions request already pending; please wait.',
+        }
+      },
+    },
   },
 
   NOTIFICATIONS: {
