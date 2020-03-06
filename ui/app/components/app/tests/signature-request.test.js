@@ -19,7 +19,9 @@ describe('Signature Request', function () {
   const store = configureMockStore()(mockStore)
 
   const props = {
-    selectedAccount: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    fromAccount: {
+      address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    },
     history: {
       push: sinon.spy(),
     },

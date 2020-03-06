@@ -43,7 +43,7 @@
       }
     },
     "transactions": {},
-    "selectedAddressTxList": [],
+    "currentNetworkTxList": [],
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {

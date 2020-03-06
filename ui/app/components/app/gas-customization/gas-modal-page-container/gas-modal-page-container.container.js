@@ -71,11 +71,11 @@ import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-ro
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
-  const { selectedAddressTxList } = state.metamask
+  const { currentNetworkTxList } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
   const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
-  const selectedTransaction = selectedAddressTxList.find(({ id }) => id === (transaction.id || txData.id))
+  const selectedTransaction = currentNetworkTxList.find(({ id }) => id === (transaction.id || txData.id))
 
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)

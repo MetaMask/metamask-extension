@@ -104,7 +104,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @returns {number} The id of the newly created EncryptionPublicKey.
    *
    */
-  addUnapprovedMessage (address, _req) {
+  addUnapprovedMessage (address, req) {
     log.debug(`EncryptionPublicKeyManager addUnapprovedMessage: address`)
     // create txData obj with parameters and meta data
     const time = (new Date()).getTime()
@@ -117,8 +117,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       type: 'eth_getEncryptionPublicKey',
     }
 
-    if (_req) {
-      msgData.origin = _req.origin
+    if (req) {
+      msgData.origin = req.origin
     }
 
     this.addMsg(msgData)

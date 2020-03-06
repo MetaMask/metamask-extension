@@ -13,7 +13,7 @@
   },
   "currentBlockGasLimit": "",
   "unapprovedTxs": {},
-  "selectedAddressTxList": [],
+  "currentNetworkTxList": [],
   "unapprovedMsgs": {},
   "unapprovedMsgCount": 0,
   "unapprovedPersonalMsgs": {},

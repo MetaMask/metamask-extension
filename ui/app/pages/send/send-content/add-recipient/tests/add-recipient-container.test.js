@@ -20,11 +20,11 @@ proxyquire('../add-recipient.container.js', {
   '../../send.selectors.js': {
     getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../selectors/selectors': {
     getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
     getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
+    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })

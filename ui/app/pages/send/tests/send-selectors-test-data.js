@@ -91,11 +91,12 @@ export default {
       },
     },
     'transactions': {},
-    'selectedAddressTxList': [
+    'currentNetworkTxList': [
       {
         'id': 'mockTokenTx1',
         'txParams': {
           'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+          'from': '0xd85a4b6a394794842887b8284293d69163007bbb',
         },
         'time': 1700000000000,
       },
@@ -103,6 +104,7 @@ export default {
         'id': 'mockTokenTx2',
         'txParams': {
           'to': '0xafaketokenaddress',
+          'from': '0xd85a4b6a394794842887b8284293d69163007bbb',
         },
         'time': 1600000000000,
       },
@@ -110,6 +112,7 @@ export default {
         'id': 'mockTokenTx3',
         'txParams': {
           'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+          'from': '0xd85a4b6a394794842887b8284293d69163007bbb',
         },
         'time': 1500000000000,
       },
@@ -117,6 +120,7 @@ export default {
         'id': 'mockEthTx1',
         'txParams': {
           'to': '0xd85a4b6a394794842887b8284293d69163007bbb',
+          'from': '0xd85a4b6a394794842887b8284293d69163007bbb',
         },
         'time': 1400000000000,
       },

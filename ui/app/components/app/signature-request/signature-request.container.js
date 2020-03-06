@@ -1,33 +1,26 @@
 import { connect } from 'react-redux'
 import SignatureRequest from './signature-request.component'
-import { goHome } from '../../../store/actions'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
-  getSelectedAccount,
-  getCurrentAccountWithSendEtherInfo,
-  getSelectedAddress,
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
 } from '../../../selectors/selectors.js'
+import { getAccountByAddress } from '../../../helpers/utils/util'
 
 function mapStateToProps (state) {
   return {
-    balance: getSelectedAccount(state).balance,
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
-    selectedAddress: getSelectedAddress(state),
-    accounts: accountsWithSendEtherInfoSelector(state),
-    conversionRate: conversionRateSelector(state),
+    // not forwarded to component
+    allAccounts: accountsWithSendEtherInfoSelector(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { allAccounts } = stateProps
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -38,7 +31,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps
 
-  const { type } = txData
+  const { type, msgParams: { from } } = txData
+
+  const fromAccount = getAccountByAddress(allAccounts, from)
 
   let cancel
   let sign
@@ -55,9 +50,9 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   }
 
   return {
-    ...stateProps,
-    ...dispatchProps,
     ...ownProps,
+    ...dispatchProps,
+    fromAccount,
     txData,
     cancel,
     sign,

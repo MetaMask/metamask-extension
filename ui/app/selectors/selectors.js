@@ -9,6 +9,7 @@ import {
   checksumAddress,
   formatDate,
   getOriginFromUrl,
+  getAccountByAddress,
 } from '../helpers/utils/util'
 
 import { getPermittedAccountsMap } from './permissions'
@@ -250,7 +251,12 @@ export function getCurrentAccountWithSendEtherInfo (state) {
   const currentAddress = getSelectedAddress(state)
   const accounts = accountsWithSendEtherInfoSelector(state)
 
-  return accounts.find(({ address }) => address === currentAddress)
+  return getAccountByAddress(accounts, currentAddress)
+}
+
+export function getTargetAccountWithSendEtherInfo (state, targetAddress) {
+  const accounts = accountsWithSendEtherInfoSelector(state)
+  return getAccountByAddress(accounts, targetAddress)
 }
 
 export function getCurrentEthBalance (state) {

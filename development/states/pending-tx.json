@@ -31,7 +31,7 @@
       }
     },
     "currentBlockGasLimit": "0x66df83",
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "id": 3516145537630216,
         "time": 1512615655535,

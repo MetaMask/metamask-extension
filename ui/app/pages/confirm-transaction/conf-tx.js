@@ -39,7 +39,7 @@ function mapStateToProps (state) {
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
     send: state.metamask.send,
-    selectedAddressTxList: state.metamask.selectedAddressTxList,
+    currentNetworkTxList: state.metamask.currentNetworkTxList,
   }
 }
 
@@ -56,11 +56,11 @@ class ConfirmTxScreen extends Component {
     unapprovedTypedMessages: PropTypes.object,
     match: PropTypes.shape({
       params: PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
       }),
     }),
 
-    selectedAddressTxList: PropTypes.array,
+    currentNetworkTxList: PropTypes.array,
     currentCurrency: PropTypes.string,
     blockGasLimit: PropTypes.string,
     history: PropTypes.object,
@@ -181,7 +181,7 @@ class ConfirmTxScreen extends Component {
     const {
       unapprovedTxs = {},
       network,
-      selectedAddressTxList,
+      currentNetworkTxList,
       send,
       history,
       match: { params: { id: transactionId } = {} },
@@ -190,12 +190,12 @@ class ConfirmTxScreen extends Component {
     let prevTx
 
     if (transactionId) {
-      prevTx = R.find(({ id }) => id + '' === transactionId)(selectedAddressTxList)
+      prevTx = R.find(({ id }) => id + '' === transactionId)(currentNetworkTxList)
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
       const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
       const prevTxData = prevUnconfTxList[prevIndex] || {}
-      prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
+      prevTx = currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {}
     }
 
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)

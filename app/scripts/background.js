@@ -122,16 +122,16 @@ initialize().catch(log.error)
  * @property {string} network - A stringified number of the current network ID.
  * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {TransactionMeta[]} selectedAddressTxList - An array of transactions associated with the currently selected account.
- * @property {Object} unapprovedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
+ * @property {Object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
- * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
- * @property {Object} EncryptionPublicKeyMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
- * @property {Object} unapprovedDecryptMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.

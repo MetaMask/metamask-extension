@@ -44,7 +44,7 @@
       }
     },
     "transactions": {},
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "id": 1188547363326880,
         "time": 1487662234127,

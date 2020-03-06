@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -11,6 +11,7 @@ import {
 describe('Transaction Selectors', function () {
 
   describe('unapprovedMessagesSelector', function () {
+
     it('returns eth sign msg from unapprovedMsgs', function () {
 
       const msg = {
@@ -94,13 +95,12 @@ describe('Transaction Selectors', function () {
 
       assert(Array.isArray(msgSelector))
       assert.deepEqual(msgSelector, [msg])
-
     })
   })
 
   describe('transactionsSelector', function () {
 
-    it('selectedAddressTxList', function () {
+    it('selects the currentNetworkTxList', function () {
 
       const state = {
         metamask: {
@@ -110,7 +110,8 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddressTxList: [
+          selectedAddress: '0xAddress',
+          currentNetworkTxList: [
             {
               id: 0,
               time: 0,
@@ -131,15 +132,15 @@ describe('Transaction Selectors', function () {
         },
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxList = state.metamask.currentNetworkTxList.sort((a, b) => b.time - a.time)
 
-      const txSelector = transactionsSelector(state)
+      const selectedTx = transactionsSelector(state)
 
-      assert(Array.isArray(txSelector))
-      assert.deepEqual(txSelector, orderedTxlist)
+      assert(Array.isArray(selectedTx))
+      assert.deepEqual(selectedTx, orderedTxList)
     })
 
-    it('returns token tx from selectedAddressTxList when selectedTokenAddress is valid', function () {
+    it('returns token transactions from currentNetworkTxList when selectedTokenAddress is valid', function () {
 
       const state = {
         metamask: {
@@ -149,8 +150,9 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
+          selectedAddress: '0xAddress',
           selectedTokenAddress: '0xToken',
-          selectedAddressTxList: [
+          currentNetworkTxList: [
             {
               id: 0,
               time: 0,
@@ -164,23 +166,123 @@ describe('Transaction Selectors', function () {
               time: 1,
               txParams: {
                 from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+            {
+              id: 2,
+              time: 2,
+              txParams: {
+                from: '0xAddress',
                 to: '0xToken',
               },
             },
           ],
         },
-
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxList = state.metamask.currentNetworkTxList
+        .filter((tx) => tx.txParams.to === '0xToken')
+        .sort((a, b) => b.time - a.time)
 
-      const txSelector = transactionsSelector(state)
+      const selectedTx = transactionsSelector(state)
 
-      assert(Array.isArray(txSelector))
-      assert.deepEqual(txSelector, orderedTxlist)
-
+      assert(Array.isArray(selectedTx))
+      assert.deepEqual(selectedTx, orderedTxList)
     })
 
+    it('should return shapeshift transactions if current network is mainnet', function () {
+
+      const state = {
+        metamask: {
+          provider: {
+            nickname: 'mainnet',
+          },
+          featureFlags: {
+            showIncomingTransactions: false,
+          },
+          selectedAddress: '0xAddress',
+          currentNetworkTxList: [
+            {
+              id: 0,
+              time: 0,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+            {
+              id: 1,
+              time: 2,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+          ],
+          shapeShiftTxList: [
+            { id: 'shapeShiftTx1', 'time': 1 },
+            { id: 'shapeShiftTx2', 'time': 3 },
+            { id: 'shapeShiftTx3', 'time': 4 },
+          ],
+        },
+      }
+
+      const orderedTxList = state.metamask.currentNetworkTxList
+        .concat(state.metamask.shapeShiftTxList)
+        .sort((a, b) => b.time - a.time)
+
+      const selectedTx = transactionsSelector(state)
+
+      assert(Array.isArray(selectedTx))
+      assert.deepEqual(selectedTx, orderedTxList)
+    })
+
+    it('should not return shapeshift transactions if current network is not mainnet', function () {
+
+      const state = {
+        metamask: {
+          provider: {
+            nickname: 'rinkeby',
+          },
+          featureFlags: {
+            showIncomingTransactions: false,
+          },
+          selectedAddress: '0xAddress',
+          currentNetworkTxList: [
+            {
+              id: 0,
+              time: 0,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+            {
+              id: 1,
+              time: 2,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+          ],
+          shapeShiftTxList: [
+            { id: 'shapeShiftTx1', 'time': 1 },
+            { id: 'shapeShiftTx2', 'time': 3 },
+            { id: 'shapeShiftTx3', 'time': 4 },
+          ],
+        },
+      }
+
+      const orderedTxList = state.metamask.currentNetworkTxList
+        .sort((a, b) => b.time - a.time)
+
+      const selectedTx = transactionsSelector(state)
+
+      assert(Array.isArray(selectedTx))
+      assert.deepEqual(selectedTx, orderedTxList)
+    })
   })
 
   describe('nonceSortedTransactionsSelector', function () {
@@ -212,10 +314,11 @@ describe('Transaction Selectors', function () {
           provider: {
             nickname: 'mainnet',
           },
+          selectedAddress: '0xAddress',
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddressTxList: [
+          currentNetworkTxList: [
             tx1,
             tx2,
           ],
@@ -296,10 +399,11 @@ describe('Transaction Selectors', function () {
         provider: {
           nickname: 'mainnet',
         },
+        selectedAddress: '0xAddress',
         featureFlags: {
           showIncomingTransactions: false,
         },
-        selectedAddressTxList: [
+        currentNetworkTxList: [
           submittedTx,
           unapprovedTx,
           approvedTx,
@@ -360,9 +464,6 @@ describe('Transaction Selectors', function () {
 
       const expectedResult = [ submittedTx ]
       assert.deepEqual(submittedPendingTransactionsSelector(state), expectedResult)
-
     })
-
   })
-
 })

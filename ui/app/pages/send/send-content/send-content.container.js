@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import SendContent from './send-content.component'
 import {
-  accountsWithSendEtherInfoSelector,
   getSendTo,
 } from '../send.selectors'
 import {
+  accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
 } from '../../../selectors/selectors'
 import * as actions from '../../../store/actions'

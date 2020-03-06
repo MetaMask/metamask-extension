@@ -12,7 +12,11 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import { selectedTokenAddressSelector } from './tokens'
 import { getFastPriceEstimateInHexWEI } from './custom-gas'
-import { getSelectedToken, getIsMainnet } from './selectors'
+import {
+  getIsMainnet,
+  getSelectedToken,
+  getSelectedAddress,
+} from './selectors'
 import txHelper from '../../lib/tx-helper'
 
 export const shapeShiftTxListSelector = (state) => {
@@ -29,19 +33,27 @@ export const incomingTxListSelector = (state) => {
   }
 
   const network = state.metamask.network
-  const selectedAddress = state.metamask.selectedAddress
+  const selectedAddress = getSelectedAddress(state)
   return Object.values(state.metamask.incomingTransactions)
     .filter(({ metamaskNetworkId, txParams }) => (
       txParams.to === selectedAddress && metamaskNetworkId === network
     ))
 }
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs
-export const selectedAddressTxListSelector = (state) => state.metamask.selectedAddressTxList
+export const currentNetworkTxListSelector = (state) => state.metamask.currentNetworkTxList
 export const unapprovedPersonalMsgsSelector = (state) => state.metamask.unapprovedPersonalMsgs
 export const unapprovedDecryptMsgsSelector = (state) => state.metamask.unapprovedDecryptMsgs
 export const unapprovedEncryptionPublicKeyMsgsSelector = (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs
 export const unapprovedTypedMessagesSelector = (state) => state.metamask.unapprovedTypedMessages
 export const networkSelector = (state) => state.metamask.network
+
+export const selectedAddressTxListSelector = createSelector(
+  getSelectedAddress,
+  currentNetworkTxListSelector,
+  (selectedAddress, transactions = []) => {
+    return transactions.filter(({ txParams }) => txParams.from === selectedAddress)
+  }
+)
 
 export const unapprovedMessagesSelector = createSelector(
   unapprovedMsgsSelector,
@@ -79,21 +91,43 @@ const priorityStatusHash = {
   [CONFIRMED_STATUS]: true,
 }
 
-export const transactionsSelector = createSelector(
-  selectedTokenAddressSelector,
+export const transactionSubSelector = createSelector(
   unapprovedMessagesSelector,
   shapeShiftTxListSelector,
   incomingTxListSelector,
-  selectedAddressTxListSelector,
-  (selectedTokenAddress, unapprovedMessages = [], shapeShiftTxList = [], incomingTxList = [], transactions = []) => {
-    const txsToRender = transactions.concat(unapprovedMessages, shapeShiftTxList, incomingTxList)
+  (unapprovedMessages = [], shapeShiftTxList = [], incomingTxList = []) => {
+    return unapprovedMessages.concat(shapeShiftTxList, incomingTxList)
+  }
+)
 
-    return selectedTokenAddress
-      ? txsToRender
-        .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-        .sort((a, b) => b.time - a.time)
-      : txsToRender
-        .sort((a, b) => b.time - a.time)
+const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => {
+  return selectedTokenAddress
+    ? transactions
+      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
+      .sort((a, b) => b.time - a.time)
+    : transactions
+      .sort((a, b) => b.time - a.time)
+}
+
+export const networkTransactionsSelector = createSelector(
+  selectedTokenAddressSelector,
+  transactionSubSelector,
+  currentNetworkTxListSelector,
+  (selectedTokenAddress, subSelectorTxList = [], networkTxList = []) => {
+    const txsToRender = networkTxList.concat(subSelectorTxList)
+
+    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
+  }
+)
+
+export const transactionsSelector = createSelector(
+  selectedTokenAddressSelector,
+  transactionSubSelector,
+  selectedAddressTxListSelector,
+  (selectedTokenAddress, subSelectorTxList = [], selectedAddressTxList = []) => {
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList)
+
+    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
   }
 )
 

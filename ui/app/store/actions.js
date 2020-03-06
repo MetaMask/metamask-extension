@@ -1473,8 +1473,8 @@ export function retryTransaction (txId, gasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
         newTxId = id
         resolve(newState)
       })
@@ -1496,8 +1496,8 @@ export function createCancelTransaction (txId, customGasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
         newTxId = id
         resolve(newState)
       })
@@ -1519,8 +1519,8 @@ export function createSpeedUpTransaction (txId, customGasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
         resolve(newState)
       })
     })
@@ -1541,8 +1541,8 @@ export function createRetryTransaction (txId, customGasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
         resolve(newState)
       })
     })
