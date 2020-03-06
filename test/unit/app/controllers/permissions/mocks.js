@@ -434,6 +434,7 @@ export const constants = deepFreeze({
   ],
 
   EXPECTED_HISTORIES: {
+
     case1: [
       {
         [ORIGINS.a]: {
@@ -458,6 +459,7 @@ export const constants = deepFreeze({
         },
       },
     ],
+
     case2: [
       {
         [ORIGINS.a]: {
@@ -468,6 +470,7 @@ export const constants = deepFreeze({
         },
       },
     ],
+
     case3: [
       {
         [ORIGINS.a]: {
@@ -511,6 +514,16 @@ export const constants = deepFreeze({
               [ACCOUNT_ARRAYS.c[0]]: 1,
               [ACCOUNT_ARRAYS.b[0]]: 2,
             },
+          },
+        },
+      },
+    ],
+
+    case4: [
+      {
+        [ORIGINS.a]: {
+          [PERM_NAMES.test_method]: {
+            lastApproved: 1,
           },
         },
       },

@@ -497,6 +497,55 @@ describe('permissions log', function () {
       )
     })
 
+    it('does not update history if no new permissions are approved', async function () {
+
+      let permHistory
+
+      let req = RPC_REQUESTS.requestPermission(
+        ORIGINS.a, PERM_NAMES.test_method
+      )
+      let res = {
+        result: [
+          PERMS.granted.test_method(),
+        ],
+      }
+
+      logMiddleware({ ...req }, { ...res })
+
+      // validate history
+
+      permHistory = permLog.getHistory()
+
+      assert.deepEqual(
+        permHistory,
+        EXPECTED_HISTORIES.case4[0],
+        'should have correct history'
+      )
+
+      // new permission requested, but not approved
+
+      clock.tick(1)
+
+      req = RPC_REQUESTS.requestPermission(
+        ORIGINS.a, PERM_NAMES.eth_accounts
+      )
+      res = {
+        result: [
+          PERMS.granted.test_method(),
+        ],
+      }
+
+      logMiddleware({ ...req }, { ...res })
+
+      // validate history
+
+      assert.deepEqual(
+        permLog.getHistory(),
+        EXPECTED_HISTORIES.case4[0],
+        'should have same history as before'
+      )
+    })
+
     it('records and updates history for multiple origins, regardless of response order', async function () {
 
       let permHistory
