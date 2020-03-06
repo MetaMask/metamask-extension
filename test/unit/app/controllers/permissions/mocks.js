@@ -9,6 +9,16 @@ import {
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
+/**
+ * README
+ * This file contains three primary kinds of mocks:
+ * - Mocks for initializing a permissions controller and getting a permissions
+ * middleware
+ * - Functions for getting various mock objects consumed or produced by
+ * permissions controller methods
+ * - Immutable mock values like Ethereum accounts and expected states
+ */
+
 export const noop = () => {}
 
 /**
@@ -49,6 +59,8 @@ const getRestrictedMethods = (permController) => {
 }
 
 /**
+ * Gets default mock constructor options for a permissions controller.
+ *
  * @returns {Object} A PermissionsController constructor options object.
  */
 export function getPermControllerOpts () {
@@ -62,6 +74,12 @@ export function getPermControllerOpts () {
 }
 
 /**
+ * Gets a Promise-wrapped permissions controller middleware function.
+ *
+ * @param {PermissionsController} permController - The permissions controller to get a
+ * middleware for.
+ * @param {string} origin - The origin for the middleware.
+ * @param {string} extensionId - The extension id for the middleware.
  * @returns {Function} A Promise-wrapped middleware function with convenient default args.
  */
 export function getPermissionsMiddleware (permController, origin, extensionId) {
@@ -130,7 +148,17 @@ const ACCOUNT_ARRAYS = {
   c: [keyringAccounts[1]],
 }
 
+/**
+ * Helpers for getting mock caveats.
+ */
 const CAVEATS = {
+
+  /**
+   * Gets a correctly formatted eth_accounts exposedAccounts caveat.
+   *
+   * @param {Array<string>} accounts - The accounts for the caveat
+   * @returns {Object} An eth_accounts exposedAccounts caveats
+   */
   eth_accounts: (accounts) => {
     return {
       type: 'filterResponse',
@@ -140,7 +168,17 @@ const CAVEATS = {
   },
 }
 
+/**
+ * Each function here corresponds to what would be a type or interface consumed
+ * by permissions controller functions if we used TypeScript.
+ */
 const PERMS = {
+
+  /**
+   * The argument to approvePermissionsRequest
+   * @param {string} id - The rpc-cap permissions request id.
+   * @param {Object} permissions - The approved permissions, request-formatted.
+   */
   approvedRequest: (id, permissions = {}) => {
     return {
       permissions: { ...permissions },
@@ -148,19 +186,42 @@ const PERMS = {
     }
   },
 
+  /**
+   * Requested permissions objects, as passed to wallet_requestPermissions.
+   */
   requests: {
+
+    /**
+     * @returns {Object} A permissions request object with eth_accounts
+     */
     eth_accounts: () => {
       return { eth_accounts: {} }
     },
+
+    /**
+     * @returns {Object} A permissions request object with test_method
+     */
     test_method: () => {
       return { test_method: {} }
     },
+
+    /**
+     * @returns {Object} A permissions request object with does_not_exist
+     */
     does_not_exist: () => {
       return { does_not_exist: {} }
     },
   },
 
+  /**
+   * Finalized permission requests, as returned by finalizePermissionsRequest
+   */
   finalizedRequests: {
+
+    /**
+     * @param {Array<string>} accounts - The accounts for the eth_accounts permission caveat
+     * @returns {Object} A finalized permissions request object with eth_accounts and its caveat
+     */
     eth_accounts: (accounts) => {
       return {
         eth_accounts: {
@@ -168,6 +229,9 @@ const PERMS = {
         } }
     },
 
+    /**
+     * @returns {Object} A finalized permissions request object with test_method
+     */
     test_method: () => {
       return {
         test_method: {},
@@ -175,11 +239,17 @@ const PERMS = {
     },
   },
 
-  /** i.e. members of res.result for successful:
+  /**
+   * Partial members of res.result for successful:
    * - wallet_requestPermissions
    * - wallet_getPermissions
    */
   granted: {
+
+    /**
+     * @param {Array<string>} accounts - The accounts for the eth_accounts permission caveat
+     * @returns {Object} A granted permissions object with eth_accounts and its caveat
+     */
     eth_accounts: (accounts) => {
       return {
         parentCapability: PERM_NAMES.eth_accounts,
@@ -187,6 +257,9 @@ const PERMS = {
       }
     },
 
+    /**
+     * @returns {Object} A granted permissions object with test_method
+     */
     test_method: () => {
       return {
         parentCapability: PERM_NAMES.test_method,
@@ -205,6 +278,9 @@ export const getters = deepFreeze({
 
   PERMS,
 
+  /**
+   * Getters for errors by the method or workflow that throws them.
+   */
   ERRORS: {
 
     validatePermittedAccounts: {
@@ -319,8 +395,16 @@ export const getters = deepFreeze({
     },
   },
 
+  /**
+   * Getters for notifications produced by the permissions controller.
+   */
   NOTIFICATIONS: {
 
+    /**
+     * Gets a removed accounts notification.
+     *
+     * @returns {Object} An accountsChanged notification with an empty array as its result
+     */
     removedAccounts: () => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
@@ -328,6 +412,12 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a new accounts notification.
+     *
+     * @param {Array<string>} accounts - The accounts added to the notification.
+     * @returns {Object} An accountsChanged notification with the given accounts as its result
+     */
     newAccounts: (accounts) => {
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
@@ -335,6 +425,11 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a test notification that doesn't occur in practice.
+     *
+     * @returns {Object} A notification with the 'test_notification' method name
+     */
     test: () => {
       return {
         method: 'test_notification',
@@ -343,7 +438,20 @@ export const getters = deepFreeze({
     },
   },
 
+  /**
+   * Getters for mock RPC request objects.
+   */
   RPC_REQUESTS: {
+
+    /**
+     * Gets an arbitrary RPC request object.
+     *
+     * @param {string} origin - The origin of the request
+     * @param {string} method - The request method
+     * @param {Array<any>} params - The request parameters
+     * @param {string} [id] - The request id
+     * @returns {Object} An RPC request object
+     */
     custom: (origin, method, params = [], id) => {
       const req = {
         origin,
@@ -356,6 +464,12 @@ export const getters = deepFreeze({
       return req
     },
 
+    /**
+     * Gets an eth_accounts RPC request object.
+     *
+     * @param {string} origin - The origin of the request
+     * @returns {Object} An RPC request object
+     */
     eth_accounts: (origin) => {
       return {
         origin,
@@ -364,6 +478,13 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a test_method RPC request object.
+     *
+     * @param {string} origin - The origin of the request
+     * @param {boolean} param - The request param
+     * @returns {Object} An RPC request object
+     */
     test_method: (origin, param = false) => {
       return {
         origin,
@@ -372,6 +493,12 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets an eth_requestAccounts RPC request object.
+     *
+     * @param {string} origin - The origin of the request
+     * @returns {Object} An RPC request object
+     */
     eth_requestAccounts: (origin) => {
       return {
         origin,
@@ -380,6 +507,14 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a wallet_requestPermissions RPC request object,
+     * for a single permission.
+     *
+     * @param {string} origin - The origin of the request
+     * @param {string} permissionName - The name of the permission to request
+     * @returns {Object} An RPC request object
+     */
     requestPermission: (origin, permissionName) => {
       return {
         origin,
@@ -388,6 +523,14 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a wallet_requestPermissions RPC request object,
+     * for multiple permissions.
+     *
+     * @param {string} origin - The origin of the request
+     * @param {Object} permissions - A permission request object
+     * @returns {Object} An RPC request object
+     */
     requestPermissions: (origin, permissions = {}) => {
       return {
         origin,
@@ -396,6 +539,14 @@ export const getters = deepFreeze({
       }
     },
 
+    /**
+     * Gets a wallet_sendDomainMetadata RPC request object.
+     *
+     * @param {string} origin - The origin of the request
+     * @param {Object} name - The domainMetadata name
+     * @param {Array<any>} [args] - Any other data for the request's domainMetadata
+     * @returns {Object} An RPC request object
+     */
     wallet_sendDomainMetadata: (origin, name, ...args) => {
       return {
         origin,
@@ -433,6 +584,9 @@ export const constants = deepFreeze({
     'test_method',
   ],
 
+  /**
+   * Mock permissions history objects.
+   */
   EXPECTED_HISTORIES: {
 
     case1: [

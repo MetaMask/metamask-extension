@@ -2,6 +2,16 @@ import { strict as assert } from 'assert'
 
 import { noop } from './mocks'
 
+/**
+ * Grants the given permissions to the given origin, using the given permissions
+ * controller.
+ *
+ * Just a wrapper for an rpc-cap middleware function.
+ *
+ * @param {PermissionsController} permController - The permissions controller.
+ * @param {string} origin - The origin to grant permissions to.
+ * @param {Object} permissions - The permissions to grant.
+ */
 export function grantPermissions (permController, origin, permissions) {
   permController.permissions.grantNewPermissions(
     origin, permissions, {}, noop
@@ -9,8 +19,13 @@ export function grantPermissions (permController, origin, permissions) {
 }
 
 /**
- * Sets the underlying rpc-cap requestUserApproval function such that we can
- * await it being called.
+ * Sets the underlying rpc-cap requestUserApproval function, and returns
+ * a promise that's resolved once it has been set.
+ *
+ * This function must be called on the given permissions controller every
+ * time you want such a Promise. As of writing, it's only called once per test.
+ *
+ * @param {PermissionsController} - A permissions controller.
  * @returns {Promise<void>} A Promise that resolves once a pending approval
  * has been set.
  */
@@ -27,6 +42,16 @@ export function getUserApprovalPromise (permController) {
   })
 }
 
+/**
+ * Validates an activity log entry with respect to a request, response, and
+ * relevant metadata.
+ *
+ * @param {Object} entry - The activity log entry to validate.
+ * @param {Object} req - The request that generated the entry.
+ * @param {Object} [res] - The response for the request, if any.
+ * @param {'restricted'|'internal'} methodType - The method log controller method type of the request.
+ * @param {boolean} success - Whether the request succeeded or not.
+ */
 export function validateActivityEntry (
   entry, req, res, methodType, success
 ) {
