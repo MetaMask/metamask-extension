@@ -39,7 +39,7 @@ createTask('reload', function devReload () {
 
 
 const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })
-const manifestTasks = createManifestTasks({ livereload, browserPlatforms })
+const manifestTasks = createManifestTasks({ browserPlatforms })
 const styleTasks = createStyleTasks({ livereload })
 const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
 
