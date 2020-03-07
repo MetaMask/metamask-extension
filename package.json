@@ -197,7 +197,6 @@
     "chai": "^4.1.0",
     "chalk": "^3.0.0",
     "chromedriver": "^79.0.0",
-    "clone": "^2.1.2",
     "concurrently": "^5.1.0",
     "coveralls": "^3.0.0",
     "css-loader": "^2.1.1",

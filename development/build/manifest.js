@@ -1,6 +1,5 @@
 const { promises: fs } = require('fs')
-const clone = require('clone')
-const { merge } = require('lodash')
+const { merge, cloneDeep } = require('lodash')
 
 const baseManifest = require('../../app/manifest/_base.json')
 
@@ -18,7 +17,7 @@ function createManifestTasks ({ browserPlatforms }) {
   const prod = createTask('manifest:prod', async () => {
     return Promise.all(browserPlatforms.map(async (platform) => {
       const platformModifications = await readJson(`${__dirname}/../../app/manifest/${platform}.json`)
-      const result = merge(clone(baseManifest), platformModifications)
+      const result = merge(cloneDeep(baseManifest), platformModifications)
       const dir = `./dist/${platform}`
       await fs.mkdir(dir, { recursive: true })
       await writeJson(result, `${dir}/manifest.json`)
