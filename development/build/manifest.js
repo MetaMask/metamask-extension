@@ -14,7 +14,8 @@ const scriptsToExcludeFromBackgroundDevBuild = {
 
 function createManifestTasks ({ browserPlatforms }) {
 
-  const prod = createTask('manifest:prod', async () => {
+  // merge base manifest with per-platform manifests
+  const prepPlatforms = async () => {
     return Promise.all(browserPlatforms.map(async (platform) => {
       const platformModifications = await readJson(`${__dirname}/../../app/manifest/${platform}.json`)
       const result = merge(cloneDeep(baseManifest), platformModifications)
@@ -22,10 +23,10 @@ function createManifestTasks ({ browserPlatforms }) {
       await fs.mkdir(dir, { recursive: true })
       await writeJson(result, `${dir}/manifest.json`)
     }))
-  })
+  }
 
   // dev: remove bg-libs, add chromereload, add perms
-  createTask('manifest:env:dev', createTaskForModifyManifestForEnvironment((manifest) => {
+  const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
     const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
     scripts.push('chromereload.js')
     manifest.background = {
@@ -33,10 +34,10 @@ function createManifestTasks ({ browserPlatforms }) {
       scripts,
     }
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking']
-  }))
+  })
 
   // testDev: remove bg-libs, add perms
-  createTask('manifest:env:testDev', createTaskForModifyManifestForEnvironment((manifest) => {
+  const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
     const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
     scripts.push('chromereload.js')
     manifest.background = {
@@ -44,28 +45,30 @@ function createManifestTasks ({ browserPlatforms }) {
       scripts,
     }
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
-  }))
+  })
 
   // test: add permissions
-  createTask('manifest:env:test', createTaskForModifyManifestForEnvironment((manifest) => {
+  const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
-  }))
+  })
 
   // high level manifest tasks
   const dev = createTask('manifest:dev', composeSeries(
-    'manifest:prod',
-    'manifest:env:dev',
+    prepPlatforms,
+    envDev,
   ))
 
   const testDev = createTask('manifest:testDev', composeSeries(
-    'manifest:prod',
-    'manifest:env:testDev',
+    prepPlatforms,
+    envTestDev,
   ))
 
   const test = createTask('manifest:test', composeSeries(
-    'manifest:prod',
-    'manifest:env:test',
+    prepPlatforms,
+    envTest,
   ))
+
+  const prod = createTask('manifest:prod', prepPlatforms)
 
   return { prod, dev, testDev, test }
 
