@@ -3,7 +3,7 @@ const path = require('path')
 const watch = require('gulp-watch')
 const glob = require('fast-glob')
 
-const { createTask, taskSeries } = require('./task')
+const { createTask, composeSeries } = require('./task')
 
 module.exports = createStaticAssetTasks
 
@@ -52,26 +52,26 @@ const copyTargetsDev = [
 
 function createStaticAssetTasks ({ livereload, browserPlatforms }) {
 
-  const prod = createTask('static:prod', taskSeries(...copyTargets.map((target) => {
-    return function copyStaticAssets () {
-      return performCopy(target)
+  const prod = createTask('static:prod', composeSeries(...copyTargets.map((target) => {
+    return async function copyStaticAssets () {
+      await performCopy(target)
     }
   })))
-  const dev = createTask('static:dev', taskSeries(...copyTargetsDev.map((target) => {
-    return function copyStaticAssets () {
-      return setupLiveCopy(target)
+  const dev = createTask('static:dev', composeSeries(...copyTargetsDev.map((target) => {
+    return async function copyStaticAssets () {
+      await setupLiveCopy(target)
     }
   })))
 
   return { dev, prod }
 
-  function setupLiveCopy (target) {
+  async function setupLiveCopy (target) {
     const pattern = target.pattern || '/**/*'
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path)
       performCopy(target)
     })
-    performCopy(target)
+    await performCopy(target)
   }
 
   async function performCopy (target) {

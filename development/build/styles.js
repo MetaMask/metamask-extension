@@ -9,7 +9,7 @@ const sourcemaps = require('gulp-sourcemaps')
 const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
 const endOfStream = pify(require('end-of-stream'))
-const pump = require('pump')
+const pump = pify(require('pump'))
 const { createTask } = require('./task')
 
 
@@ -47,7 +47,7 @@ function createStyleTasks ({ livereload }) {
 
 
   function createScssBuildTask ({ src, dest, devMode, pattern }) {
-    return function () {
+    return async function () {
       if (devMode) {
         watch(pattern, async (event) => {
           const stream = buildScss(devMode)
@@ -55,11 +55,11 @@ function createStyleTasks ({ livereload }) {
           livereload.changed(event.path)
         })
       }
-      return buildScss(devMode)
+      await buildScss(devMode)
     }
 
-    function buildScss (devMode) {
-      return pump(...[
+    async function buildScss (devMode) {
+      await pump(...[
         // pre-process
         gulp.src(src),
         devMode && sourcemaps.init(),

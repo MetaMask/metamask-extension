@@ -3,7 +3,7 @@ const { merge, cloneDeep } = require('lodash')
 
 const baseManifest = require('../../app/manifest/_base.json')
 
-const { createTask, taskSeries } = require('./task')
+const { createTask, composeSeries } = require('./task')
 
 module.exports = createManifestTasks
 
@@ -52,17 +52,17 @@ function createManifestTasks ({ browserPlatforms }) {
   }))
 
   // high level manifest tasks
-  const dev = createTask('manifest:dev', taskSeries(
+  const dev = createTask('manifest:dev', composeSeries(
     'manifest:prod',
     'manifest:env:dev',
   ))
 
-  const testDev = createTask('manifest:testDev', taskSeries(
+  const testDev = createTask('manifest:testDev', composeSeries(
     'manifest:prod',
     'manifest:env:testDev',
   ))
 
-  const test = createTask('manifest:test', taskSeries(
+  const test = createTask('manifest:test', composeSeries(
     'manifest:prod',
     'manifest:env:test',
   ))

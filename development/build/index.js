@@ -3,10 +3,10 @@ const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
 const { promises: fs } = require('fs')
+const pify = require('pify')
+const pump = pify(require('pump'))
 const baseManifest = require('../../app/manifest/_base.json')
-
-const { createTask, taskSeries, taskParallel, runTask } = require('./task')
-
+const { createTask, composeSeries, composeParallel, runTask } = require('./task')
 const createManifestTasks = require('./manifest')
 const createScriptTasks = require('./scripts')
 const createStyleTasks = require('./styles')
@@ -20,7 +20,7 @@ const browserPlatforms = [
 ]
 
 //
-// tasks
+// etc tasks
 //
 
 const clean = createTask('clean', async function clean () {
@@ -30,13 +30,23 @@ const clean = createTask('clean', async function clean () {
   }))
 })
 
-// browser reload
-
-createTask('reload', function devReload () {
+const reload = createTask('reload', async function devReload () {
   livereload.listen({ port: 35729 })
 })
 
+function createZipTask (target) {
+  return async () => {
+    await pump(
+      gulp.src(`dist/${target}/**`),
+      gulpZip(`metamask-${target}-${baseManifest.version}.zip`),
+      gulp.dest('builds'),
+    )
+  }
+}
+
+//
 // primary tasks
+//
 
 const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })
 const manifestTasks = createManifestTasks({ browserPlatforms })
@@ -44,10 +54,10 @@ const styleTasks = createStyleTasks({ livereload })
 const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
 
 // zip tasks for distribution
-const zip = createTask('zip', taskParallel(
-  zipTask('chrome'),
-  zipTask('firefox'),
-  zipTask('opera'),
+const zip = createTask('zip', composeParallel(
+  createZipTask('chrome'),
+  createZipTask('firefox'),
+  createZipTask('opera'),
 ))
 
 // top-level tasks
@@ -55,36 +65,36 @@ const zip = createTask('zip', taskParallel(
 createTask('styles', styleTasks.prod)
 
 createTask('dev',
-  taskSeries(
+  composeSeries(
     clean,
     styleTasks.dev,
-    taskParallel(
+    composeParallel(
       scriptTasks.dev,
       staticTasks.dev,
       manifestTasks.dev,
-      'reload'
+      reload
     )
   )
 )
 
 createTask('testDev',
-  taskSeries(
+  composeSeries(
     clean,
     styleTasks.dev,
-    taskParallel(
+    composeParallel(
       scriptTasks.testDev,
       staticTasks.dev,
       manifestTasks.testDev,
-      'reload',
+      reload
     )
   )
 )
 
 createTask('prod',
-  taskSeries(
+  composeSeries(
     clean,
     styleTasks.prod,
-    taskParallel(
+    composeParallel(
       scriptTasks.prod,
       staticTasks.prod,
       manifestTasks.prod,
@@ -94,10 +104,10 @@ createTask('prod',
 )
 
 createTask('test',
-  taskSeries(
+  composeSeries(
     clean,
     styleTasks.prod,
-    taskParallel(
+    composeParallel(
       scriptTasks.test,
       staticTasks.prod,
       manifestTasks.test,
@@ -105,17 +115,7 @@ createTask('test',
   )
 )
 
-// task generators
-
-function zipTask (target) {
-  return () => {
-    return gulp.src(`dist/${target}/**`)
-      .pipe(gulpZip(`metamask-${target}-${baseManifest.version}.zip`))
-      .pipe(gulp.dest('builds'))
-  }
-}
-
-// get task name and execute
+// get requested task name and execute
 const taskName = process.argv[2]
 if (!taskName) {
   throw new Error(`MetaMask build: No task name specified`)

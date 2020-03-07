@@ -1,13 +1,11 @@
 const pify = require('pify')
 const EventEmitter = require('events')
-const isStream = require('is-stream')
-const endOfStream = pify(require('end-of-stream'))
 const { spawn } = require('child_process')
 
 const tasks = {}
 const taskEvents = new EventEmitter()
 
-module.exports = { tasks, taskEvents, createTask, runTask, taskSeries, taskParallel, materializeTask, endOfTaskResult, childThread }
+module.exports = { tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, materializeTask, runInChildProcess }
 
 const { setupTaskDisplay } = require('./display')
 
@@ -34,20 +32,16 @@ function createTask (taskName, taskFn) {
   if (taskName in tasks) {
     throw new Error(`MetaMask build: task "${taskName}" already exists. Refusing to redefine`)
   }
-  const task = instrumentForTaskStats(taskName, async () => {
-    // await task done
-    const result = taskFn()
-    await endOfTaskResult(result)
-  })
+  const task = instrumentForTaskStats(taskName, taskFn)
   task.taskName = taskName
   tasks[taskName] = task
   return task
 }
 
-function childThread (task) {
+function runInChildProcess (task) {
   const taskName = typeof task === 'string' ? task : task.taskName
   if (!taskName) {
-    throw new Error(`MetaMask build: childThread unable to identify task name`)
+    throw new Error(`MetaMask build: runInChildProcess unable to identify task name`)
   }
   return instrumentForTaskStats(taskName, async () => {
     const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'])
@@ -61,7 +55,8 @@ function childThread (task) {
     await new Promise((resolve, reject) => {
       childProcess.once('close', (errCode) => {
         if (errCode !== 0) {
-          reject(new Error(`MetaMask build: childThread for task "${taskName}" encountered an error`))
+          reject(new Error(`MetaMask build: runInChildProcess for task "${taskName}" encountered an error`))
+          return
         }
         resolve()
       })
@@ -79,23 +74,6 @@ function instrumentForTaskStats (taskName, asyncFn) {
   }
 }
 
-function taskSeries (...subtasks) {
-  return async () => {
-    const realTasks = subtasks.map(materializeTask)
-    for (const subtask of realTasks) {
-      // console.log(`subtask: "${subtask}" (${typeof subtask})`)
-      await endOfTaskResult(subtask())
-    }
-  }
-}
-
-function taskParallel (...subtasks) {
-  return async () => {
-    const realTasks = subtasks.map(materializeTask)
-    await Promise.all(realTasks.map((subtask) => endOfTaskResult(subtask())))
-  }
-}
-
 function materializeTask (taskValue) {
   if (typeof taskValue !== 'string') {
     if (typeof taskValue !== 'function') {
@@ -109,10 +87,18 @@ function materializeTask (taskValue) {
   return tasks[taskValue]
 }
 
-async function endOfTaskResult (result) {
-  if (isStream(result)) {
-    await endOfStream(result)
-  } else {
-    await result
+function composeSeries (...subtasks) {
+  return async () => {
+    const realTasks = subtasks
+    for (const subtask of realTasks) {
+      await subtask()
+    }
+  }
+}
+
+function composeParallel (...subtasks) {
+  return async () => {
+    const realTasks = subtasks
+    await Promise.all(realTasks.map((subtask) => subtask()))
   }
 }

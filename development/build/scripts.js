@@ -11,10 +11,12 @@ const envify = require('envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const sesify = require('sesify')
 const terser = require('gulp-terser-js')
+const pify = require('pify')
+const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
 
-const { createTask, taskParallel, taskSeries, childThread } = require('./task')
+const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const packageJSON = require('../../package.json')
 
 module.exports = createScriptTasks
@@ -53,7 +55,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
   // high level tasks
 
-  const prod = taskParallel(
+  const prod = composeParallel(
     deps.background,
     deps.ui,
     core.prod,
@@ -62,7 +64,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   const dev = core.dev
   const testDev = core.testDev
 
-  const test = taskParallel(
+  const test = composeParallel(
     deps.background,
     deps.ui,
     core.test,
@@ -101,7 +103,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     )
 
     // task for initiating livereload
-    const initiateLiveReload = () => {
+    const initiateLiveReload = async () => {
       if (devMode) {
         // trigger live reload when the bundles are updated
         // this is not ideal, but overcomes the limitations:
@@ -117,10 +119,10 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
 
     // make each bundle run in a separate process
-    const allSubtasks = [...standardSubtasks, contentscriptSubtask].map((subtask) => childThread(subtask))
+    const allSubtasks = [...standardSubtasks, contentscriptSubtask].map((subtask) => runInChildProcess(subtask))
     // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
-    return taskParallel(initiateLiveReload, ...allSubtasks)
+    return composeParallel(initiateLiveReload, ...allSubtasks)
   }
 
   function createBundleTaskForBuildJsExtensionNormal ({ filename, devMode, testing }) {
@@ -137,7 +139,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   function createTaskForBuildJsExtensionContentscript ({ devMode, testing }) {
     const inpage = 'inpage'
     const contentscript = 'contentscript'
-    return taskSeries(
+    return composeSeries(
       bundleTask({
         label: inpage,
         filename: `${inpage}.js`,
@@ -163,7 +165,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     return performBundle
 
-    function performBundle () {
+    async function performBundle () {
       // initialize bundler if not available yet
       // dont create bundler until task is actually run
       if (!bundler) {
@@ -223,7 +225,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         buildStream = buildStream.pipe(gulp.dest(dest))
       })
 
-      return buildStream
+      await endOfStream(buildStream)
     }
   }
 
