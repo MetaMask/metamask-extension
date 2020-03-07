@@ -2,7 +2,7 @@ const gulp = require('gulp')
 const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const { promises: fs } = require('fs').promises
+const { promises: fs } = require('fs')
 const baseManifest = require('../../app/manifest/_base.json')
 
 const { createTask, taskSeries, taskParallel, runTask } = require('./task')

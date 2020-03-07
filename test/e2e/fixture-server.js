@@ -1,4 +1,4 @@
-const fs = require('fs').promises
+const { promises: fs } = require('fs')
 const Koa = require('koa')
 const path = require('path')
 
