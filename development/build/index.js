@@ -3,7 +3,6 @@ const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
 const { promises: fs } = require('fs').promises
-// const imagemin = require('gulp-imagemin')
 const baseManifest = require('../../app/manifest/_base.json')
 
 const { createTask, taskSeries, taskParallel, runTask } = require('./task')
@@ -37,18 +36,12 @@ createTask('reload', function devReload () {
   livereload.listen({ port: 35729 })
 })
 
+// primary tasks
 
 const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms })
 const manifestTasks = createManifestTasks({ browserPlatforms })
 const styleTasks = createStyleTasks({ livereload })
 const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
-
-// createTask('optimize:images', function () {
-//   return gulp.src('./dist/**/images/**', { base: './dist/' })
-//     .pipe(imagemin())
-//     .pipe(gulp.dest('./dist/', { overwrite: true }))
-// })
-
 
 // zip tasks for distribution
 const zip = createTask('zip', taskParallel(
@@ -57,7 +50,7 @@ const zip = createTask('zip', taskParallel(
   zipTask('opera'),
 ))
 
-// entry tasks
+// top-level tasks
 
 createTask('styles', styleTasks.prod)
 
@@ -96,7 +89,6 @@ createTask('prod',
       staticTasks.prod,
       manifestTasks.prod,
     ),
-    // 'optimize:images',
     zip,
   )
 )
