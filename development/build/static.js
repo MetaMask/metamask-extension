@@ -1,9 +1,9 @@
-const { promises: fs } = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const watch = require('gulp-watch')
 const glob = require('fast-glob')
 
-const { createTask, taskParallel } = require('./task')
+const { createTask, taskSeries } = require('./task')
 
 module.exports = createStaticAssetTasks
 
@@ -52,12 +52,12 @@ const copyTargetsDev = [
 
 function createStaticAssetTasks ({ livereload, browserPlatforms }) {
 
-  const prod = createTask('static:prod', taskParallel(...copyTargets.map((target) => {
+  const prod = createTask('static:prod', taskSeries(...copyTargets.map((target) => {
     return function copyStaticAssets () {
       return performCopy(target)
     }
   })))
-  const dev = createTask('static:dev', taskParallel(...copyTargetsDev.map((target) => {
+  const dev = createTask('static:dev', taskSeries(...copyTargetsDev.map((target) => {
     return function copyStaticAssets () {
       return setupLiveCopy(target)
     }
@@ -85,10 +85,10 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
   }
 
   async function copyGlob (baseDir, srcGlob, dest) {
-    const sources = await glob(srcGlob)
+    const sources = await glob(srcGlob, { onlyFiles: false })
     await Promise.all(sources.map(async (src) => {
       const relativePath = path.relative(baseDir, src)
-      await fs.copyFile(src, `${dest}${relativePath}`)
+      await fs.copy(src, `${dest}${relativePath}`)
     }))
   }
 
