@@ -76,7 +76,6 @@ function barBuilder (start, end) {
   const [spaceInt, spaceRest] = splitNumber(start)
   const barBodyLength = end - spaceInt
   let [barInt, barRest] = splitNumber(barBodyLength)
-  // console.log(`${barBodyLength} ${barInt}`)
   // We are handling zero value as a special case
   // to print at least something on the screen
   if (barInt === 0 && barRest === 0) {
