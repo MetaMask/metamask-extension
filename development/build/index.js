@@ -23,12 +23,12 @@ const browserPlatforms = [
 // tasks
 //
 
-async function clean () {
+const clean = createTask('clean', async function clean () {
   await del(['./dist/*'])
   await Promise.all(browserPlatforms.map(async (platform) => {
     await fs.mkdir(`./dist/${platform}`, { recursive: true })
   }))
-}
+})
 
 // browser reload
 
