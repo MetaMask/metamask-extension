@@ -1,6 +1,6 @@
 const pify = require('pify')
 const EventEmitter = require('events')
-const isStream = require('isstream')
+const isStream = require('is-stream')
 const endOfStream = pify(require('end-of-stream'))
 const { spawn } = require('child_process')
 
