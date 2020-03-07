@@ -1,15 +1,12 @@
+const { promises: fs } = require('fs')
 const clone = require('clone')
 const mergeDeep = require('merge-deep')
-const mkdirp = require('mkdirp')
-const fs = require('fs')
-
-const fsAsync = fs.promises
 const baseManifest = require('../../app/manifest/_base.json')
-
 
 const { createTask, taskSeries } = require('./task')
 
 module.exports = createManifestTasks
+
 
 const scriptsToExcludeFromBackgroundDevBuild = {
   'bg-libs.js': true,
@@ -22,7 +19,7 @@ function createManifestTasks ({ browserPlatforms }) {
       const platformModifications = await readJson(`${__dirname}/../../app/manifest/${platform}.json`)
       const result = mergeDeep(clone(baseManifest), platformModifications)
       const dir = `./dist/${platform}`
-      await mkdirp(dir)
+      await fs.mkdir(dir, { recursive: true })
       await writeJson(result, `${dir}/manifest.json`)
     }))
   })
@@ -88,10 +85,10 @@ function createManifestTasks ({ browserPlatforms }) {
 
 // helper for reading and deserializing json from fs
 async function readJson (path) {
-  return JSON.parse(await fsAsync.readFile(path, 'utf8'))
+  return JSON.parse(await fs.readFile(path, 'utf8'))
 }
 
 // helper for serializing and writing json to fs
 async function writeJson (obj, path) {
-  return fsAsync.writeFile(path, JSON.stringify(obj, null, 2))
+  return fs.writeFile(path, JSON.stringify(obj, null, 2))
 }

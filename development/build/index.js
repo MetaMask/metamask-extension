@@ -2,7 +2,7 @@ const gulp = require('gulp')
 const gulpZip = require('gulp-zip')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const mkdirp = require('mkdirp')
+const { promises: fs } = require('fs').promises
 // const imagemin = require('gulp-imagemin')
 const baseManifest = require('../../app/manifest/_base.json')
 
@@ -27,7 +27,7 @@ const browserPlatforms = [
 async function clean () {
   await del(['./dist/*'])
   await Promise.all(browserPlatforms.map(async (platform) => {
-    await mkdirp(`./dist/${platform}`)
+    await fs.mkdir(`./dist/${platform}`, { recursive: true })
   }))
 }
 
