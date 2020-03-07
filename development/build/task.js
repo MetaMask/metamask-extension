@@ -4,10 +4,21 @@ const { spawn } = require('child_process')
 const tasks = {}
 const taskEvents = new EventEmitter()
 
-module.exports = { tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, materializeTask, runInChildProcess }
+module.exports = { detectAndRunEntryTask, tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, materializeTask, runInChildProcess }
 
 const { setupTaskDisplay } = require('./display')
 
+
+function detectAndRunEntryTask () {
+  // get requested task name and execute
+  const taskName = process.argv[2]
+  if (!taskName) {
+    throw new Error(`MetaMask build: No task name specified`)
+  }
+  const skipStats = process.argv[3] === '--skip-stats'
+
+  runTask(taskName, { skipStats })
+}
 
 async function runTask (taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
