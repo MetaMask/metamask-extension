@@ -74,6 +74,25 @@ function instrumentForTaskStats (taskName, asyncFn) {
   }
 }
 
+<<<<<<< HEAD
+=======
+function taskSeries (...subtasks) {
+  return async () => {
+    const realTasks = subtasks.map(materializeTask)
+    for (const subtask of realTasks) {
+      await endOfTaskResult(subtask())
+    }
+  }
+}
+
+function taskParallel (...subtasks) {
+  return async () => {
+    const realTasks = subtasks.map(materializeTask)
+    await Promise.all(realTasks.map((subtask) => endOfTaskResult(subtask())))
+  }
+}
+
+>>>>>>> 08bdcf0641bd136a8754137ae674fd6c4a5f91a8
 function materializeTask (taskValue) {
   if (typeof taskValue !== 'string') {
     if (typeof taskValue !== 'function') {

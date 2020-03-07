@@ -76,7 +76,6 @@ function barBuilder (start, end) {
   const [spaceInt, spaceRest] = splitNumber(start)
   const barBodyLength = end - spaceInt
   let [barInt, barRest] = splitNumber(barBodyLength)
-  // console.log(`${barBodyLength} ${barInt}`)
   // We are handling zero value as a special case
   // to print at least something on the screen
   if (barInt === 0 && barRest === 0) {
@@ -88,7 +87,6 @@ function barBuilder (start, end) {
   const spacePartial = getSymbolNormalRight(spaceRest)
   const barFull = SYMBOLS.Full.repeat(barInt)
   const barPartial = getSymbolNormal(barRest)
-  // console.log(`${spaceFull.length} ${spacePartial.length} ${barFull.length} ${barPartial.length}`)
 
   return `${spaceFull}${spacePartial}${barFull}${barPartial}`
 }
@@ -108,7 +106,6 @@ function getSymbolNormal (value) {
   const rounded = possibleValues.reduce((prev, curr) => {
     return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
   })
-  // console.log(`${value} -> ${rounded}`)
 
   if (rounded === 0) {
     return SYMBOLS.Empty
