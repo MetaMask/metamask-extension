@@ -5,8 +5,6 @@ module.exports = { setupTaskDisplay, displayChart }
 
 const SYMBOLS = {
   Empty: '',
-  LeftCorner: '◺',
-  RightCorner: '◿',
   Space: ' ',
   Full: '█',
   SevenEighths: '▉',
@@ -16,7 +14,6 @@ const SYMBOLS = {
   ThreeEighths: '▍',
   Quarter: '▎',
   Eighth: '▏',
-  EOL: require('os').EOL,
   RightHalf: '▐',
   RightEigth: '▕',
 }
