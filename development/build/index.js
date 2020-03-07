@@ -1,3 +1,9 @@
+//
+// build task definitions
+//
+// run any task with "yarn build ${taskName}"
+//
+
 const livereload = require('gulp-livereload')
 const { createTask, composeSeries, composeParallel, detectAndRunEntryTask } = require('./task')
 const createManifestTasks = require('./manifest')
@@ -24,7 +30,7 @@ function defineAllTasks () {
   const scriptTasks = createScriptTasks({ livereload, browserPlatforms })
   const { clean, reload, zip } = createEtcTasks({ livereload, browserPlatforms })
 
-  // build for development
+  // build for development (livereload)
   createTask('dev',
     composeSeries(
       clean,
@@ -38,7 +44,7 @@ function defineAllTasks () {
     )
   )
 
-  // build for test development
+  // build for test development (livereload)
   createTask('testDev',
     composeSeries(
       clean,
