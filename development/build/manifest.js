@@ -25,7 +25,7 @@ function createManifestTasks ({ browserPlatforms }) {
   })
 
   // dev: remove bg-libs, add chromereload, add perms
-  createTask('manifest:env:dev', createTaskForModifyManifestForEnvironment(function (manifest) {
+  createTask('manifest:env:dev', createTaskForModifyManifestForEnvironment((manifest) => {
     const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
     scripts.push('chromereload.js')
     manifest.background = {
@@ -35,8 +35,8 @@ function createManifestTasks ({ browserPlatforms }) {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking']
   }))
 
-  // testing-local: remove bg-libs, add perms
-  createTask('manifest:env:testing-local', createTaskForModifyManifestForEnvironment(function (manifest) {
+  // testDev: remove bg-libs, add perms
+  createTask('manifest:env:testDev', createTaskForModifyManifestForEnvironment((manifest) => {
     const scripts = manifest.background.scripts.filter((scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName])
     scripts.push('chromereload.js')
     manifest.background = {
@@ -46,8 +46,8 @@ function createManifestTasks ({ browserPlatforms }) {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
   }))
 
-  // testing: add permissions
-  createTask('manifest:env:testing', createTaskForModifyManifestForEnvironment(function (manifest) {
+  // test: add permissions
+  createTask('manifest:env:test', createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking', 'http://localhost/*']
   }))
 
@@ -57,17 +57,17 @@ function createManifestTasks ({ browserPlatforms }) {
     'manifest:env:dev',
   ))
 
-  const testingLocal = createTask('manifest:testing-local', taskSeries(
+  const testDev = createTask('manifest:testDev', taskSeries(
     'manifest:prod',
-    'manifest:env:testing-local',
+    'manifest:env:testDev',
   ))
 
-  const testing = createTask('manifest:testing', taskSeries(
+  const test = createTask('manifest:test', taskSeries(
     'manifest:prod',
-    'manifest:env:testing',
+    'manifest:env:test',
   ))
 
-  return { prod, dev, testingLocal, testing }
+  return { prod, dev, testDev, test }
 
   // helper for modifying each platform's manifest.json in place
   function createTaskForModifyManifestForEnvironment (transformFn) {

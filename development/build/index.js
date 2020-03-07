@@ -74,7 +74,7 @@ createTask('testDev',
     taskParallel(
       scriptTasks.testDev,
       staticTasks.dev,
-      manifestTasks.testing,
+      manifestTasks.testDev,
       'reload',
     )
   )
@@ -100,7 +100,7 @@ createTask('test',
     taskParallel(
       scriptTasks.test,
       staticTasks.prod,
-      manifestTasks.testing,
+      manifestTasks.test,
     ),
   )
 )
