@@ -87,7 +87,6 @@ function barBuilder (start, end) {
   const spacePartial = getSymbolNormalRight(spaceRest)
   const barFull = SYMBOLS.Full.repeat(barInt)
   const barPartial = getSymbolNormal(barRest)
-  // console.log(`${spaceFull.length} ${spacePartial.length} ${barFull.length} ${barPartial.length}`)
 
   return `${spaceFull}${spacePartial}${barFull}${barPartial}`
 }
