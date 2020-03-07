@@ -1,7 +1,7 @@
+const { promises: fs } = require('fs')
+const path = require('path')
 const watch = require('gulp-watch')
-// const endOfStream = require('pify')(require('end-of-stream'))
-const pify = require('pify')
-const { exec } = pify(require('child_process'))
+const glob = require('fast-glob')
 
 const { createTask, taskParallel } = require('./task')
 
@@ -77,10 +77,18 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
   async function performCopy (target) {
     await Promise.all(browserPlatforms.map(async (platform) => {
       if (target.pattern) {
-        await exec(`cp ${target.src}${target.pattern} ./dist/${platform}/${target.dest}`)
+        await copyGlob(target.src, `${target.src}${target.pattern}`, `./dist/${platform}/${target.dest}`)
       } else {
-        await exec(`cp -r ${target.src} ./dist/${platform}/${target.dest}`)
+        await copyGlob(target.src, `${target.src}`, `./dist/${platform}/${target.dest}`)
       }
+    }))
+  }
+
+  async function copyGlob (baseDir, srcGlob, dest) {
+    const sources = await glob(srcGlob)
+    await Promise.all(sources.map(async (src) => {
+      const relativePath = path.relative(baseDir, src)
+      await fs.copyFile(src, `${dest}${relativePath}`)
     }))
   }
 
