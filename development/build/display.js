@@ -107,7 +107,6 @@ function getSymbolNormal (value) {
   const rounded = possibleValues.reduce((prev, curr) => {
     return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
   })
-  // console.log(`${value} -> ${rounded}`)
 
   if (rounded === 0) {
     return SYMBOLS.Empty
