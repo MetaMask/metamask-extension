@@ -83,7 +83,6 @@ function taskSeries (...subtasks) {
   return async () => {
     const realTasks = subtasks.map(materializeTask)
     for (const subtask of realTasks) {
-      // console.log(`subtask: "${subtask}" (${typeof subtask})`)
       await endOfTaskResult(subtask())
     }
   }
