@@ -40,11 +40,12 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getKeyringAccounts = getKeyringAccounts
+    this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this.getUnlockPromise = getUnlockPromise
-    this.getKeyringAccounts = getKeyringAccounts
     this._platform = platform
+
     this._restrictedMethods = getRestrictedMethods(this)
     this.permissionsLog = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),

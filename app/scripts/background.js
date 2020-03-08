@@ -421,6 +421,7 @@ function setupController (initState, initLangCode) {
   controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
   controller.permissionsController.permissions.subscribe(updateBadge)
+  controller.appStateController.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -435,8 +436,9 @@ function setupController (initState, initLangCode) {
     const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
     const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
+    const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
-                 unapprovedTypedMessagesCount + pendingPermissionRequests
+                 unapprovedTypedMessagesCount + pendingPermissionRequests + waitingForUnlockCount
     if (count) {
       label = String(count)
     }

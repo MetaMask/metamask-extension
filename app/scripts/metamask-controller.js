@@ -121,9 +121,11 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.appStateController = new AppStateController({
-      preferencesStore: this.preferencesController.store,
-      onInactiveTimeout: () => this.setLocked(),
+      addUnlockListener: this.addUnlockListener.bind(this),
+      isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
+      onInactiveTimeout: () => this.setLocked(),
+      preferencesStore: this.preferencesController.store,
     })
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
@@ -209,11 +211,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
-      platform: opts.platform,
+      getRestrictedMethods,
+      getUnlockPromise: this.appStateController.getUnlockPromise.bind(this.appStateController),
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
-      getRestrictedMethods,
-      getUnlockPromise: this.getUnlockPromise.bind(this),
+      platform: opts.platform,
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -1791,27 +1793,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get a Promise that resolves when the extension is unlocked.
-   * This Promise will never reject.
-   *
-   * @returns {Promise<void>} A promise that resolves when the extension is
-   * unlocked, or immediately if the extension is already unlocked.
-   */
-  getUnlockPromise () {
-    return new Promise((resolve) => {
-      if (this.isUnlocked()) {
-        resolve()
-      } else {
-        this.once('unlock', resolve)
-      }
-    })
-  }
-
-  /**
    * @returns {boolean} Whether the extension is unlocked.
    */
   isUnlocked () {
     return this.keyringController.memStore.getState().isUnlocked
+  }
+
+  /**
+   * Adds an 'unlock' event listener to the MetaMask Controller with the
+   * given handler.
+   * @param {Function} handler - The event handler.
+   */
+  addUnlockListener (handler) {
+    this.on('unlocked', handler)
   }
 
   //=============================================================================
