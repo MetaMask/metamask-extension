@@ -6,7 +6,7 @@
     "start": "yarn build dev",
     "dist": "yarn build prod",
     "build": "node development/build/index.js",
-    "start:test": "yarn build devTest",
+    "start:test": "yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "yarn build test",
