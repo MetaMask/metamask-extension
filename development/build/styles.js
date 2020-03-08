@@ -8,7 +8,6 @@ const watch = require('gulp-watch')
 const sourcemaps = require('gulp-sourcemaps')
 const rtlcss = require('gulp-rtlcss')
 const rename = require('gulp-rename')
-const endOfStream = pify(require('end-of-stream'))
 const pump = pify(require('pump'))
 const { createTask } = require('./task')
 
