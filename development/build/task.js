@@ -4,7 +4,7 @@ const { spawn } = require('child_process')
 const tasks = {}
 const taskEvents = new EventEmitter()
 
-module.exports = { detectAndRunEntryTask, tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, materializeTask, runInChildProcess }
+module.exports = { detectAndRunEntryTask, tasks, taskEvents, createTask, runTask, composeSeries, composeParallel, runInChildProcess }
 
 const { setupTaskDisplay } = require('./display')
 
@@ -82,19 +82,6 @@ function instrumentForTaskStats (taskName, asyncFn) {
     const end = Date.now()
     taskEvents.emit('end', [taskName, start, end])
   }
-}
-
-function materializeTask (taskValue) {
-  if (typeof taskValue !== 'string') {
-    if (typeof taskValue !== 'function') {
-      throw new Error(`invalid task value: "${taskValue}" (${typeof taskValue})`)
-    }
-    return taskValue
-  }
-  if (!(taskValue in tasks)) {
-    throw new Error(`no such task "${taskValue}"`)
-  }
-  return tasks[taskValue]
 }
 
 function composeSeries (...subtasks) {
