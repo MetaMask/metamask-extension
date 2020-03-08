@@ -105,6 +105,49 @@ describe('permissions controller', function () {
     })
   })
 
+  describe('hasPermission', function () {
+
+    it('returns correct values', async function () {
+
+      const permController = initPermController()
+      grantPermissions(
+        permController, ORIGINS.a,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
+      )
+      grantPermissions(
+        permController, ORIGINS.b,
+        PERMS.finalizedRequests.test_method()
+      )
+
+      assert.ok(
+        permController.hasPermission(ORIGINS.a, 'eth_accounts'),
+        'should return true for granted permission'
+      )
+      assert.ok(
+        permController.hasPermission(ORIGINS.b, 'test_method'),
+        'should return true for granted permission'
+      )
+
+      assert.ok(
+        !permController.hasPermission(ORIGINS.a, 'test_method'),
+        'should return false for non-granted permission'
+      )
+      assert.ok(
+        !permController.hasPermission(ORIGINS.b, 'eth_accounts'),
+        'should return true for non-granted permission'
+      )
+
+      assert.ok(
+        !permController.hasPermission('foo', 'eth_accounts'),
+        'should return false for unknown origin'
+      )
+      assert.ok(
+        !permController.hasPermission(ORIGINS.b, 'foo'),
+        'should return false for unknown permission'
+      )
+    })
+  })
+
   describe('clearPermissions', function () {
 
     it('notifies all appropriate domains and removes permissions', async function () {

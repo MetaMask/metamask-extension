@@ -79,6 +79,7 @@ export class PermissionsController {
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
       getUnlockPromise: this.getUnlockPromise,
+      hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
@@ -115,6 +116,10 @@ export class PermissionsController {
         }
       }
     })
+  }
+
+  hasPermission (origin, permission) {
+    return Boolean(this.permissions.getPermission(origin, permission))
   }
 
   /**

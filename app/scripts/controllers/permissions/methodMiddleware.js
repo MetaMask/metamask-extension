@@ -7,6 +7,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 export default function createMethodMiddleware ({
   getAccounts,
   getUnlockPromise,
+  hasPermission,
   requestAccountsPermission,
   store,
   storeKey,
@@ -35,10 +36,11 @@ export default function createMethodMiddleware ({
           return
         }
 
-        isProcessingRequestAccounts = true
-        await getUnlockPromise()
-
-        isProcessingRequestAccounts = false
+        if (hasPermission('eth_accounts')) {
+          isProcessingRequestAccounts = true
+          await getUnlockPromise()
+          isProcessingRequestAccounts = false
+        }
 
         // first, just try to get accounts
         let accounts = await getAccounts()

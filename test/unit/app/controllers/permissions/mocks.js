@@ -401,6 +401,14 @@ export const getters = deepFreeze({
         }
       },
     },
+
+    eth_requestAccounts: {
+      requestAlreadyPending: () => {
+        return {
+          message: 'Already processing eth_requestAccounts. Please wait.',
+        }
+      },
+    },
   },
 
   /**
