@@ -50,8 +50,7 @@ function createStyleTasks ({ livereload }) {
     return async function () {
       if (devMode) {
         watch(pattern, async (event) => {
-          const stream = buildScss(devMode)
-          await endOfStream(stream)
+          await buildScss(devMode)
           livereload.changed(event.path)
         })
       }
