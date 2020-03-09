@@ -1,25 +1,30 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
 import MessageCircleIcon from './message-circle-icon.component'
 
-storiesOf('MessageCircleIcon', module)
-  .add('Success', () => (
-    <MessageCircleIcon
-      type="success"
-    />
-  ))
-  .add('Danger', () => (
-    <MessageCircleIcon
-      type="danger"
-    />
-  ))
-  .add('Warning', () => (
-    <MessageCircleIcon
-      type="info"
-    />
-  ))
-  .add('Info', () => (
-    <MessageCircleIcon
-      type="warning"
-    />
-  ))
+export default {
+  title: 'MessageCircleIcon',
+}
+
+export const successCircleIcon = () => (
+  <MessageCircleIcon
+    type="success"
+  />
+)
+
+export const dangerCircleIcon = () => (
+  <MessageCircleIcon
+    type="danger"
+  />
+)
+
+export const warningCircleIcon = () => (
+  <MessageCircleIcon
+    type="warning"
+  />
+)
+
+export const infoCircleIcon = () => (
+  <MessageCircleIcon
+    type="info"
+  />
+)
