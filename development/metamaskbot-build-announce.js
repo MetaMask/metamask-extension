@@ -39,7 +39,7 @@ async function start () {
   }).join(', ')
 
   // links to bundle browser builds
-  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'ui-libs', 'bg-libs', 'phishing-detect']
+  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'common']
   const bundleLinks = bundles.map((bundle) => {
     const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
     return `<a href="${url}">${bundle}</a>`
@@ -47,7 +47,7 @@ async function start () {
 
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/deps-viz/index.html`
-  const depVizLink = `<a href="${depVizUrl}">background</a>`
+  const depVizLink = `<a href="${depVizUrl}">ui + background</a>`
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`
