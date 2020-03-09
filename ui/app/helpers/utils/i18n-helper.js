@@ -48,6 +48,11 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   // perform substitutions
   if (hasSubstitutions) {
     const parts = phrase.split(/(\$\d)/g)
+    const partsToReplace = phrase.match(/(\$\d)/g)
+
+    if (partsToReplace.length > substitutions.length) {
+      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+    }
 
     const substitutedParts = parts.map((part) => {
       const subMatch = part.match(/\$(\d)/)
