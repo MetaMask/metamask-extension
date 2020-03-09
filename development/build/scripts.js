@@ -115,7 +115,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         })
       })
 
-      await bundleIt({ bundlerOpts, events })
+      await executeBundle({ bundlerOpts, events })
     }
   }
 
@@ -147,7 +147,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         })
       })
 
-      await bundleIt({ bundlerOpts, events })
+      await executeBundle({ bundlerOpts, events })
     }
   }
 
@@ -194,7 +194,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
       // record dependencies used in bundle
       await fs.mkdir('./dist/lavamoat', { recursive: true })
-      await bundleIt({ bundlerOpts, events })
+      await executeBundle({ bundlerOpts, events })
     })
   }
 
@@ -276,7 +276,7 @@ function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify })
   })
 }
 
-function bundleIt ({ bundlerOpts, events }) {
+function executeBundle ({ bundlerOpts, events }) {
   const bundler = browserify(bundlerOpts)
   // output build logs to terminal
   bundler.on('log', log)
