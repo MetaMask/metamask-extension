@@ -24,16 +24,9 @@
     "128": "images/icon-128.png",
     "512": "images/icon-512.png"
   },
-  "applications": {
-    "gecko": {
-      "id": "webextension@metamask.io",
-      "strict_min_version": "56.0"
-    }
-  },
   "default_locale": "en",
   "background": {
     "scripts": [
-      "chromereload.js",
       "bg-libs.js",
       "background.js"
     ],
