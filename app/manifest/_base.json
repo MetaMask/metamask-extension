@@ -27,8 +27,8 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "bg-libs.js",
-      "background.js"
+      "common.js",
+      "app/scripts/background.js"
     ],
     "persistent": true
   },
