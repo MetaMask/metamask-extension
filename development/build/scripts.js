@@ -23,7 +23,7 @@ module.exports = createScriptTasks
 function createScriptTasks ({ browserPlatforms, livereload }) {
 
   const prod = createBundleTasks('prod')
-  const dev = createBundleTasks('dev', { devMode: true })
+  const dev = createBundleTasks('dev', { devMode: true, livereload })
   const testDev = createBundleTasks('testDev', { test: true, devMode: true, livereload })
   const test = createBundleTasks('test', { test: true })
   const lavamoat = createLavamoatTask('lavamoat:dashboard')
@@ -272,11 +272,15 @@ function executeBundle ({ bundlerOpts, events }) {
 
   async function performBundle () {
     const pipeline = labeledStreamSplicer([
-      'bundler', [],
+      // ensure browserify output is vinyl (for bify-package-factor, it already is)
       'vinyl', [],
+      // load sourcemaps
       'sourcemaps:init', [],
+      // apply post-bundle transformations
       'minify', [],
+      // sourcemaps written to disk
       'sourcemaps:write', [],
+      // completed, write content to disk
       'dest', [],
     ])
     const bundleStream = bundler.bundle()
@@ -318,7 +322,7 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
   // instrument pipeline
   events.on('pipeline', (pipeline) => {
 
-    // initialize source maps, requires files to be buffered
+    // initialize source maps, gulp-sourcemaps requires files to be buffered
     pipeline.get('sourcemaps:init').push(buffer())
     pipeline.get('sourcemaps:init').push(
       sourcemaps.init({ loadMaps: true })
