@@ -11,8 +11,10 @@ const terser = require('gulp-terser-js')
 const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const labeledStreamSplicer = require('labeled-stream-splicer').obj
+const createLavamoatPacker = require('lavamoat-browserify/src/createCustomPack')
+const lavamoatArgs = require('lavamoat-browserify').args
 const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
-// const fs = require('fs')
+const { promises: fs } = require('fs')
 // const sesify = require('sesify')
 // const { makeStringTransform } = require('browserify-transform-tools')
 
@@ -25,8 +27,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   const dev = createBundleTasks('dev', { devMode: true })
   const testDev = createBundleTasks('testDev', { test: true, devMode: true, livereload })
   const test = createBundleTasks('test', { test: true })
+  const lavamoat = createLavamoatTask('lavamoat:dashboard')
 
-  return { prod, dev, testDev, test }
+  return { prod, dev, testDev, test, lavamoat }
 
 
   function createBundleTasks (label, { devMode, test, livereload } = {}) {
@@ -141,6 +144,53 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
       await bundleIt({ bundlerOpts, events })
     }
+  }
+
+  function createLavamoatTask (label) {
+    return createTask(label, async function () {
+      // create bundler setup and apply defaults
+      const { bundlerOpts, events } = createBundlerSetup()
+      setupBundlerDefaults({ bundlerOpts, events })
+
+      // add factor-bundle specific options
+      Object.assign(bundlerOpts, {
+        // add recommended lavamoat args
+        ...lavamoatArgs,
+        // ui + background, bify-package-factor will split into separate bundles
+        entries: ['app/scripts/ui.js', 'app/scripts/background.js'],
+        // dedupe breaks under bundle factoring
+        dedupe: false,
+        plugin: [
+          ...bundlerOpts.plugin,
+          // add lavamoat for global usage detection
+          ['lavamoat-browserify', {
+            config: './dist/lavamoat/lavamoat-config.json',
+            writeAutoConfig: true,
+          }],
+          // factor code into multiple bundles and emit as vinyl file objects
+          ['bify-package-factor', {
+            createPacker: () => {
+              return createLavamoatPacker({
+                raw: true,
+                config: {},
+                includePrelude: false,
+              })
+            },
+          }],
+          // record dep graph across factored bundles
+          ['deps-dump', {
+            filename: `./dist/lavamoat/deps.json`,
+          }],
+        ],
+      })
+
+      // we dont add a destination for the build pipeline
+      // because we ignore the bundle output
+
+      // record dependencies used in bundle
+      await fs.mkdir('./dist/lavamoat', { recursive: true })
+      await bundleIt({ bundlerOpts, events })
+    })
   }
 
 }
@@ -292,46 +342,3 @@ function getEnvironment ({ devMode, test }) {
     return 'other'
   }
 }
-
-
-// const bundleName = opts.filename.split('.')[0]
-
-// // activate sesify
-// const activateAutoConfig = Boolean(process.env.SESIFY_AUTOGEN)
-// // const activateSesify = activateAutoConfig
-// const activateSesify = activateAutoConfig && ['background'].includes(bundleName)
-// if (activateSesify) {
-//   configureBundleForSesify({ browserifyOpts, bundleName })
-// }
-
-
-// function configureBundleForSesify ({
-//   browserifyOpts,
-//   bundleName,
-// }) {
-//   // add in sesify args for better globalRef usage detection
-//   Object.assign(browserifyOpts, sesify.args)
-
-//   // ensure browserify uses full paths
-//   browserifyOpts.fullPaths = true
-
-//   // record dependencies used in bundle
-//   fs.mkdirSync('./sesify', { recursive: true })
-//   browserifyOpts.plugin.push(['deps-dump', {
-//     filename: `./sesify/deps-${bundleName}.json`,
-//   }])
-
-//   const sesifyConfigPath = `./sesify/${bundleName}.json`
-
-//   // add sesify plugin
-//   browserifyOpts.plugin.push([sesify, {
-//     writeAutoConfig: sesifyConfigPath,
-//   }])
-
-//   // remove html comments that SES is alergic to
-//   const removeHtmlComment = makeStringTransform('remove-html-comment', { excludeExtension: ['.json'] }, (content, _, cb) => {
-//     const result = content.split('-->').join('-- >')
-//     cb(null, result)
-//   })
-//   browserifyOpts.transform.push([removeHtmlComment, { global: true }])
-// }

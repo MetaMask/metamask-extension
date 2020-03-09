@@ -8021,6 +8021,11 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
+cytoplasm@^2.0.2:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/cytoplasm/-/cytoplasm-2.0.5.tgz#926ea93cbf0fa5cf4c5d86a2b642bb89add96776"
+  integrity sha512-0x4QINKrEE12n02iTdmCO7TtpZkNvGMrJWxTyOVwE1xQvXG6my5809Vm5N+KJHa2l4OxlJ4s+cTtCkdNpyTsMA==
+
 d3-array@1, d3-array@^1.1.1, d3-array@^1.2.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
@@ -17329,6 +17334,31 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
+lavamoat-browserify@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-7.0.1.tgz#4dfbb88eb6565334d2e2d16516ac83fd663f5d29"
+  integrity sha512-oUfi50fXh9rYr2lFyb5e4yQI2OGlsPX0GEMeQ4K61qKIDsNorLbJDck0xzmcnCh4StoCbm5vM/POXoohzrU7Jw==
+  dependencies:
+    JSONStream "^1.3.5"
+    acorn-globals "^4.3.3"
+    acorn-walk "^6.1.1"
+    browserify-transform-tools "^1.7.0"
+    combine-source-map "^0.8.0"
+    cytoplasm "^2.0.2"
+    defined "^1.0.0"
+    fromentries "^1.1.0"
+    json-stable-stringify "^1.0.1"
+    merge-deep "^3.0.2"
+    module-name-from-path "git+https://git@github.com/kumavis/module-name-from-path.git"
+    offset-sourcemap-lines "^1.0.1"
+    pify "^4.0.1"
+    resolve-package-path "^1.2.7"
+    safe-buffer "^5.1.2"
+    sesify-tofu "^2.0.4"
+    tape "^4.9.1"
+    through2 "^3.0.0"
+    umd "^3.0.3"
+
 lazy-cache@^0.2.3:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-0.2.7.tgz#7feddf2dcb6edb77d11ef1d117ab5ffdf0ab1b65"
@@ -25287,10 +25317,10 @@ sesify-tofu@^2.0.4:
   dependencies:
     acorn-globals "^4.3.3"
 
-sesify-viz@^3.0.5:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/sesify-viz/-/sesify-viz-3.0.9.tgz#2fefff0456c3fa4e407e8564d2d0ab8797e29065"
-  integrity sha512-6weweTW6XQJyeoWK2vdoov52fpN07/lHqTlFwVO/M3LJMNr//BPfgxGxXVxtd09RdSLyAk5NZ7B3m3WgY8vMkQ==
+sesify-viz@^3.0.10:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/sesify-viz/-/sesify-viz-3.0.10.tgz#1936e9a62bf8155c57dfc42e5eeceaa28b1cb875"
+  integrity sha512-Gamqr/8qbZDJ7Yq/NGUk3Iq2woTK67x1mZ59Qrt5ssLZZPzeCBYFeqnNWu8SUO42GlP1D3eyiGLHA31xceySHg==
   dependencies:
     ncp "^2.0.0"
     pify "^4.0.1"
