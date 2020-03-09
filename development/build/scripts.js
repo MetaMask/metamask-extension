@@ -8,6 +8,7 @@ const browserify = require('browserify')
 const envify = require('envify/custom')
 const sourcemaps = require('gulp-sourcemaps')
 const terser = require('gulp-terser-js')
+const rename = require('gulp-rename')
 const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const labeledStreamSplicer = require('labeled-stream-splicer').obj
@@ -106,6 +107,10 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         // setup bundle destination
         browserPlatforms.forEach((platform) => {
           const dest = `./dist/${platform}`
+          pipeline.get('dest').push(rename((path) => {
+            // remove relative source directory
+            path.dirname = '.'
+          }))
           pipeline.get('dest').push(gulp.dest(dest))
         })
       })
