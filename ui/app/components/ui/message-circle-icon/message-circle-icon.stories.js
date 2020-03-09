@@ -5,12 +5,6 @@ export default {
   title: 'MessageCircleIcon',
 }
 
-export const successCircleIcon = () => (
-  <MessageCircleIcon
-    type="success"
-  />
-)
-
 export const dangerCircleIcon = () => (
   <MessageCircleIcon
     type="danger"
@@ -20,11 +14,5 @@ export const dangerCircleIcon = () => (
 export const warningCircleIcon = () => (
   <MessageCircleIcon
     type="warning"
-  />
-)
-
-export const infoCircleIcon = () => (
-  <MessageCircleIcon
-    type="info"
   />
 )
