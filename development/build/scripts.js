@@ -102,13 +102,14 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
       // instrument build pipeline
       events.on('pipeline', (pipeline) => {
+        // rename file. we put it here so sourcemaps first load correctly
+        pipeline.get('sourcemaps:write').unshift(rename((path) => {
+          // remove relative directory from source
+          path.dirname = '.'
+        }))
         // setup bundle destination
         browserPlatforms.forEach((platform) => {
           const dest = `./dist/${platform}`
-          pipeline.get('dest').push(rename((path) => {
-            // remove relative source directory
-            path.dirname = '.'
-          }))
           pipeline.get('dest').push(gulp.dest(dest))
         })
       })
@@ -132,11 +133,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         // convert bundle stream to gulp vinyl stream
         pipeline.get('vinyl').push(
           source(destName)
-        )
-        // initialize source maps, requires files to be buffered
-        pipeline.get('sourcemaps:init').push(buffer())
-        pipeline.get('sourcemaps:init').push(
-          sourcemaps.init({ loadMaps: true })
         )
         // setup bundle destination
         browserPlatforms.forEach((platform) => {
@@ -261,6 +257,12 @@ function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify })
         },
       }))
     }
+
+    // initialize source maps, requires files to be buffered
+    pipeline.get('sourcemaps:init').push(buffer())
+    pipeline.get('sourcemaps:init').push(
+      sourcemaps.init({ loadMaps: true })
+    )
 
     // write sourcemaps
     if (devMode) {
