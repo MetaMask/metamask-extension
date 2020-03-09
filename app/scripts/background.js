@@ -34,6 +34,7 @@ import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
+import './phishing-detect'
 
 import {
   ENVIRONMENT_TYPE_POPUP,
