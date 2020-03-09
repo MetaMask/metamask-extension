@@ -28,7 +28,7 @@
   "background": {
     "scripts": [
       "common.js",
-      "app/scripts/background.js"
+      "background.js"
     ],
     "persistent": true
   },
