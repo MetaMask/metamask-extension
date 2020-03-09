@@ -16,8 +16,6 @@ const createLavamoatPacker = require('lavamoat-browserify/src/createCustomPack')
 const lavamoatArgs = require('lavamoat-browserify').args
 const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const { promises: fs } = require('fs')
-// const sesify = require('sesify')
-// const { makeStringTransform } = require('browserify-transform-tools')
 
 module.exports = createScriptTasks
 
