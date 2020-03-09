@@ -5,7 +5,7 @@ export default class CircleIcon extends PureComponent {
   static propTypes = {
     size: PropTypes.string,
     circleClass: PropTypes.string,
-    iconSource: PropTypes.string,
+    iconSource: PropTypes.string.isRequired,
     iconSize: PropTypes.string,
   }
 
@@ -13,7 +13,6 @@ export default class CircleIcon extends PureComponent {
     size: '56px',
     iconSize: '18px',
     circleClass: '',
-    iconSource: null,
   }
 
   render () {
@@ -40,16 +39,14 @@ export default class CircleIcon extends PureComponent {
 
           }}
         />
-        { iconSource ? (
-          <img
-            src={iconSource}
-            className="circle-icon__icon"
-            style={{
-              height: iconSize,
-              width: iconSize,
-            }}
-          />
-        ) : null }
+        <img
+          src={iconSource}
+          className="circle-icon__icon"
+          style={{
+            height: iconSize,
+            width: iconSize,
+          }}
+        />
       </div>
     )
   }
