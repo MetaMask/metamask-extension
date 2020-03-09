@@ -236,14 +236,15 @@ function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify })
     ],
     // use filepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
-    // for sourcemaps
-    debug: true,
   })
 
   // setup watchify
   if (watchify) {
     setupWatchify({ bundlerOpts, events })
   }
+
+  // setup sourcemaps, write location depends on devMode
+  setupSourcemaps({ bundlerOpts, events, devMode })
 
   // instrument pipeline
   events.on('pipeline', (pipeline) => {
@@ -256,21 +257,6 @@ function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify })
           reserved: [ 'MetamaskInpageProvider' ],
         },
       }))
-    }
-
-    // initialize source maps, requires files to be buffered
-    pipeline.get('sourcemaps:init').push(buffer())
-    pipeline.get('sourcemaps:init').push(
-      sourcemaps.init({ loadMaps: true })
-    )
-
-    // write sourcemaps
-    if (devMode) {
-      // Use inline source maps for development due to Chrome DevTools bug
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-      pipeline.get('sourcemaps:write').push(sourcemaps.write())
-    } else {
-      pipeline.get('sourcemaps:write').push(sourcemaps.write('../sourcemaps'))
     }
 
   })
@@ -322,6 +308,31 @@ function setupWatchify ({ bundlerOpts, events }) {
       beep()
       console.warn(err.stack)
     })
+  })
+}
+
+function setupSourcemaps ({ bundlerOpts, events, devMode }) {
+  // tell browserify to generate sourcemaps
+  bundlerOpts.debug = true
+
+  // instrument pipeline
+  events.on('pipeline', (pipeline) => {
+
+    // initialize source maps, requires files to be buffered
+    pipeline.get('sourcemaps:init').push(buffer())
+    pipeline.get('sourcemaps:init').push(
+      sourcemaps.init({ loadMaps: true })
+    )
+
+    // write sourcemaps
+    if (devMode) {
+      // Use inline source maps for development due to Chrome DevTools bug
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
+      pipeline.get('sourcemaps:write').push(sourcemaps.write())
+    } else {
+      pipeline.get('sourcemaps:write').push(sourcemaps.write('../sourcemaps'))
+    }
+
   })
 }
 
