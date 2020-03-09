@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#322](https://github.com/poanetwork/nifty-wallet/pull/322) - (Fix) Update explorers links
 - [#318](https://github.com/poanetwork/nifty-wallet/pull/318) - (Fix) pasting of ABI for contract type account
 
 ## 4.11.10 Tue Feb 04 2020
