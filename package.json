@@ -273,7 +273,7 @@
     "sesify-viz": "^3.0.10",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
-    "source-map-explorer": "^2.0.1",
+    "source-map-explorer": "^2.3.1",
     "string.prototype.matchall": "^4.0.2",
     "style-loader": "^0.21.0",
     "stylelint": "^9.10.1",
