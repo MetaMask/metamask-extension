@@ -97,7 +97,7 @@ export default class SendAmountRow extends Component {
     }
   }
 
-  handleChange = newAmount => {
+  handleChange = (newAmount) => {
     this.validateAmount(newAmount)
     this.updateGas(newAmount)
     this.updateAmount(newAmount)
