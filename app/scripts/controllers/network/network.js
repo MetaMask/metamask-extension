@@ -201,9 +201,10 @@ module.exports = class NetworkController extends EventEmitter {
   //
 
   _switchNetwork (opts) {
+    const previousNetworkID = this.getNetworkState()
     this.setNetworkState('loading')
     this._configureProvider(opts)
-    this.emit('networkDidChange', opts.type)
+    this.emit('networkDidChange', opts.type, previousNetworkID)
   }
 
   _configureProvider (opts) {

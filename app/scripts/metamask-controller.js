@@ -54,7 +54,7 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
-const { ifPOA, ifRSK } = require('../../old-ui/app/util')
+const { ifPOA, ifRSK, getNetworkID } = require('../../old-ui/app/util')
 
 const {
   CLASSIC_CODE,
@@ -155,9 +155,24 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // ensure accountTracker updates balances after network change
-    this.networkController.on('networkDidChange', () => {
+    this.networkController.on('networkDidChange', (newType, previousNetworkIDStr) => {
       this.accountTracker._updateAccounts()
       this.detectTokensController.restartTokenDetection()
+
+      const previousNetworkID = parseInt(previousNetworkIDStr, 10)
+      const nextNetwork = getNetworkID({network: newType})
+      const nextNetworkID = parseInt(nextNetwork && nextNetwork.netId, 10)
+
+      if (nextNetworkID !== previousNetworkID) {
+        const isPreviousETC = previousNetworkID === CLASSIC_CODE
+        const isPreviousRSK = ifRSK(previousNetworkID)
+        const isNextETC = nextNetworkID === CLASSIC_CODE
+        const isNextRSK = ifRSK(nextNetworkID)
+        if (isPreviousETC || isPreviousRSK || isNextETC || isNextRSK) {
+          this.forgetDevice(LEDGER, false)
+          this.forgetDevice(TREZOR, false)
+        }
+      }
     })
 
     // key mgmt
