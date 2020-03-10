@@ -142,7 +142,6 @@ const PERM_NAMES = {
 }
 
 const ACCOUNT_ARRAYS = {
-  metamask: [],
   a: [ ...keyringAccounts ],
   b: [keyringAccounts[0]],
   c: [keyringAccounts[1]],

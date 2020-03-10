@@ -296,9 +296,10 @@ describe('permissions controller', function () {
       )
     })
 
-    // we do not check notifications in this test, because while the mocks will
-    // register notifications, they will be ignored before being emitted if the
-    // domain doesn't exist
+    // we do not check notifications in this test, because while our mock
+    // notifications will be emitted, the ones used in production ignore
+    // unknown domains
+    // see getNotifyDomain and getNotifyAllDomains for details
     it('does nothing for unknown domains', async function () {
 
       permController.removePermissionsFor({
@@ -379,6 +380,8 @@ describe('permissions controller', function () {
 
     it('throws error if any account value is not in keyring', async function () {
 
+      const keyringAccounts = await permController.getKeyringAccounts()
+
       assert.rejects(
         permController.validatePermittedAccounts([DUMMY_ACCOUNT]),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
@@ -386,7 +389,7 @@ describe('permissions controller', function () {
       )
 
       assert.rejects(
-        permController.validatePermittedAccounts(ACCOUNT_ARRAYS.a.concat(DUMMY_ACCOUNT)),
+        permController.validatePermittedAccounts(keyringAccounts.concat(DUMMY_ACCOUNT)),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account with other accounts'
       )
@@ -394,18 +397,20 @@ describe('permissions controller', function () {
 
     it('succeeds if all accounts are in keyring', async function () {
 
+      const keyringAccounts = await permController.getKeyringAccounts()
+
       assert.doesNotReject(
-        permController.validatePermittedAccounts(ACCOUNT_ARRAYS.a),
+        permController.validatePermittedAccounts(keyringAccounts),
         'should not throw on all keyring accounts'
       )
 
       assert.doesNotReject(
-        permController.validatePermittedAccounts(ACCOUNT_ARRAYS.b),
+        permController.validatePermittedAccounts([ keyringAccounts[0] ]),
         'should not throw on single keyring account'
       )
 
       assert.doesNotReject(
-        permController.validatePermittedAccounts(ACCOUNT_ARRAYS.c),
+        permController.validatePermittedAccounts([ keyringAccounts[1] ]),
         'should not throw on single keyring account'
       )
     })
