@@ -262,7 +262,7 @@ describe('permissions controller', function () {
           bPermissions.length === 1 &&
           find(bPermissions, { parentCapability: PERM_NAMES.eth_accounts })
         ),
-        'targeted permission only should have been removed'
+        'only targeted permission should have been removed'
       )
     })
 
