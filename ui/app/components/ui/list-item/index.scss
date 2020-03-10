@@ -57,13 +57,6 @@
     }
   }
 
-  &__preloader {
-    animation-name: spin;
-    animation-duration: 500ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
-
   &__subheading {
     font-size: 12px;
     line-height: 14px;

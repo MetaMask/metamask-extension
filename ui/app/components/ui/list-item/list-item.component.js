@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Approve from '../icon/approve-icon.component'
 import Interaction from '../icon/interaction-icon.component'
-import Preloader from '../icon/preloader-icon.component'
+import Preloader from '../icon/preloader'
 import Send from '../icon/send-icon.component'
 
 const SendIcon = () => (
