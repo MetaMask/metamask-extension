@@ -9,8 +9,7 @@ import Send from '../icon/send-icon.component'
 const SendIcon = () => (
   <Send
     className="list-item__icon"
-    width={28}
-    height={28}
+    size={28}
     color="#2F80ED"
   />
 )
@@ -18,8 +17,7 @@ const SendIcon = () => (
 const InteractionIcon = () => (
   <Interaction
     className="list-item__icon"
-    width={28}
-    height={28}
+    size={28}
     color="#2F80ED"
   />
 )
@@ -27,8 +25,7 @@ const InteractionIcon = () => (
 const ApproveIcon = () => (
   <Approve
     className="list-item__icon"
-    width={28}
-    height={28}
+    size={28}
     color="#2F80ED"
   />
 )
@@ -36,8 +33,7 @@ const ApproveIcon = () => (
 const FailIcon = () => (
   <Interaction
     className="list-item__icon"
-    width={28}
-    height={28}
+    size={28}
     color="#D73A49"
   />
 )
@@ -90,9 +86,7 @@ const Item = ({
             { title } {isPending && (
               <span className="list-item__heading-wrap">
                 <Preloader
-                  className="list-item__preloader"
-                  width={16}
-                  height={16}
+                  size={16}
                   color="#D73A49"
                 />
               </span>

@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 
 const Receive = ({
   className,
-  width,
-  height,
+  size,
   color,
 }) => (
   <svg
     className={className}
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 28 28"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -44,8 +43,7 @@ Receive.defaultProps = {
 
 Receive.propTypes = {
   className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
+  size: PropTypes.number,
   color: PropTypes.string.isRequired,
 }
 

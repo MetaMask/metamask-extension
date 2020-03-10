@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 
 const Copy = ({
   className,
-  width,
-  height,
+  size,
   color,
 }) => (
   <svg
     className={className}
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 11 11"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -30,8 +29,7 @@ Copy.defaultProps = {
 
 Copy.propTypes = {
   className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
+  size: PropTypes.number,
   color: PropTypes.string.isRequired,
 }
 

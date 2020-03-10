@@ -3,14 +3,12 @@ import PropTypes from 'prop-types'
 
 const Preloader = ({
   className,
-  width,
-  height,
-  // color,
+  size,
 }) => (
   <svg
     className={className}
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +50,7 @@ Preloader.defaultProps = {
 
 Preloader.propTypes = {
   className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
+  size: PropTypes.number,
 }
 
 export default Preloader

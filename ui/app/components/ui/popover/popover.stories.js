@@ -50,8 +50,7 @@ export const approve = () => (
                 <button className="popover-item__icon" onClick={preventDefault}>
                   <Copy
                     className="popover-item__copy"
-                    width={11}
-                    height={11}
+                    size={11}
                     color="#6A737D"
                   />
                 </button>

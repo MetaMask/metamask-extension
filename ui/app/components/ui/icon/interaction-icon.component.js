@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 
 const Interaction = ({
   className,
-  width,
-  height,
+  size,
   color,
 }) => (
   <svg
     className={className}
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -34,8 +33,7 @@ Interaction.defaultProps = {
 
 Interaction.propTypes = {
   className: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
+  size: PropTypes.number,
   color: PropTypes.string.isRequired,
 }
 

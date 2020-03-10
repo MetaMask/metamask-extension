@@ -13,47 +13,41 @@ export default {
 
 export const copy = () => (
   <Copy
-    width={number('width', 28,)}
-    height={number('height', 28)}
+    size={number('size', 40)}
     color={color('color', '#2F80ED')}
   />
 )
 
 export const send = () => (
   <Send
-    width={number('width', 28,)}
-    height={number('height', 28)}
+    size={number('size', 40)}
     color={color('color', '#2F80ED')}
   />
 )
 
 export const receive = () => (
   <Receive
-    width={number('width', 28)}
-    height={number('height', 28)}
+    size={number('size', 40)}
     color={color('color', '#2F80ED')}
   />
 )
 
 export const siteInteraction = () => (
   <Interaction
-    width={number('width', 28)}
-    height={number('height', 28)}
+    size={number('size', 40)}
     color={color('color', '#2F80ED')}
   />
 )
 
 export const approveSpendLimit = () => (
   <Approve
-    width={number('width', 28)}
-    height={number('height', 28)}
+    size={number('size', 40)}
     color={color('color', '#2F80ED')}
   />
 )
 
 export const preloader = () => (
   <Preloader
-    width={number('width', 28)}
-    height={number('height', 28)}
+    size={number('size', 40)}
   />
 )
