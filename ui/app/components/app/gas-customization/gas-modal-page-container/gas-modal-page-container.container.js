@@ -107,9 +107,11 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
+  const isTokenSelected = Boolean(getSelectedToken(state))
+
   const newTotalEth = maxModeOn ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 
-  const sendAmount = maxModeOn ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+  const sendAmount = maxModeOn && !isTokenSelected ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
