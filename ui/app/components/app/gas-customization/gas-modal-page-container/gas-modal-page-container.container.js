@@ -192,8 +192,8 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  const updateCustomGasPrice = newPrice =>
+const mapDispatchToProps = (dispatch) => {
+  const updateCustomGasPrice = (newPrice) =>
     dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
 
   return {
@@ -203,7 +203,7 @@ const mapDispatchToProps = dispatch => {
     },
     hideModal: () => dispatch(hideModal()),
     updateCustomGasPrice,
-    updateCustomGasLimit: newLimit =>
+    updateCustomGasLimit: (newLimit) =>
       dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
     setGasData: (newLimit, newPrice) => {
       dispatch(setGasLimit(newLimit))
@@ -219,11 +219,11 @@ const mapDispatchToProps = dispatch => {
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     hideSidebar: () => dispatch(hideSidebar()),
-    fetchGasEstimates: blockTime => dispatch(fetchGasEstimates(blockTime)),
+    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
-    setGasTotal: total => dispatch(setGasTotal(total)),
-    setAmountToMax: maxAmountDataObject => {
+    setGasTotal: (total) => dispatch(setGasTotal(total)),
+    setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },

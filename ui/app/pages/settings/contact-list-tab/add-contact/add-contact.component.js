@@ -5,7 +5,7 @@ import TextField from '../../../../components/ui/text-field'
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes'
 import {
   isValidAddress,
-  isValidENSAddress,
+  isValidDomainName,
 } from '../../../../helpers/utils/util'
 import EnsInput from '../../../send/send-content/add-recipient/ens-input'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
@@ -52,9 +52,9 @@ export default class AddContact extends PureComponent {
     }
   }
 
-  validate = address => {
+  validate = (address) => {
     const valid = isValidAddress(address)
-    const validEnsAddress = isValidENSAddress(address)
+    const validEnsAddress = isValidDomainName(address)
     if (valid || validEnsAddress || address === '') {
       this.setState({ error: '', ethAddress: address })
     } else {
@@ -66,16 +66,16 @@ export default class AddContact extends PureComponent {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => {
+        scanQrCode={(_) => {
           this.props.scanQrCode()
         }}
         onChange={this.dValidate}
-        onPaste={text => this.setState({ ethAddress: text })}
+        onPaste={(text) => this.setState({ ethAddress: text })}
         onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
-        updateEnsResolution={address => {
+        updateEnsResolution={(address) => {
           this.setState({ ensAddress: address, error: '', ensError: '' })
         }}
-        updateEnsResolutionError={message =>
+        updateEnsResolutionError={(message) =>
           this.setState({ ensError: message })
         }
       />
@@ -107,7 +107,7 @@ export default class AddContact extends PureComponent {
               type="text"
               id="nickname"
               value={this.state.newName}
-              onChange={e => this.setState({ newName: e.target.value })}
+              onChange={(e) => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />

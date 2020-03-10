@@ -38,7 +38,7 @@ export default class ContactListTab extends Component {
         <ContactList
           searchForContacts={() => contacts}
           searchForRecents={() => nonContacts}
-          selectRecipient={address => {
+          selectRecipient={(address) => {
             history.push(`${CONTACT_VIEW_ROUTE}/${address}`)
           }}
           selectedAddress={selectedAddress}

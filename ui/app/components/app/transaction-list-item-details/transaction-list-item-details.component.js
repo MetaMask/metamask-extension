@@ -61,7 +61,7 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
-  handleCancel = event => {
+  handleCancel = (event) => {
     const {
       transactionGroup: { initialTransaction: { id } = {} } = {},
       onCancel,
@@ -71,7 +71,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onCancel(id)
   }
 
-  handleRetry = event => {
+  handleRetry = (event) => {
     const {
       transactionGroup: { initialTransaction: { id } = {} } = {},
       onRetry,

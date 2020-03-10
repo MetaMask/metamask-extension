@@ -46,7 +46,7 @@ function setupControllerConnection (connectionStream, cb) {
     },
   })
   connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
-  metaMaskControllerDnode.once('remote', backgroundConnection =>
+  metaMaskControllerDnode.once('remote', (backgroundConnection) =>
     cb(null, backgroundConnection)
   )
 }

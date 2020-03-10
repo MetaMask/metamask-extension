@@ -32,7 +32,8 @@ describe('Add Token', function () {
       wrapper = mountWithRouter(
         <Provider store={store}>
           <AddToken.WrappedComponent {...props} />
-        </Provider>, store
+        </Provider>,
+        store
       )
 
       wrapper.find({ name: 'customToken' }).simulate('click')
@@ -43,7 +44,9 @@ describe('Add Token', function () {
     })
 
     it('next button is disabled when no fields are populated', function () {
-      const nextButton = wrapper.find('.button.btn-secondary.page-container__footer-button')
+      const nextButton = wrapper.find(
+        '.button.btn-secondary.page-container__footer-button'
+      )
 
       assert.equal(nextButton.props().disabled, true)
     })
@@ -54,9 +57,11 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('input#custom-address')
 
       customAddress.simulate('change', event)
-      assert.equal(wrapper.find('AddToken').instance().state.customAddress, tokenAddress)
+      assert.equal(
+        wrapper.find('AddToken').instance().state.customAddress,
+        tokenAddress
+      )
     })
-
 
     it('edits token symbol', function () {
       const tokenSymbol = 'META'
@@ -64,7 +69,10 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('#custom-symbol')
       customAddress.last().simulate('change', event)
 
-      assert.equal(wrapper.find('AddToken').instance().state.customSymbol, tokenSymbol)
+      assert.equal(
+        wrapper.find('AddToken').instance().state.customSymbol,
+        tokenSymbol
+      )
     })
 
     it('edits token decimal precision', function () {
@@ -73,11 +81,16 @@ describe('Add Token', function () {
       const customAddress = wrapper.find('#custom-decimals')
       customAddress.last().simulate('change', event)
 
-      assert.equal(wrapper.find('AddToken').instance().state.customDecimals, tokenPrecision)
+      assert.equal(
+        wrapper.find('AddToken').instance().state.customDecimals,
+        tokenPrecision
+      )
     })
 
     it('next', function () {
-      const nextButton = wrapper.find('.button.btn-secondary.page-container__footer-button')
+      const nextButton = wrapper.find(
+        '.button.btn-secondary.page-container__footer-button'
+      )
       nextButton.simulate('click')
 
       assert(props.setPendingTokens.calledOnce)
@@ -86,7 +99,9 @@ describe('Add Token', function () {
     })
 
     it('cancels', function () {
-      const cancelButton = wrapper.find('button.btn-default.page-container__footer-button')
+      const cancelButton = wrapper.find(
+        'button.btn-default.page-container__footer-button'
+      )
       cancelButton.simulate('click')
 
       assert(props.clearPendingTokens.calledOnce)

@@ -7,7 +7,7 @@ import TextField from '../../../../components/ui/text-field'
 
 describe('AdvancedTab Component', function () {
   it.skip('should render correctly when threeBoxFeatureFlag', function () {
-    const root = shallow((
+    const root = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={() => {}}
@@ -16,12 +16,12 @@ describe('AdvancedTab Component', function () {
         setThreeBoxSyncingPermission={() => {}}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-      />),
-    {
-      context: {
-        t: s => `_${s}`,
-      },
-    }
+      />,
+      {
+        context: {
+          t: (s) => `_${s}`,
+        },
+      }
     )
 
     assert.equal(root.find('.settings-page__content-row').length, 7)
@@ -29,7 +29,7 @@ describe('AdvancedTab Component', function () {
 
   it('should update autoLockTimeLimit', function () {
     const setAutoLockTimeLimitSpy = sinon.spy()
-    const root = shallow((
+    const root = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
@@ -38,12 +38,12 @@ describe('AdvancedTab Component', function () {
         setThreeBoxSyncingPermission={() => {}}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-      />),
-    {
-      context: {
-        t: s => `_${s}`,
-      },
-    }
+      />,
+      {
+        context: {
+          t: (s) => `_${s}`,
+        },
+      }
     )
 
     const autoTimeout = root.find('.settings-page__content-row').at(5)

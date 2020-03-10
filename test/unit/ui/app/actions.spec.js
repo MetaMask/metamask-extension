@@ -21,7 +21,6 @@ const middleware = [thunk]
 const mockStore = configureStore(middleware)
 
 describe('Actions', function () {
-
   const noop = () => {}
 
   const currentNetworkId = 42
@@ -35,7 +34,6 @@ describe('Actions', function () {
     '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
   beforeEach(async function () {
-
     metamaskController = new MetaMaskController({
       provider,
       keyringController: new KeyringController({}),
@@ -72,7 +70,6 @@ describe('Actions', function () {
   })
 
   describe('#tryUnlockMetamask', function () {
-
     let submitPasswordSpy, verifySeedPhraseSpy
 
     afterEach(function () {
@@ -81,7 +78,6 @@ describe('Actions', function () {
     })
 
     it('calls submitPassword and verifySeedPhrase', async function () {
-
       const store = mockStore({})
 
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
@@ -93,7 +89,6 @@ describe('Actions', function () {
     })
 
     it('errors on submitPassword will fail', async function () {
-
       const store = mockStore({})
 
       const expectedActions = [
@@ -123,7 +118,7 @@ describe('Actions', function () {
       const unlockFailedError = [{ type: 'UNLOCK_FAILED', value: 'error' }]
 
       verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
-      verifySeedPhraseSpy.callsFake(callback => {
+      verifySeedPhraseSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -132,8 +127,12 @@ describe('Actions', function () {
         assert.fail('Should have thrown error')
       } catch (_) {
         const actions1 = store.getActions()
-        const warning = actions1.filter(action => action.type === 'DISPLAY_WARNING')
-        const unlockFailed = actions1.filter(action => action.type === 'UNLOCK_FAILED')
+        const warning = actions1.filter(
+          (action) => action.type === 'DISPLAY_WARNING'
+        )
+        const unlockFailed = actions1.filter(
+          (action) => action.type === 'UNLOCK_FAILED'
+        )
         assert.deepEqual(warning, displayWarningError)
         assert.deepEqual(unlockFailed, unlockFailedError)
       }
@@ -141,7 +140,6 @@ describe('Actions', function () {
   })
 
   describe('#createNewVaultAndRestore', function () {
-
     let createNewVaultAndRestoreSpy
 
     afterEach(function () {
@@ -149,7 +147,6 @@ describe('Actions', function () {
     })
 
     it('restores new vault', async function () {
-
       const store = mockStore({})
 
       createNewVaultAndRestoreSpy = sinon.spy(
@@ -218,7 +215,7 @@ describe('Actions', function () {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'verifySeedPhrase')
-      submitPasswordSpy.callsFake(callback => {
+      submitPasswordSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -254,9 +251,7 @@ describe('Actions', function () {
         actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
       )
       assert(removeAccountSpy.calledOnce)
-      const actionTypes = store
-        .getActions()
-        .map(action => action.type)
+      const actionTypes = store.getActions().map((action) => action.type)
       assert.deepEqual(actionTypes, expectedActions)
     })
 
@@ -280,9 +275,7 @@ describe('Actions', function () {
         )
         assert.fail('Should have thrown error')
       } catch (_) {
-        const actionTypes = store
-          .getActions()
-          .map(action => action.type)
+        const actionTypes = store.getActions().map((action) => action.type)
         assert.deepEqual(actionTypes, expectedActions)
       }
     })
@@ -300,7 +293,8 @@ describe('Actions', function () {
     })
 
     it('calls addNewKeyring', function () {
-      const privateKey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
+      const privateKey =
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
 
       const store = mockStore()
       store.dispatch(actions.addNewKeyring('Simple Key Pair', [privateKey]))
@@ -325,7 +319,6 @@ describe('Actions', function () {
   })
 
   describe('#resetAccount', function () {
-
     let resetAccountSpy
 
     afterEach(function () {
@@ -333,7 +326,6 @@ describe('Actions', function () {
     })
 
     it('resets account', async function () {
-
       const store = mockStore()
 
       const expectedActions = [
@@ -359,7 +351,7 @@ describe('Actions', function () {
       ]
 
       resetAccountSpy = sinon.stub(background, 'resetAccount')
-      resetAccountSpy.callsFake(callback => {
+      resetAccountSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -373,7 +365,6 @@ describe('Actions', function () {
   })
 
   describe('#importNewAccount', function () {
-
     let importAccountWithStrategySpy
 
     afterEach(function () {
@@ -425,7 +416,6 @@ describe('Actions', function () {
   })
 
   describe('#addNewAccount', function () {
-
     it('Adds a new account', function () {
       const store = mockStore({ metamask: devState })
 
@@ -437,7 +427,6 @@ describe('Actions', function () {
   })
 
   describe('#checkHardwareStatus', function () {
-
     let checkHardwareStatusSpy
 
     beforeEach(function () {
@@ -449,7 +438,6 @@ describe('Actions', function () {
     })
 
     it('calls checkHardwareStatus in background', async function () {
-
       const store = mockStore()
 
       store.dispatch(
@@ -480,7 +468,6 @@ describe('Actions', function () {
   })
 
   describe('#forgetDevice', function () {
-
     let forgetDeviceSpy
 
     beforeEach(function () {
@@ -492,7 +479,6 @@ describe('Actions', function () {
     })
 
     it('calls forgetDevice in background', function () {
-
       const store = mockStore()
 
       store.dispatch(actions.forgetDevice('ledger'))
@@ -521,7 +507,6 @@ describe('Actions', function () {
   })
 
   describe('#connectHardware', function () {
-
     let connectHardwareSpy
 
     beforeEach(function () {
@@ -533,7 +518,6 @@ describe('Actions', function () {
     })
 
     it('calls connectHardware in background', function () {
-
       const store = mockStore()
 
       store.dispatch(actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`))
@@ -562,11 +546,13 @@ describe('Actions', function () {
   })
 
   describe('#unlockHardwareWalletAccount', function () {
-
     let unlockHardwareWalletAccountSpy
 
     beforeEach(function () {
-      unlockHardwareWalletAccountSpy = sinon.stub(background, 'unlockHardwareWalletAccount')
+      unlockHardwareWalletAccountSpy = sinon.stub(
+        background,
+        'unlockHardwareWalletAccount'
+      )
     })
 
     afterEach(function () {
@@ -574,7 +560,6 @@ describe('Actions', function () {
     })
 
     it('calls unlockHardwareWalletAccount in background', function () {
-
       const store = mockStore()
 
       store.dispatch(
@@ -605,7 +590,6 @@ describe('Actions', function () {
   })
 
   describe('#setCurrentCurrency', function () {
-
     let setCurrentCurrencySpy
 
     beforeEach(function () {
@@ -640,7 +624,6 @@ describe('Actions', function () {
   })
 
   describe('#signMsg', function () {
-
     let signMessageSpy, metamaskMsgs, msgId, messages
 
     const msgParams = {
@@ -697,7 +680,6 @@ describe('Actions', function () {
   })
 
   describe('#signPersonalMsg', function () {
-
     let signPersonalMessageSpy, metamaskMsgs, msgId, personalMessages
 
     const msgParams = {
@@ -758,21 +740,21 @@ describe('Actions', function () {
     const msgParamsV3 = {
       from: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       data: JSON.stringify({
-        'types': {
-          'EIP712Domain': [
-            { 'name': 'name', 'type': 'string' },
-            { 'name': 'version', 'type': 'string' },
-            { 'name': 'chainId', 'type': 'uint256' },
-            { 'name': 'verifyingContract', 'type': 'address' },
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
           ],
-          'Person': [
-            { 'name': 'name', 'type': 'string' },
-            { 'name': 'wallet', 'type': 'address' },
+          Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' },
           ],
-          'Mail': [
-            { 'name': 'from', 'type': 'Person' },
-            { 'name': 'to', 'type': 'Person' },
-            { 'name': 'contents', 'type': 'string' },
+          Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' },
           ],
         },
         primaryType: 'Mail',
@@ -838,7 +820,6 @@ describe('Actions', function () {
   })
 
   describe('#signTx', function () {
-
     let sendTransactionSpy
 
     beforeEach(function () {
@@ -940,7 +921,6 @@ describe('Actions', function () {
   })
 
   describe('#updateTransaction', function () {
-
     let updateTransactionSpy
 
     const txParams = {
@@ -1025,7 +1005,7 @@ describe('Actions', function () {
         { type: 'LOCK_METAMASK' },
       ]
       backgroundSetLockedSpy = sinon.stub(background, 'setLocked')
-      backgroundSetLockedSpy.callsFake(callback => {
+      backgroundSetLockedSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -1149,7 +1129,6 @@ describe('Actions', function () {
   })
 
   describe('#removeToken', function () {
-
     let removeTokenSpy
 
     beforeEach(function () {
@@ -1371,7 +1350,14 @@ describe('Actions', function () {
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
         .get('/marketinfo/btc_eth')
-        .reply(200, { pair: 'BTC_ETH', rate: 25.68289016, minerFee: 0.00176, limit: 0.67748474, minimum: 0.00013569, maxLimit: 0.67758573 })
+        .reply(200, {
+          pair: 'BTC_ETH',
+          rate: 25.68289016,
+          minerFee: 0.00176,
+          limit: 0.67748474,
+          minimum: 0.00013569,
+          maxLimit: 0.67758573,
+        })
 
       nock('https://shapeshift.io')
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
@@ -1432,7 +1418,7 @@ describe('Actions', function () {
   describe('#setCompletedOnboarding', function () {
     it('completes onboarding', async function () {
       const completeOnboardingSpy = sinon.stub(background, 'completeOnboarding')
-      completeOnboardingSpy.callsFake(cb => cb())
+      completeOnboardingSpy.callsFake((cb) => cb())
       const store = mockStore()
       await store.dispatch(actions.setCompletedOnboarding())
       assert.equal(completeOnboardingSpy.callCount, 1)
@@ -1533,7 +1519,10 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'SET_CURRENT_LOCALE', value: { locale: 'en', messages: enLocale } },
+        {
+          type: 'SET_CURRENT_LOCALE',
+          value: { locale: 'en', messages: enLocale },
+        },
         { type: 'HIDE_LOADING_INDICATION' },
       ]
 

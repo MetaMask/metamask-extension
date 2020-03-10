@@ -64,6 +64,8 @@ export const SAFE_METHODS = [
   'eth_submitWork',
   'eth_syncing',
   'eth_uninstallFilter',
+  'eth_getEncryptionPublicKey',
+  'eth_decrypt',
   'metamask_watchAsset',
   'wallet_watchAsset',
   'cfx_epochNumber',
@@ -108,4 +110,6 @@ export const SAFE_METHODS = [
   'cfx_submitWork',
   'cfx_syncing',
   'cfx_uninstallFilter',
+  'cfx_getEncryptionPublicKey',
+  'cfx_decrypt',
 ]

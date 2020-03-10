@@ -73,7 +73,7 @@ export function constructUpdatedTx ({
             ['address', 'uint256'],
             [to, ethUtil.addHexPrefix(amount)]
           ),
-          x => ('00' + x.toString(16)).slice(-2)
+          (x) => ('00' + x.toString(16)).slice(-2)
         )
         .join('')
 

@@ -39,7 +39,7 @@ function transformState (state) {
     const reverseTxList = transactions.reverse()
     let stripping = true
     while (reverseTxList.length > 40 && stripping) {
-      const txIndex = reverseTxList.findIndex(txMeta => {
+      const txIndex = reverseTxList.findIndex((txMeta) => {
         return (
           txMeta.status === 'failed' ||
           txMeta.status === 'rejected' ||

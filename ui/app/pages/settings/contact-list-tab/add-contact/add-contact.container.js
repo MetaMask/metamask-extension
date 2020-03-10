@@ -9,18 +9,18 @@ import {
 } from '../../../../store/actions'
 import { getQrCodeData } from '../../../send/send.selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     qrCodeData: getQrCodeData(state),
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     addToAddressBook: (recipient, nickname) =>
       dispatch(addToAddressBook(recipient, nickname)),
     scanQrCode: () => dispatch(showQrScanner()),
-    qrCodeDetected: data => dispatch(qrCodeDetected(data)),
+    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
   }
 }
 

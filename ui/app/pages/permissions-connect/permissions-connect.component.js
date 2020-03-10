@@ -88,7 +88,7 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  selectAccount = address => {
+  selectAccount = (address) => {
     this.setState({
       page: 2,
       selectedAccountAddress: address,
@@ -169,7 +169,7 @@ export default class PermissionConnect extends Component {
             accounts={accounts}
             originName={originName}
             nativeCurrency={nativeCurrency}
-            selectAccount={address => this.selectAccount(address)}
+            selectAccount={(address) => this.selectAccount(address)}
             selectNewAccountViaModal={() => {
               showNewAccountModal({
                 onCreateNewAccount: this.selectAccount,
@@ -177,7 +177,7 @@ export default class PermissionConnect extends Component {
               })
             }}
             addressLastConnectedMap={addressLastConnectedMap}
-            cancelPermissionsRequest={requestId => {
+            cancelPermissionsRequest={(requestId) => {
               if (requestId) {
                 rejectPermissionsRequest(requestId)
                 this.redirectFlow(false)
@@ -193,12 +193,12 @@ export default class PermissionConnect extends Component {
                 approvePermissionsRequest(request, accounts)
                 this.redirectFlow(true)
               }}
-              rejectPermissionsRequest={requestId => {
+              rejectPermissionsRequest={(requestId) => {
                 rejectPermissionsRequest(requestId)
                 this.redirectFlow(false)
               }}
               selectedIdentity={accounts.find(
-                account => account.address === selectedAccountAddress
+                (account) => account.address === selectedAccountAddress
               )}
               redirect={page === null}
               permissionRejected={permissionAccepted === false}

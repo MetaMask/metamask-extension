@@ -314,7 +314,7 @@ class Routes extends Component {
         className={classnames('app', { 'mouse-user-styles': isMouseUser })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           if (e.keyCode === 9) {
             setMouseUserState(false)
           }
@@ -492,10 +492,10 @@ function mapDispatchToProps (dispatch) {
     lockMetaMask: () => dispatch(actions.lockMetamask(false)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    setMouseUserState: isMouseUser =>
+    setMouseUserState: (isMouseUser) =>
       dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
-    showAccountDetail: address => dispatch(actions.showAccountDetail(address)),
+    showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
   }
 }
 

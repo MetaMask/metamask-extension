@@ -38,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     createCancelTransaction: (txId, customGasPrice) => {
       return dispatch(createCancelTransaction(txId, customGasPrice))

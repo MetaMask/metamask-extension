@@ -22,14 +22,18 @@ describe('Send Component', function () {
     updateSendErrors: sinon.spy(),
     updateSendTokenBalance: sinon.spy(),
     resetSendState: sinon.spy(),
-    fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
+    fetchBasicGasEstimates: sinon
+      .stub()
+      .returns(Promise.resolve(mockBasicGasEstimates)),
     fetchGasEstimates: sinon.spy(),
     updateToNicknameIfNecessary: sinon.spy(),
   }
   const utilsMethodStubs = {
     getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
     getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
-    doesAmountErrorRequireUpdate: sinon.stub().callsFake(obj => obj.balance !== obj.prevBalance),
+    doesAmountErrorRequireUpdate: sinon
+      .stub()
+      .callsFake((obj) => obj.balance !== obj.prevBalance),
   }
 
   const SendTransactionScreen = proxyquire('../send.component.js', {
@@ -42,7 +46,7 @@ describe('Send Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <SendTransactionScreen
         amount="mockAmount"
         amountConversionRate="mockAmountConversionRate"
@@ -81,7 +85,7 @@ describe('Send Component', function () {
           propsMethodSpies.updateToNicknameIfNecessary
         }
       />
-    ))
+    )
   })
 
   afterEach(function () {

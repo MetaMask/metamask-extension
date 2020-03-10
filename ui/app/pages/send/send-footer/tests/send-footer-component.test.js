@@ -29,7 +29,7 @@ describe('SendFooter Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
         amount="mockAmount"
@@ -51,8 +51,8 @@ describe('SendFooter Component', function () {
         unapprovedTxs={['mockTx']}
         update={propsMethodSpies.update}
         sendErrors={{}}
-      />),
-    { context: { t: str => str, metricsEvent: () => ({}) } }
+      />,
+      { context: { t: (str) => str, metricsEvent: () => ({}) } }
     )
   })
 
@@ -85,7 +85,6 @@ describe('SendFooter Component', function () {
       assert.equal(historySpies.push.getCall(0).args[0], DEFAULT_ROUTE)
     })
   })
-
 
   describe('formShouldBeDisabled()', function () {
     const config = {
@@ -191,19 +190,21 @@ describe('SendFooter Component', function () {
     })
 
     it('should call history.push', function (done) {
-      Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT))
-        .then(() => {
-          assert.equal(historySpies.push.callCount, 1)
-          assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
-          done()
-        })
+      Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT)).then(() => {
+        assert.equal(historySpies.push.callCount, 1)
+        assert.equal(
+          historySpies.push.getCall(0).args[0],
+          CONFIRM_TRANSACTION_ROUTE
+        )
+        done()
+      })
     })
   })
 
   describe('render', function () {
     beforeEach(function () {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true)
-      wrapper = shallow((
+      wrapper = shallow(
         <SendFooter
           addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
           amount="mockAmount"
@@ -224,8 +225,8 @@ describe('SendFooter Component', function () {
           tokenBalance="mockTokenBalance"
           unapprovedTxs={['mockTx']}
           update={propsMethodSpies.update}
-        />),
-      { context: { t: str => str, metricsEvent: () => ({}) } }
+        />,
+        { context: { t: (str) => str, metricsEvent: () => ({}) } }
       )
     })
 
@@ -238,11 +239,9 @@ describe('SendFooter Component', function () {
     })
 
     it('should pass the correct props to PageContainerFooter', function () {
-      const {
-        onCancel,
-        onSubmit,
-        disabled,
-      } = wrapper.find(PageContainerFooter).props()
+      const { onCancel, onSubmit, disabled } = wrapper
+        .find(PageContainerFooter)
+        .props()
       assert.equal(disabled, true)
 
       assert.equal(SendFooter.prototype.onSubmit.callCount, 0)

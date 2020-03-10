@@ -65,7 +65,7 @@ describe('GasModalPageContainer Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <GasModalPageContainer
         cancelAndClose={propsMethodSpies.cancelAndClose}
         onSubmit={propsMethodSpies.onSubmit}
@@ -85,7 +85,7 @@ describe('GasModalPageContainer Component', function () {
         insufficientBalance={false}
         disableSave={false}
       />
-    ))
+    )
   })
 
   afterEach(function () {
@@ -119,21 +119,14 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should pass correct props to PageContainer', function () {
-      const {
-        title,
-        subtitle,
-        disabled,
-      } = wrapper.find(PageContainer).props()
+      const { title, subtitle, disabled } = wrapper.find(PageContainer).props()
       assert.equal(title, 'customGas')
       assert.equal(subtitle, 'customGasSubTitle')
       assert.equal(disabled, false)
     })
 
     it('should pass the correct onCancel and onClose methods to PageContainer', function () {
-      const {
-        onCancel,
-        onClose,
-      } = wrapper.find(PageContainer).props()
+      const { onCancel, onClose } = wrapper.find(PageContainer).props()
       assert.equal(propsMethodSpies.cancelAndClose.callCount, 0)
       onCancel()
       assert.equal(propsMethodSpies.cancelAndClose.callCount, 1)
@@ -143,14 +136,14 @@ describe('GasModalPageContainer Component', function () {
 
     it('should pass the correct renderTabs property to PageContainer', function () {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
-      const renderTabsWrapperTester = shallow((
+      const renderTabsWrapperTester = shallow(
         <GasModalPageContainer
           fetchBasicGasAndTimeEstimates={
             propsMethodSpies.fetchBasicGasAndTimeEstimates
           }
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-        />),
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+        />,
+        { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
       )
       const { tabsComponent } = renderTabsWrapperTester
         .find(PageContainer)
@@ -222,7 +215,7 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should not render the basic tab if hideBasic is true', function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <GasModalPageContainer
           cancelAndClose={propsMethodSpies.cancelAndClose}
           onSubmit={propsMethodSpies.onSubmit}
@@ -243,7 +236,7 @@ describe('GasModalPageContainer Component', function () {
           disableSave={false}
           hideBasic
         />
-      ))
+      )
       const renderTabsResult = wrapper.instance().renderTabs()
 
       const renderedTabs = shallow(renderTabsResult)
@@ -255,7 +248,9 @@ describe('GasModalPageContainer Component', function () {
 
   describe('renderBasicTabContent', function () {
     it('should render', function () {
-      const renderBasicTabContentResult = wrapper.instance().renderBasicTabContent(mockGasPriceButtonGroupProps)
+      const renderBasicTabContentResult = wrapper
+        .instance()
+        .renderBasicTabContent(mockGasPriceButtonGroupProps)
 
       assert.deepEqual(
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,

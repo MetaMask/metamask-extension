@@ -36,9 +36,9 @@ proxyquire('../gas-modal-page-container.container.js', {
     },
   },
   '../../../../selectors/custom-gas': {
-    getBasicGasEstimateLoadingStatus: s =>
+    getBasicGasEstimateLoadingStatus: (s) =>
       `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
-    getRenderableBasicEstimateData: s =>
+    getRenderableBasicEstimateData: (s) =>
       `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
     getDefaultActiveButtonIndex: (a, b) => a + b,
   },
@@ -47,16 +47,15 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../../ducks/send/send.duck': sendActionSpies,
   '../../../../selectors/selectors.js': {
-    getCurrentEthBalance: state => state.metamask.balance || '0x0',
+    getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
     getSelectedToken: () => null,
   },
   '../../../../pages/send/send.selectors': {
-    getTokenBalance: state => state.metamask.send.tokenBalance || '0x0',
+    getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
   },
 })
 
 describe('gas-modal-page-container container', function () {
-
   describe('mapStateToProps()', function () {
     it('should map the correct properties to props', function () {
       const baseMockState = {
@@ -438,7 +437,11 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should return the expected props when isConfirm is false', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps(
+        Object.assign({}, stateProps, { isConfirm: false }),
+        dispatchProps,
+        ownProps
+      )
 
       assert.equal(result.isConfirm, false)
       assert.equal(result.someOtherStateProp, 'baz')
@@ -478,7 +481,11 @@ describe('gas-modal-page-container container', function () {
     })
 
     it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', function () {
-      const result = mergeProps(Object.assign({}, stateProps, { isSpeedUp: true, isConfirm: false }), dispatchProps, ownProps)
+      const result = mergeProps(
+        Object.assign({}, stateProps, { isSpeedUp: true, isConfirm: false }),
+        dispatchProps,
+        ownProps
+      )
 
       result.onSubmit()
 

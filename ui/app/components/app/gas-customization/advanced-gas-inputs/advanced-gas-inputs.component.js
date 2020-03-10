@@ -46,21 +46,21 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  onChangeGasLimit = e => {
+  onChangeGasLimit = (e) => {
     this.setState({ gasLimit: e.target.value })
     this.changeGasLimit({ target: { value: e.target.value } })
   }
 
-  changeGasLimit = e => {
+  changeGasLimit = (e) => {
     this.props.updateCustomGasLimit(Number(e.target.value))
   }
 
-  onChangeGasPrice = e => {
+  onChangeGasPrice = (e) => {
     this.setState({ gasPrice: e.target.value })
     this.changeGasPrice({ target: { value: e.target.value } })
   }
 
-  changeGasPrice = e => {
+  changeGasPrice = (e) => {
     this.props.updateCustomGasPrice(Number(e.target.value))
   }
 
@@ -103,11 +103,6 @@ export default class AdvancedGasInputs extends Component {
     } else if (gasLimit < 21000) {
       return {
         errorText: t('gasLimitTooLow'),
-        errorType: 'error',
-      }
-    } else if (gasLimit > 1000000) {
-      return {
-        errorText: t('gasLimitTooHigh'),
         errorType: 'error',
       }
     }

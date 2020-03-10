@@ -16,7 +16,7 @@ import {
 } from '../../store/actions'
 import UnlockPage from './unlock-page.component'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { isUnlocked },
   } = state
@@ -25,10 +25,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     forgotPassword: () => dispatch(forgotPassword()),
-    tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     showOptInModal: () =>
@@ -53,7 +53,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   }
 
-  const onSubmit = async password => {
+  const onSubmit = async (password) => {
     await tryUnlockMetamask(password)
     history.push(DEFAULT_ROUTE)
   }

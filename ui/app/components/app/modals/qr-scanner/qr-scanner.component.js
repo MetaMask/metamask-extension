@@ -63,12 +63,13 @@ export default class QrScanner extends Component {
   checkEnvironment = async () => {
     try {
       const { environmentReady } = await WebcamUtils.checkStatus()
-      if (!environmentReady && getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      if (
+        !environmentReady &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
+      ) {
         const currentUrl = new URL(window.location.href)
         const currentHash = currentUrl.hash
-        const currentRoute = currentHash
-          ? currentHash.substring(1)
-          : null
+        const currentRoute = currentHash ? currentHash.substring(1) : null
         global.platform.openExtensionInBrowser(currentRoute)
       }
     } catch (error) {
@@ -85,7 +86,7 @@ export default class QrScanner extends Component {
       const { permissions } = await WebcamUtils.checkStatus()
       if (permissions) {
         // Let the video stream load first...
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        await new Promise((resolve) => setTimeout(resolve, 2000))
         if (!this.mounted) {
           return
         }
@@ -113,7 +114,10 @@ export default class QrScanner extends Component {
     this.codeReader = new BrowserQRCodeReader()
     try {
       await this.codeReader.getVideoInputDevices()
-      const content = await this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
+      const content = await this.codeReader.decodeFromInputVideoDevice(
+        undefined,
+        'video'
+      )
       const result = this.parseContent(content.text)
       if (!this.mounted) {
         return
@@ -194,18 +198,8 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__image">
           <img src="images/webcam.svg" width={70} height={70} />
         </div>
-        {
-          title
-            ? (
-              <div className="qr-scanner__title">
-                { title }
-              </div>
-            )
-            : null
-        }
-        <div className="qr-scanner__error">
-          {msg}
-        </div>
+        {title ? <div className="qr-scanner__title">{title}</div> : null}
+        <div className="qr-scanner__error">{msg}</div>
         <PageContainerFooter
           onCancel={this.stopAndClose}
           onSubmit={this.tryAgain}
@@ -232,9 +226,7 @@ export default class QrScanner extends Component {
 
     return (
       <>
-        <div className="qr-scanner__title">
-          { `${t('scanQrCode')}` }
-        </div>
+        <div className="qr-scanner__title">{`${t('scanQrCode')}`}</div>
         <div className="qr-scanner__content">
           <div className="qr-scanner__content__video-wrapper">
             <video
@@ -243,12 +235,10 @@ export default class QrScanner extends Component {
                 display: ready === READY_STATE.READY ? 'block' : 'none',
               }}
             />
-            { ready !== READY_STATE.READY ? <Spinner color="#F7C06C" /> : null}
+            {ready !== READY_STATE.READY ? <Spinner color="#F7C06C" /> : null}
           </div>
         </div>
-        <div className="qr-scanner__status">
-          {message}
-        </div>
+        <div className="qr-scanner__status">{message}</div>
       </>
     )
   }
@@ -258,11 +248,7 @@ export default class QrScanner extends Component {
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
-        {
-          error
-            ? this.renderError()
-            : this.renderVideo()
-        }
+        {error ? this.renderError() : this.renderVideo()}
       </div>
     )
   }

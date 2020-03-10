@@ -9,8 +9,7 @@ const mockStore = configureMockStore(middlewares)
 describe('tx confirmation screen', function () {
   const txId = 1457634084250832
   const initialState = {
-    appState: {
-    },
+    appState: {},
     metamask: {
       unapprovedTxs: {
         [txId]: {
@@ -40,7 +39,9 @@ describe('tx confirmation screen', function () {
 
       await store.dispatch(actions.cancelTx({ id: txId }))
       const storeActions = store.getActions()
-      const completedTxAction = storeActions.find(({ type }) => type === actions.actionConstants.COMPLETED_TX)
+      const completedTxAction = storeActions.find(
+        ({ type }) => type === actions.actionConstants.COMPLETED_TX
+      )
       const { id } = completedTxAction.value
       assert.equal(id, txId)
     })

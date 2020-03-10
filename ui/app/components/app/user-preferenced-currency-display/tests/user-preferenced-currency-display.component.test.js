@@ -7,9 +7,7 @@ import CurrencyDisplay from '../../../ui/currency-display'
 describe('UserPreferencedCurrencyDisplay Component', function () {
   describe('rendering', function () {
     it('should render properly', function () {
-      const wrapper = shallow(
-        <UserPreferencedCurrencyDisplay />
-      )
+      const wrapper = shallow(<UserPreferencedCurrencyDisplay />)
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)

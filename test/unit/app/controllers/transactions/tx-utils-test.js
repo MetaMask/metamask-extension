@@ -98,7 +98,6 @@ describe('txUtils', function () {
     })
   })
 
-
   describe('#validateFrom', function () {
     it('should error when from is not a hex string', function () {
       // where from is undefined

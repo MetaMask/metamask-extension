@@ -14,7 +14,7 @@ class FixtureServer {
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]])
     this._initialStateCache = new Map()
 
-    this._app.use(async ctx => {
+    this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
       ctx.set('Access-Control-Allow-Origin', '*')
       if (this._isStateRequest(ctx)) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
 import {
-  isValidENSAddress,
+  isValidDomainName,
   isValidAddress,
   isValidAddressHead,
 } from '../../../../helpers/utils/util'
@@ -81,13 +81,13 @@ export default class EnsInput extends Component {
     updateEnsResolutionError('')
   }
 
-  lookupEnsName = recipient => {
+  lookupEnsName = (recipient) => {
     recipient = recipient.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens
       .lookup(recipient)
-      .then(address => {
+      .then((address) => {
         if (address === ZERO_ADDRESS) {
           throw new Error(this.context.t('noAddressForName'))
         }
@@ -96,9 +96,9 @@ export default class EnsInput extends Component {
         }
         this.props.updateEnsResolution(address)
       })
-      .catch(reason => {
+      .catch((reason) => {
         if (
-          isValidENSAddress(recipient) &&
+          isValidDomainName(recipient) &&
           reason.message === 'ENS name not defined.'
         ) {
           this.props.updateEnsResolutionError(
@@ -111,15 +111,15 @@ export default class EnsInput extends Component {
       })
   }
 
-  onPaste = event => {
-    event.clipboardData.items[0].getAsString(text => {
+  onPaste = (event) => {
+    event.clipboardData.items[0].getAsString((text) => {
       if (isValidAddress(text)) {
         this.props.onPaste(text)
       }
     })
   }
 
-  onChange = e => {
+  onChange = (e) => {
     const {
       network,
       onChange,
@@ -147,7 +147,7 @@ export default class EnsInput extends Component {
       return
     }
 
-    if (isValidENSAddress(input)) {
+    if (isValidDomainName(input)) {
       this.lookupEnsName(input)
     } else if (onValidAddressTyped && isValidAddress(input)) {
       onValidAddressTyped(input)
@@ -288,7 +288,7 @@ export default class EnsInput extends Component {
         <i
           className="fa fa-check-circle fa-lg cursor-pointer"
           style={{ color: 'green' }}
-          onClick={event => {
+          onClick={(event) => {
             event.preventDefault()
             event.stopPropagation()
             copyToClipboard(ensResolution)

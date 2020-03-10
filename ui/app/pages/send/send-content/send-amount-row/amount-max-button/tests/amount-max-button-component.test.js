@@ -20,7 +20,7 @@ describe('AmountMaxButton Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <AmountMaxButton
         balance="mockBalance"
         gasTotal="mockGasTotal"
@@ -29,13 +29,13 @@ describe('AmountMaxButton Component', function () {
         setAmountToMax={propsMethodSpies.setAmountToMax}
         setMaxModeTo={propsMethodSpies.setMaxModeTo}
         tokenBalance="mockTokenBalance"
-      />),
-    {
-      context: {
-        t: str => str + '_t',
-        metricsEvent: () => {},
-      },
-    }
+      />,
+      {
+        context: {
+          t: (str) => str + '_t',
+          metricsEvent: () => {},
+        },
+      }
     )
     instance = wrapper.instance()
   })
@@ -51,7 +51,6 @@ describe('AmountMaxButton Component', function () {
   })
 
   describe('setMaxAmount', function () {
-
     it('should call setAmountToMax with the correct params', function () {
       assert.equal(propsMethodSpies.setAmountToMax.callCount, 0)
       instance.setMaxAmount()
@@ -73,9 +72,7 @@ describe('AmountMaxButton Component', function () {
     })
 
     it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', function () {
-      const {
-        onClick,
-      } = wrapper.find('.send-v2__amount-max').props()
+      const { onClick } = wrapper.find('.send-v2__amount-max').props()
 
       assert.equal(AmountMaxButton.prototype.setMaxAmount.callCount, 0)
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 0)

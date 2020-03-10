@@ -31,7 +31,7 @@ proxyquire('../send-gas-row.container.js', {
     },
   },
   '../send-amount-row/amount-max-button/amount-max-button.selectors': {
-    getMaxModeOn: s => `mockMaxModeOn:${s}`,
+    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
     isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
@@ -44,7 +44,6 @@ proxyquire('../send-gas-row.container.js', {
 })
 
 describe('send-gas-row container', function () {
-
   describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject

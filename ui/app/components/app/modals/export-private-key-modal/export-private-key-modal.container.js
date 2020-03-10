@@ -29,7 +29,7 @@ function mapStateToPropsFactory () {
 function mapDispatchToProps (dispatch) {
   return {
     exportAccount: (password, address) => {
-      return dispatch(exportAccount(password, address)).then(res => {
+      return dispatch(exportAccount(password, address)).then((res) => {
         dispatch(hideWarning())
         return res
       })

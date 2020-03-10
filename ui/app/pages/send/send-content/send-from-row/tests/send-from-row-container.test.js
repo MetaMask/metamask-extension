@@ -5,13 +5,13 @@ let mapStateToProps
 
 proxyquire('../send-from-row.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },
   },
   '../../send.selectors.js': {
-    getSendFromObject: s => `mockFrom:${s}`,
+    getSendFromObject: (s) => `mockFrom:${s}`,
   },
 })
 

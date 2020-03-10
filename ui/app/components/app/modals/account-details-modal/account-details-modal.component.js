@@ -31,7 +31,7 @@ export default class AccountDetailsModal extends Component {
     } = this.props
     const { name, address } = selectedIdentity
 
-    const keyring = keyrings.find(kr => {
+    const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address)
     })
 
@@ -46,7 +46,7 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-modal__name"
           defaultValue={name}
-          onSubmit={label => setAccountLabel(address, label)}
+          onSubmit={(label) => setAccountLabel(address, label)}
         />
 
         <QrView

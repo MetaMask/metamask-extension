@@ -16,14 +16,14 @@ describe('Sidebar Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <Sidebar
         sidebarOpen={false}
         hideSidebar={propsMethodSpies.hideSidebar}
         transitionName="someTransition"
         type="wallet-view"
       />
-    ))
+    )
   })
 
   afterEach(function () {
@@ -87,8 +87,19 @@ describe('Sidebar Component', function () {
     })
 
     it('should render the ReactCSSTransitionGroup without any children', function () {
-      assert(wrapper.children().at(0).is(ReactCSSTransitionGroup))
-      assert.equal(wrapper.children().at(0).children().length, 0)
+      assert(
+        wrapper
+          .children()
+          .at(0)
+          .is(ReactCSSTransitionGroup)
+      )
+      assert.equal(
+        wrapper
+          .children()
+          .at(0)
+          .children().length,
+        0
+      )
     })
 
     it('should render sidebar content and the overlay if sidebarOpen is true', function () {

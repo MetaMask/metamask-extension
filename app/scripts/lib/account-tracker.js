@@ -60,7 +60,7 @@ class AccountTracker {
     this._blockTracker = opts.blockTracker
     // blockTracker.currentBlock may be null
     this._currentBlockNumber = this._blockTracker.getCurrentBlock()
-    this._blockTracker.once('latest', blockNumber => {
+    this._blockTracker.once('latest', (blockNumber) => {
       this._currentBlockNumber = blockNumber
     })
     // bind function for easier listener syntax
@@ -100,14 +100,14 @@ class AccountTracker {
     const locals = Object.keys(accounts)
 
     const accountsToAdd = []
-    addresses.forEach(upstream => {
+    addresses.forEach((upstream) => {
       if (!locals.includes(upstream)) {
         accountsToAdd.push(upstream)
       }
     })
 
     const accountsToRemove = []
-    locals.forEach(local => {
+    locals.forEach((local) => {
       if (!addresses.includes(local)) {
         accountsToRemove.push(local)
       }
@@ -127,7 +127,7 @@ class AccountTracker {
   addAccounts (addresses) {
     const accounts = this.store.getState().accounts
     // add initial state for addresses
-    addresses.forEach(address => {
+    addresses.forEach((address) => {
       accounts[address] = {}
     })
     // save accounts state
@@ -148,7 +148,7 @@ class AccountTracker {
   removeAccount (addresses) {
     const accounts = this.store.getState().accounts
     // remove each state object
-    addresses.forEach(address => {
+    addresses.forEach((address) => {
       delete accounts[address]
     })
     // save accounts state
@@ -274,7 +274,7 @@ class AccountTracker {
     const result = await ethContract
       .balances(addresses, ethBalance)
       .call()
-      .catch(error => {
+      .catch((error) => {
         log.warn(
           `MetaMask - Account Tracker single call balance fetch failed`,
           error

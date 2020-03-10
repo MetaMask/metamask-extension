@@ -69,7 +69,7 @@ class TransactionStateManager extends EventEmitter {
   getTxList () {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
-    return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
+    return fullTxList.filter((txMeta) => txMeta.metamaskNetworkId === network)
   }
 
   /**
@@ -166,7 +166,7 @@ class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex(metaTx => {
+      const index = transactions.findIndex((metaTx) => {
         return getFinalStates().includes(metaTx.status)
       })
       if (index !== -1) {
@@ -174,7 +174,7 @@ class TransactionStateManager extends EventEmitter {
       }
     }
     const newTxIndex = transactions.findIndex(
-      currentTxMeta => currentTxMeta.time > txMeta.time
+      (currentTxMeta) => currentTxMeta.time > txMeta.time
     )
 
     newTxIndex === -1
@@ -219,7 +219,7 @@ class TransactionStateManager extends EventEmitter {
     // commit txMeta to state
     const txId = txMeta.id
     const txList = this.getFullTxList()
-    const index = txList.findIndex(txData => txData.id === txId)
+    const index = txList.findIndex((txData) => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
   }
@@ -254,7 +254,7 @@ class TransactionStateManager extends EventEmitter {
     @param {Object} txParams - txParams to validate
   */
   validateTxParams (txParams) {
-    Object.keys(txParams).forEach(key => {
+    Object.keys(txParams).forEach((key) => {
       const value = txParams[key]
       // validate types
       switch (key) {
@@ -306,7 +306,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getFilteredTxList (opts, initialList) {
     let filteredTxList = initialList
-    Object.keys(opts).forEach(key => {
+    Object.keys(opts).forEach((key) => {
       filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
     })
     return filteredTxList
@@ -320,9 +320,9 @@ class TransactionStateManager extends EventEmitter {
     @returns {array} - a list of txMetas who matches the search params
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
-    const filter = typeof value === 'function' ? value : v => v === value
+    const filter = typeof value === 'function' ? value : (v) => v === value
 
-    return txList.filter(txMeta => {
+    return txList.filter((txMeta) => {
       if (key in txMeta.txParams) {
         return filter(txMeta.txParams[key])
       } else {
@@ -447,7 +447,7 @@ class TransactionStateManager extends EventEmitter {
 
     // Filter out the ones from the current account and network
     const otherAccountTxs = txs.filter(
-      txMeta =>
+      (txMeta) =>
         !(
           txMeta.txParams.from === address &&
           txMeta.metamaskNetworkId === network
@@ -513,7 +513,7 @@ class TransactionStateManager extends EventEmitter {
 
   _removeTx (txId) {
     const transactionList = this.getFullTxList()
-    this._saveTxList(transactionList.filter(txMeta => txMeta.id !== txId))
+    this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
   }
 }
 

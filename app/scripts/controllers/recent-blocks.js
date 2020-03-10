@@ -37,7 +37,7 @@ class RecentBlocksController {
       opts.initState
     )
     this.store = new ObservableStore(initState)
-    const blockListner = async newBlockNumberHex => {
+    const blockListner = async (newBlockNumberHex) => {
       try {
         await this.processBlock(newBlockNumberHex)
       } catch (err) {
@@ -50,7 +50,7 @@ class RecentBlocksController {
       this.blockTracker.on('latest', blockListner)
       isListening = true
     }
-    networkController.on('networkDidChange', newType => {
+    networkController.on('networkDidChange', (newType) => {
       if (INFURA_PROVIDER_TYPES.includes(newType) && isListening) {
         this.blockTracker.removeListener('latest', blockListner)
       } else if (
@@ -122,7 +122,7 @@ class RecentBlocksController {
   mapTransactionsToPrices (newBlock) {
     const block = {
       ...newBlock,
-      gasPrices: newBlock.transactions.map(tx => {
+      gasPrices: newBlock.transactions.map((tx) => {
         return tx.gasPrice
       }),
     }
@@ -141,7 +141,7 @@ class RecentBlocksController {
    * @returns {Promise<void>} - Promises undefined
    */
   async backfill () {
-    this.blockTracker.once('latest', async blockNumberHex => {
+    this.blockTracker.once('latest', async (blockNumberHex) => {
       const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
       const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
       const prevBlockNumber = currentBlockNumber - 1
@@ -149,7 +149,7 @@ class RecentBlocksController {
         .fill()
         .map((_, index) => prevBlockNumber - index)
       await Promise.all(
-        targetBlockNumbers.map(async targetBlockNumber => {
+        targetBlockNumbers.map(async (targetBlockNumber) => {
           try {
             const newBlock = await this.getBlockByNumber(targetBlockNumber)
             if (!newBlock) {

@@ -19,6 +19,8 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
+  DECRYPT_REQUEST_KEY,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
@@ -60,7 +62,7 @@ const registry = new MethodRegistry({ provider: global.ethereumProvider })
  */
 export async function getMethodDataAsync (fourBytePrefix) {
   try {
-    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch(e => {
+    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
       log.error(e)
       return null
     })
@@ -135,7 +137,13 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    return SIGNATURE_REQUEST_KEY
+    if (type === 'eth_decrypt') {
+      return DECRYPT_REQUEST_KEY
+    } else if (type === 'eth_getEncryptionPublicKey') {
+      return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
+    } else {
+      return SIGNATURE_REQUEST_KEY
+    }
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -188,7 +196,17 @@ export function getLatestSubmittedTxWithNonce (
 }
 
 export async function isSmartContractAddress (address) {
-  const code = await global.eth.getCode(address)
+  let code
+
+  try {
+    await global.eth.getCode(address)
+  } catch (err) {
+    if (err && err.message.includes('does not exist')) {
+      code = '0x'
+    } else {
+      throw err
+    }
+  }
   // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
   const codeIsEmpty = !code || code === '0x' || code === '0x0'
   return !codeIsEmpty

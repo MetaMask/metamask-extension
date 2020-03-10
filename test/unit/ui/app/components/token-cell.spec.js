@@ -55,7 +55,10 @@ describe('Token Cell', function () {
   })
 
   it('renders token balance', function () {
-    assert.equal(wrapper.find('.token-list-item__token-balance').text(), '5.000')
+    assert.equal(
+      wrapper.find('.token-list-item__token-balance').text(),
+      '5.000'
+    )
   })
 
   it('renders token symbol', function () {
@@ -63,6 +66,9 @@ describe('Token Cell', function () {
   })
 
   it('renders converted fiat amount', function () {
-    assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
+    assert.equal(
+      wrapper.find('.token-list-item__fiat-amount').text(),
+      '0.52 USD'
+    )
   })
 })

@@ -110,7 +110,7 @@ export default class PermissionsLogController {
       }
 
       // call next with a return handler for capturing the response
-      next(cb => {
+      next((cb) => {
         const time = Date.now()
         this.logActivityResponse(requestId, res, time)
 
@@ -231,7 +231,7 @@ export default class PermissionsLogController {
       // accounts were last seen or approved by the origin.
       newEntries = result
         ? result
-          .map(perm => {
+          .map((perm) => {
             if (perm.parentCapability === 'eth_accounts') {
               accounts = this.getAccountsFromPermission(perm)
             }

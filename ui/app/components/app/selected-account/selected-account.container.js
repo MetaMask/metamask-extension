@@ -6,7 +6,7 @@ import {
   getSelectedIdentity,
 } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     selectedAddress: getSelectedAddress(state),
     selectedIdentity: getSelectedIdentity(state),

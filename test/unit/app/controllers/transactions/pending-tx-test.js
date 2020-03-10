@@ -58,7 +58,7 @@ describe('PendingTransactionTracker', function () {
       confirmTransaction: () => {},
     })
 
-    pendingTxTracker._getBlock = blockNumber => {
+    pendingTxTracker._getBlock = (blockNumber) => {
       return { number: blockNumber, transactions: [] }
     }
   })
@@ -88,11 +88,12 @@ describe('PendingTransactionTracker', function () {
         { count: 1, fromNonce: '0x01' }
       )[0]
 
-      const stub = sinon.stub(pendingTxTracker, 'getCompletedTransactions')
+      const stub = sinon
+        .stub(pendingTxTracker, 'getCompletedTransactions')
         .returns(txGen.txs)
 
       const spy = sinon.spy()
-      pendingTxTracker.on('tx:dropped', txId => {
+      pendingTxTracker.on('tx:dropped', (txId) => {
         assert.equal(txId, pending.id, 'should fail the pending tx')
         spy(txId)
       })
@@ -106,7 +107,7 @@ describe('PendingTransactionTracker', function () {
 
   describe('#_checkPendingTx', function () {
     it("should emit 'tx:failed' if the txMeta does not have a hash", function (done) {
-      pendingTxTracker.once('tx:failed', txId => {
+      pendingTxTracker.once('tx:failed', (txId) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
       })
@@ -132,7 +133,7 @@ describe('PendingTransactionTracker', function () {
       let counter = 0
       providerResultStub['eth_getTransactionCount'] = '0x02'
       providerResultStub['eth_getTransactionReceipt'] = {}
-      pendingTxTracker.once('tx:dropped', id => {
+      pendingTxTracker.once('tx:dropped', (id) => {
         if (id === txMeta.id) {
           delete providerResultStub['eth_getTransactionCount']
           delete providerResultStub['eth_getTransactionReceipt']
@@ -185,7 +186,7 @@ describe('PendingTransactionTracker', function () {
         epochNumber: '0x9090',
       }
 
-      pendingTxTracker.once('tx:skipped', id => {
+      pendingTxTracker.once('tx:skipped', (id) => {
         delete providerResultStub['eth_getTransactionCount']
         delete providerResultStub['eth_getTransactionReceipt']
         assert(id, txMetaNoHash.id, 'should emit skipped')
@@ -201,21 +202,21 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkPendingTxs', function () {
-    it('should warp all txMeta\'s in #updatePendingTxs', function (done) {
-      const txMeta2 = txMeta3 = txMeta
+    it("should warp all txMeta's in #updatePendingTxs", function (done) {
+      const txMeta2 = (txMeta3 = txMeta)
       txMeta2.id = 2
       txMeta3.id = 3
-      txList = [txMeta, txMeta2, txMeta3].map(tx => {
-        tx.processed = new Promise(resolve => {
+      txList = [txMeta, txMeta2, txMeta3].map((tx) => {
+        tx.processed = new Promise((resolve) => {
           tx.resolve = resolve
         })
         return tx
       })
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._checkPendingTx = tx => {
+      pendingTxTracker._checkPendingTx = (tx) => {
         tx.resolve(tx)
       }
-      Promise.all(txList.map(tx => tx.processed))
+      Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
 
@@ -227,8 +228,8 @@ describe('PendingTransactionTracker', function () {
     const blockNumberStub = '0x0'
     beforeEach(function () {
       const txMeta2 = (txMeta3 = txMeta)
-      txList = [txMeta, txMeta2, txMeta3].map(tx => {
-        tx.processed = new Promise(resolve => {
+      txList = [txMeta, txMeta2, txMeta3].map((tx) => {
+        tx.processed = new Promise((resolve) => {
           tx.resolve = resolve
         })
         return tx
@@ -240,10 +241,10 @@ describe('PendingTransactionTracker', function () {
     })
     it("should call #_resubmitTx for all pending tx's", function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async tx => {
+      pendingTxTracker._resubmitTx = async (tx) => {
         tx.resolve(tx)
       }
-      Promise.all(txList.map(tx => tx.processed))
+      Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
       pendingTxTracker.resubmitPendingTxs(blockNumberStub)
@@ -265,11 +266,11 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:failed', (_, err) => done(err))
 
       pendingTxTracker.getPendingTransactions = () => enoughForAllErrors
-      pendingTxTracker._resubmitTx = async tx => {
+      pendingTxTracker._resubmitTx = async (tx) => {
         tx.resolve()
         throw new Error(knownErrors.pop())
       }
-      Promise.all(txList.map(tx => tx.processed))
+      Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
 
@@ -278,7 +279,7 @@ describe('PendingTransactionTracker', function () {
     it("should emit 'tx:warning' if it encountered a real error", function (done) {
       pendingTxTracker.once('tx:warning', (txMeta, err) => {
         if (err.message === 'im some real error') {
-          const matchingTx = txList.find(tx => tx.id === txMeta.id)
+          const matchingTx = txList.find((tx) => tx.id === txMeta.id)
           matchingTx.resolve()
         } else {
           done(err)
@@ -289,7 +290,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker._resubmitTx = async () => {
         throw new TypeError('im some real error')
       }
-      Promise.all(txList.map(tx => tx.processed))
+      Promise.all(txList.map((tx) => tx.processed))
         .then(() => done())
         .catch(done)
 
@@ -306,7 +307,7 @@ describe('PendingTransactionTracker', function () {
         assert.equal(address, txMeta.txParams.from, 'Should pass the address')
         return enoughBalance
       }
-      pendingTxTracker.publishTransaction = async rawTx => {
+      pendingTxTracker.publishTransaction = async (rawTx) => {
         assert.equal(rawTx, txMeta.rawTx, 'Should pass the rawTx')
       }
       pendingTxTracker.approveTransaction = async () => {}
@@ -330,7 +331,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker
         ._resubmitTx(txMeta)
         .then(() => done())
-        .catch(err => {
+        .catch((err) => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -349,7 +350,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker
         ._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
         .then(() => done())
-        .catch(err => {
+        .catch((err) => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -368,7 +369,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker
         ._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
         .then(() => done())
-        .catch(err => {
+        .catch((err) => {
           assert.ifError(err, 'should not throw an error')
           done(err)
         })
@@ -412,7 +413,7 @@ describe('PendingTransactionTracker', function () {
       providerResultStub['eth_getTransactionReceipt'] = {}
       pendingTxTracker
         ._checkIftxWasDropped(txMeta, {})
-        .then(dropped => {
+        .then((dropped) => {
           assert(!dropped, 'should be false')
           done()
         })
@@ -424,7 +425,7 @@ describe('PendingTransactionTracker', function () {
       providerResultStub['eth_getTransactionReceipt'] = {}
       pendingTxTracker
         ._checkIftxWasDropped(txMeta, {})
-        .then(dropped => {
+        .then((dropped) => {
           assert(dropped, 'should be true')
           done()
         })
@@ -462,7 +463,7 @@ describe('PendingTransactionTracker', function () {
             '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
         },
       ]
-      pendingTxTracker.getCompletedTransactions = address => {
+      pendingTxTracker.getCompletedTransactions = (address) => {
         if (!address) {
           throw new Error(
             'unless behavior has changed #_checkIfNonceIsTaken needs a filtered list of transactions to see if the nonce is taken'
@@ -481,7 +482,7 @@ describe('PendingTransactionTracker', function () {
             value: '0xfffff',
           },
         })
-        .then(taken => {
+        .then((taken) => {
           assert.ok(!taken)
           done()
         })
@@ -497,7 +498,7 @@ describe('PendingTransactionTracker', function () {
             value: '0xfffff',
           },
         })
-        .then(taken => {
+        .then((taken) => {
           assert.ok(taken)
           done()
         })

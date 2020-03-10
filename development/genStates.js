@@ -13,7 +13,7 @@ async function start () {
   const stateFilesNames = await promisify(fs.readdir)(statesPath)
   const states = {}
   await Promise.all(
-    stateFilesNames.map(async stateFileName => {
+    stateFilesNames.map(async (stateFileName) => {
       const stateFilePath = path.join(__dirname, 'states', stateFileName)
       const state = require(stateFilePath)
 

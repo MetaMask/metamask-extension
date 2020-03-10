@@ -31,7 +31,13 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
+    const {
+      addToken,
+      pendingTokens,
+      tokens,
+      removeSuggestedTokens,
+      history,
+    } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
     const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
@@ -46,20 +52,14 @@ export default class ConfirmAddSuggestedToken extends Component {
           <div className="page-container__subtitle">
             {this.context.t('likeToAddTokens')}
           </div>
-          { hasTokenDuplicates ?
-            (
-              <div className="warning">
-                { this.context.t('knownTokenWarning') }
-              </div>
-            ) : null
-          }
-          { reusesName ?
-            (
-              <div className="warning">
-                { this.context.t('reusedTokenNameWarning') }
-              </div>
-            ) : null
-          }
+          {hasTokenDuplicates ? (
+            <div className="warning">{this.context.t('knownTokenWarning')}</div>
+          ) : null}
+          {reusesName ? (
+            <div className="warning">
+              {this.context.t('reusedTokenNameWarning')}
+            </div>
+          ) : null}
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
@@ -132,7 +132,7 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   checkTokenDuplicates (pendingTokens, tokens) {
     const pending = Object.keys(pendingTokens)
-    const existing = tokens.map(token => token.address)
+    const existing = tokens.map((token) => token.address)
     const dupes = pending.filter((proposed) => {
       return existing.includes(proposed)
     })
@@ -150,11 +150,11 @@ export default class ConfirmAddSuggestedToken extends Component {
     const duplicates = Object.keys(pendingTokens)
       .map((addr) => pendingTokens[addr])
       .filter((token) => {
-        const dupes = tokens.filter(old => old.symbol === token.symbol)
-          .filter(old => old.address !== token.address)
+        const dupes = tokens
+          .filter((old) => old.symbol === token.symbol)
+          .filter((old) => old.address !== token.address)
         return dupes.length > 0
       })
     return duplicates.length > 0
   }
-
 }

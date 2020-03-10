@@ -15,9 +15,9 @@ import { getFastPriceEstimateInHexWEI } from './custom-gas'
 import { getSelectedToken } from './selectors'
 import txHelper from '../../lib/tx-helper'
 
-export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
+export const shapeShiftTxListSelector = (state) => state.metamask.shapeShiftTxList
 
-export const incomingTxListSelector = state => {
+export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags
   if (!showIncomingTransactions) {
     return []
@@ -30,23 +30,31 @@ export const incomingTxListSelector = state => {
       txParams.to === selectedAddress && metamaskNetworkId === network
   )
 }
-export const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
-export const selectedAddressTxListSelector = state =>
+export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs
+export const selectedAddressTxListSelector = (state) =>
   state.metamask.selectedAddressTxList
-export const unapprovedPersonalMsgsSelector = state =>
+export const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs
-export const unapprovedTypedMessagesSelector = state =>
+export const unapprovedDecryptMsgsSelector = (state) =>
+  state.metamask.unapprovedDecryptMsgs
+export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
+  state.metamask.unapprovedEncryptionPublicKeyMsgs
+export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages
-export const networkSelector = state => state.metamask.network
+export const networkSelector = (state) => state.metamask.network
 
 export const unapprovedMessagesSelector = createSelector(
   unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   networkSelector,
   (
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
+    unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network
   ) =>
@@ -54,6 +62,8 @@ export const unapprovedMessagesSelector = createSelector(
       {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      unapprovedDecryptMsgs,
+      unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
       network
     ) || []
@@ -205,7 +215,7 @@ const mergeNonNonceTransactionGroups = (
   orderedTransactionGroups,
   nonNonceTransactionGroups
 ) => {
-  nonNonceTransactionGroups.forEach(shapeshiftGroup => {
+  nonNonceTransactionGroups.forEach((shapeshiftGroup) => {
     insertTransactionGroupByTime(orderedTransactionGroups, shapeshiftGroup)
   })
 }
@@ -224,7 +234,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
-    transactions.forEach(transaction => {
+    transactions.forEach((transaction) => {
       const {
         txParams: { nonce } = {},
         status,
@@ -299,7 +309,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     })
 
     const orderedTransactionGroups = orderedNonces.map(
-      nonce => nonceToTransactionsMap[nonce]
+      (nonce) => nonceToTransactionsMap[nonce]
     )
     mergeNonNonceTransactionGroups(
       orderedTransactionGroups,
@@ -347,7 +357,7 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) =>
-    transactions.filter(transaction => transaction.status === SUBMITTED_STATUS)
+    transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
 )
 
 export const getTxParams = (state, selectedTransaction = {}) => {

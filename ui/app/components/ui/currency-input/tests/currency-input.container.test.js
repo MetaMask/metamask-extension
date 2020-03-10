@@ -182,10 +182,19 @@ describe('CurrencyInput container', function () {
       },
     ]
 
-    tests.forEach(({ mock: { stateProps, dispatchProps, ownProps }, expected, comment }) => {
-      it(comment, function () {
-        assert.deepEqual(mergeProps(stateProps, dispatchProps, ownProps), expected)
-      })
-    })
+    tests.forEach(
+      ({
+        mock: { stateProps, dispatchProps, ownProps },
+        expected,
+        comment,
+      }) => {
+        it(comment, function () {
+          assert.deepEqual(
+            mergeProps(stateProps, dispatchProps, ownProps),
+            expected
+          )
+        })
+      }
+    )
   })
 })

@@ -48,7 +48,7 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {})
 
 let customNonceValue = ''
-const customNonceMerge = txData =>
+const customNonceMerge = (txData) =>
   (customNonceValue
     ? {
       ...txData,
@@ -126,7 +126,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter(key => unapprovedTxs[key].metamaskNetworkId === network)
+    .filter((key) => unapprovedTxs[key].metamaskNetworkId === network)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
@@ -189,12 +189,12 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = dispatch => {
+export const mapDispatchToProps = (dispatch) => {
   return {
-    tryReverseResolveAddress: address => {
+    tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address))
     },
-    updateCustomNonce: value => {
+    updateCustomNonce: (value) => {
       customNonceValue = value
       dispatch(updateCustomNonce(value))
     },
@@ -207,7 +207,7 @@ export const mapDispatchToProps = dispatch => {
         showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate })
       )
     },
-    updateGasAndCalculate: updatedTx => {
+    updateGasAndCalculate: (updatedTx) => {
       return dispatch(updateTransaction(updatedTx))
     },
     showRejectTransactionsConfirmationModal: ({
@@ -219,10 +219,10 @@ export const mapDispatchToProps = dispatch => {
       )
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
-    cancelAllTransactions: txList => dispatch(cancelTxs(txList)),
-    sendTransaction: txData =>
+    cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
+    sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
+    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
   }
 }
@@ -295,7 +295,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     showCustomizeGasModal: () =>
       dispatchShowCustomizeGasModal({
         txData,
-        onSubmit: customGas => dispatchUpdateGasAndCalculate(customGas),
+        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
         validate: validateEditGas,
       }),
     cancelAllTransactions: () =>

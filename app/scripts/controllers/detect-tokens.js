@@ -158,7 +158,7 @@ class DetectTokensController {
     }
     this._preferences = preferences
     preferences.store.subscribe(({ tokens = [] }) => {
-      this.tokenAddresses = tokens.map(obj => {
+      this.tokenAddresses = tokens.map((obj) => {
         return obj.address
       })
     })

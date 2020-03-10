@@ -16,7 +16,7 @@ import {
   fetchGasEstimates,
 } from '../../../ducks/gas/gas.duck'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const pendingTransactions = nonceSortedPendingTransactionsSelector(state)
   const firstPendingTransactionId =
     pendingTransactions[0] && pendingTransactions[0].primaryTransaction.id
@@ -31,10 +31,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateNetworkNonce: address => dispatch(updateNetworkNonce(address)),
-    fetchGasEstimates: blockTime => dispatch(fetchGasEstimates(blockTime)),
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
+    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
   }

@@ -13,7 +13,7 @@ export default class SendHexDataRow extends Component {
     t: PropTypes.func,
   }
 
-  onInput = event => {
+  onInput = (event) => {
     const { updateSendHexData, updateGas } = this.props
     const data = event.target.value.replace(/\n/g, '') || null
     updateSendHexData(data)

@@ -6,7 +6,7 @@ import SignatureRequest from '../signature-request.component'
 describe('Signature Request Component', function () {
   describe('render', function () {
     it('should render a div with one child', function () {
-      const wrapper = shallow((
+      const wrapper = shallow(
         <SignatureRequest
           clearConfirmTransaction={() => {}}
           cancel={() => {}}
@@ -18,7 +18,7 @@ describe('Signature Request Component', function () {
             },
           }}
         />
-      ))
+      )
 
       assert(wrapper.is('div'))
       assert.equal(wrapper.length, 1)

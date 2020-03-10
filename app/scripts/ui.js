@@ -92,7 +92,7 @@ async function start () {
 }
 
 async function queryCurrentActiveTab (windowType) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     // At the time of writing we only have the `activeTab` permission which means
     // that this query will only succeed in the popup context (i.e. after a "browserAction")
     if (windowType !== ENVIRONMENT_TYPE_POPUP) {
@@ -100,7 +100,7 @@ async function queryCurrentActiveTab (windowType) {
       return
     }
 
-    extension.tabs.query({ active: true, currentWindow: true }, tabs => {
+    extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const [activeTab] = tabs
       const { title, url } = activeTab
       const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}

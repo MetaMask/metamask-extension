@@ -23,9 +23,7 @@ describe('Account Details Modal', function () {
     keyrings: [
       {
         type: 'HD Key Tree',
-        accounts: [
-          '0xAddress',
-        ],
+        accounts: ['0xAddress'],
       },
     ],
     identities: {
@@ -37,13 +35,11 @@ describe('Account Details Modal', function () {
   }
 
   beforeEach(function () {
-    wrapper = shallow(
-      <AccountDetailsModal.WrappedComponent {...props} />, {
-        context: {
-          t: str => str,
-        },
-      }
-    )
+    wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+      },
+    })
   })
 
   it('sets account label when changing default account label', function () {
@@ -77,6 +73,9 @@ describe('Account Details Modal', function () {
     const modalButton = wrapper.find('.account-modal__button')
     const blockExplorerLink = modalButton.first()
 
-    assert.equal(blockExplorerLink.html(), '<button class="button btn-secondary account-modal__button">blockExplorerView</button>')
+    assert.equal(
+      blockExplorerLink.html(),
+      '<button class="button btn-secondary account-modal__button">blockExplorerView</button>'
+    )
   })
 })

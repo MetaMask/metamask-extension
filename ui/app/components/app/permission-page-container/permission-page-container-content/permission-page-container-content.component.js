@@ -26,7 +26,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderAccountInfo = account => {
+  renderAccountInfo = (account) => {
     return (
       <div className="permission-approval-visual__account-info">
         <div className="permission-approval-visual__account-info__label">
@@ -92,7 +92,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     } = this.props
     const { t } = this.context
 
-    const items = Object.keys(selectedPermissions).map(methodName => {
+    const items = Object.keys(selectedPermissions).map((methodName) => {
       // the request will almost certainly be reject by rpc-cap if this happens
       if (!permissionsDescriptions[methodName]) {
         console.warn(`Unknown permission requested: ${methodName}`)

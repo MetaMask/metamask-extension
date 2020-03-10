@@ -65,7 +65,7 @@ class TokenList extends Component {
 
     // Set up listener instances for cleaning up
     this.balanceUpdater = this.updateBalances.bind(this)
-    this.showError = error => {
+    this.showError = (error) => {
       this.setState({ error, isLoading: false })
     }
     this.tracker.on('update', this.balanceUpdater)
@@ -76,7 +76,7 @@ class TokenList extends Component {
       .then(() => {
         this.updateBalances(this.tracker.serialize())
       })
-      .catch(reason => {
+      .catch((reason) => {
         log.error(`Problem updating balances`, reason)
         this.setState({ isLoading: false })
       })

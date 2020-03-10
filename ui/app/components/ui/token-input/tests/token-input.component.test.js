@@ -10,14 +10,11 @@ import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
 describe('TokenInput Component', function () {
-  const t = key => `translate ${key}`
+  const t = (key) => `translate ${key}`
 
   describe('rendering', function () {
     it('should render properly without a token', function () {
-      const wrapper = shallow(
-        <TokenInput />,
-        { context: { t } }
-      )
+      const wrapper = shallow(<TokenInput />, { context: { t } })
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(UnitInput).length, 1)

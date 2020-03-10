@@ -34,7 +34,7 @@ export function getAdjacentGasPrices ({ gasPrices, priceToPosition }) {
   const closestLowerValueIndex = gasPrices.findIndex(
     (e, i, a) => e <= priceToPosition && a[i + 1] >= priceToPosition
   )
-  const closestHigherValueIndex = gasPrices.findIndex(e => e > priceToPosition)
+  const closestHigherValueIndex = gasPrices.findIndex((e) => e > priceToPosition)
   return {
     closestLowerValueIndex,
     closestHigherValueIndex,

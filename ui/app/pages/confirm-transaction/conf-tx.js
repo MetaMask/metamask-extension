@@ -19,9 +19,7 @@ function mapStateToProps (state) {
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
-  const {
-    txId,
-  } = appState
+  const { txId } = appState
 
   return {
     identities: state.metamask.identities,

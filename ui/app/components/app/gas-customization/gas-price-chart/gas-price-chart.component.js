@@ -52,7 +52,7 @@ export default class GasPriceChart extends Component {
 
       d3.select('.c3-axis-x .tick').attr(
         'transform',
-        'translate(' + (domainX - tickX) / 2 + ', 0)'
+        'translate(' + ((domainX - tickX) / 2) + ', 0)'
       )
       d3.select('.c3-axis-x-label').attr('transform', 'translate(0,-15)')
       d3.select('.c3-axis-y-label').attr(

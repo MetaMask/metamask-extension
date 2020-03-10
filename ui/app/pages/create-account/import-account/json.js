@@ -128,7 +128,7 @@ class JsonImportSubview extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err))
   }
 
   checkInputEmpty () {
@@ -150,19 +150,19 @@ JsonImportSubview.propTypes = {
   setSelectedAddress: PropTypes.func,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    displayWarning: warning => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: options =>
+    displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
+    importNewJsonAccount: (options) =>
       dispatch(actions.importNewAccount('JSON File', options)),
-    setSelectedAddress: address =>
+    setSelectedAddress: (address) =>
       dispatch(actions.setSelectedAddress(address)),
   }
 }

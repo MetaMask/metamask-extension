@@ -49,7 +49,7 @@ class CopyButton extends Component {
             style={{
               margin: '5px',
             }}
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
               copyToClipboard(value)

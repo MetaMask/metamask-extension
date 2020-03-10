@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
+// import classnames from 'classnames'
 import { exportAsFile } from '../../../helpers/utils/util'
 import ToggleButton from '../../../components/ui/toggle-button'
 import TextField from '../../../components/ui/text-field'
@@ -28,9 +28,9 @@ export default class AdvancedTab extends PureComponent {
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
-    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
-    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
-    threeBoxDisabled: PropTypes.bool.isRequired,
+    // threeBoxSyncingAllowed: PropTypes.bool.isRequired,
+    // setThreeBoxSyncingPermission: PropTypes.func.isRequired,
+    // threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
   }
@@ -59,7 +59,7 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 history.push(MOBILE_SYNC_ROUTE)
               }}
@@ -131,7 +131,7 @@ export default class AdvancedTab extends PureComponent {
               type="warning"
               large
               className="settings-tab__button--red"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 this.context.metricsEvent({
                   eventOpts: {
@@ -170,7 +170,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={sendHexData}
-              onToggle={value => setHexDataFeatureFlag(!value)}
+              onToggle={(value) => setHexDataFeatureFlag(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -199,7 +199,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={advancedInlineGas}
-              onToggle={value => setAdvancedInlineGasFeatureFlag(!value)}
+              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -231,7 +231,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showFiatInTestnets}
-              onToggle={value =>
+              onToggle={(value) =>
                 setShowFiatConversionOnTestnetsPreference(!value)
               }
               offLabel={t('off')}
@@ -262,7 +262,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useNonceField}
-              onToggle={value => setUseNonceField(!value)}
+              onToggle={(value) => setUseNonceField(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -314,7 +314,7 @@ export default class AdvancedTab extends PureComponent {
               placeholder="5"
               value={this.state.autoLockTimeLimit}
               defaultValue={autoLockTimeLimit}
-              onChange={e => this.handleLockChange(e.target.value)}
+              onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
               margin="dense"
@@ -336,53 +336,53 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
-  renderThreeBoxControl () {
-    const { t } = this.context
-    const {
-      threeBoxSyncingAllowed,
-      setThreeBoxSyncingPermission,
-      threeBoxDisabled,
-    } = this.props
+  // renderThreeBoxControl () {
+  //   const { t } = this.context
+  //   const {
+  //     threeBoxSyncingAllowed,
+  //     setThreeBoxSyncingPermission,
+  //     threeBoxDisabled,
+  //   } = this.props
 
-    let allowed = threeBoxSyncingAllowed
-    let description = t('syncWithThreeBoxDescription')
+  //   let allowed = threeBoxSyncingAllowed
+  //   let description = t('syncWithThreeBoxDescription')
 
-    if (threeBoxDisabled) {
-      allowed = false
-      description = t('syncWithThreeBoxDisabled')
-    }
-    return (
-      <div
-        className="settings-page__content-row"
-        data-testid="advanced-setting-3box"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithThreeBox')}</span>
-          <div className="settings-page__content-description">
-            {description}
-          </div>
-        </div>
-        <div
-          className={classnames('settings-page__content-item', {
-            'settings-page__content-item--disabled': threeBoxDisabled,
-          })}
-        >
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={allowed}
-              onToggle={value => {
-                if (!threeBoxDisabled) {
-                  setThreeBoxSyncingPermission(!value)
-                }
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
+  //   if (threeBoxDisabled) {
+  //     allowed = false
+  //     description = t('syncWithThreeBoxDisabled')
+  //   }
+  //   return (
+  //     <div
+  //       className="settings-page__content-row"
+  //       data-testid="advanced-setting-3box"
+  //     >
+  //       <div className="settings-page__content-item">
+  //         <span>{t('syncWithThreeBox')}</span>
+  //         <div className="settings-page__content-description">
+  //           {description}
+  //         </div>
+  //       </div>
+  //       <div
+  //         className={classnames('settings-page__content-item', {
+  //           'settings-page__content-item--disabled': threeBoxDisabled,
+  //         })}
+  //       >
+  //         <div className="settings-page__content-item-col">
+  //           <ToggleButton
+  //             value={allowed}
+  //             onToggle={(value) => {
+  //               if (!threeBoxDisabled) {
+  //                 setThreeBoxSyncingPermission(!value)
+  //               }
+  //             }}
+  //             offLabel={t('off')}
+  //             onLabel={t('on')}
+  //           />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   handleIpfsGatewayChange (url) {
     const { t } = this.context
@@ -441,7 +441,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="text"
               value={this.state.ipfsGateway}
-              onChange={e => this.handleIpfsGatewayChange(e.target.value)}
+              onChange={(e) => this.handleIpfsGatewayChange(e.target.value)}
               error={ipfsGatewayError}
               fullWidth
               margin="dense"

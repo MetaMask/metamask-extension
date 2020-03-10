@@ -3,7 +3,7 @@ import { WALLET_VIEW_SIDEBAR } from '../sidebars/sidebar.constants'
 import MenuBar from './menu-bar.component'
 import { showSidebar, hideSidebar } from '../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     appState: {
       sidebar: { isOpen },
@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showSidebar: () => {
       dispatch(

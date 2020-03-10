@@ -21,7 +21,7 @@ import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions
-const createActionType = action => `metamask/confirm-transaction/${action}`
+const createActionType = (action) => `metamask/confirm-transaction/${action}`
 
 const UPDATE_TX_DATA = createActionType('UPDATE_TX_DATA')
 const CLEAR_TX_DATA = createActionType('CLEAR_TX_DATA')
@@ -111,9 +111,12 @@ export default function reducer (state = initState, action = {}) {
       } = action.payload
       return {
         ...state,
-        fiatTransactionAmount: fiatTransactionAmount || state.fiatTransactionAmount,
-        ethTransactionAmount: ethTransactionAmount || state.ethTransactionAmount,
-        hexTransactionAmount: hexTransactionAmount || state.hexTransactionAmount,
+        fiatTransactionAmount:
+          fiatTransactionAmount || state.fiatTransactionAmount,
+        ethTransactionAmount:
+          ethTransactionAmount || state.ethTransactionAmount,
+        hexTransactionAmount:
+          hexTransactionAmount || state.hexTransactionAmount,
       }
     case UPDATE_TRANSACTION_FEES:
       const {
@@ -135,7 +138,8 @@ export default function reducer (state = initState, action = {}) {
       } = action.payload
       return {
         ...state,
-        fiatTransactionTotal: fiatTransactionTotal || state.fiatTransactionTotal,
+        fiatTransactionTotal:
+          fiatTransactionTotal || state.fiatTransactionTotal,
         ethTransactionTotal: ethTransactionTotal || state.ethTransactionTotal,
         hexTransactionTotal: hexTransactionTotal || state.hexTransactionTotal,
       }

@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch) {
         url: genAccountLink(address, network, rpcPrefs),
       })
     },
-    showRemoveAccountConfirmationModal: identity => {
+    showRemoveAccountConfirmationModal: (identity) => {
       return dispatch(
         actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity })
       )
@@ -57,7 +57,7 @@ class AccountDetailsDropdown extends Component {
     onClose: PropTypes.func.isRequired,
   }
 
-  onClose = e => {
+  onClose = (e) => {
     e.stopPropagation()
     this.props.onClose()
   }
@@ -76,7 +76,7 @@ class AccountDetailsDropdown extends Component {
 
     const address = selectedIdentity.address
 
-    const keyring = keyrings.find(kr => {
+    const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address)
     })
 
@@ -86,7 +86,7 @@ class AccountDetailsDropdown extends Component {
       <Menu className="account-details-dropdown" isShowing>
         <CloseArea onClick={this.onClose} />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             this.context.metricsEvent({
               eventOpts: {
@@ -104,7 +104,7 @@ class AccountDetailsDropdown extends Component {
           }
         />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             showAccountDetailModal()
             this.context.metricsEvent({
@@ -120,7 +120,7 @@ class AccountDetailsDropdown extends Component {
           icon={<img src="images/info.svg" style={{ height: '15px' }} alt="" />}
         />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             this.context.metricsEvent({
               eventOpts: {
@@ -153,7 +153,7 @@ class AccountDetailsDropdown extends Component {
           }
         />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             this.context.metricsEvent({
               eventOpts: {
@@ -177,7 +177,7 @@ class AccountDetailsDropdown extends Component {
         />
         {isRemovable ? (
           <Item
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation()
               showRemoveAccountConfirmationModal(selectedIdentity)
               this.props.onClose()

@@ -263,9 +263,9 @@ export default class ConfirmTransactionBase extends Component {
             <ConfirmDetailRow
               label="Gas Fee"
               value={hexTransactionFee}
-              headerText="Edit"
+              headerText={advancedInlineGasShown ? '' : 'Edit' }
               headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() => this.handleEditGas()}
+              onHeaderClick={() => !advancedInlineGasShown && this.handleEditGas()}
               secondaryText={
                 hideFiatConversion
                   ? this.context.t('noConversionRateAvailable')
@@ -274,10 +274,10 @@ export default class ConfirmTransactionBase extends Component {
             />
             {advancedInlineGasShown ? (
               <AdvancedGasInputs
-                updateCustomGasPrice={newGasPrice =>
+                updateCustomGasPrice={(newGasPrice) =>
                   updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
                 }
-                updateCustomGasLimit={newGasLimit =>
+                updateCustomGasLimit={(newGasLimit) =>
                   updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
                 }
                 customGasPrice={customGas.gasPrice}
@@ -536,7 +536,7 @@ export default class ConfirmTransactionBase extends Component {
                   }
                 )
               })
-              .catch(error => {
+              .catch((error) => {
                 this.setState({
                   submitting: false,
                   submitError: error.message,
@@ -751,7 +751,7 @@ export default class ConfirmTransactionBase extends Component {
         nextTxId={nextTxId}
         prevTxId={prevTxId}
         showNavigation={showNavigation}
-        onNextTx={txId => this.handleNextTx(txId)}
+        onNextTx={(txId) => this.handleNextTx(txId)}
         firstTx={firstTx}
         lastTx={lastTx}
         ofText={ofText}

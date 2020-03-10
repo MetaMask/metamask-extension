@@ -18,7 +18,7 @@ import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { activeTab, metamask, appState } = state
   const {
     suggestedTokens,
@@ -56,10 +56,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated()).then(lastUpdated => {
+    dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
       if (lastUpdated) {
         dispatch(setThreeBoxLastUpdated(lastUpdated))
       } else {
@@ -68,7 +68,7 @@ const mapDispatchToProps = dispatch => ({
       }
     })
   },
-  restoreFromThreeBox: address => dispatch(restoreFromThreeBox(address)),
+  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
 })
 

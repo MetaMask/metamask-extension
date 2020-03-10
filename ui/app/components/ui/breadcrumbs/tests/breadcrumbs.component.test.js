@@ -5,12 +5,7 @@ import Breadcrumbs from '../breadcrumbs.component'
 
 describe('Breadcrumbs Component', function () {
   it('should render with the correct colors', function () {
-    const wrapper = shallow(
-      <Breadcrumbs
-        currentIndex={1}
-        total={3}
-      />
-    )
+    const wrapper = shallow(<Breadcrumbs currentIndex={1} total={3} />)
 
     assert.ok(wrapper)
     assert.equal(wrapper.find('.breadcrumbs').length, 1)

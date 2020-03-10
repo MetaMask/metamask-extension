@@ -29,17 +29,17 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setProviderType: type => {
+    setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     },
     setRpcTarget: (target, network, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, network, ticker, nickname))
     },
-    delRpcTarget: target => {
+    delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setNetworksTabAddMode: isInAddMode =>
+    setNetworksTabAddMode: (isInAddMode) =>
       dispatch(actions.setNetworksTabAddMode(isInAddMode)),
   }
 }
@@ -131,7 +131,7 @@ class NetworkDropdown extends Component {
     const props = this.props
     const reversedRpcListDetail = rpcListDetail.slice().reverse()
 
-    return reversedRpcListDetail.map(entry => {
+    return reversedRpcListDetail.map((entry) => {
       const rpc = entry.rpcUrl
       const ticker = entry.ticker || 'CFX'
       const nickname = entry.nickname || ''
@@ -169,7 +169,7 @@ class NetworkDropdown extends Component {
             </span>
             <i
               className="fa fa-times delete"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation()
                 props.delRpcTarget(rpc)
               }}
@@ -213,9 +213,9 @@ class NetworkDropdown extends Component {
     return (
       <Dropdown
         isOpen={isOpen}
-        onClickOutside={event => {
+        onClickOutside={(event) => {
           const { classList } = event.target
-          const isInClassList = className => classList.contains(className)
+          const isInClassList = (className) => classList.contains(className)
           const notToggleElementIndex = R.findIndex(isInClassList)(
             notToggleElementClassnames
           )

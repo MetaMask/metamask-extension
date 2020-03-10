@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ConfirmPageContainerWarning = props => {
+const ConfirmPageContainerWarning = (props) => {
   return (
     <div className="confirm-page-container-warning">
       <img

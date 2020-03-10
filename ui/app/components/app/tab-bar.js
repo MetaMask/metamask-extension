@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const TabBar = props => {
+const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props
 
   return (

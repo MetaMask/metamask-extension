@@ -23,9 +23,13 @@ describe('AccountListItem Component', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <AccountListItem
-          account={ { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' } }
+          account={{
+            address: 'mockAddress',
+            name: 'mockName',
+            balance: 'mockBalance',
+          }}
           className="mockClassName"
           conversionRate={4}
           currentCurrency="mockCurrentyCurrency"
@@ -34,8 +38,9 @@ describe('AccountListItem Component', function () {
           displayBalance={false}
           handleClick={propsMethodSpies.handleClick}
           icon={<i className="mockIcon" />}
-        />
-      ), { context: { t: str => str + '_t' } })
+        />,
+        { context: { t: (str) => str + '_t' } }
+      )
     })
 
     afterEach(function () {
@@ -59,20 +64,32 @@ describe('AccountListItem Component', function () {
     })
 
     it('should have a top row div', function () {
-      assert.equal(wrapper.find('.mockClassName > .account-list-item__top-row').length, 1)
-      assert(wrapper.find('.mockClassName > .account-list-item__top-row').is('div'))
+      assert.equal(
+        wrapper.find('.mockClassName > .account-list-item__top-row').length,
+        1
+      )
+      assert(
+        wrapper.find('.mockClassName > .account-list-item__top-row').is('div')
+      )
     })
 
     it('should have an identicon, name and icon in the top row', function () {
-      const topRow = wrapper.find('.mockClassName > .account-list-item__top-row')
+      const topRow = wrapper.find(
+        '.mockClassName > .account-list-item__top-row'
+      )
       assert.equal(topRow.find(Identicon).length, 1)
       assert.equal(topRow.find('.account-list-item__account-name').length, 1)
       assert.equal(topRow.find('.account-list-item__icon').length, 1)
     })
 
     it('should show the account name if it exists', function () {
-      const topRow = wrapper.find('.mockClassName > .account-list-item__top-row')
-      assert.equal(topRow.find('.account-list-item__account-name').text(), 'mockName')
+      const topRow = wrapper.find(
+        '.mockClassName > .account-list-item__top-row'
+      )
+      assert.equal(
+        topRow.find('.account-list-item__account-name').text(),
+        'mockName'
+      )
     })
 
     it('should show the account address if there is no name', function () {
@@ -87,9 +104,21 @@ describe('AccountListItem Component', function () {
     })
 
     it('should render the passed icon', function () {
-      const topRow = wrapper.find('.mockClassName > .account-list-item__top-row')
-      assert(topRow.find('.account-list-item__icon').childAt(0).is('i'))
-      assert(topRow.find('.account-list-item__icon').childAt(0).hasClass('mockIcon'))
+      const topRow = wrapper.find(
+        '.mockClassName > .account-list-item__top-row'
+      )
+      assert(
+        topRow
+          .find('.account-list-item__icon')
+          .childAt(0)
+          .is('i')
+      )
+      assert(
+        topRow
+          .find('.account-list-item__icon')
+          .childAt(0)
+          .hasClass('mockIcon')
+      )
     })
 
     it('should not render an icon if none is passed', function () {

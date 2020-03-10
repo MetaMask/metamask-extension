@@ -68,7 +68,7 @@ export default class NetworksTab extends PureComponent {
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
             type="secondary"
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault()
               setSelectedSettingsRpcUrl(null)
               setNetworksTabAddMode(true)
@@ -152,7 +152,7 @@ export default class NetworksTab extends PureComponent {
             networksTabIsInAddMode,
         })}
       >
-        {networksToRender.map(network =>
+        {networksToRender.map((network) =>
           this.renderNetworkListItem(network, selectedNetwork.rpcUrl)
         )}
         {networksTabIsInAddMode && (
@@ -206,7 +206,7 @@ export default class NetworksTab extends PureComponent {
         {this.renderNetworksList()}
         {shouldRenderNetworkForm ? (
           <NetworkForm
-            rpcUrls={networksToRender.map(network => network.rpcUrl)}
+            rpcUrls={networksToRender.map((network) => network.rpcUrl)}
             setRpcTarget={setRpcTarget}
             editRpc={editRpc}
             networkName={label || (labelKey && t(labelKey)) || ''}
@@ -246,7 +246,7 @@ export default class NetworksTab extends PureComponent {
           <div className="networks-tab__add-network-button-wrapper">
             <Button
               type="primary"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 setSelectedSettingsRpcUrl(null)
                 setNetworksTabAddMode(true)

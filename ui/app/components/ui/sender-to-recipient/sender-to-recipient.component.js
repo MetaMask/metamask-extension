@@ -83,11 +83,13 @@ export default class SenderToRecipient extends PureComponent {
         onHidden={() => this.setState({ senderAddressCopied: false })}
       >
         <div className="sender-to-recipient__name">
-          {
-            addressOnly
-              ? <span>{`${t('from')}: ${senderName || checksummedSenderAddress}`}</span>
-              : senderName
-          }
+          {addressOnly ? (
+            <span>
+              {`${t('from')}: ${senderName || checksummedSenderAddress}`}
+            </span>
+          ) : (
+            senderName
+          )}
         </div>
       </Tooltip>
     )

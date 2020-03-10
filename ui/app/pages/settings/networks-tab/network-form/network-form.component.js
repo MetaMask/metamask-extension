@@ -212,7 +212,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   setStateWithValue = (stateKey, validator) => {
-    return e => {
+    return (e) => {
       validator && validator(e.target.value, stateKey)
       this.setState({ [stateKey]: e.target.value })
     }
@@ -227,7 +227,7 @@ export default class NetworkForm extends PureComponent {
     })
   }
 
-  validateChainId = chainId => {
+  validateChainId = (chainId) => {
     this.setErrorTo(
       'chainId',
       !!chainId && Number.isNaN(parseInt(chainId))
@@ -236,7 +236,7 @@ export default class NetworkForm extends PureComponent {
     )
   }
 
-  isValidWhenAppended = url => {
+  isValidWhenAppended = (url) => {
     const appendedRpc = `http://${url}`
     return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
   }
@@ -288,7 +288,7 @@ export default class NetworkForm extends PureComponent {
     const isSubmitDisabled =
       viewOnly ||
       this.stateIsUnchanged() ||
-      Object.values(errors).some(x => x) ||
+      Object.values(errors).some((x) => x) ||
       !rpcUrl
     const deletable =
       !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly

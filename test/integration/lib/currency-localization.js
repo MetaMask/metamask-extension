@@ -4,11 +4,11 @@ const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('currency localization')
 
-QUnit.test('renders localized currency', assert => {
+QUnit.test('renders localized currency', (assert) => {
   const done = assert.async()
   runCurrencyLocalizationTest(assert)
     .then(done)
-    .catch(err => {
+    .catch((err) => {
       assert.notOk(err, `Error was thrown: ${err.stack}`)
       done()
     })

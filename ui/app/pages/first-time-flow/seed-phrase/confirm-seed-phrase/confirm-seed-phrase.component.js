@@ -45,12 +45,12 @@ export default class ConfirmSeedPhrase extends PureComponent {
     this.setState({ sortedSeedWords })
   }
 
-  setDraggingSeedIndex = draggingSeedIndex =>
+  setDraggingSeedIndex = (draggingSeedIndex) =>
     this.setState({ draggingSeedIndex })
 
-  setHoveringIndex = hoveringIndex => this.setState({ hoveringIndex })
+  setHoveringIndex = (hoveringIndex) => this.setState({ hoveringIndex })
 
-  onDrop = targetIndex => {
+  onDrop = (targetIndex) => {
     const { selectedSeedIndices, draggingSeedIndex } = this.state
 
     const indices = insert(
@@ -117,15 +117,19 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
   handleDeselectSeedWord = (index) => {
     this.setState({
-      selectedSeedIndices: this.state.selectedSeedIndices.filter(i => index !== i),
-      pendingSeedIndices: this.state.pendingSeedIndices.filter(i => index !== i),
+      selectedSeedIndices: this.state.selectedSeedIndices.filter(
+        (i) => index !== i
+      ),
+      pendingSeedIndices: this.state.pendingSeedIndices.filter(
+        (i) => index !== i
+      ),
     })
   }
 
   isValid () {
     const { seedPhrase } = this.props
     const { selectedSeedIndices, sortedSeedWords } = this.state
-    const selectedSeedWords = selectedSeedIndices.map(i => sortedSeedWords[i])
+    const selectedSeedWords = selectedSeedIndices.map((i) => sortedSeedWords[i])
     return seedPhrase === selectedSeedWords.join(' ')
   }
 
@@ -142,7 +146,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
       <div className="confirm-seed-phrase">
         <div className="confirm-seed-phrase__back-button">
           <a
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               history.push(INITIALIZE_SEED_PHRASE_ROUTE)
             }}
@@ -166,32 +170,33 @@ export default class ConfirmSeedPhrase extends PureComponent {
           {this.renderPendingSeeds()}
           {this.renderSelectedSeeds()}
         </div>
-        <div className="confirm-seed-phrase__sorted-seed-words" data-testid="seed-phrase-sorted">
-          {
-            sortedSeedWords.map((word, index) => {
-              const isSelected = selectedSeedIndices.includes(index)
+        <div
+          className="confirm-seed-phrase__sorted-seed-words"
+          data-testid="seed-phrase-sorted"
+        >
+          {sortedSeedWords.map((word, index) => {
+            const isSelected = selectedSeedIndices.includes(index)
 
-              return (
-                <DraggableSeed
-                  key={index}
-                  seedIndex={index}
-                  index={index}
-                  setHoveringIndex={this.setHoveringIndex}
-                  onDrop={this.onDrop}
-                  className="confirm-seed-phrase__seed-word--sorted"
-                  selected={isSelected}
-                  onClick={() => {
-                    if (!isSelected) {
-                      this.handleSelectSeedWord(index)
-                    } else {
-                      this.handleDeselectSeedWord(index)
-                    }
-                  }}
-                  word={word}
-                />
-              )
-            })
-          }
+            return (
+              <DraggableSeed
+                key={index}
+                seedIndex={index}
+                index={index}
+                setHoveringIndex={this.setHoveringIndex}
+                onDrop={this.onDrop}
+                className="confirm-seed-phrase__seed-word--sorted"
+                selected={isSelected}
+                onClick={() => {
+                  if (!isSelected) {
+                    this.handleSelectSeedWord(index)
+                  } else {
+                    this.handleDeselectSeedWord(index)
+                  }
+                }}
+                word={word}
+              />
+            )
+          })}
         </div>
         <Button
           type="primary"
@@ -206,7 +211,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   renderSelectedSeeds () {
-    const { sortedSeedWords, selectedSeedIndices, draggingSeedIndex } = this.state
+    const {
+      sortedSeedWords,
+      selectedSeedIndices,
+      draggingSeedIndex,
+    } = this.state
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index]
       const word = sortedSeedWords[seedIndex]

@@ -34,7 +34,7 @@ describe('MetaMask', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map(err => err.message)
+        const errorReports = errors.map((err) => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -63,7 +63,9 @@ describe('MetaMask', function () {
     })
 
     it('clicks the "Create New Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Create a Wallet')]`)
+      )
       await driver.delay(largeDelayMs)
     })
 
@@ -73,8 +75,12 @@ describe('MetaMask', function () {
     })
 
     it('accepts a secure password', async function () {
-      const passwordBox = await driver.findElement(By.css('.first-time-flow__form #create-password'))
-      const passwordBoxConfirm = await driver.findElement(By.css('.first-time-flow__form #confirm-password'))
+      const passwordBox = await driver.findElement(
+        By.css('.first-time-flow__form #create-password')
+      )
+      const passwordBoxConfirm = await driver.findElement(
+        By.css('.first-time-flow__form #confirm-password')
+      )
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -86,7 +92,11 @@ describe('MetaMask', function () {
     })
 
     it('skips the seed phrase challenge', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
+      await driver.clickElement(
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`
+        )
+      )
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.css('.account-details__details-button'))
@@ -127,7 +137,7 @@ describe('MetaMask', function () {
         windowHandles
       )
       popup = windowHandles.find(
-        handle => handle !== extension && handle !== dapp
+        (handle) => handle !== extension && handle !== dapp
       )
 
       await driver.switchToWindow(popup)
@@ -148,7 +158,9 @@ describe('MetaMask', function () {
     })
 
     it('shows connected sites', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected Sites')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Connected Sites')]`)
+      )
 
       await driver.findElement(By.css('.connected-sites__title'))
 

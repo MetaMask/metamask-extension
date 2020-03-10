@@ -83,9 +83,9 @@ async function validateSourcemapForFile ({ buildName }) {
   const buildLines = rawBuild.split('\n')
   const targetString = 'new Error'
   // const targetString = 'null'
-  const matchesPerLine = buildLines.map(line => indicesOf(targetString, line))
+  const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
   matchesPerLine.forEach((matchIndices, lineIndex) => {
-    matchIndices.forEach(matchColumn => {
+    matchIndices.forEach((matchColumn) => {
       sampleCount++
       const position = { line: lineIndex + 1, column: matchColumn }
       const result = consumer.originalPositionFor(position)

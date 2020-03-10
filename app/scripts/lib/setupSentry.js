@@ -6,9 +6,9 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
 const SENTRY_DSN_PROD =
-  'https://9f364c1e50ff4c8b96f279b236019359@sentry.conflux-chain.org/10'
+      'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
 const SENTRY_DSN_DEV =
-  'https://b6d6770834fe4c6bb3912b598d6b53b8@sentry.conflux-chain.org/9'
+      'https://756aa0cb47eb4b44ac25739ceba42c07@sentry.io/3624979'
 
 export default setupSentry
 
@@ -37,10 +37,10 @@ function setupSentry (opts) {
     environment: METAMASK_ENVIRONMENT,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: report => rewriteReport(report),
+    beforeSend: (report) => rewriteReport(report),
   })
 
-  Sentry.configureScope(scope => {
+  Sentry.configureScope((scope) => {
     scope.setExtra('isBrave', isBrave)
   })
 
@@ -65,7 +65,7 @@ function setupSentry (opts) {
 }
 
 function simplifyErrorMessages (report) {
-  rewriteErrorMessages(report, errorMessage => {
+  rewriteErrorMessages(report, (errorMessage) => {
     // simplify ethjs error messages
     errorMessage = extractEthjsErrorMessage(errorMessage)
     // simplify 'Transaction Failed: known transaction'
@@ -84,7 +84,7 @@ function rewriteErrorMessages (report, rewriteFn) {
   }
   // rewrite each exception message
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
+    report.exception.values.forEach((item) => {
       if (typeof item.value === 'string') {
         item.value = rewriteFn(item.value)
       }
@@ -97,8 +97,8 @@ function rewriteReportUrls (report) {
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
   if (report.exception && report.exception.values) {
-    report.exception.values.forEach(item => {
-      item.stacktrace.frames.forEach(frame => {
+    report.exception.values.forEach((item) => {
+      item.stacktrace.frames.forEach((frame) => {
         frame.filename = toMetamaskUrl(frame.filename)
       })
     })

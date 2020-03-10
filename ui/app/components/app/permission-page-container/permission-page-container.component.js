@@ -58,7 +58,7 @@ export default class PermissionPageContainer extends Component {
     return Object.keys(props.request.permissions || {})
   }
 
-  onPermissionToggle = methodName => {
+  onPermissionToggle = (methodName) => {
     this.setState({
       selectedPermissions: {
         ...this.state.selectedPermissions,
@@ -95,7 +95,7 @@ export default class PermissionPageContainer extends Component {
       permissions: { ..._request.permissions },
     }
 
-    Object.keys(this.state.selectedPermissions).forEach(key => {
+    Object.keys(this.state.selectedPermissions).forEach((key) => {
       if (!this.state.selectedPermissions[key]) {
         delete request.permissions[key]
       }

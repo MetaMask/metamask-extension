@@ -8,7 +8,7 @@ import liveMigrations from '../../../app/scripts/migrations'
 const stubMigrations = [
   {
     version: 1,
-    migrate: data => {
+    migrate: (data) => {
       // clone the data just like we do in migrations
       const clonedData = cloneDeep(data)
       clonedData.meta.version = 1
@@ -44,18 +44,25 @@ const firstTimeState = {
 describe('migrations', function () {
   describe('liveMigrations require list', function () {
     it('should include all the migrations', async function () {
-      const fileNames = await pify(cb => fs.readdir('./app/scripts/migrations/', cb))()
-      const migrationNumbers = fileNames.reduce((agg, filename) => {
-        const name = filename.split('.')[0]
-        if (/^\d+$/.test(name)) {
-          agg.push(name)
-        }
-        return agg
-      }, []).map((num) => parseInt(num))
+      const fileNames = await pify((cb) =>
+        fs.readdir('./app/scripts/migrations/', cb)
+      )()
+      const migrationNumbers = fileNames
+        .reduce((agg, filename) => {
+          const name = filename.split('.')[0]
+          if (/^\d+$/.test(name)) {
+            agg.push(name)
+          }
+          return agg
+        }, [])
+        .map((num) => parseInt(num))
 
       migrationNumbers.forEach((num) => {
         const migration = liveMigrations.find((m) => m.version === num)
-        assert(migration, `migration should be include in the index missing migration ${num}`)
+        assert(
+          migration,
+          `migration should be include in the index missing migration ${num}`
+        )
       })
     })
   })
@@ -76,12 +83,14 @@ describe('migrations', function () {
 
     it('should emit an error', async function () {
       const migrator = new Migrator({
-        migrations: [{
-          version: 1,
-          async migrate () {
-            throw new Error('test')
+        migrations: [
+          {
+            version: 1,
+            async migrate () {
+              throw new Error('test')
+            },
           },
-        }],
+        ],
       })
       await assert.rejects(migrator.migrateData({ meta: { version: 0 } }))
     })

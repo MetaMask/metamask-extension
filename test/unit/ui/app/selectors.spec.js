@@ -163,7 +163,9 @@ describe('Selectors', function () {
   })
 
   it('#getSelectedTokenToFiatRate', function () {
-    const selectedTokenToFiatRate = selectors.getSelectedTokenToFiatRate(mockState)
+    const selectedTokenToFiatRate = selectors.getSelectedTokenToFiatRate(
+      mockState
+    )
     assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 

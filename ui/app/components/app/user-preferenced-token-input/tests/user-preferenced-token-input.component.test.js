@@ -7,9 +7,7 @@ import TokenInput from '../../../ui/token-input'
 describe('UserPreferencedCurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly', function () {
-      const wrapper = shallow(
-        <UserPreferencedTokenInput />
-      )
+      const wrapper = shallow(<UserPreferencedTokenInput />)
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(TokenInput).length, 1)

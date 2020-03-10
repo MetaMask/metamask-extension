@@ -17,14 +17,18 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async function () {
-      await assert.rejects(async () => {
-        await accountImporter.importAccount('Private Key', [ '' ])
-      }, Error, 'no empty strings')
+      await assert.rejects(
+        async () => {
+          await accountImporter.importAccount('Private Key', [''])
+        },
+        Error,
+        'no empty strings'
+      )
     })
 
     it('throws an error for undefined string private key', async function () {
       await assert.rejects(async () => {
-        await accountImporter.importAccount('Private Key', [ undefined ])
+        await accountImporter.importAccount('Private Key', [undefined])
       })
 
       await assert.rejects(async () => {
@@ -34,7 +38,7 @@ describe('Account Import Strategies', function () {
 
     it('throws an error for invalid private key', async function () {
       await assert.rejects(async () => {
-        await accountImporter.importAccount('Private Key', [ 'popcorn' ])
+        await accountImporter.importAccount('Private Key', ['popcorn'])
       })
     })
   })

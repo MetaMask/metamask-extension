@@ -108,7 +108,7 @@ export default class WalletView extends Component {
 
     const checksummedAddress = checksumAddress(selectedAddress)
 
-    const keyring = keyrings.find(kr => {
+    const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(selectedAddress)
     })
 

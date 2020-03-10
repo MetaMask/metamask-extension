@@ -20,7 +20,7 @@ export default class SendContent extends Component {
     isOwnedAccount: PropTypes.bool,
   }
 
-  updateGas = updateData => this.props.updateGas(updateData)
+  updateGas = (updateData) => this.props.updateGas(updateData)
 
   render () {
     return (

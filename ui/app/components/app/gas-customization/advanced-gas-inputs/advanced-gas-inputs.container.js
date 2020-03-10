@@ -15,7 +15,7 @@ function convertGasLimitForInputs (gasLimitInHexWEI) {
   return parseInt(gasLimitInHexWEI, 16) || 0
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showGasPriceInfoModal: () =>
       dispatch(showModal({ name: 'GAS_PRICE_INFO_MODAL' })),
@@ -37,8 +37,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     customGasPrice: convertGasPriceForInputs(customGasPrice),
     customGasLimit: convertGasLimitForInputs(customGasLimit),
-    updateCustomGasPrice: price => updateCustomGasPrice(decGWEIToHexWEI(price)),
-    updateCustomGasLimit: limit => updateCustomGasLimit(decimalToHex(limit)),
+    updateCustomGasPrice: (price) => updateCustomGasPrice(decGWEIToHexWEI(price)),
+    updateCustomGasLimit: (limit) => updateCustomGasLimit(decimalToHex(limit)),
   }
 }
 

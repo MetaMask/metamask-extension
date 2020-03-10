@@ -20,14 +20,14 @@ proxyquire('../send-amount-row.container.js', {
     },
   },
   './send-amount-row.selectors': {
-    sendAmountIsInError: s => `mockInError:${s}`,
+    sendAmountIsInError: (s) => `mockInError:${s}`,
   },
   '../../send.utils': {
-    getAmountErrorObject: mockDataObject => ({
+    getAmountErrorObject: (mockDataObject) => ({
       ...mockDataObject,
       mockChange: true,
     }),
-    getGasFeeErrorObject: mockDataObject => ({
+    getGasFeeErrorObject: (mockDataObject) => ({
       ...mockDataObject,
       mockGasFeeErrorChange: true,
     }),
@@ -37,7 +37,6 @@ proxyquire('../send-amount-row.container.js', {
 })
 
 describe('send-amount-row container', function () {
-
   describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject

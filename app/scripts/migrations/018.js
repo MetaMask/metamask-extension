@@ -32,7 +32,7 @@ function transformState (state) {
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
-    newState.TransactionController.transactions = transactions.map(txMeta => {
+    newState.TransactionController.transactions = transactions.map((txMeta) => {
       // no history: initialize
       if (!txMeta.history || txMeta.history.length === 0) {
         const snapshot = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
@@ -43,7 +43,7 @@ function transformState (state) {
       const newHistory = txStateHistoryHelper
         .migrateFromSnapshotsToDiffs(txMeta.history)
         // remove empty diffs
-        .filter(entry => {
+        .filter((entry) => {
           return !Array.isArray(entry) || entry.length > 0
         })
       txMeta.history = newHistory

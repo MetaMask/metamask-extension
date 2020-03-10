@@ -47,8 +47,8 @@ describe('Transaction Controller', function () {
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
-      signTransaction: ethTx =>
-        new Promise(resolve => {
+      signTransaction: (ethTx) =>
+        new Promise((resolve) => {
           ethTx.sign(`0x${fromAccount.key.toString('hex')}`)
           resolve()
         }),
@@ -61,10 +61,22 @@ describe('Transaction Controller', function () {
   describe('#getState', function () {
     it('should return a state object with the right keys and datat types', function () {
       const exposedState = txController.getState()
-      assert('unapprovedTxs' in exposedState, 'state should have the key unapprovedTxs')
-      assert('selectedAddressTxList' in exposedState, 'state should have the key selectedAddressTxList')
-      assert(exposedState && typeof exposedState.unapprovedTxs === 'object', 'should be an object')
-      assert(Array.isArray(exposedState.selectedAddressTxList), 'should be an array')
+      assert(
+        'unapprovedTxs' in exposedState,
+        'state should have the key unapprovedTxs'
+      )
+      assert(
+        'selectedAddressTxList' in exposedState,
+        'state should have the key selectedAddressTxList'
+      )
+      assert(
+        exposedState && typeof exposedState.unapprovedTxs === 'object',
+        'should be an object'
+      )
+      assert(
+        Array.isArray(exposedState.selectedAddressTxList),
+        'should be an array'
+      )
     })
   })
 
@@ -236,7 +248,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
-      txController.once('newUnapprovedTx', txMetaFromEmit => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
           txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
@@ -245,7 +257,7 @@ describe('Transaction Controller', function () {
 
       txController
         .newUnapprovedTransaction(txParams)
-        .then(hash => {
+        .then((hash) => {
           assert(hash, 'newUnapprovedTransaction needs to return the hash')
           done()
         })
@@ -253,13 +265,13 @@ describe('Transaction Controller', function () {
     })
 
     it('should reject when finished and status is rejected', function (done) {
-      txController.once('newUnapprovedTx', txMetaFromEmit => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
       })
 
-      txController.newUnapprovedTransaction(txParams).catch(err => {
+      txController.newUnapprovedTransaction(txParams).catch((err) => {
         if (
           err.message ===
           'MetaMask Tx Signature: User denied transaction signature.'
@@ -293,7 +305,7 @@ describe('Transaction Controller', function () {
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
       txController
         .addUnapprovedTransaction({ from: selectedAddress })
-        .then(txMeta => {
+        .then((txMeta) => {
           assert('id' in txMeta, 'should have a id')
           assert('time' in txMeta, 'should have a time stamp')
           assert(
@@ -316,7 +328,7 @@ describe('Transaction Controller', function () {
 
     it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
       providerResultStub.eth_gasPrice = '4a817c800'
-      txController.once('newUnapprovedTx', txMetaFromEmit => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
@@ -332,7 +344,7 @@ describe('Transaction Controller', function () {
           from: selectedAddress,
           to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.message === 'Recipient is a public account') {
             done()
           } else {
@@ -357,7 +369,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should not fail if recipient is public but not on mainnet', function (done) {
-      txController.once('newUnapprovedTx', txMetaFromEmit => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
@@ -376,7 +388,7 @@ describe('Transaction Controller', function () {
           from: selectedAddress,
           to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
         })
-        .catch(err => {
+        .catch((err) => {
           if (
             err.message ===
             'MetaMask is having trouble connecting to the network'
@@ -427,17 +439,17 @@ describe('Transaction Controller', function () {
 
       const eventNames = ['update:badge', '1:unapproved']
       const listeners = []
-      eventNames.forEach(eventName => {
+      eventNames.forEach((eventName) => {
         listeners.push(
-          new Promise(resolve => {
-            txController.once(eventName, arg => {
+          new Promise((resolve) => {
+            txController.once(eventName, (arg) => {
               resolve(arg)
             })
           })
         )
       })
       Promise.all(listeners)
-        .then(returnValues => {
+        .then((returnValues) => {
           assert.deepEqual(
             returnValues.pop(),
             txMeta,
@@ -521,7 +533,7 @@ describe('Transaction Controller', function () {
       )
       txController
         .signTransaction('1')
-        .then(rawTx => {
+        .then((rawTx) => {
           const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
           assert.equal(ethTx.getChainId(), currentNetworkId)
           done()
@@ -770,7 +782,7 @@ describe('Transaction Controller', function () {
       ])
       txController
         .retryTransaction(1)
-        .then(txMeta => {
+        .then((txMeta) => {
           assert.equal(
             txMeta.txParams.gasPrice,
             '0x10642ac00',
@@ -962,8 +974,8 @@ describe('Transaction Controller', function () {
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: ethTx =>
-          new Promise(resolve => {
+        signTransaction: (ethTx) =>
+          new Promise((resolve) => {
             ethTx.sign(_fromAccount.key)
             resolve()
           }),
@@ -1000,8 +1012,8 @@ describe('Transaction Controller', function () {
         networkStore: new ObservableStore(currentNetworkId),
         txHistoryLimit: 10,
         blockTracker: _blockTrackerStub,
-        signTransaction: ethTx =>
-          new Promise(resolve => {
+        signTransaction: (ethTx) =>
+          new Promise((resolve) => {
             ethTx.sign(_fromAccount.key)
             resolve()
           }),
@@ -1073,7 +1085,7 @@ describe('Transaction Controller', function () {
       assert(txController.pendingTxTracker.getPendingTransactions().length, 2)
       const states = txController.pendingTxTracker
         .getPendingTransactions()
-        .map(tx => tx.status)
+        .map((tx) => tx.status)
       assert(states.includes('approved'), 'includes approved')
       assert(states.includes('submitted'), 'includes submitted')
     })

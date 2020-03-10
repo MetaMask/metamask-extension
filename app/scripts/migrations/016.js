@@ -32,7 +32,7 @@ function transformState (state) {
   if (TransactionController && TransactionController.transactions) {
     const transactions = newState.TransactionController.transactions
 
-    newState.TransactionController.transactions = transactions.map(txMeta => {
+    newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (!txMeta.err) {
         return txMeta
       }

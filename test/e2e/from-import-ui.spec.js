@@ -41,7 +41,7 @@ describe('Using MetaMask with an existing account', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map(err => err.message)
+        const errorReports = errors.map((err) => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -70,7 +70,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Import Wallet')]`)
+      )
       await driver.delay(largeDelayMs)
     })
 
@@ -80,7 +82,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('imports a seed phrase', async function () {
-      const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
+      const [seedTextArea] = await driver.findElements(
+        By.css('textarea.first-time-flow__textarea')
+      )
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
 
@@ -100,8 +104,14 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('clicks through the success screen', async function () {
-      await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
-      await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
+      await driver.findElement(
+        By.xpath(`//div[contains(text(), 'Congratulations')]`)
+      )
+      await driver.clickElement(
+        By.xpath(
+          `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`
+        )
+      )
       await driver.delay(regularDelayMs)
     })
   })
@@ -176,7 +186,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('set account name', async function () {
-      const [accountName] = await driver.findElements(By.css('.new-account-create-form input'))
+      const [accountName] = await driver.findElements(
+        By.css('.new-account-create-form input')
+      )
       await accountName.sendKeys('2nd account')
       await driver.delay(regularDelayMs)
 
@@ -187,7 +199,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const [accountName] = await driver.findElements(
+        By.css('.account-details__account-name')
+      )
       assert.equal(await accountName.getText(), '2nd account')
       await driver.delay(regularDelayMs)
     })
@@ -217,12 +231,12 @@ describe('Using MetaMask with an existing account', function () {
       await inputAmount.sendKeys('1')
 
       // Set the gas limit
-      await driver.clickElement(By.css('.advanced-gas-options-btn'))
-      await driver.delay(regularDelayMs)
+      // await driver.clickElement(By.css('.advanced-gas-options-btn'))
+      // await driver.delay(regularDelayMs)
 
-      const gasModal = await driver.findElement(By.css('span .modal'))
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Save')]`))
-      await driver.wait(until.stalenessOf(gasModal))
+      // const gasModal = await driver.findElement(By.css('span .modal'))
+      // await driver.clickElement(By.xpath(`//button[contains(text(), 'Save')]`))
+      // await driver.wait(until.stalenessOf(gasModal))
       await driver.delay(regularDelayMs)
 
       // Continue to next screen
@@ -251,7 +265,7 @@ describe('Using MetaMask with an existing account', function () {
         By.css('.transaction-list-item__amount--primary')
       )
       assert.equal(txValues.length, 1)
-      assert.ok(/-1\s*ETH/.test(await txValues[0].getText()))
+      assert.ok(/-1\s*CFX/.test(await txValues[0].getText()))
     })
   })
 
@@ -267,7 +281,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('enter private key', async function () {
-      const privateKeyInput = await driver.findElement(By.css('#private-key-box'))
+      const privateKeyInput = await driver.findElement(
+        By.css('#private-key-box')
+      )
       await privateKeyInput.sendKeys(testPrivateKey2)
       await driver.delay(regularDelayMs)
       await driver.clickElement(
@@ -277,13 +293,17 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const [accountName] = await driver.findElements(
+        By.css('.account-details__account-name')
+      )
       assert.equal(await accountName.getText(), 'Account 4')
       await driver.delay(regularDelayMs)
     })
 
     it('should show the imported label', async function () {
-      const [importedLabel] = await driver.findElements(By.css('.account-details__keyring-label'))
+      const [importedLabel] = await driver.findElements(
+        By.css('.account-details__keyring-label')
+      )
       assert.equal(await importedLabel.getText(), 'IMPORTED')
       await driver.delay(regularDelayMs)
     })
@@ -301,7 +321,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('enter private key', async function () {
-      const privateKeyInput = await driver.findElement(By.css('#private-key-box'))
+      const privateKeyInput = await driver.findElement(
+        By.css('#private-key-box')
+      )
       await privateKeyInput.sendKeys(testPrivateKey3)
       await driver.delay(regularDelayMs)
       await driver.clickElement(
@@ -311,7 +333,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the remove account modal', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const [accountName] = await driver.findElements(
+        By.css('.account-details__account-name')
+      )
       assert.equal(await accountName.getText(), 'Account 5')
       await driver.delay(regularDelayMs)
 
@@ -332,7 +356,9 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should remove the account', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Remove')]`))
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Remove')]`)
+      )
 
       await driver.delay(regularDelayMs)
 
@@ -351,7 +377,9 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Connects to a Hardware wallet', function () {
     it('choose Connect Hardware Wallet from the account menu', async function () {
-      await driver.clickElement(By.xpath(`//div[contains(text(), 'Connect Hardware Wallet')]`))
+      await driver.clickElement(
+        By.xpath(`//div[contains(text(), 'Connect Hardware Wallet')]`)
+      )
       await driver.delay(regularDelayMs)
     })
 

@@ -8,7 +8,7 @@ const firstTimeFlowTypeNameMap = {
   import: 'Selected Import Wallet',
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { firstTimeFlowType, participateInMetaMetrics } = state.metamask
 
   return {
@@ -19,9 +19,9 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setParticipateInMetaMetrics: val =>
+    setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
   }
 }

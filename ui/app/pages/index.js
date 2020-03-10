@@ -27,10 +27,7 @@ class Index extends PureComponent {
       return (
         <Provider store={store}>
           <I18nProvider>
-            <ErrorPage
-              error={error}
-              errorId={errorId}
-            />
+            <ErrorPage error={error} errorId={errorId} />
           </I18nProvider>
         </Provider>
       )

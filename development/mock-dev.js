@@ -105,7 +105,7 @@ const store = createStore(
       ? action.value
       : rootReducer(state, action)),
   firstState,
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(thunkMiddleware)
 )
 
 // start app
@@ -120,7 +120,7 @@ function startApp () {
   render(
     <div className="super-dev-container">
       <button
-        onClick={ev => {
+        onClick={(ev) => {
           ev.preventDefault()
           store.dispatch(updateState('terms'))
         }}

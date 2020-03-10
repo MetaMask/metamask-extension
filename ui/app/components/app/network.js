@@ -18,7 +18,7 @@ function NetworkIndicator ({
         'conflux-test-network': providerName === 'testnet',
       })}
       title={hoverText}
-      onClick={event => {
+      onClick={(event) => {
         if (!disabled) {
           onClick(event)
         }
@@ -114,7 +114,7 @@ export default class Network extends Component {
             {networkNumber === 'loading' ? (
               <span
                 className="pointer network-loading-spinner"
-                onClick={event => onClick(event)}
+                onClick={(event) => onClick(event)}
               >
                 <img
                   title={t('attemptingConnect')}

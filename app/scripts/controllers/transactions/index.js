@@ -104,7 +104,7 @@ class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      publishTransaction: rawTx => this.query.sendRawTransaction(rawTx),
+      publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: () => {
         const pending = this.txStateManager.getPendingTransactions()
         const approved = this.txStateManager.getApprovedTransactions()
@@ -180,7 +180,7 @@ class TransactionController extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.txStateManager.once(
         `${initialTxMeta.id}:finished`,
-        finishedTxMeta => {
+        (finishedTxMeta) => {
           switch (finishedTxMeta.status) {
             case 'submitted':
               return resolve(finishedTxMeta.hash)
@@ -640,10 +640,10 @@ class TransactionController extends EventEmitter {
       @returns {number} - number of transactions that have the status submitted
       @param {string} account - hex prefixed account
     */
-    this.getPendingTxCount = account =>
+    this.getPendingTxCount = (account) =>
       this.txStateManager.getPendingTransactions(account).length
     /** see txStateManager */
-    this.getFilteredTxList = opts => this.txStateManager.getFilteredTxList(opts)
+    this.getFilteredTxList = (opts) => this.txStateManager.getFilteredTxList(opts)
   }
 
   // called once on startup
@@ -666,16 +666,16 @@ class TransactionController extends EventEmitter {
         status: 'unapproved',
         loadingDefaults: true,
       })
-      .forEach(tx => {
+      .forEach((tx) => {
         this.addTxGasDefaults(tx)
-          .then(txMeta => {
+          .then((txMeta) => {
             txMeta.loadingDefaults = false
             this.txStateManager.updateTx(
               txMeta,
               'transactions: gas estimation for tx on boot'
             )
           })
-          .catch(error => {
+          .catch((error) => {
             tx.loadingDefaults = false
             this.txStateManager.updateTx(
               tx,
@@ -689,7 +689,7 @@ class TransactionController extends EventEmitter {
       .getFilteredTxList({
         status: TRANSACTION_STATUS_APPROVED,
       })
-      .forEach(txMeta => {
+      .forEach((txMeta) => {
         const txSignError = new Error(
           'Transaction found as "approved" during boot - possibly stuck during signing'
         )
@@ -707,7 +707,7 @@ class TransactionController extends EventEmitter {
       this.emit.bind(this, 'tx:status-update')
     )
     this._setupBlockTrackerListener()
-    this.pendingTxTracker.on('tx:warning', txMeta => {
+    this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:warning'
@@ -737,7 +737,7 @@ class TransactionController extends EventEmitter {
         )
       }
     })
-    this.pendingTxTracker.on('tx:retry', txMeta => {
+    this.pendingTxTracker.on('tx:retry', (txMeta) => {
       if (!('retryCount' in txMeta)) {
         txMeta.retryCount = 0
       }
@@ -760,7 +760,7 @@ class TransactionController extends EventEmitter {
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,
       TOKEN_METHOD_TRANSFER_FROM,
-    ].find(tokenMethodName => tokenMethodName === name && name.toLowerCase())
+    ].find((tokenMethodName) => tokenMethodName === name && name.toLowerCase())
 
     let result
     if (txParams.data && tokenMethodName) {
@@ -801,7 +801,7 @@ class TransactionController extends EventEmitter {
       return
     }
     // mark all same nonce transactions as dropped and give i a replacedBy hash
-    sameNonceTxs.forEach(otherTxMeta => {
+    sameNonceTxs.forEach((otherTxMeta) => {
       if (otherTxMeta.id === txId) {
         return
       }

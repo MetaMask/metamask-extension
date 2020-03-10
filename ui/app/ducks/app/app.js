@@ -5,56 +5,59 @@ const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
 
 export default function reduceApp (state = {}, action) {
   // default state
-  const appState = Object.assign({
-    shouldClose: false,
-    menuOpen: false,
-    modal: {
-      open: false,
-      modalState: {
-        name: null,
+  const appState = Object.assign(
+    {
+      shouldClose: false,
+      menuOpen: false,
+      modal: {
+        open: false,
+        modalState: {
+          name: null,
+          props: {},
+        },
+        previousModalState: {
+          name: null,
+        },
+      },
+      sidebar: {
+        isOpen: false,
+        transitionName: '',
+        type: '',
         props: {},
       },
-      previousModalState: {
-        name: null,
+      alertOpen: false,
+      alertMessage: null,
+      qrCodeData: null,
+      networkDropdownOpen: false,
+      accountDetail: {
+        subview: 'transactions',
       },
+      // Used to render transition direction
+      transForward: true,
+      // Used to display loading indicator
+      isLoading: false,
+      // Used to display error text
+      warning: null,
+      buyView: {},
+      isMouseUser: false,
+      gasIsLoading: false,
+      networkNonce: null,
+      defaultHdPaths: {
+        trezor: `m/44'/60'/0'/0`,
+        ledger: `m/44'/60'/0'/0/0`,
+      },
+      lastSelectedProvider: null,
+      networksTabSelectedRpcUrl: '',
+      networksTabIsInAddMode: false,
+      loadingMethodData: false,
+      show3BoxModalAfterImport: false,
+      threeBoxLastUpdated: null,
+      requestAccountTabs: {},
+      openMetaMaskTabs: {},
+      currentWindowTab: {},
     },
-    sidebar: {
-      isOpen: false,
-      transitionName: '',
-      type: '',
-      props: {},
-    },
-    alertOpen: false,
-    alertMessage: null,
-    qrCodeData: null,
-    networkDropdownOpen: false,
-    accountDetail: {
-      subview: 'transactions',
-    },
-    // Used to render transition direction
-    transForward: true,
-    // Used to display loading indicator
-    isLoading: false,
-    // Used to display error text
-    warning: null,
-    buyView: {},
-    isMouseUser: false,
-    gasIsLoading: false,
-    networkNonce: null,
-    defaultHdPaths: {
-      trezor: `m/44'/60'/0'/0`,
-      ledger: `m/44'/60'/0'/0/0`,
-    },
-    lastSelectedProvider: null,
-    networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
-    loadingMethodData: false,
-    show3BoxModalAfterImport: false,
-    threeBoxLastUpdated: null,
-    requestAccountTabs: {},
-    openMetaMaskTabs: {},
-    currentWindowTab: {},
-  }, state)
+    state
+  )
 
   switch (action.type) {
     // dropdown methods
@@ -111,7 +114,6 @@ export default function reduceApp (state = {}, action) {
         qrCodeData: action.value,
       }
 
-
     // modal methods:
     case actions.MODAL_OPEN:
       const { name, ...modalProps } = action.payload
@@ -135,7 +137,7 @@ export default function reduceApp (state = {}, action) {
           appState.modal,
           { open: false },
           { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState },
+          { previousModalState: appState.modal.modalState }
         ),
       }
 
@@ -164,7 +166,9 @@ export default function reduceApp (state = {}, action) {
     case actions.UNLOCK_METAMASK:
       return {
         ...appState,
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        forgottenPassword: appState.forgottenPassword
+          ? !appState.forgottenPassword
+          : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -195,7 +199,9 @@ export default function reduceApp (state = {}, action) {
     case actions.SHOW_ACCOUNT_DETAIL:
       return {
         ...appState,
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
+        forgottenPassword: appState.forgottenPassword
+          ? !appState.forgottenPassword
+          : null,
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',

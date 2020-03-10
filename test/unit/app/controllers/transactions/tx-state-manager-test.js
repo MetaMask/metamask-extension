@@ -36,7 +36,12 @@ describe('TransactionStateManager', function () {
     })
 
     it('should emit a signed event to signal the exciton of callback', function (done) {
-      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = {
+        id: 1,
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {},
+      }
       const noop = function () {
         assert(true, 'event listener has been triggered and noop executed')
         done()
@@ -63,7 +68,12 @@ describe('TransactionStateManager', function () {
     })
 
     it('should emit a rejected event to signal the exciton of callback', function (done) {
-      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = {
+        id: 1,
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {},
+      }
       txStateManager.addTx(tx)
       const noop = () => {
         assert(true, 'event listener has been triggered and noop executed')
@@ -486,7 +496,7 @@ describe('TransactionStateManager', function () {
           metamaskNetworkId: currentNetworkId,
         },
       ]
-      txMetas.forEach(txMeta => txStateManager.addTx(txMeta, noop))
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
       let filterParams
 
       filterParams = { status: 'unapproved', from: '0xaa' }
@@ -520,9 +530,17 @@ describe('TransactionStateManager', function () {
         `getFilteredTxList - ${JSON.stringify(filterParams)}`
       )
       filterParams = { to: '0xaa' }
-      assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+      assert.equal(
+        txStateManager.getFilteredTxList(filterParams).length,
+        5,
+        `getFilteredTxList - ${JSON.stringify(filterParams)}`
+      )
       filterParams = { status: (status) => status !== 'confirmed' }
-      assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+      assert.equal(
+        txStateManager.getFilteredTxList(filterParams).length,
+        5,
+        `getFilteredTxList - ${JSON.stringify(filterParams)}`
+      )
     })
   })
 
@@ -551,16 +569,16 @@ describe('TransactionStateManager', function () {
           metamaskNetworkId: currentNetworkId,
         },
       ]
-      txMetas.forEach(txMeta => txStateManager.addTx(txMeta, noop))
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
 
       txStateManager.wipeTransactions(specificAddress)
 
       const transactionsFromCurrentAddress = txStateManager
         .getTxList()
-        .filter(txMeta => txMeta.txParams.from === specificAddress)
+        .filter((txMeta) => txMeta.txParams.from === specificAddress)
       const transactionsFromOtherAddresses = txStateManager
         .getTxList()
-        .filter(txMeta => txMeta.txParams.from !== specificAddress)
+        .filter((txMeta) => txMeta.txParams.from !== specificAddress)
 
       assert.equal(transactionsFromCurrentAddress.length, 0)
       assert.equal(transactionsFromOtherAddresses.length, 2)
@@ -588,16 +606,16 @@ describe('TransactionStateManager', function () {
         },
       ]
 
-      txMetas.forEach(txMeta => txStateManager.addTx(txMeta, noop))
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
 
       txStateManager.wipeTransactions(specificAddress)
 
       const txsFromCurrentNetworkAndAddress = txStateManager
         .getTxList()
-        .filter(txMeta => txMeta.txParams.from === specificAddress)
+        .filter((txMeta) => txMeta.txParams.from === specificAddress)
       const txFromOtherNetworks = txStateManager
         .getFullTxList()
-        .filter(txMeta => txMeta.metamaskNetworkId === otherNetworkId)
+        .filter((txMeta) => txMeta.metamaskNetworkId === otherNetworkId)
 
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0)
       assert.equal(txFromOtherNetworks.length, 2)
@@ -606,13 +624,13 @@ describe('TransactionStateManager', function () {
 
   describe('#_removeTx', function () {
     it('should remove the transaction from the storage', function () {
-      txStateManager._saveTxList([ { id: 1 } ])
+      txStateManager._saveTxList([{ id: 1 }])
       txStateManager._removeTx(1)
       assert(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
     it('should only remove the transaction with ID 1 from the storage', function () {
-      txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
+      txStateManager._saveTxList([{ id: 1 }, { id: 2 }])
       txStateManager._removeTx(1)
       assert.equal(
         txStateManager.getFullTxList()[0].id,

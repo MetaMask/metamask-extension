@@ -58,7 +58,7 @@ export default class TypedMessageManager extends EventEmitter {
    */
   getUnapprovedMsgs () {
     return this.messages
-      .filter(msg => msg.status === 'unapproved')
+      .filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
         result[msg.id] = msg
         return result
@@ -78,7 +78,7 @@ export default class TypedMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req, version) {
     return new Promise((resolve, reject) => {
       const msgId = this.addUnapprovedMessage(msgParams, req, version)
-      this.once(`${msgId}:finished`, data => {
+      this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'signed':
             return resolve(data.rawSig)
@@ -232,7 +232,7 @@ export default class TypedMessageManager extends EventEmitter {
    *
    */
   getMsg (msgId) {
-    return this.messages.find(msg => msg.id === msgId)
+    return this.messages.find((msg) => msg.id === msgId)
   }
 
   /**
@@ -352,7 +352,7 @@ export default class TypedMessageManager extends EventEmitter {
    *
    */
   _updateMsg (msg) {
-    const index = this.messages.findIndex(message => message.id === msg.id)
+    const index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }

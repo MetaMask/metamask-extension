@@ -4,7 +4,13 @@ import NetworkController from '../../../app/scripts/controllers/network/index'
 import TypedMessageManager from '../../../app/scripts/lib/typed-message-manager'
 
 describe('Typed Message Manager', function () {
-  let typedMessageManager, msgParamsV1, msgParamsV3, typedMsgs, messages, msgId, numberMsgId
+  let typedMessageManager,
+    msgParamsV1,
+    msgParamsV3,
+    typedMsgs,
+    messages,
+    msgId,
+    numberMsgId
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
   const networkController = new NetworkController()

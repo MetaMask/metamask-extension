@@ -18,7 +18,7 @@ export default class NewAccountCreateForm extends Component {
   render () {
     const { newAccountName, defaultAccountName } = this.state
     const { history, createAccount } = this.props
-    const createClick = _ => {
+    const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.metricsEvent({
@@ -30,7 +30,7 @@ export default class NewAccountCreateForm extends Component {
           })
           history.push(DEFAULT_ROUTE)
         })
-        .catch(e => {
+        .catch((e) => {
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',
@@ -54,7 +54,7 @@ export default class NewAccountCreateForm extends Component {
             className="new-account-create-form__input"
             value={newAccountName}
             placeholder={defaultAccountName}
-            onChange={event =>
+            onChange={(event) =>
               this.setState({ newAccountName: event.target.value })
             }
           />

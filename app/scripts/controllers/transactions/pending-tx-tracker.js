@@ -40,7 +40,7 @@ class PendingTransactionTracker extends EventEmitter {
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
       const pendingTxs = this.getPendingTransactions()
-      await Promise.all(pendingTxs.map(txMeta => this._checkPendingTx(txMeta)))
+      await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
       log.error(
         'PendingTransactionTracker - Error updating pending transactions'
@@ -61,8 +61,8 @@ class PendingTransactionTracker extends EventEmitter {
     if (!pending.length) {
       return
     }
-    pending.forEach(txMeta =>
-      this._resubmitTx(txMeta, epochNumber).catch(err => {
+    pending.forEach((txMeta) =>
+      this._resubmitTx(txMeta, epochNumber).catch((err) => {
         /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -258,7 +258,7 @@ class PendingTransactionTracker extends EventEmitter {
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
-    const sameNonce = completed.filter(otherMeta => {
+    const sameNonce = completed.filter((otherMeta) => {
       if (otherMeta.id === txMeta.id) {
         return false
       }

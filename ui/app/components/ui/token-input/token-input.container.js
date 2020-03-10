@@ -7,7 +7,7 @@ import {
   preferencesSelector,
 } from '../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
   } = state

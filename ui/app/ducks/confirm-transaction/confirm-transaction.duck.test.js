@@ -88,7 +88,7 @@ describe('Confirm Transaction Duck', function () {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        { ...mockState },
+        { ...mockState }
       )
     })
 
@@ -298,13 +298,21 @@ describe('Confirm Transaction Duck', function () {
 
     it('should set fetchingData to false when receiving a FETCH_DATA_END action', function () {
       assert.deepEqual(
-        ConfirmTransactionReducer({ fetchingData: true }, { type: FETCH_DATA_END }),
-        { fetchingData: false },
+        ConfirmTransactionReducer(
+          { fetchingData: true },
+          { type: FETCH_DATA_END }
+        ),
+        { fetchingData: false }
       )
     })
 
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', function () {
-      assert.deepEqual(ConfirmTransactionReducer(mockState, { type: CLEAR_CONFIRM_TRANSACTION }), initialState)
+      assert.deepEqual(
+        ConfirmTransactionReducer(mockState, {
+          type: CLEAR_CONFIRM_TRANSACTION,
+        }),
+        initialState
+      )
     })
   })
 
@@ -455,7 +463,7 @@ describe('Confirm Transaction Duck', function () {
       global.eth = {
         getCode: sinon
           .stub()
-          .callsFake(address =>
+          .callsFake((address) =>
             Promise.resolve(
               address && address.match(/isContract/) ? 'not-0x' : '0x'
             )

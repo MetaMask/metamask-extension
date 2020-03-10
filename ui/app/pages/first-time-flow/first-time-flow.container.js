@@ -32,14 +32,14 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    createNewAccount: password =>
+    createNewAccount: (password) =>
       dispatch(createNewVaultAndGetSeedPhrase(password)),
     createNewAccountFromSeed: (password, seedPhrase) => {
       return dispatch(createNewVaultAndRestore(password, seedPhrase))
     },
-    unlockAccount: password => dispatch(unlockAndGetSeedPhrase(password)),
+    unlockAccount: (password) => dispatch(unlockAndGetSeedPhrase(password)),
     verifySeedPhrase: () => verifySeedPhrase(),
   }
 }

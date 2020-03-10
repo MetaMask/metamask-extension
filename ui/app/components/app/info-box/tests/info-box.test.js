@@ -6,7 +6,6 @@ import { shallow } from 'enzyme'
 import InfoBox from '../index'
 
 describe('InfoBox', function () {
-
   let wrapper
 
   const props = {

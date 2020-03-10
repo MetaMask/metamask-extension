@@ -22,26 +22,24 @@ proxyquire('../amount-max-button.container.js', {
     },
   },
   '../../../send.selectors.js': {
-    getGasTotal: s => `mockGasTotal:${s}`,
-    getSelectedToken: s => `mockSelectedToken:${s}`,
-    getSendFromBalance: s => `mockBalance:${s}`,
-    getTokenBalance: s => `mockTokenBalance:${s}`,
+    getGasTotal: (s) => `mockGasTotal:${s}`,
+    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendFromBalance: (s) => `mockBalance:${s}`,
+    getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
   './amount-max-button.selectors.js': {
-    getMaxModeOn: s => `mockMaxModeOn:${s}`,
+    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
   },
-  './amount-max-button.utils.js': { calcMaxAmount: mockObj => mockObj.val + 1 },
+  './amount-max-button.utils.js': { calcMaxAmount: (mockObj) => mockObj.val + 1 },
   '../../../../../selectors/custom-gas': {
-    getBasicGasEstimateLoadingStatus: s => `mockButtonDataLoading:${s}`,
+    getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}`,
   },
   '../../../../../store/actions': actionSpies,
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })
 
 describe('amount-max-button container', function () {
-
   describe('mapStateToProps()', function () {
-
     it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         balance: 'mockBalance:mockState',

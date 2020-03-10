@@ -107,7 +107,7 @@ function mapDispatchToProps (dispatch) {
         dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
       }
     },
-    setAmountToMax: maxAmountDataObject => {
+    setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },

@@ -72,7 +72,7 @@ NotificationModal.propTypes = {
   onConfirm: PropTypes.func,
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideModal: () => {
       dispatch(hideModal())

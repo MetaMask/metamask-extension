@@ -3,56 +3,59 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
 export default function reduceMetamask (state = {}, action) {
-  const metamaskState = Object.assign({
-    isInitialized: false,
-    isUnlocked: false,
-    isAccountMenuOpen: false,
-    isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
-    rpcTarget: 'https://rawtestrpc.metamask.io/',
-    identities: {},
-    unapprovedTxs: {},
-    frequentRpcList: [],
-    addressBook: [],
-    selectedTokenAddress: null,
-    contractExchangeRates: {},
-    tokenExchangeRates: {},
-    tokens: [],
-    pendingTokens: {},
-    customNonceValue: '',
-    send: {
-      gasLimit: null,
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '0x0',
-      from: '',
-      to: '',
-      amount: '0',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      forceGasMin: null,
-      toNickname: '',
-      ensResolution: null,
-      ensResolutionError: '',
+  const metamaskState = Object.assign(
+    {
+      isInitialized: false,
+      isUnlocked: false,
+      isAccountMenuOpen: false,
+      isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
+      rpcTarget: 'https://rawtestrpc.metamask.io/',
+      identities: {},
+      unapprovedTxs: {},
+      frequentRpcList: [],
+      addressBook: [],
+      selectedTokenAddress: null,
+      contractExchangeRates: {},
+      tokenExchangeRates: {},
+      tokens: [],
+      pendingTokens: {},
+      customNonceValue: '',
+      send: {
+        gasLimit: null,
+        gasPrice: null,
+        gasTotal: null,
+        tokenBalance: '0x0',
+        from: '',
+        to: '',
+        amount: '0',
+        memo: '',
+        errors: {},
+        maxModeOn: false,
+        editingTransactionId: null,
+        forceGasMin: null,
+        toNickname: '',
+        ensResolution: null,
+        ensResolutionError: '',
+      },
+      coinOptions: {},
+      useBlockie: false,
+      featureFlags: {},
+      networkEndpointType: undefined,
+      welcomeScreenSeen: false,
+      currentLocale: '',
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+        showFiatInTestnets: false,
+      },
+      firstTimeFlowType: null,
+      completedOnboarding: false,
+      knownMethodData: {},
+      participateInMetaMetrics: null,
+      metaMetricsSendCount: 0,
+      nextNonce: null,
     },
-    coinOptions: {},
-    useBlockie: false,
-    featureFlags: {},
-    networkEndpointType: undefined,
-    welcomeScreenSeen: false,
-    currentLocale: '',
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-      showFiatInTestnets: false,
-    },
-    firstTimeFlowType: null,
-    completedOnboarding: false,
-    knownMethodData: {},
-    participateInMetaMetrics: null,
-    metaMetricsSendCount: 0,
-    nextNonce: null,
-  }, state)
+    state
+  )
 
   switch (action.type) {
     case actions.UPDATE_METAMASK_STATE:
@@ -282,7 +285,7 @@ export default function reduceMetamask (state = {}, action) {
     case actions.UPDATE_TRANSACTION_PARAMS:
       const { id: txId, value } = action
       let { selectedAddressTxList } = metamaskState
-      selectedAddressTxList = selectedAddressTxList.map(tx => {
+      selectedAddressTxList = selectedAddressTxList.map((tx) => {
         if (tx.id === txId) {
           const newTx = Object.assign({}, tx)
           newTx.txParams = value

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const Tab = props => {
+const Tab = (props) => {
   const {
     name,
     onClick,
@@ -15,7 +15,7 @@ const Tab = props => {
   return (
     <li
       className={classnames(className, { [activeClassName]: isActive })}
-      onClick={event => {
+      onClick={(event) => {
         event.preventDefault()
         onClick(tabIndex)
       }}

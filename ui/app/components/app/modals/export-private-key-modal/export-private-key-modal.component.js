@@ -38,13 +38,13 @@ export default class ExportPrivateKeyModal extends Component {
     const { exportAccount } = this.props
 
     exportAccount(password, address)
-      .then(privateKey =>
+      .then((privateKey) =>
         this.setState({
           privateKey,
           showWarning: false,
         })
       )
-      .catch(e => log.error(e))
+      .catch((e) => log.error(e))
   }
 
   renderPasswordLabel (privateKey) {
@@ -65,7 +65,7 @@ export default class ExportPrivateKeyModal extends Component {
         <input
           type="password"
           className="private-key-password-input"
-          onChange={event => this.setState({ password: event.target.value })}
+          onChange={(event) => this.setState({ password: event.target.value })}
         />
       )
     }

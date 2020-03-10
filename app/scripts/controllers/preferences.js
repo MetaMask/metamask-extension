@@ -288,7 +288,7 @@ class PreferencesController {
   addAddresses (addresses) {
     const identities = this.store.getState().identities
     const accountTokens = this.store.getState().accountTokens
-    addresses.forEach(address => {
+    addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
         return
@@ -313,7 +313,7 @@ class PreferencesController {
     const { identities, lostIdentities } = this.store.getState()
 
     const newlyLost = {}
-    Object.keys(identities).forEach(identity => {
+    Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         newlyLost[identity] = identities[identity]
         delete identities[identity]
@@ -348,7 +348,7 @@ class PreferencesController {
   }
 
   removeSuggestedTokens () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.store.updateState({ suggestedTokens: {} })
       resolve({})
     })
@@ -414,7 +414,7 @@ class PreferencesController {
 
     const { lastSelectedAddressByOrigin } = this.store.getState()
 
-    origins.forEach(origin => {
+    origins.forEach((origin) => {
       delete lastSelectedAddressByOrigin[origin]
     })
     this.store.updateState({ lastSelectedAddressByOrigin })
@@ -453,7 +453,7 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const previousEntry = tokens.find(token => {
+    const previousEntry = tokens.find((token) => {
       return token.address === address
     })
     const previousIndex = tokens.indexOf(previousEntry)
@@ -478,7 +478,7 @@ class PreferencesController {
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
     const assetImages = this.getAssetImages()
-    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
+    const updatedTokens = tokens.filter((token) => token.address !== rawAddress)
     delete assetImages[rawAddress]
     this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
@@ -522,7 +522,7 @@ class PreferencesController {
    *
    */
   setCurrentAccountTab (currentAccountTab) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.store.updateState({ currentAccountTab })
       resolve()
     })
@@ -541,7 +541,7 @@ class PreferencesController {
 
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex(element => {
+    const index = rpcList.findIndex((element) => {
       return element.rpcUrl === newRpcDetails.rpcUrl
     })
     if (index > -1) {
@@ -579,7 +579,7 @@ class PreferencesController {
     rpcPrefs = {}
   ) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex(element => {
+    const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url
     })
     if (index !== -1) {
@@ -611,7 +611,7 @@ class PreferencesController {
    */
   removeFromFrequentRpcList (url) {
     const rpcList = this.getFrequentRpcListDetail()
-    const index = rpcList.findIndex(element => {
+    const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url
     })
     if (index !== -1) {
@@ -788,7 +788,7 @@ class PreferencesController {
     this.addSuggestedERC20Asset(tokenOpts)
     return this.openPopup().then(() => {
       const tokenAddresses = this.getTokens().filter(
-        token => token.address === normalizeAddress(rawAddress)
+        (token) => token.address === normalizeAddress(rawAddress)
       )
       return tokenAddresses.length > 0
     })

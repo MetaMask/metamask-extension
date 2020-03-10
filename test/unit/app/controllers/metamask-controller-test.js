@@ -130,16 +130,19 @@ describe('MetaMaskController', function () {
       const password = 'a-fake-password'
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
-      metamaskController.networkController._baseProviderParams.getAccounts((err, res) => {
-        assert.ifError(err)
-        assert.equal(res.length, 1)
-        assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
-      })
+      metamaskController.networkController._baseProviderParams.getAccounts(
+        (err, res) => {
+          assert.ifError(err)
+          assert.equal(res.length, 1)
+          assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+        }
+      )
     })
   })
 
   describe('#importAccountWithStrategy', function () {
-    const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+    const importPrivkey =
+      '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
 
     beforeEach(async function () {
       const password = 'a-fake-password'
@@ -190,14 +193,14 @@ describe('MetaMaskController', function () {
       )
       const addresses = await metamaskController.keyringController.getAccounts()
 
-      identities.forEach(identity => {
+      identities.forEach((identity) => {
         assert.ok(
           addresses.includes(identity),
           `addresses should include all IDs: ${identity}`
         )
       })
 
-      addresses.forEach(address => {
+      addresses.forEach((address) => {
         assert.ok(
           identities.includes(address),
           `identities should include all Addresses: ${address}`
@@ -662,8 +665,14 @@ describe('MetaMaskController', function () {
 
   describe('#resetAccount', function () {
     it('wipes transactions from only the correct network id and with the selected address', async function () {
-      const selectedAddressStub = sinon.stub(metamaskController.preferencesController, 'getSelectedAddress')
-      const getNetworkstub = sinon.stub(metamaskController.txController.txStateManager, 'getNetwork')
+      const selectedAddressStub = sinon.stub(
+        metamaskController.preferencesController,
+        'getSelectedAddress'
+      )
+      const getNetworkstub = sinon.stub(
+        metamaskController.txController.txStateManager,
+        'getNetwork'
+      )
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
       getNetworkstub.returns(42)
@@ -758,7 +767,6 @@ describe('MetaMaskController', function () {
   })
 
   describe('#newUnsignedMessage', function () {
-
     let msgParams, metamaskMsgs, messages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
@@ -923,7 +931,10 @@ describe('MetaMaskController', function () {
         cb()
       })
 
-      metamaskController.setupUntrustedCommunication(streamTest, phishingMessageSender)
+      metamaskController.setupUntrustedCommunication(
+        streamTest,
+        phishingMessageSender
+      )
       await promise
       streamTest.end()
     })
@@ -1042,7 +1053,7 @@ describe('MetaMaskController', function () {
 
 function deferredPromise () {
   let resolve
-  const promise = new Promise(_resolve => {
+  const promise = new Promise((_resolve) => {
     resolve = _resolve
   })
   return { promise, resolve }

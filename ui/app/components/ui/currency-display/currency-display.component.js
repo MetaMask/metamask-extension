@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import availableCurrencies from '../../../helpers/constants/available-conversions'
-
-const currencies = availableCurrencies.map(({ code }) => code)
 
 export default class CurrencyDisplay extends PureComponent {
   static propTypes = {
@@ -14,6 +11,7 @@ export default class CurrencyDisplay extends PureComponent {
     style: PropTypes.object,
     suffix: PropTypes.string,
     hideTitle: PropTypes.bool,
+    hide: PropTypes.bool,
   }
 
   render () {
@@ -24,26 +22,23 @@ export default class CurrencyDisplay extends PureComponent {
       prefixComponent,
       style,
       hideTitle,
+      hide,
     } = this.props
+
     let suffix
     if (this.props.suffix) {
       suffix =
         this.props.suffix.toLowerCase() === 'eth' ? 'CFX' : this.props.suffix
     }
-    const text = `${prefix || ''}${displayValue}`
-    const title = suffix ? `${text} ${suffix}` : text
 
     let currencyDisplayClass = 'currency-display-component'
-
-    if (isNaN(parseInt(title[0]))) {
+    if (hide) {
       currencyDisplayClass =
         'currency-display-component currency-display-component-hide'
     }
 
-    if (suffix && currencies.includes(suffix.toLowerCase())) {
-      currencyDisplayClass =
-        'currency-display-component currency-display-component-hide'
-    }
+    const text = `${prefix || ''}${displayValue}`
+    const title = suffix ? `${text} ${suffix}` : text
 
     return (
       <div

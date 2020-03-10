@@ -6,7 +6,7 @@ import {
 } from '../../../../selectors/selectors'
 import AccountDetailsModal from './account-details-modal.component'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showExportPrivateKeyModal: () =>
       dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),

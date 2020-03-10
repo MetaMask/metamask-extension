@@ -17,7 +17,7 @@ export default class CreateAccountPage extends Component {
       history,
       location: { pathname },
     } = this.props
-    const getClassNames = path =>
+    const getClassNames = (path) =>
       classnames('new-account__tabs__tab', {
         'new-account__tabs__selected': matchPath(pathname, {
           path,

@@ -21,7 +21,7 @@ export default class ConfirmSendToken extends Component {
 
     return (
       <ConfirmTokenTransactionBaseContainer
-        onEdit={confirmTransactionData =>
+        onEdit={(confirmTransactionData) =>
           this.handleEdit(confirmTransactionData)
         }
         tokenAmount={tokenAmount}

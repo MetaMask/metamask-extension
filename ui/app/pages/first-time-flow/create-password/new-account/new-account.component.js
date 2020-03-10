@@ -48,7 +48,7 @@ export default class NewAccount extends PureComponent {
   handlePasswordChange (password) {
     const { t } = this.context
 
-    this.setState(state => {
+    this.setState((state) => {
       const { confirmPassword } = state
       let passwordError = ''
       let confirmPasswordError = ''
@@ -72,7 +72,7 @@ export default class NewAccount extends PureComponent {
   handleConfirmPasswordChange (confirmPassword) {
     const { t } = this.context
 
-    this.setState(state => {
+    this.setState((state) => {
       const { password } = state
       let confirmPasswordError = ''
 
@@ -87,7 +87,7 @@ export default class NewAccount extends PureComponent {
     })
   }
 
-  handleCreate = async event => {
+  handleCreate = async (event) => {
     event.preventDefault()
 
     if (!this.isValid()) {
@@ -123,7 +123,7 @@ export default class NewAccount extends PureComponent {
       },
     })
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }))
   }
@@ -148,7 +148,7 @@ export default class NewAccount extends PureComponent {
       <div>
         <div className="first-time-flow__create-back">
           <a
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               this.context.metricsEvent({
                 eventOpts: {
@@ -172,7 +172,7 @@ export default class NewAccount extends PureComponent {
             type="password"
             className="first-time-flow__input"
             value={password}
-            onChange={event => this.handlePasswordChange(event.target.value)}
+            onChange={(event) => this.handlePasswordChange(event.target.value)}
             error={passwordError}
             autoFocus
             autoComplete="new-password"
@@ -186,7 +186,7 @@ export default class NewAccount extends PureComponent {
             type="password"
             className="first-time-flow__input"
             value={confirmPassword}
-            onChange={event =>
+            onChange={(event) =>
               this.handleConfirmPasswordChange(event.target.value)
             }
             error={confirmPasswordError}

@@ -31,7 +31,6 @@ proxyquire('../send.container.js', {
 })
 
 describe('send container', function () {
-
   describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
@@ -62,7 +61,16 @@ describe('send container', function () {
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
-        const { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data } = mockProps
+        const {
+          gasPrice,
+          selectedAddress,
+          selectedToken,
+          recentBlocks,
+          blockGasLimit,
+          to,
+          value,
+          data,
+        } = mockProps
         mapDispatchToPropsObject.updateAndSetGasLimit(
           Object.assign({}, mockProps, { editingTransactionId: false })
         )
@@ -88,7 +96,9 @@ describe('send container', function () {
       }
 
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.updateSendTokenBalance(Object.assign({}, mockProps))
+        mapDispatchToPropsObject.updateSendTokenBalance(
+          Object.assign({}, mockProps)
+        )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],

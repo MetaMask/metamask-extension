@@ -18,7 +18,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showAddToAddressBookModal: recipient =>
+    showAddToAddressBookModal: (recipient) =>
       dispatch(
         actions.showModal({
           name: 'ADD_TO_ADDRESSBOOK',

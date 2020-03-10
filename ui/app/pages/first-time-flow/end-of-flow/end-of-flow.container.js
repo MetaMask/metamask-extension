@@ -8,7 +8,7 @@ const firstTimeFlowTypeNameMap = {
   import: 'New Wallet Imported',
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { firstTimeFlowType },
   } = state
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
   }

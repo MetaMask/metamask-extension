@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../../ui/identicon'
 
-const ConfirmPageContainerSummary = props => {
+const ConfirmPageContainerSummary = (props) => {
   const {
     action,
     title,

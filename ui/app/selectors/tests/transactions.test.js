@@ -9,10 +9,8 @@ import {
 } from '../transactions'
 
 describe('Transaction Selectors', function () {
-
   describe('unapprovedMessagesSelector', function () {
     it('returns eth sign msg from unapprovedMsgs', function () {
-
       const msg = {
         id: 1,
         msgParams: {
@@ -40,7 +38,6 @@ describe('Transaction Selectors', function () {
     })
 
     it('returns personal sign from unapprovedPersonalMsgsSelector', function () {
-
       const msg = {
         id: 1,
         msgParams: {
@@ -68,7 +65,6 @@ describe('Transaction Selectors', function () {
     })
 
     it('returns typed message from unapprovedTypedMessagesSelector', function () {
-
       const msg = {
         id: 1,
         msgParams: {
@@ -94,14 +90,11 @@ describe('Transaction Selectors', function () {
 
       assert(Array.isArray(msgSelector))
       assert.deepEqual(msgSelector, [msg])
-
     })
   })
 
   describe('transactionsSelector', function () {
-
     it('selectedAddressTxList', function () {
-
       const state = {
         metamask: {
           featureFlags: {
@@ -128,7 +121,9 @@ describe('Transaction Selectors', function () {
         },
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxlist = state.metamask.selectedAddressTxList.sort(
+        (a, b) => b.time - a.time
+      )
 
       const txSelector = transactionsSelector(state)
 
@@ -137,7 +132,6 @@ describe('Transaction Selectors', function () {
     })
 
     it('returns token tx from selectedAddressTxList when selectedTokenAddress is valid', function () {
-
       const state = {
         metamask: {
           featureFlags: {
@@ -163,24 +157,21 @@ describe('Transaction Selectors', function () {
             },
           ],
         },
-
       }
 
-      const orderedTxlist = state.metamask.selectedAddressTxList.sort((a, b) => b.time - a.time)
+      const orderedTxlist = state.metamask.selectedAddressTxList.sort(
+        (a, b) => b.time - a.time
+      )
 
       const txSelector = transactionsSelector(state)
 
       assert(Array.isArray(txSelector))
       assert.deepEqual(txSelector, orderedTxlist)
-
     })
-
   })
 
   describe('nonceSortedTransactionsSelector', function () {
-
     it('returns transaction group nonce sorted tx from from selectedTxList wit', function () {
-
       const tx1 = {
         id: 0,
         time: 0,
@@ -206,17 +197,14 @@ describe('Transaction Selectors', function () {
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddressTxList: [
-            tx1,
-            tx2,
-          ],
+          selectedAddressTxList: [tx1, tx2],
         },
       }
 
       const expectedResult = [
         {
           nonce: '0x0',
-          transactions: [ tx1 ],
+          transactions: [tx1],
           initialTransaction: tx1,
           primaryTransaction: tx1,
           hasRetried: false,
@@ -224,7 +212,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: '0x1',
-          transactions: [ tx2 ],
+          transactions: [tx2],
           initialTransaction: tx2,
           primaryTransaction: tx2,
           hasRetried: false,
@@ -237,7 +225,6 @@ describe('Transaction Selectors', function () {
   })
 
   describe('Sorting Transactions Selectors', function () {
-
     const submittedTx = {
       id: 0,
       time: 0,
@@ -297,11 +284,10 @@ describe('Transaction Selectors', function () {
     }
 
     it('nonceSortedPendingTransactionsSelector', function () {
-
       const expectedResult = [
         {
           nonce: submittedTx.txParams.nonce,
-          transactions: [ submittedTx ],
+          transactions: [submittedTx],
           initialTransaction: submittedTx,
           primaryTransaction: submittedTx,
           hasRetried: false,
@@ -309,7 +295,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: unapprovedTx.txParams.nonce,
-          transactions: [ unapprovedTx ],
+          transactions: [unapprovedTx],
           initialTransaction: unapprovedTx,
           primaryTransaction: unapprovedTx,
           hasRetried: false,
@@ -317,7 +303,7 @@ describe('Transaction Selectors', function () {
         },
         {
           nonce: approvedTx.txParams.nonce,
-          transactions: [ approvedTx ],
+          transactions: [approvedTx],
           initialTransaction: approvedTx,
           primaryTransaction: approvedTx,
           hasRetried: false,
@@ -325,15 +311,17 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepEqual(nonceSortedPendingTransactionsSelector(state), expectedResult)
+      assert.deepEqual(
+        nonceSortedPendingTransactionsSelector(state),
+        expectedResult
+      )
     })
 
     it('nonceSortedCompletedTransactionsSelector', function () {
-
       const expectedResult = [
         {
           nonce: confirmedTx.txParams.nonce,
-          transactions: [ confirmedTx ],
+          transactions: [confirmedTx],
           initialTransaction: confirmedTx,
           primaryTransaction: confirmedTx,
           hasRetried: false,
@@ -341,16 +329,18 @@ describe('Transaction Selectors', function () {
         },
       ]
 
-      assert.deepEqual(nonceSortedCompletedTransactionsSelector(state), expectedResult)
+      assert.deepEqual(
+        nonceSortedCompletedTransactionsSelector(state),
+        expectedResult
+      )
     })
 
     it('submittedPendingTransactionsSelector', function () {
-
-      const expectedResult = [ submittedTx ]
-      assert.deepEqual(submittedPendingTransactionsSelector(state), expectedResult)
-
+      const expectedResult = [submittedTx]
+      assert.deepEqual(
+        submittedPendingTransactionsSelector(state),
+        expectedResult
+      )
     })
-
   })
-
 })

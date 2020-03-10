@@ -6,7 +6,7 @@ import {
   initializeThreeBox,
 } from '../../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     appState: { showingSeedPhraseBackupAfterOnboarding },
   } = state
@@ -16,9 +16,9 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setSeedPhraseBackedUp: seedPhraseBackupState =>
+    setSeedPhraseBackedUp: (seedPhraseBackupState) =>
       dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     hideSeedPhraseBackupAfterOnboarding: () =>
       dispatch(hideSeedPhraseBackupAfterOnboarding()),

@@ -2,7 +2,6 @@ import assert from 'assert'
 import { sendAmountIsInError } from '../send-amount-row.selectors.js'
 
 describe('send-amount-row selectors', function () {
-
   describe('sendAmountIsInError()', function () {
     it('should return true if send.errors.amount is truthy', function () {
       const state = {

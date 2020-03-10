@@ -25,7 +25,7 @@ describe('wallet1 is migrated successfully', function () {
 
     return migration2
       .migrate(wallet1)
-      .then(secondResult => {
+      .then((secondResult) => {
         const secondData = secondResult.data
         assert.equal(
           secondData.config.provider.type,
@@ -40,7 +40,7 @@ describe('wallet1 is migrated successfully', function () {
         secondResult.data.config.provider.rpcTarget = oldTestRpc
         return migration3.migrate(secondResult)
       })
-      .then(thirdResult => {
+      .then((thirdResult) => {
         assert.equal(
           thirdResult.data.config.provider.rpcTarget,
           newTestRpc,
@@ -48,7 +48,7 @@ describe('wallet1 is migrated successfully', function () {
         )
         return migration4.migrate(thirdResult)
       })
-      .then(fourthResult => {
+      .then((fourthResult) => {
         const fourthData = fourthResult.data
         assert.equal(
           fourthData.config.provider.rpcTarget,
@@ -63,7 +63,7 @@ describe('wallet1 is migrated successfully', function () {
 
         return migration5.migrate(vault4)
       })
-      .then(fifthResult => {
+      .then((fifthResult) => {
         const fifthData = fifthResult.data
         assert.equal(fifthData.vault, null, 'old vault should not exist')
         assert.equal(
@@ -99,7 +99,7 @@ describe('wallet1 is migrated successfully', function () {
         vault5 = fifthResult
         return migration6.migrate(fifthResult)
       })
-      .then(sixthResult => {
+      .then((sixthResult) => {
         assert.equal(
           sixthResult.data.KeyringController.selectedAccount,
           null,
@@ -114,7 +114,7 @@ describe('wallet1 is migrated successfully', function () {
         vault6 = sixthResult
         return migration7.migrate(sixthResult)
       })
-      .then(seventhResult => {
+      .then((seventhResult) => {
         assert.equal(
           seventhResult.data.transactions,
           null,
@@ -139,7 +139,7 @@ describe('wallet1 is migrated successfully', function () {
         vault7 = seventhResult
         return migration8.migrate(seventhResult)
       })
-      .then(eighthResult => {
+      .then((eighthResult) => {
         assert.equal(
           eighthResult.data.noticesList,
           null,
@@ -154,7 +154,7 @@ describe('wallet1 is migrated successfully', function () {
         vault8 = eighthResult
         return migration9.migrate(eighthResult)
       })
-      .then(ninthResult => {
+      .then((ninthResult) => {
         assert.equal(
           ninthResult.data.currentFiat,
           null,
@@ -195,7 +195,7 @@ describe('wallet1 is migrated successfully', function () {
         vault9 = ninthResult
         return migration10.migrate(ninthResult)
       })
-      .then(tenthResult => {
+      .then((tenthResult) => {
         assert.equal(
           tenthResult.data.shapeShiftTxList,
           null,
@@ -208,7 +208,7 @@ describe('wallet1 is migrated successfully', function () {
 
         return migration11.migrate(tenthResult)
       })
-      .then(eleventhResult => {
+      .then((eleventhResult) => {
         assert.equal(
           eleventhResult.data.isDisclaimerConfirmed,
           null,
@@ -222,7 +222,7 @@ describe('wallet1 is migrated successfully', function () {
 
         return migration12.migrate(eleventhResult)
       })
-      .then(twelfthResult => {
+      .then((twelfthResult) => {
         assert.equal(
           twelfthResult.data.NoticeController.noticesList[0].body,
           '',
@@ -241,7 +241,7 @@ describe('wallet1 is migrated successfully', function () {
         )
         return migration13.migrate(twelfthResult)
       })
-      .then(thirteenthResult => {
+      .then((thirteenthResult) => {
         assert.equal(
           thirteenthResult.data.config.provider.type,
           'ropsten',

@@ -5,11 +5,11 @@ export default function getRestrictedMethods (permissionsController) {
       method: (_, res, __, end) => {
         permissionsController
           .getKeyringAccounts()
-          .then(accounts => {
+          .then((accounts) => {
             res.result = accounts
             end()
           })
-          .catch(err => {
+          .catch((err) => {
             res.error = err
             end(err)
           })

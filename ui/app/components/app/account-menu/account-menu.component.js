@@ -103,7 +103,7 @@ export default class AccountMenu extends Component {
         placeholder={this.context.t('searchAccounts')}
         type="text"
         value={this.state.searchQuery}
-        onChange={e => this.setSearchQuery(e.target.value)}
+        onChange={(e) => this.setSearchQuery(e.target.value)}
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
@@ -137,12 +137,12 @@ export default class AccountMenu extends Component {
       )
     }
 
-    return filteredIdentities.map(identity => {
+    return filteredIdentities.map((identity) => {
       const isSelected = identity.address === selectedAddress
 
       const simpleAddress = identity.address.substring(2).toLowerCase()
 
-      const keyring = keyrings.find(kr => {
+      const keyring = keyrings.find((kr) => {
         return (
           kr.accounts.includes(simpleAddress) ||
           kr.accounts.includes(identity.address)
@@ -210,7 +210,7 @@ export default class AccountMenu extends Component {
         <Tooltip title={t('removeAccount')} position="bottom">
           <a
             className="remove-account-icon"
-            onClick={e => this.removeAccount(e, identity)}
+            onClick={(e) => this.removeAccount(e, identity)}
           />
         </Tooltip>
       )
@@ -272,7 +272,7 @@ export default class AccountMenu extends Component {
 
   onScroll = debounce(this.setShouldShowScrollButton, 25)
 
-  handleScrollDown = e => {
+  handleScrollDown = (e) => {
     e.stopPropagation()
 
     const { scrollHeight } = this.accountsRef
@@ -332,7 +332,7 @@ export default class AccountMenu extends Component {
           <div
             className="account-menu__accounts"
             onScroll={this.onScroll}
-            ref={ref => {
+            ref={(ref) => {
               this.accountsRef = ref
             }}
           >

@@ -12,7 +12,9 @@ describe('ButtonGroup Component', function () {
   }
 
   const mockButtons = [
-    <button onClick={childButtonSpies.onClick} key="a"><div className="mockClass" /></button>,
+    <button onClick={childButtonSpies.onClick} key="a">
+      <div className="mockClass" />
+    </button>,
     <button onClick={childButtonSpies.onClick} key="b"></button>,
     <button onClick={childButtonSpies.onClick} key="c"></button>,
   ]
@@ -23,7 +25,7 @@ describe('ButtonGroup Component', function () {
   })
 
   beforeEach(function () {
-    wrapper = shallow((
+    wrapper = shallow(
       <ButtonGroup
         defaultActiveButtonIndex={1}
         disabled={false}
@@ -32,7 +34,7 @@ describe('ButtonGroup Component', function () {
       >
         {mockButtons}
       </ButtonGroup>
-    ))
+    )
   })
 
   afterEach(function () {
@@ -79,7 +81,7 @@ describe('ButtonGroup Component', function () {
       assert.deepEqual(childButtons.get(1), activeChildButton.get(0))
     })
 
-    it('should call handleButtonClick and the respective button\'s onClick method when a button is clicked', function () {
+    it("should call handleButtonClick and the respective button's onClick method when a button is clicked", function () {
       assert.equal(ButtonGroup.prototype.handleButtonClick.callCount, 0)
       assert.equal(childButtonSpies.onClick.callCount, 0)
       const childButtons = wrapper.find('.button-group__button')
@@ -101,7 +103,7 @@ describe('ButtonGroup Component', function () {
 
     it('should render all child buttons as disabled if props.disabled is true', function () {
       const childButtons = wrapper.find('.button-group__button')
-      childButtons.forEach(button => {
+      childButtons.forEach((button) => {
         assert.equal(button.props().disabled, undefined)
       })
       wrapper.setProps({ disabled: true })
@@ -117,8 +119,20 @@ describe('ButtonGroup Component', function () {
 
   describe('render', function () {
     it('should render a div with the expected class and style', function () {
-      assert.equal(wrapper.find('div').at(0).props().className, 'someClassName')
-      assert.deepEqual(wrapper.find('div').at(0).props().style, { color: 'red' })
+      assert.equal(
+        wrapper
+          .find('div')
+          .at(0)
+          .props().className,
+        'someClassName'
+      )
+      assert.deepEqual(
+        wrapper
+          .find('div')
+          .at(0)
+          .props().style,
+        { color: 'red' }
+      )
     })
 
     it('should call renderButtons when rendering', function () {

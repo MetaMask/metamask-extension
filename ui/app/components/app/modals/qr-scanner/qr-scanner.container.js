@@ -3,7 +3,7 @@ import QrScanner from './qr-scanner.component'
 
 import { hideModal, qrCodeDetected } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideModal: () => dispatch(hideModal()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),

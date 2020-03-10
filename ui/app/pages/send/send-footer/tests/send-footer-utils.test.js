@@ -22,7 +22,6 @@ const {
 } = sendUtils
 
 describe('send-footer utils', function () {
-
   describe('addHexPrefixToObjectValues()', function () {
     it('should return a new object with the same properties with a 0x prefix', function () {
       assert.deepEqual(

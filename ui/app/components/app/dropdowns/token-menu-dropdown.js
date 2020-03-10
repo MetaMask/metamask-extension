@@ -17,7 +17,7 @@ class TokenMenuDropdown extends Component {
     network: PropTypes.number.isRequired,
   }
 
-  onClose = e => {
+  onClose = (e) => {
     e.stopPropagation()
     this.props.onClose()
   }
@@ -29,7 +29,7 @@ class TokenMenuDropdown extends Component {
       <Menu className="token-menu-dropdown" isShowing>
         <CloseArea onClick={this.onClose} />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             showHideTokenConfirmationModal(this.props.token)
             this.props.onClose()
@@ -37,7 +37,7 @@ class TokenMenuDropdown extends Component {
           text={this.context.t('hideToken')}
         />
         <Item
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
             const url = genAccountLink(
               this.props.token.address,
@@ -63,7 +63,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showHideTokenConfirmationModal: token => {
+    showHideTokenConfirmationModal: (token) => {
       dispatch(actions.showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
     },
   }

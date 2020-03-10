@@ -36,12 +36,12 @@ class EditableLabel extends Component {
         required
         dir="auto"
         value={this.state.value}
-        onKeyPress={event => {
+        onKeyPress={(event) => {
           if (event.key === 'Enter') {
             this.handleSubmit()
           }
         }}
-        onChange={event => this.setState({ value: event.target.value })}
+        onChange={(event) => this.setState({ value: event.target.value })}
         className={classnames('large-input', 'editable-label__input', {
           'editable-label__input--error': value === '',
         })}

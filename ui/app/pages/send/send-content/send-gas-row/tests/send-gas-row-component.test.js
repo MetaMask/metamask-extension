@@ -18,7 +18,7 @@ describe('SendGasRow Component', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <SendGasRow
           conversionRate={20}
           convertedCurrency="mockConvertedCurrency"
@@ -32,8 +32,9 @@ describe('SendGasRow Component', function () {
             someGasPriceButtonGroupProp: 'foo',
             anotherGasPriceButtonGroupProp: 'bar',
           }}
-        />
-      ), { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
+        />,
+        { context: { t: (str) => str + '_t', metricsEvent: () => ({}) } }
+      )
     })
 
     afterEach(function () {
@@ -45,11 +46,9 @@ describe('SendGasRow Component', function () {
     })
 
     it('should pass the correct props to SendRowWrapper', function () {
-      const {
-        label,
-        showError,
-        errorType,
-      } = wrapper.find(SendRowWrapper).props()
+      const { label, showError, errorType } = wrapper
+        .find(SendRowWrapper)
+        .props()
 
       assert.equal(label, 'transactionFee_t:')
       assert.equal(showError, true)
@@ -57,15 +56,19 @@ describe('SendGasRow Component', function () {
     })
 
     it('should render a GasFeeDisplay as a child of the SendRowWrapper', function () {
-      assert(wrapper.find(SendRowWrapper).childAt(0).is(GasFeeDisplay))
+      assert(
+        wrapper
+          .find(SendRowWrapper)
+          .childAt(0)
+          .is(GasFeeDisplay)
+      )
     })
 
     it('should render the GasFeeDisplay', function () {
-      const {
-        gasLoadingError,
-        gasTotal,
-        onReset,
-      } = wrapper.find(SendRowWrapper).childAt(0).props()
+      const { gasLoadingError, gasTotal, onReset } = wrapper
+        .find(SendRowWrapper)
+        .childAt(0)
+        .props()
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)

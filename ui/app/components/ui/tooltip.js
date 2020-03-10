@@ -66,7 +66,7 @@ class ReactTooltip extends Component {
     this.tooltipEl.style.opacity = 0
   }
 
-  handleMouseMove = e => {
+  handleMouseMove = (e) => {
     if (this.props.title === '') {
       return
     }
@@ -83,7 +83,7 @@ class ReactTooltip extends Component {
     this.resetTooltip()
   }
 
-  getTooltipPosition = e => {
+  getTooltipPosition = (e) => {
     let pointX
     let pointY
     const bodyRect = document.body.getBoundingClientRect()

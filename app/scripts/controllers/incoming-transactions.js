@@ -40,7 +40,7 @@ class IncomingTransactionsController {
     this.preferencesController = preferencesController
     this.getCurrentNetwork = () => networkController.getProviderConfig().type
 
-    this._onLatestBlock = async newBlockNumberHex => {
+    this._onLatestBlock = async (newBlockNumberHex) => {
       const selectedAddress = this.preferencesController.getSelectedAddress()
       const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
       await this._update({
@@ -105,7 +105,7 @@ class IncomingTransactionsController {
       })
     )
 
-    this.networkController.on('networkDidChange', async newType => {
+    this.networkController.on('networkDidChange', async (newType) => {
       const address = this.preferencesController.getSelectedAddress()
       await this._update({
         address,
@@ -186,7 +186,7 @@ class IncomingTransactionsController {
     const newIncomingTransactions = {
       ...currentIncomingTxs,
     }
-    newTxs.forEach(tx => {
+    newTxs.forEach((tx) => {
       newIncomingTransactions[tx.hash] = tx
     })
 
@@ -240,7 +240,7 @@ class IncomingTransactionsController {
     if (status === '1' && Array.isArray(result) && result.length > 0) {
       const remoteTxList = {}
       const remoteTxs = []
-      result.forEach(tx => {
+      result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
           remoteTxs.push(this._normalizeTxFromEtherscan(tx, currentNetworkID))
           remoteTxList[tx.hash] = 1
@@ -248,14 +248,14 @@ class IncomingTransactionsController {
       })
 
       const incomingTxs = remoteTxs.filter(
-        tx =>
+        (tx) =>
           tx.txParams.to &&
           tx.txParams.to.toLowerCase() === address.toLowerCase()
       )
       incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
 
       let latestIncomingTxBlockNumber = null
-      incomingTxs.forEach(tx => {
+      incomingTxs.forEach((tx) => {
         if (
           tx.blockNumber &&
           (!latestIncomingTxBlockNumber ||
@@ -304,7 +304,7 @@ export default IncomingTransactionsController
 function pairwise (fn) {
   let first = true
   let cache
-  return value => {
+  return (value) => {
     try {
       if (first) {
         first = false

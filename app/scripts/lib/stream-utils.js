@@ -8,7 +8,7 @@ import pump from 'pump'
  */
 export function setupMultiplex (connectionStream) {
   const mux = new ObjectMultiplex()
-  pump(connectionStream, mux, connectionStream, err => {
+  pump(connectionStream, mux, connectionStream, (err) => {
     if (err) {
       console.error(err)
     }

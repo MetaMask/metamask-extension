@@ -7,7 +7,7 @@ import {
 import { getAddressBookEntry } from '../../../../selectors/selectors'
 import { connect } from 'react-redux'
 
-export default connect(state => {
+export default connect((state) => {
   const selectedAddress = getSendTo(state)
   return {
     network: getCurrentNetwork(state),

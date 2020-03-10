@@ -20,7 +20,7 @@ class ConnectHardwareForm extends Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     const { accounts } = nextProps
-    const newAccounts = this.state.accounts.map(a => {
+    const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase()
       const balanceValue =
         (accounts[normalizedAddress] && accounts[normalizedAddress].balance) ||
@@ -36,7 +36,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    ;['trezor', 'ledger'].forEach(async device => {
+    ;['trezor', 'ledger'].forEach(async (device) => {
       const unlocked = await this.props.checkHardwareStatus(
         device,
         this.props.defaultHdPaths[device]
@@ -48,7 +48,7 @@ class ConnectHardwareForm extends Component {
     })
   }
 
-  connectToHardwareWallet = device => {
+  connectToHardwareWallet = (device) => {
     if (this.state.accounts.length) {
       return null
     }
@@ -57,7 +57,7 @@ class ConnectHardwareForm extends Component {
     this.getPage(device, 0, this.props.defaultHdPaths[device])
   }
 
-  onPathChange = path => {
+  onPathChange = (path) => {
     this.props.setHardwareWalletDefaultHdPath({
       device: this.state.device,
       path,
@@ -65,7 +65,7 @@ class ConnectHardwareForm extends Component {
     this.getPage(this.state.device, 0, path)
   }
 
-  onAccountChange = account => {
+  onAccountChange = (account) => {
     this.setState({ selectedAccount: account.toString(), error: null })
   }
 
@@ -76,7 +76,7 @@ class ConnectHardwareForm extends Component {
   showTemporaryAlert () {
     this.props.showAlert(this.context.t('hardwareWalletConnected'))
     // Autohide the alert after 5 seconds
-    setTimeout(_ => {
+    setTimeout((_) => {
       this.props.hideAlert()
     }, 5000)
   }
@@ -84,7 +84,7 @@ class ConnectHardwareForm extends Component {
   getPage = (device, page, hdPath) => {
     this.props
       .connectHardware(device, page, hdPath)
-      .then(accounts => {
+      .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
           // (device previously locked) show the global alert
@@ -95,7 +95,7 @@ class ConnectHardwareForm extends Component {
           const newState = { unlocked: true, device, error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
-            accounts.forEach(a => {
+            accounts.forEach((a) => {
               if (a.address.toLowerCase() === this.props.address) {
                 newState.selectedAccount = a.index.toString()
               }
@@ -103,14 +103,14 @@ class ConnectHardwareForm extends Component {
             // If the page doesn't contain the selected account, let's deselect it
           } else if (
             !accounts.filter(
-              a => a.index.toString() === this.state.selectedAccount
+              (a) => a.index.toString() === this.state.selectedAccount
             ).length
           ) {
             newState.selectedAccount = null
           }
 
           // Map accounts with balances
-          newState.accounts = accounts.map(account => {
+          newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
             const balanceValue =
               (this.props.accounts[normalizedAddress] &&
@@ -125,7 +125,7 @@ class ConnectHardwareForm extends Component {
           this.setState(newState)
         }
       })
-      .catch(e => {
+      .catch((e) => {
         const errorMessage = e.message
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null })
@@ -138,10 +138,10 @@ class ConnectHardwareForm extends Component {
       })
   }
 
-  onForgetDevice = device => {
+  onForgetDevice = (device) => {
     this.props
       .forgetDevice(device)
-      .then(_ => {
+      .then((_) => {
         this.setState({
           error: null,
           selectedAccount: null,
@@ -149,19 +149,19 @@ class ConnectHardwareForm extends Component {
           unlocked: false,
         })
       })
-      .catch(e => {
+      .catch((e) => {
         this.setState({ error: e.message })
       })
   }
 
-  onUnlockAccount = device => {
+  onUnlockAccount = (device) => {
     if (this.state.selectedAccount === null) {
       this.setState({ error: this.context.t('accountSelectionRequired') })
     }
 
     this.props
       .unlockHardwareWalletAccount(this.state.selectedAccount, device)
-      .then(_ => {
+      .then((_) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Accounts',
@@ -171,7 +171,7 @@ class ConnectHardwareForm extends Component {
         })
         this.props.history.push(DEFAULT_ROUTE)
       })
-      .catch(e => {
+      .catch((e) => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Accounts',
@@ -258,7 +258,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { network, selectedAddress },
   } = state
@@ -275,7 +275,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }))
@@ -286,7 +286,7 @@ const mapDispatchToProps = dispatch => {
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
     },
-    forgetDevice: deviceName => {
+    forgetDevice: (deviceName) => {
       return dispatch(actions.forgetDevice(deviceName))
     },
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
@@ -294,7 +294,7 @@ const mapDispatchToProps = dispatch => {
         actions.unlockHardwareWalletAccount(index, deviceName, hdPath)
       )
     },
-    showAlert: msg => dispatch(actions.showAlert(msg)),
+    showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   }
 }

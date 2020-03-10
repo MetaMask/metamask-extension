@@ -40,7 +40,7 @@ export default class UnlockPage extends Component {
     }
   }
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault()
     event.stopPropagation()
 
@@ -158,7 +158,7 @@ export default class UnlockPage extends Component {
               label={t('password')}
               type="password"
               value={password}
-              onChange={event => this.handleInputChange(event)}
+              onChange={(event) => this.handleInputChange(event)}
               error={error}
               autoFocus
               autoComplete="current-password"

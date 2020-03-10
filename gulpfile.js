@@ -31,9 +31,11 @@ const packageJSON = require('./package.json')
 
 sass.compiler = require('node-sass')
 
-const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
+const dependencies = Object.keys(
+  (packageJSON && packageJSON.dependencies) || {}
+)
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
@@ -69,40 +71,40 @@ const copyDevTaskNames = []
 
 createCopyTasks('locales', {
   source: './app/_locales/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/_locales`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/_locales`),
 })
 createCopyTasks('images', {
   source: './app/images/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images`),
 })
 createCopyTasks('contractImages', {
   source: './node_modules/@yqrashawn/cfx-contract-metadata/images/',
   destinations: commonPlatforms.map(
-    platform => `./dist/${platform}/images/contract`
+    (platform) => `./dist/${platform}/images/contract`
   ),
 })
 createCopyTasks('fonts', {
   source: './app/fonts/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/fonts`),
 })
 createCopyTasks('vendor', {
   source: './app/vendor/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}/vendor`),
 })
 createCopyTasks('css', {
   source: './ui/app/css/output/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 createCopyTasks('reload', {
   devOnly: true,
   source: './app/scripts/',
   pattern: '/chromereload.js',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 createCopyTasks('html', {
   source: './app/',
   pattern: '/*.html',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
 })
 
 // copy extension
@@ -110,7 +112,7 @@ createCopyTasks('html', {
 createCopyTasks('manifest', {
   source: './app/',
   pattern: '/*.json',
-  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
+  destinations: browserPlatforms.map((platform) => `./dist/${platform}`),
 })
 
 function createCopyTasks (label, opts) {
@@ -133,7 +135,7 @@ function copyTask (taskName, opts) {
 
   return gulp.task(taskName, function () {
     if (devMode) {
-      watch(source + pattern, event => {
+      watch(source + pattern, (event) => {
         livereload.changed(event.path)
         performCopy()
       })
@@ -205,7 +207,7 @@ gulp.task('manifest:production', function () {
       // Exclude chromereload script in production:
       .pipe(
         jsoneditor(function (json) {
-          json.background.scripts = json.background.scripts.filter(script => {
+          json.background.scripts = json.background.scripts.filter((script) => {
             return !script.includes('chromereload')
           })
           return json
@@ -254,7 +256,7 @@ gulp.task('manifest:testing-local', function () {
         json.background = {
           ...json.background,
           scripts: json.background.scripts.filter(
-            scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
+            (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
           ),
         }
         json.permissions = [
@@ -280,7 +282,7 @@ gulp.task('manifest:dev', function () {
         json.background = {
           ...json.background,
           scripts: json.background.scripts.filter(
-            scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
+            (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
           ),
         }
         json.permissions = [...json.permissions, 'webRequestBlocking']
@@ -352,7 +354,7 @@ gulp.task(
 function createScssBuildTask ({ src, dest, devMode, pattern }) {
   return function () {
     if (devMode) {
-      watch(pattern, async event => {
+      watch(pattern, async (event) => {
         const stream = buildScss()
         await endOfStream(stream)
         livereload.changed(event.path)
@@ -432,7 +434,7 @@ createTasksForBuildJsExtension({
 })
 
 function createTasksForBuildJsDeps ({ key, filename }) {
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
+  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
 
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
@@ -467,10 +469,10 @@ function createTasksForBuildJsExtension ({
 }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
-  const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
+  const nonInpageFiles = buildJsFiles.filter((file) => file !== 'inpage')
   const buildPhase1 = ['inpage']
   const buildPhase2 = nonInpageFiles
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
+  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
   bundleTaskOpts = Object.assign(
     {
       buildSourceMaps: true,
@@ -503,7 +505,7 @@ function createTasksForBuildJs ({
 }) {
   // bundle task for each file
   const jsFiles = [].concat(buildPhase1, buildPhase2)
-  jsFiles.forEach(jsFile => {
+  jsFiles.forEach((jsFile) => {
     gulp.task(
       `${taskPrefix}:${jsFile}`,
       bundleTask(
@@ -524,10 +526,10 @@ function createTasksForBuildJs ({
   })
   // compose into larger task
   const subtasks = []
-  subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
+  subtasks.push(gulp.parallel(buildPhase1.map((file) => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) {
     subtasks.push(
-      gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`))
+      gulp.parallel(buildPhase2.map((file) => `${taskPrefix}:${file}`))
     )
   }
 
@@ -670,7 +672,9 @@ function generateBundler (opts, performBundle) {
     environment = 'testing'
   } else if (process.env.CIRCLE_BRANCH === 'master') {
     environment = 'production'
-  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+  } else if (
+    /^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)
+  ) {
     environment = 'release-candidate'
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
     environment = 'staging'
@@ -681,21 +685,24 @@ function generateBundler (opts, performBundle) {
   }
 
   // Inject variables into bundle
-  bundler.transform(envify({
-    METAMASK_DEBUG: opts.devMode,
-    METAMASK_ENVIRONMENT: environment,
-    NODE_ENV: opts.devMode ? 'development' : 'production',
-    IN_TEST: opts.testing,
-    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
-    PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-  }), {
-    global: true,
-  })
+  bundler.transform(
+    envify({
+      METAMASK_DEBUG: opts.devMode,
+      METAMASK_ENVIRONMENT: environment,
+      NODE_ENV: opts.devMode ? 'development' : 'production',
+      IN_TEST: opts.testing,
+      PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
+      PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+    }),
+    {
+      global: true,
+    }
+  )
 
   if (opts.watch) {
     bundler = watchify(bundler)
     // on any file update, re-runs the bundler
-    bundler.on('update', async ids => {
+    bundler.on('update', async (ids) => {
       const stream = performBundle()
       await endOfStream(stream)
       livereload.changed(`${ids}`)
@@ -722,7 +729,7 @@ function bundleTask (opts) {
     let buildStream = bundler.bundle()
 
     // handle errors
-    buildStream.on('error', err => {
+    buildStream.on('error', (err) => {
       beep()
       if (opts.watch) {
         console.warn(err.stack)
@@ -768,7 +775,7 @@ function bundleTask (opts) {
     }
 
     // write completed bundles
-    opts.destinations.forEach(dest => {
+    opts.destinations.forEach((dest) => {
       buildStream = buildStream.pipe(gulp.dest(dest))
     })
 
@@ -785,9 +792,12 @@ function configureBundleForSesify ({ browserifyOpts, bundleName }) {
 
   // record dependencies used in bundle
   fs.mkdirSync('./sesify', { recursive: true })
-  browserifyOpts.plugin.push(['deps-dump', {
-    filename: `./sesify/deps-${bundleName}.json`,
-  }])
+  browserifyOpts.plugin.push([
+    'deps-dump',
+    {
+      filename: `./sesify/deps-${bundleName}.json`,
+    },
+  ])
 
   const sesifyConfigPath = `./sesify/${bundleName}.json`
 

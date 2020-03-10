@@ -1,8 +1,5 @@
-
 import { createSelector } from 'reselect'
-import {
-  CAVEAT_NAMES,
-} from '../../../app/scripts/controllers/permissions/enums'
+import { CAVEAT_NAMES } from '../../../app/scripts/controllers/permissions/enums'
 
 const permissionsSelector = (state, origin) => {
   return origin && state.metamask.domains && state.metamask.domains[origin]
@@ -12,14 +9,11 @@ const permissionsSelector = (state, origin) => {
 const accountsPermissionSelector = createSelector(
   permissionsSelector,
   (domain = {}) => {
-
-    return (
-      Array.isArray(domain.permissions)
-        ? domain.permissions.find(
-          perm => perm.parentCapability === 'eth_accounts'
-        )
-        : {}
-    )
+    return Array.isArray(domain.permissions)
+      ? domain.permissions.find(
+        (perm) => perm.parentCapability === 'eth_accounts'
+      )
+      : {}
   }
 )
 
@@ -31,18 +25,14 @@ const accountsPermissionSelector = createSelector(
 export const getPermittedAccounts = createSelector(
   accountsPermissionSelector, // deep equal check performed on this output
   (accountsPermission = {}) => {
-
-    const accountsCaveat = (
+    const accountsCaveat =
       Array.isArray(accountsPermission.caveats) &&
       accountsPermission.caveats.find(
-        c => c.name === CAVEAT_NAMES.exposedAccounts
+        (c) => c.name === CAVEAT_NAMES.exposedAccounts
       )
-    )
 
-    return (
-      accountsCaveat && Array.isArray(accountsCaveat.value)
-        ? accountsCaveat.value
-        : []
-    )
+    return accountsCaveat && Array.isArray(accountsCaveat.value)
+      ? accountsCaveat.value
+      : []
   }
 )

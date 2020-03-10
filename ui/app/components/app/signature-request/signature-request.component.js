@@ -30,7 +30,7 @@ export default class SignatureRequest extends PureComponent {
     const { clearConfirmTransaction, cancel } = this.props
     const { metricsEvent } = this.context
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', event => {
+      window.addEventListener('beforeunload', (event) => {
         metricsEvent({
           eventOpts: {
             category: 'Transactions',

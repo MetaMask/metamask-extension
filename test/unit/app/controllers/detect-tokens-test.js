@@ -87,7 +87,11 @@ describe('DetectTokensController', function () {
   })
 
   it('should only check and add tokens while in main network', async function () {
-    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    const controller = new DetectTokensController({
+      preferences: preferences,
+      network: network,
+      keyringMemStore: keyringMemStore,
+    })
     controller.isOpen = true
     controller.isUnlocked = true
 

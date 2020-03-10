@@ -11,7 +11,6 @@ export function mountWithStore (component, store) {
 }
 
 export function mountWithRouter (component, store = {}, pathname = '/') {
-
   // Instantiate router context
   const router = {
     history: new MemoryRouter().history,
@@ -26,8 +25,8 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
   const createContext = () => ({
     context: {
       router,
-      t: str => str,
-      tOrKey: str => str,
+      t: (str) => str,
+      tOrKey: (str) => str,
       metricsEvent: () => {},
       store,
     },

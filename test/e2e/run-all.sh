@@ -56,12 +56,12 @@ concurrently --kill-others \
   'yarn dapp' \
   'mocha test/e2e/permissions.spec'
 
-concurrently --kill-others \
-  --names 'sendwithprivatedapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn sendwithprivatedapp' \
-  'mocha test/e2e/incremental-security.spec'
+# concurrently --kill-others \
+#   --names 'sendwithprivatedapp,e2e' \
+#   --prefix '[{time}][{name}]' \
+#   --success first \
+#   'yarn sendwithprivatedapp' \
+#   'mocha test/e2e/incremental-security.spec'
 
 concurrently --kill-others \
   --names 'dapp,e2e' \

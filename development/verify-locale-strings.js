@@ -46,7 +46,7 @@ for (const arg of process.argv.slice(2)) {
   }
 }
 
-main(specifiedLocale, fix).catch(error => {
+main(specifiedLocale, fix).catch((error) => {
   log.error(error)
   process.exit(1)
 })
@@ -55,7 +55,7 @@ async function main (specifiedLocale, fix) {
   if (specifiedLocale) {
     log.info(`Verifying selected locale "${specifiedLocale}":\n`)
     const locale = localeIndex.find(
-      localeMeta => localeMeta.code === specifiedLocale
+      (localeMeta) => localeMeta.code === specifiedLocale
     )
     const failed =
       locale.code === 'en'
@@ -68,8 +68,8 @@ async function main (specifiedLocale, fix) {
     log.info('Verifying all locales:\n')
     let failed = await verifyEnglishLocale(fix)
     const localeCodes = localeIndex
-      .filter(localeMeta => localeMeta.code !== 'en')
-      .map(localeMeta => localeMeta.code)
+      .filter((localeMeta) => localeMeta.code !== 'en')
+      .map((localeMeta) => localeMeta.code)
 
     for (const code of localeCodes) {
       log.info() // Separate each locale report by a newline when not in '--quiet' mode
@@ -194,7 +194,7 @@ async function verifyEnglishLocale (fix = false) {
     const templateMatches = fileContents.match(templateStringRegex)
     if (templateMatches) {
       // concat doesn't work here for some reason
-      templateMatches.forEach(match => templateUsage.push(match))
+      templateMatches.forEach((match) => templateUsage.push(match))
     }
   }
 
@@ -203,7 +203,7 @@ async function verifyEnglishLocale (fix = false) {
 
   const englishMessages = Object.keys(englishLocale)
   const unusedMessages = englishMessages.filter(
-    message =>
+    (message) =>
       !messageExceptions.includes(message) && !usedMessages.has(message)
   )
 
@@ -260,5 +260,5 @@ async function * getFileContents (filenames) {
 }
 
 function compareLocalesForMissingItems ({ base, subject }) {
-  return Object.keys(base).filter(key => !subject[key])
+  return Object.keys(base).filter((key) => !subject[key])
 }

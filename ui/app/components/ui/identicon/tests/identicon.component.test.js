@@ -17,9 +17,7 @@ describe('Identicon', function () {
   const store = mockStore(state)
 
   it('renders default eth_logo identicon with no props', function () {
-    const wrapper = mount(
-      <Identicon store={store} />
-    )
+    const wrapper = mount(<Identicon store={store} />)
 
     assert.equal(
       wrapper.find('img.balance-icon').prop('src'),

@@ -14,6 +14,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   MIN_GAS_LIMIT_HEX,
+  MAX_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
@@ -213,8 +214,18 @@ async function estimateGas ({
 
   // if recipient has no code, gas is 21k max:
   if (!selectedToken && !data) {
-    const code = Boolean(to) && (await global.eth.getCode(to))
+    let code
+    try {
+      code = Boolean(to) && (await global.eth.getCode(to))
+    } catch (err) {
+      if (err && err.message.includes('does not exist')) {
+        code = '0x'
+      } else {
+        throw err
+      }
+    }
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+    // conflux will return error if there's no contract at that address
     const codeIsEmpty = !code || code === '0x' || code === '0x0'
     if (codeIsEmpty) {
       return SIMPLE_GAS_COST
@@ -248,6 +259,8 @@ async function estimateGas ({
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
     blockGasLimit = MIN_GAS_LIMIT_HEX
+  } else if (parseInt(blockGasLimit) > parseInt(`0x{MAX_GAS_LIMIT_HEX}`)) {
+    blockGasLimit = MAX_GAS_LIMIT_HEX
   }
 
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(
@@ -264,6 +277,7 @@ async function estimateGas ({
     return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
       if (err) {
         const simulationFailed =
+          err.message.includes('Internal error') ||
           err.message.includes('Transaction execution error.') ||
           err.message.includes(
             'gas required exceeds allowance or always failing transaction'
@@ -349,7 +363,7 @@ function generateTokenTransferData ({
           ['address', 'uint256'],
           [toAddress, ethUtil.addHexPrefix(amount)]
         ),
-        x => ('00' + x.toString(16)).slice(-2)
+        (x) => ('00' + x.toString(16)).slice(-2)
       )
       .join('')
   )
@@ -362,7 +376,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
   }
 
   const lowestPrices = recentBlocks
-    .map(block => {
+    .map((block) => {
       if (!block.gasPrices || block.gasPrices.length < 1) {
         return ONE_GWEI_IN_WEI_HEX
       }
@@ -379,7 +393,7 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
 
 function getToAddressForGasUpdate (...addresses) {
   return [...addresses, '']
-    .find(str => str !== undefined && str !== null)
+    .find((str) => str !== undefined && str !== null)
     .toLowerCase()
 }
 

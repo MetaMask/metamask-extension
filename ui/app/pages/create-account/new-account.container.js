@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import * as actions from '../../store/actions'
 import NewAccountCreateForm from './new-account.component'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { network, selectedAddress, identities = {} },
   } = state
@@ -16,12 +16,12 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    toCoinbase: address =>
+    toCoinbase: (address) =>
       dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
-    createAccount: newAccountName => {
-      return dispatch(actions.addNewAccount()).then(newAccountAddress => {
+    createAccount: (newAccountName) => {
+      return dispatch(actions.addNewAccount()).then((newAccountAddress) => {
         if (newAccountName) {
           dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
         }

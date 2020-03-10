@@ -120,7 +120,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     }
   }
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = (prevProps) => {
     const { provider } = this.props
     const { provider: prevProvider } = prevProps
     if (provider.type !== prevProvider.type) {

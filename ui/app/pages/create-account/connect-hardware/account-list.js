@@ -48,7 +48,7 @@ class AccountList extends Component {
             clearable={false}
             value={selectedPath}
             options={options}
-            onChange={opt => {
+            onChange={(opt) => {
               onPathChange(opt.value)
             }}
           />
@@ -90,7 +90,7 @@ class AccountList extends Component {
                 name="selectedAccount"
                 id={`address-${idx}`}
                 value={account.index}
-                onChange={e => this.props.onAccountChange(e.target.value)}
+                onChange={(e) => this.props.onAccountChange(e.target.value)}
                 checked={
                   this.props.selectedAccount === account.index.toString()
                 }

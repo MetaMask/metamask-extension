@@ -17,7 +17,7 @@ export default class NewAccountModal extends Component {
     alias: '',
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       alias: e.target.value,
     })
@@ -27,7 +27,7 @@ export default class NewAccountModal extends Component {
     this.props.onSave(this.state.alias).then(this.props.hideModal)
   }
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSubmit()
     }

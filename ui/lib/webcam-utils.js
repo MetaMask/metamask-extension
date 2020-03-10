@@ -14,12 +14,12 @@ class WebcamUtils {
       getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE)
 
     const devices = await window.navigator.mediaDevices.enumerateDevices()
-    const webcams = devices.filter(device => device.kind === 'videoinput')
+    const webcams = devices.filter((device) => device.kind === 'videoinput')
     const hasWebcam = webcams.length > 0
     // A non-empty-string label implies that the webcam has been granted permission, as
     // otherwise the label is kept blank to prevent fingerprinting
     const hasWebcamPermissions = webcams.some(
-      webcam => webcam.label && webcam.label.length > 0
+      (webcam) => webcam.label && webcam.label.length > 0
     )
 
     if (hasWebcam) {

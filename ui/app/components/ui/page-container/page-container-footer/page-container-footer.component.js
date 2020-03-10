@@ -42,7 +42,7 @@ export default class PageContainerFooter extends Component {
               type={cancelButtonType || 'default'}
               large={buttonSizeLarge}
               className="page-container__footer-button"
-              onClick={e => onCancel(e)}
+              onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
             >
               {cancelText || this.context.t('cancel')}
@@ -54,7 +54,7 @@ export default class PageContainerFooter extends Component {
             large={buttonSizeLarge}
             className="page-container__footer-button"
             disabled={disabled}
-            onClick={e => onSubmit(e)}
+            onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
           >
             {submitText || this.context.t('next')}

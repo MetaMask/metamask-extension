@@ -52,7 +52,7 @@ export default class PageContainer extends PureComponent {
         return (
           child &&
           React.cloneElement(child, {
-            onClick: index => this.handleTabClick(index),
+            onClick: (index) => this.handleTabClick(index),
             tabIndex,
             isActive:
               numberOfTabs > 1 && tabIndex === this.state.activeTabIndex,
@@ -68,7 +68,7 @@ export default class PageContainer extends PureComponent {
   renderActiveTabContent () {
     const { tabsComponent } = this.props
     let { children } = tabsComponent.props
-    children = children.filter(child => child)
+    children = children.filter((child) => child)
     const { activeTabIndex } = this.state
 
     return children[activeTabIndex]

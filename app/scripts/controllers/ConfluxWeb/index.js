@@ -34,7 +34,7 @@ export default class Web3 extends Conflux {
 
   get eth () {
     return {
-      contract: abi => new FakeContract(this, abi),
+      contract: (abi) => new FakeContract(this, abi),
     }
   }
 }

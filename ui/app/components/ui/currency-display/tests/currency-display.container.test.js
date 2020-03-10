@@ -49,6 +49,7 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
           },
           result: {
+            hide: true,
             displayValue: '$2.80',
             suffix: 'USD',
             nativeCurrency: 'CFX',
@@ -61,6 +62,7 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
           },
           result: {
+            hide: true,
             displayValue: '$2.80',
             suffix: 'USD',
             nativeCurrency: 'CFX',
@@ -77,6 +79,7 @@ describe('CurrencyDisplay container', function () {
             displayValue: '1.266',
             suffix: 'CFX',
             nativeCurrency: 'CFX',
+            hide: false,
           },
         },
         {
@@ -91,6 +94,7 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
             displayValue: '1.266',
             suffix: undefined,
+            hide: false,
           },
         },
         {
@@ -100,11 +104,13 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
             denomination: 'GWEI',
             hideLabel: true,
+            hide: false,
           },
           result: {
             nativeCurrency: 'CFX',
             displayValue: '1',
             suffix: undefined,
+            hide: false,
           },
         },
         {
@@ -119,6 +125,7 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
             displayValue: '1000000000',
             suffix: undefined,
+            hide: false,
           },
         },
         {
@@ -133,6 +140,7 @@ describe('CurrencyDisplay container', function () {
             nativeCurrency: 'CFX',
             displayValue: '0.000000001',
             suffix: undefined,
+            hide: false,
           },
         },
       ]

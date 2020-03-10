@@ -188,13 +188,13 @@ class SettingsPage extends PureComponent {
             key: ABOUT_US_ROUTE,
           },
         ]}
-        isActive={key => {
+        isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true
           }
           return matchPath(currentPath, { path: key, exact: true })
         }}
-        onSelect={key => history.push(key)}
+        onSelect={(key) => history.push(key)}
       />
     )
   }

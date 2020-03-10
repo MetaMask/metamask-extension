@@ -8,7 +8,7 @@ describe('TransactionStatus Component', function () {
   it('should render APPROVED properly', function () {
     const wrapper = mount(
       <TransactionStatus statusKey="approved" title="test-title" />,
-      { context: { t: str => str.toUpperCase() } }
+      { context: { t: (str) => str.toUpperCase() } }
     )
 
     assert.ok(wrapper)
@@ -17,12 +17,9 @@ describe('TransactionStatus Component', function () {
   })
 
   it('should render SUBMITTED properly', function () {
-    const wrapper = mount(
-      <TransactionStatus
-        statusKey="submitted"
-      />,
-      { context: { t: str => str.toUpperCase() } }
-    )
+    const wrapper = mount(<TransactionStatus statusKey="submitted" />, {
+      context: { t: (str) => str.toUpperCase() },
+    })
 
     assert.ok(wrapper)
     assert.equal(wrapper.text(), 'PENDING')

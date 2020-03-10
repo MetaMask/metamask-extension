@@ -29,7 +29,13 @@ class PrivateKeyImportView extends Component {
 
   createNewKeychain () {
     const privateKey = this.inputRef.current.value
-    const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+    const {
+      importNewAccount,
+      history,
+      displayWarning,
+      setSelectedAddress,
+      firstAddress,
+    } = this.props
 
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
@@ -55,10 +61,10 @@ class PrivateKeyImportView extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err))
   }
 
-  createKeyringOnEnter = event => {
+  createKeyringOnEnter = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
       this.createNewKeychain()
@@ -87,7 +93,7 @@ class PrivateKeyImportView extends Component {
             className="new-account-import-form__input-password"
             type="password"
             id="private-key-box"
-            onKeyPress={e => this.createKeyringOnEnter(e)}
+            onKeyPress={(e) => this.createKeyringOnEnter(e)}
             onChange={() => this.checkInputEmpty()}
             ref={this.inputRef}
           />
@@ -137,9 +143,9 @@ function mapDispatchToProps (dispatch) {
     importNewAccount: (strategy, [privateKey]) => {
       return dispatch(actions.importNewAccount(strategy, [privateKey]))
     },
-    displayWarning: message =>
+    displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
-    setSelectedAddress: address =>
+    setSelectedAddress: (address) =>
       dispatch(actions.setSelectedAddress(address)),
   }
 }

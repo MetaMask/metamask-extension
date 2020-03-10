@@ -622,9 +622,6 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
-  "gasLimitTooHigh": {
-    "message": "Gas limit must be at most 1000000"
-  },
   "gasUsed": {
     "message": "Gas Used"
   },
@@ -1618,5 +1615,35 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "decryptRequest": {
+    "message": "Decrypt request"
+  },
+  "decrypt": {
+    "message": "Decrypt"
+  },
+  "decryptMessageNotice": {
+    "message": "$1 would like to read this message to complete your action",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Decrypt message"
+  },
+  "decryptCopy": {
+    "message": "Copy encrypted message"
+  },
+  "decryptInlineError": {
+    "message": "This message cannot be decrypted due to error: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Provide"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Request encryption public key"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
+    "description": "$1 is website or dapp name"
   }
 }

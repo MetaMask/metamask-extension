@@ -4,7 +4,7 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import EditApprovalPermission from './edit-approval-permission.component'
 import { getSelectedIdentity } from '../../../../selectors/selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const modalStateProps = state.appState.modal.modalState.props || {}
   return {
     selectedIdentity: getSelectedIdentity(state),

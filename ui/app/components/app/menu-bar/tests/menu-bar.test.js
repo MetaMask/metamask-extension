@@ -22,9 +22,7 @@ describe('MenuBar', function () {
       keyrings: [
         {
           type: 'HD Key Tree',
-          accounts: [
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          ],
+          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
         },
       ],
       frequentRpcListDetail: [],
@@ -50,7 +48,8 @@ describe('MenuBar', function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar.WrappedComponent {...props} />
-      </Provider>, store
+      </Provider>,
+      store
     )
 
     const sidebarButton = wrapper.find('.menu-bar__sidebar-button')
@@ -68,7 +67,8 @@ describe('MenuBar', function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar.WrappedComponent {...props} />
-      </Provider>, store
+      </Provider>,
+      store
     )
 
     const sidebarButton = wrapper.find('.menu-bar__sidebar-button')
@@ -79,16 +79,25 @@ describe('MenuBar', function () {
   it('opens account detail menu when account options is clicked', function () {
     const accountOptions = wrapper.find('.menu-bar__open-in-browser')
     accountOptions.simulate('click')
-    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, true)
+    assert.equal(
+      wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen,
+      true
+    )
   })
 
   it('sets accountDetailsMenuOpen to false when closed', function () {
-    wrapper.find('MenuBar').instance().setState({ accountDetailsMenuOpen: true })
+    wrapper
+      .find('MenuBar')
+      .instance()
+      .setState({ accountDetailsMenuOpen: true })
     wrapper.update()
 
     const accountDetailsMenu = wrapper.find('AccountDetailsDropdown')
     accountDetailsMenu.prop('onClose')()
 
-    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, false)
+    assert.equal(
+      wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen,
+      false
+    )
   })
 })

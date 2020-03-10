@@ -126,7 +126,7 @@ export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
 export function tokenInfoGetter () {
   const tokens = {}
 
-  return async address => {
+  return async (address) => {
     if (tokens[address]) {
       return tokens[address]
     }
@@ -148,11 +148,11 @@ export function calcTokenValue (value, decimals) {
 }
 
 export function getTokenValue (tokenParams = []) {
-  const valueData = tokenParams.find(param => param.name === '_value')
+  const valueData = tokenParams.find((param) => param.name === '_value')
   return valueData && valueData.value
 }
 
 export function getTokenToAddress (tokenParams = []) {
-  const toAddressData = tokenParams.find(param => param.name === '_to')
+  const toAddressData = tokenParams.find((param) => param.name === '_to')
   return toAddressData ? toAddressData.value : tokenParams[0].value
 }

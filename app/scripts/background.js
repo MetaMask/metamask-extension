@@ -127,6 +127,10 @@ initialize().catch(log.error)
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
+ * @property {Object} EncryptionPublicKeyMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
+ * @property {Object} unapprovedDecryptMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
  * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
@@ -191,7 +195,7 @@ async function loadStateFromPersistence () {
   }
 
   // report migration errors to sentry
-  migrator.on('error', err => {
+  migrator.on('error', (err) => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(versionedData)
     sentry.captureException(err, {
@@ -283,7 +287,7 @@ function setupController (initState, initLangCode) {
     debounce(1000),
     storeTransform(versionifyData),
     createStreamSink(persistData),
-    error => {
+    (error) => {
       log.error('Conflux Portal - Persistence pipeline failed', error)
     }
   )
@@ -396,7 +400,7 @@ function setupController (initState, initLangCode) {
         const url = new URL(remotePort.sender.url)
         const origin = url.hostname
 
-        remotePort.onMessage.addListener(msg => {
+        remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
             requestAccountTabIds[origin] = tabId
           }
@@ -420,6 +424,8 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.decryptMessageManager.on('updateBadge', updateBadge)
+  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
   controller.permissionsController.permissions.subscribe(updateBadge)
 
@@ -431,9 +437,14 @@ function setupController (initState, initLangCode) {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs =
+    const unapprovedPersonalMsgCount =
       controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs =
+    const unapprovedDecryptMsgCount =
+      controller.decryptMessageManager.unapprovedDecryptMsgCount
+    const unapprovedEncryptionPublicKeyMsgCount =
+      controller.encryptionPublicKeyManager
+        .unapprovedEncryptionPublicKeyMsgCount
+    const unapprovedTypedMessagesCount =
       controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingPermissionRequests = Object.keys(
       controller.permissionsController.permissions.state.permissionsRequests
@@ -441,8 +452,10 @@ function setupController (initState, initLangCode) {
     const count =
       unapprovedTxCount +
       unapprovedMsgCount +
-      unapprovedPersonalMsgs +
-      unapprovedTypedMsgs +
+      unapprovedPersonalMsgCount +
+      unapprovedDecryptMsgCount +
+      unapprovedEncryptionPublicKeyMsgCount +
+      unapprovedTypedMessagesCount +
       pendingPermissionRequests
     if (count) {
       label = String(count)
@@ -462,9 +475,9 @@ function setupController (initState, initLangCode) {
  * Opens the browser popup for user confirmation
  */
 function triggerUi () {
-  extension.tabs.query({ active: true }, tabs => {
+  extension.tabs.query({ active: true }, (tabs) => {
     const currentlyActiveMetamaskTab = Boolean(
-      tabs.find(tab => openMetamaskTabsIDs[tab.id])
+      tabs.find((tab) => openMetamaskTabsIDs[tab.id])
     )
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
@@ -479,7 +492,7 @@ function triggerUi () {
  */
 function openPopup () {
   triggerUi()
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const interval = setInterval(() => {
       if (!notificationIsOpen) {
         clearInterval(interval)

@@ -4,11 +4,11 @@ const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('confirm sig requests')
 
-QUnit.test('successful confirmation of sig requests', assert => {
+QUnit.test('successful confirmation of sig requests', (assert) => {
   const done = assert.async()
   runConfirmSigRequestsTest(assert)
     .then(done)
-    .catch(err => {
+    .catch((err) => {
       assert.notOk(err, `Error was thrown: ${err.stack}`)
       done()
     })

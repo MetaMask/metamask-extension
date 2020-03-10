@@ -11,6 +11,9 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs')
     }
     const options = new chrome.Options().addArguments(args)
+    if (responsive) {
+      options.windowSize({ width: 1000, height: 1000 })
+    }
     const builder = new Builder().forBrowser('chrome').setChromeOptions(options)
     if (port) {
       const service = new chrome.ServiceBuilder().setPort(port)
@@ -18,7 +21,7 @@ class ChromeDriver {
     }
     const driver = builder.build()
     const chromeDriver = new ChromeDriver(driver)
-    const extensionId = await chromeDriver.getExtensionIdByName('MetaMask')
+    const extensionId = await chromeDriver.getExtensionIdByName('ConfluxPortal')
 
     return {
       driver,

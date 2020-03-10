@@ -9,8 +9,12 @@ import PortStream from 'extension-port-stream'
 const fs = require('fs')
 const path = require('path')
 
-const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'), 'utf8')
-const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+const inpageContent = fs.readFileSync(
+  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
+  'utf8'
+)
+const inpageSuffix =
+  '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -73,10 +77,10 @@ async function setupStreams () {
   const extensionMux = new ObjectMultiplex()
   extensionMux.setMaxListeners(25)
 
-  pump(pageMux, pageStream, pageMux, err =>
+  pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
   )
-  pump(extensionMux, extensionStream, extensionMux, err =>
+  pump(extensionMux, extensionStream, extensionMux, (err) =>
     logStreamDisconnectWarning('MetaMask Background Multiplex', err)
   )
 
@@ -96,7 +100,7 @@ async function setupStreams () {
 function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
-  pump(channelA, channelB, channelA, err =>
+  pump(channelA, channelB, channelA, (err) =>
     logStreamDisconnectWarning(
       `MetaMask muxed traffic for channel "${channelName}" failed.`,
       err
@@ -232,7 +236,7 @@ async function domIsReady () {
     return
   }
   // wait for load
-  return new Promise(resolve =>
+  return new Promise((resolve) =>
     window.addEventListener('DOMContentLoaded', resolve, { once: true })
   )
 }

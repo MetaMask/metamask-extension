@@ -13,7 +13,7 @@ class PollingBlockTracker extends OriginalPollingBlockTracker {
     if (this._setSkipCacheFlag) {
       req.skipCache = true
     }
-    const res = await pify(cb => this._provider.sendAsync(req, cb))()
+    const res = await pify((cb) => this._provider.sendAsync(req, cb))()
     if (res.error) {
       throw new Error(
         `PollingBlockTracker - encountered error fetching block:\n${res.error}`

@@ -7,9 +7,7 @@ import { Menu, Item, Divider, CloseArea } from '../components/menu'
 describe('Dropdown Menu Components', function () {
   describe('Menu', function () {
     it('adds prop className to menu', function () {
-      const wrapper = shallow(
-        <Menu className="Test Class" isShowing />
-      )
+      const wrapper = shallow(<Menu className="Test Class" isShowing />)
       assert.equal(wrapper.find('.menu').prop('className'), 'menu Test Class')
     })
   })
@@ -30,7 +28,10 @@ describe('Dropdown Menu Components', function () {
     })
 
     it('add className based on props', function () {
-      assert.equal(wrapper.find('.menu__item').prop('className'), 'menu__item test foo1 menu__item--clickable')
+      assert.equal(
+        wrapper.find('.menu__item').prop('className'),
+        'menu__item test foo1 menu__item--clickable'
+      )
     })
 
     it('simulates onClick called', function () {
@@ -57,11 +58,7 @@ describe('Dropdown Menu Components', function () {
   describe('CloseArea', function () {
     it('simulates click', function () {
       const onClickSpy = sinon.spy()
-      const wrapper = shallow((
-        <CloseArea
-          onClick={onClickSpy}
-        />
-      ))
+      const wrapper = shallow(<CloseArea onClick={onClickSpy} />)
       wrapper.prop('onClick')()
       assert.ok(onClickSpy.calledOnce)
     })

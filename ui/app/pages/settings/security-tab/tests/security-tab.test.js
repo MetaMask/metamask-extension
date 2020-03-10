@@ -22,14 +22,12 @@ describe('Security Tab', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <SecurityTab.WrappedComponent {...props} />, {
-        context: {
-          t: str => str,
-          metricsEvent: () => {},
-        },
-      }
-    )
+    wrapper = mount(<SecurityTab.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        metricsEvent: () => {},
+      },
+    })
   })
 
   it('navigates to reveal seed words page', function () {

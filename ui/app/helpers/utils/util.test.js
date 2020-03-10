@@ -1,5 +1,4 @@
 import assert from 'assert'
-import sinon from 'sinon'
 import ethUtil from 'ethereumjs-util'
 import * as util from './util'
 
@@ -8,14 +7,6 @@ describe('util', function () {
   for (let i = 0; i < 18; i++) {
     ethInWei += '0'
   }
-
-  beforeEach(function () {
-    this.sinon = sinon.createSandbox()
-  })
-
-  afterEach(function () {
-    this.sinon.restore()
-  })
 
   describe('#parseBalance', function () {
     it('should render 0.01 eth correctly', function () {
@@ -103,6 +94,64 @@ describe('util', function () {
     })
   })
 
+  describe('isValidDomainName', function () {
+    it('should return true when given a valid domain name', function () {
+      assert.strictEqual(util.isValidDomainName('foo.bar'), true)
+    })
+
+    it('should return true when given a valid subdomain', function () {
+      assert.strictEqual(util.isValidDomainName('foo.foo.bar'), true)
+    })
+
+    it('should return true when given a single-character domain', function () {
+      assert.strictEqual(util.isValidDomainName('f.bar'), true)
+    })
+
+    it('should return true when given a unicode TLD', function () {
+      assert.strictEqual(util.isValidDomainName('台灣.中国'), true)
+    })
+
+    it('should return false when given a domain with unacceptable ASCII characters', function () {
+      assert.strictEqual(util.isValidDomainName('$.bar'), false)
+    })
+
+    it('should return false when given a TLD that starts with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo.-bar'), false)
+    })
+
+    it('should return false when given a TLD that ends with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo.bar-'), false)
+    })
+
+    it('should return false when given a domain name with a chunk that starts with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('-foo.bar'), false)
+    })
+
+    it('should return false when given a domain name with a chunk that ends with a dash', function () {
+      assert.strictEqual(util.isValidDomainName('foo-.bar'), false)
+    })
+
+    it('should return false when given a bare TLD', function () {
+      assert.strictEqual(util.isValidDomainName('bar'), false)
+    })
+
+    it('should return false when given a domain that starts with a period', function () {
+      assert.strictEqual(util.isValidDomainName('.bar'), false)
+    })
+
+    it('should return false when given a subdomain that starts with a period', function () {
+      assert.strictEqual(util.isValidDomainName('.foo.bar'), false)
+    })
+
+    it('should return false when given a domain that ends with a period', function () {
+      assert.strictEqual(util.isValidDomainName('bar.'), false)
+    })
+
+    it('should return false when given a 1-character TLD', function () {
+      assert.strictEqual(util.isValidDomainName('foo.b'), false)
+    })
+  })
+
   describe('#numericBalance', function () {
     it('should return a BN 0 if given nothing', function () {
       const result = util.numericBalance()
@@ -133,7 +182,9 @@ describe('util', function () {
     })
 
     it('should return 0.500 ETH', function () {
-      const input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
+      const input = new ethUtil.BN(ethInWei, 10)
+        .div(new ethUtil.BN('2', 10))
+        .toJSON()
       const result = util.formatBalance(input, 3)
       assert.equal(result, '0.500 CFX')
     })

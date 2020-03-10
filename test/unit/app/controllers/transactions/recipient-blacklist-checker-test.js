@@ -13,7 +13,8 @@ describe('Recipient Blacklist Checker', function () {
     let publicAccounts
 
     before(async function () {
-      const damnedMnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat'
+      const damnedMnemonic =
+        'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat'
       const keyringController = new KeyringController({})
       const Keyring = keyringController.getKeyringClassForType('HD Key Tree')
       const opts = {
@@ -28,7 +29,7 @@ describe('Recipient Blacklist Checker', function () {
       let callCount = 0
       const networks = [ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE]
       for (const networkId in networks) {
-        publicAccounts.forEach(account => {
+        publicAccounts.forEach((account) => {
           recipientBlackListChecker.checkAccount(networkId, account)
           callCount++
         })
@@ -39,7 +40,7 @@ describe('Recipient Blacklist Checker', function () {
     it('fails on mainnet', function () {
       const mainnetId = 1
       let callCount = 0
-      publicAccounts.forEach(account => {
+      publicAccounts.forEach((account) => {
         try {
           recipientBlackListChecker.checkAccount(mainnetId, account)
           assert.fail('function should have thrown an error')

@@ -20,7 +20,7 @@ export default class ViewContact extends PureComponent {
       <div>
         <ContactList
           searchForMyAccounts={() => myAccounts}
-          selectRecipient={address => {
+          selectRecipient={(address) => {
             history.push(`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${address}`)
           }}
         />

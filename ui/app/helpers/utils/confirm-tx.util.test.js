@@ -16,31 +16,19 @@ describe('Confirm Transaction utils', function () {
 
   describe('hexGreaterThan', function () {
     it('should return true if the first value is greater than the second value', function () {
-      assert.equal(
-        utils.hexGreaterThan('0xb', '0xa'),
-        true
-      )
+      assert.equal(utils.hexGreaterThan('0xb', '0xa'), true)
     })
 
     it('should return false if the first value is less than the second value', function () {
-      assert.equal(
-        utils.hexGreaterThan('0xa', '0xb'),
-        false
-      )
+      assert.equal(utils.hexGreaterThan('0xa', '0xb'), false)
     })
 
     it('should return false if the first value is equal to the second value', function () {
-      assert.equal(
-        utils.hexGreaterThan('0xa', '0xa'),
-        false
-      )
+      assert.equal(utils.hexGreaterThan('0xa', '0xa'), false)
     })
 
     it('should correctly compare prefixed and non-prefixed hex values', function () {
-      assert.equal(
-        utils.hexGreaterThan('0xb', 'a'),
-        true
-      )
+      assert.equal(utils.hexGreaterThan('0xb', 'a'), true)
     })
   })
 
@@ -62,10 +50,7 @@ describe('Confirm Transaction utils', function () {
 
   describe('addEth', function () {
     it('should add two values together rounding to 6 decimal places', function () {
-      assert.equal(
-        utils.addEth('0.12345678', '0'),
-        '0.123457'
-      )
+      assert.equal(utils.addEth('0.12345678', '0'), '0.123457')
     })
 
     it('should add any number of values together rounding to 6 decimal places', function () {
@@ -86,10 +71,7 @@ describe('Confirm Transaction utils', function () {
 
   describe('addFiat', function () {
     it('should add two values together rounding to 2 decimal places', function () {
-      assert.equal(
-        utils.addFiat('0.12345678', '0'),
-        '0.12'
-      )
+      assert.equal(utils.addFiat('0.12345678', '0'), '0.12')
     })
 
     it('should add any number of values together rounding to 2 decimal places', function () {

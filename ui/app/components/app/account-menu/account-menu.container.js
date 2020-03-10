@@ -55,7 +55,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
-    showAccountDetail: address => {
+    showAccountDetail: (address) => {
       dispatch(showAccountDetail(address))
       dispatch(hideSidebar())
       dispatch(toggleAccountMenu())
@@ -66,7 +66,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(hideSidebar())
       dispatch(toggleAccountMenu())
     },
-    showRemoveAccountConfirmationModal: identity => {
+    showRemoveAccountConfirmationModal: (identity) => {
       return dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
     },
   }

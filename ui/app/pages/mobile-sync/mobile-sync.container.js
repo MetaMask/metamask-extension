@@ -6,16 +6,16 @@ import {
 } from '../../store/actions'
 import MobileSyncPage from './mobile-sync.component'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    requestRevealSeedWords: password =>
+    requestRevealSeedWords: (password) =>
       dispatch(requestRevealSeedWords(password)),
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
-    displayWarning: message => dispatch(displayWarning(message || null)),
+    displayWarning: (message) => dispatch(displayWarning(message || null)),
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { selectedAddress },
   } = state

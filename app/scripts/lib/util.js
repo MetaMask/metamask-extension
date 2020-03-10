@@ -44,7 +44,7 @@ const getEnvironmentType = (url = window.location.href) => {
  * @returns {string} - the platform ENUM
  *
  */
-const getPlatform = _ => {
+const getPlatform = (_) => {
   const ua = navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
@@ -132,7 +132,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 function removeListeners (listeners, emitter) {
-  Object.keys(listeners).forEach(key => {
+  Object.keys(listeners).forEach((key) => {
     emitter.removeListener(key, listeners[key])
   })
 }
@@ -143,7 +143,7 @@ function getRandomArrayItem (array) {
 
 function mapObjectValues (object, cb) {
   const mappedObject = {}
-  Object.keys(object).forEach(key => {
+  Object.keys(object).forEach((key) => {
     mappedObject[key] = cb(key, object[key])
   })
   return mappedObject

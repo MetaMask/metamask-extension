@@ -6,11 +6,7 @@ import UserPreferencedCurrencyDisplay from '../../../../user-preferenced-currenc
 
 describe('CancelTransactionGasFee Component', function () {
   it('should render', function () {
-    const wrapper = shallow(
-      <CancelTransactionGasFee
-        value="0x3b9aca00"
-      />
-    )
+    const wrapper = shallow(<CancelTransactionGasFee value="0x3b9aca00" />)
 
     assert.ok(wrapper)
     assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)

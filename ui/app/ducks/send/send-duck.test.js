@@ -35,7 +35,7 @@ describe('Send Duck', function () {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        mockState,
+        mockState
       )
     })
 
@@ -44,7 +44,7 @@ describe('Send Duck', function () {
         SendReducer(mockState, {
           type: OPEN_TO_DROPDOWN,
         }),
-        { toDropdownOpen: true, ...mockState },
+        { toDropdownOpen: true, ...mockState }
       )
     })
 
@@ -53,21 +53,24 @@ describe('Send Duck', function () {
         SendReducer(mockState, {
           type: CLOSE_TO_DROPDOWN,
         }),
-        { toDropdownOpen: false, ...mockState },
+        { toDropdownOpen: false, ...mockState }
       )
     })
 
     it('should set gasButtonGroupShown to true when receiving a SHOW_GAS_BUTTON_GROUP action', function () {
       assert.deepEqual(
-        SendReducer({ ...mockState, gasButtonGroupShown: false }, { type: SHOW_GAS_BUTTON_GROUP }),
-        { gasButtonGroupShown: true, ...mockState },
+        SendReducer(
+          { ...mockState, gasButtonGroupShown: false },
+          { type: SHOW_GAS_BUTTON_GROUP }
+        ),
+        { gasButtonGroupShown: true, ...mockState }
       )
     })
 
     it('should set gasButtonGroupShown to false when receiving a HIDE_GAS_BUTTON_GROUP action', function () {
       assert.deepEqual(
         SendReducer(mockState, { type: HIDE_GAS_BUTTON_GROUP }),
-        { gasButtonGroupShown: false, ...mockState },
+        { gasButtonGroupShown: false, ...mockState }
       )
     })
 
@@ -89,7 +92,7 @@ describe('Send Duck', function () {
             someError: false,
             someOtherError: true,
           },
-        },
+        }
       )
     })
 
@@ -98,7 +101,7 @@ describe('Send Duck', function () {
         SendReducer(mockState, {
           type: RESET_SEND_STATE,
         }),
-        initState,
+        initState
       )
     })
   })
@@ -120,6 +123,9 @@ describe('Send Duck', function () {
   })
 
   describe('updateSendErrors', function () {
-    assert.deepEqual(updateSendErrors('mockErrorObject'), { type: UPDATE_SEND_ERRORS, value: 'mockErrorObject' })
+    assert.deepEqual(updateSendErrors('mockErrorObject'), {
+      type: UPDATE_SEND_ERRORS,
+      value: 'mockErrorObject',
+    })
   })
 })

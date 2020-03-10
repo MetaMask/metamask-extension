@@ -2,7 +2,6 @@ import assert from 'assert'
 import etherscanNetworkPrefix from '../../../ui/lib/etherscan-prefix-for-network'
 
 describe('Etherscan Network Prefix', function () {
-
   it('returns empy string as default value', function () {
     assert.equal(etherscanNetworkPrefix(), '')
   })

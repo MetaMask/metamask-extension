@@ -7,7 +7,7 @@ import ConfirmSeedPhrase from '../confirm-seed-phrase/confirm-seed-phrase.compon
 function shallowRender (props = {}, context = {}) {
   return shallow(<ConfirmSeedPhrase {...props} />, {
     context: {
-      t: str => str + '_t',
+      t: (str) => str + '_t',
       ...context,
     },
   })
@@ -56,7 +56,10 @@ describe('ConfirmSeedPhrase Component', function () {
     root.state()
     root.update()
     root.state()
-    root.find('.confirm-seed-phrase__seed-word--sorted').at(1).simulate('click')
+    root
+      .find('.confirm-seed-phrase__seed-word--sorted')
+      .at(1)
+      .simulate('click')
     assert.deepEqual(
       root.state().selectedSeedIndices,
       [0, 2],
@@ -131,7 +134,20 @@ describe('ConfirmSeedPhrase Component', function () {
   })
 
   it('should submit correctly', async function () {
-    const originalSeed = ['鼠', '牛', '虎', '兔', '龍', '蛇', '馬', '羊', '猴', '雞', '狗', '豬']
+    const originalSeed = [
+      '鼠',
+      '牛',
+      '虎',
+      '兔',
+      '龍',
+      '蛇',
+      '馬',
+      '羊',
+      '猴',
+      '雞',
+      '狗',
+      '豬',
+    ]
     const metricsEventSpy = sinon.spy()
     const pushSpy = sinon.spy()
     const initialize3BoxSpy = sinon.spy()
@@ -150,8 +166,8 @@ describe('ConfirmSeedPhrase Component', function () {
     const sorted = root.state().sortedSeedWords
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
 
-    originalSeed.forEach(seed => {
-      const seedIndex = sorted.findIndex(s => s === seed)
+    originalSeed.forEach((seed) => {
+      const seedIndex = sorted.findIndex((s) => s === seed)
       seeds.at(seedIndex).simulate('click')
     })
 
@@ -159,7 +175,7 @@ describe('ConfirmSeedPhrase Component', function () {
 
     root.find('.first-time-flow__button').simulate('click')
 
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     assert.deepEqual(metricsEventSpy.args[0][0], {
       eventOpts: {

@@ -28,25 +28,25 @@ proxyquire('../send-footer.container.js', {
   },
   '../../../store/actions': actionSpies,
   '../send.selectors': {
-    getGasLimit: s => `mockGasLimit:${s}`,
-    getGasPrice: s => `mockGasPrice:${s}`,
-    getGasTotal: s => `mockGasTotal:${s}`,
-    getSelectedToken: s => `mockSelectedToken:${s}`,
-    getSendAmount: s => `mockAmount:${s}`,
-    getSendEditingTransactionId: s => `mockEditingTransactionId:${s}`,
-    getSendFromObject: s => `mockFromObject:${s}`,
-    getSendTo: s => `mockTo:${s}`,
-    getSendToNickname: s => `mockToNickname:${s}`,
-    getSendToAccounts: s => `mockToAccounts:${s}`,
-    getTokenBalance: s => `mockTokenBalance:${s}`,
-    getSendHexData: s => `mockHexData:${s}`,
-    getUnapprovedTxs: s => `mockUnapprovedTxs:${s}`,
-    getSendErrors: s => `mockSendErrors:${s}`,
+    getGasLimit: (s) => `mockGasLimit:${s}`,
+    getGasPrice: (s) => `mockGasPrice:${s}`,
+    getGasTotal: (s) => `mockGasTotal:${s}`,
+    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendAmount: (s) => `mockAmount:${s}`,
+    getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
+    getSendFromObject: (s) => `mockFromObject:${s}`,
+    getSendTo: (s) => `mockTo:${s}`,
+    getSendToNickname: (s) => `mockToNickname:${s}`,
+    getSendToAccounts: (s) => `mockToAccounts:${s}`,
+    getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getSendHexData: (s) => `mockHexData:${s}`,
+    getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
+    getSendErrors: (s) => `mockSendErrors:${s}`,
   },
-  './send-footer.selectors': { isSendFormInError: s => `mockInError:${s}` },
+  './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
   '../../../selectors/custom-gas': {
-    getRenderableEstimateDataForSmallButtonsFromGWEI: s => [
+    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
       { gasEstimateType: `mockGasEstimateType:${s}` },
     ],
     getDefaultActiveButtonIndex: () => 0,
@@ -54,7 +54,6 @@ proxyquire('../send-footer.container.js', {
 })
 
 describe('send-footer container', function () {
-
   describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
@@ -162,7 +161,11 @@ describe('send-footer container', function () {
 
     describe('addToAddressBookIfNew()', function () {
       it('should dispatch an action', function () {
-        mapDispatchToPropsObject.addToAddressBookIfNew('mockNewAddress', 'mockToAccounts', 'mockNickname')
+        mapDispatchToPropsObject.addToAddressBookIfNew(
+          'mockNewAddress',
+          'mockToAccounts',
+          'mockNickname'
+        )
         assert(dispatchSpy.calledOnce)
         assert.equal(
           utilsStubs.addressIsNew.getCall(0).args[0],

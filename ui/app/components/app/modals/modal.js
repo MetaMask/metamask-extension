@@ -83,7 +83,7 @@ const accountModalStyle = {
 const MODALS = {
   DEPOSIT_ETHER: {
     contents: <DepositEtherModal />,
-    onHide: props => props.hideWarning(),
+    onHide: (props) => props.hideWarning(),
     mobileModalStyle: {
       width: '100%',
       height: '100%',
@@ -458,7 +458,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: customOnHideOpts => {
+    hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal())
       if (customOnHideOpts && customOnHideOpts.action) {
         dispatch(customOnHideOpts.action(...customOnHideOpts.args))
@@ -512,7 +512,7 @@ class Modal extends Component {
           }
           this.props.hideModal(modal.customOnHideOpts)
         }}
-        ref={ref => {
+        ref={(ref) => {
           this.modalRef = ref
         }}
         modalStyle={modalStyle}

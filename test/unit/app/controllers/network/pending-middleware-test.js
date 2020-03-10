@@ -9,7 +9,9 @@ describe('PendingNonceMiddleware', function () {
   describe('#createPendingNonceMiddleware', function () {
     const getPendingNonce = async () => '0x2'
     const address = '0xF231D46dD78806E1DD93442cf33C7671f8538748'
-    const pendingNonceMiddleware = createPendingNonceMiddleware({ getPendingNonce })
+    const pendingNonceMiddleware = createPendingNonceMiddleware({
+      getPendingNonce,
+    })
 
     it('should call next if not a eth_getTransactionCount request', function (done) {
       const req = { method: 'cfx_getBlockByNumber' }
@@ -22,14 +24,22 @@ describe('PendingNonceMiddleware', function () {
       pendingNonceMiddleware(req, res, () => done())
     })
     it('should fill the result with a the "pending" nonce', function (done) {
-      const req = { method: 'cfx_getTransactionCount', params: [address, 'pending'] }
+      const req = {
+        method: 'cfx_getTransactionCount',
+        params: [address, 'pending'],
+      }
       const res = {}
-      pendingNonceMiddleware(req, res, () => {
-        done(new Error('should not have called next'))
-      }, () => {
-        assert(res.result === '0x2')
-        done()
-      })
+      pendingNonceMiddleware(
+        req,
+        res,
+        () => {
+          done(new Error('should not have called next'))
+        },
+        () => {
+          assert(res.result === '0x2')
+          done()
+        }
+      )
     })
   })
 
@@ -47,7 +57,8 @@ describe('PendingNonceMiddleware', function () {
       from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       gas: '0x5208',
       gasPrice: '0x1e8480',
-      hash: '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
+      hash:
+        '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       input: '0x',
       nonce: '0x4',
       to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
@@ -83,7 +94,7 @@ describe('PendingNonceMiddleware', function () {
           done(new Error('should not have called next'))
         },
         () => {
-        /*
+          /*
       // uncomment this section for debugging help with non matching keys
       const coppy = {...res.result}
       Object.keys(spec).forEach((key) => {

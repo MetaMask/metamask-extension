@@ -65,13 +65,13 @@ export default class AccountImportSubview extends Component {
             name="import-type-select"
             clearable={false}
             value={type || menuItems[0]}
-            options={menuItems.map(type => {
+            options={menuItems.map((type) => {
               return {
                 value: type,
                 label: type,
               }
             })}
-            onChange={opt => {
+            onChange={(opt) => {
               this.setState({ type: opt.value })
             }}
           />

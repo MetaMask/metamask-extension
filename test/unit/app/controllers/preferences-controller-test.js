@@ -649,7 +649,9 @@ describe('preferences controller', function () {
 
   describe('#updateRpc', function () {
     it('should update the rpcDetails properly', function () {
-      preferencesController.store.updateState({ frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}] })
+      preferencesController.store.updateState({
+        frequentRpcListDetail: [{}, { rpcUrl: 'test' }, {}],
+      })
       preferencesController.updateRpc({ rpcUrl: 'test', chainId: 1 })
       preferencesController.updateRpc({ rpcUrl: 'test/1', chainId: 1 })
       preferencesController.updateRpc({ rpcUrl: 'test/2', chainId: 1 })

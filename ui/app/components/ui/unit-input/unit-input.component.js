@@ -45,7 +45,7 @@ export default class UnitInput extends PureComponent {
     this.unitInput.focus()
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     const { value: userInput } = event.target
     let value = userInput
 
@@ -105,7 +105,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleBlur}
               style={{ width: this.getInputWidth(value) }}
-              ref={ref => {
+              ref={(ref) => {
                 this.unitInput = ref
               }}
               disabled={maxModeOn}

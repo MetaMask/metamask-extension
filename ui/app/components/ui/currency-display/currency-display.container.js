@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/utils/confirm-tx.util'
 import { GWEI } from '../../../helpers/constants/common'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     metamask: { nativeCurrency, currentCurrency, conversionRate },
   } = state
@@ -54,6 +54,7 @@ const mergeProps = (stateProps, _, ownProps) => {
     ...restOwnProps,
     displayValue,
     suffix,
+    hide: !propsSuffix && toCurrency === currentCurrency,
   }
 }
 

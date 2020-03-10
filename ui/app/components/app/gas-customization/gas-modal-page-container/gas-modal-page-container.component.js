@@ -47,9 +47,9 @@ export default class GasModalPageContainer extends Component {
       ? Promise.resolve(this.props.blockTime)
       : this.props
         .fetchBasicGasAndTimeEstimates()
-        .then(basicEstimates => basicEstimates.blockTime)
+        .then((basicEstimates) => basicEstimates.blockTime)
 
-    promise.then(blockTime => {
+    promise.then((blockTime) => {
       this.props.fetchGasEstimates(blockTime)
     })
   }

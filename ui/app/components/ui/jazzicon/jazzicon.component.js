@@ -54,12 +54,6 @@ export default class Jazzicon extends PureComponent {
   render () {
     const { className, style } = this.props
 
-    return (
-      <div
-        className={className}
-        ref={this.container}
-        style={style}
-      />
-    )
+    return <div className={className} ref={this.container} style={style} />
   }
 }

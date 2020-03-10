@@ -5,9 +5,9 @@ import {
   initializeThreeBox,
 } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setSeedPhraseBackedUp: seedPhraseBackupState =>
+    setSeedPhraseBackedUp: (seedPhraseBackupState) =>
       dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     initializeThreeBox: () => dispatch(initializeThreeBox()),
   }

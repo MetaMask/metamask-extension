@@ -14,12 +14,9 @@ describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(function () {
-    wrapper = shallow(
-      <SendContent
-        showHexData
-      />,
-      { context: { t: str => str + '_t' } }
-    )
+    wrapper = shallow(<SendContent showHexData />, {
+      context: { t: (str) => str + '_t' },
+    })
   })
 
   describe('render', function () {
@@ -28,18 +25,37 @@ describe('SendContent Component', function () {
     })
 
     it('should render a div with a .send-v2__form class as a child of PageContainerContent', function () {
-      const PageContainerContentChild = wrapper.find(PageContainerContent).children()
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children()
       PageContainerContentChild.is('div')
       PageContainerContentChild.is('.send-v2__form')
     })
 
     it('should render the correct row components as grandchildren of the PageContainerContent component', function () {
-      const PageContainerContentChild = wrapper.find(PageContainerContent).children()
-      assert(PageContainerContentChild.childAt(0).is(Dialog), 'row[0] should be Dialog')
-      assert(PageContainerContentChild.childAt(1).is(SendAssetRow), 'row[1] should be SendAssetRow')
-      assert(PageContainerContentChild.childAt(2).is(SendAmountRow), 'row[2] should be SendAmountRow')
-      assert(PageContainerContentChild.childAt(3).is(SendGasRow), 'row[3] should be SendGasRow')
-      assert(PageContainerContentChild.childAt(4).is(SendHexDataRow), 'row[4] should be SendHexDataRow')
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children()
+      assert(
+        PageContainerContentChild.childAt(0).is(Dialog),
+        'row[0] should be Dialog'
+      )
+      assert(
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        'row[1] should be SendAssetRow'
+      )
+      assert(
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        'row[2] should be SendAmountRow'
+      )
+      assert(
+        PageContainerContentChild.childAt(3).is(SendGasRow),
+        'row[3] should be SendGasRow'
+      )
+      assert(
+        PageContainerContentChild.childAt(4).is(SendHexDataRow),
+        'row[4] should be SendHexDataRow'
+      )
     })
 
     it('should not render the SendHexDataRow if props.showHexData is false', function () {

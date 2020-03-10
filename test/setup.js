@@ -1,6 +1,6 @@
 require('@babel/register')({
   ignore: [
-    name => name.includes('node_modules') && !name.includes('obs-store'),
+    (name) => name.includes('node_modules') && !name.includes('obs-store'),
   ],
 })
 

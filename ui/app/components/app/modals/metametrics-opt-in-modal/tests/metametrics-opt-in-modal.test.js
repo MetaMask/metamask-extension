@@ -14,13 +14,11 @@ describe('MetaMetrics Opt In', function () {
   }
 
   beforeEach(function () {
-    wrapper = mount(
-      <MetaMetricsOptIn.WrappedComponent {...props} />, {
-        context: {
-          metricsEvent: () => {},
-        },
-      }
-    )
+    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />, {
+      context: {
+        metricsEvent: () => {},
+      },
+    })
   })
 
   afterEach(function () {
@@ -51,5 +49,4 @@ describe('MetaMetrics Opt In', function () {
       done()
     })
   })
-
 })

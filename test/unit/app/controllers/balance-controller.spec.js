@@ -19,7 +19,6 @@ const accounts = {
 }
 
 describe('Balance Controller', function () {
-
   let balanceController
 
   it('errors when address, accountTracker, txController, or blockTracker', function () {

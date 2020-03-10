@@ -8,7 +8,10 @@ import { calcTokenAmount } from '../../../../helpers/utils/token-util'
 import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
 
-const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10)
+const MAX_UNSIGNED_256_INT = new BigNumber(2)
+  .pow(256)
+  .minus(1)
+  .toString(10)
 
 export default class EditApprovalPermission extends PureComponent {
   static propTypes = {
@@ -99,16 +102,16 @@ export default class EditApprovalPermission extends PureComponent {
                   'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
                 })}
               >
-                {
-                  (new BigNumber(tokenAmount)).lessThan(new BigNumber(tokenBalance))
-                    ? t('proposedApprovalLimit')
-                    : t('unlimited')
-                }
+                {new BigNumber(tokenAmount).lessThan(
+                  new BigNumber(tokenBalance)
+                )
+                  ? t('proposedApprovalLimit')
+                  : t('unlimited')}
               </div>
               <div className="edit-approval-permission__edit-section__option-description">
                 {t('spendLimitRequestedBy', [origin])}
               </div>
-              <div className="edit-approval-permission__edit-section__option-value" >
+              <div className="edit-approval-permission__edit-section__option-value">
                 {`${Number(tokenAmount)} ${tokenSymbol}`}
               </div>
             </div>
@@ -146,7 +149,9 @@ export default class EditApprovalPermission extends PureComponent {
               <div className="edit-approval-permission__edit-section__option-input">
                 <TextField
                   type="number"
-                  placeholder={ `${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}` }
+                  placeholder={`${Number(
+                    customTokenAmount || tokenAmount
+                  )} ${tokenSymbol}`}
                   onChange={(event) => {
                     this.setState({ customSpendLimit: event.target.value })
                     if (selectedOptionIsUnlimited) {
@@ -155,7 +160,7 @@ export default class EditApprovalPermission extends PureComponent {
                   }}
                   fullWidth
                   margin="dense"
-                  value={ this.state.customSpendLimit }
+                  value={this.state.customSpendLimit}
                   error={error}
                 />
               </div>
@@ -201,7 +206,7 @@ export default class EditApprovalPermission extends PureComponent {
     const error = this.validateSpendLimit()
     const disabled = Boolean(
       (customSpendLimit === customTokenAmount && !selectedOptionIsUnlimited) ||
-      error
+        error
     )
 
     return (
@@ -216,7 +221,7 @@ export default class EditApprovalPermission extends PureComponent {
         containerClass="edit-approval-permission-modal-container"
         submitDisabled={disabled}
       >
-        { this.renderModalContent(error) }
+        {this.renderModalContent(error)}
       </Modal>
     )
   }

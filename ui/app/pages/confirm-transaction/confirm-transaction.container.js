@@ -48,16 +48,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setTransactionToConfirm: transactionId => {
+    setTransactionToConfirm: (transactionId) => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
-    getContractMethodData: data => dispatch(getContractMethodData(data)),
-    getTokenParams: tokenAddress => dispatch(getTokenParams(tokenAddress)),
+    getContractMethodData: (data) => dispatch(getContractMethodData(data)),
+    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
   }
 }
 

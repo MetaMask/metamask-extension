@@ -41,7 +41,7 @@ class MetaMetricsProvider extends Component {
     super(props)
 
     props.history.listen(() => {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         previousPath: prevState.currentPath,
         currentPath: window.location.href,
       }))
@@ -104,7 +104,7 @@ class MetaMetricsProvider extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const txData = txDataSelector(state) || {}
 
   return {

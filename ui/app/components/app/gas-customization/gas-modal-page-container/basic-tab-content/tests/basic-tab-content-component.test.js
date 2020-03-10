@@ -32,7 +32,7 @@ const mockGasPriceButtonGroupProps = {
       gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
   ],
-  handleGasPriceSelection: newPrice => console.log('NewPrice: ', newPrice),
+  handleGasPriceSelection: (newPrice) => console.log('NewPrice: ', newPrice),
   noButtonActiveByDefault: true,
   showCheck: true,
 }
@@ -42,15 +42,20 @@ describe('BasicTabContent Component', function () {
     let wrapper
 
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <BasicTabContent
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
         />
-      ))
+      )
     })
 
     it('should have a title', function () {
-      assert(wrapper.find('.basic-tab-content').childAt(0).hasClass('basic-tab-content__title'))
+      assert(
+        wrapper
+          .find('.basic-tab-content')
+          .childAt(0)
+          .hasClass('basic-tab-content__title')
+      )
     })
 
     it('should render a GasPriceButtonGroup compenent', function () {

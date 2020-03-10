@@ -61,8 +61,8 @@ workflows:
             - test-unit
             - test-unit-global
             - test-mozilla-lint
-            # - test-e2e-chrome
-            # - test-e2e-firefox
+            - test-e2e-chrome
+            - test-e2e-firefox
             - test-integration-flat-chrome
             - test-integration-flat-firefox
       - benchmark:
@@ -72,7 +72,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            # - benchmark
+            - benchmark
             - all-tests-pass
       - job-publish-release:
           filters:

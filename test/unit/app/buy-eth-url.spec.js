@@ -24,7 +24,10 @@ describe('buy-eth-url', function () {
   it('returns coinbase url with amount and address for network 1', function () {
     const wyreUrl = getBuyEthUrl(mainnet)
 
-    assert.equal(wyreUrl, 'https://pay.sendwyre.com/?dest=ethereum:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card')
+    assert.equal(
+      wyreUrl,
+      'https://pay.sendwyre.com/?dest=ethereum:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card'
+    )
   })
 
   it('returns conflux test net facuet for network 2', function () {

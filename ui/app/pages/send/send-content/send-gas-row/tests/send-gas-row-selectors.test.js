@@ -6,7 +6,6 @@ import {
 } from '../send-gas-row.selectors.js'
 
 describe('send-gas-row selectors', function () {
-
   describe('getGasLoadingError()', function () {
     it('should return send.errors.gasLoading', function () {
       const state = {

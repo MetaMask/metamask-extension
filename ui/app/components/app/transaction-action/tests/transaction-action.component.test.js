@@ -5,13 +5,12 @@ import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
 describe('TransactionAction Component', function () {
-  const t = key => key
-
+  const t = (key) => key
 
   describe('Outgoing transaction', function () {
     beforeEach(function () {
       global.eth = {
-        getCode: sinon.stub().callsFake(address => {
+        getCode: sinon.stub().callsFake((address) => {
           const code = address === 'approveAddress' ? 'contract' : '0x'
           return Promise.resolve(code)
         }),
@@ -47,7 +46,13 @@ describe('TransactionAction Component', function () {
       assert.equal(wrapper.find('.transaction-action').length, 1)
       wrapper.setState({ transactionAction: 'sentEther' })
       assert.equal(wrapper.text(), 'sentEther')
-      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'sentEther')
+      assert.equal(
+        wrapper
+          .find('.transaction-action')
+          .props()
+          .title.trim(),
+        'sentEther'
+      )
     })
 
     it('should render Approved', async function () {
@@ -83,8 +88,20 @@ describe('TransactionAction Component', function () {
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.transaction-action').length, 1)
-      assert.equal(wrapper.find('.transaction-action').text().trim(), 'Approve')
-      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'Approve')
+      assert.equal(
+        wrapper
+          .find('.transaction-action')
+          .text()
+          .trim(),
+        'Approve'
+      )
+      assert.equal(
+        wrapper
+          .find('.transaction-action')
+          .props()
+          .title.trim(),
+        'Approve'
+      )
     })
 
     it('should render contractInteraction', async function () {
@@ -118,8 +135,20 @@ describe('TransactionAction Component', function () {
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.transaction-action').length, 1)
-      assert.equal(wrapper.find('.transaction-action').text().trim(), 'contractInteraction')
-      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'contractInteraction')
+      assert.equal(
+        wrapper
+          .find('.transaction-action')
+          .text()
+          .trim(),
+        'contractInteraction'
+      )
+      assert.equal(
+        wrapper
+          .find('.transaction-action')
+          .props()
+          .title.trim(),
+        'contractInteraction'
+      )
     })
   })
 })

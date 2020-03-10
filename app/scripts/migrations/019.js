@@ -39,18 +39,18 @@ function transformState (state) {
         }
 
         const confirmedTxs = txList
-          .filter(tx => tx.status === 'confirmed')
-          .filter(tx => tx.txParams.from === txMeta.txParams.from)
+          .filter((tx) => tx.status === 'confirmed')
+          .filter((tx) => tx.txParams.from === txMeta.txParams.from)
           .filter(
-            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+            (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
           )
         const highestConfirmedNonce = getHighestNonce(confirmedTxs)
 
         const pendingTxs = txList
-          .filter(tx => tx.status === 'submitted')
-          .filter(tx => tx.txParams.from === txMeta.txParams.from)
+          .filter((tx) => tx.status === 'submitted')
+          .filter((tx) => tx.txParams.from === txMeta.txParams.from)
           .filter(
-            tx => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
+            (tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from
           )
         const highestContinuousNonce = getHighestContinuousFrom(
           pendingTxs,
@@ -74,7 +74,7 @@ function transformState (state) {
 }
 
 function getHighestContinuousFrom (txList, startPoint) {
-  const nonces = txList.map(txMeta => {
+  const nonces = txList.map((txMeta) => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce, 16)
   })
@@ -88,7 +88,7 @@ function getHighestContinuousFrom (txList, startPoint) {
 }
 
 function getHighestNonce (txList) {
-  const nonces = txList.map(txMeta => {
+  const nonces = txList.map((txMeta) => {
     const nonce = txMeta.txParams.nonce
     return parseInt(nonce || '0x0', 16)
   })

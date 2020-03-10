@@ -16,7 +16,7 @@ tests.forEach(function (fileName) {
   b.add(filePath)
 })
 
-pump(b.bundle(), writeStream, err => {
+pump(b.bundle(), writeStream, (err) => {
   if (err) {
     throw err
   }

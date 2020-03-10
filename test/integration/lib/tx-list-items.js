@@ -4,11 +4,11 @@ const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('tx list items')
 
-QUnit.test('renders list items successfully', assert => {
+QUnit.test('renders list items successfully', (assert) => {
   const done = assert.async()
   runTxListItemsTest(assert)
     .then(done)
-    .catch(err => {
+    .catch((err) => {
       assert.notOk(err, `Error was thrown: ${err.stack}`)
       done()
     })

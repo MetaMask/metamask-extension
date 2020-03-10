@@ -6,10 +6,7 @@ module.exports = function (api) {
         '@babel/preset-env',
         {
           targets: {
-            browsers: [
-              'chrome >= 58',
-              'firefox >= 56.2',
-            ],
+            browsers: ['chrome >= 58', 'firefox >= 56.2'],
           },
         },
       ],
@@ -19,6 +16,7 @@ module.exports = function (api) {
       '@babel/plugin-transform-runtime',
       '@babel/plugin-proposal-class-properties',
       '@babel/plugin-proposal-object-rest-spread',
+      '@babel/plugin-proposal-optional-chaining',
     ],
   }
 }

@@ -34,7 +34,7 @@ describe('MetaMask', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver)
       if (errors.length) {
-        const errorReports = errors.map(err => err.message)
+        const errorReports = errors.map((err) => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n'
         )}`
@@ -85,7 +85,7 @@ describe('MetaMask', function () {
         windowHandles
       )
       popup = windowHandles.find(
-        handle => handle !== extension && handle !== dapp
+        (handle) => handle !== extension && handle !== dapp
       )
 
       await driver.switchToWindow(popup)
@@ -105,13 +105,16 @@ describe('MetaMask', function () {
     })
 
     it('creates a sign typed data signature request', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Sign')]`),
+        10000
+      )
       await driver.delay(largeDelayMs)
 
       await driver.delay(regularDelayMs)
       windowHandles = await driver.getAllWindowHandles()
       await driver.switchToWindowWithTitle(
-        'MetaMask Notification',
+        'Conflux Portal Notification',
         windowHandles
       )
       await driver.delay(regularDelayMs)
@@ -139,7 +142,10 @@ describe('MetaMask', function () {
     })
 
     it('signs the transaction', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      await driver.clickElement(
+        By.xpath(`//button[contains(text(), 'Sign')]`),
+        10000
+      )
       await driver.delay(regularDelayMs)
 
       extension = windowHandles[0]

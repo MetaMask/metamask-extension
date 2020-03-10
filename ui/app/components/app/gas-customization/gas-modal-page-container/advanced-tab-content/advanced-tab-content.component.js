@@ -46,7 +46,7 @@ export default class AdvancedTabContent extends Component {
     )
   }
 
-  onGasChartUpdate = price => {
+  onGasChartUpdate = (price) => {
     const { updateCustomGasPrice } = this.props
     updateCustomGasPrice(decGWEIToHexWEI(price))
   }

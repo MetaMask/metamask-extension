@@ -14,7 +14,7 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled rejection:', reason)
   unhandledRejections.set(promise, reason)
 })
-process.on('rejectionHandled', promise => {
+process.on('rejectionHandled', (promise) => {
   console.log(`handled: ${unhandledRejections.get(promise)}`)
   unhandledRejections.delete(promise)
 })
@@ -42,7 +42,7 @@ before(function (done) {
       nock.enableNetConnect('localhost')
       done()
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err)
     })
 })

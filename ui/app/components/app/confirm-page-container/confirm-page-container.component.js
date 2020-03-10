@@ -117,7 +117,7 @@ export default class ConfirmPageContainer extends Component {
           nextTxId={nextTxId}
           prevTxId={prevTxId}
           showNavigation={showNavigation}
-          onNextTx={txId => onNextTx(txId)}
+          onNextTx={(txId) => onNextTx(txId)}
           firstTx={firstTx}
           lastTx={lastTx}
           ofText={ofText}

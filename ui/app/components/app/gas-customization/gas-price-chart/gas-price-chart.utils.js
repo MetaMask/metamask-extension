@@ -306,12 +306,12 @@ export function generateChart (
     },
     tooltip: {
       format: {
-        title: v => v.toPrecision(4),
+        title: (v) => v.toPrecision(4),
       },
       contents: function (d) {
         const titleFormat = this.config.tooltip_format_title
         let text
-        d.forEach(el => {
+        d.forEach((el) => {
           if (el && (el.value || el.value === 0) && !text) {
             text =
               "<table class='" +
@@ -395,7 +395,7 @@ export function generateChart (
   }
 
   chart.internal.showTooltip = function (selectedData, element) {
-    const dataToShow = selectedData.filter(d => d && (d.value || d.value === 0))
+    const dataToShow = selectedData.filter((d) => d && (d.value || d.value === 0))
 
     if (dataToShow.length) {
       this.tooltip

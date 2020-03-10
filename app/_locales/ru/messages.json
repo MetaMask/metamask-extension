@@ -124,6 +124,9 @@
   "customRPC": {
     "message": "Пользовательский RPC"
   },
+  "dataBackupFoundInfo": {
+    "message": "Некоторые данные вашей учетной записи были экспортированы во время предыдущей установки MetaMask. Это может включать ваши настройки, контакты и токены. Вы хотите импортировать эти данные сейчас?"
+  },
   "decimalsMustZerotoTen": {
     "message": "Количество десятичных разрядов должно быть минимум 0 и максимум 36."
   },
@@ -962,8 +965,11 @@
   "noConversionRateAvailable": {
     "message": "Курсы валют недоступны"
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "notEnoughGas": {
-    "message": "Нехватает газа"
+    "message": "Не хватает газа"
   },
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
@@ -1045,6 +1051,10 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой аккаунт с помощью секретной фразы"
+  },
+  "restoreWalletPreferences": {
+    "message": "Были найдены данные экспортированные от $1. Вы желаете восстановить настройки вашего кошелька?",
+    "description": "$1 is the date at which the data was backed up"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
@@ -1339,5 +1349,35 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
+  },
+  "decryptRequest": {
+    "message": "Запрос расшифровки"
+  },
+  "decrypt": {
+    "message": "Расшифровать"
+  },
+  "decryptMessageNotice": {
+    "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Расшифровать сообщение"
+  },
+  "decryptCopy": {
+    "message": "Скопировать расшифрованное сообщение"
+  },
+  "decryptInlineError": {
+    "message": "Это сообщение не может быть дешифровано из-за ошибки: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Предоставить"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Запрос публичного ключа шифрования"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения.",
+    "description": "$1 is website or dapp name"
   }
 }

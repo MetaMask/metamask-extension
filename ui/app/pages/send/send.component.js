@@ -108,7 +108,7 @@ export default class SendTransactionScreen extends Component {
       to: prevTo,
     } = prevProps
 
-    const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
+    const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null)
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
       balance,
@@ -211,7 +211,7 @@ export default class SendTransactionScreen extends Component {
     this.props.resetSendState()
   }
 
-  onRecipientInputChange = query => {
+  onRecipientInputChange = (query) => {
     if (query) {
       this.dValidate(query)
     } else {
@@ -317,7 +317,7 @@ export default class SendTransactionScreen extends Component {
     return (
       <EnsInput
         className="send__to-row"
-        scanQrCode={_ => {
+        scanQrCode={(_) => {
           this.context.metricsEvent({
             eventOpts: {
               category: 'Transactions',
@@ -328,8 +328,8 @@ export default class SendTransactionScreen extends Component {
           this.props.scanQrCode()
         }}
         onChange={this.onRecipientInputChange}
-        onValidAddressTyped={address => this.props.updateSendTo(address, '')}
-        onPaste={text => {
+        onValidAddressTyped={(address) => this.props.updateSendTo(address, '')}
+        onPaste={(text) => {
           this.props.updateSendTo(text) && this.updateGas()
         }}
         onReset={() => this.props.updateSendTo('', '')}

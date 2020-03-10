@@ -17,7 +17,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedToken: address => dispatch(setSelectedToken(address)),
+    setSelectedToken: (address) => dispatch(setSelectedToken(address)),
     hideSidebar: () => dispatch(hideSidebar()),
   }
 }

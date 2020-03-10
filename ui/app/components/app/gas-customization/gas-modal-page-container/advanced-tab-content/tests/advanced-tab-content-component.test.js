@@ -113,7 +113,9 @@ describe('AdvancedTabContent Component', function () {
     })
 
     it('should call renderDataSummary with the expected params', function () {
-      const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(0).args
+      const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(
+        0
+      ).args
       assert.deepEqual(renderDataSummaryArgs, ['$0.25', 21500])
     })
   })
@@ -122,7 +124,9 @@ describe('AdvancedTabContent Component', function () {
     let dataSummary
 
     beforeEach(function () {
-      dataSummary = shallow(wrapper.instance().renderDataSummary('mockTotalFee', 'mockMsRemaining'))
+      dataSummary = shallow(
+        wrapper.instance().renderDataSummary('mockTotalFee', 'mockMsRemaining')
+      )
     })
 
     it('should render the transaction-data-summary root node', function () {

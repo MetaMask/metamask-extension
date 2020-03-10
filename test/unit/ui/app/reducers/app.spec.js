@@ -5,7 +5,6 @@ import { actionConstants } from '../../../../../ui/app/store/actions'
 const actions = actionConstants
 
 describe('App State', function () {
-
   const metamaskState = {
     selectedAddress: '0xAddress',
     identities: {

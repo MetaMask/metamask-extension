@@ -201,7 +201,7 @@ export class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err =>
+        this.permissions.grantNewPermissions(origin, permissions, {}, (err) =>
           (err ? resolve() : reject(err))
         )
       })
@@ -270,7 +270,7 @@ export class PermissionsController {
 
       // caveat names are unique, and we will only construct this caveat here
       ethAccounts.caveats = ethAccounts.caveats.filter(
-        c => c.name !== CAVEAT_NAMES.exposedAccounts
+        (c) => c.name !== CAVEAT_NAMES.exposedAccounts
       )
 
       ethAccounts.caveats.push({
@@ -294,7 +294,7 @@ export class PermissionsController {
 
     // assert accounts exist
     const allAccounts = await this.getKeyringAccounts()
-    accounts.forEach(acc => {
+    accounts.forEach((acc) => {
       if (!allAccounts.includes(acc)) {
         throw new Error(`Unknown account: ${acc}`)
       }
@@ -332,7 +332,7 @@ export class PermissionsController {
     Object.entries(domains).forEach(([origin, perms]) => {
       this.permissions.removePermissionsFor(
         origin,
-        perms.map(methodName => {
+        perms.map((methodName) => {
           if (methodName === 'eth_accounts') {
             this.notifyDomain(origin, {
               method: NOTIFICATION_NAMES.accountsChanged,
@@ -366,7 +366,7 @@ export class PermissionsController {
     }
 
     const newPermittedAccounts = [account].concat(
-      permittedAccounts.filter(_account => _account !== account)
+      permittedAccounts.filter((_account) => _account !== account)
     )
 
     // update permitted accounts to ensure that accounts are returned
@@ -416,7 +416,7 @@ export class PermissionsController {
          *
          * @param {string} req - The internal rpc-cap user request object.
          */
-        requestUserApproval: async req => {
+        requestUserApproval: async (req) => {
           const {
             metadata: { id },
           } = req
