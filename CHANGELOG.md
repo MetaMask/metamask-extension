@@ -2,8 +2,11 @@
 
 ## Current Master
 
-- [#317](https://github.com/poanetwork/nifty-wallet/pull/317) - Fix path to derive accounts in HD wallets for RSK, ETC
+- [#324](https://github.com/poanetwork/nifty-wallet/pull/324) - (Chore) Whitelist Geon token
+- [#323](https://github.com/poanetwork/nifty-wallet/pull/323) - (Chore) update Mainnet tokens metadata
+- [#322](https://github.com/poanetwork/nifty-wallet/pull/322) - (Fix) Update explorers links
 - [#318](https://github.com/poanetwork/nifty-wallet/pull/318) - (Fix) pasting of ABI for contract type account
+- [#317](https://github.com/poanetwork/nifty-wallet/pull/317) - (Fix) path to derive accounts in HD wallets for RSK, ETC
 
 ## 4.11.10 Tue Feb 04 2020
 
