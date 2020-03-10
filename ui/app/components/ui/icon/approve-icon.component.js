@@ -29,7 +29,7 @@ const Approve = ({
 )
 
 Approve.defaultProps = {
-  className: 'approve__icon',
+  className: undefined,
 }
 
 Approve.propTypes = {

@@ -31,7 +31,7 @@ const Send = ({
 )
 
 Send.defaultProps = {
-  className: 'send__icon',
+  className: undefined,
 }
 
 Send.propTypes = {

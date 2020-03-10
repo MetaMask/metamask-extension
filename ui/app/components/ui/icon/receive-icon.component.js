@@ -39,7 +39,7 @@ const Receive = ({
 )
 
 Receive.defaultProps = {
-  className: 'receive__icon',
+  className: undefined,
 }
 
 Receive.propTypes = {

@@ -25,7 +25,7 @@ const Copy = ({
 )
 
 Copy.defaultProps = {
-  className: 'copy__icon',
+  className: undefined,
 }
 
 Copy.propTypes = {

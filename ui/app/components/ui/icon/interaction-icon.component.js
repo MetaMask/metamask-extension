@@ -29,7 +29,7 @@ const Interaction = ({
 )
 
 Interaction.defaultProps = {
-  className: 'interaction__icon',
+  className: undefined,
 }
 
 Interaction.propTypes = {
