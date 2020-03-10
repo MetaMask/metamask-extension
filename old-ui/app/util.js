@@ -1,23 +1,44 @@
 const ethUtil = require('ethereumjs-util')
 const ethNetProps = require('eth-net-props')
 const {
-  POA_SOKOL_CODE,
-  POA_CODE,
-  DAI_CODE,
-  RSK_CODE,
-  RSK_TESTNET_CODE,
   ROPSTEN,
+  ROPSTEN_CODE,
+  ROPSTEN_CHAINID,
+  RINKEBY_CODE,
+  RINKEBY_CHAINID,
   RINKEBY,
   KOVAN,
+  KOVAN_CODE,
+  KOVAN_CHAINID,
   MAINNET,
-  LOCALHOST,
+  MAINNET_CODE,
+  MAINNET_CHAINID,
+  ETH_TICK,
   POA_SOKOL,
+  POA_CODE,
+  POA_CHAINID,
+  POA_TICK,
   POA,
   DAI,
+  DAI_CODE,
+  DAI_CHAINID,
   GOERLI_TESTNET,
+  GOERLI_TESTNET_CODE,
+  GOERLI_TESTNET_CHAINID,
+  POA_SOKOL_CODE,
+  POA_SOKOL_CHAINID,
+  RSK_CODE,
+  RSK_CHAINID,
+  RSK_TESTNET_CODE,
+  RSK_TESTNET_CHAINID,
+  LOCALHOST,
   CLASSIC,
+  CLASSIC_CODE,
+  CLASSIC_CHAINID,
+  CLASSIC_TICK,
   RSK,
   RSK_TESTNET,
+  RSK_TICK,
 } = require('../../app/scripts/controllers/network/enums')
 
 var valueTable = {
@@ -72,6 +93,7 @@ module.exports = {
   isValidChecksumAddress,
   isInfuraProvider,
   isKnownProvider,
+  getNetworkID,
 }
 
 function valuesFor (obj) {
@@ -461,4 +483,72 @@ function isKnownProvider (type) {
   type === CLASSIC ||
   type === RSK ||
   type === RSK_TESTNET
+}
+
+function getNetworkID ({ network }) {
+  let chainId
+  let netId
+  let ticker
+  switch (network) {
+    case MAINNET:
+      netId = MAINNET_CODE.toString()
+      chainId = MAINNET_CHAINID
+      ticker = ETH_TICK
+      break
+    case ROPSTEN:
+      netId = ROPSTEN_CODE.toString()
+      chainId = ROPSTEN_CHAINID
+      ticker = ETH_TICK
+      break
+    case RINKEBY:
+      netId = RINKEBY_CODE.toString()
+      chainId = RINKEBY_CHAINID
+      ticker = ETH_TICK
+      break
+    case KOVAN:
+      netId = KOVAN_CODE.toString()
+      chainId = KOVAN_CHAINID
+      ticker = ETH_TICK
+      break
+    case GOERLI_TESTNET:
+      netId = GOERLI_TESTNET_CODE.toString()
+      chainId = GOERLI_TESTNET_CHAINID
+      ticker = ETH_TICK
+      break
+    case POA:
+      netId = POA_CODE.toString()
+      chainId = POA_CHAINID
+      ticker = POA_TICK
+      break
+    case DAI:
+      netId = DAI_CODE.toString()
+      chainId = DAI_CHAINID
+      ticker = POA_TICK
+      break
+    case POA_SOKOL:
+      netId = POA_SOKOL_CODE.toString()
+      chainId = POA_SOKOL_CHAINID
+      ticker = POA_TICK
+      break
+    case RSK:
+      netId = RSK_CODE.toString()
+      chainId = RSK_CHAINID
+      ticker = RSK_TICK
+      break
+    case RSK_TESTNET:
+      netId = RSK_TESTNET_CODE.toString()
+      chainId = RSK_TESTNET_CHAINID
+      ticker = RSK_TICK
+      break
+    case CLASSIC:
+      netId = CLASSIC_CODE.toString()
+      chainId = CLASSIC_CHAINID
+      ticker = CLASSIC_TICK
+      break
+    default:
+      console.error(`getNetworkID - unknown network "${network}"`)
+  }
+  return {
+    chainId, netId, ticker,
+  }
 }

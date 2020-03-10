@@ -47,8 +47,8 @@ const hdRSKTestnetLedgerPath = `m/44'/37310'/0'/0`
 const hdRSKTestnetLedgerLivePath = `m/44'/37310'/0'/0`
 
 const hdETCTrezorPath = `m/44'/61'/0'/0`
-const hdETCLedgerPath = `m/44'/61'/0'/0/0`
-const hdETCLedgerLivePath = `m/44'/61'`
+const hdETCLedgerPath = `m/44'/60'/160720'/0'`
+const hdETCLedgerLivePath = `m/44'/60'/160720'/0'`
 
 const customHdPaths = {}
 customHdPaths[RSK_CODE] = {
