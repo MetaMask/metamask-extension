@@ -24,10 +24,10 @@ const Tab = (props) => {
 
 Tab.propTypes = {
   className: PropTypes.string,
-  isActive: PropTypes.bool.isRequired,
+  isActive: PropTypes.bool, // required, but added using React.cloneElement
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  tabIndex: PropTypes.number.isRequired,
+  tabIndex: PropTypes.number, // required, but added using React.cloneElement
 }
 
 Tab.defaultProps = {
