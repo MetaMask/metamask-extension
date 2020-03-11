@@ -159,6 +159,11 @@ export function getSelectedAccount (state) {
   return accounts[selectedAddress]
 }
 
+export function getTargetAccount (state, targetAddress) {
+  const accounts = getMetaMaskAccounts(state)
+  return accounts[targetAddress]
+}
+
 export function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
@@ -269,10 +274,6 @@ export function getGasIsLoading (state) {
 
 export function getForceGasMin (state) {
   return state.metamask.send.forceGasMin
-}
-
-export function getSendFrom (state) {
-  return state.metamask.send.from
 }
 
 export function getSendAmount (state) {

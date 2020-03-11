@@ -24,10 +24,6 @@ import {
   getSendErrors,
 } from '../send.selectors'
 import { getGasIsLoading } from '../../../selectors/selectors'
-import { networkTransactionsSelector } from '../../../selectors/transactions'
-import {
-  getTxById,
-} from '../../../helpers/utils/util'
 import {
   isSendFormInError,
 } from './send-footer.selectors'
@@ -51,20 +47,13 @@ function mapStateToProps (state) {
   const gasEstimateType = activeButtonIndex >= 0
     ? gasButtonInfo[activeButtonIndex].gasEstimateType
     : 'custom'
-
-  let fromAddress
   const editingTransactionId = getSendEditingTransactionId(state)
-  if (editingTransactionId) {
-    const transactions = networkTransactionsSelector(state)
-    const tx = getTxById(transactions, editingTransactionId)
-    fromAddress = tx && tx.txParams && tx.txParams.from
-  }
 
   return {
     amount: getSendAmount(state),
     data: getSendHexData(state),
     editingTransactionId,
-    from: getSendFromObject(state, fromAddress),
+    from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),

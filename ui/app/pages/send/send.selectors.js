@@ -3,9 +3,8 @@ import { multiplyCurrencies } from '../../helpers/utils/conversion-util'
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,
-  getCurrentAccountWithSendEtherInfo,
-  getTargetAccountWithSendEtherInfo,
-  getMetaMaskAccounts,
+  getSelectedAccount,
+  getTargetAccount,
   getSelectedAddress,
 } from '../../selectors/selectors'
 import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
@@ -66,13 +65,6 @@ export function getPrimaryCurrency (state) {
 
 export function getRecentBlocks (state) {
   return state.metamask.recentBlocks
-}
-
-export function getSelectedAccount (state) {
-  const accounts = getMetaMaskAccounts(state)
-  const selectedAddress = getSelectedAddress(state)
-
-  return accounts[selectedAddress]
 }
 
 export function getSelectedIdentity (state) {
@@ -147,15 +139,15 @@ export function getSendFrom (state) {
 }
 
 export function getSendFromBalance (state) {
-  const from = getSendFrom(state) || getSelectedAccount(state)
-  return from.balance
+  const fromAccount = getSendFromObject(state)
+  return fromAccount.balance
 }
 
-export function getSendFromObject (state, address) {
-  if (address) {
-    return getTargetAccountWithSendEtherInfo(state, address)
-  }
-  return getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
+export function getSendFromObject (state) {
+  const fromAddress = getSendFrom(state)
+  return fromAddress
+    ? getTargetAccount(state, fromAddress)
+    : getSelectedAccount(state)
 }
 
 export function getSendMaxModeState (state) {

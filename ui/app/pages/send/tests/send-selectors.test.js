@@ -17,7 +17,6 @@ import {
   getGasTotal,
   getPrimaryCurrency,
   getRecentBlocks,
-  getSelectedAccount,
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
@@ -233,21 +232,6 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSelectedAccount()', function () {
-    it('should return the currently selected account', function () {
-      assert.deepEqual(
-        getSelectedAccount(mockState),
-        {
-          code: '0x',
-          balance: '0x0',
-          nonce: '0x0',
-          address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-        }
-      )
-    })
-  })
-
-
   describe('getSelectedIdentity()', function () {
     it('should return the identity object of the currently selected address', function () {
       assert.deepEqual(
@@ -368,10 +352,7 @@ describe('send selectors', function () {
     it('should return the send.from', function () {
       assert.deepEqual(
         getSendFrom(mockState),
-        {
-          address: '0xabcdefg',
-          balance: '0x5f4e3d2c1',
-        }
+        '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       )
     })
   })
@@ -380,7 +361,7 @@ describe('send selectors', function () {
     it('should get the send.from balance if it exists', function () {
       assert.equal(
         getSendFromBalance(mockState),
-        '0x5f4e3d2c1'
+        '0x37452b1315889f80'
       )
     })
 
@@ -404,13 +385,15 @@ describe('send selectors', function () {
       assert.deepEqual(
         getSendFromObject(mockState),
         {
-          address: '0xabcdefg',
-          balance: '0x5f4e3d2c1',
+          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          balance: '0x37452b1315889f80',
+          code: '0x',
+          nonce: '0xa',
         }
       )
     })
 
-    it('should return the current account with send ether info if send.from does not exist', function () {
+    it('should return the current account if send.from does not exist', function () {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -425,7 +408,6 @@ describe('send selectors', function () {
           balance: '0x0',
           nonce: '0x0',
           address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          name: 'Send Account 4',
         }
       )
     })

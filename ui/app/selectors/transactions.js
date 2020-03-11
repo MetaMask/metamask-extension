@@ -109,17 +109,6 @@ const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => 
       .sort((a, b) => b.time - a.time)
 }
 
-export const networkTransactionsSelector = createSelector(
-  selectedTokenAddressSelector,
-  transactionSubSelector,
-  currentNetworkTxListSelector,
-  (selectedTokenAddress, subSelectorTxList = [], networkTxList = []) => {
-    const txsToRender = networkTxList.concat(subSelectorTxList)
-
-    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
-  }
-)
-
 export const transactionsSelector = createSelector(
   selectedTokenAddressSelector,
   transactionSubSelector,
