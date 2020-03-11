@@ -36,7 +36,6 @@ export default class CircleIcon extends PureComponent {
           style={{
             height: size,
             width: size,
-
           }}
         />
         <img
