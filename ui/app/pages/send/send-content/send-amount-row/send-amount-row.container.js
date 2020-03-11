@@ -8,6 +8,7 @@ import {
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
+  getSendMaxModeState,
 } from '../../send.selectors'
 import {
   sendAmountIsInError,
@@ -35,6 +36,7 @@ function mapStateToProps (state) {
     primaryCurrency: getPrimaryCurrency(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
+    maxModeOn: getSendMaxModeState(state),
   }
 }
 
