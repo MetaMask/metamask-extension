@@ -1,37 +1,37 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import StyledMessage from './styled-message.component'
+import AlertMessage from './alert-message.component'
 
 storiesOf('StyledMessage', module)
   .add('Success', () => (
-    <StyledMessage
+    <AlertMessage
       type="success"
       width="365px"
     >
       This is a test message.
-    </StyledMessage>
+    </AlertMessage>
   ))
   .add('Danger', () => (
-    <StyledMessage
+    <AlertMessage
       type="danger"
       width="365px"
     >
       This is a test message.
-    </StyledMessage>
+    </AlertMessage>
   ))
   .add('Warning', () => (
-    <StyledMessage
+    <AlertMessage
       type="warning"
       width="365px"
     >
       This is a test message.
-    </StyledMessage>
+    </AlertMessage>
   ))
   .add('Info', () => (
-    <StyledMessage
+    <AlertMessage
       type="info"
       width="365px"
     >
       This is a test message.
-    </StyledMessage>
+    </AlertMessage>
   ))
