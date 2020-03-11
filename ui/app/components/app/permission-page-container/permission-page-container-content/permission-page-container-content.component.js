@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 import IconWithFallBack from '../../../ui/icon-with-fallback'
 import PermissionsConnectHeader from '../../permissions-connect-header'
+import Tooltip from '../../../ui/tooltip-v2'
 import classnames from 'classnames'
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -13,6 +14,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
+    allIdentitiesSelected: PropTypes.bool,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
   }
@@ -21,6 +23,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     redirect: null,
     permissionRejected: null,
     selectedIdentities: [],
+    allIdentitiesSelected: false,
   }
 
   static contextTypes = {
@@ -99,26 +102,93 @@ export default class PermissionPageContainerContent extends PureComponent {
     )
   }
 
-  render () {
-    const { domainMetadata, redirect, permissionRejected, selectedIdentities } = this.props
+  getAccountDescriptor (identity) {
+    return `${identity.label} (...${identity.address.slice(identity.address.length - 4)})`
+  }
+
+  renderAccountTooltip (textContent) {
+    const { selectedIdentities } = this.props
     const { t } = this.context
 
-    let titleArgs
+    return (
+      <Tooltip
+        key="all-account-connect-tooltip"
+        position="bottom"
+        wrapperClassName="permission-approval-container__bold-title-elements"
+        html={(
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            { selectedIdentities.slice(0, 6).map((identity, index) => {
+              return (
+                <div key={ `tooltip-identity-${index}` }>
+                  { this.getAccountDescriptor(identity) }
+                </div>
+              )
+            }) }
+            { selectedIdentities.length > 6
+              ? t('plusXMore', [ selectedIdentities.length - 6 ])
+              : null
+            }
+          </div>
+        )}
+      >{ textContent }
+      </Tooltip>
+    )
+  }
+
+  renderTitleSubstituteText (name, key = 'title-substitute-text') {
+    return (
+      <div
+        key={key}
+        className="permission-approval-container__bold-title-elements"
+      >
+        { name }
+      </div>
+    )
+  }
+
+  getTitleArgs () {
+    const { domainMetadata, redirect, permissionRejected, selectedIdentities, allIdentitiesSelected } = this.props
+    const { t } = this.context
+
     if (redirect && permissionRejected) {
-      titleArgs = [ 'cancelledConnectionWithMetaMask' ]
+      return [ 'cancelledConnectionWithMetaMask' ]
     } else if (redirect) {
-      titleArgs = [ 'connectingWithMetaMask' ]
+      return [ 'connectingWithMetaMask' ]
     } else if (domainMetadata.extensionId) {
-      titleArgs = [ 'externalExtension', [domainMetadata.extensionId] ]
+      return [ 'externalExtension', [domainMetadata.extensionId] ]
+    } else if (allIdentitiesSelected) {
+      return [
+        'connectToAll',
+        [
+          <div
+            key="multi-account-connect-all-accounts"
+            className="permission-approval-container__bold-title-elements"
+          >
+            { this.renderAccountTooltip(t('connectToAllAccounts')) }
+          </div>,
+        ],
+      ]
     } else if (selectedIdentities.length > 1) {
-      titleArgs = ['connectToMultiple', [ selectedIdentities.length ] ]
+      return [
+        'connectToMultiple',
+        [
+          this.renderAccountTooltip(t('connectToMultipleNumberOfAccounts', [ selectedIdentities.length ])),
+        ],
+      ]
     } else {
-      titleArgs = [
+      return [
         'connectTo', [
-          `${selectedIdentities[0].label} (...${selectedIdentities[0].address.slice(selectedIdentities[0].address.length - 4)})`,
+          this.renderTitleSubstituteText(this.getAccountDescriptor(selectedIdentities[0]), 'title-substitute-text-account-name'),
         ],
       ]
     }
+  }
+
+  render () {
+    const { domainMetadata, redirect } = this.props
+    const { t } = this.context
+
+    const titleArgs = this.getTitleArgs()
 
     return (
       <div
