@@ -28,7 +28,7 @@ const typeConfig = {
 
 export default class AlertMessage extends Component {
   static propTypes = {
-    type: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(Object.keys(typeConfig)).isRequired,
     children: PropTypes.node,
   }
 
