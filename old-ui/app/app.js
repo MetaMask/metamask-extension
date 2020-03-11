@@ -88,6 +88,7 @@ function mapStateToProps (state) {
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
+    dPath: state.metamask.dPath,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
     nextUnreadNotice: state.metamask.nextUnreadNotice,

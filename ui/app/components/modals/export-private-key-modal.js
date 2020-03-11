@@ -27,14 +27,15 @@ function mapStateToPropsFactory () {
       network: state.metamask.network,
       selectedIdentity,
       previousModalState: state.appState.modal.previousModalState.name,
+      dPath: state.metamask.dPath,
     }
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    exportAccount: (password, address) => {
-      return dispatch(actions.exportAccount(password, address))
+    exportAccount: (password, address, dPath) => {
+      return dispatch(actions.exportAccount(password, address, dPath))
         .then((res) => {
           dispatch(actions.hideWarning())
           return res
@@ -64,9 +65,9 @@ module.exports = connect(mapStateToPropsFactory, mapDispatchToProps)(ExportPriva
 
 
 ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
-  const { exportAccount } = this.props
+  const { exportAccount, dPath } = this.props
 
-  exportAccount(password, address)
+  exportAccount(password, address, dPath)
     .then(privateKey => this.setState({
       privateKey,
       showWarning: false,

@@ -16,7 +16,7 @@ const ethNetProps = require('eth-net-props')
 const parse = require('url-parse')
 const extend = require('extend')
 const networks = { networkList: {} }
-const { isKnownProvider } = require('../../../../old-ui/app/util')
+const { isKnownProvider, getDPath } = require('../../../../old-ui/app/util')
 
 const {
   ROPSTEN,
@@ -204,6 +204,8 @@ module.exports = class NetworkController extends EventEmitter {
     const previousNetworkID = this.getNetworkState()
     this.setNetworkState('loading')
     this._configureProvider(opts)
+    const dPath = getDPath(opts.type)
+    this.store.updateState({ dPath })
     this.emit('networkDidChange', opts.type, previousNetworkID)
   }
 

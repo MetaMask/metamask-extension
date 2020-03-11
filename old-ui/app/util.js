@@ -39,6 +39,7 @@ const {
   RSK,
   RSK_TESTNET,
   RSK_TICK,
+  customDPaths,
 } = require('../../app/scripts/controllers/network/enums')
 
 var valueTable = {
@@ -94,6 +95,8 @@ module.exports = {
   isInfuraProvider,
   isKnownProvider,
   getNetworkID,
+  getDPath,
+  setDPath,
 }
 
 function valuesFor (obj) {
@@ -550,5 +553,16 @@ function getNetworkID ({ network }) {
   }
   return {
     chainId, netId, ticker,
+  }
+}
+
+function getDPath (network) {
+  return customDPaths[network] || `m/44'/60'/0'/0`
+}
+
+function setDPath (keyring, network) {
+  const dPath = getDPath(network)
+  if (dPath && keyring.setHdPath) {
+    keyring.setHdPath(dPath)
   }
 }

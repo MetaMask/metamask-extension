@@ -15,6 +15,7 @@ function RevealSeedConfirmation () {
 function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
+    dPath: state.metamask.dPath,
   }
 }
 
@@ -116,5 +117,5 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
 
 RevealSeedConfirmation.prototype.revealSeedWords = function () {
   var password = document.getElementById('password-box').value
-  this.props.dispatch(actions.requestRevealSeed(password))
+  this.props.dispatch(actions.requestRevealSeed(password, this.props.dPath))
 }
