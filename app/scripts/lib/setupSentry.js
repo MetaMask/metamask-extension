@@ -95,9 +95,11 @@ function rewriteReportUrls (report) {
   // update exception stack trace
   if (report.exception && report.exception.values) {
     report.exception.values.forEach((item) => {
-      item.stacktrace.frames.forEach((frame) => {
-        frame.filename = toMetamaskUrl(frame.filename)
-      })
+      if (item.stacktrace) {
+        item.stacktrace.frames.forEach((frame) => {
+          frame.filename = toMetamaskUrl(frame.filename)
+        })
+      }
     })
   }
 }
