@@ -288,10 +288,6 @@ export function getOriginFromUrl (url) {
   return origin
 }
 
-export function getTxById (transactions = [], targetId) {
-  return transactions.find(({ id }) => String(id) === targetId)
-}
-
 export function getAccountByAddress (accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress)
 }
