@@ -73,31 +73,31 @@ describe('Network utils', () => {
     const tests = [
       {
         input: 3,
-        expected: 'Ropsten',
+        expected: 'Ropsten Testnet',
       }, {
         input: 4,
-        expected: 'Rinkeby',
+        expected: 'Rinkeby Testnet',
       }, {
         input: 42,
-        expected: 'Kovan',
+        expected: 'Kovan Testnet',
       }, {
         input: 77,
-        expected: 'Sokol',
+        expected: 'Sokol Testnet',
       }, {
         input: 'ropsten',
-        expected: 'Ropsten',
+        expected: 'Ropsten Testnet',
       }, {
         input: 'rinkeby',
-        expected: 'Rinkeby',
+        expected: 'Rinkeby Testnet',
       }, {
         input: 'kovan',
-        expected: 'Kovan',
+        expected: 'Kovan Testnet',
       }, {
         input: 'sokol',
-        expected: 'Sokol',
+        expected: 'Sokol Testnet',
       }, {
         input: 'mainnet',
-        expected: 'Main Ethereum Network',
+        expected: 'Ethereum',
       },
     ]
 

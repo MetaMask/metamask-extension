@@ -46,6 +46,7 @@ const DeleteImportedAccount = require('./components/delete-imported-account')
 const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
 const { getMetaMaskAccounts } = require('../../ui/app/selectors')
+const { getNetworkID } = require('./util')
 
 module.exports = compose(
   withRouter,
@@ -360,6 +361,8 @@ App.prototype.renderPrimary = function () {
 }
 
 App.prototype.getNetworkName = function () {
-  const { network } = this.props
-  return ethNetProps.props.getNetworkDisplayName(network)
+  const { provider } = this.props
+  const providerName = provider.type
+  const network = getNetworkID({network: providerName})
+  return ethNetProps.props.getNetworkDisplayName(network.netId)
 }
