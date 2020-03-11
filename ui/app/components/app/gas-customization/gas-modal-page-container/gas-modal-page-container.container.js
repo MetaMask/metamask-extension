@@ -5,6 +5,7 @@ import {
   hideModal,
   setGasLimit,
   setGasPrice,
+  createRetryTransaction,
   createSpeedUpTransaction,
   hideSidebar,
   updateSendAmount,
@@ -184,6 +185,9 @@ const mapDispatchToProps = (dispatch) => {
       updateCustomGasPrice(gasPrice)
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
       return dispatch(updateTransaction(updatedTx))
+    },
+    createRetryTransaction: (txId, gasPrice) => {
+      return dispatch(createRetryTransaction(txId, gasPrice))
     },
     createSpeedUpTransaction: (txId, gasPrice) => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice))
