@@ -38,12 +38,12 @@ export default class SendAmountRow extends Component {
     const { maxModeOn, amount, gasTotal, selectedToken } = this.props
 
     if (maxModeOn && selectedToken && !prevMaxModeOn) {
-      if (prevGasTotal !== gasTotal) {
-        this.validateAmount(amount)
-      }
       this.updateGas(amount)
     }
 
+    if (prevGasTotal !== gasTotal) {
+      this.validateAmount(amount)
+    }
   }
 
   updateGas = debounce(this.updateGas.bind(this), 500)
