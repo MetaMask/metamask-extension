@@ -33,7 +33,7 @@ Approve.defaultProps = {
 
 Approve.propTypes = {
   className: PropTypes.string,
-  size: PropTypes.number,
+  size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
 }
 
