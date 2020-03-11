@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 const Preloader = ({
   className,
   size,
 }) => (
   <svg
-    className={className}
+    className={classnames('preloader__icon', className)}
     width={size}
     height={size}
     viewBox="0 0 16 16"
@@ -45,7 +46,7 @@ const Preloader = ({
 )
 
 Preloader.defaultProps = {
-  className: 'preloader__icon',
+  className: undefined,
 }
 
 Preloader.propTypes = {
