@@ -26,21 +26,24 @@ export default class SendAmountRow extends Component {
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
-    maxMode: PropTypes.bool,
+    maxModeOn: PropTypes.bool,
   }
 
   static contextTypes = {
     t: PropTypes.func,
   }
 
-  componentDidUpdate () {
-    const { maxMode, amount, selectedToken, updateSendAmount } = this.props
+  componentDidUpdate (prevProps) {
+    const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps
+    const { maxModeOn, amount, gasTotal, selectedToken } = this.props
 
-    if (maxMode && selectedToken) {
-      this.validateAmount(amount)
-      updateSendAmount(amount)
+    if (maxModeOn && selectedToken && !prevMaxModeOn) {
+      if (prevGasTotal !== gasTotal) {
+        this.validateAmount(amount)
+      }
       this.updateGas(amount)
     }
+
   }
 
   updateGas = debounce(this.updateGas.bind(this), 500)

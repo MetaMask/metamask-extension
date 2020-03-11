@@ -36,7 +36,7 @@ function mapStateToProps (state) {
     primaryCurrency: getPrimaryCurrency(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
-    maxMode: getSendMaxModeState(state),
+    maxModeOn: getSendMaxModeState(state),
   }
 }
 
