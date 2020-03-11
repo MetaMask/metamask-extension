@@ -1216,6 +1216,9 @@
   "selectLocale": {
     "message": "Select Locale"
   },
+  "selectMultipleAccountWarning": {
+    "message": "Selecting multiple  accounts will allow this site to view the accounts in your wallet. Make sure you trust this site."
+  },
   "selectType": {
     "message": "Select Type"
   },

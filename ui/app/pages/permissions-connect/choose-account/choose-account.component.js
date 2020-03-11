@@ -5,6 +5,7 @@ import Button from '../../../components/ui/button'
 import CheckBox from '../../../components/ui/check-box'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
+import AlertMessage from '../../../components/ui/alert-message'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
 
 export default class ChooseAccount extends Component {
@@ -84,6 +85,12 @@ export default class ChooseAccount extends Component {
     const { selectedAccounts } = this.state
 
     return accounts.every(({ address }) => selectedAccounts[address])
+  }
+
+  multipleAreSelected () {
+    const { selectedAccounts } = this.state
+
+    return Object.values(selectedAccounts).filter((selected) => selected).length > 1
   }
 
   renderAccountsList = () => {
@@ -171,10 +178,26 @@ export default class ChooseAccount extends Component {
     )
   }
 
+  renderSelectAllWarning () {
+    const { t } = this.context
+
+    return this.multipleAreSelected()
+      ? (
+        <AlertMessage
+          type="warning"
+          width="428px"
+        >
+          { t('selectMultipleAccountWarning') }
+        </AlertMessage>
+      )
+      : null
+  }
+
   render () {
     const { originName, selectAccounts, permissionsRequestId, cancelPermissionsRequest } = this.props
     const { selectedAccounts } = this.state
     const { t } = this.context
+
     return (
       <div className="permissions-connect-choose-account">
         <div className="permissions-connect-choose-account__title">
@@ -185,6 +208,7 @@ export default class ChooseAccount extends Component {
         </div>
         { this.renderAccountsListHeader() }
         { this.renderAccountsList() }
+        { this.renderSelectAllWarning() }
         <div className="permissions-connect-choose-account__bottom-buttons">
           <Button
             onClick={ () => cancelPermissionsRequest(permissionsRequestId) }

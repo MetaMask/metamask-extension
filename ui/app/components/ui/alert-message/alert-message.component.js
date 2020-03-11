@@ -2,27 +2,22 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BoxedMessage from '../boxed-message'
 
-import success from '../../../../../app/images/icons/green-circle-check.svg'
-import danger from '../../../../../app/images/icons/red-triangle-exclaim.svg'
-import info from '../../../../../app/images/icons/blue-circle-info.svg'
-import warning from '../../../../../app/images/icons/yellow-bell.svg'
-
 const typeConfig = {
   success: {
     boxClass: 'alert-message--success',
-    iconSource: success,
+    iconSource: '/images/icons/green-circle-check.svg',
   },
   danger: {
     boxClass: 'alert-message--danger',
-    iconSource: danger,
+    iconSource: '/images/icons/red-triangle-exclaim.svg',
   },
   info: {
     boxClass: 'alert-message--info',
-    iconSource: info,
+    iconSource: '/images/icons/blue-circle-info.svg',
   },
   warning: {
     boxClass: 'alert-message--warning',
-    iconSource: warning,
+    iconSource: '/images/icons/yellow-bell.svg',
   },
 }
 
