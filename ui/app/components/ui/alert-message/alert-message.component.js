@@ -9,24 +9,24 @@ import warning from '../../../../../app/images/icons/yellow-bell.svg'
 
 const typeConfig = {
   success: {
-    boxClass: 'styled-message--success',
+    boxClass: 'alert-message--success',
     iconSource: success,
   },
   danger: {
-    boxClass: 'styled-message--danger',
+    boxClass: 'alert-message--danger',
     iconSource: danger,
   },
   info: {
-    boxClass: 'styled-message--info',
+    boxClass: 'alert-message--info',
     iconSource: info,
   },
   warning: {
-    boxClass: 'styled-message--warning',
+    boxClass: 'alert-message--warning',
     iconSource: warning,
   },
 }
 
-export default class StyledMessage extends Component {
+export default class AlertMessage extends Component {
   static propTypes = {
     type: PropTypes.string.isRequired,
     children: PropTypes.node,
