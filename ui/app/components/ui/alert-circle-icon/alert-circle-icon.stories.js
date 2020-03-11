@@ -1,18 +1,18 @@
 import React from 'react'
-import MessageCircleIcon from './message-circle-icon.component'
+import AlertCircleIcon from './alert-circle-icon.component'
 
 export default {
-  title: 'MessageCircleIcon',
+  title: 'AlertCircleIcon',
 }
 
 export const dangerCircleIcon = () => (
-  <MessageCircleIcon
+  <AlertCircleIcon
     type="danger"
   />
 )
 
 export const warningCircleIcon = () => (
-  <MessageCircleIcon
+  <AlertCircleIcon
     type="warning"
   />
 )

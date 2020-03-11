@@ -7,16 +7,16 @@ import warning from '../../../../../app/images/icons/yellow-bell.svg'
 
 const typeConfig = {
   danger: {
-    circleClass: 'message-circle-icon--danger',
+    circleClass: 'alert-circle-icon--danger',
     iconSource: danger,
   },
   warning: {
-    circleClass: 'message-circle-icon--warning',
+    circleClass: 'alert-circle-icon--warning',
     iconSource: warning,
   },
 }
 
-export default class MessageCircleIcon extends Component {
+export default class AlertCircleIcon extends Component {
   static propTypes = {
     type: PropTypes.string.isRequired,
   }
