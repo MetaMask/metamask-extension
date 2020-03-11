@@ -66,7 +66,7 @@ describe('', function () {
     assert.equal(kovanUrl, 'https://gitter.im/kovan-testnet/faucet/')
   })
 
-  it('returns exchanges for POA core network', function () {
+  it('returns exchanges for POA', function () {
     const exchanges = getExchanges({network: 99})
     assert.deepEqual(exchanges, [
       {

@@ -38,7 +38,7 @@ const importAccount = async (f) => {
     await menu.click()
   })
 
-  it('Auto-detect tokens for POA core network ', async () => {
+  it('Auto-detect tokens for POA ', async () => {
     // await setProvider(NETWORKS.POA)
     const tab = await f.waitUntilShowUp(tokensEl.menu)
     await tab.click()

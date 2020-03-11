@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#329](https://github.com/poanetwork/nifty-wallet/pull/329) - (Fix) Connect to unknown private network fix
 - [#326](https://github.com/poanetwork/nifty-wallet/pull/326) - (Chore) HTTP2 RPC endpoints for POA and xDai
 - [#324](https://github.com/poanetwork/nifty-wallet/pull/324) - (Chore) Whitelist Geon token
 - [#323](https://github.com/poanetwork/nifty-wallet/pull/323) - (Chore) update Mainnet tokens metadata

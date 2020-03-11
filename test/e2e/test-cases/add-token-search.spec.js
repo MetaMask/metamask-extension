@@ -251,7 +251,7 @@ const addTokeFromSearch = async (f) => {
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in RSK mainnet', async () => {
+      it('token should not be displayed in RSK', async () => {
         await f.setProvider(NETWORKS.RSK)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })

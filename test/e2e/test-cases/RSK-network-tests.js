@@ -2,7 +2,7 @@ const assert = require('assert')
 const { screens, elements, NETWORKS } = require('../elements')
 
  const RSKNetworkTests = async (f, account1) => {
-	it('connects to RSK mainnet', async function () {
+	it('connects to RSK', async function () {
 		await f.setProvider(NETWORKS.RSK)
 		await f.delay(2000)
 	})
