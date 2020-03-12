@@ -36,7 +36,12 @@ const {
 const validatePermission = (perm, name, origin, caveats) => {
   assert.equal(name, perm.parentCapability, 'should have expected permission name')
   assert.equal(origin, perm.invoker, 'should have expected permission origin')
-  assert.deepEqual(caveats, perm.caveats, 'should have expected permission caveats')
+  if (caveats) {
+    assert.deepEqual(caveats, perm.caveats, 'should have expected permission caveats')
+  } else {
+    console.log('CAVEATS', perm.caveats)
+    assert.ok(!perm.caveats, 'should not have any caveats')
+  }
 }
 
 const initPermController = () => {
@@ -100,6 +105,110 @@ describe('permissions middleware', function () {
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
+        'origin should have correct accounts'
+      )
+    })
+
+    it('handles serial approved requests that overwrite existing permissions', async function () {
+
+      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+
+      // create first request
+
+      const req1 = RPC_REQUESTS.requestPermission(
+        ORIGINS.a, PERM_NAMES.eth_accounts
+      )
+      const res1 = {}
+
+      // send, approve, and validate first request
+      // note use of ACCOUNT_ARRAYS.a
+
+      const pendingApproval1 = assert.doesNotReject(
+        aMiddleware(req1, res1),
+        'should not reject permissions request'
+      )
+
+      const id1 = permController.pendingApprovals.keys().next().value
+      const approvedReq1 = PERMS.approvedRequest(id1, PERMS.requests.eth_accounts())
+
+      await permController.approvePermissionsRequest(approvedReq1, ACCOUNT_ARRAYS.a)
+      await pendingApproval1
+
+      assert.ok(
+        res1.result && !res1.error,
+        'response should have result and no error'
+      )
+
+      assert.equal(
+        res1.result.length, 1,
+        'origin should have single approved permission'
+      )
+
+      validatePermission(
+        res1.result[0],
+        PERM_NAMES.eth_accounts,
+        ORIGINS.a,
+        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+      )
+
+      const accounts1 = await permController.getAccounts(ORIGINS.a)
+      assert.deepEqual(
+        accounts1, ACCOUNT_ARRAYS.a,
+        'origin should have correct accounts'
+      )
+
+      // create second request
+
+      const requestedPerms2 = {
+        ...PERMS.requests.eth_accounts(),
+        ...PERMS.requests.test_method(),
+      }
+
+      const req2 = RPC_REQUESTS.requestPermissions(
+        ORIGINS.a, { ...requestedPerms2 }
+      )
+      const res2 = {}
+
+      // send, approve, and validate second request
+      // note use of ACCOUNT_ARRAYS.b
+
+      const pendingApproval2 = assert.doesNotReject(
+        aMiddleware(req2, res2),
+        'should not reject permissions request'
+      )
+
+      const id2 = permController.pendingApprovals.keys().next().value
+      const approvedReq2 = PERMS.approvedRequest(id2, { ...requestedPerms2 })
+
+      await permController.approvePermissionsRequest(approvedReq2, ACCOUNT_ARRAYS.b)
+      await pendingApproval2
+
+      assert.ok(
+        res2.result && !res2.error,
+        'response should have result and no error'
+      )
+
+      assert.equal(
+        res2.result.length, 2,
+        'origin should have single approved permission'
+      )
+
+      validatePermission(
+        res2.result[0],
+        PERM_NAMES.eth_accounts,
+        ORIGINS.a,
+        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.b)]
+      )
+
+      validatePermission(
+        res2.result[1],
+        PERM_NAMES.test_method,
+        ORIGINS.a,
+      )
+
+      const accounts2 = await permController.getAccounts(ORIGINS.a)
+      assert.deepEqual(
+        accounts2, ACCOUNT_ARRAYS.b,
         'origin should have correct accounts'
       )
     })

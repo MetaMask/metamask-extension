@@ -407,6 +407,10 @@ export class PermissionsController {
   /**
    * When a new account is selected in the UI for 'origin', emit accountsChanged
    * to 'origin' if the selected account is permitted.
+   *
+   * Note: This will emit "false positive" accountsChanged events, but they are
+   * handled by the inpage provider.
+   *
    * @param {string} origin - The origin.
    * @param {string} account - The newly selected account's address.
    */
