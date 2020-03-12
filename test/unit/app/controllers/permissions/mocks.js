@@ -139,6 +139,7 @@ const ORIGINS = {
 const PERM_NAMES = {
   eth_accounts: 'eth_accounts',
   test_method: 'test_method',
+  does_not_exist: 'does_not_exist',
 }
 
 const ACCOUNT_ARRAYS = {
@@ -352,6 +353,11 @@ export const getters = deepFreeze({
       rejection: () => {
         return {
           message: ethErrors.provider.userRejectedRequest().message,
+        }
+      },
+      methodNotFound: (methodName) => {
+        return {
+          message: `The method '${methodName}' does not exist / is not available.`,
         }
       },
     },

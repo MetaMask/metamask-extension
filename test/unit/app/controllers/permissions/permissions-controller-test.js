@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert'
 import { find } from 'lodash'
 import nanoid from 'nanoid'
+import sinon from 'sinon'
 
 import {
   METADATA_STORE_KEY,
@@ -346,25 +347,25 @@ describe('permissions controller', function () {
 
     it('throws error on non-array accounts', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts(undefined),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on undefined'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts(false),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on false'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts(true),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on true'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts({}),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on non-array object'
@@ -373,7 +374,7 @@ describe('permissions controller', function () {
 
     it('throws error on empty array of accounts', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts([]),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on empty array'
@@ -384,13 +385,13 @@ describe('permissions controller', function () {
 
       const keyringAccounts = await permController.getKeyringAccounts()
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts([DUMMY_ACCOUNT]),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.validatePermittedAccounts(keyringAccounts.concat(DUMMY_ACCOUNT)),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account with other accounts'
@@ -401,17 +402,17 @@ describe('permissions controller', function () {
 
       const keyringAccounts = await permController.getKeyringAccounts()
 
-      assert.doesNotReject(
+      await assert.doesNotReject(
         permController.validatePermittedAccounts(keyringAccounts),
         'should not throw on all keyring accounts'
       )
 
-      assert.doesNotReject(
+      await assert.doesNotReject(
         permController.validatePermittedAccounts([ keyringAccounts[0] ]),
         'should not throw on single keyring account'
       )
 
-      assert.doesNotReject(
+      await assert.doesNotReject(
         permController.validatePermittedAccounts([ keyringAccounts[1] ]),
         'should not throw on single keyring account'
       )
@@ -437,19 +438,19 @@ describe('permissions controller', function () {
 
     it('throws on invalid accounts', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.updatePermittedAccounts(ORIGINS.a, {}),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on non-array accounts param'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.updatePermittedAccounts(ORIGINS.a, []),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on empty array accounts param'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.updatePermittedAccounts(ORIGINS.a, [DUMMY_ACCOUNT]),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account'
@@ -458,13 +459,13 @@ describe('permissions controller', function () {
 
     it('throws if origin invalid or lacks eth_accounts permission', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.updatePermittedAccounts(false, ACCOUNT_ARRAYS.a),
         ERRORS.updatePermittedAccounts.invalidOrigin(),
         'should throw on invalid origin'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.updatePermittedAccounts(ORIGINS.c, ACCOUNT_ARRAYS.a),
         ERRORS.updatePermittedAccounts.invalidOrigin(),
         'should throw on origin without eth_accounts permission'
@@ -537,7 +538,7 @@ describe('permissions controller', function () {
 
     it('throws on non-keyring accounts', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.finalizePermissionsRequest(
           PERMS.requests.eth_accounts(), [DUMMY_ACCOUNT]
         ),
@@ -638,7 +639,7 @@ describe('permissions controller', function () {
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(aAccounts, ACCOUNT_ARRAYS.a, 'origin should have correct accounts')
 
-      assert.rejects(
+      await assert.rejects(
         permController.legacyExposeAccounts(ORIGINS.a, ACCOUNT_ARRAYS.b),
         ERRORS.legacyExposeAccounts.forbiddenUsage(),
         'should throw if called on origin with existing exposed accounts'
@@ -657,7 +658,7 @@ describe('permissions controller', function () {
 
     it('throws if called with bad accounts', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.legacyExposeAccounts(ORIGINS.a, []),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw if called with no accounts'
@@ -676,7 +677,7 @@ describe('permissions controller', function () {
 
     it('throws if called with bad origin', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.legacyExposeAccounts(null, ACCOUNT_ARRAYS.a),
         ERRORS.legacyExposeAccounts.badOrigin(),
         'should throw if called with invalid origin'
@@ -715,25 +716,25 @@ describe('permissions controller', function () {
 
     it('throws if invalid origin or account', async function () {
 
-      assert.rejects(
+      await assert.rejects(
         permController.handleNewAccountSelected({}, DUMMY_ACCOUNT),
         ERRORS.handleNewAccountSelected.invalidParams(),
         'should throw if origin non-string'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.handleNewAccountSelected('', DUMMY_ACCOUNT),
         ERRORS.handleNewAccountSelected.invalidParams(),
         'should throw if origin empty string'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.handleNewAccountSelected(ORIGINS.a, {}),
         ERRORS.handleNewAccountSelected.invalidParams(),
         'should throw if account non-string'
       )
 
-      assert.rejects(
+      await assert.rejects(
         permController.handleNewAccountSelected(ORIGINS.a, ''),
         ERRORS.handleNewAccountSelected.invalidParams(),
         'should throw if account empty string'
@@ -796,15 +797,18 @@ describe('permissions controller', function () {
         'pending approvals should be empty on init',
       )
 
-      permController.finalizePermissionsRequest = () => {
-        throw new Error('should not be reached')
-      }
+      sinon.spy(permController, 'finalizePermissionsRequest')
 
       const request = PERMS.approvedRequest(REQUEST_IDS.a, null)
 
-      assert.doesNotReject(
+      await assert.doesNotReject(
         permController.approvePermissionsRequest(request, null),
         'should not throw on non-existing request'
+      )
+
+      assert.ok(
+        permController.finalizePermissionsRequest.notCalled,
+        'should not call finalizePermissionRequest'
       )
 
       assert.equal(
@@ -813,39 +817,40 @@ describe('permissions controller', function () {
       )
     })
 
-    it('rejects invalid requests', async function () {
+    it('rejects request with bad accounts param', async function () {
 
-      let request
+      const request = PERMS.approvedRequest(
+        REQUEST_IDS.a,
+        PERMS.requests.eth_accounts()
+      )
 
-      // bad accounts param
-
-      request = PERMS.approvedRequest(REQUEST_IDS.a, PERMS.requests.eth_accounts())
-
-      assert.rejects(
+      const rejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should reject bad accounts'
       )
 
-      // bad param causing above rejection is here
       await permController.approvePermissionsRequest(request, null)
+      await rejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
         'pending approvals should be empty after rejection',
       )
+    })
 
-      // no permissions
+    it('rejects request with no permissions', async function () {
 
-      request = PERMS.approvedRequest(REQUEST_IDS.a, {})
+      const request = PERMS.approvedRequest(REQUEST_IDS.a, {})
 
-      assert.rejects(
+      const rejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.approvePermissionsRequest.noPermsRequested(),
         'should reject if no permissions in request'
       )
 
       await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
+      await rejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -859,7 +864,7 @@ describe('permissions controller', function () {
 
       let perms
 
-      assert.doesNotReject(
+      const approval = assert.doesNotReject(
         async () => {
           perms = await mockRequestUserApproval(REQUEST_IDS.a)
         },
@@ -867,6 +872,7 @@ describe('permissions controller', function () {
       )
 
       await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
+      await approval
 
       assert.deepEqual(
         perms, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a),
@@ -887,14 +893,14 @@ describe('permissions controller', function () {
 
       let perms1, perms2
 
-      assert.doesNotReject(
+      const approval1 = assert.doesNotReject(
         async () => {
           perms1 = await mockRequestUserApproval(REQUEST_IDS.a)
         },
         'should not reject request'
       )
 
-      assert.doesNotReject(
+      const approval2 = assert.doesNotReject(
         async () => {
           perms2 = await mockRequestUserApproval(REQUEST_IDS.b)
         },
@@ -906,6 +912,9 @@ describe('permissions controller', function () {
       // add a non-existing request to the mix
       await permController.approvePermissionsRequest(request3, ACCOUNT_ARRAYS.c)
       await permController.approvePermissionsRequest(request1, ACCOUNT_ARRAYS.a)
+
+      await approval1
+      await approval2
 
       assert.deepEqual(
         perms1, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a),
@@ -942,7 +951,7 @@ describe('permissions controller', function () {
         'pending approvals should be empty on init',
       )
 
-      assert.doesNotReject(
+      await assert.doesNotReject(
         permController.rejectPermissionsRequest(REQUEST_IDS.a),
         'should not throw on non-existing request'
       )
@@ -955,13 +964,14 @@ describe('permissions controller', function () {
 
     it('rejects single existing request', async function () {
 
-      assert.rejects(
+      const rejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
       )
 
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
+      await rejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -971,13 +981,13 @@ describe('permissions controller', function () {
 
     it('rejects requests regardless of order', async function () {
 
-      assert.rejects(
+      const rejection1 = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.b),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
       )
 
-      assert.rejects(
+      const rejection2 = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.c),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
@@ -988,6 +998,9 @@ describe('permissions controller', function () {
       // add a non-existing request to the mix
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
       await permController.rejectPermissionsRequest(REQUEST_IDS.b)
+
+      await rejection1
+      await rejection2
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -1006,28 +1019,11 @@ describe('permissions controller', function () {
 
     it('requests the given permissions and grants them on user approval', async function () {
 
-      permController._requestPermissions(
+      const approval = permController._requestPermissions(
         ORIGINS.a, PERMS.requests.eth_accounts()
       )
-        .then(async (result) => {
 
-          // this is the last thing that will happen in this test
-
-          assert.ok(
-            result.length === 1 && result[0].parentCapability === 'eth_accounts',
-            'single eth_accounts permission should have been granted'
-          )
-
-          const accounts = await permController.getAccounts(ORIGINS.a)
-          assert.deepEqual(
-            accounts, ACCOUNT_ARRAYS.a, 'origin should have correct accounts'
-          )
-        })
-        .catch(() => {
-          assert.fail('promise should not reject')
-        })
-
-      const accounts = await permController.getAccounts(ORIGINS.a)
+      let accounts = await permController.getAccounts(ORIGINS.a)
 
       assert.deepEqual(accounts, [], 'origin should not have any accounts')
 
@@ -1039,33 +1035,31 @@ describe('permissions controller', function () {
       const id = permController.pendingApprovals.keys().next().value
       const request = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
-      permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
+      const result = await approval
+
+      assert.ok(
+        result.length === 1 && result[0].parentCapability === 'eth_accounts',
+        'single eth_accounts permission should have been granted'
+      )
+
+      accounts = await permController.getAccounts(ORIGINS.a)
+      assert.deepEqual(
+        accounts, ACCOUNT_ARRAYS.a, 'origin should have correct accounts'
+      )
     })
 
     it('requests the given permissions and rejects them on user rejection', async function () {
 
-      permController._requestPermissions(
-        ORIGINS.a, PERMS.requests.eth_accounts()
+      const rejection = assert.rejects(
+        permController._requestPermissions(
+          ORIGINS.a, PERMS.requests.eth_accounts()
+        ),
+        ERRORS.rejectPermissionsRequest.rejection(),
+        'should reject with expected error'
       )
-        .then(() => {
-          assert.fail('promise should not resolve')
-        })
-        .catch(async (err) => {
 
-          // this is the last thing that will happen in this test
-
-          assert.equal(
-            err.message, ERRORS.rejectPermissionsRequest.rejection().message,
-            'rejected with unexpected error'
-          )
-
-          const accounts = await permController.getAccounts(ORIGINS.a)
-          assert.deepEqual(
-            accounts, [], 'origin should have no accounts'
-          )
-        })
-
-      const accounts = await permController.getAccounts(ORIGINS.a)
+      let accounts = await permController.getAccounts(ORIGINS.a)
 
       assert.deepEqual(accounts, [], 'origin should not have any accounts')
 
@@ -1076,16 +1070,25 @@ describe('permissions controller', function () {
 
       const id = permController.pendingApprovals.keys().next().value
 
-      permController.rejectPermissionsRequest(id)
+      await permController.rejectPermissionsRequest(id)
+      await rejection
+
+      accounts = await permController.getAccounts(ORIGINS.a)
+      assert.deepEqual(
+        accounts, [], 'origin should still have no accounts'
+      )
     })
 
-    it('throws on bad request', async function () {
+    it('throws on request with unknown permission', async function () {
 
-      assert.rejects(
-        () => permController._requestPermissions(
+      permController.permissions.requestUserApproval = async (req) => req.permissions
+
+      await assert.rejects(
+        permController._requestPermissions(
           ORIGINS.a, PERMS.requests.does_not_exist()
         ),
-        'should reject bad request'
+        ERRORS.rejectPermissionsRequest.methodNotFound(PERM_NAMES.does_not_exist),
+        'should reject with expected error'
       )
     })
   })
