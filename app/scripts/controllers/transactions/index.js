@@ -775,7 +775,8 @@ class TransactionController extends EventEmitter {
         code = await this.query.getCode(to)
       } catch (e) {
         code = null
-        log.warn(e)
+        // conflux fullnode will return a error here if it's not a contract addr
+        // log.warn(e)
       }
 
       const codeIsEmpty = !code || code === '0x' || code === '0x0'

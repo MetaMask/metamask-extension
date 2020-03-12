@@ -820,7 +820,6 @@ describe('MetaMask', function () {
       const navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
-      await driver.delay(tinyDelayMs / 2)
       const navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('3'), true, 'transaction confirmed')
       await driver.clickElement(By.xpath(`//a[contains(text(), 'Reject 3')]`))
