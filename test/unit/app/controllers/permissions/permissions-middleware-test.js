@@ -64,7 +64,7 @@ describe('permissions middleware', function () {
       )
       const res = {}
 
-      const approval = assert.doesNotReject(
+      const pendingApproval = assert.doesNotReject(
         aMiddleware(req, res),
         'should not reject permissions request'
       )
@@ -78,7 +78,7 @@ describe('permissions middleware', function () {
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
-      await approval
+      await pendingApproval
 
       assert.ok(
         res.result && !res.error,
@@ -115,7 +115,7 @@ describe('permissions middleware', function () {
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         aMiddleware(req, res),
         expectedError,
         'request should be rejected with correct error',
@@ -129,7 +129,7 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
 
       await permController.rejectPermissionsRequest(id)
-      await rejection
+      await requestRejection
 
       assert.ok(
         (
@@ -161,7 +161,7 @@ describe('permissions middleware', function () {
       )
       const resA1 = {}
 
-      const approval1 = assert.doesNotReject(
+      const requestApproval1 = assert.doesNotReject(
         aMiddleware(reqA1, resA1),
         'should not reject permissions request'
       )
@@ -173,7 +173,7 @@ describe('permissions middleware', function () {
       )
       const resB1 = {}
 
-      const approval2 = assert.doesNotReject(
+      const requestApproval2 = assert.doesNotReject(
         bMiddleware(reqB1, resB1),
         'should not reject permissions request'
       )
@@ -219,8 +219,8 @@ describe('permissions middleware', function () {
           PERMS.approvedRequest(id, PERMS.requests.test_method())
         )
       }
-      await approval1
-      await approval2
+      await requestApproval1
+      await requestApproval2
 
       assert.ok(
         resA1.result && !resA1.error,
@@ -375,7 +375,7 @@ describe('permissions middleware', function () {
       const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.a)
       const res = {}
 
-      const approval = assert.doesNotReject(
+      const pendingApproval = assert.doesNotReject(
         aMiddleware(req, res),
         'should not reject permissions request'
       )
@@ -407,7 +407,7 @@ describe('permissions middleware', function () {
         [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
       )
 
-      await approval
+      await pendingApproval
 
       // we should also see the accounts on the response
       assert.ok(
@@ -438,7 +438,7 @@ describe('permissions middleware', function () {
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         aMiddleware(req, res),
         expectedError,
         'request should be rejected with correct error',
@@ -454,7 +454,7 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
 
       await permController.rejectPermissionsRequest(id)
-      await rejection
+      await requestRejection
 
       assert.ok(
         (

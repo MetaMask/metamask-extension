@@ -824,14 +824,14 @@ describe('permissions controller', function () {
         PERMS.requests.eth_accounts()
       )
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should reject bad accounts'
       )
 
       await permController.approvePermissionsRequest(request, null)
-      await rejection
+      await requestRejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -843,14 +843,14 @@ describe('permissions controller', function () {
 
       const request = PERMS.approvedRequest(REQUEST_IDS.a, {})
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.approvePermissionsRequest.noPermsRequested(),
         'should reject if no permissions in request'
       )
 
       await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
-      await rejection
+      await requestRejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -864,7 +864,7 @@ describe('permissions controller', function () {
 
       let perms
 
-      const approval = assert.doesNotReject(
+      const requestApproval = assert.doesNotReject(
         async () => {
           perms = await mockRequestUserApproval(REQUEST_IDS.a)
         },
@@ -872,7 +872,7 @@ describe('permissions controller', function () {
       )
 
       await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
-      await approval
+      await requestApproval
 
       assert.deepEqual(
         perms, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a),
@@ -964,14 +964,14 @@ describe('permissions controller', function () {
 
     it('rejects single existing request', async function () {
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
       )
 
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
-      await rejection
+      await requestRejection
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -981,13 +981,13 @@ describe('permissions controller', function () {
 
     it('rejects requests regardless of order', async function () {
 
-      const rejection1 = assert.rejects(
+      const requestRejection1 = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.b),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
       )
 
-      const rejection2 = assert.rejects(
+      const requestRejection2 = assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.c),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
@@ -999,8 +999,8 @@ describe('permissions controller', function () {
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
       await permController.rejectPermissionsRequest(REQUEST_IDS.b)
 
-      await rejection1
-      await rejection2
+      await requestRejection1
+      await requestRejection2
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -1019,13 +1019,9 @@ describe('permissions controller', function () {
 
     it('requests the given permissions and grants them on user approval', async function () {
 
-      const approval = permController._requestPermissions(
+      const requestApproval = permController._requestPermissions(
         ORIGINS.a, PERMS.requests.eth_accounts()
       )
-
-      let accounts = await permController.getAccounts(ORIGINS.a)
-
-      assert.deepEqual(accounts, [], 'origin should not have any accounts')
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -1036,14 +1032,14 @@ describe('permissions controller', function () {
       const request = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
       await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
-      const result = await approval
+      const result = await requestApproval
 
       assert.ok(
         result.length === 1 && result[0].parentCapability === 'eth_accounts',
         'single eth_accounts permission should have been granted'
       )
 
-      accounts = await permController.getAccounts(ORIGINS.a)
+      const accounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
         accounts, ACCOUNT_ARRAYS.a, 'origin should have correct accounts'
       )
@@ -1051,17 +1047,13 @@ describe('permissions controller', function () {
 
     it('requests the given permissions and rejects them on user rejection', async function () {
 
-      const rejection = assert.rejects(
+      const requestRejection = assert.rejects(
         permController._requestPermissions(
           ORIGINS.a, PERMS.requests.eth_accounts()
         ),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error'
       )
-
-      let accounts = await permController.getAccounts(ORIGINS.a)
-
-      assert.deepEqual(accounts, [], 'origin should not have any accounts')
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -1071,9 +1063,9 @@ describe('permissions controller', function () {
       const id = permController.pendingApprovals.keys().next().value
 
       await permController.rejectPermissionsRequest(id)
-      await rejection
+      await requestRejection
 
-      accounts = await permController.getAccounts(ORIGINS.a)
+      const accounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
         accounts, [], 'origin should still have no accounts'
       )
@@ -1353,25 +1345,53 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('miscellanea and edge cases', function () {
+  describe('notifyDomain', function () {
 
-    let permController, notifications
+    let notifications, permController
 
     beforeEach(function () {
       notifications = initNotifications()
       permController = initPermController(notifications)
+      sinon.spy(permController.permissionsLog, 'updateAccountsHistory')
+    })
+
+    it('notifyDomain handles accountsChanged', async function () {
+
+      permController.notifyDomain(
+        ORIGINS.a,
+        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a),
+      )
+
+      assert.ok(
+        permController.permissionsLog.updateAccountsHistory.calledOnce,
+        'permissionsLog.updateAccountsHistory should have been called once'
+      )
+
+      assert.deepEqual(
+        notifications[ORIGINS.a],
+        [ NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a) ],
+        'origin should have correct notification'
+      )
     })
 
     it('notifyDomain handles notifications other than accountsChanged', async function () {
 
       permController.notifyDomain(ORIGINS.a, NOTIFICATIONS.test())
 
+      assert.ok(
+        permController.permissionsLog.updateAccountsHistory.notCalled,
+        'permissionsLog.updateAccountsHistory should not have been called'
+      )
+
       assert.deepEqual(
-        notifications[ORIGINS.a][0],
-        NOTIFICATIONS.test(),
+        notifications[ORIGINS.a],
+        [ NOTIFICATIONS.test() ],
         'origin should have correct notification'
       )
     })
+  })
+
+  describe('miscellanea and edge cases', function () {
 
     it('addInternalMethodPrefix', function () {
       const str = 'foo'
