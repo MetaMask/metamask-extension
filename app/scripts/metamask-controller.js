@@ -54,6 +54,7 @@ import { version } from '../manifest/_base.json'
 import ethUtil, { BN } from 'ethereumjs-util'
 
 const GWEI_BN = new BN('1000000000')
+
 import percentile from 'percentile'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
@@ -63,7 +64,10 @@ import EthQuery from 'eth-query'
 import nanoid from 'nanoid'
 import contractMap from 'eth-contract-metadata'
 
+const CoolWalletKeyring = require('eth-cws-keyring')
+
 import {
+
   AddressBookController,
   CurrencyRateController,
   PhishingController,
@@ -197,7 +201,12 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker._updateAccounts()
     })
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    // key mgmt
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      CoolWalletKeyring,
+    ]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -740,6 +749,7 @@ export default class MetamaskController extends EventEmitter {
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
+      coolwallet: [],
     }
 
     // transactions
@@ -827,6 +837,9 @@ export default class MetamaskController extends EventEmitter {
         break
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type
+        break
+      case 'coolwallet':
+        keyringName = CoolWalletKeyring.type
         break
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
