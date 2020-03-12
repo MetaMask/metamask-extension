@@ -34,9 +34,9 @@ const {
 } = constants
 
 const validatePermission = (perm, name, origin, caveats) => {
-  assert.equal(name, perm.parentCapability, 'unexpected permission name')
-  assert.equal(origin, perm.invoker, 'unexpected permission origin')
-  assert.deepEqual(caveats, perm.caveats, 'unexpected permission caveats')
+  assert.equal(name, perm.parentCapability, 'should have expected permission name')
+  assert.equal(origin, perm.invoker, 'should have expected permission origin')
+  assert.deepEqual(caveats, perm.caveats, 'should have expected permission caveats')
 }
 
 const initPermController = () => {
@@ -97,7 +97,10 @@ describe('permissions middleware', function () {
       )
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, ACCOUNT_ARRAYS.a, 'origin does not have correct accounts')
+      assert.deepEqual(
+        aAccounts, ACCOUNT_ARRAYS.a,
+        'origin should have correct accounts'
+      )
     })
 
     it('rejects permissions on user rejection', async function () {
@@ -122,7 +125,7 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.message === expectedError.message
             ),
-            'response has expected error and no result'
+            'response should have expected error and no result'
           )
         })
 
@@ -136,7 +139,9 @@ describe('permissions middleware', function () {
       await permController.rejectPermissionsRequest(id)
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, [], 'origin does not have correct accounts')
+      assert.deepEqual(
+        aAccounts, [], 'origin should have have correct accounts'
+      )
     })
 
     it('accepts only a single pending permissions request per origin', async function () {
@@ -196,7 +201,7 @@ describe('permissions middleware', function () {
               !resA2.result && resA2.error &&
             resA2.error.message === expectedError.message
             ),
-            'response has expected error and no result'
+            'response should have expected error and no result'
           )
         })
 
@@ -268,7 +273,7 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.code === expectedError.code
             ),
-            'response has expected error and no result'
+            'response should have expected error and no result'
           )
         })
     })
@@ -394,7 +399,7 @@ describe('permissions middleware', function () {
 
       assert.equal(
         perms.length, 1,
-        'domain has correct number of permissions'
+        'domain should have correct number of permissions'
       )
 
       validatePermission(
@@ -419,7 +424,9 @@ describe('permissions middleware', function () {
 
       // we should also be able to get the accounts independently
       const aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, ACCOUNT_ARRAYS.a, 'origin does not have correct accounts')
+      assert.deepEqual(
+        aAccounts, ACCOUNT_ARRAYS.a, 'origin should have have correct accounts'
+      )
     })
 
     it('requests accounts for unpermitted origin, and rejects on user rejection', async function () {
@@ -444,7 +451,7 @@ describe('permissions middleware', function () {
               !res.result && res.error &&
             res.error.message === expectedError.message
             ),
-            'response has expected error and no result'
+            'response should have expected error and no result'
           )
         })
 
@@ -460,7 +467,9 @@ describe('permissions middleware', function () {
       await permController.rejectPermissionsRequest(id)
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, [], 'origin does not have correct accounts')
+      assert.deepEqual(
+        aAccounts, [], 'origin should have have correct accounts'
+      )
     })
 
     it('directly returns accounts for permitted domain', async function () {
@@ -556,7 +565,7 @@ describe('permissions middleware', function () {
         })
     })
 
-    it('does not record domain metadata if no name', async function () {
+    it('should have record domain metadata if no name', async function () {
 
       const name = null
 
@@ -582,7 +591,7 @@ describe('permissions middleware', function () {
         })
     })
 
-    it('does not record domain metadata if no metadata', async function () {
+    it('should have record domain metadata if no metadata', async function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 

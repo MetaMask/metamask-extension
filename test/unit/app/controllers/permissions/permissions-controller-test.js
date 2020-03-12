@@ -88,11 +88,11 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
-        'first origin does not have correct accounts'
+        'first origin should have correct accounts'
       )
       assert.deepEqual(
         bAccounts, ACCOUNT_ARRAYS.b,
-        'second origin does not have correct accounts'
+        'second origin should have correct accounts'
       )
     })
 
@@ -133,15 +133,15 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
-        'first origin does not have correct accounts'
+        'first origin should have correct accounts'
       )
       assert.deepEqual(
         bAccounts, ACCOUNT_ARRAYS.b,
-        'second origin does not have correct accounts'
+        'second origin should have correct accounts'
       )
       assert.deepEqual(
         cAccounts, ACCOUNT_ARRAYS.c,
-        'third origin does not have correct accounts'
+        'third origin should have correct accounts'
       )
 
       permController.clearPermissions()
@@ -201,11 +201,11 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
-        'first origin does not have correct accounts'
+        'first origin should have correct accounts'
       )
       assert.deepEqual(
         bAccounts, ACCOUNT_ARRAYS.b,
-        'second origin does not have correct accounts'
+        'second origin should have correct accounts'
       )
 
       permController.removePermissionsFor({
@@ -277,7 +277,7 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
-        'first origin does not have correct accounts'
+        'first origin should have correct accounts'
       )
       assert.deepEqual(bAccounts, [], 'second origin should have no accounts')
 
@@ -296,26 +296,28 @@ describe('permissions controller', function () {
       )
     })
 
-    // we do not check notifications in this test, because while our mock
-    // notifications will be emitted, the ones used in production ignore
-    // unknown domains
-    // see getNotifyDomain and getNotifyAllDomains for details
-    it('does nothing for unknown domains', async function () {
+    it('send notification but does not affect permissions for unknown domain', async function () {
 
+      // it knows nothing of this origin
       permController.removePermissionsFor({
         [ORIGINS.c]: [PERM_NAMES.eth_accounts],
       })
+
+      assert.deepEqual(
+        notifications[ORIGINS.c], [NOTIFICATIONS.removedAccounts()],
+        'unknown origin should have notification'
+      )
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       const bAccounts = await permController.getAccounts(ORIGINS.b)
 
       assert.deepEqual(
         aAccounts, ACCOUNT_ARRAYS.a,
-        'first origin does not have correct accounts'
+        'first origin should have correct accounts'
       )
       assert.deepEqual(
         bAccounts, ACCOUNT_ARRAYS.b,
-        'second origin does not have correct accounts'
+        'second origin should have correct accounts'
       )
 
       assert.deepEqual(
@@ -561,7 +563,10 @@ describe('permissions controller', function () {
         ACCOUNT_ARRAYS.b,
       )
 
-      assert.deepEqual(perm, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b))
+      assert.deepEqual(
+        perm, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b),
+        'permission should have correct caveat'
+      )
     })
 
     it('handles non-eth_accounts permission', async function () {
@@ -572,7 +577,8 @@ describe('permissions controller', function () {
       )
 
       assert.deepEqual(
-        perm, PERMS.finalizedRequests.test_method()
+        perm, PERMS.finalizedRequests.test_method(),
+        'permission should have correct caveat'
       )
     })
   })
@@ -601,7 +607,7 @@ describe('permissions controller', function () {
       const historyOrigins = Object.keys(permissionsHistory)
 
       assert.equal(historyOrigins.length, 1, 'should have single origin')
-      assert.equal(historyOrigins[0], ORIGINS.a)
+      assert.equal(historyOrigins[0], ORIGINS.a, 'should have correct origin')
 
       assert.ok(
         permissionsHistory[ORIGINS.a].eth_accounts,
@@ -611,7 +617,7 @@ describe('permissions controller', function () {
       assert.deepEqual(
         Object.keys(permissionsHistory[ORIGINS.a].eth_accounts.accounts),
         ACCOUNT_ARRAYS.a,
-        'eth_accounts entry accounts should be as expected'
+        'should have expected eth_accounts entry accounts'
       )
 
       // notification should also have been sent
@@ -787,7 +793,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty on init',
+        'pending approvals should be empty on init',
       )
 
       permController.finalizePermissionsRequest = () => {
@@ -803,7 +809,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals still empty after request',
+        'pending approvals should still be empty after request',
       )
     })
 
@@ -826,7 +832,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after rejection',
+        'pending approvals should be empty after rejection',
       )
 
       // no permissions
@@ -843,7 +849,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after rejection',
+        'pending approvals should be empty after rejection',
       )
     })
 
@@ -864,12 +870,12 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         perms, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a),
-        'produced expected approved permissions'
+        'should produce expected approved permissions'
       )
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after approval',
+        'pending approvals should be empty after approval',
       )
     })
 
@@ -903,17 +909,17 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         perms1, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a),
-        'first request produced expected approved permissions'
+        'first request should produce expected approved permissions'
       )
 
       assert.deepEqual(
         perms2, PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b),
-        'second request produced expected approved permissions'
+        'second request should produce expected approved permissions'
       )
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after approvals',
+        'pending approvals should be empty after approvals',
       )
     })
   })
@@ -933,7 +939,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty on init',
+        'pending approvals should be empty on init',
       )
 
       assert.doesNotReject(
@@ -943,7 +949,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals still empty after request',
+        'pending approvals should still be empty after request',
       )
     })
 
@@ -952,14 +958,14 @@ describe('permissions controller', function () {
       assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.a),
         ERRORS.rejectPermissionsRequest.rejection(),
-        'rejects as expected'
+        'should reject with expected error'
       )
 
       await permController.rejectPermissionsRequest(REQUEST_IDS.a)
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after rejection',
+        'pending approvals should be empty after rejection',
       )
     })
 
@@ -968,13 +974,13 @@ describe('permissions controller', function () {
       assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.b),
         ERRORS.rejectPermissionsRequest.rejection(),
-        'rejects as expected'
+        'should reject with expected error'
       )
 
       assert.rejects(
         mockRequestUserApproval(REQUEST_IDS.c),
         ERRORS.rejectPermissionsRequest.rejection(),
-        'rejects as expected'
+        'should reject with expected error'
       )
 
       // reject out of order
@@ -985,7 +991,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after approval',
+        'pending approvals should be empty after approval',
       )
     })
   })
@@ -1097,17 +1103,20 @@ describe('permissions controller', function () {
 
       assert.throws(
         () => permController.createMiddleware({ origin: {} }),
-        ERRORS.createMiddleware.badOrigin()
+        ERRORS.createMiddleware.badOrigin(),
+        'should throw expected error'
       )
 
       assert.throws(
         () => permController.createMiddleware({ origin: '' }),
         ERRORS.createMiddleware.badOrigin(),
+        'should throw expected error'
       )
 
       assert.throws(
         () => permController.createMiddleware({}),
         ERRORS.createMiddleware.badOrigin(),
+        'should throw expected error'
       )
     })
 
@@ -1128,7 +1137,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         middleware.name, 'engineAsMiddleware',
-        'function name should be "engineAsMiddleware'
+        'function name should be "engineAsMiddleware"'
       )
     })
 
@@ -1154,7 +1163,7 @@ describe('permissions controller', function () {
 
       assert.equal(
         middleware.name, 'engineAsMiddleware',
-        'function name should be "engineAsMiddleware'
+        'function name should be "engineAsMiddleware"'
       )
 
       const metadataStore = permController.store.getState()[METADATA_STORE_KEY]
@@ -1183,12 +1192,12 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 1,
-        'pending approvals has single entry',
+        'pending approvals should have single entry',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 1,
-        'pending approvals origins has single item',
+        'pending approval origins should have single item',
       )
 
       assert.deepEqual(
@@ -1199,19 +1208,19 @@ describe('permissions controller', function () {
 
       assert.ok(
         permController.pendingApprovalOrigins.has(origin),
-        'pending approvals origins has expected item',
+        'pending approval origins should have expected item',
       )
 
       permController._removePendingApproval(id)
 
       assert.equal(
         permController.pendingApprovals.size, 0,
-        'pending approvals empty after removal',
+        'pending approvals should be empty after removal',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 0,
-        'pending approvals origins empty after removal',
+        'pending approval origins empty after removal',
       )
     })
 
@@ -1227,24 +1236,24 @@ describe('permissions controller', function () {
 
       assert.equal(
         permController.pendingApprovals.size, 3,
-        'pending approvals has expected number of entries',
+        'pending approvals should have expected number of entries',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 3,
-        'pending approvals origins has expected number of items',
+        'pending approval origins should have expected number of items',
       )
 
       permController._removePendingApproval(id2)
 
       assert.equal(
         permController.pendingApprovals.size, 2,
-        'pending approvals has expected number of entries',
+        'pending approvals should have expected number of entries',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 2,
-        'pending approvals origins has expected number of items',
+        'pending approval origins should have expected number of items',
       )
 
       assert.deepEqual(
@@ -1260,11 +1269,11 @@ describe('permissions controller', function () {
 
       assert.ok(
         permController.pendingApprovalOrigins.has(ORIGINS.a),
-        'pending approvals origins has expected item',
+        'pending approval origins should have expected item',
       )
       assert.ok(
         permController.pendingApprovalOrigins.has(ORIGINS.c),
-        'pending approvals origins has expected item',
+        'pending approval origins should have expected item',
       )
     })
 
@@ -1279,17 +1288,18 @@ describe('permissions controller', function () {
 
       assert.throws(
         () => permController._addPendingApproval(otherId, origin, noop, noop),
-        ERRORS.pendingApprovals.duplicateOriginOrId(otherId, origin)
+        ERRORS.pendingApprovals.duplicateOriginOrId(otherId, origin),
+        'should throw expected error'
       )
 
       assert.equal(
         permController.pendingApprovals.size, 1,
-        'pending approvals has single entry',
+        'pending approvals should have single entry',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 1,
-        'pending approvals origins has single item',
+        'pending approval origins should have single item',
       )
 
       assert.deepEqual(
@@ -1300,7 +1310,7 @@ describe('permissions controller', function () {
 
       assert.ok(
         permController.pendingApprovalOrigins.has(origin),
-        'pending approvals origins has expected item',
+        'pending approval origins should have expected item',
       )
     })
 
@@ -1313,17 +1323,18 @@ describe('permissions controller', function () {
 
       assert.throws(
         () => permController._addPendingApproval(id, ORIGINS.b, noop, noop),
-        ERRORS.pendingApprovals.duplicateOriginOrId(id, ORIGINS.b)
+        ERRORS.pendingApprovals.duplicateOriginOrId(id, ORIGINS.b),
+        'should throw expected error'
       )
 
       assert.equal(
         permController.pendingApprovals.size, 1,
-        'pending approvals has single entry',
+        'pending approvals should have single entry',
       )
 
       assert.equal(
         permController.pendingApprovalOrigins.size, 1,
-        'pending approvals origins has single item',
+        'pending approval origins should have single item',
       )
 
       assert.deepEqual(
@@ -1334,7 +1345,7 @@ describe('permissions controller', function () {
 
       assert.ok(
         permController.pendingApprovalOrigins.has(origin),
-        'pending approvals origins has expected item',
+        'pending approval origins should have expected item',
       )
     })
   })

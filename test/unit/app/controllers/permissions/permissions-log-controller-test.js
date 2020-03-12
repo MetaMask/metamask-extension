@@ -198,7 +198,7 @@ describe('permissions log', function () {
           entry2.id === id2 && entry2.response === null &&
           entry3.id === id3 && entry3.response === null
         ),
-        'all entries are in correct order and without responses'
+        'all entries should be in correct order and without responses'
       )
 
       // call response handlers
@@ -658,28 +658,32 @@ describe('permissions log', function () {
         () => {
           permLog.logAccountExposure('', ACCOUNT_ARRAYS.a)
         },
-        ERRORS.logAccountExposure.invalidParams()
+        ERRORS.logAccountExposure.invalidParams(),
+        'should throw expected error'
       )
 
       assert.throws(
         () => {
           permLog.logAccountExposure(null, ACCOUNT_ARRAYS.a)
         },
-        ERRORS.logAccountExposure.invalidParams()
+        ERRORS.logAccountExposure.invalidParams(),
+        'should throw expected error'
       )
 
       assert.throws(
         () => {
           permLog.logAccountExposure('foo', {})
         },
-        ERRORS.logAccountExposure.invalidParams()
+        ERRORS.logAccountExposure.invalidParams(),
+        'should throw expected error'
       )
 
       assert.throws(
         () => {
           permLog.logAccountExposure('foo', [])
         },
-        ERRORS.logAccountExposure.invalidParams()
+        ERRORS.logAccountExposure.invalidParams(),
+        'should throw expected error'
       )
     })
   })
