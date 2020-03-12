@@ -1507,13 +1507,13 @@ export function createCancelTransaction (txId, customGasPrice) {
   }
 }
 
-export function createSpeedUpTransaction (txId, customGasPrice) {
+export function createSpeedUpTransaction (txId, customGasPrice, customGasLimit) {
   log.debug('background.createSpeedUpTransaction')
   let newTx
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
           return reject(err)
@@ -1529,13 +1529,13 @@ export function createSpeedUpTransaction (txId, customGasPrice) {
   }
 }
 
-export function createRetryTransaction (txId, customGasPrice) {
+export function createRetryTransaction (txId, customGasPrice, customGasLimit) {
   log.debug('background.createRetryTransaction')
   let newTx
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
           return reject(err)
