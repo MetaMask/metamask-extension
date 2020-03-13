@@ -1286,8 +1286,8 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  async createSpeedUpTransaction (originalTxId, customGasPrice) {
-    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
+  async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit)
     const state = await this.getState()
     return state
   }

@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 7.7.8 Wed Mar 11 2020
+- [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
+- [#8178](https://github.com/MetaMask/metamask-extension/pull/8178): Use specified gas limit when speeding up a transaction
+
 ## 7.7.7 Wed Mar 04 2020
 - [#8162](https://github.com/MetaMask/metamask-extension/pull/8162): Remove invalid Ledger accounts
 - [#8163](https://github.com/MetaMask/metamask-extension/pull/8163): Fix account index check

@@ -27,10 +27,24 @@ export default class SendAmountRow extends Component {
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
+    maxModeOn: PropTypes.bool,
   }
 
   static contextTypes = {
     t: PropTypes.func,
+  }
+
+  componentDidUpdate (prevProps) {
+    const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps
+    const { maxModeOn, amount, gasTotal, selectedToken } = this.props
+
+    if (maxModeOn && selectedToken && !prevMaxModeOn) {
+      this.updateGas(amount)
+    }
+
+    if (prevGasTotal !== gasTotal) {
+      this.validateAmount(amount)
+    }
   }
 
   updateGas = debounce(this.updateGas.bind(this), 500)
@@ -87,17 +101,19 @@ export default class SendAmountRow extends Component {
     }
   }
 
+  handleChange = (newAmount) => {
+    this.validateAmount(newAmount)
+    this.updateGas(newAmount)
+    this.updateAmount(newAmount)
+  }
+
   renderInput () {
     const { amount, inError, selectedToken } = this.props
     const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
 
     return (
       <Component
-        onChange={newAmount => {
-          this.validateAmount(newAmount)
-          this.updateGas(newAmount)
-          this.updateAmount(newAmount)
-        }}
+        onChange={this.handleChange}
         error={inError}
         value={amount}
       />
