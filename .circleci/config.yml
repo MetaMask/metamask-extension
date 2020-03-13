@@ -75,6 +75,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - job-build-lavamoat
             - benchmark
             - all-tests-pass
       - job-publish-release:
@@ -84,6 +85,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - job-build-lavamoat
             - all-tests-pass
       - job-publish-storybook:
           filters:
