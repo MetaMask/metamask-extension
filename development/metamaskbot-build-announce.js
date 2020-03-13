@@ -46,7 +46,7 @@ async function start () {
   }).join(', ')
 
   // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/deps-viz/index.html`
+  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/lavamoat/dashboard/index.html`
   const depVizLink = `<a href="${depVizUrl}">ui + background</a>`
 
   // link to artifacts
