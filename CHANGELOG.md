@@ -23,6 +23,7 @@
 - Fix: changelog.md (#50)
 - Fix e2e tests (#56)
 - Add rlp to support new version of testnet (#57)
+## 0.0.9 Thu Mar 12 2020
 
 ## 0.0.8 Tue Feb 20 2020
 - update/cleanup packages (#46)
