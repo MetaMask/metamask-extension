@@ -205,61 +205,30 @@ function createBundlerSetup () {
 }
 
 function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify }) {
+  // enabling some general options
   Object.assign(bundlerOpts, {
     // source transforms
     transform: [
       // transpile top-level code
       'babelify',
-      // transpile specified dependencies using the object spread/rest operator
-      // because it is incompatible with `esprima`, which is used by `envify`
-      // See https://github.com/jquery/esprima/issues/1927
-      ['babelify', {
-        only: [
-          './**/node_modules/libp2p',
-        ],
-        global: true,
-        plugins: ['@babel/plugin-proposal-object-rest-spread'],
-      }],
       // inline `fs.readFileSync` files
       'brfs',
-      // inject environment variables
-      [envify({
-        METAMASK_DEBUG: devMode,
-        METAMASK_ENVIRONMENT: getEnvironment({ devMode }),
-        NODE_ENV: devMode ? 'development' : 'production',
-        IN_TEST: test ? 'true' : false,
-        PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
-        PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-      }), {
-        global: true,
-      }],
     ],
     // use filepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
   })
-
+  // setup minification
+  if (devMode) {
+    setupMinification({ bundlerOpts, events })
+  }
+  // inject environment variables
+  setupEnvVarInjection({ bundlerOpts, events, devMode, test })
   // setup watchify
   if (watchify) {
     setupWatchify({ bundlerOpts, events })
   }
-
   // setup sourcemaps, write location depends on devMode
   setupSourcemaps({ bundlerOpts, events, devMode })
-
-  // instrument pipeline
-  events.on('pipeline', (pipeline) => {
-
-    // setup minify
-    if (!devMode) {
-      pipeline.get('minify').push(buffer())
-      pipeline.get('minify').push(terser({
-        mangle: {
-          reserved: [ 'MetamaskInpageProvider' ],
-        },
-      }))
-    }
-
-  })
 }
 
 function executeBundle ({ bundlerOpts, events }) {
@@ -337,6 +306,49 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
       pipeline.get('sourcemaps:write').push(sourcemaps.write('../sourcemaps'))
     }
 
+  })
+}
+
+function setupEnvVarInjection ({ bundlerOpts, devMode, test }) {
+  Object.assign(bundlerOpts, {
+    transform: [
+      ...bundlerOpts.transform,
+      // transpile specified dependencies using the object spread/rest operator
+      // because it is incompatible with `esprima`, which is used by `envify`
+      // See https://github.com/jquery/esprima/issues/1927
+      ['babelify', {
+        only: [
+          './**/node_modules/libp2p',
+        ],
+        global: true,
+        plugins: ['@babel/plugin-proposal-object-rest-spread'],
+      }],
+      // inject environment variables
+      [envify({
+        METAMASK_DEBUG: devMode,
+        METAMASK_ENVIRONMENT: getEnvironment({ devMode }),
+        NODE_ENV: devMode ? 'development' : 'production',
+        IN_TEST: test ? 'true' : false,
+        PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
+        PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+      }), {
+        global: true,
+      }],
+    ],
+  })
+}
+
+function setupMinification ({ events }) {
+  // instrument pipeline
+  events.on('pipeline', (pipeline) => {
+    // must ensure vinyl file objects are buffered first
+    pipeline.get('minify').push(buffer())
+    // apply terser
+    pipeline.get('minify').push(terser({
+      mangle: {
+        reserved: [ 'MetamaskInpageProvider' ],
+      },
+    }))
   })
 }
 
