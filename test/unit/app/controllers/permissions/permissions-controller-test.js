@@ -1009,82 +1009,6 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('_requestPermissions', function () {
-
-    let permController
-
-    beforeEach(function () {
-      permController = initPermController()
-    })
-
-    it('requests the given permissions and grants them on user approval', async function () {
-
-      const requestApproval = permController._requestPermissions(
-        ORIGINS.a, PERMS.requests.eth_accounts()
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size, 1,
-        'perm controller should have single pending approval',
-      )
-
-      const id = permController.pendingApprovals.keys().next().value
-      const request = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
-
-      await permController.approvePermissionsRequest(request, ACCOUNT_ARRAYS.a)
-      const result = await requestApproval
-
-      assert.ok(
-        result.length === 1 && result[0].parentCapability === 'eth_accounts',
-        'single eth_accounts permission should have been granted'
-      )
-
-      const accounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(
-        accounts, ACCOUNT_ARRAYS.a, 'origin should have correct accounts'
-      )
-    })
-
-    it('requests the given permissions and rejects them on user rejection', async function () {
-
-      const requestRejection = assert.rejects(
-        permController._requestPermissions(
-          ORIGINS.a, PERMS.requests.eth_accounts()
-        ),
-        ERRORS.rejectPermissionsRequest.rejection(),
-        'should reject with expected error'
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size, 1,
-        'perm controller should have single pending approval',
-      )
-
-      const id = permController.pendingApprovals.keys().next().value
-
-      await permController.rejectPermissionsRequest(id)
-      await requestRejection
-
-      const accounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(
-        accounts, [], 'origin should still have no accounts'
-      )
-    })
-
-    it('throws on request with unknown permission', async function () {
-
-      permController.permissions.requestUserApproval = async (req) => req.permissions
-
-      await assert.rejects(
-        permController._requestPermissions(
-          ORIGINS.a, PERMS.requests.does_not_exist()
-        ),
-        ERRORS.rejectPermissionsRequest.methodNotFound(PERM_NAMES.does_not_exist),
-        'should reject with expected error'
-      )
-    })
-  })
-
   // see permissions-middleware-test for testing the middleware itself
   describe('createMiddleware', function () {
 
@@ -1170,181 +1094,6 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('adding and removing pending approvals', function () {
-
-    let permController
-
-    beforeEach(function () {
-      permController = initPermController()
-    })
-
-    it('should add and remove pending approval', function () {
-
-      const id = nanoid()
-      const origin = ORIGINS.a
-
-      permController._addPendingApproval(id, origin, noop, noop)
-
-      assert.equal(
-        permController.pendingApprovals.size, 1,
-        'pending approvals should have single entry',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 1,
-        'pending approval origins should have single item',
-      )
-
-      assert.deepEqual(
-        permController.pendingApprovals.get(id),
-        { origin, resolve: noop, reject: noop },
-        'pending approvals should have expected entry'
-      )
-
-      assert.ok(
-        permController.pendingApprovalOrigins.has(origin),
-        'pending approval origins should have expected item',
-      )
-
-      permController._removePendingApproval(id)
-
-      assert.equal(
-        permController.pendingApprovals.size, 0,
-        'pending approvals should be empty after removal',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 0,
-        'pending approval origins empty after removal',
-      )
-    })
-
-    it('should add and remove multiple pending approvals', function () {
-
-      const id1 = nanoid()
-      const id2 = nanoid()
-      const id3 = nanoid()
-
-      permController._addPendingApproval(id1, ORIGINS.a, noop, noop)
-      permController._addPendingApproval(id2, ORIGINS.b, noop, noop)
-      permController._addPendingApproval(id3, ORIGINS.c, noop, noop)
-
-      assert.equal(
-        permController.pendingApprovals.size, 3,
-        'pending approvals should have expected number of entries',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 3,
-        'pending approval origins should have expected number of items',
-      )
-
-      permController._removePendingApproval(id2)
-
-      assert.equal(
-        permController.pendingApprovals.size, 2,
-        'pending approvals should have expected number of entries',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 2,
-        'pending approval origins should have expected number of items',
-      )
-
-      assert.deepEqual(
-        permController.pendingApprovals.get(id1),
-        { origin: ORIGINS.a, resolve: noop, reject: noop },
-        'pending approvals should have expected entry'
-      )
-      assert.deepEqual(
-        permController.pendingApprovals.get(id3),
-        { origin: ORIGINS.c, resolve: noop, reject: noop },
-        'pending approvals should have expected entry'
-      )
-
-      assert.ok(
-        permController.pendingApprovalOrigins.has(ORIGINS.a),
-        'pending approval origins should have expected item',
-      )
-      assert.ok(
-        permController.pendingApprovalOrigins.has(ORIGINS.c),
-        'pending approval origins should have expected item',
-      )
-    })
-
-    it('should throw if adding origin twice', function () {
-
-      const id = nanoid()
-      const origin = ORIGINS.a
-
-      permController._addPendingApproval(id, origin, noop, noop)
-
-      const otherId = nanoid()
-
-      assert.throws(
-        () => permController._addPendingApproval(otherId, origin, noop, noop),
-        ERRORS.pendingApprovals.duplicateOriginOrId(otherId, origin),
-        'should throw expected error'
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size, 1,
-        'pending approvals should have single entry',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 1,
-        'pending approval origins should have single item',
-      )
-
-      assert.deepEqual(
-        permController.pendingApprovals.get(id),
-        { origin, resolve: noop, reject: noop },
-        'pending approvals should have expected entry'
-      )
-
-      assert.ok(
-        permController.pendingApprovalOrigins.has(origin),
-        'pending approval origins should have expected item',
-      )
-    })
-
-    it('should throw if adding id twice', function () {
-
-      const id = nanoid()
-      const origin = ORIGINS.a
-
-      permController._addPendingApproval(id, origin, noop, noop)
-
-      assert.throws(
-        () => permController._addPendingApproval(id, ORIGINS.b, noop, noop),
-        ERRORS.pendingApprovals.duplicateOriginOrId(id, ORIGINS.b),
-        'should throw expected error'
-      )
-
-      assert.equal(
-        permController.pendingApprovals.size, 1,
-        'pending approvals should have single entry',
-      )
-
-      assert.equal(
-        permController.pendingApprovalOrigins.size, 1,
-        'pending approval origins should have single item',
-      )
-
-      assert.deepEqual(
-        permController.pendingApprovals.get(id),
-        { origin, resolve: noop, reject: noop },
-        'pending approvals should have expected entry'
-      )
-
-      assert.ok(
-        permController.pendingApprovalOrigins.has(origin),
-        'pending approval origins should have expected item',
-      )
-    })
-  })
-
   describe('notifyDomain', function () {
 
     let notifications, permController
@@ -1393,13 +1142,56 @@ describe('permissions controller', function () {
 
   describe('miscellanea and edge cases', function () {
 
+    let permController
+
+    beforeEach(function () {
+      permController = initPermController()
+    })
+
+    it('_addPendingApproval: should throw if adding origin twice', function () {
+
+      const id = nanoid()
+      const origin = ORIGINS.a
+
+      permController._addPendingApproval(id, origin, noop, noop)
+
+      const otherId = nanoid()
+
+      assert.throws(
+        () => permController._addPendingApproval(otherId, origin, noop, noop),
+        ERRORS.pendingApprovals.duplicateOriginOrId(otherId, origin),
+        'should throw expected error'
+      )
+
+      assert.equal(
+        permController.pendingApprovals.size, 1,
+        'pending approvals should have single entry',
+      )
+
+      assert.equal(
+        permController.pendingApprovalOrigins.size, 1,
+        'pending approval origins should have single item',
+      )
+
+      assert.deepEqual(
+        permController.pendingApprovals.get(id),
+        { origin, resolve: noop, reject: noop },
+        'pending approvals should have expected entry'
+      )
+
+      assert.ok(
+        permController.pendingApprovalOrigins.has(origin),
+        'pending approval origins should have expected item',
+      )
+    })
+
     it('addInternalMethodPrefix', function () {
       const str = 'foo'
       const res = addInternalMethodPrefix(str)
       assert.equal(res, WALLET_PREFIX + str, 'should prefix correctly')
     })
 
-    it('eth_accounts restricted method failure', async function () {
+    it('eth_accounts: restricted method failure', async function () {
       const restrictedMethods = getRestrictedMethods({
         getKeyringAccounts: async () => {
           throw new Error('foo')
