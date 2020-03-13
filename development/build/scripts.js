@@ -218,7 +218,7 @@ function setupBundlerDefaults ({ bundlerOpts, events, devMode, test, watchify })
     fullPaths: devMode,
   })
   // setup minification
-  if (devMode) {
+  if (!devMode) {
     setupMinification({ bundlerOpts, events })
   }
   // inject environment variables
