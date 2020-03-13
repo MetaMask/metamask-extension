@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.0.9 Thu Mar 12 2020
+
 ## 0.0.8 Tue Feb 20 2020
 - update/cleanup packages (#46)
 - update readme.md (#45)
