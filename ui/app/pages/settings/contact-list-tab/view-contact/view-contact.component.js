@@ -56,7 +56,10 @@ export default class ViewContact extends PureComponent {
               >
                 { quadSplit(checkSummedAddress) }
               </div>
-              <button className="address-book__view-contact__group__static-address--copy-icon" onClick={() => copyToClipboard(checkSummedAddress)}>
+              <button
+                className="address-book__view-contact__group__static-address--copy-icon"
+                onClick={() => copyToClipboard(checkSummedAddress)}
+              >
                 <Copy size={20} color="#3098DC" />
               </button>
             </div>
