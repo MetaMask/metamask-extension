@@ -16,6 +16,9 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - job-build-lavamoat:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -160,6 +163,21 @@ jobs:
           root: .
           paths:
             - dist-test
+
+  job-build-lavamoat:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build lavamoat dashboard
+          command: ./.circleci/scripts/create-lavamoat-dashboard.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build-artifacts
 
   prep-build-storybook:
     docker:
@@ -320,10 +338,6 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-      # important: generate sesify viz AFTER uploading builds as artifacts
-      - run:
-          name: build:sesify-viz
-          command: ./.circleci/scripts/create-sesify-viz
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
