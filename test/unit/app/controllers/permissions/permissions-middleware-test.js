@@ -39,7 +39,6 @@ const validatePermission = (perm, name, origin, caveats) => {
   if (caveats) {
     assert.deepEqual(caveats, perm.caveats, 'should have expected permission caveats')
   } else {
-    console.log('CAVEATS', perm.caveats)
     assert.ok(!perm.caveats, 'should not have any caveats')
   }
 }
@@ -251,6 +250,42 @@ describe('permissions middleware', function () {
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
         aAccounts, [], 'origin should have have correct accounts'
+      )
+    })
+
+    it('rejects requests with unknown permissions', async function () {
+
+      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+
+      const req = RPC_REQUESTS.requestPermissions(
+        ORIGINS.a, {
+          ...PERMS.requests.does_not_exist(),
+          ...PERMS.requests.test_method(),
+        }
+      )
+      const res = {}
+
+      const expectedError = ERRORS.rejectPermissionsRequest.methodNotFound(
+        PERM_NAMES.does_not_exist
+      )
+
+      await assert.rejects(
+        aMiddleware(req, res),
+        expectedError,
+        'request should be rejected with correct error',
+      )
+
+      assert.equal(
+        permController.pendingApprovals.size, 0,
+        'perm controller should have no pending approvals',
+      )
+
+      assert.ok(
+        (
+          !res.result && res.error &&
+        res.error.message === expectedError.message
+        ),
+        'response should have expected error and no result'
       )
     })
 
