@@ -34,9 +34,11 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   function createBundleTasks (label, { devMode, test, livereload } = {}) {
     const primaryBundlesTask = createTask(`scripts:${label}:factor`, createFactorBundles({ test, devMode }))
     const contentscriptTask = createTask(`scripts:${label}:contentscript`, createBuildContentscriptTask({ test, devMode }))
+    const phishingDetectTask = createTask(`scripts:${label}:phishingDetect`, createBuildPhishingDetectTask({ test, devMode }))
     return createTask(`scripts:${label}`, composeParallel(...[
       runInChildProcess(primaryBundlesTask),
       runInChildProcess(contentscriptTask),
+      runInChildProcess(phishingDetectTask),
       devMode && initiateLiveReload({ livereload }),
     ].filter(Boolean)))
   }
@@ -57,13 +59,22 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     }
   }
 
+  function createBuildPhishingDetectTask ({ devMode, testing } = {}) {
+    return createNormalBundle({
+      destName: `phishing-detect.js`,
+      srcPath: `./app/scripts/phishing-detect.js`,
+      devMode,
+      testing,
+      watchify: devMode,
+    })
+  }
+
   function createBuildContentscriptTask ({ devMode, testing } = {}) {
     // inpage must be built first so it can be inserted into contentscript
     const inpage = 'inpage'
     const contentscript = 'contentscript'
     return composeSeries(
       createNormalBundle({
-        // label: inpage,
         destName: `${inpage}.js`,
         srcPath: `./app/scripts/${inpage}.js`,
         devMode,
@@ -71,7 +82,6 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         watchify: false,
       }),
       createNormalBundle({
-        // label: contentscript,
         destName: `${contentscript}.js`,
         srcPath: `./app/scripts/${contentscript}.js`,
         devMode,

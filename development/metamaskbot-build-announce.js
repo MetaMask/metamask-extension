@@ -39,7 +39,7 @@ async function start () {
   }).join(', ')
 
   // links to bundle browser builds
-  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'common']
+  const bundles = ['background', 'ui', 'inpage', 'contentscript', 'common', 'phishing-detect']
   const bundleLinks = bundles.map((bundle) => {
     const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`
     return `<a href="${url}">${bundle}</a>`
