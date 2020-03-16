@@ -52,22 +52,6 @@ const Item = ({
   const isPending = status === 'pending'
   const isFailed = status === 'failed'
 
-  if (isUnapproved) {
-    subtitle = (
-      <h3 className="list-item__subheading">
-        <span className="list-item__status--unapproved">Unapproved</span> · {subtitle}
-      </h3>
-    )
-  }
-
-  if (isFailed) {
-    subtitle = (
-      <h3 className="list-item__subheading">
-        <span className="list-item__status--failed">Failed</span> · {subtitle}
-      </h3>
-    )
-  }
-
   return (
     <div className={className}>
       <div className="list-item__col">
@@ -81,26 +65,25 @@ const Item = ({
           <InteractionIcon />
         )}
       </div>
-      <div className={`list-item__col main${isApproved ? ' list-item__approved' : ''}`}>
-        {typeof title === 'string' ? (
-          <h2 className="list-item__heading">
-            { title } {isPending && (
-              <span className="list-item__heading-wrap">
-                <Preloader
-                  size={16}
-                  color="#D73A49"
-                />
-              </span>
-            )}
-          </h2>
-        ) : (
-          title
-        )}
-        {typeof subtitle === 'string' ? (
-          <h3 className="list-item__subheading">{ subtitle }</h3>
-        ) : (
-          subtitle
-        )}
+      <div className={`list-item__col ${isApproved ? ' list-item__approved' : ''}`}>
+        <h2 className="list-item__heading">
+          { title } {isPending && (
+            <span className="list-item__heading-wrap">
+              <Preloader
+                size={16}
+                color="#D73A49"
+              />
+            </span>
+          )}
+        </h2>
+        <h3 className="list-item__subheading">
+          {isUnapproved ? (
+            <span><span className="list-item__status--unapproved">Unapproved</span> · </span>
+          ) : isFailed ? (
+            <span><span className="list-item__status--failed">Failed</span> · </span>
+          ) : null}
+          {subtitle}
+        </h3>
         {children && (
           <div className="list-item__more">
             { children }
@@ -122,14 +105,8 @@ Item.defaultProps = {
 Item.propTypes = {
   className: PropTypes.string,
   status: PropTypes.string,
-  title: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-  ]).isRequired,
-  subtitle: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-  ]).isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   children: PropTypes.node,
   nativeCurrency: PropTypes.string,
   currentCurrency: PropTypes.string,
