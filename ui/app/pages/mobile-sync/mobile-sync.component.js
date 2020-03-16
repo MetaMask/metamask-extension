@@ -226,6 +226,7 @@ export default class MobileSyncPage extends Component {
 
 
   componentWillUnmount () {
+    this.handle && clearTimeout(this.handle)
     this.disconnectWebsockets()
   }
 
