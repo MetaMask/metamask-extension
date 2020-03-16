@@ -9,15 +9,11 @@ export default function createMethodMiddleware ({
 }) {
   return createAsyncMiddleware(async (req, res, next) => {
 
-    if (typeof req.method !== 'string') {
-      res.error = ethErrors.rpc.invalidRequest({ data: req })
-      return
-    }
-
     switch (req.method) {
 
-      // intercepting eth_accounts requests for backwards compatibility,
-      // i.e. return an empty array instead of an error
+      // Intercepting eth_accounts requests for backwards compatibility:
+      // The getAccounts call below wraps the rpc-cap middleware, and returns
+      // an empty array in case of errors (such as 4100:unauthorized)
       case 'eth_accounts':
 
         res.result = await getAccounts()
@@ -42,10 +38,12 @@ export default function createMethodMiddleware ({
 
         // get the accounts again
         accounts = await getAccounts()
+        /* istanbul ignore else: too hard to induce, see below comment */
         if (accounts.length > 0) {
           res.result = accounts
         } else {
-          // this should never happen
+          // this should never happen, because it should be caught in the
+          // above catch clause
           res.error = ethErrors.rpc.internal(
             'Accounts unexpectedly unavailable. Please report this bug.'
           )
@@ -53,7 +51,8 @@ export default function createMethodMiddleware ({
 
         return
 
-      // custom method for getting metadata from the requesting domain
+      // custom method for getting metadata from the requesting domain,
+      // sent automatically by the inpage provider
       case 'wallet_sendDomainMetadata':
 
         const storeState = store.getState()[storeKey]

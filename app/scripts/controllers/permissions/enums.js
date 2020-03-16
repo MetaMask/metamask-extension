@@ -19,6 +19,13 @@ export const LOG_IGNORE_METHODS = [
   'wallet_sendDomainMetadata',
 ]
 
+export const LOG_METHOD_TYPES = {
+  restricted: 'restricted',
+  internal: 'internal',
+}
+
+export const LOG_LIMIT = 100
+
 export const SAFE_METHODS = [
   'web3_sha3',
   'net_listening',
