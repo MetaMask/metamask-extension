@@ -121,7 +121,7 @@ Item.defaultProps = {
 Item.propTypes = {
   className: PropTypes.string,
   status: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   children: PropTypes.node,
   primaryCurrency: PropTypes.string,
