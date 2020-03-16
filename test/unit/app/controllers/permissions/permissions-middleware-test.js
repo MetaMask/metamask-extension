@@ -662,20 +662,10 @@ describe('permissions middleware', function () {
       const res = {}
 
       // this will block until we resolve the unlock Promise
-      assert.doesNotReject(
+      const requestApproval = assert.doesNotReject(
         cMiddleware(req, res),
         'should not reject'
       )
-        .then(() => {
-          assert.ok(
-            res.result && !res.error,
-            'response should have result and no error'
-          )
-          assert.deepEqual(
-            res.result, ACCOUNT_ARRAYS.c,
-            'response should have correct result'
-          )
-        })
 
       // this will reject because of the already pending request
       await assert.rejects(
@@ -685,6 +675,17 @@ describe('permissions middleware', function () {
 
       // now unlock and let through the first request
       unlock()
+
+      await requestApproval
+
+      assert.ok(
+        res.result && !res.error,
+        'response should have result and no error'
+      )
+      assert.deepEqual(
+        res.result, ACCOUNT_ARRAYS.c,
+        'response should have correct result'
+      )
     })
   })
 

@@ -119,6 +119,13 @@ export class PermissionsController {
     })
   }
 
+  /**
+   * Returns whether the given origin has the given permission.
+   *
+   * @param {string} origin - The origin to check.
+   * @param {string} permission - The permission to check for.
+   * @returns {boolean} Whether the origin has the permission.
+   */
   hasPermission (origin, permission) {
     return Boolean(this.permissions.getPermission(origin, permission))
   }
