@@ -54,20 +54,17 @@ import { version } from '../manifest/_base.json'
 import ethUtil, { BN } from 'ethereumjs-util'
 
 const GWEI_BN = new BN('1000000000')
-
 import percentile from 'percentile'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
 import TrezorKeyring from 'eth-trezor-keyring'
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
+import CoolWalletKeyring from 'eth-cws-keyring'
 import EthQuery from 'eth-query'
 import nanoid from 'nanoid'
 import contractMap from 'eth-contract-metadata'
 
-const CoolWalletKeyring = require('eth-cws-keyring')
-
 import {
-
   AddressBookController,
   CurrencyRateController,
   PhishingController,
