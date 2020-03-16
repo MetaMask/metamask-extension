@@ -43,10 +43,9 @@ const validatePermission = (perm, name, origin, caveats) => {
   }
 }
 
-const initPermController = (opts) => {
+const initPermController = () => {
   return new PermissionsController({
     ...getPermControllerOpts(),
-    ...opts,
   })
 }
 
