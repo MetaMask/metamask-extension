@@ -12,6 +12,7 @@ import LoadingScreen from '../../components/ui/loading-screen'
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 const KEYS_GENERATION_TIME = 30000
+const IDLE_TIME = KEYS_GENERATION_TIME * 4
 
 export default class MobileSyncPage extends Component {
   static contextTypes = {
@@ -47,18 +48,31 @@ export default class MobileSyncPage extends Component {
     }
   }
 
+  handleIdleTimeout () {
+    let timeout
+    const { history } = this.props
+    const timeoutFunc = () => {
+      clearTimeout(timeout)
+      history.push(DEFAULT_ROUTE)
+      console.log('tock')
+    }
+    timeout = setTimeout(timeoutFunc, IDLE_TIME)
+  }
+
   handleSubmit (event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
       .then((seedWords) => {
         this.startKeysGeneration()
+        this.handleIdleTimeout()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
       })
       .catch((error) => this.setState({ error: error.message }))
   }
 
   startKeysGeneration () {
+    console.log('tick')
     this.handle && clearTimeout(this.handle)
     this.disconnectWebsockets()
     this.generateCipherKeyAndChannelName()
