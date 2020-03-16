@@ -10290,11 +10290,13 @@ eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.12.1:
   resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.12.1.tgz#41014c8c0123453cee15acbcc14299c4d470c759"
   integrity sha512-9u2jUcdxaKIv4RvA9RtjyD4+M2yWt4yCulR5bpdQTiG3HUFnN9lHtNL5NIRDpvQVJKerFhexrgEM2WdGP3a6VA==
 
-eth-cws-keyring@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/eth-cws-keyring/-/eth-cws-keyring-1.1.2.tgz#f6994a984bc37f7c7addf5135eaae89d2d64aee2"
-  integrity sha512-7y1jbI4IO0cteWGUZ9VrBhSo9CwzWt/uraeL0VKvLNj3kxV5Y9IxoO/pU5v0JIKGiZ3JmvXMfweIOmdKFEtfmA==
+eth-cws-keyring@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/eth-cws-keyring/-/eth-cws-keyring-1.2.0.tgz#01488a51c04d4f7b55faac7448a76901fb354e5e"
+  integrity sha512-uWy60nQubMxquWZox89nXZL4ihADWw08WUZclvNv4bMu0olRBOTTpjfwhbSOoJmk/Ehb3jY4JR89GBWCRuFx7A==
   dependencies:
+    ethereumjs-util "^5.1.0"
+    hdkey "^1.1.1"
     rlp "^2.0.0"
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
@@ -10734,7 +10736,7 @@ ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0, ethereumjs-util@^4.4.0:
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereumjs-util@^5.1.3, ethereumjs-util@^5.1.5, ethereumjs-util@^5.2.0:
+ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.0, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereumjs-util@^5.1.3, ethereumjs-util@^5.1.5, ethereumjs-util@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.2.0.tgz#3e0c0d1741471acf1036052d048623dee54ad642"
   integrity sha512-CJAKdI0wgMbQFLlLRtZKGcy/L6pzVRgelIZqRqNbuVFM3K9VEnyfbcvz0ncWMRNCe4kaHWjwRYQcYMucmwsnWA==
@@ -13722,7 +13724,7 @@ hdkey@^0.7.0:
     coinstring "^2.0.0"
     secp256k1 "^3.0.1"
 
-hdkey@^1.1.0:
+hdkey@^1.1.0, hdkey@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-1.1.1.tgz#c2b3bfd5883ff9529b72f2f08b28be0972a9f64a"
   integrity sha512-DvHZ5OuavsfWs5yfVJZestsnc3wzPvLWNk6c2nRUfo6X+OtxypGt20vDDf7Ba+MJzjL3KS1og2nw2eBbLCOUTA==
