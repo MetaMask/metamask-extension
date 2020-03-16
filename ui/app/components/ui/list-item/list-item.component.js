@@ -44,8 +44,8 @@ const Item = ({
   title,
   subtitle,
   children,
-  primary,
-  secondary,
+  primaryCurrency,
+  secondaryCurrency,
 }) => {
   const isApproved = status === 'approved'
   const isUnapproved = status === 'unapproved'
@@ -124,8 +124,8 @@ Item.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   children: PropTypes.node,
-  primary: PropTypes.string,
-  secondary: PropTypes.string,
+  primaryCurrency: PropTypes.string,
+  secondaryCurrency: PropTypes.string,
 }
 
 export default Item

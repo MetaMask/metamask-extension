@@ -19,8 +19,8 @@ export const send = () => (
     className="list-item"
     status="pending"
     subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
-    nativeCurrency={text('nativeCurrency', '- 0.0732 DAI')}
-    currentCurrency={text('currentCurrency', '- $6.04 USD')}
+    primaryCurrency={text('primaryCurrency', '- 0.0732 DAI')}
+    secondaryCurrency={text('secondaryCurrency', '- $6.04 USD')}
   >
     <More />
   </ListItem>
@@ -32,8 +32,8 @@ export const pending = () => (
     className="list-item"
     status="unapproved"
     subtitle={text('subtitle', 'Turtlefarm.com')}
-    nativeCurrency={text('nativeCurrency', '- 0.0732 ETH')}
-    currentCurrency={text('currentCurrency', '- $6.00 USD')}
+    primaryCurrency={text('primaryCurrency', '- 0.0732 ETH')}
+    secondaryCurrency={text('secondaryCurrency', '- $6.00 USD')}
   />
 )
 
@@ -43,8 +43,8 @@ export const approve = () => (
     className="list-item"
     status="approved"
     subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
-    nativeCurrency={text('nativeCurrency', '0.00070 DAI')}
-    currentCurrency={text('currentCurrency', '$0.02 USD')}
+    primaryCurrency={text('primaryCurrency', '0.00070 DAI')}
+    secondaryCurrency={text('secondaryCurrency', '$0.02 USD')}
   />
 )
 
@@ -54,7 +54,7 @@ export const failed = () => (
     className="list-item"
     status="failed"
     subtitle={text('subtitle', 'Turtlefarm.com')}
-    nativeCurrency={text('nativeCurrency', '- 0.0732 ETH')}
-    currentCurrency={text('currentCurrency', '- $6.00 USD')}
+    primaryCurrency={text('primaryCurrency', '- 0.0732 ETH')}
+    secondaryCurrency={text('secondaryCurrency', '- $6.00 USD')}
   />
 )
