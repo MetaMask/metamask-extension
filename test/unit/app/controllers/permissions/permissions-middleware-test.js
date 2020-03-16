@@ -242,7 +242,7 @@ describe('permissions middleware', function () {
       assert.ok(
         (
           !res.result && res.error &&
-        res.error.message === expectedError.message
+          res.error.message === expectedError.message
         ),
         'response should have expected error and no result'
       )
@@ -283,7 +283,7 @@ describe('permissions middleware', function () {
       assert.ok(
         (
           !res.result && res.error &&
-        res.error.message === expectedError.message
+          res.error.message === expectedError.message
         ),
         'response should have expected error and no result'
       )
@@ -344,7 +344,7 @@ describe('permissions middleware', function () {
       assert.ok(
         (
           !resA2.result && resA2.error &&
-        resA2.error.message === expectedError.message
+          resA2.error.message === expectedError.message
         ),
         'response should have expected error and no result'
       )
@@ -417,7 +417,7 @@ describe('permissions middleware', function () {
       assert.ok(
         (
           !res.result && res.error &&
-        res.error.code === expectedError.code
+          res.error.code === expectedError.code
         ),
         'response should have expected error and no result'
       )
@@ -603,7 +603,7 @@ describe('permissions middleware', function () {
       assert.ok(
         (
           !res.result && res.error &&
-        res.error.message === expectedError.message
+          res.error.message === expectedError.message
         ),
         'response should have expected error and no result'
       )
@@ -702,7 +702,7 @@ describe('permissions middleware', function () {
       )
     })
 
-    it('should have record domain metadata if no name', async function () {
+    it('should not record domain metadata if no name', async function () {
 
       const name = null
 
@@ -726,7 +726,7 @@ describe('permissions middleware', function () {
       )
     })
 
-    it('should have record domain metadata if no metadata', async function () {
+    it('should not record domain metadata if no metadata', async function () {
 
       const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
 
