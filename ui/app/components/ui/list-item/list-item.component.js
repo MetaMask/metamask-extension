@@ -77,9 +77,10 @@ const Item = ({
       <div className="list-item__col">
         { icon }
       </div>
-      <div className={classnames('list-item__col', {
-        'list-item__approved': isApproved,
-      })}
+      <div
+        className={classnames('list-item__col', {
+          'list-item__approved': isApproved,
+        })}
       >
         <h2 className="list-item__heading">
           { title } {isPending && (
@@ -101,9 +102,10 @@ const Item = ({
           </div>
         )}
       </div>
-      <div className={classnames('list-item__col list-item__amount', {
-        'list-item__approved': isApproved,
-      })}
+      <div
+        className={classnames('list-item__col list-item__amount', {
+          'list-item__approved': isApproved,
+        })}
       >
         <h2 className="list-item__heading">{primary}</h2>
         <h3 className="list-item__subheading">{secondary}</h3>
