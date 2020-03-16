@@ -5,6 +5,7 @@ import Approve from '../icon/approve-icon.component'
 import Interaction from '../icon/interaction-icon.component'
 import Preloader from '../icon/preloader'
 import Send from '../icon/send-icon.component'
+import classnames from 'classnames'
 
 const SendIcon = () => (
   <Send
@@ -44,28 +45,43 @@ const Item = ({
   title,
   subtitle,
   children,
-  nativeCurrency,
-  currentCurrency,
+  primary,
+  secondary,
 }) => {
   const isApproved = status === 'approved'
   const isUnapproved = status === 'unapproved'
   const isPending = status === 'pending'
   const isFailed = status === 'failed'
 
+  let icon = <InteractionIcon />
+  if (isApproved) {
+    icon = <ApproveIcon />
+  } else if (isPending) {
+    icon = <SendIcon />
+  } else if (isFailed) {
+    icon = <FailIcon />
+  }
+
+  let subtitleStatus = null
+  if (isUnapproved) {
+    subtitleStatus = (
+      <span><span className="list-item__status--unapproved">Unapproved</span> · </span>
+    )
+  } else if (isFailed) {
+    subtitleStatus = (
+      <span><span className="list-item__status--failed">Failed</span> · </span>
+    )
+  }
+
   return (
     <div className={className}>
       <div className="list-item__col">
-        {isApproved ? (
-          <ApproveIcon />
-        ) : isPending ? (
-          <SendIcon />
-        ) : isFailed ? (
-          <FailIcon />
-        ) : (
-          <InteractionIcon />
-        )}
+        { icon }
       </div>
-      <div className={`list-item__col ${isApproved ? ' list-item__approved' : ''}`}>
+      <div className={classnames('list-item__col', {
+        'list-item__approved': isApproved,
+      })}
+      >
         <h2 className="list-item__heading">
           { title } {isPending && (
             <span className="list-item__heading-wrap">
@@ -77,11 +93,7 @@ const Item = ({
           )}
         </h2>
         <h3 className="list-item__subheading">
-          {isUnapproved ? (
-            <span><span className="list-item__status--unapproved">Unapproved</span> · </span>
-          ) : isFailed ? (
-            <span><span className="list-item__status--failed">Failed</span> · </span>
-          ) : null}
+          {subtitleStatus}
           {subtitle}
         </h3>
         {children && (
@@ -90,9 +102,12 @@ const Item = ({
           </div>
         )}
       </div>
-      <div className={`list-item__col list-item__amount${isApproved ? ' list-item__approved' : ''}`}>
-        <h2 className="list-item__heading">{nativeCurrency}</h2>
-        <h3 className="list-item__subheading">{currentCurrency}</h3>
+      <div className={classnames('list-item__col list-item__amount', {
+        'list-item__approved': isApproved,
+      })}
+      >
+        <h2 className="list-item__heading">{primary}</h2>
+        <h3 className="list-item__subheading">{secondary}</h3>
       </div>
     </div>
   )
@@ -108,8 +123,8 @@ Item.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   children: PropTypes.node,
-  nativeCurrency: PropTypes.string,
-  currentCurrency: PropTypes.string,
+  primary: PropTypes.string,
+  secondary: PropTypes.string,
 }
 
 export default Item
