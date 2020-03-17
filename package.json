@@ -59,6 +59,11 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
+    "**/gonzales-pe/minimist": "^1.2.5",
+    "**/knex/minimist": "^1.2.5",
+    "**/mkdirp/minimist": "^1.2.5",
+    "**/optimist/minimist": "^1.2.5",
+    "**/socketcluster/minimist": "^1.2.5",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.15"
   },
   "dependencies": {
