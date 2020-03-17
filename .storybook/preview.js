@@ -22,7 +22,7 @@ const styles = {
 }
 
 const store = configureStore({
-  appState: {},
+  metamask: { metamask: { currentLocale: 'en' } },
 
   localeMessages: {
     current: en,
