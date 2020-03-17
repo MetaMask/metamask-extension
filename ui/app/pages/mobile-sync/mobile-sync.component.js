@@ -77,12 +77,12 @@ export default class MobileSyncPage extends Component {
     }, KEYS_GENERATION_TIME)
   }
 
-  goBack() {
+  goBack () {
     const { history } = this.props
     history.push(DEFAULT_ROUTE)
   }
 
-  clearTimeouts() {
+  clearTimeouts () {
     this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
     this.idleTimeout && clearTimeout(this.idleTimeout)
   }
