@@ -22,26 +22,6 @@
     align-self: flex-start;
   }
 
-  &__more {
-    &--button {
-      border: 1px solid $Grey-500;
-      color: $Grey-500;
-      box-sizing: border-box;
-      border-radius: 4px;
-      background: transparent;
-      @extend %font;
-      font-size: 10px;
-      line-height: 12px;
-      padding: 6px 16px;
-      margin-top: 12px;
-      margin-right: 8px;
-    }
-    &--button:hover {
-      color: $lochmara;
-      border-color: $lochmara;
-    }
-  }
-
   &__heading {
     font-size: 16px;
     line-height: 160%;

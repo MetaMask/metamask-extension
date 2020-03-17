@@ -6,13 +6,6 @@ export default {
   title: 'ListItem',
 }
 
-const More = () => (
-  <span>
-    <button className="list-item__more--button">{text('Button1', 'Speed up')}</button>
-    <button className="list-item__more--button">{text('Button2', 'Cancel')}</button>
-  </span>
-)
-
 export const send = () => (
   <ListItem
     title={text('title', 'Send DAI')}
@@ -21,9 +14,7 @@ export const send = () => (
     subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
     primaryCurrency={text('primaryCurrency', '- 0.0732 DAI')}
     secondaryCurrency={text('secondaryCurrency', '- $6.04 USD')}
-  >
-    <More />
-  </ListItem>
+  />
 )
 
 export const pending = () => (
