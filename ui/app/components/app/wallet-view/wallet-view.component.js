@@ -46,7 +46,7 @@ export default class WalletView extends Component {
     return (
       <div
         className={classnames('flex-column', 'wallet-balance-wrapper', {
-          'wallet-balance-wrapper--active': Boolean(selectedTokenAddress),
+          'wallet-balance-wrapper--active': !selectedTokenAddress,
         })}
       >
         <div
