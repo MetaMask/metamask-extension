@@ -162,6 +162,10 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+    } else if (history.location.pathname.match(/^\/confirm-transaction/)) {
+      // This should only happen if this renders during the redirect to the confirm page
+      // Display nothing while the confirm page loads, to avoid side-effects of rendering normal home view
+      return null
     }
 
     return (
@@ -174,21 +178,15 @@ export default class Home extends PureComponent {
               (isWideViewport) => (
                 <>
                   { isWideViewport ? <WalletView /> : null }
-                  {
-                    !history.location.pathname.match(/^\/confirm-transaction/)
-                      ? (
-                        <div className="home__main-view">
-                          {
-                            !isWideViewport ? <MenuBar /> : null
-                          }
-                          <div className="home__balance-wrapper">
-                            <TransactionViewBalance />
-                          </div>
-                          <TransactionList />
-                        </div>
-                      )
-                      : null
-                  }
+                  <div className="home__main-view">
+                    {
+                      !isWideViewport ? <MenuBar /> : null
+                    }
+                    <div className="home__balance-wrapper">
+                      <TransactionViewBalance />
+                    </div>
+                    <TransactionList />
+                  </div>
                 </>
               )
             }
