@@ -30,7 +30,7 @@ const store = configureStore({
   },
 })
 
-const CenterDecorator = story => (
+const metamaskDecorator = story => (
   <Provider store={store}>
     <I18nProvider>
       <div style={styles}>
@@ -41,4 +41,4 @@ const CenterDecorator = story => (
 )
 
 addDecorator(withKnobs)
-addDecorator(CenterDecorator)
+addDecorator(metamaskDecorator)
