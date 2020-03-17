@@ -107,8 +107,8 @@ const Item = ({
           'list-item__approved': isApproved,
         })}
       >
-        <h2 className="list-item__heading">{primary}</h2>
-        <h3 className="list-item__subheading">{secondary}</h3>
+        <h2 className="list-item__heading">{primaryCurrency}</h2>
+        <h3 className="list-item__subheading">{secondaryCurrency}</h3>
       </div>
     </div>
   )
