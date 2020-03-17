@@ -1,7 +1,11 @@
 import React from 'react'
 import { addDecorator, addParameters } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs/react'
+import I18nProvider from '../ui/app/helpers/higher-order-components/i18n-provider'
+import { Provider } from 'react-redux'
+import configureStore from '../ui/app/store/store'
 import '../ui/app/css/index.scss'
+import en from '../app/_locales/en/messages'
 
 addParameters({
   backgrounds: [
@@ -17,10 +21,23 @@ const styles = {
   alignItems: 'center',
 }
 
+const store = configureStore({
+  appState: {},
+
+  localeMessages: {
+    current: en,
+    en: en,
+  },
+})
+
 const CenterDecorator = story => (
-  <div style={styles}>
-    { story() }
-  </div>
+  <Provider store={store}>
+    <I18nProvider>
+      <div style={styles}>
+        { story() }
+      </div>
+    </I18nProvider>
+  </Provider>
 )
 
 addDecorator(withKnobs)
