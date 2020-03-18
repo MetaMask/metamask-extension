@@ -103,7 +103,7 @@ describe('Actions', () => {
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
 
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((password, hdPath, callback) => {
         callback(new Error('error in submitPassword'))
       })
 
@@ -123,7 +123,7 @@ describe('Actions', () => {
         callback(new Error('error'))
       })
 
-      return store.dispatch(actions.tryUnlockMetamask('test'))
+      return store.dispatch(actions.tryUnlockMetamask('test', `m/44'/60'/0'/0`))
         .catch(() => {
           const actions = store.getActions()
           const warning = actions.filter(action => action.type === 'DISPLAY_WARNING')
@@ -342,7 +342,7 @@ describe('Actions', () => {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((password, hdPath, callback) => {
         callback(new Error('error'))
       })
 
@@ -415,7 +415,7 @@ describe('Actions', () => {
 
     it('displays warning error message when submitPassword in background errors', () => {
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((password, hdPath, callback) => {
         callback(new Error('error'))
       })
 
@@ -1202,7 +1202,7 @@ describe('Actions', () => {
       ]
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      submitPasswordSpy.callsFake((password, callback) => {
+      submitPasswordSpy.callsFake((password, hdPath, callback) => {
         callback(new Error('error'))
       })
 

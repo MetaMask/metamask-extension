@@ -126,6 +126,7 @@ setupMetamaskMeshMetrics()
  * @property {string} provider.rpcTarget - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} network - A stringified number of the current network ID.
+ * @property {string} dPath - A path to derive accounts.
  * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {TransactionMeta[]} selectedAddressTxList - An array of transactions associated with the currently selected account.

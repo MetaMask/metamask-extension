@@ -54,6 +54,7 @@ function reduceMetamask (state, action) {
     preferences: {
       useETHAsPrimaryCurrency: true,
     },
+    dPath: `m/44'/60'/0'/0`,
   }, state.metamask)
 
   switch (action.type) {

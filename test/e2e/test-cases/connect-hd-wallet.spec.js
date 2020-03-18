@@ -2,14 +2,14 @@ const assert = require('assert')
 const { menus, screens } = require('../elements')
 
 const connectHDWallet = async (f) => {
-	it("Account menu contais item 'Connect HD wallet'", async () => {
+	it("Account menu contains item 'Connect HD wallet'", async () => {
     const menu = await f.waitUntilShowUp(menus.account.menu)
     await menu.click()
     await f.waitUntilShowUp(menus.account.item)
     const items = await f.driver.findElements(menus.account.item)
     await f.delay(500)
-    assert.equal(await items[4].getText(), 'Connect hardware wallet', "item's text incorrect")
-    await items[4].click()
+    assert.equal(await items[3].getText(), 'Connect hardware wallet', "item's text incorrect")
+    await items[3].click()
   })
 
 
@@ -90,7 +90,7 @@ const connectHDWallet = async (f) => {
    await f.waitUntilShowUp(menus.account.item)
    const items = await f.driver.findElements(menus.account.item)
    await f.delay(500)
-   await items[4].click()
+   await items[3].click()
    const arrow = await f.waitUntilShowUp(screens.hdWallet.buttonArrow)
    await arrow.click()
    const ident = await f.waitUntilShowUp(screens.main.identicon, 20)

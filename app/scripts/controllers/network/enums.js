@@ -69,6 +69,15 @@ const chainTypes = {
   PROD: 2,
 }
 
+const hdRSKMainnetPath = `m/44'/137'/0'/0`
+const hdRSKTestnetPath = `m/44'/37310'/0'/0`
+const hdETCPath = `m/44'/61'/0'/0`
+
+const customDPaths = {}
+customDPaths[RSK] = hdRSKMainnetPath
+customDPaths[RSK_TESTNET] = hdRSKTestnetPath
+customDPaths[CLASSIC] = hdETCPath
+
 module.exports = {
   POA,
   POA_TICK,
@@ -131,4 +140,5 @@ module.exports = {
   DROPDOWN_RSK_DISPLAY_NAME,
   DROPDOWN_RSK_TESTNET_DISPLAY_NAME,
   chainTypes,
+  customDPaths,
 }

@@ -1,7 +1,7 @@
 const path = require('path')
 const Func = require('./func').Functions
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
-const account1RSK = '0x2E428aBd9313D256d64D1f69fe3929c3Be18Fd1F'
+const account1RSK = '0x7a9bc05F7441d862d1B83CB724861a9872FF43fe'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const testsFolder = './test-cases'
 const setup = require(`${testsFolder}/setup.spec`)
@@ -18,7 +18,7 @@ const RSKNetworkTests = require(`${testsFolder}/RSK-network-tests.js`)
 const checkEmittedEvents = require(`${testsFolder}/check-emitted-events.spec`)
 // const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
 const changePassword = require(`${testsFolder}/change-password.spec`)
-const addTokeFromSearch = require(`${testsFolder}/add-token-search.spec`)
+// const addTokenFromSearch = require(`${testsFolder}/add-token-search.spec`)
 const customRPC = require(`${testsFolder}/custom-rpc.spec`)
 
 describe('Metamask popup page', async function () {
@@ -134,9 +134,10 @@ describe('Metamask popup page', async function () {
     await changePassword(f, password, newPassword)
   })
 
-  describe('Add Token:Search', async () => {
-    await addTokeFromSearch(f)
-  })
+  // todo
+  // describe('Add Token:Search', async () => {
+  //   await addTokenFromSearch(f)
+  // })
 
   describe('Custom RPC', async () => {
     await customRPC(f)
