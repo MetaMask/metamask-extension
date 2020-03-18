@@ -34,36 +34,8 @@
       position: absolute;
       top: 13px;
       right: 6px;
-      width: 18px;
-      height: 18px;
-      display: block;
-      padding: 20px;
-      background: none;
-
-      &-wrap {
-        width: 18px;
-        height: 18px;
-        transform: rotate(45deg);
-        pointer-events: none;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-      }
-
-      &-line {
-        &-a, &-b {
-          width: 18px;
-          height: 2px;
-          background: #4A4A4A;
-          position: absolute;
-          border-radius: 2px;
-          top: calc(18px / 2);
-        }
-
-        &-b {
-          transform: rotate(90deg);
-        }
-      }
+      margin: 10px;
+      cursor: pointer;
     }
   }
 

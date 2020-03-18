@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Close from '../icon/close-icon.component'
 
 const PopoverHeader = ({ title, onClose }) => (
   <header className="popover-header">
     <h2 className="popover-header__heading">{title}</h2>
-    <button className="popover-header__close" onClick={onClose}>
-      <div className="popover-header__close-wrap">
-        <div className="popover-header__close-line-a"></div>
-        <div className="popover-header__close-line-b"></div>
-      </div>
-    </button>
+    <Close
+      onClick={onClose}
+      className="popover-header__close"
+      size={18}
+      color="#4A4A4A"
+    />
   </header>
 )
 
