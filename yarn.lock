@@ -10386,10 +10386,25 @@ eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5, eth-json-rpc-mid
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-keyring-controller@^5.3.0, eth-keyring-controller@^5.5.0:
+eth-keyring-controller@^5.3.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.5.0.tgz#f8b78f69a0b0005873af2d1a6b2c655d6de51351"
   integrity sha512-kWaukiHLMYNYtB/1vZyj1r1G6wU8u+DIYVMq8QUyFAxwcBnemsKISVPIXgltgXkuUiB/t9oXsA54bWBredgrVg==
+  dependencies:
+    bip39 "^2.4.0"
+    bluebird "^3.5.0"
+    browser-passworder "^2.0.3"
+    eth-hd-keyring "^3.5.0"
+    eth-sig-util "^1.4.0"
+    eth-simple-keyring "^3.5.0"
+    ethereumjs-util "^5.1.2"
+    loglevel "^1.5.0"
+    obs-store "^4.0.3"
+
+eth-keyring-controller@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.6.0.tgz#2c851c9b2e6fe5b16285c1a82056577375ac32f4"
+  integrity sha512-KVoC9dGU1V+VrnNJ9DkXgxEYmXPnAbwsLVdKNgiHGEsxk1/y3gO79HFeoWnjZgfapsMm1lTRdjSWW2xYVyreoA==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"

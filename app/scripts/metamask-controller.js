@@ -1805,7 +1805,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {Function} handler - The event handler.
    */
   addUnlockListener (handler) {
-    this.on('unlocked', handler)
+    this.keyringController.on('unlock', handler)
   }
 
   //=============================================================================
