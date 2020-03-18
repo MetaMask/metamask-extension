@@ -208,6 +208,7 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
+    this.addUnlockListener(this._onUnlock.bind(this))
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
