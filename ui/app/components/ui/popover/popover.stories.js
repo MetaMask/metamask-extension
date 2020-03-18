@@ -1,8 +1,6 @@
 import React from 'react'
 import Popover from './popover.component'
 import { text } from '@storybook/addon-knobs/react'
-import Copy from '../icon/copy-icon.component'
-import Tooltip from '../tooltip'
 
 const containerStyle = {
   width: 800,
