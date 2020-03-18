@@ -58,13 +58,13 @@ const connectHDWallet = async (f) => {
       assert.equal(await selected.length, 1, 'more than one device is selected')
     })
 
-    // it('Error message if connect Ledger', async () => {
-    //   const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
-    //   await button.click()
-    //   const error = await f.waitUntilShowUp(screens.hdWallet.error)
-    //   const shouldBe = "TransportError: U2F browser support is needed for Ledger. Please use Chrome, Opera or Firefox with a U2F extension. Also make sure you're on an HTTPS connection"
-    //   assert.equal(await error.getText(), shouldBe, 'error has incorrect text')
-    // })
+    it('Error message if connect Ledger', async () => {
+      const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
+      await button.click()
+      const error = await f.waitUntilShowUp(screens.hdWallet.error)
+      const shouldBe = "TransportError: U2F browser support is needed for Ledger. Please use Chrome, Opera or Firefox with a U2F extension. Also make sure you're on an HTTPS connection"
+      assert.equal(await error.getText(), shouldBe, 'error has incorrect text')
+    })
 
     it('Popup opens if connect Trezor', async () => {
       const images = await f.driver.findElements(screens.hdWallet.image)

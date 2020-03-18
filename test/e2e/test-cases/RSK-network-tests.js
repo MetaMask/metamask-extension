@@ -12,17 +12,17 @@ const { screens, elements, NETWORKS } = require('../elements')
 		await f.delay(2000)
 	})
 
-	// it('checks zero exchange rate for RSK testnet', async function () {
-	// 	const balanceField = await f.waitUntilShowUp(screens.main.balance)
-	// 	const balanceUSDField = await f.waitUntilShowUp(screens.main.balanceUSD)
-	// 	await f.delay(2000)
-	// 	const balance = await balanceField.getText()
-	// 	const balanceUSD = await balanceUSDField.getText()
-	// 	console.log('Balance = ' + parseFloat(balance))
-	// 	console.log('balanceUSD = ' + parseFloat(balanceUSD))
-	// 	assert.equal(parseFloat(balance) > 0.0001, true, 'Balance of account ' + account1 + ' is TOO LOW in RSK testnet !!! Please refill it!!!!')
-	// 	assert.equal(parseFloat(balanceUSD), 0, 'USD balance of account is not zero')
-	// })
+	it('checks zero exchange rate for RSK testnet', async function () {
+		const balanceField = await f.waitUntilShowUp(screens.main.balance)
+		const balanceUSDField = await f.waitUntilShowUp(screens.main.balanceUSD)
+		await f.delay(2000)
+		const balance = await balanceField.getText()
+		const balanceUSD = await balanceUSDField.getText()
+		console.log('Balance = ' + parseFloat(balance))
+		console.log('balanceUSD = ' + parseFloat(balanceUSD))
+		assert.equal(parseFloat(balance) > 0.0001, true, 'Balance of account ' + account1 + ' is TOO LOW in RSK testnet !!! Please refill it!!!!')
+		assert.equal(parseFloat(balanceUSD), 0, 'USD balance of account is not zero')
+	})
 
 	it('opens RSK faucet', async function () {
 		await f.waitUntilShowUp(screens.main.buttons.buyRSK)
