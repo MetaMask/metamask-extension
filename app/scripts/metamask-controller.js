@@ -119,9 +119,10 @@ export default class MetamaskController extends EventEmitter {
       openPopup: opts.openPopup,
       network: this.networkController,
     })
+    this.on('unlock', this._onUnlock)
 
     this.appStateController = new AppStateController({
-      addUnlockListener: this.addUnlockListener.bind(this),
+      addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
@@ -208,7 +209,7 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
-    this.addUnlockListener(this._onUnlock.bind(this))
+    this.keyringController.on('unlock', () => this.emit('unlock'))
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
@@ -1798,15 +1799,6 @@ export default class MetamaskController extends EventEmitter {
    */
   isUnlocked () {
     return this.keyringController.memStore.getState().isUnlocked
-  }
-
-  /**
-   * Adds an 'unlock' event listener to the MetaMask Controller with the
-   * given handler.
-   * @param {Function} handler - The event handler.
-   */
-  addUnlockListener (handler) {
-    this.keyringController.on('unlock', handler)
   }
 
   //=============================================================================
