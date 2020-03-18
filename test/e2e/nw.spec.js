@@ -18,7 +18,7 @@ const RSKNetworkTests = require(`${testsFolder}/RSK-network-tests.js`)
 const checkEmittedEvents = require(`${testsFolder}/check-emitted-events.spec`)
 // const addCustomToken = require(`${testsFolder}/add-token-custom.spec`)
 const changePassword = require(`${testsFolder}/change-password.spec`)
-const addTokeFromSearch = require(`${testsFolder}/add-token-search.spec`)
+// const addTokenFromSearch = require(`${testsFolder}/add-token-search.spec`)
 const customRPC = require(`${testsFolder}/custom-rpc.spec`)
 
 describe('Metamask popup page', async function () {
@@ -134,9 +134,10 @@ describe('Metamask popup page', async function () {
     await changePassword(f, password, newPassword)
   })
 
-  describe('Add Token:Search', async () => {
-    await addTokeFromSearch(f)
-  })
+  // todo
+  // describe('Add Token:Search', async () => {
+  //   await addTokenFromSearch(f)
+  // })
 
   describe('Custom RPC', async () => {
     await customRPC(f)

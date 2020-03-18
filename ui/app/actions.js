@@ -1853,16 +1853,16 @@ function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
-      return Promise.all(tokens.map(({ address, symbol, decimals, network }) => (
-        dispatch(addToken(address, symbol, decimals, network))
+      return Promise.all(tokens.map(({ address, symbol, decimals, image, network }) => (
+        dispatch(addToken(address, symbol, decimals, image, network))
       )))
     } else {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
-        .map(([_, { address, symbol, decimals, network }]) => (
-          dispatch(addToken(address, symbol, decimals, network))
+        .map(([_, { address, symbol, decimals, image, network }]) => (
+          dispatch(addToken(address, symbol, decimals, image, network))
         ))
       )
     }
@@ -2694,7 +2694,7 @@ function setPendingTokens (pendingTokens) {
   const { selectedTokens = {}, customToken = {} } = pendingTokens
   const { address, symbol, decimals, network } = customToken
   Object.keys(selectedTokens).forEach(address => {
-    selectedTokens[address].network = parseInt(network)
+    selectedTokens[address].network = parseInt(network, 10)
   })
   const tokens = address && symbol && decimals && network
     ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }

@@ -42,6 +42,7 @@ const deleteImportedAccount = async (f) => {
       const button = await f.waitUntilShowUp(deleteImportedAccountScr.buttons.yes)
       assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
       await f.click(button)
+      await f.delay(2000)
       const settingsTitle = await f.waitUntilShowUp(settings.title)
       assert.equal(await settingsTitle.getText(), 'Settings', "screen 'Settings' has incorrect title")
       // check, that imported account is removed

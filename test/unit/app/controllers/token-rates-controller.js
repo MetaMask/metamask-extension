@@ -18,12 +18,11 @@ describe('TokenRatesController', () => {
     stub.restore()
   })
 
-  it('should fetch each token rate based on address', async () => {
+  it('should not fetch each token rate based on wrong address', async () => {
     const controller = new TokenRatesController()
     controller.isActive = true
-    controller.fetchExchangeRate = address => address
     controller.tokens = [{ address: 'foo' }, { address: 'bar' }]
     await controller.updateExchangeRates()
-    assert.deepEqual(controller.store.getState().contractExchangeRates, { foo: 'foo', bar: 'bar' })
+    assert.deepEqual(controller.store.getState().contractExchangeRates, {})
   })
 })
