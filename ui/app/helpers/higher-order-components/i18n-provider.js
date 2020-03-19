@@ -15,7 +15,7 @@ class I18nProvider extends Component {
        * @returns {string|undefined|null} - The localized message if available
        */
       t (key, ...args) {
-        return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`
+        return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args)
       },
     }
   }
