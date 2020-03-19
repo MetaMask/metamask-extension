@@ -21,7 +21,6 @@ import TextField from '../../components/ui/text-field'
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    tOrKey: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func,
   }
 
@@ -311,7 +310,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderData () {
+  renderData (functionType) {
     const { t } = this.context
     const {
       txData: {
@@ -320,12 +319,10 @@ export default class ConfirmTransactionBase extends Component {
         } = {},
       } = {},
       methodData: {
-        name,
         params,
       } = {},
       hideData,
       dataComponent,
-      transactionCategory,
     } = this.props
 
     if (hideData) {
@@ -337,7 +334,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__data-box-label">
           {`${t('functionType')}:`}
           <span className="confirm-page-container-content__function-type">
-            { getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction') }
+            { functionType }
           </span>
         </div>
         {
@@ -627,6 +624,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   render () {
+    const { t } = this.context
     const {
       isTxReprice,
       fromName,
@@ -660,6 +658,14 @@ export default class ConfirmTransactionBase extends Component {
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
     const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
+
+    let functionType = getMethodName(name)
+    if (!functionType) {
+      functionType = transactionCategory
+        ? t(transactionCategory)
+        : t('contractInteraction')
+    }
+
     return (
       <ConfirmPageContainer
         fromName={fromName}
@@ -670,8 +676,7 @@ export default class ConfirmTransactionBase extends Component {
         toEns={toEns}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
-        // In the event that the key is falsy (and inherently invalid), use a fallback string
-        action={getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction')}
+        action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
@@ -679,7 +684,7 @@ export default class ConfirmTransactionBase extends Component {
         hideSubtitle={hideSubtitle}
         summaryComponent={summaryComponent}
         detailsComponent={this.renderDetails()}
-        dataComponent={this.renderData()}
+        dataComponent={this.renderData(functionType)}
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}

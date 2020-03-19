@@ -4,14 +4,6 @@ import PropTypes from 'prop-types'
 import { getMessage } from '../utils/i18n-helper'
 
 class I18nProvider extends Component {
-  tOrDefault = (key, defaultValue, ...args) => {
-    if (!key) {
-      return defaultValue
-    }
-    const { localeMessages: { current, en } = {}, currentLocale } = this.props
-    return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || defaultValue
-  }
-
   getChildContext () {
     const { localeMessages, currentLocale } = this.props
     const { current, en } = localeMessages
@@ -24,10 +16,6 @@ class I18nProvider extends Component {
        */
       t (key, ...args) {
         return getMessage(currentLocale, current, key, ...args) || getMessage(currentLocale, en, key, ...args) || `[${key}]`
-      },
-      tOrDefault: this.tOrDefault,
-      tOrKey: (key, ...args) => {
-        return this.tOrDefault(key, key, ...args)
       },
     }
   }
@@ -45,8 +33,6 @@ I18nProvider.propTypes = {
 
 I18nProvider.childContextTypes = {
   t: PropTypes.func,
-  tOrDefault: PropTypes.func,
-  tOrKey: PropTypes.func,
 }
 
 const mapStateToProps = (state) => {

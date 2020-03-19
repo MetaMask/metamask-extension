@@ -27,14 +27,12 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
     context: {
       router,
       t: (str) => str,
-      tOrKey: (str) => str,
       metricsEvent: () => {},
       store,
     },
     childContextTypes: {
       router: PropTypes.object,
       t: PropTypes.func,
-      tOrKey: PropTypes.func,
       metricsEvent: PropTypes.func,
       store: PropTypes.object,
     },
