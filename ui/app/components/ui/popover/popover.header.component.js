@@ -5,12 +5,12 @@ import Close from '../icon/close-icon.component'
 const PopoverHeader = ({ title, onClose }) => (
   <header className="popover-header">
     <h2 className="popover-header__heading">{title}</h2>
-    <Close
-      onClick={onClose}
-      className="popover-header__close"
-      size={18}
-      color="#4A4A4A"
-    />
+    <button className="popover-header__close" onClick={onClose}>
+      <Close
+        size={18}
+        color="#4A4A4A"
+      />
+    </button>
   </header>
 )
 
