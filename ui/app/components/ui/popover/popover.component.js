@@ -4,7 +4,7 @@ import PopoverHeader from './popover.header.component'
 
 const Popover = ({ title, children, onClose }) => (
   <div className="popover-container">
-    <a href="#" className="popover-bg" onClick={onClose} />
+    <div className="popover-bg" onClick={onClose} />
     <div className="popover-wrap">
       <PopoverHeader title={title} onClose={onClose} />
       <div className="popover-content">
