@@ -240,11 +240,11 @@ module.exports = {
       },
     },
     deleteImportedAccount: {
-      title: By.css('#app-content > div > div.app-primary.from-left > div > div.section-title.flex-row.flex-center > h2'),
+      title: By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'),
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
-        yes: By.css('div.flex-row:nth-child(4) > button:nth-child(2)'),
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
         arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
     },
@@ -289,6 +289,7 @@ module.exports = {
       },
     },
     main: {
+      container: By.css('#app-content > div > div.app-primary.from-right > div'),
       accountAddress: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[1]/flex-column/div[2]/div/span'),
       identicon: By.className('identicon-wrapper select-none'),
       fieldAccountName: By.className('sizing-input'),

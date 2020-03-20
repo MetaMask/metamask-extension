@@ -13,7 +13,7 @@ const addrPrivKey = '76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3a
 const importAccount = async (f) => {
 	it('Open import account menu', async () => {
     await f.setProvider(NETWORKS.POA)
-    await f.delay(2000)
+    await f.delay(5000)
     const menu = await f.waitUntilShowUp(account.menu)
     await menu.click()
     await f.delay(2000)
@@ -39,9 +39,9 @@ const importAccount = async (f) => {
   })
 
   it('Auto-detect tokens for POA ', async () => {
-    // await setProvider(NETWORKS.POA)
     const tab = await f.waitUntilShowUp(tokensEl.menu)
     await tab.click()
+    await f.delay(10000)
     const balance = await f.waitUntilShowUp(tokensEl.balance)
     console.log(await balance.getText())
     assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')

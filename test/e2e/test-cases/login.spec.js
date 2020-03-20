@@ -11,7 +11,7 @@ const login = async (f, password) => {
     await f.delay(5000)
     const terms = await f.waitUntilShowUp(screens.TOU.agreement, 900)
     const text = await terms.getText()
-    assert.equal(text.length > 400, true, 'agreement is too short')
+    assert.equal(text.length > 100, true, 'agreement is too short')
   })
 
   it('screen \'Terms of Use\' has correct title', async () => {

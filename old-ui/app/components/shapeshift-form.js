@@ -63,7 +63,7 @@ ShapeshiftForm.prototype.renderMain = function () {
           list: 'coinList',
           autoFocus: true,
           dataset: {
-            persistentFormId: 'input-coin',
+            persistentFormid: 'input-coin',
           },
           style: {
             boxSizing: 'border-box',
@@ -149,7 +149,7 @@ ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
       type: 'text',
       placeholder: `Your ${coin} Refund Address`,
       dataset: {
-        persistentFormId: 'refund-address',
+        persistentFormid: 'refund-address',
 
       },
       style: {
