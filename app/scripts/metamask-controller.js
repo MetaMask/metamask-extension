@@ -119,7 +119,6 @@ export default class MetamaskController extends EventEmitter {
       openPopup: opts.openPopup,
       network: this.networkController,
     })
-    this.on('unlock', this._onUnlock)
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
