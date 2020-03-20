@@ -773,7 +773,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
-    const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
     const nonSimpleKeyrings = this.keyringController.keyrings.filter((keyring) => keyring.type !== 'Simple Key Pair')
@@ -781,7 +780,6 @@ export default class MetamaskController extends EventEmitter {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
-    await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
 
     try {
@@ -1773,7 +1771,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate (state) {
-    const { isUnlocked, keyrings } = state
+    const { keyrings } = state
     const addresses = keyrings.reduce((acc, { accounts }) => acc.concat(accounts), [])
 
     if (!addresses.length) {
@@ -1781,17 +1779,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.addAddresses(addresses)
+    this.preferencesController.syncAddresses(addresses)
     this.accountTracker.syncWithAddresses(addresses)
-
-    const wasLocked = !isUnlocked
-    if (wasLocked) {
-      const oldSelectedAddress = this.preferencesController.getSelectedAddress()
-      if (!addresses.includes(oldSelectedAddress)) {
-        const address = addresses[0]
-        await this.preferencesController.setSelectedAddress(address)
-      }
-    }
   }
 
   // misc

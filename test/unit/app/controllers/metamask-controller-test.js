@@ -912,11 +912,12 @@ describe('MetaMaskController', function () {
   })
 
   describe('#_onKeyringControllerUpdate', function () {
+
     it('should do nothing if there are no keyrings in state', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -925,20 +926,16 @@ describe('MetaMaskController', function () {
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({ keyrings: [] })
 
-      assert.ok(addAddresses.notCalled)
+      assert.ok(syncAddresses.notCalled)
       assert.ok(syncWithAddresses.notCalled)
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
-    it('should update selected address if keyrings was locked', async function () {
-      const addAddresses = sinon.fake()
-      const getSelectedAddress = sinon.fake.returns('0x42')
-      const setSelectedAddress = sinon.fake()
+    it('should sync addresses if there are keyrings in state', async function () {
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
-        getSelectedAddress,
-        setSelectedAddress,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -946,23 +943,21 @@ describe('MetaMaskController', function () {
 
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({
-        isUnlocked: false,
         keyrings: [{
           accounts: ['0x1', '0x2'],
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
-      assert.deepEqual(setSelectedAddress.args, [['0x1']])
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
     it('should NOT update selected address if already unlocked', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -976,7 +971,7 @@ describe('MetaMaskController', function () {
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(metamaskController.getState(), oldState)
     })
