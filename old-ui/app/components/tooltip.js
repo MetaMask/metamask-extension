@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import ReactTooltip from 'react-tooltip'
+import PropTypes from 'prop-types'
 
 class Tooltip extends Component {
+
+  static propTypes = {
+    position: PropTypes.any,
+    title: PropTypes.string,
+    id: PropTypes.any,
+    children: PropTypes.any,
+  }
 
     render () {
       const props = this.props

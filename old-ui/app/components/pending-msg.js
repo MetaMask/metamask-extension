@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
 import PendingTxDetails from './pending-msg-details'
+import PropTypes from 'prop-types'
 
 export default class PendingMsg extends Component {
+  static propTypes = {
+    txData: PropTypes.object,
+    cancelMessage: PropTypes.function,
+    signMessage: PropTypes.function,
+  }
+
   render () {
     var state = this.props
     var msgData = state.txData

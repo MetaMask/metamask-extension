@@ -38,6 +38,7 @@ class ConfigScreen extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     metamask: PropTypes.object,
+    warning: PropTypes.string,
   }
 
   render () {

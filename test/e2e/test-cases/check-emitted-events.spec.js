@@ -15,9 +15,10 @@ const checkEmittedEvents = async (f, account1, account2) => {
       const item = await f.waitUntilShowUp(menus.account.account2)
       await item.click()
     }
+    await f.driver.navigate().refresh()
 
     const balanceField = await f.waitUntilShowUp(screens.main.balance)
-    await f.delay(2000)
+    await f.delay(5000)
     const balance = await balanceField.getText()
     console.log('Account = ' + account)
     console.log('Balance = ' + balance)

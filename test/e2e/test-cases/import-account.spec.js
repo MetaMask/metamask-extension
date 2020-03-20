@@ -41,7 +41,7 @@ const importAccount = async (f) => {
   it('Auto-detect tokens for POA ', async () => {
     const tab = await f.waitUntilShowUp(tokensEl.menu)
     await tab.click()
-    await f.delay(10000)
+    await f.delay(15000)
     const balance = await f.waitUntilShowUp(tokensEl.balance)
     console.log(await balance.getText())
     assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')

@@ -9,6 +9,7 @@ const deleteImportedAccount = async (f) => {
       await menu.click()
       const item = await f.waitUntilShowUp(account.delete)
       await item.click()
+      await f.delay(2000)
       const deleteImportedAccountTitle = await f.waitUntilShowUp(deleteImportedAccountScr.title)
       assert.equal(await deleteImportedAccountTitle.getText(), deleteImportedAccountScr.titleText)
     })

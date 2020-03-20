@@ -94,11 +94,10 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.equal(text1, 'PROXY', 'label incorrect')
       })
       it('Delete imported account', async () => {
-        await f.waitUntilShowUp(menus.account.delete)
-        const items = await f.driver.findElements(menus.account.delete)
-        await items[accountPosition].click()
-        const button = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-        await button.click()
+        const deleteButton = await f.waitUntilShowUp(menus.account.delete)
+        await deleteButton.click()
+        const yesButton = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+        await yesButton.click()
         await f.driver.findElements(main.container)
         const identicon = await f.waitUntilShowUp(screens.main.identicon)
         assert.notEqual(identicon, false, 'main screen didn\'t opened')
@@ -117,15 +116,10 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         await f.setProvider(NETWORKS.ROPSTEN)
         const menu = await f.waitUntilShowUp(menus.account.menu)
         await menu.click()
-        const item = await f.waitUntilShowUp(menus.account.import2)
-        await item.click()
+        const importItem = await f.waitUntilShowUp(menus.account.import2)
+        await importItem.click()
         const importAccountTitle = await f.waitUntilShowUp(screens.importAccounts.title)
         assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-      })
-
-      it("Warning's  text is correct", async () => {
-        const field = await f.waitUntilShowUp(screens.importAccounts.warning)
-        assert.equal(await field.getText(), 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.', "incorrect warning's text")
       })
 
       it("Select type 'Contract'", async () => {
