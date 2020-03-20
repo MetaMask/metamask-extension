@@ -312,7 +312,7 @@ class PreferencesController {
   syncAddresses (addresses) {
 
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      return this.getSelectedAddress()
+      throw new Error('Expected non-empty array of addresses.')
     }
 
     const { identities, lostIdentities } = this.store.getState()
