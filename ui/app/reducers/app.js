@@ -830,6 +830,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         identity: action.identity,
+        keyring: action.keyring,
       })
 
     case actions.CONFIRM_CHANGE_PASSWORD:

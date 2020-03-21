@@ -70,7 +70,7 @@ RestoreVaultScreen.prototype.render = function () {
           id: 'password-box',
           placeholder: 'New Password (min 8 chars)',
           dataset: {
-            persistentFormId: 'password',
+            persistentFormid: 'password',
           },
           style: {
             width: '100%',
@@ -86,7 +86,7 @@ RestoreVaultScreen.prototype.render = function () {
           placeholder: 'Confirm Password',
           onKeyPress: this.createOnEnter.bind(this),
           dataset: {
-            persistentFormId: 'password-confirmation',
+            persistentFormid: 'password-confirmation',
           },
           style: {
             width: '100%',

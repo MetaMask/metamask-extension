@@ -14,6 +14,11 @@ import PropTypes from 'prop-types'
 import { getMetaMaskAccounts } from '../../../ui/app/selectors'
 
 class BuyButtonSubview extends Component {
+  static propTypes = {
+    isSubLoading: PropTypes.bool,
+    identity: PropTypes.object,
+    account: PropTypes.object,
+  }
   render () {
     return (
       <div style={{ width: '100%' }}>

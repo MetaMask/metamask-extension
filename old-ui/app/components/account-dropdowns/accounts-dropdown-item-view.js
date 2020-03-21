@@ -54,7 +54,7 @@ class AccountsDropdownItemView extends Component {
         onClick={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          this.props.actions.showDeleteImportedAccount(identity)
+          this.props.actions.showDeleteImportedAccount(identity, keyring)
           this.props.closeMenu()
         }}
       />) : null
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
-      showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
+      showDeleteImportedAccount: (identity, keyring) => dispatch(actions.showDeleteImportedAccount(identity, keyring)),
       getContract: (addr) => dispatch(actions.getContract(addr)),
       connectHardwareAndUnlockAddress: (deviceName, hdPath, address) => {
         return dispatch(actions.connectHardwareAndUnlockAddress(deviceName, hdPath, address))

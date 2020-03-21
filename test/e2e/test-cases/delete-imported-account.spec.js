@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { menus, screens } = require('../elements')
 const { account } = menus
-const { deleteImportedAccount: deleteImportedAccountScr, settings } = screens
+const { deleteImportedAccount: deleteImportedAccountScr, main } = screens
 
 const deleteImportedAccount = async (f) => {
 	it('Open delete imported account screen', async function () {
@@ -9,6 +9,7 @@ const deleteImportedAccount = async (f) => {
       await menu.click()
       const item = await f.waitUntilShowUp(account.delete)
       await item.click()
+      await f.delay(2000)
       const deleteImportedAccountTitle = await f.waitUntilShowUp(deleteImportedAccountScr.title)
       assert.equal(await deleteImportedAccountTitle.getText(), deleteImportedAccountScr.titleText)
     })
@@ -17,8 +18,7 @@ const deleteImportedAccount = async (f) => {
       const button = await f.waitUntilShowUp(deleteImportedAccountScr.buttons.no)
       assert.equal(await button.getText(), 'No', 'button has incorrect name')
       await f.click(button)
-      const settingsTitle = await f.waitUntilShowUp(settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
+      await f.driver.findElements(main.container)
       // check, that imported account still exists
       const menu = await f.waitUntilShowUp(account.menu)
       await menu.click()
@@ -43,8 +43,7 @@ const deleteImportedAccount = async (f) => {
       assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
       await f.click(button)
       await f.delay(2000)
-      const settingsTitle = await f.waitUntilShowUp(settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings', "screen 'Settings' has incorrect title")
+      await f.driver.findElements(main.container)
       // check, that imported account is removed
       const menu = await f.waitUntilShowUp(account.menu)
       await menu.click()

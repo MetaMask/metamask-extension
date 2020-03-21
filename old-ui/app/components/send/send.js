@@ -103,7 +103,7 @@ SendTransactionScreen.prototype.render = function () {
             marginRight: '6px',
           },
           dataset: {
-            persistentFormId: 'tx-amount',
+            persistentFormid: 'tx-amount',
           },
         }),
 
@@ -137,7 +137,7 @@ SendTransactionScreen.prototype.render = function () {
             resize: 'none',
           },
           dataset: {
-            persistentFormId: 'tx-data',
+            persistentFormid: 'tx-data',
           },
         }),
       ]),

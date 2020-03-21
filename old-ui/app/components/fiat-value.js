@@ -4,6 +4,11 @@ import PropTypes from 'prop-types'
 import { DAI_CODE, POA_SOKOL_CODE, RSK_TESTNET_CODE, GOERLI_TESTNET_CODE } from '../../../app/scripts/controllers/network/enums'
 
 class FiatValue extends Component {
+  static propTypes = {
+    value: PropTypes.number,
+    valueStyle: PropTypes.object,
+    dimStyle: PropTypes.object,
+  }
   render = () => {
     const props = this.props
     let { conversionRate } = props

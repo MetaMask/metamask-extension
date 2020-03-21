@@ -27,8 +27,8 @@
   },
 
   "plugins": [
+    "babel",
     "mocha",
-    "chai",
     "react",
     "json"
   ],

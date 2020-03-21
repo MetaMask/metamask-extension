@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
 import AccountPanel from './account-panel'
+import PropTypes from 'prop-types'
 
 export default class PendingMsgDetails extends Component {
+  static propTypes = {
+    txData: PropTypes.object,
+    selectedAddress: PropTypes.string,
+    identities: PropTypes.object,
+    accounts: PropTypes.array,
+    imageifyIdenticons: PropTypes.any,
+  }
   render () {
     var state = this.props
     var msgData = state.txData

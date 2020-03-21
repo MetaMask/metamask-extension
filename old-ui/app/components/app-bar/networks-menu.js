@@ -17,6 +17,8 @@ class NetworksMenu extends Component {
     provider: PropTypes.any.isRequired,
     frequentRpcList: PropTypes.array.isRequired,
     isNetworkMenuOpen: PropTypes.bool,
+    setProviderType: PropTypes.function,
+    showDeleteRPC: PropTypes.function,
   }
 
   render () {
