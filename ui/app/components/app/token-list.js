@@ -73,19 +73,9 @@ class TokenList extends Component {
     this.tracker.on('error', this.showError)
 
     this.tracker.updateBalances()
-      .then(() => {
-        this.updateBalances(this.tracker.serialize())
-      })
-      .catch((reason) => {
-        log.error(`Problem updating balances`, reason)
-        this.setState({ isLoading: false })
-      })
   }
 
   updateBalances = function (tokens) {
-    if (!this.tracker.running) {
-      return
-    }
     this.setState({ tokens, isLoading: false })
   }
 
