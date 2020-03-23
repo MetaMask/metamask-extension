@@ -661,9 +661,11 @@ export default class ConfirmTransactionBase extends Component {
 
     let functionType = getMethodName(name)
     if (!functionType) {
-      functionType = transactionCategory
-        ? t(transactionCategory)
-        : t('contractInteraction')
+      if (transactionCategory) {
+        functionType = t(transactionCategory) || transactionCategory
+      } else {
+        functionType = t('contractInteraction')
+      }
     }
 
     return (
