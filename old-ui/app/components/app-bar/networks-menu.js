@@ -17,8 +17,8 @@ class NetworksMenu extends Component {
     provider: PropTypes.any.isRequired,
     frequentRpcList: PropTypes.array.isRequired,
     isNetworkMenuOpen: PropTypes.bool,
-    setProviderType: PropTypes.function,
-    showDeleteRPC: PropTypes.function,
+    setProviderType: PropTypes.func,
+    showDeleteRPC: PropTypes.func,
   }
 
   render () {
@@ -50,7 +50,7 @@ class NetworksMenu extends Component {
           // classes from three constituent nodes of the toggle element
 
           if (isNotToggleElement) {
-            this.props.updateNetworksMenuOpenState(false)
+            props.updateNetworksMenuOpenState(false)
           }
         }}
         zIndex={11}
@@ -70,7 +70,7 @@ class NetworksMenu extends Component {
 
         <DropdownMenuItem
           key={'default'}
-          closeMenu={() => this.props.updateNetworksMenuOpenState(!isOpen)}
+          closeMenu={() => props.updateNetworksMenuOpenState(!isOpen)}
           onClick={() => {
             props.setProviderType(LOCALHOST, LOCALHOST_RPC_URL)
             props.setRpcTarget(LOCALHOST_RPC_URL)
@@ -86,8 +86,8 @@ class NetworksMenu extends Component {
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          closeMenu={() => this.props.updateNetworksMenuOpenState(!isOpen)}
-          onClick={() => this.props.showConfigPage()}
+          closeMenu={() => props.updateNetworksMenuOpenState(!isOpen)}
+          onClick={() => props.showConfigPage()}
           className={'app-bar-networks-dropdown-custom-rpc'}
         >Custom RPC</DropdownMenuItem>
 
@@ -109,7 +109,7 @@ class NetworksMenu extends Component {
       return (
         <DropdownMenuItem
           key={networkObj.providerName}
-          closeMenu={() => this.props.updateNetworksMenuOpenState(!isOpen)}
+          closeMenu={() => props.updateNetworksMenuOpenState(!isOpen)}
           onClick={() => props.setProviderType(networkObj.providerName)}
           style={{
             paddingLeft: '20px',
@@ -132,6 +132,7 @@ class NetworksMenu extends Component {
   }
 
   renderCustomOption ({ rpcTarget, type }) {
+    const props = this.props
     if (type !== 'rpc') {
       return null
     }
@@ -149,8 +150,8 @@ class NetworksMenu extends Component {
         return (
           <DropdownMenuItem
             key={rpcTarget}
-            onClick={() => this.props.setRpcTarget(rpcTarget)}
-            closeMenu={() => this.props.updateNetworksMenuOpenState(false)}
+            onClick={() => props.setRpcTarget(rpcTarget)}
+            closeMenu={() => props.updateNetworksMenuOpenState(false)}
           >
             <i className="fa fa-question-circle fa-lg menu-icon" />
             {label}
@@ -171,7 +172,7 @@ class NetworksMenu extends Component {
         return (
           <DropdownMenuItem
             key={`common${rpc}`}
-            closeMenu={() => this.props.updateNetworksMenuOpenState(false)}
+            closeMenu={() => props.updateNetworksMenuOpenState(false)}
             onClick={() => props.setRpcTarget(rpc)}
             style={{
               paddingLeft: '20px',
@@ -183,8 +184,8 @@ class NetworksMenu extends Component {
               onClick={(event) => {
                 event.preventDefault()
                 event.stopPropagation()
-                this.props.updateNetworksMenuOpenState(false)
-                props.showDeleteRPC(rpc)
+                props.updateNetworksMenuOpenState(false)
+                props.showDeleteRPC(rpc, true)
               }}
             />
           </DropdownMenuItem>
@@ -210,7 +211,7 @@ class NetworksMenu extends Component {
           <DropdownMenuItem
             key={rpcTarget}
             onClick={() => props.setRpcTarget(rpcTarget)}
-            closeMenu={() => this.props.updateNetworksMenuOpenState(false)}
+            closeMenu={() => props.updateNetworksMenuOpenState(false)}
             style={{
               paddingLeft: '20px',
               color: 'white',
@@ -223,8 +224,8 @@ class NetworksMenu extends Component {
               onClick={(event) => {
                 event.preventDefault()
                 event.stopPropagation()
-                this.props.updateNetworksMenuOpenState(false)
-                props.showDeleteRPC(label)
+                props.updateNetworksMenuOpenState(false)
+                props.showDeleteRPC(label, true)
               }}
             />
           </DropdownMenuItem>
@@ -238,7 +239,7 @@ const mapDispatchToProps = dispatch => {
     showConfigPage: () => dispatch(actions.showConfigPage()),
     setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
     setProviderType: (providerType) => dispatch(actions.setProviderType(providerType)),
-    showDeleteRPC: (label) => dispatch(actions.showDeleteRPC(label)),
+    showDeleteRPC: (label, transitionForward) => dispatch(actions.showDeleteRPC(label, transitionForward)),
   }
 }
 

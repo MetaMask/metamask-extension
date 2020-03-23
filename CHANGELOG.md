@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#333](https://github.com/poanetwork/nifty-wallet/pull/333) - (Fix) Support RSK testnet explorer links
 - [#332](https://github.com/poanetwork/nifty-wallet/pull/332) - (Chore) Return to main screen from removal of imported account
 - [#330](https://github.com/poanetwork/nifty-wallet/pull/330) - (Fix) Derive correct addresses for custom networks (RSK/ETC)
 - [#329](https://github.com/poanetwork/nifty-wallet/pull/329) - (Fix) Connect to unknown private network fix
