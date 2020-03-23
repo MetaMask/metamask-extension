@@ -26,29 +26,39 @@ const {
 const POCKET_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, POA, DAI, GOERLI_TESTNET, POA_SOKOL]
 
 class ConfigScreen extends Component {
+  static propTypes = {
+    metamask: PropTypes.object,
+    warning: PropTypes.string,
+    provider: PropTypes.object,
+    dProviderStore: PropTypes.object,
+    setProviderType: PropTypes.func,
+    showDeleteRPC: PropTypes.func,
+    displayWarning: PropTypes.func,
+    goHome: PropTypes.func,
+    setDProvider: PropTypes.func,
+    setRpcTarget: PropTypes.func,
+    confirmChangePassword: PropTypes.func,
+    revealSeedConfirmation: PropTypes.func,
+    resetAccount: PropTypes.func,
+    setCurrentCurrency: PropTypes.func,
+  }
 
   constructor (props) {
     super(props)
     this.state = {
       loading: false,
-      dProvider: props.metamask.dProviderStore.dProvider,
+      dProvider: props.dProviderStore.dProvider,
     }
   }
 
-  static propTypes = {
-    dispatch: PropTypes.func,
-    metamask: PropTypes.object,
-    warning: PropTypes.string,
-  }
-
   render () {
-    const state = this.props
-    const metamaskState = state.metamask
-    const warning = state.warning
+    const props = this.props
+    const metamaskState = props.metamask
+    const warning = props.warning
 
-    if (state.metamask.dProviderStore.dProvider !== this.state.dProvider) {
+    if (props.dProviderStore.dProvider !== this.state.dProvider) {
       this.setState({
-        dProvider: this.props.metamask.dProviderStore.dProvider,
+        dProvider: props.dProviderStore.dProvider,
       })
     }
 
@@ -70,7 +80,7 @@ class ConfigScreen extends Component {
         h('.section-title.flex-row.flex-center', [
           h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
             onClick: () => {
-              state.dispatch(actions.goHome())
+              props.goHome()
             },
             style: {
               position: 'absolute',
@@ -101,7 +111,7 @@ class ConfigScreen extends Component {
             },
           }, [
 
-            this.currentProviderDisplay(metamaskState, state),
+            this.currentProviderDisplay(metamaskState),
 
             h('div', { style: {display: 'flex'} }, [
               h('input#new_rpc', {
@@ -119,7 +129,7 @@ class ConfigScreen extends Component {
                   if (event.key === 'Enter') {
                     const element = event.target
                     const newRpc = element.value
-                    this.rpcValidation(newRpc, state)
+                    this.rpcValidation(newRpc)
                   }
                 },
               }),
@@ -130,13 +140,13 @@ class ConfigScreen extends Component {
                 event.preventDefault()
                 const element = document.querySelector('input#new_rpc')
                 const newRpc = element.value
-                this.rpcValidation(newRpc, state)
+                this.rpcValidation(newRpc)
               },
             }, 'Save'),
 
             h('hr.horizontal-line'),
 
-            this.currentConversionInformation(metamaskState, state),
+            this.currentConversionInformation(metamaskState),
 
             h('hr.horizontal-line'),
 
@@ -150,7 +160,7 @@ class ConfigScreen extends Component {
                 onClick (event) {
                   window.logStateString((err, result) => {
                     if (err) {
-                      state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
+                      props.displayWarning('Error in retrieving state logs.')
                     } else {
                       exportAsFile('Nifty Wallet State Logs.json', result)
                     }
@@ -170,7 +180,7 @@ class ConfigScreen extends Component {
                 },
                 onClick (event) {
                   event.preventDefault()
-                  state.dispatch(actions.revealSeedConfirmation())
+                  props.revealSeedConfirmation()
                 },
               }, 'Reveal Seed Words'),
             ]),
@@ -221,7 +231,7 @@ class ConfigScreen extends Component {
                 },
                 onClick (event) {
                   event.preventDefault()
-                  state.dispatch(actions.resetAccount())
+                  props.resetAccount()
                 },
               }, 'Reset Account'),
 
@@ -230,7 +240,7 @@ class ConfigScreen extends Component {
               h('button.btn-spread', {
                 onClick (event) {
                   event.preventDefault()
-                  state.dispatch(actions.confirmChangePassword())
+                  props.confirmChangePassword()
                 },
               }, 'Change password'),
             ]),
@@ -241,30 +251,32 @@ class ConfigScreen extends Component {
   }
 
   toggleProvider () {
-    const isPocket = POCKET_PROVIDER_TYPES.includes(this.props.metamask.provider.type)
+    const props = this.props
+    const isPocket = POCKET_PROVIDER_TYPES.includes(props.provider.type)
     if (isPocket) {
       if (!this.state.dProvider) {
-        this.props.dispatch(actions.setDProvider(true))
+        props.setDProvider(true)
         this.setState({
           dProvider: true,
         })
       } else {
-        this.props.dispatch(actions.setDProvider(false))
+        props.setDProvider(false)
         this.setState({
           dProvider: false,
         })
       }
-      this.props.dispatch(actions.setProviderType(this.props.metamask.provider.type))
+      props.setProviderType(props.provider.type)
     } else {
       alert('Pocket does not support this network, using centralized provider')
     }
   }
 
   componentWillUnmount () {
-    this.props.dispatch(actions.displayWarning(''))
+    this.props.displayWarning('')
   }
 
-  rpcValidation (newRpc, state) {
+  rpcValidation (newRpc) {
+    const props = this.props
     if (validUrl.isWebUri(newRpc)) {
       this.setState({
         loading: true,
@@ -272,9 +284,9 @@ class ConfigScreen extends Component {
       const web3 = new Web3(new Web3.providers.HttpProvider(newRpc))
       web3.eth.getBlockNumber((err, res) => {
         if (err) {
-          state.dispatch(actions.displayWarning('Invalid RPC endpoint'))
+          props.displayWarning('Invalid RPC endpoint')
         } else {
-          state.dispatch(actions.setRpcTarget(newRpc))
+          props.setRpcTarget(newRpc)
         }
         this.setState({
           loading: false,
@@ -282,14 +294,15 @@ class ConfigScreen extends Component {
       })
     } else {
       if (!newRpc.startsWith('http')) {
-        state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
+        props.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.')
       } else {
-        state.dispatch(actions.displayWarning('Invalid RPC URI'))
+        props.displayWarning('Invalid RPC URI')
       }
     }
   }
 
-  currentConversionInformation (metamaskState, state) {
+  currentConversionInformation (metamaskState) {
+    const props = this.props
     const currentCurrency = metamaskState.currentCurrency
     const conversionDate = metamaskState.conversionDate
     return h('div', [
@@ -300,7 +313,7 @@ class ConfigScreen extends Component {
           event.preventDefault()
           const element = document.getElementById('currentCurrency')
           const newCurrency = element.value
-          state.dispatch(actions.setCurrentCurrency(newCurrency))
+          props.setCurrentCurrency(newCurrency)
         },
         defaultValue: currentCurrency,
       }, infuraCurrencies.map((currency) => {
@@ -310,7 +323,8 @@ class ConfigScreen extends Component {
     ])
   }
 
-  currentProviderDisplay (metamaskState, state) {
+  currentProviderDisplay (metamaskState) {
+    const props = this.props
     const provider = metamaskState.provider
     let title, value
 
@@ -328,7 +342,7 @@ class ConfigScreen extends Component {
       provider.type === 'rpc' && h('button.btn-spread', {
         onClick (event) {
           event.preventDefault()
-          state.dispatch(actions.showDeleteRPC())
+          props.showDeleteRPC()
         },
       }, 'Delete'),
     ])
@@ -338,8 +352,25 @@ class ConfigScreen extends Component {
 function mapStateToProps (state) {
   return {
     metamask: state.metamask,
+    provider: state.metamask.provider,
+    dProviderStore: state.metamask.dProviderStore,
     warning: state.appState.warning,
   }
 }
 
-module.exports = connect(mapStateToProps)(ConfigScreen)
+const mapDispatchToProps = dispatch => {
+  return {
+    setProviderType: (providerType) => dispatch(actions.setProviderType(providerType)),
+    showDeleteRPC: (label, transitionForward) => dispatch(actions.showDeleteRPC(label, transitionForward)),
+    displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
+    goHome: () => dispatch(actions.goHome()),
+    setDProvider: (set) => dispatch(actions.setDProvider(set)),
+    setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
+    setCurrentCurrency: (newCurrency) => dispatch(actions.setRpcTarget(newCurrency)),
+    confirmChangePassword: () => dispatch(actions.confirmChangePassword()),
+    resetAccount: () => dispatch(actions.resetAccount()),
+    revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfigScreen)

@@ -205,7 +205,8 @@ class AccountDropdowns extends Component {
 
   viewOnBlockExplorer = () => {
     const { selected, network } = this.props
-    const url = ethNetProps.explorerLinks.getExplorerAccountLinkFor(selected, network)
+    const networkCode = parseInt(network, 10)
+    const url = ethNetProps.explorerLinks.getExplorerAccountLinkFor(selected, networkCode)
     global.platform.openWindow({ url })
   }
 

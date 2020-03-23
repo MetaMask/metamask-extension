@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 export default class PendingMsg extends Component {
   static propTypes = {
     txData: PropTypes.object,
-    cancelPersonalMessage: PropTypes.function,
-    signPersonalMessage: PropTypes.function,
+    cancelPersonalMessage: PropTypes.func,
+    signPersonalMessage: PropTypes.func,
   }
 
   render () {

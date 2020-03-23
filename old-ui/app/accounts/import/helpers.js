@@ -57,25 +57,46 @@ const getBlockscoutApiNetworkSuffix = (network) => {
 	}
 }
 
+const _isBlockscoutInstanceForThisChain = (network) => {
+	switch (Number(network)) {
+		case 1:
+		case 99:
+		case 77:
+		case 100:
+		return true
+		case 42:
+		case 3:
+		case 4:
+		return false
+		default:
+		return false
+	}
+}
+
 const fetchABI = (addr, network) => {
 	return new Promise((resolve, reject) => {
-		const networkParent = getBlockscoutApiNetworkPrefix(network)
-		const networkName = getBlockscoutApiNetworkSuffix(network)
-		const bloscoutApiLink = `https://blockscout.com/${networkParent}/${networkName}/api`
-		const bloscoutApiContractPath = '?module=contract'
-		const blockscoutApiGetAbiPath = `&action=getabi&address=${addr}`
-		const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
-		fetch(apiLink)
-		.then(response => {
-			return response.json()
-		})
-		.then(responseJson => {
-			resolve(responseJson && responseJson.result)
-		})
-		.catch((e) => {
-			log.debug(e)
+		const blockscoutInstanceExists = _isBlockscoutInstanceForThisChain(network)
+		if (blockscoutInstanceExists) {
+			const networkParent = getBlockscoutApiNetworkPrefix(network)
+			const networkName = getBlockscoutApiNetworkSuffix(network)
+			const bloscoutApiLink = `https://blockscout.com/${networkParent}/${networkName}/api`
+			const bloscoutApiContractPath = '?module=contract'
+			const blockscoutApiGetAbiPath = `&action=getabi&address=${addr}`
+			const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
+			fetch(apiLink)
+			.then(response => {
+				return response.json()
+			})
+			.then(responseJson => {
+				resolve(responseJson && responseJson.result)
+			})
+			.catch(e => {
+				log.debug(e)
+				reject(e)
+			})
+		} else {
 			resolve()
-		})
+		}
 	})
 }
 
@@ -94,13 +115,17 @@ const getFullABI = (eth, contractAddr, network, type) => {
 				}
 				try {
 					eth.contract(targetABI).at(contractAddr).implementation.call((err, implAddr) => {
-						fetchABI(implAddr, network)
-						.then((implABI) => {
-							implABI = implABI && JSON.parse(implABI)
-							finalABI = implABI ? targetABI.concat(implABI) : targetABI
-							resolve(finalABI)
-						})
-						.catch(e => reject(e))
+						if (err) {
+							reject(err)
+						} else {
+							fetchABI(implAddr, network)
+							.then((implABI) => {
+								implABI = implABI && JSON.parse(implABI)
+								finalABI = implABI ? targetABI.concat(implABI) : targetABI
+								resolve(finalABI)
+							})
+							.catch(e => reject(e))
+						}
 					})
 				} catch (e) {
 					reject(e)
