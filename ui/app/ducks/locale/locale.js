@@ -11,3 +11,7 @@ export default function reduceLocaleMessages (state = {}, { type, value }) {
       return state
   }
 }
+
+export const getCurrentLocaleMessages = (state) => state.localeMessages.current
+
+export const getEnLocaleMessages = (state) => state.localeMessages.en

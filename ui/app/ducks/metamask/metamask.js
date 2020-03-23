@@ -379,3 +379,5 @@ export default function reduceMetamask (state = {}, action) {
       return metamaskState
   }
 }
+
+export const getCurrentLocale = (state) => state.metamask.currentLocale

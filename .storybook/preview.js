@@ -1,7 +1,7 @@
 import React from 'react'
 import { addDecorator, addParameters } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs/react'
-import I18nProvider from '../ui/app/helpers/higher-order-components/i18n-provider'
+import I18nProvider from '../ui/app/contexts/i18n'
 import { Provider } from 'react-redux'
 import configureStore from '../ui/app/store/store'
 import '../ui/app/css/index.scss'
