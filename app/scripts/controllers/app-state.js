@@ -1,13 +1,22 @@
 import ObservableStore from 'obs-store'
+import EventEmitter from 'events'
 
-class AppStateController {
+class AppStateController extends EventEmitter {
   /**
    * @constructor
    * @param opts
    */
   constructor (opts = {}) {
-    const { initState, onInactiveTimeout, preferencesStore } = opts
+    const {
+      addUnlockListener,
+      isUnlocked,
+      initState,
+      onInactiveTimeout,
+      preferencesStore,
+    } = opts
     const { preferences } = preferencesStore.getState()
+
+    super()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
     this.store = new ObservableStore(Object.assign({
@@ -16,11 +25,45 @@ class AppStateController {
     }, initState))
     this.timer = null
 
+    this.isUnlocked = isUnlocked
+    this.waitingForUnlock = []
+    addUnlockListener(this.handleUnlock.bind(this))
+
     preferencesStore.subscribe((state) => {
       this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
     })
 
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
+  }
+
+  /**
+   * Get a Promise that resolves when the extension is unlocked.
+   * This Promise will never reject.
+   *
+   * @returns {Promise<void>} A promise that resolves when the extension is
+   * unlocked, or immediately if the extension is already unlocked.
+   */
+  getUnlockPromise () {
+    return new Promise((resolve) => {
+      if (this.isUnlocked()) {
+        resolve()
+      } else {
+        this.waitingForUnlock.push({ resolve })
+        this.emit('updateBadge')
+      }
+    })
+  }
+
+  /**
+   * Drains the waitingForUnlock queue, resolving all the related Promises.
+   */
+  handleUnlock () {
+    if (this.waitingForUnlock.length > 0) {
+      while (this.waitingForUnlock.length > 0) {
+        this.waitingForUnlock.shift().resolve()
+      }
+      this.emit('updateBadge')
+    }
   }
 
   setMkrMigrationReminderTimestamp (timestamp) {

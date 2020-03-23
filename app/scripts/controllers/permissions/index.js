@@ -24,8 +24,12 @@ export class PermissionsController {
 
   constructor (
     {
-      platform, notifyDomain, notifyAllDomains,
-      getKeyringAccounts, getRestrictedMethods,
+      getKeyringAccounts,
+      getRestrictedMethods,
+      getUnlockPromise,
+      notifyDomain,
+      notifyAllDomains,
+      platform,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -36,10 +40,12 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getKeyringAccounts = getKeyringAccounts
+    this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this.getKeyringAccounts = getKeyringAccounts
     this._platform = platform
+
     this._restrictedMethods = getRestrictedMethods(this)
     this.permissionsLog = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),
@@ -73,6 +79,8 @@ export class PermissionsController {
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
+      getUnlockPromise: this.getUnlockPromise,
+      hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
@@ -109,6 +117,17 @@ export class PermissionsController {
         }
       }
     })
+  }
+
+  /**
+   * Returns whether the given origin has the given permission.
+   *
+   * @param {string} origin - The origin to check.
+   * @param {string} permission - The permission to check for.
+   * @returns {boolean} Whether the origin has the permission.
+   */
+  hasPermission (origin, permission) {
+    return Boolean(this.permissions.getPermission(origin, permission))
   }
 
   /**

@@ -640,6 +640,52 @@ describe('permissions middleware', function () {
         'response should have correct result'
       )
     })
+
+    it('rejects new requests when request already pending', async function () {
+
+      let unlock
+      const unlockPromise = new Promise((resolve) => {
+        unlock = resolve
+      })
+
+      permController.getUnlockPromise = () => unlockPromise
+
+      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+
+      grantPermissions(
+        permController, ORIGINS.c,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+      )
+
+      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
+      const res = {}
+
+      // this will block until we resolve the unlock Promise
+      const requestApproval = assert.doesNotReject(
+        cMiddleware(req, res),
+        'should not reject'
+      )
+
+      // this will reject because of the already pending request
+      await assert.rejects(
+        cMiddleware({ ...req }, {}),
+        ERRORS.eth_requestAccounts.requestAlreadyPending()
+      )
+
+      // now unlock and let through the first request
+      unlock()
+
+      await requestApproval
+
+      assert.ok(
+        res.result && !res.error,
+        'response should have result and no error'
+      )
+      assert.deepEqual(
+        res.result, ACCOUNT_ARRAYS.c,
+        'response should have correct result'
+      )
+    })
   })
 
   describe('wallet_sendDomainMetadata', function () {

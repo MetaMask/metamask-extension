@@ -121,9 +121,11 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.appStateController = new AppStateController({
-      preferencesStore: this.preferencesController.store,
-      onInactiveTimeout: () => this.setLocked(),
+      addUnlockListener: this.on.bind(this, 'unlock'),
+      isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
+      onInactiveTimeout: () => this.setLocked(),
+      preferencesStore: this.preferencesController.store,
     })
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
@@ -206,13 +208,15 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
+    this.keyringController.on('unlock', () => this.emit('unlock'))
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
-      platform: opts.platform,
+      getRestrictedMethods,
+      getUnlockPromise: this.appStateController.getUnlockPromise.bind(this.appStateController),
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
-      getRestrictedMethods,
+      platform: opts.platform,
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -352,9 +356,7 @@ export default class MetamaskController extends EventEmitter {
         if (origin === 'metamask') {
           const selectedAddress = this.preferencesController.getSelectedAddress()
           return selectedAddress ? [selectedAddress] : []
-        } else if (
-          this.keyringController.memStore.getState().isUnlocked
-        ) {
+        } else if (this.isUnlocked()) {
           return await this.permissionsController.getAccounts(origin)
         }
         return [] // changing this is a breaking change
@@ -613,11 +615,11 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
       }
-      releaseLock()
       return vault
     } catch (err) {
-      releaseLock()
       throw err
+    } finally {
+      releaseLock()
     }
   }
 
@@ -657,11 +659,11 @@ export default class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      releaseLock()
       return vault
     } catch (err) {
-      releaseLock()
       throw err
+    } finally {
+      releaseLock()
     }
   }
 
@@ -1730,9 +1732,8 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyConnections (origin, payload) {
 
-    const { isUnlocked } = this.getState()
     const connections = this.connections[origin]
-    if (!isUnlocked || !connections) {
+    if (!this.isUnlocked() || !connections) {
       return
     }
 
@@ -1750,8 +1751,7 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyAllConnections (payload) {
 
-    const { isUnlocked } = this.getState()
-    if (!isUnlocked) {
+    if (!this.isUnlocked()) {
       return
     }
 
@@ -1791,6 +1791,13 @@ export default class MetamaskController extends EventEmitter {
    */
   privateSendUpdate () {
     this.emit('update', this.getState())
+  }
+
+  /**
+   * @returns {boolean} Whether the extension is unlocked.
+   */
+  isUnlocked () {
+    return this.keyringController.memStore.getState().isUnlocked
   }
 
   //=============================================================================
@@ -2083,7 +2090,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
   }
 

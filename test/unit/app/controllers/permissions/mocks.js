@@ -58,6 +58,8 @@ const getRestrictedMethods = (permController) => {
   }
 }
 
+const getUnlockPromise = () => Promise.resolve()
+
 /**
  * Gets default mock constructor options for a permissions controller.
  *
@@ -67,9 +69,10 @@ export function getPermControllerOpts () {
   return {
     platform,
     getKeyringAccounts,
+    getUnlockPromise,
+    getRestrictedMethods,
     notifyDomain: noop,
     notifyAllDomains: noop,
-    getRestrictedMethods,
   }
 }
 
@@ -395,6 +398,14 @@ export const getters = deepFreeze({
       requestAlreadyPending: () => {
         return {
           message: 'Permissions request already pending; please wait.',
+        }
+      },
+    },
+
+    eth_requestAccounts: {
+      requestAlreadyPending: () => {
+        return {
+          message: 'Already processing eth_requestAccounts. Please wait.',
         }
       },
     },
