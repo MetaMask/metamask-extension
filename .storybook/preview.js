@@ -1,7 +1,7 @@
 import React from 'react'
 import { addDecorator, addParameters } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs/react'
-import I18nProvider from '../ui/app/contexts/i18n'
+import { I18nProvider, LegacyI18nProvider } from '../ui/app/contexts/i18n'
 import { Provider } from 'react-redux'
 import configureStore from '../ui/app/store/store'
 import '../ui/app/css/index.scss'
@@ -33,9 +33,11 @@ const store = configureStore({
 const metamaskDecorator = story => (
   <Provider store={store}>
     <I18nProvider>
-      <div style={styles}>
-        { story() }
-      </div>
+      <LegacyI18nProvider>
+        <div style={styles}>
+          { story() }
+        </div>
+      </LegacyI18nProvider>
     </I18nProvider>
   </Provider>
 )
