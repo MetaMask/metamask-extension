@@ -53,7 +53,6 @@ export default class PageContainer extends PureComponent {
         isActive: numberOfTabs > 1 && tabIndex === this.state.activeTabIndex,
         key: tabIndex,
         className: 'page-container__tab',
-        activeClassName: 'page-container__tab--selected',
       })
     })
   }
