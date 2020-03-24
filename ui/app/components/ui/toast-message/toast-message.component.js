@@ -36,9 +36,10 @@ export default class ToastMessage extends Component {
     return (
       <BoxedMessage
         { ...typeConfig[this.props.type] }
-        message={this.props.children}
         { ...this.props }
-      />
+      >
+        { this.props.children }
+      </BoxedMessage>
     )
   }
 }
