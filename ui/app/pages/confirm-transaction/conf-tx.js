@@ -112,7 +112,7 @@ class ConfirmTxScreen extends Component {
   signatureSelect (type, version) {
     // Temporarily direct only v3 and v4 requests to new code.
     if (
-      type === 'eth_signTypedData' &&
+      (type === 'cfx_signTypedData' || type === 'eth_signTypedData') &&
       (version === 'V3' || version === 'V4')
     ) {
       return SignatureRequest

@@ -7,7 +7,7 @@ import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import EthQuery from '../../../../app/scripts/eth-query'
 import Eth from 'ethjs'
-import KeyringController from 'eth-keyring-controller'
+import KeyringController from 'cfx-keyring-controller'
 
 import { createTestProviderTools } from '../../../stub/provider'
 import enLocale from '../../../../app/_locales/en/messages.json'
@@ -644,12 +644,12 @@ describe('Actions', function () {
       signMessageSpy.restore()
     })
 
-    it('calls signMsg in background', function () {
+    it('calls signPerMsg in background', function () {
       const store = mockStore({
         metamask: {},
       })
 
-      signMessageSpy = sinon.spy(background, 'signMessage')
+      signMessageSpy = sinon.spy(background, 'signPersonalMessage')
       store.dispatch(actions.signMsg(msgParams))
       assert(signMessageSpy.calledOnce)
     })
@@ -665,7 +665,7 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      signMessageSpy = sinon.stub(background, 'signMessage')
+      signMessageSpy = sinon.stub(background, 'signPersonalMessage')
       signMessageSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })

@@ -48,10 +48,10 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   if (type === 'personal_sign') {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === 'cfx_signTypedData' || type === 'eth_signTypedData') {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  } else if (type === 'eth_sign') {
+  } else if (type === 'cfx_sign' || type === 'eth_sign') {
     cancel = cancelMessage
     sign = signMessage
   }

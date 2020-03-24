@@ -23,7 +23,7 @@ import createOriginMiddleware from './lib/createOriginMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 import providerAsMiddleware from '@yqrashawn/cfx-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils.js'
-import KeyringController from 'eth-keyring-controller'
+import KeyringController from 'cfx-keyring-controller'
 import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
@@ -34,7 +34,7 @@ import OnboardingController from './controllers/onboarding'
 // import ThreeBoxController from './controllers/threebox'
 import RecentBlocksController from './controllers/recent-blocks'
 import IncomingTransactionsController from './controllers/incoming-transactions'
-import MessageManager from './lib/message-manager'
+// import MessageManager from './lib/message-manager'
 import DecryptMessageManager from './lib/decrypt-message-manager'
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager'
 import PersonalMessageManager from './lib/personal-message-manager'
@@ -312,8 +312,8 @@ export default class MetamaskController extends EventEmitter {
     )
 
     this.networkController.lookupNetwork()
-    this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
+    this.messageManager = this.personalMessageManager
     this.decryptMessageManager = new DecryptMessageManager()
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({
@@ -398,7 +398,7 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
-      processEthSignMessage: this.newUnsignedMessage.bind(this),
+      processEthSignMessage: this.newUnsignedPersonalMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
@@ -636,8 +636,8 @@ export default class MetamaskController extends EventEmitter {
       getNextNonce: nodeify(this.getNextNonce, this),
 
       // messageManager
-      signMessage: nodeify(this.signMessage, this),
-      cancelMessage: this.cancelMessage.bind(this),
+      signMessage: nodeify(this.signPersonalMessage, this),
+      cancelMessage: this.cancelPersonalMessage.bind(this),
 
       // personalMessageManager
       signPersonalMessage: nodeify(this.signPersonalMessage, this),

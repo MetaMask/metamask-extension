@@ -1,4 +1,4 @@
-import KeyringController from 'eth-keyring-controller'
+import KeyringController from 'cfx-keyring-controller'
 import log from 'loglevel'
 
 const seedPhraseVerifier = {

@@ -6,7 +6,7 @@ import {
   KOVAN_CODE,
   GOERLI_CODE,
 } from '../../../../../app/scripts/controllers/network/enums'
-import KeyringController from 'eth-keyring-controller'
+import KeyringController from 'cfx-keyring-controller'
 
 describe('Recipient Blacklist Checker', function () {
   describe('#checkAccount', function () {

@@ -507,7 +507,7 @@ const initialize = () => {
     }
 
     personalSignData.addEventListener('click', () => {
-      const typedData = {
+      const personalSignData = {
         types: {
           EIP712Domain: [
             { name: 'name', type: 'string' },
@@ -548,7 +548,7 @@ const initialize = () => {
       confluxJS.provider.sendAsync(
         {
           method: 'personal_sign',
-          params: [JSON.stringify(typedData), conflux.selectedAddress],
+          params: [JSON.stringify(personalSignData), conflux.selectedAddress],
           from: conflux.selectedAddress,
         },
         (err, result) => {
@@ -669,13 +669,16 @@ const initialize = () => {
 
       confluxJS.provider.sendAsync(
         {
-          method: 'eth_signTypedData_v3',
+          method: 'cfx_signTypedData_v3',
           params: [conflux.selectedAddress, JSON.stringify(typedData)],
           from: conflux.selectedAddress,
         },
         (err, result) => {
           if (err) {
             console.log(err)
+            if (!chainId) {
+              console.log('chainId is not defined')
+            }
           } else {
             signTypedDataResults.innerHTML = JSON.stringify(result)
             sendSignedTypedData.disabled = false
