@@ -48,7 +48,7 @@ export default class MobileSyncPage extends Component {
     }
   }
 
-  handleIdleTimeout () {
+  startIdleTimeout () {
     this.idleTimeout = setTimeout(() => {
       this.clearTimeouts()
       this.goBack()
@@ -61,7 +61,7 @@ export default class MobileSyncPage extends Component {
     this.props.requestRevealSeedWords(this.state.password)
       .then((seedWords) => {
         this.startKeysGeneration()
-        this.handleIdleTimeout()
+        this.startIdleTimeout()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
       })
       .catch((error) => this.setState({ error: error.message }))
