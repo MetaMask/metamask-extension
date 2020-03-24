@@ -1,43 +1,43 @@
 import React from 'react'
-import AlertMessage from './alert-message.component'
+import ToastMessage from './toast-message.component'
 
 export default {
-  title: 'StyledMessage',
+  title: 'ToastMessage',
 }
 
 export const Success = () => (
-  <AlertMessage
+  <ToastMessage
     type="success"
     width="365px"
   >
     This is a test message.
-  </AlertMessage>
+  </ToastMessage>
 )
 
 export const Warning = () => (
-  <AlertMessage
+  <ToastMessage
     type="warning"
     width="365px"
   >
     This is a test message.
-  </AlertMessage>
+  </ToastMessage>
 )
 
 export const Info = () => (
-  <AlertMessage
+  <ToastMessage
     type="info"
     width="365px"
   >
     This is a test message.
-  </AlertMessage>
+  </ToastMessage>
 )
 
 export const Danger = () => (
-  <AlertMessage
+  <ToastMessage
     type="danger"
     width="365px"
   >
     This is a test message.
-  </AlertMessage>
+  </ToastMessage>
 )
 

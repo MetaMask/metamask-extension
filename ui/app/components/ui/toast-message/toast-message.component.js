@@ -9,24 +9,24 @@ import warning from '../../../../../app/images/icons/yellow-bell.svg'
 
 const typeConfig = {
   success: {
-    boxClass: 'alert-message--success',
+    boxClass: 'toast-message--success',
     iconSource: success,
   },
   danger: {
-    boxClass: 'alert-message--danger',
+    boxClass: 'toast-message--danger',
     iconSource: danger,
   },
   info: {
-    boxClass: 'alert-message--info',
+    boxClass: 'toast-message--info',
     iconSource: info,
   },
   warning: {
-    boxClass: 'alert-message--warning',
+    boxClass: 'toast-message--warning',
     iconSource: warning,
   },
 }
 
-export default class AlertMessage extends Component {
+export default class ToastMessage extends Component {
   static propTypes = {
     type: PropTypes.oneOf(Object.keys(typeConfig)).isRequired,
     children: PropTypes.node,
