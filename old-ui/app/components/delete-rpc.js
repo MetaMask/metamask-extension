@@ -6,7 +6,7 @@ import actions from '../../../ui/app/actions'
 class DeleteRpc extends ConfirmScreen {
   static propTypes = {
   }
-  
+
   render () {
     const props = this.props
     return (
