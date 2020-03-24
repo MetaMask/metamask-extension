@@ -12,6 +12,7 @@ import LoadingScreen from '../../components/ui/loading-screen'
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 const KEYS_GENERATION_TIME = 30000
+const IDLE_TIME = KEYS_GENERATION_TIME * 4
 
 export default class MobileSyncPage extends Component {
   static contextTypes = {
@@ -47,25 +48,43 @@ export default class MobileSyncPage extends Component {
     }
   }
 
+  startIdleTimeout () {
+    this.idleTimeout = setTimeout(() => {
+      this.clearTimeouts()
+      this.goBack()
+    }, IDLE_TIME)
+  }
+
   handleSubmit (event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
       .then((seedWords) => {
         this.startKeysGeneration()
+        this.startIdleTimeout()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
       })
       .catch((error) => this.setState({ error: error.message }))
   }
 
   startKeysGeneration () {
-    this.handle && clearTimeout(this.handle)
+    this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
     this.disconnectWebsockets()
     this.generateCipherKeyAndChannelName()
     this.initWebsockets()
-    this.handle = setTimeout(() => {
+    this.keysGenerationTimeout = setTimeout(() => {
       this.startKeysGeneration()
     }, KEYS_GENERATION_TIME)
+  }
+
+  goBack () {
+    const { history } = this.props
+    history.push(DEFAULT_ROUTE)
+  }
+
+  clearTimeouts () {
+    this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
+    this.idleTimeout && clearTimeout(this.idleTimeout)
   }
 
   generateCipherKeyAndChannelName () {
@@ -101,7 +120,7 @@ export default class MobileSyncPage extends Component {
         if (message.event === 'start-sync') {
           this.startSyncing()
         } else if (message.event === 'connection-info') {
-          this.handle && clearTimeout(this.handle)
+          this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
           this.disconnectWebsockets()
           this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
           this.initWebsockets()
@@ -226,7 +245,7 @@ export default class MobileSyncPage extends Component {
 
 
   componentWillUnmount () {
-    this.handle && clearTimeout(this.handle)
+    this.clearTimeouts()
     this.disconnectWebsockets()
   }
 
@@ -353,7 +372,6 @@ export default class MobileSyncPage extends Component {
 
   renderPasswordPromptFooter () {
     const { t } = this.context
-    const { history } = this.props
     const { password } = this.state
 
     return (
@@ -362,7 +380,7 @@ export default class MobileSyncPage extends Component {
           type="default"
           large
           className="new-account-create-form__button"
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => this.goBack()}
         >
           {t('cancel')}
         </Button>
@@ -381,7 +399,6 @@ export default class MobileSyncPage extends Component {
 
   renderRevealSeedFooter () {
     const { t } = this.context
-    const { history } = this.props
 
     return (
       <div className="page-container__footer" style={{ padding: 30 }}>
@@ -389,7 +406,7 @@ export default class MobileSyncPage extends Component {
           type="default"
           large
           className="page-container__footer-button"
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => this.goBack()}
         >
           {t('close')}
         </Button>
