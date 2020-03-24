@@ -18,6 +18,7 @@ import {
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
 } from '../../helpers/constants/routes'
+import ConnectedSitesModal from '../../components/app/connected-sites-modal/connected-sites-modal.container'
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -26,6 +27,7 @@ export default class Home extends PureComponent {
 
   static defaultProps = {
     hasDaiV1Token: false,
+    originOfCurrentTab: null,
   }
 
   static propTypes = {
@@ -45,6 +47,17 @@ export default class Home extends PureComponent {
     threeBoxLastUpdated: PropTypes.number,
     hasDaiV1Token: PropTypes.bool,
     firstPermissionsRequestId: PropTypes.string,
+    originOfCurrentTab: PropTypes.string,
+  }
+
+  state = {
+    showConnectedSites: false,
+  }
+
+  toggleConnectedSitesModal = () => {
+    this.setState((prevState) => ({
+      showConnectedSites: !prevState.showConnectedSites,
+    }))
   }
 
   UNSAFE_componentWillMount () {
@@ -158,7 +171,11 @@ export default class Home extends PureComponent {
     const {
       forgottenPassword,
       history,
+      originOfCurrentTab,
     } = this.props
+    const {
+      showConnectedSites,
+    } = this.state
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
@@ -177,11 +194,19 @@ export default class Home extends PureComponent {
             {
               (isWideViewport) => (
                 <>
-                  { isWideViewport ? <WalletView /> : null }
+                  { isWideViewport
+                    ? (
+                      <WalletView
+                        showConnectedSitesModal={this.toggleConnectedSitesModal}
+                      />
+                    )
+                    : null }
                   <div className="home__main-view">
-                    {
-                      !isWideViewport ? <MenuBar /> : null
-                    }
+                    { !isWideViewport ? (
+                      <MenuBar
+                        showConnectedSitesModal={this.toggleConnectedSitesModal}
+                      />
+                    ) : null }
                     <div className="home__balance-wrapper">
                       <TransactionViewBalance />
                     </div>
@@ -192,6 +217,12 @@ export default class Home extends PureComponent {
             }
           </Media>
           { this.renderNotifications() }
+          { showConnectedSites ? (
+            <ConnectedSitesModal
+              onClose={this.toggleConnectedSitesModal}
+              onAddSite={originOfCurrentTab ? () => {} : null}
+            />
+          ) : null }
         </div>
       </div>
     )

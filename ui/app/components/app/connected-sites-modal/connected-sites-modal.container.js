@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 import ConnectedSitesModal from './connected-sites-modal.component'
 import {
+  getSelectedAddress,
   getRenderablePermissionsDomains,
 } from '../../../selectors/selectors'
 
 const mapStateToProps = (state) => {
   return {
+    accountName: state.metamask.identities[getSelectedAddress(state)].name,
     connectedSites: getRenderablePermissionsDomains(state),
   }
 }

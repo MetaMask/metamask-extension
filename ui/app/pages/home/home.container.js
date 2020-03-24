@@ -3,7 +3,12 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token, getFirstPermissionRequest } from '../../selectors/selectors'
+import {
+  getCurrentEthBalance,
+  getDaiV1Token,
+  getFirstPermissionRequest,
+  getOriginOfCurrentTab,
+} from '../../selectors/selectors'
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
@@ -34,6 +39,7 @@ const mapStateToProps = (state) => {
     : null
 
   return {
+    originOfCurrentTab: getOriginOfCurrentTab(state),
     forgottenPassword,
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),

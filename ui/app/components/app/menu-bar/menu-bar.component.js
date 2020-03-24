@@ -14,13 +14,14 @@ export default class MenuBar extends PureComponent {
     hideSidebar: PropTypes.func,
     sidebarOpen: PropTypes.bool,
     showSidebar: PropTypes.func,
+    showConnectedSitesModal: PropTypes.func.isRequired,
   }
 
   state = { accountDetailsMenuOpen: false }
 
   render () {
     const { t } = this.context
-    const { sidebarOpen, hideSidebar, showSidebar } = this.props
+    const { sidebarOpen, hideSidebar, showSidebar, showConnectedSitesModal } = this.props
     const { accountDetailsMenuOpen } = this.state
 
     return (
@@ -69,6 +70,7 @@ export default class MenuBar extends PureComponent {
           accountDetailsMenuOpen && (
             <AccountDetailsDropdown
               onClose={() => this.setState({ accountDetailsMenuOpen: false })}
+              showConnectedSitesModal={showConnectedSitesModal}
             />
           )
         }

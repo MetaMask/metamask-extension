@@ -32,6 +32,7 @@ export default class WalletView extends Component {
     unsetSelectedToken: PropTypes.func.isRequired,
     sidebarOpen: PropTypes.bool.isRequired,
     hideSidebar: PropTypes.func.isRequired,
+    showConnectedSitesModal: PropTypes.func.isRequired,
   }
 
   renderWalletBalance () {
@@ -97,6 +98,7 @@ export default class WalletView extends Component {
       selectedAddress,
       keyrings,
       identities,
+      showConnectedSitesModal,
     } = this.props
 
     const checksummedAddress = checksumAddress(selectedAddress)
@@ -124,6 +126,7 @@ export default class WalletView extends Component {
           label={label}
           checksummedAddress={checksummedAddress}
           name={identities[selectedAddress].name}
+          showConnectedSitesModal={showConnectedSitesModal}
         />
         {this.renderWalletBalance()}
         <TokenList />

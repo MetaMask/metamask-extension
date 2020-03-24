@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { compose } from 'redux'
-import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../selectors/selectors'
-import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 import genAccountLink from '../../../../lib/account-link.js'
 import { Menu, Item, CloseArea } from './components/menu'
 
@@ -46,8 +43,8 @@ class AccountDetailsDropdown extends Component {
     viewOnEtherscan: PropTypes.func.isRequired,
     showRemoveAccountConfirmationModal: PropTypes.func.isRequired,
     rpcPrefs: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
+    showConnectedSitesModal: PropTypes.func.isRequired,
   }
 
   onClose = (e) => {
@@ -64,7 +61,7 @@ class AccountDetailsDropdown extends Component {
       viewOnEtherscan,
       showRemoveAccountConfirmationModal,
       rpcPrefs,
-      history,
+      showConnectedSitesModal,
     } = this.props
 
     const address = selectedIdentity.address
@@ -151,7 +148,8 @@ class AccountDetailsDropdown extends Component {
                 name: 'Opened Connected Sites',
               },
             })
-            history.push(CONNECTED_ROUTE)
+            showConnectedSitesModal()
+            this.props.onClose()
           }}
           text={this.context.t('connectedSites')}
           icon={(
@@ -178,4 +176,4 @@ class AccountDetailsDropdown extends Component {
   }
 }
 
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)
+export default connect(mapStateToProps, mapDispatchToProps)(AccountDetailsDropdown)
