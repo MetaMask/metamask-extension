@@ -1000,7 +1000,7 @@ function signTypedMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    global.ethQuery.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err, _data) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
