@@ -2,7 +2,6 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
 
@@ -15,7 +14,6 @@ export default class TokenCell extends Component {
     address: PropTypes.string,
     symbol: PropTypes.string,
     string: PropTypes.string,
-    network: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
     selectedTokenAddress: PropTypes.string,
     contractExchangeRates: PropTypes.object,
@@ -30,29 +28,12 @@ export default class TokenCell extends Component {
     tokenMenuOpen: false,
   }
 
-  send (address, event) {
-    event.preventDefault()
-    event.stopPropagation()
-    const url = tokenFactoryFor(address)
-    if (url) {
-      navigateTo(url)
-    }
-  }
-
-  view (address, userAddress, network) {
-    const url = etherscanLinkFor(address, userAddress, network)
-    if (url) {
-      navigateTo(url)
-    }
-  }
-
   render () {
     const { tokenMenuOpen } = this.state
     const {
       address,
       symbol,
       string,
-      network,
       setSelectedToken,
       selectedTokenAddress,
       contractExchangeRates,
@@ -106,7 +87,6 @@ export default class TokenCell extends Component {
           className="token-list-item__identicon"
           diameter={50}
           address={address}
-          network={network}
           image={image}
         />
         <div className="token-list-item__balance-ellipsis">
@@ -137,17 +117,3 @@ export default class TokenCell extends Component {
     )
   }
 }
-
-function navigateTo (url) {
-  global.platform.openWindow({ url })
-}
-
-function etherscanLinkFor (tokenAddress, address, network) {
-  const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
-}
-
-function tokenFactoryFor (tokenAddress) {
-  return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
-}
-

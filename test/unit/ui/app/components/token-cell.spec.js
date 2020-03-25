@@ -13,7 +13,6 @@ describe('Token Cell', function () {
 
   const state = {
     metamask: {
-      network: 'test',
       currentCurrency: 'usd',
       selectedTokenAddress: '0xToken',
       selectedAddress: '0xAddress',
@@ -40,7 +39,6 @@ describe('Token Cell', function () {
           address="0xAnotherToken"
           symbol="TEST"
           string="5.000"
-          network={22}
           currentCurrency="usd"
           image="./test-image"
         />
@@ -50,7 +48,6 @@ describe('Token Cell', function () {
 
   it('renders Identicon with props from token cell', function () {
     assert.equal(wrapper.find(Identicon).prop('address'), '0xAnotherToken')
-    assert.equal(wrapper.find(Identicon).prop('network'), 'test')
     assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
   })
 
