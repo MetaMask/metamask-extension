@@ -36,6 +36,7 @@ class TokenList extends Component {
     userAddress: PropTypes.string.isRequired,
     network: PropTypes.string.isRequired,
     assetImages: PropTypes.object.isRequired,
+    onTokenClick: PropTypes.func.isRequired,
   }
 
   state = {
@@ -121,7 +122,7 @@ class TokenList extends Component {
   }
 
   render () {
-    const { userAddress, assetImages } = this.props
+    const { userAddress, assetImages, onTokenClick } = this.props
     const { tokens, isLoading, error } = this.state
     if (isLoading) {
       return (
@@ -172,7 +173,7 @@ class TokenList extends Component {
         {tokens.map((tokenData, index) => {
           tokenData.image = assetImages[tokenData.address]
           return (
-            <TokenCell key={index} {...tokenData} />
+            <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
           )
         })}
       </div>
@@ -180,4 +181,10 @@ class TokenList extends Component {
   }
 }
 
-export default connect(mapStateToProps)(TokenList)
+const TokenListContainer = connect(mapStateToProps)(TokenList)
+
+TokenListContainer.propTypes = {
+  onTokenClick: PropTypes.func.isRequired,
+}
+
+export default TokenListContainer
