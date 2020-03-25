@@ -4,6 +4,7 @@ import TokenTracker from 'eth-token-tracker'
 import { isEqual } from 'lodash'
 import contracts from 'eth-contract-metadata'
 
+import { I18nContext } from '../../../contexts/i18n'
 import TokenCell from '../token-cell'
 
 const defaultTokens = []
@@ -16,9 +17,7 @@ for (const address in contracts) {
 }
 
 class TokenList extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  }
+  static contextType = I18nContext
 
   static propTypes = {
     assetImages: PropTypes.object.isRequired,
@@ -108,7 +107,7 @@ class TokenList extends Component {
   }
 
   render () {
-    const { t } = this.context
+    const t = this.context
     const { error, tokensLoading, tokensWithBalances } = this.state
     const { assetImages, network, userAddress } = this.props
     if (network === 'loading' || tokensLoading) {
