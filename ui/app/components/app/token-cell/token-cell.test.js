@@ -4,6 +4,7 @@ import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
+import sinon from 'sinon'
 
 import TokenCell from '.'
 import Identicon from '../../ui/identicon'
@@ -32,7 +33,10 @@ describe('Token Cell', function () {
   const mockStore = configureMockStore(middlewares)
   const store = mockStore(state)
 
+  let onClick
+
   beforeEach(function () {
+    onClick = sinon.stub()
     wrapper = mount(
       <Provider store={store}>
         <TokenCell
@@ -41,9 +45,14 @@ describe('Token Cell', function () {
           string="5.000"
           currentCurrency="usd"
           image="./test-image"
+          onClick={onClick}
         />
       </Provider>
     )
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   it('renders Identicon with props from token cell', function () {
@@ -63,4 +72,9 @@ describe('Token Cell', function () {
     assert.equal(wrapper.find('.token-list-item__fiat-amount').text(), '0.52 USD')
   })
 
+  it('calls onClick when clicked', function () {
+    assert.ok(!onClick.called)
+    wrapper.simulate('click')
+    assert.ok(onClick.called)
+  })
 })

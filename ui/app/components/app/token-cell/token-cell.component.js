@@ -14,14 +14,12 @@ export default class TokenCell extends Component {
     address: PropTypes.string,
     symbol: PropTypes.string,
     string: PropTypes.string,
-    setSelectedToken: PropTypes.func.isRequired,
     selectedTokenAddress: PropTypes.string,
     contractExchangeRates: PropTypes.object,
     conversionRate: PropTypes.number,
-    hideSidebar: PropTypes.func.isRequired,
-    sidebarOpen: PropTypes.bool,
     currentCurrency: PropTypes.string,
     image: PropTypes.string,
+    onClick: PropTypes.func.isRequired,
   }
 
   state = {
@@ -34,12 +32,10 @@ export default class TokenCell extends Component {
       address,
       symbol,
       string,
-      setSelectedToken,
       selectedTokenAddress,
       contractExchangeRates,
       conversionRate,
-      hideSidebar,
-      sidebarOpen,
+      onClick,
       currentCurrency,
       image,
     } = this.props
@@ -71,17 +67,7 @@ export default class TokenCell extends Component {
         className={classnames(`token-list-item`, {
           'token-list-item--active': selectedTokenAddress === address,
         })}
-        onClick={() => {
-          setSelectedToken(address)
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Token Menu',
-              name: 'Clicked Token',
-            },
-          })
-          selectedTokenAddress !== address && sidebarOpen && hideSidebar()
-        }}
+        onClick={onClick.bind(null, address)}
       >
         <Identicon
           className="token-list-item__identicon"

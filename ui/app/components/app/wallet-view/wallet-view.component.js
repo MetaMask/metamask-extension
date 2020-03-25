@@ -22,16 +22,17 @@ export default class WalletView extends Component {
   }
 
   static propTypes = {
-    selectedTokenAddress: PropTypes.string,
-    selectedAccount: PropTypes.object,
-    selectedAddress: PropTypes.string.isRequired,
+    hideSidebar: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    identities: PropTypes.object.isRequired,
     keyrings: PropTypes.array.isRequired,
     responsiveDisplayClassname: PropTypes.string,
-    identities: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    unsetSelectedToken: PropTypes.func.isRequired,
+    selectedAccount: PropTypes.object,
+    selectedAddress: PropTypes.string.isRequired,
+    selectedTokenAddress: PropTypes.string,
+    setSelectedToken: PropTypes.func.isRequired,
     sidebarOpen: PropTypes.bool.isRequired,
-    hideSidebar: PropTypes.func.isRequired,
+    unsetSelectedToken: PropTypes.func.isRequired,
   }
 
   renderWalletBalance () {
@@ -105,10 +106,14 @@ export default class WalletView extends Component {
 
   render () {
     const {
+      hideSidebar,
+      identities,
+      keyrings,
       responsiveDisplayClassname,
       selectedAddress,
-      keyrings,
-      identities,
+      selectedTokenAddress,
+      setSelectedToken,
+      sidebarOpen,
     } = this.props
 
     const checksummedAddress = checksumAddress(selectedAddress)
@@ -139,7 +144,19 @@ export default class WalletView extends Component {
           showConnectedSites={this.showConnectedSites}
         />
         {this.renderWalletBalance()}
-        <TokenList />
+        <TokenList
+          onTokenClick={(tokenAddress) => {
+            setSelectedToken(tokenAddress)
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Navigation',
+                action: 'Token Menu',
+                name: 'Clicked Token',
+              },
+            })
+            selectedTokenAddress !== tokenAddress && sidebarOpen && hideSidebar()
+          }}
+        />
         {this.renderAddToken()}
       </div>
     )
