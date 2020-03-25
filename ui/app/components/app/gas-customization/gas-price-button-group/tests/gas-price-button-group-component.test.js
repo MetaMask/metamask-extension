@@ -6,48 +6,50 @@ import GasPriceButtonGroup from '../gas-price-button-group.component'
 
 import ButtonGroup from '../../../../ui/button-group'
 
-const mockGasPriceButtonGroupProps = {
-  buttonDataLoading: false,
-  className: 'gas-price-button-group',
-  gasButtonInfo: [
-    {
-      feeInPrimaryCurrency: '$0.52',
-      feeInSecondaryCurrency: '0.0048 ETH',
-      timeEstimate: '~ 1 min 0 sec',
-      priceInHexWei: '0xa1b2c3f',
-    },
-    {
-      feeInPrimaryCurrency: '$0.39',
-      feeInSecondaryCurrency: '0.004 ETH',
-      timeEstimate: '~ 1 min 30 sec',
-      priceInHexWei: '0xa1b2c39',
-    },
-    {
-      feeInPrimaryCurrency: '$0.30',
-      feeInSecondaryCurrency: '0.00354 ETH',
-      timeEstimate: '~ 2 min 1 sec',
-      priceInHexWei: '0xa1b2c30',
-    },
-  ],
-  handleGasPriceSelection: sinon.spy(),
-  noButtonActiveByDefault: true,
-  defaultActiveButtonIndex: 2,
-  showCheck: true,
-}
-
-const mockButtonPropsAndFlags = Object.assign({}, {
-  className: mockGasPriceButtonGroupProps.className,
-  handleGasPriceSelection: mockGasPriceButtonGroupProps.handleGasPriceSelection,
-  showCheck: mockGasPriceButtonGroupProps.showCheck,
-})
-
-sinon.spy(GasPriceButtonGroup.prototype, 'renderButton')
-sinon.spy(GasPriceButtonGroup.prototype, 'renderButtonContent')
-
 describe('GasPriceButtonGroup Component', function () {
+  let mockButtonPropsAndFlags
+  let mockGasPriceButtonGroupProps
   let wrapper
 
   beforeEach(function () {
+    mockGasPriceButtonGroupProps = {
+      buttonDataLoading: false,
+      className: 'gas-price-button-group',
+      gasButtonInfo: [
+        {
+          feeInPrimaryCurrency: '$0.52',
+          feeInSecondaryCurrency: '0.0048 ETH',
+          timeEstimate: '~ 1 min 0 sec',
+          priceInHexWei: '0xa1b2c3f',
+        },
+        {
+          feeInPrimaryCurrency: '$0.39',
+          feeInSecondaryCurrency: '0.004 ETH',
+          timeEstimate: '~ 1 min 30 sec',
+          priceInHexWei: '0xa1b2c39',
+        },
+        {
+          feeInPrimaryCurrency: '$0.30',
+          feeInSecondaryCurrency: '0.00354 ETH',
+          timeEstimate: '~ 2 min 1 sec',
+          priceInHexWei: '0xa1b2c30',
+        },
+      ],
+      handleGasPriceSelection: sinon.spy(),
+      noButtonActiveByDefault: true,
+      defaultActiveButtonIndex: 2,
+      showCheck: true,
+    }
+
+    mockButtonPropsAndFlags = Object.assign({}, {
+      className: mockGasPriceButtonGroupProps.className,
+      handleGasPriceSelection: mockGasPriceButtonGroupProps.handleGasPriceSelection,
+      showCheck: mockGasPriceButtonGroupProps.showCheck,
+    })
+
+    sinon.spy(GasPriceButtonGroup.prototype, 'renderButton')
+    sinon.spy(GasPriceButtonGroup.prototype, 'renderButtonContent')
+
     wrapper = shallow((
       <GasPriceButtonGroup
         {...mockGasPriceButtonGroupProps}
@@ -56,9 +58,7 @@ describe('GasPriceButtonGroup Component', function () {
   })
 
   afterEach(function () {
-    GasPriceButtonGroup.prototype.renderButton.resetHistory()
-    GasPriceButtonGroup.prototype.renderButtonContent.resetHistory()
-    mockGasPriceButtonGroupProps.handleGasPriceSelection.resetHistory()
+    sinon.restore()
   })
 
   describe('render', function () {
