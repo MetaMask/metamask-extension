@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # capture yarn build output
 STORYBOOK_OUTPUT=$(yarn storybook:build 2>&1)
 # check for export warnings
