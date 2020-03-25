@@ -30,7 +30,7 @@ Item.prototype.render = function () {
   return children
     ? h('div', { className: itemClassName, onClick }, children)
     : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent ]
-      .filter(d => Boolean(d))
+      .filter(d => Boolean(d)),
     )
 }
 

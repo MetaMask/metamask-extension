@@ -323,6 +323,8 @@ var actions = {
   SET_DPROVIDER: 'SET_DPROVIDER',
   setDProvider,
 
+  setUsePhishDetect,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -1863,7 +1865,7 @@ function addTokens (tokens) {
         .entries(tokens)
         .map(([_, { address, symbol, decimals, image, network }]) => (
           dispatch(addToken(address, symbol, decimals, image, network))
-        ))
+        )),
       )
     }
   }
@@ -2630,6 +2632,19 @@ function setUseBlockie (val) {
     dispatch({
       type: actions.SET_USE_BLOCKIE,
       value: val,
+    })
+  }
+}
+
+function setUsePhishDetect (val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    log.debug(`background.setUsePhishDetect`)
+    background.setUsePhishDetect(val, (err) => {
+      dispatch(hideLoadingIndication())
+      if (err) {
+        return dispatch(displayWarning(err.message))
+      }
     })
   }
 }

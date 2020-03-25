@@ -218,7 +218,7 @@ PendingTx.prototype.render = function () {
                   },
                   onClick: () => props.dispatch(actions.nextTx()),
                 }),
-              ])]
+              ])],
             ),
 
             h(MiniAccountPanel, {

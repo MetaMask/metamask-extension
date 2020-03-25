@@ -30,7 +30,7 @@ describe('Send Duck', () => {
     it('should initialize state', () => {
       assert.deepEqual(
         SendReducer({}),
-        initState
+        initState,
       )
     })
 
@@ -40,7 +40,7 @@ describe('Send Duck', () => {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        Object.assign({}, mockState.send)
+        Object.assign({}, mockState.send),
       )
     })
 
@@ -49,7 +49,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: true}, mockState.send)
+        Object.assign({fromDropdownOpen: true}, mockState.send),
       )
     })
 
@@ -63,7 +63,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_FROM_DROPDOWN,
         }),
-        Object.assign({fromDropdownOpen: false}, mockState.send)
+        Object.assign({fromDropdownOpen: false}, mockState.send),
       )
     })
 
@@ -72,7 +72,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: OPEN_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: true}, mockState.send)
+        Object.assign({toDropdownOpen: true}, mockState.send),
       )
     })
 
@@ -81,7 +81,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: CLOSE_TO_DROPDOWN,
         }),
-        Object.assign({toDropdownOpen: false}, mockState.send)
+        Object.assign({toDropdownOpen: false}, mockState.send),
       )
     })
 
@@ -103,7 +103,7 @@ describe('Send Duck', () => {
             someError: false,
             someOtherError: true,
           },
-        })
+        }),
       )
     })
 
@@ -112,7 +112,7 @@ describe('Send Duck', () => {
         SendReducer(mockState, {
           type: RESET_SEND_STATE,
         }),
-        Object.assign({}, initState)
+        Object.assign({}, initState),
       )
     })
   })
@@ -120,35 +120,35 @@ describe('Send Duck', () => {
   describe('openFromDropdown', () => {
     assert.deepEqual(
       openFromDropdown(),
-      { type: OPEN_FROM_DROPDOWN }
+      { type: OPEN_FROM_DROPDOWN },
     )
   })
 
   describe('closeFromDropdown', () => {
     assert.deepEqual(
       closeFromDropdown(),
-      { type: CLOSE_FROM_DROPDOWN }
+      { type: CLOSE_FROM_DROPDOWN },
     )
   })
 
   describe('openToDropdown', () => {
     assert.deepEqual(
       openToDropdown(),
-      { type: OPEN_TO_DROPDOWN }
+      { type: OPEN_TO_DROPDOWN },
     )
   })
 
   describe('closeToDropdown', () => {
     assert.deepEqual(
       closeToDropdown(),
-      { type: CLOSE_TO_DROPDOWN }
+      { type: CLOSE_TO_DROPDOWN },
     )
   })
 
   describe('updateSendErrors', () => {
     assert.deepEqual(
       updateSendErrors('mockErrorObject'),
-      { type: UPDATE_SEND_ERRORS, value: 'mockErrorObject' }
+      { type: UPDATE_SEND_ERRORS, value: 'mockErrorObject' },
     )
   })
 

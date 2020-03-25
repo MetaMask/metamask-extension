@@ -186,5 +186,5 @@ export default connect(
       dispatch(unMarkPasswordForgotten())
     },
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
-  })
+  }),
 )(ImportSeedPhraseScreen)

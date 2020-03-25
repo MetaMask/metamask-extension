@@ -7,5 +7,5 @@ export const selectedTokenSelector = createSelector(
   selectedTokenAddressSelector,
   (tokens = [], selectedTokenAddress = '') => {
     return tokens.find(({ address }) => address === selectedTokenAddress)
-  }
+  },
 )

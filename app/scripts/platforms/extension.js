@@ -1,6 +1,7 @@
-const extension = require('extensionizer')
+import extension from 'extensionizer'
 const explorerLinks = require('eth-net-props').explorerLinks
-const { capitalizeFirstLetter } = require('../lib/util')
+const { capitalizeFirstLetter, getEnvironmentType, checkForError } = require('../lib/util')
+const { ENVIRONMENT_TYPE_BACKGROUND } = require('../lib/enums')
 
 class ExtensionPlatform {
 
@@ -57,6 +58,9 @@ class ExtensionPlatform {
       extensionURL += `#${route}`
     }
     this.openWindow({ url: extensionURL })
+    if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
+      window.close()
+    }
   }
 
   getPlatformInfo (cb) {
@@ -70,13 +74,55 @@ class ExtensionPlatform {
   }
 
   showTransactionNotification (txMeta) {
+    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
 
-    const status = txMeta.status
     if (status === 'confirmed') {
-      this._showConfirmedTransaction(txMeta)
+      // There was an on-chain failure
+      receiptStatus === '0x0'
+        ? this._showFailedTransaction(txMeta, 'Transaction encountered an error.')
+        : this._showConfirmedTransaction(txMeta)
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  currentTab () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.getCurrent((tab) => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  switchToTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  closeTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.remove(tabId, () => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
   }
 
   _showConfirmedTransaction (txMeta) {
@@ -91,11 +137,11 @@ class ExtensionPlatform {
     this._showNotification(title, message, url)
   }
 
-  _showFailedTransaction (txMeta) {
+  _showFailedTransaction (txMeta, errorMessage) {
 
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${capitalizeFirstLetter(txMeta.err.message)}`
+    const message = `Transaction ${nonce} failed! ${errorMessage || capitalizeFirstLetter(txMeta.err.message)}`
     this._showNotification(title, message)
   }
 
@@ -103,10 +149,10 @@ class ExtensionPlatform {
     extension.notifications.create(
       url,
       {
-      'type': 'basic',
-      'title': title,
-      'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-      'message': message,
+        'type': 'basic',
+        'title': title,
+        'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
+        'message': message,
       })
   }
 
@@ -131,7 +177,6 @@ class ExtensionPlatform {
       url: explorerLinks.getExplorerTxLinkFor(hash, networkId),
     }
   }
-
 }
 
 module.exports = ExtensionPlatform

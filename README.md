@@ -7,7 +7,7 @@
 
 ## Building locally
 
- - Install [Node.js](https://nodejs.org/en/) version 12.x.x and npm version 6.14.2
+ - Install [Node.js](https://nodejs.org/en/) version 10.x.x and npm version 6.13.4
    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
    - Select npm 6.9.0: ```npm install -g npm@6.9.0```
  - Install dependencies: ```npm install```

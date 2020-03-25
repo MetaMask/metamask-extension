@@ -79,7 +79,7 @@ async function startApp (metamaskState, accountManager, opts) {
     h(Root, {
       // inject initial state
       store: store,
-    }
+    },
   ), opts.container)
 
   return store

@@ -78,7 +78,7 @@ ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (passwo
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
   return h('span.private-key-password-label', privateKey
     ? this.context.t('copyPrivateKey')
-    : this.context.t('typePassword')
+    : this.context.t('typePassword'),
   )
 }
 

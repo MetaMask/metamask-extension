@@ -200,16 +200,16 @@ gulp.task('copy',
     gulp.parallel(...copyTaskNames),
     'manifest:production',
     'manifest:chrome',
-    'manifest:opera'
-  )
+    'manifest:opera',
+  ),
 )
 
 gulp.task('dev:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
-    'manifest:opera'
-  )
+    'manifest:opera',
+  ),
 )
 
 gulp.task('lint-scss', function () {
@@ -328,9 +328,9 @@ gulp.task('dev',
       'dev:extension:js',
       'dev:mascara:js',
       'dev:copy',
-      'dev:reload'
-    )
-  )
+      'dev:reload',
+    ),
+  ),
 )
 
 gulp.task('dev:extension',
@@ -339,9 +339,9 @@ gulp.task('dev:extension',
     gulp.parallel(
       'dev:extension:js',
       'dev:copy',
-      'dev:reload'
-    )
-  )
+      'dev:reload',
+    ),
+  ),
 )
 
 gulp.task('dev:mascara',
@@ -350,9 +350,9 @@ gulp.task('dev:mascara',
     gulp.parallel(
       'dev:mascara:js',
       'dev:copy',
-      'dev:reload'
-    )
-  )
+      'dev:reload',
+    ),
+  ),
 )
 
 gulp.task('build',
@@ -361,9 +361,9 @@ gulp.task('build',
     gulpParallel(
       'build:extension:js',
       'build:mascara:js',
-      'copy'
-    )
-  )
+      'copy',
+    ),
+  ),
 )
 
 gulp.task('build:extension',
@@ -371,9 +371,9 @@ gulp.task('build:extension',
     'clean',
     gulp.parallel(
       'build:extension:js',
-      'copy'
-    )
-  )
+      'copy',
+    ),
+  ),
 )
 
 gulp.task('build:mascara',
@@ -381,16 +381,16 @@ gulp.task('build:mascara',
     'clean',
     gulp.parallel(
       'build:mascara:js',
-      'copy'
-    )
-  )
+      'copy',
+    ),
+  ),
 )
 
 gulp.task('dist',
   gulp.series(
     'build',
-    'zip'
-  )
+    'zip',
+  ),
 )
 
 // task generators

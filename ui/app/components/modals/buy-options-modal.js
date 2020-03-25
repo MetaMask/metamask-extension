@@ -80,7 +80,7 @@ BuyOptions.prototype.render = function () {
         this.renderModalContentOption(
           this.context.t('directDeposit'),
           this.context.t('depositFromAccount'),
-          () => this.goToAccountDetailsModal()
+          () => this.goToAccountDetailsModal(),
         ),
 
       ]),

@@ -31,7 +31,7 @@ describe('ExecutorCell component', () => {
 						}}
 						onClick={() => {}}
 					/>
-				</Provider>
+				</Provider>,
 			)
 		})
 

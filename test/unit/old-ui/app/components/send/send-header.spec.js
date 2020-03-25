@@ -24,7 +24,7 @@ describe('SendHeader component', () => {
 					<SendHeader
 						title={'Execute Method'}
 					/>
-				</Provider>
+				</Provider>,
 			)
 		})
 		it('renders correct title', () => {

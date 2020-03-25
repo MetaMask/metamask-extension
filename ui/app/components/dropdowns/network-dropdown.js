@@ -63,7 +63,7 @@ NetworkDropdown.contextTypes = {
 
 module.exports = compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(NetworkDropdown)
 
 
@@ -110,7 +110,7 @@ NetworkDropdown.prototype.render = function () {
 
       h('div.network-dropdown-content',
         {},
-        this.context.t('defaultNetwork')
+        this.context.t('defaultNetwork'),
       ),
     ]),
 
@@ -133,7 +133,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('mainnet')),
-      ]
+      ],
     ),
 
     h(
@@ -155,7 +155,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('ropsten')),
-      ]
+      ],
     ),
 
     h(
@@ -177,7 +177,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('kovan')),
-      ]
+      ],
     ),
 
     h(
@@ -199,7 +199,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('rinkeby')),
-      ]
+      ],
     ),
 
     h(
@@ -221,7 +221,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'poa' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('poa')),
-      ]
+      ],
     ),
 
     h(
@@ -243,7 +243,7 @@ NetworkDropdown.prototype.render = function () {
             color: providerType === 'localhost' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('localhost')),
-      ]
+      ],
     ),
 
     this.renderCustomOption(props.provider),
@@ -267,7 +267,7 @@ NetworkDropdown.prototype.render = function () {
             color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
           },
         }, this.context.t('customRPC')),
-      ]
+      ],
     ),
 
   ])
@@ -334,7 +334,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
               props.delRpcTarget(rpc)
             },
           }),
-        ]
+        ],
       )
     }
   })
@@ -372,7 +372,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
               color: '#ffffff',
             },
           }, rpcTarget),
-        ]
+        ],
       )
   }
 }

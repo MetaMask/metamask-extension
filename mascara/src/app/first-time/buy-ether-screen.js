@@ -196,5 +196,5 @@ export default connect(
   dispatch => ({
     goToCoinbase: address => dispatch(buyEth({ network: '1', address, amount: 0 })),
     showAccountDetail: address => dispatch(showAccountDetail(address)),
-  })
+  }),
 )(BuyEtherScreen)

@@ -77,7 +77,7 @@ class SimpleDropdown extends Component {
         h('div.simple-dropdown__selected', this.getDisplayValue() || placeholder || 'Select'),
         h('i.fa.fa-caret-down.fa-lg.simple-dropdown__caret'),
         isOpen && this.renderOptions(),
-      ]
+      ],
     )
   }
 }

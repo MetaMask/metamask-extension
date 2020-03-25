@@ -135,7 +135,7 @@ class AccountDropdowns extends Component {
             ]),
 
           ]),
-        ]
+        ],
       )
     })
   }
@@ -193,7 +193,7 @@ class AccountDropdowns extends Component {
                 style: {
                   marginLeft: '8px',
                 },
-              }
+              },
             ),
             h('span', {
               style: {
@@ -226,7 +226,7 @@ class AccountDropdowns extends Component {
                 style: {
                   marginLeft: '8px',
                 },
-              }
+              },
             ),
             h('span', {
               style: {
@@ -237,9 +237,9 @@ class AccountDropdowns extends Component {
                 lineHeight: '23px',
               },
             }, this.context.t('importAccount')),
-          ]
+          ],
         ),
-      ]
+      ],
     )
   }
 
@@ -348,7 +348,7 @@ class AccountDropdowns extends Component {
           this.context.t('addToken'),
         ),
 
-      ]
+      ],
     )
   }
 
@@ -393,9 +393,9 @@ class AccountDropdowns extends Component {
               })
             },
           },
-          this.renderAccountOptions()
+          this.renderAccountOptions(),
         ),
-      ]
+      ],
     )
   }
 }

@@ -210,6 +210,6 @@ export default compose(
     mapStateToProps,
     dispatch => ({
       createAccount: password => dispatch(createNewVaultAndKeychain(password)),
-    })
-  )
+    }),
+  ),
 )(CreatePasswordScreen)

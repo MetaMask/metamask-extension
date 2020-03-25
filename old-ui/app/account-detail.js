@@ -144,7 +144,7 @@ AccountDetailScreen.prototype.render = function () {
                       }, [
                         identity && identity.name,
                       ]),
-                    ]
+                    ],
                   ),
                   h(
                     AccountDropdowns,
@@ -161,7 +161,7 @@ AccountDetailScreen.prototype.render = function () {
                       enableAccountOptions: true,
                     },
                   ),
-                ]
+                ],
               ),
             ]),
             h('.flex-row', {

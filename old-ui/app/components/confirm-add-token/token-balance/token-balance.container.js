@@ -12,5 +12,5 @@ const mapStateToProps = state => {
 
 export default compose(
   connect(mapStateToProps),
-  withTokenTracker
+  withTokenTracker,
 )(TokenBalance)

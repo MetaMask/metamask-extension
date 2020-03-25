@@ -50,7 +50,7 @@ const { getNetworkID } = require('./util')
 
 module.exports = compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(App)
 
 inherits(App, Component)
