@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import sinon from 'sinon'
 import { shallow } from 'enzyme'
-import AccountDetailsModal from '../account-details-modal'
+import AccountDetailsModal from '../index'
 
 describe('Account Details Modal', function () {
   let wrapper
@@ -11,6 +11,7 @@ describe('Account Details Modal', function () {
     hideModal: sinon.spy(),
     setAccountLabel: sinon.spy(),
     showExportPrivateKeyModal: sinon.spy(),
+    showQrView: sinon.spy(),
     network: 'test',
     rpcPrefs: {},
     selectedIdentity: {
@@ -45,6 +46,10 @@ describe('Account Details Modal', function () {
         },
       }
     )
+  })
+
+  after(function () {
+    sinon.restore()
   })
 
   it('sets account label when changing default account label', function () {

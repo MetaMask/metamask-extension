@@ -10,7 +10,7 @@ export function mountWithStore (component, store) {
   return mount(component, { context })
 }
 
-export function mountWithRouter (component, store = {}, pathname = '/') {
+export function mountWithRouter (component, pathname = '/') {
 
   // Instantiate router context
   const router = {
@@ -28,13 +28,11 @@ export function mountWithRouter (component, store = {}, pathname = '/') {
       router,
       t: (str) => str,
       metricsEvent: () => {},
-      store,
     },
     childContextTypes: {
       router: PropTypes.object,
       t: PropTypes.func,
       metricsEvent: PropTypes.func,
-      store: PropTypes.object,
     },
   })
 

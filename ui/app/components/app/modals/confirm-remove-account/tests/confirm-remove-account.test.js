@@ -11,9 +11,7 @@ describe('Confirm Remove Account', function () {
   let wrapper
 
   const state = {
-    metamask: {
-
-    },
+    metamask: {},
   }
 
   const props = {
