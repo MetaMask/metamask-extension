@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.1.0 Fri Mar 27 2020
 - Sync Version v0.0.9 RC (#58) from master (#60)
 - new sign logic (#62)
 - Change logo, mail, faq, tos links (#63)
