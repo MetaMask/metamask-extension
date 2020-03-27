@@ -25,7 +25,7 @@ export default class MetaFoxLogo extends PureComponent {
       >
         <img
           height={30}
-          src="/images/logo/metamask-logo-horizontal.svg"
+          src="/images/logo/conflux-portal-logo-horizontal.svg"
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--horizontal'
@@ -33,7 +33,7 @@ export default class MetaFoxLogo extends PureComponent {
         />
         <img
           {...iconProps}
-          src="/images/logo/metamask-fox.svg"
+          src="/images/logo/conflux-confi.svg"
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--icon'

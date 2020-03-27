@@ -396,7 +396,7 @@
     "message": "আপনাকে আপনার সীড আবার ব্যাকআপ করতে হলে, আপনি সেটি সেটিংস -> নিরাপত্তায় পাবেন।"
   },
   "endOfFlowMessage7": {
-    "message": "আপনার কখনও কোনো প্রশ্ন থাকলে বা সন্দেহজনক কিছু দেখলে, support@metamask.io ঠিকানায় ইমেল করুন।"
+    "message": "আপনার কখনও কোনো প্রশ্ন থাকলে বা সন্দেহজনক কিছু দেখলে, portal@conflux-chain.org ঠিকানায় ইমেল করুন।"
   },
   "endOfFlowMessage8": {
     "message": "MetaMask আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
@@ -426,7 +426,7 @@
     "message": "Ethereum পাবলিক অ্যাড্রেস"
   },
   "etherscanView": {
-    "message": "Etherscan এ অ্যাকাউন্ট দেখুন"
+    "message": "Confluxscan এ অ্যাকাউন্ট দেখুন"
   },
   "estimatedProcessingTimes": {
     "message": "আনুমানিক প্রক্রিয়াকরণের সময়"
@@ -750,7 +750,7 @@
     "message": "আপনার সীড ফ্রেজ বিষয়ে সাবধান থাকুন — এমন ওয়েবসাইটগুলির রিপোর্ট পাওয়া গেছে যেগুলি MetaMask কে অনুকরণ করার চেষ্টা করে। MetaMask কখনও আপনার সীড ফ্রেজ জিজ্ঞাসা করবে না।"
   },
   "protectYourKeysMessage2": {
-    "message": "আপনার ফ্রেজটিকে নিরাপদে রাখুন।সন্দেহজনক কিছু দেখলে, বা একটি ওয়েবসাইট সম্পর্কে নিশ্চিত না হলে, support@metamask.io এ ইমেল করুন"
+    "message": "আপনার ফ্রেজটিকে নিরাপদে রাখুন।সন্দেহজনক কিছু দেখলে, বা একটি ওয়েবসাইট সম্পর্কে নিশ্চিত না হলে, portal@conflux-chain.org এ ইমেল করুন"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"
@@ -866,7 +866,7 @@
     "message": "প্রাপকের ঠিকানা"
   },
   "recipientAddressPlaceholder": {
-    "message": "অনুসন্ধান, সার্বজনীন ঠিকানা (0x), বা ENS"
+    "message": "অনুসন্ধান, সার্বজনীন ঠিকানা (0x)"
   },
   "rejectAll": {
     "message": "সব খারিজ করুন"
@@ -1312,7 +1312,7 @@
     "message": "$1 এ দেখুন"
   },
   "viewOnEtherscan": {
-    "message": "Etherscan দেখুন"
+    "message": "Confluxscan দেখুন"
   },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"

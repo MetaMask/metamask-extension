@@ -116,7 +116,7 @@
     "message": "Nhập mật khẩu"
   },
   "etherscanView": {
-    "message": "Xem tài khoản trên Etherscan"
+    "message": "Xem tài khoản trên Confluxscan"
   },
   "exportPrivateKey": {
     "message": "Xuất mã khóa cá nhân"

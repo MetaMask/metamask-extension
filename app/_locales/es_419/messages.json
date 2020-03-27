@@ -393,7 +393,7 @@
     "message": "Si necesitas otra copia de seguridad de tu frase de inicialización, puedes encontrarla en Configuración -> Seguridad."
   },
   "endOfFlowMessage7": {
-    "message": "Si tienes preguntas o ves algo sospechoso, envía un correo electrónico a support@metamask.io."
+    "message": "Si tienes preguntas o ves algo sospechoso, envía un correo electrónico a portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask no puede recuperar tu frase de inicialización. Obtén más información."
@@ -423,7 +423,7 @@
     "message": "Dirección pública de Ethereum"
   },
   "etherscanView": {
-    "message": "Ver cuenta en Etherscan"
+    "message": "Ver cuenta en Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Tiempo estimado de procesamiento"
@@ -735,7 +735,7 @@
     "message": "Ten cuidado con tu frase de inicialización: hay informes sobre sitios web que intentan hacerse pasar por MetaMask. ¡MetaMask no te pedirá nunca tu frase de inicialización!"
   },
   "protectYourKeysMessage2": {
-    "message": "Mantén tu frase segura. Si notas algo raro o si no está seguro sobre si usar algún sitio web en específico, envíanos un correo electrónico a support@metamask.io"
+    "message": "Mantén tu frase segura. Si notas algo raro o si no está seguro sobre si usar algún sitio web en específico, envíanos un correo electrónico a portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Nueva URL de RPC"
@@ -851,7 +851,7 @@
     "message": "Dirección del destinatario"
   },
   "recipientAddressPlaceholder": {
-    "message": "Buscar, dirección pública (0x) o ENS"
+    "message": "Buscar, dirección pública (0x)"
   },
   "rejectAll": {
     "message": "Rechazar todo"
@@ -1291,7 +1291,7 @@
     "message": "Ver en $1"
   },
   "viewOnEtherscan": {
-    "message": "Ver en Etherscan"
+    "message": "Ver en Confluxscan"
   },
   "visitWebSite": {
     "message": "Visita nuestro sitio web"

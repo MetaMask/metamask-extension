@@ -1,5 +1,5 @@
 import ethUtil from 'ethereumjs-util'
-import MethodRegistry from 'eth-method-registry'
+// import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
 import {
@@ -7,7 +7,7 @@ import {
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
-import fetchWithCache from './fetch-with-cache'
+// import fetchWithCache from './fetch-with-cache'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -26,7 +26,7 @@ import {
   DEPOSIT_TRANSACTION_KEY,
 } from '../constants/transactions'
 
-import log from 'loglevel'
+// import log from 'loglevel'
 import { addCurrencies } from './conversion-util'
 
 abiDecoder.addABI(abi)
@@ -35,58 +35,59 @@ export function getTokenData (data = '') {
   return abiDecoder.decodeMethod(data)
 }
 
-async function getMethodFrom4Byte (fourBytePrefix) {
-  const fourByteResponse = await fetchWithCache(
-    `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
-    {
-      referrerPolicy: 'no-referrer-when-downgrade',
-      body: null,
-      method: 'GET',
-      mode: 'cors',
-    }
-  )
+// async function getMethodFrom4Byte (fourBytePrefix) {
+//   const fourByteResponse = await fetchWithCache(
+//     `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
+//     {
+//       referrerPolicy: 'no-referrer-when-downgrade',
+//       body: null,
+//       method: 'GET',
+//       mode: 'cors',
+//     }
+//   )
 
-  if (fourByteResponse.count === 1) {
-    return fourByteResponse.results[0].text_signature
-  } else {
-    return null
-  }
-}
+//   if (fourByteResponse.count === 1) {
+//     return fourByteResponse.results[0].text_signature
+//   } else {
+//     return null
+//   }
+// }
 
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
+// const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
-export async function getMethodDataAsync (fourBytePrefix) {
-  try {
-    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-      log.error(e)
-      return null
-    })
+export async function getMethodDataAsync (/* fourBytePrefix */) {
+  return {}
+  // try {
+  //   const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+  //     log.error(e)
+  //     return null
+  //   })
 
-    let sig = await registry.lookup(fourBytePrefix)
+  //   let sig = await registry.lookup(fourBytePrefix)
 
-    if (!sig) {
-      sig = await fourByteSig
-    }
+  //   if (!sig) {
+  //     sig = await fourByteSig
+  //   }
 
-    if (!sig) {
-      return {}
-    }
+  //   if (!sig) {
+  //     return {}
+  //   }
 
-    const parsedResult = registry.parse(sig)
+  //   const parsedResult = registry.parse(sig)
 
-    return {
-      name: parsedResult.name,
-      params: parsedResult.args,
-    }
-  } catch (error) {
-    log.error(error)
-    return {}
-  }
+  //   return {
+  //     name: parsedResult.name,
+  //     params: parsedResult.args,
+  //   }
+  // } catch (error) {
+  //   log.error(error)
+  //   return {}
+  // }
 }
 
 export function isConfirmDeployContract (txData = {}) {

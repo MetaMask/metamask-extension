@@ -26,6 +26,8 @@
   &__secondary {
     color: $oslo-gray;
     justify-content: flex-end;
+    // TODO: show this when there's convertion
+    display: none;
   }
 
   &__header-text {

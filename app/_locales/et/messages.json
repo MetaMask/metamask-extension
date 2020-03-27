@@ -396,7 +396,7 @@
     "message": "Kui peate oma seemnefraasi uuesti varundama, leiate selle valikust Settings (Seaded) -> Security (Turvalisus)."
   },
   "endOfFlowMessage7": {
-    "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile support@metamask.io."
+    "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
@@ -426,7 +426,7 @@
     "message": "Ethereumi avalik aadress"
   },
   "etherscanView": {
-    "message": "Vaadake kontot Etherscanil"
+    "message": "Vaadake kontot Confluxscanil"
   },
   "estimatedProcessingTimes": {
     "message": "Eeldatavad töötlemisajad"
@@ -740,7 +740,7 @@
     "message": "Kaitske oma seemnefraasi. Meid on teavitatud veebilehtedest, mis püüavad MetaMaski jäljendada. MetaMask ei küsi teilt kunagi teie seemnefraasi!"
   },
   "protectYourKeysMessage2": {
-    "message": "Kaitske oma seemnefraasi. Kui näete midagi kahtlast või pole veebilehe ehtsuses kindel, saatke e-kiri aadressile support@metamask.io"
+    "message": "Kaitske oma seemnefraasi. Kui näete midagi kahtlast või pole veebilehe ehtsuses kindel, saatke e-kiri aadressile portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
@@ -856,7 +856,7 @@
     "message": "Saaja aadress"
   },
   "recipientAddressPlaceholder": {
-    "message": "Otsing, avalik aadress (0x) või ENS"
+    "message": "Otsing, avalik aadress (0x)"
   },
   "rejectAll": {
     "message": "Lükka kõik tagasi"
@@ -1302,7 +1302,7 @@
     "message": "Vaata $1"
   },
   "viewOnEtherscan": {
-    "message": "Kuva Etherscanil"
+    "message": "Kuva Confluxscanil"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"

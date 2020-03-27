@@ -8,7 +8,7 @@ set -o pipefail
 
 git fetch --tags
 
-most_recent_tag="$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+most_recent_tag="$(git describe --tags "$(git rev-list --tags='v0.*.*' --max-count=1)")"
 
 git rev-list "${most_recent_tag}"..HEAD | while read -r commit
 do

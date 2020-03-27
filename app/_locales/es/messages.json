@@ -344,7 +344,7 @@
     "message": "Introducir contraseña para seguir"
   },
   "etherscanView": {
-    "message": "Ver la cuenta en Etherscan"
+    "message": "Ver la cuenta en Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Tiempo Previsto de procesamiento"
@@ -1044,7 +1044,7 @@
     "message": "Mirar cuenta"
   },
   "viewOnEtherscan": {
-    "message": "Ver en Etherscan"
+    "message": "Ver en Confluxscan"
   },
   "visitWebSite": {
     "message": "Visita nuestro sitio web"

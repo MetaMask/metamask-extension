@@ -396,7 +396,7 @@
     "message": "Jeigu reikia dar kartą padaryti jūsų atkūrimo frazės kopiją, ją galite rasti pasirinkę Nuostatos -> Sauga."
   },
   "endOfFlowMessage7": {
-    "message": "Jeigu turite klausimų arba pastebite ką nors įtartino, rašykite el. paštu support@metamask.io."
+    "message": "Jeigu turite klausimų arba pastebite ką nors įtartino, rašykite el. paštu portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "„MetaMask“ negali atkurti jūsų atkūrimo frazės. Sužinokite daugiau."
@@ -426,7 +426,7 @@
     "message": "„Ethereum“ viešasis adresas"
   },
   "etherscanView": {
-    "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
+    "message": "Peržiūrėti paskyrą „Confluxscan“ programoje"
   },
   "estimatedProcessingTimes": {
     "message": "Numatomos apdorojimo trukmės"
@@ -750,7 +750,7 @@
     "message": "Saugokite savo atkūrimo frazę – gavome pranešimų apie interneto svetaines, kuriomis bandoma imituoti „MetaMask“. „MetaMask“ niekada neprašys jūsų pateikti savo atkūrimo frazę!"
   },
   "protectYourKeysMessage2": {
-    "message": "Saugokite savo frazę. Jei pastebėjote kažką įtartino arba nesate tikri dėl svetainės, rašykite mums adresu support@metamask.io"
+    "message": "Saugokite savo frazę. Jei pastebėjote kažką įtartino arba nesate tikri dėl svetainės, rašykite mums adresu portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"
@@ -866,7 +866,7 @@
     "message": "Gavėjo adresas"
   },
   "recipientAddressPlaceholder": {
-    "message": "Ieška, viešieji adresai (0x) arba ENS"
+    "message": "Ieška, viešieji adresai (0x)"
   },
   "rejectAll": {
     "message": "Atmesti viską"
@@ -1312,7 +1312,7 @@
     "message": "Peržiūrėti $1"
   },
   "viewOnEtherscan": {
-    "message": "Peržiūrėti „Etherscan“"
+    "message": "Peržiūrėti „Confluxscan“"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

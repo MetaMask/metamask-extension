@@ -766,7 +766,7 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#newUnsignedMessage', function () {
+  describe.skip('#newUnsignedMessage', function () {
     let msgParams, metamaskMsgs, messages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
@@ -905,7 +905,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,
-        '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b'
+        '0x42aa75cb4f4991a9e4b84645896b6a2a402f38de45a3f522dd7f1f0aa99205237bf8f9693a435438ad9d37e536552ecdc407ba41f54f57bc2e182c3bd5470eb801'
       )
     })
   })

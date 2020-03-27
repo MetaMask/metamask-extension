@@ -190,7 +190,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'eth_accounts')]`)
+        By.xpath(`//button[contains(text(), 'cfx_accounts')]`)
       )
 
       const getAccountsResult = await driver.findElement(
@@ -222,7 +222,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'eth_accounts')]`)
+        By.xpath(`//button[contains(text(), 'cfx_accounts')]`)
       )
 
       const getAccountsResult = await driver.findElement(

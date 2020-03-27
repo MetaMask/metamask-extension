@@ -591,31 +591,31 @@ export function setCurrentCurrency (currencyCode) {
   }
 }
 
-export function signMsg (msgData) {
-  log.debug('action - signMsg')
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signMessage`)
-      background.signMessage(msgData, (err, newState) => {
-        log.debug('signMessage called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+// export function signMsg (msgData) {
+//   log.debug('action - signMsg')
+//   return (dispatch) => {
+//     dispatch(showLoadingIndication())
+//     return new Promise((resolve, reject) => {
+//       log.debug(`actions calling background.signMessage`)
+//       background.signMessage(msgData, (err, newState) => {
+//         log.debug('signMessage called back')
+//         dispatch(updateMetamaskState(newState))
+//         dispatch(hideLoadingIndication())
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
+//         if (err) {
+//           log.error(err)
+//           dispatch(displayWarning(err.message))
+//           return reject(err)
+//         }
 
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
+//         dispatch(completedTx(msgData.metamaskId))
+//         dispatch(closeCurrentNotificationWindow())
 
-        return resolve(msgData)
-      })
-    })
-  }
-}
+//         return resolve(msgData)
+//       })
+//     })
+//   }
+// }
 
 export function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
@@ -642,6 +642,8 @@ export function signPersonalMsg (msgData) {
     })
   }
 }
+
+export const signMsg = signPersonalMsg
 
 export function decryptMsgInline (decryptedMsgData) {
   log.debug('action - decryptMsgInline')
@@ -1061,26 +1063,26 @@ export function txError (err) {
   }
 }
 
-export function cancelMsg (msgData) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.cancelMessage(msgData.id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+// export function cancelMsg (msgData) {
+//   return (dispatch) => {
+//     dispatch(showLoadingIndication())
+//     return new Promise((resolve, reject) => {
+//       background.cancelMessage(msgData.id, (err, newState) => {
+//         dispatch(updateMetamaskState(newState))
+//         dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
+//         if (err) {
+//           return reject(err)
+//         }
 
-        dispatch(completedTx(msgData.id))
-        dispatch(closeCurrentNotificationWindow())
+//         dispatch(completedTx(msgData.id))
+//         dispatch(closeCurrentNotificationWindow())
 
-        return resolve(msgData)
-      })
-    })
-  }
-}
+//         return resolve(msgData)
+//       })
+//     })
+//   }
+// }
 
 export function cancelPersonalMsg (msgData) {
   return (dispatch) => {
@@ -1103,6 +1105,8 @@ export function cancelPersonalMsg (msgData) {
     })
   }
 }
+
+export const cancelMsg = cancelPersonalMsg
 
 export function cancelDecryptMsg (msgData) {
   return (dispatch) => {

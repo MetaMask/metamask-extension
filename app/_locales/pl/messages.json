@@ -393,7 +393,7 @@
     "message": "Jeśli zajdzie konieczność ponownego wykonania kopii zapasowej frazy seed, znajdziesz ją w Ustawieniach -> Zabezpieczenia."
   },
   "endOfFlowMessage7": {
-    "message": "Jeśli masz jakieś pytania lub zauważysz coś podejrzanego, wyślij e-mail na adres support@metamask.io."
+    "message": "Jeśli masz jakieś pytania lub zauważysz coś podejrzanego, wyślij e-mail na adres portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask nie może odzyskać Twojej frazy seed. Dowiedz się więcej."
@@ -423,7 +423,7 @@
     "message": "Adres publiczny Ethereum"
   },
   "etherscanView": {
-    "message": "Zobacz konto na Etherscan"
+    "message": "Zobacz konto na Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Szacunkowy czas przetwarzania"
@@ -741,7 +741,7 @@
     "message": "Traktuj swoją frazę seed z ostrożnością – zgłaszano nam przypadki stron internetowych, które podają się za MetaMask. MetaMask nigdy nie poprosi Cię o podanie frazy seed!"
   },
   "protectYourKeysMessage2": {
-    "message": "Przechowuj frazę z zachowaniem zasad bezpieczeństwa. Jeśli zauważysz coś podejrzanego lub nie masz pewności co do strony internetowej, wyślij e-mail na adres support@metamask.io"
+    "message": "Przechowuj frazę z zachowaniem zasad bezpieczeństwa. Jeśli zauważysz coś podejrzanego lub nie masz pewności co do strony internetowej, wyślij e-mail na adres portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Nowy adres URL RPC"
@@ -857,7 +857,7 @@
     "message": "Adres odbiorcy"
   },
   "recipientAddressPlaceholder": {
-    "message": "Szukaj, adres publiczny (0x) lub ENS"
+    "message": "Szukaj, adres publiczny (0x)"
   },
   "rejectAll": {
     "message": "Odrzuć wszystkie"
@@ -1297,7 +1297,7 @@
     "message": "Wyświetl w $1"
   },
   "viewOnEtherscan": {
-    "message": "Zobacz na Etherscan"
+    "message": "Zobacz na Confluxscan"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"

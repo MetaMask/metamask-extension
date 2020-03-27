@@ -2731,10 +2731,10 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.0-beta":
-  version "2.0.0-beta"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.0-beta.tgz#c00e449b62726eaed768bfa2123086ec228a6458"
-  integrity sha512-b6qa3HTNRoIWocwIKz9ey2UvHnH+4JshCChkdGm1MSPcyp08WY+QcvDgwJfZ4C0Mr7qLzfSEFnfnOxm+jYxd9w==
+"@yqrashawn/conflux-local-network-lite@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.1.tgz#b4e10b927ece3495d820f704140eb7de2297165c"
+  integrity sha512-BFckbt8tZC+7F8/js75icjYzR1WchlgY8gst7AY8SjxFEx83PvA2ZLxskAOLP9r72FgtAy5fSIG+/X/O2nPSkA==
   dependencies:
     ethereumjs-util "^6.2.0"
     express "^4.17.1"
@@ -6040,6 +6040,22 @@ cephes@^1.1.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/cephes/-/cephes-1.2.0.tgz#4d246b622bc488ab8c982a1f702f0c9f49705d96"
   integrity sha512-twuUuJRrIrsELHz6foJtZlqrz6FC36zoHZJvvThsrM1UWPKxyoilw1Rka6Hk0AmPFKHKUoGwGfAtvNZNtNZu0g==
+
+cfx-keyring-controller@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.1.tgz#bf1fa02bc5ad242625f528a19efc030d1a8f1e4a"
+  integrity sha512-IyPpQ9E9KfHYpI3Prj/bbklfATN2MF42hA3IfJaUIeSdrlNUxnfPNqpuGuRZ9Xu/I1R30YpQoDujRx8H0n75rg==
+  dependencies:
+    bip39 "^2.4.0"
+    bluebird "^3.5.0"
+    browser-passworder "^2.0.3"
+    eth-hd-keyring "^3.5.0"
+    eth-sig-util "^1.4.0"
+    eth-simple-keyring "^3.5.0"
+    ethereumjs-util "^5.1.2"
+    js-conflux-sdk "^0.8.0-alpha"
+    loglevel "^1.5.0"
+    obs-store "^4.0.3"
 
 "chai@>=1.9.2 <4.0.0":
   version "3.5.0"
@@ -9844,21 +9860,6 @@ eth-keyring-controller@^5.3.0:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-keyring-controller@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.5.0.tgz#f8b78f69a0b0005873af2d1a6b2c655d6de51351"
-  integrity sha512-kWaukiHLMYNYtB/1vZyj1r1G6wU8u+DIYVMq8QUyFAxwcBnemsKISVPIXgltgXkuUiB/t9oXsA54bWBredgrVg==
-  dependencies:
-    bip39 "^2.4.0"
-    bluebird "^3.5.0"
-    browser-passworder "^2.0.3"
-    eth-hd-keyring "^3.5.0"
-    eth-sig-util "^1.4.0"
-    eth-simple-keyring "^3.5.0"
-    ethereumjs-util "^5.1.2"
-    loglevel "^1.5.0"
-    obs-store "^4.0.3"
-
 eth-ledger-bridge-keyring@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.2.0.tgz#715de14da24496c35cdb433022a20bd21b984f7e"
@@ -9896,13 +9897,6 @@ eth-method-registry@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/eth-method-registry/-/eth-method-registry-1.1.0.tgz#3cc01bd23dcf513428d14a0bb19910652cc5cac0"
   integrity sha512-jGbbGYd19XJCtoGFtUD2qJYWefKCCbFcu7F/AQ5sJXvqTIVAHnFn3paaV2zhN5t7iyKYp1qxc+ugOky+72xcbg==
-  dependencies:
-    ethjs "^0.3.0"
-
-eth-method-registry@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eth-method-registry/-/eth-method-registry-1.2.0.tgz#2160592d7938ef0b850c9267bc40b3470c2700c9"
-  integrity sha512-m+nphH4kOxz5KTvQ+BeIKVggxAul1sp4Ev09lfxRXIEHM1t/6NQEtaErL5ddTDFXXFVtTiW8uC9edTVUTnBZNg==
   dependencies:
     ethjs "^0.3.0"
 
@@ -11867,6 +11861,34 @@ fuse.js@^3.4.6:
   version "3.4.6"
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.6.tgz#545c3411fed88bf2e27c457cab6e73e7af697a45"
   integrity sha512-H6aJY4UpLFwxj1+5nAvufom5b2BT2v45P1MkPvdGIK8fWjQx/7o6tTT1+ALV0yawQvbmvCF0ufl2et8eJ7v7Cg==
+
+gaba@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.10.0.tgz#f01e4462f8b7e72a02d9558977ea411d8f7a9a09"
+  integrity sha512-2WEN3YgBh9kP7xow5K579bWsvCaH8c+HE75N9VZHQtGFZmK41q/U9MfRuRx4PREfUgP0S/O9GzQz+Uu0HvA19g==
+  dependencies:
+    await-semaphore "^0.1.3"
+    eth-contract-metadata "^1.11.0"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-errors "^2.0.2"
+    eth-json-rpc-infura "^4.0.1"
+    eth-keyring-controller "^5.3.0"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-sig-util "^2.3.0"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "0.6.0"
+    ethjs-query "^0.3.8"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    isomorphic-fetch "^2.2.1"
+    jsonschema "^1.2.4"
+    percentile "^1.2.1"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^15.0.4"
 
 gaba@^1.9.3:
   version "1.9.3"

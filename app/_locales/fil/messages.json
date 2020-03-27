@@ -369,7 +369,7 @@
     "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
   },
   "endOfFlowMessage7": {
-    "message": "Kung may mga tanong ka o nakakita ka ng kahina-hinalang bagay, i-email ang support@metamask.io."
+    "message": "Kung may mga tanong ka o nakakita ka ng kahina-hinalang bagay, i-email ang portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "Hindi ma-recover ng MetaMask ang iyong seedphrase. Alamin pa."
@@ -396,7 +396,7 @@
     "message": "Ilagay ang password para magpatuloy"
   },
   "etherscanView": {
-    "message": "Tingnan ang account sa Etherscan"
+    "message": "Tingnan ang account sa Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Tinatantiyang Tagal ng Pagproseso"
@@ -681,7 +681,7 @@
     "message": "Mag-ingat sa iyong seed phrase — may mga ulat na may mga website na nagpapanggap bilang MetaMask. Hindi kailanman hihilingin ng MetaMask ang iyong seed phrase!"
   },
   "protectYourKeysMessage2": {
-    "message": "Panatilihing ligtas ang iyong parirala. Kung may makikita kang kahina-hinala, o hindi ka sigurado tungkol sa isang website, mag-email sa support@metamask.io"
+    "message": "Panatilihing ligtas ang iyong parirala. Kung may makikita kang kahina-hinala, o hindi ka sigurado tungkol sa isang website, mag-email sa portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"
@@ -790,7 +790,7 @@
     "message": "Address ng Recipient"
   },
   "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
+    "message": "Maghanap, pampublikong address (0x)"
   },
   "rejectAll": {
     "message": "Tanggihan Lahat"
@@ -1203,7 +1203,7 @@
     "message": "Tingnan sa $1"
   },
   "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
+    "message": "Tingnan sa Confluxscan"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"

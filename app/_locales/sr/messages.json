@@ -393,7 +393,7 @@
     "message": "Ako treba ponovo da izradite rezervnu kopiju svoje početne fraze, možete je pronaći u Postavke -> Bezbednost."
   },
   "endOfFlowMessage7": {
-    "message": "Ako imate bilo kakvih pitanja ili primetite nešto sumnjivo, pošaljite e-poruku na support@metamask.io."
+    "message": "Ako imate bilo kakvih pitanja ili primetite nešto sumnjivo, pošaljite e-poruku na portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ne može da oporavi vašu početnu frazu. Saznajte više."
@@ -423,7 +423,7 @@
     "message": "Ethereum javna adresa"
   },
   "etherscanView": {
-    "message": "Pogledajte račun na Etherscan-u"
+    "message": "Pogledajte račun na Confluxscan-u"
   },
   "estimatedProcessingTimes": {
     "message": "Procenjeno vreme za obradu"
@@ -857,7 +857,7 @@
     "message": "Adresa primaoca"
   },
   "recipientAddressPlaceholder": {
-    "message": "Pretraga, javna adresa (0x) ili ENS"
+    "message": "Pretraga, javna adresa (0x)"
   },
   "rejectAll": {
     "message": "Odbacite sve"
@@ -1297,7 +1297,7 @@
     "message": "Pogledaj na $1"
   },
   "viewOnEtherscan": {
-    "message": "Pogledaj na Etherscan-u"
+    "message": "Pogledaj na Confluxscan-u"
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"

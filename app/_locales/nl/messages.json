@@ -134,7 +134,7 @@
     "message": "Voer wachtwoord in"
   },
   "etherscanView": {
-    "message": "Bekijk account op Etherscan"
+    "message": "Bekijk account op Confluxscan"
   },
   "exportPrivateKey": {
     "message": "Exporteer privésleutel"

@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Mascot from '../../../components/ui/mascot'
+// import Mascot from '../../../components/ui/mascot'
 import Button from '../../../components/ui/button'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
@@ -45,10 +45,14 @@ export default class Welcome extends PureComponent {
     return (
       <div className="welcome-page__wrapper">
         <div className="welcome-page">
-          <Mascot
-            animationEventEmitter={this.animationEventEmitter}
-            width="125"
-            height="125"
+          {/* <Mascot */}
+          {/*   animationEventEmitter={this.animationEventEmitter} */}
+          {/*   width="125" */}
+          {/*   height="125" */}
+          {/* /> */}
+          <img
+            height={128}
+            src="/images/icon-128.png"
           />
           <div className="welcome-page__header">{t('welcome')}</div>
           <div className="welcome-page__description">

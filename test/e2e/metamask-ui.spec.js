@@ -278,7 +278,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x), or ENS"]')
+        By.css('input[placeholder="Search, public address (0x)"]')
       )
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
@@ -363,7 +363,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x), or ENS"]')
+        By.css('input[placeholder="Search, public address (0x)"]')
       )
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
@@ -415,7 +415,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x), or ENS"]')
+        By.css('input[placeholder="Search, public address (0x)"]')
       )
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
@@ -1186,7 +1186,7 @@ describe('MetaMask', function () {
       await driver.delay(1000)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Search, public address (0x), or ENS"]')
+        By.css('input[placeholder="Search, public address (0x)"]')
       )
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
 
