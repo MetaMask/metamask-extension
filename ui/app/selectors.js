@@ -33,6 +33,7 @@ const selectors = {
   getTotalUnapprovedCount,
   preferencesSelector,
   getMetaMaskAccounts,
+  getUsePhishDetect,
 }
 
 module.exports = selectors
@@ -67,6 +68,10 @@ function getMetaMaskAccounts (state) {
     }
   })
   return selectedAccounts
+}
+
+function getUsePhishDetect (state) {
+  return Boolean(state.metamask.usePhishDetect)
 }
 
 function getSelectedAccount (state) {
@@ -166,7 +171,7 @@ function getSelectedTokenToFiatRate (state) {
   const tokenToFiatRate = multiplyCurrencies(
     conversionRate,
     selectedTokenExchangeRate,
-    { toNumericBase: 'dec' }
+    { toNumericBase: 'dec' },
   )
 
   return tokenToFiatRate

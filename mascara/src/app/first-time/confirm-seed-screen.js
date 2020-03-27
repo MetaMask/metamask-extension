@@ -157,6 +157,6 @@ export default compose(
     dispatch => ({
       confirmSeedWords: () => dispatch(confirmSeedWords()),
       openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
-    })
-  )
+    }),
+  ),
 )(ConfirmSeedScreen)

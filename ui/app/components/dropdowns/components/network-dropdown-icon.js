@@ -26,6 +26,6 @@ NetworkDropdownIcon.prototype.render = function () {
         height: `${diameter}px`,
         width: `${diameter}px`,
       },
-    })
+    }),
   )
 }

@@ -42,13 +42,13 @@ async function customizeGas (assert, price, limit, ethFee, usdFee) {
   assert.equal(
     (await findAsync(sendGasField, '.currency-display-component'))[0].textContent,
     ethFee,
-    'send gas field should show customized gas total'
+    'send gas field should show customized gas total',
   )
 
   assert.equal(
     (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
     usdFee,
-    'send gas field should show customized gas total converted to USD'
+    'send gas field should show customized gas total converted to USD',
   )
 }
 

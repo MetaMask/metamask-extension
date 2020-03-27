@@ -130,6 +130,6 @@ export default compose(
     mapStateToProps,
     dispatch => ({
       markNoticeRead: notice => dispatch(markNoticeRead(notice)),
-    })
-  )
+    }),
+  ),
 )(NoticeScreen)

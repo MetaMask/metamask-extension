@@ -1,6 +1,7 @@
-const ethUtil = require('ethereumjs-util')
-const assert = require('assert')
-const BN = require('bn.js')
+import extension from 'extensionizer'
+import ethUtil from 'ethereumjs-util'
+import assert from 'assert'
+import BN from 'bn.js'
 const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -152,6 +153,24 @@ function capitalizeFirstLetter (msg) {
   return msg.charAt(0).toUpperCase() + msg.slice(1)
 }
 
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) {
+    return
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message)
+}
+
 module.exports = {
   removeListeners,
   applyListeners,
@@ -163,4 +182,5 @@ module.exports = {
   bnToHex,
   BnMultiplyByFraction,
   capitalizeFirstLetter,
+  checkForError,
 }

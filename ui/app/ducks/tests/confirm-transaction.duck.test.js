@@ -78,7 +78,7 @@ describe('Confirm Transaction Duck', () => {
     it('should initialize state', () => {
       assert.deepEqual(
         ConfirmTransactionReducer({}),
-        initialState
+        initialState,
       )
     })
 
@@ -106,7 +106,7 @@ describe('Confirm Transaction Duck', () => {
             ...mockState.confirmTransaction.txData,
             id: 2,
           },
-        }
+        },
       )
     })
 
@@ -118,7 +118,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           txData: {},
-        }
+        },
       )
     })
 
@@ -136,7 +136,7 @@ describe('Confirm Transaction Duck', () => {
             ...mockState.confirmTransaction.tokenData,
             name: 'defToken',
           },
-        }
+        },
       )
     })
 
@@ -148,7 +148,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           tokenData: {},
-        }
+        },
       )
     })
 
@@ -166,7 +166,7 @@ describe('Confirm Transaction Duck', () => {
             ...mockState.confirmTransaction.methodData,
             name: 'transferFrom',
           },
-        }
+        },
       )
     })
 
@@ -178,7 +178,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           methodData: {},
-        }
+        },
       )
     })
 
@@ -197,7 +197,7 @@ describe('Confirm Transaction Duck', () => {
           fiatTransactionAmount: '123.45',
           ethTransactionAmount: '.5',
           hexTransactionAmount: '0x1',
-        }
+        },
       )
     })
 
@@ -216,7 +216,7 @@ describe('Confirm Transaction Duck', () => {
           fiatTransactionFee: '123.45',
           ethTransactionFee: '.5',
           hexTransactionFee: '0x1',
-        }
+        },
       )
     })
 
@@ -235,7 +235,7 @@ describe('Confirm Transaction Duck', () => {
           fiatTransactionTotal: '123.45',
           ethTransactionTotal: '.5',
           hexTransactionTotal: '0x1',
-        }
+        },
       )
     })
 
@@ -254,7 +254,7 @@ describe('Confirm Transaction Duck', () => {
             tokenSymbol: 'DEF',
             tokenDecimals: '1',
           },
-        }
+        },
       )
     })
 
@@ -267,7 +267,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           nonce: '0x1',
-        }
+        },
       )
     })
 
@@ -280,7 +280,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           toSmartContract: true,
-        }
+        },
       )
     })
 
@@ -292,7 +292,7 @@ describe('Confirm Transaction Duck', () => {
         {
           ...mockState.confirmTransaction,
           fetchingData: true,
-        }
+        },
       )
     })
 
@@ -303,7 +303,7 @@ describe('Confirm Transaction Duck', () => {
         }),
         {
           fetchingData: false,
-        }
+        },
       )
     })
 
@@ -314,7 +314,7 @@ describe('Confirm Transaction Duck', () => {
         }),
         {
           ...initialState,
-        }
+        },
       )
     })
   })
@@ -329,7 +329,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTxData(txData),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -340,7 +340,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.clearTxData(),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -353,7 +353,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTokenData(tokenData),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -364,7 +364,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.clearTokenData(),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -377,7 +377,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateMethodData(methodData),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -388,7 +388,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.clearMethodData(),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -401,7 +401,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTransactionAmounts(transactionAmounts),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -414,7 +414,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTransactionFees(transactionFees),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -427,7 +427,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTransactionTotals(transactionTotals),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -443,7 +443,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateTokenProps(tokenProps),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -456,7 +456,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.updateNonce(nonce),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -467,7 +467,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.setFetchingData(true),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -478,7 +478,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.setFetchingData(false),
-        expectedAction
+        expectedAction,
       )
     })
 
@@ -489,7 +489,7 @@ describe('Confirm Transaction Duck', () => {
 
       assert.deepEqual(
         actions.clearConfirmTransaction(),
-        expectedAction
+        expectedAction,
       )
     })
   })
@@ -498,7 +498,7 @@ describe('Confirm Transaction Duck', () => {
     beforeEach(() => {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          address => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x')
+          address => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x'),
         ),
       }
     })

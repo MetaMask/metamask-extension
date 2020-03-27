@@ -210,5 +210,5 @@ export default connect(
   dispatch => ({
     importNewAccount: (strategy, args) => dispatch(importNewAccount(strategy, args)),
     hideWarning: () => dispatch(hideWarning()),
-  })
+  }),
 )(ImportAccountScreen)

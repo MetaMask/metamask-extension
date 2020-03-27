@@ -33,26 +33,26 @@ export const transactionsSelector = createSelector(
         .sort((a, b) => b.time - a.time)
       : txsToRender
         .sort((a, b) => b.time - a.time)
-  }
+  },
 )
 
 export const pendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
     transactions.filter(transaction => transaction.status in pendingStatusHash).reverse()
-  )
+  ),
 )
 
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
     transactions.filter(transaction => transaction.status === SUBMITTED_STATUS)
-  )
+  ),
 )
 
 export const completedTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
     transactions.filter(transaction => !(transaction.status in pendingStatusHash))
-  )
+  ),
 )

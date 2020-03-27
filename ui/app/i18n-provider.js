@@ -48,6 +48,6 @@ const mapStateToProps = state => {
 }
 
 module.exports = compose(
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(I18nProvider)
 

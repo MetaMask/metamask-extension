@@ -40,7 +40,7 @@ RadioList.prototype.render = function () {
               props.onClick(event)
             },
           })
-        })
+        }),
       ),
       h('.text', {},
         labels.map((label) => {
@@ -52,7 +52,7 @@ RadioList.prototype.render = function () {
           } else {
             return h('.radio-titles.font-pre-medium', label)
           }
-        })
+        }),
       ),
     ])
   )

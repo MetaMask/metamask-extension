@@ -34,7 +34,7 @@ export default class Button extends Component {
           'button',
           typeHash[type],
           large && CLASSNAME_LARGE,
-          className
+          className,
         )}
         { ...buttonProps }
       >

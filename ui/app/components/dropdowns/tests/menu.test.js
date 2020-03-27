@@ -11,7 +11,7 @@ describe('Dropdown Menu Components', () => {
 
     beforeEach(() => {
       wrapper = shallow(
-        <Menu className = {'Test Class'} isShowing = {true}/>
+        <Menu className = {'Test Class'} isShowing = {true}/>,
       )
     })
 
@@ -33,7 +33,7 @@ describe('Dropdown Menu Components', () => {
           text = {'test text'}
           className = {'test className'}
           onClick = {onClickSpy}
-        />
+        />,
       )
     })
 

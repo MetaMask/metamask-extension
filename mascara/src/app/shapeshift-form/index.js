@@ -214,5 +214,5 @@ export default connect(
     shapeShiftSubview: () => dispatch(shapeShiftSubview()),
     pairUpdate: coin => dispatch(pairUpdate(coin)),
     buyWithShapeShift: data => dispatch(buyWithShapeShift(data)),
-  })
+  }),
 )(ShapeShiftForm)

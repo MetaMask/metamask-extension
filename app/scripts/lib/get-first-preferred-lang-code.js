@@ -4,7 +4,7 @@ const allLocales = require('../../_locales/index.json')
 
 const getPreferredLocales = extension.i18n ? promisify(
   extension.i18n.getAcceptLanguages,
-  { errorFirst: false }
+  { errorFirst: false },
 ) : async () => []
 
 const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().replace('_', '-'))

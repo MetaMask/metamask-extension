@@ -318,7 +318,7 @@ class ConfigScreen extends Component {
         defaultValue: currentCurrency,
       }, infuraCurrencies.map((currency) => {
         return h('option', {key: currency.quote.code, value: currency.quote.code}, `${currency.quote.code.toUpperCase()} - ${currency.quote.name}`)
-      })
+      }),
     ),
     ])
   }

@@ -96,7 +96,7 @@ class AccountList extends Component {
                 >{`${a.balance}`}</span>
               </label>
             </div>
-          </div>
+          </div>,
         )
       })
 
