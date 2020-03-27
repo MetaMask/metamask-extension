@@ -1,15 +1,21 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const Transaction = require('ethereumjs-tx')
-const EthQuery = require('ethjs-query')
-const TransactionStateManager = require('./tx-state-manager')
+import EventEmitter from 'safe-event-emitter'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import Transaction from 'ethereumjs-tx'
+import EthQuery from 'ethjs-query'
+
+import abi from 'human-standard-token-abi'
+import abiDecoder from 'abi-decoder'
+
+abiDecoder.addABI(abi)
+
+import TransactionStateManager from './tx-state-manager'
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
 const NonceTracker = require('./nonce-tracker')
-const txUtils = require('./lib/util')
+import * as txUtils from './lib/util'
 const cleanErrorStack = require('../../lib/cleanErrorStack')
-const log = require('loglevel')
+import log from 'loglevel'
 const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 const {
   TRANSACTION_TYPE_CANCEL,
@@ -222,19 +228,28 @@ class TransactionController extends EventEmitter {
     @return {txMeta}
   */
 
-  async retryTransaction (originalTxId) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const lastGasPrice = originalTxMeta.txParams.gasPrice
-    const txMeta = this.txStateManager.generateTxMeta({
-      txParams: originalTxMeta.txParams,
-      lastGasPrice,
-      loadingDefaults: false,
-      type: TRANSACTION_TYPE_RETRY,
-    })
-    this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
-    return txMeta
-  }
+ async retryTransaction (originalTxId, gasPrice) {
+  const originalTxMeta = this.txStateManager.getTx(originalTxId)
+  const { txParams } = originalTxMeta
+  const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
+  const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
+  const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
+  // essentially lastGasPrice * 1.1 but
+  // dont trust decimals so a round about way of doing that
+  const lastGasPriceBNBumped = lastGasPriceBN.mul(new ethUtil.BN(110, 10)).div(new ethUtil.BN(100, 10))
+  // transactions that are being retried require a >=%10 bump or the clients will throw an error
+  txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped) ? `0x${suggestedGasPriceBN.toString(16)}` : `0x${lastGasPriceBNBumped.toString(16)}`
+
+  const txMeta = this.txStateManager.generateTxMeta({
+    txParams: originalTxMeta.txParams,
+    lastGasPrice,
+    loadingDefaults: false,
+    type: TRANSACTION_TYPE_RETRY,
+  })
+  this.addTx(txMeta)
+  this.emit('newUnapprovedTx', txMeta)
+  return txMeta
+}
 
   /**
    * Creates a new approved transaction to attempt to cancel a previously submitted transaction. The

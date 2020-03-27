@@ -1,11 +1,11 @@
-const extend = require('xtend')
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const log = require('loglevel')
-const txStateHistoryHelper = require('./lib/tx-state-history-helper')
-const createId = require('../../lib/random-id')
-const { getFinalStates } = require('./lib/util')
+import ethUtil from 'ethereumjs-util'
+import extend from 'extend'
+import EventEmitter from 'safe-event-emitter'
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
+import txStateHistoryHelper from './lib/tx-state-history-helper'
+import createId from '../../lib/random-id'
+import { getFinalStates } from './lib/util'
 /**
   TransactionStateManager is responsible for the state of a transaction and
   storing the transaction

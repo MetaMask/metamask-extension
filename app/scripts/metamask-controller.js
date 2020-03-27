@@ -19,7 +19,7 @@ const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
-const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
+import createLoggerMiddleware from './lib/createLoggerMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
@@ -42,6 +42,8 @@ const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
+// import { PermissionsController } from './controllers/permissions'
+// import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 import { Mutex } from 'await-semaphore'
@@ -206,6 +208,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
     this.keyringController.on('unlock', () => this.emit('unlock'))
 
+    // this.permissionsController = new PermissionsController({
+    //   getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
+    //   getRestrictedMethods,
+    //   notifyDomain: this.notifyConnections.bind(this),
+    //   notifyAllDomains: this.notifyAllConnections.bind(this),
+    //   platform: opts.platform,
+    // }, initState.PermissionsController, initState.PermissionsMetadata)
+
     // detect tokens controller
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
@@ -285,6 +295,8 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      // PermissionsController: this.permissionsController.permissions,
+      // PermissionsMetadata: this.permissionsController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -307,6 +319,8 @@ module.exports = class MetamaskController extends EventEmitter {
       NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
+      // PermissionsController: this.permissionsController.permissions,
+      // PermissionsMetadata: this.permissionsController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -341,6 +355,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingTransactionByHash: (hash) => this.txController.getFilteredTxList({ hash, status: 'submitted' })[0],
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -414,6 +429,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const txController = this.txController
     const noticeController = this.noticeController
     const addressBookController = this.addressBookController
+    // const permissionsController = this.permissionsController
 
     return {
       // etc
@@ -514,6 +530,16 @@ module.exports = class MetamaskController extends EventEmitter {
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
+
+      // // permissions
+      // approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
+      // clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
+      // getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
+      // rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
+      // removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
+      // updatePermittedAccounts: nodeify(permissionsController.updatePermittedAccounts, permissionsController),
+      // legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+      // handleNewAccountSelected: nodeify(this.handleNewAccountSelected, this),
     }
   }
 
@@ -1710,6 +1736,8 @@ cancelEncryptionPublicKey (msgId, cb) {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
+    // permissions
+    // engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // sign typed data middleware

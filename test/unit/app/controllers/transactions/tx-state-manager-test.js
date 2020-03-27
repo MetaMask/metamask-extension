@@ -1,6 +1,6 @@
 const assert = require('assert')
 const TxStateManager = require('../../../../../app/scripts/controllers/transactions/tx-state-manager')
-const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
+import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
 const noop = () => true
 
 describe('TransactionStateManager', function () {

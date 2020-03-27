@@ -4,7 +4,7 @@ const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
-const extension = require('extensionizer')
+import extension from 'extensionizer'
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
