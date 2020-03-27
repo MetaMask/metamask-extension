@@ -18,7 +18,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-header">{t('links')}</div>
         <div className="info-tab__link-item">
           <a
-            href="https://metamask.io/privacy.html"
+            href="https://confluxnetwork.org/policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -27,22 +27,22 @@ export default class InfoTab extends PureComponent {
         </div>
         <div className="info-tab__link-item">
           <a
-            href="https://metamask.io/terms.html"
+            href="https://confluxnetwork.org/terms/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <span className="info-tab__link-text">{t('terms')}</span>
           </a>
         </div>
-        <div className="info-tab__link-item">
-          <a
-            href="https://metamask.io/attributions.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className="info-tab__link-text">{t('attributions')}</span>
-          </a>
-        </div>
+        {/* <div className="info-tab__link-item"> */}
+        {/*   <a */}
+        {/*     href="https://metamask.io/attributions.html" */}
+        {/*     target="_blank" */}
+        {/*     rel="noopener noreferrer" */}
+        {/*   > */}
+        {/*     <span className="info-tab__link-text">{t('attributions')}</span> */}
+        {/*   </a> */}
+        {/* </div> */}
         <hr className="info-tab__separator" />
         <div className="info-tab__link-item">
           <a

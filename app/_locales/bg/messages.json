@@ -396,7 +396,7 @@
     "message": "Ако отново трябва да архивирате основната си фраза, можете да я намерите в Настройки -> Защита."
   },
   "endOfFlowMessage7": {
-    "message": "Ако имате въпроси или забележите нещо съмнително, изпратете имейл на support@metamask.io."
+    "message": "Ако имате въпроси или забележите нещо съмнително, изпратете имейл на portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask не може да възстанови ключовата Ви фраза. Научете повече."
@@ -426,7 +426,7 @@
     "message": "Публичен адрес за етереум"
   },
   "etherscanView": {
-    "message": "Преглед на акаунта в Etherscan"
+    "message": "Преглед на акаунта в Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Приблизителни времена за обработка"
@@ -746,7 +746,7 @@
     "message": "Внимавайте с вашата фраза - има съобщения за уебсайтове, които се опитват да имитират MetaMask. MetaMask никога няма да поиска вашата фраза-зародиш!"
   },
   "protectYourKeysMessage2": {
-    "message": "Пазете фразата си. Ако забележите нещо съмнително или не сте сигурни за даден уебсайт, изпратете имейл на support@metamask.io"
+    "message": "Пазете фразата си. Ако забележите нещо съмнително или не сте сигурни за даден уебсайт, изпратете имейл на portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"
@@ -862,7 +862,7 @@
     "message": "Адрес на получателя"
   },
   "recipientAddressPlaceholder": {
-    "message": "Търсене, публичен адрес (0x) или ENS"
+    "message": "Търсене, публичен адрес (0x)"
   },
   "rejectAll": {
     "message": "Отхвърлете всички"
@@ -1308,7 +1308,7 @@
     "message": "Преглед на $1"
   },
   "viewOnEtherscan": {
-    "message": "Преглед на Etherscan"
+    "message": "Преглед на Confluxscan"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"

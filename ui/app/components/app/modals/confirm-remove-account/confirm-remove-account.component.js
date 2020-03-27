@@ -77,14 +77,14 @@ export default class ConfirmRemoveAccount extends Component {
           {this.renderSelectedAccount()}
           <div className="confirm-remove-account__description">
             {t('removeAccountDescription')}
-            <a
-              className="confirm-remove-account__link"
-              rel="noopener noreferrer"
-              target="_blank"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
-            >
-              {t('learnMore')}
-            </a>
+            {/* <a */}
+            {/*   className="confirm-remove-account__link" */}
+            {/*   rel="noopener noreferrer" */}
+            {/*   target="_blank" */}
+            {/*   href="https://metamask.zendesk.com/hc/en-us/articles/360015289932" */}
+            {/* > */}
+            {/*   {t('learnMore')} */}
+            {/* </a> */}
           </div>
         </div>
       </Modal>

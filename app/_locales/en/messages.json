@@ -15,7 +15,7 @@
     "message": "Select this to use Confluxscan to show incoming transactions in the transactions list"
   },
   "cancelledConnectionWithMetaMask": {
-    "message": "Cancelled Connection With ConfluxPortal"
+    "message": "Cancelled Connection With Conflux Portal"
   },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Conflux networks."
@@ -24,7 +24,7 @@
     "message": "Connected Sites"
   },
   "connectingWithMetaMask": {
-    "message": "Connecting With ConfluxPortal..."
+    "message": "Connecting With Conflux Portal..."
   },
   "connectTo": {
     "message": "Connect to $1",
@@ -110,7 +110,7 @@
     "message": "Add Suggested Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using ConfluxPortal"
+    "message": "Add the tokens you've acquired using Conflux Portal"
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -131,7 +131,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "ConfluxPortal",
+    "message": "Conflux Portal",
     "description": "The name of the application"
   },
   "approve": {
@@ -159,7 +159,7 @@
     "message": "Auto-Lock Timer (minutes)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Set the idle time in minutes before ConfluxPortal will automatically log out"
+    "message": "Set the idle time in minutes before Conflux Portal will automatically log out"
   },
   "average": {
     "message": "Average"
@@ -211,7 +211,7 @@
     "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
-    "message": "ConfluxPortal a fork of Metamask which is designed and built in California. It's alterd to use on Conflux network in Beijing."
+    "message": "Conflux Portal a fork of Metamask which is designed and built in California. It's alterd to use on Conflux network in Beijing."
   },
   "buyWithWyre": {
     "message": "We don't support Wyre"
@@ -265,7 +265,7 @@
     "message": "Close"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "You need to use ConfluxPortal on Google Chrome in order to connect to your Hardware Wallet. It's not fully tested yet. Use at your own risk."
+    "message": "You need to use Conflux Portal on Google Chrome in order to connect to your Hardware Wallet. It's not fully tested yet. Use at your own risk."
   },
   "confirm": {
     "message": "Confirm"
@@ -485,16 +485,16 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
-    "message": "Be careful of phishing! ConfluxPortal will never spontaneously ask for your seed phrase."
+    "message": "Be careful of phishing! Conflux Portal will never spontaneously ask for your seed phrase."
   },
   "endOfFlowMessage6": {
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
-    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+    "message": "If you ever have questions or see something fishy, email portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "ConfluxPortal cannot recover your seedphrase."
+    "message": "Conflux Portal cannot recover your seedphrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -504,7 +504,7 @@
   },
   "extensionId": {
     "message": "Extension ID: $1",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to ConfluxPortal"
+    "description": "$1 is a string of random letters that are the id of another extension connecting to Conflux Portal"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -552,11 +552,11 @@
     "description": "Title of generic error page"
   },
   "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support at support@metamask.io",
+    "message": "Try again by reloading the page, or contact support at portal@conflux-chain.org",
     "description": "Message displayed on generic error page in the fullscreen or notification UI"
   },
   "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
+    "message": "Try again by closing and reopening the popup, or contact support at portal@conflux-chain.org",
     "description": "Message displayed on generic error page in the popup UI"
   },
   "errorStack": {
@@ -669,7 +669,7 @@
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with ConfluxPortal"
+    "message": "Select a hardware wallet you'd like to use with Conflux Portal"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -701,7 +701,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created ConfluxPortal account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created Conflux Portal account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an Account with Seed Phrase"
@@ -805,8 +805,8 @@
     "message": "Would you like to add these tokens?"
   },
   "likeToConnect": {
-    "message": "$1 would like to connect to your ConfluxPortal account",
-    "description": "$1 is the name/url of a site/dapp asking to connect to ConfluxPortal"
+    "message": "$1 would like to connect to your Conflux Portal account",
+    "description": "$1 is the name/url of a site/dapp asking to connect to Conflux Portal"
   },
   "links": {
     "message": "Links"
@@ -851,7 +851,7 @@
     "message": "Connecting you to Conflux and the Decentralized Web."
   },
   "metamaskVersion": {
-    "message": "ConfluxPortal Version"
+    "message": "Conflux Portal Version"
   },
   "missingYourTokens": {
     "message": "Don't see your tokens?"
@@ -866,13 +866,13 @@
     "message": "My Wallet Accounts"
   },
   "myWalletAccountsDescription": {
-    "message": "All of your ConfluxPortal created accounts will automatically be added to this section."
+    "message": "All of your Conflux Portal created accounts will automatically be added to this section."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using ConfluxPortal, you’ll need CFX in your wallet."
+    "message": "To interact with decentralized applications using Conflux Portal, you’ll need CFX in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -916,7 +916,7 @@
     "message": "New Network"
   },
   "newToMetaMask": {
-    "message": "New to ConfluxPortal?"
+    "message": "New to Conflux Portal?"
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
@@ -925,10 +925,10 @@
     "message": "Protect Your Keys!"
   },
   "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate ConfluxPortal. ConfluxPortal will never ask for your seed phrase!"
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate Conflux Portal. Conflux Portal will never ask for your seed phrase!"
   },
   "protectYourKeysMessage2": {
-    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
+    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -953,7 +953,7 @@
   },
   "nextNonceWarning": {
     "message": "Nonce is higher than suggested nonce of $1",
-    "description": "The next nonce according to ConfluxPortal's internal logic"
+    "description": "The next nonce according to Portal's internal logic"
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
@@ -995,7 +995,7 @@
     "message": "Participate in MetaMetrics (actually that's a metamask thing not conflux thing, we don't have this for real)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participate in MetaMetrics to help us make ConfluxPortal better (actually that's a metamask thing not conflux thing, we don't have this for real)"
+    "message": "Participate in MetaMetrics to help us make Conflux Portal better (actually that's a metamask thing not conflux thing, we don't have this for real)"
   },
   "password": {
     "message": "Password"
@@ -1057,7 +1057,7 @@
     "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Search, public address (0x)"
   },
   "rejectAll": {
     "message": "Reject All"
@@ -1136,7 +1136,7 @@
     "message": "Ready to Connect?"
   },
   "revokeInPermissions": {
-    "message": "* You can view and revoke permissions in ConfluxPortal settings."
+    "message": "* You can view and revoke permissions in Conflux Portal settings."
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -1244,7 +1244,7 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in ConfluxPortal"
+    "message": "Select the account to view in Conflux Portal"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1326,7 +1326,7 @@
     "message": "Switch Networks"
   },
   "stateLogFileName": {
-    "message": "ConfluxPortal State Logs"
+    "message": "Conflux Portal State Logs"
   },
   "stateLogs": {
     "message": "State Logs"
@@ -1392,16 +1392,16 @@
     "message": "You can sync your accounts and information with your mobile device. Open the ConfluxPortal mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\" (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "If you just open the ConfluxPortal Mobile app for the first time, just follow the steps in your phone. (Conflux version of MetaMask don't support mobile yet)"
+    "message": "If you just open the Conflux Portal Mobile app for the first time, just follow the steps in your phone. (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scan this code with your ConfluxPortal mobile app (Conflux version of MetaMask don't support mobile yet)"
+    "message": "Scan this code with your Conflux Portal mobile app (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileBeCareful": {
     "message": "Make sure nobody else is looking at your screen when you scan this code (Conflux version of MetaMask don't support mobile yet)"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced successfully. Enjoy the ConfluxPortal mobile app! (Conflux version of MetaMask don't support mobile yet)"
+    "message": "Your data has been synced successfully. Enjoy the Conflux Portal mobile app! (Conflux version of MetaMask don't support mobile yet)"
   },
   "terms": {
     "message": "Terms of Use"
@@ -1418,7 +1418,7 @@
   },
   "thisWillAllowExternalExtension": {
     "message": "This will allow an external extension with id $1 to:",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to ConfluxPortal"
+    "description": "$1 is a string of random letters that are the id of another extension connecting to Conflux Portal"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
@@ -1434,7 +1434,7 @@
   },
   "toConnectWith": {
     "message": "To connect with $1",
-    "description": "$1 is the name or domain of a site/dapp that asking to connect with ConfluxPortal"
+    "description": "$1 is the name or domain of a site/dapp that asking to connect with Conflux Portal"
   },
   "toETHviaShapeShift": {
     "message": "$1 to CFX via ShapeShift",
@@ -1518,7 +1518,7 @@
     "message": "Try again"
   },
   "typePassword": {
-    "message": "Type your ConfluxPortal password"
+    "message": "Type your Conflux Portal password"
   },
   "unapproved": {
     "message": "Unapproved"
@@ -1593,7 +1593,7 @@
     "message": "Welcome Back!"
   },
   "welcome": {
-    "message": "Welcome to ConfluxPortal"
+    "message": "Welcome to Conflux Portal"
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."

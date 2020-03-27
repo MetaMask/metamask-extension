@@ -393,7 +393,7 @@
     "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
   },
   "endOfFlowMessage7": {
-    "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til support@metamask.io"
+    "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til portal@conflux-chain.org"
   },
   "endOfFlowMessage8": {
     "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
@@ -423,7 +423,7 @@
     "message": "Ethereum offentlig adresse"
   },
   "etherscanView": {
-    "message": "Vis konto på Etherscan "
+    "message": "Vis konto på Confluxscan "
   },
   "estimatedProcessingTimes": {
     "message": "Anslått behandlingstid"
@@ -740,7 +740,7 @@
     "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
   },
   "protectYourKeysMessage2": {
-    "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til support@metamask.io"
+    "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "NY RPC-URL "
@@ -856,7 +856,7 @@
     "message": "Mottakeradresse"
   },
   "recipientAddressPlaceholder": {
-    "message": "Søk, offentlig adresse (0x) eller ENS"
+    "message": "Søk, offentlig adresse (0x)"
   },
   "rejectAll": {
     "message": "Avvis alle"
@@ -1284,7 +1284,7 @@
     "message": "Vis ved $1 "
   },
   "viewOnEtherscan": {
-    "message": "Vis på Etherscan "
+    "message": "Vis på Confluxscan "
   },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "

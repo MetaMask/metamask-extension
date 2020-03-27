@@ -21,7 +21,7 @@ class ChromeDriver {
     }
     const driver = builder.build()
     const chromeDriver = new ChromeDriver(driver)
-    const extensionId = await chromeDriver.getExtensionIdByName('ConfluxPortal')
+    const extensionId = await chromeDriver.getExtensionIdByName('Conflux Portal')
 
     return {
       driver,

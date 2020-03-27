@@ -214,19 +214,6 @@ export default class SignatureRequestOriginal extends Component {
           })}
         >
           {notice}
-          {type === 'eth_sign' ? (
-            <span
-              className="request-signature__help-link"
-              onClick={() => {
-                global.platform.openWindow({
-                  url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
-                })
-              }}
-            >
-              {this.context.t('learnMore')}
-            </span>
-          ) : null}
         </div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {

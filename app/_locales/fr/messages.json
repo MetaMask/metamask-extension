@@ -384,7 +384,7 @@
     "message": "Si vous avez besoin de sauvegarder à nouveau votre phrase de départ, vous pouvez la trouver dans Paramètres -> Sécurité."
   },
   "endOfFlowMessage7": {
-    "message": "Si vous avez des questions ou remarquez quelque chose de suspect, envoyez un e-mail à : support@metamask.io."
+    "message": "Si vous avez des questions ou remarquez quelque chose de suspect, envoyez un e-mail à : portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ne peut pas récupérer votre phrase de départ. Renseignez-vous davantage."
@@ -414,7 +414,7 @@
     "message": "Adresse publique d'Ethereum"
   },
   "etherscanView": {
-    "message": "Afficher le compte sur Etherscan"
+    "message": "Afficher le compte sur Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Délais de traitement estimés"
@@ -729,7 +729,7 @@
     "message": "Soyez prudent avec votre phrase mnémotechnique — on nous a signalé des sites web qui tentaient d'imiter MetaMask. MetaMask ne vous demandera jamais votre phrase mnémotechnique !"
   },
   "protectYourKeysMessage2": {
-    "message": "Ne dévoilez pas votre phrase. Si vous remarquez quelque chose de suspect ou que vous avez un doute à propos d'un site web, envoyez un e-mail à : support@metamask.io"
+    "message": "Ne dévoilez pas votre phrase. Si vous remarquez quelque chose de suspect ou que vous avez un doute à propos d'un site web, envoyez un e-mail à : portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Nouvelle URL de RPC"
@@ -845,7 +845,7 @@
     "message": "Adresse du destinataire"
   },
   "recipientAddressPlaceholder": {
-    "message": "Recherche, adresse publique (0x) ou ENS"
+    "message": "Recherche, adresse publique (0x)"
   },
   "rejectAll": {
     "message": "Tout rejeter"
@@ -1285,7 +1285,7 @@
     "message": "Afficher à $1"
   },
   "viewOnEtherscan": {
-    "message": "Voir sur Etherscan"
+    "message": "Voir sur Confluxscan"
   },
   "visitWebSite": {
     "message": "Visitez notre site web"

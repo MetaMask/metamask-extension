@@ -393,7 +393,7 @@
     "message": "Αν χρειάζεται να δημιουργήσετε ξανά αντίγραφο της φράσης επαναφοράς σας, μπορείτε να την βρείτε στη Ρυθμίσεις -> Ασφάλεια."
   },
   "endOfFlowMessage7": {
-    "message": "Εάν έχετε οποιαδήποτε ερώτηση ή αντιληφθείτε κάτι ύποπτο στείλτε μας email στο support@metamask.io."
+    "message": "Εάν έχετε οποιαδήποτε ερώτηση ή αντιληφθείτε κάτι ύποπτο στείλτε μας email στο portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "Το MetaMask δεν μπορεί να ανακτήσει τη φράση φύτρου σας. Μάθετε περισσότερα."
@@ -423,7 +423,7 @@
     "message": "Δημόσια Διεύθυνση Ethereum"
   },
   "etherscanView": {
-    "message": "Προβολή λογαριασμού στο Etherscan"
+    "message": "Προβολή λογαριασμού στο Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Εκτιμώμενοι Χρόνοι Επεξεργασίας"
@@ -747,7 +747,7 @@
     "message": "Να προσέχετε με τη φάση σπόρου. Υπάρχουν αναφορές για ιστότοπους που προσπαθούν να προσποιηθούν ότι είναι το MetaTask. Το MetaTask δεν θα σας ρωτήσει ποτέ για τη φάση σπόρου!"
   },
   "protectYourKeysMessage2": {
-    "message": "Κρατήστε τη φράση σας ασφαλή. Αν δείτε κάτι ύποπτο ή δεν είστε βέβαιοι για έναν ιστότοπο, στείλτε ένα email στο support@metamask.io"
+    "message": "Κρατήστε τη φράση σας ασφαλή. Αν δείτε κάτι ύποπτο ή δεν είστε βέβαιοι για έναν ιστότοπο, στείλτε ένα email στο portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Νέο RPC URL"
@@ -863,7 +863,7 @@
     "message": "Διεύθυνση Παραλήπτη"
   },
   "recipientAddressPlaceholder": {
-    "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
+    "message": "Αναζήτηση, δημόσια διεύθυνση (0x)"
   },
   "rejectAll": {
     "message": "Απόρριψη Όλων"
@@ -1306,7 +1306,7 @@
     "message": "Προβολή σε $1"
   },
   "viewOnEtherscan": {
-    "message": "Προβολή στο Etherscan"
+    "message": "Προβολή στο Confluxscan"
   },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"

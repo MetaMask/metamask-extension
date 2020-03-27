@@ -396,7 +396,7 @@
     "message": "إذا كنت بحاجة إلى عمل نسخة احتياطية من عبارة الأمان الخاصة بك مرة أخرى، يمكنك العثور عليها في الإعدادات -> الأمان."
   },
   "endOfFlowMessage7": {
-    "message": "إذا كانت لديك أسئلة أو ترى شيئاً ما مريباً، فأرسل بريداً إلكترونياً إلى support@metamask.io."
+    "message": "إذا كانت لديك أسئلة أو ترى شيئاً ما مريباً، فأرسل بريداً إلكترونياً إلى portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "لا يمكن لـ MetaMask استعادة جملتك البذرية. تعلم المزيد."
@@ -426,7 +426,7 @@
     "message": "عنوان الإيثيريوم العمومي"
   },
   "etherscanView": {
-    "message": "عرض الحساب على Etherscan"
+    "message": "عرض الحساب على Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "أوقات المعالجة المقدرة"
@@ -743,7 +743,7 @@
     "message": "كن حذراً بشأن عبارة الأمان الخاصة بك - فهناك بلاغات عن مواقع ويب تحاول تقليد MetaMask. لن تسأل MetaMask عن عبارة الأمان الخاصة بك أبداً!"
   },
   "protectYourKeysMessage2": {
-    "message": "أبقِ عبارة الأمان الخاصة بك بأمان. إذا رأيت شيئاً مريباً، أو كنت غير متأكد من موقع ويب ما، أرسل بريداً إلكترونياً إلى support@metamask.io"
+    "message": "أبقِ عبارة الأمان الخاصة بك بأمان. إذا رأيت شيئاً مريباً، أو كنت غير متأكد من موقع ويب ما، أرسل بريداً إلكترونياً إلى portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
@@ -859,7 +859,7 @@
     "message": "عنوان المستلم"
   },
   "recipientAddressPlaceholder": {
-    "message": "البحث، العنوان العام (0x)، أو ENS"
+    "message": "البحث، العنوان العام (0x)"
   },
   "rejectAll": {
     "message": "رفض الكل"
@@ -1305,7 +1305,7 @@
     "message": "عرض في $1"
   },
   "viewOnEtherscan": {
-    "message": "عرضه على Etherscan"
+    "message": "عرضه على Confluxscan"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"

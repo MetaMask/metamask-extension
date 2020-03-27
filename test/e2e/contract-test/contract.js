@@ -693,7 +693,7 @@ const initialize = () => {
           from: accounts[0],
           to: accounts[0],
           data: signedData,
-          gas: 21000,
+          gas: 26000,
           gasPrice: 10000000000,
         })
         .confirmed()

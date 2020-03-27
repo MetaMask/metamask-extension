@@ -387,7 +387,7 @@
     "message": "Ak potrebujete backup frázu znova zálohovať, nájdete ju v časti Nastavenia -> Zabezpečenie."
   },
   "endOfFlowMessage7": {
-    "message": "Ak budete mať nejaké otázky alebo niečo zaujímavé, pošlite email na support@metamask.io."
+    "message": "Ak budete mať nejaké otázky alebo niečo zaujímavé, pošlite email na portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask nemôže obnoviť vašu seed frázu. Zistiť viac."
@@ -417,7 +417,7 @@
     "message": "Verejná adresa Ethereum"
   },
   "etherscanView": {
-    "message": "Prohlédněte si účet na Etherscan"
+    "message": "Prohlédněte si účet na Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Odhadovaný čas spracovania"
@@ -716,7 +716,7 @@
     "message": "Pri seed fráze buďte opatrní – vyskytli sa správy o webových stránkach, ktoré sa snažia napodobniť MetaMask. MetaMask nikdy nebude žiadať vašu seed frázu!"
   },
   "protectYourKeysMessage2": {
-    "message": "Držte svoju frázu v bezpečí. Ak zbadáte niečo podozrivé alebo si nie ste istí webom, pošlite email na adresu support@metamask.io"
+    "message": "Držte svoju frázu v bezpečí. Ak zbadáte niečo podozrivé alebo si nie ste istí webom, pošlite email na adresu portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Nová RPC URL"
@@ -832,7 +832,7 @@
     "message": "Adresa příjemce"
   },
   "recipientAddressPlaceholder": {
-    "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
+    "message": "Vyhľadávať verejnú adresu (0x)"
   },
   "rejectAll": {
     "message": "Odmietnuť všetko"
@@ -1266,7 +1266,7 @@
     "message": "Zobraziť na $1"
   },
   "viewOnEtherscan": {
-    "message": "Zobraziť na Etherscan"
+    "message": "Zobraziť na Confluxscan"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

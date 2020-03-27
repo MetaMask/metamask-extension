@@ -167,7 +167,7 @@
     "message": "Parolanızı girin"
   },
   "etherscanView": {
-    "message": "Hesabı Etherscan üzerinde izle"
+    "message": "Hesabı Confluxscan üzerinde izle"
   },
   "exportPrivateKey": {
     "message": "Özel anahtarı ver"

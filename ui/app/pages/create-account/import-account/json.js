@@ -9,8 +9,8 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { getMetaMaskAccounts } from '../../../selectors/selectors'
 import Button from '../../../components/ui/button'
 
-const HELP_LINK =
-  'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
+// const HELP_LINK =
+//   'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
 class JsonImportSubview extends Component {
   state = {
@@ -27,9 +27,9 @@ class JsonImportSubview extends Component {
     return (
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
-        <a className="warning" href={HELP_LINK} target="_blank">
-          {this.context.t('fileImportFail')}
-        </a>
+        {/* <a className="warning" href={HELP_LINK} target="_blank"> */}
+        {/*   {this.context.t('fileImportFail')} */}
+        {/* </a> */}
         <FileInput
           readAs="text"
           onLoad={this.onLoad.bind(this)}

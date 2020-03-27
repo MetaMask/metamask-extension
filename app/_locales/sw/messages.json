@@ -390,7 +390,7 @@
     "message": "Ikiwa unataka kuhifadhi tena kwa njia mbadla kirai chako kianzio, unaweza kukipata kwenye Mipangilio -> Usalama."
   },
   "endOfFlowMessage7": {
-    "message": "Ikiwa una maswali au umeona kitu ambacho ni cha ulaghai, tuma barua pepe support@metamask.io."
+    "message": "Ikiwa una maswali au umeona kitu ambacho ni cha ulaghai, tuma barua pepe portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask haiwezi kurejesha kirai chako kianzio. Pata maelezo ziadi."
@@ -420,7 +420,7 @@
     "message": "Anwani ya Umma ya Ethereum"
   },
   "etherscanView": {
-    "message": "Tazama akaunti kwenye Etherscan"
+    "message": "Tazama akaunti kwenye Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Muda wa Kuchakata Uliokadiriwa"
@@ -728,7 +728,7 @@
     "message": "Kuwa mwangalifu na kirai kianzio chako - kumekuwa na taarifa za tovuti ambazo zinajaribu kuiga MetaMask. MetaMask kamwe haitakuomba kirai kianzio chako!"
   },
   "protectYourKeysMessage2": {
-    "message": "Weka salama kirai kianzio chako. Ikiwa unaona kitu cha kilaghai, au huna uhakika na tovuti fulani, tuma barua pepe kwenda support@metamask.io"
+    "message": "Weka salama kirai kianzio chako. Ikiwa unaona kitu cha kilaghai, au huna uhakika na tovuti fulani, tuma barua pepe kwenda portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
@@ -844,7 +844,7 @@
     "message": "Anwani ya Mpokeaji"
   },
   "recipientAddressPlaceholder": {
-    "message": "Tafuta, anwani za umma (0x), au ENS"
+    "message": "Tafuta, anwani za umma (0x)"
   },
   "rejectAll": {
     "message": "Kataa Zote"
@@ -1290,7 +1290,7 @@
     "message": "Tazama kwenye $1"
   },
   "viewOnEtherscan": {
-    "message": "Tazama kwenye Etherscan"
+    "message": "Tazama kwenye Confluxscan"
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"

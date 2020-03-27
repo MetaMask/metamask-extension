@@ -26,7 +26,7 @@
   },
   "applications": {
     "gecko": {
-      "id": "conflux-portal@conflux-chain.org",
+      "id": "portal@conflux-chain.org",
       "strict_min_version": "56.0"
     }
   },
@@ -45,7 +45,7 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "ConfluxPortal",
+    "default_title": "Conflux Portal",
     "default_popup": "popup.html"
   },
   "content_scripts": [

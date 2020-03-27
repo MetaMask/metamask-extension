@@ -396,7 +396,7 @@
     "message": "Če morate ponovno varnostno kopirati vaše geslo seed phrase, ga najdete v Nastavitve -> Varnost."
   },
   "endOfFlowMessage7": {
-    "message": "Če imate kakršna koli vprašanja ali opazite kaj sumljivega, nam pišite na support@metamask.io."
+    "message": "Če imate kakršna koli vprašanja ali opazite kaj sumljivega, nam pišite na portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ne more obnoviti vašega gesla seed phrase. Več informacij."
@@ -426,7 +426,7 @@
     "message": "Javni naslov Ethereum"
   },
   "etherscanView": {
-    "message": "Poglej račun na Etherscan"
+    "message": "Poglej račun na Confluxscan"
   },
   "estimatedProcessingTimes": {
     "message": "Predviden čas obdelave"
@@ -735,7 +735,7 @@
     "message": "Bodite previdni  in svoj seed phrase skrbno varujte - obstajajo poročila o spletnih mestih, ki poskušajo posnemati MetaMask. MetaMask nikoli ne bo zahteval vašega gesla seed phrase!"
   },
   "protectYourKeysMessage2": {
-    "message": "Hranite svoj seed phrase. Če opazite sumljivo delovanje ali niste prepričani ali je določeno spletno mesto varno, nam pišite na support@metamask.io"
+    "message": "Hranite svoj seed phrase. Če opazite sumljivo delovanje ali niste prepričani ali je določeno spletno mesto varno, nam pišite na portal@conflux-chain.org"
   },
   "rpcUrl": {
     "message": "Nov URL RPC"
@@ -851,7 +851,7 @@
     "message": "Prejemnikov naslov"
   },
   "recipientAddressPlaceholder": {
-    "message": "Iskanje, javni naslov (0x) ali ENS"
+    "message": "Iskanje, javni naslov (0x)"
   },
   "rejectAll": {
     "message": "Zavrni vse"
@@ -1294,7 +1294,7 @@
     "message": "Ogled na $1 "
   },
   "viewOnEtherscan": {
-    "message": "Poglej na Etherscan"
+    "message": "Poglej na Confluxscan"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"
