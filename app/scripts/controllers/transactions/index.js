@@ -12,9 +12,9 @@ abiDecoder.addABI(abi)
 import TransactionStateManager from './tx-state-manager'
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
-const NonceTracker = require('./nonce-tracker')
+import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
-const cleanErrorStack = require('../../lib/cleanErrorStack')
+import cleanErrorStack from '../../lib/cleanErrorStack'
 import log from 'loglevel'
 const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 const {
@@ -228,18 +228,9 @@ class TransactionController extends EventEmitter {
     @return {txMeta}
   */
 
- async retryTransaction (originalTxId, gasPrice) {
+ async retryTransaction (originalTxId) {
   const originalTxMeta = this.txStateManager.getTx(originalTxId)
-  const { txParams } = originalTxMeta
-  const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
-  const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
-  const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
-  // essentially lastGasPrice * 1.1 but
-  // dont trust decimals so a round about way of doing that
-  const lastGasPriceBNBumped = lastGasPriceBN.mul(new ethUtil.BN(110, 10)).div(new ethUtil.BN(100, 10))
-  // transactions that are being retried require a >=%10 bump or the clients will throw an error
-  txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped) ? `0x${suggestedGasPriceBN.toString(16)}` : `0x${lastGasPriceBNBumped.toString(16)}`
-
+  const lastGasPrice = originalTxMeta.txParams.gasPrice
   const txMeta = this.txStateManager.generateTxMeta({
     txParams: originalTxMeta.txParams,
     lastGasPrice,
