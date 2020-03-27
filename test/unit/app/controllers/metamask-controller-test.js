@@ -68,6 +68,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
+      platform: { showTransactionNotification: () => {} },
     })
     // disable diagnostics
     metamaskController.diagnostics = null

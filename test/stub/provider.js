@@ -1,4 +1,4 @@
-const JsonRpcEngine = require('json-rpc-engine')
+import JsonRpcEngine from 'json-rpc-engine'
 const scaffoldMiddleware = require('eth-json-rpc-middleware/scaffold')
 const providerAsMiddleware = require('eth-json-rpc-middleware/providerAsMiddleware')
 const GanacheCore = require('ganache-core')

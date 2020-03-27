@@ -157,7 +157,7 @@ class ExtensionPlatform {
   }
 
   _subscribeToNotificationClicked () {
-    if (extension.notifications.onClicked.hasListener(this._viewOnExplorer)) {
+    if (!extension.notifications.onClicked.hasListener(this._viewOnExplorer)) {
       extension.notifications.onClicked.removeListener(this._viewOnExplorer)
     }
     extension.notifications.onClicked.addListener(this._viewOnExplorer)
