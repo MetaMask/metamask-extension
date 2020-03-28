@@ -11,6 +11,8 @@ class ChromeDriver {
       // https://stackoverflow.com/questions/50642308/webdriverexception-unknown-error-devtoolsactiveport-file-doesnt-exist-while-t
       '--no-sandbox',
       '--disable-dev-shm-usage',
+      // https://stackoverflow.com/questions/56637973/how-to-fix-selenium-devtoolsactiveport-file-doesnt-exist-exception-in-python
+      '--remote-debugging-port=9222',
     ]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
