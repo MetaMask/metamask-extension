@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -x
 
-yarn --frozen-lockfile --ignore-scripts --har
+yarn --frozen-lockfile --ignore-scripts --har --ignore-engines
 
 # run each in subshell so directory change does not persist
 # scripts can be any of:

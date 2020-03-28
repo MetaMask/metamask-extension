@@ -274,6 +274,8 @@
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "serve-handler": "^6.1.2",
+    "sesify": "^4.2.1",
+    "sesify-viz": "^3.0.5",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.0.1",
@@ -290,7 +292,6 @@
     "webpack": "^4.41.6"
   },
   "engines": {
-    "node": "^12.16.1",
     "yarn": "^1.16.0"
   }
 }
