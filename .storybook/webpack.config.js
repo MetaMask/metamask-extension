@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
   module: {
+    strictExportPresence: true,
     rules: [
       {
         test: /\.(woff(2)?|ttf|eot|otf)(\?v=\d+\.\d+\.\d+)?$/,
