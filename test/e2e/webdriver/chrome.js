@@ -8,6 +8,9 @@ class ChromeDriver {
   static async build ({ extensionPath, responsive, port }) {
     const args = [
       `load-extension=${extensionPath}`,
+      // https://stackoverflow.com/questions/50642308/webdriverexception-unknown-error-devtoolsactiveport-file-doesnt-exist-while-t
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
     ]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
