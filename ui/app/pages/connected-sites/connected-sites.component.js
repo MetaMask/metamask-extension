@@ -4,6 +4,7 @@ import ConnectedSitesList from '../../components/app/connected-sites-list'
 import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes'
+import Popover from '../../components/ui/popover/popover.component'
 
 export default class ConnectSites extends Component {
   static propTypes = {
@@ -19,18 +20,9 @@ export default class ConnectSites extends Component {
       history,
     } = this.props
     return (
-      <div className="connected-sites">
-        <div className="connected-sites__header">
-          <div className="connected-sites__title">
-            { this.context.t('connectedSites') }
-          </div>
-          <div
-            className="settings-page__close-button"
-            onClick={() => history.push(DEFAULT_ROUTE)}
-          />
-        </div>
+      <Popover title={this.context.t('connectedSites')} onClose={() => history.push(DEFAULT_ROUTE)}>
         <ConnectedSitesList />
-      </div>
+      </Popover>
     )
   }
 }

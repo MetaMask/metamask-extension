@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Media from 'react-media'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import HomeNotification from '../../components/app/home-notification'
 import DaiMigrationNotification from '../../components/app/dai-migration-component'
@@ -10,6 +10,7 @@ import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
+import ConnectedSites from '../connected-sites/connected-sites.component'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -17,6 +18,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -170,6 +172,7 @@ export default class Home extends PureComponent {
 
     return (
       <div className="main-container">
+        <Route path={CONNECTED_ROUTE} component={ConnectedSites} />
         <div className="home__container">
           <Media
             query="(min-width: 576px)"
