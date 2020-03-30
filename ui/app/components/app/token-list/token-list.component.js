@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TokenTracker from 'eth-token-tracker'
+import TokenTracker from '@metamask/eth-token-tracker'
 import { isEqual } from 'lodash'
 import contracts from 'eth-contract-metadata'
 
