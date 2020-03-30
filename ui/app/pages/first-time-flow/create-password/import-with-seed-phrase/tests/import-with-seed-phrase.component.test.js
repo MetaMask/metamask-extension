@@ -34,6 +34,26 @@ describe('ImportWithSeedPhrase Component', function () {
       assert.deepEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz')
     })
 
+    it('should handle a mixed-case seed phrase', function () {
+      const root = shallowRender({
+        onSubmit: sinon.spy(),
+      })
+
+      const { parseSeedPhrase } = root.instance()
+
+      assert.deepEqual(parseSeedPhrase('FOO bAr baZ'), 'foo bar baz')
+    })
+
+    it('should handle an upper-case seed phrase', function () {
+      const root = shallowRender({
+        onSubmit: sinon.spy(),
+      })
+
+      const { parseSeedPhrase } = root.instance()
+
+      assert.deepEqual(parseSeedPhrase('FOO BAR BAZ'), 'foo bar baz')
+    })
+
     it('should trim extraneous whitespace from the given seed phrase', function () {
       const root = shallowRender({
         onSubmit: sinon.spy(),

@@ -2,6 +2,7 @@
 
 ## Current Develop Branch
 - [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
+- [#8246](https://github.com/MetaMask/metamask-extension/pull/8246): Make seed phrase import case-insensitive
 
 ## 7.7.0 Thu Nov 28 2019
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Connect distinct accounts per site
