@@ -137,7 +137,7 @@
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
     "metamask-logo": "^2.1.4",
-    "multihashes": "^0.4.12",
+    "multihashes": "^0.4.15",
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
