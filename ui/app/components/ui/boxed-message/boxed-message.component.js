@@ -6,25 +6,22 @@ export default class BoxedMessage extends PureComponent {
     boxClass: PropTypes.string,
     iconSource: PropTypes.string,
     iconSize: PropTypes.string,
-    height: PropTypes.string,
-    width: PropTypes.string,
+    style: PropTypes.object,
     children: PropTypes.node,
   }
 
   static defaultProps = {
-    height: 'auto',
-    width: 'auto',
     iconSize: '14px',
     iconSource: null,
     boxClass: '',
+    style: {},
   }
 
   render () {
     const {
       iconSize,
       iconSource,
-      height,
-      width,
+      style,
       boxClass,
       children,
     } = this.props
@@ -32,10 +29,7 @@ export default class BoxedMessage extends PureComponent {
     return (
       <div
         className={`boxed-message__container ${boxClass}`}
-        style={{
-          height,
-          width,
-        }}
+        style={style}
       >
         { iconSource ? (
           <img

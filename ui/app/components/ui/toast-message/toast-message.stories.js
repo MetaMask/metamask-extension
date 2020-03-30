@@ -8,7 +8,7 @@ export default {
 export const Success = () => (
   <ToastMessage
     type="success"
-    width="365px"
+    style={{ width: '365px' }}
   >
     This is a test message.
   </ToastMessage>
@@ -17,25 +17,23 @@ export const Success = () => (
 export const Warning = () => (
   <ToastMessage
     type="warning"
-    width="365px"
+    style={{ width: '365px' }}
   >
     This is a test message.
   </ToastMessage>
 )
 
-export const Info = () => (
+export const InfoWithoutWidth = () => (
   <ToastMessage
     type="info"
-    width="365px"
   >
     This is a test message.
   </ToastMessage>
 )
 
-export const Danger = () => (
+export const DangerWithoutWidth = () => (
   <ToastMessage
     type="danger"
-    width="365px"
   >
     This is a test message.
   </ToastMessage>
