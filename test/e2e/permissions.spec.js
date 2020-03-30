@@ -135,7 +135,7 @@ describe('MetaMask', function () {
     it('shows connected sites', async function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected Sites')]`))
 
-      await driver.findElement(By.css('.connected-sites__title'))
+      await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected Sites')]`))
 
       const domains = await driver.findClickableElements(By.css('.connected-sites-list__domain'))
       assert.equal(domains.length, 1)
@@ -163,6 +163,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(extension)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Disconnect All')]`))
+      await driver.clickElement(By.css('.popover-header__close'))
 
       const disconnectModal = await driver.findElement(By.css('span .modal'))
 
