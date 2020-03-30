@@ -30,6 +30,10 @@ const copyTargets = [
     dest: `vendor`,
   },
   {
+    src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+    dest: `fonts/fontawesome`,
+  },
+  {
     src: `./ui/app/css/output/`,
     pattern: `*.css`,
     dest: ``,
