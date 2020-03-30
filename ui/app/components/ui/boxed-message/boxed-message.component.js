@@ -13,7 +13,7 @@ export default class BoxedMessage extends PureComponent {
 
   static defaultProps = {
     height: 'auto',
-    width: '100%',
+    width: 'auto',
     iconSize: '14px',
     iconSource: null,
     boxClass: '',
@@ -40,7 +40,7 @@ export default class BoxedMessage extends PureComponent {
         { iconSource ? (
           <img
             src={iconSource}
-            className="circle-icon__icon"
+            className="boxed-message__icon"
             style={{
               height: iconSize,
               width: iconSize,
