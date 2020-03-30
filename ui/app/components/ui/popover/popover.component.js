@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import PopoverHeader from './popover.header.component'
 
@@ -20,4 +21,33 @@ Popover.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
 
-export default Popover
+export default class PopoverPortal extends PureComponent {
+  static propTypes = Popover.propTypes
+
+  rootNode = document.getElementById('popover-content')
+
+  instanceNode = document.createElement('div')
+
+  componentDidMount () {
+    if (!this.rootNode) {
+      return
+    }
+
+    this.rootNode.appendChild(this.instanceNode)
+  }
+
+  componentWillUnmount () {
+    if (!this.rootNode) {
+      return
+    }
+
+    this.rootNode.removeChild(this.instanceNode)
+  }
+
+  render () {
+    const children = <Popover {...this.props} />
+    return this.rootNode
+      ? ReactDOM.createPortal(children, this.instanceNode)
+      : children
+  }
+}
