@@ -9,10 +9,13 @@
   }
 
   &__icon {
-
+    margin-right: 10px;
   }
 
   &__message {
-    margin-left: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }

@@ -3,6 +3,9 @@ import classnames from 'classnames'
 import { Tooltip as ReactTippy } from 'react-tippy'
 import PropTypes from 'prop-types'
 import Button from '../../ui/button'
+import BoxedMessage from '../../ui/boxed-message'
+import connectIcon from '../../../../../app/images/icons/connect.svg'
+import infoIcon from '../../../../../app/images/icons/info.svg'
 
 export default class HomeNotification extends PureComponent {
   static contextTypes = {
@@ -38,14 +41,12 @@ export default class HomeNotification extends PureComponent {
     const { descriptionText, acceptText, onAccept, ignoreText, onIgnore, infoText, classNames = [] } = this.props
 
     return (
-      <div className={classnames('home-notification', ...classNames)}>
+      <BoxedMessage
+        boxClass={classnames('home-notification', ...classNames)}
+        iconSource={connectIcon}
+      >
         <div className="home-notification__header">
           <div className="home-notification__header-container">
-            <img
-              className="home-notification__icon"
-              alt=""
-              src="images/icons/connect.svg"
-            />
             <div className="home-notification__text">
               { descriptionText }
             </div>
@@ -70,7 +71,7 @@ export default class HomeNotification extends PureComponent {
               >
                 <img
                   alt=""
-                  src="images/icons/info.svg"
+                  src={infoIcon}
                 />
               </ReactTippy>
             ) : (
@@ -106,7 +107,7 @@ export default class HomeNotification extends PureComponent {
             )
           }
         </div>
-      </div>
+      </BoxedMessage>
     )
   }
 }
