@@ -17739,14 +17739,6 @@ multicodec@^0.5.5, multicodec@~0.5.1:
   dependencies:
     varint "^5.0.0"
 
-multihashes@^0.4.12:
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/multihashes/-/multihashes-0.4.13.tgz#d10bd71bd51d24aa894e2a6f1457146bb7bac125"
-  integrity sha512-HwJGEKPCpLlNlgGQA56CYh/Wsqa+c4JAq8+mheIgw7OK5T4QvNJqgp6TH8gZ4q4l1aiWeNat/H/MrFXmTuoFfQ==
-  dependencies:
-    bs58 "^4.0.1"
-    varint "^5.0.0"
-
 multihashes@^0.4.15, multihashes@~0.4.14:
   version "0.4.15"
   resolved "https://registry.yarnpkg.com/multihashes/-/multihashes-0.4.15.tgz#6dbc55f7f312c6782f5367c03c9783681589d8a6"
