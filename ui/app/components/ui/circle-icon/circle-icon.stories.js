@@ -1,6 +1,5 @@
 import React from 'react'
 import CircleIcon from './circle-icon.component'
-import img from '../../../../../app/images/eth_logo.svg'
 
 export default {
   title: 'CircleIcon',
@@ -12,6 +11,6 @@ export const basicCircleIcon = () => (
     borderColor="black"
     background="white"
     iconSize="42px"
-    iconSource={img}
+    iconSource="images/eth_logo.svg"
   />
 )

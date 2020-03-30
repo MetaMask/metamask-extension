@@ -2,17 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import CircleIcon from '../circle-icon'
 
-import danger from '../../../../../app/images/icons/red-triangle-exclaim.svg'
-import warning from '../../../../../app/images/icons/yellow-bell.svg'
-
 const typeConfig = {
   danger: {
     circleClass: 'alert-circle-icon--danger',
-    iconSource: danger,
+    iconSource: 'images/icons/red-triangle-exclaim.svg',
   },
   warning: {
     circleClass: 'alert-circle-icon--warning',
-    iconSource: warning,
+    iconSource: 'images/icons/yellow-bell.svg',
   },
 }
 
