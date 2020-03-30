@@ -4,14 +4,15 @@ import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
+import Tooltip from '../../ui/tooltip-v2'
+import { I18nContext } from '../../../contexts/i18n'
 
 export default class TokenCell extends Component {
-  static contextTypes = {
-    metricsEvent: PropTypes.func,
-  }
+  static contextType = I18nContext
 
   static propTypes = {
     address: PropTypes.string,
+    outdatedBalance: PropTypes.bool,
     symbol: PropTypes.string,
     string: PropTypes.string,
     selectedTokenAddress: PropTypes.string,
@@ -20,6 +21,11 @@ export default class TokenCell extends Component {
     currentCurrency: PropTypes.string,
     image: PropTypes.string,
     onClick: PropTypes.func.isRequired,
+    userAddress: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    outdatedBalance: false,
   }
 
   state = {
@@ -27,6 +33,7 @@ export default class TokenCell extends Component {
   }
 
   render () {
+    const t = this.context
     const { tokenMenuOpen } = this.state
     const {
       address,
@@ -38,6 +45,8 @@ export default class TokenCell extends Component {
       onClick,
       currentCurrency,
       image,
+      outdatedBalance,
+      userAddress,
     } = this.props
     let currentTokenToFiatRate
     let currentTokenInFiat
@@ -66,6 +75,7 @@ export default class TokenCell extends Component {
       <div
         className={classnames('token-cell', {
           'token-cell--active': selectedTokenAddress === address,
+          'token-cell--outdated': outdatedBalance,
         })}
         onClick={onClick.bind(null, address)}
       >
@@ -85,6 +95,32 @@ export default class TokenCell extends Component {
               </div>
             )}
           </div>
+        </div>
+        {
+          outdatedBalance && (
+            <Tooltip
+              interactive
+              position="bottom"
+              html={(
+                <div className="token-cell__outdated-tooltip">
+                  { t('troubleTokenBalances') }
+                  <a
+                    href={`https://ethplorer.io/address/${userAddress}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    style={{ color: '#F7861C' }}
+                  >
+                    { t('here') }
+                  </a>
+                </div>
+              )}
+            >
+              <i className={classnames(['fa', 'fa-exclamation-circle', 'token-cell__outdated-icon'])} />
+            </Tooltip>
+          )
+        }
+
+        <div>
           <i
             className="fa fa-ellipsis-h fa-lg token-cell__ellipsis cursor-pointer"
             onClick={(e) => {

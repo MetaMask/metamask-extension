@@ -61,6 +61,10 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     }
   }
 
+  &--outdated > &__identicon {
+    opacity: 0.5
+  }
+
   &__balance-ellipsis {
     display: flex;
     align-items: center;
@@ -68,9 +72,12 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     flex: 1;
   }
 
+  &--outdated > &__balance-ellipsis {
+    opacity: 0.5
+  }
+
   &__ellipsis {
     line-height: 45px;
-    margin-left: 5px;
   }
 
   &__balance-wrapper {
@@ -78,6 +85,16 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     flex-flow: row wrap;
     display: flex;
     min-width: 0;
+  }
+
+  &__outdated-icon {
+    color: $warning-yellow;
+    display: block;
+    padding: 0 10px;
+  }
+
+  &__outdated-tooltip {
+    width: 260px;
   }
 }
 
