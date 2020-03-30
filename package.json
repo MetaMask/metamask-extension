@@ -52,8 +52,8 @@
     "devtools:redux": "remotedev --hostname=localhost --port=8000",
     "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
     "announce": "node development/announcer.js",
-    "storybook": "start-storybook -p 6006 -c .storybook",
-    "storybook:build": "build-storybook -c .storybook -o .out",
+    "storybook": "start-storybook -p 6006 -c .storybook --static-dir ./app",
+    "storybook:build": "build-storybook -c .storybook -o .out --static-dir ./app",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir .out --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
