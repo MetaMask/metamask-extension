@@ -323,6 +323,8 @@ var actions = {
   SET_DPROVIDER: 'SET_DPROVIDER',
   setDProvider,
 
+  setUsePhishDetect,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -379,14 +381,14 @@ function goHome () {
 
 // async actions
 
-function tryUnlockMetamask (password) {
+function tryUnlockMetamask (password, dPath) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
     log.debug(`background.submitPassword`)
 
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, error => {
+      background.submitPassword(password, dPath, error => {
         if (error) {
           return reject(error)
         }
@@ -526,9 +528,9 @@ function revealSeedConfirmation () {
   }
 }
 
-function verifyPassword (password) {
+function verifyPassword (password, dPath) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, error => {
+    background.submitPassword(password, dPath, error => {
       if (error) {
         return reject(error)
       }
@@ -550,12 +552,12 @@ function verifySeedPhrase () {
   })
 }
 
-function requestRevealSeed (password) {
+function requestRevealSeed (password, dPath) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, err => {
+      background.submitPassword(password, dPath, err => {
         if (err) {
           dispatch(actions.displayWarning(err))
           return reject(err)
@@ -581,13 +583,13 @@ function requestRevealSeed (password) {
   }
 }
 
-function requestRevealSeedWords (password) {
+function requestRevealSeedWords (password, dPath) {
   return async dispatch => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
 
     try {
-      await verifyPassword(password)
+      await verifyPassword(password, dPath)
       const seedWords = await verifySeedPhrase()
       dispatch(actions.hideLoadingIndication())
       return seedWords
@@ -619,12 +621,12 @@ function resetAccount () {
   }
 }
 
-function changePassword (oldPassword, newPassword) {
+function changePassword (oldPassword, newPassword, dPath) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
-      background.changePassword(oldPassword, newPassword, (err, account) => {
+      background.changePassword(oldPassword, newPassword, dPath, (err, account) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           log.error(err)
@@ -1000,7 +1002,7 @@ function signTypedMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    global.ethQuery.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err, _data) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
@@ -1853,17 +1855,17 @@ function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
-      return Promise.all(tokens.map(({ address, symbol, decimals, network }) => (
-        dispatch(addToken(address, symbol, decimals, network))
+      return Promise.all(tokens.map(({ address, symbol, decimals, image, network }) => (
+        dispatch(addToken(address, symbol, decimals, image, network))
       )))
     } else {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
-        .map(([_, { address, symbol, decimals, network }]) => (
-          dispatch(addToken(address, symbol, decimals, network))
-        ))
+        .map(([_, { address, symbol, decimals, image, network }]) => (
+          dispatch(addToken(address, symbol, decimals, image, network))
+        )),
       )
     }
   }
@@ -2227,7 +2229,7 @@ function requestExportAccount () {
   }
 }
 
-function exportAccount (password, address) {
+function exportAccount (password, address, dPath) {
   var self = this
 
   return function (dispatch) {
@@ -2235,7 +2237,7 @@ function exportAccount (password, address) {
 
     log.debug(`background.submitPassword`)
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, function (err) {
+      background.submitPassword(password, dPath, function (err) {
         if (err) {
           log.error('Error in submiting password.')
           dispatch(self.hideLoadingIndication())
@@ -2634,6 +2636,19 @@ function setUseBlockie (val) {
   }
 }
 
+function setUsePhishDetect (val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    log.debug(`background.setUsePhishDetect`)
+    background.setUsePhishDetect(val, (err) => {
+      dispatch(hideLoadingIndication())
+      if (err) {
+        return dispatch(displayWarning(err.message))
+      }
+    })
+  }
+}
+
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -2694,7 +2709,7 @@ function setPendingTokens (pendingTokens) {
   const { selectedTokens = {}, customToken = {} } = pendingTokens
   const { address, symbol, decimals, network } = customToken
   Object.keys(selectedTokens).forEach(address => {
-    selectedTokens[address].network = parseInt(network)
+    selectedTokens[address].network = parseInt(network, 10)
   })
   const tokens = address && symbol && decimals && network
     ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }

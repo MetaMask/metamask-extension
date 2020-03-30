@@ -5,7 +5,19 @@ import classnames from 'classnames'
 import LoadingScreen from './loading-screen'
 import {importNewAccount, hideWarning} from '../../../../ui/app/actions'
 
-const Input = ({ label, placeholder, onChange, errorMessage, type = 'text' }) => (
+class Input extends Component {
+
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    errorMessage: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+  }
+
+render () {
+  const {label, type, placeholder, errorMessage, onChange} = this.props
+  return (
   <div className="import-account__input-wrapper">
     <div className="import-account__input-label">{label}</div>
     <input
@@ -19,14 +31,8 @@ const Input = ({ label, placeholder, onChange, errorMessage, type = 'text' }) =>
     <div className="import-account__input-error-message">{errorMessage}</div>
   </div>
 )
-
-Input.prototype.propTypes = {
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
 }
+    }
 
 class ImportAccountScreen extends Component {
   static OPTIONS = {
@@ -204,5 +210,5 @@ export default connect(
   dispatch => ({
     importNewAccount: (strategy, args) => dispatch(importNewAccount(strategy, args)),
     hideWarning: () => dispatch(hideWarning()),
-  })
+  }),
 )(ImportAccountScreen)

@@ -1,6 +1,7 @@
 const assert = require('assert')
 const clipboardy = require('clipboardy')
 const { menus, screens, elements, NETWORKS } = require('../elements')
+const { main } = screens
 let abiClipboard
 
 const importContractAccount = async (f, account1, getCreatedAccounts) => {
@@ -36,16 +37,16 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
       })
 
       it('ABI of Proxy + Implementation is fetched and matches the pattern', async () => {
-        await f.delay(5000)
+        await f.delay(10000)
         const field = await f.waitUntilShowUp(screens.importAccounts.contractABI)
         abiClipboard = await field.getText()
-        console.log(abiClipboard)
         assert.deepEqual(JSON.parse(abiClipboard), joinedABI, "ABI isn't fetched")
       })
 
       it("Click button 'Import', main screen opens", async () => {
         const button = await f.waitUntilShowUp(screens.importAccounts.buttonImport)
         await f.click(button)
+        await f.delay(7000)
         const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
@@ -93,13 +94,11 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.equal(text1, 'PROXY', 'label incorrect')
       })
       it('Delete imported account', async () => {
-        await f.waitUntilShowUp(menus.account.delete)
-        const items = await f.driver.findElements(menus.account.delete)
-        await items[accountPosition].click()
-        const button = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-        await button.click()
-        const buttonArrow = await f.waitUntilShowUp(screens.settings.buttons.arrow)
-        await buttonArrow.click()
+        const deleteButton = await f.waitUntilShowUp(menus.account.delete)
+        await deleteButton.click()
+        const yesButton = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+        await yesButton.click()
+        await f.driver.findElements(main.container)
         const identicon = await f.waitUntilShowUp(screens.main.identicon)
         assert.notEqual(identicon, false, 'main screen didn\'t opened')
       })
@@ -117,15 +116,10 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         await f.setProvider(NETWORKS.ROPSTEN)
         const menu = await f.waitUntilShowUp(menus.account.menu)
         await menu.click()
-        const item = await f.waitUntilShowUp(menus.account.import2)
-        await item.click()
+        const importItem = await f.waitUntilShowUp(menus.account.import2)
+        await importItem.click()
         const importAccountTitle = await f.waitUntilShowUp(screens.importAccounts.title)
         assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-      })
-
-      it("Warning's  text is correct", async () => {
-        const field = await f.waitUntilShowUp(screens.importAccounts.warning)
-        assert.equal(await field.getText(), 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.', "incorrect warning's text")
       })
 
       it("Select type 'Contract'", async () => {
@@ -208,6 +202,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
       it("Click button 'Import', main screen opens", async () => {
         const button = await f.waitUntilShowUp(screens.importAccounts.buttonImport)
         await f.click(button)
+        await f.delay(5000)
         const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
@@ -728,7 +723,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         const accs = await f.waitUntilShowUp(screens.chooseContractExecutor.account)
         assert.notEqual(accs, false, 'accounts aren\'t displayed')
         const accounts = await f.driver.findElements(screens.chooseContractExecutor.account)
-        assert.equal(accounts.length, 4, "number of accounts isn't 2")
+        assert.equal(accounts.length, 3, "number of accounts isn't 2")
       })
 
       it("Click arrow button leads to 'Execute Method' screen ", async () => {
@@ -775,61 +770,61 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         }
       })
 
-      it("Click button 'Next' open 'Confirm transaction' screen", async () => {
-        const button = await f.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
-        await button.click()
-        await f.delay(3000)
-        const reject = await f.waitUntilShowUp(screens.confirmTransaction.button.reject)
-        assert.notEqual(reject, false, "button reject isn't displayed")
-      })
+      // it("Click button 'Next' open 'Confirm transaction' screen", async () => {
+      //   const button = await f.waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+      //   await button.click()
+      //   await f.delay(3000)
+      //   const reject = await f.waitUntilShowUp(screens.confirmTransaction.button.reject)
+      //   assert.notEqual(reject, false, "button reject isn't displayed")
+      // })
 
-      it("Button 'Buy POA' is displayed", async function () {
-        const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
-        assert.equal(await button.getText(), 'Buy POA', 'button has incorrect name')
-        assert.equal(await button.isEnabled(), true, 'button is disabled')
-      })
+      // it("Button 'Buy POA' is displayed", async function () {
+      //   const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+      //   assert.equal(await button.getText(), 'Buy POA', 'button has incorrect name')
+      //   assert.equal(await button.isEnabled(), true, 'button is disabled')
+      // })
 
-      it("Open screen 'Buy'", async function () {
-        const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
-        await button.click()
-        await f.delay(1000)
-        const title = await f.waitUntilShowUp(screens.buyEther.title)
-        assert.equal(await title.getText(), 'Buy POA', "screen 'Buy POA' has incorrect title text")
-        const arrow = await f.waitUntilShowUp(elements.buttonArrow)
-        await arrow.click()
-        await f.delay(1000)
-      })
+      // it("Open screen 'Buy'", async function () {
+      //   const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+      //   await button.click()
+      //   await f.delay(1000)
+      //   const title = await f.waitUntilShowUp(screens.buyEther.title)
+      //   assert.equal(await title.getText(), 'Buy POA', "screen 'Buy POA' has incorrect title text")
+      //   const arrow = await f.waitUntilShowUp(elements.buttonArrow)
+      //   await arrow.click()
+      //   await f.delay(1000)
+      // })
 
-      it("Click button 'Reject' open contract's account screen", async () => {
-        const reject = await f.waitUntilShowUp(screens.confirmTransaction.button.reject)
-        assert.equal(await reject.getText(), 'Reject', 'button has incorrect name')
-        await reject.click()
-        await f.delay(1000)
-        const buttonExecute = await f.waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
-        assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
-        await f.delay(1000)
-      })
+      // it("Click button 'Reject' open contract's account screen", async () => {
+      //   const reject = await f.waitUntilShowUp(screens.confirmTransaction.button.reject)
+      //   assert.equal(await reject.getText(), 'Reject', 'button has incorrect name')
+      //   await reject.click()
+      //   await f.delay(1000)
+      //   const buttonExecute = await f.waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+      //   assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
+      //   await f.delay(1000)
+      // })
 
-      it("Button arrow leads to executor's account screen", async () => {
-        assert.equal(await f.executeTransferMethod(f, 0, account1), true, "can't execute the method 'transfer'")
-        await f.delay(2000)
-        const arrow = await f.waitUntilShowUp(elements.buttonArrow)
-        await arrow.click()
-        await f.delay(2000)
-        // const address = await f.waitUntilShowUp(screens.main.address)
-        // assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
-      })
+      // it("Button arrow leads to executor's account screen", async () => {
+      //   assert.equal(await f.executeTransferMethod(f, 0, account1), true, "can't execute the method 'transfer'")
+      //   await f.delay(2000)
+      //   const arrow = await f.waitUntilShowUp(elements.buttonArrow)
+      //   await arrow.click()
+      //   await f.delay(2000)
+      //   // const address = await f.waitUntilShowUp(screens.main.address)
+      //   // assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
+      // })
 
-      it('Switch to contract account ', async () => {
-        const accountMenu = await f.waitUntilShowUp(menus.account.menu)
-        await accountMenu.click()
-        await f.delay(1000)
-        const item = await f.waitUntilShowUp(menus.account.account4)
-        await item.click()
-        await f.delay(2000)
-        const address = await f.waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
-      })
+      // it('Switch to contract account ', async () => {
+      //   const accountMenu = await f.waitUntilShowUp(menus.account.menu)
+      //   await accountMenu.click()
+      //   await f.delay(1000)
+      //   const item = await f.waitUntilShowUp(menus.account.account4)
+      //   await item.click()
+      //   await f.delay(2000)
+      //   const address = await f.waitUntilShowUp(screens.main.address)
+      //   assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
+      // })
 
       // it("Confirm transaction: button 'Reject All' leads to contract's account screen", async () => {
       //   assert.equal(await f.executeTransferMethod(f, 0, account1), true, "can't execute the method 'transfer'")
@@ -865,8 +860,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         await items[1].click()
         const button = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
         await button.click()
-        const buttonArrow = await f.waitUntilShowUp(screens.settings.buttons.arrow)
-        await buttonArrow.click()
+        await f.driver.findElements(main.container)
         const identicon = await f.waitUntilShowUp(screens.main.identicon)
         assert.notEqual(identicon, false, 'main screen didn\'t opened')
       })

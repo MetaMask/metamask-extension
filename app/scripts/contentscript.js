@@ -59,7 +59,7 @@ function setupStreams () {
     pageStream,
     pluginStream,
     pageStream,
-    (err) => logStreamDisconnectWarning('Nifty Wallet Contentscript Forwarding', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Contentscript Forwarding', err),
   )
 
   // setup local multistream channels
@@ -70,13 +70,13 @@ function setupStreams () {
     mux,
     pageStream,
     mux,
-    (err) => logStreamDisconnectWarning('Nifty Wallet Inpage', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Inpage', err),
   )
   pump(
     mux,
     pluginStream,
     mux,
-    (err) => logStreamDisconnectWarning('Nifty Wallet Background', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Background', err),
   )
 
   // connect ping stream
@@ -85,7 +85,7 @@ function setupStreams () {
     mux,
     pongStream,
     mux,
-    (err) => logStreamDisconnectWarning('Nifty Wallet PingPongStream', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet PingPongStream', err),
   )
 
   // connect phishing warning stream

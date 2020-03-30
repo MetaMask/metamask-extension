@@ -22,7 +22,7 @@ describe('ErrorComponent', () => {
 			wrapper = mount(
 				<Provider store={store}>
 					<ErrorComponent error="Error!"/>
-				</Provider>
+				</Provider>,
 			)
 		})
 		it('shows error', () => {
@@ -35,7 +35,7 @@ describe('ErrorComponent', () => {
 			wrapper = mount(
 				<Provider store={store}>
 					<ErrorComponent/>
-				</Provider>
+				</Provider>,
 			)
 		})
 

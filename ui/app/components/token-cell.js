@@ -65,7 +65,7 @@ TokenCell.prototype.render = function () {
   if (contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
       contractExchangeRates[address],
-      conversionRate
+      conversionRate,
     )
     currentTokenInFiat = conversionUtil(string, {
       fromNumericBase: 'dec',

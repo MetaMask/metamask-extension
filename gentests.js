@@ -121,10 +121,10 @@ async function startContainer (fileRegEx, testGenerator) {
           await promisify(fs.writeFile)(
             `${__dirname}/${sRootPath}tests/${testFilePath}`,
             containerTest,
-            'utf8'
+            'utf8',
           )
         }
-      }
+      },
     )
   }, (err) => {
     console.log('123', err)

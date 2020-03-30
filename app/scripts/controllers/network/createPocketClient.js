@@ -8,43 +8,16 @@ const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/b
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const createPocketMiddleware = require('json-rpc-pocket')
 const BlockTracker = require('eth-block-tracker')
+const { getNetworkID } = require('../../../../old-ui/app/util')
 const devid = 'DEVVGQ8VfHgBBet8CyowHcN'
-const {
-  ROPSTEN,
-  ROPSTEN_CODE,
-  ROPSTEN_CHAINID,
-  RINKEBY_CODE,
-  RINKEBY_CHAINID,
-  RINKEBY,
-  KOVAN,
-  KOVAN_CODE,
-  KOVAN_CHAINID,
-  MAINNET,
-  MAINNET_CODE,
-  MAINNET_CHAINID,
-  ETH_TICK,
-  POA_SOKOL,
-  POA_CODE,
-  POA_CHAINID,
-  POA_TICK,
-  POA,
-  DAI,
-  DAI_CODE,
-  DAI_CHAINID,
-  GOERLI_TESTNET,
-  GOERLI_TESTNET_CODE,
-  GOERLI_TESTNET_CHAINID,
-  POA_SOKOL_CODE,
-  POA_SOKOL_CHAINID,
-} = require('./enums')
 
 module.exports = createPocketClient
 
 function createPocketClient ({ network }) {
-  const networkIDs = getNetworkIds({ network })
+  const networkID = getNetworkID({ network })
   const pocketMiddleware = createPocketMiddleware(devid, {
-    netID: networkIDs.netId,
-    network: networkIDs.ticker,
+    netID: networkID.netId,
+    network: networkID.ticker,
   })
   const pocketProvider = providerFromMiddleware(pocketMiddleware)
   const blockTracker = new BlockTracker({ provider: pocketProvider })
@@ -61,64 +34,11 @@ function createPocketClient ({ network }) {
   return { networkMiddleware, blockTracker }
 }
 
-function getNetworkIds ({ network }) {
-  let chainId
-  let netId
-  let ticker
-  switch (network) {
-    case MAINNET:
-      netId = MAINNET_CODE.toString()
-      chainId = MAINNET_CHAINID
-      ticker = ETH_TICK
-      break
-    case ROPSTEN:
-      netId = ROPSTEN_CODE.toString()
-      chainId = ROPSTEN_CHAINID
-      ticker = ETH_TICK
-      break
-    case RINKEBY:
-      netId = RINKEBY_CODE.toString()
-      chainId = RINKEBY_CHAINID
-      ticker = ETH_TICK
-      break
-    case KOVAN:
-      netId = KOVAN_CODE.toString()
-      chainId = KOVAN_CHAINID
-      ticker = ETH_TICK
-      break
-    case GOERLI_TESTNET:
-      netId = GOERLI_TESTNET_CODE.toString()
-      chainId = GOERLI_TESTNET_CHAINID
-      ticker = ETH_TICK
-      break
-    case POA:
-      netId = POA_CODE.toString()
-      chainId = POA_CHAINID
-      ticker = POA_TICK
-      break
-    case DAI:
-      netId = DAI_CODE.toString()
-      chainId = DAI_CHAINID
-      ticker = POA_TICK
-      break
-    case POA_SOKOL:
-      netId = POA_SOKOL_CODE.toString()
-      chainId = POA_SOKOL_CHAINID
-      ticker = POA_TICK
-      break
-    default:
-      throw new Error(`createPocketClient - unknown network "${network}"`)
-  }
-  return {
-    chainId, netId, ticker,
-  }
-}
-
 function createNetworkAndChainIdMiddleware ({ network }) {
-  const networkIds = getNetworkIds({network})
+  const networkID = getNetworkID({network})
 
   return createScaffoldMiddleware({
-    eth_chainId: networkIds.chainId,
-    net_version: networkIds.netId,
+    eth_chainId: networkID.chainId,
+    net_version: networkID.netId,
   })
 }

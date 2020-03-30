@@ -26,6 +26,7 @@ const { POA_CODE,
   GOERLI_TESTNET_CODE,
   CLASSIC_CODE,
   RSK_CODE,
+  RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
@@ -87,7 +88,8 @@ TransactionListItem.prototype.render = function () {
     numericNet === DAI_CODE ||
     numericNet === GOERLI_TESTNET_CODE ||
     numericNet === CLASSIC_CODE ||
-    numericNet === RSK_CODE
+    numericNet === RSK_CODE ||
+    numericNet === RSK_TESTNET_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -303,7 +305,13 @@ function renderErrorOrWarning (transaction, network) {
 
   // show warning
   const isRSK = ifRSK(network)
-  if (warning && !isRSK || (isRSK && warning && !warning.error.includes('[ethjs-rpc] rpc error with payload'))) {
+  if (warning && !isRSK || (
+      isRSK &&
+      warning &&
+      !warning.error.includes('[ethjs-rpc] rpc error with payload') &&
+      !warning.error.includes('[ethjs-query] while formatting outputs from rpc')
+      )
+    ) {
     const message = warning.message
     return h(Tooltip, {
       title: message,

@@ -55,7 +55,7 @@ describe('Dropdown components', function () {
           closeMenu,
           onClick,
         }, 'Item 2'),
-      ]
+      ],
     ), store)
     dropdownComponent = component
   })

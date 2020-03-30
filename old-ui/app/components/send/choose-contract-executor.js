@@ -184,7 +184,7 @@ class ChooseContractExecutor extends Component {
 
 		return new Promise((resolve) => {
 			try {
-				web3.eth.contract(abi).at(txParams.to)[method].call((err, output) => {
+				web3.eth.contract(abi).at(txParams.to)[method].call((_err, output) => {
 					resolve(output)
 				})
 			} catch (e) {

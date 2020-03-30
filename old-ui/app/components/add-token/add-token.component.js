@@ -39,6 +39,7 @@ export default class AddTokenScreen extends Component {
     address: PropTypes.string,
     dispatch: PropTypes.func,
     network: PropTypes.string,
+    addToken: PropTypes.func,
   }
 
   constructor (props) {

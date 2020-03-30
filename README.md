@@ -7,7 +7,7 @@
 
 ## Building locally
 
- - Install [Node.js](https://nodejs.org/en/) version 10.16.0 and npm version 6.9.0
+ - Install [Node.js](https://nodejs.org/en/) version 10.x.x and npm version 6.13.4
    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
    - Select npm 6.9.0: ```npm install -g npm@6.9.0```
  - Install dependencies: ```npm install```
@@ -17,10 +17,6 @@
  - To package .zip files for distribution, run `gulp zip`, or run the full build & zip with `gulp dist`.
 
  Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
-
-## Contributing
-
-You can re-generate the docs locally by running `npm run doc`, and contributors can update the hosted docs by running `npm run publish-docs`.
 
 ### Running Tests
 

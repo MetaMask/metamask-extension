@@ -16,6 +16,7 @@ class AccountsDropdownItemView extends Component {
     identity: PropTypes.object.isRequired,
     actions: PropTypes.objectOf(PropTypes.func),
     closeMenu: PropTypes.func,
+    network: PropTypes.string,
   }
 
   constructor (props) {
@@ -53,7 +54,7 @@ class AccountsDropdownItemView extends Component {
         onClick={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          this.props.actions.showDeleteImportedAccount(identity)
+          this.props.actions.showDeleteImportedAccount(identity, keyring)
           this.props.closeMenu()
         }}
       />) : null
@@ -117,7 +118,7 @@ class AccountsDropdownItemView extends Component {
     this.props.actions.showAccountDetail(address)
     if (ifHardwareAcc(keyring)) {
       if (isLedger(keyring.type)) {
-        const hdPaths = getHdPaths()
+        const hdPaths = getHdPaths(this.props.network)
         return new Promise((resolve, reject) => {
           this.props.actions.connectHardwareAndUnlockAddress(LEDGER, hdPaths[1].value, address)
           .then(_ => resolve())
@@ -156,7 +157,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
-      showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
+      showDeleteImportedAccount: (identity, keyring) => dispatch(actions.showDeleteImportedAccount(identity, keyring)),
       getContract: (addr) => dispatch(actions.getContract(addr)),
       connectHardwareAndUnlockAddress: (deviceName, hdPath, address) => {
         return dispatch(actions.connectHardwareAndUnlockAddress(deviceName, hdPath, address))

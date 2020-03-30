@@ -4,17 +4,21 @@ import { connect } from 'react-redux'
 import actions from '../../../ui/app/actions'
 
 class DeleteRpc extends ConfirmScreen {
+  static propTypes = {
+  }
+
   render () {
+    const props = this.props
     return (
       <ConfirmScreen
         subtitle="Delete Custom RPC"
-        question={`Are you sure to delete ${this.props.url} ?`}
-        onCancelClick={() => this.props.dispatch(actions.showConfigPage())}
-        onNoClick={() => this.props.dispatch(actions.showConfigPage())}
+        question={`Are you sure to delete ${props.url} ?`}
+        onCancelClick={() => props.showConfigPage()}
+        onNoClick={() => props.showConfigPage()}
         onYesClick={() => {
-          this.props.dispatch(actions.removeCustomRPC(this.props.url, this.props.provider))
+          props.removeCustomRPC(props.url, props.provider)
             .then(() => {
-              this.props.dispatch(actions.showConfigPage())
+              props.showConfigPage()
             })
         }}
       />
@@ -30,4 +34,11 @@ function mapStateToProps (state) {
   }
 }
 
-module.exports = connect(mapStateToProps)(DeleteRpc)
+const mapDispatchToProps = dispatch => {
+  return {
+    showConfigPage: () => dispatch(actions.showConfigPage()),
+    removeCustomRPC: (url, provider) => dispatch(actions.removeCustomRPC(url, provider)),
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(DeleteRpc)

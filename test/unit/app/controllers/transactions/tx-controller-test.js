@@ -28,6 +28,9 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
+      getGasPrice: function () {
+        return '0xee6b2800'
+      },
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
@@ -416,9 +419,10 @@ describe('Transaction Controller', function () {
   describe('#retryTransaction', function () {
     it('should create a new txMeta with the same txParams as the original one', function (done) {
       const txParams = {
+        gasPrice: '0xee6b2800',
         nonce: '0x00',
-        from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
-        to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        from: '0xb09d8505e1f4ef1cea089d47094f5dd3464083d4',
+        to: '0xb09d8505e1f4ef1cea089d47094f5dd3464083d4',
         data: '0x0',
       }
       txController.txStateManager._saveTxList([

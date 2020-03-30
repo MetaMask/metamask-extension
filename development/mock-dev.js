@@ -151,6 +151,6 @@ function startApp () {
         }),
       ]),
 
-    ]
+    ],
   ), container)
 }

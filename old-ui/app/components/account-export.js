@@ -17,6 +17,7 @@ function ExportAccountView () {
 function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
+    dPath: state.metamask.dPath,
   }
 }
 
@@ -91,7 +92,7 @@ ExportAccountView.prototype.render = function () {
             }},
             [
               h('div.error', this.props.warning.split('-')),
-            ]
+            ],
           )
         ),
         ])
@@ -133,7 +134,7 @@ ExportAccountView.prototype.render = function () {
             },
           }, h(CopyButton, {
             value: accountDetail.privateKey,
-          })
+          }),
         ),
       ]),
       h('div', {
@@ -165,5 +166,5 @@ ExportAccountView.prototype.onExportKeyPress = function (event) {
   event.preventDefault()
 
   const input = document.getElementById('exportAccount').value
-  this.props.dispatch(actions.exportAccount(input, this.props.address))
+  this.props.dispatch(actions.exportAccount(input, this.props.address, this.props.dPath))
 }

@@ -4,13 +4,11 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const { HashRouter } = require('react-router-dom')
 const OldApp = require('../../old-ui/app/app')
-const { autoAddToBetaUI } = require('./selectors')
 const { setFeatureFlag } = require('./actions')
 const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
   return {
-    autoAdd: autoAddToBetaUI(state),
     isUnlocked: state.metamask.isUnlocked,
     isMascara: state.metamask.isMascara,
     firstTime: Object.keys(state.metamask.identities).length === 0,

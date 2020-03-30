@@ -70,7 +70,7 @@ const baseChange = {
 const fromAndToCurrencyPropsNotEqual = R.compose(
   R.not,
   R.eqBy(R.__, 'fromCurrency', 'toCurrency'),
-  R.flip(R.prop)
+  R.flip(R.prop),
 )
 
 // Lens
@@ -82,8 +82,8 @@ const whenPredSetCRWithPropAndSetter = (pred, prop, setter) => R.when(
   pred,
   R.converge(
     conversionRateLens,
-    [R.pipe(R.prop(prop), setter), R.identity]
-  )
+    [R.pipe(R.prop(prop), setter), R.identity],
+  ),
 )
 
 // conditional 'value' setting wrappers
@@ -91,13 +91,13 @@ const whenPredSetWithPropAndSetter = (pred, prop, setter) => R.when(
   pred,
   R.converge(
     valuePropertyLens,
-    [R.pipe(R.prop(prop), setter), R.identity]
-  )
+    [R.pipe(R.prop(prop), setter), R.identity],
+  ),
 )
 const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter(
   R.prop(prop),
   prop,
-  R.prop(R.__, setterMap)
+  R.prop(R.__, setterMap),
 )
 
 // Conversion utility function
@@ -111,7 +111,7 @@ const converter = R.pipe(
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPredSetWithPropAndSetter(R.prop('roundDown'), 'roundDown', roundDown),
   whenPropApplySetterMap('toNumericBase', baseChange),
-  R.view(R.lensProp('value'))
+  R.view(R.lensProp('value')),
 )
 
 const conversionUtil = (value, {
@@ -209,7 +209,7 @@ const conversionMax = (
 ) => {
   const firstIsGreater = conversionGreaterThan(
     { ...firstProps },
-    { ...secondProps }
+    { ...secondProps },
   )
 
   return firstIsGreater ? firstProps.value : secondProps.value

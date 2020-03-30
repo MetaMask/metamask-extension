@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
 const log = require('loglevel')
 const EventEmitter = require('events').EventEmitter
+const { getDPath } = require('./util')
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
@@ -17,6 +18,8 @@ function UnlockScreen () {
 function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
+    dPath: state.metamask.dPath,
+    provider: state.metamask.provider,
   }
 }
 
@@ -93,7 +96,7 @@ UnlockScreen.prototype.onSubmit = async function (event) {
   const input = document.getElementById('password-box')
   const password = input.value
   try {
-    await this.props.dispatch(actions.tryUnlockMetamask(password))
+    await this.props.dispatch(actions.tryUnlockMetamask(password, this.props.dPath))
   } catch (e) {
     log.error(e)
   }
@@ -111,7 +114,8 @@ UnlockScreen.prototype.submitPassword = async function (event) {
   // reset input
   element.value = ''
   try {
-    await this.props.dispatch(actions.tryUnlockMetamask(password))
+    const dPath = getDPath(this.props.provider.type) || this.props.dPath
+    await this.props.dispatch(actions.tryUnlockMetamask(password, dPath))
   } catch (e) {
     log.error(e)
   }

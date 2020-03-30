@@ -32,6 +32,7 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
+      usePhishDetect: true,
       featureFlags: {},
       currentLocale: opts.initLangCode,
       identities: {},
@@ -75,6 +76,16 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  /**
+   * Setter for the `usePhishDetect` property
+   *
+   * @param {boolean} val - Whether or not the user prefers phishing domain protection
+   *
+   */
+  setUsePhishDetect (val) {
+    this.store.updateState({ usePhishDetect: val })
   }
 
   getSuggestedTokens () {

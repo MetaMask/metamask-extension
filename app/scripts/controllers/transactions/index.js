@@ -1,15 +1,21 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const Transaction = require('ethereumjs-tx')
-const EthQuery = require('ethjs-query')
-const TransactionStateManager = require('./tx-state-manager')
+import EventEmitter from 'safe-event-emitter'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import Transaction from 'ethereumjs-tx'
+import EthQuery from 'ethjs-query'
+
+import abi from 'human-standard-token-abi'
+import abiDecoder from 'abi-decoder'
+
+abiDecoder.addABI(abi)
+
+import TransactionStateManager from './tx-state-manager'
 const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
-const NonceTracker = require('./nonce-tracker')
-const txUtils = require('./lib/util')
-const cleanErrorStack = require('../../lib/cleanErrorStack')
-const log = require('loglevel')
+import NonceTracker from 'nonce-tracker'
+import * as txUtils from './lib/util'
+import cleanErrorStack from '../../lib/cleanErrorStack'
+import log from 'loglevel'
 const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 const {
   TRANSACTION_TYPE_CANCEL,
@@ -222,19 +228,19 @@ class TransactionController extends EventEmitter {
     @return {txMeta}
   */
 
-  async retryTransaction (originalTxId) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const lastGasPrice = originalTxMeta.txParams.gasPrice
-    const txMeta = this.txStateManager.generateTxMeta({
-      txParams: originalTxMeta.txParams,
-      lastGasPrice,
-      loadingDefaults: false,
-      type: TRANSACTION_TYPE_RETRY,
-    })
-    this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
-    return txMeta
-  }
+ async retryTransaction (originalTxId) {
+  const originalTxMeta = this.txStateManager.getTx(originalTxId)
+  const lastGasPrice = originalTxMeta.txParams.gasPrice
+  const txMeta = this.txStateManager.generateTxMeta({
+    txParams: originalTxMeta.txParams,
+    lastGasPrice,
+    loadingDefaults: false,
+    type: TRANSACTION_TYPE_RETRY,
+  })
+  this.addTx(txMeta)
+  this.emit('newUnapprovedTx', txMeta)
+  return txMeta
+}
 
   /**
    * Creates a new approved transaction to attempt to cancel a previously submitted transaction. The

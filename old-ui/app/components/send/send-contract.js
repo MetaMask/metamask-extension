@@ -8,11 +8,11 @@ import ErrorComponent from '../error'
 import ToastComponent from '../toast'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
-import { AbiCoder } from 'web3-eth-abi'
+import abi from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
 import CopyButton from '../copy/copy-button'
-const abiEncoder = new AbiCoder()
+import { normalizeEthStringToWei } from '../../util'
 
 class SendTransactionField extends Component {
 	constructor (props) {
@@ -131,6 +131,7 @@ class SendTransactionScreen extends PersistentForm {
 			methodOutputsView: [],
 			isConstantMethod: false,
 			inputValues: props.inputValues || {},
+			txValue: props.txValue || '0x',
 			outputValues: props.outputValues || {},
 			copyDisabled: true,
 		}
@@ -161,12 +162,14 @@ class SendTransactionScreen extends PersistentForm {
 						options={this.state.options}
 						style={{ marginBottom: '10px' }}
 						onChange={(opt) => {
+							const isConstantMethod = opt.metadata && (opt.metadata.constant || opt.metadata.stateMutability === 'view')
 							this.setState({
 								methodSelected: opt.value,
-								isConstantMethod: opt.metadata.constant,
+								isConstantMethod: isConstantMethod,
 								methodABI: opt.metadata,
 								outputValues: {},
 								inputValues: {},
+								txValue: '0x',
 							}, () => {
 								this.generateMethodFieldsView(opt.metadata)
 							})
@@ -251,7 +254,7 @@ class SendTransactionScreen extends PersistentForm {
 		}
 		const textTypeProps = {
 			key: Math.random(),
-			placeholder: params.type,
+			placeholder: params.placeholder || params.type,
 		}
 		if (params.type === 'bool' && isInput) {
 			field = (
@@ -277,17 +280,25 @@ class SendTransactionScreen extends PersistentForm {
 
 	handleInputChange (val, type, ind) {
 		const { inputValues } = this.state
+		let { txValue } = this.state
 		if (val) {
 			if (type === 'bool') {
 				inputValues[ind] = (val === 'true')
+			} else if (type === 'value') {
+				const valWei = normalizeEthStringToWei(val)
+				txValue = '0x' + parseInt(valWei, 10).toString(16)
 			} else {
 				inputValues[ind] = val
 			}
 		} else {
 			delete inputValues[ind]
+			if (type === 'value') {
+				txValue = '0x'
+			}
 		}
 		this.setState({
 			inputValues,
+			txValue,
 		})
 	}
 
@@ -302,9 +313,13 @@ class SendTransactionScreen extends PersistentForm {
 		const methodInputs = metadata && metadata.inputs
 		const methodOutputsView = []
 		const methodOutputs = metadata && metadata.outputs
+		if (metadata.stateMutability === 'payable') {
+			methodInputsView.push(this.generateMethodField({'name': 'tx value', 'type': 'value', 'placeholder': 'tx value in Ether' }, methodInputs.length, true))
+		}
 		methodInputs.forEach((input, ind) => {
 			methodInputsView.push(this.generateMethodField(input, ind, true))
 		})
+
 		methodOutputs.forEach((output, ind) => {
 			methodOutputsView.push(this.generateMethodField(output, ind, false))
 		})
@@ -429,7 +444,7 @@ class SendTransactionScreen extends PersistentForm {
 		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		let txData
 		try {
-			txData = abiEncoder.encodeFunctionCall(methodABI, inputValuesArray)
+			txData = abi.encodeFunctionCall(methodABI, inputValuesArray)
 			this.props.hideWarning()
 		} catch (e) {
 			this.props.hideToast()
@@ -448,7 +463,7 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	onSubmit = () => {
-		const { inputValues, methodABI, methodSelected } = this.state
+		const { inputValues, txValue, methodABI, methodSelected } = this.state
 		const { address } = this.props
 		const txData = this.encodeFunctionCall()
 
@@ -456,7 +471,7 @@ class SendTransactionScreen extends PersistentForm {
 			this.props.hideWarning()
 
 			const txParams = {
-				value: '0x',
+				value: txValue,
 				data: txData,
 				to: address,
 			}

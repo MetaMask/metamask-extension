@@ -1,8 +1,17 @@
 import React, {Component} from 'react'
 import AccountPanel from './account-panel'
 import BinaryRenderer from './binary-renderer'
+import PropTypes from 'prop-types'
 
 export default class PendingMsgDetails extends Component {
+  static propTypes = {
+    txData: PropTypes.object,
+    selectedAddress: PropTypes.string,
+    identities: PropTypes.object,
+    accounts: PropTypes.object,
+    imageifyIdenticons: PropTypes.object,
+  }
+
   render () {
     var state = this.props
     var msgData = state.txData

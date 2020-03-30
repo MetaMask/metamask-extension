@@ -12,7 +12,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   // Used to set values on TextField input component
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype, 'value'
+    window.HTMLInputElement.prototype, 'value',
   ).set
 
   // const loader = (await findAsync($, '.loading-overlay'))[0]

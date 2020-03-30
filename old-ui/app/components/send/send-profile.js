@@ -5,8 +5,20 @@ import { addressSummary } from '../../util'
 import EthBalance from '../eth-balance'
 import TokenBalance from '../token-balance'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import PropTypes from 'prop-types'
 
 class SendProfile extends Component {
+	static propTypes = {
+		address: PropTypes.string,
+		account: PropTypes.object,
+		identity: PropTypes.object,
+		network: PropTypes.string,
+		conversionRate: PropTypes.number,
+		currentCurrency: PropTypes.string,
+		isToken: PropTypes.bool,
+		token: PropTypes.any,
+	}
+
 	render () {
 		const props = this.props
 		const {

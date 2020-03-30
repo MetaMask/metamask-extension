@@ -1,5 +1,6 @@
 const KeyringController = require('eth-keychain-controller')
 const log = require('loglevel')
+const { getDPath } = require('../../../old-ui/app/util')
 
 const seedPhraseVerifier = {
 
@@ -16,19 +17,20 @@ const seedPhraseVerifier = {
    * @returns {Promise<void>} Promises undefined
    *
   */
-  verifyAccounts (createdAccounts, seedWords) {
-
+  verifyAccounts (createdAccounts, seedWords, network) {
     return new Promise((resolve, reject) => {
 
       if (!createdAccounts || createdAccounts.length < 1) {
         return reject(new Error('No created accounts defined.'))
       }
 
+      const dPath = getDPath(network)
       const keyringController = new KeyringController({})
       const Keyring = keyringController.getKeyringClassForType('HD Key Tree')
       const opts = {
         mnemonic: seedWords,
         numberOfAccounts: createdAccounts.length,
+        hdPath: dPath,
       }
 
       const keyring = new Keyring(opts)

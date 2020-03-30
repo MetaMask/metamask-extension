@@ -1,13 +1,23 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const clone = require('clone')
-const nock = require('nock')
-const createThoughStream = require('through2').obj
+import assert from 'assert'
+import sinon from 'sinon'
+import { cloneDeep } from 'lodash'
+import nock from 'nock'
+import { obj as createThoughStream } from 'through2'
 const blacklistJSON = require('eth-phishing-detect/src/config')
-const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
-const EthQuery = require('eth-query')
+import EthQuery from 'eth-query'
+import proxyquire from 'proxyquire'
+
+const ExtensionizerMock = {
+  runtime: {
+    id: 'fake-extension-id',
+  },
+}
+
+const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
+  'extensionizer': ExtensionizerMock,
+})
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'
@@ -57,7 +67,8 @@ describe('MetaMaskController', function () {
           return Promise.resolve(this.object)
         },
       },
-      initState: clone(firstTimeState),
+      initState: cloneDeep(firstTimeState),
+      platform: { showTransactionNotification: () => {} },
     })
     // disable diagnostics
     metamaskController.diagnostics = null
@@ -372,7 +383,7 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
       await metamaskController.connectHardware('trezor', 0).catch((e) => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
       assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Trezor Hardware')
       assert.equal(keyrings.length, 1)
@@ -382,7 +393,7 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
       await metamaskController.connectHardware('ledger', 0).catch((e) => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Ledger Hardware'
+        'Ledger Hardware',
       )
       assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Ledger Hardware')
       assert.equal(keyrings.length, 1)
@@ -419,7 +430,7 @@ describe('MetaMaskController', function () {
       await metamaskController.connectHardware('trezor', 0).catch((e) => null)
       await metamaskController.forgetDevice('trezor')
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
 
       assert.deepEqual(keyrings[0].accounts, [])
@@ -468,7 +479,7 @@ describe('MetaMaskController', function () {
 
     it('should set unlockedAccount in the keyring', async function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
     })
@@ -821,47 +832,104 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setupUntrustedCommunication', function () {
-    let streamTest
+    it('sets up phishing stream for untrusted communication ', async function () {
+      const phishingMessageSender = {
+        url: 'http://myethereumwalletntw.com',
+        tab: {},
+      }
+      await metamaskController.phishingController.updatePhishingLists()
 
-    const phishingUrl = 'myethereumwalletntw.com'
-
-    afterEach(function () {
-      streamTest.end()
-    })
-
-    it('sets up phishing stream for untrusted communication ', async () => {
-      await metamaskController.blacklistController.updatePhishingList()
-      console.log(blacklistJSON.blacklist.includes(phishingUrl))
 
       const { promise, resolve } = deferredPromise()
-
-      streamTest = createThoughStream((chunk, enc, cb) => {
-        if (chunk.name !== 'phishing') return cb()
-        assert.equal(chunk.data.hostname, phishingUrl)
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.name !== 'phishing') {
+          return cb()
+        }
+        assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
         resolve()
         cb()
       })
-      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
 
+
+      metamaskController.setupUntrustedCommunication(streamTest, phishingMessageSender)
       await promise
+      streamTest.end()
+    })
+
+    it('adds a tabId and origin to requests', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: { id: 456 },
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        done()
+      })
+    })
+
+    it('should add only origin to request if tabId not provided', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        done()
+      })
     })
   })
 
   describe('#setupTrustedCommunication', function () {
-    let streamTest
-
-    afterEach(function () {
-      streamTest.end()
-    })
-
-    it('sets up controller dnode api for trusted communication', function (done) {
-      streamTest = createThoughStream((chunk, enc, cb) => {
+    it('sets up controller dnode api for trusted communication', async function () {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: {},
+      }
+      const { promise, resolve } = deferredPromise()
+      const streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'controller')
+        resolve()
         cb()
-        done()
       })
 
-      metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
+      metamaskController.setupTrustedCommunication(streamTest, messageSender)
+      await promise
+      streamTest.end()
     })
   })
 
@@ -964,6 +1032,8 @@ describe('MetaMaskController', function () {
 
 function deferredPromise () {
   let resolve
-  const promise = new Promise(_resolve => { resolve = _resolve })
+  const promise = new Promise((_resolve) => {
+    resolve = _resolve
+  })
   return { promise, resolve }
 }

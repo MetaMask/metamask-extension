@@ -10,6 +10,7 @@ function mapStateToProps (state) {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
+    dPath: state.metamask.dPath,
   }
 }
 
@@ -142,7 +143,7 @@ ConfirmChangePassword.prototype.ChangePassword = function () {
     props.dispatch(actions.displayWarning(this.warning))
     return
   }
-  props.dispatch(actions.changePassword(oldPassword, newPassword))
+  props.dispatch(actions.changePassword(oldPassword, newPassword, this.props.dPath))
     .then(() => {
       props.dispatch(actions.showConfigPage())
     })

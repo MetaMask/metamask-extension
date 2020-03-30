@@ -1,10 +1,45 @@
 /*global Web3*/
+
+// need to make sure we aren't affected by overlapping namespaces
+// and that we dont affect the app with our namespace
+// mostly a fix for web3's BigNumber if AMD's "define" is defined...
+let __define
+
+/**
+ * Caches reference to global define object and deletes it to
+ * avoid conflicts with other global define objects, such as
+ * AMD's define function
+ */
+const cleanContextForImports = () => {
+  __define = global.define
+  try {
+    global.define = undefined
+  } catch (_) {
+    console.warn('Nifty Wallet - global.define could not be deleted.')
+  }
+}
+
+/**
+ * Restores global define object from cached reference
+ */
+const restoreContextAfterImports = () => {
+  try {
+    global.define = __define
+  } catch (_) {
+    console.warn('Nifty Wallet - global.define could not be overwritten.')
+  }
+}
+
 cleanContextForImports()
-require('web3/dist/web3.min.js')
-const log = require('loglevel')
-const LocalMessageDuplexStream = require('post-message-stream')
-const setupDappAutoReload = require('./lib/auto-reload.js')
-const MetamaskInpageProvider = require('nifty-wallet-inpage-provider')
+
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+import MetamaskInpageProvider from 'nifty-wallet-inpage-provider'
+
+// TODO:deprecate:Q1-2020
+import 'web3/dist/web3.min.js'
+
+import setupDappAutoReload from './lib/auto-reload.js'
 
 restoreContextAfterImports()
 
@@ -15,13 +50,14 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 //
 
 // setup background connection
-var metamaskStream = new LocalMessageDuplexStream({
+const metamaskStream = new LocalMessageDuplexStream({
   name: 'nifty-inpage',
   target: 'nifty-contentscript',
 })
 
 // compose the inpage provider
-var inpageProvider = new MetamaskInpageProvider(metamaskStream)
+const inpageProvider = new MetamaskInpageProvider(metamaskStream)
+
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
@@ -43,79 +79,35 @@ inpageProvider.enable = function (options = {}) {
 }
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
-// `sendAsync` method on the prototype, causing `this` reference issues with drizzle
+// `sendAsync` method on the prototype, causing `this` reference issues
 const proxiedInpageProvider = new Proxy(inpageProvider, {
   // straight up lie that we deleted the property so that it doesnt
   // throw an error in strict mode
   deleteProperty: () => true,
 })
 
-window.ethereum = proxiedInpageProvider
-
 //
+// TODO:deprecate:Q1-2020
+//
+
 // setup web3
-//
 
-var web3 = new Web3(inpageProvider)
+const web3 = new Web3(proxiedInpageProvider)
 web3.setProvider = function () {
   log.debug('Nifty Wallet - overrode web3.setProvider')
 }
 log.debug('Nifty Wallet - injected web3')
 
+proxiedInpageProvider._web3Ref = web3.eth
+
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
-
-// export global web3, with usage-detection and deprecation warning
-
-/* TODO: Uncomment this area once auto-reload.js has been deprecated:
-let hasBeenWarned = false
-global.web3 = new Proxy(web3, {
-  get: (_web3, key) => {
-    // show warning once on web3 access
-    if (!hasBeenWarned && key !== 'currentProvider') {
-      console.warn('Nifty Wallet: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/MetaMask/faq/blob/master/detecting_metamask.md#web3-deprecation')
-      hasBeenWarned = true
-    }
-    // return value normally
-    return _web3[key]
-  },
-  set: (_web3, key, value) => {
-    // set value normally
-    _web3[key] = value
-  },
-})
-*/
 
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
+//
+// end deprecate:Q1-2020
+//
 
-// need to make sure we aren't affected by overlapping namespaces
-// and that we dont affect the app with our namespace
-// mostly a fix for web3's BigNumber if AMD's "define" is defined...
-var __define
-
-/**
- * Caches reference to global define object and deletes it to
- * avoid conflicts with other global define objects, such as
- * AMD's define function
- */
-function cleanContextForImports () {
-  __define = global.define
-  try {
-    global.define = undefined
-  } catch (_) {
-    console.warn('Nifty Wallet - global.define could not be deleted.')
-  }
-}
-
-/**
- * Restores global define object from cached reference
- */
-function restoreContextAfterImports () {
-  try {
-    global.define = __define
-  } catch (_) {
-    console.warn('Nifty Wallet - global.define could not be overwritten.')
-  }
-}
+window.ethereum = proxiedInpageProvider

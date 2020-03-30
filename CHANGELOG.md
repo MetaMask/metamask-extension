@@ -2,6 +2,21 @@
 
 ## Current Master
 
+## 5.0.0 Tue Mar 31 2020
+
+- [#340](https://github.com/poanetwork/nifty-wallet/pull/340) - (Feature) Update in-page provider (EIP-1193)
+- [#334](https://github.com/poanetwork/nifty-wallet/pull/334) - (Feature) Ability to set tx value for payable methods
+- [#333](https://github.com/poanetwork/nifty-wallet/pull/333) - (Fix) Support RSK testnet explorer links
+- [#332](https://github.com/poanetwork/nifty-wallet/pull/332) - (Chore) Return to main screen from removal of imported account
+- [#330](https://github.com/poanetwork/nifty-wallet/pull/330) - (Fix) Derive correct addresses for custom networks (RSK/ETC)
+- [#329](https://github.com/poanetwork/nifty-wallet/pull/329) - (Fix) Connect to unknown private network fix
+- [#326](https://github.com/poanetwork/nifty-wallet/pull/326) - (Chore) HTTP2 RPC endpoints for POA and xDai
+- [#324](https://github.com/poanetwork/nifty-wallet/pull/324) - (Chore) Whitelist Geon token
+- [#323](https://github.com/poanetwork/nifty-wallet/pull/323) - (Chore) update Mainnet tokens metadata
+- [#322](https://github.com/poanetwork/nifty-wallet/pull/322) - (Fix) Update explorers links
+- [#318](https://github.com/poanetwork/nifty-wallet/pull/318) - (Fix) pasting of ABI for contract type account
+- [#317](https://github.com/poanetwork/nifty-wallet/pull/317) - (Fix) path to derive accounts in HD wallets for RSK, ETC
+
 ## 4.11.10 Tue Feb 04 2020
 
 - [#313](https://github.com/poanetwork/nifty-wallet/pull/313) - Change Ethereum classic RPC endpoint

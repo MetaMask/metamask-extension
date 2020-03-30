@@ -5,7 +5,6 @@
 // this needs to run before anything else
 require('./lib/setupFetchDebugging')()
 
-const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
 const debounce = require('debounce-stream')
@@ -29,7 +28,6 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
-const ipfsContent = require('./lib/ipfsContent.js')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -59,7 +57,6 @@ const isIE = !!document.documentMode
 // Edge 20+
 const isEdge = !isIE && !!window.StyleMedia
 
-let ipfsHandle
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -126,6 +123,7 @@ setupMetamaskMeshMetrics()
  * @property {string} provider.rpcTarget - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} network - A stringified number of the current network ID.
+ * @property {string} dPath - A path to derive accounts.
  * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {TransactionMeta[]} selectedAddressTxList - An array of transactions associated with the currently selected account.
@@ -165,7 +163,6 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('Nifty Wallet initialization complete.')
-  ipfsHandle = ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -270,11 +267,6 @@ function setupController (initState, initLangCode) {
   })
   global.metamaskController = controller
 
-  controller.networkController.on('networkDidChange', () => {
-    ipfsHandle && ipfsHandle.remove()
-    ipfsHandle = ipfsContent(controller.networkController.providerStore.getState())
-  })
-
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
@@ -294,7 +286,7 @@ function setupController (initState, initLangCode) {
     createStreamSink(persistData),
     (error) => {
       log.error('Nifty Wallet - Persistence pipeline failed', error)
-    }
+    },
   )
 
   /**
@@ -396,9 +388,8 @@ function setupController (initState, initLangCode) {
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const originDomain = urlUtil.parse(remotePort.sender.url).hostname
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, originDomain)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //
@@ -409,6 +400,8 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.decryptMessageManager.on('updateBadge', updateBadge)
+  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
 
   /**
@@ -416,12 +409,15 @@ function setupController (initState, initLangCode) {
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge () {
-    var label = ''
-    var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
-    var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    var unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs
+    let label = ''
+    const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
+    const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
+    const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
+    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
+    const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
+    const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
+    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
+                 unapprovedTypedMessagesCount
     if (count) {
       label = String(count)
     }
@@ -462,12 +458,12 @@ function showWatchAssetUi () {
   triggerUi()
   return new Promise(
     (resolve) => {
-      var interval = setInterval(() => {
+      const interval = setInterval(() => {
         if (!notificationIsOpen) {
           clearInterval(interval)
           resolve()
         }
       }, 1000)
-    }
+    },
   )
 }

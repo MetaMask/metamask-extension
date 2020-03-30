@@ -46,10 +46,10 @@ class Dropdown extends Component {
             border-radius: 4px;
           }
           li.dropdown-menu-item { color: rgb(185, 185, 185); }
-          `
+          `,
         ),
         ...children,
-      ]
+      ],
     )
   }
 }
@@ -94,7 +94,7 @@ class DropdownMenuItem extends Component {
           color: 'white',
         }, style),
       },
-      children
+      children,
     )
   }
 }

@@ -45,6 +45,6 @@ export default compose(
   connect(
     ({ metamask: { selectedAddress } }) => ({
       address: selectedAddress,
-    })
-  )
+    }),
+  ),
 )(UniqueImageScreen)

@@ -27,12 +27,12 @@ const selectors = {
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
-  autoAddToBetaUI,
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
   preferencesSelector,
   getMetaMaskAccounts,
+  getUsePhishDetect,
 }
 
 module.exports = selectors
@@ -67,6 +67,10 @@ function getMetaMaskAccounts (state) {
     }
   })
   return selectedAccounts
+}
+
+function getUsePhishDetect (state) {
+  return Boolean(state.metamask.usePhishDetect)
 }
 
 function getSelectedAccount (state) {
@@ -166,7 +170,7 @@ function getSelectedTokenToFiatRate (state) {
   const tokenToFiatRate = multiplyCurrencies(
     conversionRate,
     selectedTokenExchangeRate,
-    { toNumericBase: 'dec' }
+    { toNumericBase: 'dec' },
   )
 
   return tokenToFiatRate
@@ -177,23 +181,6 @@ function getSelectedTokenContract (state) {
   return selectedToken
     ? global.eth.contract(abi).at(selectedToken.address)
     : null
-}
-
-function autoAddToBetaUI (state) {
-  const autoAddTransactionThreshold = 12
-  const autoAddAccountsThreshold = 2
-  const autoAddTokensThreshold = 1
-
-  const numberOfTransactions = state.metamask.selectedAddressTxList.length
-  const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
-  const numberOfTokensAdded = state.metamask.tokens.length
-
-  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-    (numberOfAccounts > autoAddAccountsThreshold) &&
-    (numberOfTokensAdded > autoAddTokensThreshold)
-  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-  return userIsNotInBeta && userPassesThreshold
 }
 
 function getCurrentViewContext (state) {

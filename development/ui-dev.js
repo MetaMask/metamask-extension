@@ -90,7 +90,7 @@ function startApp () {
         }),
       ]),
 
-    ]
+    ],
   ), container)
 }
 

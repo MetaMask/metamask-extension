@@ -1,11 +1,11 @@
-const assert = require('assert')
-const txUtils = require('../../../../../app/scripts/controllers/transactions/lib/util')
+import assert from 'assert'
+import * as txUtils from '../../../../../app/scripts/controllers/transactions/lib/util'
 
 
 describe('txUtils', function () {
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
@@ -13,7 +13,7 @@ describe('txUtils', function () {
     })
 
     it('returns error for negative values', function () {
-      var sample = {
+      const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
@@ -25,8 +25,8 @@ describe('txUtils', function () {
     })
   })
 
-  describe('#normalizeTxParams', () => {
-    it('should normalize txParams', () => {
+  describe('#normalizeTxParams', function () {
+    it('should normalize txParams', function () {
       const txParams = {
         chainId: '0x1',
         from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
@@ -50,7 +50,7 @@ describe('txUtils', function () {
     })
   })
 
-  describe('#validateRecipient', () => {
+  describe('#validateRecipient', function () {
     it('removes recipient for txParams with 0x when contract data is provided', function () {
       const zeroRecipientandDataTxParams = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -66,33 +66,43 @@ describe('txUtils', function () {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0x',
       }
-      assert.throws(() => { txUtils.validateRecipient(zeroRecipientTxParams) }, Error, 'Invalid recipient address')
+      assert.throws(() => {
+        txUtils.validateRecipient(zeroRecipientTxParams)
+      }, Error, 'Invalid recipient address')
     })
   })
 
 
-  describe('#validateFrom', () => {
+  describe('#validateFrom', function () {
     it('should error when from is not a hex string', function () {
 
       // where from is undefined
       const txParams = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is array
       txParams.from = []
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is a object
       txParams.from = {}
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address ${txParams.from} not a string`)
 
       // where from is a invalid address
       txParams.from = 'im going to fail'
-      assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address`)
+      assert.throws(() => {
+        txUtils.validateFrom(txParams)
+      }, Error, `Invalid from address`)
 
       // should run
       txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d'
       txUtils.validateFrom(txParams)
-      })
+    })
   })
 })

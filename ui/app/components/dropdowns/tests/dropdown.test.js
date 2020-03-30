@@ -16,7 +16,7 @@ describe('', () => {
         style = {{test: 'style'}}
         closeMenu = {closeMenuSpy}
       >
-      </DropdownMenuItem>
+      </DropdownMenuItem>,
     )
   })
 

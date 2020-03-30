@@ -1,6 +1,6 @@
-const log = require('loglevel')
+import log from 'loglevel'
 
-module.exports = createLoggerMiddleware
+export default createLoggerMiddleware
 
 /**
  * Returns a middleware that logs RPC activity
@@ -13,7 +13,9 @@ function createLoggerMiddleware (opts) {
       if (res.error) {
         log.error('Error in RPC response:\n', res)
       }
-      if (req.isMetamaskInternal) return
+      if (req.isMetamaskInternal) {
+        return
+      }
       log.info(`RPC (${opts.origin}):`, req, '->', res)
       cb()
     })

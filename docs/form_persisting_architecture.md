@@ -14,12 +14,12 @@ To use this class, simply take your form component (the component that renders `
 
 You can see an example of this in use in `ui/app/first-time/restore-vault.js`.
 
-Additionally, any field whose value should be persisted, should have a `persistentFormId` attribute, which needs to be assigned under a `dataset` key on the main `attributes` hash.  For example:
+Additionally, any field whose value should be persisted, should have a `persistentFormid` attribute, which needs to be assigned under a `dataset` key on the main `attributes` hash.  For example:
 
 ```javascript
   return h('textarea.twelve-word-phrase.letter-spacey', {
     dataset: {
-      persistentFormId: 'wallet-seed',
+      persistentFormid: 'wallet-seed',
     },
   })
 ```

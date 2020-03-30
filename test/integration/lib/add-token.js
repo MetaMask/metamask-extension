@@ -25,7 +25,7 @@ async function runAddTokenFlowTest (assert, done) {
 
   // Used to set values on TextField input component
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype, 'value'
+    window.HTMLInputElement.prototype, 'value',
   ).set
 
   // Check that no tokens have been added

@@ -44,7 +44,7 @@ describe('Token Cell', () => {
           currentCurrency={'usd'}
           image={'./test-image'}
         />
-      </Provider>
+      </Provider>,
     )
   })
 
