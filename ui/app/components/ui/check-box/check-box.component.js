@@ -6,13 +6,12 @@ export default class CheckBox extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
     checked: PropTypes.bool,
-    onClick: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     className: '',
     checked: false,
-    onClick: () => {},
   }
 
   render () {
@@ -21,12 +20,15 @@ export default class CheckBox extends PureComponent {
     return (
       <div
         onClick={ () => onClick() }
-        className={classnames('check-box', className)}
+        className={classnames('check-box', className, {
+          'check-box--checked': checked,
+          'check-box--un-checked': !checked,
+        })}
       >
         {
           checked
-            ? <div className="check-box--checked"><i className="fa fa-check" /></div>
-            : <div className="check-box--un-checked" />
+            ? <i className="fa fa-check" />
+            : null
         }
       </div>
     )
