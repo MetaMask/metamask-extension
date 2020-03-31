@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import classnames from 'classnames'
 import { ObjectInspector } from 'react-inspector'
 

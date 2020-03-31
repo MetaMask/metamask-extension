@@ -1,6 +1,6 @@
 import ObservableStore from 'obs-store'
 import PendingBalanceCalculator from '../lib/pending-balance-calculator'
-import { BN } from 'ethereumjs-util'
+import { BN } from 'cfx-util'
 
 class BalanceController {
   /**

@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import { ETH, GWEI, WEI } from '../constants/common'
 import {
   conversionUtil,

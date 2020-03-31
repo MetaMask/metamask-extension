@@ -18,7 +18,7 @@ import {
 import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util'
 
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from 'cfx-util'
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`

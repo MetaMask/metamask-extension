@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { isValidAddress } from 'ethereumjs-util'
+import { isValidAccountAddress } from 'cfx-util'
 import {
   CAVEAT_NAMES,
   HISTORY_STORE_KEY,
@@ -342,7 +342,7 @@ export default class PermissionsLogController {
         Array.isArray(caveat.value)
       ) {
         for (const value of caveat.value) {
-          if (isValidAddress(value)) {
+          if (isValidAccountAddress(value)) {
             accounts[value] = true
           }
         }

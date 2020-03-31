@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 // import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'

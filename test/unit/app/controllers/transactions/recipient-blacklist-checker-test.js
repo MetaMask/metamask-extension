@@ -54,7 +54,7 @@ describe('Recipient Blacklist Checker', function () {
 
     it('fails for public account - uppercase', function () {
       const mainnetId = 1
-      const publicAccount = '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'
+      const publicAccount = '0X19396F8115517E26FA78EC7F1EE73681DD3D1E54'
       try {
         recipientBlackListChecker.checkAccount(mainnetId, publicAccount)
         assert.fail('function should have thrown an error')
@@ -65,7 +65,7 @@ describe('Recipient Blacklist Checker', function () {
 
     it('fails for public account - lowercase', async function () {
       const mainnetId = 1
-      const publicAccount = '0x0d1d4e623d10f9fba5db95830f7d3839406c6af2'
+      const publicAccount = '0x19396f8115517e26fa78ec7f1ee73681dd3d1e54'
       try {
         await recipientBlackListChecker.checkAccount(mainnetId, publicAccount)
         assert.fail('function should have thrown an error')

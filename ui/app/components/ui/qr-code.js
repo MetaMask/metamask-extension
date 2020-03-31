@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import qrCode from 'qrcode-generator'
 import { connect } from 'react-redux'
-import { isHexPrefixed } from 'ethereumjs-util'
+import { isHexPrefixed } from 'cfx-util'
 import ReadOnlyInput from './readonly-input'
 import { checksumAddress } from '../../helpers/utils/util'
 

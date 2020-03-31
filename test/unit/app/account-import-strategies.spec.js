@@ -1,5 +1,5 @@
 import assert from 'assert'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import accountImporter from '../../../app/scripts/account-import-strategies/index'
 
 describe('Account Import Strategies', function () {

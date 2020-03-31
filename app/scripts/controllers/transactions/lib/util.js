@@ -1,4 +1,4 @@
-import { addHexPrefix, isValidAddress } from 'ethereumjs-util'
+import { addHexPrefix, isValidAddress, isValidAccountAddress } from 'cfx-util'
 
 // functions that handle normalizing of that key in txParams
 const normalizers = {
@@ -60,13 +60,13 @@ export function validateFrom (txParams) {
   if (!(typeof txParams.from === 'string')) {
     throw new Error(`Invalid from address ${txParams.from} not a string`)
   }
-  if (!isValidAddress(txParams.from)) {
+  if (!isValidAccountAddress(txParams.from)) {
     throw new Error('Invalid from address')
   }
 }
 
 /**
-  validates the to field in  txParams
+  validates the to field in txParams
   @param {Object} txParams
  */
 export function validateRecipient (txParams) {

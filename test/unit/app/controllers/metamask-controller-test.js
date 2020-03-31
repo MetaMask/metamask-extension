@@ -2,7 +2,7 @@ import assert from 'assert'
 import sinon from 'sinon'
 import { cloneDeep } from 'lodash'
 import nock from 'nock'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import { obj as createThoughStream } from 'through2'
 import blacklistJSON from 'eth-phishing-detect/src/config'
 import firstTimeState from '../../localhostState'
@@ -49,12 +49,12 @@ const DEFAULT_LABEL = 'Account 1'
 const DEFAULT_LABEL_2 = 'Account 2'
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
-const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
-const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'
-const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823'
+const TEST_ADDRESS = '0x1b398b5288001b79275ef9293835aa1a21caccfc'
+const TEST_ADDRESS_2 = '0x15f81a1b497e8ba4bfa766916e9b0a56008e902a'
+const TEST_ADDRESS_3 = '0x1237787c844f8ec2df6bafb3870d1aee4ffd670e'
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
-const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+const TEST_ADDRESS_ALT = '0x1cd356635e3139dfa7e7762f8306165ce978203d'
 const CUSTOM_RPC_URL = 'http://localhost:8545'
 
 describe('MetaMaskController', function () {
@@ -156,20 +156,20 @@ describe('MetaMaskController', function () {
       const simpleKeyrings = metamaskController.keyringController.getKeyringsByType(
         'Simple Key Pair'
       )
-      const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
-      const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
+      const privKeyBuffer = simpleKeyrings[0].wallets[0].privKey
+      const pubKeyBuffer = simpleKeyrings[0].wallets[0].pubKey
       const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
       const privKey = ethUtil.bufferToHex(privKeyBuffer)
       const pubKey = ethUtil.bufferToHex(addressBuffer)
       assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
-      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+      assert.equal(pubKey, '0x118035bf8712672935fdb4e5e431b1a0183d2dfc')
     })
 
     it('adds 1 account', async function () {
       const keyringAccounts = await metamaskController.keyringController.getAccounts()
       assert.equal(
         keyringAccounts[keyringAccounts.length - 1],
-        '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'
+        '0x118035bf8712672935fdb4e5e431b1a0183d2dfc'
       )
     })
   })
@@ -315,6 +315,7 @@ describe('MetaMaskController', function () {
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000')
       })
+
       metamaskController.getBalance.withArgs(TEST_ADDRESS_2).callsFake(() => {
         return Promise.resolve('0x0')
       })
@@ -832,7 +833,7 @@ describe('MetaMaskController', function () {
   describe('#newUnsignedPersonalMessage', function () {
     let msgParams, metamaskPersonalMsgs, personalMessages, msgId
 
-    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+    const address = '0x1cd356635e3139dfa7e7762f8306165ce978203d'
     const data = '0x43727970746f6b697474696573'
 
     beforeEach(async function () {
@@ -905,7 +906,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,
-        '0x42aa75cb4f4991a9e4b84645896b6a2a402f38de45a3f522dd7f1f0aa99205237bf8f9693a435438ad9d37e536552ecdc407ba41f54f57bc2e182c3bd5470eb801'
+        '0xf8ef0b4b2e47c4f2bce9fe8b21d2a58ba107d6b4fcaced3f6b52c255b5d954e67873b8f5969a0e125c2b56a8bd2917f12186c43ed0471a36172744a7b7d923b600'
       )
     })
   })

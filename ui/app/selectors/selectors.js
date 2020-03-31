@@ -1,6 +1,6 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { mapObjectValues } from '../../../app/scripts/lib/util'
-import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
+import { stripHexPrefix, addHexPrefix } from 'cfx-util'
 import { createSelector } from 'reselect'
 
 import abi from 'human-standard-token-abi'

@@ -1,7 +1,7 @@
 import EthQuery from '../../ethjs-query'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from 'cfx-util'
 import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.

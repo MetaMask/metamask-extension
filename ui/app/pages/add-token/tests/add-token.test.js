@@ -52,7 +52,7 @@ describe('Add Token', function () {
     })
 
     it('edits token address', function () {
-      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4'
+      const tokenAddress = '0x817b3f8050a0BD94b6b1da02B4384eE5B4DF13F4'
       const event = { target: { value: tokenAddress } }
       const customAddress = wrapper.find('input#custom-address')
 

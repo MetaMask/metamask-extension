@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
 import { addInternalMethodPrefix } from './permissions'
-import { normalize as normalizeAddress } from 'eth-sig-util'
-import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
+import { normalize as normalizeAddress } from 'cfx-sig-util'
+import { isValidContractAddress, keccak, bufferToHex } from 'cfx-util'
 
 class PreferencesController {
   /**
@@ -818,7 +818,7 @@ class PreferencesController {
         `Invalid decimals ${decimals} must be at least 0, and not over 36`
       )
     }
-    if (!isValidAddress(rawAddress)) {
+    if (!isValidContractAddress(rawAddress)) {
       throw new Error(`Invalid address ${rawAddress}`)
     }
   }

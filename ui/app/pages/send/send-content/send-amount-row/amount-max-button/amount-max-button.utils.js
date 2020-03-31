@@ -2,7 +2,7 @@ import {
   multiplyCurrencies,
   subtractCurrencies,
 } from '../../../../../helpers/utils/conversion-util'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 
 export function calcMaxAmount ({
   balance,

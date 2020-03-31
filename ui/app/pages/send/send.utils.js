@@ -22,7 +22,7 @@ import {
 } from './send.constants'
 
 import abi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 
 export {
   addGasBuffer,
@@ -213,21 +213,10 @@ async function estimateGas ({
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
   // if recipient has no code, gas is 21k max:
+  // 0x1 account address
+  // 0x8 contract address
   if (!selectedToken && !data) {
-    let code
-    try {
-      code = Boolean(to) && (await global.eth.getCode(to))
-    } catch (err) {
-      if (err && err.message.includes('does not exist')) {
-        code = '0x'
-      } else {
-        throw err
-      }
-    }
-    // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-    // conflux will return error if there's no contract at that address
-    const codeIsEmpty = !code || code === '0x' || code === '0x0'
-    if (codeIsEmpty) {
+    if(!to || to[2] === '1') {
       return SIMPLE_GAS_COST
     }
   } else if (selectedToken && !to) {

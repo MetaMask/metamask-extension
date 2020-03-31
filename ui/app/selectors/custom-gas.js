@@ -13,7 +13,7 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util'
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util'
 import { formatETHFee } from '../helpers/utils/formatters'
 import { calcGasTotal } from '../pages/send/send.utils'
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from 'cfx-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
 

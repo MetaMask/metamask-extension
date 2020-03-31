@@ -518,7 +518,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpy({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABC',
           decimals: 0,
         })
@@ -540,7 +540,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpySymbol({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           decimals: 0,
         })
       } catch (e) {}
@@ -554,7 +554,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpyDecimals({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABC',
         })
       } catch (e) {}
@@ -568,7 +568,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpyInvalidSymbol({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABCDEFGHI',
           decimals: 0,
         })
@@ -583,7 +583,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpyInvalidDecimals1({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABCDEFGHI',
           decimals: -1,
         })
@@ -598,7 +598,7 @@ describe('preferences controller', function () {
       )
       try {
         validateSpyInvalidDecimals2({
-          rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          rawAddress: '0x826114cd6EE289AccF82350c8d8487fedB8A0C07',
           symbol: 'ABCDEFGHI',
           decimals: 38,
         })
