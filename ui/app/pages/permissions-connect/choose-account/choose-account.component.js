@@ -6,6 +6,7 @@ import CheckBox from '../../../components/ui/check-box'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
+import PermissionsConnectHeader from '../../../components/app/permissions-connect-header'
 
 export default class ChooseAccount extends Component {
   static propTypes = {
@@ -15,14 +16,14 @@ export default class ChooseAccount extends Component {
       lastConnectedDate: PropTypes.string,
       balance: PropTypes.string,
     })).isRequired,
-    originName: PropTypes.string.isRequired,
     selectAccounts: PropTypes.func.isRequired,
     selectNewAccountViaModal: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
     addressLastConnectedMap: PropTypes.object,
     cancelPermissionsRequest: PropTypes.func.isRequired,
     permissionsRequestId: PropTypes.string.isRequired,
-    selectedAccountAddresses: PropTypes.object,
+    selectedAccountAddresses: PropTypes.object.isRequired,
+    targetDomainMetadata: PropTypes.object,
   }
 
   state = {
@@ -31,7 +32,6 @@ export default class ChooseAccount extends Component {
 
   static defaultProps = {
     addressLastConnectedMap: {},
-    selectedAccountAddresses: {},
   }
 
   static contextTypes = {
@@ -159,17 +159,26 @@ export default class ChooseAccount extends Component {
   }
 
   render () {
-    const { originName, selectAccounts, permissionsRequestId, cancelPermissionsRequest } = this.props
+    const {
+      selectAccounts,
+      permissionsRequestId,
+      cancelPermissionsRequest,
+      targetDomainMetadata,
+      accounts,
+    } = this.props
     const { selectedAccounts } = this.state
     const { t } = this.context
     return (
       <div className="permissions-connect-choose-account">
-        <div className="permissions-connect-choose-account__title">
-          { t('selectYourAccounts') }
-        </div>
-        <div className="permissions-connect-choose-account__text">
-          { t('toConnectWith', [originName]) }
-        </div>
+        <PermissionsConnectHeader
+          icon={targetDomainMetadata.icon}
+          iconName={targetDomainMetadata.name}
+          headerTitle={t('connectWithMetaMask')}
+          headerText={accounts.length > 0
+            ? t('chooseAccountsToUse')
+            : t('connectAccountOrCreate')
+          }
+        />
         { this.renderAccountsListHeader() }
         { this.renderAccountsList() }
         <div className="permissions-connect-choose-account__bottom-buttons">

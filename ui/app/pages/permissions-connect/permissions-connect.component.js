@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -37,6 +36,7 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     redirecting: PropTypes.bool,
+    targetDomainMetadata: PropTypes.object,
   }
 
   static defaultProps = {
@@ -161,13 +161,25 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       page,
+      targetDomainMetadata,
     } = this.props
-    const { selectedAccountAddresses, permissionAccepted, originName, redirecting } = this.state
+    const {
+      selectedAccountAddresses,
+      permissionAccepted,
+      originName,
+      redirecting,
+    } = this.state
 
     return (
       <div className="permissions-connect">
         { !redirecting
-          ? <PermissionsConnectHeader page={page} />
+          ? (
+            <div className="permissions-connect__page-count-wrapper">
+              <div className="permissions-connect-header__page-count">
+                { `${page}/2` }
+              </div>
+            </div>
+          )
           : null
         }
         <Switch>
@@ -196,6 +208,7 @@ export default class PermissionConnect extends Component {
                   }}
                   permissionsRequestId={permissionsRequestId}
                   selectedAccountAddresses={selectedAccountAddresses}
+                  targetDomainMetadata={targetDomainMetadata}
                 />
                 <PermissionsConnectFooter />
               </div>

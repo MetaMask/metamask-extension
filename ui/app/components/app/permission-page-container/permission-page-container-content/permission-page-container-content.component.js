@@ -2,12 +2,12 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Identicon from '../../../ui/identicon'
 import IconWithFallBack from '../../../ui/icon-with-fallback'
+import PermissionsConnectHeader from '../../permissions-connect-header'
 import classnames from 'classnames'
 
 export default class PermissionPageContainerContent extends PureComponent {
 
   static propTypes = {
-    requestMetadata: PropTypes.object.isRequired,
     domainMetadata: PropTypes.object.isRequired,
     selectedPermissions: PropTypes.object.isRequired,
     permissionsDescriptions: PropTypes.object.isRequired,
@@ -47,33 +47,6 @@ export default class PermissionPageContainerContent extends PureComponent {
               diameter={54}
             />
           </div>
-        </div>
-      </div>
-    )
-  }
-
-  renderNonRedirectVisual () {
-    const { requestMetadata, domainMetadata } = this.props
-
-    return (
-      <div>
-        <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
-        <h1>{domainMetadata.name}</h1>
-        <h2>{requestMetadata.origin}</h2>
-      </div>
-    )
-  }
-
-  renderPermissionApprovalVisual = () => {
-    const { redirect } = this.props
-
-    return (
-      <div className="permission-approval-visual">
-        <div className="permission-approval-visual__content">
-          { redirect
-            ? this.renderRedirectVisual()
-            : this.renderNonRedirectVisual()
-          }
         </div>
       </div>
     )
@@ -150,24 +123,26 @@ export default class PermissionPageContainerContent extends PureComponent {
           'permission-approval-container__content--redirect': redirect,
         })}
       >
-        {this.renderPermissionApprovalVisual()}
-        <div className="permission-approval-container__title">
-          { t(...titleArgs) }
-        </div>
         { !redirect
           ? (
-            <section className="permission-approval-container__permissions-container">
-              <div className="permission-approval-container__permissions-header">
-                { domainMetadata.extensionId
+            <div>
+              <PermissionsConnectHeader
+                icon={domainMetadata.icon}
+                iconName={domainMetadata.name}
+                headerTitle={t(...titleArgs)}
+                headerText={ domainMetadata.extensionId
                   ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
                   : t('thisWillAllow', [domainMetadata.name])
                 }
-              </div>
-              { this.renderRequestedPermissions() }
-            </section>
+              />
+              <section className="permission-approval-container__permissions-container">
+                { this.renderRequestedPermissions() }
+              </section>
+            </div>
           )
           : (
             <div className="permission-approval-container__permissions-header-redirect">
+              { this.renderRedirectVisual() }
               { t('redirectingBackToDapp') }
             </div>
           )
