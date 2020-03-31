@@ -1,13 +1,11 @@
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import BalanceComponent from '../../ui/balance'
-import AddTokenButton from '../add-token-button'
 import AccountDetails from '../account-details'
 
 import { checksumAddress } from '../../../helpers/utils/util'
-import TokenList from '../token-list'
-import { ADD_TOKEN_ROUTE, CONNECTED_ROUTE } from '../../../helpers/constants/routes'
+import AssetList from '../asset-list'
+import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 
 export default class WalletView extends Component {
   static contextTypes = {
@@ -17,8 +15,6 @@ export default class WalletView extends Component {
 
   static defaultProps = {
     responsiveDisplayClassname: '',
-    selectedAccount: null,
-    selectedTokenAddress: null,
   }
 
   static propTypes = {
@@ -27,69 +23,8 @@ export default class WalletView extends Component {
     identities: PropTypes.object.isRequired,
     keyrings: PropTypes.array.isRequired,
     responsiveDisplayClassname: PropTypes.string,
-    selectedAccount: PropTypes.object,
     selectedAddress: PropTypes.string.isRequired,
-    selectedTokenAddress: PropTypes.string,
-    setSelectedToken: PropTypes.func.isRequired,
     sidebarOpen: PropTypes.bool.isRequired,
-    unsetSelectedToken: PropTypes.func.isRequired,
-  }
-
-  renderWalletBalance () {
-    const {
-      selectedTokenAddress,
-      selectedAccount,
-      unsetSelectedToken,
-      hideSidebar,
-      sidebarOpen,
-    } = this.props
-
-    return (
-      <div
-        className={classnames('flex-column', 'wallet-balance-wrapper', {
-          'wallet-balance-wrapper--active': !selectedTokenAddress,
-        })}
-      >
-        <div
-          className="wallet-balance"
-          onClick={() => {
-            unsetSelectedToken()
-            selectedTokenAddress && sidebarOpen && hideSidebar()
-          }}
-        >
-          <BalanceComponent
-            balanceValue={selectedAccount ? selectedAccount.balance : ''}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  renderAddToken () {
-    const {
-      sidebarOpen,
-      hideSidebar,
-      history,
-    } = this.props
-    const { metricsEvent } = this.context
-
-    return (
-      <AddTokenButton
-        onClick={() => {
-          history.push(ADD_TOKEN_ROUTE)
-          metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Token Menu',
-              name: 'Clicked "Add Token"',
-            },
-          })
-          if (sidebarOpen) {
-            hideSidebar()
-          }
-        }}
-      />
-    )
   }
 
   showConnectedSites = () => {
@@ -106,14 +41,10 @@ export default class WalletView extends Component {
 
   render () {
     const {
-      hideSidebar,
       identities,
       keyrings,
       responsiveDisplayClassname,
       selectedAddress,
-      selectedTokenAddress,
-      setSelectedToken,
-      sidebarOpen,
     } = this.props
 
     const checksummedAddress = checksumAddress(selectedAddress)
@@ -143,21 +74,7 @@ export default class WalletView extends Component {
           name={identities[selectedAddress].name}
           showConnectedSites={this.showConnectedSites}
         />
-        {this.renderWalletBalance()}
-        <TokenList
-          onTokenClick={(tokenAddress) => {
-            setSelectedToken(tokenAddress)
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
-                action: 'Token Menu',
-                name: 'Clicked Token',
-              },
-            })
-            selectedTokenAddress !== tokenAddress && sidebarOpen && hideSidebar()
-          }}
-        />
-        {this.renderAddToken()}
+        <AssetList />
       </div>
     )
   }

@@ -2,8 +2,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import WalletView from './wallet-view.component'
-import { hideSidebar, setSelectedToken } from '../../../store/actions'
-import { getSelectedAddress, getSelectedAccount } from '../../../selectors/selectors'
+import { hideSidebar } from '../../../store/actions'
+import { getSelectedAddress } from '../../../selectors/selectors'
 
 function mapStateToProps (state) {
   return {
@@ -11,16 +11,12 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     keyrings: state.metamask.keyrings,
     selectedAddress: getSelectedAddress(state),
-    selectedAccount: getSelectedAccount(state),
-    selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     hideSidebar: () => dispatch(hideSidebar()),
-    setSelectedToken: (tokenAddress) => dispatch(setSelectedToken(tokenAddress)),
-    unsetSelectedToken: () => dispatch(setSelectedToken()),
   }
 }
 
