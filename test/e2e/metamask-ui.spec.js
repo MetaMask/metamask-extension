@@ -995,7 +995,7 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.wallet-balance'))
 
-      await driver.clickElement(By.css('.token-list-item'))
+      await driver.clickElement(By.css('.token-cell'))
       await driver.delay(1000)
 
       const tokenBalanceAmount = await driver.findElements(By.css('.transaction-view-balance__primary-balance'))
@@ -1223,7 +1223,7 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
-      await driver.clickElement(By.css('.token-list-item__ellipsis'))
+      await driver.clickElement(By.css('.token-cell__ellipsis'))
 
       const byTokenMenuDropdownOption = By.css('.menu__item--clickable')
       await driver.clickElement(byTokenMenuDropdownOption)
