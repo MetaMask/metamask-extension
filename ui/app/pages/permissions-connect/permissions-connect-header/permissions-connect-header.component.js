@@ -4,7 +4,7 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo'
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
-    page: PropTypes.number.isRequired,
+    page: PropTypes.string.isRequired,
   }
 
   render () {

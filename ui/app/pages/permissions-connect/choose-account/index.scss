@@ -154,10 +154,7 @@
   }
 
   &__toolip {
-    font-family: Roboto, 'sans-serif';
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
+    @extend %font;
     color: $white;
     text-align: left;
     display: inline-block;
