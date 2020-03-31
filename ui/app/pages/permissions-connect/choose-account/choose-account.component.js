@@ -55,9 +55,7 @@ export default class ChooseAccount extends Component {
   selectAll () {
     const { accounts } = this.props
 
-    const newSelectedAccounts = new Set()
-
-    accounts.forEach((account) => newSelectedAccounts.add(account.address))
+    const newSelectedAccounts = new Set(accounts.map((account) => account.address))
 
     this.setState({ selectedAccounts: newSelectedAccounts })
   }
