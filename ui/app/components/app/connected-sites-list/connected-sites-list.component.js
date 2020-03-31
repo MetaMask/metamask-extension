@@ -13,13 +13,7 @@ export default class ConnectedSitesList extends Component {
       icon: PropTypes.string,
       key: PropTypes.string,
     })).isRequired,
-    getOpenMetamaskTabsIds: PropTypes.func.isRequired,
     onDisconnectSite: PropTypes.func.isRequired,
-  }
-
-  UNSAFE_componentWillMount () {
-    const { getOpenMetamaskTabsIds } = this.props
-    getOpenMetamaskTabsIds()
   }
 
   render () {

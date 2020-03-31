@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
-import { legacyExposeAccounts, removePermissionsFor } from '../../store/actions'
+import { getOpenMetamaskTabsIds, legacyExposeAccounts, removePermissionsFor } from '../../store/actions'
 import {
   getCurrentAccountWithSendEtherInfo,
   getPermissionsDomains,
@@ -32,6 +32,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
     disconnectAccount: (domainKey, domain) => {
       const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
       dispatch(removePermissionsFor({

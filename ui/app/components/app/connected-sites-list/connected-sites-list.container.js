@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import ConnectedSitesList from './connected-sites-list.component'
-import { getOpenMetamaskTabsIds } from '../../../store/actions'
 import { getRenderablePermissionsDomains } from '../../../selectors/selectors'
 
 const mapStateToProps = (state) => {
@@ -9,10 +8,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectedSitesList)
+export default connect(mapStateToProps)(ConnectedSitesList)
