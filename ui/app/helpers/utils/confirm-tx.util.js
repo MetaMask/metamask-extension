@@ -1,6 +1,6 @@
 import currencyFormatter from 'currency-formatter'
 import currencies from 'currency-formatter/currencies'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import BigNumber from 'bignumber.js'
 
 import {

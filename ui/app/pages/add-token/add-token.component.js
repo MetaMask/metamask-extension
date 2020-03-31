@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import { checkExistingAddresses } from './util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
 import {
@@ -162,7 +162,7 @@ class AddToken extends Component {
       autoFilled: false,
     })
 
-    const isValidAddress = ethUtil.isValidAddress(customAddress)
+    const isValidAddress = ethUtil.isValidContractAddress(customAddress)
     const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
     switch (true) {

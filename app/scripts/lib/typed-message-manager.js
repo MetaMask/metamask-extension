@@ -3,7 +3,7 @@ import ObservableStore from 'obs-store'
 import createId from './random-id'
 import assert from 'assert'
 import { ethErrors } from 'eth-json-rpc-errors'
-import sigUtil from 'eth-sig-util'
+import * as sigUtil from 'cfx-sig-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
 

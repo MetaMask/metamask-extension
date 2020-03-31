@@ -12,7 +12,7 @@ describe('Typed Message Manager', function () {
     msgId,
     numberMsgId
 
-  const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+  const address = '0x142edfcc21ed14dda456aa0756c153f7985d8813'
   const networkController = new NetworkController()
   sinon.stub(networkController, 'getNetworkState').returns('1')
 

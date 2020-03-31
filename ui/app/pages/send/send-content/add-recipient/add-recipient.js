@@ -8,7 +8,7 @@ import {
 import { isValidAddress, isEthNetwork } from '../../../../helpers/utils/util'
 import { checkExistingAddresses } from '../../../add-token/util'
 
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import contractMap from '@yqrashawn/cfx-contract-metadata'
 
 export function getToErrorObject (

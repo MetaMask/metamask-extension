@@ -316,7 +316,7 @@ describe('send utils', function () {
     const baseMockParams = {
       blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
-      to: '0xisContract',
+      to: '0x8isContract',
       estimateGasMethod: sinon.stub().callsFake(({ to }, cb) => {
         const err =
           typeof to === 'string' && to.match(/willFailBecauseOf:/)
@@ -329,7 +329,7 @@ describe('send utils', function () {
     const baseExpectedCall = {
       from: 'mockAddress',
       gas: '0x64x0.95',
-      to: '0xisContract',
+      to: '0x8isContract',
       value: '0xff',
     }
 

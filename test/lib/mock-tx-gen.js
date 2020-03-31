@@ -1,4 +1,4 @@
-import { BN } from 'ethereumjs-util'
+import { BN } from 'cfx-util'
 
 const template = {
   status: 'submitted',

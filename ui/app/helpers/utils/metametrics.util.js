@@ -1,6 +1,6 @@
 /* eslint camelcase: 0 */
 
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 
 const inDevelopment = process.env.NODE_ENV === 'development'
 
@@ -206,7 +206,7 @@ function composeUrl (config) {
     ((url || currentPath) &&
       `&pv_id=${ethUtil
         .bufferToHex(
-          ethUtil.sha3(
+          ethUtil.keccak(
             url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0]
           )
         )

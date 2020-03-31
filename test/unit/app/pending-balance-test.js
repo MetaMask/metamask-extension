@@ -1,7 +1,7 @@
 import assert from 'assert'
 import PendingBalanceCalculator from '../../../app/scripts/lib/pending-balance-calculator'
 import MockTxGen from '../../lib/mock-tx-gen'
-import { BN } from 'ethereumjs-util'
+import { BN } from 'cfx-util'
 
 const zeroBn = new BN(0)
 const etherBn = new BN(String(1e18))

@@ -58,7 +58,7 @@ import {
   calcGasTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
-import { addHexPrefix } from 'ethereumjs-util'
+import { addHexPrefix } from 'cfx-util'
 import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 

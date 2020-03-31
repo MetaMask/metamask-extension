@@ -6041,21 +6041,86 @@ cephes@^1.1.2:
   resolved "https://registry.yarnpkg.com/cephes/-/cephes-1.2.0.tgz#4d246b622bc488ab8c982a1f702f0c9f49705d96"
   integrity sha512-twuUuJRrIrsELHz6foJtZlqrz6FC36zoHZJvvThsrM1UWPKxyoilw1Rka6Hk0AmPFKHKUoGwGfAtvNZNtNZu0g==
 
-cfx-keyring-controller@^5.6.1:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.1.tgz#bf1fa02bc5ad242625f528a19efc030d1a8f1e4a"
-  integrity sha512-IyPpQ9E9KfHYpI3Prj/bbklfATN2MF42hA3IfJaUIeSdrlNUxnfPNqpuGuRZ9Xu/I1R30YpQoDujRx8H0n75rg==
+cfx-hd-keyring@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/cfx-hd-keyring/-/cfx-hd-keyring-0.0.1.tgz#c803bfb10772163c39a8e9294fff6ac50ccb06e9"
+  integrity sha512-wmKiuyzGJFhAsaCyCTyVN8jSD71AXi1/qRweKVOBuO/04v9m2fmZBmzSUgn6hwAjMHtIsUTeSHu7lR7SIZ84ng==
+  dependencies:
+    bip39 "^2.2.0"
+    cfx-sig-util "^0.0.1-a"
+    cfx-simple-keyring "^0.0.1"
+    cfx-util "^0.0.1-c"
+    cfx-wallet "^0.0.1-b"
+    ethereumjs-abi "^0.6.5"
+    events "^1.1.1"
+    xtend "^4.0.1"
+
+cfx-keyring-controller@^5.6.3:
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.3.tgz#1f10276abc05e1e71f839d4e38b20d9028213429"
+  integrity sha512-d/Zp9ErKguXfd1G83BugksF1/Ep8p3KKhdOJzXF66zPVNc1OWn+V5HaPPpDVpLyDzVkGfUyBTwGw5g9W175HSA==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    eth-hd-keyring "^3.5.0"
-    eth-sig-util "^1.4.0"
-    eth-simple-keyring "^3.5.0"
-    ethereumjs-util "^5.1.2"
+    cfx-hd-keyring "^0.0.1"
+    cfx-sig-util "^0.0.1-a"
+    cfx-simple-keyring "^0.0.1"
+    cfx-util "^0.0.1-c"
     js-conflux-sdk "^0.8.0-alpha"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
+
+cfx-sig-util@^0.0.1-a:
+  version "0.0.1-a"
+  resolved "https://registry.yarnpkg.com/cfx-sig-util/-/cfx-sig-util-0.0.1-a.tgz#1fcd25eb85fcdbb96d89b7b7f7cbcf641c87f0bb"
+  integrity sha512-6vCdIuVCSyQkoI6l5D4IejY3uqpioUmD93pGHokd/lLbfjLImSJbEMXTwAc+pqMaCamdTGqg0BM1Efgh7G1MqA==
+  dependencies:
+    buffer "^5.2.1"
+    cfx-util "^0.0.1-b"
+    elliptic "^6.4.0"
+    ethereumjs-abi "0.6.5"
+    tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
+
+cfx-simple-keyring@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/cfx-simple-keyring/-/cfx-simple-keyring-0.0.1.tgz#9ae9bc09bd5132b59165f45dd16603a29edfe5db"
+  integrity sha512-/nP6luHn2UtXiiHxhY4tWis++ltUcklHIwF1TrRJpCbJtSykIwoJji2uR2krQ3Vw7gUj5llBQ6boljbgxY7EAA==
+  dependencies:
+    cfx-sig-util "^0.0.1-a"
+    cfx-util "^0.0.1-b"
+    cfx-wallet "^0.0.1-a"
+    ethereumjs-abi "0.6.5"
+    events "^1.1.1"
+    xtend "^4.0.1"
+
+cfx-util@^0.0.1-b, cfx-util@^0.0.1-c:
+  version "0.0.1-c"
+  resolved "https://registry.yarnpkg.com/cfx-util/-/cfx-util-0.0.1-c.tgz#b47da0ab610a82951fe964fe9c1894154f02375e"
+  integrity sha512-1Y8SvaAd7SxNt2N3XaP6JS4fkbmPT13gh1FeAEKf0HShk3229ZrwURaofhWSVZ+d+aDMZQBTjCH2vJZVlNe9Hw==
+  dependencies:
+    "@types/bn.js" "^4.11.3"
+    bn.js "^4.11.0"
+    create-hash "^1.1.2"
+    ethjs-util "0.1.6"
+    keccak "^3.0.0"
+    rlp "^2.2.4"
+    secp256k1 "^3.0.1"
+
+cfx-wallet@^0.0.1-a, cfx-wallet@^0.0.1-b, cfx-wallet@^0.0.1-c:
+  version "0.0.1-c"
+  resolved "https://registry.yarnpkg.com/cfx-wallet/-/cfx-wallet-0.0.1-c.tgz#0b0268465fd867dd669cc2248211f8e9daf5ba9d"
+  integrity sha512-l7Phw6PNl6ep8v//rofqwDFK2Mne3kk3lLg47n+YEs//5peqkFcc/mEQRdjMHL+ZCDah+La8ewa0fRF810JPEw==
+  dependencies:
+    aes-js "^3.1.1"
+    bs58check "^2.1.2"
+    cfx-util "^0.0.1-c"
+    hdkey "^1.1.1"
+    randombytes "^2.0.6"
+    scrypt.js "^0.3.0"
+    utf8 "^3.0.0"
+    uuid "^3.3.2"
 
 "chai@>=1.9.2 <4.0.0":
   version "3.5.0"
@@ -9738,7 +9803,7 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^3.4.0, eth-hd-keyring@^3.5.0:
+eth-hd-keyring@^3.4.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.5.0.tgz#3976d83a27b24305481c389178f290d9264e839d"
   integrity sha512-Ix1LcWYxHMxCCSIMz+TLXLtt50zF6ZDd/TRVXthdw91IwOk1ajuf7QHg3bCDcfeUpdf9oEpwIPbL3xjDqEEjYw==
@@ -10125,17 +10190,6 @@ ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^
   dependencies:
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
-
-ethereumjs-util@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.0.tgz#8e9646c13322e75a9c593cf705d27d4a51c991c0"
-  integrity sha1-jpZGwTMi51qcWTz3BdJ9SlHJkcA=
-  dependencies:
-    bn.js "^4.8.0"
-    create-hash "^1.1.2"
-    keccak "^1.0.2"
-    rlp "^2.0.0"
-    secp256k1 "^3.0.1"
 
 ethereumjs-util@6.1.0, ethereumjs-util@^6.0.0, ethereumjs-util@^6.1.0:
   version "6.1.0"
@@ -13118,7 +13172,7 @@ hdkey@^0.7.0:
     coinstring "^2.0.0"
     secp256k1 "^3.0.1"
 
-hdkey@^1.1.0:
+hdkey@^1.1.0, hdkey@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-1.1.1.tgz#c2b3bfd5883ff9529b72f2f08b28be0972a9f64a"
   integrity sha512-DvHZ5OuavsfWs5yfVJZestsnc3wzPvLWNk6c2nRUfo6X+OtxypGt20vDDf7Ba+MJzjL3KS1og2nw2eBbLCOUTA==
@@ -15773,6 +15827,14 @@ keccak@^2.0.0:
     nan "^2.14.0"
     safe-buffer "^5.2.0"
 
+keccak@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.0.tgz#420d1de4a38a04f33ff8401f0535fb93756861d4"
+  integrity sha512-/4h4FIfFEpTEuySXi/nVFM5rqSKPnnhI7cL4K3MFSwoI3VyM7AhPSq3SsysARtnEBEeIKMBUWD8cTh9nHE8AkA==
+  dependencies:
+    node-addon-api "^2.0.0"
+    node-gyp-build "^4.2.0"
+
 keccakjs@^0.2.0, keccakjs@^0.2.1:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/keccakjs/-/keccakjs-0.2.3.tgz#5e4e969ce39689a3861f445d7752ee3477f9fe72"
@@ -17931,6 +17993,11 @@ nock@^9.0.14:
     qs "^6.5.1"
     semver "^5.3.0"
 
+node-addon-api@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-2.0.0.tgz#f9afb8d777a91525244b01775ea0ddbe1125483b"
+  integrity sha512-ASCL5U13as7HhOExbT6OlWJJUV/lLzL2voOSP1UVehpRD8FbSrSDjfScK/KwAvVTI5AS6r4VwbOMlIqtvRidnA==
+
 node-ask@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/node-ask/-/node-ask-1.0.1.tgz#caaa1076cc58e0364267a0903e3eadfac158396b"
@@ -17968,6 +18035,11 @@ node-fetch@^2.1.2, node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
+
+node-gyp-build@^4.2.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.1.tgz#f28f0d3d3ab268d48ab76c6f446f19bc3d0db9dc"
+  integrity sha512-XyCKXsqZfLqHep1hhsMncoXuUNt/cXCjg1+8CLbu69V1TKuPiOeSGbL9n+k/ByKH8UT0p4rdIX8XkTRZV0i7Sw==
 
 node-gyp@^3.8.0:
   version "3.8.0"
@@ -22213,7 +22285,7 @@ rlp@^2.0.0, rlp@^2.2.1:
     bn.js "^4.11.1"
     safe-buffer "^5.1.1"
 
-rlp@^2.2.3:
+rlp@^2.2.3, rlp@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/rlp/-/rlp-2.2.4.tgz#d6b0e1659e9285fc509a5d169a9bd06f704951c1"
   integrity sha512-fdq2yYCWpAQBhwkZv+Z8o/Z4sPmYm1CUq6P7n6lVTOdb949CnqA0sndXal5C1NleSVSZm6q5F3iEbauyVln/iw==

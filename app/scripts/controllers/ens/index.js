@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import ObservableStore from 'obs-store'
 import punycode from 'punycode'
 import log from 'loglevel'

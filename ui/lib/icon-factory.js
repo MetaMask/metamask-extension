@@ -1,5 +1,5 @@
 let iconFactory
-import { isValidAddress } from 'ethereumjs-util'
+import { isValidAddress } from 'cfx-util'
 import { checksumAddress } from '../app/helpers/utils/util'
 import contractMap from '@yqrashawn/cfx-contract-metadata'
 

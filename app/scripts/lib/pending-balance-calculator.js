@@ -1,5 +1,5 @@
-import { BN } from 'ethereumjs-util'
-import { normalize } from 'eth-sig-util'
+import { BN } from 'cfx-util'
+import { normalize } from 'cfx-sig-util'
 
 class PendingBalanceCalculator {
   /**

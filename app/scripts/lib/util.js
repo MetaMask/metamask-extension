@@ -1,5 +1,5 @@
 import extension from 'extensionizer'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import assert from 'assert'
 import BN from 'bn.js'
 

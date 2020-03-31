@@ -6,7 +6,7 @@ import {
   checksumAddress,
 } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
-import ethUtil from 'ethereumjs-util'
+import * as ethUtil from 'cfx-util'
 import { fetchLocale } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
