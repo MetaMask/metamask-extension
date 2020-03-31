@@ -27,69 +27,54 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderAccountInfo = (account) => {
+  renderRedirectVisual () {
+    const { permissionRejected, selectedIdentities, domainMetadata } = this.props
     return (
-      <div className="permission-approval-visual__account-info">
-        <div className="permission-approval-visual__account-info__label">
-          { account.label }
+      <div className="permission-approval-visual__redirect">
+        <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
+        <div className="permission-approval-visual__redirect-center">
+          { permissionRejected
+            ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
+            : <span className="permission-approval-visual__check" />
+          }
+          <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
         </div>
-        <div className="permission-approval-visual__account-info__address">
-          { account.truncatedAddress }
+        <div className="permission-approval-visual__identicon-container">
+          <div className="permission-approval-visual__identicon-border">
+            <Identicon
+              className="permission-approval-visual__identicon"
+              address={selectedIdentities[0].address}
+              diameter={54}
+            />
+          </div>
         </div>
       </div>
     )
   }
 
+  renderNonRedirectVisual () {
+    const { requestMetadata, domainMetadata } = this.props
+
+    return (
+      <div>
+        <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
+        <h1>{domainMetadata.name}</h1>
+        <h2>{requestMetadata.origin}</h2>
+      </div>
+    )
+  }
+
   renderPermissionApprovalVisual = () => {
-    const {
-      requestMetadata, domainMetadata, selectedIdentities, redirect, permissionRejected,
-    } = this.props
+    const { redirect } = this.props
 
     return (
       <div className="permission-approval-visual">
-        <section>
-          <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
-          { redirect ? null : <h1>{domainMetadata.name}</h1> }
-          { redirect ? null : <h2>{requestMetadata.origin}</h2> }
-        </section>
-        { redirect
-          ? permissionRejected
-            ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
-            : <span className="permission-approval-visual__check" />
-          : null
-        }
-        { redirect
-          ? <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
-          : null
-        }
-        { redirect
-          ? (
-            <section>
-              <div className="permission-approval-visual__identicon-container">
-                <div className="permission-approval-visual__identicon-border" />
-                <Identicon
-                  className="permission-approval-visual__identicon"
-                  address={selectedIdentities[0].address}
-                  diameter={54}
-                />
-              </div>
-            </section>
-          )
-          : null
-        }
-        <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
-        <section>
-          <div className="permission-approval-visual__identicon-container">
-            <div className="permission-approval-visual__identicon-border">
-              <Identicon
-                className="permission-approval-visual__identicon"
-                address={selectedIdentities[0].address}
-                diameter={54}
-              />
-            </div>
-          </div>
-          { redirect ? null : this.renderAccountInfo(selectedIdentities[0]) }
-        </section>
+        <div className="permission-approval-visual__content">
+          { redirect
+            ? this.renderRedirectVisual()
+            : this.renderNonRedirectVisual()
+          }
+        </div>
       </div>
     )
   }

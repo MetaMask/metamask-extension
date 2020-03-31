@@ -219,6 +219,7 @@ export default class PermissionConnect extends Component {
                   selectedIdentities={accounts.filter((account) => selectedAccountAddresses[account.address])}
                   redirect={redirecting}
                   permissionRejected={ permissionAccepted === false }
+                  cachedOrigin={originName}
                 />
                 <PermissionsConnectFooter />
               </div>
