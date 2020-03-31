@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
   },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj račun"
-  },
   "clickToRevealSeed": {
     "message": "Ovdje kliknite za otkrivanje tajnih riječi"
   },

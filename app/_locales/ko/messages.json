@@ -197,9 +197,6 @@
   "chainId": {
     "message": "체인 ID"
   },
-  "clickToAdd": {
-    "message": "계정에 토큰을 추가하기 위해 $1를 클릭하세요."
-  },
   "clickToRevealSeed": {
     "message": "비밀 단어를 보기 위해 여기를 클릭하세요."
   },

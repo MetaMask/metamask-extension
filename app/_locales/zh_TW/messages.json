@@ -197,9 +197,6 @@
   "chainId": {
     "message": "鏈 ID"
   },
-  "clickToAdd": {
-    "message": "點選下方 $1 新增資訊"
-  },
   "clickToRevealSeed": {
     "message": "點選顯示助憶詞"
   },

@@ -200,9 +200,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "clickToAdd": {
-    "message": "点击 $1 将其加入您的个人账户"
-  },
   "clickToRevealSeed": {
     "message": "点击此处显示密语"
   },

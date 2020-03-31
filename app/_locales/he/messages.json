@@ -200,9 +200,6 @@
   "chainId": {
     "message": "מזהה שרשרת"
   },
-  "clickToAdd": {
-    "message": "לחצ/י על $1 כדי להוסיף אותם לחשבונך"
-  },
   "clickToRevealSeed": {
     "message": "לחצ/י כאן לחשיפת מילים סודיות"
   },

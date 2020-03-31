@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Ķēdes ID"
   },
-  "clickToAdd": {
-    "message": "Noklikšķiniet uz $1, lai pievienotu tos savam kontam"
-  },
   "clickToRevealSeed": {
     "message": "Klikšķiniet šeit, lai skatītu slepenos vārdus"
   },

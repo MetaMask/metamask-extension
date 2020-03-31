@@ -255,9 +255,6 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "clickToAdd": {
-    "message": "Click on $1 to add them to your account"
-  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },

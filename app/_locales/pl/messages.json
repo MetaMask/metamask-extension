@@ -197,9 +197,6 @@
   "chainId": {
     "message": "Identyfikator łańcucha"
   },
-  "clickToAdd": {
-    "message": "Przycisnij $1, aby dodać go do swojego konta"
-  },
   "clickToRevealSeed": {
     "message": "Kliknij tutaj, aby odkryć tajne słowa"
   },

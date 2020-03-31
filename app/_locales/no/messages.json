@@ -197,9 +197,6 @@
   "chainId": {
     "message": "Blokkjede "
   },
-  "clickToAdd": {
-    "message": "Klikk på $1 for a legge dem til kontoen din "
-  },
   "clickToRevealSeed": {
     "message": "Klikk her for å vise hemmelige ord "
   },

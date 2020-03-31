@@ -176,9 +176,6 @@
   "cancelled": {
     "message": "Nakansela"
   },
-  "clickToAdd": {
-    "message": "Mag-click sa $1 para idagdag ang mga iyon sa iyong account"
-  },
   "clickToRevealSeed": {
     "message": "Mag-click dito para ipakita ang iyong secret words"
   },

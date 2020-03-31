@@ -197,9 +197,6 @@
   "cancelled": {
     "message": "Otkazano"
   },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj nalog"
-  },
   "clickToRevealSeed": {
     "message": "Kliknite ovde kako biste otkrili tajne reči"
   },

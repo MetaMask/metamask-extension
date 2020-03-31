@@ -200,9 +200,6 @@
   "chainId": {
     "message": "معرّف السلسلة"
   },
-  "clickToAdd": {
-    "message": "انقر على $1لإضافتها إلى حسابك"
-  },
   "clickToRevealSeed": {
     "message": "انقر هنا للكشف عن الكلمات السرية"
   },

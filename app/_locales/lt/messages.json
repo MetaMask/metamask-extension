@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Grandinės ID"
   },
-  "clickToAdd": {
-    "message": "Spustelėkite $1, kad juos pridėtumėte prie paskyros"
-  },
   "clickToRevealSeed": {
     "message": "Spustelėkite čia, kad atidengtumėte slaptus žodžius"
   },

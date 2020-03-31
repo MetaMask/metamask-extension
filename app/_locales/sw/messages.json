@@ -194,9 +194,6 @@
   "chainId": {
     "message": "Utambulisho wa Mnyororo"
   },
-  "clickToAdd": {
-    "message": "Bofya kwenye $1 ili kuongeza kwenye akaunti yako"
-  },
   "clickToRevealSeed": {
     "message": "Bofya hapa ili uonyeshe maneno ya siri"
   },

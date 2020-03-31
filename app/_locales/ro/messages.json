@@ -200,9 +200,6 @@
   "chainId": {
     "message": "ID lanț"
   },
-  "clickToAdd": {
-    "message": "Faceți clic pe $1 pentru a-i adăuga contului dvs."
-  },
   "clickToRevealSeed": {
     "message": "Faceți clic aici pentru a arăta cuvintele secrete"
   },

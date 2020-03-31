@@ -200,9 +200,6 @@
   "chainId": {
     "message": "ID Rantai"
   },
-  "clickToAdd": {
-    "message": "Klik $1 untuk menambahkannya ke akun Anda"
-  },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk mengungkapkan kata-kata rahasia"
   },
