@@ -3,7 +3,6 @@ const webdriver = require('selenium-webdriver')
 
 const { By, until } = webdriver
 const {
-  tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
@@ -129,7 +128,6 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await driver.delay(tinyDelayMs)
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
 
       await driver.waitUntilXWindowHandles(2)
