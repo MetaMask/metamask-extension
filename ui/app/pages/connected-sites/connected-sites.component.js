@@ -56,7 +56,6 @@ export default class ConnectSites extends Component {
       <>
         <ConnectedSitesList
           onDisconnectSite={this.setSitePendingDisconnect}
-          onGoToSite={(x) => console.log(`go to ${x}`)}
         />
         { tabToConnect ? (
           <footer className="connected-sites__add-site-manually">

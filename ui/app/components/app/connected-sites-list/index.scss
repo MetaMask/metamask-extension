@@ -1,6 +1,4 @@
 .connected-sites {
-  $padding-size: 16px;
-
   position: relative;
   font-family: Roboto, 'sans-serif';
   color: #24292E;
@@ -37,40 +35,7 @@
     margin-left: 6px;
   }
 
-  &__options {
+  &__trash {
     cursor: pointer;
-  }
-
-  &-options {
-    position: absolute;
-    font: 12px Roboto, 'sans-serif';
-    color: #24292E;
-
-    background: #FFFFFF;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.214);
-    border-radius: 8px;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 $padding-size;
-    right: $padding-size;
-
-    &__row {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      width: 100%;
-      padding: $padding-size 0;
-      cursor: pointer;
-
-      &:first-of-type {
-        border-bottom: 1px solid #D2D8DD;
-      }
-
-      &-icon {
-        margin-right: 8px;
-      }
-    }
   }
 }

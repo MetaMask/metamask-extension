@@ -15,11 +15,6 @@ export default class ConnectedSitesList extends Component {
     })).isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
     onDisconnectSite: PropTypes.func.isRequired,
-    onGoToSite: PropTypes.func.isRequired,
-  }
-
-  state = {
-    showOptionsKey: null,
   }
 
   UNSAFE_componentWillMount () {
@@ -28,7 +23,7 @@ export default class ConnectedSitesList extends Component {
   }
 
   render () {
-    const { connectedDomains, onDisconnectSite, onGoToSite } = this.props
+    const { connectedDomains, onDisconnectSite } = this.props
     const { t } = this.context
 
     return (
@@ -46,32 +41,10 @@ export default class ConnectedSitesList extends Component {
               </span>
             </div>
             <i
-              className="fas fa-ellipsis-v connected-sites__options"
-              onClick={() => {
-                this.setState((prevState) => ({
-                  showOptionsKey: prevState.showOptionsKey === domain.key
-                    ? null
-                    : domain.key,
-                }))
-              }}
-            >
-              {
-                this.state.showOptionsKey === domain.key
-                  ? (
-                    <div className="connected-sites-options">
-                      <div className="connected-sites-options__row" onClick={() => onDisconnectSite(domain.key, domain.name)}>
-                        <i className="fas fa-trash-alt connected-sites-options__row-icon" />
-                        <span>Disconnect site</span>
-                      </div>
-                      <div className="connected-sites-options__row" onClick={() => onGoToSite(domain.key)}>
-                        <i className="fas fa-external-link-alt connected-sites-options__row-icon" />
-                        <span>Go to {domain.key}</span>
-                      </div>
-                    </div>
-                  )
-                  : null
-              }
-            </i>
+              className="fas fa-trash-alt connected-sites__trash"
+              title={t('disconnect')}
+              onClick={() => onDisconnectSite(domain.key, domain.name)}
+            />
           </div>
         )) }
       </main>
