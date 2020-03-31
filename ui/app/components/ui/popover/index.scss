@@ -42,7 +42,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
-        i {
+        button {
           margin-right: 24px;
         }
       }
@@ -53,6 +53,12 @@
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;
+    }
+
+    &__button {
+      background: none;
+      font-size: inherit;
+      padding: 0;
     }
 
     i {
