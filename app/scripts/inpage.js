@@ -102,10 +102,6 @@ proxiedInpageProvider._web3Ref = web3.eth
 
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
-// set web3 defaultAccount
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
-})
 //
 // end deprecate:Q1-2020
 //

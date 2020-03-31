@@ -4,7 +4,7 @@
 
 ## 5.0.0 Tue Mar 31 2020
 
-- [#340](https://github.com/poanetwork/nifty-wallet/pull/340) - (Feature) Update in-page provider (EIP-1193)
+- [#340](https://github.com/poanetwork/nifty-wallet/pull/340), [#342](https://github.com/poanetwork/nifty-wallet/pull/342) - (Feature) Update in-page provider (EIP-1193)
 - [#334](https://github.com/poanetwork/nifty-wallet/pull/334) - (Feature) Ability to set tx value for payable methods
 - [#333](https://github.com/poanetwork/nifty-wallet/pull/333) - (Fix) Support RSK testnet explorer links
 - [#332](https://github.com/poanetwork/nifty-wallet/pull/332) - (Chore) Return to main screen from removal of imported account
