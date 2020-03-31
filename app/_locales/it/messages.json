@@ -29,6 +29,10 @@
   "chooseAnAcount": {
     "message": "Scegli un account"
   },
+  "connectTo": {
+    "message": "Collegati a $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+  },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
