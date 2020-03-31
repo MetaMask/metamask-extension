@@ -64,29 +64,29 @@ export default class TokenCell extends Component {
 
     return (
       <div
-        className={classnames(`token-list-item`, {
-          'token-list-item--active': selectedTokenAddress === address,
+        className={classnames('token-cell', {
+          'token-cell--active': selectedTokenAddress === address,
         })}
         onClick={onClick.bind(null, address)}
       >
         <Identicon
-          className="token-list-item__identicon"
+          className="token-cell__identicon"
           diameter={50}
           address={address}
           image={image}
         />
-        <div className="token-list-item__balance-ellipsis">
-          <div className="token-list-item__balance-wrapper">
-            <div className="token-list-item__token-balance">{string || 0}</div>
-            <div className="token-list-item__token-symbol">{symbol}</div>
+        <div className="token-cell__balance-ellipsis">
+          <div className="token-cell__balance-wrapper">
+            <div className="token-cell__token-balance">{string || 0}</div>
+            <div className="token-cell__token-symbol">{symbol}</div>
             {showFiat && (
-              <div className="token-list-item__fiat-amount">
+              <div className="token-cell__fiat-amount">
                 {formattedFiat}
               </div>
             )}
           </div>
           <i
-            className="fa fa-ellipsis-h fa-lg token-list-item__ellipsis cursor-pointer"
+            className="fa fa-ellipsis-h fa-lg token-cell__ellipsis cursor-pointer"
             onClick={(e) => {
               e.stopPropagation()
               this.setState({ tokenMenuOpen: true })

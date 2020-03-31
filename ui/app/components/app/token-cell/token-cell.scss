@@ -1,7 +1,7 @@
 $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
-.token-list-item {
+.token-cell {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
