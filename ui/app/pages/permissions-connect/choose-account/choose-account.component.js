@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
 import Button from '../../../components/ui/button'
 import CheckBox from '../../../components/ui/check-box'
@@ -86,10 +87,15 @@ export default class ChooseAccount extends Component {
                 className="permissions-connect-choose-account__account"
               >
                 <div className="permissions-connect-choose-account__account-info-wrapper">
-                  <CheckBox
-                    className="permissions-connect-choose-account__list-check-box"
-                    checked={ selectedAccounts.has(address) }
-                  />
+                  { accounts.length > 1
+                    ? (
+                      <CheckBox
+                        className="permissions-connect-choose-account__list-check-box"
+                        checked={ selectedAccounts.has(address) }
+                      />
+                    )
+                    : null
+                  }
                   <Identicon
                     diameter={34}
                     address={address}
@@ -125,10 +131,13 @@ export default class ChooseAccount extends Component {
 
   renderAccountsListHeader () {
     const { t } = this.context
-    const { selectNewAccountViaModal } = this.props
+    const { selectNewAccountViaModal, accounts } = this.props
     return (
       <div className="permissions-connect-choose-account__accounts-list-header">
-        <div className="permissions-connect-choose-account__select-all">
+        <div className={classnames('permissions-connect-choose-account__select-all', {
+          invisible: accounts.length < 2,
+        })}
+        >
           <CheckBox
             className="permissions-connect-choose-account__header-check-box"
             checked={this.allAreSelected()}
@@ -138,7 +147,7 @@ export default class ChooseAccount extends Component {
           <Tooltip
             position="bottom"
             html={(
-              <div style={{ width: 129, height: 112, padding: 4 }}>
+              <div style={{ width: 200, padding: 4 }}>
                 {t('selectingAllWillAllow')}
               </div>
             )}
