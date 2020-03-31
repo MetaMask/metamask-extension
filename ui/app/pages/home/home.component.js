@@ -10,7 +10,7 @@ import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
-import ConnectedSites from '../connected-sites/connected-sites.component'
+import ConnectedSites from '../connected-sites'
 
 import {
   RESTORE_VAULT_ROUTE,

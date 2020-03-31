@@ -29,7 +29,6 @@ import ConfirmDeleteNetwork from './confirm-delete-network'
 import AddToAddressBookModal from './add-to-addressbook-modal'
 import EditApprovalPermission from './edit-approval-permission'
 import NewAccountModal from './new-account-modal'
-import DisconnectAccount from './disconnect-account'
 import DisconnectAll from './disconnect-all'
 
 const modalContainerBaseStyle = {
@@ -143,33 +142,6 @@ const MODALS = {
 
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
-    mobileModalStyle: {
-      width: '95%',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    contentStyle: {
-      borderRadius: '10px',
-    },
-  },
-
-  DISCONNECT_ACCOUNT: {
-    contents: <DisconnectAccount />,
     mobileModalStyle: {
       width: '95%',
       top: '10%',

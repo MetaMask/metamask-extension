@@ -1,13 +1,25 @@
 import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import PopoverHeader from './popover.header.component'
 
-const Popover = ({ title, children, onClose }) => (
+const Popover = ({ title, subtitle, children, onBack, onClose }) => (
   <div className="popover-container">
     <div className="popover-bg" onClick={onClose} />
     <div className="popover-wrap">
-      <PopoverHeader title={title} onClose={onClose} />
+      <header className="popover-header">
+        <div className="popover-header__title">
+          <h2 title={title}>
+            {
+              onBack
+                ? <i className="fas fa-chevron-left" onClick={onBack} />
+                : null
+            }
+            {title}
+          </h2>
+          <i className="fas fa-times" onClick={onClose} />
+        </div>
+        <p className="popover-header__subtitle">{subtitle}</p>
+      </header>
       <div className="popover-content">
         {children}
       </div>
@@ -17,7 +29,9 @@ const Popover = ({ title, children, onClose }) => (
 
 Popover.propTypes = {
   title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
+  onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
 }
 

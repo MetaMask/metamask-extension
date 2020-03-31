@@ -1,0 +1,32 @@
+.connected-sites {
+  &__confirmation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 30px;
+    border-top: 1px solid #D2D8DD;
+    padding: 16px 24px 16px;
+
+    button:first-child {
+      margin-right: 24px;
+    }
+  }
+
+  &__add-site-manually {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #D2D8DD;
+    margin-top: -1px;
+    padding: 16px 24px 24px 24px;
+    border-radius: 0 0 10px 10px;
+    font-size: 14px;
+    line-height: 20px;
+    z-index: 1;
+
+    a, a:hover {
+      cursor: pointer;
+      color: #037DD6;
+    }
+  }
+}
