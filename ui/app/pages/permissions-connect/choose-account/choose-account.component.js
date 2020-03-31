@@ -149,7 +149,7 @@ export default class ChooseAccount extends Component {
             checked={this.allAreSelected()}
             onClick={() => (this.allAreSelected() ? this.deSelectAll() : this.selectAll())}
           />
-          <div className="permissions-connect-choose-account__text--grey">{ this.context.t('selectAll') }</div>
+          <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
           <Tooltip
             position="bottom"
             html={(
@@ -162,7 +162,7 @@ export default class ChooseAccount extends Component {
           </Tooltip>
         </div>
         <div
-          className="permissions-connect-choose-account__text--blue"
+          className="permissions-connect-choose-account__text-blue"
           onClick={() => selectNewAccountViaModal(this.handleAccountClick.bind(this))}
         >
           { this.context.t('newAccount') }
