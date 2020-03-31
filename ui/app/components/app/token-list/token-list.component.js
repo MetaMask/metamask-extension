@@ -110,7 +110,7 @@ class TokenList extends Component {
   render () {
     const t = this.context
     const { error, tokensLoading, tokensWithBalances } = this.state
-    const { assetImages, network, onTokenClick, userAddress } = this.props
+    const { assetImages, network, onTokenClick } = this.props
     if (network === 'loading' || tokensLoading) {
       return (
         <div
@@ -127,39 +127,17 @@ class TokenList extends Component {
       )
     }
 
-    if (error) {
-      return (
-        <div
-          className="hotFix"
-          style={{
-            padding: '80px',
-          }}
-        >
-          {t('troubleTokenBalances')}
-          <span
-            className="hotFix"
-            style={{
-              color: 'rgba(247, 134, 28, 1)',
-              cursor: 'pointer',
-            }}
-            onClick={() => {
-              global.platform.openWindow({
-                url: `https://ethplorer.io/address/${userAddress}`,
-              })
-            }}
-          >
-            {t('here')}
-          </span>
-        </div>
-      )
-    }
-
     return (
       <div>
         {tokensWithBalances.map((tokenData, index) => {
           tokenData.image = assetImages[tokenData.address]
           return (
-            <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
+            <TokenCell
+              key={index}
+              {...tokenData}
+              outdatedBalance={Boolean(error)}
+              onClick={onTokenClick}
+            />
           )
         })}
       </div>
