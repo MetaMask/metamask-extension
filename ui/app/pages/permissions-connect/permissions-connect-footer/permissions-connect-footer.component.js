@@ -18,7 +18,7 @@ export default class PermissionsConnectFooter extends Component {
             onClick={() => {
               global.platform.openWindow({ url: 'https://medium.com/metamask/privacy-mode-is-now-enabled-by-default-1c1c957f4d57' })
             }}
-          >{ t('learnAboutRisks') }
+          >{ t('learnMore') }
           </div>
         </div>
       </div>

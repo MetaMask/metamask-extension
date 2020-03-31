@@ -107,11 +107,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     } else if (domainMetadata.extensionId) {
       titleArgs = [ 'externalExtension', [domainMetadata.extensionId] ]
     } else if (selectedIdentities.length > 1) {
-      titleArgs = ['likeToConnectMultiple', [ domainMetadata.name, selectedIdentities.length ] ]
+      titleArgs = ['connectToMultiple', [ selectedIdentities.length ] ]
     } else {
       titleArgs = [
-        'likeToConnect', [
-          domainMetadata.name,
+        'connectTo', [
           `${selectedIdentities[0].label} (...${selectedIdentities[0].address.slice(selectedIdentities[0].address.length - 4)})`,
         ],
       ]

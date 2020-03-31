@@ -38,8 +38,22 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
+  "connectedSites": {
+    "message": "Connected Sites"
+  },
+  "connectWithMetaMask": {
+    "message": "Connect With MetaMask"
+  },
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
+  },
+  "connectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+  },
+  "connectToMultiple": {
+    "message": "Connect to $1",
+    "description": "$1 is the number of accounts to connect to"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
@@ -263,6 +277,12 @@
   "chainId": {
     "message": "Chain ID"
   },
+  "chooseAccountsToUse": {
+    "message": "Choose the account(s) to use on this site"
+  },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -286,6 +306,9 @@
   },
   "congratulations": {
     "message": "Congratulations"
+  },
+  "connectAccountOrCreate": {
+    "message": "Connect account or create new"
   },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
@@ -785,9 +808,6 @@
   "learnMore": {
     "message": "Learn more"
   },
-  "learnAboutRisks": {
-    "message": "Learn about the risks here."
-  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -796,14 +816,6 @@
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
-  },
-  "likeToConnect": {
-    "message": "$1 would like to connect to $2",
-    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask, $2 is the name of the account to be connected to and last 4 digits of the account address"
-  },
-  "likeToConnectMultiple": {
-    "message": "$1 would like to connect to $2 accounts",
-    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask, $2 is the number of accounts to connect to"
   },
   "links": {
     "message": "Links"
