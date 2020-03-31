@@ -1,9 +1,11 @@
 .permissions-connect-choose-account {
   display: flex;
   flex-direction: column;
-  margin-top: 40px;
-  width: 100%;
   align-items: center;
+  margin-top: 40px;
+  width: 428px;
+  margin-left: auto;
+  margin-right: auto;
 
   &__title {
     @extend %header--18;
@@ -24,13 +26,13 @@
   }
 
   &__accounts-list {
-    width: 428px;
+    width: 100%;
     border: 1px solid #D0D5DA;
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 8px;
     max-height: 338px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     @media screen and (max-width: 575px) {
       width: 100%;
@@ -41,7 +43,8 @@
     display: flex;
     justify-content: space-between;
     margin-top: 36px;
-    width: 426px;
+    width: 100%;
+    padding-right: 2px;
   }
 
   &__select-all {
@@ -141,7 +144,7 @@
   &__bottom-buttons {
     display: flex;
     justify-content: space-between;
-    width: 428px;
+    width: 100%;
     margin-top: 16px;
 
     button {
@@ -151,14 +154,6 @@
     .btn-default {
       background: white;
     }
-  }
-
-  &__toolip {
-    @extend %font;
-    color: $white;
-    text-align: left;
-    display: inline-block;
-    width: 200px;
   }
 
 }
