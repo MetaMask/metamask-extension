@@ -176,6 +176,8 @@ $Orange-300: #faa66c;
 $Orange-600: #c65507;
 $Orange-500: #F66A0A;
 
+$Black-100: #24292E;
+
 // Font Sizes
 %h3 {
   font-size: 1.5rem;
@@ -265,7 +267,7 @@ $xxlarge-spacing: 64px;
 
 %header--24 {
   @extend %font;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 %content-text {
