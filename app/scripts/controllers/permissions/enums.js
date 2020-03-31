@@ -78,4 +78,5 @@ export const SAFE_METHODS = [
   'wallet_watchAsset',
   'eth_getEncryptionPublicKey',
   'eth_decrypt',
+  'eth_accounts',
 ]
