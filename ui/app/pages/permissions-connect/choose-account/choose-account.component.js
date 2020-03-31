@@ -198,7 +198,7 @@ export default class ChooseAccount extends Component {
           <Button
             onClick={ () => selectAccounts(selectedAccounts) }
             type="primary"
-            disabled={false}
+            disabled={ selectedAccounts.size === 0 }
           >
             { t('next') }
           </Button>
