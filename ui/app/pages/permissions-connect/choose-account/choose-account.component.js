@@ -41,11 +41,14 @@ export default class ChooseAccount extends Component {
   compone
 
   handleAccountClick (address) {
-    const { selectedAccounts: currentSelectedAccounts } = this.state
+    const { selectedAccounts } = this.state
 
-    const newSelectedAccounts = {
-      ...currentSelectedAccounts,
-      [address]: !currentSelectedAccounts[address],
+    const newSelectedAccounts = new Set(selectedAccounts)
+
+    if (newSelectedAccounts.has(address)) {
+      newSelectedAccounts.delete(address)
+    } else {
+      newSelectedAccounts.add(address)
     }
 
     this.setState({ selectedAccounts: newSelectedAccounts })
@@ -54,36 +57,22 @@ export default class ChooseAccount extends Component {
   selectAll () {
     const { accounts } = this.props
 
-    const newSelectedAccounts = accounts.reduce((accountsObject, account) => {
-      const { address } = account
-      return {
-        ...accountsObject,
-        [address]: true,
-      }
-    }, {})
+    const newSelectedAccounts = new Set()
+
+    accounts.forEach((account) => newSelectedAccounts.add(account.address))
 
     this.setState({ selectedAccounts: newSelectedAccounts })
   }
 
   deSelectAll () {
-    const { accounts } = this.props
-
-    const newSelectedAccounts = accounts.reduce((accountsObject, account) => {
-      const { address } = account
-      return {
-        ...accountsObject,
-        [address]: false,
-      }
-    }, {})
-
-    this.setState({ selectedAccounts: newSelectedAccounts })
+    this.setState({ selectedAccounts: new Set() })
   }
 
   allAreSelected () {
     const { accounts } = this.props
     const { selectedAccounts } = this.state
 
-    return accounts.every(({ address }) => selectedAccounts[address])
+    return accounts.every(({ address }) => selectedAccounts.has(address))
   }
 
   renderAccountsList = () => {
@@ -103,7 +92,7 @@ export default class ChooseAccount extends Component {
                 <div className="permissions-connect-choose-account__account-info-wrapper">
                   <CheckBox
                     className="permissions-connect-choose-account__list-check-box"
-                    checked={ selectedAccounts[address] }
+                    checked={ selectedAccounts.has(address) }
                   />
                   <Identicon
                     diameter={34}

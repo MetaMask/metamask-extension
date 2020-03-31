@@ -56,7 +56,7 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddresses: {},
+    selectedAccountAddresses: new Set(),
     permissionAccepted: null,
     originName: this.props.originName,
   }
@@ -216,7 +216,7 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest(requestId)
                     this.redirectFlow(false)
                   }}
-                  selectedIdentities={accounts.filter((account) => selectedAccountAddresses[account.address])}
+                  selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
                   redirect={redirecting}
                   permissionRejected={ permissionAccepted === false }
                   cachedOrigin={originName}
