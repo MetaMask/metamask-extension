@@ -10,7 +10,6 @@ export default class PermissionsConnectFooter extends Component {
     const { t } = this.context
     return (
       <div className="permissions-connect-footer">
-        <img src="/images/mm-secure.svg" />
         <div className="permissions-connect-footer__text">
           <div>{ t('onlyConnectTrust') }</div>
           <div
