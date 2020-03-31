@@ -4,21 +4,40 @@ import PropTypes from 'prop-types'
 export default class Tabs extends Component {
   static defaultProps = {
     defaultActiveTabIndex: 0,
+    onClick: undefined,
+    tabIndex: undefined,
   }
 
   static propTypes = {
-    defaultActiveTabIndex: PropTypes.number,
     children: PropTypes.node.isRequired,
+    defaultActiveTabIndex: PropTypes.number,
+    onClick: PropTypes.func,
+    tabIndex: PropTypes.number,
   }
 
   state = {
     activeTabIndex: this.props.defaultActiveTabIndex,
   }
 
+  static getDerivedStateFromProps (nextProps, currentState) {
+    if (
+      nextProps.tabIndex !== undefined &&
+      nextProps.tabIndex !== currentState.activeTabIndex
+    ) {
+      return {
+        activeTabIndex: nextProps.tabIndex,
+      }
+    }
+    return null
+  }
+
   handleTabClick (tabIndex) {
+    const { onClick } = this.props
     const { activeTabIndex } = this.state
 
-    if (tabIndex !== activeTabIndex) {
+    if (onClick) {
+      onClick(tabIndex)
+    } else if (tabIndex !== activeTabIndex) {
       this.setState({
         activeTabIndex: tabIndex,
       })

@@ -2,6 +2,7 @@ import React from 'react'
 import Tab from './tab/tab.component'
 import Tabs from './tabs.component'
 import { number, text } from '@storybook/addon-knobs/react'
+import { action } from '@storybook/addon-actions'
 
 export default {
   title: 'Tabs',
@@ -52,6 +53,20 @@ export const singleTab = () => {
       >
         {text('Contents', 'Contents of tab')}
       </Tab>
+    </Tabs>
+  )
+}
+
+export const controlledTab = () => {
+  return (
+    <Tabs
+      tabIndex={number('Tab Index', 0, { min: 0, max: 4 })}
+      onClick={action('tab-click')}
+    >
+      {
+        ['A', 'B', 'C', 'D', 'E']
+          .map(renderTab)
+      }
     </Tabs>
   )
 }
