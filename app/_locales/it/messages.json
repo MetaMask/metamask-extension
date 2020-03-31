@@ -26,10 +26,6 @@
   "connectingWithMetaMask": {
     "message": "Connettendo con MetaMask..."
   },
-  "connectTo": {
-    "message": "Collegati a $1",
-    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
-  },
   "chooseAnAcount": {
     "message": "Scegli un account"
   },
@@ -408,23 +404,11 @@
   "details": {
     "message": "Dettagli"
   },
-  "disconnectAccount": {
-    "message": "Disconnetti account"
-  },
   "disconnectAll": {
     "message": "Disconnetti Tutti"
   },
   "disconnectAllModalDescription": {
     "message": "Sei sicuro? Sarai disconnesso da tutti i siti su tutti gli account."
-  },
-  "disconnectAccountModalDescription": {
-    "message": "Sei sicuro? Il tuo account (\"$1\") sarà disconnesso da questo sito."
-  },
-  "disconnectAccountQuestion": {
-    "message": "Disconnettere account?"
-  },
-  "disconnectFromThisAccount": {
-    "message": "Disconnettersi da questo account?"
   },
   "disconnectAllAccountsQuestion": {
     "message": "Disconnettere tutti gli account?"
@@ -434,10 +418,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
-  },
-  "domainLastConnect": {
-    "message": "Ultima Connessione: $1",
-    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Finito"
@@ -498,10 +478,6 @@
   },
   "endOfFlowMessage10": {
     "message": "Tutto Fatto"
-  },
-  "extensionId": {
-    "message": "ID Estensione: $1",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "externalExtension": {
     "message": "Estensione Esterna"

@@ -137,16 +137,8 @@ describe('MetaMask', function () {
 
       await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected Sites')]`))
 
-      const domains = await driver.findClickableElements(By.css('.connected-sites-list__domain'))
+      const domains = await driver.findClickableElements(By.css('.connected-sites__domain-name'))
       assert.equal(domains.length, 1)
-
-      const domainName = await driver.findElement(By.css('.connected-sites-list__domain-name'))
-      assert.equal(await domainName.getText(), 'E2E Test Dapp')
-
-      await domains[0].click()
-
-      const permissionDescription = await driver.findElement(By.css('.connected-sites-list__permission-description'))
-      assert.equal(await permissionDescription.getText(), `View the addresses of the user's chosen accounts.`)
     })
 
     it('can get accounts within the dapp', async function () {
@@ -157,30 +149,6 @@ describe('MetaMask', function () {
 
       const getAccountsResult = await driver.findElement(By.css('#getAccountsResult'))
       assert.equal((await getAccountsResult.getText()).toLowerCase(), publicAddress.toLowerCase())
-    })
-
-    it('can disconnect all accounts', async function () {
-      await driver.switchToWindow(extension)
-
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Disconnect All')]`))
-      await driver.clickElement(By.css('.popover-header__close'))
-
-      const disconnectModal = await driver.findElement(By.css('span .modal'))
-
-      await driver.clickElement(By.css('.disconnect-all-modal .btn-danger'))
-
-      await driver.wait(until.stalenessOf(disconnectModal))
-      await driver.delay(regularDelayMs)
-    })
-
-    it('can no longer get accounts within the dapp', async function () {
-      await driver.switchToWindow(dapp)
-      await driver.delay(regularDelayMs)
-
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'eth_accounts')]`))
-
-      const getAccountsResult = await driver.findElement(By.css('#getAccountsResult'))
-      assert.equal(await getAccountsResult.getText(), 'Not able to get accounts')
     })
   })
 })
