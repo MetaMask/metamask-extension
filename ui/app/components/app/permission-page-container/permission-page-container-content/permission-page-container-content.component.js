@@ -79,8 +79,8 @@ export default class PermissionPageContainerContent extends PureComponent {
           }}
         >
           { selectedPermissions[methodName]
-            ? <i className="fa fa-check-circle fa-sm" />
-            : <i className="fa fa-circle fa-sm" />
+            ? <i title={t('permissionCheckedIconDescription')} className="fa fa-check-square" />
+            : <i title={t('permissionUncheckedIconDescription')} className="fa fa-square" />
           }
           <label>{description}</label>
         </div>

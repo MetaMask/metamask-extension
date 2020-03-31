@@ -86,14 +86,16 @@
     }
 
     &__permission {
+      display: flex;
       margin-top: 18px;
 
       i {
-        color: #6A737D;
+        font-size: 1.4rem;
+        color: $Grey-200;
       }
       label {
         margin-left: 6px;
-        color: #24292E;
+        color: $Black-100;
       }
     }
 

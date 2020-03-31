@@ -1019,6 +1019,12 @@
   "pending": {
     "message": "pending"
   },
+  "permissionCheckedIconDescription": {
+    "message": "You have approved this permission"
+  },
+  "permissionUncheckedIconDescription": {
+    "message": "You have not approved this permission"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
