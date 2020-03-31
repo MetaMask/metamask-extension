@@ -38,8 +38,6 @@ export default class ChooseAccount extends Component {
     t: PropTypes.func,
   }
 
-  compone
-
   handleAccountClick (address) {
     const { selectedAccounts } = this.state
 
