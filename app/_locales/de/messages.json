@@ -188,9 +188,6 @@
   "cancelled": {
     "message": "Abgebrochen"
   },
-  "clickToAdd": {
-    "message": "Klicken Sie auf $1, um sie zu Ihrem Konto hinzuzufügen"
-  },
   "clickToRevealSeed": {
     "message": "Hier klicken, um Geheimwörter zu enthüllen"
   },

@@ -20,14 +20,13 @@ export default class AddTokenButton extends PureComponent {
 
     return (
       <div className="add-token-button">
-        <h1 className="add-token-button__help-header">{t('missingYourTokens')}</h1>
-        <p className="add-token-button__help-desc">{t('clickToAdd', [t('addToken')])}</p>
-        <div
+        <span className="add-token-button__description">{t('missingYourTokens')}</span>
+        <button
           className="add-token-button__button"
           onClick={onClick}
         >
           {t('addToken')}
-        </div>
+        </button>
       </div>
     )
   }

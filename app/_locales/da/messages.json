@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Kæde-ID"
   },
-  "clickToAdd": {
-    "message": "Klik på $1 for at tilføje dem til din konto"
-  },
   "clickToRevealSeed": {
     "message": "Klik her for at se hemmelige ord"
   },

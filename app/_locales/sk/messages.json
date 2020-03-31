@@ -191,9 +191,6 @@
   "chainId": {
     "message": "ID reťazca"
   },
-  "clickToAdd": {
-    "message": "Kliknutím na $1 ich pridáte do svojho účtu"
-  },
   "clickToRevealSeed": {
     "message": "Kliknutím sem odkryjete tajné slová"
   },

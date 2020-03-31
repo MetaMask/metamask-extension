@@ -200,9 +200,6 @@
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
   },
-  "clickToAdd": {
-    "message": "ወደ መለያዎት ለማከል $1ላይ ጠቅ ያድርጉ"
-  },
   "clickToRevealSeed": {
     "message": "ሚስጥራዊ ቃላትን ለመግለጽ እዚህ ጠቅ ያድርጉ"
   },

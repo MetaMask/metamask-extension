@@ -160,9 +160,6 @@
   "chainId": {
     "message": "ID Cadena"
   },
-  "clickToAdd": {
-    "message": "Hazle clic en $1 para agregarles a su cuenta"
-  },
   "clickToRevealSeed": {
     "message": "Haga clic aquí para revelar palabras secretas"
   },

@@ -197,9 +197,6 @@
   "chainId": {
     "message": "Cadena ID"
   },
-  "clickToAdd": {
-    "message": "Fes clic a $1 per afegir-los al teu compte"
-  },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
   },

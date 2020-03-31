@@ -194,9 +194,6 @@
   "cancelled": {
     "message": "Avbruten"
   },
-  "clickToAdd": {
-    "message": "Tryck på $1 för att lägga till dem på ditt konto."
-  },
   "clickToRevealSeed": {
     "message": "Klicka här för att visa hemliga ord"
   },

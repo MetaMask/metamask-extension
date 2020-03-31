@@ -197,9 +197,6 @@
   "chainId": {
     "message": "Ketjun tunnus"
   },
-  "clickToAdd": {
-    "message": "Napsauta kohdetta $1 lisätäksesi ne tiliisi"
-  },
   "clickToRevealSeed": {
     "message": "Paljasta salaiset sanat napsauttamalla tästä"
   },

@@ -188,9 +188,6 @@
   "chainId": {
     "message": "ID de chaîne"
   },
-  "clickToAdd": {
-    "message": "Cliquez sur $1 pour les ajouter à votre compte"
-  },
   "clickToRevealSeed": {
     "message": "Cliquez ici pour révéler des mots secrets"
   },

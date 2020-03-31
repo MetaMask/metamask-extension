@@ -255,9 +255,6 @@
   "chainId": {
     "message": "Blockchain ID"
   },
-  "clickToAdd": {
-    "message": "Clicca su $1 per aggiungerli al tuo account"
-  },
   "clickToRevealSeed": {
     "message": "Clicca qui per rivelare la tua frase segreta"
   },
