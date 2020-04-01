@@ -36,7 +36,7 @@ describe('MenuBar', function () {
         <MenuBar />
       </Provider>
     )
-    const accountOptions = wrapper.find('.menu-bar__open-in-browser')
+    const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')
     assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, true)
   })
