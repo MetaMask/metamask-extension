@@ -15,7 +15,7 @@ export default class NewAccountModal extends Component {
   }
 
   state = {
-    alias: '',
+    alias: this.context.t('newAccountNumberName', [this.props.newAccountNumber]),
   }
 
   onChange = (e) => {
@@ -32,14 +32,6 @@ export default class NewAccountModal extends Component {
   onKeyPress = (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSubmit()
-    }
-  }
-
-  onKeyDown = (e) => {
-    const { t } = this.context
-
-    if (e.keyCode === 39 && this.state.alias === '') {
-      this.setState({ alias: t('newAccountNumberName', [this.props.newAccountNumber]) })
     }
   }
 
@@ -60,9 +52,7 @@ export default class NewAccountModal extends Component {
             className="new-account-modal__input"
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
-            onKeyDown={this.onKeyDown}
             value={this.state.alias}
-            placeholder={ t('newAccountNumberName', [this.props.newAccountNumber]) }
             autoFocus
           />
         </div>
