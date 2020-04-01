@@ -53,8 +53,6 @@ export default class ConnectedStatusIndicator extends Component {
   }
 
   render () {
-    console.log('getEnvironmentType()', getEnvironmentType())
-    console.log('ENVIRONMENT_TYPE_POPUP', ENVIRONMENT_TYPE_POPUP)
     return (
       <div className={classnames('connected-status-indicator', {
         invisible: getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP,
