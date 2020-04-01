@@ -58,7 +58,7 @@
     "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
   "connectToMultiple": {
-    "message": "Connect to $1",
+    "message": "Connect to $1 accounts",
     "description": "$1 is the number of accounts to connect to"
   },
   "contractInteraction": {
