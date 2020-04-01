@@ -148,8 +148,8 @@ export default class TrustvaultKeyring extends EventEmitter {
     if (error) {
       throw new Error(error.message)
     }
-    const pinChallenge = data && data.getPartialPinChallenge
     // Set pinChallenge details
+    const pinChallenge = data && data.getPartialPinChallenge
     this.pinChallenge.email = email
     if (pinChallenge) {
       this.pinChallenge.sessionToken = pinChallenge.sessionToken
