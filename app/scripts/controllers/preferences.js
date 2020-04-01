@@ -315,7 +315,7 @@ class PreferencesController {
    * @param {Array<string>} addresses - known to the vault.
    * @returns {Promise<string>} - selectedAddress the selected address.
    */
-  syncAddresses (addresses) {
+  syncAddresses (addresses, namesMap = []) {
 
     if (!Array.isArray(addresses) || addresses.length === 0) {
       throw new Error('Expected non-empty array of addresses.')
@@ -346,7 +346,7 @@ class PreferencesController {
     }
 
     this.store.updateState({ identities, lostIdentities })
-    this.addAddresses(addresses)
+    this.addAddresses(addresses, namesMap)
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:

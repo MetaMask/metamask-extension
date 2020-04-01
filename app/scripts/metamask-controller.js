@@ -1854,7 +1854,7 @@ export default class MetamaskController extends EventEmitter {
     // Ensure preferences + identities controller know about all addresses
     if (trustvaultKeyring) {
       const namesMap = trustvaultKeyring.getAccountNames()
-      this.preferencesController.addAddresses(addresses, namesMap)
+      this.preferencesController.syncAddresses(addresses, namesMap)
     } else {
       this.preferencesController.syncAddresses(addresses)
     }
