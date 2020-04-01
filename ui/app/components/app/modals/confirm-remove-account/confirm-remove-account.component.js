@@ -49,6 +49,7 @@ export default class ConfirmRemoveAccount extends Component {
             className=""
             href={genAccountLink(identity.address, this.props.network)}
             target="_blank"
+            rel="noopener noreferrer"
             title={this.context.t('etherscanView')}
           >
             <img src="images/popout.svg" />

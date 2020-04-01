@@ -1,4 +1,7 @@
-@import url('./fonts/Font_Awesome/font-awesome.min.css');
+$fa-font-path: 'fonts/fontawesome';
+
+@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '../../../../../node_modules/@fortawesome/fontawesome-free/scss/solid.scss';
 
 @font-face {
   font-family: 'Roboto';

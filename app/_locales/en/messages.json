@@ -1,4 +1,22 @@
 {
+  "connectedSites": {
+    "message": "Connected Sites"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 is connected to these sites. They can view your account address."
+  },
+  "connectManually": {
+    "message": "Manually connect to current site"
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
+  "disconnectSite": {
+    "message": "Disconnect $1?"
+  },
+  "disconnectAccountConfirmationDescription": {
+    "message": "Are you sure you want to disconnect? You may lose site functionality."
+  },
   "migrateSai": {
     "message": "A message from Maker: The new Multi-Collateral Dai token has been released. Your old tokens are now called Sai. Please upgrade your Sai tokens to the new Dai."
   },
@@ -20,15 +38,8 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "connectedSites": {
-    "message": "Connected Sites"
-  },
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
-  },
-  "connectTo": {
-    "message": "Connect to $1",
-    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
   "chooseAnAcount": {
     "message": "Choose an account"
@@ -255,9 +266,6 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "clickToAdd": {
-    "message": "Click on $1 to add them to your account"
-  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -391,7 +399,7 @@
     "message": "Custom Spend Limit"
   },
   "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts and tokens. Would you like to restore this data now?"
+    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -417,23 +425,11 @@
   "details": {
     "message": "Details"
   },
-  "disconnectAccount": {
-    "message": "Disconnect account"
-  },
   "disconnectAll": {
     "message": "Disconnect All"
   },
   "disconnectAllModalDescription": {
     "message": "Are you sure? You will be disconnected from all sites on all accounts."
-  },
-  "disconnectAccountModalDescription": {
-    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
-  },
-  "disconnectAccountQuestion": {
-    "message": "Disconnect account?"
-  },
-  "disconnectFromThisAccount": {
-    "message": "Disconnect from this account?"
   },
   "disconnectAllAccountsQuestion": {
     "message": "Disconnect all accounts?"
@@ -443,10 +439,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "domainLastConnect": {
-    "message": "Last Connected: $1",
-    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -510,10 +502,6 @@
   },
   "endOfFlowMessage10": {
     "message": "All Done"
-  },
-  "extensionId": {
-    "message": "Extension ID: $1",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -645,6 +633,14 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
+  },
+  "gdprMessage": {
+    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1.",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
+  },
+  "gdprMessagePrivacyPolicy": {
+    "message": "Privacy Policy here",
+    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
   "general": {
     "message": "General"
@@ -1064,9 +1060,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
-  },
-  "qrCode": {
-    "message": "Show QR Code"
   },
   "queue": {
     "message": "Queue"
@@ -1613,6 +1606,12 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "usePhishingDetection": {
+    "message": "Use Phishing Detection"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
   "userName": {
     "message": "Username"
   },
@@ -1666,5 +1665,35 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "decryptRequest": {
+    "message": "Decrypt request"
+  },
+  "decrypt": {
+    "message": "Decrypt"
+  },
+  "decryptMessageNotice": {
+    "message": "$1 would like to read this message to complete your action",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Decrypt message"
+  },
+  "decryptCopy": {
+    "message": "Copy encrypted message"
+  },
+  "decryptInlineError": {
+    "message": "This message cannot be decrypted due to error: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Provide"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Request encryption public key"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
+    "description": "$1 is website or dapp name"
   }
 }

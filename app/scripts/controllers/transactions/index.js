@@ -119,7 +119,6 @@ class TransactionController extends EventEmitter {
       this._onBootCleanUp()
       this._updateMemstore()
     })
-    this.preferencesStore.subscribe(() => this._updateMemstore())
 
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock()
@@ -340,7 +339,17 @@ class TransactionController extends EventEmitter {
     return newTxMeta
   }
 
-  async createSpeedUpTransaction (originalTxId, customGasPrice) {
+  /**
+   * Creates a new approved transaction to attempt to speed up a previously submitted transaction. The
+   * new transaction contains the same nonce as the previous. By default, the new transaction will use
+   * the same gas limit and a 10% higher gas price, though it is possible to set a custom value for
+   * each instead.
+   * @param {number} originalTxId - the id of the txMeta that you want to speed up
+   * @param {string} [customGasPrice] - The new custom gas price, in hex
+   * @param {string} [customGasLimit] - The new custom gas limt, in hex
+   * @returns {txMeta}
+   */
+  async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
     const { gasPrice: lastGasPrice } = txParams
@@ -357,6 +366,10 @@ class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUS_APPROVED,
       type: TRANSACTION_TYPE_RETRY,
     })
+
+    if (customGasLimit) {
+      newTxMeta.txParams.gas = customGasLimit
+    }
 
     this.addTx(newTxMeta)
     await this.approveTransaction(newTxMeta.id)
@@ -748,11 +761,10 @@ class TransactionController extends EventEmitter {
   _updateMemstore () {
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
-      from: this.getSelectedAddress(),
+    const currentNetworkTxList = this.txStateManager.getFilteredTxList({
       metamaskNetworkId: this.getNetwork(),
     })
-    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
 }
 

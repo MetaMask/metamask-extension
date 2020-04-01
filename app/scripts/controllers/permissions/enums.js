@@ -19,6 +19,13 @@ export const LOG_IGNORE_METHODS = [
   'wallet_sendDomainMetadata',
 ]
 
+export const LOG_METHOD_TYPES = {
+  restricted: 'restricted',
+  internal: 'internal',
+}
+
+export const LOG_LIMIT = 100
+
 export const SAFE_METHODS = [
   'web3_sha3',
   'net_listening',
@@ -63,10 +70,13 @@ export const SAFE_METHODS = [
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
   'eth_submitHashrate',
   'eth_submitWork',
   'eth_syncing',
   'eth_uninstallFilter',
   'metamask_watchAsset',
   'wallet_watchAsset',
+  'eth_getEncryptionPublicKey',
+  'eth_decrypt',
 ]

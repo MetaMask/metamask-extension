@@ -93,7 +93,7 @@ export default {
       },
     },
     'transactions': {},
-    'selectedAddressTxList': [
+    'currentNetworkTxList': [
       {
         'id': 'mockTokenTx1',
         'txParams': {
@@ -132,6 +132,10 @@ export default {
     'unapprovedMsgCount': 0,
     'unapprovedPersonalMsgs': {},
     'unapprovedPersonalMsgCount': 0,
+    'unapprovedDecryptMsgs': {},
+    'unapprovedDecryptMsgCount': 0,
+    'unapprovedEncryptionPublicKeyMsgs': {},
+    'unapprovedEncryptionPublicKeyMsgCount': 0,
     'keyringTypes': [
       'Simple Key Pair',
       'HD Key Tree',

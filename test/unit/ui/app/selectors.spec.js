@@ -114,26 +114,19 @@ describe('Selectors', function () {
     assert.equal(gasIsLoading, false)
   })
 
-  describe('Send From', function () {
-    it('#getSendFrom', function () {
-      const sendFrom = selectors.getSendFrom(mockState)
-      assert.equal(sendFrom, '0xc42edfcc21ed14dda456aa0756c153f7985d8813')
-    })
+  it('#getForceGasMin', function () {
+    const forceGasMin = selectors.getForceGasMin(mockState)
+    assert.equal(forceGasMin, null)
+  })
 
-    it('#getForceGasMin', function () {
-      const forceGasMin = selectors.getForceGasMin(mockState)
-      assert.equal(forceGasMin, null)
-    })
+  it('#getSendAmount', function () {
+    const sendAmount = selectors.getSendAmount(mockState)
+    assert.equal(sendAmount, '1bc16d674ec80000')
+  })
 
-    it('#getSendAmount', function () {
-      const sendAmount = selectors.getSendAmount(mockState)
-      assert.equal(sendAmount, '1bc16d674ec80000')
-    })
-
-    it('#getSendMaxModeState', function () {
-      const sendMaxModeState = selectors.getSendMaxModeState(mockState)
-      assert.equal(sendMaxModeState, false)
-    })
+  it('#getSendMaxModeState', function () {
+    const sendMaxModeState = selectors.getSendMaxModeState(mockState)
+    assert.equal(sendMaxModeState, false)
   })
 
   it('#getCurrentCurrency', function () {

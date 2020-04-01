@@ -4,8 +4,8 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
+import { cloneDeep } from 'lodash'
 
-import getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
 
@@ -24,7 +24,12 @@ export class PermissionsController {
 
   constructor (
     {
-      platform, notifyDomain, notifyAllDomains, getKeyringAccounts,
+      getKeyringAccounts,
+      getRestrictedMethods,
+      getUnlockPromise,
+      notifyDomain,
+      notifyAllDomains,
+      platform,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -35,19 +40,27 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getKeyringAccounts = getKeyringAccounts
+    this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this.getKeyringAccounts = getKeyringAccounts
     this._platform = platform
+
     this._restrictedMethods = getRestrictedMethods(this)
-    this.permissionsLogController = new PermissionsLogController({
+    this.permissionsLog = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),
       store: this.store,
     })
+    this.pendingApprovals = new Map()
+    this.pendingApprovalOrigins = new Set()
     this._initializePermissions(restoredPermissions)
   }
 
   createMiddleware ({ origin, extensionId }) {
+
+    if (typeof origin !== 'string' || !origin.length) {
+      throw new Error('Must provide non-empty string origin.')
+    }
 
     if (extensionId) {
       this.store.updateState({
@@ -60,12 +73,14 @@ export class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
-    engine.push(this.permissionsLogController.createMiddleware())
+    engine.push(this.permissionsLog.createMiddleware())
 
     engine.push(createMethodMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
+      getUnlockPromise: this.getUnlockPromise,
+      hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
@@ -74,6 +89,7 @@ export class PermissionsController {
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
+
     return asMiddleware(engine)
   }
 
@@ -104,6 +120,17 @@ export class PermissionsController {
   }
 
   /**
+   * Returns whether the given origin has the given permission.
+   *
+   * @param {string} origin - The origin to check.
+   * @param {string} permission - The permission to check for.
+   * @returns {boolean} Whether the origin has the permission.
+   */
+  hasPermission (origin, permission) {
+    return Boolean(this.permissions.getPermission(origin, permission))
+  }
+
+  /**
    * Submits a permissions request to rpc-cap. Internal, background use only.
    *
    * @param {string} origin - The origin string.
@@ -112,15 +139,18 @@ export class PermissionsController {
   _requestPermissions (origin, permissions) {
     return new Promise((resolve, reject) => {
 
+      // rpc-cap assigns an id to the request if there is none, as expected by
+      // requestUserApproval below
       const req = { method: 'wallet_requestPermissions', params: [permissions] }
       const res = {}
       this.permissions.providerMiddlewareFunction(
         { origin }, req, res, () => {}, _end
       )
 
-      function _end (err) {
-        if (err || res.error) {
-          reject(err || res.error)
+      function _end (_err) {
+        const err = _err || res.error
+        if (err) {
+          reject(err)
         } else {
           resolve(res.result)
         }
@@ -129,27 +159,40 @@ export class PermissionsController {
   }
 
   /**
-   * User approval callback. The request can fail if the request is invalid.
+   * User approval callback. Resolves the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
+   * The request will be rejected if finalizePermissionsRequest fails.
    *
-   * @param {Object} approved - the approved request object
+   * @param {Object} approved - The request object approved by the user
    * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
 
     const { id } = approved.metadata
-    const approval = this.pendingApprovals[id]
+    const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.warn(`Permissions request with id '${id}' not found`)
+      log.error(`Permissions request with id '${id}' not found`)
       return
     }
 
     try {
 
-      // attempt to finalize the request and resolve it
-      await this.finalizePermissionsRequest(approved.permissions, accounts)
-      approval.resolve(approved.permissions)
+      if (Object.keys(approved.permissions).length === 0) {
 
+        approval.reject(ethErrors.rpc.invalidRequest({
+          message: 'Must request at least one permission.',
+        }))
+
+      } else {
+
+        // attempt to finalize the request and resolve it,
+        // settings caveats as necessary
+        approved.permissions = await this.finalizePermissionsRequest(
+          approved.permissions, accounts
+        )
+        approval.resolve(approved.permissions)
+      }
     } catch (err) {
 
       // if finalization fails, reject the request
@@ -158,27 +201,29 @@ export class PermissionsController {
       }))
     }
 
-    delete this.pendingApprovals[id]
+    this._removePendingApproval(id)
   }
 
   /**
-   * User rejection callback.
+   * User rejection callback. Rejects the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
    *
-   * @param {string} id - the id of the rejected request
+   * @param {string} id - The id of the request rejected by the user
    */
   async rejectPermissionsRequest (id) {
-    const approval = this.pendingApprovals[id]
+    const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.warn(`Permissions request with id '${id}' not found`)
+      log.error(`Permissions request with id '${id}' not found`)
       return
     }
 
     approval.reject(ethErrors.provider.userRejectedRequest())
-    delete this.pendingApprovals[id]
+    this._removePendingApproval(id)
   }
 
   /**
+   * @deprecated
    * Grants the given origin the eth_accounts permission for the given account(s).
    * This method should ONLY be called as a result of direct user action in the UI,
    * with the intention of supporting legacy dapps that don't support EIP 1102.
@@ -188,33 +233,54 @@ export class PermissionsController {
    */
   async legacyExposeAccounts (origin, accounts) {
 
-    const permissions = {
-      eth_accounts: {},
+    // accounts are validated by finalizePermissionsRequest
+    if (typeof origin !== 'string' || !origin.length) {
+      throw new Error('Must provide non-empty string origin.')
     }
 
-    await this.finalizePermissionsRequest(permissions, accounts)
+    const existingAccounts = await this.getAccounts(origin)
 
-    let error
+    if (existingAccounts.length > 0) {
+      throw new Error(
+        'May not call legacyExposeAccounts on origin with exposed accounts.'
+      )
+    }
+
+    const permissions = await this.finalizePermissionsRequest(
+      { eth_accounts: {} }, accounts
+    )
+
     try {
-      await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, (err) => (err ? resolve() : reject(err)))
-      })
-    } catch (err) {
-      error = err
-    }
 
-    if (error) {
-      if (error.code === 4001) {
-        throw error
-      } else {
-        throw ethErrors.rpc.internal({
-          message: `Failed to add 'eth_accounts' to '${origin}'.`,
-          data: {
-            originalError: error,
-            accounts,
-          },
-        })
-      }
+      await new Promise((resolve, reject) => {
+        this.permissions.grantNewPermissions(
+          origin, permissions, {}, _end
+        )
+
+        function _end (err) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve()
+          }
+        }
+      })
+
+      this.notifyDomain(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        result: accounts,
+      })
+      this.permissionsLog.logAccountExposure(origin, accounts)
+
+    } catch (error) {
+
+      throw ethErrors.rpc.internal({
+        message: `Failed to add 'eth_accounts' to '${origin}'.`,
+        data: {
+          originalError: error,
+          accounts,
+        },
+      })
     }
   }
 
@@ -244,19 +310,25 @@ export class PermissionsController {
   }
 
   /**
-   * Finalizes a permissions request.
-   * Throws if request validation fails.
+   * Finalizes a permissions request. Throws if request validation fails.
+   * Clones the passed-in parameters to prevent inadvertent modification.
+   * Sets (adds or replaces) caveats for the following permissions:
+   * - eth_accounts: the permitted accounts caveat
    *
    * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
+   * @param {string[]} requestedAccounts - The accounts to expose, if any.
+   * @returns {Object} The finalized permissions request object.
    */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
+  async finalizePermissionsRequest (requestedPermissions, requestedAccounts) {
 
-    const { eth_accounts: ethAccounts } = requestedPermissions
+    const finalizedPermissions = cloneDeep(requestedPermissions)
+    const finalizedAccounts = cloneDeep(requestedAccounts)
+
+    const { eth_accounts: ethAccounts } = finalizedPermissions
 
     if (ethAccounts) {
 
-      await this.validatePermittedAccounts(accounts)
+      await this.validatePermittedAccounts(finalizedAccounts)
 
       if (!ethAccounts.caveats) {
         ethAccounts.caveats = []
@@ -270,11 +342,13 @@ export class PermissionsController {
       ethAccounts.caveats.push(
         {
           type: 'filterResponse',
-          value: accounts,
+          value: finalizedAccounts,
           name: CAVEAT_NAMES.exposedAccounts,
         },
       )
     }
+
+    return finalizedPermissions
   }
 
   /**
@@ -307,7 +381,7 @@ export class PermissionsController {
       payload.method === NOTIFICATION_NAMES.accountsChanged &&
       Array.isArray(payload.result)
     ) {
-      this.permissionsLogController.updateAccountsHistory(
+      this.permissionsLog.updateAccountsHistory(
         origin, payload.result
       )
     }
@@ -323,6 +397,9 @@ export class PermissionsController {
 
   /**
    * Removes the given permissions for the given domain.
+   * Should only be called after confirming that the permissions exist, to
+   * avoid sending unnecessary notifications.
+   *
    * @param {Object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
@@ -349,6 +426,10 @@ export class PermissionsController {
   /**
    * When a new account is selected in the UI for 'origin', emit accountsChanged
    * to 'origin' if the selected account is permitted.
+   *
+   * Note: This will emit "false positive" accountsChanged events, but they are
+   * handled by the inpage provider.
+   *
    * @param {string} origin - The origin.
    * @param {string} account - The newly selected account's address.
    */
@@ -356,10 +437,17 @@ export class PermissionsController {
 
     const permittedAccounts = await this.getAccounts(origin)
 
+    if (
+      typeof origin !== 'string' || !origin.length ||
+      typeof account !== 'string' || !account.length
+    ) {
+      throw new Error('Should provide non-empty origin and account strings.')
+    }
+
     // do nothing if the account is not permitted for the origin, or
     // if it's already first in the array of permitted accounts
     if (
-      !account || !permittedAccounts.includes(account) ||
+      !permittedAccounts.includes(account) ||
       permittedAccounts[0] === account
     ) {
       return
@@ -371,7 +459,7 @@ export class PermissionsController {
 
     // update permitted accounts to ensure that accounts are returned
     // in the same order every time
-    this.updatePermittedAccounts(origin, newPermittedAccounts)
+    await this.updatePermittedAccounts(origin, newPermittedAccounts)
   }
 
   /**
@@ -386,6 +474,38 @@ export class PermissionsController {
   }
 
   /**
+   * Adds a pending approval.
+   * @param {string} id - The id of the pending approval.
+   * @param {string} origin - The origin of the pending approval.
+   * @param {Function} resolve - The function resolving the pending approval Promise.
+   * @param {Function} reject - The function rejecting the pending approval Promise.
+   */
+  _addPendingApproval (id, origin, resolve, reject) {
+
+    if (
+      this.pendingApprovalOrigins.has(origin) ||
+      this.pendingApprovals.has(id)
+    ) {
+      throw new Error(
+        `Pending approval with id ${id} or origin ${origin} already exists.`
+      )
+    }
+
+    this.pendingApprovals.set(id, { origin, resolve, reject })
+    this.pendingApprovalOrigins.add(origin)
+  }
+
+  /**
+   * Removes the pending approval with the given id.
+   * @param {string} id - The id of the pending approval to remove.
+   */
+  _removePendingApproval (id) {
+    const { origin } = this.pendingApprovals.get(id)
+    this.pendingApprovalOrigins.delete(origin)
+    this.pendingApprovals.delete(id)
+  }
+
+  /**
    * A convenience method for retrieving a login object
    * or creating a new one if needed.
    *
@@ -395,8 +515,6 @@ export class PermissionsController {
 
     // these permission requests are almost certainly stale
     const initState = { ...restoredState, permissionsRequests: [] }
-
-    this.pendingApprovals = {}
 
     this.permissions = new RpcCap({
 
@@ -418,12 +536,18 @@ export class PermissionsController {
        * @param {string} req - The internal rpc-cap user request object.
        */
       requestUserApproval: async (req) => {
-        const { metadata: { id } } = req
+        const { origin, metadata: { id } } = req
+
+        if (this.pendingApprovalOrigins.has(origin)) {
+          throw ethErrors.rpc.resourceUnavailable(
+            'Permissions request already pending; please wait.'
+          )
+        }
 
         this._platform.openExtensionInBrowser(`connect/${id}`)
 
         return new Promise((resolve, reject) => {
-          this.pendingApprovals[id] = { resolve, reject }
+          this._addPendingApproval(id, origin, resolve, reject)
         })
       },
     }, initState)

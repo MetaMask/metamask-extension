@@ -287,3 +287,7 @@ export function getOriginFromUrl (url) {
   const origin = url.hostname
   return origin
 }
+
+export function getAccountByAddress (accounts = [], targetAddress) {
+  return accounts.find(({ address }) => address === targetAddress)
+}

@@ -1,37 +1,32 @@
 .connected-sites {
-  width: 408px;
-  background-color: #fff;
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
-  z-index: 25;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  flex-flow: column;
-  border-radius: 8px;
-  overflow-y: auto;
-
-  @media screen and (min-width: 576px) {
-    max-height: 82vh;
-    min-height: 570px;
-    -webkit-box-flex: 0;
-    flex: 0 0 auto;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  &__header {
+  &__confirmation {
     display: flex;
-    height: 67px;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-bottom: 1px solid #C4C4C4;
+    margin-top: 30px;
+    border-top: 1px solid #D2D8DD;
+    padding: 16px 24px 16px;
+
+    button:first-child {
+      margin-right: 24px;
+    }
   }
 
-  &__title {
-    @extend %header--24;
+  &__add-site-manually {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #D2D8DD;
+    margin-top: -1px;
+    padding: 16px 24px 24px 24px;
+    border-radius: 0 0 10px 10px;
+    font-size: 14px;
+    line-height: 20px;
+    z-index: 1;
+
+    a, a:hover {
+      cursor: pointer;
+      color: #037DD6;
+    }
   }
 }

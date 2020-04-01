@@ -117,9 +117,6 @@
   "privacyMsg": {
     "message": "Política de Privacidade"
   },
-  "qrCode": {
-    "message": "Mostre o código QR"
-  },
   "queue": {
     "message": "Fila"
   },

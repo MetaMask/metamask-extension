@@ -191,9 +191,6 @@
   "chainId": {
     "message": "ID reťazca"
   },
-  "clickToAdd": {
-    "message": "Kliknutím na $1 ich pridáte do svojho účtu"
-  },
   "clickToRevealSeed": {
     "message": "Kliknutím sem odkryjete tajné slová"
   },
@@ -815,9 +812,6 @@
   },
   "privateNetwork": {
     "message": "Soukromá síť"
-  },
-  "qrCode": {
-    "message": "Ukázat QR kód"
   },
   "queue": {
     "message": "Poradie"

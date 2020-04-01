@@ -194,9 +194,6 @@
   "chainId": {
     "message": "ID da Cadeia"
   },
-  "clickToAdd": {
-    "message": "Clique em $1 para adicioná-los à sua conta"
-  },
   "clickToRevealSeed": {
     "message": "Clique aqui para revelar as palavras secretas"
   },
@@ -834,9 +831,6 @@
   },
   "privateNetwork": {
     "message": "Rede Particular"
-  },
-  "qrCode": {
-    "message": "Mostrar QR Code"
   },
   "queue": {
     "message": "Fila"

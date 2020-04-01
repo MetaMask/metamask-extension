@@ -200,9 +200,6 @@
   "chainId": {
     "message": "ID мережі"
   },
-  "clickToAdd": {
-    "message": "Клацніть на $1, щоб додати їх до вашого облікового запису"
-  },
   "clickToRevealSeed": {
     "message": "Клацніть тут, щоб відкрити секретні слова"
   },
@@ -849,9 +846,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "qrCode": {
-    "message": "Показати QR код"
   },
   "queue": {
     "message": "Черга"

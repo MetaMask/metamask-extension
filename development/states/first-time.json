@@ -20,7 +20,7 @@
     "network": "3",
     "accounts": {},
     "transactions": {},
-    "selectedAddressTxList": [],
+    "currentNetworkTxList": [],
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "keyringTypes": [

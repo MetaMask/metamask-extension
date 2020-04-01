@@ -64,7 +64,7 @@
     ],
     "tokens": [],
     "transactions": {},
-    "selectedAddressTxList": [{
+    "currentNetworkTxList": [{
       "id": 4768706228115573,
       "time": 1487363153561,
       "status": "unapproved",

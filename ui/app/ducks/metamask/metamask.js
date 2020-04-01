@@ -118,6 +118,7 @@ export default function reduceMetamask (state = {}, action) {
         }
         newSend.tokenBalance = null
         newSend.balance = '0'
+        newSend.from = unapprovedTx.from || ''
       }
 
       newState.send = newSend
@@ -279,8 +280,8 @@ export default function reduceMetamask (state = {}, action) {
 
     case actions.UPDATE_TRANSACTION_PARAMS:
       const { id: txId, value } = action
-      let { selectedAddressTxList } = metamaskState
-      selectedAddressTxList = selectedAddressTxList.map((tx) => {
+      let { currentNetworkTxList } = metamaskState
+      currentNetworkTxList = currentNetworkTxList.map((tx) => {
         if (tx.id === txId) {
           const newTx = Object.assign({}, tx)
           newTx.txParams = value
@@ -291,17 +292,7 @@ export default function reduceMetamask (state = {}, action) {
 
       return {
         ...metamaskState,
-        selectedAddressTxList,
-      }
-
-    case actions.PAIR_UPDATE:
-      const { value: { marketinfo: pairMarketInfo } } = action
-      return {
-        ...metamaskState,
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pairMarketInfo.pair]: pairMarketInfo,
-        },
+        currentNetworkTxList,
       }
 
     case actions.SET_PARTICIPATE_IN_METAMETRICS:
@@ -388,3 +379,5 @@ export default function reduceMetamask (state = {}, action) {
       return metamaskState
   }
 }
+
+export const getCurrentLocale = (state) => state.metamask.currentLocale

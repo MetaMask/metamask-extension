@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import contractMap from 'eth-contract-metadata'
 import ConfirmTransactionBase from './confirm-transaction-base.component'

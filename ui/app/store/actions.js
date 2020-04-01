@@ -90,12 +90,6 @@ export const actionConstants = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
-  PAIR_UPDATE: 'PAIR_UPDATE',
-  SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
-  HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
-  // QR STUFF:
-  SHOW_QR: 'SHOW_QR',
-  SHOW_QR_VIEW: 'SHOW_QR_VIEW',
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
 
@@ -653,6 +647,80 @@ export function signPersonalMsg (msgData) {
   }
 }
 
+export function decryptMsgInline (decryptedMsgData) {
+  log.debug('action - decryptMsgInline')
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessageInline`)
+      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsgInline called back')
+        dispatch(updateMetamaskState(newState))
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function decryptMsg (decryptedMsgData) {
+  log.debug('action - decryptMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.decryptMessage`)
+      background.decryptMessage(decryptedMsgData, (err, newState) => {
+        log.debug('decryptMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(decryptedMsgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+        console.log(decryptedMsgData)
+        return resolve(decryptedMsgData)
+      })
+    })
+  }
+}
+
+export function encryptionPublicKeyMsg (msgData) {
+  log.debug('action - encryptionPublicKeyMsg')
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.encryptionPublicKey`)
+      background.encryptionPublicKey(msgData, (err, newState) => {
+        log.debug('encryptionPublicKeyMsg called back')
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          log.error(err)
+          dispatch(displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(completedTx(msgData.metamaskId))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
   return (dispatch) => {
@@ -1027,6 +1095,50 @@ export function cancelPersonalMsg (msgData) {
   }
 }
 
+export function cancelDecryptMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelDecryptMessage(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
+export function cancelEncryptionPublicKeyMsg (msgData) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelEncryptionPublicKey(id, (err, newState) => {
+        dispatch(updateMetamaskState(newState))
+        dispatch(hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(completedTx(id))
+        dispatch(closeCurrentNotificationWindow())
+
+        return resolve(msgData)
+      })
+    })
+  }
+}
+
 export function cancelTypedMsg (msgData) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
@@ -1383,8 +1495,8 @@ export function retryTransaction (txId, gasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
         newTxId = id
         resolve(newState)
       })
@@ -1406,8 +1518,8 @@ export function createCancelTransaction (txId, customGasPrice) {
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
         newTxId = id
         resolve(newState)
       })
@@ -1417,20 +1529,20 @@ export function createCancelTransaction (txId, customGasPrice) {
   }
 }
 
-export function createSpeedUpTransaction (txId, customGasPrice) {
+export function createSpeedUpTransaction (txId, customGasPrice, customGasLimit) {
   log.debug('background.createSpeedUpTransaction')
   let newTx
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
         resolve(newState)
       })
     })
@@ -1439,20 +1551,20 @@ export function createSpeedUpTransaction (txId, customGasPrice) {
   }
 }
 
-export function createRetryTransaction (txId, customGasPrice) {
+export function createRetryTransaction (txId, customGasPrice, customGasLimit) {
   log.debug('background.createRetryTransaction')
   let newTx
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
         if (err) {
           dispatch(displayWarning(err.message))
           return reject(err)
         }
 
-        const { selectedAddressTxList } = newState
-        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        const { currentNetworkTxList } = newState
+        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
         resolve(newState)
       })
     })
@@ -1760,18 +1872,6 @@ export function hideLoadingIndication () {
   }
 }
 
-export function showSubLoadingIndication () {
-  return {
-    type: actionConstants.SHOW_SUB_LOADING_INDICATION,
-  }
-}
-
-export function hideSubLoadingIndication () {
-  return {
-    type: actionConstants.HIDE_SUB_LOADING_INDICATION,
-  }
-}
-
 export function displayWarning (text) {
   return {
     type: actionConstants.DISPLAY_WARNING,
@@ -1862,86 +1962,6 @@ export function buyEth (opts) {
     dispatch({
       type: actionConstants.BUY_ETH,
     })
-  }
-}
-
-export function pairUpdate (coin) {
-  return (dispatch) => {
-    dispatch(showSubLoadingIndication())
-    dispatch(hideWarning())
-    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
-      dispatch(hideSubLoadingIndication())
-      if (mktResponse.error) {
-        return dispatch(displayWarning(mktResponse.error))
-      }
-      dispatch({
-        type: actionConstants.PAIR_UPDATE,
-        value: {
-          marketinfo: mktResponse,
-        },
-      })
-    })
-  }
-}
-
-export function showQrView (data, message) {
-  return {
-    type: actionConstants.SHOW_QR_VIEW,
-    value: {
-      message: message,
-      data: data,
-    },
-  }
-}
-export function reshowQrCode (data, coin) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    shapeShiftRequest('marketinfo', { pair: `${coin.toLowerCase()}_eth` }, (mktResponse) => {
-      if (mktResponse.error) {
-        return dispatch(displayWarning(mktResponse.error))
-      }
-
-      const message = [
-        `Deposit your ${coin} to the address below:`,
-        `Deposit Limit: ${mktResponse.limit}`,
-        `Deposit Minimum:${mktResponse.minimum}`,
-      ]
-
-      dispatch(hideLoadingIndication())
-      return dispatch(showQrView(data, message))
-    })
-  }
-}
-
-export function shapeShiftRequest (query, options = {}, cb) {
-  let queryResponse, method
-  options.method ? method = options.method : method = 'GET'
-
-  const requestListner = function () {
-    try {
-      queryResponse = JSON.parse(this.responseText)
-      if (cb) {
-        cb(queryResponse)
-      }
-      return queryResponse
-    } catch (e) {
-      if (cb) {
-        cb({ error: e })
-      }
-      return e
-    }
-  }
-
-  const shapShiftReq = new XMLHttpRequest()
-  shapShiftReq.addEventListener('load', requestListner)
-  shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
-
-  if (options.method === 'POST') {
-    const jsonObj = JSON.stringify(options.data)
-    shapShiftReq.setRequestHeader('Content-Type', 'application/json')
-    return shapShiftReq.send(jsonObj)
-  } else {
-    return shapShiftReq.send()
   }
 }
 
@@ -2176,6 +2196,19 @@ export function setUseNonceField (val) {
   }
 }
 
+export function setUsePhishDetect (val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication())
+    log.debug(`background.setUsePhishDetect`)
+    background.setUsePhishDetect(val, (err) => {
+      dispatch(hideLoadingIndication())
+      if (err) {
+        return dispatch(displayWarning(err.message))
+      }
+    })
+  }
+}
+
 export function setIpfsGateway (val) {
   return (dispatch) => {
     dispatch(showLoadingIndication())
@@ -2275,7 +2308,6 @@ export function legacyExposeAccounts (origin, accounts) {
 export function removePermissionsFor (domains) {
   return () => {
     background.removePermissionsFor(domains)
-    background.removeLastSelectedAddressesFor(Object.keys(domains))
   }
 }
 
@@ -2285,7 +2317,6 @@ export function removePermissionsFor (domains) {
 export function clearPermissions () {
   return () => {
     background.clearPermissions()
-    background.clearLastSelectedAddressHistory()
   }
 }
 

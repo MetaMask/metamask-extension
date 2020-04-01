@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Ahela ID"
   },
-  "clickToAdd": {
-    "message": "Klõpsake valikul $1, et need oma kontole lisada"
-  },
   "clickToRevealSeed": {
     "message": "Klõpsake salasõnade kuvamiseks"
   },
@@ -839,9 +836,6 @@
   },
   "privateNetwork": {
     "message": "Privaatvõrk"
-  },
-  "qrCode": {
-    "message": "Kuva QR-kood"
   },
   "queue": {
     "message": "Järjekord"

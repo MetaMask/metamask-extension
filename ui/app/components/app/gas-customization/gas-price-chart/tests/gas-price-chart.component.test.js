@@ -11,74 +11,82 @@ function timeout (time) {
   })
 }
 
-const propsMethodSpies = {
-  updateCustomGasPrice: sinon.spy(),
-}
-
-const selectReturnSpies = {
-  empty: sinon.spy(),
-  remove: sinon.spy(),
-  style: sinon.spy(),
-  select: d3.select,
-  attr: sinon.spy(),
-  on: sinon.spy(),
-  datum: sinon.stub().returns({ x: 'mockX' }),
-}
-
-const mockSelectReturn = {
-  ...d3.select('div'),
-  node: () => ({
-    getBoundingClientRect: () => ({ x: 123, y: 321, width: 400 }),
-  }),
-  ...selectReturnSpies,
-}
-
-const gasPriceChartUtilsSpies = {
-  appendOrUpdateCircle: sinon.spy(),
-  generateChart: sinon.stub().returns({ mockChart: true }),
-  generateDataUIObj: sinon.spy(),
-  getAdjacentGasPrices: sinon.spy(),
-  getCoordinateData: sinon.stub().returns({ x: 'mockCoordinateX', width: 'mockWidth' }),
-  getNewXandTimeEstimate: sinon.spy(),
-  handleChartUpdate: sinon.spy(),
-  hideDataUI: sinon.spy(),
-  setSelectedCircle: sinon.spy(),
-  setTickPosition: sinon.spy(),
-  handleMouseMove: sinon.spy(),
-}
-
-const testProps = {
-  gasPrices: [1.5, 2.5, 4, 8],
-  estimatedTimes: [100, 80, 40, 10],
-  gasPricesMax: 9,
-  estimatedTimesMax: 100,
-  currentPrice: 6,
-  updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
-}
-
-const GasPriceChart = proxyquire('../gas-price-chart.component.js', {
-  './gas-price-chart.utils.js': gasPriceChartUtilsSpies,
-  'd3': {
-    ...d3,
-    select: function (...args) {
-      const result = d3.select(...args)
-      return result.empty()
-        ? mockSelectReturn
-        : result
-    },
-    event: {
-      clientX: 'mockClientX',
-    },
-  },
-}).default
-
-sinon.spy(GasPriceChart.prototype, 'renderChart')
-
 describe('GasPriceChart Component', function () {
+  let GasPriceChart
+  let gasPriceChartUtilsSpies
+  let propsMethodSpies
+  let selectReturnSpies
+  let testProps
   let wrapper
 
   beforeEach(function () {
+    propsMethodSpies = {
+      updateCustomGasPrice: sinon.spy(),
+    }
+
+    selectReturnSpies = {
+      empty: sinon.spy(),
+      remove: sinon.spy(),
+      style: sinon.spy(),
+      select: d3.select,
+      attr: sinon.spy(),
+      on: sinon.spy(),
+      datum: sinon.stub().returns({ x: 'mockX' }),
+    }
+
+    const mockSelectReturn = {
+      ...d3.select('div'),
+      node: () => ({
+        getBoundingClientRect: () => ({ x: 123, y: 321, width: 400 }),
+      }),
+      ...selectReturnSpies,
+    }
+
+    gasPriceChartUtilsSpies = {
+      appendOrUpdateCircle: sinon.spy(),
+      generateChart: sinon.stub().returns({ mockChart: true }),
+      generateDataUIObj: sinon.spy(),
+      getAdjacentGasPrices: sinon.spy(),
+      getCoordinateData: sinon.stub().returns({ x: 'mockCoordinateX', width: 'mockWidth' }),
+      getNewXandTimeEstimate: sinon.spy(),
+      handleChartUpdate: sinon.spy(),
+      hideDataUI: sinon.spy(),
+      setSelectedCircle: sinon.spy(),
+      setTickPosition: sinon.spy(),
+      handleMouseMove: sinon.spy(),
+    }
+
+    testProps = {
+      gasPrices: [1.5, 2.5, 4, 8],
+      estimatedTimes: [100, 80, 40, 10],
+      gasPricesMax: 9,
+      estimatedTimesMax: 100,
+      currentPrice: 6,
+      updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
+    }
+
+    GasPriceChart = proxyquire('../gas-price-chart.component.js', {
+      './gas-price-chart.utils.js': gasPriceChartUtilsSpies,
+      'd3': {
+        ...d3,
+        select: function (...args) {
+          const result = d3.select(...args)
+          return result.empty()
+            ? mockSelectReturn
+            : result
+        },
+        event: {
+          clientX: 'mockClientX',
+        },
+      },
+    }).default
+    sinon.spy(GasPriceChart.prototype, 'renderChart')
+
     wrapper = shallow(<GasPriceChart {...testProps} />)
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   describe('render()', function () {

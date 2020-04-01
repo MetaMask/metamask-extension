@@ -197,9 +197,6 @@
   "chainId": {
     "message": "Cadena ID"
   },
-  "clickToAdd": {
-    "message": "Fes clic a $1 per afegir-los al teu compte"
-  },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
   },
@@ -830,9 +827,6 @@
   },
   "privateNetwork": {
     "message": "Xarxa privada"
-  },
-  "qrCode": {
-    "message": "Mostra el codi QR"
   },
   "queue": {
     "message": "Cua"

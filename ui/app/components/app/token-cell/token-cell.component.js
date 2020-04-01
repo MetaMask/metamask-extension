@@ -2,53 +2,52 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Identicon from '../../ui/identicon'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
+import Tooltip from '../../ui/tooltip-v2'
+import { I18nContext } from '../../../contexts/i18n'
 
 export default class TokenCell extends Component {
-  static contextTypes = {
-    metricsEvent: PropTypes.func,
+  static contextType = I18nContext
+
+  static propTypes = {
+    address: PropTypes.string,
+    outdatedBalance: PropTypes.bool,
+    symbol: PropTypes.string,
+    string: PropTypes.string,
+    selectedTokenAddress: PropTypes.string,
+    contractExchangeRates: PropTypes.object,
+    conversionRate: PropTypes.number,
+    currentCurrency: PropTypes.string,
+    image: PropTypes.string,
+    onClick: PropTypes.func.isRequired,
+    userAddress: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    outdatedBalance: false,
   }
 
   state = {
     tokenMenuOpen: false,
   }
 
-  send (address, event) {
-    event.preventDefault()
-    event.stopPropagation()
-    const url = tokenFactoryFor(address)
-    if (url) {
-      navigateTo(url)
-    }
-  }
-
-  view (address, userAddress, network) {
-    const url = etherscanLinkFor(address, userAddress, network)
-    if (url) {
-      navigateTo(url)
-    }
-  }
-
   render () {
+    const t = this.context
     const { tokenMenuOpen } = this.state
-    const props = this.props
     const {
       address,
       symbol,
       string,
-      network,
-      setSelectedToken,
       selectedTokenAddress,
       contractExchangeRates,
       conversionRate,
-      hideSidebar,
-      sidebarOpen,
+      onClick,
       currentCurrency,
-      // userAddress,
       image,
-    } = props
+      outdatedBalance,
+      userAddress,
+    } = this.props
     let currentTokenToFiatRate
     let currentTokenInFiat
     let formattedFiat = ''
@@ -74,40 +73,56 @@ export default class TokenCell extends Component {
 
     return (
       <div
-        className={classnames(`token-list-item`, {
-          'token-list-item--active': selectedTokenAddress === address,
+        className={classnames('token-cell', {
+          'token-cell--active': selectedTokenAddress === address,
+          'token-cell--outdated': outdatedBalance,
         })}
-        onClick={() => {
-          setSelectedToken(address)
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Token Menu',
-              name: 'Clicked Token',
-            },
-          })
-          selectedTokenAddress !== address && sidebarOpen && hideSidebar()
-        }}
+        onClick={onClick.bind(null, address)}
       >
         <Identicon
-          className="token-list-item__identicon"
+          className="token-cell__identicon"
           diameter={50}
           address={address}
-          network={network}
           image={image}
         />
-        <div className="token-list-item__balance-ellipsis">
-          <div className="token-list-item__balance-wrapper">
-            <div className="token-list-item__token-balance">{string || 0}</div>
-            <div className="token-list-item__token-symbol">{symbol}</div>
+        <div className="token-cell__balance-ellipsis">
+          <div className="token-cell__balance-wrapper">
+            <div className="token-cell__token-balance">{string || 0}</div>
+            <div className="token-cell__token-symbol">{symbol}</div>
             {showFiat && (
-              <div className="token-list-item__fiat-amount">
+              <div className="token-cell__fiat-amount">
                 {formattedFiat}
               </div>
             )}
           </div>
+        </div>
+        {
+          outdatedBalance && (
+            <Tooltip
+              interactive
+              position="bottom"
+              html={(
+                <div className="token-cell__outdated-tooltip">
+                  { t('troubleTokenBalances') }
+                  <a
+                    href={`https://ethplorer.io/address/${userAddress}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    style={{ color: '#F7861C' }}
+                  >
+                    { t('here') }
+                  </a>
+                </div>
+              )}
+            >
+              <i className={classnames(['fa', 'fa-exclamation-circle', 'token-cell__outdated-icon'])} />
+            </Tooltip>
+          )
+        }
+
+        <div>
           <i
-            className="fa fa-ellipsis-h fa-lg token-list-item__ellipsis cursor-pointer"
+            className="fa fa-ellipsis-h fa-lg token-cell__ellipsis cursor-pointer"
             onClick={(e) => {
               e.stopPropagation()
               this.setState({ tokenMenuOpen: true })
@@ -124,17 +139,3 @@ export default class TokenCell extends Component {
     )
   }
 }
-
-function navigateTo (url) {
-  global.platform.openWindow({ url })
-}
-
-function etherscanLinkFor (tokenAddress, address, network) {
-  const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
-}
-
-function tokenFactoryFor (tokenAddress) {
-  return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
-}
-

@@ -2,22 +2,19 @@ const path = require('path')
 
 module.exports = {
   module: {
+    strictExportPresence: true,
     rules: [
-      {
-        test: /\.(woff(2)?|ttf|eot|svg|otf)(\?v=\d+\.\d+\.\d+)?$/,
-        loaders: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts/',
-          },
-        }],
-      },
       {
         test: /\.scss$/,
         loaders: [
           'style-loader',
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              import: false,
+              url: false,
+            },
+          },
           'resolve-url-loader',
           {
             loader: 'sass-loader',
@@ -28,10 +25,5 @@ module.exports = {
         ],
       },
     ],
-  },
-  resolve: {
-    alias: {
-      './fonts/Font_Awesome': path.resolve(__dirname, '../app/fonts/Font_Awesome'),
-    },
   },
 }

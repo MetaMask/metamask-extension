@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import MetaMetricsOptInModal from './metametrics-opt-in-modal.component'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import { setParticipateInMetaMetrics } from '../../../../store/actions'

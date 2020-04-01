@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import ethUtil from 'ethereumjs-util'
 import { multiplyCurrencies } from '../../../../helpers/utils/conversion-util'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
@@ -10,8 +10,8 @@ import { getHexGasTotal } from '../../../../helpers/utils/confirm-tx.util'
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
   const { transactionId, originalGasPrice } = ownProps
-  const { selectedAddressTxList } = metamask
-  const transaction = selectedAddressTxList.find(({ id }) => id === transactionId)
+  const { currentNetworkTxList } = metamask
+  const transaction = currentNetworkTxList.find(({ id }) => id === transactionId)
   const transactionStatus = transaction ? transaction.status : ''
 
   const defaultNewGasPrice = ethUtil.addHexPrefix(

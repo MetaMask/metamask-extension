@@ -97,9 +97,12 @@
         }
 
         &--copy-icon {
-          padding-left: 4px;
-          width: 30px;
+          display: inline-block;
+          width: 20px;
           height: 20px;
+          padding: 0;
+          background: none;
+          padding-left: 10px;
         }
       }
 

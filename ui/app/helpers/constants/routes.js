@@ -29,6 +29,7 @@ const TRUSTVAULT_EMAIL_ROUTE = '/new-account/connect/trustvault/email'
 const TRUSTVAULT_PIN_ROUTE = '/new-account/connect/trustvault/pin'
 const SEND_ROUTE = '/send'
 const CONNECT_ROUTE = '/connect'
+const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
 const CONNECTED_ROUTE = '/connected'
 
 const INITIALIZE_ROUTE = '/initialize'
@@ -51,6 +52,8 @@ const CONFIRM_APPROVE_PATH = '/approve'
 const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from'
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method'
 const SIGNATURE_REQUEST_PATH = '/signature-request'
+const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request'
+const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 
 export {
   DEFAULT_ROUTE,
@@ -87,6 +90,8 @@ export {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
@@ -103,5 +108,6 @@ export {
   NETWORKS_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
+  CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,
 }

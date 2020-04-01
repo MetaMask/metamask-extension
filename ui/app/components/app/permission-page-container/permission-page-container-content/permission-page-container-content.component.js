@@ -59,12 +59,13 @@ export default class PermissionPageContainerContent extends PureComponent {
         <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
         <section>
           <div className="permission-approval-visual__identicon-container">
-            <div className="permission-approval-visual__identicon-border" />
-            <Identicon
-              className="permission-approval-visual__identicon"
-              address={selectedAccount.address}
-              diameter={54}
-            />
+            <div className="permission-approval-visual__identicon-border">
+              <Identicon
+                className="permission-approval-visual__identicon"
+                address={selectedAccount.address}
+                diameter={54}
+              />
+            </div>
           </div>
           { redirect ? null : this.renderAccountInfo(selectedAccount) }
         </section>

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route, matchPath } from 'react-router-dom'
 import TabBar from '../../components/app/tab-bar'
-import c from 'classnames'
+import classnames from 'classnames'
 import SettingsTab from './settings-tab'
 import NetworksTab from './networks-tab'
 import AdvancedTab from './advanced-tab'
@@ -49,7 +49,7 @@ class SettingsPage extends PureComponent {
 
     return (
       <div
-        className={c('main-container settings-page', {
+        className={classnames('main-container settings-page', {
           'settings-page--selected': currentPath !== SETTINGS_ROUTE,
         })}
       >
@@ -129,7 +129,7 @@ class SettingsPage extends PureComponent {
     return currentPath !== NETWORKS_ROUTE && (
       <div className="settings-page__subheader">
         <div
-          className={c({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
+          className={classnames({ 'settings-page__subheader--link': initialBreadCrumbRoute })}
           onClick={() => initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)}
         >
           {subheaderText}

@@ -94,9 +94,6 @@
   "cancellationGasFee": {
     "message": "Anilasyon Gaz Chaj"
   },
-  "clickToAdd": {
-    "message": "Klike sou $ 1 pou ajoute yo nan kont ou"
-  },
   "close": {
     "message": "Fèmen"
   },
@@ -512,9 +509,6 @@
   },
   "privateNetwork": {
     "message": "Rezo Prive"
-  },
-  "qrCode": {
-    "message": "Montre QR Kòd"
   },
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."

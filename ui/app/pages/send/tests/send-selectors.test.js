@@ -2,11 +2,12 @@ import assert from 'assert'
 import sinon from 'sinon'
 import {
   accountsWithSendEtherInfoSelector,
-  // autoAddToBetaUI,
+  getCurrentAccountWithSendEtherInfo,
+} from '../../../selectors/selectors'
+import {
   getBlockGasLimit,
   getAmountConversionRate,
   getConversionRate,
-  getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
   getNativeCurrency,
@@ -16,7 +17,6 @@ import {
   getGasTotal,
   getPrimaryCurrency,
   getRecentBlocks,
-  getSelectedAccount,
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
@@ -35,7 +35,6 @@ import {
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
-  transactionsSelector,
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
@@ -233,21 +232,6 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSelectedAccount()', function () {
-    it('should return the currently selected account', function () {
-      assert.deepEqual(
-        getSelectedAccount(mockState),
-        {
-          code: '0x',
-          balance: '0x0',
-          nonce: '0x0',
-          address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-        }
-      )
-    })
-  })
-
-
   describe('getSelectedIdentity()', function () {
     it('should return the identity object of the currently selected address', function () {
       assert.deepEqual(
@@ -368,10 +352,7 @@ describe('send selectors', function () {
     it('should return the send.from', function () {
       assert.deepEqual(
         getSendFrom(mockState),
-        {
-          address: '0xabcdefg',
-          balance: '0x5f4e3d2c1',
-        }
+        '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       )
     })
   })
@@ -380,7 +361,7 @@ describe('send selectors', function () {
     it('should get the send.from balance if it exists', function () {
       assert.equal(
         getSendFromBalance(mockState),
-        '0x5f4e3d2c1'
+        '0x37452b1315889f80'
       )
     })
 
@@ -404,13 +385,15 @@ describe('send selectors', function () {
       assert.deepEqual(
         getSendFromObject(mockState),
         {
-          address: '0xabcdefg',
-          balance: '0x5f4e3d2c1',
+          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          balance: '0x37452b1315889f80',
+          code: '0x',
+          nonce: '0xa',
         }
       )
     })
 
-    it('should return the current account with send ether info if send.from does not exist', function () {
+    it('should return the current account if send.from does not exist', function () {
       const editedMockState = {
         metamask: Object.assign({}, mockState.metamask, {
           send: {
@@ -425,7 +408,6 @@ describe('send selectors', function () {
           balance: '0x0',
           nonce: '0x0',
           address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          name: 'Send Account 4',
         }
       )
     })
@@ -540,132 +522,4 @@ describe('send selectors', function () {
       )
     })
   })
-
-  describe('transactionsSelector()', function () {
-    it('should return the selected addresses selected token transactions', function () {
-      assert.deepEqual(
-        transactionsSelector(mockState),
-        [
-          {
-            id: 'mockTokenTx1',
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-            time: 1700000000000,
-          },
-          {
-            id: 'mockTokenTx3',
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-            time: 1500000000000,
-          },
-        ]
-      )
-    })
-
-    it('should return all transactions if no token is selected', function () {
-      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false })
-      const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
-      assert.deepEqual(
-        transactionsSelector(modifiedState),
-        [
-          {
-            id: 'mockTokenTx1',
-            time: 1700000000000,
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-          },
-          {
-            id: 'unapprovedMessage1',
-            time: 1650000000000,
-          },
-          {
-            id: 'mockTokenTx2',
-            time: 1600000000000,
-            txParams: {
-              to: '0xafaketokenaddress',
-            },
-          },
-          {
-            id: 'unapprovedMessage2',
-            time: 1550000000000,
-          },
-          {
-            id: 'mockTokenTx3',
-            time: 1500000000000,
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-          },
-          {
-            id: 'unapprovedMessage3',
-            time: 1450000000000,
-          },
-          {
-            id: 'mockEthTx1',
-            time: 1400000000000,
-            txParams: {
-              to: '0xd85a4b6a394794842887b8284293d69163007bbb',
-            },
-          },
-        ]
-      )
-    })
-
-    it('should return shapeshift transactions if current network is 1', function () {
-      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false, network: '1' })
-      const modifiedState = Object.assign({}, mockState, { metamask: modifiedMetamaskState })
-      assert.deepEqual(
-        transactionsSelector(modifiedState),
-        [
-          {
-            id: 'mockTokenTx1',
-            time: 1700000000000,
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-          },
-          { id: 'shapeShiftTx1', 'time': 1675000000000 },
-          {
-            id: 'unapprovedMessage1',
-            time: 1650000000000,
-          },
-          {
-            id: 'mockTokenTx2',
-            time: 1600000000000,
-            txParams: {
-              to: '0xafaketokenaddress',
-            },
-          },
-          { id: 'shapeShiftTx2', 'time': 1575000000000 },
-          {
-            id: 'unapprovedMessage2',
-            time: 1550000000000,
-          },
-          {
-            id: 'mockTokenTx3',
-            time: 1500000000000,
-            txParams: {
-              to: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-            },
-          },
-          { id: 'shapeShiftTx3', 'time': 1475000000000 },
-          {
-            id: 'unapprovedMessage3',
-            time: 1450000000000,
-          },
-          {
-            id: 'mockEthTx1',
-            time: 1400000000000,
-            txParams: {
-              to: '0xd85a4b6a394794842887b8284293d69163007bbb',
-            },
-          },
-        ]
-      )
-    })
-  })
-
 })

@@ -13,10 +13,12 @@ export default class SecurityTab extends PureComponent {
   static propTypes = {
     warning: PropTypes.string,
     history: PropTypes.object,
-    participateInMetaMetrics: PropTypes.bool,
-    setParticipateInMetaMetrics: PropTypes.func,
-    showIncomingTransactions: PropTypes.bool,
-    setShowIncomingTransactionsFeatureFlag: PropTypes.func,
+    participateInMetaMetrics: PropTypes.bool.isRequired,
+    setParticipateInMetaMetrics: PropTypes.func.isRequired,
+    showIncomingTransactions: PropTypes.bool.isRequired,
+    setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
+    setUsePhishDetect: PropTypes.func.isRequired,
+    usePhishDetect: PropTypes.bool.isRequired,
   }
 
   renderSeedWords () {
@@ -105,6 +107,32 @@ export default class SecurityTab extends PureComponent {
     )
   }
 
+  renderPhishingDetectionToggle () {
+    const { t } = this.context
+    const { usePhishDetect, setUsePhishDetect } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('usePhishingDetection') }</span>
+          <div className="settings-page__content-description">
+            { t('usePhishingDetectionDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={usePhishDetect}
+              onToggle={(value) => setUsePhishDetect(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderContent () {
     const { warning } = this.props
 
@@ -113,6 +141,7 @@ export default class SecurityTab extends PureComponent {
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderSeedWords() }
         { this.renderIncomingTransactionsOptIn() }
+        { this.renderPhishingDetectionToggle() }
         { this.renderMetaMetricsOptIn() }
       </div>
     )

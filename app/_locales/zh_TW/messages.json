@@ -197,9 +197,6 @@
   "chainId": {
     "message": "鏈 ID"
   },
-  "clickToAdd": {
-    "message": "點選下方 $1 新增資訊"
-  },
   "clickToRevealSeed": {
     "message": "點選顯示助憶詞"
   },
@@ -837,9 +834,6 @@
   },
   "privateNetwork": {
     "message": "私有網路"
-  },
-  "qrCode": {
-    "message": "顯示 QR Code"
   },
   "queue": {
     "message": "佇列"

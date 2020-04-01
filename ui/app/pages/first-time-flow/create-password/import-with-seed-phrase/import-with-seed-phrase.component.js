@@ -41,7 +41,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       return ''
     }
 
-    const words = trimmed.match(/\w+/g)
+    const words = trimmed.toLowerCase().match(/\w+/g)
     if (!words) {
       return ''
     }
@@ -291,7 +291,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               rel="noopener noreferrer"
             >
               <span className="first-time-flow__link-text">
-                { 'Terms of Use' }
+                { t('terms') }
               </span>
             </a>
           </span>

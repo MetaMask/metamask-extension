@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 
 import {
   getAmountConversionRate,
@@ -54,13 +54,15 @@ import {
 } from '../../helpers/utils/util'
 
 function mapStateToProps (state) {
+  const editingTransactionId = getSendEditingTransactionId(state)
+
   return {
     addressBook: getAddressBook(state),
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
-    editingTransactionId: getSendEditingTransactionId(state),
+    editingTransactionId,
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),

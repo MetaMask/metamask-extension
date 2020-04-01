@@ -1,5 +1,4 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
-import { mapObjectValues } from '../../../app/scripts/lib/util'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
 
@@ -10,9 +9,10 @@ import {
   checksumAddress,
   formatDate,
   getOriginFromUrl,
+  getAccountByAddress,
 } from '../helpers/utils/util'
 
-import { getPermittedAccounts } from './permissions'
+import { getPermittedAccountsMap } from './permissions'
 
 export { getPermittedAccounts } from './permissions'
 
@@ -103,21 +103,6 @@ export function getSelectedAddress (state) {
   return selectedAddress
 }
 
-function lastSelectedAddressSelector (state, origin) {
-  return state.metamask.lastSelectedAddressByOrigin[origin] || null
-}
-
-// not using reselect here since the returns are contingent;
-// we have no reasons to recompute the permitted accounts if there
-// exists a lastSelectedAddress
-export function getLastSelectedAddress (state, origin) {
-  return (
-    lastSelectedAddressSelector(state, origin) ||
-    getPermittedAccounts(state, origin)[0] || // always returns array
-    getSelectedAddress(state)
-  )
-}
-
 export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
   const identities = state.metamask.identities
@@ -184,6 +169,11 @@ export function getSelectedAccount (state) {
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
+}
+
+export function getTargetAccount (state, targetAddress) {
+  const accounts = getMetaMaskAccounts(state)
+  return accounts[targetAddress]
 }
 
 export function getSelectedToken (state) {
@@ -280,7 +270,12 @@ export function getCurrentAccountWithSendEtherInfo (state) {
   const currentAddress = getSelectedAddress(state)
   const accounts = accountsWithSendEtherInfoSelector(state)
 
-  return accounts.find(({ address }) => address === currentAddress)
+  return getAccountByAddress(accounts, currentAddress)
+}
+
+export function getTargetAccountWithSendEtherInfo (state, targetAddress) {
+  const accounts = accountsWithSendEtherInfoSelector(state)
+  return getAccountByAddress(accounts, targetAddress)
 }
 
 export function getCurrentEthBalance (state) {
@@ -293,10 +288,6 @@ export function getGasIsLoading (state) {
 
 export function getForceGasMin (state) {
   return state.metamask.send.forceGasMin
-}
-
-export function getSendFrom (state) {
-  return state.metamask.send.from
 }
 
 export function getSendAmount (state) {
@@ -340,11 +331,13 @@ export function getTotalUnapprovedCount ({ metamask }) {
     unapprovedTxs = {},
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedDecryptMsgCount,
+    unapprovedEncryptionPublicKeyMsgCount,
     unapprovedTypedMessagesCount,
   } = metamask
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount
+    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
 }
 
 export function getIsMainnet (state) {
@@ -375,6 +368,10 @@ export function getAdvancedInlineGasShown (state) {
 
 export function getUseNonceField (state) {
   return Boolean(state.metamask.useNonceField)
+}
+
+export function getUsePhishDetect (state) {
+  return Boolean(state.metamask.usePhishDetect)
 }
 
 export function getCustomNonceValue (state) {
@@ -446,60 +443,29 @@ export function getPermissionsDomains (state) {
 
 export function getAddressConnectedDomainMap (state) {
   const {
-    domains,
     domainMetadata,
   } = state.metamask
 
+  const accountsMap = getPermittedAccountsMap(state)
   const addressConnectedIconMap = {}
 
-  if (domains) {
-    Object.keys(domains).forEach((domainKey) => {
-      const { permissions } = domains[domainKey]
-      const { icon, name } = domainMetadata[domainKey] || {}
-      permissions.forEach((perm) => {
-        const caveats = perm.caveats || []
-        const exposedAccountCaveat = caveats.find((caveat) => caveat.name === 'exposedAccounts')
-        if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
-          exposedAccountCaveat.value.forEach((address) => {
-            const nameToRender = name || domainKey
-            addressConnectedIconMap[address] = addressConnectedIconMap[address]
-              ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
-              : { [domainKey]: { icon, name: nameToRender } }
-          })
-        }
-      })
+  Object.keys(accountsMap).forEach((domainKey) => {
+    const { icon, name } = domainMetadata[domainKey] || {}
+    accountsMap[domainKey].forEach((address) => {
+      const nameToRender = name || domainKey
+      addressConnectedIconMap[address] = addressConnectedIconMap[address]
+        ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
+        : { [domainKey]: { icon, name: nameToRender } }
     })
-  }
+  })
 
   return addressConnectedIconMap
 }
 
-export function getDomainToConnectedAddressMap (state) {
-  const { domains = {} } = state.metamask
-
-  const domainToConnectedAddressMap = mapObjectValues(domains, (_, { permissions }) => {
-    const ethAccountsPermissions = permissions.filter((permission) => permission.parentCapability === 'eth_accounts')
-    const ethAccountsPermissionsExposedAccountAddresses = ethAccountsPermissions.map((permission) => {
-      const caveats = permission.caveats
-      const exposedAccountsCaveats = caveats.filter((caveat) => caveat.name === 'exposedAccounts')
-      const exposedAccountsAddresses = exposedAccountsCaveats.map((caveat) => caveat.value[0])
-      return exposedAccountsAddresses
-    })
-    const allAddressesConnectedToDomain = ethAccountsPermissionsExposedAccountAddresses.reduce((acc, arrayOfAddresses) => {
-      return [ ...acc, ...arrayOfAddresses ]
-    }, [])
-    return allAddressesConnectedToDomain
-  })
-
-  return domainToConnectedAddressMap
-}
-
-export function getAddressConnectedToCurrentTab (state) {
-  const domainToConnectedAddressMap = getDomainToConnectedAddressMap(state)
+export function getPermittedAccountsForCurrentTab (state) {
+  const permittedAccountsMap = getPermittedAccountsMap(state)
   const originOfCurrentTab = getOriginOfCurrentTab(state)
-  const addressesConnectedToCurrentTab = domainToConnectedAddressMap[originOfCurrentTab]
-  const addressConnectedToCurrentTab = addressesConnectedToCurrentTab && addressesConnectedToCurrentTab[0]
-  return addressConnectedToCurrentTab
+  return permittedAccountsMap[originOfCurrentTab] || []
 }
 
 export function getRenderablePermissionsDomains (state) {

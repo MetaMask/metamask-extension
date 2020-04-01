@@ -19,19 +19,22 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   static propTypes = {
-    balance: PropTypes.string,
+    fromAccount: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      balance: PropTypes.string,
+      name: PropTypes.string,
+    }).isRequired,
     cancel: PropTypes.func.isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
-    selectedAccount: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
   }
 
   state = {
-    selectedAccount: this.props.selectedAccount,
+    fromAccount: this.props.fromAccount,
   }
 
   componentDidMount = () => {
@@ -81,7 +84,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderAccount = () => {
-    const { selectedAccount } = this.state
+    const { fromAccount } = this.state
 
     return (
       <div className="request-signature__account">
@@ -91,7 +94,7 @@ export default class SignatureRequestOriginal extends Component {
 
         <div className="request-signature__account-item">
           <AccountListItem
-            account={selectedAccount}
+            account={fromAccount}
             displayBalance={false}
           />
         </div>
@@ -100,7 +103,8 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderBalance = () => {
-    const { balance, conversionRate } = this.props
+    const { conversionRate } = this.props
+    const { fromAccount: { balance } } = this.state
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',

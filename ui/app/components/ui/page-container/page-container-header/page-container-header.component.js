@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import c from 'classnames'
+import classnames from 'classnames'
 
 export default class PageContainerHeader extends Component {
   static propTypes = {
@@ -47,7 +47,7 @@ export default class PageContainerHeader extends Component {
 
     return (
       <div
-        className={c('page-container__header', className, {
+        className={classnames('page-container__header', className, {
           'page-container__header--no-padding-bottom': Boolean(tabs),
         })}
       >

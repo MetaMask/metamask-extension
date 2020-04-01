@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import * as actions from '../../../store/actions'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
@@ -51,6 +51,8 @@ class NetworkDropdown extends Component {
 
   static propTypes = {
     provider: PropTypes.shape({
+      nickname: PropTypes.string,
+      rpcTarget: PropTypes.string,
       type: PropTypes.string,
       ticker: PropTypes.string,
     }).isRequired,
@@ -62,6 +64,7 @@ class NetworkDropdown extends Component {
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
+    delRpcTarget: PropTypes.func.isRequired,
   }
 
   handleClick (newProviderType) {
@@ -123,7 +126,6 @@ class NetworkDropdown extends Component {
   }
 
   renderCommonRpc (rpcListDetail, provider) {
-    const props = this.props
     const reversedRpcListDetail = rpcListDetail.slice().reverse()
 
     return reversedRpcListDetail.map((entry) => {
@@ -140,7 +142,7 @@ class NetworkDropdown extends Component {
           <DropdownMenuItem
             key={`common${rpc}`}
             closeMenu={() => this.props.hideNetworkDropdown()}
-            onClick={() => props.setRpcTarget(rpc, chainId, ticker, nickname)}
+            onClick={() => this.props.setRpcTarget(rpc, chainId, ticker, nickname)}
             style={{
               fontSize: '16px',
               lineHeight: '20px',
@@ -167,7 +169,7 @@ class NetworkDropdown extends Component {
               className="fa fa-times delete"
               onClick={(e) => {
                 e.stopPropagation()
-                props.delRpcTarget(rpc)
+                this.props.delRpcTarget(rpc)
               }}
             />
           </DropdownMenuItem>

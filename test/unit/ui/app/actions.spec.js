@@ -1,7 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import { cloneDeep } from 'lodash'
-import nock from 'nock'
 import fetchMock from 'fetch-mock'
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -1306,30 +1305,6 @@ describe('Actions', function () {
       const store = mockStore()
       store.dispatch(actions.setAccountLabel('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', 'test'))
       assert(setAccountLabelSpy.calledOnce)
-    })
-  })
-
-  describe('#pairUpdate', function () {
-    it('calls expected actions', function () {
-      nock('https://shapeshift.io')
-        .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
-        .get('/marketinfo/btc_eth')
-        .reply(200, { pair: 'BTC_ETH', rate: 25.68289016, minerFee: 0.00176, limit: 0.67748474, minimum: 0.00013569, maxLimit: 0.67758573 })
-
-      nock('https://shapeshift.io')
-        .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
-        .get('/coins')
-        .reply(200)
-
-      const store = mockStore()
-      // issue with dispatch action in callback not showing
-      const expectedActions = [
-        { type: 'SHOW_SUB_LOADING_INDICATION' },
-        { type: 'HIDE_WARNING' },
-      ]
-
-      store.dispatch(actions.pairUpdate('btc'))
-      assert.deepEqual(store.getActions(), expectedActions)
     })
   })
 

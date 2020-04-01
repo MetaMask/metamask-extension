@@ -200,9 +200,6 @@
   "chainId": {
     "message": "ID verige"
   },
-  "clickToAdd": {
-    "message": "Kliknite na $1 za dodajo v vaš račun"
-  },
   "clickToRevealSeed": {
     "message": "Kliknite tukaj, če želite razkriti skrivne besede"
   },
@@ -834,9 +831,6 @@
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
-  },
-  "qrCode": {
-    "message": "Prikaži QR kodo"
   },
   "queue": {
     "message": "Čakalna vrsta"

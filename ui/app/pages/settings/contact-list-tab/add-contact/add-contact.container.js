@@ -1,5 +1,5 @@
 import AddContact from './add-contact.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { addToAddressBook, showQrScanner, qrCodeDetected } from '../../../../store/actions'

@@ -136,6 +136,10 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
+    "unapprovedDecryptMsgs": {},
+    "unapprovedDecryptMsgCount": 0,
+    "unapprovedEncryptionPublicKeyMsgs": {},
+    "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
     "send": {
@@ -153,7 +157,7 @@
       "forceGasMin": null,
       "toNickname": ""
     },
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "id": 3387511061307736,
         "time": 1528133130531,

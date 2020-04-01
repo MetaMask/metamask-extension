@@ -102,6 +102,7 @@ describe('MetaMaskController', function () {
     // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
+    sandbox.spy(metamaskController.txController, 'newUnapprovedTransaction')
   })
 
   afterEach(function () {
@@ -800,6 +801,88 @@ describe('MetaMaskController', function () {
       await promise
       streamTest.end()
     })
+
+    it('adds a tabId and origin to requests', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+        tab: { id: 456 },
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        setTimeout(() => {
+          assert.deepStrictEqual(
+            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
+            [
+              'mock tx params',
+              {
+                ...message,
+                origin: 'mycrypto.com',
+                tabId: 456,
+              },
+            ]
+          )
+          done()
+        })
+      })
+    })
+
+    it('should add only origin to request if tabId not provided', function (done) {
+      const messageSender = {
+        url: 'http://mycrypto.com',
+      }
+      const streamTest = createThoughStream((chunk, _, cb) => {
+        if (chunk.data && chunk.data.method) {
+          cb(null, chunk)
+        } else {
+          cb()
+        }
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, messageSender)
+
+      const message = {
+        id: 1999133338649204,
+        jsonrpc: '2.0',
+        params: ['mock tx params'],
+        method: 'eth_sendTransaction',
+      }
+      streamTest.write({
+        name: 'provider',
+        data: message,
+      }, null, () => {
+        setTimeout(() => {
+          assert.deepStrictEqual(
+            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
+            [
+              'mock tx params',
+              {
+                ...message,
+                origin: 'mycrypto.com',
+              },
+            ]
+          )
+          done()
+        })
+      })
+    })
   })
 
   describe('#setupTrustedCommunication', function () {
@@ -838,11 +921,12 @@ describe('MetaMaskController', function () {
   })
 
   describe('#_onKeyringControllerUpdate', function () {
+
     it('should do nothing if there are no keyrings in state', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -851,20 +935,16 @@ describe('MetaMaskController', function () {
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({ keyrings: [] })
 
-      assert.ok(addAddresses.notCalled)
+      assert.ok(syncAddresses.notCalled)
       assert.ok(syncWithAddresses.notCalled)
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
-    it('should update selected address if keyrings was locked', async function () {
-      const addAddresses = sinon.fake()
-      const getSelectedAddress = sinon.fake.returns('0x42')
-      const setSelectedAddress = sinon.fake()
+    it('should sync addresses if there are keyrings in state', async function () {
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
-        getSelectedAddress,
-        setSelectedAddress,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -872,23 +952,21 @@ describe('MetaMaskController', function () {
 
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({
-        isUnlocked: false,
         keyrings: [{
           accounts: ['0x1', '0x2'],
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
-      assert.deepEqual(setSelectedAddress.args, [['0x1']])
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
     it('should NOT update selected address if already unlocked', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -902,7 +980,7 @@ describe('MetaMaskController', function () {
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(metamaskController.getState(), oldState)
     })

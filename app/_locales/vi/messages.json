@@ -261,9 +261,6 @@
   "privateNetwork": {
     "message": "Mạng lưới riêng"
   },
-  "qrCode": {
-    "message": "Hiển thị mã QR"
-  },
   "readdToken": {
     "message": "Bạn có thể thêm trở lại mã token này bằng cách nhấn \"Thêm mã token\" trong menu tùy chọn trong tài khoản của bạn."
   },

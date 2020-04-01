@@ -274,7 +274,7 @@ describe('MetaMask Reducers', function () {
 
   it('updates value of tx by id', function () {
     const oldState = {
-      selectedAddressTxList: [
+      currentNetworkTxList: [
         {
           id: 1,
           txParams: 'foo',
@@ -288,20 +288,7 @@ describe('MetaMask Reducers', function () {
       value: 'bar',
     })
 
-    assert.equal(state.selectedAddressTxList[0].txParams, 'bar')
-  })
-
-  it('updates pair for shapeshift', function () {
-    const state = reduceMetamask({}, {
-      type: actions.PAIR_UPDATE,
-      value: {
-        marketinfo: {
-          pair: 'test pair',
-          foo: 'bar',
-        },
-      },
-    })
-    assert.equal(state.tokenExchangeRates['test pair'].pair, 'test pair')
+    assert.equal(state.currentNetworkTxList[0].txParams, 'bar')
   })
 
   it('sets blockies', function () {

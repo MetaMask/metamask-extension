@@ -10,6 +10,7 @@ import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
+import Copy from '../../ui/icon/copy-icon.component'
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -178,10 +179,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 className="transaction-list-item-details__header-button"
                 disabled={!hash}
               >
-                <img
-                  className="transaction-list-item-details__header-button__copy-icon"
-                  src="/images/copy-to-clipboard.svg"
-                />
+                <Copy size={10} color="#3098DC" />
               </Button>
             </Tooltip>
             <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>

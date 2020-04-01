@@ -85,7 +85,7 @@ describe('gas-modal-page-container container', function () {
           provider: {
             type: 'mainnet',
           },
-          selectedAddressTxList: [{
+          currentNetworkTxList: [{
             id: 34,
             txParams: {
               gas: '0x1600000',

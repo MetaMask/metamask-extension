@@ -40,17 +40,19 @@ import {
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
 function mapStateToProps (state) {
+
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
   const gasEstimateType = activeButtonIndex >= 0
     ? gasButtonInfo[activeButtonIndex].gasEstimateType
     : 'custom'
+  const editingTransactionId = getSendEditingTransactionId(state)
 
   return {
     amount: getSendAmount(state),
     data: getSendHexData(state),
-    editingTransactionId: getSendEditingTransactionId(state),
+    editingTransactionId,
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),

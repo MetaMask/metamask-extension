@@ -808,7 +808,7 @@ describe('MetaMask', function () {
     })
 
     it('clicks on the Add Token button', async function () {
-      await driver.clickElement(By.xpath(`//div[contains(text(), 'Add Token')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })
 
@@ -995,7 +995,7 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.wallet-balance'))
 
-      await driver.clickElement(By.css('.token-list-item'))
+      await driver.clickElement(By.css('.token-cell'))
       await driver.delay(1000)
 
       const tokenBalanceAmount = await driver.findElements(By.css('.transaction-view-balance__primary-balance'))
@@ -1223,7 +1223,7 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
-      await driver.clickElement(By.css('.token-list-item__ellipsis'))
+      await driver.clickElement(By.css('.token-cell__ellipsis'))
 
       const byTokenMenuDropdownOption = By.css('.menu__item--clickable')
       await driver.clickElement(byTokenMenuDropdownOption)
@@ -1239,7 +1239,7 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', function () {
     it('clicks on the Add Token button', async function () {
-      await driver.clickElement(By.xpath(`//div[contains(text(), 'Add Token')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })
 

@@ -200,9 +200,6 @@
   "chainId": {
     "message": "Lánc azonosítója"
   },
-  "clickToAdd": {
-    "message": "Kattintson $1-re, hogy hozzáadja a fiókjához"
-  },
   "clickToRevealSeed": {
     "message": "Kattintson ide a titkos szavak megjelenítéséhez"
   },
@@ -842,9 +839,6 @@
   },
   "privateNetwork": {
     "message": "Magánhálózat"
-  },
-  "qrCode": {
-    "message": "QR kód megmutatása"
   },
   "queue": {
     "message": "Nyomtatólista"

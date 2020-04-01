@@ -330,23 +330,6 @@ describe('App State', function () {
     assert.equal(state.isLoading, false)
   })
 
-  it('shows sub loading indicator', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_SUB_LOADING_INDICATION,
-    })
-
-    assert.equal(state.isSubLoading, true)
-  })
-
-  it('hides sub loading indicator', function () {
-    const oldState = { ...metamaskState, isSubLoading: true }
-    const state = reduceApp(oldState, {
-      type: actions.HIDE_SUB_LOADING_INDICATION,
-    })
-
-    assert.equal(state.isSubLoading, false)
-  })
-
   it('displays warning', function () {
     const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,
@@ -376,90 +359,6 @@ describe('App State', function () {
     assert.equal(state.accountDetail.subview, 'export')
     assert.equal(state.accountDetail.accountExport, 'completed')
     assert.equal(state.accountDetail.privateKey, 'private key')
-  })
-
-  it('updates pair', function () {
-    const coinOptions = {
-      BTC: {
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        image: 'https://shapeshift.io/images/coins/bitcoin.png',
-        imageSmall: 'https://shapeshift.io/images/coins-sm/bitcoin.png',
-        status: 'available',
-        minerFee: 0.00025,
-      },
-    }
-
-    const appState = {
-      buyView: {
-        buyAddress: '0xAddress',
-        amount: '12.00',
-        formView: {
-          coinOptions,
-        },
-      },
-    }
-
-    const marketinfo = {
-      pair: 'BTC_ETH',
-      rate: 28.91191106,
-      minerFee: 0.0022,
-      limit: 0.76617432,
-      minimum: 0.00015323,
-      maxLimit: 0.76617432,
-    }
-
-    const oldState = { ...metamaskState, ...appState }
-
-    const state = reduceApp(oldState, {
-      type: actions.PAIR_UPDATE,
-      value: {
-        marketinfo,
-      },
-    })
-
-    assert.equal(state.buyView.subview, 'ShapeShift')
-    assert.equal(state.buyView.formView.shapeshift, true)
-    assert.deepEqual(state.buyView.formView.marketinfo, marketinfo)
-    assert.deepEqual(state.buyView.formView.coinOptions, coinOptions)
-    assert.equal(state.buyView.buyAddress, '0xAddress')
-    assert.equal(state.buyView.amount, '12.00')
-  })
-
-  it('shows QR', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_QR,
-      value: {
-        message: 'message',
-        data: 'data',
-      },
-    })
-
-    assert.equal(state.qrRequested, true)
-    assert.equal(state.transForward, true)
-    assert.equal(state.Qr.message, 'message')
-    assert.equal(state.Qr.data, 'data')
-  })
-
-  it('shows qr view', function () {
-    const appState = {
-      currentView: {
-        context: 'accounts',
-      },
-    }
-
-    const oldState = { ...metamaskState, ...appState }
-    const state = reduceApp(oldState, {
-      type: actions.SHOW_QR_VIEW,
-      value: {
-        message: 'message',
-        data: 'data',
-      },
-    })
-
-    assert.equal(state.transForward, true)
-    assert.equal(state.Qr.message, 'message')
-    assert.equal(state.Qr.data, 'data')
   })
 
   it('set mouse user state', function () {
