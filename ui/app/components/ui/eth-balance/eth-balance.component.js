@@ -121,10 +121,11 @@ export default class EthBalance extends Component {
 
     return (
       <div className="ether-balance ether-balance-amount" style={style}>
-        <div style={{
-          display: 'inline',
-          width,
-        }}
+        <div
+          style={{
+            display: 'inline',
+            width,
+          }}
         >
           {this.renderBalance(formattedValue)}
         </div>

@@ -132,9 +132,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     }
 
     return (
-      <div className={classnames('permission-approval-container__content', {
-        'permission-approval-container__content--redirect': redirect,
-      })}
+      <div
+        className={classnames('permission-approval-container__content', {
+          'permission-approval-container__content--redirect': redirect,
+        })}
       >
         <div className="permission-approval-container__title">
           { t(...titleArgs) }
