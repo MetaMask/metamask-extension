@@ -4,30 +4,32 @@
       "mkrMigrationReminderTimestamp": null
     },
     "CachedBalancesController": {
-      "cachedBalances": {
-        "4": {}
-      }
+      "cachedBalances": {}
     },
     "CurrencyController": {
-      "conversionDate": 1575697244.188,
-      "conversionRate": 149.61,
+      "conversionDate": 1585699587.453,
+      "conversionRate": 133.54,
       "currentCurrency": "usd",
       "nativeCurrency": "CFX"
     },
     "IncomingTransactionsController": {
-      "incomingTransactions": {},
+      "incomingTransactions": {
+      },
       "incomingTxLastFetchedBlocksByNetwork": {
         "goerli": null,
         "kovan": null,
+        "localhost": 48,
         "mainnet": null,
-        "rinkeby": 5570536
+        "rinkeby": null,
+        "ropsten": null,
+        "testnet": 669821
       }
     },
     "KeyringController": {
-      "vault": "{\"data\":\"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT\",\"iv\":\"FbeHDAW5afeWNORfNJBR0Q==\",\"salt\":\"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8=\"}"
+      "vault": "{\"data\":\"PFoPAVWSvgTQSld4pBw+7KF5Y7tl366nXMp6s6eqxY2QPx9++99OEjZ3sfuWrNcVIhzN8YO2jB0QqfZKn/WBWV9mWhQirqwdYAaiE0FnBJwfHDoMdGBCS/J8lE6yFzIrAECHZtAX/xrVK0Nx90L5WGt0vArOFwKcXlO31Fwc/q/dH4DFWtpRN5gqNSu6JCC3swcI6y+WtRdisPn94W0Ngk3M7EE1AD+WcBcoqijnLHVf0d3dOPfQwvsu7onNMeyA\",\"iv\":\"09s3jX1XEBHt6+FKyGM7zg==\",\"salt\":\"f6UpzrePd+cGwOA8vmHlu7A9ckbYr1tsPJ7Xe371E5k=\"}"
     },
     "NetworkController": {
-      "network": "5777",
+      "network": "0x2c",
       "provider": {
         "nickname": "",
         "rpcTarget": "",
@@ -35,90 +37,130 @@
         "type": "localhost"
       },
       "settings": {
+        "chainId": 2,
+        "network": 2,
+        "nickname": "conflux-test-net",
+        "rpcUrl": "http://testnet-jsonrpc.conflux-chain.org:12537",
         "ticker": "CFX"
       }
     },
     "OnboardingController": {
-      "onboardingTabs": {},
-      "seedPhraseBackedUp": false
+      "onboardingTabs": {
+      },
+      "seedPhraseBackedUp": true
     },
     "PermissionsMetadata": {
       "domainMetadata": {
-        "metamask.github.io": {
+        "ogs.google.com": {
           "icon": null,
-          "name": "M E T A M A S K M E S H T E S T"
+          "name": "ogs.google.com"
+        },
+        "www.google.com": {
+          "icon": null,
+          "name": "dark background and light text chrome - Google Search"
         }
       },
-      "permissionsHistory": {},
+      "permissionsHistory": {
+      },
       "permissionsLog": [
         {
-          "id": 746677923,
+          "id": 1748681906,
           "method": "eth_accounts",
           "methodType": "restricted",
-          "origin": "metamask.github.io",
+          "origin": "www.google.com",
           "request": {
-            "id": 746677923,
+            "id": 1748681906,
             "jsonrpc": "2.0",
             "method": "eth_accounts",
-            "origin": "metamask.github.io",
+            "origin": "www.google.com",
             "params": []
           },
-          "requestTime": 1575697241368,
+          "requestTime": 1585699057729,
           "response": {
-            "id": 746677923,
+            "id": 1748681906,
             "jsonrpc": "2.0",
             "result": []
           },
-          "responseTime": 1575697241370,
+          "responseTime": 1585699057730,
+          "success": true
+        },
+        {
+          "id": 1938070636,
+          "method": "eth_accounts",
+          "methodType": "restricted",
+          "origin": "ogs.google.com",
+          "request": {
+            "id": 1938070636,
+            "jsonrpc": "2.0",
+            "method": "eth_accounts",
+            "origin": "ogs.google.com",
+            "params": []
+          },
+          "requestTime": 1585699057730,
+          "response": {
+            "id": 1938070636,
+            "jsonrpc": "2.0",
+            "result": []
+          },
+          "responseTime": 1585699057731,
           "success": true
         }
       ]
     },
     "PreferencesController": {
       "accountTokens": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "rinkeby": [],
-          "ropsten": []
+        "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2": {
+          "localhost": [],
+          "testnet": []
         }
       },
-      "assetImages": {},
+      "assetImages": {
+      },
       "completedOnboarding": true,
       "currentAccountTab": "history",
       "currentLocale": "en",
       "featureFlags": {
+        "advancedInlineGas": true,
         "showIncomingTransactions": true,
         "transactionTime": false
       },
-      "firstTimeFlowType": "create",
+      "firstTimeFlowType": "import",
       "forgottenPassword": false,
       "frequentRpcListDetail": [],
       "identities": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2": {
+          "address": "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2",
           "name": "Account 1"
         }
       },
-      "knownMethodData": {},
-      "lostIdentities": {},
+      "ipfsGateway": "ipfs.dweb.link",
+      "knownMethodData": {
+      },
+      "lastSelectedAddressByOrigin": {
+      },
+      "lostIdentities": {
+      },
       "metaMetricsId": null,
       "metaMetricsSendCount": 0,
       "participateInMetaMetrics": false,
       "preferences": {
         "useNativeCurrencyAsPrimaryCurrency": true
       },
-      "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-      "suggestedTokens": {},
+      "selectedAddress": "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2",
+      "suggestedTokens": {
+      },
       "tokens": [],
       "useBlockie": false,
       "useNonceField": false
     },
-    "config": {},
+    "config": {
+    },
     "firstTimeInfo": {
-      "date": 1575697234195,
-      "version": "7.7.0"
+      "date": 1585699040456,
+      "version": "0.1.0"
     }
   },
   "meta": {
-    "version": 40
+    "version": 41
   }
 }
