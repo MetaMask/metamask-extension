@@ -67,7 +67,7 @@ const getUnlockPromise = () => Promise.resolve()
  */
 export function getPermControllerOpts () {
   return {
-    platform,
+    showPermissionRequest: noop,
     getKeyringAccounts,
     getUnlockPromise,
     getRestrictedMethods,
