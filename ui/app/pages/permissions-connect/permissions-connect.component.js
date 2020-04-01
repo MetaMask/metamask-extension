@@ -177,7 +177,7 @@ export default class PermissionConnect extends Component {
             : null
           }
           <div className="permissions-connect__page-count">
-            { `${page} of 2` }
+            { t('xOfY', [ page, '2' ]) }
           </div>
         </div>
       )
