@@ -1,38 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { compose } from 'redux'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import * as actions from '../../../store/actions'
-import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../selectors/selectors'
-import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
-import genAccountLink from '../../../../lib/account-link.js'
-import { Menu, Item, CloseArea } from './components/menu'
+import { CONNECTED_ROUTE } from '../../../../helpers/constants/routes'
+import { Menu, Item, CloseArea } from '../components/menu'
 
-function mapStateToProps (state) {
-  return {
-    selectedIdentity: getSelectedIdentity(state),
-    network: state.metamask.network,
-    keyrings: state.metamask.keyrings,
-    rpcPrefs: getRpcPrefsForCurrentProvider(state),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    showAccountDetailModal: () => {
-      dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
-    },
-    viewOnEtherscan: (address, network, rpcPrefs) => {
-      global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
-    },
-    showRemoveAccountConfirmationModal: (identity) => {
-      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
-    },
-  }
-}
-
-class AccountDetailsDropdown extends Component {
+export default class AccountDetailsDropdown extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -177,5 +148,3 @@ class AccountDetailsDropdown extends Component {
     )
   }
 }
-
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(AccountDetailsDropdown)

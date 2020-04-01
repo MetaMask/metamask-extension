@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Tooltip from '../../ui/tooltip'
 import SelectedAccount from '../selected-account'
 import ConnectedStatusIndicator from '../connected-status-indicator'
-import AccountDetailsDropdown from '../dropdowns/account-details-dropdown.js'
+import AccountDetailsDropdown from '../dropdowns/account-details-dropdown'
 
 export default class MenuBar extends PureComponent {
   static contextTypes = {
