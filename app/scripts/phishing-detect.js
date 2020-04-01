@@ -10,16 +10,14 @@ import ExtensionPlatform from './platforms/extension'
 document.addEventListener('DOMContentLoaded', start)
 
 function start () {
-  const windowType = getEnvironmentType()
   const hash = window.location.hash.substring(1)
   const suspect = querystring.parse(hash)
 
   document.getElementById('csdbLink').href = `https://cryptoscamdb.org/search`
 
   global.platform = new ExtensionPlatform()
-  global.METAMASK_UI_TYPE = windowType
 
-  const extensionPort = extension.runtime.connect({ name: windowType })
+  const extensionPort = extension.runtime.connect({ name: getEnvironmentType() })
   const connectionStream = new PortStream(extensionPort)
   const mx = setupMultiplex(connectionStream)
   setupControllerConnection(mx.createStream('controller'), (err, metaMaskController) => {

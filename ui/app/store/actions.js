@@ -13,6 +13,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
+import { getEnvironmentType } from '../../../app/scripts/lib/util'
 
 export const actionConstants = {
   GO_HOME: 'GO_HOME',
@@ -1194,7 +1195,7 @@ export function cancelTxs (txDataList) {
 
     dispatch(hideLoadingIndication())
 
-    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       return global.platform.closeCurrentWindow()
     }
   }
@@ -1431,7 +1432,7 @@ export function removeSuggestedTokens () {
           dispatch(displayWarning(err.message))
         }
         dispatch(clearPendingTokens())
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+        if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
           return global.platform.closeCurrentWindow()
         }
         resolve(suggestedTokens)
@@ -1724,7 +1725,7 @@ export function hideModal (payload) {
 
 export function closeCurrentNotificationWindow () {
   return (dispatch, getState) => {
-    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())) {
       global.platform.closeCurrentWindow()
 
