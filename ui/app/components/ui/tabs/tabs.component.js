@@ -42,6 +42,13 @@ export default class Tabs extends Component {
     const { children } = this.props
     const { activeTabIndex } = this.state
 
+    if (
+      (Array.isArray(children) && !children[activeTabIndex]) ||
+      (!Array.isArray(children) && activeTabIndex !== 0)
+    ) {
+      throw new Error(`Tab at index '${activeTabIndex}' does not exist`)
+    }
+
     return children[activeTabIndex]
       ? children[activeTabIndex].props.children
       : children.props.children
