@@ -50,6 +50,7 @@ import {
 } from '../../helpers/constants/routes'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 
 export default class Routes extends Component {
   static propTypes = {
@@ -160,11 +161,13 @@ export default class Routes extends Component {
       return true
     }
 
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+    const windowType = getEnvironmentType()
+
+    if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
       return true
     }
 
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
+    if (windowType === ENVIRONMENT_TYPE_POPUP) {
       return this.onConfirmPage() || hasPermissionsRequests
     }
 
