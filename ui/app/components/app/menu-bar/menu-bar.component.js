@@ -4,6 +4,8 @@ import Tooltip from '../../ui/tooltip'
 import SelectedAccount from '../selected-account'
 import ConnectedStatusIndicator from '../connected-status-indicator'
 import AccountDetailsDropdown from '../dropdowns/account-details-dropdown'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 
 export default class MenuBar extends PureComponent {
   static contextTypes = {
@@ -19,7 +21,11 @@ export default class MenuBar extends PureComponent {
 
     return (
       <div className="menu-bar">
-        <ConnectedStatusIndicator />
+        {
+          getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+            ? <ConnectedStatusIndicator />
+            : null
+        }
 
         <SelectedAccount />
 
