@@ -189,7 +189,7 @@ export default class Home extends PureComponent {
                         <div className="home__balance-wrapper">
                           <TransactionViewBalance />
                         </div>
-                        <TransactionList />
+                        <TransactionList isWideViewport />
                       </div>
                     </>
                   )
