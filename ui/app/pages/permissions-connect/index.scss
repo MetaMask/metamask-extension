@@ -5,17 +5,31 @@
   position: relative;
   background: white;
 
-  &__page-count-wrapper {
+  &__top-bar--two-items,
+  &__top-bar--right-item {
     margin-top: 16px;
     padding-right: 16px;
+    padding-left: 16px;
     display: flex;
-    justify-content: flex-end;
     align-items: flex-end;
+  }
+
+  &__top-bar--two-items{
+    justify-content: space-between;
+  }
+
+  &__top-bar--right-item {
+    justify-content: flex-end;
+  }
+
+  &__back {
+    @extend %content-text;
+    color: $curious-blue;
+    cursor: pointer;
   }
 
   &__page-count {
     @extend %content-text;
-    margin-right: 30px;
     font-size: 12px;
     color: #6A737D;
   }

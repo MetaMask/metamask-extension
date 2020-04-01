@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
+import classnames from 'classnames'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
@@ -155,6 +156,34 @@ export default class PermissionConnect extends Component {
     }
   }
 
+  goBack () {
+    const { history, connectPath } = this.props
+    history.push(connectPath)
+  }
+
+  renderTopBar () {
+    const { redirecting } = this.state
+    const { page } = this.props
+    const { t } = this.context
+    return !redirecting
+      ? (
+        <div className={classnames({
+          'permissions-connect__top-bar--right-item': page === '1',
+          'permissions-connect__top-bar--two-items': page === '2',
+        })}
+        >
+          { page === '2'
+            ? <div className="permissions-connect__back" onClick={() => this.goBack()}>{ t('back') }</div>
+            : null
+          }
+          <div className="permissions-connect__page-count">
+            { `${page} of 2` }
+          </div>
+        </div>
+      )
+      : null
+  }
+
   render () {
     const {
       approvePermissionsRequest,
@@ -168,7 +197,6 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
-      page,
       targetDomainMetadata,
     } = this.props
     const {
@@ -180,16 +208,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        { !redirecting
-          ? (
-            <div className="permissions-connect__page-count-wrapper">
-              <div className="permissions-connect-header__page-count">
-                { `${page} of 2` }
-              </div>
-            </div>
-          )
-          : null
-        }
+        { this.renderTopBar() }
         <Switch>
           <Route
             path={connectPath}
