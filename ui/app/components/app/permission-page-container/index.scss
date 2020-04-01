@@ -37,44 +37,8 @@
       padding-top: 8px;
     }
 
-    h1, h2 {
-      color: #4A4A4A;
-      display: flex;
-      justify-content: center;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 16px;
-      line-height: 18px;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 22px;
-      line-height: 26px;
-      padding: 20px;
-    }
-
-    p {
-      padding: 0 40px;
-      text-align: center;
-      font-size: 12px;
-      line-height: 18px;
-    }
-
     a, a:hover {
       color: $dodger-blue;
-    }
-
-    section {
-      h1 {
-        padding: 30px 0px 0px 0px;
-      }
-
-      h2 {
-        padding: 0px 0px 20px 0px;
-      }
     }
 
     &__requested {
@@ -83,10 +47,6 @@
 
     &__revoke-note {
       margin-top: 60px;
-    }
-
-    &__checkbox {
-      margin-right: 10px;
     }
 
     &__permission {
@@ -101,12 +61,6 @@
         margin-left: 6px;
         color: $Black-100;
       }
-    }
-
-    .secure-badge {
-      display: flex;
-      justify-content: center;
-      padding: 25px;
     }
   }
 
@@ -164,13 +118,6 @@
   text-align: center;
   color: $Black-100;
   height: 114px;
-
-  &__content {
-    display: flex;
-    justify-content: center;
-    width: 228px;
-    padding: 10px;
-  }
 
   &__icons {
     display: flex;
@@ -261,18 +208,5 @@
 
   .icon-with-fallback__identicon-border {
     position: absolute;
-  }
-
-  &:before {
-    border-top: 2px dashed #CDD1E4;
-    content: "";
-    margin: 0 auto;
-    position: absolute;
-    top: 32px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 65%;
-    z-index: -1;
   }
 }
