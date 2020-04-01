@@ -7,6 +7,7 @@
   margin-bottom: 16px;
   padding: 0 22px;
   border-bottom: 1px solid $Grey-100;
+  position: relative;
 
   &__sidebar-button {
     width: 20px;
@@ -28,5 +29,12 @@
     cursor: pointer;
     display: flex;
     justify-content: center;
+    position: absolute;
+    right: 16px;
+    transform: rotate(90deg);
+  }
+
+  .selected-account {
+    flex: none;
   }
 }
