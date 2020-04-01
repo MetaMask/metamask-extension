@@ -32,6 +32,9 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "cancelling": {
+    "message": "Cancelling..."
+  },
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With MetaMask"
   },
@@ -40,6 +43,9 @@
   },
   "connectedSites": {
     "message": "Connected Sites"
+  },
+  "connecting": {
+    "message": "Connecting..."
   },
   "connectWithMetaMask": {
     "message": "Connect With MetaMask"

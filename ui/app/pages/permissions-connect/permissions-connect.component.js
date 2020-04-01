@@ -210,7 +210,7 @@ export default class PermissionConnect extends Component {
                   selectedAccountAddresses={selectedAccountAddresses}
                   targetDomainMetadata={targetDomainMetadata}
                 />
-                <PermissionsConnectFooter />
+                { !redirecting ? <PermissionsConnectFooter /> : null }
               </div>
             )}
           />
@@ -234,7 +234,7 @@ export default class PermissionConnect extends Component {
                   permissionRejected={ permissionAccepted === false }
                   cachedOrigin={originName}
                 />
-                <PermissionsConnectFooter />
+                { !redirecting ? <PermissionsConnectFooter /> : null }
               </div>
             )}
           />

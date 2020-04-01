@@ -27,25 +27,29 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
-  renderRedirectVisual () {
+  renderRedirect () {
+    const { t } = this.context
     const { permissionRejected, selectedIdentities, domainMetadata } = this.props
     return (
-      <div className="permission-approval-visual__redirect">
-        <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
-        <div className="permission-approval-visual__redirect-center">
-          { permissionRejected
-            ? <span className="permission-approval-visual__reject" ><i className="fa fa-times-circle" /></span>
-            : <span className="permission-approval-visual__check" />
-          }
-          <img className="permission-approval-visual__broken-line" src="/images/broken-line.svg" />
-        </div>
-        <div className="permission-approval-visual__identicon-container">
-          <div className="permission-approval-visual__identicon-border">
-            <Identicon
-              className="permission-approval-visual__identicon"
-              address={selectedIdentities[0].address}
-              diameter={54}
-            />
+      <div className="permission-result">
+        { permissionRejected ? t('cancelling') : t('connecting') }
+        <div className="permission-result__icons">
+          <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
+          <div className="permission-result__center-icon">
+            { permissionRejected
+              ? <span className="permission-result__reject" ><i className="fa fa-times-circle" /></span>
+              : <span className="permission-result__check" />
+            }
+            <img className="permission-result__broken-line" src="/images/broken-line.svg" />
+          </div>
+          <div className="permission-result__identicon-container">
+            <div className="permission-result__identicon-border">
+              <Identicon
+                className="permission-result__identicon"
+                address={selectedIdentities[0].address}
+                diameter={54}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -139,12 +143,7 @@ export default class PermissionPageContainerContent extends PureComponent {
               </section>
             </div>
           )
-          : (
-            <div className="permission-approval-container__permissions-header-redirect">
-              { this.renderRedirectVisual() }
-              { t('redirectingBackToDapp') }
-            </div>
-          )
+          : this.renderRedirect()
         }
       </div>
     )
