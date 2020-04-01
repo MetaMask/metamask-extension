@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -51,8 +53,13 @@ export default class ConnectedStatusIndicator extends Component {
   }
 
   render () {
+    console.log('getEnvironmentType()', getEnvironmentType())
+    console.log('ENVIRONMENT_TYPE_POPUP', ENVIRONMENT_TYPE_POPUP)
     return (
-      <div className="connected-status-indicator">
+      <div className={classnames('connected-status-indicator', {
+        invisible: getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP,
+      })}
+      >
         { this.renderStatusCircle() }
         { this.renderStatusText() }
       </div>
