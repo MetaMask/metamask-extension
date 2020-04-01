@@ -30,6 +30,14 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
+  renderBrokenLine () {
+    return (
+      <svg width="131" height="2" viewBox="0 0 131 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 1H134" stroke="#CDD1E4" stroke-linejoin="round" stroke-dasharray="8 7"/>
+      </svg>
+    )
+  }
+
   renderRedirect () {
     const { t } = this.context
     const { permissionRejected, selectedIdentities, domainMetadata } = this.props
@@ -43,7 +51,7 @@ export default class PermissionPageContainerContent extends PureComponent {
               ? <span className="permission-result__reject" ><i className="fa fa-times-circle" /></span>
               : <span className="permission-result__check" />
             }
-            <img className="permission-result__broken-line" src="/images/broken-line.svg" />
+            { this.renderBrokenLine() }
           </div>
           <div className="permission-result__identicon-container">
             <div className="permission-result__identicon-border">
