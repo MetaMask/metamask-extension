@@ -55,12 +55,6 @@
     justify-content: space-between;
   }
 
-  &__select-all {
-    display: flex;
-    margin-left: 16px;
-    align-items: center;
-  }
-
   &__account-info-wrapper {
     display: flex;
     justify-content: flex-start;
@@ -76,6 +70,10 @@
   }
 
   &__select-all {
+    display: flex;
+    margin-left: 16px;
+    align-items: center;
+
     .fa-info-circle, .fa-info-circle:hover {
       color: $silver;
       cursor: pointer;
