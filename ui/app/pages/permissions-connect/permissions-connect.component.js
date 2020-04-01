@@ -27,7 +27,6 @@ export default class PermissionConnect extends Component {
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
     addressLastConnectedMap: PropTypes.object,
-    requestAccountTabs: PropTypes.object,
     permissionsRequestId: PropTypes.string,
     domains: PropTypes.object,
     history: PropTypes.object.isRequired,
@@ -43,7 +42,6 @@ export default class PermissionConnect extends Component {
     nativeCurrency: '',
     permissionsRequest: undefined,
     addressLastConnectedMap: {},
-    requestAccountTabs: {},
     permissionsRequestId: '',
     domains: {},
     redirecting: false,
@@ -70,7 +68,7 @@ export default class PermissionConnect extends Component {
   }
 
   removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this.beforeUnload)
     }
   }
@@ -100,8 +98,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { requestAccountTabs, history } = this.props
-    const { originName } = this.state
+    const { history } = this.props
 
     this.setState({
       redirecting: true,
@@ -112,16 +109,12 @@ export default class PermissionConnect extends Component {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
       setTimeout(async () => {
         const currentTab = await global.platform.currentTab()
-        try {
-          if (currentTab.active) {
-            await global.platform.switchToTab(requestAccountTabs[originName])
-          }
-        } finally {
-          global.platform.closeTab(currentTab.id)
-        }
+        global.platform.closeTab(currentTab.id)
       }, 2000)
     } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      history.push(DEFAULT_ROUTE)
+      setTimeout(async () => {
+        global.platform.closeCurrentWindow()
+      }, 2000)
     } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       history.push(CONNECTED_ROUTE)
     }
@@ -141,8 +134,24 @@ export default class PermissionConnect extends Component {
       return history.push(DEFAULT_ROUTE)
     }
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this.beforeUnload)
+    }
+  }
+
+  cancelPermissionsRequest = async (requestId) => {
+    const { rejectPermissionsRequest } = this.props
+    if (requestId) {
+      await rejectPermissionsRequest(requestId)
+
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+        const currentTab = await global.platform.currentTab()
+        global.platform.closeTab(currentTab.id)
+      } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        global.platform.closeCurrentWindow()
+      } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+        history.push(DEFAULT_ROUTE)
+      }
     }
   }
 
@@ -199,12 +208,7 @@ export default class PermissionConnect extends Component {
                     })
                   }}
                   addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) => {
-                    if (requestId) {
-                      rejectPermissionsRequest(requestId)
-                      this.redirectFlow(false)
-                    }
-                  }}
+                  cancelPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
                   permissionsRequestId={permissionsRequestId}
                   selectedAccountAddresses={selectedAccountAddresses}
                   targetDomainMetadata={targetDomainMetadata}

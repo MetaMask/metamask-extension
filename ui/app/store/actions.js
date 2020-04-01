@@ -2218,7 +2218,11 @@ export function approvePermissionsRequest (request, accounts) {
  */
 export function rejectPermissionsRequest (requestId) {
   return () => {
-    background.rejectPermissionsRequest(requestId)
+    return new Promise((resolve) => {
+      background.rejectPermissionsRequest(requestId, () => {
+        resolve()
+      })
+    })
   }
 }
 

@@ -240,6 +240,7 @@ function setupController (initState, initLangCode) {
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
     showUnapprovedTx: triggerUi,
+    showPermissionRequest: triggerUi,
     openPopup: openPopup,
     closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
