@@ -1324,6 +1324,12 @@
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
+  "statusConnected": {
+    "message": "Connected"
+  },
+  "statusNotConnected": {
+    "message": "Not connected"
+  },
   "step1HardwareWallet": {
     "message": "1. Connect Hardware Wallet"
   },

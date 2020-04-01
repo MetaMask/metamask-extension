@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Tooltip from '../../ui/tooltip'
 import SelectedAccount from '../selected-account'
+import ConnectedStatusIndicator from '../connected-status-indicator'
 import AccountDetailsDropdown from '../dropdowns/account-details-dropdown.js'
 
 export default class MenuBar extends PureComponent {
@@ -18,6 +19,8 @@ export default class MenuBar extends PureComponent {
 
     return (
       <div className="menu-bar">
+        <ConnectedStatusIndicator />
+
         <SelectedAccount />
 
         <Tooltip
