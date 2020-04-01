@@ -196,10 +196,11 @@ export default class ConfirmApproveContent extends Component {
                   <div className="confirm-approve-content__small-blue-text">
                     View full transaction details
                   </div>
-                  <i className={classnames({
-                    'fa fa-caret-up': showFullTxDetails,
-                    'fa fa-caret-down': !showFullTxDetails,
-                  })}
+                  <i
+                    className={classnames({
+                      'fa fa-caret-up': showFullTxDetails,
+                      'fa fa-caret-down': !showFullTxDetails,
+                    })}
                   />
                 </div>
               </div>

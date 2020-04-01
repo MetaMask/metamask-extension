@@ -24,11 +24,12 @@ export default class ConnectedStatusIndicator extends Component {
     const { status } = this.props
 
     return (
-      <div className={classnames({
-        'connected-status-indicator__green-circle': status === STATUS_CONNECTED,
-        'connected-status-indicator__yellow-circle': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-        'connected-status-indicator__grey-circle': status === STATUS_NOT_CONNECTED,
-      })}
+      <div
+        className={classnames({
+          'connected-status-indicator__green-circle': status === STATUS_CONNECTED,
+          'connected-status-indicator__yellow-circle': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+          'connected-status-indicator__grey-circle': status === STATUS_NOT_CONNECTED,
+        })}
       />
     )
   }
