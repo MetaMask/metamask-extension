@@ -128,28 +128,35 @@ export default class ChooseAccount extends Component {
     const { t } = this.context
     const { selectNewAccountViaModal, accounts } = this.props
     return (
-      <div className="permissions-connect-choose-account__accounts-list-header">
-        <div className={classnames('permissions-connect-choose-account__select-all', {
-          invisible: accounts.length < 2,
+      <div
+        className={classnames({
+          'permissions-connect-choose-account__accounts-list-header--one-item': accounts.length === 1,
+          'permissions-connect-choose-account__accounts-list-header--two-items': accounts.length > 1,
         })}
-        >
-          <CheckBox
-            className="permissions-connect-choose-account__header-check-box"
-            checked={this.allAreSelected()}
-            onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
-          />
-          <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
-          <Tooltip
-            position="bottom"
-            html={(
-              <div style={{ width: 200, padding: 4 }}>
-                {t('selectingAllWillAllow')}
-              </div>
-            )}
-          >
-            <i className="fa fa-info-circle" />
-          </Tooltip>
-        </div>
+      >
+        { accounts.length > 1
+          ? (
+            <div className="permissions-connect-choose-account__select-all">
+              <CheckBox
+                className="permissions-connect-choose-account__header-check-box"
+                checked={this.allAreSelected()}
+                onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
+              />
+              <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
+              <Tooltip
+                position="bottom"
+                html={(
+                  <div style={{ width: 200, padding: 4 }}>
+                    {t('selectingAllWillAllow')}
+                  </div>
+                )}
+              >
+                <i className="fa fa-info-circle" />
+              </Tooltip>
+            </div>
+          )
+          : null
+        }
         <div
           className="permissions-connect-choose-account__text-blue"
           onClick={() => selectNewAccountViaModal(this.handleAccountClick.bind(this))}

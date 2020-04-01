@@ -39,12 +39,20 @@
     }
   }
 
-  &__accounts-list-header {
+  &__accounts-list-header--one-item,
+  &__accounts-list-header--two-items {
     display: flex;
-    justify-content: space-between;
     margin-top: 36px;
     width: 100%;
     padding-right: 2px;
+  }
+
+  &__accounts-list-header--one-item {
+    justify-content: flex-end;
+  }
+
+  &__accounts-list-header--two-items {
+    justify-content: space-between;
   }
 
   &__select-all {
