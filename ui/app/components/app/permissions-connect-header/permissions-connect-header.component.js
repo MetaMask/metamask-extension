@@ -5,13 +5,12 @@ import IconWithFallBack from '../../ui/icon-with-fallback'
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
     icon: PropTypes.string,
-    iconName: PropTypes.string,
+    iconName: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
     headerText: PropTypes.string,
   }
 
   static defaultProps = {
-    iconName: '',
     icon: null,
     headerTitle: '',
     headerText: '',
