@@ -39,13 +39,9 @@ export default class ConnectedStatusIndicator extends Component {
     const { t } = this.context
     const { status } = this.props
 
-    let text = ''
-
-    if (status === STATUS_CONNECTED) {
-      text = t('statusConnected')
-    } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT || status === STATUS_NOT_CONNECTED) {
-      text = t('statusNotConnected')
-    }
+    const text = status === STATUS_CONNECTED
+      ? t('statusConnected')
+      : t('statusNotConnected')
 
     return (
       <div className="connected-status-indicator__text">{ text }</div>
