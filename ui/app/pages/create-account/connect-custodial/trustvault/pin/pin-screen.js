@@ -129,13 +129,14 @@ export class PinScreen extends PureComponent {
     return (
       <div className="sw-connect__pin-input__header">
         <p className="sw-connect__header__msg">
-          {'Please enter characters'}
+          Please enter characters
         </p>
         <p className="sw-connect__pin-input__header__msg">
           {`${firstPinDigitPosition} and ${secondPinDigitPosition} of your PIN`}
         </p>
 
-      </div>)
+      </div>
+    )
 
   }
 
@@ -148,7 +149,8 @@ export class PinScreen extends PureComponent {
         >
           {`${this.context.t('not')} ${this.props.email}?`}
         </span>
-      </div>)
+      </div>
+    )
 
   }
 
@@ -178,7 +180,8 @@ export class PinScreen extends PureComponent {
           {this.context.t('connectToTrustVault')}
         </Button>
 
-      </div>)
+      </div>
+    )
   }
 
   renderPinScreen () {
