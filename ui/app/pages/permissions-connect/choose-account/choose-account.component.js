@@ -179,7 +179,7 @@ export default class ChooseAccount extends Component {
       <div className="permissions-connect-choose-account">
         <PermissionsConnectHeader
           icon={targetDomainMetadata.icon}
-          iconName={targetDomainMetadata.name}
+          iconName={targetDomainMetadata.origin}
           headerTitle={t('connectWithMetaMask')}
           headerText={accounts.length > 0
             ? t('chooseAccountsToUse')

@@ -382,6 +382,7 @@ export function getTargetDomainMetadata (state, request, defaultOrigin) {
   const { metadata: requestMetadata = {} } = request || {}
   const origin = requestMetadata.origin || defaultOrigin
   const targetDomainMetadata = (domainMetadata[origin] || { name: origin, icon: null })
+  targetDomainMetadata.origin = origin
 
   return targetDomainMetadata
 }
