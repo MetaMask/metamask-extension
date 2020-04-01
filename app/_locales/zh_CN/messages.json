@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒绝"
   },
-  "likeToConnect": {
-    "message": "$1 希望关联您的账户"
-  },
   "about": {
     "message": "关于"
   },

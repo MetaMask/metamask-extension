@@ -8,9 +8,6 @@
   "reject": {
     "message": "거부"
   },
-  "likeToConnect": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
   "about": {
     "message": "정보"
   },

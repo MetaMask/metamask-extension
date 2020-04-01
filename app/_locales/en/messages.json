@@ -41,9 +41,6 @@
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "connectedSites": {
-    "message": "Connected Sites"
-  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -66,9 +63,6 @@
   },
   "reject": {
     "message": "Reject"
-  },
-  "redirectingBackToDapp": {
-    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
@@ -285,9 +279,6 @@
   },
   "chooseAccountsToUse": {
     "message": "Choose the account(s) to use on this site"
-  },
-  "clickToAdd": {
-    "message": "Click on $1 to add them to your account"
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -1228,9 +1219,6 @@
   "selectType": {
     "message": "Select Type"
   },
-  "selectYourAccounts": {
-    "message": "Select your account(s)"
-  },
   "send": {
     "message": "Send"
   },
@@ -1455,10 +1443,6 @@
   },
   "toWithColon": {
     "message": "To:"
-  },
-  "toConnectWith": {
-    "message": "To connect with $1",
-    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",

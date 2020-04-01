@@ -8,9 +8,6 @@
   "reject": {
     "message": "Відхилити"
   },
-  "likeToConnect": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
   "about": {
     "message": "Про Google Chrome"
   },

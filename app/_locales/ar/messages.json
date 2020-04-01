@@ -8,9 +8,6 @@
   "reject": {
     "message": "رفض"
   },
-  "likeToConnect": {
-    "message": "يرغب $1 في الاتصال بحسابك"
-  },
   "about": {
     "message": "حول"
   },

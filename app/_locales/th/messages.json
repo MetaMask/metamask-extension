@@ -2,9 +2,6 @@
   "reject": {
     "message": "ปฏิเสธ"
   },
-  "likeToConnect": {
-    "message": "$1 ต้องการเชื่อมต่อกับบัญชีของคุณ"
-  },
   "about": {
     "message": "เกี่ยวกับ"
   },
