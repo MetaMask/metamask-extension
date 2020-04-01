@@ -3,7 +3,7 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
 module.exports = { createCfxRewriteRequestMiddleware, alterRpcMethodAndParams }
 
 const MethodsWithDefaultEpochParameter = {
-  cfx_getTransactionCount: 1,
+  cfx_getNextNounce: 1,
   cfx_getBalance: 1,
   cfx_getBlockByEpochNumber: 0,
   cfx_epochNumber: 0,
@@ -13,6 +13,7 @@ const MethodsWithDefaultEpochParameter = {
 function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
   if (method) {
     method = method.replace('eth_', 'cfx_')
+    method = method.replace('getTransactionCount', 'getNextNonce')
     method = method.replace('getBlockByNumber', 'getBlockByEpochNumber')
     method = method.replace('cfx_blockNumber', 'cfx_epochNumber')
   }
