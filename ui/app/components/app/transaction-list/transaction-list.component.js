@@ -100,9 +100,13 @@ export default class TransactionList extends PureComponent {
           )
         }
         <div className="transaction-list__completed-transactions">
-          <div className="transaction-list__header">
-            { t('history') }
-          </div>
+          {
+            pendingLength > 0 && (
+              <div className="transaction-list__header">
+                { t('history') }
+              </div>
+            )
+          }
           {
             completedTransactions.length > 0
               ? completedTransactions.map((transactionGroup, index) => (

@@ -18,21 +18,17 @@ export default class AssetList extends Component {
   }
 
   static propTypes = {
-    hideSidebar: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     selectedAccount: PropTypes.object,
     selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
-    sidebarOpen: PropTypes.bool.isRequired,
     unsetSelectedToken: PropTypes.func.isRequired,
   }
 
   renderWalletBalance () {
     const {
-      hideSidebar,
       selectedTokenAddress,
       selectedAccount,
-      sidebarOpen,
       unsetSelectedToken,
     } = this.props
 
@@ -46,7 +42,6 @@ export default class AssetList extends Component {
           className="wallet-balance"
           onClick={() => {
             unsetSelectedToken()
-            selectedTokenAddress && sidebarOpen && hideSidebar()
           }}
         >
           <BalanceComponent
@@ -59,9 +54,7 @@ export default class AssetList extends Component {
 
   renderAddToken () {
     const {
-      hideSidebar,
       history,
-      sidebarOpen,
     } = this.props
     const { metricsEvent } = this.context
 
@@ -76,21 +69,13 @@ export default class AssetList extends Component {
               name: 'Clicked "Add Token"',
             },
           })
-          if (sidebarOpen) {
-            hideSidebar()
-          }
         }}
       />
     )
   }
 
   render () {
-    const {
-      hideSidebar,
-      selectedTokenAddress,
-      setSelectedToken,
-      sidebarOpen,
-    } = this.props
+    const { setSelectedToken } = this.props
     return (
       <>
         {this.renderWalletBalance()}
@@ -104,7 +89,6 @@ export default class AssetList extends Component {
                 name: 'Clicked Token',
               },
             })
-            selectedTokenAddress !== tokenAddress && sidebarOpen && hideSidebar()
           }}
         />
         {this.renderAddToken()}

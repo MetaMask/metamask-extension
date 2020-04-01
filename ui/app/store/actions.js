@@ -24,7 +24,7 @@ export const actionConstants = {
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
-  // sidebar state
+  // alert state
   ALERT_OPEN: 'UI_ALERT_OPEN',
   ALERT_CLOSE: 'UI_ALERT_CLOSE',
   QR_CODE_DETECTED: 'UI_QR_CODE_DETECTED',

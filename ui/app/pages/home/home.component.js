@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
+import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
 import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
@@ -11,6 +12,7 @@ import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
 import ConnectedSites from '../connected-sites'
+import { Tabs, Tab } from '../../components/ui/tabs'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -179,18 +181,34 @@ export default class Home extends PureComponent {
           >
             {
               (isWideViewport) => (
-                <>
-                  { isWideViewport ? <WalletView /> : null }
-                  <div className="home__main-view">
-                    {
-                      !isWideViewport ? <MenuBar /> : null
-                    }
-                    <div className="home__balance-wrapper">
-                      <TransactionViewBalance />
+                isWideViewport
+                  ? (
+                    <>
+                      <WalletView />
+                      <div className="home__main-view">
+                        <div className="home__balance-wrapper">
+                          <TransactionViewBalance />
+                        </div>
+                        <TransactionList />
+                      </div>
+                    </>
+                  )
+                  : (
+                    <div className="home__main-view">
+                      <MenuBar />
+                      <div className="home__balance-wrapper">
+                        <TransactionViewBalance />
+                      </div>
+                      <Tabs>
+                        <Tab className="home__tab" data-testid="home__asset-tab" name="Assets">
+                          <AssetList />
+                        </Tab>
+                        <Tab className="home__tab" data-testid="home__history-tab" name="History">
+                          <TransactionList />
+                        </Tab>
+                      </Tabs>
                     </div>
-                    <TransactionList />
-                  </div>
-                </>
+                  )
               )
             }
           </Media>

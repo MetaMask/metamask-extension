@@ -5,7 +5,6 @@ import sinon from 'sinon'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 import Sidebar from '../sidebar.component.js'
 
-import WalletView from '../../wallet-view'
 import CustomizeGas from '../../gas-customization/gas-modal-page-container'
 
 const propsMethodSpies = {
@@ -21,7 +20,7 @@ describe('Sidebar Component', function () {
         sidebarOpen={false}
         hideSidebar={propsMethodSpies.hideSidebar}
         transitionName="someTransition"
-        type="wallet-view"
+        type="customize-gas"
       />
     ))
   })
@@ -52,18 +51,10 @@ describe('Sidebar Component', function () {
     let renderSidebarContent
 
     beforeEach(function () {
-      wrapper.setProps({ type: 'wallet-view' })
       renderSidebarContent = wrapper.instance().renderSidebarContent()
-    })
-
-    it('should render sidebar content with the type wallet-view', function () {
-      wrapper.setProps({ type: 'wallet-view' })
-      renderSidebarContent = wrapper.instance().renderSidebarContent()
-      assert.equal(renderSidebarContent.props.responsiveDisplayClassname, 'sidebar-right')
     })
 
     it('should render sidebar content with the type customize-gas', function () {
-      wrapper.setProps({ type: 'customize-gas' })
       renderSidebarContent = wrapper.instance().renderSidebarContent()
       const renderedSidebarContent = shallow(renderSidebarContent)
       assert(renderedSidebarContent.hasClass('sidebar-left'))
@@ -93,7 +84,8 @@ describe('Sidebar Component', function () {
       assert.equal(wrapper.children().length, 2)
       assert(wrapper.children().at(1).hasClass('sidebar-overlay'))
       assert.equal(wrapper.children().at(0).children().length, 1)
-      assert(wrapper.children().at(0).children().at(0).is(WalletView))
+      assert(wrapper.children().at(0).children().at(0).hasClass('sidebar-left'))
+      assert(wrapper.children().at(0).children().at(0).children().at(0).is(CustomizeGas))
     })
   })
 })
