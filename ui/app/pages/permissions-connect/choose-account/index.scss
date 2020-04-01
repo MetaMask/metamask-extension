@@ -129,14 +129,6 @@
     }
   }
 
-  &__new-account, &__cancel {
-    @extend %content-text;
-    line-height: 20px;
-    color: #037DD6;
-    margin-top: 24px;
-    cursor: pointer;
-  }
-
   &__cancel {
     color: $Red-400;
   }

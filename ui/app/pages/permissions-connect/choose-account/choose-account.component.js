@@ -61,7 +61,7 @@ export default class ChooseAccount extends Component {
     this.setState({ selectedAccounts: newSelectedAccounts })
   }
 
-  deSelectAll () {
+  deselectAll () {
     this.setState({ selectedAccounts: new Set() })
   }
 
@@ -141,7 +141,7 @@ export default class ChooseAccount extends Component {
           <CheckBox
             className="permissions-connect-choose-account__header-check-box"
             checked={this.allAreSelected()}
-            onClick={() => (this.allAreSelected() ? this.deSelectAll() : this.selectAll())}
+            onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
           />
           <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
           <Tooltip
