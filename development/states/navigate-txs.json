@@ -3,7 +3,6 @@
     "isInitialized": true,
     "isUnlocked": true,
     "isAccountMenuOpen": false,
-    "isPopup": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0x8cf82b5aa41ff2282427be151dd328568684007a": {

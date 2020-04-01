@@ -1,13 +1,10 @@
 import { actionConstants as actions } from '../../store/actions'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 
 export default function reduceMetamask (state = {}, action) {
   const metamaskState = Object.assign({
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
-    isPopup: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
