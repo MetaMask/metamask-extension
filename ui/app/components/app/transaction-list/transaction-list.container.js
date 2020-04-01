@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import TransactionList from './transaction-list.component'
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -43,4 +44,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransactionList)
+const TransactionListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransactionList)
+
+TransactionListContainer.propTypes = {
+  isWideViewport: PropTypes.bool,
+}
+
+TransactionListContainer.defaultProps = {
+  isWideViewport: false,
+}
+
+export default TransactionListContainer
