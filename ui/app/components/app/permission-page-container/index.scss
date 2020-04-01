@@ -2,9 +2,9 @@
   display: flex;
   border: none;
   box-shadow: none;
-  margin-top: 45px;
-  width: 488px;
+  width: 100%;
   min-height: 468px;
+  margin-top: 2px;
 
   &__header {
     display: flex;
@@ -25,12 +25,14 @@
   &__content {
     display: flex;
     overflow-y: auto;
-    flex: 1;
     flex-direction: column;
     color: #7C808E;
+    height: 445px;
+    padding-left: 24px;
+    padding-right: 24px;
 
     &--redirect {
-      margin-top: 50px;
+      margin-top: 140px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -51,17 +53,32 @@
 
     &__permission {
       display: flex;
-      margin-top: 18px;
+      align-items: center;
 
       i {
         font-size: 1.4rem;
         color: $Grey-200;
       }
+
       label {
-        margin-left: 6px;
+        font-size: 14px;
+        margin-left: 16px;
         color: $Black-100;
       }
     }
+<<<<<<< HEAD
+=======
+
+    .permissions-connect-header {
+      width: 92%;
+    }
+>>>>>>> Connect screen popup redesign
+  }
+
+  &__content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__permissions-header {
@@ -77,12 +94,12 @@
   &__permissions-container {
     display: flex;
     flex-direction: column;
-    margin-top: 33px;
+    margin-top: 38px;
   }
 
   .page-container__footer {
-    border-top: none;
     align-items: center;
+    margin-top: 8px;
 
     footer {
       width: 300px;
@@ -90,10 +107,6 @@
   }
 
   @media screen and (max-width: 575px) {
-    width: 100%;
-    margin-top: 25px;
-    padding: 10px;
-
     &__title {
       position: initial;
     }

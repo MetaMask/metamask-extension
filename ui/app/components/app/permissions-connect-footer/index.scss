@@ -3,12 +3,6 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
-  position: absolute;
-  bottom: 50px;
-
-  @media screen and (max-width: 575px) {
-    bottom: 5px;
-  }
 
   &__text {
     @extend %content-text;

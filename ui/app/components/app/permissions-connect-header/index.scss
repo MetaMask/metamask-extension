@@ -27,13 +27,12 @@
     @extend %header--24;
     text-align: center;
     color: $Black-100;
-    margin-top: 16px;
+    margin-top: 14px;
   }
 
   &__text {
     @extend %content-text;
     text-align: center;
-    margin-top: 4px;
     color: $Grey-500;
   }
 }

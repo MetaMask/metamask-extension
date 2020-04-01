@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
@@ -176,7 +175,7 @@ export default class PermissionConnect extends Component {
           ? (
             <div className="permissions-connect__page-count-wrapper">
               <div className="permissions-connect-header__page-count">
-                { `${page}/2` }
+                { `${page} of 2` }
               </div>
             </div>
           )
@@ -210,7 +209,6 @@ export default class PermissionConnect extends Component {
                   selectedAccountAddresses={selectedAccountAddresses}
                   targetDomainMetadata={targetDomainMetadata}
                 />
-                { !redirecting ? <PermissionsConnectFooter /> : null }
               </div>
             )}
           />
@@ -234,7 +232,6 @@ export default class PermissionConnect extends Component {
                   permissionRejected={ permissionAccepted === false }
                   cachedOrigin={originName}
                 />
-                { !redirecting ? <PermissionsConnectFooter /> : null }
               </div>
             )}
           />
