@@ -10,7 +10,7 @@ const ganacheserver = new Ganache({ verbose: true, genBlockInterval: 300 })
     accounts: [
       {
         secretKey:
-          '0xCA17316C298AC00F746B5F90330191EB08FC446A1A8A91D1F97E1F9588DBDD91',
+        '0xA46F301E2D0AC3EE7B83303D93DD49C14CE8E18251EB623ED468AAA12F572E74',
         balance: 1e23,
       },
     ],

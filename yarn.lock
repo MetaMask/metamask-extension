@@ -2731,17 +2731,17 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.1.tgz#b4e10b927ece3495d820f704140eb7de2297165c"
-  integrity sha512-BFckbt8tZC+7F8/js75icjYzR1WchlgY8gst7AY8SjxFEx83PvA2ZLxskAOLP9r72FgtAy5fSIG+/X/O2nPSkA==
+"@yqrashawn/conflux-local-network-lite@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.3.tgz#2dccb370ea02e15d605737006db078bce78f7b02"
+  integrity sha512-BAiGnJrWwctpSFeFZ+TKh7ByJ/1cgquMt62pNxE+4eQGOVmssbGNP1CwvSFthmbFgksGkwivDd2GPs4OQJRNWA==
   dependencies:
-    ethereumjs-util "^6.2.0"
+    cfx-util "^0.0.1-c"
     express "^4.17.1"
     express-async-errors "^3.1.1"
-    got "^10.2.2"
+    got "^10.5.7"
     jayson "^3.2.0"
-    js-conflux-sdk "^0.8.0-alpha"
+    js-conflux-sdk "^0.9.0-alpha"
     make-dir "^3.0.2"
     platform-is "^1.0.4"
     rimraf "^3.0.1"
@@ -10228,19 +10228,6 @@ ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumjs-util@^5.1.1, ethereum
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.2.0.tgz#23ec79b2488a7d041242f01e25f24e5ad0357960"
-  integrity sha512-vb0XN9J2QGdZGIEKG2vXM+kUdEivUfU6Wmi5y0cg+LRhDYKnXIZ/Lz7XjFbHRR9VIKq2lVGLzGBkA++y2nOdOQ==
-  dependencies:
-    "@types/bn.js" "^4.11.3"
-    bn.js "^4.11.0"
-    create-hash "^1.1.2"
-    ethjs-util "0.1.6"
-    keccak "^2.0.0"
-    rlp "^2.2.3"
-    secp256k1 "^3.0.1"
-
 ethereumjs-util@~6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.0.0.tgz#f14841c182b918615afefd744207c7932c8536c0"
@@ -12574,10 +12561,10 @@ got@9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
-got@^10.2.2:
-  version "10.6.0"
-  resolved "https://registry.yarnpkg.com/got/-/got-10.6.0.tgz#ac3876261a4d8e5fc4f81186f79955ce7b0501dc"
-  integrity sha512-3LIdJNTdCFbbJc+h/EH0V5lpNpbJ6Bfwykk21lcQvQsEcrzdi/ltCyQehFHLzJ/ka0UMH4Slg0hkYvAZN9qUDg==
+got@^10.5.7:
+  version "10.7.0"
+  resolved "https://registry.yarnpkg.com/got/-/got-10.7.0.tgz#62889dbcd6cca32cd6a154cc2d0c6895121d091f"
+  integrity sha512-aWTDeNw9g+XqEZNcTjMMZSy7B7yE9toWOFYip7ofFTLleJhvZwUxxTxkTpKvF+p1SAA4VHmuEy7PiHTHyq8tJg==
   dependencies:
     "@sindresorhus/is" "^2.0.0"
     "@szmarczak/http-timer" "^4.0.0"
@@ -15237,6 +15224,20 @@ js-conflux-sdk@^0.8.0-alpha:
   integrity sha512-BAWAs2xL8mN5GsqNQGAACz47J/seXfwM4v4S9BNms5tOvfHNOE2vgGlae0fQVyvrDzhVDBUxsQqvPyWkc7uYNw==
   dependencies:
     "@babel/runtime" "^7.8.4"
+    esm "^3.2.25"
+    jsbi "^3.1.1"
+    keccak "^2.0.0"
+    lodash "^4.17.15"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+
+js-conflux-sdk@^0.9.0-alpha:
+  version "0.9.0-alpha"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.9.0-alpha.tgz#fb0b2c7558746533cfc42cbb9f1135a9d55c5b34"
+  integrity sha512-L4T8AAenfJs0YF5fAMO6V5UfX4BuTTscib7cY/4toTus+dXEtrfLGfUrxUJzZpO3cUg+hOr+AeQnlYliL8o1Rg==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
     esm "^3.2.25"
     jsbi "^3.1.1"
     keccak "^2.0.0"
@@ -22285,7 +22286,7 @@ rlp@^2.0.0, rlp@^2.2.1:
     bn.js "^4.11.1"
     safe-buffer "^5.1.1"
 
-rlp@^2.2.3, rlp@^2.2.4:
+rlp@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/rlp/-/rlp-2.2.4.tgz#d6b0e1659e9285fc509a5d169a9bd06f704951c1"
   integrity sha512-fdq2yYCWpAQBhwkZv+Z8o/Z4sPmYm1CUq6P7n6lVTOdb949CnqA0sndXal5C1NleSVSZm6q5F3iEbauyVln/iw==
