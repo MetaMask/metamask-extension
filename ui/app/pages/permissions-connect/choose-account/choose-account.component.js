@@ -87,15 +87,10 @@ export default class ChooseAccount extends Component {
                 className="permissions-connect-choose-account__account"
               >
                 <div className="permissions-connect-choose-account__account-info-wrapper">
-                  { accounts.length > 1
-                    ? (
-                      <CheckBox
-                        className="permissions-connect-choose-account__list-check-box"
-                        checked={ selectedAccounts.has(address) }
-                      />
-                    )
-                    : null
-                  }
+                  <CheckBox
+                    className="permissions-connect-choose-account__list-check-box"
+                    checked={ selectedAccounts.has(address) }
+                  />
                   <Identicon
                     diameter={34}
                     address={address}
