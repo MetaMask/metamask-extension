@@ -10,6 +10,10 @@
     font-size: 14px;
     line-height: 20px;
 
+    & :only-child {
+      margin: 0;
+    }
+
     a, a:hover {
       cursor: pointer;
       color: #037DD6;
