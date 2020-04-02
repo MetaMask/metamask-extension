@@ -1,7 +1,6 @@
 import React from 'react'
 import Approve from './approve-icon.component'
 import Copy from './copy-icon.component'
-import Close from './close-icon.component'
 import Interaction from './interaction-icon.component'
 import Preloader from './preloader'
 import Receive from './receive-icon.component'
@@ -50,12 +49,5 @@ export const approveSpendLimit = () => (
 export const preloader = () => (
   <Preloader
     size={number('size', 40)}
-  />
-)
-
-export const close = () => (
-  <Close
-    size={number('size', 40)}
-    color={color('color', '#2F80ED')}
   />
 )
