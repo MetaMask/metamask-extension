@@ -230,8 +230,8 @@ export const mapDispatchToProps = (dispatch) => {
 const getValidateEditGas = ({ balance, conversionRate, txData }) => {
   const { txParams: { value: amount } = {} } = txData
 
-  return ({ gasLimit, gasPrice }) => {
-    const gasTotal = getHexGasTotal({ gasLimit, gasPrice })
+  return ({ gasLimit, gasPrice, storageLimit }) => {
+    const gasTotal = getHexGasTotal({ gasLimit, gasPrice, storageLimit })
     const hasSufficientBalance = isBalanceSufficient({
       amount,
       gasTotal,

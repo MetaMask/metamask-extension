@@ -322,7 +322,10 @@ describe('send utils', function () {
           typeof to === 'string' && to.match(/willFailBecauseOf:/)
             ? new Error(to.match(/:(.+)$/)[1])
             : null
-        const result = { toString: (n) => `0xabc${n}` }
+        const result = {
+          gasUsed: { toString: (n) => `0xabc${n}` },
+          storageCollateralized: '0x30',
+        }
         return cb(err, result)
       }),
     }
@@ -358,7 +361,7 @@ describe('send utils', function () {
           baseExpectedCall
         )
       )
-      assert.equal(result, '0xabc16')
+      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
     })
 
     it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
@@ -374,7 +377,7 @@ describe('send utils', function () {
           { gas: '0xbcdx0.95' }
         )
       )
-      assert.equal(result, '0xabc16x1.5')
+      assert.deepEqual(result, { gas: '0xabc16x1.5', storage: '0x30' })
     })
 
     it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async function () {
@@ -394,7 +397,7 @@ describe('send utils', function () {
           to: 'mockAddress',
         })
       )
-      assert.equal(result, '0xabc16')
+      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
     })
 
     it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function () {
@@ -409,7 +412,7 @@ describe('send utils', function () {
         from: baseExpectedCall.from,
         gas: baseExpectedCall.gas,
       })
-      assert.equal(result, '0xabc16')
+      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
     })
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
@@ -417,7 +420,7 @@ describe('send utils', function () {
       const result = await estimateGas(
         Object.assign({}, baseMockParams, { to: '0x123' })
       )
-      assert.equal(result, SIMPLE_GAS_COST)
+      assert.deepEqual(result, { gas: '0x5208', storage: '0x0' })
     })
 
     it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async function () {
@@ -425,7 +428,7 @@ describe('send utils', function () {
       const result = await estimateGas(
         Object.assign({}, baseMockParams, { to: null })
       )
-      assert.equal(result, SIMPLE_GAS_COST)
+      assert.deepEqual(result, { gas: '0x5208', storage: '0x0' })
     })
 
     it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async function () {
@@ -436,17 +439,18 @@ describe('send utils', function () {
           selectedToken: { address: '' },
         })
       )
-      assert.notEqual(result, SIMPLE_GAS_COST)
+      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
     })
 
-    it(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async function () {
+    // we plan to support tokens other than erc20 token
+    it.skip(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async function () {
       const result = await estimateGas(
         Object.assign({}, baseMockParams, {
           to: null,
-          selectedToken: { address: '' },
+          selectedToken: { address: '0x8isContract' },
         })
       )
-      assert.equal(result, BASE_TOKEN_GAS_COST)
+      assert.deepEqual(result, { gas: BASE_TOKEN_GAS_COST, storage: '0x39' })
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {

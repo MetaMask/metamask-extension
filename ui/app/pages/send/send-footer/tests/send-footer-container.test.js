@@ -80,6 +80,7 @@ describe('send-footer container', function () {
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
+          storage: 'mockStorage',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
@@ -92,6 +93,7 @@ describe('send-footer container', function () {
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
+          storage: 'mockStorage',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
@@ -109,6 +111,7 @@ describe('send-footer container', function () {
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
+          storage: 'mockStorage',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
@@ -119,6 +122,7 @@ describe('send-footer container', function () {
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
+          storage: 'mockStorage',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         })
@@ -134,6 +138,7 @@ describe('send-footer container', function () {
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
+          storage: 'mockStorage',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
           editingTransactionId: 'mockEditingTransactionId',
@@ -148,6 +153,7 @@ describe('send-footer container', function () {
           from: 'mockFrom',
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
+          storage: 'mockStorage',
           editingTransactionId: 'mockEditingTransactionId',
           selectedToken: 'mockSelectedToken',
           unapprovedTxs: 'mockUnapprovedTxs',

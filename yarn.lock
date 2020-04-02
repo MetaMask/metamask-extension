@@ -6041,10 +6041,10 @@ cephes@^1.1.2:
   resolved "https://registry.yarnpkg.com/cephes/-/cephes-1.2.0.tgz#4d246b622bc488ab8c982a1f702f0c9f49705d96"
   integrity sha512-twuUuJRrIrsELHz6foJtZlqrz6FC36zoHZJvvThsrM1UWPKxyoilw1Rka6Hk0AmPFKHKUoGwGfAtvNZNtNZu0g==
 
-cfx-hd-keyring@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/cfx-hd-keyring/-/cfx-hd-keyring-0.0.1.tgz#c803bfb10772163c39a8e9294fff6ac50ccb06e9"
-  integrity sha512-wmKiuyzGJFhAsaCyCTyVN8jSD71AXi1/qRweKVOBuO/04v9m2fmZBmzSUgn6hwAjMHtIsUTeSHu7lR7SIZ84ng==
+cfx-hd-keyring@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfx-hd-keyring/-/cfx-hd-keyring-0.0.2.tgz#960a4ece53e903805652c59826ff3b3058fc106f"
+  integrity sha512-3pneO2c1s9+wJzkkwUDmm46swy4fKhUv5+UGbpKNYlQPv2FudnnSfjdYgrUCyTO71KGWdAU5GIF/96OoenUJxg==
   dependencies:
     bip39 "^2.2.0"
     cfx-sig-util "^0.0.1-a"
@@ -6055,15 +6055,15 @@ cfx-hd-keyring@^0.0.1:
     events "^1.1.1"
     xtend "^4.0.1"
 
-cfx-keyring-controller@^5.6.3:
-  version "5.6.3"
-  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.3.tgz#1f10276abc05e1e71f839d4e38b20d9028213429"
-  integrity sha512-d/Zp9ErKguXfd1G83BugksF1/Ep8p3KKhdOJzXF66zPVNc1OWn+V5HaPPpDVpLyDzVkGfUyBTwGw5g9W175HSA==
+cfx-keyring-controller@^5.6.4:
+  version "5.6.4"
+  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.4.tgz#41437b535ae496744ed5d96e0f3dd15d57d01154"
+  integrity sha512-H8Y758Zh6dpMbUUOjuVnn5MyHIkUY7aGfvMLhrLOM+3frqHlhOZcmTFdkozt+yX1AybOMl2LKsPWDtLUVaWsdA==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    cfx-hd-keyring "^0.0.1"
+    cfx-hd-keyring "^0.0.2"
     cfx-sig-util "^0.0.1-a"
     cfx-simple-keyring "^0.0.1"
     cfx-util "^0.0.1-c"

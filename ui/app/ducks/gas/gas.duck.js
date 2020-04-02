@@ -98,7 +98,8 @@ export default function reducer (state = initState, action) {
         ...state,
         customData: {
           ...state.customData,
-          limit: action.value,
+          limit: action.value.newGasLimit,
+          storageLimit: action.value.newStorageLimit,
         },
       }
     case SET_CUSTOM_GAS_TOTAL:
@@ -600,10 +601,10 @@ export function setCustomGasPrice (newPrice) {
   }
 }
 
-export function setCustomGasLimit (newLimit) {
+export function setCustomGasLimit ({ newGasLimit, newStorageLimit }) {
   return {
     type: SET_CUSTOM_GAS_LIMIT,
-    value: newLimit,
+    value: { newGasLimit, newStorageLimit },
   }
 }
 

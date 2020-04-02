@@ -14,6 +14,7 @@ function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
   if (method) {
     method = method.replace('eth_', 'cfx_')
     method = method.replace('getTransactionCount', 'getNextNonce')
+    method = method.replace(/estimateGas$/, 'estimateGasAndCollateral')
     method = method.replace('getBlockByNumber', 'getBlockByEpochNumber')
     method = method.replace('cfx_blockNumber', 'cfx_epochNumber')
   }

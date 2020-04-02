@@ -9,6 +9,7 @@ export default function configureStore (initialState) {
     hostname: 'localhost',
     port: 8000,
     realtime: Boolean(process.env.METAMASK_DEBUG),
+    actionsBlacklist: ['UPDATE_METAMASK_STATE'],
   })
   return createStore(
     rootReducer,

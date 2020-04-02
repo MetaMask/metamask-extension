@@ -29,13 +29,19 @@ export function hexGreaterThan (a, b) {
   )
 }
 
-export function getHexGasTotal ({ gasLimit, gasPrice }) {
+export function getHexGasTotal ({ gasLimit, gasPrice, storageLimit }) {
   return ethUtil.addHexPrefix(
-    multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 16,
-    })
+    addCurrencies(
+      storageLimit || '0x0',
+      ethUtil.addHexPrefix(
+        multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+          toNumericBase: 'hex',
+          multiplicandBase: 16,
+          multiplierBase: 16,
+        })
+      ),
+      { toNumericBase: 'hex', numberOfDecimals: 6 }
+    )
   )
 }
 

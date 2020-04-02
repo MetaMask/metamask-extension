@@ -39,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
   const {
-    txParams: { gas: gasLimit, gasPrice, data } = {},
+    txParams: { gas: gasLimit, gasPrice, data, storage: storageLimit } = {},
     transactionCategory,
   } = primaryTransaction
   const selectedAddress = getSelectedAddress(state)
@@ -57,6 +57,7 @@ const mapStateToProps = (state, ownProps) => {
       gasTotal: getHexGasTotal({
         gasPrice: increaseLastGasPrice(gasPrice),
         gasLimit,
+        storageLimit,
       }),
       balance: selectedAccountBalance,
       conversionRate: conversionRateSelector(state),

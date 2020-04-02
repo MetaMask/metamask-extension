@@ -49,6 +49,7 @@ const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for token transfers.
+const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
 
 export {
   INSUFFICIENT_FUNDS_ERROR,
@@ -70,4 +71,5 @@ export {
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   BASE_TOKEN_GAS_COST,
+  SIMPLE_STORAGE_COST,
 }

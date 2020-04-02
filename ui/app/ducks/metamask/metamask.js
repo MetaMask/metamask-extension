@@ -156,7 +156,8 @@ export default function reduceMetamask (state = {}, action) {
         ...metamaskState,
         send: {
           ...metamaskState.send,
-          gasLimit: action.value,
+          storageLimit: action.value.storageLimit,
+          gasLimit: action.value.gasLimit,
         },
       }
     case actions.UPDATE_CUSTOM_NONCE:
