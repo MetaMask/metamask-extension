@@ -27,6 +27,7 @@ class SelectedAccount extends Component {
     return (
       <div className="selected-account">
         <Tooltip
+          wrapperClassName="selected-account__tooltip-wrapper"
           position="bottom"
           title={this.state.copied ? t('copiedExclamation') : t('copyToClipboard')}
         >

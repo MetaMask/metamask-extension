@@ -1,8 +1,7 @@
 .connected-status-indicator {
   display:flex;
   align-items: center;
-  position: absolute;
-  left: 22px;
+  place-self: center start;
 
   &__green-circle, &__yellow-circle, &__grey-circle {
     border-radius: 4px;

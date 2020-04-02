@@ -1,40 +1,23 @@
 .menu-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-bottom: 16px;
-  padding: 0 22px;
+  display: grid;
+  grid-template-columns: 30% minmax(30%, 1fr) 30%;
+  column-gap: 5px;
+
+  margin-bottom: 24px;
+  padding: 0 24px;
   border-bottom: 1px solid $Grey-100;
-  position: relative;
 
-  &__sidebar-button {
-    width: 20px;
-    height: 20px;
-    background-image: url(/images/icons/hamburger.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    cursor: pointer;
-  }
+  .menu-bar__account-options {
+    background: none;
+    font-size: inherit;
+    padding: 0 0 0 5px;
 
-  &__open-in-browser {
-    width: 20px;
-    height: 20px;
-    background-image: url(/images/icons/3dots.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    right: 16px;
-    transform: rotate(90deg);
+    position: relative; // to allow the dropdown to position itself absolutely
+    place-self: center end;
   }
 
   .selected-account {
-    flex: none;
+    grid-column: 2 / span 1;
+    place-self: center stretch;
   }
 }

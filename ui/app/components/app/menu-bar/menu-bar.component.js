@@ -29,12 +29,10 @@ export default class MenuBar extends PureComponent {
 
         <SelectedAccount />
 
-        <Tooltip
-          title={t('accountOptions')}
-          position="bottom"
-        >
-          <div
-            className="menu-bar__open-in-browser"
+        <Tooltip title={t('accountOptions')} position="left">
+          <button
+            className="fas fa-ellipsis-v menu-bar__account-options"
+            title={t('accountOptions')}
             onClick={() => {
               this.context.metricsEvent({
                 eventOpts: {
@@ -43,10 +41,12 @@ export default class MenuBar extends PureComponent {
                   name: 'Opened Account Options',
                 },
               })
-              this.setState({ accountDetailsMenuOpen: true })
+              this.setState((prevState) => ({
+                accountDetailsMenuOpen: !prevState.accountDetailsMenuOpen,
+              }))
             }}
           >
-          </div>
+          </button>
         </Tooltip>
 
         {
