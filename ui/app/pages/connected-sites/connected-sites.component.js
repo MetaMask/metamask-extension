@@ -56,38 +56,15 @@ export default class ConnectSites extends Component {
   }
 
   renderConnectedSites () {
-    const { tabToConnect, legacyExposeAccount } = this.props
-    const { t } = this.context
     return (
-      <>
-        <ConnectedSitesList
-          onDisconnectSite={this.setSitePendingDisconnect}
-        />
-        { tabToConnect ? (
-          <footer className="connected-sites__add-site-manually">
-            <a onClick={legacyExposeAccount}>{ t('connectManually') }</a>
-          </footer>
-        ) : null }
-      </>
-    )
-  }
-
-  renderDisconnectConfirmation () {
-    const { t } = this.context
-    return (
-      <div className="connected-sites__confirmation">
-        <Button type="secondary" onClick={this.clearSitePendingDisconnect}>
-          { t('cancel') }
-        </Button>
-        <Button type="primary" onClick={this.disconnect}>
-          { t('disconnect') }
-        </Button>
-      </div>
+      <ConnectedSitesList
+        onDisconnectSite={this.setSitePendingDisconnect}
+      />
     )
   }
 
   render () {
-    const { accountLabel, history } = this.props
+    const { accountLabel, history, legacyExposeAccount, tabToConnect } = this.props
     const { t } = this.context
     const { sitePendingDisconnect } = this.state
     return (
@@ -97,15 +74,32 @@ export default class ConnectSites extends Component {
             title={t('disconnectSite', [sitePendingDisconnect.domainName])}
             subtitle={t('disconnectAccountConfirmationDescription')}
             onClose={() => history.push(DEFAULT_ROUTE)}
-          >
-            {this.renderDisconnectConfirmation()}
-          </Popover>
+            footer={(
+              <>
+                <Button type="secondary" onClick={this.clearSitePendingDisconnect}>
+                  { t('cancel') }
+                </Button>
+                <Button type="primary" onClick={this.disconnect}>
+                  { t('disconnect') }
+                </Button>
+              </>
+            )}
+            footerClassName="connected-sites__confirmation"
+          />
         )
         : (
           <Popover
             title={t('connectedSites')}
             subtitle={t('connectedSitesDescription', [accountLabel])}
             onClose={() => history.push(DEFAULT_ROUTE)}
+            footer={
+              tabToConnect
+                ? (
+                  <a onClick={legacyExposeAccount}>{ t('connectManually') }</a>
+                )
+                : null
+            }
+            footerClassName="connected-sites__add-site-manually"
           >
             {this.renderConnectedSites()}
           </Popover>

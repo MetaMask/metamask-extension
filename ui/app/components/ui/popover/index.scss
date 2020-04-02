@@ -95,4 +95,16 @@
     align-items: center;
     z-index: 1050;
   }
+
+  &-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1px solid #D2D8DD;
+    padding: 16px 24px 24px;
+
+    & :only-child {
+      margin: 0 auto;
+    }
+  }
 }
