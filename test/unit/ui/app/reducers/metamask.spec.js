@@ -145,11 +145,12 @@ describe('MetaMask Reducers', function () {
       {},
       {
         type: actions.UPDATE_GAS_LIMIT,
-        value: '0xGasLimit',
+        value: { gasLimit: '0xGasLimit', storageLimit: '0xStorageLimit' },
       }
     )
 
     assert.equal(state.send.gasLimit, '0xGasLimit')
+    assert.equal(state.send.storageLimit, '0xStorageLimit')
   })
 
   it('updates send gas price', function () {

@@ -757,10 +757,10 @@ export function signTx (txData) {
   }
 }
 
-export function setGasLimit (gasLimit) {
+export function setGasLimit ({ gasLimit, storageLimit }) {
   return {
     type: actionConstants.UPDATE_GAS_LIMIT,
-    value: gasLimit,
+    value: { gasLimit, storageLimit },
   }
 }
 
@@ -799,9 +799,9 @@ export function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-      .then((gas) => {
-        dispatch(setGasLimit(gas))
-        dispatch(setCustomGasLimit(gas))
+      .then(({ gas: gasLimit, storage: storageLimit }) => {
+        dispatch(setGasLimit({ gasLimit, storageLimit }))
+        dispatch(setCustomGasLimit({ newGasLimit: gasLimit, newStorageLimit: storageLimit }))
         dispatch(updateSendErrors({ gasLoadingError: null }))
         dispatch(gasLoadingFinished())
       })

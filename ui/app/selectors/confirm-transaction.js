@@ -266,7 +266,12 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state)
 
   const {
-    txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
+    txParams: {
+      value = '0x0',
+      gas: gasLimit = '0x0',
+      gasPrice = '0x0',
+      storage: storageLimit = '0x0',
+    } = {},
   } = txData
 
   const fiatTransactionAmount = getValueFromWeiHex({
@@ -284,7 +289,7 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   })
 
-  const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice })
+  const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice, storageLimit })
 
   const fiatTransactionFee = getTransactionFee({
     value: hexTransactionFee,

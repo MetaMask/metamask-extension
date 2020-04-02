@@ -49,12 +49,12 @@ const DEFAULT_LABEL = 'Account 1'
 const DEFAULT_LABEL_2 = 'Account 2'
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
-const TEST_ADDRESS = '0x1b398b5288001b79275ef9293835aa1a21caccfc'
-const TEST_ADDRESS_2 = '0x15f81a1b497e8ba4bfa766916e9b0a56008e902a'
-const TEST_ADDRESS_3 = '0x1237787c844f8ec2df6bafb3870d1aee4ffd670e'
+const TEST_ADDRESS = '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4'
+const TEST_ADDRESS_2 = '0x1e1aca25be19d60bc6e59e8e162273183dd1de0a'
+const TEST_ADDRESS_3 = '0x126dcc25e6ea588971631c15512821fd5f26fd4a'
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
-const TEST_ADDRESS_ALT = '0x1cd356635e3139dfa7e7762f8306165ce978203d'
+const TEST_ADDRESS_ALT = '0x1aac926ed958373188fddcaf959d492a8bddfb5d'
 const CUSTOM_RPC_URL = 'http://localhost:8545'
 
 describe('MetaMaskController', function () {
@@ -833,7 +833,7 @@ describe('MetaMaskController', function () {
   describe('#newUnsignedPersonalMessage', function () {
     let msgParams, metamaskPersonalMsgs, personalMessages, msgId
 
-    const address = '0x1cd356635e3139dfa7e7762f8306165ce978203d'
+    const address = '0x1aac926ed958373188fddcaf959d492a8bddfb5d'
     const data = '0x43727970746f6b697474696573'
 
     beforeEach(async function () {
@@ -906,7 +906,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,
-        '0xf8ef0b4b2e47c4f2bce9fe8b21d2a58ba107d6b4fcaced3f6b52c255b5d954e67873b8f5969a0e125c2b56a8bd2917f12186c43ed0471a36172744a7b7d923b600'
+        '0x9c6c6f9d4da11e9fde35668c9c1af13d6609bfd8b327ab59b252d3f2ce3be2c87010917270b9fc88086c415209fa8b4a9168258bb40f65fc22fe88ec6800a21401'
       )
     })
   })

@@ -18,6 +18,7 @@ import {
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
+  SIMPLE_STORAGE_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
 
@@ -210,49 +211,61 @@ async function estimateGas ({
   gasPrice,
   estimateGasMethod,
 }) {
-  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
+  const result = {}
+  const paramsForEstimate = { from: selectedAddress, value, gasPrice }
 
   // if recipient has no code, gas is 21k max:
   // 0x1 account address
   // 0x8 contract address
   if (!selectedToken && !data) {
-    if(!to || to[2] === '1') {
-      return SIMPLE_GAS_COST
+    if (!to || to[2] === '1') {
+      result.gas = SIMPLE_GAS_COST
+      result.storage = SIMPLE_STORAGE_COST
+      return result
     }
   } else if (selectedToken && !to) {
-    return BASE_TOKEN_GAS_COST
+    result.gas = BASE_TOKEN_GAS_COST
   }
 
-  if (selectedToken) {
-    paramsForGasEstimate.value = '0x0'
-    paramsForGasEstimate.data = generateTokenTransferData({
-      toAddress: to,
-      amount: value,
-      selectedToken,
-    })
-    paramsForGasEstimate.to = selectedToken.address
-  } else {
-    if (data) {
-      paramsForGasEstimate.data = data
+  if (!(!selectedToken && !data) || !(selectedToken && !to)) {
+    if (selectedToken) {
+      paramsForEstimate.value = '0x0'
+      paramsForEstimate.data = generateTokenTransferData({
+        toAddress: to,
+        amount: value,
+        selectedToken,
+      })
+      paramsForEstimate.to = selectedToken.address
+    } else {
+      if (data) {
+        paramsForEstimate.data = data
+      }
+
+      if (to) {
+        paramsForEstimate.to = to
+      }
+
+      if (!value || value === '0') {
+        paramsForEstimate.value = '0xff'
+      }
     }
 
-    if (to) {
-      paramsForGasEstimate.to = to
-    }
-
-    if (!value || value === '0') {
-      paramsForGasEstimate.value = '0xff'
+    // if not, fall back to block gasLimit
+    if (!blockGasLimit && to) {
+      blockGasLimit = MIN_GAS_LIMIT_HEX
+    } else if (
+      parseInt(blockGasLimit) > parseInt(`0x{MAX_GAS_LIMIT_HEX}`) &&
+      to
+    ) {
+      blockGasLimit = MAX_GAS_LIMIT_HEX
     }
   }
 
-  // if not, fall back to block gasLimit
-  if (!blockGasLimit) {
-    blockGasLimit = MIN_GAS_LIMIT_HEX
-  } else if (parseInt(blockGasLimit) > parseInt(`0x{MAX_GAS_LIMIT_HEX}`)) {
-    blockGasLimit = MAX_GAS_LIMIT_HEX
+  if (!selectedToken && !data && !to) {
+    paramsForEstimate.to = paramsForEstimate.to || selectedToken.address
   }
 
-  paramsForGasEstimate.gas = ethUtil.addHexPrefix(
+  paramsForEstimate.gas = ethUtil.addHexPrefix(
     multiplyCurrencies(blockGasLimit, 0.95, {
       multiplicandBase: 16,
       multiplierBase: 10,
@@ -263,7 +276,7 @@ async function estimateGas ({
 
   // run tx
   return new Promise((resolve, reject) => {
-    return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
+    return estimateGasMethod(paramsForEstimate, (err, result) => {
       if (err) {
         const simulationFailed =
           err.message.includes('Internal error') ||
@@ -273,7 +286,7 @@ async function estimateGas ({
           )
         if (simulationFailed) {
           const estimateWithBuffer = addGasBuffer(
-            paramsForGasEstimate.gas,
+            paramsForEstimate.gas,
             blockGasLimit,
             1.5
           )
@@ -282,12 +295,25 @@ async function estimateGas ({
           return reject(err)
         }
       }
+      const {
+        gasUsed: estimatedGas,
+        storageCollateralized: estimatedStorage,
+      } = result
+
+      // only need the storage here
+      if (result.gas !== undefined) {
+        result.storage = ethUtil.addHexPrefix(estimatedStorage)
+        return result
+      }
       const estimateWithBuffer = addGasBuffer(
         estimatedGas.toString(16),
         blockGasLimit,
         1.5
       )
-      return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
+      return resolve({
+        gas: ethUtil.addHexPrefix(estimateWithBuffer),
+        storage: ethUtil.addHexPrefix(estimatedStorage),
+      })
     })
   })
 }

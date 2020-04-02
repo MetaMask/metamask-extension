@@ -4,6 +4,7 @@ import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 const STATUS_PATH = '/status'
 const GAS_PRICE_PATH = '/txParams/gasPrice'
 const GAS_LIMIT_PATH = '/txParams/gas'
+const STORAGE_LIMIT_PATH = '/txParams/storage'
 
 // op constants
 const REPLACE_OP = 'replace'
@@ -55,26 +56,37 @@ export function getActivities (transaction, isFirstTransaction = false) {
     id,
     hash,
     history = [],
-    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice },
+    txParams: {
+      gas: paramsGasLimit,
+      gasPrice: paramsGasPrice,
+      storage: paramsStorageLimit,
+    },
     xReceipt: { status } = {},
     type,
   } = transaction
 
   let cachedGasLimit = '0x0'
   let cachedGasPrice = '0x0'
+  let cachedStorageLimit = '0x0'
 
   const historyActivities = history.reduce((acc, base, index) => {
     // First history item should be transaction creation
     if (index === 0 && !Array.isArray(base) && base.txParams) {
       const {
         time: timestamp,
-        txParams: { value, gas = '0x0', gasPrice = '0x0' } = {},
+        txParams: {
+          value,
+          gas = '0x0',
+          gasPrice = '0x0',
+          storage = '0x0',
+        } = {},
       } = base
       // The cached gas limit and gas price are used to display the gas fee in the activity log. We
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
       cachedGasLimit = gas
       cachedGasPrice = gasPrice
+      cachedStorageLimit = storage
 
       if (isFirstTransaction) {
         return acc.concat({
@@ -99,14 +111,18 @@ export function getActivities (transaction, isFirstTransaction = false) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
-                cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                cachedGasLimit === '0x0' &&
+                cachedGasPrice === '0x0' &&
+                cachedStorageLimit === '0x0'
                   ? getHexGasTotal({
                     gasLimit: paramsGasLimit,
                     gasPrice: paramsGasPrice,
+                    storageLimit: paramsStorageLimit,
                   })
                   : getHexGasTotal({
                     gasLimit: cachedGasLimit,
                     gasPrice: cachedGasPrice,
+                    storageLimit: cachedStorageLimit,
                   })
 
               if (value in statusHash) {
@@ -142,7 +158,8 @@ export function getActivities (transaction, isFirstTransaction = false) {
             // previously submitted event. These events happen when the gas limit and gas price is
             // changed at the confirm screen.
             case GAS_PRICE_PATH:
-            case GAS_LIMIT_PATH: {
+            case GAS_LIMIT_PATH:
+            case STORAGE_LIMIT_PATH: {
               const lastEvent = events[events.length - 1] || {}
               const { lastEventKey } = lastEvent
 
@@ -150,6 +167,8 @@ export function getActivities (transaction, isFirstTransaction = false) {
                 cachedGasLimit = value
               } else if (path === GAS_PRICE_PATH) {
                 cachedGasPrice = value
+              } else if (path === STORAGE_LIMIT_PATH) {
+                cachedStorageLimit = value
               }
 
               if (
@@ -159,6 +178,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
                 lastEvent.value = getHexGasTotal({
                   gasLimit: cachedGasLimit,
                   gasPrice: cachedGasPrice,
+                  storageLimit: cachedStorageLimit,
                 })
               }
 

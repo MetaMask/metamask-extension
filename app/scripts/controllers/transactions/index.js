@@ -458,6 +458,7 @@ class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusApproved(txId)
       // get next nonce
       const txMeta = this.txStateManager.getTx(txId)
+      txMeta.txParams.epochHeight = await this.blockTracker.getLatestBlock()
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
       let { customNonceValue = null } = txMeta
@@ -772,7 +773,7 @@ class TransactionController extends EventEmitter {
     let code
     if (!result) {
       try {
-        code = await this.query.getCode(to)
+        code = to.startsWith('0x1') ? null : await this.query.getCode(to)
       } catch (e) {
         code = null
         // conflux fullnode will return a error here if it's not a contract addr

@@ -5,6 +5,7 @@ import { addHexPrefix } from 'cfx-util'
 import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
@@ -27,12 +28,18 @@ class TxGasUtil {
   async analyzeGasUsage (txMeta, getCodeResponse) {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
+    let estimatedStorageHex
     try {
-      estimatedGasHex = await this.estimateTxGas(
+      const {
+        gasUsed,
+        storageCollateralized,
+      } = await this.estimateTxGas(
         txMeta,
         block.gasLimit,
         getCodeResponse
       )
+      estimatedGasHex = gasUsed
+      estimatedStorageHex = storageCollateralized
     } catch (err) {
       log.warn(err)
       txMeta.simulationFails = {
@@ -47,12 +54,15 @@ class TxGasUtil {
 
       return txMeta
     }
-    this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
+    this.setTxGas(txMeta, block.gasLimit, {
+      estimatedGasHex,
+      estimatedStorageHex,
+    })
     return txMeta
   }
 
   /**
-    Estimates the tx's gas usage
+    Estimates the tx's gas/storage usage
     @param {Object} txMeta - the txMeta object
     @param {string} blockGasLimitHex - hex string of the block's gas limit
     @returns {string} - the estimated gas limit as a hex string
@@ -62,6 +72,7 @@ class TxGasUtil {
 
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
+    txMeta.storageLimitSpecified = Boolean(txParams.storageLimit)
 
     // if it is, use that value
     if (txMeta.gasLimitSpecified) {
@@ -109,21 +120,37 @@ class TxGasUtil {
   }
 
   /**
-    Writes the gas on the txParams in the txMeta
+    Writes the gas/stroage on the txParams in the txMeta
     @param {Object} txMeta - the txMeta object to write to
     @param {string} blockGasLimitHex - the block gas limit hex
     @param {string} estimatedGasHex - the estimated gas hex
   */
-  setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
+  setTxGas (
+    txMeta,
+    blockGasLimitHex,
+    { estimatedGasHex, estimatedStorageHex }
+  ) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
+    txMeta.estimatedStroage = addHexPrefix(estimatedStorageHex)
     const txParams = txMeta.txParams
+
+    if (txMeta.simpleSend) {
+      txMeta.estimatedGas = txParams.gas
+      txMeta.estimatedStorage = SIMPLE_STORAGE_COST
+      return
+    }
+
+    if (txMeta.storageLimitSpecified) {
+      txMeta.estimatedStorage = txParams.storageLimit
+    }
 
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
-    if (txMeta.gasLimitSpecified || txMeta.simpleSend) {
+    if (txMeta.gasLimitSpecified) {
       txMeta.estimatedGas = txParams.gas
       return
     }
+
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
     const recommendedGasHex = this.addGasBuffer(
@@ -131,6 +158,10 @@ class TxGasUtil {
       blockGasLimitHex
     )
     txParams.gas = recommendedGasHex
+
+    if (!txMeta.storageLimitSpecified) {
+      txParams.storageLimit = txMeta.estimatedStroage
+    }
     return
   }
 

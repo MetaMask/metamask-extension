@@ -38,6 +38,7 @@ describe('SendFooter Component', function () {
         editingTransactionId="mockEditingTransactionId"
         errors={{}}
         from={{ address: 'mockAddress', balance: 'mockBalance' }}
+        storageLimit="mockStorageLimit"
         gasLimit="mockGasLimit"
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
@@ -158,6 +159,7 @@ describe('SendFooter Component', function () {
         amount: 'mockAmount',
         editingTransactionId: 'mockEditingTransactionId',
         from: 'mockAddress',
+        storage: 'mockStorageLimit',
         gas: 'mockGasLimit',
         gasPrice: 'mockGasPrice',
         selectedToken: { mockProp: 'mockSelectedTokenProp' },
@@ -178,6 +180,7 @@ describe('SendFooter Component', function () {
         data: undefined,
         amount: 'mockAmount',
         from: 'mockAddress',
+        storage: 'mockStorageLimit',
         gas: 'mockGasLimit',
         gasPrice: 'mockGasPrice',
         selectedToken: { mockProp: 'mockSelectedTokenProp' },
@@ -213,6 +216,7 @@ describe('SendFooter Component', function () {
           editingTransactionId="mockEditingTransactionId"
           errors={{}}
           from={{ address: 'mockAddress', balance: 'mockBalance' }}
+          storageLimit="mockStorageLimit"
           gasLimit="mockGasLimit"
           gasPrice="mockGasPrice"
           gasTotal="mockGasTotal"

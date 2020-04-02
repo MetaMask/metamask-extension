@@ -14,6 +14,7 @@ export default class SendFooter extends Component {
     clearSend: PropTypes.func,
     editingTransactionId: PropTypes.string,
     from: PropTypes.object,
+    storageLimit: PropTypes.string,
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
@@ -51,6 +52,7 @@ export default class SendFooter extends Component {
       from: { address: from },
       gasLimit: gas,
       gasPrice,
+      storageLimit: storage,
       selectedToken,
       sign,
       to,
@@ -80,11 +82,12 @@ export default class SendFooter extends Component {
         from,
         gas,
         gasPrice,
+        storage,
         selectedToken,
         to,
         unapprovedTxs,
       })
-      : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
+      : sign({ data, selectedToken, to, amount, from, gas, gasPrice, storage })
 
     Promise.resolve(promise).then(() => {
       metricsEvent({

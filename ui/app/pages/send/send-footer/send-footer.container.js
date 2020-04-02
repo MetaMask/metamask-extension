@@ -10,6 +10,7 @@ import {
 import SendFooter from './send-footer.component'
 import {
   getGasLimit,
+  getStorageLimit,
   getGasPrice,
   getGasTotal,
   getSelectedToken,
@@ -52,6 +53,7 @@ function mapStateToProps (state) {
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
+    storageLimit: getStorageLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),
     inError: isSendFormInError(state),
@@ -69,13 +71,14 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ selectedToken, to, amount, from, gas, gasPrice, data }) => {
+    sign: ({ selectedToken, to, amount, from, gas, gasPrice, storage, data }) => {
       const txParams = constructTxParams({
         amount,
         data,
         from,
         gas,
         gasPrice,
+        storage,
         selectedToken,
         to,
       })
@@ -91,6 +94,7 @@ function mapDispatchToProps (dispatch) {
       from,
       gas,
       gasPrice,
+      storage,
       selectedToken,
       to,
       unapprovedTxs,
@@ -102,6 +106,7 @@ function mapDispatchToProps (dispatch) {
         from,
         gas,
         gasPrice,
+        storage,
         selectedToken,
         to,
         unapprovedTxs,

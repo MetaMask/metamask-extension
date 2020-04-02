@@ -627,7 +627,7 @@ describe('Actions', function () {
     let signMessageSpy, metamaskMsgs, msgId, messages
 
     const msgParams = {
-      from: '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+      from: '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
       data:
         '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     }
@@ -683,7 +683,7 @@ describe('Actions', function () {
     let signPersonalMessageSpy, metamaskMsgs, msgId, personalMessages
 
     const msgParams = {
-      from: '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+      from: '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
       data:
         '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     }
@@ -738,7 +738,7 @@ describe('Actions', function () {
     let signTypedMsgSpy, messages, typedMessages, msgId
 
     const msgParamsV3 = {
-      from: '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+      from: '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
       data: JSON.stringify({
         types: {
           EIP712Domain: [
@@ -868,7 +868,7 @@ describe('Actions', function () {
       const mockData = {
         gasPrice: '0x3b9aca00', //
         blockGasLimit: '0x6ad79a', // 7002010
-        selectedAddress: '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+        selectedAddress: '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
         to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
         value: '0xde0b6b3a7640000', // 1000000000000000000
       }
@@ -885,7 +885,7 @@ describe('Actions', function () {
       const mockData = {
         gasPrice: '0x3b9aca00',
         blockGasLimit: '0x6ad79a', // 7002010
-        selectedAddress: '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+        selectedAddress: '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
         to: '0x1C1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
         value: '0xde0b6b3a7640000', // 1000000000000000000
       }
@@ -897,8 +897,14 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
-        { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
-        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
+        {
+          type: 'UPDATE_GAS_LIMIT',
+          value: { gasLimit: '0x5208', storageLimit: '0x0' },
+        },
+        {
+          type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+          value: { newGasLimit: '0x5208', newStorageLimit: '0x0' },
+        },
         { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null } },
         { type: 'GAS_LOADING_FINISHED' },
       ]
@@ -1033,7 +1039,7 @@ describe('Actions', function () {
       const store = mockStore({ metamask: devState })
 
       store.dispatch(
-        actions.setSelectedAddress('0x1b398b5288001b79275ef9293835aa1a21caccfc')
+        actions.setSelectedAddress('0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4')
       )
       assert(setSelectedAddressSpy.calledOnce)
     })
@@ -1257,7 +1263,7 @@ describe('Actions', function () {
         {
           type: 'SHOW_PRIVATE_KEY',
           value:
-          '5610b6d83b4d9d5b02a366965ab93ff9b01aec11f9b1d6fadde97fe266f953a9',
+          '9edb63a4efd4d9f599b603a7563eae77eb1986f73a095ea8c904965164aa4a26',
         },
       ]
 
@@ -1267,7 +1273,7 @@ describe('Actions', function () {
       await store.dispatch(
         actions.exportAccount(
           password,
-          '0x1b398b5288001b79275ef9293835aa1a21caccfc'
+          '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4'
         )
       )
       assert(submitPasswordSpy.calledOnce)
@@ -1292,7 +1298,7 @@ describe('Actions', function () {
         await store.dispatch(
           actions.exportAccount(
             password,
-            '0x1b398b5288001b79275ef9293835aa1a21caccfc'
+            '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4'
           )
         )
         assert.fail('Should have thrown error')
@@ -1321,7 +1327,7 @@ describe('Actions', function () {
         await store.dispatch(
           actions.exportAccount(
             password,
-            '0x1b398b5288001b79275ef9293835aa1a21caccfc'
+            '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4'
           )
         )
         assert.fail('Should have thrown error')
@@ -1337,7 +1343,7 @@ describe('Actions', function () {
       const store = mockStore()
       store.dispatch(
         actions.setAccountLabel(
-          '0x1b398b5288001b79275ef9293835aa1a21caccfc',
+          '0x17c03dfb6cc3ceb6fc2634b906fb7abe99f254c4',
           'test'
         )
       )

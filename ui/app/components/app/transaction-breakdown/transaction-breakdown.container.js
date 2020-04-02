@@ -11,7 +11,7 @@ import { sumHexes } from '../../../helpers/utils/transactions.util'
 const mapStateToProps = (state, ownProps) => {
   const { transaction } = ownProps
   const {
-    txParams: { gas, gasPrice, value } = {},
+    txParams: { gas, gasPrice, value, storage: storageLimit } = {},
     txReceipt: { gasUsed } = {},
   } = transaction
   const { showFiatInTestnets } = preferencesSelector(state)
@@ -20,7 +20,10 @@ const mapStateToProps = (state, ownProps) => {
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
 
   const hexGasTotal =
-    (gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice })) || '0x0'
+    (gasLimit &&
+      gasPrice &&
+      getHexGasTotal({ gasLimit, gasPrice, storageLimit })) ||
+    '0x0'
   const totalInHex = sumHexes(hexGasTotal, value)
 
   return {

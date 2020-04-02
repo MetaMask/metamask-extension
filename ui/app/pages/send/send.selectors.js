@@ -62,6 +62,10 @@ export function getGasLimit (state) {
   return state.metamask.send.gasLimit || '0'
 }
 
+export function getStorageLimit (state) {
+  return state.metamask.send.storageLimit || '0'
+}
+
 export function getGasPrice (state) {
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
