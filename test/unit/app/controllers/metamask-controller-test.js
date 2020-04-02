@@ -906,7 +906,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,
-        '0x9c6c6f9d4da11e9fde35668c9c1af13d6609bfd8b327ab59b252d3f2ce3be2c87010917270b9fc88086c415209fa8b4a9168258bb40f65fc22fe88ec6800a21401'
+        '0xe6cce6d8c5324be07417c3248bd7a26331bfb14de535104174bcfab68fdc78e2413a2d46a062ba75e0fcc25bede625296875f7c5f34c865c072e337b8a6723a11c'
       )
     })
   })
