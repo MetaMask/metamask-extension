@@ -13,6 +13,7 @@ import MenuBar from '../../components/app/menu-bar'
 import Popover from '../../components/ui/popover'
 import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
+import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
 
 import {
@@ -22,6 +23,7 @@ import {
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -218,7 +220,8 @@ export default class Home extends PureComponent {
 
     return (
       <div className="main-container">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} />
+        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
+        <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
         <div className="home__container">
           { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
           <Media

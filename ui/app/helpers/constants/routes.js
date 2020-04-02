@@ -29,6 +29,7 @@ const SEND_ROUTE = '/send'
 const CONNECT_ROUTE = '/connect'
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
 const CONNECTED_ROUTE = '/connected'
+const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -106,4 +107,5 @@ export {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
 }
