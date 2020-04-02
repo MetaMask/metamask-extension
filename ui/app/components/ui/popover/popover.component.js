@@ -1,14 +1,15 @@
 import React, { PureComponent, useContext } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 
-const Popover = ({ title, subtitle, children, onBack, onClose }) => {
+const Popover = ({ title, subtitle, children, footer, footerClassName, onBack, onClose }) => {
   const t = useContext(I18nContext)
   return (
     <div className="popover-container">
       <div className="popover-bg" onClick={onClose} />
-      <div className="popover-wrap">
+      <section className="popover-wrap">
         <header className="popover-header">
           <div className="popover-header__title">
             <h2 title={title}>
@@ -33,10 +34,25 @@ const Popover = ({ title, subtitle, children, onBack, onClose }) => {
           </div>
           <p className="popover-header__subtitle">{subtitle}</p>
         </header>
-        <div className="popover-content">
-          {children}
-        </div>
-      </div>
+        {
+          children
+            ? (
+              <div className="popover-content">
+                {children}
+              </div>
+            )
+            : null
+        }
+        {
+          footer
+            ? (
+              <footer className={classnames('popover-footer', footerClassName)}>
+                {footer}
+              </footer>
+            )
+            : null
+        }
+      </section>
     </div>
   )
 }
@@ -44,7 +60,9 @@ const Popover = ({ title, subtitle, children, onBack, onClose }) => {
 Popover.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+  footer: PropTypes.node,
+  footerClassName: PropTypes.string,
   onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
 }
