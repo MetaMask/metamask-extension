@@ -8,9 +8,6 @@
   "reject": {
     "message": "Zavrni"
   },
-  "likeToConnect": {
-    "message": "$1 se želi povezati z vašim računom."
-  },
   "about": {
     "message": "O možnostih"
   },

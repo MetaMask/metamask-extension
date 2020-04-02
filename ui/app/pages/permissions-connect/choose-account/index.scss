@@ -1,34 +1,93 @@
 .permissions-connect-choose-account {
   display: flex;
   flex-direction: column;
-  margin-top: 40px;
-  width: 100%;
   align-items: center;
+  margin-top: 40px;
+  width: 428px;
+  margin-left: auto;
+  margin-right: auto;
 
   &__title {
     @extend %header--18;
   }
 
-  &__text {
+  &__text, &__text--blue, &__text--grey {
     @extend %content-text;
     line-height: 25px;
   }
 
+  &__text-blue {
+    color: $curious-blue;
+    cursor: pointer;
+  }
+
+  &__text-grey {
+    color: $Grey-500;
+  }
+
   &__accounts-list {
-    width: 393px;
+    width: 100%;
     border: 1px solid #D0D5DA;
     box-sizing: border-box;
     border-radius: 8px;
-    margin-top: 36px;
+    margin-top: 8px;
+    max-height: 338px;
+    overflow-y: auto;
 
     @media screen and (max-width: 575px) {
       width: 100%;
     }
   }
 
+  &__accounts-list-header--one-item,
+  &__accounts-list-header--two-items {
+    display: flex;
+    margin-top: 36px;
+    width: 100%;
+    padding-right: 2px;
+  }
+
+  &__accounts-list-header--one-item {
+    justify-content: flex-end;
+  }
+
+  &__accounts-list-header--two-items {
+    justify-content: space-between;
+  }
+
   &__account-info-wrapper {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__list-check-box {
+    margin-right: 24px;
+  }
+
+  &__header-check-box {
+    margin-right: 16px;
+  }
+
+  &__select-all {
+    display: flex;
+    margin-left: 16px;
+    align-items: center;
+
+    .fa-info-circle, .fa-info-circle:hover {
+      color: $silver;
+      cursor: pointer;
+      margin-left: 8px;
+      font-size: 0.9rem;
+    }
+
+    .fa-info-circle {
+      cursor: pointer;
+    }
+
+    .fa-info-circle:hover {
+      color: $mid-gray;
+    }
   }
 
   &__account {
@@ -76,22 +135,23 @@
     }
   }
 
-  &__new-account, &__cancel {
-    @extend %content-text;
-    line-height: 20px;
-    color: #037DD6;
-    margin-top: 24px;
-    cursor: pointer;
-  }
-
   &__cancel {
     color: $Red-400;
   }
 
   &__bottom-buttons {
     display: flex;
-    justify-content: space-around;
-    width: 393px;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 16px;
+
+    button {
+      width: 124px;
+    }
+
+    .btn-default {
+      background: white;
+    }
   }
 
 }

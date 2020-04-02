@@ -8,9 +8,6 @@
   "reject": {
     "message": "Hylkää"
   },
-  "likeToConnect": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
   "about": {
     "message": "Tietoja asetuksista"
   },

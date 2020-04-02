@@ -8,9 +8,6 @@
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
-    "message": "$1 ingin menyambung kepada akaun anda"
-  },
   "about": {
     "message": "Mengenai"
   },

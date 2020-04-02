@@ -8,9 +8,6 @@
   "reject": {
     "message": "Atmesti"
   },
-  "likeToConnect": {
-    "message": "$1 norėtų prisijungti prie jūsų paskyros"
-  },
   "about": {
     "message": "Apie"
   },

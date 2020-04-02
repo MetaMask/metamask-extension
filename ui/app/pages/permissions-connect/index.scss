@@ -1,5 +1,3 @@
-@import 'permissions-connect-header/index';
-
 @import 'permissions-connect-footer/index';
 
 @import 'choose-account/index';
@@ -8,4 +6,20 @@
   width: 100%;
   position: relative;
   background: white;
+
+  &__page-count-wrapper {
+    margin-top: 26px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    &__page-count {
+      @extend %content-text;
+      margin-right: 30px;
+      font-size: 12px;
+      line-height: 17px;
+      color: #6A737D;
+    }
+  }
 }

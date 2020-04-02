@@ -12,9 +12,6 @@
   "reject": {
     "message": "Avvisa"
   },
-  "likeToConnect": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
   "about": {
     "message": "Om"
   },

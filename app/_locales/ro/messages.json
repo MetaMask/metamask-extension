@@ -8,9 +8,6 @@
   "reject": {
     "message": "Respingeți"
   },
-  "likeToConnect": {
-    "message": "$1 ar dori să se conecteze la contul dvs."
-  },
   "about": {
     "message": "Despre"
   },

@@ -15,7 +15,7 @@ export default class NewAccountModal extends Component {
   }
 
   state = {
-    alias: '',
+    alias: this.context.t('newAccountNumberName', [this.props.newAccountNumber]),
   }
 
   onChange = (e) => {
@@ -53,7 +53,6 @@ export default class NewAccountModal extends Component {
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
             value={this.state.alias}
-            placeholder={ t('account', [this.props.newAccountNumber]) }
             autoFocus
           />
         </div>

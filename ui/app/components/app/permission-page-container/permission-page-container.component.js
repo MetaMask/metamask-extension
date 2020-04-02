@@ -9,7 +9,7 @@ export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    selectedIdentity: PropTypes.object,
+    selectedIdentities: PropTypes.array,
     permissionsDescriptions: PropTypes.object.isRequired,
     request: PropTypes.object,
     redirect: PropTypes.bool,
@@ -23,7 +23,7 @@ export default class PermissionPageContainer extends Component {
     permissionRejected: null,
     request: {},
     requestMetadata: {},
-    selectedIdentity: {},
+    selectedIdentities: [],
   }
 
   static contextTypes = {
@@ -88,7 +88,7 @@ export default class PermissionPageContainer extends Component {
 
   onSubmit = () => {
     const {
-      request: _request, approvePermissionsRequest, rejectPermissionsRequest, selectedIdentity,
+      request: _request, approvePermissionsRequest, rejectPermissionsRequest, selectedIdentities,
     } = this.props
 
     const request = {
@@ -103,7 +103,7 @@ export default class PermissionPageContainer extends Component {
     })
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request, [selectedIdentity.address])
+      approvePermissionsRequest(request, selectedIdentities.map((selectedIdentity) => selectedIdentity.address))
     } else {
       rejectPermissionsRequest(request.metadata.id)
     }
@@ -114,7 +114,7 @@ export default class PermissionPageContainer extends Component {
       requestMetadata,
       targetDomainMetadata,
       permissionsDescriptions,
-      selectedIdentity,
+      selectedIdentities,
       redirect,
       permissionRejected,
     } = this.props
@@ -127,7 +127,7 @@ export default class PermissionPageContainer extends Component {
           selectedPermissions={this.state.selectedPermissions}
           permissionsDescriptions={permissionsDescriptions}
           onPermissionToggle={this.onPermissionToggle}
-          selectedAccount={selectedIdentity}
+          selectedIdentities={selectedIdentities}
           redirect={redirect}
           permissionRejected={permissionRejected}
         />

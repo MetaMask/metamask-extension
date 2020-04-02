@@ -32,26 +32,37 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "cancelling": {
+    "message": "Cancelling..."
+  },
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With MetaMask"
   },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectWithMetaMask": {
+    "message": "Connect With MetaMask"
+  },
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
   },
-  "chooseAnAcount": {
-    "message": "Choose an account"
+  "connectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+  },
+  "connectToMultiple": {
+    "message": "Connect to $1 accounts",
+    "description": "$1 is the number of accounts to connect to"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
   "reject": {
     "message": "Reject"
-  },
-  "redirectingBackToDapp": {
-    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
@@ -266,6 +277,9 @@
   "chainId": {
     "message": "Chain ID"
   },
+  "chooseAccountsToUse": {
+    "message": "Choose the account(s) to use on this site"
+  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -289,6 +303,9 @@
   },
   "congratulations": {
     "message": "Congratulations"
+  },
+  "connectAccountOrCreate": {
+    "message": "Connect account or create new"
   },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
@@ -788,9 +805,6 @@
   "learnMore": {
     "message": "Learn more"
   },
-  "learnAboutRisks": {
-    "message": "Learn about the risks here."
-  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -799,10 +813,6 @@
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
-  },
-  "likeToConnect": {
-    "message": "$1 would like to connect to your MetaMask account",
-    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Links"
@@ -1006,6 +1016,12 @@
   "pending": {
     "message": "pending"
   },
+  "permissionCheckedIconDescription": {
+    "message": "You have approved this permission"
+  },
+  "permissionUncheckedIconDescription": {
+    "message": "You have not approved this permission"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -1184,6 +1200,12 @@
   },
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "selectingAllWillAllow": {
+    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
+  },
+  "selectAll": {
+    "message": "Select all"
   },
   "selectCurrency": {
     "message": "Select Currency"
@@ -1421,10 +1443,6 @@
   },
   "toWithColon": {
     "message": "To:"
-  },
-  "toConnectWith": {
-    "message": "To connect with $1",
-    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",

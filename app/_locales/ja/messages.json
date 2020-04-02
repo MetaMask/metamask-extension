@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒否"
   },
-  "likeToConnect": {
-    "message": "$1 はあなたのアカウントにアクセスしようとしています。"
-  },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
   },

@@ -12,9 +12,6 @@
   "reject": {
     "message": "Elutasítás"
   },
-  "likeToConnect": {
-    "message": "$1 szeretne kapcsolódni az ön fiókjához"
-  },
   "about": {
     "message": "Névjegy"
   },

@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒絕"
   },
-  "likeToConnect": {
-    "message": "$1 請求訪問帳戶權限"
-  },
   "about": {
     "message": "關於"
   },

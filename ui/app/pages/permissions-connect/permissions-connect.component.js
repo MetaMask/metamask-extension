@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import PermissionsConnectHeader from './permissions-connect-header'
 import PermissionsConnectFooter from './permissions-connect-footer'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -37,6 +36,7 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     redirecting: PropTypes.bool,
+    targetDomainMetadata: PropTypes.object,
   }
 
   static defaultProps = {
@@ -56,7 +56,7 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddress: '',
+    selectedAccountAddresses: new Set(),
     permissionAccepted: null,
     originName: this.props.originName,
   }
@@ -94,9 +94,9 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  selectAccount = (address) => {
+  selectAccounts = (addresses) => {
     this.setState({
-      selectedAccountAddress: address,
+      selectedAccountAddresses: addresses,
     }, () => this.props.history.push(this.props.confirmPermissionPath))
   }
 
@@ -161,13 +161,25 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       page,
+      targetDomainMetadata,
     } = this.props
-    const { selectedAccountAddress, permissionAccepted, originName, redirecting } = this.state
+    const {
+      selectedAccountAddresses,
+      permissionAccepted,
+      originName,
+      redirecting,
+    } = this.state
 
     return (
       <div className="permissions-connect">
         { !redirecting
-          ? <PermissionsConnectHeader page={page} />
+          ? (
+            <div className="permissions-connect__page-count-wrapper">
+              <div className="permissions-connect-header__page-count">
+                { `${page}/2` }
+              </div>
+            </div>
+          )
           : null
         }
         <Switch>
@@ -175,26 +187,31 @@ export default class PermissionConnect extends Component {
             path={connectPath}
             exact
             render={() => (
-              <ChooseAccount
-                accounts={accounts}
-                originName={originName}
-                nativeCurrency={nativeCurrency}
-                selectAccount={(address) => this.selectAccount(address)}
-                selectNewAccountViaModal={() => {
-                  showNewAccountModal({
-                    onCreateNewAccount: this.selectAccount,
-                    newAccountNumber,
-                  })
-                }}
-                addressLastConnectedMap={addressLastConnectedMap}
-                cancelPermissionsRequest={(requestId) => {
-                  if (requestId) {
-                    rejectPermissionsRequest(requestId)
-                    this.redirectFlow(false)
-                  }
-                }}
-                permissionsRequestId={permissionsRequestId}
-              />
+              <div>
+                <ChooseAccount
+                  accounts={accounts}
+                  originName={originName}
+                  nativeCurrency={nativeCurrency}
+                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                  selectNewAccountViaModal={(handleAccountClick) => {
+                    showNewAccountModal({
+                      onCreateNewAccount: (address) => handleAccountClick(address),
+                      newAccountNumber,
+                    })
+                  }}
+                  addressLastConnectedMap={addressLastConnectedMap}
+                  cancelPermissionsRequest={(requestId) => {
+                    if (requestId) {
+                      rejectPermissionsRequest(requestId)
+                      this.redirectFlow(false)
+                    }
+                  }}
+                  permissionsRequestId={permissionsRequestId}
+                  selectedAccountAddresses={selectedAccountAddresses}
+                  targetDomainMetadata={targetDomainMetadata}
+                />
+                { !redirecting ? <PermissionsConnectFooter /> : null }
+              </div>
             )}
           />
           <Route
@@ -212,11 +229,12 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest(requestId)
                     this.redirectFlow(false)
                   }}
-                  selectedIdentity={accounts.find((account) => account.address === selectedAccountAddress)}
+                  selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
                   redirect={redirecting}
                   permissionRejected={ permissionAccepted === false }
+                  cachedOrigin={originName}
                 />
-                <PermissionsConnectFooter />
+                { !redirecting ? <PermissionsConnectFooter /> : null }
               </div>
             )}
           />

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Απόρριψη"
   },
-  "likeToConnect": {
-    "message": "Αίτημα σύνδεσης στον λογαριασμό σας από $1"
-  },
   "about": {
     "message": "Σχετικά με"
   },

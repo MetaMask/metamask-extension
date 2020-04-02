@@ -7,6 +7,7 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsDomains,
+  getTargetDomainMetadata,
 } from '../../selectors/selectors'
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
@@ -52,6 +53,8 @@ const mapStateToProps = (state, ownProps) => {
     throw new Error('Incorrect path for permissions-connect component')
   }
 
+  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
+
   return {
     permissionsRequest,
     permissionsRequestId,
@@ -65,6 +68,7 @@ const mapStateToProps = (state, ownProps) => {
     connectPath,
     confirmPermissionPath,
     page,
+    targetDomainMetadata,
   }
 }
 

@@ -26,17 +26,15 @@
   "connectingWithMetaMask": {
     "message": "Connettendo con MetaMask..."
   },
-  "chooseAnAcount": {
-    "message": "Scegli un account"
+  "connectTo": {
+    "message": "Collegati a $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
   "reject": {
     "message": "Annulla"
-  },
-  "redirectingBackToDapp": {
-    "message": "Ritornando alla dapp..."
   },
   "about": {
     "message": "Informazioni"
@@ -773,9 +771,6 @@
   "learnMore": {
     "message": "Scopri di più"
   },
-  "learnAboutRisks": {
-    "message": "Scopri di piu sui rischi qua."
-  },
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
   },
@@ -784,10 +779,6 @@
   },
   "likeToAddTokens": {
     "message": "Vorresti aggiungere questi token?"
-  },
-  "likeToConnect": {
-    "message": "$1 vorrebbe connettersi al tuo account",
-    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Collegamenti"
@@ -1400,10 +1391,6 @@
   },
   "toWithColon": {
     "message": "To:"
-  },
-  "toConnectWith": {
-    "message": "Di connettersi con $1",
-    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 a ETH con ShapeShift",

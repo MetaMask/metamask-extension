@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
+import Button from '../../../components/ui/button'
+import CheckBox from '../../../components/ui/check-box'
+import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
+import PermissionsConnectHeader from '../../../components/app/permissions-connect-header'
 
 export default class ChooseAccount extends Component {
   static propTypes = {
@@ -12,13 +17,18 @@ export default class ChooseAccount extends Component {
       lastConnectedDate: PropTypes.string,
       balance: PropTypes.string,
     })).isRequired,
-    originName: PropTypes.string.isRequired,
-    selectAccount: PropTypes.func.isRequired,
+    selectAccounts: PropTypes.func.isRequired,
     selectNewAccountViaModal: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
     addressLastConnectedMap: PropTypes.object,
     cancelPermissionsRequest: PropTypes.func.isRequired,
     permissionsRequestId: PropTypes.string.isRequired,
+    selectedAccountAddresses: PropTypes.object.isRequired,
+    targetDomainMetadata: PropTypes.object,
+  }
+
+  state = {
+    selectedAccounts: this.props.selectedAccountAddresses,
   }
 
   static defaultProps = {
@@ -29,8 +39,42 @@ export default class ChooseAccount extends Component {
     t: PropTypes.func,
   }
 
+  handleAccountClick (address) {
+    const { selectedAccounts } = this.state
+
+    const newSelectedAccounts = new Set(selectedAccounts)
+
+    if (newSelectedAccounts.has(address)) {
+      newSelectedAccounts.delete(address)
+    } else {
+      newSelectedAccounts.add(address)
+    }
+
+    this.setState({ selectedAccounts: newSelectedAccounts })
+  }
+
+  selectAll () {
+    const { accounts } = this.props
+
+    const newSelectedAccounts = new Set(accounts.map((account) => account.address))
+
+    this.setState({ selectedAccounts: newSelectedAccounts })
+  }
+
+  deselectAll () {
+    this.setState({ selectedAccounts: new Set() })
+  }
+
+  allAreSelected () {
+    const { accounts } = this.props
+    const { selectedAccounts } = this.state
+
+    return accounts.every(({ address }) => selectedAccounts.has(address))
+  }
+
   renderAccountsList = () => {
-    const { accounts, selectAccount, nativeCurrency, addressLastConnectedMap } = this.props
+    const { accounts, nativeCurrency, addressLastConnectedMap } = this.props
+    const { selectedAccounts } = this.state
     return (
       <div className="permissions-connect-choose-account__accounts-list">
         {
@@ -39,10 +83,14 @@ export default class ChooseAccount extends Component {
             return (
               <div
                 key={`permissions-connect-choose-account-${index}`}
-                onClick={ () => selectAccount(address) }
+                onClick={ () => this.handleAccountClick(address) }
                 className="permissions-connect-choose-account__account"
               >
                 <div className="permissions-connect-choose-account__account-info-wrapper">
+                  <CheckBox
+                    className="permissions-connect-choose-account__list-check-box"
+                    checked={ selectedAccounts.has(address) }
+                  />
                   <Identicon
                     diameter={34}
                     address={address}
@@ -76,31 +124,86 @@ export default class ChooseAccount extends Component {
     )
   }
 
+  renderAccountsListHeader () {
+    const { t } = this.context
+    const { selectNewAccountViaModal, accounts } = this.props
+    return (
+      <div
+        className={classnames({
+          'permissions-connect-choose-account__accounts-list-header--one-item': accounts.length === 1,
+          'permissions-connect-choose-account__accounts-list-header--two-items': accounts.length > 1,
+        })}
+      >
+        { accounts.length > 1
+          ? (
+            <div className="permissions-connect-choose-account__select-all">
+              <CheckBox
+                className="permissions-connect-choose-account__header-check-box"
+                checked={this.allAreSelected()}
+                onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
+              />
+              <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>
+              <Tooltip
+                position="bottom"
+                html={(
+                  <div style={{ width: 200, padding: 4 }}>
+                    {t('selectingAllWillAllow')}
+                  </div>
+                )}
+              >
+                <i className="fa fa-info-circle" />
+              </Tooltip>
+            </div>
+          )
+          : null
+        }
+        <div
+          className="permissions-connect-choose-account__text-blue"
+          onClick={() => selectNewAccountViaModal(this.handleAccountClick.bind(this))}
+        >
+          { this.context.t('newAccount') }
+        </div>
+      </div>
+    )
+  }
+
   render () {
-    const { originName, selectNewAccountViaModal, permissionsRequestId, cancelPermissionsRequest } = this.props
+    const {
+      selectAccounts,
+      permissionsRequestId,
+      cancelPermissionsRequest,
+      targetDomainMetadata,
+      accounts,
+    } = this.props
+    const { selectedAccounts } = this.state
     const { t } = this.context
     return (
       <div className="permissions-connect-choose-account">
-        <div className="permissions-connect-choose-account__title">
-          { t('chooseAnAcount') }
-        </div>
-        <div className="permissions-connect-choose-account__text">
-          { t('toConnectWith', [originName]) }
-        </div>
+        <PermissionsConnectHeader
+          icon={targetDomainMetadata.icon}
+          iconName={targetDomainMetadata.origin}
+          headerTitle={t('connectWithMetaMask')}
+          headerText={accounts.length > 0
+            ? t('chooseAccountsToUse')
+            : t('connectAccountOrCreate')
+          }
+        />
+        { this.renderAccountsListHeader() }
         { this.renderAccountsList() }
         <div className="permissions-connect-choose-account__bottom-buttons">
-          <div
+          <Button
             onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
-            className="permissions-connect-choose-account__cancel"
+            type="default"
           >
             { t('cancel') }
-          </div>
-          <div
-            onClick={ () => selectNewAccountViaModal() }
-            className="permissions-connect-choose-account__new-account"
+          </Button>
+          <Button
+            onClick={ () => selectAccounts(selectedAccounts) }
+            type="primary"
+            disabled={ selectedAccounts.size === 0 }
           >
-            { t('newAccount') }
-          </div>
+            { t('next') }
+          </Button>
         </div>
       </div>
     )

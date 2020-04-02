@@ -12,9 +12,6 @@
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
-    "message": "$1 ingin menghubungkan ke akun Anda"
-  },
   "about": {
     "message": "Tentang"
   },

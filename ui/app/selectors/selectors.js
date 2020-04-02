@@ -376,6 +376,17 @@ export function getDomainMetadata (state) {
   return state.metamask.domainMetadata
 }
 
+export function getTargetDomainMetadata (state, request, defaultOrigin) {
+  const domainMetadata = getDomainMetadata(state)
+
+  const { metadata: requestMetadata = {} } = request || {}
+  const origin = requestMetadata.origin || defaultOrigin
+  const targetDomainMetadata = (domainMetadata[origin] || { name: origin, icon: null })
+  targetDomainMetadata.origin = origin
+
+  return targetDomainMetadata
+}
+
 export function getActiveTab (state) {
   return state.activeTab
 }

@@ -125,6 +125,7 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
 
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
 
       await driver.waitUntilXWindowHandles(2)

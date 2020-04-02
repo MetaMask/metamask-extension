@@ -8,9 +8,6 @@
   "reject": {
     "message": "Odmítnout"
   },
-  "likeToConnect": {
-    "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
   "about": {
     "message": "Informácie"
   },
