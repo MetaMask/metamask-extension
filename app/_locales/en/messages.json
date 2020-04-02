@@ -64,7 +64,7 @@
   },
   "connectToMultiple": {
     "message": "Connect to $1",
-    "description": "$1 will be replaced by the translation of likeToConnecNumberOfAccounts"
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
   },
   "connectToMultipleNumberOfAccounts": {
     "message": "$1 accounts",

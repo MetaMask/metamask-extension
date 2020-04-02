@@ -130,57 +130,56 @@ export default class PermissionPageContainerContent extends PureComponent {
             }
           </div>
         )}
-      >{ textContent }
+      >
+        { textContent }
       </Tooltip>
     )
   }
 
-  renderTitleSubstituteText (name, key = 'title-substitute-text') {
-    return (
-      <div
-        key={key}
-        className="permission-approval-container__bold-title-elements"
-      >
-        { name }
-      </div>
-    )
-  }
-
-  getTitleArgs () {
+  getTitle () {
     const { domainMetadata, redirect, permissionRejected, selectedIdentities, allIdentitiesSelected } = this.props
     const { t } = this.context
 
     if (redirect && permissionRejected) {
-      return [ 'cancelledConnectionWithMetaMask' ]
+      return t('cancelledConnectionWithMetaMask')
     } else if (redirect) {
-      return [ 'connectingWithMetaMask' ]
+      return t('connectingWithMetaMask')
     } else if (domainMetadata.extensionId) {
-      return [ 'externalExtension', [domainMetadata.extensionId] ]
+      return t('externalExtension', [domainMetadata.extensionId])
     } else if (allIdentitiesSelected) {
-      return [
+      return t(
         'connectToAll',
         [
-          <div
-            key="multi-account-connect-all-accounts"
-            className="permission-approval-container__bold-title-elements"
-          >
-            { this.renderAccountTooltip(t('connectToAllAccounts')) }
-          </div>,
-        ],
-      ]
+          (
+            <span
+              key="multi-account-connect-all-accounts"
+              className="permission-approval-container__bold-title-elements"
+            >
+              { this.renderAccountTooltip(t('connectToAllAccounts')) }
+            </span>
+          ),
+        ]
+      )
     } else if (selectedIdentities.length > 1) {
-      return [
+      return t(
         'connectToMultiple',
         [
           this.renderAccountTooltip(t('connectToMultipleNumberOfAccounts', [ selectedIdentities.length ])),
-        ],
-      ]
+        ]
+      )
     } else {
-      return [
+      return t(
         'connectTo', [
-          this.renderTitleSubstituteText(this.getAccountDescriptor(selectedIdentities[0]), 'title-substitute-text-account-name'),
-        ],
-      ]
+          (
+            <span
+              key="connect-to-one-account"
+              className="permission-approval-container__bold-title-elements"
+            >
+              { this.getAccountDescriptor(selectedIdentities[0]) }
+            </span>
+          ),
+        ]
+      )
     }
   }
 
@@ -188,7 +187,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { domainMetadata, redirect } = this.props
     const { t } = this.context
 
-    const titleArgs = this.getTitleArgs()
+    const title = this.getTitle()
 
     return (
       <div
@@ -202,7 +201,7 @@ export default class PermissionPageContainerContent extends PureComponent {
               <PermissionsConnectHeader
                 icon={domainMetadata.icon}
                 iconName={domainMetadata.origin}
-                headerTitle={t(...titleArgs)}
+                headerTitle={title}
                 headerText={ domainMetadata.extensionId
                   ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
                   : t('thisWillAllow', [domainMetadata.origin])
