@@ -10,6 +10,7 @@ export default class PermissionPageContainer extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
+    allIdentitiesSelected: PropTypes.bool,
     permissionsDescriptions: PropTypes.object.isRequired,
     request: PropTypes.object,
     redirect: PropTypes.bool,
@@ -24,6 +25,7 @@ export default class PermissionPageContainer extends Component {
     request: {},
     requestMetadata: {},
     selectedIdentities: [],
+    allIdentitiesSelected: false,
   }
 
   static contextTypes = {
@@ -117,6 +119,7 @@ export default class PermissionPageContainer extends Component {
       selectedIdentities,
       redirect,
       permissionRejected,
+      allIdentitiesSelected,
     } = this.props
 
     return (
@@ -130,6 +133,7 @@ export default class PermissionPageContainer extends Component {
           selectedIdentities={selectedIdentities}
           redirect={redirect}
           permissionRejected={permissionRejected}
+          allIdentitiesSelected={allIdentitiesSelected}
         />
         { !redirect
           ? (

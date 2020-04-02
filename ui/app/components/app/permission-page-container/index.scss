@@ -3,7 +3,7 @@
   border: none;
   box-shadow: none;
   margin-top: 45px;
-  width: 466px;
+  width: 488px;
   min-height: 468px;
 
   &__header {
@@ -105,6 +105,15 @@
     .page-container__footer header {
       padding: 0;
     }
+  }
+
+  &__tooltip-body {
+    display: 'flex';
+    flex-direction: 'column';
+  }
+
+  &__bold-title-elements {
+    font-weight: bold;
   }
 }
 
