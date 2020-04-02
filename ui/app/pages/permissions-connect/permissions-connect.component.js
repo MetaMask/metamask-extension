@@ -167,10 +167,11 @@ export default class PermissionConnect extends Component {
     const { t } = this.context
     return !redirecting
       ? (
-        <div className={classnames({
-          'permissions-connect__top-bar--right-item': page === '1',
-          'permissions-connect__top-bar--two-items': page === '2',
-        })}
+        <div
+          className={classnames({
+            'permissions-connect__top-bar--right-item': page === '1',
+            'permissions-connect__top-bar--two-items': page === '2',
+          })}
         >
           { page === '2'
             ? <div className="permissions-connect__back" onClick={() => this.goBack()}>{ t('back') }</div>
