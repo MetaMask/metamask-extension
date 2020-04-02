@@ -29,6 +29,7 @@ import { Modal } from '../../components/app/modals'
 import Alert from '../../components/ui/alert'
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
+import Alerts from '../../components/app/alerts'
 
 import {
   ADD_TOKEN_ROUTE,
@@ -251,6 +252,7 @@ export default class Routes extends Component {
           { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
           { this.renderRoutes() }
         </div>
+        <Alerts />
       </div>
     )
   }
