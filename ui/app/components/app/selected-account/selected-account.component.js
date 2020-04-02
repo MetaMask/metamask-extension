@@ -15,14 +15,13 @@ class SelectedAccount extends Component {
   }
 
   static propTypes = {
-    selectedAddress: PropTypes.string,
-    selectedIdentity: PropTypes.object,
+    selectedIdentity: PropTypes.object.isRequired,
   }
 
   render () {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity } = this.props
-    const checksummedAddress = checksumAddress(selectedAddress)
+    const { selectedIdentity } = this.props
+    const checksummedAddress = checksumAddress(selectedIdentity.address)
 
     return (
       <div className="selected-account">
