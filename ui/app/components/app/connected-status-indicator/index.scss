@@ -3,6 +3,10 @@
   align-items: center;
   place-self: center start;
 
+  background: none;
+  font-size: inherit;
+  padding: 8px 0;
+
   &__green-circle, &__yellow-circle, &__grey-circle {
     border-radius: 4px;
     height: 8px;

@@ -14,10 +14,12 @@ export default class ConnectedStatusIndicator extends Component {
 
   static propTypes = {
     status: PropTypes.oneOf([ STATUS_CONNECTED, STATUS_CONNECTED_TO_ANOTHER_ACCOUNT, STATUS_NOT_CONNECTED ]),
+    onClick: PropTypes.func,
   }
 
   static defaultProps = {
     status: STATUS_NOT_CONNECTED,
+    onClick: null,
   }
 
   renderStatusCircle = () => {
@@ -49,10 +51,10 @@ export default class ConnectedStatusIndicator extends Component {
 
   render () {
     return (
-      <div className="connected-status-indicator">
+      <button className="connected-status-indicator" onClick={this.props.onClick}>
         { this.renderStatusCircle() }
         { this.renderStatusText() }
-      </div>
+      </button>
     )
   }
 }
