@@ -7,7 +7,7 @@ export const LOCALHOST = 'localhost'
 export const GOERLI = 'goerli'
 
 export const MAINNET_CODE = 1
-export const TESTNET_CODE = 2
+export const TESTNET_CODE = 0
 export const ROPSTEN_CODE = 3
 export const RINKEBY_CODE = 4
 export const KOVAN_CODE = 42

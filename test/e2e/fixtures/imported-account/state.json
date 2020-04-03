@@ -1,165 +1,107 @@
 {
   "data": {
-    "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+  "AppStateController": {
+    "mkrMigrationReminderTimestamp": null
+  },
+  "CachedBalancesController": {
+    "cachedBalances": {}
+  },
+  "CurrencyController": {
+    "conversionDate": 1585881340.741,
+    "conversionRate": 142.72,
+    "currentCurrency": "usd",
+    "nativeCurrency": "CFX"
+  },
+  "IncomingTransactionsController": {
+    "incomingTransactions": {
     },
-    "CachedBalancesController": {
-      "cachedBalances": {}
-    },
-    "CurrencyController": {
-      "conversionDate": 1585699587.453,
-      "conversionRate": 133.54,
-      "currentCurrency": "usd",
-      "nativeCurrency": "CFX"
-    },
-    "IncomingTransactionsController": {
-      "incomingTransactions": {
-      },
-      "incomingTxLastFetchedBlocksByNetwork": {
-        "goerli": null,
-        "kovan": null,
-        "localhost": 48,
-        "mainnet": null,
-        "rinkeby": null,
-        "ropsten": null,
-        "testnet": 669821
-      }
-    },
-    "KeyringController": {
-      "vault": "{\"data\":\"PFoPAVWSvgTQSld4pBw+7KF5Y7tl366nXMp6s6eqxY2QPx9++99OEjZ3sfuWrNcVIhzN8YO2jB0QqfZKn/WBWV9mWhQirqwdYAaiE0FnBJwfHDoMdGBCS/J8lE6yFzIrAECHZtAX/xrVK0Nx90L5WGt0vArOFwKcXlO31Fwc/q/dH4DFWtpRN5gqNSu6JCC3swcI6y+WtRdisPn94W0Ngk3M7EE1AD+WcBcoqijnLHVf0d3dOPfQwvsu7onNMeyA\",\"iv\":\"09s3jX1XEBHt6+FKyGM7zg==\",\"salt\":\"f6UpzrePd+cGwOA8vmHlu7A9ckbYr1tsPJ7Xe371E5k=\"}"
-    },
-    "NetworkController": {
-      "network": "0x2c",
-      "provider": {
-        "nickname": "",
-        "rpcTarget": "",
-        "ticker": "CFX",
-        "type": "localhost"
-      },
-      "settings": {
-        "chainId": 2,
-        "network": 2,
-        "nickname": "conflux-test-net",
-        "rpcUrl": "http://testnet-jsonrpc.conflux-chain.org:12537",
-        "ticker": "CFX"
-      }
-    },
-    "OnboardingController": {
-      "onboardingTabs": {
-      },
-      "seedPhraseBackedUp": true
-    },
-    "PermissionsMetadata": {
-      "domainMetadata": {
-        "ogs.google.com": {
-          "icon": null,
-          "name": "ogs.google.com"
-        },
-        "www.google.com": {
-          "icon": null,
-          "name": "dark background and light text chrome - Google Search"
-        }
-      },
-      "permissionsHistory": {
-      },
-      "permissionsLog": [
-        {
-          "id": 1748681906,
-          "method": "eth_accounts",
-          "methodType": "restricted",
-          "origin": "www.google.com",
-          "request": {
-            "id": 1748681906,
-            "jsonrpc": "2.0",
-            "method": "eth_accounts",
-            "origin": "www.google.com",
-            "params": []
-          },
-          "requestTime": 1585699057729,
-          "response": {
-            "id": 1748681906,
-            "jsonrpc": "2.0",
-            "result": []
-          },
-          "responseTime": 1585699057730,
-          "success": true
-        },
-        {
-          "id": 1938070636,
-          "method": "eth_accounts",
-          "methodType": "restricted",
-          "origin": "ogs.google.com",
-          "request": {
-            "id": 1938070636,
-            "jsonrpc": "2.0",
-            "method": "eth_accounts",
-            "origin": "ogs.google.com",
-            "params": []
-          },
-          "requestTime": 1585699057730,
-          "response": {
-            "id": 1938070636,
-            "jsonrpc": "2.0",
-            "result": []
-          },
-          "responseTime": 1585699057731,
-          "success": true
-        }
-      ]
-    },
-    "PreferencesController": {
-      "accountTokens": {
-        "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2": {
-          "localhost": [],
-          "testnet": []
-        }
-      },
-      "assetImages": {
-      },
-      "completedOnboarding": true,
-      "currentAccountTab": "history",
-      "currentLocale": "en",
-      "featureFlags": {
-        "advancedInlineGas": true,
-        "showIncomingTransactions": true,
-        "transactionTime": false
-      },
-      "firstTimeFlowType": "import",
-      "forgottenPassword": false,
-      "frequentRpcListDetail": [],
-      "identities": {
-        "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2": {
-          "address": "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2",
-          "name": "Account 1"
-        }
-      },
-      "ipfsGateway": "ipfs.dweb.link",
-      "knownMethodData": {
-      },
-      "lastSelectedAddressByOrigin": {
-      },
-      "lostIdentities": {
-      },
-      "metaMetricsId": null,
-      "metaMetricsSendCount": 0,
-      "participateInMetaMetrics": false,
-      "preferences": {
-        "useNativeCurrencyAsPrimaryCurrency": true
-      },
-      "selectedAddress": "0x1e08d58857d7d79b2c14d5160682248aa80ac6e2",
-      "suggestedTokens": {
-      },
-      "tokens": [],
-      "useBlockie": false,
-      "useNonceField": false
-    },
-    "config": {
-    },
-    "firstTimeInfo": {
-      "date": 1585699040456,
-      "version": "0.1.0"
+    "incomingTxLastFetchedBlocksByNetwork": {
+      "goerli": null,
+      "kovan": null,
+      "localhost": 356,
+      "mainnet": null,
+      "rinkeby": null,
+      "ropsten": null,
+      "testnet": 836059
     }
   },
+  "KeyringController": {
+    "vault": "{\"data\":\"LBEKnHOPSghgsZI5DJEc26ORjPiOwHHf1bDGbTPcGCImSoZblWw+SYly3/sHAscA+cZr2RC79Emk80+r0EDEv0aaQyRpMPKMwVW47yuNEds640OF21ZqqkXqsEhla9q+usI7l4Q9xfWVUU1FMNtx7y2775D4RsCiIR/DZ4OI0jzSjw2pBqdV5kXQEV/+PMlXNijYCxYc7P5qn6sfO0YbtdVxS5UkFvqmTZLq+k5SR3NLW/jlImZaz0rdD+uh\",\"iv\":\"KTZMdYnXuYmUe9dVVhgMgg==\",\"salt\":\"fI3At0lzBWucgUmIPtNwv6xguGiwFvclXgeJHYs9nP0=\"}"
+  },
+  "NetworkController": {
+    "network": "0x124",
+    "provider": {
+      "nickname": "",
+      "rpcTarget": "",
+      "ticker": "CFX",
+      "type": "localhost"
+    },
+    "settings": {
+      "chainId": 0,
+      "network": 0,
+      "nickname": "conflux-test-net",
+      "rpcUrl": "http://testnet-jsonrpc.conflux-chain.org:12537",
+      "ticker": "CFX"
+    }
+  },
+  "OnboardingController": {
+    "onboardingTabs": {
+    },
+    "seedPhraseBackedUp": true
+  },
+  "PreferencesController": {
+    "accountTokens": {
+      "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc": {
+        "localhost": [],
+        "testnet": []
+      }
+    },
+    "assetImages": {
+    },
+    "completedOnboarding": true,
+    "currentAccountTab": "history",
+    "currentLocale": "en",
+    "featureFlags": {
+      "advancedInlineGas": true,
+      "showIncomingTransactions": true,
+      "transactionTime": false
+    },
+    "firstTimeFlowType": "import",
+    "forgottenPassword": false,
+    "frequentRpcListDetail": [],
+    "identities": {
+      "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc": {
+        "address": "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc",
+        "name": "Account 1"
+      }
+    },
+    "ipfsGateway": "ipfs.dweb.link",
+    "knownMethodData": {
+    },
+    "lastSelectedAddressByOrigin": {
+    },
+    "lostIdentities": {
+    },
+    "metaMetricsId": null,
+    "metaMetricsSendCount": 0,
+    "participateInMetaMetrics": false,
+    "preferences": {
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "selectedAddress": "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc",
+    "suggestedTokens": {
+    },
+    "tokens": [],
+    "useBlockie": false,
+    "useNonceField": false
+  },
+  "config": {
+  },
+  "firstTimeInfo": {
+    "date": 1585881340477,
+    "version": "0.1.2"
+  }
+},
   "meta": {
     "version": 41
   }

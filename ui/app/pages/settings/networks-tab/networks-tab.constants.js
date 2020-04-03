@@ -13,7 +13,7 @@ const defaultNetworksData = [
     iconColor: '#FF4A8D',
     providerType: 'testnet',
     rpcUrl: 'http://testnet-jsonrpc.conflux-chain.org:12537',
-    chainId: '2',
+    chainId: '0',
     ticker: 'CFX',
     blockExplorerUrl: 'https://confluxscan.io',
   },
