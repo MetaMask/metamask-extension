@@ -10,6 +10,7 @@ import Loading from '../../../../../ui/loading-screen'
 const propsMethodSpies = {
   updateCustomGasPrice: sinon.spy(),
   updateCustomGasLimit: sinon.spy(),
+  updateCustomStorageLimit: sinon.spy(),
 }
 
 sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
@@ -22,8 +23,10 @@ describe('AdvancedTabContent Component', function () {
       <AdvancedTabContent
         updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
         updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
+        updateCustomStorageLimit={propsMethodSpies.updateCustomStorageLimit}
         customModalGasPriceInHex="11"
         customModalGasLimitInHex="23456"
+        customModalStorageLimitInHex="23456"
         timeRemaining="21500"
         transactionFee="$0.25"
         insufficientBalance={false}
@@ -37,6 +40,7 @@ describe('AdvancedTabContent Component', function () {
   afterEach(function () {
     propsMethodSpies.updateCustomGasPrice.resetHistory()
     propsMethodSpies.updateCustomGasLimit.resetHistory()
+    propsMethodSpies.updateCustomStorageLimit.resetHistory()
     AdvancedTabContent.prototype.renderDataSummary.resetHistory()
   })
 

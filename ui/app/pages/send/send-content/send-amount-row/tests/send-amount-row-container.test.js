@@ -27,9 +27,9 @@ proxyquire('../send-amount-row.container.js', {
       ...mockDataObject,
       mockChange: true,
     }),
-    getGasFeeErrorObject: (mockDataObject) => ({
+    getGasAndCollateralFeeErrorObject: (mockDataObject) => ({
       ...mockDataObject,
-      mockGasFeeErrorChange: true,
+      mockGasAndCollateralFeeErrorChange: true,
     }),
   },
   '../../../../store/actions': actionSpies,
@@ -75,7 +75,7 @@ describe('send-amount-row container', function () {
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(duckActionSpies.updateSendErrors.getCall(0).args[0], {
           some: 'data',
-          mockGasFeeErrorChange: true,
+          mockGasAndCollateralFeeErrorChange: true,
         })
       })
     })

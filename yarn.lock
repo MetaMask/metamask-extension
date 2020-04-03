@@ -2731,10 +2731,10 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.3.tgz#2dccb370ea02e15d605737006db078bce78f7b02"
-  integrity sha512-BAiGnJrWwctpSFeFZ+TKh7ByJ/1cgquMt62pNxE+4eQGOVmssbGNP1CwvSFthmbFgksGkwivDd2GPs4OQJRNWA==
+"@yqrashawn/conflux-local-network-lite@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.6.tgz#48e1a9b2609eb9b5eca4f5e12a4600a073e239ef"
+  integrity sha512-CJan36Q0q1qIiKHpTyOyErgdl7MdHR8ysmrKnqCIjUgH7LXZrv3ALR7fB6OFXK/xR/seDRhcAm8Qsdp94e3A4Q==
   dependencies:
     cfx-util "^0.0.1-c"
     express "^4.17.1"
@@ -2742,6 +2742,7 @@
     got "^10.5.7"
     jayson "^3.2.0"
     js-conflux-sdk "^0.9.0-alpha"
+    kill-port-process "^2.2.1"
     make-dir "^3.0.2"
     platform-is "^1.0.4"
     rimraf "^3.0.1"
@@ -10673,6 +10674,19 @@ execa@^0.8.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
+execa@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-0.9.0.tgz#adb7ce62cf985071f60580deb4a88b9e34712d01"
+  integrity sha512-BbUMBiX4hqiHZUA5+JujIjNb6TyAlp2D5KLheMjMluwOuzcnylDL4AxZYLLn1n2AGB49eSWwyKvvEQoRpnAtmA==
+  dependencies:
+    cross-spawn "^5.0.1"
+    get-stream "^3.0.0"
+    is-stream "^1.1.0"
+    npm-run-path "^2.0.0"
+    p-finally "^1.0.0"
+    signal-exit "^3.0.0"
+    strip-eof "^1.0.0"
+
 execa@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-1.0.0.tgz#c6236a5bb4df6d6f15e88e7f017798216749ddd8"
@@ -12152,6 +12166,11 @@ get-stream@^5.0.0, get-stream@^5.1.0:
   integrity sha512-EXr1FOzrzTfGeL0gQdeFEvOMm2mzMOglyiOXSTpPC+iAjAKftbr3jpCMWynogwYnM+eSj9sHGc6wjIcDvYiygw==
   dependencies:
     pump "^3.0.0"
+
+get-them-args@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/get-them-args/-/get-them-args-1.3.2.tgz#74a20ba8a4abece5ae199ad03f2bcc68fdfc9ba5"
+  integrity sha1-dKILqKSr7OWuGZrQPyvMaP38m6U=
 
 get-uri@^2.0.0:
   version "2.0.2"
@@ -15882,6 +15901,14 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
+kill-port-process@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/kill-port-process/-/kill-port-process-2.2.1.tgz#96a46417804b68f2078355bd7be8f16a6ad83f12"
+  integrity sha512-shMsmTy7FlCUGeckJLy/7s06Z7H4GeoxJjgKtYRhBA84ufGxgE/Imcoh9vGITIG3YjsUpuY90s9NugbERzw+eQ==
+  dependencies:
+    get-them-args "1.3.2"
+    pid-from-port "1.1.3"
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -19534,6 +19561,13 @@ picomatch@^2.0.4, picomatch@^2.0.5:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.1.tgz#21bac888b6ed8601f831ce7816e335bc779f0a4a"
   integrity sha512-ISBaA8xQNmwELC7eOjqFKMESB2VIqt4PPDD0nsS95b/9dZXvVKOlz9keMSnoGGKcOHXfTvDD6WMaRoSc9UuhRA==
+
+pid-from-port@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/pid-from-port/-/pid-from-port-1.1.3.tgz#313a1d056ee71319cff0940ed0ff027dad39ca69"
+  integrity sha512-OlE82n3yMOE5dY9RMOwxhoWefeMlxwk5IVxoj0sSzSFIlmvhN4obzTvO3s/d/b5JhcgXikjaspsy/HuUDTqbBg==
+  dependencies:
+    execa "^0.9.0"
 
 pidtree@^0.3.0:
   version "0.3.0"

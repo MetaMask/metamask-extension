@@ -1,6 +1,6 @@
 import assert from 'assert'
 import {
-  gasFeeIsInError,
+  gasAndCollateralFeeIsInError,
   getGasLoadingError,
   getGasButtonGroupShown,
 } from '../send-gas-row.selectors.js'
@@ -20,29 +20,29 @@ describe('send-gas-row selectors', function () {
     })
   })
 
-  describe('gasFeeIsInError()', function () {
-    it('should return true if send.errors.gasFee is truthy', function () {
+  describe('gasAndCollateralFeeIsInError()', function () {
+    it('should return true if send.errors.gasAndCollateralFee is truthy', function () {
       const state = {
         send: {
           errors: {
-            gasFee: 'def',
+            gasAndCollateralFee: 'def',
           },
         },
       }
 
-      assert.equal(gasFeeIsInError(state), true)
+      assert.equal(gasAndCollateralFeeIsInError(state), true)
     })
 
-    it('should return false send.errors.gasFee is falsely', function () {
+    it('should return false send.errors.gasAndCollateralFee is falsely', function () {
       const state = {
         send: {
           errors: {
-            gasFee: null,
+            gasAndCollateralFee: null,
           },
         },
       }
 
-      assert.equal(gasFeeIsInError(state), false)
+      assert.equal(gasAndCollateralFeeIsInError(state), false)
     })
   })
 

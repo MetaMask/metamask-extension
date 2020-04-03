@@ -402,7 +402,7 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#addTxGasDefaults', function () {
+  describe('#addTxGasAndCollateralDefaults', function () {
     it('should add the tx defaults if their are none', async function () {
       const txMeta = {
         txParams: {
@@ -415,7 +415,7 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
       providerResultStub.eth_estimateGas = '5209'
 
-      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta)
+      const txMetaWithDefaults = await txController.addTxGasAndCollateralDefaults(txMeta)
       assert(
         txMetaWithDefaults.txParams.value,
         '0x0',

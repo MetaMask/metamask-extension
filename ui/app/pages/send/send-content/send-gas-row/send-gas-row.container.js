@@ -1,15 +1,24 @@
 import { connect } from 'react-redux'
+import { isValidContractAddress } from 'cfx-util'
 import {
+  getSendTo,
   getConversionRate,
+  getGasAndCollateralTotal,
+  getStorageTotal,
   getGasTotal,
   getGasPrice,
   getGasLimit,
+  getStorageLimit,
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
 } from '../../send.selectors.js'
 import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors'
-import { isBalanceSufficient, calcGasTotal } from '../../send.utils.js'
+import {
+  isBalanceSufficient,
+  calcGasTotal,
+  calcStorageTotal,
+} from '../../send.utils.js'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
   getBasicGasEstimateLoadingStatus,
@@ -21,21 +30,24 @@ import {
   updateSendErrors,
 } from '../../../../ducks/send/send.duck'
 import {
-  resetCustomData,
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
+import { setCustomStorageLimit } from '../../../../ducks/storageLimit/storageLimit.duck'
 import {
   getGasLoadingError,
-  gasFeeIsInError,
+  gasAndCollateralFeeIsInError,
   getGasButtonGroupShown,
 } from './send-gas-row.selectors.js'
 import {
   showModal,
+  setStorageLimit,
   setGasPrice,
   setGasLimit,
   setGasTotal,
+  setStorageTotal,
   updateSendAmount,
+  resetAllCustomData,
 } from '../../../../store/actions'
 import {
   getAdvancedInlineGasShown,
@@ -54,23 +66,31 @@ function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const gasLimit = getGasLimit(state)
+  const storageLimit = getStorageLimit(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
 
   const gasTotal = getGasTotal(state)
+  const storageTotal = getStorageTotal(state)
+  const gasAndCollateralTotal = getGasAndCollateralTotal(state)
   const conversionRate = getConversionRate(state)
   const balance = getCurrentEthBalance(state)
+  const selectedToken = getSelectedToken(state)
+  const isSimpleTx = !(selectedToken || isValidContractAddress(getSendTo(state)))
 
   const insufficientBalance = !isBalanceSufficient({
     amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
-    gasTotal,
+    gasAndCollateralTotal,
     balance,
     conversionRate,
   })
 
   return {
+    isSimpleTx,
     balance: getSendFromBalance(state),
     gasTotal,
-    gasFeeError: gasFeeIsInError(state),
+    storageTotal,
+    gasAndCollateralTotal,
+    gasAndCollateralFeeError: gasAndCollateralFeeIsInError(state),
     gasLoadingError: getGasLoadingError(state),
     gasPriceButtonGroupProps: {
       buttonDataLoading: getBasicGasEstimateLoadingStatus(state),
@@ -82,6 +102,7 @@ function mapStateToProps (state) {
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
     gasPrice,
     gasLimit,
+    storageLimit,
     insufficientBalance,
     maxModeOn: getMaxModeOn(state),
     selectedToken: getSelectedToken(state),
@@ -93,6 +114,8 @@ function mapDispatchToProps (dispatch) {
   return {
     showCustomizeGasModal: () =>
       dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
+    showCustomizeStorageModal: () =>
+      dispatch(showModal({ name: 'CUSTOMIZE_STORAGE', hideBasic: true })),
     setGasPrice: (newPrice, gasLimit) => {
       dispatch(setGasPrice(newPrice))
       dispatch(setCustomGasPrice(newPrice))
@@ -107,12 +130,17 @@ function mapDispatchToProps (dispatch) {
         dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
       }
     },
+    setStorageLimit: (newLimit) => {
+      dispatch(setStorageLimit(newLimit))
+      dispatch(setCustomStorageLimit(newLimit))
+      dispatch(setStorageTotal(calcStorageTotal(newLimit)))
+    },
     setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },
     showGasButtonGroup: () => dispatch(showGasButtonGroup()),
-    resetCustomData: () => dispatch(resetCustomData()),
+    resetCustomData: () => dispatch(resetAllCustomData()),
   }
 }
 

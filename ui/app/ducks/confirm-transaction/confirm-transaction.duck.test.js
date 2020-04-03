@@ -499,6 +499,7 @@ describe('Confirm Transaction Duck', function () {
           },
           txData: {
             estimatedGas: '0x5208',
+            storageLimitSpecified: false,
             gasLimitSpecified: false,
             gasPriceSpecified: false,
             history: [],
@@ -524,7 +525,11 @@ describe('Confirm Transaction Duck', function () {
       ]
 
       store.dispatch(
-        actions.updateGasAndCalculate({ gasLimit: '0x2', gasPrice: '0x25' })
+        actions.updateGasAndCollateralAndCalculate({
+          gasLimit: '0x2',
+          gasPrice: '0x25',
+          storageLimit: '0x1',
+        })
       )
 
       const storeActions = store.getActions()

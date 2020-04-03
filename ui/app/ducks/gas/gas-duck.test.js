@@ -180,6 +180,7 @@ describe('Gas Duck', function () {
     customData: {
       price: null,
       limit: null,
+      total: null,
     },
     basicEstimates: {
       average: null,
@@ -302,9 +303,9 @@ describe('Gas Duck', function () {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_CUSTOM_GAS_LIMIT,
-          value: { newGasLimit: 9876, newStorageLimit: 0 },
+          value: 9876,
         }),
-        { customData: { limit: 9876, storageLimit: 0 }, ...mockState }
+        { customData: { limit: 9876 }, ...mockState }
       )
     })
 
@@ -722,7 +723,8 @@ describe('Gas Duck', function () {
       } = mockDistpatch.getCall(2).args[0]
       assert.equal(thirdDispatchCallType, SET_PRICE_AND_TIME_ESTIMATES)
       assert(
-        priceAndTimeEstimateResult.length < ((mockPredictTableResponse.length * 3) - 2)
+        priceAndTimeEstimateResult.length <
+          ((mockPredictTableResponse.length * 3) - 2)
       )
       assert(!priceAndTimeEstimateResult.find((d) => d.expectedTime > 100))
       assert(
@@ -829,19 +831,10 @@ describe('Gas Duck', function () {
 
   describe('setCustomGasLimit', function () {
     it('should create the correct action', function () {
-      assert.deepEqual(
-        setCustomGasLimit({
-          newGasLimit: 'mockCustomGasLimit',
-          newStorageLimit: 'mockCustomStorageLimit',
-        }),
-        {
-          type: SET_CUSTOM_GAS_LIMIT,
-          value: {
-            newGasLimit: 'mockCustomGasLimit',
-            newStorageLimit: 'mockCustomStorageLimit',
-          },
-        }
-      )
+      assert.deepEqual(setCustomGasLimit('mockCustomGasLimit'), {
+        type: SET_CUSTOM_GAS_LIMIT,
+        value: 'mockCustomGasLimit',
+      })
     })
   })
 

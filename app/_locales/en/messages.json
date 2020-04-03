@@ -613,6 +613,12 @@
   "functionType": {
     "message": "Function Type"
   },
+  "storageLimit": {
+    "message": "Storage Limit"
+  },
+  "storageLimitInfoModalContent": {
+    "message": "Storage limit is the maximum amount of units of storage you are willing to spend."
+  },
   "gasLimit": {
     "message": "Gas Limit"
   },

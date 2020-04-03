@@ -8,9 +8,12 @@ import {
   getBlockGasLimit,
   getConversionRate,
   getCurrentNetwork,
+  getStorageLimit,
   getGasLimit,
   getGasPrice,
   getGasTotal,
+  getStorageTotal,
+  getGasAndCollateralTotal,
   getPrimaryCurrency,
   getRecentBlocks,
   getSelectedToken,
@@ -29,8 +32,9 @@ import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
   updateSendTokenBalance,
-  updateGasData,
+  updateGasAndCollateralData,
   setGasTotal,
+  setStorageTotal,
   showQrScanner,
   qrCodeDetected,
   updateSendEnsResolution,
@@ -38,7 +42,7 @@ import {
 } from '../../store/actions'
 import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck'
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck'
-import { calcGasTotal } from './send.utils.js'
+import { calcGasTotal, calcStorageTotal } from './send.utils.js'
 import { isValidDomainName } from '../../helpers/utils/util'
 
 function mapStateToProps (state) {
@@ -50,9 +54,12 @@ function mapStateToProps (state) {
     conversionRate: getConversionRate(state),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
+    storageLimit: getStorageLimit(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),
+    storageTotal: getStorageTotal(state),
+    gasAndCollateralTotal: getGasAndCollateralTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
     qrCodeData: getQrCodeData(state),
@@ -70,9 +77,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    updateAndSetGasLimit: ({
+    updateAndSetGasAndStorageLimit: ({
       blockGasLimit,
       editingTransactionId,
+      storageLimit,
       gasLimit,
       gasPrice,
       recentBlocks,
@@ -82,9 +90,15 @@ function mapDispatchToProps (dispatch) {
       value,
       data,
     }) => {
-      !editingTransactionId
-        ? dispatch(
-          updateGasData({
+      if (editingTransactionId) {
+        dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+        dispatch(setStorageTotal(calcStorageTotal(storageLimit)))
+      } else {
+        if (selectedToken && !to) {
+          return
+        }
+        dispatch(
+          updateGasAndCollateralData({
             gasPrice,
             recentBlocks,
             selectedAddress,
@@ -95,7 +109,7 @@ function mapDispatchToProps (dispatch) {
             data,
           })
         )
-        : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+      }
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
       dispatch(

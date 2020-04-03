@@ -463,6 +463,12 @@
   "functionType": {
     "message": "功能類型"
   },
+  "storageLimit": {
+    "message": "Storage 上限"
+  },
+  "storageLimitInfoModalContent": {
+    "message": "Storage 上限代表願意為交易手續費所付出的最高總價"
+  },
   "gasLimit": {
     "message": "Gas 上限"
   },

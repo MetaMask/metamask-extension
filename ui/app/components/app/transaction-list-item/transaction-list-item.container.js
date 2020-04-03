@@ -11,8 +11,8 @@ import {
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
 import {
-  getHexGasTotal,
   increaseLastGasPrice,
+  getHexGasAndCollateralTotal,
 } from '../../../helpers/utils/confirm-tx.util'
 import { formatDate } from '../../../helpers/utils/util'
 import {
@@ -21,6 +21,7 @@ import {
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
+import { setCustomStorageLimit } from '../../../ducks/storageLimit/storageLimit.duck'
 import {
   getIsMainnet,
   preferencesSelector,
@@ -39,7 +40,7 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
   const {
-    txParams: { gas: gasLimit, gasPrice, data, storage: storageLimit } = {},
+    txParams: { storageLimit, gas: gasLimit, gasPrice, data } = {},
     transactionCategory,
   } = primaryTransaction
   const selectedAddress = getSelectedAddress(state)
@@ -54,10 +55,10 @@ const mapStateToProps = (state, ownProps) => {
     primaryTransaction.txParams &&
     isBalanceSufficient({
       amount: '0x0',
-      gasTotal: getHexGasTotal({
+      gasAndCollateralTotal: getHexGasAndCollateralTotal({
+        storageLimit,
         gasPrice: increaseLastGasPrice(gasPrice),
         gasLimit,
-        storageLimit,
       }),
       balance: selectedAccountBalance,
       conversionRate: conversionRateSelector(state),
@@ -89,6 +90,7 @@ const mapDispatchToProps = (dispatch) => {
         setCustomGasPriceForRetry(gasPrice || transaction.txParams.gasPrice)
       )
       dispatch(setCustomGasLimit(transaction.txParams.gas))
+      dispatch(setCustomStorageLimit(transaction.txParams.storageLimit))
       dispatch(
         showSidebar({
           transitionName: 'sidebar-left',

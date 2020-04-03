@@ -9,20 +9,30 @@ let mergeProps
 const actionSpies = {
   hideModal: sinon.spy(),
   setGasLimit: sinon.spy(),
+  setStorageLimit: sinon.spy(),
   setGasPrice: sinon.spy(),
 }
 
-const gasActionSpies = {
+const gasDuckSpies = {
   setCustomGasPrice: sinon.spy(),
   setCustomGasLimit: sinon.spy(),
-  resetCustomData: sinon.spy(),
+  resetCustomGasData: sinon.spy(),
+}
+
+const storageLimitDuckSpies = {
+  setCustomStorageLimit: sinon.spy(),
+  resetCustomStorageData: sinon.spy(),
+}
+
+const gasAndCollateralDuckSpies = {
+  resetCustomGasAndCollateralData: sinon.spy(),
 }
 
 const confirmTransactionActionSpies = {
-  updateGasAndCalculate: sinon.spy(),
+  updateGasAndCollateralAndCalculte: sinon.spy(),
 }
 
-const sendActionSpies = {
+const sendDuckSpies = {
   hideGasButtonGroup: sinon.spy(),
 }
 
@@ -43,9 +53,11 @@ proxyquire('../gas-modal-page-container.container.js', {
     getDefaultActiveButtonIndex: (a, b) => a + b,
   },
   '../../../../store/actions': actionSpies,
-  '../../../../ducks/gas/gas.duck': gasActionSpies,
+  '../../../../ducks/gas/gas.duck': gasDuckSpies,
+  '../../../../ducks/storageLimit/storageLimit.duck': storageLimitDuckSpies,
+  '../../../../ducks/gasAndCollateral/gasAndCollateral.duck': gasAndCollateralDuckSpies,
   '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
-  '../../../../ducks/send/send.duck': sendActionSpies,
+  '../../../../ducks/send/send.duck': sendDuckSpies,
   '../../../../selectors/selectors.js': {
     getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
     getSelectedToken: () => null,
@@ -73,6 +85,7 @@ describe('gas-modal-page-container container', function () {
         },
         metamask: {
           send: {
+            storageLimit: '1024',
             gasLimit: '16',
             gasPrice: '32',
             amount: '64',
@@ -91,6 +104,7 @@ describe('gas-modal-page-container container', function () {
               id: 34,
               txParams: {
                 gas: '0x1600000',
+                storageLimit: '0x400',
                 gasPrice: '0x3200000',
                 value: '0x640000000000000',
               },
@@ -114,9 +128,18 @@ describe('gas-modal-page-container container', function () {
             { gasprice: 6, expectedTime: 124 },
           ],
         },
+        storageLimit: {
+          customData: {
+            limit: '1024',
+          },
+        },
+        gasAndCollateral: {
+          total: 'bbbbbbbb',
+        },
         confirmTransaction: {
           txData: {
             txParams: {
+              storageLimit: '0x400',
               gas: '0x1600000',
               gasPrice: '0x3200000',
               value: '0x640000000000000',
@@ -130,11 +153,12 @@ describe('gas-modal-page-container container', function () {
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
         currentTimeEstimate: '~1 min 11 sec',
-        newTotalFiat: '637.41',
+        newTotalFiat: '839.17',
+        isSimpleTx: true,
         blockTime: 12,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
-        customGasTotal: 'aaaaaaa955555556',
+        customGasAndCollateralTotal: 'e2aa6be443c7d956',
         customPriceIsSafe: true,
         gasChartProps: {
           currentPrice: 4.294967295,
@@ -144,19 +168,19 @@ describe('gas-modal-page-container container', function () {
           gasPricesMax: 6,
         },
         gasPriceButtonGroupProps: {
-          buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
-          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',
-          gasButtonInfo: 'mockRenderableBasicEstimateData:4',
+          buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:6',
+          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:6ffffffff',
+          gasButtonInfo: 'mockRenderableBasicEstimateData:6',
         },
         gasEstimatesLoading: false,
         hideBasic: true,
         infoRowProps: {
-          originalTotalFiat: '637.41',
-          originalTotalEth: '12.748189 CFX',
-          newTotalFiat: '637.41',
-          newTotalEth: '12.748189 CFX',
+          originalTotalFiat: '839.17',
+          originalTotalEth: '16.783346 CFX',
+          newTotalFiat: '839.17',
+          newTotalEth: '16.783346 CFX',
           sendAmount: '0.45036 CFX',
-          transactionFee: '12.297829 CFX',
+          transactionFee: '16.332986 CFX',
         },
         insufficientBalance: true,
         isSpeedUp: false,
@@ -283,24 +307,29 @@ describe('gas-modal-page-container container', function () {
 
     afterEach(function () {
       actionSpies.hideModal.resetHistory()
-      gasActionSpies.setCustomGasPrice.resetHistory()
-      gasActionSpies.setCustomGasLimit.resetHistory()
+      gasDuckSpies.setCustomGasPrice.resetHistory()
+      gasDuckSpies.setCustomGasLimit.resetHistory()
+      storageLimitDuckSpies.setCustomStorageLimit.resetHistory()
     })
 
     describe('hideGasButtonGroup()', function () {
       it('should dispatch a hideGasButtonGroup action', function () {
         mapDispatchToPropsObject.hideGasButtonGroup()
         assert(dispatchSpy.calledOnce)
-        assert(sendActionSpies.hideGasButtonGroup.calledOnce)
+        assert(sendDuckSpies.hideGasButtonGroup.calledOnce)
       })
     })
 
     describe('cancelAndClose()', function () {
       it('should dispatch a hideModal action', function () {
         mapDispatchToPropsObject.cancelAndClose()
-        assert(dispatchSpy.calledTwice)
+        assert.equal(dispatchSpy.callCount, 4)
         assert(actionSpies.hideModal.calledOnce)
-        assert(gasActionSpies.resetCustomData.calledOnce)
+        assert(gasDuckSpies.resetCustomGasData.calledOnce)
+        assert(storageLimitDuckSpies.resetCustomStorageData.calledOnce)
+        assert(
+          gasAndCollateralDuckSpies.resetCustomGasAndCollateralData.calledOnce
+        )
       })
     })
 
@@ -308,9 +337,9 @@ describe('gas-modal-page-container container', function () {
       it('should dispatch a setCustomGasPrice action with the arg passed to updateCustomGasPrice hex prefixed', function () {
         mapDispatchToPropsObject.updateCustomGasPrice('ffff')
         assert(dispatchSpy.calledOnce)
-        assert(gasActionSpies.setCustomGasPrice.calledOnce)
+        assert(gasDuckSpies.setCustomGasPrice.calledOnce)
         assert.equal(
-          gasActionSpies.setCustomGasPrice.getCall(0).args[0],
+          gasDuckSpies.setCustomGasPrice.getCall(0).args[0],
           '0xffff'
         )
       })
@@ -318,9 +347,9 @@ describe('gas-modal-page-container container', function () {
       it('should dispatch a setCustomGasPrice action', function () {
         mapDispatchToPropsObject.updateCustomGasPrice('0xffff')
         assert(dispatchSpy.calledOnce)
-        assert(gasActionSpies.setCustomGasPrice.calledOnce)
+        assert(gasDuckSpies.setCustomGasPrice.calledOnce)
         assert.equal(
-          gasActionSpies.setCustomGasPrice.getCall(0).args[0],
+          gasDuckSpies.setCustomGasPrice.getCall(0).args[0],
           '0xffff'
         )
       })
@@ -330,9 +359,18 @@ describe('gas-modal-page-container container', function () {
       it('should dispatch a setCustomGasLimit action', function () {
         mapDispatchToPropsObject.updateCustomGasLimit('0x10')
         assert(dispatchSpy.calledOnce)
-        assert(gasActionSpies.setCustomGasLimit.calledOnce)
+        assert(gasDuckSpies.setCustomGasLimit.calledOnce)
+        assert.equal(gasDuckSpies.setCustomGasLimit.getCall(0).args[0], '0x10')
+      })
+    })
+
+    describe('updateCustomStorageLimit()', function () {
+      it('should dispatch a setCustomStorageLimit action', function () {
+        mapDispatchToPropsObject.updateCustomStorageLimit('0x10')
+        assert(dispatchSpy.calledOnce)
+        assert(storageLimitDuckSpies.setCustomStorageLimit.calledOnce)
         assert.equal(
-          gasActionSpies.setCustomGasLimit.getCall(0).args[0],
+          storageLimitDuckSpies.setCustomStorageLimit.getCall(0).args[0],
           '0x10'
         )
       })
@@ -349,14 +387,39 @@ describe('gas-modal-page-container container', function () {
       })
     })
 
-    describe('updateConfirmTxGasAndCalculate()', function () {
-      it('should dispatch a updateGasAndCalculate action with the correct props', function () {
-        mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa')
-        assert.equal(dispatchSpy.callCount, 3)
-        assert(actionSpies.setGasPrice.calledOnce)
-        assert(actionSpies.setGasLimit.calledOnce)
-        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'ffff')
-        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa')
+    describe('setStorageData()', function () {
+      it('should dispatch a setGasPrice and setGasLimit action with the correct props', function () {
+        mapDispatchToPropsObject.setStorageData('ffff')
+        assert(dispatchSpy.calledOnce)
+        assert(actionSpies.setStorageLimit.calledOnce)
+        assert.equal(actionSpies.setStorageLimit.getCall(0).args[0], 'ffff')
+      })
+    })
+
+    describe('updateConfirmTxGasAndCollateralAndCalculate()', function () {
+      it('should dispatch a updateConfirmTxGasAndCollateralAndCalculate action with the correct props', function () {
+        mapDispatchToPropsObject.updateConfirmTxGasAndCollateralAndCalculate(
+          'ffff',
+          'aaaa',
+          '400',
+          'ffff'
+        )
+        assert.equal(dispatchSpy.callCount, 4)
+        assert(gasDuckSpies.setCustomGasPrice.calledOnce)
+        assert(gasDuckSpies.setCustomGasLimit.calledOnce)
+        assert(storageLimitDuckSpies.setCustomStorageLimit.calledOnce)
+        assert.equal(
+          gasDuckSpies.setCustomGasLimit.getCall(0).args[0],
+          '0xffff'
+        )
+        assert.equal(
+          gasDuckSpies.setCustomGasPrice.getCall(0).args[0],
+          '0xaaaa'
+        )
+        assert.equal(
+          storageLimitDuckSpies.setCustomStorageLimit.getCall(0).args[0],
+          '0x400'
+        )
       })
     })
   })
@@ -380,7 +443,8 @@ describe('gas-modal-page-container container', function () {
         updateCustomGasPrice: sinon.spy(),
         hideGasButtonGroup: sinon.spy(),
         setGasData: sinon.spy(),
-        updateConfirmTxGasAndCalculate: sinon.spy(),
+        setStorageData: sinon.spy(),
+        updateConfirmTxGasAndCollateralAndCalculate: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
         createSpeedUpTransaction: sinon.spy(),
         hideSidebar: sinon.spy(),
@@ -394,7 +458,7 @@ describe('gas-modal-page-container container', function () {
       dispatchProps.updateCustomGasPrice.resetHistory()
       dispatchProps.hideGasButtonGroup.resetHistory()
       dispatchProps.setGasData.resetHistory()
-      dispatchProps.updateConfirmTxGasAndCalculate.resetHistory()
+      dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.resetHistory()
       dispatchProps.someOtherDispatchProp.resetHistory()
       dispatchProps.createSpeedUpTransaction.resetHistory()
       dispatchProps.hideSidebar.resetHistory()
@@ -415,14 +479,20 @@ describe('gas-modal-page-container container', function () {
       )
       assert.equal(result.someOwnProp, 123)
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(
+        dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
+        0
+      )
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
       assert.equal(dispatchProps.hideModal.callCount, 0)
 
       result.onSubmit()
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 1)
+      assert.equal(
+        dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
+        1
+      )
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
       assert.equal(dispatchProps.hideModal.callCount, 1)
@@ -455,14 +525,20 @@ describe('gas-modal-page-container container', function () {
       )
       assert.equal(result.someOwnProp, 123)
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(
+        dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
+        0
+      )
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
       assert.equal(dispatchProps.cancelAndClose.callCount, 0)
 
       result.onSubmit('mockNewLimit', 'mockNewPrice')
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(
+        dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
+        0
+      )
       assert.equal(dispatchProps.setGasData.callCount, 1)
       assert.deepEqual(dispatchProps.setGasData.getCall(0).args, [
         'mockNewLimit',
@@ -489,7 +565,10 @@ describe('gas-modal-page-container container', function () {
 
       result.onSubmit()
 
-      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(
+        dispatchProps.updateConfirmTxGasAndCollateralAndCalculate.callCount,
+        0
+      )
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
       assert.equal(dispatchProps.cancelAndClose.callCount, 1)

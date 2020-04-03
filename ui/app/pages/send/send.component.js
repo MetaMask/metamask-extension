@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   getAmountErrorObject,
-  getGasFeeErrorObject,
+  getGasAndCollateralFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
@@ -30,9 +30,12 @@ export default class SendTransactionScreen extends Component {
     editingTransactionId: PropTypes.string,
     fetchBasicGasEstimates: PropTypes.func.isRequired,
     from: PropTypes.object,
+    storageLimit: PropTypes.string,
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
+    storageTotal: PropTypes.string,
+    gasAndCollateralTotal: PropTypes.string,
     hasHexData: PropTypes.bool,
     history: PropTypes.object,
     network: PropTypes.string,
@@ -47,7 +50,7 @@ export default class SendTransactionScreen extends Component {
     tokens: PropTypes.array,
     tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
-    updateAndSetGasLimit: PropTypes.func.isRequired,
+    updateAndSetGasAndStorageLimit: PropTypes.func.isRequired,
     updateSendEnsResolution: PropTypes.func.isRequired,
     updateSendEnsResolutionError: PropTypes.func.isRequired,
     updateSendErrors: PropTypes.func.isRequired,
@@ -82,6 +85,8 @@ export default class SendTransactionScreen extends Component {
       conversionRate,
       from: { address, balance },
       gasTotal,
+      storageTotal,
+      gasAndCollateralTotal,
       network,
       primaryCurrency,
       selectedToken,
@@ -102,6 +107,8 @@ export default class SendTransactionScreen extends Component {
     const {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
+      storageTotal: prevStorageTotal,
+      gasAndCollateralTotal: prevGasAndCollateralTotal,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
       selectedToken: prevSelectedToken,
@@ -112,6 +119,10 @@ export default class SendTransactionScreen extends Component {
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
       balance,
+      gasAndCollateralTotal,
+      prevGasAndCollateralTotal,
+      storageTotal,
+      prevStorageTotal,
       gasTotal,
       prevBalance,
       prevGasTotal,
@@ -126,22 +137,22 @@ export default class SendTransactionScreen extends Component {
         amountConversionRate,
         balance,
         conversionRate,
-        gasTotal,
+        gasAndCollateralTotal,
         primaryCurrency,
         selectedToken,
         tokenBalance,
       })
-      const gasFeeErrorObject = selectedToken
-        ? getGasFeeErrorObject({
+      const gasAndCollateralFeeErrorObject = selectedToken
+        ? getGasAndCollateralFeeErrorObject({
           amountConversionRate,
           balance,
           conversionRate,
-          gasTotal,
+          gasAndCollateralTotal,
           primaryCurrency,
           selectedToken,
         })
-        : { gasFee: null }
-      updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))
+        : { gasAndCollateralFee: null }
+      updateSendErrors(Object.assign(amountErrorObject, gasAndCollateralFeeErrorObject))
     }
 
     if (!uninitialized) {
@@ -271,18 +282,20 @@ export default class SendTransactionScreen extends Component {
       amount,
       blockGasLimit,
       editingTransactionId,
+      storageLimit,
       gasLimit,
       gasPrice,
       recentBlocks,
       selectedAddress,
       selectedToken = {},
       to: currentToAddress,
-      updateAndSetGasLimit,
+      updateAndSetGasAndStorageLimit,
     } = this.props
 
-    updateAndSetGasLimit({
+    updateAndSetGasAndStorageLimit({
       blockGasLimit,
       editingTransactionId,
+      storageLimit,
       gasLimit,
       gasPrice,
       recentBlocks,

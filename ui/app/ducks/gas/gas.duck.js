@@ -16,7 +16,7 @@ const GAS_ESTIMATE_LOADING_FINISHED =
   'metamask/gas/GAS_ESTIMATE_LOADING_FINISHED'
 const GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/GAS_ESTIMATE_LOADING_STARTED'
 const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
-const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA'
+const RESET_CUSTOM_GAS_DATA = 'metamask/gas/RESET_CUSTOM_GAS_DATA'
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
 const SET_CUSTOM_GAS_ERRORS = 'metamask/gas/SET_CUSTOM_GAS_ERRORS'
 const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT'
@@ -30,10 +30,12 @@ const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED =
 const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED =
   'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
+// state.gas
 const initState = {
   customData: {
     price: null,
     limit: null,
+    total: null,
   },
   basicEstimates: {
     average: null,
@@ -98,8 +100,7 @@ export default function reducer (state = initState, action) {
         ...state,
         customData: {
           ...state.customData,
-          limit: action.value.newGasLimit,
-          storageLimit: action.value.newStorageLimit,
+          limit: action.value,
         },
       }
     case SET_CUSTOM_GAS_TOTAL:
@@ -138,7 +139,7 @@ export default function reducer (state = initState, action) {
         ...state,
         basicPriceEstimatesLastRetrieved: action.value,
       }
-    case RESET_CUSTOM_DATA:
+    case RESET_CUSTOM_GAS_DATA:
       return {
         ...state,
         customData: clone(initState.customData),
@@ -601,10 +602,10 @@ export function setCustomGasPrice (newPrice) {
   }
 }
 
-export function setCustomGasLimit ({ newGasLimit, newStorageLimit }) {
+export function setCustomGasLimit (newLimit) {
   return {
     type: SET_CUSTOM_GAS_LIMIT,
-    value: { newGasLimit, newStorageLimit },
+    value: newLimit,
   }
 }
 
@@ -647,6 +648,6 @@ export function resetCustomGasState () {
   return { type: RESET_CUSTOM_GAS_STATE }
 }
 
-export function resetCustomData () {
-  return { type: RESET_CUSTOM_DATA }
+export function resetCustomGasData () {
+  return { type: RESET_CUSTOM_GAS_DATA }
 }

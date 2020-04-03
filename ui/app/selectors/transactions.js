@@ -368,6 +368,7 @@ export const getTxParams = (state, selectedTransaction = {}) => {
   return (
     txParams || {
       from: send.from,
+      storageLimit: send.storageLimit || '0x0',
       gas: send.gasLimit || '0x5208',
       gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
       to: send.to,

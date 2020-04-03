@@ -35,23 +35,15 @@ describe('Confirm Transaction utils', function () {
   describe('getHexGasTotal', function () {
     it('should multiply the hex gasLimit and hex gasPrice values together', function () {
       assert.equal(
-        utils.getHexGasTotal({
-          gasLimit: '0x5208',
-          gasPrice: '0x3b9aca00',
-          storageLimit: '0x1',
-        }),
-        '0x1319718a5001'
+        utils.getHexGasTotal({ gasLimit: '0x5208', gasPrice: '0x3b9aca00' }),
+        '0x1319718a5000'
       )
     })
 
     it('should prefix the result with 0x', function () {
       assert.equal(
-        utils.getHexGasTotal({
-          gasLimit: '5208',
-          gasPrice: '3b9aca00',
-          storageLimit: '0x1',
-        }),
-        '0x1319718a5001'
+        utils.getHexGasTotal({ gasLimit: '5208', gasPrice: '3b9aca00' }),
+        '0x1319718a5000'
       )
     })
   })

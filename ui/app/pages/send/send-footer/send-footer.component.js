@@ -52,7 +52,7 @@ export default class SendFooter extends Component {
       from: { address: from },
       gasLimit: gas,
       gasPrice,
-      storageLimit: storage,
+      storageLimit,
       selectedToken,
       sign,
       to,
@@ -82,12 +82,12 @@ export default class SendFooter extends Component {
         from,
         gas,
         gasPrice,
-        storage,
+        storageLimit,
         selectedToken,
         to,
         unapprovedTxs,
       })
-      : sign({ data, selectedToken, to, amount, from, gas, gasPrice, storage })
+      : sign({ data, selectedToken, to, amount, from, gas, gasPrice, storageLimit })
 
     Promise.resolve(promise).then(() => {
       metricsEvent({

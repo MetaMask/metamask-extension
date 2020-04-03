@@ -371,6 +371,18 @@ export default function reduceApp (state = {}, action) {
         isMouseUser: action.value,
       }
 
+    case actions.STORAGE_LOADING_STARTED:
+      return {
+        ...appState,
+        storageIsLoading: true,
+      }
+
+    case actions.STORAGE_LOADING_FINISHED:
+      return {
+        ...appState,
+        storageIsLoading: false,
+      }
+
     case actions.GAS_LOADING_STARTED:
       return {
         ...appState,

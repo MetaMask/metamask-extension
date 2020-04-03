@@ -6,8 +6,11 @@ let mapDispatchToProps
 
 const actionSpies = {
   updateSendTokenBalance: sinon.spy(),
-  updateGasData: sinon.spy(),
+  updateGasAndCollateralData: sinon.spy(),
+  setStorageLimit: sinon.spy(),
   setGasTotal: sinon.spy(),
+  setStorageTotal: sinon.spy(),
+  setGasAndCollateralTotal: sinon.spy(),
 }
 const duckActionSpies = {
   updateSendErrors: sinon.spy(),
@@ -27,6 +30,19 @@ proxyquire('../send.container.js', {
   '../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
+    calcStorageTotal: (storageLimit) => storageLimit + '*gdripperb',
+    calcGasAndCollateralTotal: (
+      gasLimit,
+      gasPrice,
+      storageLimit,
+      gasTotal,
+      storageTotal
+    ) => {
+      if (gasTotal !== undefined && storageTotal !== undefined) {
+        return `${gasTotal}+${storageTotal}`
+      }
+      return `${gasLimit}*${gasPrice}+${storageLimit}`
+    },
   },
 })
 
@@ -40,10 +56,11 @@ describe('send container', function () {
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
     })
 
-    describe('updateAndSetGasLimit()', function () {
+    describe('updateAndSetGasAndStorageLimit()', function () {
       const mockProps = {
         blockGasLimit: 'mockBlockGasLimit',
         editingTransactionId: '0x2',
+        storageLimit: '0x2',
         gasLimit: '0x3',
         gasPrice: '0x4',
         recentBlocks: ['mockBlock'],
@@ -55,12 +72,16 @@ describe('send container', function () {
       }
 
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
-        mapDispatchToPropsObject.updateAndSetGasLimit(mockProps)
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.updateAndSetGasAndStorageLimit(mockProps)
+        assert(dispatchSpy.calledTwice)
         assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0x30x4')
+        assert.equal(
+          actionSpies.setStorageTotal.getCall(0).args[0],
+          '0x2*gdripperb'
+        )
       })
 
-      it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
+      it('should dispatch an updateGasAndCollateralData action when editingTransactionId is falsy', function () {
         const {
           gasPrice,
           selectedAddress,
@@ -71,20 +92,23 @@ describe('send container', function () {
           value,
           data,
         } = mockProps
-        mapDispatchToPropsObject.updateAndSetGasLimit(
+        mapDispatchToPropsObject.updateAndSetGasAndStorageLimit(
           Object.assign({}, mockProps, { editingTransactionId: false })
         )
         assert(dispatchSpy.calledOnce)
-        assert.deepEqual(actionSpies.updateGasData.getCall(0).args[0], {
-          gasPrice,
-          selectedAddress,
-          selectedToken,
-          recentBlocks,
-          blockGasLimit,
-          to,
-          value,
-          data,
-        })
+        assert.deepEqual(
+          actionSpies.updateGasAndCollateralData.getCall(0).args[0],
+          {
+            gasPrice,
+            selectedAddress,
+            selectedToken,
+            recentBlocks,
+            blockGasLimit,
+            to,
+            value,
+            data,
+          }
+        )
       })
     })
 

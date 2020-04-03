@@ -466,8 +466,11 @@
   "functionType": {
     "message": "功能类型"
   },
+  "storageLimitInfoModalContent": {
+    "message": "存储空间限制即您个人希望购买的最大存储空间单位数量。"
+  },
   "gasLimitInfoModalContent": {
-    "message": "然气限制即您个人希望购买的最大单位数量。"
+    "message": "然气限制即您个人希望购买的最大燃气单位数量。"
   },
   "gasLimitTooLow": {
     "message": "Gas Limit 至少要 21000"

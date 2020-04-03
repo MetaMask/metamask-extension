@@ -58,6 +58,17 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
+  "mocha": {
+    "require": [
+      "test/env.js"
+    ],
+    "file": [
+      "test/setup.js"
+    ],
+    "recursive": [
+      "ui/app/**/*.test.js"
+    ]
+  },
   "lint-staged": {
     "*.{js,json}": [
       "prettier-eslint --write",
@@ -197,7 +208,7 @@
     "@storybook/addon-knobs": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@storybook/storybook-deployer": "^2.8.1",
-    "@yqrashawn/conflux-local-network-lite": "^2.0.3",
+    "@yqrashawn/conflux-local-network-lite": "^2.0.6",
     "@yqrashawn/conflux-portal-onboarding": "^0.2.0-alpha",
     "addons-linter": "1.14.0",
     "babel-eslint": "^10.0.2",

@@ -6,7 +6,12 @@ import {
   getSelectedAddress,
   getAddressBook,
 } from '../../selectors/selectors'
-import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
+import {
+  estimateGasPriceFromRecentBlocks,
+  calcGasTotal,
+  calcStorageTotal,
+  calcGasAndCollateralTotal,
+} from './send.utils'
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas'
 
 export function accountsWithSendEtherInfoSelector (state) {
@@ -76,6 +81,18 @@ export function getGasPriceFromRecentBlocks (state) {
 
 export function getGasTotal (state) {
   return calcGasTotal(getGasLimit(state), getGasPrice(state))
+}
+
+export function getStorageTotal (state) {
+  return calcStorageTotal(getStorageLimit(state))
+}
+
+export function getGasAndCollateralTotal (state) {
+  return calcGasAndCollateralTotal(
+    getGasLimit(state),
+    getGasPrice(state),
+    getStorageLimit(state)
+  )
 }
 
 export function getPrimaryCurrency (state) {

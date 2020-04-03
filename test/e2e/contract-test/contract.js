@@ -189,7 +189,7 @@ const initialize = () => {
         .constructor()
         .sendTransaction({
           from: accounts[0],
-          gas: 300000,
+          storageLimit: 700,
           gasPrice: 10000000000,
         })
         .confirmed()
@@ -219,7 +219,6 @@ const initialize = () => {
           .sendTransaction({
             value: '0x3782dace9d900000',
             from: accounts[0],
-            gas: 300000,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -232,7 +231,6 @@ const initialize = () => {
           .withdraw('0xde0b6b3a7640000')
           .sendTransaction({
             from: accounts[0],
-            gas: 600000,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -253,7 +251,6 @@ const initialize = () => {
           from: accounts[0],
           to: accounts[0],
           value: '0x29a2241af62c0000',
-          gas: 21000,
           gasPrice: 10000000000,
         })
         .confirmed()
@@ -423,7 +420,7 @@ const initialize = () => {
         .constructor(_initialAmount, _tokenName, _decimalUnits, _tokenSymbol)
         .sendTransaction({
           from: accounts[0],
-          gas: 2000000,
+          storageLimit: 5000,
           gasPrice: 10000000000,
         })
         .confirmed()
@@ -454,11 +451,10 @@ const initialize = () => {
       transferTokens.onclick = async (event) => {
         console.log(`event`, event)
         const transferResult = humanstandardtokenContract
-          .transfer('0x2f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
+          .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gas: 60000,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -467,11 +463,10 @@ const initialize = () => {
 
       approveTokens.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x9bc5baF874d2DA8D216aE9f137804184EE5AfEF4', '70000')
+          .approve('0x8bc5baF874d2DA8D216aE9f137804184EE5AfEF4', '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gas: 60000,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -481,7 +476,7 @@ const initialize = () => {
       transferTokensWithoutGas.onclick = async (event) => {
         console.log(`event`, event)
         const transferResult = await humanstandardtokenContract
-          .transfer('0x2f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
+          .transfer('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '15000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
@@ -494,11 +489,10 @@ const initialize = () => {
 
       approveTokensWithoutGas.onclick = async () => {
         const approveResult = await humanstandardtokenContract
-          .approve('0x2f318C334780961FB129D2a6c30D0763d9a5C970', '70000')
+          .approve('0x1f318C334780961FB129D2a6c30D0763d9a5C970', '70000')
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gas: 60000,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -693,7 +687,6 @@ const initialize = () => {
           from: accounts[0],
           to: accounts[0],
           data: signedData,
-          gas: 26000,
           gasPrice: 10000000000,
         })
         .confirmed()

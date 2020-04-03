@@ -11,13 +11,17 @@ export default class AdvancedGasInputs extends Component {
   static propTypes = {
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
+    updateCustomStorageLimit: PropTypes.func,
     customGasPrice: PropTypes.number.isRequired,
     customGasLimit: PropTypes.number.isRequired,
+    customStorageLimit: PropTypes.number.isRequired,
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
+    isSimpleTx: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
     showGasPriceInfoModal: PropTypes.func,
     showGasLimitInfoModal: PropTypes.func,
+    showStorageLimitInfoModal: PropTypes.func,
   }
 
   constructor (props) {
@@ -25,18 +29,21 @@ export default class AdvancedGasInputs extends Component {
     this.state = {
       gasPrice: this.props.customGasPrice,
       gasLimit: this.props.customGasLimit,
+      storageLimit: this.props.customStorageLimit,
     }
     this.changeGasPrice = debounce(this.changeGasPrice, 500)
     this.changeGasLimit = debounce(this.changeGasLimit, 500)
+    this.changeStorageLimit = debounce(this.changeStorageLimit, 500)
   }
 
   componentDidUpdate (prevProps) {
     const {
       customGasPrice: prevCustomGasPrice,
       customGasLimit: prevCustomGasLimit,
+      customStorageLimit: prevCustomStorageLimit,
     } = prevProps
-    const { customGasPrice, customGasLimit } = this.props
-    const { gasPrice, gasLimit } = this.state
+    const { customGasPrice, customGasLimit, customStorageLimit } = this.props
+    const { gasPrice, gasLimit, storageLimit } = this.state
 
     if (customGasPrice !== prevCustomGasPrice && customGasPrice !== gasPrice) {
       this.setState({ gasPrice: customGasPrice })
@@ -44,6 +51,21 @@ export default class AdvancedGasInputs extends Component {
     if (customGasLimit !== prevCustomGasLimit && customGasLimit !== gasLimit) {
       this.setState({ gasLimit: customGasLimit })
     }
+    if (
+      customStorageLimit !== prevCustomStorageLimit &&
+      customStorageLimit !== storageLimit
+    ) {
+      this.setState({ storageLimit: customStorageLimit })
+    }
+  }
+
+  onChangeStorageLimit = (e) => {
+    this.setState({ storageLimit: e.target.value })
+    this.changeStorageLimit({ target: { value: e.target.value } })
+  }
+
+  changeStorageLimit = (e) => {
+    this.props.updateCustomStorageLimit(Number(e.target.value))
   }
 
   onChangeGasLimit = (e) => {
@@ -110,7 +132,20 @@ export default class AdvancedGasInputs extends Component {
     return {}
   }
 
-  renderGasInput ({
+  storageLimitError ({ insufficientBalance }) {
+    const { t } = this.context
+
+    if (insufficientBalance) {
+      return {
+        errorText: t('insufficientBalance'),
+        errorType: 'error',
+      }
+    }
+
+    return {}
+  }
+
+  renderGasOrStorageInput ({
     value,
     onChange,
     errorComponent,
@@ -173,8 +208,10 @@ export default class AdvancedGasInputs extends Component {
       insufficientBalance,
       customPriceIsSafe,
       isSpeedUp,
+      isSimpleTx,
       showGasPriceInfoModal,
       showGasLimitInfoModal,
+      showStorageLimitInfoModal,
     } = this.props
     const { gasPrice, gasLimit } = this.state
 
@@ -207,9 +244,21 @@ export default class AdvancedGasInputs extends Component {
       </div>
     ) : null
 
+    const {
+      errorText: storageLimitErrorText,
+      errorType: storageLimitErrorType,
+    } = this.storageLimitError({ insufficientBalance })
+    const storageLimitErrorComponent = storageLimitErrorType ? (
+      <div
+        className={`advanced-storage-inputs__storage-edit-row__${storageLimitErrorType}-text`}
+      >
+        {storageLimitErrorText}
+      </div>
+    ) : null
+
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
-        {this.renderGasInput({
+        {this.renderGasOrStorageInput({
           label: this.context.t('gasPrice'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
@@ -217,13 +266,21 @@ export default class AdvancedGasInputs extends Component {
           errorType: gasPriceErrorType,
           infoOnClick: showGasPriceInfoModal,
         })}
-        {this.renderGasInput({
+        {this.renderGasOrStorageInput({
           label: this.context.t('gasLimit'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           errorComponent: gasLimitErrorComponent,
           errorType: gasLimitErrorType,
           infoOnClick: showGasLimitInfoModal,
+        })}
+        {!isSimpleTx && this.renderGasOrStorageInput({
+          label: this.context.t('storageLimit'),
+          value: this.state.storageLimit,
+          onChange: this.onChangeStorageLimit,
+          errorComponent: storageLimitErrorComponent,
+          errorType: storageLimitErrorType,
+          infoOnClick: showStorageLimitInfoModal,
         })}
       </div>
     )

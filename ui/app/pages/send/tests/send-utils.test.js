@@ -55,12 +55,12 @@ const sendUtils = proxyquire('../send.utils.js', {
 
 const {
   calcGasTotal,
-  estimateGas,
+  estimateGasAndCollateral,
   doesAmountErrorRequireUpdate,
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getGasFeeErrorObject,
+  getGasAndCollateralFeeErrorObject,
   getToAddressForGasUpdate,
   calcTokenBalance,
   isBalanceSufficient,
@@ -98,6 +98,11 @@ describe('send utils', function () {
         prevGasTotal: 1,
         expectedResult: true,
       },
+      'should return true if storageTotals are different': {
+        storageTotal: 0,
+        prevStorageTotal: 1,
+        expectedResult: true,
+      },
       'should return true if token balances are different': {
         tokenBalance: 0,
         prevTokenBalance: 1,
@@ -107,6 +112,10 @@ describe('send utils', function () {
       'should return false if they are all the same': {
         balance: 1,
         prevBalance: 1,
+        storageTotal: 1,
+        prevStorageTotal: 1,
+        gasAndCollateralTotal: 1,
+        prevGasAndCollateralTotal: 1,
         gasTotal: 1,
         prevGasTotal: 1,
         tokenBalance: 1,
@@ -166,7 +175,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
-        gasTotal: 17,
+        gasAndCollateralTotal: 17,
         primaryCurrency: 'ABC',
         expectedResult: { amount: INSUFFICIENT_FUNDS_ERROR },
       },
@@ -175,7 +184,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
-        gasTotal: 17,
+        gasAndCollateralTotal: 17,
         primaryCurrency: 'ABC',
         selectedToken: { symbole: 'DEF', decimals: 0 },
         decimals: 0,
@@ -188,7 +197,7 @@ describe('send utils', function () {
         balance: 100,
         conversionRate: 3,
         decimals: 10,
-        gasTotal: 17,
+        gasAndCollateralTotal: 17,
         primaryCurrency: 'ABC',
         selectedToken: 'someToken',
         tokenBalance: 123,
@@ -202,28 +211,28 @@ describe('send utils', function () {
     })
   })
 
-  describe('getGasFeeErrorObject()', function () {
+  describe('getGasAndCollateralFeeErrorObject()', function () {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
-        gasTotal: 17,
+        gasAndCollateralTotal: 17,
         primaryCurrency: 'ABC',
-        expectedResult: { gasFee: INSUFFICIENT_FUNDS_ERROR },
+        expectedResult: { gasAndCollateralFee: INSUFFICIENT_FUNDS_ERROR },
       },
       'should return null error if isBalanceSufficient returns true': {
         amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
-        gasTotal: 15,
+        gasAndCollateralTotal: 15,
         primaryCurrency: 'ABC',
-        expectedResult: { gasFee: null },
+        expectedResult: { gasAndCollateralFee: null },
       },
     }
     Object.entries(config).map(([description, obj]) => {
       it(description, function () {
-        assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
+        assert.deepEqual(getGasAndCollateralFeeErrorObject(obj), obj.expectedResult)
       })
     })
   })
@@ -252,7 +261,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 100,
         conversionRate: 3,
-        gasTotal: 17,
+        gasAndCollateralTotal: 17,
         primaryCurrency: 'ABC',
       })
       assert.deepEqual(stubs.addCurrencies.getCall(0).args, [
@@ -312,12 +321,12 @@ describe('send utils', function () {
     })
   })
 
-  describe('estimateGas', function () {
+  describe('estimateGasAndCollateral', function () {
     const baseMockParams = {
       blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
       to: '0x8isContract',
-      estimateGasMethod: sinon.stub().callsFake(({ to }, cb) => {
+      estimateGasAndCollateralMethod: sinon.stub().callsFake(({ to }, cb) => {
         const err =
           typeof to === 'string' && to.match(/willFailBecauseOf:/)
             ? new Error(to.match(/:(.+)$/)[1])
@@ -347,49 +356,49 @@ describe('send utils', function () {
     })
 
     afterEach(function () {
-      baseMockParams.estimateGasMethod.resetHistory()
+      baseMockParams.estimateGasAndCollateralMethod.resetHistory()
       global.eth.getCode.resetHistory()
     })
 
     it('should call ethQuery.estimateGas with the expected params', async function () {
-      const result = await sendUtils.estimateGas(baseMockParams)
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      const result = await sendUtils.estimateGasAndCollateral(baseMockParams)
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
       assert.deepEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0],
         Object.assign(
           { gasPrice: undefined, value: undefined },
           baseExpectedCall
         )
       )
-      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
+      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
     it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
-      const result = await estimateGas(
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { blockGasLimit: '0xbcd' })
       )
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
       assert.deepEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0],
         Object.assign(
           { gasPrice: undefined, value: undefined },
           baseExpectedCall,
           { gas: '0xbcdx0.95' }
         )
       )
-      assert.deepEqual(result, { gas: '0xabc16x1.5', storage: '0x30' })
+      assert.deepEqual(result, { gas: '0xabc16x1.5', storageLimit: '0x30' })
     })
 
     it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async function () {
-      const result = await estimateGas(
+      const result = await estimateGasAndCollateral(
         Object.assign(
           { data: 'mockData', selectedToken: { address: 'mockAddress' } },
           baseMockParams
         )
       )
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
       assert.deepEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0],
         Object.assign({}, baseExpectedCall, {
           gasPrice: undefined,
           value: '0x0',
@@ -397,64 +406,64 @@ describe('send utils', function () {
           to: 'mockAddress',
         })
       )
-      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
+      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
     it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async function () {
       const data = 'mockData'
       const to = ''
-      const result = await estimateGas({ ...baseMockParams, data, to })
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(baseMockParams.estimateGasMethod.getCall(0).args[0], {
+      const result = await estimateGasAndCollateral({ ...baseMockParams, data, to })
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 1)
+      assert.deepEqual(baseMockParams.estimateGasAndCollateralMethod.getCall(0).args[0], {
         gasPrice: undefined,
         value: '0xff',
         data,
         from: baseExpectedCall.from,
         gas: baseExpectedCall.gas,
       })
-      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
+      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { to: '0x123' })
       )
-      assert.deepEqual(result, { gas: '0x5208', storage: '0x0' })
+      assert.deepEqual(result, { gas: '0x5208', storageLimit: '0x0' })
     })
 
     it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async function () {
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, { to: null })
       )
-      assert.deepEqual(result, { gas: '0x5208', storage: '0x0' })
+      assert.deepEqual(result, { gas: '0x5208', storageLimit: '0x0' })
     })
 
     it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async function () {
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(
+      assert.equal(baseMockParams.estimateGasAndCollateralMethod.callCount, 0)
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: '0x123',
           selectedToken: { address: '' },
         })
       )
-      assert.deepEqual(result, { gas: '0xabc16', storage: '0x30' })
+      assert.deepEqual(result, { gas: '0xabc16', storageLimit: '0x30' })
     })
 
     // we plan to support tokens other than erc20 token
     it.skip(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async function () {
-      const result = await estimateGas(
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: null,
           selectedToken: { address: '0x8isContract' },
         })
       )
-      assert.deepEqual(result, { gas: BASE_TOKEN_GAS_COST, storage: '0x39' })
+      assert.deepEqual(result, { gas: BASE_TOKEN_GAS_COST, storageLimit: '0x39' })
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {
-      const result = await estimateGas(
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to: 'isContract willFailBecauseOf:Transaction execution error.',
         })
@@ -463,7 +472,7 @@ describe('send utils', function () {
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function () {
-      const result = await estimateGas(
+      const result = await estimateGasAndCollateral(
         Object.assign({}, baseMockParams, {
           to:
             'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.',
@@ -474,7 +483,7 @@ describe('send utils', function () {
 
     it(`should reject other errors`, async function () {
       try {
-        await estimateGas(
+        await estimateGasAndCollateral(
           Object.assign({}, baseMockParams, {
             to: 'isContract willFailBecauseOf:some other error',
           })

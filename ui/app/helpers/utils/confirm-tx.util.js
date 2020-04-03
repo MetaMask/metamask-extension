@@ -2,6 +2,7 @@ import currencyFormatter from 'currency-formatter'
 import currencies from 'currency-formatter/currencies'
 import * as ethUtil from 'cfx-util'
 import BigNumber from 'bignumber.js'
+import { storageToDrip } from './storage-util'
 
 import {
   conversionUtil,
@@ -29,18 +30,35 @@ export function hexGreaterThan (a, b) {
   )
 }
 
-export function getHexGasTotal ({ gasLimit, gasPrice, storageLimit }) {
+export function getHexGasTotal ({ gasLimit, gasPrice }) {
+  return ethUtil.addHexPrefix(
+    multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 16,
+    })
+  )
+}
+
+export function getHexStorageTotal ({ storageLimit }) {
+  return ethUtil.addHexPrefix(storageToDrip(storageLimit))
+}
+
+export function getHexGasAndCollateralTotal ({
+  gasLimit,
+  gasPrice,
+  storageLimit,
+}) {
   return ethUtil.addHexPrefix(
     addCurrencies(
-      storageLimit || '0x0',
-      ethUtil.addHexPrefix(
-        multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
-          toNumericBase: 'hex',
-          multiplicandBase: 16,
-          multiplierBase: 16,
-        })
-      ),
-      { toNumericBase: 'hex', numberOfDecimals: 6 }
+      getHexGasTotal({ gasLimit, gasPrice }),
+      getHexStorageTotal({ storageLimit }),
+      {
+        aBase: 16,
+        bBase: 16,
+        numberOfDecimals: 6,
+        toNumericBase: 'hex',
+      }
     )
   )
 }

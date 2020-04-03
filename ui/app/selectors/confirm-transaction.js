@@ -4,7 +4,7 @@ import { calcTokenAmount } from '../helpers/utils/token-util'
 import {
   roundExponential,
   getValueFromWeiHex,
-  getHexGasTotal,
+  getHexGasAndCollateralTotal,
   getTransactionFee,
   addFiat,
   addEth,
@@ -270,7 +270,7 @@ export const transactionFeeSelector = function (state, txData) {
       value = '0x0',
       gas: gasLimit = '0x0',
       gasPrice = '0x0',
-      storage: storageLimit = '0x0',
+      storageLimit = '0x0',
     } = {},
   } = txData
 
@@ -289,7 +289,11 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   })
 
-  const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice, storageLimit })
+  const hexTransactionFee = getHexGasAndCollateralTotal({
+    gasLimit,
+    gasPrice,
+    storageLimit,
+  })
 
   const fiatTransactionFee = getTransactionFee({
     value: hexTransactionFee,

@@ -18,7 +18,7 @@ describe('Send Component', function () {
   }
 
   const propsMethodSpies = {
-    updateAndSetGasLimit: sinon.spy(),
+    updateAndSetGasAndStorageLimit: sinon.spy(),
     updateSendErrors: sinon.spy(),
     updateSendTokenBalance: sinon.spy(),
     resetSendState: sinon.spy(),
@@ -30,7 +30,9 @@ describe('Send Component', function () {
   }
   const utilsMethodStubs = {
     getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
-    getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
+    getGasAndCollateralFeeErrorObject: sinon
+      .stub()
+      .returns({ gasAndCollateralFee: 'mockGasAndCollateralFeeError' }),
     doesAmountErrorRequireUpdate: sinon
       .stub()
       .callsFake((obj) => obj.balance !== obj.prevBalance),
@@ -56,9 +58,12 @@ describe('Send Component', function () {
         fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
         fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
         from={{ address: 'mockAddress', balance: 'mockBalance' }}
+        storageLimit="mockStorageLimit"
         gasLimit="mockGasLimit"
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
+        storageTotal="mockStorageTotal"
+        gasAndCollateralTotal="mockGasAndCollateralTotal"
         history={{ mockProp: 'history-abc' }}
         network="3"
         primaryCurrency="mockPrimaryCurrency"
@@ -72,7 +77,9 @@ describe('Send Component', function () {
         showHexData
         tokenBalance="mockTokenBalance"
         tokenContract={{ method: 'mockTokenMethod' }}
-        updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
+        updateAndSetGasAndStorageLimit={
+          propsMethodSpies.updateAndSetGasAndStorageLimit
+        }
         qrCodeDetected={() => {}}
         scanQrCode={() => {}}
         updateSendEnsResolution={() => {}}
@@ -93,9 +100,9 @@ describe('Send Component', function () {
     SendTransactionScreen.prototype.updateGas.resetHistory()
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
-    utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+    utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
     propsMethodSpies.fetchBasicGasEstimates.resetHistory()
-    propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
     propsMethodSpies.updateToNicknameIfNecessary.resetHistory()
@@ -150,8 +157,12 @@ describe('Send Component', function () {
         {
           balance: 'mockBalance',
           gasTotal: 'mockGasTotal',
+          storageTotal: 'mockStorageTotal',
+          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
           prevBalance: '',
           prevGasTotal: undefined,
+          prevStorageTotal: undefined,
+          prevGasAndCollateralTotal: undefined,
           prevTokenBalance: undefined,
           selectedToken: {
             address: 'mockTokenAddress',
@@ -188,7 +199,7 @@ describe('Send Component', function () {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasTotal: 'mockGasTotal',
+          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
@@ -200,21 +211,24 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
-      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+    it('should call getGasAndCollateralFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
+      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
+      assert.equal(
+        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        1
+      )
       assert.deepEqual(
-        utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
+        utilsMethodStubs.getGasAndCollateralFeeErrorObject.getCall(0).args[0],
         {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasTotal: 'mockGasTotal',
+          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
@@ -225,23 +239,29 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
-      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+    it('should not call getGasAndCollateralFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
+      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+      assert.equal(
+        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        0
+      )
     })
 
     it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function () {
-      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
         },
       })
-      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+      assert.equal(
+        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        0
+      )
     })
 
     it('should call updateSendErrors with the expected params if selectedToken is falsy', function () {
@@ -255,7 +275,7 @@ describe('Send Component', function () {
       assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
         amount: 'mockAmountError',
-        gasFee: null,
+        gasAndCollateralFee: null,
       })
     })
 
@@ -276,7 +296,7 @@ describe('Send Component', function () {
       assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
       assert.deepEqual(propsMethodSpies.updateSendErrors.getCall(0).args[0], {
         amount: 'mockAmountError',
-        gasFee: 'mockGasFeeError',
+        gasAndCollateralFee: 'mockGasAndCollateralFeeError',
       })
     })
 
@@ -353,7 +373,7 @@ describe('Send Component', function () {
 
     it('should call updateGas when selectedToken.address is changed', function () {
       SendTransactionScreen.prototype.updateGas.resetHistory()
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+      propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balancedChanged',
@@ -362,20 +382,21 @@ describe('Send Component', function () {
         selectedToken: { address: 'newSelectedToken' },
       })
       assert.equal(propsMethodSpies.updateToNicknameIfNecessary.callCount, 0) // Network did not change
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
+      assert.equal(propsMethodSpies.updateAndSetGasAndStorageLimit.callCount, 1)
     })
   })
 
   describe('updateGas', function () {
-    it('should call updateAndSetGasLimit with the correct params if no to prop is passed', function () {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasAndStorageLimit with the correct params if no to prop is passed', function () {
+      propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().updateGas()
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
+      assert.equal(propsMethodSpies.updateAndSetGasAndStorageLimit.callCount, 1)
       assert.deepEqual(
-        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0],
+        propsMethodSpies.updateAndSetGasAndStorageLimit.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
           editingTransactionId: 'mockEditingTransactionId',
+          storageLimit: 'mockStorageLimit',
           gasLimit: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
           recentBlocks: ['mockBlock'],
@@ -392,21 +413,21 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasLimit with the correct params if a to prop is passed', function () {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasAndStorageLimit with the correct params if a to prop is passed', function () {
+      propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
       assert.equal(
-        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
+        propsMethodSpies.updateAndSetGasAndStorageLimit.getCall(0).args[0].to,
         'someaddress'
       )
     })
 
-    it('should call updateAndSetGasLimit with to set to lowercase if passed', function () {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasAndStorageLimit with to set to lowercase if passed', function () {
+      propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
       assert.equal(
-        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
+        propsMethodSpies.updateAndSetGasAndStorageLimit.getCall(0).args[0].to,
         '0xabc'
       )
     })

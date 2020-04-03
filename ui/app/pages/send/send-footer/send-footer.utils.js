@@ -16,7 +16,7 @@ export function constructTxParams ({
   from,
   gas,
   gasPrice,
-  storage,
+  storageLimit,
 }) {
   const txParams = {
     data,
@@ -24,7 +24,7 @@ export function constructTxParams ({
     value: '0',
     gas,
     gasPrice,
-    storageLimit: storage,
+    storageLimit,
   }
 
   if (!selectedToken) {
@@ -42,7 +42,7 @@ export function constructUpdatedTx ({
   from,
   gas,
   gasPrice,
-  storage,
+  storageLimit,
   selectedToken,
   to,
   unapprovedTxs,
@@ -63,7 +63,7 @@ export function constructUpdatedTx ({
         gas,
         gasPrice,
         value: amount,
-        storageLimit: storage,
+        storageLimit,
       })
     ),
   }

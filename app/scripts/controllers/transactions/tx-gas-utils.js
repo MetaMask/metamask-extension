@@ -1,11 +1,11 @@
 import EthQuery from '../../ethjs-query'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
-import { addHexPrefix } from 'cfx-util'
+import { addHexPrefix, isValidContractAddress } from 'cfx-util'
 import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
 
-const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
-const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
+export const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+export const SIMPLE_STORAGE_COST = '0x0' // Hex for 0, cost of a simple send.
 
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
@@ -33,7 +33,7 @@ class TxGasUtil {
       const {
         gasUsed,
         storageCollateralized,
-      } = await this.estimateTxGas(
+      } = await this.estimateTxGasAndCollateral(
         txMeta,
         block.gasLimit,
         getCodeResponse
@@ -62,21 +62,30 @@ class TxGasUtil {
   }
 
   /**
-    Estimates the tx's gas/storage usage
+    Estimates the tx's gas/storageLimit usage
     @param {Object} txMeta - the txMeta object
     @param {string} blockGasLimitHex - hex string of the block's gas limit
     @returns {string} - the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
+  async estimateTxGasAndCollateral (txMeta, blockGasLimitHex, getCodeResponse) {
+    // new unapproved tx will come here first
     const txParams = txMeta.txParams
+    if (txParams.to && !isValidContractAddress(txParams.to)) {
+      txMeta.simpleSend = true
+    }
 
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
     txMeta.storageLimitSpecified = Boolean(txParams.storageLimit)
 
+    if (!txMeta.storageLimitSpecified) {
+      txParams.storageLimit = SIMPLE_STORAGE_COST
+      txMeta.storageLimitSpecified = true
+    }
+
     // if it is, use that value
-    if (txMeta.gasLimitSpecified) {
-      return txParams.gas
+    if (txMeta.gasLimitSpecified && txMeta.storageLimitSpecified) {
+      return { gasUsed: txParams.gas, storageCollateralized: txParams.storageLimit }
     }
 
     const recipient = txParams.to
@@ -125,11 +134,7 @@ class TxGasUtil {
     @param {string} blockGasLimitHex - the block gas limit hex
     @param {string} estimatedGasHex - the estimated gas hex
   */
-  setTxGas (
-    txMeta,
-    blockGasLimitHex,
-    { estimatedGasHex, estimatedStorageHex }
-  ) {
+  setTxGas (txMeta, blockGasLimitHex, { estimatedGasHex, estimatedStorageHex }) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     txMeta.estimatedStroage = addHexPrefix(estimatedStorageHex)
     const txParams = txMeta.txParams

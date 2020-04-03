@@ -5,13 +5,13 @@ import {
   getNativeCurrency,
   preferencesSelector,
 } from '../../../selectors/selectors'
-import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
+import { getHexGasAndCollateralTotal } from '../../../helpers/utils/confirm-tx.util'
 import { sumHexes } from '../../../helpers/utils/transactions.util'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction } = ownProps
   const {
-    txParams: { gas, gasPrice, value, storage: storageLimit } = {},
+    txParams: { gas, gasPrice, value, storageLimit } = {},
     txReceipt: { gasUsed } = {},
   } = transaction
   const { showFiatInTestnets } = preferencesSelector(state)
@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
   const hexGasTotal =
     (gasLimit &&
       gasPrice &&
-      getHexGasTotal({ gasLimit, gasPrice, storageLimit })) ||
+      getHexGasAndCollateralTotal({ gasLimit, gasPrice, storageLimit })) ||
     '0x0'
   const totalInHex = sumHexes(hexGasTotal, value)
 

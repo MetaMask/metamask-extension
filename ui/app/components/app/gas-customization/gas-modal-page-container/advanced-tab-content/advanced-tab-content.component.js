@@ -11,10 +11,13 @@ export default class AdvancedTabContent extends Component {
   }
 
   static propTypes = {
+    isSimpleTx: PropTypes.bool,
+    updateCustomStorageLimit: PropTypes.func,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
+    customModalStorageLimitInHex: PropTypes.string,
     gasEstimatesLoading: PropTypes.bool,
     millisecondsRemaining: PropTypes.number,
     transactionFee: PropTypes.string,
@@ -54,11 +57,14 @@ export default class AdvancedTabContent extends Component {
   render () {
     const { t } = this.context
     const {
+      isSimpleTx,
       updateCustomGasPrice,
       updateCustomGasLimit,
+      updateCustomStorageLimit,
       timeRemaining,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
+      customModalStorageLimitInHex,
       insufficientBalance,
       gasChartProps,
       gasEstimatesLoading,
@@ -76,10 +82,13 @@ export default class AdvancedTabContent extends Component {
             <AdvancedGasInputs
               updateCustomGasPrice={updateCustomGasPrice}
               updateCustomGasLimit={updateCustomGasLimit}
+              updateCustomStorageLimit={updateCustomStorageLimit}
               customGasPrice={customModalGasPriceInHex}
               customGasLimit={customModalGasLimitInHex}
+              customStorageLimit={customModalStorageLimitInHex}
               insufficientBalance={insufficientBalance}
               customPriceIsSafe={customPriceIsSafe}
+              isSimpleTx={isSimpleTx}
               isSpeedUp={isSpeedUp}
             />
           </div>
