@@ -6041,33 +6041,33 @@ cephes@^1.1.2:
   resolved "https://registry.yarnpkg.com/cephes/-/cephes-1.2.0.tgz#4d246b622bc488ab8c982a1f702f0c9f49705d96"
   integrity sha512-twuUuJRrIrsELHz6foJtZlqrz6FC36zoHZJvvThsrM1UWPKxyoilw1Rka6Hk0AmPFKHKUoGwGfAtvNZNtNZu0g==
 
-cfx-hd-keyring@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/cfx-hd-keyring/-/cfx-hd-keyring-0.0.2.tgz#960a4ece53e903805652c59826ff3b3058fc106f"
-  integrity sha512-3pneO2c1s9+wJzkkwUDmm46swy4fKhUv5+UGbpKNYlQPv2FudnnSfjdYgrUCyTO71KGWdAU5GIF/96OoenUJxg==
+cfx-hd-keyring@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/cfx-hd-keyring/-/cfx-hd-keyring-0.0.3.tgz#a5c14aa536d68a2c7d662d1ba56b0cf48e76b100"
+  integrity sha512-jwCk2QLeA8FcyaKmqdpR7r5+4jreKXZxwMTijmLY0WYwv2BQ1xKeqbwqOwWtHp1g8HnzdFIbzsNrwG32w+8eVw==
   dependencies:
     bip39 "^2.2.0"
     cfx-sig-util "^0.0.1-a"
-    cfx-simple-keyring "^0.0.1"
-    cfx-util "^0.0.1-c"
-    cfx-wallet "^0.0.1-b"
+    cfx-simple-keyring "^0.0.2"
+    cfx-util "^0.0.2"
+    cfx-wallet "^0.0.1-c"
     ethereumjs-abi "^0.6.5"
     events "^1.1.1"
     xtend "^4.0.1"
 
-cfx-keyring-controller@^5.6.5:
-  version "5.6.5"
-  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.5.tgz#ce01858a80710001221fbf3c13ef23bd1302dc61"
-  integrity sha512-VrscPQcTWN2ejAT0Hw5pNMQp8TGDY1D+lreZD70xv3wcpGq+Qmf0DRpui69+i0s/pIMAhj9YPdDhevIECCeWyw==
+cfx-keyring-controller@^5.6.6:
+  version "5.6.6"
+  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.6.tgz#628e3328a2e4536e72b6102ed45c745a192e1f29"
+  integrity sha512-7Mh1TIrXd5w5X1PctDYhE8Oqnd+cbO2D61K0rvB+jnsG3FswNwgHEiCBVZp0TFyNuzbnHxhKC2chTL74FrXJrA==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
     browser-passworder "^2.0.3"
-    cfx-hd-keyring "^0.0.2"
+    cfx-hd-keyring "^0.0.3"
     cfx-sig-util "^0.0.1-a"
-    cfx-simple-keyring "^0.0.1"
-    cfx-util "^0.0.1-c"
-    js-conflux-sdk "^0.8.0-alpha"
+    cfx-simple-keyring "^0.0.2"
+    cfx-util "^0.0.2"
+    js-conflux-sdk "^0.9.0-alpha"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
@@ -6083,14 +6083,14 @@ cfx-sig-util@^0.0.1-a:
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
 
-cfx-simple-keyring@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/cfx-simple-keyring/-/cfx-simple-keyring-0.0.1.tgz#9ae9bc09bd5132b59165f45dd16603a29edfe5db"
-  integrity sha512-/nP6luHn2UtXiiHxhY4tWis++ltUcklHIwF1TrRJpCbJtSykIwoJji2uR2krQ3Vw7gUj5llBQ6boljbgxY7EAA==
+cfx-simple-keyring@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfx-simple-keyring/-/cfx-simple-keyring-0.0.2.tgz#a5c4950a4b5356056510cbaf1b0d3ddc42dcea49"
+  integrity sha512-lUagxBl3nT1DysIoUGW8eJUFaqNMHs49E1+6FiS+hhTrwX1Qc3oiWHCZMo+OP8ji7xyxE3+jbdtrCiiQ9vC6WA==
   dependencies:
     cfx-sig-util "^0.0.1-a"
-    cfx-util "^0.0.1-b"
-    cfx-wallet "^0.0.1-a"
+    cfx-util "^0.0.2"
+    cfx-wallet "^0.0.1-c"
     ethereumjs-abi "0.6.5"
     events "^1.1.1"
     xtend "^4.0.1"
@@ -6108,7 +6108,20 @@ cfx-util@^0.0.1-b, cfx-util@^0.0.1-c:
     rlp "^2.2.4"
     secp256k1 "^3.0.1"
 
-cfx-wallet@^0.0.1-a, cfx-wallet@^0.0.1-b, cfx-wallet@^0.0.1-c:
+cfx-util@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfx-util/-/cfx-util-0.0.2.tgz#e9b621f41802a790ee65b2a9656134826d0b6bed"
+  integrity sha512-rKQmEX0yooRWyPTRjheiNQ4iv36/holHwj0TqSlFWsnufUdTzAWZPNyMNbNn3bO4D9IqFK9PJrnsIxbCR+hwZA==
+  dependencies:
+    "@types/bn.js" "^4.11.3"
+    bn.js "^4.11.0"
+    create-hash "^1.1.2"
+    ethjs-util "0.1.6"
+    keccak "^3.0.0"
+    rlp "^2.2.4"
+    secp256k1 "^3.0.1"
+
+cfx-wallet@^0.0.1-c:
   version "0.0.1-c"
   resolved "https://registry.yarnpkg.com/cfx-wallet/-/cfx-wallet-0.0.1-c.tgz#0b0268465fd867dd669cc2248211f8e9daf5ba9d"
   integrity sha512-l7Phw6PNl6ep8v//rofqwDFK2Mne3kk3lLg47n+YEs//5peqkFcc/mEQRdjMHL+ZCDah+La8ewa0fRF810JPEw==
@@ -15217,19 +15230,6 @@ js-beautify@^1.10.2:
     glob "^7.1.3"
     mkdirp "~0.5.1"
     nopt "~4.0.1"
-
-js-conflux-sdk@^0.8.0-alpha:
-  version "0.8.0-alpha"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.8.0-alpha.tgz#7d76ee0c0b658d9080489cbc84be48b0ce2b42fe"
-  integrity sha512-BAWAs2xL8mN5GsqNQGAACz47J/seXfwM4v4S9BNms5tOvfHNOE2vgGlae0fQVyvrDzhVDBUxsQqvPyWkc7uYNw==
-  dependencies:
-    "@babel/runtime" "^7.8.4"
-    esm "^3.2.25"
-    jsbi "^3.1.1"
-    keccak "^2.0.0"
-    lodash "^4.17.15"
-    secp256k1 "^3.7.1"
-    superagent "^5.1.0"
 
 js-conflux-sdk@^0.9.0-alpha:
   version "0.9.0-alpha"
