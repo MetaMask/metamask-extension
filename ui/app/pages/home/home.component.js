@@ -11,6 +11,8 @@ import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
+import Popover from '../../components/ui/popover'
+import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
 import { Tabs, Tab } from '../../components/ui/tabs'
 
@@ -51,6 +53,11 @@ export default class Home extends PureComponent {
     hasDaiV1Token: PropTypes.bool,
     firstPermissionsRequestId: PropTypes.string,
     totalUnapprovedCount: PropTypes.number.isRequired,
+  }
+
+  state = {
+    hidePopover: false,
+
   }
 
   UNSAFE_componentWillMount () {
@@ -172,12 +179,43 @@ export default class Home extends PureComponent {
       </MultipleNotifications>
     )
   }
+  renderPopover = () => {
+    const { t } = this.context
+    return (
+      <Popover
+        title={ t('whatsthis') }
+        onClose={() => {
+          this.setState({ hidePopover: true })
+        }}
+        className="home__connected-status-popover"
+        showTooltip
+        backgroundClass="home__connected-status-popover-bg"
+      >
+        <main className="home__connect-status-text">
+          <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
+          <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
+        </main>
+        <div className="home__connect-status-button-container">
+          <Button
+            type="primary"
+            className="home__connect-status-button"
+            onClick={() => {
+              this.setState({ hidePopover: true })
+            }}
+          >
+            { t('dismiss') }
+          </Button>
+        </div>
+      </Popover>
+    )
+  }
 
   render () {
     const {
       forgottenPassword,
       history,
     } = this.props
+    const { hidePopover } = this.state
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
@@ -191,6 +229,7 @@ export default class Home extends PureComponent {
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} />
         <div className="home__container">
+          { hidePopover ? null : this.renderPopover() }
           <Media
             query="(min-width: 576px)"
           >

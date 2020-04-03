@@ -3,13 +3,25 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
+import classnames from 'classnames'
 
-const Popover = ({ title, subtitle, children, footer, footerClassName, onBack, onClose }) => {
+const Popover = ({
+  title,
+  subtitle,
+  children,
+  footerClassName
+  onBack,
+  onClose,
+  className,
+  showTooltip,
+  backgroundClass,
+}) => {
   const t = useContext(I18nContext)
   return (
     <div className="popover-container">
-      <div className="popover-bg" onClick={onClose} />
-      <section className="popover-wrap">
+      <div className={classnames('popover-bg', backgroundClass)} onClick={onClose} />
+      <section className={classnames('popover-wrap', className)}>
+        { showTooltip ? <div className="popover-tooltip" /> : null}
         <header className="popover-header">
           <div className="popover-header__title">
             <h2 title={title}>
