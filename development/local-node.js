@@ -2,10 +2,10 @@ const Ganache = require('@yqrashawn/conflux-local-network-lite')
 
 const ganacheserver = new Ganache({ verbose: true, genBlockInterval: 300 })
 
-// const SEED = "ankle hedgehog attack fatal label blame shoe bulb subject negative cruise sick";
-// const PASSWORD = "11111111"
+  // const SEED = "ankle hedgehog attack fatal label blame shoe bulb subject negative cruise sick";
+  // const PASSWORD = "11111111"
 
-;(async function() {
+;(async function () {
   await ganacheserver.start({
     accounts: [
       {
