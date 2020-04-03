@@ -1,107 +1,129 @@
 {
   "data": {
-  "AppStateController": {
-    "mkrMigrationReminderTimestamp": null
-  },
-  "CachedBalancesController": {
-    "cachedBalances": {}
-  },
-  "CurrencyController": {
-    "conversionDate": 1585881340.741,
-    "conversionRate": 142.72,
-    "currentCurrency": "usd",
-    "nativeCurrency": "CFX"
-  },
-  "IncomingTransactionsController": {
-    "incomingTransactions": {
+    "AppStateController": {
+      "mkrMigrationReminderTimestamp": null
     },
-    "incomingTxLastFetchedBlocksByNetwork": {
-      "goerli": null,
-      "kovan": null,
-      "localhost": 356,
-      "mainnet": null,
-      "rinkeby": null,
-      "ropsten": null,
-      "testnet": 836059
-    }
-  },
-  "KeyringController": {
-    "vault": "{\"data\":\"LBEKnHOPSghgsZI5DJEc26ORjPiOwHHf1bDGbTPcGCImSoZblWw+SYly3/sHAscA+cZr2RC79Emk80+r0EDEv0aaQyRpMPKMwVW47yuNEds640OF21ZqqkXqsEhla9q+usI7l4Q9xfWVUU1FMNtx7y2775D4RsCiIR/DZ4OI0jzSjw2pBqdV5kXQEV/+PMlXNijYCxYc7P5qn6sfO0YbtdVxS5UkFvqmTZLq+k5SR3NLW/jlImZaz0rdD+uh\",\"iv\":\"KTZMdYnXuYmUe9dVVhgMgg==\",\"salt\":\"fI3At0lzBWucgUmIPtNwv6xguGiwFvclXgeJHYs9nP0=\"}"
-  },
-  "NetworkController": {
-    "network": "0x124",
-    "provider": {
-      "nickname": "",
-      "rpcTarget": "",
-      "ticker": "CFX",
-      "type": "localhost"
-    },
-    "settings": {
-      "chainId": 0,
-      "network": 0,
-      "nickname": "conflux-test-net",
-      "rpcUrl": "http://testnet-jsonrpc.conflux-chain.org:12537",
-      "ticker": "CFX"
-    }
-  },
-  "OnboardingController": {
-    "onboardingTabs": {
-    },
-    "seedPhraseBackedUp": true
-  },
-  "PreferencesController": {
-    "accountTokens": {
-      "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc": {
-        "localhost": [],
-        "testnet": []
+    "CachedBalancesController": {
+      "cachedBalances": {
+        "2": {}
       }
     },
-    "assetImages": {
+    "CurrencyController": {
+      "conversionDate": 1585899214.884,
+      "conversionRate": 144.79,
+      "currentCurrency": "usd",
+      "nativeCurrency": "CFX"
     },
-    "completedOnboarding": true,
-    "currentAccountTab": "history",
-    "currentLocale": "en",
-    "featureFlags": {
-      "advancedInlineGas": true,
-      "showIncomingTransactions": true,
-      "transactionTime": false
-    },
-    "firstTimeFlowType": "import",
-    "forgottenPassword": false,
-    "frequentRpcListDetail": [],
-    "identities": {
-      "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc": {
-        "address": "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc",
-        "name": "Account 1"
+    "IncomingTransactionsController": {
+      "incomingTransactions": {},
+      "incomingTxLastFetchedBlocksByNetwork": {
+        "goerli": null,
+        "kovan": null,
+        "localhost": 3216,
+        "mainnet": null,
+        "rinkeby": null,
+        "ropsten": null,
+        "testnet": 855205
       }
     },
-    "ipfsGateway": "ipfs.dweb.link",
-    "knownMethodData": {
+    "KeyringController": {
+      "vault": "{\"data\":\"+Xb2ikedIViF+SKf0S0vV3NAyCxsQMigjRtvyZfBaxUFwJlyENhO4JnQ2lpsIW6QXTjiRqG49jwJb/f1XIZ/2JkI8oeUG3xJzj7d5unPZqtTWYDqtE28a4kW4f+6Gg/xg2lWXJKTt2jpt6w9zrBTzqarBCBfQ0vtUB48+FLCNuoMMtRjhrRyrczx3PPKAqe54gtggpYnyhgkaTUEt7KwnGGUh7qnGJBHS9xecnhKYnjG038=\",\"iv\":\"CTtrtffmuu2KVAcoTwWY0g==\",\"salt\":\"pTN8sI0NRYfpx++JpUt4V6BcbDVWQOa1AXeUmBGBkMM=\"}"
     },
-    "lastSelectedAddressByOrigin": {
+    "NetworkController": {
+      "network": "0xcdb",
+      "provider": {
+        "nickname": "",
+        "rpcTarget": "",
+        "ticker": "CFX",
+        "type": "localhost"
+      },
+      "settings": {
+        "ticker": "CFX"
+      }
     },
-    "lostIdentities": {
+    "OnboardingController": {
+      "onboardingTabs": {},
+      "seedPhraseBackedUp": false
     },
-    "metaMetricsId": null,
-    "metaMetricsSendCount": 0,
-    "participateInMetaMetrics": false,
-    "preferences": {
-      "useNativeCurrencyAsPrimaryCurrency": true
+    "PermissionsMetadata": {
+      "domainMetadata": {
+        "github.com": {
+          "icon": null,
+          "name": "GitHub"
+        }
+      },
+      "permissionsHistory": {},
+      "permissionsLog": [
+        {
+          "id": 746677923,
+          "method": "eth_accounts",
+          "methodType": "restricted",
+          "origin": "metamask.github.io",
+          "request": {
+            "id": 746677923,
+            "jsonrpc": "2.0",
+            "method": "eth_accounts",
+            "origin": "metamask.github.io",
+            "params": []
+          },
+          "requestTime": 1575697241368,
+          "response": {
+            "id": 746677923,
+            "jsonrpc": "2.0",
+            "result": []
+          },
+          "responseTime": 1575697241370,
+          "success": true
+        }
+      ]
     },
-    "selectedAddress": "0x11f9bf8b33ad36e34b36184f482ce8eef476e5dc",
-    "suggestedTokens": {
+    "PreferencesController": {
+      "accountTokens": {
+        "0x1494e65ac65e076c4297a60d929ca5d3db7701b3": {
+          "localhost": [],
+          "testnet": []
+        }
+      },
+      "assetImages": {
+      },
+      "completedOnboarding": true,
+      "currentAccountTab": "history",
+      "currentLocale": "en",
+      "featureFlags": {
+        "showIncomingTransactions": true,
+        "transactionTime": false
+      },
+      "firstTimeFlowType": "create",
+      "forgottenPassword": false,
+      "frequentRpcListDetail": [],
+      "identities": {
+        "0x1494e65ac65e076c4297a60d929ca5d3db7701b3": {
+          "address": "0x1494e65ac65e076c4297a60d929ca5d3db7701b3",
+          "name": "Account 1"
+        }
+      },
+      "ipfsGateway": "ipfs.dweb.link",
+      "knownMethodData": {},
+      "lastSelectedAddressByOrigin": {},
+      "lostIdentities": {},
+      "metaMetricsId": null,
+      "metaMetricsSendCount": 0,
+      "participateInMetaMetrics": false,
+      "preferences": {
+        "useNativeCurrencyAsPrimaryCurrency": true
+      },
+      "selectedAddress": "0x1494e65ac65e076c4297a60d929ca5d3db7701b3",
+      "suggestedTokens": {},
+      "tokens": [],
+      "useBlockie": false,
+      "useNonceField": false
     },
-    "tokens": [],
-    "useBlockie": false,
-    "useNonceField": false
+    "config": {},
+    "firstTimeInfo": {
+      "date": 1585899214618,
+      "version": "0.1.1"
+    }
   },
-  "config": {
-  },
-  "firstTimeInfo": {
-    "date": 1585881340477,
-    "version": "0.1.2"
-  }
-},
   "meta": {
     "version": 41
   }
