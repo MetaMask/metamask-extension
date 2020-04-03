@@ -37,6 +37,7 @@ export default class ConfirmTransactionBase extends Component {
     // react-router props
     history: PropTypes.object,
     // Redux props
+    isSimpleTx: PropTypes.bool,
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
@@ -68,8 +69,8 @@ export default class ConfirmTransactionBase extends Component {
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
-    updateGasAndCalculate: PropTypes.func,
-    customGas: PropTypes.object,
+    updateGasAndCollateralAndCalculte: PropTypes.func,
+    customGasAndCollateral: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -116,7 +117,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
@@ -156,13 +157,13 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  getErrorKey() {
+  getErrorKey () {
     const {
       balance,
       conversionRate,
       hexTransactionFee,
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
-      customGas,
+      customGasAndCollateral,
     } = this.props
 
     const insufficientBalance =
@@ -181,7 +182,7 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (hexToDecimal(customGas.gasLimit) < 21000) {
+    if (hexToDecimal(customGasAndCollateral.gasLimit) < 21000) {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -202,7 +203,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  handleEditGas() {
+  handleEditGas () {
     const {
       onEditGas,
       showCustomizeGasModal,
@@ -232,7 +233,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  renderDetails() {
+  renderDetails () {
     const {
       detailsComponent,
       primaryTotalTextOverride,
@@ -244,12 +245,13 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       updateCustomNonce,
       advancedInlineGasShown,
-      customGas,
+      customGasAndCollateral,
       insufficientBalance,
-      updateGasAndCalculate,
+      updateGasAndCollateralAndCalculte,
       hideFiatConversion,
       nextNonce,
       getNextNonce,
+      isSimpleTx,
     } = this.props
 
     if (hideDetails) {
@@ -276,17 +278,22 @@ export default class ConfirmTransactionBase extends Component {
             />
             {advancedInlineGasShown ? (
               <AdvancedGasInputs
-                updateCustomGasPrice={newGasPrice =>
-                  updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
+                updateCustomGasPrice={(newGasPrice) =>
+                  updateGasAndCollateralAndCalculte({ ...customGasAndCollateral, gasPrice: newGasPrice })
                 }
-                updateCustomGasLimit={newGasLimit =>
-                  updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
+                updateCustomGasLimit={(newGasLimit) =>
+                  updateGasAndCollateralAndCalculte({ ...customGasAndCollateral, gasLimit: newGasLimit })
                 }
-                customGasPrice={customGas.gasPrice}
-                customGasLimit={customGas.gasLimit}
+                updateCustomStorageLimit={(newStorageLimit) =>
+                  updateGasAndCollateralAndCalculte({ ...customGasAndCollateral, storageLimit: newStorageLimit })
+                }
+                customGasPrice={customGasAndCollateral.gasPrice}
+                customGasLimit={customGasAndCollateral.gasLimit}
+                customStorageLimit={customGasAndCollateral.storageLimit}
                 insufficientBalance={insufficientBalance}
                 customPriceIsSafe
                 isSpeedUp={false}
+                isSimpleTx={isSimpleTx}
               />
             ) : null}
           </div>
@@ -341,7 +348,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderData() {
+  renderData () {
     const { t } = this.context
     const {
       txData: { txParams: { data } = {} } = {},
@@ -385,7 +392,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  handleEdit() {
+  handleEdit () {
     const {
       txData,
       tokenData,
@@ -413,7 +420,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit({ txData, tokenData, tokenProps })
   }
 
-  handleCancelAll() {
+  handleCancelAll () {
     const {
       cancelAllTransactions,
       clearConfirmTransaction,
@@ -433,7 +440,7 @@ export default class ConfirmTransactionBase extends Component {
     })
   }
 
-  handleCancel() {
+  handleCancel () {
     const { metricsEvent } = this.context
     const {
       onCancel,
@@ -472,7 +479,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  handleSubmit() {
+  handleSubmit () {
     const { metricsEvent } = this.context
     const {
       txData: { origin },
@@ -538,7 +545,7 @@ export default class ConfirmTransactionBase extends Component {
                   }
                 )
               })
-              .catch(error => {
+              .catch((error) => {
                 this.setState({
                   submitting: false,
                   submitError: error.message,
@@ -551,7 +558,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderTitleComponent() {
+  renderTitleComponent () {
     const { title, titleComponent, hexTransactionAmount } = this.props
 
     // Title string passed in by props takes priority
@@ -572,7 +579,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  renderSubtitleComponent() {
+  renderSubtitleComponent () {
     const { subtitle, subtitleComponent, hexTransactionAmount } = this.props
 
     // Subtitle string passed in by props takes priority
@@ -592,7 +599,7 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
-  handleNextTx(txId) {
+  handleNextTx (txId) {
     const { history, clearConfirmTransaction } = this.props
 
     if (txId) {
@@ -601,7 +608,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  getNavigateTxData() {
+  getNavigateTxData () {
     const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
     const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
     const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
@@ -641,7 +648,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const {
       toAddress,
       txData: { origin } = {},
@@ -668,11 +675,11 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress(toAddress)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this._removeBeforeUnload()
   }
 
-  render() {
+  render () {
     const {
       isTxReprice,
       fromName,
@@ -753,7 +760,7 @@ export default class ConfirmTransactionBase extends Component {
         nextTxId={nextTxId}
         prevTxId={prevTxId}
         showNavigation={showNavigation}
-        onNextTx={txId => this.handleNextTx(txId)}
+        onNextTx={(txId) => this.handleNextTx(txId)}
         firstTx={firstTx}
         lastTx={lastTx}
         ofText={ofText}
@@ -769,7 +776,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 }
 
-export function getMethodName(camelCase) {
+export function getMethodName (camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
     return ''
   }

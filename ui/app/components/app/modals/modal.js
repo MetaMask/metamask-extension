@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
-import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck'
 import isMobileView from '../../../../lib/is-mobile-view'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
@@ -292,6 +291,20 @@ const MODALS = {
     },
   },
 
+  STORAGE_LIMIT_INFO_MODAL: {
+    contents: (
+      <NotifcationModal header="storageLimit" message="storageLimitInfoModalContent" />
+    ),
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
   CONFIRM_RESET_ACCOUNT: {
     contents: <ConfirmResetAccount />,
     mobileModalStyle: {
@@ -355,7 +368,36 @@ const MODALS = {
       borderRadius: '8px',
     },
     customOnHideOpts: {
-      action: resetCustomGasData,
+      action: actions.resetAllCustomData,
+      args: [],
+    },
+  },
+
+  CUSTOMIZE_STORAGE: {
+    contents: <ConfirmCustomizeGasModal />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    customOnHideOpts: {
+      action: actions.resetAllCustomData,
       args: [],
     },
   },

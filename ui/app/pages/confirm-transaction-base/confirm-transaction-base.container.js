@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import contractMap from '@yqrashawn/cfx-contract-metadata'
+import { isValidContractAddress } from 'cfx-util'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
@@ -20,8 +21,11 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../helpers/constants/error-keys'
-import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
+import { getHexGasAndCollateralTotal } from '../../helpers/utils/confirm-tx.util'
+import {
+  isBalanceSufficient,
+  calcGasAndCollateralTotal,
+} from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
 import {
@@ -92,6 +96,7 @@ const mapStateToProps = (state, ownProps) => {
     from: fromAddress,
     to: txParamsToAddress,
     gasPrice,
+    storageLimit,
     gas: gasLimit,
     value: amount,
     data,
@@ -132,7 +137,11 @@ const mapStateToProps = (state, ownProps) => {
 
   const insufficientBalance = !isBalanceSufficient({
     amount,
-    gasTotal: calcGasTotal(gasLimit, gasPrice),
+    gasAndCollateralTotal: calcGasAndCollateralTotal(
+      gasLimit,
+      gasPrice,
+      storageLimit
+    ),
     balance,
     conversionRate,
   })
@@ -150,6 +159,10 @@ const mapStateToProps = (state, ownProps) => {
     }
   }
 
+  const isSimpleTx =
+    fullTxData.simpleSend ||
+    !(fullTxData.txParams.data || isValidContractAddress(toAddress))
+
   return {
     balance,
     fromAddress,
@@ -166,6 +179,7 @@ const mapStateToProps = (state, ownProps) => {
     methodData,
     tokenProps,
     isTxReprice,
+    isSimpleTx,
     conversionRate,
     transactionStatus,
     nonce,
@@ -173,7 +187,8 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
-    customGas: {
+    customGasAndCollateral: {
+      storageLimit,
       gasLimit,
       gasPrice,
     },
@@ -202,12 +217,17 @@ export const mapDispatchToProps = (dispatch) => {
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
+    showCustomizeStorageModal: ({ txData, onSubmit, validate }) => {
+      return dispatch(
+        showModal({ name: 'CUSTOMIZE_STORAGE', txData, onSubmit, validate })
+      )
+    },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
       return dispatch(
         showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate })
       )
     },
-    updateGasAndCalculate: (updatedTx) => {
+    updateGasAndCollateralAndCalculte: (updatedTx) => {
       return dispatch(updateTransaction(updatedTx))
     },
     showRejectTransactionsConfirmationModal: ({
@@ -231,10 +251,14 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
   const { txParams: { value: amount } = {} } = txData
 
   return ({ gasLimit, gasPrice, storageLimit }) => {
-    const gasTotal = getHexGasTotal({ gasLimit, gasPrice, storageLimit })
+    const gasAndCollateralTotal = getHexGasAndCollateralTotal({
+      gasLimit,
+      gasPrice,
+      storageLimit,
+    })
     const hasSufficientBalance = isBalanceSufficient({
       amount,
-      gasTotal,
+      gasAndCollateralTotal,
       balance,
       conversionRate,
     })
@@ -278,7 +302,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
-    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
+    showCustomizeStorageModal: dispatchShowCustomizeStorageModal,
+    updateGasAndCollateralAndCalculte: dispatchUpdateGasAndCollateralAndCalculate,
     ...otherDispatchProps
   } = dispatchProps
 
@@ -295,21 +320,34 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     showCustomizeGasModal: () =>
       dispatchShowCustomizeGasModal({
         txData,
-        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
+        onSubmit: (customGasAndCollateral) =>
+          dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
+        validate: validateEditGas,
+      }),
+    showCustomizeStorageModal: () =>
+      dispatchShowCustomizeStorageModal({
+        txData,
+        onSubmit: (customGasAndCollateral) =>
+          dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
         validate: validateEditGas,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
-    updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
+    updateGasAndCollateralAndCalculte: ({
+      gasLimit,
+      gasPrice,
+      storageLimit,
+    }) => {
       const updatedTx = {
         ...txData,
         txParams: {
           ...txData.txParams,
           gas: gasLimit,
+          storageLimit,
           gasPrice,
         },
       }
-      dispatchUpdateGasAndCalculate(updatedTx)
+      dispatchUpdateGasAndCollateralAndCalculate(updatedTx)
     },
   }
 }

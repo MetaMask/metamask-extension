@@ -22,7 +22,7 @@ describe('SendGasRow Component', function () {
         <SendGasRow
           conversionRate={20}
           convertedCurrency="mockConvertedCurrency"
-          gasFeeError
+          gasAndCollateralFeeError
           gasLoadingError={false}
           gasTotal="mockGasTotal"
           gasButtonGroupShown={false}
@@ -52,7 +52,7 @@ describe('SendGasRow Component', function () {
 
       assert.equal(label, 'transactionFee_t:')
       assert.equal(showError, true)
-      assert.equal(errorType, 'gasFee')
+      assert.equal(errorType, 'gasAndCollateralFee')
     })
 
     it('should render a GasFeeDisplay as a child of the SendRowWrapper', function () {

@@ -8,7 +8,7 @@ import {
 import {
   getValueFromWeiHex,
   getTransactionFee,
-  getHexGasTotal,
+  getHexGasAndCollateralTotal,
   addFiat,
   addEth,
   increaseLastGasPrice,
@@ -268,7 +268,8 @@ export function setFetchingData (isFetching) {
   }
 }
 
-export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
+export function updateGasAndCollateralAndCalculate ({ gasLimit, gasPrice, storageLimit }) {
+  storageLimit = addHexPrefix(storageLimit)
   gasLimit = addHexPrefix(gasLimit)
   gasPrice = addHexPrefix(gasPrice)
   return (dispatch, getState) => {
@@ -279,6 +280,7 @@ export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
       ...txData,
       txParams: {
         ...txData.txParams,
+        storageLimit,
         gas: gasLimit,
         gasPrice,
       },
@@ -344,7 +346,7 @@ export function updateTxDataAndCalculate (txData) {
       })
     )
 
-    const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice, storageLimit })
+    const hexTransactionFee = getHexGasAndCollateralTotal({ gasLimit, gasPrice, storageLimit })
 
     const fiatTransactionFee = getTransactionFee({
       value: hexTransactionFee,

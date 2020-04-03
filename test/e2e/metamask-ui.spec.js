@@ -1367,10 +1367,10 @@ describe('MetaMask', function () {
       // await driver.clickElement(By.css('.page-container__footer-button'))
       // await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInputs = await driver.findElements(
+      const gasAndCollateralFeeInputs = await driver.findElements(
         By.css('.confirm-detail-row__primary')
       )
-      const renderedGasFee = await gasFeeInputs[0].getText()
+      const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
       assert.equal(renderedGasFee, '0.0006')
     })
 
@@ -1534,12 +1534,12 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('.page-container__footer-button'))
       // await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInEth = await driver.findElement(
+      const gasAndCollateralFeeInEth = await driver.findElement(
         By.css(
           '.confirm-approve-content__transaction-details-content__secondary-fee'
         )
       )
-      assert.equal(await gasFeeInEth.getText(), '0.0006 CFX')
+      assert.equal(await gasAndCollateralFeeInEth.getText(), '0.0006 CFX')
     })
 
     it('edits the permission', async function () {

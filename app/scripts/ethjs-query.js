@@ -90,7 +90,12 @@ function generateFnFor (method, methodObject) {
                 "' with raw outputs: " +
                 JSON.stringify(callbackResult, null, self.options.jsonSpace)
             )
-            const methodOutputs = format.formatOutputs(method, callbackResult)
+            let methodOutputs
+            if (method === 'eth_estimateGas') {
+              methodOutputs = callbackResult
+            } else {
+              methodOutputs = format.formatOutputs(method, callbackResult)
+            }
             self.log(
               "method formatting success for '" +
                 protoMethod +

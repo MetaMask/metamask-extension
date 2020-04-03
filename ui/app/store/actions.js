@@ -5,7 +5,11 @@ import {
   getTokenAddressFromTokenObject,
   checksumAddress,
 } from '../helpers/utils/util'
-import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
+import {
+  calcGasAndCollateralTotal,
+  calcTokenBalance,
+  estimateGasAndCollateral,
+} from '../pages/send/send.utils'
 import * as ethUtil from 'cfx-util'
 import { fetchLocale } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
@@ -14,7 +18,12 @@ import switchDirection from '../helpers/utils/switch-direction'
 import log from 'loglevel'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
-import { setCustomGasLimit } from '../ducks/gas/gas.duck'
+import { setCustomGasLimit, resetCustomGasData } from '../ducks/gas/gas.duck'
+import {
+  setCustomStorageLimit,
+  resetCustomStorageData,
+} from '../ducks/storageLimit/storageLimit.duck'
+import { resetCustomGasAndCollateralData } from '../ducks/gasAndCollateral/gasAndCollateral.duck'
 import txHelper from '../../lib/tx-helper'
 
 export const actionConstants = {
@@ -66,9 +75,12 @@ export const actionConstants = {
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   SET_NEXT_NONCE: 'SET_NEXT_NONCE',
   // send screen
+  UPDATE_STORAGE_LIMIT: 'UPDATE_STORAGE_LIMIT',
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
+  UPDATE_STORAGE_TOTAL: 'UPDATE_STORAGE_TOTAL',
+  UPDATE_GAS_AND_COLLATERAL_TOTAL: 'UPDATE_GAS_AND_COLLATERAL_TOTAL',
   UPDATE_SEND_HEX_DATA: 'UPDATE_SEND_HEX_DATA',
   UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
@@ -77,6 +89,8 @@ export const actionConstants = {
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
+  STORAGE_LOADING_STARTED: 'STORAGE_LOADING_STARTED',
+  STORAGE_LOADING_FINISHED: 'STORAGE_LOADING_FINISHED',
   GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
   GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   UPDATE_SEND_ENS_RESOLUTION: 'UPDATE_SEND_ENS_RESOLUTION',
@@ -757,10 +771,17 @@ export function signTx (txData) {
   }
 }
 
-export function setGasLimit ({ gasLimit, storageLimit }) {
+export function setGasLimit (gasLimit) {
   return {
     type: actionConstants.UPDATE_GAS_LIMIT,
-    value: { gasLimit, storageLimit },
+    value: gasLimit,
+  }
+}
+
+export function setStorageLimit (storageLimit) {
+  return {
+    type: actionConstants.UPDATE_STORAGE_LIMIT,
+    value: storageLimit,
   }
 }
 
@@ -772,13 +793,41 @@ export function setGasPrice (gasPrice) {
 }
 
 export function setGasTotal (gasTotal) {
-  return {
-    type: actionConstants.UPDATE_GAS_TOTAL,
-    value: gasTotal,
+  return (dispatch, getState) => {
+    const { metamask: { send: { storageTotal } } } = getState()
+    dispatch({
+      type: actionConstants.UPDATE_GAS_TOTAL,
+      value: gasTotal,
+    })
+    dispatch(setGasAndCollateralTotal(gasTotal, storageTotal || 0))
   }
 }
 
-export function updateGasData ({
+export function setStorageTotal (storageTotal) {
+  return (dispatch, getState) => {
+    const { metamask: { send: { gasTotal } } } = getState()
+    dispatch({
+      type: actionConstants.UPDATE_STORAGE_TOTAL,
+      value: storageTotal,
+    })
+    dispatch(setGasAndCollateralTotal(gasTotal || 0, storageTotal))
+  }
+}
+
+export function setGasAndCollateralTotal (gasTotal, storageTotal, gasAndCollateralTotal) {
+  if (gasAndCollateralTotal === undefined) {
+    return {
+      type: actionConstants.UPDATE_GAS_AND_COLLATERAL_TOTAL,
+      value: calcGasAndCollateralTotal(null, null, null, gasTotal, storageTotal),
+    }
+  }
+  return {
+    type: actionConstants.UPDATE_GAS_AND_COLLATERAL_TOTAL,
+    value: gasAndCollateralTotal,
+  }
+}
+
+export function updateGasAndCollateralData ({
   gasPrice,
   blockGasLimit,
   selectedAddress,
@@ -789,8 +838,9 @@ export function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(gasLoadingStarted())
-    return estimateGas({
-      estimateGasMethod: background.estimateGas,
+    dispatch(storageLoadingStarted())
+    return estimateGasAndCollateral({
+      estimateGasAndCollateralMethod: background.estimateGas,
       blockGasLimit,
       selectedAddress,
       selectedToken,
@@ -799,16 +849,27 @@ export function updateGasData ({
       estimateGasPrice: gasPrice,
       data,
     })
-      .then(({ gas: gasLimit, storage: storageLimit }) => {
-        dispatch(setGasLimit({ gasLimit, storageLimit }))
-        dispatch(setCustomGasLimit({ newGasLimit: gasLimit, newStorageLimit: storageLimit }))
-        dispatch(updateSendErrors({ gasLoadingError: null }))
+      .then(({ gas, storageLimit }) => {
+        dispatch(setGasLimit(gas))
+        dispatch(setStorageLimit(storageLimit))
+        dispatch(setCustomGasLimit(gas))
+        dispatch(setCustomStorageLimit(storageLimit))
+        dispatch(
+          updateSendErrors({ gasLoadingError: null, storageLoadingError: null })
+        )
         dispatch(gasLoadingFinished())
+        dispatch(storageLoadingFinished())
       })
       .catch((err) => {
         log.error(err)
-        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+        dispatch(
+          updateSendErrors({
+            gasLoadingError: 'gasLoadingError',
+            storageLoadingError: 'storageLoadingError',
+          })
+        )
         dispatch(gasLoadingFinished())
+        dispatch(storageLoadingFinished())
       })
   }
 }
@@ -822,6 +883,18 @@ export function gasLoadingStarted () {
 export function gasLoadingFinished () {
   return {
     type: actionConstants.GAS_LOADING_FINISHED,
+  }
+}
+
+export function storageLoadingStarted () {
+  return {
+    type: actionConstants.STORAGE_LOADING_STARTED,
+  }
+}
+
+export function storageLoadingFinished () {
+  return {
+    type: actionConstants.STORAGE_LOADING_FINISHED,
   }
 }
 
@@ -2745,5 +2818,13 @@ export function getCurrentWindowTab () {
   return async (dispatch) => {
     const currentWindowTab = await global.platform.currentTab()
     dispatch(setCurrentWindowTab(currentWindowTab))
+  }
+}
+
+export function resetAllCustomData () {
+  return (dispatch) => {
+    dispatch(resetCustomGasData)
+    dispatch(resetCustomStorageData)
+    dispatch(resetCustomGasAndCollateralData)
   }
 }

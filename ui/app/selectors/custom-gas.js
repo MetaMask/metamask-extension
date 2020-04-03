@@ -27,10 +27,6 @@ export function getCustomGasLimit (state) {
   return state.gas.customData.limit
 }
 
-export function getCustomStroageLimit (state) {
-  return state.gas.customData.storageLimit
-}
-
 export function getCustomGasPrice (state) {
   return state.gas.customData.price
 }

@@ -71,14 +71,14 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ selectedToken, to, amount, from, gas, gasPrice, storage, data }) => {
+    sign: ({ selectedToken, to, amount, from, gas, gasPrice, storageLimit, data }) => {
       const txParams = constructTxParams({
         amount,
         data,
         from,
         gas,
         gasPrice,
-        storage,
+        storageLimit,
         selectedToken,
         to,
       })
@@ -94,7 +94,7 @@ function mapDispatchToProps (dispatch) {
       from,
       gas,
       gasPrice,
-      storage,
+      storageLimit,
       selectedToken,
       to,
       unapprovedTxs,
@@ -106,7 +106,7 @@ function mapDispatchToProps (dispatch) {
         from,
         gas,
         gasPrice,
-        storage,
+        storageLimit,
         selectedToken,
         to,
         unapprovedTxs,

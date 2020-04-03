@@ -10,6 +10,10 @@ const actionSpies = {
   setGasPrice: sinon.spy(),
   setGasTotal: sinon.spy(),
   setGasLimit: sinon.spy(),
+  setStorageTotal: sinon.spy(),
+  setGasAndCollateralTotal: sinon.spy(),
+  setStorageLimit: sinon.spy(),
+  resetAllCustomData: sinon.spy(),
 }
 
 const sendDuckSpies = {
@@ -17,9 +21,12 @@ const sendDuckSpies = {
 }
 
 const gasDuckSpies = {
-  resetCustomData: sinon.spy(),
   setCustomGasPrice: sinon.spy(),
   setCustomGasLimit: sinon.spy(),
+}
+
+const storageLimitDuckSpies = {
+  setCustomStorageLimit: sinon.spy(),
 }
 
 proxyquire('../send-gas-row.container.js', {
@@ -34,13 +41,31 @@ proxyquire('../send-gas-row.container.js', {
     getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
-    isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
-      `${amount}:${gasTotal}:${balance}:${conversionRate}`,
+    isBalanceSufficient: ({
+      amount,
+      gasAndCollateralTotal,
+      balance,
+      conversionRate,
+    }) => `${amount}:${gasAndCollateralTotal}:${balance}:${conversionRate}`,
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
+    calcStorageTotal: (storageLimit) => storageLimit + '*gdripperb',
+    calcGasAndCollateralTotal: (
+      gasLimit,
+      gasPrice,
+      storageLimit,
+      gasTotal,
+      storageTotal
+    ) => {
+      if (gasTotal !== undefined && storageTotal !== undefined) {
+        return `${gasTotal}+${storageTotal}`
+      }
+      return `${gasLimit}*${gasPrice}+${storageLimit}`
+    },
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/send/send.duck': sendDuckSpies,
   '../../../../ducks/gas/gas.duck': gasDuckSpies,
+  '../../../../ducks/storageLimit/storageLimit.duck': storageLimitDuckSpies,
 })
 
 describe('send-gas-row container', function () {
@@ -52,6 +77,9 @@ describe('send-gas-row container', function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
       actionSpies.setGasTotal.resetHistory()
+      actionSpies.setStorageTotal.resetHistory()
+      actionSpies.setGasAndCollateralTotal.resetHistory()
+      actionSpies.showModal.resetHistory()
     })
 
     describe('showCustomizeGasModal()', function () {
@@ -60,6 +88,17 @@ describe('send-gas-row container', function () {
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(actionSpies.showModal.getCall(0).args[0], {
           name: 'CUSTOMIZE_GAS',
+          hideBasic: true,
+        })
+      })
+    })
+
+    describe('showCustomizeStorageModal()', function () {
+      it('should dispatch an action', function () {
+        mapDispatchToPropsObject.showCustomizeStorageModal()
+        assert(dispatchSpy.calledOnce)
+        assert.deepEqual(actionSpies.showModal.getCall(0).args[0], {
+          name: 'CUSTOMIZE_STORAGE',
           hideBasic: true,
         })
       })
@@ -76,10 +115,15 @@ describe('send-gas-row container', function () {
           'mockNewPrice'
         )
         assert(actionSpies.setGasTotal.calledOnce)
+        // assert(actionSpies.setGasAndCollateralTotal.calledOnce)
         assert.equal(
           actionSpies.setGasTotal.getCall(0).args[0],
           'mockLimitmockNewPrice'
         )
+        // assert.equal(
+        //   actionSpies.setGasAndCollateralTotal.getCall(0).args[0],
+        //   'mockLimitmockNewPrice0'
+        // )
       })
     })
 
@@ -94,10 +138,35 @@ describe('send-gas-row container', function () {
           'mockNewLimit'
         )
         assert(actionSpies.setGasTotal.calledOnce)
+        // assert(actionSpies.setGasAndCollateralTotal.calledOnce)
         assert.equal(
           actionSpies.setGasTotal.getCall(0).args[0],
           'mockNewLimitmockPrice'
         )
+        // assert.equal(
+        //   actionSpies.setGasAndCollateralTotal.getCall(0).args[0],
+        //   'mockNewLimitmockPrice0'
+        // )
+      })
+    })
+
+    describe('setStorageLimit()', function () {
+      it('should dispatch an action', function () {
+        mapDispatchToPropsObject.setStorageLimit('mockNewStorageLimit')
+        assert(dispatchSpy.calledThrice)
+        assert(actionSpies.setStorageLimit.calledOnce)
+        assert.equal(
+          actionSpies.setStorageLimit.getCall(0).args[0],
+          'mockNewStorageLimit'
+        )
+        assert.equal(
+          actionSpies.setStorageTotal.getCall(0).args[0],
+          'mockNewStorageLimit*gdripperb'
+        )
+        // assert.equal(
+        //   actionSpies.setGasAndCollateralTotal.getCall(0).args[0],
+        //   '0mockNewStorageLimit*gdripperb'
+        // )
       })
     })
 
@@ -113,7 +182,7 @@ describe('send-gas-row container', function () {
       it('should dispatch an action', function () {
         mapDispatchToPropsObject.resetCustomData()
         assert(dispatchSpy.calledOnce)
-        assert(gasDuckSpies.resetCustomData.calledOnce)
+        assert(actionSpies.resetAllCustomData.calledOnce)
       })
     })
   })

@@ -874,7 +874,7 @@ describe('Actions', function () {
       }
 
       try {
-        await store.dispatch(actions.updateGasData(mockData))
+        await store.dispatch(actions.updateGasAndCollateralData(mockData))
         assert.fail('Should have thrown error')
       } catch (error) {
         assert.deepEqual(store.getActions(), expectedActions)
@@ -897,19 +897,17 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
-        {
-          type: 'UPDATE_GAS_LIMIT',
-          value: { gasLimit: '0x5208', storageLimit: '0x0' },
-        },
-        {
-          type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-          value: { newGasLimit: '0x5208', newStorageLimit: '0x0' },
-        },
-        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null } },
+        { type: 'STORAGE_LOADING_STARTED' },
+        { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
+        { type: 'UPDATE_STORAGE_LIMIT', value: '0x0' },
+        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
+        { type: 'metamask/storageLimit/SET_CUSTOM_STORAGE_LIMIT', value: '0x0' },
+        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null, storageLoadingError: null } },
         { type: 'GAS_LOADING_FINISHED' },
+        { type: 'STORAGE_LOADING_FINISHED' },
       ]
 
-      await store.dispatch(actions.updateGasData(mockData))
+      await store.dispatch(actions.updateGasAndCollateralData(mockData))
       assert.deepEqual(store.getActions(), expectedActions)
       global.eth.getCode.reset()
     })

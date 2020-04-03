@@ -28,6 +28,7 @@ describe('TransactionActivityLog utils', function () {
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
                 value: '0x2386f26fc10000',
                 gas: '0x5208',
+                storageLimit: '0x400',
                 gasPrice: '0x3b9aca00',
               },
               type: 'standard',
@@ -74,6 +75,7 @@ describe('TransactionActivityLog utils', function () {
           time: 1543958845581,
           txParams: {
             from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
+            storageLimit: '0x400',
             gas: '0x5208',
             gasPrice: '0x3b9aca00',
             nonce: '0x32',
@@ -96,6 +98,7 @@ describe('TransactionActivityLog utils', function () {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
                 value: '0x2386f26fc10000',
+                storageLimit: '0x400',
                 gas: '0x5208',
                 gasPrice: '0x3b9aca00',
                 nonce: '0x32',
@@ -166,6 +169,7 @@ describe('TransactionActivityLog utils', function () {
           time: 1543958857697,
           txParams: {
             from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
+            storageLimit: '0x400',
             gas: '0x5208',
             gasPrice: '0x481f2280',
             nonce: '0x32',
@@ -194,7 +198,7 @@ describe('TransactionActivityLog utils', function () {
             '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
           timestamp: 1543958848147,
-          value: '0x1319718a5000',
+          value: '0xde0c9cd18ee5000',
         },
         {
           id: 6400627574331060,
@@ -202,7 +206,7 @@ describe('TransactionActivityLog utils', function () {
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
           timestamp: 1543958860061,
-          value: '0x171c3a061400',
+          value: '0xde0cdcfe16a1400',
         },
         {
           id: 6400627574331060,
@@ -210,7 +214,7 @@ describe('TransactionActivityLog utils', function () {
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
           timestamp: 1543958897165,
-          value: '0x171c3a061400',
+          value: '0xde0cdcfe16a1400',
         },
       ]
 

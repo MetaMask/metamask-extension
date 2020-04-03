@@ -1,23 +1,32 @@
 import { connect } from 'react-redux'
+import { isValidContractAddress, addHexPrefix } from 'cfx-util'
 import { pipe, partialRight } from 'ramda'
 import GasModalPageContainer from './gas-modal-page-container.component'
 import {
   hideModal,
+  setStorageLimit,
   setGasLimit,
   setGasPrice,
   createSpeedUpTransaction,
   hideSidebar,
   updateSendAmount,
   setGasTotal,
+  setStorageTotal,
+  setGasAndCollateralTotal,
   updateTransaction,
 } from '../../../../store/actions'
 import {
   setCustomGasPrice,
   setCustomGasLimit,
-  resetCustomData,
+  resetCustomGasData,
   fetchGasEstimates,
   fetchBasicGasAndTimeEstimates,
 } from '../../../../ducks/gas/gas.duck'
+import {
+  setCustomStorageLimit,
+  resetCustomStorageData,
+} from '../../../../ducks/storageLimit/storageLimit.duck'
+import { resetCustomGasAndCollateralData } from '../../../../ducks/gasAndCollateral/gasAndCollateral.duck'
 import {
   hideGasButtonGroup,
   updateSendErrors,
@@ -43,6 +52,7 @@ import {
   getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
 } from '../../../../selectors/custom-gas'
+import { getCustomStorageLimit } from '../../../../selectors/custom-storageLimit'
 import { getTxParams } from '../../../../selectors/transactions'
 import { getTokenBalance } from '../../../../pages/send/send.selectors'
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util'
@@ -55,10 +65,10 @@ import {
 import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import { formatETHFee } from '../../../../helpers/utils/formatters'
 import {
-  calcGasTotal,
+  calcGasAndCollateralTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
-import { addHexPrefix } from 'cfx-util'
+
 import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
@@ -77,14 +87,21 @@ const mapStateToProps = (state, ownProps) => {
   const {
     gasPrice: currentGasPrice,
     gas: currentGasLimit,
+    storageLimit: currentStorageLimit,
     value,
+    to: toAddress,
+    data,
   } = getTxParams(state, selectedTransaction)
+  const isSimpleTx = !(data || isValidContractAddress(toAddress))
+  const customStorageLimitInHex =
+    getCustomStorageLimit(state) || currentStorageLimit || '0x0'
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex =
     getCustomGasLimit(state) || currentGasLimit || '0x5208'
-  const customGasTotal = calcGasTotal(
+  const customGasAndCollateralTotal = calcGasAndCollateralTotal(
     customModalGasLimitInHex,
-    customModalGasPriceInHex
+    customModalGasPriceInHex,
+    customStorageLimitInHex
   )
 
   const gasButtonInfo = getRenderableBasicEstimateData(
@@ -97,7 +114,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(
     value,
-    customGasTotal,
+    customGasAndCollateralTotal,
     currentCurrency,
     conversionRate
   )
@@ -118,29 +135,30 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalEth = maxModeOn
     ? addHexWEIsToRenderableEth(balance, '0x0')
-    : addHexWEIsToRenderableEth(value, customGasTotal)
+    : addHexWEIsToRenderableEth(value, customGasAndCollateralTotal)
 
   const sendAmount = maxModeOn
-    ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
+    ? subtractHexWEIsFromRenderableEth(balance, customGasAndCollateralTotal)
     : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn
     ? false
     : !isBalanceSufficient({
       amount: value,
-      gasTotal: customGasTotal,
+      gasAndCollateralTotal: customGasAndCollateralTotal,
       balance,
       conversionRate,
     })
 
   return {
     hideBasic: true, // TODO: support smarter gas price estimation based on gas station
+    isSimpleTx,
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
-    customGasTotal,
+    customGasAndCollateralTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(
       customGasPrice,
@@ -168,14 +186,20 @@ const mapStateToProps = (state, ownProps) => {
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(
         value,
-        customGasTotal,
+        customGasAndCollateralTotal,
         currentCurrency,
         conversionRate
       ),
-      originalTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
+      originalTotalEth: addHexWEIsToRenderableEth(
+        value,
+        customGasAndCollateralTotal
+      ),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
-      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
+      transactionFee: addHexWEIsToRenderableEth(
+        '0x0',
+        customGasAndCollateralTotal
+      ),
       sendAmount,
     },
     transaction: txData || transaction,
@@ -198,20 +222,33 @@ const mapDispatchToProps = (dispatch) => {
 
   return {
     cancelAndClose: () => {
-      dispatch(resetCustomData())
+      dispatch(resetCustomGasData())
+      dispatch(resetCustomStorageData())
+      dispatch(resetCustomGasAndCollateralData())
       dispatch(hideModal())
     },
     hideModal: () => dispatch(hideModal()),
     updateCustomGasPrice,
     updateCustomGasLimit: (newLimit) =>
       dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
+    updateCustomStorageLimit: (newLimit) =>
+      dispatch(setCustomStorageLimit(addHexPrefix(newLimit))),
     setGasData: (newLimit, newPrice) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
     },
-    updateConfirmTxGasAndCalculate: (gasLimit, gasPrice, updatedTx) => {
+    setStorageData: (newLimit) => {
+      dispatch(setStorageLimit(newLimit))
+    },
+    updateConfirmTxGasAndCollateralAndCalculate: (
+      gasLimit,
+      gasPrice,
+      storageLimit,
+      updatedTx
+    ) => {
       updateCustomGasPrice(gasPrice)
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
+      dispatch(setCustomStorageLimit(addHexPrefix(storageLimit.toString(16))))
       return dispatch(updateTransaction(updatedTx))
     },
     createSpeedUpTransaction: (txId, gasPrice) => {
@@ -223,6 +260,9 @@ const mapDispatchToProps = (dispatch) => {
     fetchBasicGasAndTimeEstimates: () =>
       dispatch(fetchBasicGasAndTimeEstimates()),
     setGasTotal: (total) => dispatch(setGasTotal(total)),
+    setStorageTotal: (total) => dispatch(setStorageTotal(total)),
+    setGasAndCollateralTotal: (total) =>
+      dispatch(setGasAndCollateralTotal(total)),
     setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
@@ -234,13 +274,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     gasPriceButtonGroupProps,
     isConfirm,
+    isSimpleTx,
     txId,
     isSpeedUp,
     isRetry,
     insufficientBalance,
     maxModeOn,
     customGasPrice,
-    customGasTotal,
+    customGasAndCollateralTotal,
     balance,
     selectedToken,
     tokenBalance,
@@ -250,7 +291,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     hideGasButtonGroup: dispatchHideGasButtonGroup,
     setGasData: dispatchSetGasData,
-    updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
+    setStorageData: dispatchSetStorageData,
+    updateConfirmTxGasAndCollateralAndCalculate: dispatchUpdateConfirmTxGasAndCollateralAndCalculate,
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
     createRetryTransaction: dispatchCreateRetryTransaction,
     hideSidebar: dispatchHideSidebar,
@@ -264,17 +306,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    onSubmit: (gasLimit, gasPrice) => {
+    isSimpleTx: !selectedToken && isSimpleTx,
+    onSubmit: (gasLimit, gasPrice, storageLimit) => {
       if (isConfirm) {
         const updatedTx = {
           ...transaction,
           txParams: {
             ...transaction.txParams,
+            stroage: storageLimit,
             gas: gasLimit,
             gasPrice,
           },
         }
-        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice, updatedTx)
+        dispatchUpdateConfirmTxGasAndCollateralAndCalculate(
+          gasLimit,
+          gasPrice,
+          storageLimit,
+          updatedTx
+        )
         dispatchHideModal()
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, gasPrice)
@@ -286,13 +335,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchCancelAndClose()
       } else {
         dispatchSetGasData(gasLimit, gasPrice)
+        dispatchSetStorageData(storageLimit)
         dispatchHideGasButtonGroup()
         dispatchCancelAndClose()
       }
       if (maxModeOn) {
         dispatchSetAmountToMax({
           balance,
-          gasTotal: customGasTotal,
+          gasAndCollateralTotal: customGasAndCollateralTotal,
           selectedToken,
           tokenBalance,
         })

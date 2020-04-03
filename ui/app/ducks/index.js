@@ -5,6 +5,8 @@ import sendReducer from './send/send.duck'
 import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
+import storageLimitReducer from './storageLimit/storageLimit.duck'
+import gasAndCollateralReducer from './gasAndCollateral/gasAndCollateral.duck'
 
 export default combineReducers({
   activeTab: (s) => (s === undefined ? null : s),
@@ -13,5 +15,7 @@ export default combineReducers({
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,
   gas: gasReducer,
+  storageLimit: storageLimitReducer,
+  gasAndCollateral: gasAndCollateralReducer,
   localeMessages: localeMessagesReducer,
 })

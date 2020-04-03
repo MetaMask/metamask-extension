@@ -21,9 +21,12 @@ export default function reduceMetamask (state = {}, action) {
       pendingTokens: {},
       customNonceValue: '',
       send: {
+        storageLimit: null,
         gasLimit: null,
         gasPrice: null,
         gasTotal: null,
+        storageTotal: null,
+        gasAndCollateralTotal: null,
         tokenBalance: '0x0',
         from: '',
         to: '',
@@ -156,8 +159,15 @@ export default function reduceMetamask (state = {}, action) {
         ...metamaskState,
         send: {
           ...metamaskState.send,
-          storageLimit: action.value.storageLimit,
-          gasLimit: action.value.gasLimit,
+          gasLimit: action.value,
+        },
+      }
+    case actions.UPDATE_STORAGE_LIMIT:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          storageLimit: action.value,
         },
       }
     case actions.UPDATE_CUSTOM_NONCE:
@@ -186,6 +196,22 @@ export default function reduceMetamask (state = {}, action) {
         send: {
           ...metamaskState.send,
           gasTotal: action.value,
+        },
+      }
+    case actions.UPDATE_STORAGE_TOTAL:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          storageTotal: action.value,
+        },
+      }
+    case actions.UPDATE_GAS_AND_COLLATERAL_TOTAL:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          gasAndCollateralTotal: action.value,
         },
       }
 

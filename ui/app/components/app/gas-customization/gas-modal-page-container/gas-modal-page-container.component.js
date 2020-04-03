@@ -13,8 +13,10 @@ export default class GasModalPageContainer extends Component {
 
   static propTypes = {
     hideBasic: PropTypes.bool,
+    isSimpleTx: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
+    updateCustomStorageLimit: PropTypes.func,
     currentTimeEstimate: PropTypes.string,
     insufficientBalance: PropTypes.bool,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
@@ -31,6 +33,7 @@ export default class GasModalPageContainer extends Component {
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
+    customModalStorageLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
     blockTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     customPriceIsSafe: PropTypes.bool,
@@ -64,14 +67,17 @@ export default class GasModalPageContainer extends Component {
     const {
       updateCustomGasPrice,
       updateCustomGasLimit,
+      updateCustomStorageLimit,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
+      customModalStorageLimitInHex,
       gasChartProps,
       currentTimeEstimate,
       insufficientBalance,
       gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
+      isSimpleTx,
       isRetry,
       infoRowProps: { transactionFee },
       isEthereumNetwork,
@@ -79,10 +85,12 @@ export default class GasModalPageContainer extends Component {
 
     return (
       <AdvancedTabContent
+        updateCustomStorageLimit={updateCustomStorageLimit}
         updateCustomGasPrice={updateCustomGasPrice}
         updateCustomGasLimit={updateCustomGasLimit}
         customModalGasPriceInHex={customModalGasPriceInHex}
         customModalGasLimitInHex={customModalGasLimitInHex}
+        customModalStorageLimitInHex={customModalStorageLimitInHex}
         timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
         gasChartProps={gasChartProps}
@@ -90,6 +98,7 @@ export default class GasModalPageContainer extends Component {
         gasEstimatesLoading={gasEstimatesLoading}
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
+        isSimpleTx={isSimpleTx}
         isRetry={isRetry}
         isEthereumNetwork={isEthereumNetwork}
       />
@@ -181,6 +190,7 @@ export default class GasModalPageContainer extends Component {
       onSubmit,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
+      customModalStorageLimitInHex,
       disableSave,
       isSpeedUp,
     } = this.props
@@ -204,7 +214,7 @@ export default class GasModalPageContainer extends Component {
                 },
               })
             }
-            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
+            onSubmit(customModalGasLimitInHex, customModalGasPriceInHex, customModalStorageLimitInHex)
           }}
           submitText={this.context.t('save')}
           headerCloseText={this.context.t('close')}

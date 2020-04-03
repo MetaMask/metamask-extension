@@ -4,6 +4,7 @@ import * as ethUtil from 'cfx-util'
 import { Transaction } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
 import EthQuery from '../../ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
+import TxGasUtil, { SIMPLE_GAS_COST } from './tx-gas-utils'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
 
@@ -19,7 +20,7 @@ import {
 } from '../../../../ui/app/helpers/constants/transactions.js'
 
 import TransactionStateManager from './tx-state-manager'
-import TxGasUtil from './tx-gas-utils'
+
 import PendingTransactionTracker from './pending-tx-tracker'
 import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
@@ -274,7 +275,7 @@ class TransactionController extends EventEmitter {
         normalizedTxParams.to
       )
       // add default tx params
-      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
+      txMeta = await this.addTxGasAndCollateralDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
       txMeta.loadingDefaults = false
@@ -295,7 +296,7 @@ class TransactionController extends EventEmitter {
    * @param {Object} txMeta - the txMeta object
    * @returns {Promise<object>} - resolves with txMeta
    */
-  async addTxGasDefaults (txMeta, getCodeResponse) {
+  async addTxGasAndCollateralDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
     // ensure value
     txParams.value = txParams.value
@@ -377,7 +378,7 @@ class TransactionController extends EventEmitter {
         from,
         to: from,
         nonce,
-        gas: '0x5208',
+        gas: SIMPLE_GAS_COST,
         value: '0x0',
         gasPrice: newGasPrice,
       },
@@ -513,6 +514,7 @@ class TransactionController extends EventEmitter {
     // eslint-disable-next-line no-unused-vars
     const chainId = this.getChainId()
     const txParams = Object.assign({}, txMeta.txParams)
+    txParams.storageLimit = txParams.storageLimit || '0x0'
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
@@ -668,7 +670,7 @@ class TransactionController extends EventEmitter {
         loadingDefaults: true,
       })
       .forEach((tx) => {
-        this.addTxGasDefaults(tx)
+        this.addTxGasAndCollateralDefaults(tx)
           .then((txMeta) => {
             txMeta.loadingDefaults = false
             this.txStateManager.updateTx(

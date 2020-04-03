@@ -22,19 +22,23 @@ import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
 
+import { storageToDrip as calcStorageTotal } from '../../helpers/utils/storage-util'
+
 import abi from 'ethereumjs-abi'
 import * as ethUtil from 'cfx-util'
 
 export {
   addGasBuffer,
   calcGasTotal,
+  calcStorageTotal,
+  calcGasAndCollateralTotal,
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
-  estimateGas,
+  estimateGasAndCollateral,
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getGasFeeErrorObject,
+  getGasAndCollateralFeeErrorObject,
   getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -50,15 +54,44 @@ function calcGasTotal (gasLimit = '0', gasPrice = '0') {
   })
 }
 
+function calcGasAndCollateralTotal (
+  gasLimit = '0',
+  gasPrice = '0',
+  storageLimit = '0',
+  gasTotal,
+  storageTotal
+) {
+  if (gasTotal !== undefined && storageTotal !== undefined) {
+    return addCurrencies(
+      ethUtil.addHexPrefix(gasTotal),
+      ethUtil.addHexPrefix(storageTotal),
+      {
+        aBase: 16,
+        bBase: 16,
+        toNumericBase: 'hex',
+      }
+    )
+  }
+  return addCurrencies(
+    ethUtil.addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
+    ethUtil.addHexPrefix(calcStorageTotal(storageLimit)),
+    {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    }
+  )
+}
+
 function isBalanceSufficient ({
   amount = '0x0',
   amountConversionRate = 1,
   balance = '0x0',
   conversionRate = 1,
-  gasTotal = '0x0',
+  gasAndCollateralTotal = '0x0',
   primaryCurrency,
 }) {
-  const totalAmount = addCurrencies(amount, gasTotal, {
+  const totalAmount = addCurrencies(amount, gasAndCollateralTotal, {
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',
@@ -105,19 +138,19 @@ function getAmountErrorObject ({
   amountConversionRate,
   balance,
   conversionRate,
-  gasTotal,
+  gasAndCollateralTotal,
   primaryCurrency,
   selectedToken,
   tokenBalance,
 }) {
   let insufficientFunds = false
-  if (gasTotal && conversionRate && !selectedToken) {
+  if (gasAndCollateralTotal && conversionRate && !selectedToken) {
     insufficientFunds = !isBalanceSufficient({
       amount,
       amountConversionRate,
       balance,
       conversionRate,
-      gasTotal,
+      gasAndCollateralTotal,
       primaryCurrency,
     })
   }
@@ -150,31 +183,31 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getGasFeeErrorObject ({
+function getGasAndCollateralFeeErrorObject ({
   amountConversionRate,
   balance,
   conversionRate,
-  gasTotal,
+  gasAndCollateralTotal,
   primaryCurrency,
 }) {
-  let gasFeeError = null
+  let gasAndCollateralFeeError = null
 
-  if (gasTotal && conversionRate) {
+  if (gasAndCollateralTotal && conversionRate) {
     const insufficientFunds = !isBalanceSufficient({
       amount: '0x0',
       amountConversionRate,
       balance,
       conversionRate,
-      gasTotal,
+      gasAndCollateralTotal,
       primaryCurrency,
     })
 
     if (insufficientFunds) {
-      gasFeeError = INSUFFICIENT_FUNDS_ERROR
+      gasAndCollateralFeeError = INSUFFICIENT_FUNDS_ERROR
     }
   }
 
-  return { gasFee: gasFeeError }
+  return { gasAndCollateralFee: gasAndCollateralFeeError }
 }
 
 function calcTokenBalance ({ selectedToken, usersToken }) {
@@ -184,6 +217,10 @@ function calcTokenBalance ({ selectedToken, usersToken }) {
 
 function doesAmountErrorRequireUpdate ({
   balance,
+  gasAndCollateralTotal,
+  prevGasAndCollateralTotal,
+  storageTotal,
+  prevStorageTotal,
   gasTotal,
   prevBalance,
   prevGasTotal,
@@ -193,15 +230,22 @@ function doesAmountErrorRequireUpdate ({
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
+  const storageTotalHasChange = storageTotal !== prevStorageTotal
+  const gasAndCollateralTotalHasChange =
+    gasAndCollateralTotal !== prevGasAndCollateralTotal
   const tokenBalanceHasChanged =
     selectedToken && tokenBalance !== prevTokenBalance
   const amountErrorRequiresUpdate =
-    balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
+    balanceHasChanged ||
+    gasTotalHasChange ||
+    tokenBalanceHasChanged ||
+    storageTotalHasChange ||
+    gasAndCollateralTotalHasChange
 
   return amountErrorRequiresUpdate
 }
 
-async function estimateGas ({
+async function estimateGasAndCollateral ({
   selectedAddress,
   selectedToken,
   blockGasLimit = MIN_GAS_LIMIT_HEX,
@@ -209,7 +253,7 @@ async function estimateGas ({
   value,
   data,
   gasPrice,
-  estimateGasMethod,
+  estimateGasAndCollateralMethod,
 }) {
   const result = {}
   const paramsForEstimate = { from: selectedAddress, value, gasPrice }
@@ -220,7 +264,7 @@ async function estimateGas ({
   if (!selectedToken && !data) {
     if (!to || to[2] === '1') {
       result.gas = SIMPLE_GAS_COST
-      result.storage = SIMPLE_STORAGE_COST
+      result.storageLimit = SIMPLE_STORAGE_COST
       return result
     }
   } else if (selectedToken && !to) {
@@ -276,7 +320,7 @@ async function estimateGas ({
 
   // run tx
   return new Promise((resolve, reject) => {
-    return estimateGasMethod(paramsForEstimate, (err, result) => {
+    return estimateGasAndCollateralMethod(paramsForEstimate, (err, result) => {
       if (err) {
         const simulationFailed =
           err.message.includes('Internal error') ||
@@ -300,9 +344,9 @@ async function estimateGas ({
         storageCollateralized: estimatedStorage,
       } = result
 
-      // only need the storage here
+      // only need the storageLimit here
       if (result.gas !== undefined) {
-        result.storage = ethUtil.addHexPrefix(estimatedStorage)
+        result.storageLimit = ethUtil.addHexPrefix(estimatedStorage)
         return result
       }
       const estimateWithBuffer = addGasBuffer(
@@ -312,7 +356,7 @@ async function estimateGas ({
       )
       return resolve({
         gas: ethUtil.addHexPrefix(estimateWithBuffer),
-        storage: ethUtil.addHexPrefix(estimatedStorage),
+        storageLimit: ethUtil.addHexPrefix(estimatedStorage),
       })
     })
   })
