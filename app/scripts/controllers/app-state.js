@@ -22,7 +22,7 @@ class AppStateController extends EventEmitter {
     this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
       mkrMigrationReminderTimestamp: null,
-      connectedStatusPopoverHasBeenShown: false,
+      connectedStatusPopoverHasBeenShown: true,
     }, initState))
     this.timer = null
 
