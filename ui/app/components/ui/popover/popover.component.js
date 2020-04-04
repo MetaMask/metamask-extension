@@ -3,23 +3,26 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
-import classnames from 'classnames'
 
 const Popover = ({
   title,
-  subtitle,
+  subtitle = '',
   children,
-  footerClassName
+  footer,
+  footerClassName,
   onBack,
   onClose,
   className,
   showTooltip,
-  backgroundClass,
+  CustomBackground,
 }) => {
   const t = useContext(I18nContext)
   return (
     <div className="popover-container">
-      <div className={classnames('popover-bg', backgroundClass)} onClick={onClose} />
+      { CustomBackground
+        ? <CustomBackground onClose={onClose} />
+        : <div className="popover-bg" onClick={onClose} />
+      }
       <section className={classnames('popover-wrap', className)}>
         { showTooltip ? <div className="popover-tooltip" /> : null}
         <header className="popover-header">
@@ -44,7 +47,7 @@ const Popover = ({
               onClick={onClose}
             />
           </div>
-          <p className="popover-header__subtitle">{subtitle}</p>
+          { subtitle ? <p className="popover-header__subtitle">{subtitle}</p> : null }
         </header>
         {
           children
@@ -71,12 +74,13 @@ const Popover = ({
 
 Popover.propTypes = {
   title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
   children: PropTypes.node,
   footer: PropTypes.node,
   footerClassName: PropTypes.string,
   onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
+  CustomBackground: PropTypes.node,
 }
 
 export default class PopoverPortal extends PureComponent {

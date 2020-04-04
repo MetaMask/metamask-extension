@@ -77,6 +77,11 @@
     background: none;
   }
 
+  &__connected-status-popover-bg-container {
+    height: 100%;
+    width: 100%;
+  }
+
   &__connect-status-button-container {
     border-top: 1px solid #D2D8DD;
     width: 100%;
