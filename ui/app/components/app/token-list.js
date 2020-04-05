@@ -83,7 +83,7 @@ TokenList.prototype.render = function () {
     pluginToken.string = pluginToken.balance
   })
   return h('div', tokens.concat(pluginTokens).map((tokenData) => {
-    tokenData.image = assetImages[tokenData.address]
+    tokenData.image = tokenData.image || assetImages[tokenData.address]
     if (tokenData.customViewUrl) {
       tokenData.onClick = this.showPluginToken.bind(this, tokenData)
     }
