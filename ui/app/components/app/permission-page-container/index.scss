@@ -8,6 +8,20 @@
   flex-direction: column;
   justify-content: space-between;
 
+  @media screen and (min-width: 576px) {
+    width: 426px;
+    flex: 1;
+
+    &__footers {
+      display: flex;
+      flex-direction: column-reverse;
+      flex: 1;
+      padding-bottom: 20px;
+      justify-content: space-between;
+    }
+  }
+
+
   &__header {
     display: flex;
     flex-direction: column;
@@ -94,6 +108,10 @@
   .page-container__footer {
     align-items: center;
     margin-top: 8px;
+
+    @media screen and (min-width: 576px) {
+      border-top: none;
+    }
 
     footer {
       width: 100%;

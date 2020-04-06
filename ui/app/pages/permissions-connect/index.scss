@@ -8,6 +8,13 @@
   display: flex;
   flex-direction: column;
 
+  @media screen and (min-width: 576px) {
+    .page-container {
+      max-height: none;
+      min-height: auto;
+    }
+  }
+
   &__top-bar {
     display: grid;
     grid-template-columns: 1fr 1fr;

@@ -138,7 +138,7 @@ export default class PermissionPageContainer extends Component {
         />
         { !redirect
           ? (
-            <div>
+            <div className="permission-approval-container__footers">
               <PermissionsConnectFooter />
               <PageContainerFooter
                 cancelButtonType="default"
