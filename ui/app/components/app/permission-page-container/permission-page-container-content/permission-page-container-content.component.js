@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import Identicon from '../../../ui/identicon'
 import IconWithFallBack from '../../../ui/icon-with-fallback'
 import PermissionsConnectHeader from '../../permissions-connect-header'
 import Tooltip from '../../../ui/tooltip-v2'
@@ -40,7 +39,7 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderRedirect () {
     const { t } = this.context
-    const { permissionRejected, selectedIdentities, domainMetadata } = this.props
+    const { permissionRejected, domainMetadata } = this.props
     return (
       <div className="permission-result">
         { permissionRejected ? t('cancelling') : t('connecting') }
@@ -55,11 +54,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           </div>
           <div className="permission-result__identicon-container">
             <div className="permission-result__identicon-border">
-              <Identicon
-                className="permission-result__identicon"
-                address={selectedIdentities[0].address}
-                diameter={54}
-              />
+              <img src="/images/logo/metamask-fox.svg" />
             </div>
           </div>
         </div>
