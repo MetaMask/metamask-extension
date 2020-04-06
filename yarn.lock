@@ -1878,6 +1878,11 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
+"@metamask/etherscan-link@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.1.0.tgz#8c69f3659558074e48e85d52b3db36a3dd93e3e3"
+  integrity sha512-kdgz4OpAQM6kOSuXv8/yfW9kTKxPCFUxQGE4RKBzlpy9HkFcI6XWu3Uw3hOWPBFmI8uPwU8KxBIpdCts8jL7WA==
+
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
@@ -10819,11 +10824,6 @@ ethers@^4.0.20, ethers@^4.0.28:
     setimmediate "1.0.4"
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
-
-etherscan-link@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/etherscan-link/-/etherscan-link-1.0.2.tgz#c7b9142c4b59509b338a204b6328aea40dd3c64e"
-  integrity sha1-x7kULEtZUJsziiBLYyiupA3Txk4=
 
 ethjs-abi@0.2.0:
   version "0.2.0"
