@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
-import { createAccountLink as genAccountLink } from 'etherscan-link'
+import { createAccountLink as genAccountLink } from '@metamask/etherscan-link'
 import { Menu, Item, CloseArea } from './components/menu'
 
 class TokenMenuDropdown extends Component {
