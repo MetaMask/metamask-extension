@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 5.0.1 Mon Apr 06 2020
+
 - [#347](https://github.com/poanetwork/nifty-wallet/pull/347) - Rollback custom dPath for RSK/ETC
 
 ## 5.0.0 Tue Mar 31 2020
