@@ -2218,8 +2218,12 @@ export function approvePermissionsRequest (request, accounts) {
  */
 export function rejectPermissionsRequest (requestId) {
   return () => {
-    return new Promise((resolve) => {
-      background.rejectPermissionsRequest(requestId, () => {
+    return new Promise((resolve, reject) => {
+      background.rejectPermissionsRequest(requestId, (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message))
+          reject()
+        }
         resolve()
       })
     })
