@@ -5,7 +5,7 @@
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  height: 556px;
+  height: 100%;
 
   &__title {
     @extend %header--18;
@@ -138,11 +138,20 @@
     color: $Red-400;
   }
 
+  &__footer-container {
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
   &__bottom-buttons {
     display: flex;
     justify-content: space-between;
     width: 100%;
     padding-top: 16px;
+    padding-bottom: 16px;
     margin-top: 8px;
     border-top: 1px solid #D6D9DC;
 

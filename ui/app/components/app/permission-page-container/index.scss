@@ -3,8 +3,10 @@
   border: none;
   box-shadow: none;
   width: 100%;
-  min-height: 468px;
   margin-top: 2px;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
 
   &__header {
     display: flex;
@@ -27,7 +29,6 @@
     overflow-y: auto;
     flex-direction: column;
     color: #7C808E;
-    height: 445px;
     padding-left: 24px;
     padding-right: 24px;
 
@@ -66,10 +67,6 @@
         color: $Black-100;
       }
     }
-
-    .permissions-connect-header {
-      width: 92%;
-    }
   }
 
   &__content-container {
@@ -99,7 +96,12 @@
     margin-top: 8px;
 
     footer {
-      width: 300px;
+      width: 100%;
+      justify-content: space-between;
+
+      button {
+        width: 124px;
+      }
     }
   }
 

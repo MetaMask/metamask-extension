@@ -138,7 +138,7 @@ export default class PermissionPageContainer extends Component {
         />
         { !redirect
           ? (
-            <>
+            <div>
               <PermissionsConnectFooter />
               <PageContainerFooter
                 cancelButtonType="default"
@@ -149,7 +149,7 @@ export default class PermissionPageContainer extends Component {
                 submitButtonType="confirm"
                 buttonSizeLarge={false}
               />
-            </>
+            </div>
           )
           : null
         }

@@ -168,13 +168,13 @@ export default class PermissionConnect extends Component {
     return !redirecting
       ? (
         <div
-          className={classnames({
-            'permissions-connect__top-bar--right-item': page === '1',
-            'permissions-connect__top-bar--two-items': page === '2',
-          })}
+          className={"permissions-connect__top-bar"}
         >
           { page === '2'
-            ? <div className="permissions-connect__back" onClick={() => this.goBack()}>{ t('back') }</div>
+            ? (<div className="permissions-connect__back" onClick={() => this.goBack()}>
+                <i className="fas fa-chevron-left" />
+                { t('back') }
+              </div>)
             : null
           }
           <div className="permissions-connect__page-count">
@@ -215,48 +215,44 @@ export default class PermissionConnect extends Component {
             path={connectPath}
             exact
             render={() => (
-              <div>
-                <ChooseAccount
-                  accounts={accounts}
-                  originName={originName}
-                  nativeCurrency={nativeCurrency}
-                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                  selectNewAccountViaModal={(handleAccountClick) => {
-                    showNewAccountModal({
-                      onCreateNewAccount: (address) => handleAccountClick(address),
-                      newAccountNumber,
-                    })
-                  }}
-                  addressLastConnectedMap={addressLastConnectedMap}
-                  cancelPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
-                  permissionsRequestId={permissionsRequestId}
-                  selectedAccountAddresses={selectedAccountAddresses}
-                  targetDomainMetadata={targetDomainMetadata}
-                />
-              </div>
+              <ChooseAccount
+                accounts={accounts}
+                originName={originName}
+                nativeCurrency={nativeCurrency}
+                selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                selectNewAccountViaModal={(handleAccountClick) => {
+                  showNewAccountModal({
+                    onCreateNewAccount: (address) => handleAccountClick(address),
+                    newAccountNumber,
+                  })
+                }}
+                addressLastConnectedMap={addressLastConnectedMap}
+                cancelPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
+                permissionsRequestId={permissionsRequestId}
+                selectedAccountAddresses={selectedAccountAddresses}
+                targetDomainMetadata={targetDomainMetadata}
+              />
             )}
           />
           <Route
             path={confirmPermissionPath}
             exact
             render={() => (
-              <div>
-                <PermissionPageContainer
-                  request={permissionsRequest || {}}
-                  approvePermissionsRequest={(request, accounts) => {
-                    approvePermissionsRequest(request, accounts)
-                    this.redirectFlow(true)
-                  }}
-                  rejectPermissionsRequest={(requestId) => {
-                    rejectPermissionsRequest(requestId)
-                    this.redirectFlow(false)
-                  }}
-                  selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
-                  redirect={redirecting}
-                  permissionRejected={ permissionAccepted === false }
-                  cachedOrigin={originName}
-                />
-              </div>
+              <PermissionPageContainer
+                request={permissionsRequest || {}}
+                approvePermissionsRequest={(request, accounts) => {
+                  approvePermissionsRequest(request, accounts)
+                  this.redirectFlow(true)
+                }}
+                rejectPermissionsRequest={(requestId) => {
+                  rejectPermissionsRequest(requestId)
+                  this.redirectFlow(false)
+                }}
+                selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
+                redirect={redirecting}
+                permissionRejected={ permissionAccepted === false }
+                cachedOrigin={originName}
+              />
             )}
           />
         </Switch>
