@@ -39,7 +39,7 @@ const {
   RSK,
   RSK_TESTNET,
   RSK_TICK,
-  customDPaths,
+  // customDPaths,
 } = require('../../app/scripts/controllers/network/enums')
 
 var valueTable = {
@@ -557,7 +557,9 @@ function getNetworkID ({ network }) {
 }
 
 function getDPath (network) {
-  return customDPaths[network] || `m/44'/60'/0'/0`
+  // todo: return when the robust solution will be ready
+  return `m/44'/60'/0'/0`
+  // return customDPaths[network] || `m/44'/60'/0'/0`
 }
 
 function setDPath (keyring, network) {
