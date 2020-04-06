@@ -31,7 +31,7 @@ import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
 import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
+import getDefaultLangCode from './lib/get-default-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 
@@ -157,7 +157,7 @@ initialize().catch(log.error)
  */
 async function initialize () {
   const initState = await loadStateFromPersistence()
-  const initLangCode = await getFirstPreferredLangCode()
+  const initLangCode = getDefaultLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
 }
