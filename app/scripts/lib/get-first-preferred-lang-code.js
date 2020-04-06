@@ -1,11 +1,7 @@
 import extension from 'extensionizer'
-import promisify from 'pify'
 import allLocales from '../../_locales/index.json'
 
-const getPreferredLocales = extension.i18n ? promisify(
-  extension.i18n.getAcceptLanguages,
-  { errorFirst: false }
-) : async () => []
+const getUILanguage = extension.i18n ? extension.i18n.getUILanguage() : async () => ''
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
@@ -23,24 +19,23 @@ allLocales.forEach((locale) => {
  *
  */
 async function getFirstPreferredLangCode () {
-  let userPreferredLocaleCodes
+  let userUILanguage
 
   try {
-    userPreferredLocaleCodes = await getPreferredLocales()
+    userUILanguage = await getUILanguage()
+
   } catch (e) {
     // Brave currently throws when calling getAcceptLanguages, so this handles that.
-    userPreferredLocaleCodes = []
+    userUILanguage = ''
   }
 
   // safeguard for Brave Browser until they implement chrome.i18n.getAcceptLanguages
   // https://github.com/MetaMask/metamask-extension/issues/4270
-  if (!userPreferredLocaleCodes) {
-    userPreferredLocaleCodes = []
+  if (!userUILanguage) {
+    userUILanguage = ''
   }
 
-  const firstPreferredLangCode = userPreferredLocaleCodes
-    .map((code) => code.toLowerCase().replace('_', '-'))
-    .find((code) => existingLocaleCodes.hasOwnProperty(code))
+  const firstPreferredLangCode = getUILanguage.toLowerCase().replace('_', '-')
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }
