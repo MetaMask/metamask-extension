@@ -145,10 +145,7 @@ export default class PermissionConnect extends Component {
     if (requestId) {
       await rejectPermissionsRequest(requestId)
 
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-        const currentTab = await global.platform.currentTab()
-        global.platform.closeTab(currentTab.id)
-      } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREE || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         global.platform.closeCurrentWindow()
       } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
         history.push(DEFAULT_ROUTE)
