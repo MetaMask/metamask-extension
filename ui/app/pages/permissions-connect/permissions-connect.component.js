@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import classnames from 'classnames'
 import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
@@ -145,7 +144,7 @@ export default class PermissionConnect extends Component {
     if (requestId) {
       await rejectPermissionsRequest(requestId)
 
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREE || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         global.platform.closeCurrentWindow()
       } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
         history.push(DEFAULT_ROUTE)
@@ -165,13 +164,15 @@ export default class PermissionConnect extends Component {
     return !redirecting
       ? (
         <div
-          className={"permissions-connect__top-bar"}
+          className="permissions-connect__top-bar"
         >
           { page === '2'
-            ? (<div className="permissions-connect__back" onClick={() => this.goBack()}>
+            ? (
+              <div className="permissions-connect__back" onClick={() => this.goBack()}>
                 <i className="fas fa-chevron-left" />
                 { t('back') }
-              </div>)
+              </div>
+            )
             : null
           }
           <div className="permissions-connect__page-count">
