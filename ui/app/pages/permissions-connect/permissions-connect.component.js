@@ -145,7 +145,7 @@ export default class PermissionConnect extends Component {
       await rejectPermissionsRequest(requestId)
 
       if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        global.platform.closeCurrentWindow()
+        window.close()
       } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
         history.push(DEFAULT_ROUTE)
       }
