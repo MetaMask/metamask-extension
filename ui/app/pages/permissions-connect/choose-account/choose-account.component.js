@@ -8,6 +8,7 @@ import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header'
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer'
 
 export default class ChooseAccount extends Component {
   static propTypes = {
@@ -190,20 +191,23 @@ export default class ChooseAccount extends Component {
         />
         { this.renderAccountsListHeader() }
         { this.renderAccountsList() }
-        <div className="permissions-connect-choose-account__bottom-buttons">
-          <Button
-            onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
-            type="default"
-          >
-            { t('cancel') }
-          </Button>
-          <Button
-            onClick={ () => selectAccounts(selectedAccounts) }
-            type="primary"
-            disabled={ selectedAccounts.size === 0 }
-          >
-            { t('next') }
-          </Button>
+        <div className="permissions-connect-choose-account__footer-container">
+          <PermissionsConnectFooter />
+          <div className="permissions-connect-choose-account__bottom-buttons">
+            <Button
+              onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
+              type="default"
+            >
+              { t('cancel') }
+            </Button>
+            <Button
+              onClick={ () => selectAccounts(selectedAccounts) }
+              type="primary"
+              disabled={ selectedAccounts.size === 0 }
+            >
+              { t('next') }
+            </Button>
+          </div>
         </div>
       </div>
     )

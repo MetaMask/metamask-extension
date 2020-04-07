@@ -29,7 +29,7 @@ export class PermissionsController {
       getUnlockPromise,
       notifyDomain,
       notifyAllDomains,
-      platform,
+      showPermissionRequest,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -44,7 +44,7 @@ export class PermissionsController {
     this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this._platform = platform
+    this._showPermissionRequest = showPermissionRequest
 
     this._restrictedMethods = getRestrictedMethods(this)
     this.permissionsLog = new PermissionsLogController({
@@ -544,7 +544,7 @@ export class PermissionsController {
           )
         }
 
-        this._platform.openExtensionInBrowser(`connect/${id}`)
+        this._showPermissionRequest()
 
         return new Promise((resolve, reject) => {
           this._addPendingApproval(id, origin, resolve, reject)

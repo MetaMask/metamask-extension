@@ -1,25 +1,44 @@
-@import 'permissions-connect-footer/index';
-
 @import 'choose-account/index';
 
 .permissions-connect {
   width: 100%;
+  height: 100%;
   position: relative;
   background: white;
+  display: flex;
+  flex-direction: column;
 
-  &__page-count-wrapper {
-    margin-top: 26px;
-    margin-left: 20px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-
-    &__page-count {
-      @extend %content-text;
-      margin-right: 30px;
-      font-size: 12px;
-      line-height: 17px;
-      color: #6A737D;
+  @media screen and (min-width: 576px) {
+    .page-container {
+      max-height: none;
+      min-height: auto;
     }
+  }
+
+  &__top-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 16px 0px 16px;
+    align-items: center;
+  }
+
+  &__back {
+    @extend %content-text;
+    color: $curious-blue;
+    cursor: pointer;
+
+    i {
+      margin-right: 10px;
+    }
+  }
+
+  &__page-count {
+    @extend %content-text;
+    font-size: 12px;
+    color: #6A737D;
+    grid-column: 2;
+    justify-self: end;
+    font-weight: bold;
+    line-height: 21px;
   }
 }

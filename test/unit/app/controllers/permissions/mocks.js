@@ -25,10 +25,6 @@ export const noop = () => {}
  * Mock Permissions Controller and Middleware
  */
 
-const platform = {
-  openExtensionInBrowser: noop,
-}
-
 const keyringAccounts = deepFreeze([
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -67,7 +63,7 @@ const getUnlockPromise = () => Promise.resolve()
  */
 export function getPermControllerOpts () {
   return {
-    platform,
+    showPermissionRequest: noop,
     getKeyringAccounts,
     getUnlockPromise,
     getRestrictedMethods,

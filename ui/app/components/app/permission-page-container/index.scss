@@ -2,9 +2,25 @@
   display: flex;
   border: none;
   box-shadow: none;
-  margin-top: 45px;
-  width: 488px;
-  min-height: 468px;
+  width: 100%;
+  margin-top: 2px;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media screen and (min-width: 576px) {
+    width: 426px;
+    flex: 1;
+
+    &__footers {
+      display: flex;
+      flex-direction: column-reverse;
+      flex: 1;
+      padding-bottom: 20px;
+      justify-content: space-between;
+    }
+  }
+
 
   &__header {
     display: flex;
@@ -25,12 +41,13 @@
   &__content {
     display: flex;
     overflow-y: auto;
-    flex: 1;
     flex-direction: column;
     color: #7C808E;
+    padding-left: 24px;
+    padding-right: 24px;
 
     &--redirect {
-      margin-top: 50px;
+      margin-top: 140px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -51,17 +68,25 @@
 
     &__permission {
       display: flex;
-      margin-top: 18px;
+      align-items: center;
 
       i {
         font-size: 1.4rem;
         color: $Grey-200;
       }
+
       label {
-        margin-left: 6px;
+        font-size: 14px;
+        margin-left: 16px;
         color: $Black-100;
       }
     }
+  }
+
+  &__content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__permissions-header {
@@ -77,23 +102,28 @@
   &__permissions-container {
     display: flex;
     flex-direction: column;
-    margin-top: 33px;
+    margin-top: 38px;
   }
 
   .page-container__footer {
-    border-top: none;
     align-items: center;
+    margin-top: 8px;
+
+    @media screen and (min-width: 576px) {
+      border-top: none;
+    }
 
     footer {
-      width: 300px;
+      width: 100%;
+      justify-content: space-between;
+
+      button {
+        width: 124px;
+      }
     }
   }
 
   @media screen and (max-width: 575px) {
-    width: 100%;
-    margin-top: 25px;
-    padding: 10px;
-
     &__title {
       position: initial;
     }

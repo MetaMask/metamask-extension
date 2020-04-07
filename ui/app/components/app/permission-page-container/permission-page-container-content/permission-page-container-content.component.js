@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import Identicon from '../../../ui/identicon'
 import IconWithFallBack from '../../../ui/icon-with-fallback'
 import PermissionsConnectHeader from '../../permissions-connect-header'
 import Tooltip from '../../../ui/tooltip-v2'
@@ -30,9 +29,17 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   }
 
+  renderBrokenLine () {
+    return (
+      <svg width="131" height="2" viewBox="0 0 131 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 1H134" stroke="#CDD1E4" strokeLinejoin="round" strokeDasharray="8 7" />
+      </svg>
+    )
+  }
+
   renderRedirect () {
     const { t } = this.context
-    const { permissionRejected, selectedIdentities, domainMetadata } = this.props
+    const { permissionRejected, domainMetadata } = this.props
     return (
       <div className="permission-result">
         { permissionRejected ? t('cancelling') : t('connecting') }
@@ -43,15 +50,11 @@ export default class PermissionPageContainerContent extends PureComponent {
               ? <span className="permission-result__reject" ><i className="fa fa-times-circle" /></span>
               : <span className="permission-result__check" />
             }
-            <img className="permission-result__broken-line" src="/images/broken-line.svg" />
+            { this.renderBrokenLine() }
           </div>
           <div className="permission-result__identicon-container">
             <div className="permission-result__identicon-border">
-              <Identicon
-                className="permission-result__identicon"
-                address={selectedIdentities[0].address}
-                diameter={54}
-              />
+              <img src="/images/logo/metamask-fox.svg" />
             </div>
           </div>
         </div>
@@ -97,7 +100,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     return (
       <div className="permission-approval-container__content__requested">
         {items}
-        <div className="permission-approval-container__content__revoke-note">{ t('revokeInPermissions') }</div>
       </div>
     )
   }
@@ -149,16 +151,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     } else if (allIdentitiesSelected) {
       return t(
         'connectToAll',
-        [
-          (
-            <span
-              key="multi-account-connect-all-accounts"
-              className="permission-approval-container__bold-title-elements"
-            >
-              { this.renderAccountTooltip(t('connectToAllAccounts')) }
-            </span>
-          ),
-        ]
+        [ this.renderAccountTooltip(t('connectToAllAccounts')) ]
       )
     } else if (selectedIdentities.length > 1) {
       return t(
@@ -169,15 +162,9 @@ export default class PermissionPageContainerContent extends PureComponent {
       )
     } else {
       return t(
-        'connectTo', [
-          (
-            <span
-              key="connect-to-one-account"
-              className="permission-approval-container__bold-title-elements"
-            >
-              { this.getAccountDescriptor(selectedIdentities[0]) }
-            </span>
-          ),
+        'connectTo',
+        [
+          this.getAccountDescriptor(selectedIdentities[0]),
         ]
       )
     }
@@ -197,7 +184,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       >
         { !redirect
           ? (
-            <div>
+            <div className="permission-approval-container__content-container">
               <PermissionsConnectHeader
                 icon={domainMetadata.icon}
                 iconName={domainMetadata.origin}

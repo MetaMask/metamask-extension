@@ -2217,8 +2217,16 @@ export function approvePermissionsRequest (request, accounts) {
  * @param {string} requestId - The id of the request to be rejected
  */
 export function rejectPermissionsRequest (requestId) {
-  return () => {
-    background.rejectPermissionsRequest(requestId)
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rejectPermissionsRequest(requestId, (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message))
+          reject()
+        }
+        resolve()
+      })
+    })
   }
 }
 

@@ -2,18 +2,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 40px;
-  width: 428px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
+  height: 100%;
+
+  @media screen and (min-width: 576px) {
+    width: 426px;
+  }
+
 
   &__title {
     @extend %header--18;
   }
 
-  &__text, &__text--blue, &__text--grey {
+  &__text, &__text-blue, &__text-grey {
     @extend %content-text;
-    line-height: 25px;
   }
 
   &__text-blue {
@@ -26,17 +30,13 @@
   }
 
   &__accounts-list {
-    width: 100%;
+    width: 92%;
     border: 1px solid #D0D5DA;
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 8px;
-    max-height: 338px;
+    max-height: 238px;
     overflow-y: auto;
-
-    @media screen and (max-width: 575px) {
-      width: 100%;
-    }
   }
 
   &__accounts-list-header--one-item,
@@ -44,7 +44,8 @@
     display: flex;
     margin-top: 36px;
     width: 100%;
-    padding-right: 2px;
+    padding-left: 15px;
+    padding-right: 17px;
   }
 
   &__accounts-list-header--one-item {
@@ -62,7 +63,11 @@
   }
 
   &__list-check-box {
-    margin-right: 24px;
+    margin-right: 16px;
+
+    i {
+      font-size: 0.8rem;
+    }
   }
 
   &__header-check-box {
@@ -113,15 +118,14 @@
     }
 
     &__label {
-      @extend %header--18;
-      line-height: 25px;
-      color: #000000;
+      @extend %content-text;
+      color: $Black-100;
     }
 
     &__balance {
       @extend %content-text;
-      line-height: 17px;
-      color: #6A737D;
+      font-size: 12px;
+      color: $Grey-500;
     }
 
     &__last-connected {
@@ -139,11 +143,32 @@
     color: $Red-400;
   }
 
+  &__footer-container {
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    @media screen and (min-width: 576px) {
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding-bottom: 20px;
+    }
+  }
+
   &__bottom-buttons {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: 8px;
+    border-top: 1px solid #D6D9DC;
+
+    @media screen and (min-width: 576px) {
+      border-top: none;
+    }
 
     button {
       width: 124px;
@@ -151,6 +176,11 @@
 
     .btn-default {
       background: white;
+      margin-left: 16px;
+    }
+
+    .btn-primary {
+      margin-right: 16px;
     }
   }
 

@@ -1101,9 +1101,6 @@
   "readyToConnect": {
     "message": "Pronto a Connetterti?"
   },
-  "revokeInPermissions": {
-    "message": "* Puoi vedere e revocare i permessi nelle impostazioni di MetaMask."
-  },
   "rinkeby": {
     "message": "Rete di test Rinkeby"
   },

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 92%;
 
   &__icon {
     display: flex;
@@ -27,13 +28,16 @@
     @extend %header--24;
     text-align: center;
     color: $Black-100;
-    margin-top: 16px;
+    margin-top: 14px;
   }
 
-  &__text {
+  &__text, &__subtitle {
     @extend %content-text;
     text-align: center;
-    margin-top: 4px;
     color: $Grey-500;
+  }
+
+  &__subtitle {
+    margin-top: 4px;
   }
 }

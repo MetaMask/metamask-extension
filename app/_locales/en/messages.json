@@ -1157,9 +1157,6 @@
   "readyToConnect": {
     "message": "Ready to Connect?"
   },
-  "revokeInPermissions": {
-    "message": "* You can view and revoke permissions in MetaMask settings."
-  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -1627,6 +1624,10 @@
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
+  },
+  "xOfY": {
+    "message": "$1 of $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "Yes, let's try"

@@ -32,8 +32,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const accountsWithLabels = getAccountsWithLabels(state)
 
-  const { requestAccountTabs = {} } = state.appState
-
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
 
@@ -62,7 +60,6 @@ const mapStateToProps = (state, ownProps) => {
     originName: origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
-    requestAccountTabs,
     addressLastConnectedMap,
     domains: getPermissionsDomains(state),
     connectPath,

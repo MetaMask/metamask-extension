@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { isEqual } from 'lodash'
 import { PermissionPageContainerContent } from '.'
 import { PageContainerFooter } from '../../ui/page-container'
+import PermissionsConnectFooter from '../permissions-connect-footer'
 
 export default class PermissionPageContainer extends Component {
 
@@ -137,15 +138,18 @@ export default class PermissionPageContainer extends Component {
         />
         { !redirect
           ? (
-            <PageContainerFooter
-              cancelButtonType="primary"
-              onCancel={() => this.onCancel()}
-              cancelText={this.context.t('cancel')}
-              onSubmit={() => this.onSubmit()}
-              submitText={this.context.t('submit')}
-              submitButtonType="confirm"
-              buttonSizeLarge={false}
-            />
+            <div className="permission-approval-container__footers">
+              <PermissionsConnectFooter />
+              <PageContainerFooter
+                cancelButtonType="default"
+                onCancel={() => this.onCancel()}
+                cancelText={this.context.t('cancel')}
+                onSubmit={() => this.onSubmit()}
+                submitText={this.context.t('submit')}
+                submitButtonType="confirm"
+                buttonSizeLarge={false}
+              />
+            </div>
           )
           : null
         }
