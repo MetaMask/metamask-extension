@@ -200,7 +200,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     onClick={this.handleRetry}
                     className="transaction-list-item-details__header-button"
                   >
-                    <i className="fa fa-refresh"></i>
+                    <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
               )
