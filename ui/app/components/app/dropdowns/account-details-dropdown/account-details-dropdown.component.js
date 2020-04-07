@@ -123,6 +123,7 @@ export default class AccountDetailsDropdown extends Component {
               },
             })
             history.push(CONNECTED_ROUTE)
+            this.props.onClose()
           }}
           text={this.context.t('connectedSites')}
           icon={(
