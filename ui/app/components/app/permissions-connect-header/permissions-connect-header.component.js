@@ -35,7 +35,7 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">
           { headerTitle }
         </div>
-        <div className="permissions-connect-header__text">
+        <div className="permissions-connect-header__subtitle">
           { headerText }
         </div>
       </div>
