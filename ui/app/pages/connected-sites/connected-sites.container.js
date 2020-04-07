@@ -5,6 +5,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getPermissionsDomains,
   getPermittedAccountsForCurrentTab,
+  getRenderablePermissionsDomains,
   getSelectedAddress,
 } from '../../selectors/selectors'
 import { getOriginFromUrl } from '../../helpers/utils/util'
@@ -13,6 +14,7 @@ const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
   const { title, url, id } = state.activeTab
   const permittedAccounts = getPermittedAccountsForCurrentTab(state)
+  const connectedDomains = getRenderablePermissionsDomains(state)
 
   let tabToConnect
   if (url && permittedAccounts.length === 0 && !openMetaMaskTabs[id]) {
@@ -24,6 +26,7 @@ const mapStateToProps = (state) => {
 
   return {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
+    connectedDomains,
     domains: getPermissionsDomains(state),
     selectedAddress: getSelectedAddress(state),
     tabToConnect,
