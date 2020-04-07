@@ -31,9 +31,13 @@
     margin-top: 14px;
   }
 
-  &__text {
+  &__text, &__subtitle {
     @extend %content-text;
     text-align: center;
     color: $Grey-500;
+  }
+
+  &__subtitle {
+    margin-top: 4px;
   }
 }
