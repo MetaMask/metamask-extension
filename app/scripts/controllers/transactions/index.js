@@ -6,6 +6,7 @@ import EthQuery from 'ethjs-query'
 import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
+import createCalculateWorkForTransaction from 'web3-ebakus/lib/ebakus-pow.esm.js'
 
 abiDecoder.addABI(abi)
 
@@ -35,6 +36,8 @@ import {
 } from './enums'
 
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+
+import { EBAKUS_CODE, EBAKUS_TESTNET_CODE } from '../network/enums'
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -80,6 +83,7 @@ class TransactionController extends EventEmitter {
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
     this.txGasUtil = new TxGasUtil(this.provider)
+    this.calculateWorkForTransaction = createCalculateWorkForTransaction()
 
     this._mapMethods()
     this.txStateManager = new TransactionStateManager({
@@ -468,8 +472,23 @@ class TransactionController extends EventEmitter {
     // add network/chain id
     const chainId = this.getChainId()
     const txParams = Object.assign({}, txMeta.txParams, { chainId })
-    // sign tx
+
     const fromAddress = txParams.from
+
+    // calc work on supported networks
+    if ([EBAKUS_CODE, EBAKUS_TESTNET_CODE].includes(chainId)) {
+      const suggestDifficulty = await this.query.rpc.sendAsync({
+        method: 'eth_suggestDifficulty',
+        params: [fromAddress],
+      })
+
+      const txWithWorkNonce = await this.calculateWorkForTransaction(txParams, suggestDifficulty)
+      txParams.workNonce = txWithWorkNonce.workNonce
+      // use gasPrice to pass workNonce, so as to keep the minimum changes for metamask extension
+      txParams.gasPrice = txParams.workNonce
+    }
+
+    // sign tx
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
 

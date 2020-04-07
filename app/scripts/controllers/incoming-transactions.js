@@ -11,11 +11,15 @@ import {
   RINKEBY_CODE,
   KOVAN_CODE,
   GOERLI_CODE,
+  EBAKUS_CODE,
+  EBAKUS_TESTNET_CODE,
   ROPSTEN,
   RINKEBY,
   KOVAN,
   GOERLI,
   MAINNET,
+  EBAKUS,
+  EBAKUS_TESTNET,
 } from './network/enums'
 
 const networkTypeToIdMap = {
@@ -24,6 +28,8 @@ const networkTypeToIdMap = {
   [KOVAN]: String(KOVAN_CODE),
   [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
+  [EBAKUS]: String(EBAKUS_CODE),
+  [EBAKUS_TESTNET]: String(EBAKUS_TESTNET_CODE),
 }
 const fetch = fetchWithTimeout({
   timeout: 30000,
@@ -59,6 +65,8 @@ class IncomingTransactionsController {
         [KOVAN]: null,
         [GOERLI]: null,
         [MAINNET]: null,
+        [EBAKUS]: null,
+        [EBAKUS_TESTNET]: null,
       },
     }, opts.initState)
     this.store = new ObservableStore(initState)
@@ -186,21 +194,33 @@ class IncomingTransactionsController {
   async _fetchTxs (address, fromBlock, networkType) {
     let etherscanSubdomain = 'api'
     const currentNetworkID = networkTypeToIdMap[networkType]
-    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET]
+    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET, EBAKUS, EBAKUS_TESTNET]
 
     if (supportedNetworkTypes.indexOf(networkType) === -1) {
       return {}
     }
 
-    if (networkType !== MAINNET) {
-      etherscanSubdomain = `api-${networkType}`
-    }
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+    let url
+    if ([EBAKUS, EBAKUS_TESTNET].includes(networkType)) {
+      let ebakusDomain = 'ebakus.com'
+      if (networkType !== EBAKUS_TESTNET) {
+        ebakusDomain = 'ebakus-testnet.com'
+      }
+      const apiUrl = `https://explorer-api.${ebakusDomain}`
+      url = `${apiUrl}/transaction/all/${address}?order=desc`
+    } else {
 
-    if (fromBlock) {
-      url += `&startBlock=${parseInt(fromBlock, 10)}`
+      if (networkType !== MAINNET) {
+        etherscanSubdomain = `api-${networkType}`
+      }
+      const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
+      url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+
+      if (fromBlock) {
+        url += `&startBlock=${parseInt(fromBlock, 10)}`
+      }
     }
+
     const response = await fetch(url)
     const parsedResponse = await response.json()
 

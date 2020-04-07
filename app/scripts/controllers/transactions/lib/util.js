@@ -10,6 +10,7 @@ const normalizers = {
   data: (data) => addHexPrefix(data),
   gas: (gas) => addHexPrefix(gas),
   gasPrice: (gasPrice) => addHexPrefix(gasPrice),
+  workNonce: (workNonce) => addHexPrefix(workNonce),
 }
 
 /**

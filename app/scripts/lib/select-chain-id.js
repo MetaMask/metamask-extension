@@ -4,6 +4,8 @@ import {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
+  EBAKUS_TESTNET_CHAIN_ID,
+  EBAKUS_CHAIN_ID,
 } from './enums'
 
 const standardNetworkId = {
@@ -12,6 +14,8 @@ const standardNetworkId = {
   '4': RINKEBY_CHAIN_ID,
   '42': KOVAN_CHAIN_ID,
   '5': GOERLI_CHAIN_ID,
+  '7': EBAKUS_TESTNET_CHAIN_ID,
+  '10': EBAKUS_CHAIN_ID,
 }
 
 function selectChainId (metamaskState) {

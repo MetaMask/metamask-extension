@@ -14,9 +14,10 @@ import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-pro
 
 const networks = { networkList: {} }
 
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI } from './enums'
+import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI, EBAKUS, EBAKUS_TESTNET } from './enums'
 
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+const EBAKUS_PROVIDER_TYPES = [EBAKUS, EBAKUS_TESTNET]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -139,7 +140,7 @@ export default class NetworkController extends EventEmitter {
 
   async setProviderType (type, rpcTarget = '', ticker = 'ETH', nickname = '') {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST || EBAKUS_PROVIDER_TYPES.includes(type), `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type, rpcTarget, ticker, nickname }
     this.providerConfig = providerConfig
   }
@@ -171,12 +172,15 @@ export default class NetworkController extends EventEmitter {
     const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    const isEbakus = EBAKUS_PROVIDER_TYPES.includes(type)
     if (isInfura) {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
+    } else if (isEbakus) {
+      this._configureEbakusProvider(opts)
     } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
     } else {
@@ -195,6 +199,17 @@ export default class NetworkController extends EventEmitter {
       ticker: 'ETH',
     }
     this.networkConfig.putState(settings)
+  }
+
+  _configureEbakusProvider ({ type }) {
+    log.info('NetworkController - configureEbakusProvider', type)
+    if (type === EBAKUS) {
+      this._configureStandardProvider({ rpcUrl: 'https://rpc.ebakus.com', chainId: '10', ticker: 'EBK', nickname: EBAKUS })
+    } else if (type === EBAKUS_TESTNET) {
+      this._configureStandardProvider({ rpcUrl: 'https://rpc.ebakus-testnet.com', chainId: '7', ticker: 'EBK', nickname: EBAKUS_TESTNET })
+    } else {
+      throw new Error(`NetworkController - _configureEbakusProvider - unknown type "${type}"`)
+    }
   }
 
   _configureLocalhostProvider () {
