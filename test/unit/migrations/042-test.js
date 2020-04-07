@@ -47,7 +47,7 @@ describe('migration #42', function () {
       .catch(done)
   })
 
-  it('should do nothing if no AppStateController key', function (done) {
+  it('should initialize AppStateController if it does not exist', function (done) {
     const oldStorage = {
       meta: {},
       data: {
@@ -59,6 +59,9 @@ describe('migration #42', function () {
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, {
           foo: 'bar',
+          AppStateController: {
+            connectedStatusPopoverHasBeenShown: false,
+          },
         })
         done()
       })
