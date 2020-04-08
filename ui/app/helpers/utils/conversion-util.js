@@ -37,6 +37,7 @@ BigNumber.config({
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
 const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 const BIG_NUMBER_ETH_MULTIPLIER = new BigNumber('1')
+const BIG_NUMBER_EBK_MULTIPLIER = new BigNumber('1')
 
 // Setter Maps
 const toBigNumber = {
@@ -48,11 +49,13 @@ const toNormalizedDenomination = {
   WEI: (bigNumber) => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
   GWEI: (bigNumber) => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
   ETH: (bigNumber) => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
+  EBK: (bigNumber) => bigNumber.div(BIG_NUMBER_EBK_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
   WEI: (bigNumber) => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
   GWEI: (bigNumber) => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
   ETH: (bigNumber) => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
+  EBK: (bigNumber) => bigNumber.times(BIG_NUMBER_EBK_MULTIPLIER).round(9),
 }
 const baseChange = {
   hex: (n) => n.toString(16),
