@@ -263,15 +263,23 @@ class TransactionController extends EventEmitter {
    * @returns {Promise<object>} - resolves with txMeta
    */
   async addTxGasDefaults (txMeta, getCodeResponse) {
+    const chainId = this.getChainId()
     const txParams = txMeta.txParams
     // ensure value
     txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
-    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
-    let gasPrice = txParams.gasPrice
-    if (!gasPrice) {
-      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+
+    if ([EBAKUS_CODE, EBAKUS_TESTNET_CODE].includes(chainId)) {
+      // ebakus networks have no gasPrice
+      txParams.gasPrice = '0x0'
+    } else {
+      txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
+      let gasPrice = txParams.gasPrice
+      if (!gasPrice) {
+        gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+      }
+      txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     }
-    txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
+
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta, getCodeResponse)
   }
