@@ -56,14 +56,6 @@ export default function reduceMetamask (state = {}, action) {
     case actions.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value }
 
-    case actions.UNLOCK_METAMASK:
-      return {
-        ...metamaskState,
-        isUnlocked: true,
-        isInitialized: true,
-        selectedAddress: action.value,
-      }
-
     case actions.LOCK_METAMASK:
       return {
         ...metamaskState,

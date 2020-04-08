@@ -42,7 +42,6 @@ export const actionConstants = {
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
   UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
-  UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
   // error handling
   DISPLAY_WARNING: 'DISPLAY_WARNING',
@@ -1257,13 +1256,6 @@ export function unlockSucceeded (message) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
-  }
-}
-
-export function unlockMetamask (account) {
-  return {
-    type: actionConstants.UNLOCK_METAMASK,
-    value: account,
   }
 }
 
