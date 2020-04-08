@@ -19,6 +19,7 @@ export default class SendAssetRow extends Component {
     selectedAddress: PropTypes.string.isRequired,
     selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
+    nativeCurrency: PropTypes.string,
   }
 
   static contextTypes = {
@@ -38,6 +39,7 @@ export default class SendAssetRow extends Component {
     this.setState({
       isShowingDropdown: false,
     }, () => {
+      const nativeCurrency = this.props.nativeCurrency || 'ETH'
       this.context.metricsEvent({
         eventOpts: {
           category: 'Transactions',
@@ -45,7 +47,7 @@ export default class SendAssetRow extends Component {
           name: 'User clicks "Assets" dropdown',
         },
         customVariables: {
-          assetSelected: address ? 'ERC20' : 'ETH',
+          assetSelected: address ? 'ERC20' : nativeCurrency,
         },
       })
       this.props.setSelectedToken(address)
@@ -95,7 +97,7 @@ export default class SendAssetRow extends Component {
 
   renderEth (insideDropdown = false) {
     const { t } = this.context
-    const { accounts, selectedAddress } = this.props
+    const { accounts, selectedAddress, nativeCurrency } = this.props
 
     const balanceValue = accounts[selectedAddress] ? accounts[selectedAddress].balance : ''
 
@@ -105,10 +107,13 @@ export default class SendAssetRow extends Component {
         onClick={() => this.selectToken()}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          <Identicon diameter={36} />
+          {nativeCurrency === 'EBK' ?
+            <Identicon image="/images/ebakus.svg" diameter={36} /> :
+            <Identicon diameter={36} />
+          }
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">ETH</div>
+          <div className="send-v2__asset-dropdown__symbol">{nativeCurrency}</div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">{`${t('balance')}:`}</span>
             <UserPreferencedCurrencyDisplay
