@@ -159,18 +159,6 @@ export default function reduceApp (state = {}, action) {
         warning: null,
       }
 
-      // unlock
-
-    case actions.UNLOCK_METAMASK:
-      return {
-        ...appState,
-        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
-        detailView: {},
-        transForward: true,
-        isLoading: false,
-        warning: null,
-      }
-
     case actions.LOCK_METAMASK:
       return {
         ...appState,

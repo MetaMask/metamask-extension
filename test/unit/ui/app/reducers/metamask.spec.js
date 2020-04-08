@@ -9,17 +9,6 @@ describe('MetaMask Reducers', function () {
     assert(initState)
   })
 
-  it('unlocks MetaMask', function () {
-    const state = reduceMetamask({}, {
-      type: actions.UNLOCK_METAMASK,
-      value: 'test address',
-    })
-
-    assert.equal(state.isUnlocked, true)
-    assert.equal(state.isInitialized, true)
-    assert.equal(state.selectedAddress, 'test address')
-  })
-
   it('locks MetaMask', function () {
     const unlockMetaMaskState = {
       isUnlocked: true,
