@@ -238,18 +238,12 @@ export function accountsWithSendEtherInfoSelector (state) {
 }
 
 export function getAccountsWithLabels (state) {
-  const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
-  const accountsWithLabels = accountsWithoutLabel.map((account) => {
-    const { address, name, balance } = account
-    return {
-      address,
-      truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
-      label: name,
-      balance,
-    }
-  })
-  return accountsWithLabels
+  return accountsWithSendEtherInfoSelector(state).map(({ address, name, balance }) => ({
+    address,
+    addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+    label: name,
+    balance,
+  }))
 }
 
 export function getCurrentAccountWithSendEtherInfo (state) {
