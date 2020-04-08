@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
 import { getOpenMetamaskTabsIds, legacyExposeAccounts, removePermissionsFor } from '../../store/actions'
 import {
+  getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
   getPermissionsDomains,
   getPermittedAccountsForCurrentTab,
-  getRenderablePermissionsDomains,
   getSelectedAddress,
 } from '../../selectors/selectors'
 import { getOriginFromUrl } from '../../helpers/utils/util'
@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
   const { title, url, id } = state.activeTab
   const permittedAccounts = getPermittedAccountsForCurrentTab(state)
-  const connectedDomains = getRenderablePermissionsDomains(state)
+  const connectedDomains = getConnectedDomainsForSelectedAddress(state)
 
   let tabToConnect
   if (url && permittedAccounts.length === 0 && !openMetaMaskTabs[id]) {
