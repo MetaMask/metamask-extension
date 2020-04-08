@@ -185,7 +185,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 <Copy size={10} color="#3098DC" />
               </Button>
             </Tooltip>
-            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : !isEthereumNetwork ? t('viewOnCustomBlockExplorer', [getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs).match(/^https?:\/\/([^\/]+)/)[1]]) : t('viewOnEtherscan')}>
+            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : !isEthereumNetwork ? t('viewOnCustomBlockExplorer', [getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs).match(/^https?:\/\/([^/]+)/)[1]]) : t('viewOnEtherscan')}>
               <Button
                 type="raised"
                 onClick={this.handleEtherscanClick}

@@ -70,7 +70,7 @@ export default class AccountDetailsModal extends Component {
           {rpcPrefs.blockExplorerUrl
             ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]]) :
             !isEthereumNetwork
-              ? this.context.t('blockExplorerView', [genAccountLink(address, network, rpcPrefs).match(/^https?:\/\/([^\/]+)/)[1]])
+              ? this.context.t('blockExplorerView', [genAccountLink(address, network, rpcPrefs).match(/^https?:\/\/([^/]+)/)[1]])
               : this.context.t('viewOnEtherscan')
           }
         </Button>
