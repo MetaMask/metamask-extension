@@ -13,6 +13,8 @@ function NetworkIndicator ({ disabled, children, hoverText, onClick, providerNam
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
         'goerli-test-network': providerName === 'goerli',
+        'ebakus-network': providerName === 'ebakus',
+        'ebakus-test-network': providerName === 'ebakusTestnet',
       })}
       title={hoverText}
       onClick={(event) => {
@@ -130,6 +132,30 @@ export default class Network extends Component {
               loading={networkNumber === 'loading'}
             />
             <div className="network-name">{t('goerli')}</div>
+          </NetworkIndicator>
+        )
+
+      case 'ebakus':
+        return (
+          <NetworkIndicator disabled={disabled} hoverText={t('ebakus')} onClick={onClick} providerName={providerName}>
+            <NetworkDropdownIcon
+              backgroundColor="#3099f2"
+              nonSelectBackgroundColor="#ecb23e"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('ebakus')}</div>
+          </NetworkIndicator>
+        )
+
+      case 'ebakusTestnet':
+        return (
+          <NetworkIndicator disabled={disabled} hoverText={t('ebakusTestnet')} onClick={onClick} providerName={providerName}>
+            <NetworkDropdownIcon
+              backgroundColor="#3099f2"
+              nonSelectBackgroundColor="#ecb23e"
+              loading={networkNumber === 'loading'}
+            />
+            <div className="network-name">{t('ebakusTestnet')}</div>
           </NetworkIndicator>
         )
 

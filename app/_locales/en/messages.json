@@ -351,6 +351,12 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli Test Network"
   },
+  "connectingToEbakus": {
+    "message": "Connecting to Ebakus Network"
+  },
+  "connectingToEbakusTestnet": {
+    "message": "Connecting to Ebakus Test Network"
+  },
   "contacts": {
     "message": "Contacts"
   },
@@ -1170,6 +1176,12 @@
   },
   "goerli": {
     "message": "Goerli Test Network"
+  },
+  "ebakus": {
+    "message": "Ebakus Network"
+  },
+  "ebakusTestnet": {
+    "message": "Ebakus Test Network"
   },
   "save": {
     "message": "Save"

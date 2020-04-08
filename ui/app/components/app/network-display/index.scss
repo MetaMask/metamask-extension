@@ -30,6 +30,14 @@
     &--goerli {
       background-color: lighten($dodger-blue, 35%);
     }
+
+    &--ebakus {
+      background-color: lighten(#4aef7f, 35%);
+    }
+
+    &--ebakus-testnet {
+      background-color: lighten(#000, 35%);
+    }
   }
 
   &__name {
@@ -60,6 +68,14 @@
 
     &--goerli {
       background-color: $dodger-blue;
+    }
+
+    &--ebakus {
+      background-color: #4aef7f;
+    }
+
+    &--ebakus-testnet {
+      background-color: #000;
     }
   }
 }

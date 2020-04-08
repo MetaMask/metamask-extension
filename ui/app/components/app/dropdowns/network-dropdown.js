@@ -196,6 +196,10 @@ class NetworkDropdown extends Component {
       name = this.context.t('localhost')
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli')
+    } else if (providerName === 'ebakusTestnet') {
+      name = this.context.t('ebakusTestnet')
+    } else if (providerName === 'ebakus') {
+      name = this.context.t('ebakus')
     } else {
       name = provider.nickname || this.context.t('unknownNetwork')
     }
@@ -359,6 +363,52 @@ class NetworkDropdown extends Component {
             }}
           >
             {this.context.t('goerli')}
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          key="ebakus"
+          closeMenu={() => this.props.hideNetworkDropdown()}
+          onClick={() => this.handleClick('ebakus')}
+          style={dropdownMenuItemStyle}
+        >
+          {
+            providerType === 'ebakus'
+              ? <i className="fa fa-check" />
+              : <div className="network-check__transparent">✓</div>
+          }
+          <NetworkDropdownIcon backgroundColor="#4aef7f" isSelected={providerType === 'ebakus'} />
+          <span
+            className="network-name-item"
+            style={{
+              color: providerType === 'ebakus'
+                ? '#ffffff'
+                : '#9b9b9b',
+            }}
+          >
+            {this.context.t('ebakus')}
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          key="ebakusTestnet"
+          closeMenu={() => this.props.hideNetworkDropdown()}
+          onClick={() => this.handleClick('ebakusTestnet')}
+          style={dropdownMenuItemStyle}
+        >
+          {
+            providerType === 'ebakusTestnet'
+              ? <i className="fa fa-check" />
+              : <div className="network-check__transparent">✓</div>
+          }
+          <NetworkDropdownIcon backgroundColor="#000" isSelected={providerType === 'ebakusTestnet'} />
+          <span
+            className="network-name-item"
+            style={{
+              color: providerType === 'ebakusTestnet'
+                ? '#ffffff'
+                : '#9b9b9b',
+            }}
+          >
+            {this.context.t('ebakusTestnet')}
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem

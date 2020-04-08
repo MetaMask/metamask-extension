@@ -32,6 +32,14 @@
   &.goerli-test-network .menu-icon-circle div {
     background-color: rgba(48, 153, 242, .7) !important;
   }
+
+  &.ebakus-test-network .menu-icon-circle div {
+    background-color: rgba(0, 0, 0, .7) !important;
+  }
+
+  &.ebakus-network .menu-icon-circle div {
+    background-color: rgba(74, 239, 127, .7) !important;
+  }
 }
 
 .dropdown-menu-item {

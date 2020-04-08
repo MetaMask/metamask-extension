@@ -11,6 +11,8 @@ export const NETWORK_TYPES = {
   RINKEBY: 'rinkeby',
   ROPSTEN: 'ropsten',
   GOERLI: 'goerli',
+  EBAKUS: 'ebakus',
+  EBAKUS_TESTNET: 'ebakusTestnet',
 }
 
 export const GAS_ESTIMATE_TYPES = {

@@ -288,6 +288,10 @@ export default class Routes extends Component {
         return this.context.t('connectingToLocalhost')
       case 'goerli':
         return this.context.t('connectingToGoerli')
+      case 'ebakus':
+        return this.context.t('connectingToEbakus')
+      case 'ebakusTestnet':
+        return this.context.t('connectingToEbakusTestnet')
       default:
         return this.context.t('connectingTo', [providerId])
     }
@@ -307,6 +311,10 @@ export default class Routes extends Component {
         return this.context.t('localhost')
       case 'goerli':
         return this.context.t('goerli')
+      case 'ebakus':
+        return this.context.t('ebakus')
+      case 'ebakusTestnet':
+        return this.context.t('ebakusTestnet')
       default:
         return this.context.t('unknownNetwork')
     }
