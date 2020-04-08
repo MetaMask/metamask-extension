@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import TransactionBreakdown from './transaction-breakdown.component'
-import { getIsMainnet, getNativeCurrency, preferencesSelector } from '../../../selectors/selectors'
+import { getIsMainnet, getNativeCurrency, preferencesSelector, supportsGasPrice } from '../../../selectors/selectors'
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util'
 import { sumHexes } from '../../../helpers/utils/transactions.util'
 
@@ -23,6 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     gasPrice,
     value,
     gasUsed,
+    supportsGasPrice: supportsGasPrice(state),
   }
 }
 

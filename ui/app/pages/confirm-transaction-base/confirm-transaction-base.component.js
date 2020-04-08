@@ -96,6 +96,7 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    supportsGasPrice: PropTypes.bool,
   }
 
   state = {
@@ -234,6 +235,7 @@ export default class ConfirmTransactionBase extends Component {
       hideFiatConversion,
       nextNonce,
       getNextNonce,
+      supportsGasPrice,
     } = this.props
 
     if (hideDetails) {
@@ -243,30 +245,32 @@ export default class ConfirmTransactionBase extends Component {
     return (
       detailsComponent || (
         <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <ConfirmDetailRow
-              label="Gas Fee"
-              value={hexTransactionFee}
-              headerText="Edit"
-              headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() => this.handleEditGas()}
-              secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
-            />
-            {advancedInlineGasShown
-              ? (
-                <AdvancedGasInputs
-                  updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                  updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
-                  customGasPrice={customGas.gasPrice}
-                  customGasLimit={customGas.gasLimit}
-                  insufficientBalance={insufficientBalance}
-                  customPriceIsSafe
-                  isSpeedUp={false}
-                />
-              )
-              : null
-            }
-          </div>
+          {supportsGasPrice && (
+            <div className="confirm-page-container-content__gas-fee">
+              <ConfirmDetailRow
+                label="Gas Fee"
+                value={hexTransactionFee}
+                headerText="Edit"
+                headerTextClassName="confirm-detail-row__header-text--edit"
+                onHeaderClick={() => this.handleEditGas()}
+                secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
+              />
+              {advancedInlineGasShown
+                ? (
+                  <AdvancedGasInputs
+                    updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                    updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                    customGasPrice={customGas.gasPrice}
+                    customGasLimit={customGas.gasLimit}
+                    insufficientBalance={insufficientBalance}
+                    customPriceIsSafe
+                    isSpeedUp={false}
+                  />
+                )
+                : null
+              }
+            </div>
+          )}
           <div className={useNonceField ? 'confirm-page-container-content__gas-fee' : null}>
             <ConfirmDetailRow
               label="Total"

@@ -6,6 +6,7 @@ import {
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
+  supportsGasPrice,
 } from '../../../selectors/selectors'
 import * as actions from '../../../store/actions'
 
@@ -16,6 +17,7 @@ function mapStateToProps (state) {
     isOwnedAccount: !!ownedAccounts.find(({ address }) => address.toLowerCase() === to.toLowerCase()),
     contact: getAddressBookEntry(state, to),
     to,
+    supportsGasPrice: supportsGasPrice(state),
   }
 }
 

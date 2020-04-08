@@ -21,6 +21,7 @@ export default class TransactionBreakdown extends PureComponent {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    supportsGasPrice: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -29,7 +30,7 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { gas, gasPrice, value, className, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
+    const { gas, gasPrice, value, className, nativeCurrency, showFiat, totalInHex, gasUsed, supportsGasPrice } = this.props
 
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -70,20 +71,22 @@ export default class TransactionBreakdown extends PureComponent {
             </TransactionBreakdownRow>
           )
         }
-        <TransactionBreakdownRow title={t('gasPrice')}>
-          {typeof gasPrice !== 'undefined'
-            ? (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={gasPrice}
-                hideLabel
-              />
-            )
-            : '?'
-          }
-        </TransactionBreakdownRow>
+        { supportsGasPrice && (
+          <TransactionBreakdownRow title={t('gasPrice')}>
+            {typeof gasPrice !== 'undefined'
+              ? (
+                <CurrencyDisplay
+                  className="transaction-breakdown__value"
+                  currency={nativeCurrency}
+                  denomination={GWEI}
+                  value={gasPrice}
+                  hideLabel
+                />
+              )
+              : '?'
+            }
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow title={t('total')}>
           <div>
             <UserPreferencedCurrencyDisplay

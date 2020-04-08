@@ -322,7 +322,7 @@ export function getTotalUnapprovedCount ({ metamask }) {
 
 export function getIsMainnet (state) {
   const networkType = getNetworkIdentifier(state)
-  return networkType === NETWORK_TYPES.MAINNET
+  return [NETWORK_TYPES.MAINNET, NETWORK_TYPES.EBAKUS].includes(networkType)
 }
 
 export function isEthereumNetwork (state) {
@@ -346,6 +346,10 @@ export function isEbakusNetwork (state) {
   } = NETWORK_TYPES
 
   return [ EBAKUS, EBAKUS_TESTNET].includes(networkType)
+}
+
+export function supportsGasPrice (state) {
+  return isEthereumNetwork(state)
 }
 
 export function preferencesSelector ({ metamask }) {
