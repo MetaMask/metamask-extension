@@ -1,3 +1,4 @@
+import { flatten, forOwn } from 'lodash'
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
@@ -537,4 +538,36 @@ export function getLastConnectedInfo (state) {
 
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
+}
+
+export function getConnectedDomainsForSelectedAddress (state) {
+  const {
+    domains = {},
+    domainMetadata,
+    selectedAddress,
+  } = state.metamask
+
+  const connectedDomains = []
+
+  forOwn(domains, (value, domain) => {
+    const exposedAccounts = flatten(value.permissions.map((p) => p.caveats?.find(({ name }) => name === 'exposedAccounts').value || []))
+    if (!exposedAccounts.includes(selectedAddress)) {
+      return
+    }
+
+    const {
+      extensionId,
+      name,
+      icon,
+    } = domainMetadata[domain] || {}
+
+    connectedDomains.push({
+      extensionId,
+      key: domain,
+      name,
+      icon,
+    })
+  })
+
+  return connectedDomains
 }
