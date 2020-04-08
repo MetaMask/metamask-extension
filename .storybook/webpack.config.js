@@ -1,5 +1,7 @@
 const path = require('path')
 
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 module.exports = {
   module: {
     strictExportPresence: true,
@@ -26,4 +28,12 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.join('node_modules', '@fortawesome', 'fontawesome-free', 'webfonts'),
+        to: path.join('fonts', 'fontawesome'),
+      },
+    ]),
+  ],
 }
