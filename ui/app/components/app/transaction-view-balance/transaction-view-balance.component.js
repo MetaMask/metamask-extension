@@ -17,6 +17,7 @@ export default class TransactionViewBalance extends PureComponent {
 
   static propTypes = {
     showDepositModal: PropTypes.func,
+    showAccountDetailModal: PropTypes.func,
     selectedToken: PropTypes.object,
     history: PropTypes.object,
     network: PropTypes.string,
@@ -24,6 +25,7 @@ export default class TransactionViewBalance extends PureComponent {
     assetImage: PropTypes.string,
     balanceIsCached: PropTypes.bool,
     showFiat: PropTypes.bool,
+    isEbakusNetwork: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -80,7 +82,7 @@ export default class TransactionViewBalance extends PureComponent {
 
   renderButtons () {
     const { t, metricsEvent } = this.context
-    const { selectedToken, showDepositModal, history } = this.props
+    const { selectedToken, isEbakusNetwork, showDepositModal, showAccountDetailModal, history } = this.props
 
     return (
       <div className="transaction-view-balance__buttons">
@@ -97,7 +99,11 @@ export default class TransactionViewBalance extends PureComponent {
                     name: 'Clicked Deposit',
                   },
                 })
-                showDepositModal()
+                if (isEbakusNetwork) {
+                  showAccountDetailModal()
+                } else {
+                  showDepositModal()
+                }
               }}
             >
               { t('deposit') }

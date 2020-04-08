@@ -11,6 +11,7 @@ import {
   isBalanceCached,
   preferencesSelector,
   getIsMainnet,
+  isEbakusNetwork,
 } from '../../../selectors/selectors'
 import { showModal } from '../../../store/actions'
 
@@ -31,12 +32,16 @@ const mapStateToProps = (state) => {
     assetImage: getSelectedTokenAssetImage(state),
     balanceIsCached: isBalanceCached(state),
     showFiat: (isMainnet || !!showFiatInTestnets),
+    isEbakusNetwork: isEbakusNetwork(state),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     showDepositModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    showAccountDetailModal: () => {
+      dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+    },
   }
 }
 
