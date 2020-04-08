@@ -238,6 +238,21 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
   }
-  const prefix = prefixForNetwork(networkId)
-  return `https://${prefix}etherscan.io/tx/${hash}`
+
+  const net = parseInt(networkId)
+  let link
+  switch (net) {
+    case 7: // ebakus test net
+      link = `https://explorer.ebakus-testnet.com/transaction/${hash}`
+      break
+    case 10: // ebakus test net
+      link = `https://explorer.ebakus.com/transaction/${hash}`
+      break
+    default:
+      const prefix = prefixForNetwork(networkId)
+      link = `https://${prefix}etherscan.io/tx/${hash}`
+      break
+  }
+
+  return link
 }

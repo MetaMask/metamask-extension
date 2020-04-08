@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
+import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util'
 import { formatDate } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
@@ -30,10 +30,9 @@ export default class TransactionActivityLog extends PureComponent {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 
-    const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    const explorerUrl = getBlockExplorerUrlForTx(metamaskNetworkId, hash)
 
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openWindow({ url: explorerUrl })
   }
 
   renderInlineRetry (index, activity) {

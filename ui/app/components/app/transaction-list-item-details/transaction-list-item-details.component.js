@@ -38,6 +38,7 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string.isRequired,
+    isEthereumNetwork: PropTypes.bool,
   }
 
   state = {
@@ -146,14 +147,16 @@ export default class TransactionListItemDetails extends PureComponent {
       onRetry,
       recipientEns,
       recipientAddress,
-      rpcPrefs: { blockExplorerUrl } = {},
+      rpcPrefs = {},
       senderAddress,
       isEarliestNonce,
       senderNickname,
       recipientNickname,
+      isEthereumNetwork,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
-    const { hash } = transaction
+    const { hash, metamaskNetworkId } = transaction
+    const { blockExplorerUrl } = rpcPrefs
 
     return (
       <div className="transaction-list-item-details">
@@ -182,7 +185,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 <Copy size={10} color="#3098DC" />
               </Button>
             </Tooltip>
-            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
+            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : !isEthereumNetwork ? t('viewOnCustomBlockExplorer', [getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs).match(/^https?:\/\/([^\/]+)/)[1]]) : t('viewOnEtherscan')}>
               <Button
                 type="raised"
                 onClick={this.handleEtherscanClick}
