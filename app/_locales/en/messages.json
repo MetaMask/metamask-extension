@@ -6,6 +6,10 @@
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"
   },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 is not connected to any sites.",
+    "description": "$1 is the account name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },

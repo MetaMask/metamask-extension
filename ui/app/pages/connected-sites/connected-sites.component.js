@@ -15,6 +15,7 @@ export default class ConnectSites extends Component {
   }
 
   static propTypes = {
+    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
     accountLabel: PropTypes.string.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -58,13 +59,14 @@ export default class ConnectSites extends Component {
   renderConnectedSites () {
     return (
       <ConnectedSitesList
+        connectedDomains={this.props.connectedDomains}
         onDisconnectSite={this.setSitePendingDisconnect}
       />
     )
   }
 
   render () {
-    const { accountLabel, history, legacyExposeAccount, tabToConnect } = this.props
+    const { accountLabel, history, legacyExposeAccount, tabToConnect, connectedDomains } = this.props
     const { t } = this.context
     const { sitePendingDisconnect } = this.state
     return (
@@ -90,7 +92,10 @@ export default class ConnectSites extends Component {
         : (
           <Popover
             title={t('connectedSites')}
-            subtitle={t('connectedSitesDescription', [accountLabel])}
+            subtitle={connectedDomains.length
+              ? t('connectedSitesDescription', [accountLabel])
+              : t('connectedSitesEmptyDescription', [accountLabel])
+            }
             onClose={() => history.push(DEFAULT_ROUTE)}
             footer={
               tabToConnect
