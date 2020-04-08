@@ -1,0 +1,17 @@
+<svg width="100%" height="100%" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
+    <g transform="matrix(9.13619,0,0,9.13619,-121.111,-61.8625)">
+        <g id="XMLID_1_">
+            <g>
+                <g transform="matrix(1,0,0,1,10,0)">
+                    <path d="M31.5,17.239L46,24.939C46.7,25.239 47.1,25.939 47.1,26.739L47.1,41.839C47.1,42.539 46.7,43.239 46,43.639L31.5,51.239C30.9,51.539 30.2,51.539 29.6,51.239L15.1,43.539C14.4,43.239 14,42.539 14,41.739L14,26.639C14,25.939 14.4,25.239 15.1,24.839L29.6,17.139C30.2,16.939 31,16.939 31.5,17.239Z" style="fill:none;fill-rule:nonzero;stroke:black;stroke-width:1.5px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,10,0)">
+                    <path d="M14.7,25.939L30.5,51.139L46.7,25.939L22.9,38.539" style="fill:none;fill-rule:nonzero;stroke:black;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:round;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,10,0)">
+                    <path d="M30.6,28.739C32.257,28.739 33.6,27.396 33.6,25.739C33.6,24.083 32.257,22.739 30.6,22.739C28.943,22.739 27.6,24.083 27.6,25.739C27.6,27.396 28.943,28.739 30.6,28.739Z" style="fill-rule:nonzero;"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

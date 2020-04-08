@@ -23,6 +23,7 @@ export default class Identicon extends PureComponent {
     diameter: PropTypes.number,
     image: PropTypes.string,
     useBlockie: PropTypes.bool,
+    isEbakusNetwork: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -32,6 +33,7 @@ export default class Identicon extends PureComponent {
     diameter: 46,
     image: undefined,
     useBlockie: false,
+    isEbakusNetwork: false,
   }
 
   renderImage () {
@@ -76,7 +78,7 @@ export default class Identicon extends PureComponent {
   }
 
   render () {
-    const { className, address, image, diameter, useBlockie, addBorder } = this.props
+    const { className, address, image, diameter, useBlockie, addBorder, isEbakusNetwork } = this.props
 
     if (image) {
       return this.renderImage()
@@ -93,6 +95,16 @@ export default class Identicon extends PureComponent {
         <div className={classnames({ 'identicon__address-wrapper': addBorder })}>
           { useBlockie ? this.renderBlockie() : this.renderJazzicon() }
         </div>
+      )
+    }
+
+    if (isEbakusNetwork) {
+      return (
+        <img
+          className={classnames('balance-icon', className)}
+          src="./images/ebakus.svg"
+          style={getStyles(diameter)}
+        />
       )
     }
 

@@ -338,6 +338,16 @@ export function isEthereumNetwork (state) {
   return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
+export function isEbakusNetwork (state) {
+  const networkType = getNetworkIdentifier(state)
+  const {
+    EBAKUS,
+    EBAKUS_TESTNET,
+  } = NETWORK_TYPES
+
+  return [ EBAKUS, EBAKUS_TESTNET].includes(networkType)
+}
+
 export function preferencesSelector ({ metamask }) {
   return metamask.preferences
 }
