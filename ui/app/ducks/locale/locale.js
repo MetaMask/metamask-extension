@@ -1,4 +1,4 @@
-import { actionConstants } from '../../store/actions'
+import actionConstants from '../../store/actionConstants'
 
 export default function reduceLocaleMessages (state = {}, { type, value }) {
   switch (type) {

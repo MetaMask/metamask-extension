@@ -1,4 +1,4 @@
-import { actionConstants as actions } from '../../store/actions'
+import actionConstants from '../../store/actionConstants'
 
 export default function reduceMetamask (state = {}, action) {
   const metamaskState = Object.assign({
@@ -53,16 +53,16 @@ export default function reduceMetamask (state = {}, action) {
 
   switch (action.type) {
 
-    case actions.UPDATE_METAMASK_STATE:
+    case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value }
 
-    case actions.LOCK_METAMASK:
+    case actionConstants.LOCK_METAMASK:
       return {
         ...metamaskState,
         isUnlocked: false,
       }
 
-    case actions.SET_RPC_TARGET:
+    case actionConstants.SET_RPC_TARGET:
       return {
         ...metamaskState,
         provider: {
@@ -71,7 +71,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.SET_PROVIDER_TYPE:
+    case actionConstants.SET_PROVIDER_TYPE:
       return {
         ...metamaskState,
         provider: {
@@ -79,7 +79,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.SHOW_ACCOUNT_DETAIL:
+    case actionConstants.SHOW_ACCOUNT_DETAIL:
       return {
         ...metamaskState,
         isUnlocked: true,
@@ -87,7 +87,7 @@ export default function reduceMetamask (state = {}, action) {
         selectedAddress: action.value,
       }
 
-    case actions.SET_SELECTED_TOKEN: {
+    case actionConstants.SET_SELECTED_TOKEN: {
       const newState = {
         ...metamaskState,
         selectedTokenAddress: action.value,
@@ -114,7 +114,7 @@ export default function reduceMetamask (state = {}, action) {
       return newState
     }
 
-    case actions.SET_ACCOUNT_LABEL:
+    case actionConstants.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
       const id = {}
@@ -122,21 +122,21 @@ export default function reduceMetamask (state = {}, action) {
       const identities = Object.assign({}, metamaskState.identities, id)
       return Object.assign(metamaskState, { identities })
 
-    case actions.SET_CURRENT_FIAT:
+    case actionConstants.SET_CURRENT_FIAT:
       return Object.assign(metamaskState, {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
       })
 
-    case actions.UPDATE_TOKENS:
+    case actionConstants.UPDATE_TOKENS:
       return {
         ...metamaskState,
         tokens: action.newTokens,
       }
 
     // metamask.send
-    case actions.UPDATE_GAS_LIMIT:
+    case actionConstants.UPDATE_GAS_LIMIT:
       return {
         ...metamaskState,
         send: {
@@ -144,12 +144,12 @@ export default function reduceMetamask (state = {}, action) {
           gasLimit: action.value,
         },
       }
-    case actions.UPDATE_CUSTOM_NONCE:
+    case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
         ...metamaskState,
         customNonceValue: action.value,
       }
-    case actions.UPDATE_GAS_PRICE:
+    case actionConstants.UPDATE_GAS_PRICE:
       return {
         ...metamaskState,
         send: {
@@ -158,13 +158,13 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.TOGGLE_ACCOUNT_MENU:
+    case actionConstants.TOGGLE_ACCOUNT_MENU:
       return {
         ...metamaskState,
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
       }
 
-    case actions.UPDATE_GAS_TOTAL:
+    case actionConstants.UPDATE_GAS_TOTAL:
       return {
         ...metamaskState,
         send: {
@@ -173,7 +173,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND_TOKEN_BALANCE:
+    case actionConstants.UPDATE_SEND_TOKEN_BALANCE:
       return {
         ...metamaskState,
         send: {
@@ -182,7 +182,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND_HEX_DATA:
+    case actionConstants.UPDATE_SEND_HEX_DATA:
       return {
         ...metamaskState,
         send: {
@@ -191,7 +191,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND_TO:
+    case actionConstants.UPDATE_SEND_TO:
       return {
         ...metamaskState,
         send: {
@@ -201,7 +201,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND_AMOUNT:
+    case actionConstants.UPDATE_SEND_AMOUNT:
       return {
         ...metamaskState,
         send: {
@@ -210,7 +210,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_MAX_MODE:
+    case actionConstants.UPDATE_MAX_MODE:
       return {
         ...metamaskState,
         send: {
@@ -219,7 +219,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND:
+    case actionConstants.UPDATE_SEND:
       return Object.assign(metamaskState, {
         send: {
           ...metamaskState.send,
@@ -227,7 +227,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       })
 
-    case actions.UPDATE_SEND_ENS_RESOLUTION:
+    case actionConstants.UPDATE_SEND_ENS_RESOLUTION:
       return {
         ...metamaskState,
         send: {
@@ -237,7 +237,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_SEND_ENS_RESOLUTION_ERROR:
+    case actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR:
       return {
         ...metamaskState,
         send: {
@@ -247,7 +247,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.CLEAR_SEND:
+    case actionConstants.CLEAR_SEND:
       return {
         ...metamaskState,
         send: {
@@ -267,7 +267,7 @@ export default function reduceMetamask (state = {}, action) {
         },
       }
 
-    case actions.UPDATE_TRANSACTION_PARAMS:
+    case actionConstants.UPDATE_TRANSACTION_PARAMS:
       const { id: txId, value } = action
       let { currentNetworkTxList } = metamaskState
       currentNetworkTxList = currentNetworkTxList.map((tx) => {
@@ -284,56 +284,56 @@ export default function reduceMetamask (state = {}, action) {
         currentNetworkTxList,
       }
 
-    case actions.SET_PARTICIPATE_IN_METAMETRICS:
+    case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
         participateInMetaMetrics: action.value,
       }
 
-    case actions.SET_METAMETRICS_SEND_COUNT:
+    case actionConstants.SET_METAMETRICS_SEND_COUNT:
       return {
         ...metamaskState,
         metaMetricsSendCount: action.value,
       }
 
-    case actions.SET_USE_BLOCKIE:
+    case actionConstants.SET_USE_BLOCKIE:
       return {
         ...metamaskState,
         useBlockie: action.value,
       }
 
-    case actions.UPDATE_FEATURE_FLAGS:
+    case actionConstants.UPDATE_FEATURE_FLAGS:
       return {
         ...metamaskState,
         featureFlags: action.value,
       }
 
-    case actions.CLOSE_WELCOME_SCREEN:
+    case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
         welcomeScreenSeen: true,
       }
 
-    case actions.SET_CURRENT_LOCALE:
+    case actionConstants.SET_CURRENT_LOCALE:
       return {
         ...metamaskState,
         currentLocale: action.value.locale,
       }
 
-    case actions.SET_PENDING_TOKENS:
+    case actionConstants.SET_PENDING_TOKENS:
       return {
         ...metamaskState,
         pendingTokens: { ...action.payload },
       }
 
-    case actions.CLEAR_PENDING_TOKENS: {
+    case actionConstants.CLEAR_PENDING_TOKENS: {
       return {
         ...metamaskState,
         pendingTokens: {},
       }
     }
 
-    case actions.UPDATE_PREFERENCES: {
+    case actionConstants.UPDATE_PREFERENCES: {
       return {
         ...metamaskState,
         preferences: {
@@ -343,21 +343,21 @@ export default function reduceMetamask (state = {}, action) {
       }
     }
 
-    case actions.COMPLETE_ONBOARDING: {
+    case actionConstants.COMPLETE_ONBOARDING: {
       return {
         ...metamaskState,
         completedOnboarding: true,
       }
     }
 
-    case actions.SET_FIRST_TIME_FLOW_TYPE: {
+    case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
       return {
         ...metamaskState,
         firstTimeFlowType: action.value,
       }
     }
 
-    case actions.SET_NEXT_NONCE: {
+    case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
         nextNonce: action.value,
