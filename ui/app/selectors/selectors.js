@@ -498,7 +498,7 @@ export function getRenderablePermissionsDomains (state) {
       const selectedAddressLastConnectedTime = accountsLastConnectedTime[selectedAddress]
 
       const lastConnectedTime = selectedAddressLastConnectedTime
-        ? formatDate(selectedAddressLastConnectedTime, 'yyyy-M-d')
+        ? formatDate(selectedAddressLastConnectedTime, 'yyyy-MM-dd')
         : ''
 
       return [ ...acc, {

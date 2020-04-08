@@ -36,7 +36,7 @@ const mapStateToProps = (state, ownProps) => {
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
 
   Object.keys(addressLastConnectedMap).forEach((key) => {
-    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
+    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-MM-dd')
   })
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`
