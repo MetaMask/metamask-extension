@@ -14,6 +14,7 @@ export default class AccountDetailsModal extends Component {
     setAccountLabel: PropTypes.func,
     keyrings: PropTypes.array,
     rpcPrefs: PropTypes.object,
+    isEthereumNetwork: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -28,6 +29,7 @@ export default class AccountDetailsModal extends Component {
       setAccountLabel,
       keyrings,
       rpcPrefs,
+      isEthereumNetwork,
     } = this.props
     const { name, address } = selectedIdentity
 
@@ -66,8 +68,10 @@ export default class AccountDetailsModal extends Component {
           }}
         >
           {rpcPrefs.blockExplorerUrl
-            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
-            : this.context.t('viewOnEtherscan')
+            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]]) :
+            !isEthereumNetwork
+              ? this.context.t('blockExplorerView', [genAccountLink(address, network, rpcPrefs).match(/^https?:\/\/([^\/]+)/)[1]])
+              : this.context.t('viewOnEtherscan')
           }
         </Button>
 

@@ -24,6 +24,12 @@ export default function getAccountLink (address, network, rpcPrefs) {
     case 5: // goerli test net
       link = `https://goerli.etherscan.io/address/${address}`
       break
+    case 7: // ebakus test net
+      link = `https://explorer.ebakus-testnet.com/address/${address}`
+      break
+    case 10: // ebakus main net
+      link = `https://explorer.ebakus.com/address/${address}`
+      break
     default:
       link = ''
       break

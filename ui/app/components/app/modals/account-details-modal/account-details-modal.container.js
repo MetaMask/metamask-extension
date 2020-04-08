@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { showModal, setAccountLabel } from '../../../../store/actions'
-import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../../selectors/selectors'
+import { getSelectedIdentity, getRpcPrefsForCurrentProvider, isEthereumNetwork } from '../../../../selectors/selectors'
 import AccountDetailsModal from './account-details-modal.component'
 
 const mapStateToProps = (state) => {
@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
+    isEthereumNetwork: isEthereumNetwork(state),
   }
 }
 
