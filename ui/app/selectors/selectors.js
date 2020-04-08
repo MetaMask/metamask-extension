@@ -1,3 +1,4 @@
+import { flatten, forOwn } from 'lodash'
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
@@ -7,7 +8,6 @@ import { multiplyCurrencies } from '../helpers/utils/conversion-util'
 import {
   addressSlicer,
   checksumAddress,
-  formatDate,
   getOriginFromUrl,
   getAccountByAddress,
 } from '../helpers/utils/util'
@@ -465,59 +465,6 @@ export function getPermittedAccountsForCurrentTab (state) {
   return permittedAccountsMap[originOfCurrentTab] || []
 }
 
-export function getRenderablePermissionsDomains (state) {
-  const {
-    domains = {},
-    domainMetadata,
-    permissionsHistory,
-    permissionsDescriptions,
-    selectedAddress,
-  } = state.metamask
-
-  const renderableDomains = Object.keys(domains).reduce((acc, domainKey) => {
-    const { permissions } = domains[domainKey]
-    const permissionsWithCaveatsForSelectedAddress = permissions.filter((perm) => {
-      const caveats = perm.caveats || []
-      const exposedAccountCaveat = caveats.find((caveat) => caveat.name === 'exposedAccounts')
-      const exposedAccountCaveatValue = exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length
-        ? exposedAccountCaveat.value[0]
-        : {}
-      return exposedAccountCaveatValue === selectedAddress
-    })
-
-    if (permissionsWithCaveatsForSelectedAddress.length) {
-      const permissionKeys = permissions.map((permission) => permission.parentCapability)
-      const {
-        name,
-        icon,
-        extensionId,
-      } = domainMetadata[domainKey] || {}
-      const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
-      const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
-      const accountsLastConnectedTime = ethAccountsPermissionsForDomain.accounts || {}
-      const selectedAddressLastConnectedTime = accountsLastConnectedTime[selectedAddress]
-
-      const lastConnectedTime = selectedAddressLastConnectedTime
-        ? formatDate(selectedAddressLastConnectedTime, 'yyyy-MM-dd')
-        : ''
-
-      return [ ...acc, {
-        name: name || domainKey,
-        secondaryName: name ? domainKey : '',
-        icon,
-        key: domainKey,
-        lastConnectedTime,
-        permissionDescriptions: permissionKeys.map((permissionKey) => permissionsDescriptions[permissionKey]),
-        extensionId,
-      }]
-    } else {
-      return acc
-    }
-  }, [])
-
-  return renderableDomains
-}
-
 export function getOriginOfCurrentTab (state) {
   const { activeTab } = state
   return activeTab && activeTab.url && getOriginFromUrl(activeTab.url)
@@ -537,4 +484,38 @@ export function getLastConnectedInfo (state) {
 
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
+}
+
+export function getConnectedDomainsForSelectedAddress (state) {
+  const {
+    domains = {},
+    domainMetadata,
+    selectedAddress,
+  } = state.metamask
+
+  const connectedDomains = []
+
+  forOwn(domains, (value, domain) => {
+    const exposedAccounts = flatten(value.permissions.map(
+      (p) => p.caveats?.find(({ name }) => name === 'exposedAccounts').value || []
+    ))
+    if (!exposedAccounts.includes(selectedAddress)) {
+      return
+    }
+
+    const {
+      extensionId,
+      name,
+      icon,
+    } = domainMetadata[domain] || {}
+
+    connectedDomains.push({
+      extensionId,
+      key: domain,
+      name,
+      icon,
+    })
+  })
+
+  return connectedDomains
 }
