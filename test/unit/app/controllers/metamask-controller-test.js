@@ -238,6 +238,8 @@ describe('MetaMaskController', function () {
     })
 
     it('should clear previous identities after vault restoration', async function () {
+      const currentTimestamp = 1000
+      sandbox.useFakeTimers(currentTimestamp)
       sandbox.stub(metamaskController, 'getBalance')
       metamaskController.getBalance.callsFake(() => {
         return Promise.resolve('0x0')
@@ -245,21 +247,23 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       assert.deepEqual(metamaskController.getState().identities, {
-        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, lastSelected: currentTimestamp, name: DEFAULT_LABEL },
       })
 
       await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
       assert.deepEqual(metamaskController.getState().identities, {
-        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, lastSelected: currentTimestamp, name: 'Account Foo' },
       })
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
       assert.deepEqual(metamaskController.getState().identities, {
-        [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
+        [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, lastSelected: currentTimestamp, name: DEFAULT_LABEL },
       })
     })
 
     it('should restore any consecutive accounts with balances', async function () {
+      const currentTimestamp = 1000
+      sandbox.useFakeTimers(currentTimestamp)
       sandbox.stub(metamaskController, 'getBalance')
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000')
@@ -273,7 +277,7 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
       assert.deepEqual(metamaskController.getState().identities, {
-        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, lastSelected: currentTimestamp, name: DEFAULT_LABEL },
         [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       })
     })

@@ -370,8 +370,15 @@ class PreferencesController {
   setSelectedAddress (_address) {
     const address = normalizeAddress(_address)
     this._updateTokens(address)
-    this.store.updateState({ selectedAddress: address })
-    const tokens = this.store.getState().tokens
+
+    const { identities, tokens } = this.store.getState()
+    const selectedIdentity = identities[address]
+    if (!selectedIdentity) {
+      throw new Error(`Identity for '${address} not found`)
+    }
+
+    selectedIdentity.lastSelected = Date.now()
+    this.store.updateState({ identities, selectedAddress: address })
     return Promise.resolve(tokens)
   }
 
@@ -383,6 +390,16 @@ class PreferencesController {
    */
   getSelectedAddress () {
     return this.store.getState().selectedAddress
+  }
+
+  /**
+   * Getter for the `identities` property
+   *
+   * @returns {Object} An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
+   *
+   */
+  getIdentities () {
+    return this.store.getState().identities
   }
 
   /**

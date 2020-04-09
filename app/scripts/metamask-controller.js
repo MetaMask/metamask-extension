@@ -211,6 +211,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.on('unlock', () => this.emit('unlock'))
 
     this.permissionsController = new PermissionsController({
+      getIdentities: this.preferencesController.getIdentities.bind(this.preferencesController),
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
       getRestrictedMethods,
       getUnlockPromise: this.appStateController.getUnlockPromise.bind(this.appStateController),

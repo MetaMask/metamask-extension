@@ -24,6 +24,7 @@ export class PermissionsController {
 
   constructor (
     {
+      getIdentities,
       getKeyringAccounts,
       getRestrictedMethods,
       getUnlockPromise,
@@ -40,6 +41,7 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getIdentities = getIdentities
     this.getKeyringAccounts = getKeyringAccounts
     this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
