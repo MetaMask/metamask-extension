@@ -1,7 +1,7 @@
 import assert from 'assert'
 import freeze from 'deep-freeze-strict'
 import reducers from '../../../ui/app/ducks'
-import { actionConstants } from '../../../ui/app/store/actions'
+import actionConstants from '../../../ui/app/store/actionConstants'
 
 describe('SET_ACCOUNT_LABEL', function () {
   it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', function () {
