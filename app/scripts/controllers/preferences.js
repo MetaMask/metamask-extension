@@ -120,7 +120,7 @@ class PreferencesController {
     let metaMetricsId = null
     if (bool && !this.store.getState().metaMetricsId) {
       metaMetricsId = bufferToHex(
-        sha3(
+        keccak(
           String(Date.now()) +
             String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER))
         )
