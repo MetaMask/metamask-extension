@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import Identicon from '../../../components/ui/identicon'
 import Button from '../../../components/ui/button'
-import CheckBox from '../../../components/ui/check-box'
+import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../../../components/ui/check-box'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import { PRIMARY } from '../../../helpers/constants/common'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
@@ -90,7 +90,7 @@ export default class ChooseAccount extends Component {
                 <div className="permissions-connect-choose-account__account-info-wrapper">
                   <CheckBox
                     className="permissions-connect-choose-account__list-check-box"
-                    checked={ selectedAccounts.has(address) }
+                    checked={selectedAccounts.has(address)}
                   />
                   <Identicon
                     diameter={34}
@@ -128,6 +128,17 @@ export default class ChooseAccount extends Component {
   renderAccountsListHeader () {
     const { t } = this.context
     const { selectNewAccountViaModal, accounts } = this.props
+    const { selectedAccounts } = this.state
+
+    let checked
+    if (this.allAreSelected()) {
+      checked = CHECKED
+    } else if (selectedAccounts.size === 0) {
+      checked = UNCHECKED
+    } else {
+      checked = INDETERMINATE
+    }
+
     return (
       <div
         className={classnames({
@@ -140,7 +151,7 @@ export default class ChooseAccount extends Component {
             <div className="permissions-connect-choose-account__select-all">
               <CheckBox
                 className="permissions-connect-choose-account__header-check-box"
-                checked={this.allAreSelected()}
+                checked={checked}
                 onClick={() => (this.allAreSelected() ? this.deselectAll() : this.selectAll())}
               />
               <div className="permissions-connect-choose-account__text-grey">{ this.context.t('selectAll') }</div>

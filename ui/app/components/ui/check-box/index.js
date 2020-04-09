@@ -1,1 +1,1 @@
-export { default } from './check-box.component'
+export { default, CHECKED, INDETERMINATE, UNCHECKED } from './check-box.component'

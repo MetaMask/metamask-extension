@@ -1,26 +1,23 @@
 .check-box {
-  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: $white;
+  color: $Grey-100;
+  width: 18px;
+  height: 18px;
+  font-size: 21px;
+  line-height: 0.9;
+  border-radius: 2px;
+  display: flex;
 
-  &--checked {
-    background: $curious-blue;
-    border: 2px solid $curious-blue;
-    border-radius: 2px;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    i {
-      color: $white;
-    }
+  &:checked, &:indeterminate {
+    color: $curious-blue;
+    border-color: $curious-blue;
   }
 
-  &--un-checked {
-    background: $white;
-    border: 2px solid $Grey-100;
-    border-radius: 2px;
-    width: 18px;
-    height: 18px;
+  &:disabled {
+    color: $Grey-100;
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
