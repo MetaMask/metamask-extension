@@ -242,7 +242,6 @@ function setupController (initState, initLangCode) {
     showUnapprovedTx: triggerUi,
     showPermissionRequest: triggerUi,
     openPopup: openPopup,
-    closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
     initState,
     // initial locale code
