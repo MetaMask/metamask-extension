@@ -381,10 +381,6 @@ export function getTargetDomainMetadata (state, request, defaultOrigin) {
   return targetDomainMetadata
 }
 
-export function getActiveTab (state) {
-  return state.activeTab
-}
-
 export function getMetaMetricState (state) {
   return {
     network: getCurrentNetworkId(state),
