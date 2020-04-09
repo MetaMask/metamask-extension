@@ -34,6 +34,13 @@ const keyringAccounts = deepFreeze([
 
 const getKeyringAccounts = async () => [ ...keyringAccounts ]
 
+const getIdentities = () => {
+  return keyringAccounts.reduce((identities, address, index) => {
+    identities[address] = { address, name: `Account ${index}` }
+    return identities
+  }, {})
+}
+
 // perm controller initialization helper
 const getRestrictedMethods = (permController) => {
   return {
@@ -66,6 +73,7 @@ const getUnlockPromise = () => Promise.resolve()
 export function getPermControllerOpts () {
   return {
     showPermissionRequest: noop,
+    getIdentities,
     getKeyringAccounts,
     getUnlockPromise,
     getRestrictedMethods,
@@ -313,14 +321,6 @@ export const getters = deepFreeze({
           // name: 'EthereumRpcError',
           message: `Failed to add 'eth_accounts' to '${origin}'.`,
           code: ERROR_CODES.rpc.internal,
-        }
-      },
-    },
-
-    updatePermittedAccounts: {
-      invalidOrigin: () => {
-        return {
-          message: 'No such permission exists for the given domain.',
         }
       },
     },
@@ -584,6 +584,7 @@ export const getters = deepFreeze({
  * Objects with immutable mock values.
  */
 export const constants = deepFreeze({
+  ALL_ACCOUNTS: keyringAccounts,
 
   DUMMY_ACCOUNT: '0xabc',
 

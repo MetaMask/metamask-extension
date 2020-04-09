@@ -4,7 +4,7 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
@@ -24,6 +24,7 @@ export class PermissionsController {
 
   constructor (
     {
+      getIdentities,
       getKeyringAccounts,
       getRestrictedMethods,
       getUnlockPromise,
@@ -41,6 +42,7 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getIdentities = getIdentities
     this.getKeyringAccounts = getKeyringAccounts
     this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
@@ -294,31 +296,6 @@ export class PermissionsController {
   }
 
   /**
-   * Update the accounts exposed to the given origin. Changes the eth_accounts
-   * permissions and emits accountsChanged.
-   * At least one account must be exposed. If no accounts are to be exposed, the
-   * eth_accounts permissions should be removed completely.
-   *
-   * Throws error if the update fails.
-   *
-   * @param {string} origin - The origin to change the exposed accounts for.
-   * @param {string[]} accounts - The new account(s) to expose.
-   */
-  async updatePermittedAccounts (origin, accounts) {
-
-    await this.validatePermittedAccounts(accounts)
-
-    this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
-    )
-
-    this.notifyDomain(origin, {
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: accounts,
-    })
-  }
-
-  /**
    * Finalizes a permissions request. Throws if request validation fails.
    * Clones the passed-in parameters to prevent inadvertent modification.
    * Sets (adds or replaces) caveats for the following permissions:
@@ -461,46 +438,46 @@ export class PermissionsController {
     await Promise.all(
       connectedDomains
         .map(
-          (origin) => this._handleConnectedAccountSelected(origin, account)
+          (origin) => this._handleConnectedAccountSelected(origin)
         )
     )
   }
 
   /**
-   * When a new account is selected in the UI for 'origin', emit accountsChanged
-   * to 'origin' if the selected account is permitted.
+   * When a new account is selected in the UI, emit accountsChanged to 'origin'
+   * if the exposed accounts have changed.
    *
    * Note: This will emit "false positive" accountsChanged events, but they are
    * handled by the inpage provider.
    *
-   * @param {string} origin - The origin.
-   * @param {string} account - The newly selected account's address.
+   * @param {string} origin - The origin
    */
-  async _handleConnectedAccountSelected (origin, account) {
+  async _handleConnectedAccountSelected (origin) {
     const permittedAccounts = await this.getAccounts(origin)
 
-    if (
-      typeof origin !== 'string' || !origin.length
-    ) {
-      throw new Error('Origin should be a non-empty string.')
-    }
+    const oldPermittedAccounts = this.permissions
+      .getPermission(origin, 'eth_accounts')
+      ?.caveats
+      ?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
+      ?.value
 
-    // do nothing if the account is not permitted for the origin, or
-    // if it's already first in the array of permitted accounts
-    if (
-      !permittedAccounts.includes(account) ||
-      permittedAccounts[0] === account
-    ) {
+    // Do nothing if the exposed accounts haven't changed
+    // This can happen when:
+    // * The new selected account is not permitted for the origin, or
+    // * It's already first in the array of permitted accounts, or
+    // * The given account isn't the current selected account anymore
+    if (isEqual(permittedAccounts, oldPermittedAccounts)) {
       return
     }
 
-    const newPermittedAccounts = [account].concat(
-      permittedAccounts.filter((_account) => _account !== account)
+    this.permissions.updateCaveatFor(
+      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, permittedAccounts
     )
 
-    // update permitted accounts to ensure that accounts are returned
-    // in the same order every time
-    await this.updatePermittedAccounts(origin, newPermittedAccounts)
+    this.notifyDomain(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: permittedAccounts,
+    })
   }
 
   /**

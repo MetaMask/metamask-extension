@@ -243,18 +243,45 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x0')
       })
 
+      let startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
-      assert.deepEqual(metamaskController.getState().identities, {
+      let endTime = Date.now()
+
+      const firstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(
+        (
+          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
+          firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime
+        ),
+        `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+      )
+      delete firstVaultIdentities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(firstVaultIdentities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
       await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
-      assert.deepEqual(metamaskController.getState().identities, {
+
+      const labelledFirstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(labelledFirstVaultIdentities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
 
+      startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
-      assert.deepEqual(metamaskController.getState().identities, {
+      endTime = Date.now()
+
+      const secondVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(
+        (
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime
+        ),
+        `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+      )
+      delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected
+      assert.deepEqual(secondVaultIdentities, {
         [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
       })
     })
@@ -271,8 +298,13 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x14ced5122ce0a000')
       })
 
+      const startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
-      assert.deepEqual(metamaskController.getState().identities, {
+
+      const identities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(identities[TEST_ADDRESS].lastSelected >= startTime && identities[TEST_ADDRESS].lastSelected <= Date.now())
+      delete identities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
         [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       })
