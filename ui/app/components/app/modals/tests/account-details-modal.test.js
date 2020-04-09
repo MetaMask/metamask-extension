@@ -33,6 +33,7 @@ describe('Account Details Modal', function () {
         name: 'Account 1',
       },
     },
+    isEthereumNetwork: true,
   }
 
   beforeEach(function () {

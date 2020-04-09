@@ -21,6 +21,9 @@ describe('Token Cell', function () {
         '0xAnotherToken': 0.015,
       },
       conversionRate: 7.00,
+      provider: {
+        type: 'test',
+      },
     },
     appState: {
       sidebar: {

@@ -65,8 +65,8 @@ describe('Network Dropdown', function () {
       )
     })
 
-    it('renders 7 DropDownMenuItems ', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).length, 8)
+    it('renders 10 DropDownMenuItems ', function () {
+      assert.equal(wrapper.find(DropdownMenuItem).length, 10)
     })
 
     it('checks background color for first NetworkDropdownIcon', function () {
@@ -90,15 +90,23 @@ describe('Network Dropdown', function () {
     })
 
     it('checks background color for sixth NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('innerBorder'), '1px solid #9b9b9b')
-    })
-
-    it('checks dropdown for frequestRPCList from  state ', function () {
-      assert.equal(wrapper.find(DropdownMenuItem).at(6).text(), '✓http://localhost:7545')
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(5).prop('backgroundColor'), '#4aef7f') // Ebakus Green
     })
 
     it('checks background color for seventh NetworkDropdownIcon', function () {
-      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('innerBorder'), '1px solid #9b9b9b')
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(6).prop('backgroundColor'), '#000') // Ebakus testnet Black
+    })
+
+    it('checks background color for eighth NetworkDropdownIcon', function () {
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(7).prop('innerBorder'), '1px solid #9b9b9b')
+    })
+
+    it('checks dropdown for frequestRPCList from  state ', function () {
+      assert.equal(wrapper.find(DropdownMenuItem).at(8).text(), '✓http://localhost:7545')
+    })
+
+    it('checks background color for ninth NetworkDropdownIcon', function () {
+      assert.equal(wrapper.find(NetworkDropdownIcon).at(8).prop('innerBorder'), '1px solid #9b9b9b')
     })
 
   })

@@ -9,6 +9,9 @@ const {
     getSendEditingTransactionId: (mockState) => mockState.e,
     getSendTo: (mockState) => mockState.to,
   },
+  '../../../selectors/selectors': {
+    isEthereumNetwork: (mockState) => (typeof mockState.eth !== 'undefined' ? mockState.eth : true),
+  },
 })
 
 describe('send-header selectors', function () {
@@ -28,6 +31,10 @@ describe('send-header selectors', function () {
 
     it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is falsy', function () {
       assert.equal(getTitleKey({ e: null, to: '0x123' }), 'sendETH')
+    })
+
+    it('should return the correct key when isEthereumNetwork is falsy', function () {
+      assert.equal(getTitleKey({ e: null, to: '0x123', eth: false }), 'send')
     })
   })
 

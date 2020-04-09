@@ -6,7 +6,7 @@ const IncomingTransactionsController = proxyquire('../../../../app/scripts/contr
   '../lib/random-id': { default: () => 54321 },
 }).default
 
-import { ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET } from '../../../../app/scripts/controllers/network/enums'
+import { ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET, EBAKUS_TESTNET, EBAKUS } from '../../../../app/scripts/controllers/network/enums'
 
 describe('IncomingTransactionsController', function () {
   const EMPTY_INIT_STATE = {
@@ -17,6 +17,8 @@ describe('IncomingTransactionsController', function () {
       [KOVAN]: null,
       [GOERLI]: null,
       [MAINNET]: null,
+      [EBAKUS_TESTNET]: null,
+      [EBAKUS]: null,
     },
   }
 

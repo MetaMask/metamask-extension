@@ -12,7 +12,9 @@ describe('Confirm Remove Account', function () {
 
   const state = {
     metamask: {
-
+      provider: {
+        type: 'test',
+      },
     },
   }
 

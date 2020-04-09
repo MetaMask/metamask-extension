@@ -17,6 +17,7 @@ describe('SendContent Component', function () {
     wrapper = shallow(
       <SendContent
         showHexData
+        supportsGasPrice
       />,
       { context: { t: (str) => str + '_t' } }
     )
@@ -43,7 +44,9 @@ describe('SendContent Component', function () {
     })
 
     it('should not render the SendHexDataRow if props.showHexData is false', function () {
-      wrapper.setProps({ showHexData: false })
+      wrapper.setProps({
+        showHexData: false,
+      })
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
       assert(PageContainerContentChild.childAt(0).is(Dialog), 'row[0] should be Dialog')
       assert(PageContainerContentChild.childAt(1).is(SendAssetRow), 'row[1] should be SendAssetRow')
@@ -74,6 +77,18 @@ describe('SendContent Component', function () {
       assert(PageContainerContentChild.childAt(1).is(SendAmountRow), 'row[2] should be SendAmountRow')
       assert(PageContainerContentChild.childAt(2).is(SendGasRow), 'row[3] should be SendGasRow')
       assert.equal(PageContainerContentChild.childAt(3).exists(), false)
+    })
+
+    it('should not render SendGasRow if props.supportsGasPrice is false', function () {
+      wrapper.setProps({
+        supportsGasPrice: false,
+      })
+      const PageContainerContentChild = wrapper.find(PageContainerContent).children()
+      assert(PageContainerContentChild.childAt(0).is(Dialog), 'row[0] should be Dialog')
+      assert(PageContainerContentChild.childAt(1).is(SendAssetRow), 'row[1] should be SendAssetRow')
+      assert(PageContainerContentChild.childAt(2).is(SendAmountRow), 'row[2] should be SendAmountRow')
+      assert(PageContainerContentChild.childAt(3).is(SendHexDataRow), 'row[3] should be SendHexDataRow')
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 
