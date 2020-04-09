@@ -12,7 +12,7 @@ export default class ConfirmDeployContract extends Component {
     txData: PropTypes.object,
   }
 
-  renderData() {
+  renderData () {
     const { t } = this.context
     const { txData: { origin, txParams: { data } = {} } = {} } = this.props
 
@@ -40,7 +40,7 @@ export default class ConfirmDeployContract extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <ConfirmTransactionBase
         actionKey="contractDeployment"

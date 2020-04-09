@@ -9,7 +9,7 @@ import {
 } from 'cfx-util'
 
 const accountImporter = {
-  importAccount(strategy, args) {
+  importAccount (strategy, args) {
     try {
       const importer = this.strategies[strategy]
       const privateKeyHex = importer.apply(null, args)
@@ -20,7 +20,7 @@ const accountImporter = {
   },
 
   strategies: {
-    'Private Key': privateKey => {
+    'Private Key': (privateKey) => {
       if (!privateKey) {
         throw new Error('Cannot import an empty key.')
       }
@@ -49,7 +49,7 @@ const accountImporter = {
   },
 }
 
-function walletToPrivateKey(wallet) {
+function walletToPrivateKey (wallet) {
   const privateKeyBuffer = wallet.getPrivateKey()
   return bufferToHex(privateKeyBuffer)
 }
