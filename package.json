@@ -58,17 +58,6 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh"
   },
-  "mocha": {
-    "require": [
-      "test/env.js"
-    ],
-    "file": [
-      "test/setup.js"
-    ],
-    "recursive": [
-      "ui/app/**/*.test.js"
-    ]
-  },
   "lint-staged": {
     "*.{js,json}": [
       "prettier-eslint --write",
