@@ -12,8 +12,40 @@ class ExtensionPlatform {
     extension.runtime.reload()
   }
 
-  openWindow ({ url }) {
-    extension.tabs.create({ url })
+  openWindow (options) {
+    return new Promise((resolve, reject) => {
+      extension.windows.create(options, (newWindow) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newWindow)
+      })
+    })
+  }
+
+  closeWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.remove(windowId, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  focusWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { focused: true }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
   }
 
   closeCurrentWindow () {
@@ -63,6 +95,30 @@ class ExtensionPlatform {
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  getAllWindows () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getAll((windows) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windows)
+      })
+    })
+  }
+
+  getActiveTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({ active: true }, (tabs) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(tabs)
+      })
+    })
   }
 
   currentTab () {
