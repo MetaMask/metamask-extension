@@ -21,7 +21,7 @@ export default class ConnectSites extends Component {
     history: PropTypes.object.isRequired,
     tabToConnect: PropTypes.object,
     legacyExposeAccount: PropTypes.func.isRequired,
-    getOpenMetamaskTabsIds: PropTypes.func.isRequired,
+    getOpenMetamaskTabIds: PropTypes.func.isRequired,
   }
 
   state = {
@@ -29,8 +29,8 @@ export default class ConnectSites extends Component {
   }
 
   UNSAFE_componentWillMount () {
-    const { getOpenMetamaskTabsIds } = this.props
-    getOpenMetamaskTabsIds()
+    const { getOpenMetamaskTabIds } = this.props
+    getOpenMetamaskTabIds()
   }
 
   setSitePendingDisconnect = (domainKey, domainName) => {
