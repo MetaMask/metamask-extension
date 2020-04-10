@@ -15301,6 +15301,20 @@ js-conflux-sdk@^0.9.0-alpha:
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
 
+js-conflux-sdk@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.9.1.tgz#2b5f15a71d444447520893c5c401b45d2d6dd5b7"
+  integrity sha512-D87/WhbnXXTtBRBFW2xAS8LAWYaqQfQpHlZkax7K/wjXtWpQh/ik5g7l3lBfzFbaMncvQQos1i4fIzuy7/GFzg==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
+    esm "^3.2.25"
+    jsbi "^3.1.1"
+    keccak "^2.0.0"
+    lodash "^4.17.15"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util'
-import Loading from '../../../../ui/loading-screen'
-import GasPriceChart from '../../gas-price-chart'
+// import Loading from '../../../../ui/loading-screen'
+// import GasPriceChart from '../../gas-price-chart'
 import AdvancedGasInputs from '../../advanced-gas-inputs'
 
 export default class AdvancedTabContent extends Component {
@@ -18,15 +18,15 @@ export default class AdvancedTabContent extends Component {
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     customModalStorageLimitInHex: PropTypes.string,
-    gasEstimatesLoading: PropTypes.bool,
-    millisecondsRemaining: PropTypes.number,
+    // gasEstimatesLoading: PropTypes.bool,
+    // millisecondsRemaining: PropTypes.number,
     transactionFee: PropTypes.string,
     timeRemaining: PropTypes.string,
-    gasChartProps: PropTypes.object,
+    // gasChartProps: PropTypes.object,
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
-    isEthereumNetwork: PropTypes.bool,
+    // isEthereumNetwork: PropTypes.bool,
   }
 
   // TODO: add timeRemaining back when we have gas station
@@ -55,7 +55,7 @@ export default class AdvancedTabContent extends Component {
   }
 
   render () {
-    const { t } = this.context
+    // const { t } = this.context
     const {
       isSimpleTx,
       updateCustomGasPrice,
@@ -66,12 +66,12 @@ export default class AdvancedTabContent extends Component {
       customModalGasLimitInHex,
       customModalStorageLimitInHex,
       insufficientBalance,
-      gasChartProps,
-      gasEstimatesLoading,
+      // gasChartProps,
+      // gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
       transactionFee,
-      isEthereumNetwork,
+      // isEthereumNetwork,
     } = this.props
 
     return (
@@ -92,29 +92,29 @@ export default class AdvancedTabContent extends Component {
               isSpeedUp={isSpeedUp}
             />
           </div>
-          {isEthereumNetwork ? (
-            <div>
-              <div className="advanced-tab__fee-chart__title">
-                {t('liveGasPricePredictions')}
-              </div>
-              {!gasEstimatesLoading ? (
-                <GasPriceChart
-                  {...gasChartProps}
-                  updateCustomGasPrice={this.onGasChartUpdate}
-                />
-              ) : (
-                <Loading />
-              )}
-              <div className="advanced-tab__fee-chart__speed-buttons">
-                <span>{t('slower')}</span>
-                <span>{t('faster')}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="advanced-tab__fee-chart__title">
-              {t('chartOnlyAvailableEth')}
-            </div>
-          )}
+          {/* {isEthereumNetwork ? ( */}
+          {/*   <div> */}
+          {/*     <div className="advanced-tab__fee-chart__title"> */}
+          {/*       {t('liveGasPricePredictions')} */}
+          {/*     </div> */}
+          {/*     {!gasEstimatesLoading ? ( */}
+          {/*       <GasPriceChart */}
+          {/*         {...gasChartProps} */}
+          {/*         updateCustomGasPrice={this.onGasChartUpdate} */}
+          {/*       /> */}
+          {/*     ) : ( */}
+          {/*       <Loading /> */}
+          {/*     )} */}
+          {/*     <div className="advanced-tab__fee-chart__speed-buttons"> */}
+          {/*       <span>{t('slower')}</span> */}
+          {/*       <span>{t('faster')}</span> */}
+          {/*     </div> */}
+          {/*   </div> */}
+          {/* ) : ( */}
+          {/*   <div className="advanced-tab__fee-chart__title"> */}
+          {/*     {t('chartOnlyAvailableEth')} */}
+          {/*   </div> */}
+          {/* )} */}
         </div>
       </div>
     )

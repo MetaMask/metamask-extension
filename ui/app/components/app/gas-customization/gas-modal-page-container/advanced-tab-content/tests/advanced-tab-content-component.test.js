@@ -4,8 +4,8 @@ import shallow from '../../../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
 import AdvancedTabContent from '../advanced-tab-content.component.js'
 
-import GasPriceChart from '../../../gas-price-chart'
-import Loading from '../../../../../ui/loading-screen'
+// import GasPriceChart from '../../../gas-price-chart'
+// import Loading from '../../../../../ui/loading-screen'
 
 const propsMethodSpies = {
   updateCustomGasPrice: sinon.spy(),
@@ -60,26 +60,26 @@ describe('AdvancedTabContent Component', function () {
       )
       assert(advancedTabChildren.at(1).hasClass('advanced-tab__fee-chart'))
 
-      const feeChartDiv = advancedTabChildren.at(1)
+      // const feeChartDiv = advancedTabChildren.at(1)
 
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(0)
-          .hasClass('advanced-tab__fee-chart__title')
-      )
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(1)
-          .is(GasPriceChart)
-      )
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(2)
-          .hasClass('advanced-tab__fee-chart__speed-buttons')
-      )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(0)
+      //     .hasClass('advanced-tab__fee-chart__title')
+      // )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(1)
+      //     .is(GasPriceChart)
+      // )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(2)
+      //     .hasClass('advanced-tab__fee-chart__speed-buttons')
+      // )
     })
 
     it('should render a loading component instead of the chart if gasEstimatesLoading is true', function () {
@@ -94,26 +94,26 @@ describe('AdvancedTabContent Component', function () {
       )
       assert(advancedTabChildren.at(1).hasClass('advanced-tab__fee-chart'))
 
-      const feeChartDiv = advancedTabChildren.at(1)
+      // const feeChartDiv = advancedTabChildren.at(1)
 
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(0)
-          .hasClass('advanced-tab__fee-chart__title')
-      )
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(1)
-          .is(Loading)
-      )
-      assert(
-        feeChartDiv
-          .childAt(1)
-          .childAt(2)
-          .hasClass('advanced-tab__fee-chart__speed-buttons')
-      )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(0)
+      //     .hasClass('advanced-tab__fee-chart__title')
+      // )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(1)
+      //     .is(Loading)
+      // )
+      // assert(
+      //   feeChartDiv
+      //     .childAt(1)
+      //     .childAt(2)
+      //     .hasClass('advanced-tab__fee-chart__speed-buttons')
+      // )
     })
 
     it('should call renderDataSummary with the expected params', function () {

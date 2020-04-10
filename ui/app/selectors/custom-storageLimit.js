@@ -6,6 +6,6 @@ export function getCustomStorageLimit (state) {
   return state.storageLimit.customData.limit
 }
 
-export function getCustomStorageTotal (state) {
+export function getCustomStorageLimitTotal (state) {
   return state.storageLimit.customData.total
 }

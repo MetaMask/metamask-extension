@@ -22,7 +22,7 @@ describe('MetaMask', function () {
       accounts: [
         {
           secretKey:
-            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+            '0x57ED903454DEC7321ABB1729A7A3BB0F39B617109F610A74F9B402AAEF955333',
           balance: 25000000000000000000,
         },
       ],
@@ -208,7 +208,7 @@ describe('MetaMask', function () {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x)"]')
       )
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.css('.dialog.send__dialog.dialog--message'))

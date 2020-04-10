@@ -180,7 +180,7 @@ const initialize = () => {
           type: 'constructor',
         },
       ],
-      code: PiggyBankContractCode,
+      bytecode: PiggyBankContractCode,
     })
     deployButton.onclick = async () => {
       contractStatus.innerHTML = 'Deploying'
@@ -189,7 +189,6 @@ const initialize = () => {
         .constructor()
         .sendTransaction({
           from: accounts[0],
-          storageLimit: 700,
           gasPrice: 10000000000,
         })
         .confirmed()
@@ -213,7 +212,6 @@ const initialize = () => {
 
       depositButton.onclick = async () => {
         contractStatus.innerHTML = 'Deposit initiated'
-        console.log(piggybankContract.deposit())
         const depositResult = await piggybankContract
           .deposit()
           .sendTransaction({
@@ -231,6 +229,8 @@ const initialize = () => {
           .withdraw('0xde0b6b3a7640000')
           .sendTransaction({
             from: accounts[0],
+            gas: 600000,
+            storageLimit: 0,
             gasPrice: 10000000000,
           })
           .confirmed()
@@ -413,7 +413,7 @@ const initialize = () => {
             type: 'event',
           },
         ],
-        code: HumanStandardTokenContractCode,
+        bytecode: HumanStandardTokenContractCode,
       })
 
       const humanstandardtoken = await humanstandardtokenContract
@@ -480,7 +480,6 @@ const initialize = () => {
           .sendTransaction({
             from: accounts[0],
             to: humanstandardtokenContract.address,
-            gas: 60000,
             gasPrice: 10000000000,
           })
           .confirmed()

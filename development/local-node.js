@@ -13,6 +13,11 @@ const ganacheserver = new Ganache({ verbose: true, genBlockInterval: 300, killPo
           '0x21041DD5AEBE8CD184965BA4AAE490F3B0C2500D87306FE9F32E276757BFDA68',
         balance: 1e23,
       },
+      {
+        secretKey:
+          '0x32A0D91B3930E625501C11F959BCBA312121A181C315751EA219813EDB0822A3',
+        balance: 1e20,
+      },
     ],
   })
 })()
