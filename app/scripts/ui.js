@@ -9,16 +9,13 @@ import PortStream from 'extension-port-stream'
 import { getEnvironmentType } from './lib/util'
 
 import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from './lib/enums'
 
 import extension from 'extensionizer'
 import ExtensionPlatform from './platforms/extension'
-import NotificationManager from './lib/notification-manager'
 
-const notificationManager = new NotificationManager()
 import setupSentry from './lib/setupSentry'
 import { EventEmitter } from 'events'
 import Dnode from 'dnode'
@@ -55,7 +52,6 @@ async function start () {
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
-  closePopupIfOpen(windowType)
 
   // setup stream to background
   const extensionPort = extension.runtime.connect({ name: windowType })
@@ -63,13 +59,6 @@ async function start () {
 
   const activeTab = await queryCurrentActiveTab(windowType)
   initializeUiWithTab(activeTab)
-
-  function closePopupIfOpen (windowType) {
-    if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
-      // should close only chrome popup
-      notificationManager.closePopup()
-    }
-  }
 
   function displayCriticalError (container, err) {
     container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
