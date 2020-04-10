@@ -12,7 +12,7 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util'
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util'
 import { formatETHFee } from '../helpers/utils/formatters'
-import { calcGasTotal } from '../pages/send/send.utils'
+import { calcGasAndCollateralTotal } from '../pages/send/send.utils'
 import { addHexPrefix } from 'cfx-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
@@ -27,12 +27,24 @@ export function getCustomGasLimit (state) {
   return state.gas.customData.limit
 }
 
+export function getCustomStorageLimit (state) {
+  return state.storageLimit.customData.limit
+}
+
 export function getCustomGasPrice (state) {
   return state.gas.customData.price
 }
 
 export function getCustomGasTotal (state) {
   return state.gas.customData.total
+}
+
+export function getCustomStorageLimitTotal (state) {
+  return state.storageLimit.customData.total
+}
+
+export function getCustomGasAndCollateralTotal (state) {
+  return state.calcGasAndCollateralTotal.customData.total
 }
 
 export function getBasicGasEstimateLoadingStatus (state) {
@@ -117,9 +129,10 @@ export function getBasicGasEstimateBlockTime (state) {
 export function basicPriceEstimateToETHTotal (
   estimate,
   gasLimit,
+  storageLimit,
   numberOfDecimals = 9
 ) {
-  return conversionUtil(calcGasTotal(gasLimit, estimate), {
+  return conversionUtil(calcGasAndCollateralTotal(gasLimit, estimate, storageLimit), {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'GWEI',
@@ -127,29 +140,30 @@ export function basicPriceEstimateToETHTotal (
   })
 }
 
-export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
+export function getRenderableEthFee (estimate, gasLimit, storageLimit, numberOfDecimals = 9) {
   return pipe(
     (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
+    partialRight(basicPriceEstimateToETHTotal, [gasLimit, storageLimit, numberOfDecimals]),
     formatETHFee
-  )(estimate, gasLimit)
+  )(estimate, gasLimit, storageLimit)
 }
 
 export function getRenderableConvertedCurrencyFee (
   estimate,
   gasLimit,
+  storageLimit,
   convertedCurrency,
   conversionRate
 ) {
   return pipe(
     (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
+    partialRight(basicPriceEstimateToETHTotal, [gasLimit, storageLimit]),
     partialRight(ethTotalToConvertedCurrency, [
       convertedCurrency,
       conversionRate,
     ]),
     partialRight(formatCurrency, [convertedCurrency])
-  )(estimate, gasLimit, convertedCurrency, conversionRate)
+  )(estimate, gasLimit, storageLimit, convertedCurrency, conversionRate)
 }
 
 export function getTimeEstimateInSeconds (blockWaitEstimate) {
@@ -208,7 +222,7 @@ export function getGasPriceInHexWei (price) {
   )(price)
 }
 
-export function getRenderableBasicEstimateData (state, gasLimit) {
+export function getRenderableBasicEstimateData (state, gasLimit, storageLimit) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
@@ -234,11 +248,12 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
   return [
     {
       gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
-      feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
+      feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit, storageLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(
           safeLow,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -248,11 +263,12 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
     },
     {
       gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
+      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit, storageLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(
           average,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -262,11 +278,12 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
     },
     {
       gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
-      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
+      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit, storageLimit),
       feeInSecondaryCurrency: showFiat
         ? getRenderableConvertedCurrencyFee(
           fast,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -287,6 +304,8 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   const showFiat = isMainnet || !!showFiatInTestnets
   const gasLimit =
     state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
+  const storageLimit =
+        state.metamask.send.storageLimit || getCustomStorageLimit(state) || '0x0'
   const conversionRate = state.metamask.conversionRate
   const currentCurrency = getCurrentCurrency(state)
   const {
@@ -302,6 +321,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
         ? getRenderableConvertedCurrencyFee(
           safeLow,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -309,6 +329,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
       feeInPrimaryCurrency: getRenderableEthFee(
         safeLow,
         gasLimit,
+        storageLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
         true
       ),
@@ -320,6 +341,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
         ? getRenderableConvertedCurrencyFee(
           average,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -327,6 +349,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
       feeInPrimaryCurrency: getRenderableEthFee(
         average,
         gasLimit,
+        storageLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
         true
       ),
@@ -338,6 +361,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
         ? getRenderableConvertedCurrencyFee(
           fast,
           gasLimit,
+          storageLimit,
           currentCurrency,
           conversionRate
         )
@@ -345,6 +369,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
       feeInPrimaryCurrency: getRenderableEthFee(
         fast,
         gasLimit,
+        storageLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
         true
       ),

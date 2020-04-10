@@ -93,7 +93,7 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = getTxParams(state, selectedTransaction)
   const isSimpleTx = !(data || isValidContractAddress(toAddress))
-  const customStorageLimitInHex =
+  const customModalStorageLimitInHex =
     getCustomStorageLimit(state) || currentStorageLimit || '0x0'
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex =
@@ -101,12 +101,13 @@ const mapStateToProps = (state, ownProps) => {
   const customGasAndCollateralTotal = calcGasAndCollateralTotal(
     customModalGasLimitInHex,
     customModalGasPriceInHex,
-    customStorageLimitInHex
+    customModalStorageLimitInHex
   )
 
   const gasButtonInfo = getRenderableBasicEstimateData(
     state,
-    customModalGasLimitInHex
+    customModalGasLimitInHex,
+    customModalStorageLimitInHex
   )
 
   const currentCurrency = getCurrentCurrency(state)
@@ -156,8 +157,10 @@ const mapStateToProps = (state, ownProps) => {
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
+    customModalStorageLimitInHex,
     customGasPrice,
-    customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
+    customGasLimit: calcCustomGasOrStorageLimit(customModalGasLimitInHex),
+    customStorageLimit: calcCustomGasOrStorageLimit(customModalStorageLimitInHex),
     customGasAndCollateralTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(
@@ -313,7 +316,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           ...transaction,
           txParams: {
             ...transaction.txParams,
-            stroage: storageLimit,
+            storageLimit,
             gas: gasLimit,
             gasPrice,
           },
@@ -379,8 +382,8 @@ function calcCustomGasPrice (customGasPriceInHex) {
   return Number(hexWEIToDecGWEI(customGasPriceInHex))
 }
 
-function calcCustomGasLimit (customGasLimitInHex) {
-  return parseInt(customGasLimitInHex, 16)
+function calcCustomGasOrStorageLimit (customGasOrStorageLimitInHex) {
+  return parseInt(customGasOrStorageLimitInHex, 16)
 }
 
 function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {

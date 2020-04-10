@@ -28,9 +28,12 @@ proxyquire('../send-footer.container.js', {
   },
   '../../../store/actions': actionSpies,
   '../send.selectors': {
+    getStorageLimit: (s) => `mockStorageLimit:${s}`,
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
+    getStorageTotal: (s) => `mockStorageTotal:${s}`,
+    getGasAndCollateralTotal: (s) => `mockGasAndCollateralTotal:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendAmount: (s) => `mockAmount:${s}`,
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,

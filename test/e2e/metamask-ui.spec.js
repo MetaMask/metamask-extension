@@ -24,7 +24,7 @@ describe('MetaMask', function () {
       accounts: [
         {
           secretKey:
-            '0x4CFD3E90FC78B0F86BF7524722150BB8DA9C60CD532564D7FF43F5716514F553',
+            '0xA7C2DFA78CCA35B33EBC3728BD6229D18A64C95B38E364A9CCE05FF5F832E5D2',
           balance: 100000000000000000000,
         },
       ],
@@ -280,17 +280,18 @@ describe('MetaMask', function () {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x)"]')
       )
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1000')
 
+      await driver.delay(tinyDelayMs)
       const errorAmount = await driver.findElement(
-        By.css('.send-v2__error-amount')
+        By.css('.advanced-gas-inputs__gas-edit-row__error-text')
       )
       assert.equal(
         await errorAmount.getText(),
-        'Insufficient funds.',
+        'Insufficient balance.',
         'send screen should render an insufficient fund error message'
       )
 
@@ -365,7 +366,7 @@ describe('MetaMask', function () {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x)"]')
       )
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -417,7 +418,7 @@ describe('MetaMask', function () {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x)"]')
       )
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1188,7 +1189,7 @@ describe('MetaMask', function () {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search, public address (0x)"]')
       )
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1239,7 +1240,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
       assert(
         confirmDataText.match(
-          /0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/
+          /0xa9059cbb0000000000000000000000001f318c334780961fb129d2a6c30d0763d9a5c97/
         )
       )
 
@@ -1483,7 +1484,7 @@ describe('MetaMask', function () {
       const confirmDataText = await confirmDataDiv.getText()
       assert(
         confirmDataText.match(
-          /0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4/
+          /0x095ea7b30000000000000000000000008bc5baf874d2da8d216ae9f137804184ee5afef4/
         )
       )
     })
@@ -1539,7 +1540,7 @@ describe('MetaMask', function () {
           '.confirm-approve-content__transaction-details-content__secondary-fee'
         )
       )
-      assert.equal(await gasAndCollateralFeeInEth.getText(), '0.0006 CFX')
+      assert.equal(await gasAndCollateralFeeInEth.getText(), '0.0631 CFX')
     })
 
     it('edits the permission', async function () {
@@ -1716,7 +1717,7 @@ describe('MetaMask', function () {
         By.css('.confirm-approve-content__medium-text')
       )
       const recipientDiv = permissionInfo[1]
-      assert.equal(await recipientDiv.getText(), '0x2f318C33...C970')
+      assert.equal(await recipientDiv.getText(), '0x1f318c33...C970')
     })
 
     it('submits the transaction', async function () {

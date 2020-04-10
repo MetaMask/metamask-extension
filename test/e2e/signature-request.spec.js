@@ -25,7 +25,7 @@ describe('MetaMask', function () {
     await fixtureServer.loadState(
       path.join(__dirname, 'fixtures', 'imported-account')
     )
-    publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+    publicAddress = '0x1494e65ac65e076c4297a60d929ca5d3db7701b3'
     const result = await buildWebDriver()
     driver = result.driver
   })

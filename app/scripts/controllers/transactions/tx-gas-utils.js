@@ -129,14 +129,14 @@ class TxGasUtil {
   }
 
   /**
-    Writes the gas/stroage on the txParams in the txMeta
+    Writes the gas/storage on the txParams in the txMeta
     @param {Object} txMeta - the txMeta object to write to
     @param {string} blockGasLimitHex - the block gas limit hex
     @param {string} estimatedGasHex - the estimated gas hex
   */
   setTxGas (txMeta, blockGasLimitHex, { estimatedGasHex, estimatedStorageHex }) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
-    txMeta.estimatedStroage = addHexPrefix(estimatedStorageHex)
+    txMeta.estimatedStorage = addHexPrefix(estimatedStorageHex)
     const txParams = txMeta.txParams
 
     if (txMeta.simpleSend) {
@@ -165,7 +165,7 @@ class TxGasUtil {
     txParams.gas = recommendedGasHex
 
     if (!txMeta.storageLimitSpecified) {
-      txParams.storageLimit = txMeta.estimatedStroage
+      txParams.storageLimit = txMeta.estimatedStorage
     }
     return
   }

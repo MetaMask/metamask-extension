@@ -25,7 +25,7 @@ describe('MetaMask Browser Extension', function () {
           By.css('[data-testid="ens-input"]')
         )
         await recipientAddressField.sendKeys(
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24'
+          '0x185c30949c92df7a0bd42e0f3e3d539ece98db24'
         )
         const amountField = await driver.findElement(
           By.css('.unit-input__input')
