@@ -3,8 +3,6 @@ import ExtensionPlatform from '../platforms/extension'
 const NOTIFICATION_HEIGHT = 620
 const NOTIFICATION_WIDTH = 360
 
-const platform = new ExtensionPlatform()
-
 class NotificationManager {
 
   /**
@@ -13,6 +11,10 @@ class NotificationManager {
    * @typedef {Object} NotificationManager
    *
    */
+
+  constructor () {
+    this.platform = new ExtensionPlatform()
+  }
 
   /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
@@ -25,13 +27,13 @@ class NotificationManager {
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup
-      await platform.focusWindow(popup.id)
+      await this.platform.focusWindow(popup.id)
     } else {
       const { screenX, screenY, outerWidth, outerHeight } = window
       const notificationTop = Math.round(screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2))
       const notificationLeft = Math.round(screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2))
       // create new notification popup
-      const popupWindow = await platform.openWindow({
+      const popupWindow = await this.platform.openWindow({
         url: 'notification.html',
         type: 'popup',
         width: NOTIFICATION_WIDTH,
@@ -52,7 +54,7 @@ class NotificationManager {
     if (!popup) {
       return
     }
-    await platform.removeWindow(popup.id)
+    await this.platform.removeWindow(popup.id)
   }
 
   /**
@@ -64,7 +66,7 @@ class NotificationManager {
    *
    */
   async _getPopup () {
-    const windows = await platform.getAllWindows()
+    const windows = await this.platform.getAllWindows()
     return this._getPopupIn(windows)
   }
 
