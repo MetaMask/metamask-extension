@@ -455,22 +455,21 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
-  extension.tabs.query({ active: true }, (tabs) => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
-      notificationManager.showPopup()
-    }
-  })
+async function triggerUi () {
+  const tabs = await platform.getActiveTabs()
+  const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
+  if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
+    await notificationManager.showPopup()
+  }
 }
 
 /**
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function openPopup () {
-  triggerUi()
-  return new Promise(
+async function openPopup () {
+  await triggerUi()
+  await new Promise(
     (resolve) => {
       const interval = setInterval(() => {
         if (!notificationIsOpen) {

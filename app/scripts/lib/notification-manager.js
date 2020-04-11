@@ -1,4 +1,4 @@
-import extension from 'extensionizer'
+import ExtensionPlatform from '../platforms/extension'
 
 const NOTIFICATION_HEIGHT = 620
 const NOTIFICATION_WIDTH = 360
@@ -12,57 +12,49 @@ class NotificationManager {
    *
    */
 
+  constructor () {
+    this.platform = new ExtensionPlatform()
+  }
+
   /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
    *
    */
-  showPopup () {
-    this._getPopup((err, popup) => {
-      if (err) {
-        throw err
-      }
+  async showPopup () {
+    const popup = await this._getPopup()
 
-      // Bring focus to chrome popup
-      if (popup) {
-        // bring focus to existing chrome popup
-        extension.windows.update(popup.id, { focused: true })
-      } else {
-        const { screenX, screenY, outerWidth, outerHeight } = window
-        const notificationTop = Math.round(screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2))
-        const notificationLeft = Math.round(screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2))
-        const cb = (currentPopup) => {
-          this._popupId = currentPopup.id
-        }
-        // create new notification popup
-        const creation = extension.windows.create({
-          url: 'notification.html',
-          type: 'popup',
-          width: NOTIFICATION_WIDTH,
-          height: NOTIFICATION_HEIGHT,
-          top: Math.max(notificationTop, 0),
-          left: Math.max(notificationLeft, 0),
-        }, cb)
-        creation && creation.then && creation.then(cb)
-      }
-    })
+    // Bring focus to chrome popup
+    if (popup) {
+      // bring focus to existing chrome popup
+      await this.platform.focusWindow(popup.id)
+    } else {
+      const { screenX, screenY, outerWidth, outerHeight } = window
+      const notificationTop = Math.round(screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2))
+      const notificationLeft = Math.round(screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2))
+      // create new notification popup
+      const popupWindow = await this.platform.openWindow({
+        url: 'notification.html',
+        type: 'popup',
+        width: NOTIFICATION_WIDTH,
+        height: NOTIFICATION_HEIGHT,
+        top: Math.max(notificationTop, 0),
+        left: Math.max(notificationLeft, 0),
+      })
+      this._popupId = popupWindow.id
+    }
   }
 
   /**
    * Closes a MetaMask notification if it window exists.
    *
    */
-  closePopup () {
-    // closes notification popup
-    this._getPopup((err, popup) => {
-      if (err) {
-        throw err
-      }
-      if (!popup) {
-        return
-      }
-      extension.windows.remove(popup.id, console.error)
-    })
+  async closePopup () {
+    const popup = this._getPopup()
+    if (!popup) {
+      return
+    }
+    await this.platform.removeWindow(popup.id)
   }
 
   /**
@@ -73,31 +65,9 @@ class NotificationManager {
    * @param {Function} cb - A node style callback that to whcih the found notification window will be passed.
    *
    */
-  _getPopup (cb) {
-    this._getWindows((err, windows) => {
-      if (err) {
-        throw err
-      }
-      cb(null, this._getPopupIn(windows))
-    })
-  }
-
-  /**
-   * Returns all open MetaMask windows.
-   *
-   * @private
-   * @param {Function} cb - A node style callback that to which the windows will be passed.
-   *
-   */
-  _getWindows (cb) {
-    // Ignore in test environment
-    if (!extension.windows) {
-      return cb()
-    }
-
-    extension.windows.getAll({}, (windows) => {
-      cb(null, windows)
-    })
+  async _getPopup () {
+    const windows = await this.platform.getAllWindows()
+    return this._getPopupIn(windows)
   }
 
   /**
