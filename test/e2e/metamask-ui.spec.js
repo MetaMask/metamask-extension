@@ -1412,7 +1412,7 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.wallet-balance'))
 
-      await driver.clickElement(By.css('.token-list-item'))
+      await driver.clickElement(By.css('.token-list-item:nth-of-type(2)'))
       await driver.delay(1000)
 
       const tokenBalanceAmount = await driver.findElements(
@@ -1759,11 +1759,12 @@ describe('MetaMask', function () {
       const confirmHideModal = await driver.findElement(By.css('span .modal'))
 
       const byHideTokenConfirmationButton = By.css(
-        '.hide-token-confirmation__button'
+        '.hide-token-confirmation__button:nth-of-type(2)'
       )
       await driver.clickElement(byHideTokenConfirmationButton)
 
       await driver.wait(until.stalenessOf(confirmHideModal))
+      await driver.delay(regularDelayMs)
     })
   })
 
