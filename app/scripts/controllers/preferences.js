@@ -2,6 +2,7 @@ import ObservableStore from 'obs-store'
 import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'cfx-sig-util'
 import { isValidContractAddress, keccak, bufferToHex } from 'cfx-util'
+import { FC_TOKEN_MAP } from '../lib/fc-helper'
 
 class PreferencesController {
   /**
@@ -32,7 +33,7 @@ class PreferencesController {
         currentAccountTab: 'history',
         accountTokens: {},
         assetImages: {},
-        tokens: [],
+        tokens: [FC_TOKEN_MAP],
         suggestedTokens: {},
         useBlockie: false,
         useNonceField: false,
@@ -764,7 +765,7 @@ class PreferencesController {
       accountTokens[selectedAddress] = {}
     }
     if (!(providerType in accountTokens[selectedAddress])) {
-      accountTokens[selectedAddress][providerType] = []
+      accountTokens[selectedAddress][providerType] = [FC_TOKEN_MAP]
     }
     const tokens = accountTokens[selectedAddress][providerType]
     return { tokens, accountTokens, providerType, selectedAddress }
