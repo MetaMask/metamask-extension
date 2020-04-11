@@ -1,4 +1,7 @@
 {
+  "cfxTestWarning": {
+    "message": "目前CFX是測試幣，僅具有測試功能，並會在網絡升級重啟時清零。"
+  },
   "chartOnlyAvailableEth": {
     "message": "圖表僅適用於Conflux測試網路。"
   },

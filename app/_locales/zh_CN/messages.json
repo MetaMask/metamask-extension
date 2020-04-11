@@ -1,4 +1,7 @@
 {
+  "cfxTestWarning": {
+    "message": "目前CFX是测试币，仅具有测试功能，并会在网络升级重启时清零。"
+  },
   "chartOnlyAvailableEth": {
     "message": "聊天功能仅对Conflux网络开放。(其实Conflux还不支持该功能)"
   },
