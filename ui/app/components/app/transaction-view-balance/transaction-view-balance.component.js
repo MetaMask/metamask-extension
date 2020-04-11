@@ -11,6 +11,10 @@ import Tooltip from '../../ui/tooltip-v2'
 
 export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {
+    t: PropTypes.func.isRequired,
+  }
+
+  static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   }
@@ -32,6 +36,7 @@ export default class TransactionViewBalance extends PureComponent {
 
   renderBalance () {
     const { selectedToken, balance, balanceIsCached, showFiat } = this.props
+    const { t } = this.context
 
     return selectedToken ? (
       <div className="transaction-view-balance__balance">
@@ -48,7 +53,14 @@ export default class TransactionViewBalance extends PureComponent {
         disabled={!balanceIsCached}
       >
         <div className="transaction-view-balance__balance">
-          <div className="transaction-view-balance__primary-container">
+          <div
+            className="transaction-view-balance__primary-container"
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <UserPreferencedCurrencyDisplay
               className={classnames(
                 'transaction-view-balance__primary-balance',
@@ -61,6 +73,24 @@ export default class TransactionViewBalance extends PureComponent {
               ethNumberOfDecimals={4}
               hideTitle
             />
+            <Tooltip position="bottom" title={t('cfxTestWarning')}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <i
+                  className="fa fa-info-circle"
+                  style={{
+                    marginLeft: '6px',
+                    fontSize: '80%',
+                    color: '#fbdc5e',
+                  }}
+                />
+              </div>
+            </Tooltip>
             {balanceIsCached ? (
               <span className="transaction-view-balance__cached-star">*</span>
             ) : null}

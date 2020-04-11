@@ -5,8 +5,13 @@ import Identicon from '../identicon'
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { formatBalance } from '../../../helpers/utils/util'
+import Tooltip from '../tooltip-v2'
 
 export default class Balance extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func.isRequired,
+  }
+
   static propTypes = {
     account: PropTypes.object,
     assetImages: PropTypes.object,
@@ -24,6 +29,7 @@ export default class Balance extends PureComponent {
 
   renderBalance () {
     const { account, nativeCurrency, needsParse, showFiat } = this.props
+    const { t } = this.context
     const balanceValue = account && account.balance
     const formattedBalance = balanceValue
       ? formatBalance(balanceValue, 6, needsParse, nativeCurrency)
@@ -38,13 +44,38 @@ export default class Balance extends PureComponent {
     }
 
     return (
-      <div className="flex-column balance-display">
+      <div
+        className="flex-column balance-display"
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <UserPreferencedCurrencyDisplay
           className="token-amount"
           value={balanceValue}
           type={PRIMARY}
           ethNumberOfDecimals={4}
         />
+        <Tooltip position="bottom" title={t('cfxTestWarning')}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <i
+              className="fa fa-info-circle"
+              style={{
+                marginLeft: '6px',
+                fontSize: '80%',
+                color: '#fbdc5e',
+              }}
+            />
+          </div>
+        </Tooltip>
         {showFiat && (
           <UserPreferencedCurrencyDisplay
             value={balanceValue}
