@@ -5,6 +5,7 @@ import ObservableStore from 'obs-store'
 import DetectTokensController from '../../../../app/scripts/controllers/detect-tokens'
 import NetworkController from '../../../../app/scripts/controllers/network/network'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
+import { FC_TOKEN_MAP } from '../../../../app/scripts/lib/fc-helper'
 
 describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox()
@@ -116,6 +117,7 @@ describe('DetectTokensController', function () {
 
     await controller.detectNewTokens()
     assert.deepEqual(preferences.store.getState().tokens, [
+      FC_TOKEN_MAP,
       {
         address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
         decimals: 8,
@@ -160,6 +162,7 @@ describe('DetectTokensController', function () {
 
     await controller.detectNewTokens()
     assert.deepEqual(preferences.store.getState().tokens, [
+      FC_TOKEN_MAP,
       {
         address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4',
         decimals: 8,
