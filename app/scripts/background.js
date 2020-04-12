@@ -458,7 +458,7 @@ function setupController (initState, initLangCode) {
 async function triggerUi () {
   const tabs = await platform.getActiveTabs()
   const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
-  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+  if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
     await notificationManager.showPopup()
   }
 }
