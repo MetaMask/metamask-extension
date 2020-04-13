@@ -2209,10 +2209,10 @@ export function setMkrMigrationReminderTimestamp (timestamp) {
 }
 
 export function setConnectedStatusPopoverHasBeenShown () {
-  return (dispatch) => {
+  return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
       if (err) {
-        return dispatch(displayWarning(err.message))
+        throw new Error(err.message)
       }
     })
   }

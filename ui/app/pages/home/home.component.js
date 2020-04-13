@@ -186,9 +186,9 @@ export default class Home extends PureComponent {
     return (
       <Popover
         title={ t('whatsthis') }
-        onClose={() => setConnectedStatusPopoverHasBeenShown()}
+        onClose={setConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
-        showTooltip
+        showArrow
         CustomBackground={({ onClose }) => {
           return (
             <div
@@ -199,20 +199,20 @@ export default class Home extends PureComponent {
             </div>
           )
         }}
+        footer={(
+          <Button
+            type="primary"
+            onClick={setConnectedStatusPopoverHasBeenShown}
+          >
+            { t('dismiss') }
+          </Button>
+        )}
+        footerClassName="home__connected-status-popover-footer"
       >
         <main className="home__connect-status-text">
           <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
           <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
         </main>
-        <div className="home__connect-status-button-container">
-          <Button
-            type="primary"
-            className="home__connect-status-button"
-            onClick={() => setConnectedStatusPopoverHasBeenShown()}
-          >
-            { t('dismiss') }
-          </Button>
-        </div>
       </Popover>
     )
   }

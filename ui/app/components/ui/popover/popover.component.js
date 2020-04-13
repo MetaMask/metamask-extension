@@ -13,7 +13,7 @@ const Popover = ({
   onBack,
   onClose,
   className,
-  showTooltip,
+  showArrow,
   CustomBackground,
 }) => {
   const t = useContext(I18nContext)
@@ -24,7 +24,7 @@ const Popover = ({
         : <div className="popover-bg" onClick={onClose} />
       }
       <section className={classnames('popover-wrap', className)}>
-        { showTooltip ? <div className="popover-tooltip" /> : null}
+        { showArrow ? <div className="popover-arrow" /> : null}
         <header className="popover-header">
           <div className="popover-header__title">
             <h2 title={title}>
