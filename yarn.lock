@@ -2743,10 +2743,10 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.10":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.10.tgz#a62ba0822424b26cd09ca6ca54cb2140063a5120"
-  integrity sha512-ZHFOkrK9L8LqJq4zVIdk3UGzVo9bXKN72Ex3T3bHC0cR07SgC5/eGyH78CyO5r0sEws5nPL5WlwU9EBAkCx3gA==
+"@yqrashawn/conflux-local-network-lite@^2.0.11":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.11.tgz#f4513263a781e38490810c014352a626c73ce3cf"
+  integrity sha512-UoffV7t0xPIVV042GiFSRTj8pdswm4y8UMWdeiiq86KP/bYpiUVhLtkYDjIVYMuPD2d5Yy2o/5yCdkZQpYBATQ==
   dependencies:
     cfx-util "^0.0.1-c"
     express "^4.17.1"
@@ -2754,9 +2754,9 @@
     got "^10.5.7"
     jayson "^3.2.0"
     js-conflux-sdk "^0.9.1"
-    kill-port-process "^2.2.1"
     make-dir "^3.0.2"
     platform-is "^1.0.4"
+    real-executable-path "^3.0.0"
     rimraf "^3.0.1"
     sleep-promise "^8.0.1"
     tmp "^0.1.0"
@@ -10695,19 +10695,6 @@ execa@^0.8.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-0.9.0.tgz#adb7ce62cf985071f60580deb4a88b9e34712d01"
-  integrity sha512-BbUMBiX4hqiHZUA5+JujIjNb6TyAlp2D5KLheMjMluwOuzcnylDL4AxZYLLn1n2AGB49eSWwyKvvEQoRpnAtmA==
-  dependencies:
-    cross-spawn "^5.0.1"
-    get-stream "^3.0.0"
-    is-stream "^1.1.0"
-    npm-run-path "^2.0.0"
-    p-finally "^1.0.0"
-    signal-exit "^3.0.0"
-    strip-eof "^1.0.0"
-
 execa@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-1.0.0.tgz#c6236a5bb4df6d6f15e88e7f017798216749ddd8"
@@ -12198,11 +12185,6 @@ get-stream@^5.0.0, get-stream@^5.1.0:
   integrity sha512-EXr1FOzrzTfGeL0gQdeFEvOMm2mzMOglyiOXSTpPC+iAjAKftbr3jpCMWynogwYnM+eSj9sHGc6wjIcDvYiygw==
   dependencies:
     pump "^3.0.0"
-
-get-them-args@1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/get-them-args/-/get-them-args-1.3.2.tgz#74a20ba8a4abece5ae199ad03f2bcc68fdfc9ba5"
-  integrity sha1-dKILqKSr7OWuGZrQPyvMaP38m6U=
 
 get-uri@^2.0.0:
   version "2.0.2"
@@ -13954,6 +13936,13 @@ insert-module-globals@^7.0.0:
     through2 "^2.0.0"
     undeclared-identifiers "^1.1.2"
     xtend "^4.0.0"
+
+inspect-with-kind@^1.0.4:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/inspect-with-kind/-/inspect-with-kind-1.0.5.tgz#fce151d4ce89722c82ca8e9860bb96f9167c316c"
+  integrity sha512-MAQUJuIo7Xqk8EVNP+6d3CKq9c80hi4tjIbIAT6lmGW9W6WzlHiu9PS8uSuUYU+Do+j1baiFp3H25XEVxDIG2g==
+  dependencies:
+    kind-of "^6.0.2"
 
 internal-slot@^1.0.2:
   version "1.0.2"
@@ -15951,14 +15940,6 @@ keyv@^4.0.0:
   integrity sha512-U7ioE8AimvRVLfw4LffyOIRhL2xVgmE8T22L6i0BucSnBUyv4w+I7VN/zVZwRKHOI6ZRUcdMdWHQ8KSUvGpEog==
   dependencies:
     json-buffer "3.0.1"
-
-kill-port-process@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/kill-port-process/-/kill-port-process-2.2.1.tgz#96a46417804b68f2078355bd7be8f16a6ad83f12"
-  integrity sha512-shMsmTy7FlCUGeckJLy/7s06Z7H4GeoxJjgKtYRhBA84ufGxgE/Imcoh9vGITIG3YjsUpuY90s9NugbERzw+eQ==
-  dependencies:
-    get-them-args "1.3.2"
-    pid-from-port "1.1.3"
 
 kind-of@^1.1.0:
   version "1.1.0"
@@ -19618,13 +19599,6 @@ picomatch@^2.0.4, picomatch@^2.0.5:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.1.tgz#21bac888b6ed8601f831ce7816e335bc779f0a4a"
   integrity sha512-ISBaA8xQNmwELC7eOjqFKMESB2VIqt4PPDD0nsS95b/9dZXvVKOlz9keMSnoGGKcOHXfTvDD6WMaRoSc9UuhRA==
 
-pid-from-port@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/pid-from-port/-/pid-from-port-1.1.3.tgz#313a1d056ee71319cff0940ed0ff027dad39ca69"
-  integrity sha512-OlE82n3yMOE5dY9RMOwxhoWefeMlxwk5IVxoj0sSzSFIlmvhN4obzTvO3s/d/b5JhcgXikjaspsy/HuUDTqbBg==
-  dependencies:
-    execa "^0.9.0"
-
 pidtree@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.3.0.tgz#f6fada10fccc9f99bf50e90d0b23d72c9ebc2e6b"
@@ -21481,6 +21455,15 @@ readline2@^1.0.1:
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
+
+real-executable-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/real-executable-path/-/real-executable-path-3.0.0.tgz#8813a1a13641b3599cfd69253a77d8c91a66177a"
+  integrity sha512-hYZ/hbYYP7qFVRNqF3boEY/bkTzXUJFdPYqBVMYaKSCYJPKNSsNEgIP7OOiVSXghXSEj0n/gzGhfdbIPUF8AZQ==
+  dependencies:
+    inspect-with-kind "^1.0.4"
+    is-plain-obj "^1.1.0"
+    which "^1.3.0"
 
 realpath-native@^1.1.0:
   version "1.1.0"
