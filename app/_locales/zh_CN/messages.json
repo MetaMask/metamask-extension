@@ -78,17 +78,17 @@
     "message": "添加推荐代币"
   },
   "addAcquiredTokens": {
-    "message": "在Conflux Portal上添加已用的代币"
+    "message": "在ConfluxPortal上添加已用的代币"
   },
   "amount": {
     "message": "数量"
   },
   "appDescription": {
-    "message": "Conflux Portal 浏览器插件",
+    "message": "ConfluxPortal 浏览器插件",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "Conflux Portal",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -116,7 +116,7 @@
     "message": "自动注销计时器（分钟）"
   },
   "autoLockTimeLimitDescription": {
-    "message": "请设置 Conflux Portal 自动注销前的空闲时间（以分钟为单位）"
+    "message": "请设置 ConfluxPortal 自动注销前的空闲时间（以分钟为单位）"
   },
   "average": {
     "message": "平均值"
@@ -165,7 +165,7 @@
     "message": "使用 Wyre 购买 CFX (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 Conflux Portal 账户。(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 ConfluxPortal 账户。(Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "buyCoinSwitch": {
     "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持该功能)"
@@ -195,7 +195,7 @@
     "message": "取消操作"
   },
   "cancellationGasFee": {
-    "message": "取消然气费"
+    "message": "取消燃气费"
   },
   "cancelled": {
     "message": "已取消"
@@ -213,7 +213,7 @@
     "message": "关闭"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要通过 Google Chrome 浏览器使用 Conflux Portal ，连接个人硬件钱包。(硬件钱包没有经过充分测试, 使用中可能会遇到问题)"
+    "message": "您需要通过 Google Chrome 浏览器使用 ConfluxPortal ，连接个人硬件钱包。(硬件钱包没有经过充分测试, 使用中可能会遇到问题)"
   },
   "confirm": {
     "message": "确认"
@@ -291,7 +291,7 @@
     "message": " 复制 "
   },
   "copyPrivateKey": {
-    "message": "这是你的私钥（点击复制）"
+    "message": "这是 您的私钥（点击复制）"
   },
   "create": {
     "message": "创建"
@@ -351,7 +351,7 @@
     "message": "直接存入 CFX"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已经有了一些 CFX，通过直接转入是你的新钱包获取 CFX 的最快捷方式。"
+    "message": "如果 您已经有了一些 CFX，通过直接转入是 您的新钱包获取 CFX 的最快捷方式。"
   },
   "done": {
     "message": "完成"
@@ -381,7 +381,7 @@
     "message": "联系我们"
   },
   "endOfFlowMessage1": {
-    "message": "您已通过测试 - 请妥善保管你的种子密语。这是您的责任！"
+    "message": "您已通过测试 - 请妥善保管 您的种子密语。这是您的责任！"
   },
   "endOfFlowMessage2": {
     "message": "安全保存小技巧"
@@ -393,7 +393,7 @@
     "message": "绝不向任何分享该密语。"
   },
   "endOfFlowMessage5": {
-    "message": "谨防网络钓鱼！Conflux Portal 绝不会主动要求您提供个人种子密语。"
+    "message": "谨防网络钓鱼！ConfluxPortal 绝不会主动要求您提供个人种子密语。"
   },
   "endOfFlowMessage6": {
     "message": "如果您需要再次备份个人种子密语，请通过设置 -> 安全选项完成该操作。"
@@ -402,7 +402,7 @@
     "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 portal@conflux-chain.org 进行咨询。"
   },
   "endOfFlowMessage8": {
-    "message": "Conflux Portal 无法恢复您的种子密语。了解更多。"
+    "message": "ConfluxPortal 无法恢复您的种子密语。了解更多。"
   },
   "endOfFlowMessage9": {
     "message": "了解详情。"
@@ -429,7 +429,7 @@
     "message": "Conflux公共地址"
   },
   "etherscanView": {
-    "message": "在 Confluxscan 上查看账户"
+    "message": "在 ConfluxScan 上查看账户"
   },
   "estimatedProcessingTimes": {
     "message": "预估处理时间"
@@ -473,22 +473,22 @@
     "message": "存储空间限制即您个人希望购买的最大存储空间单位数量。"
   },
   "gasLimitInfoModalContent": {
-    "message": "然气限制即您个人希望购买的最大燃气单位数量。"
+    "message": "燃气限制即您个人希望购买的最大燃气单位数量。"
   },
   "gasLimitTooLow": {
     "message": "Gas Limit 至少要 21000"
   },
   "gasUsed": {
-    "message": "已使用然气量"
+    "message": "已使用燃气量"
   },
   "gasPriceExtremelyLow": {
-    "message": "然气价格极低"
+    "message": "燃气价格极低"
   },
   "gasPriceInfoModalContent": {
-    "message": "然气价格将详细列明每个付费然气单位的CFX金额。"
+    "message": "燃气价格将详细列明每个付费燃气单位的CFX金额。"
   },
   "gasPriceNoDenom": {
-    "message": "然气价格"
+    "message": "燃气价格"
   },
   "general": {
     "message": "通用"
@@ -500,7 +500,7 @@
     "message": "获取 CFX"
   },
   "getEtherFromFaucet": {
-    "message": "从水管获取$1网络的 CFX",
+    "message": "从水龙头获取$1网络的 CFX",
     "description": "Displays network name for CFX faucet"
   },
   "getHelp": {
@@ -522,7 +522,7 @@
     "message": "连接硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
   },
   "hardwareWalletsMsg": {
-    "message": "请选择希望用于 Conflux Portal 的硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
+    "message": "请选择希望用于 ConfluxPortal 的硬件钱包 (该功能尚未测试, 使用中可能会出现问题)"
   },
   "havingTroubleConnecting": {
     "message": "连接出现问题？"
@@ -628,13 +628,13 @@
     "message": "是的。立即开始设置！"
   },
   "likeToAddTokens": {
-    "message": "你想添加这些代币吗？"
+    "message": " 您想添加这些代币吗？"
   },
   "links": {
     "message": "链接"
   },
   "liveGasPricePredictions": {
-    "message": "实时然气价格预测"
+    "message": "实时燃气价格预测"
   },
   "loading": {
     "message": "加载中..."
@@ -664,10 +664,10 @@
     "message": "消息"
   },
   "metamaskDescription": {
-    "message": "Conflux Portal is a secure identity vault for Conflux."
+    "message": "ConfluxPortal is a secure identity vault for Conflux."
   },
   "metamaskVersion": {
-    "message": "Conflux Portal 版本"
+    "message": "ConfluxPortal 版本"
   },
   "missingYourTokens": {
     "message": "无法看到您的代币？"
@@ -679,13 +679,13 @@
     "message": "我的钱包账户"
   },
   "myWalletAccountsDescription": {
-    "message": "所有已创建的 Conflux Portal 账户将自动添加到该部分。"
+    "message": "所有已创建的 ConfluxPortal 账户将自动添加到该部分。"
   },
   "mustSelectOne": {
     "message": "至少选择一种代币."
   },
   "needEtherInWallet": {
-    "message": "使用 Conflux Portal 与 DAPP 交互，需要你的钱包里有 CFX。"
+    "message": "使用 ConfluxPortal 与 DAPP 交互，需要 您的钱包里有 CFX。"
   },
   "needImportFile": {
     "message": "必须选择导入一个文件。",
@@ -726,7 +726,7 @@
     "message": "新增网络"
   },
   "newToMetaMask": {
-    "message": "新增至 Conflux Portal？"
+    "message": "新增至 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
     "message": "不，我已经有一个种子密语了。"
@@ -735,7 +735,7 @@
     "message": "妥善保管您的密钥！"
   },
   "protectYourKeysMessage1": {
-    "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 Conflux Portal。Conflux Portal 绝不会要求您提供个人种子密语！"
+    "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 ConfluxPortal。ConfluxPortal 绝不会要求您提供个人种子密语！"
   },
   "protectYourKeysMessage2": {
     "message": "请妥善保管您的密语。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 portal@conflux-chain.org 进行咨询"
@@ -771,7 +771,7 @@
     "message": "没有交易"
   },
   "notEnoughGas": {
-    "message": "然气不足"
+    "message": "燃气不足"
   },
   "noWebcamFoundTitle": {
     "message": "未找到网络摄像头"
@@ -795,7 +795,7 @@
     "message": "加入 MetaMetrics (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "加入 MetaMetrics ，帮助我们改善 Conflux Portal 服务 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "加入 MetaMetrics ，帮助我们改善 ConfluxPortal 服务 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "password": {
     "message": "密码"
@@ -807,7 +807,7 @@
     "message": "密码长度不足"
   },
   "pastePrivateKey": {
-    "message": "请粘贴你的私钥:",
+    "message": "请粘贴 您的私钥:",
     "description": "For importing an account from a private key"
   },
   "pending": {
@@ -833,7 +833,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "注意：永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你帐户中的任何资产。"
+    "message": "注意：永远不要公开这个私钥。任何拥有 您的私钥的人都可以窃取 您帐户中的任何资产。"
   },
   "privateNetwork": {
     "message": "私有网络"
@@ -845,7 +845,7 @@
     "message": "队列"
   },
   "readdToken": {
-    "message": "之后你还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
+    "message": "之后 您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
   },
   "recents": {
     "message": "最近记录"
@@ -1025,10 +1025,10 @@
     "message": "选择账户"
   },
   "selectAnAccountHelp": {
-    "message": "请通过 Conflux Portal 选择需要查看的账户"
+    "message": "请通过 ConfluxPortal 选择需要查看的账户"
   },
   "selectAHigherGasFee": {
-    "message": "请选择价格稍高的然气费，加快交易处理速度。*"
+    "message": "请选择价格稍高的燃气费，加快交易处理速度。*"
   },
   "selectHdPath": {
     "message": "选择 HD 路径"
@@ -1040,13 +1040,13 @@
     "message": "设置"
   },
   "skipped": {
-    "message": "跳過"
+    "message": " 跳过"
   },
   "showAdvancedGasInline": {
-    "message": "高级然气控制"
+    "message": "高级燃气控制"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "请选择该选项，直接在发送和确认页面显示然气价格和限制管理。"
+    "message": "请选择该选项，直接在发送和确认页面显示燃气价格和限制管理。"
   },
   "showFiatConversionInTestnets": {
     "message": "在 Testnets 上显示兑换率"
@@ -1073,7 +1073,7 @@
     "message": "已签名"
   },
   "signNotice": {
-    "message": "签署此消息可能会产生危险的副作用。 \n只从你完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从 您完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
   },
   "sigRequest": {
     "message": "请求签名"
@@ -1115,10 +1115,10 @@
     "message": "请选择您想查看的账户。每次仅限选择一个。"
   },
   "step3HardwareWallet": {
-    "message": "3. 开始体验 dApps 和更多功能！"
+    "message": "3. 开始体验 DApps 和更多功能！"
   },
   "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与Conflux账户制作相同。登录 dApps，发送 CFX ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
+    "message": "使用您的硬件钱包，操作与Conflux账户制作相同。登录 DApps，发送 CFX ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"
@@ -1145,16 +1145,16 @@
     "message": "您可以使用个人移动设备同步个人账户与信息。打开 ConfluxPortal 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步” (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 Conflux Portal 移动应用程序，请通过个人手机完成如下操作。 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "如果您是首次启用 ConfluxPortal 移动应用程序，请通过个人手机完成如下操作。 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "使用 Conflux Portal 应用程序扫描编码 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用 ConfluxPortal 应用程序扫描编码 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileBeCareful": {
     "message": "扫描编码时，请确保身边无其他人正在查看您的显示页面 (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 Conflux Portal 应用程序！(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您的数据已同步成功。尽情体验 ConfluxPortal 应用程序！(Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "terms": {
     "message": "使用条款"
@@ -1163,7 +1163,7 @@
     "message": "Conflux 测试网"
   },
   "testFaucet": {
-    "message": "测试水管"
+    "message": "测试水龙头"
   },
   "thisWillCreate": {
     "message": "该操作将为您创建新钱包和种子密语"
@@ -1206,10 +1206,10 @@
     "message": "在 $2 终止的交易单。"
   },
   "transactionSubmitted": {
-    "message": "在 $2 提交的交易单，其然气费为 $1 。"
+    "message": "在 $2 提交的交易单，其燃气费为 $1 。"
   },
   "transactionResubmitted": {
-    "message": "在 $2 重新提交的交易单，其然气费增加至 $1"
+    "message": "在 $2 重新提交的交易单，其燃气费增加至 $1"
   },
   "transactionUpdated": {
     "message": "交易单已于 $2 更新。"
@@ -1218,7 +1218,7 @@
     "message": "交易报错。"
   },
   "transactionCancelAttempted": {
-    "message": "在 $2 尝试取消交易，其然气费为 $1"
+    "message": "在 $2 尝试取消交易，其燃气费为 $1"
   },
   "transactionCancelSuccess": {
     "message": "成功在 $2 取消交易单"
@@ -1245,14 +1245,14 @@
     "message": "转出"
   },
   "troubleTokenBalances": {
-    "message": "我们无法加载您的代币余额。你可以查看它们",
+    "message": "我们无法加载您的代币余额。 您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "重试"
   },
   "typePassword": {
-    "message": "输入你的密码"
+    "message": "输入 您的密码"
   },
   "unapproved": {
     "message": "未批准"
@@ -1279,7 +1279,7 @@
     "message": "解锁"
   },
   "unlockMessage": {
-    "message": "分散网络待命中"
+    "message": "去中心化网络待命中"
   },
   "updatedWithDate": {
     "message": "已更新 $1"
@@ -1303,7 +1303,7 @@
     "message": "在 $1 查看"
   },
   "viewOnEtherscan": {
-    "message": "在 Confluxscan 上查看"
+    "message": "在 ConfluxScan 上查看"
   },
   "visitWebSite": {
     "message": "访问我们的网站"
@@ -1315,7 +1315,7 @@
     "message": "欢迎回来！"
   },
   "welcome": {
-    "message": "欢迎使用 Conflux MetaMask 测试版"
+    "message": "欢迎使用 ConfluxPortal 测试版"
   },
   "writePhrase": {
     "message": "请将该密语记录在纸上，并保存在安全的地方。如果希望提升信息安全性，请将信息记录在多张纸上，并分别保存在 2 - 3 个不同的地方。"
@@ -1327,15 +1327,15 @@
     "message": "您需要开启相机访问权限，才能使用该功能。"
   },
   "yourSigRequested": {
-    "message": "正在请求你的签名"
+    "message": "正在请求 您的签名"
   },
   "youSign": {
     "message": "正在签名"
   },
   "yourPrivateSeedPhrase": {
-    "message": "你的私有助记词"
+    "message": " 您的私有助记词"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "然气价格加速上涨"
+    "message": "燃气价格加速上涨"
   }
 }
