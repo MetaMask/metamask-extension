@@ -249,14 +249,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install latest Chrome
-          command: |
-            curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-              && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
-              && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
-              && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' \
-                  "/opt/google/chrome/google-chrome" \
-              && google-chrome --version
+          name: Install Chrome
+          command: ./.circleci/scripts/chrome-install
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
@@ -297,14 +291,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install latest Chrome
-          command: |
-            curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-              && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
-              && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
-              && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' \
-                  "/opt/google/chrome/google-chrome" \
-              && google-chrome --version
+          name: Install Chrome
+          command: ./.circleci/scripts/chrome-install
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
