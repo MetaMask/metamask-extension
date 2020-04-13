@@ -863,7 +863,7 @@
     "message": "接收位址"
   },
   "recipientAddressPlaceholder": {
-    "message": "搜尋，公開地址 (0x)"
+    "message": "務必使用2020.4.9後更新的錢包地址"
   },
   "rejectAll": {
     "message": "全部拒絕"
