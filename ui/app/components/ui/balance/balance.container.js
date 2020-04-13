@@ -27,6 +27,7 @@ const mapStateToProps = (state) => {
     currentCurrency: getCurrentCurrency(state),
     assetImages: getAssetImages(state),
     showFiat: isMainnet || !!showFiatInTestnets,
+    selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
 }
 
