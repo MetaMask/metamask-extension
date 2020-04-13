@@ -278,7 +278,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the addresses updated after April 9, 2020"]')
+        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -364,7 +364,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the addresses updated after April 9, 2020"]')
+        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -416,7 +416,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the addresses updated after April 9, 2020"]')
+        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -1187,7 +1187,7 @@ describe('MetaMask', function () {
       await driver.delay(1000)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the addresses updated after April 9, 2020"]')
+        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
