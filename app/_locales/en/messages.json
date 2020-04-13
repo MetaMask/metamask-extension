@@ -1066,7 +1066,7 @@
     "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x)"
+    "message": "Enter the addresses updated after April 9, 2020"
   },
   "rejectAll": {
     "message": "Reject All"

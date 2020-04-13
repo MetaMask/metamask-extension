@@ -854,7 +854,7 @@
     "message": "接收地址"
   },
   "recipientAddressPlaceholder": {
-    "message": "查找、公用地址 (0x)"
+    "message": "务必使用2020.4.9后更新的钱包地址"
   },
   "rejectAll": {
     "message": "拒绝所有"
