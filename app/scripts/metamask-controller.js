@@ -440,7 +440,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       setDProvider: this.setDProvider.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
@@ -1380,8 +1379,8 @@ cancelEncryptionPublicKey (msgId, cb) {
    * @param {Object} msgParams - The params passed to eth_signTypedData.
    * @param {Function} cb - The callback function, called with the signature.
    */
-  newUnsignedTypedMessage (msgParams, req) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req)
+  newUnsignedTypedMessage (msgParams, req, version) {
+    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req, version)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
@@ -1392,7 +1391,7 @@ cancelEncryptionPublicKey (msgId, cb) {
    * Triggers the callback in newUnsignedTypedMessage.
    *
    * @param  {Object} msgParams - The params passed to eth_signTypedData.
-   * @returns {Object} Full state update.
+   * @returns {Object} - Full state update.
    */
   async signTypedMessage (msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
@@ -1434,64 +1433,6 @@ cancelEncryptionPublicKey (msgId, cb) {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // MetaMask Version 3 Migration Account Restauration Methods
-
-  /**
-   * A legacy method (probably dead code) that was used when we swapped out our
-   * key management library that we depended on.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * @deprecated
-   * @param  {} migratorOutput
-   */
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
-  }
-
-  /**
-   * A legacy method used to record user confirmation that they understand
-   * that some of their accounts have been recovered but should be backed up.
-   * This function no longer does anything and will be removed.
-   *
-   * @deprecated
-   * @param {Function} cb - A callback function called with a full state update.
-   */
-  markAccountsFound (cb) {
-    // TODO Remove me
-    cb(null, this.getState())
-  }
-
-  /**
-   * An account object
-   * @typedef Account
-   * @property string privateKey - The private key of the account.
-   */
-
-  /**
-   * Probably no longer needed, related to the Version 3 migration.
-   * Imports a hash of accounts to private keys into the vault.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   * @deprecated
-   * @param  {Account[]} lostAccounts -
-   * @returns {Keyring[]} An array of the restored keyrings.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
 
 //=============================================================================
 // END (VAULT / KEYRING RELATED METHODS)
