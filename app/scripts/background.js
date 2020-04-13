@@ -60,6 +60,7 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const requestAccountTabIds = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -263,6 +264,9 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
+    },
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
@@ -328,6 +332,10 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
+  const metamaskBlacklistedPorts = [
+    'trezor-connect',
+  ]
+
   const isClientOpenStatus = () => {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
@@ -348,11 +356,15 @@ function setupController (initState, initLangCode) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
+    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+      return false
+    }
+
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      controller.setupTrustedCommunication(portStream, 'MetaMask')
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -382,6 +394,17 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
+
+        remotePort.onMessage.addListener((msg) => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            requestAccountTabIds[origin] = tabId
+          }
+        })
+      }
       connectExternal(remotePort)
     }
   }
