@@ -8,6 +8,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import Tooltip from '../../ui/tooltip-v2'
+import InfoCircle from '../../ui/info-circle'
 
 export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {
@@ -77,18 +78,10 @@ export default class TransactionViewBalance extends PureComponent {
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  marginLeft: '4px',
                 }}
               >
-                <i
-                  className="fa fa-info-circle"
-                  style={{
-                    marginLeft: '6px',
-                    fontSize: '80%',
-                    color: '#fbdc5e',
-                  }}
-                />
+                <InfoCircle width="16" />
               </div>
             </Tooltip>
             {balanceIsCached ? (

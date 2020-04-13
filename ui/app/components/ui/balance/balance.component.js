@@ -6,6 +6,7 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { formatBalance } from '../../../helpers/utils/util'
 import Tooltip from '../tooltip-v2'
+import InfoCircle from '../info-circle'
 
 export default class Balance extends PureComponent {
   static contextTypes = {
@@ -20,15 +21,23 @@ export default class Balance extends PureComponent {
     network: PropTypes.string,
     showFiat: PropTypes.bool,
     token: PropTypes.object,
+    selectedTokenAddress: PropTypes.string,
   }
 
   static defaultProps = {
     needsParse: true,
     showFiat: true,
+    selectedTokenAddress: null,
   }
 
   renderBalance () {
-    const { account, nativeCurrency, needsParse, showFiat } = this.props
+    const {
+      account,
+      nativeCurrency,
+      needsParse,
+      showFiat,
+      selectedTokenAddress,
+    } = this.props
     const { t } = this.context
     const balanceValue = account && account.balance
     const formattedBalance = balanceValue
@@ -62,17 +71,12 @@ export default class Balance extends PureComponent {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              marginLeft: '4px',
             }}
           >
-            <i
-              className="fa fa-info-circle"
-              style={{
-                marginLeft: '6px',
-                fontSize: '80%',
-                color: '#fbdc5e',
-              }}
+            <InfoCircle
+              color={selectedTokenAddress ? '#ffffff' : undefined}
+              width="16"
             />
           </div>
         </Tooltip>
