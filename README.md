@@ -1,20 +1,20 @@
-# Conflux Portal Browser Extension
+# ConfluxPortal Browser Extension
 [![Build
 Status](https://circleci.com/gh/Conflux-Chain/conflux-portal.svg?style=svg)](https://circleci.com/gh/Conflux-Chain/conflux-portal?branch=cfx-develop)
 
-You can find the latest version of Conflux Portal on [our official
+You can find the latest version of ConfluxPortal on [our official
 website](https://github.com/Conflux-Chain/conflux-portal/releases). For help
-using Conflux Portal, visit our [User Support
+using ConfluxPortal, visit our [User Support
 Site](https://github.com/Conflux-Chain/conflux-portal/issues/new/choose).
 
-Conflux Portal supports Firefox, Google Chrome, and Chromium-based browsers. We
+ConfluxPortal supports Firefox, Google Chrome, and Chromium-based browsers. We
 recommend using the latest available browser version.
 
 
-To learn how to develop Conflux Portal-compatible applications, visit our
+To learn how to develop ConfluxPortal-compatible applications, visit our
 [Developer Docs](https://conflux-chain.github.io/conflux-portal-docs/).
 
-To learn how to contribute to the Conflux Portal project itself, visit our
+To learn how to contribute to the ConfluxPortal project itself, visit our
 [Internal
 Docs](https://github.com/Conflux-Chain/conflux-portal/tree/develop/docs).
 
@@ -82,9 +82,9 @@ yarn dist
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
-- [How to add a new translation to Conflux Portal](./docs/translating-guide.md)
+- [How to add a new translation to ConfluxPortal](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
-- [How to port Conflux Portal to a new
+- [How to port ConfluxPortal to a new
   platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's

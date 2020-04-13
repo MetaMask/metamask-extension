@@ -160,7 +160,7 @@ async function initialize () {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
-  log.debug('Conflux Portal initialization complete.')
+  log.debug('ConfluxPortal initialization complete.')
 }
 
 //
@@ -190,7 +190,7 @@ async function loadStateFromPersistence () {
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState)
     sentry.captureMessage(
-      'Conflux Portal - Empty vault found - unable to recover'
+      'ConfluxPortal - Empty vault found - unable to recover'
     )
   }
 
@@ -207,7 +207,7 @@ async function loadStateFromPersistence () {
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   if (!versionedData) {
-    throw new Error('Conflux Portal - migrator returned undefined')
+    throw new Error('ConfluxPortal - migrator returned undefined')
   }
 
   // write to disk
@@ -216,7 +216,7 @@ async function loadStateFromPersistence () {
   } else {
     // throw in setTimeout so as to not block boot
     setTimeout(() => {
-      throw new Error('Conflux Portal - Localstore not supported')
+      throw new Error('ConfluxPortal - Localstore not supported')
     })
   }
 
@@ -288,7 +288,7 @@ function setupController (initState, initLangCode) {
     storeTransform(versionifyData),
     createStreamSink(persistData),
     (error) => {
-      log.error('Conflux Portal - Persistence pipeline failed', error)
+      log.error('ConfluxPortal - Persistence pipeline failed', error)
     }
   )
 
@@ -304,10 +304,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('Conflux Portal - updated state is missing')
+      throw new Error('ConfluxPortal - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('Conflux Portal - updated state does not have data')
+      throw new Error('ConfluxPortal - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {

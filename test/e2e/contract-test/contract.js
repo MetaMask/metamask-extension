@@ -127,7 +127,7 @@ const initialize = () => {
     }
 
     if (!isConfluxPortalInstalled()) {
-      onboardButton.innerText = 'Click here to install Conflux Portal!'
+      onboardButton.innerText = 'Click here to install ConfluxPortal!'
       onboardButton.onclick = onClickInstall
       onboardButton.disabled = false
     } else if (isConfluxPortalConnected()) {

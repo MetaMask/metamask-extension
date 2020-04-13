@@ -135,7 +135,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const extension = windowHandles[0]
       const popup = await driver.switchToWindowWithTitle(
-        'Conflux Portal Notification',
+        'ConfluxPortal Notification',
         windowHandles
       )
       const dapp = windowHandles.find(
