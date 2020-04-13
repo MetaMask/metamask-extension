@@ -426,7 +426,7 @@
     "message": "„Ethereum“ viešasis adresas"
   },
   "etherscanView": {
-    "message": "Peržiūrėti paskyrą „Confluxscan“ programoje"
+    "message": "Peržiūrėti paskyrą „ConfluxScan“ programoje"
   },
   "estimatedProcessingTimes": {
     "message": "Numatomos apdorojimo trukmės"
@@ -1312,7 +1312,7 @@
     "message": "Peržiūrėti $1"
   },
   "viewOnEtherscan": {
-    "message": "Peržiūrėti „Confluxscan“"
+    "message": "Peržiūrėti „ConfluxScan“"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

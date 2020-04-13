@@ -426,7 +426,7 @@
     "message": "Javni naslov Ethereum"
   },
   "etherscanView": {
-    "message": "Poglej račun na Confluxscan"
+    "message": "Poglej račun na ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Predviden čas obdelave"
@@ -1294,7 +1294,7 @@
     "message": "Ogled na $1 "
   },
   "viewOnEtherscan": {
-    "message": "Poglej na Confluxscan"
+    "message": "Poglej na ConfluxScan"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

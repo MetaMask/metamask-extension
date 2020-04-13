@@ -140,7 +140,7 @@
     "message": "Introduza palavra-passe"
   },
   "etherscanView": {
-    "message": "Ver conta no Confluxscan"
+    "message": "Ver conta no ConfluxScan"
   },
   "exportPrivateKey": {
     "message": "Exportar Chave Privada"

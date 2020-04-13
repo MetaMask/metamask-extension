@@ -15,7 +15,7 @@
     "message": "Show Incoming Transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Confluxscan to show incoming transactions in the transactions list"
+    "message": "Select this to use ConfluxScan to show incoming transactions in the transactions list"
   },
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With ConfluxPortal"
@@ -570,7 +570,7 @@
     "message": "Conflux Public Address"
   },
   "etherscanView": {
-    "message": "View account on Confluxscan"
+    "message": "View account on ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
@@ -1587,7 +1587,7 @@
     "message": "View at $1"
   },
   "viewOnEtherscan": {
-    "message": "View on Confluxscan"
+    "message": "View on ConfluxScan"
   },
   "retryTransaction": {
     "message": "Retry Transaction"

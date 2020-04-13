@@ -227,7 +227,7 @@
     "message": "Mete modpas pou kontinye"
   },
   "etherscanView": {
-    "message": "Gade kont sou Confluxscan"
+    "message": "Gade kont sou ConfluxScan"
   },
   "expandView": {
     "message": "Elaji Wè"
@@ -813,7 +813,7 @@
     "message": "Wè Kont"
   },
   "viewOnEtherscan": {
-    "message": "Wè sou Confluxscan"
+    "message": "Wè sou ConfluxScan"
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"

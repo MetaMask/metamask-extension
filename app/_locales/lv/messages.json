@@ -426,7 +426,7 @@
     "message": "Ethereum publiskā adrese"
   },
   "etherscanView": {
-    "message": "Skatīt kontu ar Confluxscan"
+    "message": "Skatīt kontu ar ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Aprēķinātais apstrādes laiks"
@@ -1308,7 +1308,7 @@
     "message": "Skatīt $1"
   },
   "viewOnEtherscan": {
-    "message": "Skatīt Confluxscan"
+    "message": "Skatīt ConfluxScan"
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
