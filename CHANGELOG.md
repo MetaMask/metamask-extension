@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#353](https://github.com/poanetwork/nifty-wallet/pull/353) - Fix synchronous eth_accounts request
+
 ## 5.0.1 Mon Apr 06 2020
 
 - [#347](https://github.com/poanetwork/nifty-wallet/pull/347) - Rollback custom dPath for RSK/ETC
