@@ -423,7 +423,7 @@
     "message": "Adres publiczny Ethereum"
   },
   "etherscanView": {
-    "message": "Zobacz konto na Confluxscan"
+    "message": "Zobacz konto na ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Szacunkowy czas przetwarzania"
@@ -1297,7 +1297,7 @@
     "message": "Wyświetl w $1"
   },
   "viewOnEtherscan": {
-    "message": "Zobacz na Confluxscan"
+    "message": "Zobacz na ConfluxScan"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"

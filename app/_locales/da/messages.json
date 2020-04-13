@@ -426,7 +426,7 @@
     "message": "Offentlig Ethereum-adresse"
   },
   "etherscanView": {
-    "message": "Se konto på Confluxscan"
+    "message": "Se konto på ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Estimerede behandlingstider"
@@ -1278,7 +1278,7 @@
     "message": "Se på $1"
   },
   "viewOnEtherscan": {
-    "message": "Se på Confluxscan"
+    "message": "Se på ConfluxScan"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

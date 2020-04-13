@@ -414,7 +414,7 @@
     "message": "Alamat Awam Ethereum"
   },
   "etherscanView": {
-    "message": "Lihat akaun di Confluxscan"
+    "message": "Lihat akaun di ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Masa Pemprosesan yang Dijangka"
@@ -1280,7 +1280,7 @@
     "message": "Lihat pada $1"
   },
   "viewOnEtherscan": {
-    "message": "Lihat di Confluxscan"
+    "message": "Lihat di ConfluxScan"
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"

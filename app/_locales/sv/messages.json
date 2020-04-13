@@ -420,7 +420,7 @@
     "message": "Ethereum offentlig adress"
   },
   "etherscanView": {
-    "message": "Visa konto på Confluxscan"
+    "message": "Visa konto på ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Uppskattade behandlingstider"
@@ -1287,7 +1287,7 @@
     "message": "Visa vid $1"
   },
   "viewOnEtherscan": {
-    "message": "Visa på Confluxscan"
+    "message": "Visa på ConfluxScan"
   },
   "visitWebSite": {
     "message": "Besök vår hemsida"

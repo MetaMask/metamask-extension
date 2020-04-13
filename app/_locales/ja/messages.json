@@ -212,7 +212,7 @@
     "message": "パスワードを入力"
   },
   "etherscanView": {
-    "message": "Confluxscanでアカウントを確認"
+    "message": "ConfluxScanでアカウントを確認"
   },
   "exportPrivateKey": {
     "message": "秘密鍵のエクスポート"
@@ -510,7 +510,7 @@
     "message": "アカウントを見る"
   },
   "viewOnEtherscan": {
-    "message": "Confluxscan で見る"
+    "message": "ConfluxScan で見る"
   },
   "walletSeed": {
     "message": "ウォレットのパスフレーズ"

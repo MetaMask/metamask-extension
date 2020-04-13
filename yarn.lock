@@ -2743,17 +2743,17 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.9":
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.9.tgz#09c3cfa1ab9f74eef229d996a935e051ddc68573"
-  integrity sha512-m3+1jYHUNA8V/NjolKxjLzACHf4hGE5qpk9YQLDIWu5nM9IpdduY6SzIy5zax0ob7zqL8TZEq9gHXejtVB1Ylw==
+"@yqrashawn/conflux-local-network-lite@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.10.tgz#a62ba0822424b26cd09ca6ca54cb2140063a5120"
+  integrity sha512-ZHFOkrK9L8LqJq4zVIdk3UGzVo9bXKN72Ex3T3bHC0cR07SgC5/eGyH78CyO5r0sEws5nPL5WlwU9EBAkCx3gA==
   dependencies:
     cfx-util "^0.0.1-c"
     express "^4.17.1"
     express-async-errors "^3.1.1"
     got "^10.5.7"
     jayson "^3.2.0"
-    js-conflux-sdk "^0.9.0-alpha"
+    js-conflux-sdk "^0.9.1"
     kill-port-process "^2.2.1"
     make-dir "^3.0.2"
     platform-is "^1.0.4"

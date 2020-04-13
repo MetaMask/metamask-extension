@@ -426,7 +426,7 @@
     "message": "Adresa publică Ethereum"
   },
   "etherscanView": {
-    "message": "Vizualizare cont pe Confluxscan"
+    "message": "Vizualizare cont pe ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Timpi estimativi de procesare"
@@ -1293,7 +1293,7 @@
     "message": "Vizualizați la $1"
   },
   "viewOnEtherscan": {
-    "message": "Vizualizați pe Confluxscan"
+    "message": "Vizualizați pe ConfluxScan"
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"

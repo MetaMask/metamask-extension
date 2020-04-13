@@ -426,7 +426,7 @@
     "message": "Публічна адреса Ethereum"
   },
   "etherscanView": {
-    "message": "Переглянути обліковий запис на Confluxscan"
+    "message": "Переглянути обліковий запис на ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Приблизні часи обробки"
@@ -1312,7 +1312,7 @@
     "message": "Дивитись на $1"
   },
   "viewOnEtherscan": {
-    "message": "Дивитись на Confluxscan"
+    "message": "Дивитись на ConfluxScan"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"

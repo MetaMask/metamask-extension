@@ -426,7 +426,7 @@
     "message": "Ethereum পাবলিক অ্যাড্রেস"
   },
   "etherscanView": {
-    "message": "Confluxscan এ অ্যাকাউন্ট দেখুন"
+    "message": "ConfluxScan এ অ্যাকাউন্ট দেখুন"
   },
   "estimatedProcessingTimes": {
     "message": "আনুমানিক প্রক্রিয়াকরণের সময়"
@@ -1312,7 +1312,7 @@
     "message": "$1 এ দেখুন"
   },
   "viewOnEtherscan": {
-    "message": "Confluxscan দেখুন"
+    "message": "ConfluxScan দেখুন"
   },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"

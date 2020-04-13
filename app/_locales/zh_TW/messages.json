@@ -426,7 +426,7 @@
     "message": "Conflux公開位址"
   },
   "etherscanView": {
-    "message": "在 Confluxscan 上查看帳戶"
+    "message": "在 ConfluxScan 上查看帳戶"
   },
   "estimatedProcessingTimes": {
     "message": "預估處理時間"
@@ -1303,7 +1303,7 @@
     "message": "在 $1 瀏覽"
   },
   "viewOnEtherscan": {
-    "message": "在 Confluxscan 上瀏覽"
+    "message": "在 ConfluxScan 上瀏覽"
   },
   "visitWebSite": {
     "message": "造訪我們的網站"

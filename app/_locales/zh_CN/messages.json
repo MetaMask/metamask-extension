@@ -327,7 +327,7 @@
     "message": "小数位最小为0并且不超过36位."
   },
   "decimal": {
-    "message": "精确小数点"
+    "message": "小数精度"
   },
   "defaultNetwork": {
     "message": "默认Conflux交易网络为测试网。"
@@ -360,7 +360,7 @@
     "message": "下载 Google Chrome 浏览器"
   },
   "downloadSecretBackup": {
-    "message": "下载私密备份密语，并使用外部加密硬盘或存储媒介妥善保管。"
+    "message": "下载私密备份助记词，并使用外部加密硬盘或存储媒介妥善保管。"
   },
   "downloadStateLogs": {
     "message": "下载日志"
@@ -381,7 +381,7 @@
     "message": "联系我们"
   },
   "endOfFlowMessage1": {
-    "message": "您已通过测试 - 请妥善保管 您的种子密语。这是您的责任！"
+    "message": "您已通过测试 - 请妥善保管 您的助记词。这是您的责任！"
   },
   "endOfFlowMessage2": {
     "message": "安全保存小技巧"
@@ -390,19 +390,19 @@
     "message": "在多处保存备份数据。"
   },
   "endOfFlowMessage4": {
-    "message": "绝不向任何分享该密语。"
+    "message": "绝不向任何分享该助记词。"
   },
   "endOfFlowMessage5": {
-    "message": "谨防网络钓鱼！ConfluxPortal 绝不会主动要求您提供个人种子密语。"
+    "message": "谨防网络钓鱼！ConfluxPortal 绝不会主动要求您提供个人助记词。"
   },
   "endOfFlowMessage6": {
-    "message": "如果您需要再次备份个人种子密语，请通过设置 -> 安全选项完成该操作。"
+    "message": "如果您需要再次备份个人助记词，请通过设置 -> 安全选项完成该操作。"
   },
   "endOfFlowMessage7": {
     "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 portal@conflux-chain.org 进行咨询。"
   },
   "endOfFlowMessage8": {
-    "message": "ConfluxPortal 无法恢复您的种子密语。了解更多。"
+    "message": "ConfluxPortal 无法恢复您的助记词。了解更多。"
   },
   "endOfFlowMessage9": {
     "message": "了解详情。"
@@ -554,20 +554,20 @@
     "message": "导入账户"
   },
   "importAccountSeedPhrase": {
-    "message": "使用种子密语导入账户"
+    "message": "使用助记词导入账户"
   },
   "importWallet": {
     "message": "导入钱包"
   },
   "importYourExisting": {
-    "message": "请使用 12 字种子密语导入现有钱包"
+    "message": "请使用 12 字助记词导入现有钱包"
   },
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "importUsingSeed": {
-    "message": "使用帐号种子密语导入"
+    "message": "使用帐号助记词导入"
   },
   "infoHelp": {
     "message": "信息 & 帮助"
@@ -606,7 +606,7 @@
     "message": "无效 Block Explorer URI"
   },
   "invalidSeedPhrase": {
-    "message": "无效种子密语"
+    "message": "无效助记词"
   },
   "jsonFile": {
     "message": "JSON 文件",
@@ -729,13 +729,13 @@
     "message": "新增至 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
-    "message": "不，我已经有一个种子密语了。"
+    "message": "不，我已经有一个助记词了。"
   },
   "protectYourKeys": {
     "message": "妥善保管您的密钥！"
   },
   "protectYourKeysMessage1": {
-    "message": "请注意个人种子密语安全。报告显示有多个网站企图伪造 ConfluxPortal。ConfluxPortal 绝不会要求您提供个人种子密语！"
+    "message": "请注意个人助记词安全。报告显示有多个网站企图伪造 ConfluxPortal。ConfluxPortal 绝不会要求您提供个人助记词！"
   },
   "protectYourKeysMessage2": {
     "message": "请妥善保管您的密语。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 portal@conflux-chain.org 进行咨询"
@@ -890,7 +890,7 @@
     "message": "从助记词还原"
   },
   "restoreAccountWithSeed": {
-    "message": "使用种子密语恢复个人账户"
+    "message": "使用助记词恢复个人账户"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "等待确认的请求"
@@ -923,7 +923,7 @@
     "message": "移除帐号"
   },
   "removeAccountDescription": {
-    "message": "该账户已从您的钱包中删除。请在继续后续操作前，确认您是否已拥有该导入账户的原始种子密语或个人密钥。您可以通过账户下拉菜单再次导入或创建账户。"
+    "message": "该账户已从您的钱包中删除。请在继续后续操作前，确认您是否已拥有该导入账户的原始助记词或个人密钥。您可以通过账户下拉菜单再次导入或创建账户。"
   },
   "readyToConnect": {
     "message": "是否准备连接？"
@@ -977,7 +977,7 @@
     "message": "安全与隐私"
   },
   "securitySettingsDescription": {
-    "message": "隐私设置和钱包种子密语"
+    "message": "隐私设置和钱包助记词"
   },
   "seedPhrasePlaceholder": {
     "message": "用空格分隔每个单词"
@@ -1166,7 +1166,7 @@
     "message": "测试水龙头"
   },
   "thisWillCreate": {
-    "message": "该操作将为您创建新钱包和种子密语"
+    "message": "该操作将为您创建新钱包和助记词"
   },
   "tips": {
     "message": "赏金"

@@ -423,7 +423,7 @@
     "message": "Dirección pública de Ethereum"
   },
   "etherscanView": {
-    "message": "Ver cuenta en Confluxscan"
+    "message": "Ver cuenta en ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Tiempo estimado de procesamiento"
@@ -1291,7 +1291,7 @@
     "message": "Ver en $1"
   },
   "viewOnEtherscan": {
-    "message": "Ver en Confluxscan"
+    "message": "Ver en ConfluxScan"
   },
   "visitWebSite": {
     "message": "Visita nuestro sitio web"

@@ -110,7 +110,7 @@
     "message": "I-enter ang password"
   },
   "etherscanView": {
-    "message": "Tingnan ang account sa Confluxscan"
+    "message": "Tingnan ang account sa ConfluxScan"
   },
   "exportPrivateKey": {
     "message": "I-export ang Private Key"

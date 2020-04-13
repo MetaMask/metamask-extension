@@ -419,5 +419,5 @@
 - support skipped transaction
 
 ## 0.0.2 Fri Feb 10 2020
-- Some "Etherscan" to "Confluxscan"
+- Some "Etherscan" to "ConfluxScan"
 - Get default gas price from json rpc

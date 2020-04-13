@@ -426,7 +426,7 @@
     "message": "Публичен адрес за етереум"
   },
   "etherscanView": {
-    "message": "Преглед на акаунта в Confluxscan"
+    "message": "Преглед на акаунта в ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Приблизителни времена за обработка"
@@ -1308,7 +1308,7 @@
     "message": "Преглед на $1"
   },
   "viewOnEtherscan": {
-    "message": "Преглед на Confluxscan"
+    "message": "Преглед на ConfluxScan"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"

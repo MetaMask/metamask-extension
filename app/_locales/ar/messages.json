@@ -426,7 +426,7 @@
     "message": "عنوان الإيثيريوم العمومي"
   },
   "etherscanView": {
-    "message": "عرض الحساب على Confluxscan"
+    "message": "عرض الحساب على ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "أوقات المعالجة المقدرة"
@@ -1305,7 +1305,7 @@
     "message": "عرض في $1"
   },
   "viewOnEtherscan": {
-    "message": "عرضه على Confluxscan"
+    "message": "عرضه على ConfluxScan"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"

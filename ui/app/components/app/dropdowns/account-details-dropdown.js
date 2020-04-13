@@ -126,7 +126,7 @@ class AccountDetailsDropdown extends Component {
               eventOpts: {
                 category: 'Navigation',
                 action: 'Account Options',
-                name: 'Clicked View on Confluxscan',
+                name: 'Clicked View on ConfluxScan',
               },
             })
             viewOnEtherscan(address, network, rpcPrefs)

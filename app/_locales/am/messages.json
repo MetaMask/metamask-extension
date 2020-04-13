@@ -426,7 +426,7 @@
     "message": "Ethereum ሕዝባዊ አድራሻ"
   },
   "etherscanView": {
-    "message": "መለያውን በ Confluxscan ላይ ይመልከቱ"
+    "message": "መለያውን በ ConfluxScan ላይ ይመልከቱ"
   },
   "estimatedProcessingTimes": {
     "message": "የሚገመት የክወና ጊዜያት"
@@ -1309,7 +1309,7 @@
     "message": "በ $1ይመልከቱ"
   },
   "viewOnEtherscan": {
-    "message": "በ Confluxscan ላይ ይመልከቱ"
+    "message": "በ ConfluxScan ላይ ይመልከቱ"
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"

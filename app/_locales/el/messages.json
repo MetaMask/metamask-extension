@@ -423,7 +423,7 @@
     "message": "Δημόσια Διεύθυνση Ethereum"
   },
   "etherscanView": {
-    "message": "Προβολή λογαριασμού στο Confluxscan"
+    "message": "Προβολή λογαριασμού στο ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Εκτιμώμενοι Χρόνοι Επεξεργασίας"
@@ -1306,7 +1306,7 @@
     "message": "Προβολή σε $1"
   },
   "viewOnEtherscan": {
-    "message": "Προβολή στο Confluxscan"
+    "message": "Προβολή στο ConfluxScan"
   },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"

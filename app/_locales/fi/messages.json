@@ -423,7 +423,7 @@
     "message": "Ethereumin julkinen osoite"
   },
   "etherscanView": {
-    "message": "Tarkastele tiliä Confluxscanissa"
+    "message": "Tarkastele tiliä ConfluxScanissa"
   },
   "estimatedProcessingTimes": {
     "message": "Arvioidut käsittelyajat"
@@ -1309,7 +1309,7 @@
     "message": "Tarkastele kohdassa $1"
   },
   "viewOnEtherscan": {
-    "message": "Näytä Confluxscanissa"
+    "message": "Näytä ConfluxScanissa"
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"

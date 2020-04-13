@@ -423,7 +423,7 @@
     "message": "Adreça Pública d'Ethereum"
   },
   "etherscanView": {
-    "message": "Veure compte a Confluxscan"
+    "message": "Veure compte a ConfluxScan"
   },
   "estimatedProcessingTimes": {
     "message": "Temps de processament estimats"
@@ -1281,7 +1281,7 @@
     "message": "Mostra a $1"
   },
   "viewOnEtherscan": {
-    "message": "Veure a Confluxscan"
+    "message": "Veure a ConfluxScan"
   },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"
