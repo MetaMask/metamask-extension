@@ -38,6 +38,7 @@ const {
   ORIGINS,
   PERM_NAMES,
   REQUEST_IDS,
+  EXTRA_ACCOUNT,
 } = constants
 
 const initNotifications = () => {
@@ -737,83 +738,116 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('handleNewAccountSelected', function () {
+  describe('preferences state update', function () {
 
-    let permController, notifications
+    let permController, notifications, preferences
 
     beforeEach(function () {
+      preferences = {
+        getState: () => {
+          return { selectedAddress: DUMMY_ACCOUNT }
+        },
+        subscribe: sinon.stub(),
+      }
       notifications = initNotifications()
-      permController = initPermController(notifications)
-      grantPermissions(
-        permController, ORIGINS.a,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
-      )
+      permController = new PermissionsController({
+        ...getPermControllerOpts(),
+        notifyDomain: getNotifyDomain(notifications),
+        notifyAllDomains: getNotifyAllDomains(notifications),
+        preferences,
+      })
       grantPermissions(
         permController, ORIGINS.b,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b)
+        PERMS.finalizedRequests.eth_accounts([...ACCOUNT_ARRAYS.a, EXTRA_ACCOUNT])
+      )
+      grantPermissions(
+        permController, ORIGINS.c,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
       )
     })
 
-    it('throws if invalid origin or account', async function () {
+    it('should throw if given invalid account', async function () {
+      assert(preferences.subscribe.calledOnce)
+      assert(preferences.subscribe.firstCall.args.length === 1)
+      const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
 
       await assert.rejects(
-        permController.handleNewAccountSelected({}, DUMMY_ACCOUNT),
-        ERRORS.handleNewAccountSelected.invalidParams(),
-        'should throw if origin non-string'
-      )
-
-      await assert.rejects(
-        permController.handleNewAccountSelected('', DUMMY_ACCOUNT),
-        ERRORS.handleNewAccountSelected.invalidParams(),
-        'should throw if origin empty string'
-      )
-
-      await assert.rejects(
-        permController.handleNewAccountSelected(ORIGINS.a, {}),
-        ERRORS.handleNewAccountSelected.invalidParams(),
-        'should throw if account non-string'
-      )
-
-      await assert.rejects(
-        permController.handleNewAccountSelected(ORIGINS.a, ''),
-        ERRORS.handleNewAccountSelected.invalidParams(),
-        'should throw if account empty string'
+        () => onPreferencesUpdate({ selectedAddress: {} }),
+        ERRORS._handleAccountSelected.invalidParams(),
+        'should throw if account is not a string'
       )
     })
 
-    it('does nothing if account not permitted for origin', async function () {
+    it('should do nothing if account not permitted for any origins', async function () {
+      assert(preferences.subscribe.calledOnce)
+      assert(preferences.subscribe.firstCall.args.length === 1)
+      const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
 
-      await permController.handleNewAccountSelected(
-        ORIGINS.b, ACCOUNT_ARRAYS.c[0]
-      )
+      await onPreferencesUpdate({ selectedAddress: DUMMY_ACCOUNT })
 
       assert.deepEqual(
         notifications[ORIGINS.b], [],
         'should not have emitted notification'
       )
-    })
-
-    it('does nothing if account already first in array', async function () {
-
-      await permController.handleNewAccountSelected(
-        ORIGINS.a, ACCOUNT_ARRAYS.a[0]
-      )
-
       assert.deepEqual(
-        notifications[ORIGINS.a], [],
+        notifications[ORIGINS.c], [],
         'should not have emitted notification'
       )
     })
 
-    it('emits notification if selected account not first in array', async function () {
+    it('should do nothing if account already first in array for each connected site', async function () {
+      assert(preferences.subscribe.calledOnce)
+      assert(preferences.subscribe.firstCall.args.length === 1)
+      const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
 
-      await permController.handleNewAccountSelected(
-        ORIGINS.a, ACCOUNT_ARRAYS.a[1]
-      )
+      await onPreferencesUpdate({ selectedAddress: ACCOUNT_ARRAYS.a[0] })
 
       assert.deepEqual(
-        notifications[ORIGINS.a],
-        [NOTIFICATIONS.newAccounts([ ...ACCOUNT_ARRAYS.a ].reverse())],
+        notifications[ORIGINS.b], [],
+        'should not have emitted notification'
+      )
+      assert.deepEqual(
+        notifications[ORIGINS.c], [],
+        'should not have emitted notification'
+      )
+    })
+
+    it('should emit notification just for connected domains', async function () {
+      assert(preferences.subscribe.calledOnce)
+      assert(preferences.subscribe.firstCall.args.length === 1)
+      const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
+
+      await onPreferencesUpdate({ selectedAddress: EXTRA_ACCOUNT })
+
+      assert.deepEqual(
+        notifications[ORIGINS.b],
+        [NOTIFICATIONS.newAccounts([ EXTRA_ACCOUNT, ...ACCOUNT_ARRAYS.a ])],
+        'should have emitted notification'
+      )
+      assert.deepEqual(
+        notifications[ORIGINS.c], [],
+        'should not have emitted notification'
+      )
+    })
+
+    it('should emit notification for multiple connected domains', async function () {
+      assert(preferences.subscribe.calledOnce)
+      assert(preferences.subscribe.firstCall.args.length === 1)
+      const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
+
+      await onPreferencesUpdate({ selectedAddress: ACCOUNT_ARRAYS.a[1] })
+
+      const accountsWithoutFirst = ACCOUNT_ARRAYS.a
+        .filter((account) => account !== ACCOUNT_ARRAYS.a[1])
+      const expectedAccounts = [ ACCOUNT_ARRAYS.a[1], ...accountsWithoutFirst ]
+      assert.deepEqual(
+        notifications[ORIGINS.b],
+        [NOTIFICATIONS.newAccounts([ ...expectedAccounts, EXTRA_ACCOUNT ])],
+        'should have emitted notification'
+      )
+      assert.deepEqual(
+        notifications[ORIGINS.c],
+        [NOTIFICATIONS.newAccounts(expectedAccounts)],
         'should have emitted notification'
       )
     })
