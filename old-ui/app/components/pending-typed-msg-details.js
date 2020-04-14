@@ -13,15 +13,15 @@ export default class PendingMsgDetails extends Component {
   }
 
   render () {
-    var state = this.props
-    var msgData = state.txData
+    const state = this.props
+    const msgData = state.txData
 
-    var msgParams = msgData.msgParams || {}
-    var address = msgParams.from || state.selectedAddress
-    var identity = state.identities[address] || { address: address }
-    var account = state.accounts[address] || { address: address }
+    const msgParams = msgData.msgParams || {}
+    const address = msgParams.from || state.selectedAddress
+    const identity = state.identities[address] || { address: address }
+    const account = state.accounts[address] || { address: address }
 
-    var { data, version } = msgParams
+    const { data, version } = msgParams
 
     return (
       <div key={msgData.id} style={{margin: '10px 0px'}}>

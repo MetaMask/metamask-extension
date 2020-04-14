@@ -2,8 +2,9 @@
 
 ## Current Master
 
-- [#354](https://github.com/poanetwork/nifty-wallet/pull/354) - Fix `accountsChanged` event emittance (a part of EIP-1193)
-- [#353](https://github.com/poanetwork/nifty-wallet/pull/353) - Fix synchronous eth_accounts request
+- [#355](https://github.com/poanetwork/nifty-wallet/pull/355) - (Feature) Add RSK/testnet default tokens
+- [#354](https://github.com/poanetwork/nifty-wallet/pull/354) - (Fix) `accountsChanged` event emittance (a part of EIP-1193)
+- [#353](https://github.com/poanetwork/nifty-wallet/pull/353) - (Fix) synchronous eth_accounts request
 
 ## 5.0.1 Mon Apr 06 2020
 

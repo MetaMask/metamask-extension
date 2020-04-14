@@ -1,11 +1,11 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const TokenTracker = require('eth-token-watcher')
+import { Component } from 'react'
+import h from 'react-hyperscript'
+import { inherits } from 'util'
+import TokenTracker from 'eth-token-watcher'
+import log from 'loglevel'
+import { connect } from 'react-redux'
 const TokenCell = require('./token-cell.js')
-const connect = require('react-redux').connect
 const selectors = require('../../../ui/app/selectors')
-const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {
@@ -19,6 +19,8 @@ const defaultTokens = []
 
 const contractsETH = require('eth-contract-metadata')
 const contractsPOA = require('poa-contract-metadata')
+const contractsRSK = require('rsk-contract-metadata')
+const contractsRSKTest = require('rsk-test-contract-metadata')
 for (const address in contractsETH) {
   const contract = contractsETH[address]
   if (contract.erc20) {
@@ -28,6 +30,20 @@ for (const address in contractsETH) {
 }
 for (const address in contractsPOA) {
   const contract = contractsPOA[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+for (const address in contractsRSK) {
+  const contract = contractsRSK[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+for (const address in contractsRSKTest) {
+  const contract = contractsRSKTest[address]
   if (contract.erc20) {
     contract.address = address
     defaultTokens.push(contract)

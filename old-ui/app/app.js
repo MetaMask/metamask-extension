@@ -105,7 +105,7 @@ function mapStateToProps (state) {
 }
 
 App.prototype.render = function () {
-  var props = this.props
+  const props = this.props
   const {
     currentView,
     isLoading,
@@ -163,7 +163,7 @@ App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, 
 
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
-  var props = this.props
+  const props = this.props
   const {isMascara, isOnboarding} = props
 
   if (isMascara && isOnboarding) {

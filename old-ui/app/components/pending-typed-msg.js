@@ -10,8 +10,8 @@ export default class PendingMsg extends Component {
   }
 
   render () {
-    var state = this.props
-    var msgData = state.txData
+    const state = this.props
+    const msgData = state.txData
 
     return (
       <div key={msgData.id} style={{height: '100%'}}>

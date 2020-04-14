@@ -143,7 +143,7 @@ PendingTx.prototype.render = function () {
   const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
   const showRejectAll = props.unconfTxListLength > 1
 
-  var isNotification = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+  const isNotification = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
 
   this.inputs = []
 

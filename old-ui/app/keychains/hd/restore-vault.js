@@ -19,7 +19,7 @@ function mapStateToProps (state) {
 }
 
 RestoreVaultScreen.prototype.render = function () {
-  var state = this.props
+  const state = this.props
   this.persistentFormParentId = 'restore-vault-form'
 
   return (
@@ -147,10 +147,10 @@ RestoreVaultScreen.prototype.createOnEnter = function (event) {
 
 RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   // check password
-  var passwordBox = document.getElementById('password-box')
-  var password = passwordBox.value
-  var passwordConfirmBox = document.getElementById('password-box-confirm')
-  var passwordConfirm = passwordConfirmBox.value
+  const passwordBox = document.getElementById('password-box')
+  const password = passwordBox.value
+  const passwordConfirmBox = document.getElementById('password-box-confirm')
+  const passwordConfirm = passwordConfirmBox.value
   if (password.length < 8) {
     this.warning = 'Password not long enough'
     this.props.dispatch(actions.displayWarning(this.warning))
@@ -162,8 +162,8 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
     return
   }
   // check seed
-  var seedBox = document.querySelector('textarea.twelve-word-phrase')
-  var seed = seedBox.value.trim()
+  const seedBox = document.querySelector('textarea.twelve-word-phrase')
+  const seed = seedBox.value.trim()
 
   // true if the string has more than a space between words.
   if (seed.split('  ').length > 1) {

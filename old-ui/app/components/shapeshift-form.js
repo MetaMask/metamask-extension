@@ -27,7 +27,7 @@ ShapeshiftForm.prototype.render = function () {
 ShapeshiftForm.prototype.renderMain = function () {
   const marketinfo = this.props.buyView.formView.marketinfo
   const coinOptions = this.props.buyView.formView.coinOptions
-  var coin = marketinfo.pair.split('_')[0].toUpperCase()
+  const coin = marketinfo.pair.split('_')[0].toUpperCase()
 
   return h('.flex-column', {
     style: {
@@ -184,18 +184,18 @@ ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
 }
 
 ShapeshiftForm.prototype.shift = function () {
-  var props = this.props
-  var withdrawal = this.props.buyView.buyAddress
-  var returnAddress = document.getElementById('fromCoinAddress').value
-  var pair = this.props.buyView.formView.marketinfo.pair
-  var data = {
+  const props = this.props
+  const withdrawal = this.props.buyView.buyAddress
+  const returnAddress = document.getElementById('fromCoinAddress').value
+  const pair = this.props.buyView.formView.marketinfo.pair
+  const data = {
     'withdrawal': withdrawal,
     'pair': pair,
     'returnAddress': returnAddress,
     //  Public api key
     'apiKey': '5efdee9e7d3c99e7c7e8a0f788d6e52205bf00a0e24575fe59df86421f63c477d018840c94f6596cf8946990216073c68144394c384b0ddcbe782351d80d61d7',
   }
-  var message = [
+  const message = [
     `Deposit Limit: ${props.buyView.formView.marketinfo.limit}`,
     `Deposit Minimum:${props.buyView.formView.marketinfo.minimum}`,
   ]
@@ -205,7 +205,7 @@ ShapeshiftForm.prototype.shift = function () {
 }
 
 ShapeshiftForm.prototype.renderCoinList = function () {
-  var list = Object.keys(this.props.buyView.formView.coinOptions).map((item) => {
+  const list = Object.keys(this.props.buyView.formView.coinOptions).map((item) => {
     return h('option', {
       value: item,
     }, item)
@@ -221,11 +221,11 @@ ShapeshiftForm.prototype.renderCoinList = function () {
 ShapeshiftForm.prototype.updateCoin = function (event) {
   event.preventDefault()
   const props = this.props
-  var coinOptions = this.props.buyView.formView.coinOptions
-  var coin = document.getElementById('fromCoin').value
+  const coinOptions = this.props.buyView.formView.coinOptions
+  const coin = document.getElementById('fromCoin').value
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
-    var message = 'Not a valid coin'
+    const message = 'Not a valid coin'
     return props.dispatch(actions.displayWarning(message))
   } else {
     return props.dispatch(actions.pairUpdate(coin))
@@ -234,8 +234,8 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
 
 ShapeshiftForm.prototype.handleLiveInput = function () {
   const props = this.props
-  var coinOptions = this.props.buyView.formView.coinOptions
-  var coin = document.getElementById('fromCoin').value
+  const coinOptions = this.props.buyView.formView.coinOptions
+  const coin = document.getElementById('fromCoin').value
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
     return null
@@ -247,7 +247,7 @@ ShapeshiftForm.prototype.handleLiveInput = function () {
 ShapeshiftForm.prototype.renderInfo = function () {
   const marketinfo = this.props.buyView.formView.marketinfo
   const coinOptions = this.props.buyView.formView.coinOptions
-  var coin = marketinfo.pair.split('_')[0].toUpperCase()
+  const coin = marketinfo.pair.split('_')[0].toUpperCase()
 
   return h('span', {
     style: {
