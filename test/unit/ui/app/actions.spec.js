@@ -1432,7 +1432,7 @@ describe('Actions', function () {
     let setCurrentLocaleSpy
 
     beforeEach(function () {
-      sinon.stub(global, 'fetch')
+      sinon.stub(window, 'fetch')
         .resolves({
           json: async () => enLocale,
         })
@@ -1440,7 +1440,7 @@ describe('Actions', function () {
 
     afterEach(function () {
       setCurrentLocaleSpy.restore()
-      global.fetch.restore()
+      window.fetch.restore()
     })
 
     it('calls expected actions', async function () {

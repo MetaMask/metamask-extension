@@ -22,7 +22,7 @@ async function runCurrencyLocalizationTest (assert) {
   selectState.val('currency localization')
 
   const realFetch = window.fetch.bind(window)
-  global.fetch = (...args) => {
+  window.fetch = (...args) => {
     if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
     } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {

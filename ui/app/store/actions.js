@@ -1217,7 +1217,8 @@ export function showAccountDetail (address) {
       if (err) {
         return dispatch(displayWarning(err.message))
       }
-      background.handleNewAccountSelected(origin, address)
+      // TODO: Use correct `origin` here
+      background.handleNewAccountSelected(window.origin, address)
       dispatch(updateTokens(tokens))
       dispatch({
         type: actionConstants.SHOW_ACCOUNT_DETAIL,

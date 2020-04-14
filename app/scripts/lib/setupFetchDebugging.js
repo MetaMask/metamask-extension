@@ -7,12 +7,12 @@ export default setupFetchDebugging
 //
 
 function setupFetchDebugging () {
-  if (!global.fetch) {
+  if (!window.fetch) {
     return
   }
-  const originalFetch = global.fetch
+  const originalFetch = window.fetch
 
-  global.fetch = wrappedFetch
+  window.fetch = wrappedFetch
 
   async function wrappedFetch (...args) {
     const initialStack = getCurrentStack()

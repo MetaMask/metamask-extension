@@ -24,7 +24,7 @@ class ReadOnlyNetworkStore {
    */
   async _init () {
     try {
-      const response = await fetch(FIXTURE_SERVER_URL)
+      const response = await window.fetch(FIXTURE_SERVER_URL)
       if (response.ok) {
         this._state = await response.json()
       }

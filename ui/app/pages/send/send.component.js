@@ -202,8 +202,8 @@ export default class SendTransactionScreen extends Component {
       this.props.scanQrCode()
 
       // Clear the queryString param after showing the modal
-      const cleanUrl = location.href.split('?')[0]
-      history.pushState({}, null, `${cleanUrl}`)
+      const cleanUrl = window.location.href.split('?')[0]
+      window.history.pushState({}, null, `${cleanUrl}`)
       window.location.hash = '#send'
     }
   }

@@ -25,10 +25,6 @@ module.exports = {
     'plugin:react/recommended',
   ],
 
-  env: {
-    'browser': true,
-  },
-
   plugins: [
     'babel',
     'react',
@@ -37,9 +33,10 @@ module.exports = {
   ],
 
   globals: {
-    'web3': true,
-    '$': false,
-    'QUnit': false,
+    '$': 'readonly',
+    document: 'readonly',
+    QUnit: 'readonly',
+    window: 'readonly',
   },
 
   rules: {
