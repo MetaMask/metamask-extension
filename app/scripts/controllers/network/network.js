@@ -178,9 +178,9 @@ export default class NetworkController extends EventEmitter {
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
-    // url-based rpc endpoints
     } else if (isEbakus) {
       this._configureEbakusProvider(opts)
+    // url-based rpc endpoints
     } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
     } else {
