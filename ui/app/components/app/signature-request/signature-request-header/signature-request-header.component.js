@@ -20,7 +20,6 @@ export default class SignatureRequestHeader extends PureComponent {
               account={selectedAccount}
             />
           )}
-          {name}
         </div>
         <div className="signature-request-header--network">
           <NetworkDisplay colored={false} />
