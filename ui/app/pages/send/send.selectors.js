@@ -6,6 +6,7 @@ import {
   getSelectedAccount,
   getTargetAccount,
   getSelectedAddress,
+  isEbakusNetwork,
 } from '../../selectors/selectors'
 import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
 import {
@@ -47,6 +48,10 @@ export function getGasLimit (state) {
 }
 
 export function getGasPrice (state) {
+  if (isEbakusNetwork(state)) {
+    return '0x0'
+  }
+
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
 
