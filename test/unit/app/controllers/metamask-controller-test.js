@@ -224,6 +224,9 @@ describe('MetaMaskController', function () {
   })
 
   describe('#createNewVaultAndRestore', function () {
+    afterEach(function () {
+      sinon.restore()
+    })
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what'
       sandbox.stub(metamaskController, 'getBalance')
@@ -239,7 +242,7 @@ describe('MetaMaskController', function () {
 
     it('should clear previous identities after vault restoration', async function () {
       const currentTimestamp = 1000
-      sandbox.useFakeTimers(currentTimestamp)
+      sinon.stub(Date, 'now').returns(currentTimestamp)
       sandbox.stub(metamaskController, 'getBalance')
       metamaskController.getBalance.callsFake(() => {
         return Promise.resolve('0x0')
@@ -263,7 +266,7 @@ describe('MetaMaskController', function () {
 
     it('should restore any consecutive accounts with balances', async function () {
       const currentTimestamp = 1000
-      sandbox.useFakeTimers(currentTimestamp)
+      sinon.stub(Date, 'now').returns(currentTimestamp)
       sandbox.stub(metamaskController, 'getBalance')
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000')

@@ -8,9 +8,9 @@ describe('Typed Message Manager', function () {
 
   const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
   const networkController = new NetworkController()
-  sinon.stub(networkController, 'getNetworkState').returns('1')
 
   beforeEach(function () {
+    sinon.stub(networkController, 'getNetworkState').returns('1')
     typedMessageManager = new TypedMessageManager({
       networkController,
     })
@@ -70,6 +70,10 @@ describe('Typed Message Manager', function () {
     msgId = Object.keys(typedMsgs)[0]
     messages[0].msgParams.metamaskId = parseInt(msgId)
     numberMsgId = parseInt(msgId)
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   it('supports version 1 of signedTypedData', function () {

@@ -65,6 +65,10 @@ describe('Actions', function () {
     global.ethQuery = new EthQuery(provider)
   })
 
+  after(function () {
+    sinon.restore()
+  })
+
   describe('#tryUnlockMetamask', function () {
 
     let submitPasswordSpy, verifySeedPhraseSpy
