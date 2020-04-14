@@ -222,7 +222,6 @@
     "eslint-plugin-react": "^7.18.3",
     "fancy-log": "^1.3.3",
     "fast-glob": "^3.2.2",
-    "fetch-mock": "^6.5.2",
     "file-loader": "^1.1.11",
     "fs-extra": "^8.1.0",
     "ganache-cli": "^6.4.4",
