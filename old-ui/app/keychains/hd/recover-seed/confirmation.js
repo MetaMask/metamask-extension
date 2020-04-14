@@ -4,6 +4,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../../../ui/app/actions')
+const { getDPath } = require('../../../util')
 
 module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
 
@@ -16,6 +17,7 @@ function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
     dPath: state.metamask.dPath,
+    provider: state.metamask.provider,
   }
 }
 
@@ -115,7 +117,9 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
   }
 }
 
-RevealSeedConfirmation.prototype.revealSeedWords = function () {
+RevealSeedConfirmation.prototype.revealSeedWords = async function () {
   const password = document.getElementById('password-box').value
-  this.props.dispatch(actions.requestRevealSeed(password, this.props.dPath))
+  const isCreatedWithCorrectDPath = this.props.dispatch(actions.isCreatedWithCorrectDPath())
+  const dPath = getDPath(this.props.provider.type, isCreatedWithCorrectDPath)
+  this.props.dispatch(actions.requestRevealSeed(password, dPath))
 }

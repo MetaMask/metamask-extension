@@ -1,8 +1,8 @@
-const extend = require('xtend')
+import extend from 'xtend'
+import log from 'loglevel'
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
 const { customHdPaths } = require('../../../old-ui/app/components/connect-hardware/util.js')
-const log = require('loglevel')
 
 module.exports = reduceApp
 
@@ -22,21 +22,21 @@ function reduceApp (state, action) {
     name = 'confTx'
   }
 
-  var defaultView = {
+  const defaultView = {
     name,
     detailView: null,
     context: selectedAddress,
   }
 
   // confirm seed words
-  var seedWords = state.metamask.seedWords
-  var seedConfView = {
+  const seedWords = state.metamask.seedWords
+  const seedConfView = {
     name: 'createVaultComplete',
     seedWords,
   }
 
   // default state
-  var appState = extend({
+  const appState = extend({
     shouldClose: false,
     menuOpen: false,
     modal: {

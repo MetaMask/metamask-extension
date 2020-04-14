@@ -20,7 +20,7 @@ const { POA,
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
 
-var actions = {
+const actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
   GO_HOME: 'GO_HOME',
@@ -370,11 +370,13 @@ var actions = {
   getRequestAccountTabIds,
   setOpenMetamaskTabsIDs,
   getOpenMetamaskTabsIds,
+
+  isCreatedWithCorrectDPath,
 }
 
 module.exports = actions
 
-var background = null
+let background = null
 function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
@@ -404,7 +406,12 @@ function tryUnlockMetamask (password, dPath) {
     })
       .then(() => {
         dispatch(actions.unlockSucceeded())
-        return forceUpdateMetamaskState(dispatch)
+        return updateMetamaskStateFromBackground()
+        .then(newState => {
+          newState = Object.assign(newState, {dPath: dPath})
+          dispatch(actions.updateMetamaskState(newState))
+          forceUpdateMetamaskState(dispatch)
+        })
       })
       .catch((err) => {
         log.error(err)
@@ -431,6 +438,21 @@ function tryUnlockMetamask (password, dPath) {
         dispatch(actions.hideLoadingIndication())
         return Promise.reject(err)
       })
+  }
+}
+
+function isCreatedWithCorrectDPath () {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.isCreatedWithCorrectDPath((err, isCreatedWithCorrectDPath) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        resolve(isCreatedWithCorrectDPath)
+      })
+    })
   }
 }
 
@@ -466,7 +488,7 @@ function confirmSeedWords () {
   }
 }
 
-function createNewVaultAndRestore (password, seed) {
+function createNewVaultAndRestore (password, seed, dPath) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
@@ -477,7 +499,7 @@ function createNewVaultAndRestore (password, seed) {
           return reject(err)
         }
 
-        background.createNewVaultAndRestore(password, seed, (err) => {
+        background.createNewVaultAndRestore(password, seed, dPath, (err) => {
           if (err) {
             return reject(err)
           }
@@ -489,6 +511,11 @@ function createNewVaultAndRestore (password, seed) {
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
       .then(() => {
         dispatch(actions.showAccountsPage())
+        updateMetamaskStateFromBackground()
+        .then(newState => {
+          newState = Object.assign(newState, {dPath: dPath})
+          dispatch(actions.updateMetamaskState(newState))
+        })
         dispatch(actions.hideLoadingIndication())
       })
       .catch(err => {
@@ -2237,7 +2264,7 @@ function requestExportAccount () {
 }
 
 function exportAccount (password, address, dPath) {
-  var self = this
+  const self = this
 
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
@@ -2383,7 +2410,7 @@ function pairUpdate (coin) {
 }
 
 function shapeShiftSubview (network) {
-  var pair = 'btc_eth'
+  const pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -2408,7 +2435,7 @@ function coinShiftRquest (data, marketData) {
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
       dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.displayWarning(response.error))
-      var message = `
+      const message = `
         Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
       background.createShapeShiftTx(response.deposit, response.depositType)
@@ -2444,7 +2471,7 @@ function reshowQrCode (data, coin) {
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
-      var message = [
+      const message = [
         `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
@@ -2461,11 +2488,11 @@ function reshowQrCode (data, coin) {
 }
 
 function shapeShiftRequest (query, options, cb) {
-  var queryResponse, method
+  let queryResponse, method
   !options ? options = {} : null
   options.method ? method = options.method : method = 'GET'
 
-  var requestListner = function (request) {
+  const requestListner = function (request) {
     try {
       queryResponse = JSON.parse(this.responseText)
       cb ? cb(queryResponse) : null
@@ -2476,12 +2503,12 @@ function shapeShiftRequest (query, options, cb) {
     }
   }
 
-  var shapShiftReq = new XMLHttpRequest()
+  const shapShiftReq = new XMLHttpRequest()
   shapShiftReq.addEventListener('load', requestListner)
   shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
 
   if (options.method === 'POST') {
-    var jsonObj = JSON.stringify(options.data)
+    const jsonObj = JSON.stringify(options.data)
     shapShiftReq.setRequestHeader('Content-Type', 'application/json')
     return shapShiftReq.send(jsonObj)
   } else {

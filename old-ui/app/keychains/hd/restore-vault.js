@@ -3,6 +3,7 @@ const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../../ui/app/actions')
+const { getDPath } = require('../../util')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
@@ -15,6 +16,7 @@ function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
     forgottenPassword: state.appState.forgottenPassword,
+    provider: state.metamask.provider,
   }
 }
 
@@ -185,5 +187,7 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   // submit
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
-  this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
+  const isCreatedWithCorrectDPath = true
+  const dPath = getDPath(this.props.provider.type, isCreatedWithCorrectDPath)
+  this.props.dispatch(actions.createNewVaultAndRestore(password, seed, dPath))
 }

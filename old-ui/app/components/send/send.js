@@ -16,7 +16,7 @@ import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
-import ToastComponent from '../toast'
+import * as Toast from '../toast'
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
@@ -57,8 +57,8 @@ SendTransactionScreen.prototype.render = function () {
 
     h('.send-screen.flex-column.flex-grow', [
 
-      h(ToastComponent, {
-        isSuccess: false,
+      h(Toast.ToastComponent, {
+        type: Toast.TOAST_TYPE_ERROR,
       }),
 
       //

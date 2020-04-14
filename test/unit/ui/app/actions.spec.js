@@ -235,7 +235,7 @@ describe('Actions', () => {
 
       createNewVaultAndRestoreSpy = sinon.stub(background, 'createNewVaultAndRestore')
 
-      createNewVaultAndRestoreSpy.callsFake((password, seed, callback) => {
+      createNewVaultAndRestoreSpy.callsFake((password, seed, dPath, callback) => {
         callback(new Error('error'))
       })
 
