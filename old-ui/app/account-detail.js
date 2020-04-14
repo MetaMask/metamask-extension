@@ -48,12 +48,12 @@ function AccountDetailScreen () {
 }
 
 AccountDetailScreen.prototype.render = function () {
-  var props = this.props
+  const props = this.props
   const { network, conversionRate, currentCurrency } = props
-  var selected = props.address || Object.keys(props.accounts)[0]
-  var checksumAddress = selected && toChecksumAddress(network, selected)
-  var identity = props.identities[selected]
-  var account = props.accounts[selected]
+  const selected = props.address || Object.keys(props.accounts)[0]
+  const checksumAddress = selected && toChecksumAddress(network, selected)
+  const identity = props.identities[selected]
+  const account = props.accounts[selected]
 
   if (Object.keys(props.suggestedTokens).length > 0) {
     this.props.dispatch(actions.showAddSuggestedTokenPage())
@@ -248,7 +248,7 @@ AccountDetailScreen.prototype.render = function () {
 }
 
 AccountDetailScreen.prototype.subview = function () {
-  var subview
+  let subview
   try {
     subview = this.props.accountDetail.subview
   } catch (e) {
@@ -259,7 +259,7 @@ AccountDetailScreen.prototype.subview = function () {
     case 'transactions':
       return this.tabSections()
     case 'export':
-      var state = extend({key: 'export'}, this.props)
+      const state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
     default:
       return this.tabSections()

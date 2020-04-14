@@ -21,7 +21,7 @@ module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   const accounts = getMetaMaskAccounts(state)
-  var result = {
+  const result = {
     address: state.metamask.selectedAddress,
     accounts,
     identities: state.metamask.identities,
@@ -184,7 +184,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   }
 
   if (parts[1]) {
-    var decimal = parts[1]
+    const decimal = parts[1]
     if (decimal.length > 18) {
       message = 'Ether amount is too precise.'
       return this.props.dispatch(actions.displayWarning(message))
@@ -224,7 +224,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(actions.addToAddressBook(recipient, nickname))
 
-  var txParams = {
+  const txParams = {
     from: this.props.address,
     value: '0x' + value.toString(16),
   }

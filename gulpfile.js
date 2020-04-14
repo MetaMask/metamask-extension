@@ -72,6 +72,14 @@ createCopyTasks('contractImagesPOA', {
   source: './node_modules/poa-contract-metadata/images/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contractPOA`),
 })
+createCopyTasks('contractImagesRSK', {
+  source: './node_modules/rsk-contract-metadata/images/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contractRSK`),
+})
+createCopyTasks('contractImagesRSKTest', {
+  source: './node_modules/rsk-test-contract-metadata/images/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contractRSKTest`),
+})
 createCopyTasks('fonts', {
   source: './app/fonts/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),

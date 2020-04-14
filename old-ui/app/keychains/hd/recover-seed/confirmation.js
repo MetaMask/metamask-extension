@@ -116,6 +116,6 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
 }
 
 RevealSeedConfirmation.prototype.revealSeedWords = function () {
-  var password = document.getElementById('password-box').value
+  const password = document.getElementById('password-box').value
   this.props.dispatch(actions.requestRevealSeed(password, this.props.dPath))
 }

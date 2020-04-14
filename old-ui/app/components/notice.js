@@ -85,7 +85,7 @@ Notice.prototype.render = function () {
         h('div.markdown', {
           key: 'notice-div-key',
           onScroll: (e) => {
-            var object = e.currentTarget
+            const object = e.currentTarget
             if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
               this.setState({disclaimerDisabled: false})
             }
@@ -132,7 +132,7 @@ Notice.prototype.setInitialDisclaimerState = function () {
 
 Notice.prototype.componentDidMount = function () {
   // eslint-disable-next-line react/no-find-dom-node
-  var node = findDOMNode(this)
+  const node = findDOMNode(this)
   linker.setupListener(node)
   if (document.getElementsByClassName('notice-box')[0].clientHeight < 300) {
     this.setState({disclaimerDisabled: false})
@@ -151,6 +151,6 @@ Notice.prototype.componentDidUpdate = function (prevProps) {
 
 Notice.prototype.componentWillUnmount = function () {
   // eslint-disable-next-line react/no-find-dom-node
-  var node = findDOMNode(this)
+  const node = findDOMNode(this)
   linker.teardownListener(node)
 }

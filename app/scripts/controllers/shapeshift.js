@@ -157,7 +157,7 @@ class ShapeshiftController {
     const state = this.store.getState()
     let { shapeShiftTxList } = state
 
-    var shapeShiftTx = {
+    const shapeShiftTx = {
       depositAddress,
       depositType,
       key: 'shapeshift',

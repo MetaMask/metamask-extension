@@ -1,9 +1,13 @@
-var iconFactory
-const isValidAddress = require('ethereumjs-util').isValidAddress
-const contractMapETH = require('eth-contract-metadata')
-const contractMapPOA = require('poa-contract-metadata')
+import { isValidAddress } from 'ethereumjs-util'
+import contractMapETH from 'eth-contract-metadata'
+import contractMapPOA from 'poa-contract-metadata'
+import contractMapRSK from 'rsk-contract-metadata'
+import contractMapRSKTest from 'rsk-test-contract-metadata'
+import { MAINNET_CODE, POA_CODE, RSK_CODE, RSK_TESTNET_CODE } from '../../app/scripts/controllers/network/enums'
 const colors = require('../../colors')
-const { toChecksumAddress } = require('../app/util')
+const { toChecksumAddress, getTokenImageFolder } = require('../app/util')
+
+let iconFactory
 
 module.exports = function (rockicon) {
   if (!iconFactory) {
@@ -30,33 +34,33 @@ IconFactory.prototype.iconForAddress = function (address, diameter, network) {
 
 // returns svg dom element
 IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
-  var cacheId = `${address}:${diameter}`
+  const cacheId = `${address}:${diameter}`
   // check cache, lazily generate and populate cache
-  var identicon = this.cache[cacheId] || (this.cache[cacheId] = this.generateNewIdenticon(address, diameter))
+  const identicon = this.cache[cacheId] || (this.cache[cacheId] = this.generateNewIdenticon(address, diameter))
   // create a clean copy so you can modify it
-  var cleanCopy = identicon.cloneNode(true)
+  const cleanCopy = identicon.cloneNode(true)
   return cleanCopy
 }
 
 // creates a new identicon
 IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
-  var numericRepresentation = jsNumberForAddress(address)
-  var identicon = this.rockicon.generateIdenticon(diameter, numericRepresentation)
+  const numericRepresentation = jsNumberForAddress(address)
+  const identicon = this.rockicon.generateIdenticon(diameter, numericRepresentation)
   return identicon
 }
 
 // util
 
 function iconExistsFor (address, networkID) {
-  const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
+  const contractMap = _getContractMap(networkID)
   return contractMap[address] && isValidAddress(address) && contractMap[address].logo
 }
 
 function imageElFor (address, networkID) {
-  const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
+  const contractMap = _getContractMap(networkID)
   const contract = contractMap[address]
   const fileName = contract.logo
-  const imagesFolder = networkID === 1 ? 'images/contract' : 'images/contractPOA'
+  const imagesFolder = getTokenImageFolder(networkID)
   const path = `${imagesFolder}/${fileName}`
   const img = document.createElement('img')
   img.src = path
@@ -65,8 +69,23 @@ function imageElFor (address, networkID) {
 }
 
 function jsNumberForAddress (address) {
-  var addr = address.slice(2, 10)
-  var seed = parseInt(addr, 16)
+  const addr = address.slice(2, 10)
+  const seed = parseInt(addr, 16)
   return seed
+}
+
+function _getContractMap (networkID) {
+  switch (networkID) {
+    case MAINNET_CODE:
+      return contractMapETH
+    case POA_CODE:
+      return contractMapPOA
+    case RSK_CODE:
+      return contractMapRSK
+    case RSK_TESTNET_CODE:
+      return contractMapRSKTest
+    default:
+      return contractMapPOA
+  }
 }
 

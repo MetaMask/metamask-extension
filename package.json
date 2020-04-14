@@ -165,6 +165,8 @@
     "pify": "^3.0.0",
     "ping-pong-stream": "^1.0.0",
     "poa-contract-metadata": "github:poanetwork/poa-contract-metadata#master",
+    "rsk-contract-metadata": "github:rsksmart/rsk-contract-metadata#master",
+    "rsk-test-contract-metadata": "github:rsksmart/rsk-testnet-contract-metadata#master",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "post-message-stream": "^3.0.0",
     "promise-filter": "^1.1.0",

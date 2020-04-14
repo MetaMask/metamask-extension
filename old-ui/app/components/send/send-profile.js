@@ -91,7 +91,7 @@ class SendProfile extends Component {
 
 function mapStateToProps (state) {
 	const accounts = getMetaMaskAccounts(state)
-	var result = {
+	const result = {
 		address: state.metamask.selectedAddress,
 		accounts,
 		identities: state.metamask.identities,

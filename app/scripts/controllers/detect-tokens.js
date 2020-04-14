@@ -1,8 +1,10 @@
-const Web3 = require('web3')
-const contractsETH = require('eth-contract-metadata')
-const contractsPOA = require('poa-contract-metadata')
-const { warn } = require('loglevel')
-const { MAINNET, POA } = require('./network/enums')
+import Web3 from 'web3'
+import contractsETH from 'eth-contract-metadata'
+import contractsPOA from 'poa-contract-metadata'
+import contractsRSK from 'rsk-contract-metadata'
+import contractsRSKTest from 'rsk-test-contract-metadata'
+import { warn } from 'loglevel'
+const { MAINNET, POA, RSK, RSK_TESTNET } = require('./network/enums')
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
@@ -71,8 +73,10 @@ class DetectTokensController {
   getContracts () {
     const isMainnet = this._network.store.getState().provider.type === MAINNET
     const isPOA = this._network.store.getState().provider.type === POA
+    const isRSK = this._network.store.getState().provider.type === RSK
+    const isRSKTestnet = this._network.store.getState().provider.type === RSK_TESTNET
     // todo: isDAI
-    const contracts = isMainnet ? contractsETH : isPOA ? contractsPOA : {}
+    const contracts = isMainnet ? contractsETH : isPOA ? contractsPOA : isRSK ? contractsRSK : isRSKTestnet ? contractsRSKTest : {}
     return contracts
   }
 

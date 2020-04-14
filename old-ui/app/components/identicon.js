@@ -17,11 +17,11 @@ function IdenticonComponent () {
 }
 
 IdenticonComponent.prototype.render = function () {
-  var props = this.props
-  var diameter = props.diameter || this.defaultDiameter
+  const props = this.props
+  const diameter = props.diameter || this.defaultDiameter
   return (
     h('div', {
-      key: 'identicon-' + this.props.address,
+      key: 'identicon-' + props.address,
       style: {
         display: 'flex',
         alignItems: 'center',
@@ -42,7 +42,7 @@ IdenticonComponent.prototype.componentDidMount = function () {
   if (!address) return
 
   // eslint-disable-next-line react/no-find-dom-node
-  var container = findDOMNode(this)
+  const container = findDOMNode(this)
 
   const diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
@@ -58,10 +58,10 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
   if (!address) return
 
   // eslint-disable-next-line react/no-find-dom-node
-  var container = findDOMNode(this)
+  const container = findDOMNode(this)
 
   const children = container.children
-  for (var i = 0; i < children.length; i++) {
+  for (let i = 0; i < children.length; i++) {
     container.removeChild(children[i])
   }
 

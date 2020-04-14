@@ -16,7 +16,7 @@ function TransactionList () {
 TransactionList.prototype.render = function () {
   const { transactions, network, unapprovedMsgs, conversionRate } = this.props
 
-  var shapeShiftTxList
+  let shapeShiftTxList
   if (Number(network) === MAINNET_CODE) {
     shapeShiftTxList = this.props.shapeShiftTxList
   }

@@ -65,7 +65,7 @@ function formatDate (date) {
 }
 
 ShiftListItem.prototype.renderUtilComponents = function () {
-  var props = this.props
+  const props = this.props
   const { conversionRate, currentCurrency, network } = props
 
   const valueStyle = {
@@ -135,7 +135,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
 }
 
 ShiftListItem.prototype.renderInfo = function () {
-  var props = this.props
+  const props = this.props
 
   switch (props.response.status) {
     case 'no_deposits':
@@ -203,7 +203,7 @@ ShiftListItem.prototype.renderInfo = function () {
         }, 'Conversion in progress'),
       ])
     case 'complete':
-      var url = ethNetProps.explorerLinks.getExplorerTxLinkFor(props.response.transaction, parseInt('1'))
+      const url = ethNetProps.explorerLinks.getExplorerTxLinkFor(props.response.transaction, parseInt('1'))
 
       return h('.flex-column.pointer', {
         style: {

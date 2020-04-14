@@ -11,7 +11,7 @@ function reduceMetamask (state, action) {
   let newState
 
   // clone + defaults
-  var metamaskState = extend({
+  const metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
@@ -113,7 +113,7 @@ function reduceMetamask (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var stringId = String(action.id)
+      const stringId = String(action.id)
       newState = extend(metamaskState, {
         unapprovedTxs: {},
         unapprovedMsgs: {},
