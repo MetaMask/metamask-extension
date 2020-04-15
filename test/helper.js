@@ -32,7 +32,10 @@ Enzyme.configure({ adapter: new Adapter() })
 
 // ganache server
 const server = Ganache.server()
-server.listen(8545, () => {})
+server.listen(8545)
+
+server.on('error', console.error)
+server.on('clientError', console.error)
 
 log.setDefaultLevel(5)
 global.log = log
@@ -41,17 +44,30 @@ global.log = log
 // polyfills
 //
 
+// dom
+const { JSDOM } = require('jsdom')
+
+const jsdom = new JSDOM()
+global.window = jsdom.window
+
+// required by `trezor-connect/node_modules/whatwg-fetch`
+global.self = window
+// required by `dom-helpers` and various other libraries
+global.document = window.document
+// required by `react-tippy`
+global.navigator = window.navigator
+global.Element = window.Element
+
+// delete AbortController added by jsdom so it can be polyfilled correctly below
+delete window.AbortController
+
 // fetch
 const fetch = require('node-fetch')
 
-global.fetch = fetch
-global.Response = fetch.Response
-global.Headers = fetch.Headers
-global.Request = fetch.Request
-require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
+const { Headers, Request, Response } = fetch
+Object.assign(window, { fetch, Headers, Request, Response })
 
-// dom
-require('jsdom-global')()
+require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 
 // localStorage
 window.localStorage = {}

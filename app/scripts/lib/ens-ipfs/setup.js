@@ -50,7 +50,7 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) 
         const resolvedUrl = `https://${hash}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
-          const response = await fetch(resolvedUrl, { method: 'HEAD' })
+          const response = await window.fetch(resolvedUrl, { method: 'HEAD' })
           if (response.status === 200) {
             url = resolvedUrl
           }

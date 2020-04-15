@@ -245,7 +245,6 @@
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
     "jsdom": "^11.2.0",
-    "jsdom-global": "^3.0.2",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",

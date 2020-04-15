@@ -314,12 +314,12 @@ describe('IncomingTransactionsController', function () {
     }))
     let tempFetch
     beforeEach(function () {
-      tempFetch = global.fetch
-      global.fetch = mockFetch
+      tempFetch = window.fetch
+      window.fetch = mockFetch
     })
 
     afterEach(function () {
-      global.fetch = tempFetch
+      window.fetch = tempFetch
       mockFetch.resetHistory()
     })
 

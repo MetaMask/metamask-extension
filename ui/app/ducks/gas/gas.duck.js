@@ -195,7 +195,7 @@ export function fetchBasicGasEstimates () {
 }
 
 async function fetchExternalBasicGasEstimates (dispatch) {
-  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+  const response = await window.fetch('https://ethgasstation.info/json/ethgasAPI.json', {
     'headers': {},
     'referrer': 'http://ethgasstation.info/json/',
     'referrerPolicy': 'no-referrer-when-downgrade',
@@ -259,7 +259,7 @@ export function fetchBasicGasAndTimeEstimates () {
 }
 
 async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
-  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+  const response = await window.fetch('https://ethgasstation.info/json/ethgasAPI.json', {
     'headers': {},
     'referrer': 'http://ethgasstation.info/json/',
     'referrerPolicy': 'no-referrer-when-downgrade',
@@ -377,7 +377,7 @@ export function fetchGasEstimates (blockTime) {
     dispatch(gasEstimatesLoadingStarted())
 
     const promiseToFetch = Date.now() - timeLastRetrieved > 75000
-      ? fetch('https://ethgasstation.info/json/predictTable.json', {
+      ? window.fetch('https://ethgasstation.info/json/predictTable.json', {
         'headers': {},
         'referrer': 'http://ethgasstation.info/json/',
         'referrerPolicy': 'no-referrer-when-downgrade',

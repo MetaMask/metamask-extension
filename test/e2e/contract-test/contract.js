@@ -1,4 +1,4 @@
-/*global ethereum, MetamaskOnboarding */
+/*global ethereum, MetamaskOnboarding, web3 */
 
 /*
 The `piggybankContract` is compiled from:
