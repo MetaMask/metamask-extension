@@ -140,7 +140,7 @@ export default class PermissionConnect extends Component {
   }
 
   cancelPermissionsRequest = async (requestId) => {
-    const { rejectPermissionsRequest } = this.props
+    const { history, rejectPermissionsRequest } = this.props
     if (requestId) {
       await rejectPermissionsRequest(requestId)
 
