@@ -1,7 +1,6 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import { cloneDeep } from 'lodash'
-import fetchMock from 'fetch-mock'
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import EthQuery from 'eth-query'
@@ -1433,12 +1432,15 @@ describe('Actions', function () {
     let setCurrentLocaleSpy
 
     beforeEach(function () {
-      fetchMock.get('*', enLocale)
+      sinon.stub(global, 'fetch')
+        .resolves({
+          json: async () => enLocale,
+        })
     })
 
     afterEach(function () {
       setCurrentLocaleSpy.restore()
-      fetchMock.restore()
+      global.fetch.restore()
     })
 
     it('calls expected actions', async function () {
