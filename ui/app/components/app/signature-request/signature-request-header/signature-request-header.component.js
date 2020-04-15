@@ -5,19 +5,19 @@ import NetworkDisplay from '../../network-display'
 
 export default class SignatureRequestHeader extends PureComponent {
   static propTypes = {
-    selectedAccount: PropTypes.object,
+    fromAccount: PropTypes.object,
   }
 
   render () {
-    const { selectedAccount } = this.props
+    const { fromAccount } = this.props
 
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {selectedAccount && (
+          {fromAccount && (
             <AccountListItem
               displayBalance={false}
-              account={selectedAccount}
+              account={fromAccount}
             />
           )}
         </div>
