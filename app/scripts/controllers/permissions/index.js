@@ -456,7 +456,7 @@ export class PermissionsController {
           ?.value
         return exposedAccounts?.includes(account)
       })
-      .map((entry) => entry[0])
+      .map(([domain]) => domain)
 
     await Promise.all(
       connectedDomains
