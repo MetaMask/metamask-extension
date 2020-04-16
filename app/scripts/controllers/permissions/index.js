@@ -29,6 +29,7 @@ export class PermissionsController {
       getUnlockPromise,
       notifyDomain,
       notifyAllDomains,
+      preferences,
       showPermissionRequest,
     } = {},
     restoredPermissions = {},
@@ -54,6 +55,14 @@ export class PermissionsController {
     this.pendingApprovals = new Map()
     this.pendingApprovalOrigins = new Set()
     this._initializePermissions(restoredPermissions)
+    this._lastSelectedAddress = preferences.getState().selectedAddress
+
+    preferences.subscribe(async ({ selectedAddress }) => {
+      if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
+        this._lastSelectedAddress = selectedAddress
+        await this._handleAccountSelected(selectedAddress)
+      }
+    })
   }
 
   createMiddleware ({ origin, extensionId }) {
@@ -424,6 +433,40 @@ export class PermissionsController {
   }
 
   /**
+   * When a new account is selected in the UI, emit accountsChanged to each origin
+   * where the account order has changed.
+   *
+   * Note: This will emit "false positive" accountsChanged events, but they are
+   * handled by the inpage provider.
+   *
+   * @param {string} account - The newly selected account's address.
+   */
+  async _handleAccountSelected (account) {
+    if (typeof account !== 'string') {
+      throw new Error('Selected account should be a non-empty string.')
+    }
+
+    const domains = this.permissions.getDomains() || {}
+    const connectedDomains = Object.entries(domains)
+      .filter(([_, { permissions }]) => {
+        const ethAccounts = permissions.find((permission) => permission.parentCapability === 'eth_accounts')
+        const exposedAccounts = ethAccounts
+          ?.caveats
+          .find((caveat) => caveat.name === 'exposedAccounts')
+          ?.value
+        return exposedAccounts?.includes(account)
+      })
+      .map(([domain]) => domain)
+
+    await Promise.all(
+      connectedDomains
+        .map(
+          (origin) => this._handleConnectedAccountSelected(origin, account)
+        )
+    )
+  }
+
+  /**
    * When a new account is selected in the UI for 'origin', emit accountsChanged
    * to 'origin' if the selected account is permitted.
    *
@@ -433,15 +476,13 @@ export class PermissionsController {
    * @param {string} origin - The origin.
    * @param {string} account - The newly selected account's address.
    */
-  async handleNewAccountSelected (origin, account) {
-
+  async _handleConnectedAccountSelected (origin, account) {
     const permittedAccounts = await this.getAccounts(origin)
 
     if (
-      typeof origin !== 'string' || !origin.length ||
-      typeof account !== 'string' || !account.length
+      typeof origin !== 'string' || !origin.length
     ) {
-      throw new Error('Should provide non-empty origin and account strings.')
+      throw new Error('Origin should be a non-empty string.')
     }
 
     // do nothing if the account is not permitted for the origin, or

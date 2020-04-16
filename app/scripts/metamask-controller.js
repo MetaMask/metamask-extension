@@ -216,6 +216,7 @@ export default class MetamaskController extends EventEmitter {
       getUnlockPromise: this.appStateController.getUnlockPromise.bind(this.appStateController),
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
+      preferences: this.preferencesController.store,
       showPermissionRequest: opts.showPermissionRequest,
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
@@ -577,7 +578,6 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
       updatePermittedAccounts: nodeify(permissionsController.updatePermittedAccounts, permissionsController),
       legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
-      handleNewAccountSelected: nodeify(this.handleNewAccountSelected, this),
 
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
@@ -1039,17 +1039,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
     await this.preferencesController.setSelectedAddress(accounts[0])
-  }
-
-  /**
-   * Handle when a new account is selected for the given origin in the UI.
-   * Stores the address by origin and notifies external providers associated
-   * with the origin.
-   * @param {string} origin - The origin for which the address was selected.
-   * @param {string} address - The new selected address.
-   */
-  async handleNewAccountSelected (origin, address) {
-    this.permissionsController.handleNewAccountSelected(origin, address)
   }
 
   // ---------------------------------------------------------------------------

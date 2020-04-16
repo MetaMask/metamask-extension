@@ -28,6 +28,8 @@ export const noop = () => {}
 const keyringAccounts = deepFreeze([
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+  '0x7ae1cdd37bcbdb0e1f491974da8022bfdbf9c2bf',
+  '0xcc74c7a59194e5d9268476955650d1e285be703c',
 ])
 
 const getKeyringAccounts = async () => [ ...keyringAccounts ]
@@ -69,6 +71,12 @@ export function getPermControllerOpts () {
     getRestrictedMethods,
     notifyDomain: noop,
     notifyAllDomains: noop,
+    preferences: {
+      getState: () => {
+        return { selectedAddress: keyringAccounts[0] }
+      },
+      subscribe: noop,
+    },
   }
 }
 
@@ -142,7 +150,7 @@ const PERM_NAMES = {
 }
 
 const ACCOUNT_ARRAYS = {
-  a: [ ...keyringAccounts ],
+  a: [ ...keyringAccounts.slice(0, 3) ],
   b: [keyringAccounts[0]],
   c: [keyringAccounts[1]],
 }
@@ -331,11 +339,11 @@ export const getters = deepFreeze({
       },
     },
 
-    handleNewAccountSelected: {
+    _handleAccountSelected: {
       invalidParams: () => {
         return {
           name: 'Error',
-          message: 'Should provide non-empty origin and account strings.',
+          message: 'Selected account should be a non-empty string.',
         }
       },
     },
@@ -579,6 +587,8 @@ export const constants = deepFreeze({
 
   DUMMY_ACCOUNT: '0xabc',
 
+  EXTRA_ACCOUNT: keyringAccounts[3],
+
   REQUEST_IDS: {
     a: '1',
     b: '2',
@@ -609,6 +619,7 @@ export const constants = deepFreeze({
             accounts: {
               [ACCOUNT_ARRAYS.a[0]]: 1,
               [ACCOUNT_ARRAYS.a[1]]: 1,
+              [ACCOUNT_ARRAYS.a[2]]: 1,
             },
           },
         },
@@ -620,6 +631,7 @@ export const constants = deepFreeze({
             accounts: {
               [ACCOUNT_ARRAYS.a[0]]: 2,
               [ACCOUNT_ARRAYS.a[1]]: 1,
+              [ACCOUNT_ARRAYS.a[2]]: 1,
             },
           },
         },
