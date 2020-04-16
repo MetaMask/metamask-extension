@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 5.0.2 Thu Apr 16 2020
+
 - [#359](https://github.com/poanetwork/nifty-wallet/pull/359) - (Fix) Fix exposed accounts in wallet locked state
 - [#355](https://github.com/poanetwork/nifty-wallet/pull/355) - (Feature) Add RSK/testnet default tokens
 - [#354](https://github.com/poanetwork/nifty-wallet/pull/354) - (Fix) `accountsChanged` event emittance (a part of EIP-1193)
