@@ -1761,7 +1761,7 @@ export function showSendTokenPage () {
 export function buyEth (opts) {
   return (dispatch) => {
     const url = getBuyEthUrl(opts)
-    global.platform.openWindow({ url })
+    global.platform.openTab({ url })
     dispatch({
       type: actionConstants.BUY_ETH,
     })

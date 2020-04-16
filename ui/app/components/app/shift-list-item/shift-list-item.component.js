@@ -146,7 +146,7 @@ export default class ShiftListItem extends Component {
               width: '200px',
               overflow: 'hidden',
             }}
-            onClick={() => global.platform.openWindow({ url })}
+            onClick={() => global.platform.openTab({ url })}
           >
             <div
               style={{

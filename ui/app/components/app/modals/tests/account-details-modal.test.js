@@ -7,7 +7,7 @@ import AccountDetailsModal from '../account-details-modal'
 describe('Account Details Modal', function () {
   let wrapper
 
-  global.platform = { openWindow: sinon.spy() }
+  global.platform = { openTab: sinon.spy() }
 
   const props = {
     hideModal: sinon.spy(),
@@ -53,12 +53,12 @@ describe('Account Details Modal', function () {
     assert.equal(props.setAccountLabel.getCall(0).args[1], 'New Label')
   })
 
-  it('opens new window when view block explorer is clicked', function () {
+  it('opens new tab when view block explorer is clicked', function () {
     const modalButton = wrapper.find('.account-modal__button')
     const etherscanLink = modalButton.first()
 
     etherscanLink.simulate('click')
-    assert(global.platform.openWindow.calledOnce)
+    assert(global.platform.openTab.calledOnce)
   })
 
   it('shows export private key modal when clicked', function () {
