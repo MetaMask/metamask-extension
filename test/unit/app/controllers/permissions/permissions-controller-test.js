@@ -389,26 +389,26 @@ describe('permissions controller', function () {
 
     it('throws error on non-array accounts', async function () {
 
-      await assert.rejects(
-        permController.validatePermittedAccounts(undefined),
+      await assert.throws(
+        () => permController.validatePermittedAccounts(undefined),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on undefined'
       )
 
-      await assert.rejects(
-        permController.validatePermittedAccounts(false),
+      await assert.throws(
+        () => permController.validatePermittedAccounts(false),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on false'
       )
 
-      await assert.rejects(
-        permController.validatePermittedAccounts(true),
+      await assert.throws(
+        () => permController.validatePermittedAccounts(true),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on true'
       )
 
-      await assert.rejects(
-        permController.validatePermittedAccounts({}),
+      await assert.throws(
+        () => permController.validatePermittedAccounts({}),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on non-array object'
       )
@@ -416,8 +416,8 @@ describe('permissions controller', function () {
 
     it('throws error on empty array of accounts', async function () {
 
-      await assert.rejects(
-        permController.validatePermittedAccounts([]),
+      await assert.throws(
+        () => permController.validatePermittedAccounts([]),
         ERRORS.validatePermittedAccounts.invalidParam(),
         'should throw on empty array'
       )
@@ -427,14 +427,14 @@ describe('permissions controller', function () {
 
       const keyringAccounts = await permController.getKeyringAccounts()
 
-      await assert.rejects(
-        permController.validatePermittedAccounts([DUMMY_ACCOUNT]),
+      await assert.throws(
+        () => permController.validatePermittedAccounts([DUMMY_ACCOUNT]),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account'
       )
 
-      await assert.rejects(
-        permController.validatePermittedAccounts(keyringAccounts.concat(DUMMY_ACCOUNT)),
+      await assert.throws(
+        () => permController.validatePermittedAccounts(keyringAccounts.concat(DUMMY_ACCOUNT)),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
         'should throw on non-keyring account with other accounts'
       )
@@ -444,18 +444,18 @@ describe('permissions controller', function () {
 
       const keyringAccounts = await permController.getKeyringAccounts()
 
-      await assert.doesNotReject(
-        permController.validatePermittedAccounts(keyringAccounts),
+      await assert.doesNotThrow(
+        () => permController.validatePermittedAccounts(keyringAccounts),
         'should not throw on all keyring accounts'
       )
 
-      await assert.doesNotReject(
-        permController.validatePermittedAccounts([ keyringAccounts[0] ]),
+      await assert.doesNotThrow(
+        () => permController.validatePermittedAccounts([ keyringAccounts[0] ]),
         'should not throw on single keyring account'
       )
 
-      await assert.doesNotReject(
-        permController.validatePermittedAccounts([ keyringAccounts[1] ]),
+      await assert.doesNotThrow(
+        () => permController.validatePermittedAccounts([ keyringAccounts[1] ]),
         'should not throw on single keyring account'
       )
     })

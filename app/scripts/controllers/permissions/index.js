@@ -325,7 +325,7 @@ export class PermissionsController {
 
     if (ethAccounts) {
 
-      await this.validatePermittedAccounts(finalizedAccounts)
+      this.validatePermittedAccounts(finalizedAccounts)
 
       if (!ethAccounts.caveats) {
         ethAccounts.caveats = []
@@ -354,16 +354,15 @@ export class PermissionsController {
    *
    * @param {string[]} accounts - An array of addresses.
    */
-  async validatePermittedAccounts (accounts) {
-
+  validatePermittedAccounts (accounts) {
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
 
     // assert accounts exist
-    const allAccounts = await this.getKeyringAccounts()
+    const allIdentities = this._getIdentities()
     accounts.forEach((acc) => {
-      if (!allAccounts.includes(acc)) {
+      if (!allIdentities[acc]) {
         throw new Error(`Unknown account: ${acc}`)
       }
     })
