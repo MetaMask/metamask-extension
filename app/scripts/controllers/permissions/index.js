@@ -24,7 +24,6 @@ export class PermissionsController {
 
   constructor (
     {
-      getIdentities,
       getKeyringAccounts,
       getRestrictedMethods,
       getUnlockPromise,
@@ -42,14 +41,16 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
-    this.getIdentities = getIdentities
     this.getKeyringAccounts = getKeyringAccounts
     this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
     this._showPermissionRequest = showPermissionRequest
 
-    this._restrictedMethods = getRestrictedMethods(this)
+    this._restrictedMethods = getRestrictedMethods({
+      getKeyringAccounts: this.getKeyringAccounts.bind(this),
+      getIdentities: this._getIdentities.bind(this),
+    })
     this.permissionsLog = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),
       store: this.store,
@@ -58,6 +59,7 @@ export class PermissionsController {
     this.pendingApprovalOrigins = new Set()
     this._initializePermissions(restoredPermissions)
     this._lastSelectedAddress = preferences.getState().selectedAddress
+    this.preferences = preferences
 
     preferences.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
@@ -139,6 +141,15 @@ export class PermissionsController {
    */
   hasPermission (origin, permission) {
     return Boolean(this.permissions.getPermission(origin, permission))
+  }
+
+  /**
+   * Gets the identities from the preferences controller store
+   *
+   * @returns {Object} identities
+   */
+  _getIdentities () {
+    return this.preferences.getState().identities
   }
 
   /**

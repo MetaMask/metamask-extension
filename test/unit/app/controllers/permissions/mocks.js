@@ -35,10 +35,13 @@ const keyringAccounts = deepFreeze([
 const getKeyringAccounts = async () => [ ...keyringAccounts ]
 
 const getIdentities = () => {
-  return keyringAccounts.reduce((identities, address, index) => {
-    identities[address] = { address, name: `Account ${index}` }
-    return identities
-  }, {})
+  return keyringAccounts.reduce(
+    (identities, address, index) => {
+      identities[address] = { address, name: `Account ${index}` }
+      return identities
+    },
+    {}
+  )
 }
 
 // perm controller initialization helper
@@ -73,7 +76,6 @@ const getUnlockPromise = () => Promise.resolve()
 export function getPermControllerOpts () {
   return {
     showPermissionRequest: noop,
-    getIdentities,
     getKeyringAccounts,
     getUnlockPromise,
     getRestrictedMethods,
@@ -81,7 +83,10 @@ export function getPermControllerOpts () {
     notifyAllDomains: noop,
     preferences: {
       getState: () => {
-        return { selectedAddress: keyringAccounts[0] }
+        return {
+          identities: getIdentities(),
+          selectedAddress: keyringAccounts[0],
+        }
       },
       subscribe: noop,
     },

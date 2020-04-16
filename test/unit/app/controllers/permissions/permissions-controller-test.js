@@ -630,22 +630,29 @@ describe('permissions controller', function () {
     })
   })
 
-  describe.only('preferences state update', function () {
+  describe('preferences state update', function () {
 
-    let permController, notifications, preferences, getIdentities
+    let permController, notifications, preferences, identities
 
     beforeEach(function () {
-      getIdentities = sinon.stub()
-      preferences = {
-        getState: () => {
-          return { selectedAddress: DUMMY_ACCOUNT }
+      identities = ALL_ACCOUNTS.reduce(
+        (identities, account) => {
+          identities[account] = {}
+          return identities
         },
+        {}
+      )
+      preferences = {
+        getState: sinon.stub(),
         subscribe: sinon.stub(),
       }
+      preferences.getState.returns({
+        identities,
+        selectedAddress: DUMMY_ACCOUNT,
+      })
       notifications = initNotifications()
       permController = new PermissionsController({
         ...getPermControllerOpts(),
-        getIdentities,
         notifyDomain: getNotifyDomain(notifications),
         notifyAllDomains: getNotifyAllDomains(notifications),
         preferences,
@@ -661,13 +668,7 @@ describe('permissions controller', function () {
     })
 
     it('should throw if given invalid account', async function () {
-      getIdentities.returns(ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {}
-          return identities
-        },
-        {}
-      ))
+
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -680,13 +681,6 @@ describe('permissions controller', function () {
     })
 
     it('should do nothing if account not permitted for any origins', async function () {
-      getIdentities.returns(ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {}
-          return identities
-        },
-        {}
-      ))
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -703,18 +697,8 @@ describe('permissions controller', function () {
       )
     })
 
-    it('should do nothing if account already first in array for each connected site', async function () {
-      getIdentities.returns(ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {
-            lastSelected: account === ACCOUNT_ARRAYS.a[0]
-              ? 1000
-              : undefined,
-          }
-          return identities
-        },
-        {}
-      ))
+    it('should emit notification if account already first in array for each connected site', async function () {
+      identities[ACCOUNT_ARRAYS.a[0]] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -734,17 +718,7 @@ describe('permissions controller', function () {
     })
 
     it('should emit notification just for connected domains', async function () {
-      getIdentities.returns(ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {
-            lastSelected: account === EXTRA_ACCOUNT
-              ? 1000
-              : undefined,
-          }
-          return identities
-        },
-        {}
-      ))
+      identities[EXTRA_ACCOUNT] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -763,17 +737,7 @@ describe('permissions controller', function () {
     })
 
     it('should emit notification for multiple connected domains', async function () {
-      getIdentities.returns(ALL_ACCOUNTS.reduce(
-        (identities, account) => {
-          identities[account] = {
-            lastSelected: account === ACCOUNT_ARRAYS.a[1]
-              ? 1000
-              : undefined,
-          }
-          return identities
-        },
-        {}
-      ))
+      identities[ACCOUNT_ARRAYS.a[1]] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
