@@ -1,8 +1,10 @@
-const log = require('loglevel')
-const util = require('./util')
-const BigNumber = require('bignumber.js')
+import log from 'loglevel'
+import BigNumber from 'bignumber.js'
 import contractMapETH from 'eth-contract-metadata'
 import contractMapPOA from 'poa-contract-metadata'
+import contractMapRSK from 'rsk-contract-metadata'
+import contractMapRSKTest from 'rsk-test-contract-metadata'
+const util = require('./util')
 
 const casedContractMapETH = Object.keys(contractMapETH).reduce((acc, base) => {
   return {
@@ -18,7 +20,21 @@ const casedContractMapPOA = Object.keys(contractMapPOA).reduce((acc, base) => {
   }
 }, {})
 
-const casedContractMap = Object.assign(casedContractMapETH, casedContractMapPOA)
+const casedContractMapRSK = Object.keys(contractMapRSK).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMapRSK[base],
+  }
+}, {})
+
+const casedContractMapRSKTest = Object.keys(contractMapRSKTest).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMapRSKTest[base],
+  }
+}, {})
+
+const casedContractMap = Object.assign(casedContractMapETH, casedContractMapPOA, casedContractMapRSK, casedContractMapRSKTest)
 
 const DEFAULT_SYMBOL = ''
 const DEFAULT_DECIMALS = '0'

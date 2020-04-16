@@ -8,17 +8,17 @@ const { getCurrentKeyring, ifContractAcc, isValidAddress } = require('../../util
 const TokenList = require('./token-list')
 const TokenSearch = require('./token-search')
 const { tokenInfoGetter } = require('../../../../ui/app/token-util')
-const ethUtil = require('ethereumjs-util')
-const abi = require('human-standard-token-abi')
-const Eth = require('ethjs-query')
-const EthContract = require('ethjs-contract')
-const PropTypes = require('prop-types')
+import ethUtil from 'ethereumjs-util'
+import abi from 'human-standard-token-abi'
+import Eth from 'ethjs-query'
+import EthContract from 'ethjs-contract'
+import PropTypes from 'prop-types'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
-const { POA_CODE, MAINNET_CODE } = require('../../../../app/scripts/controllers/network/enums')
+const { POA_CODE, MAINNET_CODE, RSK_CODE, RSK_TESTNET_CODE } = require('../../../../app/scripts/controllers/network/enums')
 
 export default class AddTokenScreen extends Component {
 
@@ -97,7 +97,9 @@ export default class AddTokenScreen extends Component {
     const networkID = parseInt(network)
     let views = []
     const isProdNetworkWithKnownTokens = networkID === MAINNET_CODE ||
-                                         networkID === POA_CODE
+                                         networkID === POA_CODE ||
+                                         networkID === RSK_CODE ||
+                                         networkID === RSK_TESTNET_CODE
     isProdNetworkWithKnownTokens ? views = [h(TabBar, {
       style: {
         paddingTop: '0px',

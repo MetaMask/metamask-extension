@@ -60,6 +60,7 @@ const isEdge = !isIE && !!window.StyleMedia
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
+const requestAccountTabIds = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -144,7 +145,6 @@ setupMetamaskMeshMetrics()
  * @property {Object} infuraNetworkStatus - An object of infura network status checks.
  * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
  * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
- * @property {Array} lostAccounts - TODO: Remove this feature. A leftover from the version-3 migration where our seed-phrase library changed to fix a bug where some accounts were mis-generated, but we recovered the old accounts as "lost" instead of losing them.
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -263,6 +263,12 @@ function setupController (initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds
+    },
+    getOpenMetamaskTabsIds: () => {
+      return openMetamaskTabsIDs
+    },
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
@@ -328,6 +334,10 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
+  const metamaskBlacklistedPorts = [
+    'trezor-connect',
+  ]
+
   const isClientOpenStatus = () => {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
@@ -348,11 +358,15 @@ function setupController (initState, initLangCode) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
+    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+      return false
+    }
+
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      controller.setupTrustedCommunication(portStream, 'MetaMask')
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -382,6 +396,17 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id
+        const url = new URL(remotePort.sender.url)
+        const origin = url.hostname
+
+        remotePort.onMessage.addListener((msg) => {
+          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+            requestAccountTabIds[origin] = tabId
+          }
+        })
+      }
       connectExternal(remotePort)
     }
   }

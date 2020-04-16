@@ -364,6 +364,12 @@ var actions = {
   confirmChangePassword,
 
   createCancelTransaction,
+
+  SET_REQUEST_ACCOUNT_TABS: 'SET_REQUEST_ACCOUNT_TABS',
+  setRequestAccountTabIds,
+  getRequestAccountTabIds,
+  setOpenMetamaskTabsIDs,
+  getOpenMetamaskTabsIds,
 }
 
 module.exports = actions
@@ -1723,6 +1729,7 @@ function showAccountDetail (address) {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      background.handleNewAccountSelected(origin, address)
       dispatch(updateTokens(tokens))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
@@ -2759,5 +2766,33 @@ function showDeleteImportedAccount (identity, keyring) {
 function confirmChangePassword () {
   return {
     type: actions.CONFIRM_CHANGE_PASSWORD,
+  }
+}
+
+function setRequestAccountTabIds (requestAccountTabIds) {
+  return {
+    type: actions.SET_REQUEST_ACCOUNT_TABS,
+    value: requestAccountTabIds,
+  }
+}
+
+function getRequestAccountTabIds () {
+  return async (dispatch) => {
+    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    dispatch(setRequestAccountTabIds(requestAccountTabIds))
+  }
+}
+
+function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+  return {
+    type: actions.SET_OPEN_METAMASK_TAB_IDS,
+    value: openMetaMaskTabIDs,
+  }
+}
+
+function getOpenMetamaskTabsIds () {
+  return async (dispatch) => {
+    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
   }
 }

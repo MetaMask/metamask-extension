@@ -97,6 +97,7 @@ module.exports = {
   getNetworkID,
   getDPath,
   setDPath,
+  getTokenImageFolder,
 }
 
 function valuesFor (obj) {
@@ -566,5 +567,20 @@ function setDPath (keyring, network) {
   const dPath = getDPath(network)
   if (dPath && keyring.setHdPath) {
     keyring.setHdPath(dPath)
+  }
+}
+
+function getTokenImageFolder (networkID) {
+  switch (networkID) {
+    case MAINNET_CODE:
+      return 'images/contract'
+    case POA_CODE:
+      return 'images/contractPOA'
+    case RSK_CODE:
+      return 'images/contractRSK'
+    case RSK_TESTNET_CODE:
+      return 'images/contractRSKTest'
+    default:
+      return 'images/contractPOA'
   }
 }

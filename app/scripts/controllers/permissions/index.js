@@ -298,13 +298,18 @@ export class PermissionsController {
    */
   async updatePermittedAccounts (origin, accounts) {
 
-    await this.validatePermittedAccounts(accounts)
+    // await this.validatePermittedAccounts(accounts)
 
-    this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts,
-    )
+    // this.permissions.updateCaveatFor(
+    //   origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts,
+    // )
 
-    this.notifyDomain(origin, {
+    // this.notifyDomain(origin, {
+    //   method: NOTIFICATION_NAMES.accountsChanged,
+    //   result: accounts,
+    // })
+
+    this.notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
       result: accounts,
     })
@@ -378,14 +383,14 @@ export class PermissionsController {
     // if the accounts changed from the perspective of the dapp,
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
-    if (
-      payload.method === NOTIFICATION_NAMES.accountsChanged &&
-      Array.isArray(payload.result)
-    ) {
-      this.permissionsLog.updateAccountsHistory(
-        origin, payload.result,
-      )
-    }
+    // if (
+    //   payload.method === NOTIFICATION_NAMES.accountsChanged &&
+    //   Array.isArray(payload.result)
+    // ) {
+    //   this.permissionsLog.updateAccountsHistory(
+    //     origin, payload.result,
+    //   )
+    // }
 
     this._notifyDomain(origin, payload)
 
@@ -448,8 +453,8 @@ export class PermissionsController {
     // do nothing if the account is not permitted for the origin, or
     // if it's already first in the array of permitted accounts
     if (
-      !permittedAccounts.includes(account) ||
-      permittedAccounts[0] === account
+      !permittedAccounts.includes(account)
+      //  || permittedAccounts[0] === account
     ) {
       return
     }

@@ -109,8 +109,8 @@ UnlockScreen.prototype.onKeyPress = function (event) {
 }
 
 UnlockScreen.prototype.submitPassword = async function (event) {
-  var element = event.target
-  var password = element.value
+  const element = event.target
+  const password = element.value
   // reset input
   element.value = ''
   try {

@@ -65,10 +65,10 @@ ConfirmTxScreen.prototype.render = function () {
     conversionRate = 1
   }
 
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
+  const unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
   const ind = props.index || 0
-  var txData = unconfTxList[ind] || {}
-  var txParams = txData.params || {}
+  const txData = unconfTxList[ind] || {}
+  const txParams = txData.params || {}
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
@@ -180,7 +180,7 @@ ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event)
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   log.info('conf-tx.js: signing message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   this.props.dispatch(actions.signMsg(params))
@@ -194,7 +194,7 @@ ConfirmTxScreen.prototype.stopPropagation = function (event) {
 
 ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   log.info('conf-tx.js: signing personal message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   this.props.dispatch(actions.signPersonalMsg(params))
@@ -202,7 +202,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   log.info('conf-tx.js: signing typed message')
-  var params = msgData.msgParams
+  const params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
   this.props.dispatch(actions.signTypedMsg(params))

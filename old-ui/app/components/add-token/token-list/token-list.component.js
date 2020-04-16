@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import { checkExistingAddresses } from '../util'
 import TokenListPlaceholder from './token-list-placeholder'
 import Tooltip from '../../tooltip.js'
+const { getTokenImageFolder } = require('../../../util')
 
 export default class InfoBox extends Component {
   static contextTypes = {
@@ -21,7 +22,7 @@ export default class InfoBox extends Component {
   render () {
     const { results = [], selectedTokens = {}, onToggleToken, tokens = [], network } = this.props
     const networkID = parseInt(network)
-    const imagesFolder = networkID === 1 ? 'images/contract' : 'images/contractPOA'
+    const imagesFolder = getTokenImageFolder(networkID)
 
     return results.length === 0
       ? <TokenListPlaceholder />

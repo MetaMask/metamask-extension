@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import contractMapETH from 'eth-contract-metadata'
 import contractMapPOA from 'poa-contract-metadata'
+import contractMapRSK from 'rsk-contract-metadata'
+import contractMapRSKTest from 'rsk-test-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../../../ui/app/components/text-field'
+import { MAINNET_CODE, POA_CODE, RSK_CODE, RSK_TESTNET_CODE } from '../../../../../app/scripts/controllers/network/enums'
 
 let contractList
 
@@ -63,7 +66,7 @@ export default class TokenSearch extends Component {
   }
 
   updateContractList (newNetworkID) {
-    const contractMap = newNetworkID === 1 ? contractMapETH : contractMapPOA
+    const contractMap = this._getContractMap(newNetworkID)
     contractList = Object.entries(contractMap)
       .map(([ _, tokenData]) => tokenData)
       .filter(tokenData => Boolean(tokenData.erc20))
@@ -109,5 +112,20 @@ export default class TokenSearch extends Component {
         startAdornment={this.renderAdornment()}
       />
     )
+  }
+
+  _getContractMap (networkID) {
+    switch (networkID) {
+      case MAINNET_CODE:
+        return contractMapETH
+      case POA_CODE:
+        return contractMapPOA
+      case RSK_CODE:
+        return contractMapRSK
+      case RSK_TESTNET_CODE:
+        return contractMapRSKTest
+      default:
+        return contractMapPOA
+    }
   }
 }

@@ -23,7 +23,7 @@ function mapStateToProps (state) {
 }
 
 InitializeMenuScreen.prototype.render = function () {
-  var state = this.props
+  const state = this.props
 
   switch (state.currentView.name) {
 
@@ -162,10 +162,10 @@ InitializeMenuScreen.prototype.showRestoreVault = function () {
 }
 
 InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
-  var passwordBox = document.getElementById('password-box')
-  var password = passwordBox.value
-  var passwordConfirmBox = document.getElementById('password-box-confirm')
-  var passwordConfirm = passwordConfirmBox.value
+  const passwordBox = document.getElementById('password-box')
+  const password = passwordBox.value
+  const passwordConfirmBox = document.getElementById('password-box-confirm')
+  const passwordConfirm = passwordConfirmBox.value
 
   if (password.length < 8) {
     this.warning = 'password not long enough'

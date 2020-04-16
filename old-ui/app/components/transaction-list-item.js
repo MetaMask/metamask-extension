@@ -75,7 +75,7 @@ TransactionListItem.prototype.render = function () {
   if (transaction.key === 'shapeshift') {
     if (Number(network) === MAINNET_CODE) return h(ShiftListItem, transaction)
   }
-  var date = formatDate(transaction.time)
+  const date = formatDate(transaction.time)
 
   let isLinkable = false
   const numericNet = isNaN(network) ? network : parseInt(network)
@@ -91,9 +91,9 @@ TransactionListItem.prototype.render = function () {
     numericNet === RSK_CODE ||
     numericNet === RSK_TESTNET_CODE
 
-  var isMsg = ('msgParams' in transaction)
-  var isTx = ('txParams' in transaction)
-  var isPending = status === 'unapproved'
+  const isMsg = ('msgParams' in transaction)
+  const isTx = ('txParams' in transaction)
+  const isPending = status === 'unapproved'
   let txParams
   if (isTx) {
     txParams = transaction.txParams
