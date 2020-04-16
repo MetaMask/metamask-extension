@@ -630,7 +630,7 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('preferences state update', function () {
+  describe.only('preferences state update', function () {
 
     let permController, notifications, preferences, getIdentities
 
@@ -722,11 +722,13 @@ describe('permissions controller', function () {
       await onPreferencesUpdate({ selectedAddress: ACCOUNT_ARRAYS.a[0] })
 
       assert.deepEqual(
-        notifications[ORIGINS.b], [],
+        notifications[ORIGINS.b],
+        [NOTIFICATIONS.newAccounts([...ACCOUNT_ARRAYS.a, EXTRA_ACCOUNT])],
         'should not have emitted notification'
       )
       assert.deepEqual(
-        notifications[ORIGINS.c], [],
+        notifications[ORIGINS.c],
+        [NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a)],
         'should not have emitted notification'
       )
     })

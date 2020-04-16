@@ -4,7 +4,7 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
-import { cloneDeep, isEqual } from 'lodash'
+import { cloneDeep } from 'lodash'
 
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
@@ -411,7 +411,7 @@ export class PermissionsController {
 
   /**
    * When a new account is selected in the UI, emit accountsChanged to each origin
-   * where the account order has changed.
+   * where the selected account is exposed.
    *
    * Note: This will emit "false positive" accountsChanged events, but they are
    * handled by the inpage provider.
@@ -445,7 +445,6 @@ export class PermissionsController {
 
   /**
    * When a new account is selected in the UI, emit accountsChanged to 'origin'
-   * if the exposed accounts have changed.
    *
    * Note: This will emit "false positive" accountsChanged events, but they are
    * handled by the inpage provider.
@@ -454,21 +453,6 @@ export class PermissionsController {
    */
   async _handleConnectedAccountSelected (origin) {
     const permittedAccounts = await this.getAccounts(origin)
-
-    const oldPermittedAccounts = this.permissions
-      .getPermission(origin, 'eth_accounts')
-      ?.caveats
-      ?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
-      ?.value
-
-    // Do nothing if the exposed accounts haven't changed
-    // This can happen when:
-    // * The new selected account is not permitted for the origin, or
-    // * It's already first in the array of permitted accounts, or
-    // * The given account isn't the current selected account anymore
-    if (isEqual(permittedAccounts, oldPermittedAccounts)) {
-      return
-    }
 
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
