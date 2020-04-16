@@ -485,7 +485,7 @@ describe('permissions controller', function () {
       )
     })
 
-    it('should throw if given account isn\'t in keyring', async function () {
+    it('should throw if given account is not in keyring', async function () {
       await assert.rejects(
         () => permController.addPermittedAccount(ORIGINS.a, DUMMY_ACCOUNT),
         ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
