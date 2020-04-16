@@ -291,7 +291,7 @@
     "message": " 复制 "
   },
   "copyPrivateKey": {
-    "message": "这是 您的私钥（点击复制）"
+    "message": "这是您的私钥（点击复制）"
   },
   "create": {
     "message": "创建"
@@ -351,7 +351,7 @@
     "message": "直接存入 CFX"
   },
   "directDepositEtherExplainer": {
-    "message": "如果 您已经有了一些 CFX，通过直接转入是 您的新钱包获取 CFX 的最快捷方式。"
+    "message": "如果您已经有了一些 CFX，通过直接转入是您的新钱包获取 CFX 的最快捷方式。"
   },
   "done": {
     "message": "完成"
@@ -381,7 +381,7 @@
     "message": "联系我们"
   },
   "endOfFlowMessage1": {
-    "message": "您已通过测试 - 请妥善保管 您的助记词。这是您的责任！"
+    "message": "您已通过测试 - 请妥善保管您的助记词。这是您的责任！"
   },
   "endOfFlowMessage2": {
     "message": "安全保存小技巧"
@@ -628,7 +628,7 @@
     "message": "是的。立即开始设置！"
   },
   "likeToAddTokens": {
-    "message": " 您想添加这些代币吗？"
+    "message": "您想添加这些代币吗？"
   },
   "links": {
     "message": "链接"
@@ -685,7 +685,7 @@
     "message": "至少选择一种代币."
   },
   "needEtherInWallet": {
-    "message": "使用 ConfluxPortal 与 DAPP 交互，需要 您的钱包里有 CFX。"
+    "message": "使用 ConfluxPortal 与 DAPP 交互，需要您的钱包里有 CFX。"
   },
   "needImportFile": {
     "message": "必须选择导入一个文件。",
@@ -807,7 +807,7 @@
     "message": "密码长度不足"
   },
   "pastePrivateKey": {
-    "message": "请粘贴 您的私钥:",
+    "message": "请粘贴您的私钥:",
     "description": "For importing an account from a private key"
   },
   "pending": {
@@ -833,7 +833,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "注意：永远不要公开这个私钥。任何拥有 您的私钥的人都可以窃取 您帐户中的任何资产。"
+    "message": "注意：永远不要公开这个私钥。任何拥有您的私钥的人都可以窃取您帐户中的任何资产。"
   },
   "privateNetwork": {
     "message": "私有网络"
@@ -845,7 +845,7 @@
     "message": "队列"
   },
   "readdToken": {
-    "message": "之后 您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
+    "message": "之后您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
   },
   "recents": {
     "message": "最近记录"
@@ -1073,7 +1073,7 @@
     "message": "已签名"
   },
   "signNotice": {
-    "message": "签署此消息可能会产生危险的副作用。 \n只从 您完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
+    "message": "签署此消息可能会产生危险的副作用。 \n只从您完全信任的网站上签名。 这种危险的方法将在未来的版本中被移除。"
   },
   "sigRequest": {
     "message": "请求签名"
@@ -1245,14 +1245,14 @@
     "message": "转出"
   },
   "troubleTokenBalances": {
-    "message": "我们无法加载您的代币余额。 您可以查看它们",
+    "message": "我们无法加载您的代币余额。您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "重试"
   },
   "typePassword": {
-    "message": "输入 您的密码"
+    "message": "输入您的密码"
   },
   "unapproved": {
     "message": "未批准"
@@ -1327,13 +1327,13 @@
     "message": "您需要开启相机访问权限，才能使用该功能。"
   },
   "yourSigRequested": {
-    "message": "正在请求 您的签名"
+    "message": "正在请求您的签名"
   },
   "youSign": {
     "message": "正在签名"
   },
   "yourPrivateSeedPhrase": {
-    "message": " 您的私有助记词"
+    "message": "您的私有助记词"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "燃气价格加速上涨"
