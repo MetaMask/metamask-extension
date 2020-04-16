@@ -470,10 +470,6 @@ export class PermissionsController {
       return
     }
 
-    this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, permittedAccounts
-    )
-
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
       result: permittedAccounts,
