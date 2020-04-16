@@ -50,7 +50,7 @@ export default class AccountImportSubview extends Component {
               textDecoration: 'underline',
             }}
             onClick={() => {
-              global.platform.openWindow({
+              global.platform.openTab({
                 url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
               })
             }}

@@ -1894,7 +1894,7 @@ export default class MetamaskController extends EventEmitter {
     const network = this.networkController.getNetworkState()
     const url = getBuyEthUrl({ network, address, amount })
     if (url) {
-      this.platform.openWindow({ url })
+      this.platform.openTab({ url })
     }
   }
 

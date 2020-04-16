@@ -56,7 +56,7 @@ export default class TransactionListItemDetails extends PureComponent {
       },
     })
 
-    global.platform.openWindow({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
+    global.platform.openTab({ url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs) })
   }
 
   handleCancel = (event) => {

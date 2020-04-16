@@ -33,7 +33,7 @@ export default class TransactionActivityLog extends PureComponent {
     const prefix = prefixForNetwork(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
 
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openTab({ url: etherscanUrl })
   }
 
   renderInlineRetry (index, activity) {

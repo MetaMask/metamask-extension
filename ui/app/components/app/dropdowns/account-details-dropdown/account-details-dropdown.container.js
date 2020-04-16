@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
     viewOnEtherscan: (address, network, rpcPrefs) => {
-      global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
+      global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
     },
     showRemoveAccountConfirmationModal: (identity) => {
       return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))

@@ -62,7 +62,7 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-modal__button"
           onClick={() => {
-            global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
+            global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
           }}
         >
           {rpcPrefs.blockExplorerUrl

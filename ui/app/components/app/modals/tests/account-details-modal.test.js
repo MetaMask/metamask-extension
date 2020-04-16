@@ -58,7 +58,7 @@ describe('Account Details Modal', function () {
     const etherscanLink = modalButton.first()
 
     etherscanLink.simulate('click')
-    assert(global.platform.openWindow.calledOnce)
+    assert(global.platform.openTab.calledOnce)
   })
 
   it('shows export private key modal when clicked', function () {

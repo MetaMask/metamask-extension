@@ -40,7 +40,7 @@ class TokenMenuDropdown extends Component {
           onClick={(e) => {
             e.stopPropagation()
             const url = genAccountLink(this.props.token.address, this.props.network)
-            global.platform.openWindow({ url })
+            global.platform.openTab({ url })
             this.props.onClose()
           }}
           text={this.context.t('viewOnEtherscan')}
