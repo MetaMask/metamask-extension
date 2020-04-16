@@ -12,6 +12,18 @@ class ExtensionPlatform {
     extension.runtime.reload()
   }
 
+  openTab (options) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.create(options, (newTab) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newTab)
+      })
+    })
+  }
+
   openWindow (options) {
     return new Promise((resolve, reject) => {
       extension.windows.create(options, (newWindow) => {
@@ -68,7 +80,7 @@ class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`
     }
-    this.openWindow({ url: extensionURL })
+    this.openTab({ url: extensionURL })
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
