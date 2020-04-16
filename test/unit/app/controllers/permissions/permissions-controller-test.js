@@ -33,6 +33,7 @@ const {
 } = getters
 
 const {
+  ALL_ACCOUNTS,
   ACCOUNT_ARRAYS,
   DUMMY_ACCOUNT,
   ORIGINS,
@@ -460,115 +461,6 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('updatePermittedAccounts', function () {
-
-    let permController, notifications
-
-    beforeEach(function () {
-      notifications = initNotifications()
-      permController = initPermController(notifications)
-      grantPermissions(
-        permController, ORIGINS.a,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
-      )
-      grantPermissions(
-        permController, ORIGINS.b,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b)
-      )
-    })
-
-    it('throws on invalid accounts', async function () {
-
-      await assert.rejects(
-        permController.updatePermittedAccounts(ORIGINS.a, {}),
-        ERRORS.validatePermittedAccounts.invalidParam(),
-        'should throw on non-array accounts param'
-      )
-
-      await assert.rejects(
-        permController.updatePermittedAccounts(ORIGINS.a, []),
-        ERRORS.validatePermittedAccounts.invalidParam(),
-        'should throw on empty array accounts param'
-      )
-
-      await assert.rejects(
-        permController.updatePermittedAccounts(ORIGINS.a, [DUMMY_ACCOUNT]),
-        ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
-        'should throw on non-keyring account'
-      )
-    })
-
-    it('throws if origin invalid or lacks eth_accounts permission', async function () {
-
-      await assert.rejects(
-        permController.updatePermittedAccounts(false, ACCOUNT_ARRAYS.a),
-        ERRORS.updatePermittedAccounts.invalidOrigin(),
-        'should throw on invalid origin'
-      )
-
-      await assert.rejects(
-        permController.updatePermittedAccounts(ORIGINS.c, ACCOUNT_ARRAYS.a),
-        ERRORS.updatePermittedAccounts.invalidOrigin(),
-        'should throw on origin without eth_accounts permission'
-      )
-    })
-
-    it('successfully updates permitted accounts', async function () {
-
-      await permController.updatePermittedAccounts(ORIGINS.a, ACCOUNT_ARRAYS.b)
-      await permController.updatePermittedAccounts(ORIGINS.b, ACCOUNT_ARRAYS.c)
-
-      let aAccounts = await permController.getAccounts(ORIGINS.a)
-      let bAccounts = await permController.getAccounts(ORIGINS.b)
-
-      assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.b,
-        'first origin should have correct accounts'
-      )
-      assert.deepEqual(
-        bAccounts, ACCOUNT_ARRAYS.c,
-        'first origin should have correct accounts'
-      )
-
-      assert.deepEqual(
-        notifications[ORIGINS.a][0],
-        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.b),
-        'first origin should have correct notification'
-      )
-      assert.deepEqual(
-        notifications[ORIGINS.b][0],
-        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.c),
-        'second origin should have correct notification'
-      )
-
-      await permController.updatePermittedAccounts(ORIGINS.a, ACCOUNT_ARRAYS.c)
-      await permController.updatePermittedAccounts(ORIGINS.b, ACCOUNT_ARRAYS.a)
-
-      aAccounts = await permController.getAccounts(ORIGINS.a)
-      bAccounts = await permController.getAccounts(ORIGINS.b)
-
-      assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.c,
-        'first origin should have correct accounts'
-      )
-      assert.deepEqual(
-        bAccounts, ACCOUNT_ARRAYS.a,
-        'first origin should have correct accounts'
-      )
-
-      assert.deepEqual(
-        notifications[ORIGINS.a][1],
-        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.c),
-        'first origin should have correct notification'
-      )
-      assert.deepEqual(
-        notifications[ORIGINS.b][1],
-        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a),
-        'second origin should have correct notification'
-      )
-    })
-  })
-
   describe('finalizePermissionsRequest', function () {
 
     let permController
@@ -740,15 +632,24 @@ describe('permissions controller', function () {
 
   describe('preferences state update', function () {
 
-    let permController, notifications, preferences
+    let permController, notifications, preferences, identities
 
     beforeEach(function () {
-      preferences = {
-        getState: () => {
-          return { selectedAddress: DUMMY_ACCOUNT }
+      identities = ALL_ACCOUNTS.reduce(
+        (identities, account) => {
+          identities[account] = {}
+          return identities
         },
+        {}
+      )
+      preferences = {
+        getState: sinon.stub(),
         subscribe: sinon.stub(),
       }
+      preferences.getState.returns({
+        identities,
+        selectedAddress: DUMMY_ACCOUNT,
+      })
       notifications = initNotifications()
       permController = new PermissionsController({
         ...getPermControllerOpts(),
@@ -767,6 +668,7 @@ describe('permissions controller', function () {
     })
 
     it('should throw if given invalid account', async function () {
+
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -795,7 +697,8 @@ describe('permissions controller', function () {
       )
     })
 
-    it('should do nothing if account already first in array for each connected site', async function () {
+    it('should emit notification if account already first in array for each connected site', async function () {
+      identities[ACCOUNT_ARRAYS.a[0]] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -803,16 +706,19 @@ describe('permissions controller', function () {
       await onPreferencesUpdate({ selectedAddress: ACCOUNT_ARRAYS.a[0] })
 
       assert.deepEqual(
-        notifications[ORIGINS.b], [],
+        notifications[ORIGINS.b],
+        [NOTIFICATIONS.newAccounts([...ACCOUNT_ARRAYS.a, EXTRA_ACCOUNT])],
         'should not have emitted notification'
       )
       assert.deepEqual(
-        notifications[ORIGINS.c], [],
+        notifications[ORIGINS.c],
+        [NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a)],
         'should not have emitted notification'
       )
     })
 
     it('should emit notification just for connected domains', async function () {
+      identities[EXTRA_ACCOUNT] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
@@ -831,6 +737,7 @@ describe('permissions controller', function () {
     })
 
     it('should emit notification for multiple connected domains', async function () {
+      identities[ACCOUNT_ARRAYS.a[1]] = { lastSelected: 1000 }
       assert(preferences.subscribe.calledOnce)
       assert(preferences.subscribe.firstCall.args.length === 1)
       const onPreferencesUpdate = preferences.subscribe.firstCall.args[0]
