@@ -307,6 +307,40 @@ export class PermissionsController {
   }
 
   /**
+   * Expose an account to the given origin. Changes the eth_accounts
+   * permissions and emits accountsChanged.
+   *
+   * Throws error if the origin or account is invalid, or if the update fails.
+   *
+   * @param {string} origin - The origin to expose the account to.
+   * @param {string} account - The new account to expose.
+   */
+  async addPermittedAccount (origin, account) {
+    const domains = this.permissions.getDomains()
+    if (!domains[origin]) {
+      throw new Error('Unrecognized domain')
+    }
+    this.validatePermittedAccounts([account])
+
+    const oldPermittedAccounts = this._getPermittedAccounts(origin)
+    if (!oldPermittedAccounts) {
+      throw new Error('Origin does not have \'eth_accounts\' permission')
+    } else if (oldPermittedAccounts.includes(account)) {
+      throw new Error('Account is already permitted')
+    }
+
+    this.permissions.updateCaveatFor(
+      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, [...oldPermittedAccounts, account]
+    )
+    const permittedAccounts = await this.getAccounts(origin)
+
+    this.notifyDomain(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: permittedAccounts,
+    })
+  }
+
+  /**
    * Finalizes a permissions request. Throws if request validation fails.
    * Clones the passed-in parameters to prevent inadvertent modification.
    * Sets (adds or replaces) caveats for the following permissions:
@@ -417,6 +451,22 @@ export class PermissionsController {
         })
       )
     })
+  }
+
+  /**
+   * Get current set of permitted accounts for the given origin
+   *
+   * @param {string} origin - The origin to obtain permitted accounts for
+   * @returns {Array<string>|null} The list of permitted accounts
+   */
+  _getPermittedAccounts (origin) {
+    const permittedAccounts = this.permissions
+      .getPermission(origin, 'eth_accounts')
+      ?.caveats
+      ?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
+      ?.value
+
+    return permittedAccounts || null
   }
 
   /**
