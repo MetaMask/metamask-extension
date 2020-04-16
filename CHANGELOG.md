@@ -2,6 +2,49 @@
 
 ## Current Develop Branch
 
+## 0.1.3 Thu Apr 16 2020
+- Version v0.1.0 RC (#64)
+- Add: upgrade multihashes (#67)
+- Add: changelog
+- Version v0.1.0
+- Version v0.0.9 RC (#58)
+- Add: new address rule, conflux hdpath
+- Add: update local-network-lite to 2.0.3
+- Add: getTransactionCount -> getNextNonce
+- Add: new storage, epoch height, nonce logic
+- Add: update keyring controller to 5.6.5
+- Add: change chainId
+- Add: new sign logic, v to 27 28, won't depend on chainId
+- Fix: e2e test initial state
+- Add: new gas/storage logic
+- Add: update local-network-lite and chromedriver
+- Fix: lint
+- Fix: remove duplicate mocha settings
+- Fix: remove killPortProcess option, no lsof on circle ci test container
+- Fix: e2e tests, update js-conflux-sdk to 0.9.1
+- Fix: try fix ci chromedriver version issue
+- Add: testnet cfx warning, use new fc contract address
+- Add: fc by default
+- Fix: logo image
+- Add: install latest chrome
+- Fix: default show fc e2e test
+- Fix: use info-circle.svg instead of fa-info-circle
+- Fix: testnet cfx warning
+- Clean: chrome-install script
+- Fix: benchmark
+- Clean: remove mm-secure logo
+- Add: change send cfx placeholder
+- Fix: zh_CN documents
+- Fix: Conflux Portal -> ConfluxPortal
+- Add: test on latest version of fullnode
+- Add: addresses -> address
+- Fix: Confluxscan -> ConfluxScan 种子密语 -> 助记词
+- Add: update local network lite
+- Fix: upgrade conflux-local-network-lite
+- Add: test on latest fullnode
+- Add: i18n
+- Version v0.1.3
+
 ## 0.1.0 Fri Mar 27 2020
 - Sync Version v0.0.9 RC (#58) from master (#60)
 - new sign logic (#62)
