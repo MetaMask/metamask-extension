@@ -89,7 +89,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and customize RPC"
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -101,7 +101,7 @@
     "message": "e.g. John D."
   },
   "addAlias": {
-    "message": "Add alias"
+    "message": "Add Alias"
   },
   "addToken": {
     "message": "Add Token"
@@ -520,7 +520,7 @@
     "message": "Error in ENS name registration"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Conflux don't support ENS yet"
+    "message": "Conflux Network doesn't support ENS"
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -1398,19 +1398,19 @@
     "message": "Sync with mobile"
   },
   "syncWithMobileDesc": {
-    "message": "You can sync your accounts and information with your mobile device. Open the ConfluxPortal mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\" (Conflux version of MetaMask don't support mobile yet)"
+    "message": "You can sync your accounts and information with your mobile device. Open the ConfluxPortal mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\" (ConfluxPortal doesn't support mobile yet)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "If you just open the ConfluxPortal Mobile app for the first time, just follow the steps in your phone. (Conflux version of MetaMask don't support mobile yet)"
+    "message": "If you just open the ConfluxPortal Mobile app for the first time, just follow the steps in your phone. (ConfluxPortal doesn't support mobile yet)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scan this code with your ConfluxPortal mobile app (Conflux version of MetaMask don't support mobile yet)"
+    "message": "Scan this code with your ConfluxPortal mobile app (ConfluxPortal doesn't support mobile yet)"
   },
   "syncWithMobileBeCareful": {
-    "message": "Make sure nobody else is looking at your screen when you scan this code (Conflux version of MetaMask don't support mobile yet)"
+    "message": "Make sure nobody else is looking at your screen when you scan this code (ConfluxPortal doesn't support mobile yet)"
   },
   "syncWithMobileComplete": {
-    "message": "Your data has been synced successfully. Enjoy the ConfluxPortal mobile app! (Conflux version of MetaMask don't support mobile yet)"
+    "message": "Your data has been synced successfully. Enjoy the ConfluxPortal mobile app! (ConfluxPortal doesn't support mobile yet)"
   },
   "terms": {
     "message": "Terms of Use"
