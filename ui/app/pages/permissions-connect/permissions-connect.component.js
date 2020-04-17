@@ -10,7 +10,6 @@ import {
 } from '../../../../app/scripts/lib/enums'
 import {
   DEFAULT_ROUTE,
-  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
