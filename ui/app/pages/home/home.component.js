@@ -39,6 +39,7 @@ export default class Home extends PureComponent {
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isNotification: PropTypes.bool.isRequired,
     threeBoxSynced: PropTypes.bool,
     setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
@@ -49,6 +50,7 @@ export default class Home extends PureComponent {
     threeBoxLastUpdated: PropTypes.number,
     hasDaiV1Token: PropTypes.bool,
     firstPermissionsRequestId: PropTypes.string,
+    totalUnapprovedCount: PropTypes.number.isRequired,
   }
 
   UNSAFE_componentWillMount () {
@@ -81,11 +83,18 @@ export default class Home extends PureComponent {
 
   componentDidUpdate () {
     const {
-      threeBoxSynced,
+      isNotification,
       setupThreeBox,
       showRestorePrompt,
       threeBoxLastUpdated,
+      threeBoxSynced,
+      totalUnapprovedCount,
     } = this.props
+
+    if (isNotification && totalUnapprovedCount === 0) {
+      global.platform.closeCurrentWindow()
+    }
+
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox()
     }

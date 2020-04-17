@@ -2,8 +2,15 @@ import Home from './home.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token, getFirstPermissionRequest } from '../../selectors/selectors'
+import {
+  unconfirmedTransactionsCountSelector,
+} from '../../selectors/confirm-transaction'
+import {
+  getCurrentEthBalance,
+  getDaiV1Token,
+  getFirstPermissionRequest,
+  getTotalUnapprovedCount,
+} from '../../selectors/selectors'
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
@@ -12,7 +19,10 @@ import {
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../app/scripts/lib/enums'
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state
@@ -26,8 +36,12 @@ const mapStateToProps = (state) => {
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
+  const totalUnapprovedCount = getTotalUnapprovedCount(state)
 
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  const envType = getEnvironmentType()
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION
+
   const firstPermissionsRequest = getFirstPermissionRequest(state)
   const firstPermissionsRequestId = (firstPermissionsRequest && firstPermissionsRequest.metadata)
     ? firstPermissionsRequest.metadata.id
@@ -39,12 +53,14 @@ const mapStateToProps = (state) => {
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    isNotification,
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
     hasDaiV1Token: Boolean(getDaiV1Token(state)),
     firstPermissionsRequestId,
+    totalUnapprovedCount,
   }
 }
 
