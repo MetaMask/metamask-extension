@@ -215,7 +215,7 @@ export default class NewAccount extends PureComponent {
             >
               I have read and agree to the&nbsp;
               <a
-                href="https://metamask.io/terms.html"
+                href="https://confluxnetwork.org/terms/"
                 target="_blank"
                 rel="noopener noreferrer"
               >

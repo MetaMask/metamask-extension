@@ -296,7 +296,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
             I have read and agree to the&nbsp;
             <a
-              href="https://metamask.io/terms.html"
+              href="https://confluxnetwork.org/terms/"
               target="_blank"
               rel="noopener noreferrer"
             >

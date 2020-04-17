@@ -156,7 +156,7 @@ export default class MetaMetricsOptIn extends Component {
               more information in relation to our privacy practices, please see
               our&nbsp;
               <a
-                href="https://metamask.io/privacy.html"
+                href="https://confluxnetwork.org/policy/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
