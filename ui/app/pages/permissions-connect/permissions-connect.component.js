@@ -10,7 +10,6 @@ import {
 } from '../../../../app/scripts/lib/enums'
 import {
   DEFAULT_ROUTE,
-  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 
@@ -116,7 +115,7 @@ export default class PermissionConnect extends Component {
         global.platform.closeCurrentWindow()
       }, 2000)
     } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      history.push(CONNECTED_ROUTE)
+      history.push(DEFAULT_ROUTE)
     }
   }
 
