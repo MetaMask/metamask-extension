@@ -21,6 +21,7 @@
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive mocha test/unit-global/*",
     "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/{,**/!(permissions)}/*.js\" \"ui/app/**/*.test.js\"",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/permissions/*.js\"",
+    "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
     "test:integration": "yarn test:integration:build && yarn test:flat",
     "test:integration:build": "yarn build styles",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
