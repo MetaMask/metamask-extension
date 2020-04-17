@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 0.1.4 Fri Apr 17 2020
+- Fix: don't count stroageLimit into total tx fee (#73)
+- Add: new fc address
+
 ## 0.1.3 Thu Apr 16 2020
 - Version v0.1.0 RC (#64)
 - Add: upgrade multihashes (#67)
