@@ -116,7 +116,7 @@ export default class PermissionConnect extends Component {
         global.platform.closeCurrentWindow()
       }, 2000)
     } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      history.push(CONNECTED_ROUTE)
+      history.push(DEFAULT_ROUTE)
     }
   }
 
