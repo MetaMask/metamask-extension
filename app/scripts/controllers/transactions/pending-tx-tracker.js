@@ -215,10 +215,13 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {boolean}
   */
 
-  async _checkIftxWasDropped (txMeta, { blockNumber }) {
+  async _checkIftxWasDropped (txMeta, transactionReceipt) {
     const { txParams: { nonce, from } } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
-    if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
+    if (
+      !transactionReceipt?.blockNumber &&
+      parseInt(nextNonce) > parseInt(nonce)
+    ) {
       return true
     }
     return false
