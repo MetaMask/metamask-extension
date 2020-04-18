@@ -110,7 +110,7 @@ async function getFirstParentDirectoryThatExists (directory) {
 async function main () {
   const args = process.argv.slice(2)
 
-  let pages = ['notification']
+  let pages = ['home']
   let numSamples = DEFAULT_NUM_SAMPLES
   let outputPath
   let outputDirectory
