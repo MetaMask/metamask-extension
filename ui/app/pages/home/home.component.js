@@ -72,8 +72,14 @@ export default class Home extends PureComponent {
   componentDidMount () {
     const {
       history,
+      isNotification,
       suggestedTokens = {},
+      totalUnapprovedCount,
     } = this.props
+
+    if (isNotification && totalUnapprovedCount === 0) {
+      global.platform.closeCurrentWindow()
+    }
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
