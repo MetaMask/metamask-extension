@@ -1,17 +1,12 @@
 import blacklist from './recipient-blacklist'
 
-/** @module*/
-export default {
-  checkAccount,
-}
-
 /**
- * Checks if a specified account on a specified network is blacklisted.
-  @param {number} networkId
-  @param {string} account
-*/
-function checkAccount (networkId, account) {
-
+ * Checks if a specified account on a specified network is blacklisted
+ * @param {number} networkId
+ * @param {string} account
+ * @throws {Error} if the account is blacklisted on mainnet
+ */
+export function throwIfAccountIsBlacklisted (networkId, account) {
   const mainnetId = 1
   if (networkId !== mainnetId) {
     return
