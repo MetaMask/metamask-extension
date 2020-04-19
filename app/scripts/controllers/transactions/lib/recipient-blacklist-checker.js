@@ -1,4 +1,4 @@
-import Config from './recipient-blacklist.js'
+import blacklist from './recipient-blacklist'
 
 /** @module*/
 export default {
@@ -18,7 +18,7 @@ function checkAccount (networkId, account) {
   }
 
   const accountToCheck = account.toLowerCase()
-  if (Config.blacklist.includes(accountToCheck)) {
+  if (blacklist.includes(accountToCheck)) {
     throw new Error('Recipient is a public account')
   }
 }
