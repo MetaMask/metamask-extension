@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import recipientBlackListChecker from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
 import { ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE } from '../../../../../app/scripts/controllers/network/enums'
 import KeyringController from 'eth-keyring-controller'
@@ -22,7 +22,7 @@ describe('Recipient Blacklist Checker', function () {
     it('does not fail on test networks', function () {
       let callCount = 0
       const networks = [ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE]
-      for (const networkId in networks) {
+      for (const networkId of networks) {
         publicAccounts.forEach((account) => {
           recipientBlackListChecker.checkAccount(networkId, account)
           callCount++
