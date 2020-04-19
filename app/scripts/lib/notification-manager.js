@@ -29,17 +29,30 @@ class NotificationManager {
       // bring focus to existing chrome popup
       await this.platform.focusWindow(popup.id)
     } else {
-      const { screenX, screenY, outerWidth, outerHeight } = window
-      const notificationTop = Math.round(screenY + (outerHeight / 2) - (NOTIFICATION_HEIGHT / 2))
-      const notificationLeft = Math.round(screenX + (outerWidth / 2) - (NOTIFICATION_WIDTH / 2))
+      let left = 0
+      let top = 0
+      try {
+        const lastFocused = await this.platform.getLastFocusedWindow()
+        // Position window in top right corner of lastFocused window.
+        top = lastFocused.top
+        left = lastFocused.left + (lastFocused.width - NOTIFICATION_WIDTH)
+      } catch (_) {
+        // The following properties are more than likely 0, due to being
+        // opened from the background chrome process for the extension that
+        // has no physical dimensions
+        const { screenX, screenY, outerWidth } = window
+        top = Math.max(screenY, 0)
+        left = Math.max(screenX + (outerWidth - NOTIFICATION_WIDTH), 0)
+      }
+
       // create new notification popup
       const popupWindow = await this.platform.openWindow({
         url: 'notification.html',
         type: 'popup',
         width: NOTIFICATION_WIDTH,
         height: NOTIFICATION_HEIGHT,
-        top: Math.max(notificationTop, 0),
-        left: Math.max(notificationLeft, 0),
+        left,
+        top,
       })
       this._popupId = popupWindow.id
     }
