@@ -315,18 +315,18 @@ export function getTotalUnapprovedCount (state) {
     unapprovedTypedMessagesCount = 0,
   } = state.metamask
 
-  return getUnapprovedTxCount() + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
-    getPermissionsRequestCount(state) + getSuggestedTokenCount(state)
+  return unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount + unapprovedTypedMessagesCount +
+    getUnapprovedTxCount(state) + getPermissionsRequestCount(state) + getSuggestedTokenCount(state)
 }
 
 function getUnapprovedTxCount (state) {
-  const { unapprovedTxs = {} } = state
+  const { unapprovedTxs = {} } = state.metamask
   return Object.keys(unapprovedTxs).length
 }
 
 function getSuggestedTokenCount (state) {
-  const { suggestedTokens = {} } = state
+  const { suggestedTokens = {} } = state.metamask
   return Object.keys(suggestedTokens).length
 }
 
