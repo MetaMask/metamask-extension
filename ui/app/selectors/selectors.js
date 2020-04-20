@@ -373,11 +373,12 @@ export function getPermissionsDescriptions (state) {
 }
 
 export function getPermissionsRequests (state) {
-  return state.metamask.permissionsRequests
+  return state.metamask.permissionsRequests || []
 }
 
 export function getPermissionsRequestCount (state) {
-  return Object.keys(state.metamask.permissionsRequests).length
+  const permissionsRequests = getPermissionsRequests(state)
+  return permissionsRequests.length
 }
 
 export function getDomainMetadata (state) {
