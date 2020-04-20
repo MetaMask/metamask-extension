@@ -57,7 +57,7 @@ describe('Transaction Controller', function () {
       const exposedState = txController.getState()
       assert.ok('unapprovedTxs' in exposedState, 'state should have the key unapprovedTxs')
       assert.ok('currentNetworkTxList' in exposedState, 'state should have the key currentNetworkTxList')
-      assert.ok(exposedState && typeof exposedState.unapprovedTxs === 'object', 'should be an object')
+      assert.ok(typeof exposedState?.unapprovedTxs === 'object', 'should be an object')
       assert.ok(Array.isArray(exposedState.currentNetworkTxList), 'should be an array')
     })
   })
@@ -177,11 +177,11 @@ describe('Transaction Controller', function () {
 
     it('should add an unapproved transaction and return a valid txMeta', async function () {
       const txMeta = await txController.addUnapprovedTransaction({ from: selectedAddress })
-      assert.ok(('id' in txMeta), 'should have a id')
-      assert.ok(('time' in txMeta), 'should have a time stamp')
-      assert.ok(('metamaskNetworkId' in txMeta), 'should have a metamaskNetworkId')
-      assert.ok(('txParams' in txMeta), 'should have a txParams')
-      assert.ok(('history' in txMeta), 'should have a history')
+      assert.ok('id' in txMeta, 'should have a id')
+      assert.ok('time' in txMeta, 'should have a time stamp')
+      assert.ok('metamaskNetworkId' in txMeta, 'should have a metamaskNetworkId')
+      assert.ok('txParams' in txMeta, 'should have a txParams')
+      assert.ok('history' in txMeta, 'should have a history')
 
       const memTxMeta = txController.txStateManager.getTx(txMeta.id)
       assert.deepEqual(txMeta, memTxMeta)
