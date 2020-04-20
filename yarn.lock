@@ -10809,7 +10809,7 @@ ethereumjs-wallet@0.6.0, ethereumjs-wallet@^0.6.0:
     utf8 "^2.1.1"
     uuid "^2.0.1"
 
-ethereumjs-wallet@0.6.3, ethereumjs-wallet@dmihal/ethereumjs-wallet#use-scrypt-shim:
+ethereumjs-wallet@0.6.3:
   version "0.6.3"
   resolved "https://codeload.github.com/dmihal/ethereumjs-wallet/tar.gz/3942d99aa3ed3c8d334bab19d107d772e6e27041"
   dependencies:
