@@ -40,7 +40,7 @@ describe('txUtils', function () {
       assert.ok(!normalizedTxParams.to, 'there should be no to address if null')
       assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hex-prefixed')
       assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hex-prefixed')
-      assert.ok(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
+      assert.ok(!('random' in normalizedTxParams), 'there should be no random key in normalizedTxParams')
 
       txParams.to = 'a7df1beDBF813f57096dF77FCd515f0B3900e402'
       normalizedTxParams = txUtils.normalizeTxParams(txParams)
