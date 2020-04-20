@@ -2832,6 +2832,14 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@web3-js/scrypt-shim@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@web3-js/scrypt-shim/-/scrypt-shim-0.1.0.tgz#0bf7529ab6788311d3e07586f7d89107c3bea2cc"
+  integrity sha512-ZtZeWCc/s0nMcdx/+rZwY1EcuRdemOK9ag21ty9UsHkFxsNb/AaoucUz0iPuyGe0Ku+PFuRmWZG7Z7462p9xPw==
+  dependencies:
+    scryptsy "^2.1.0"
+    semver "^6.3.0"
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
@@ -10801,18 +10809,16 @@ ethereumjs-wallet@0.6.0, ethereumjs-wallet@^0.6.0:
     utf8 "^2.1.1"
     uuid "^2.0.1"
 
-ethereumjs-wallet@0.6.3:
+ethereumjs-wallet@0.6.3, ethereumjs-wallet@dmihal/ethereumjs-wallet#use-scrypt-shim:
   version "0.6.3"
-  resolved "https://registry.yarnpkg.com/ethereumjs-wallet/-/ethereumjs-wallet-0.6.3.tgz#b0eae6f327637c2aeb9ccb9047b982ac542e6ab1"
-  integrity sha512-qiXPiZOsStem+Dj/CQHbn5qex+FVkuPmGH7SvSnA9F3tdRDt8dLMyvIj3+U05QzVZNPYh4HXEdnzoYI4dZkr9w==
+  resolved "https://codeload.github.com/dmihal/ethereumjs-wallet/tar.gz/3942d99aa3ed3c8d334bab19d107d772e6e27041"
   dependencies:
+    "@web3-js/scrypt-shim" "^0.1.0"
     aes-js "^3.1.1"
     bs58check "^2.1.2"
     ethereumjs-util "^6.0.0"
-    hdkey "^1.1.0"
+    hdkey "^1.1.1"
     randombytes "^2.0.6"
-    safe-buffer "^5.1.2"
-    scrypt.js "^0.3.0"
     utf8 "^3.0.0"
     uuid "^3.3.2"
 
@@ -13708,12 +13714,12 @@ hdkey@^0.7.0:
     coinstring "^2.0.0"
     secp256k1 "^3.0.1"
 
-hdkey@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-1.1.1.tgz#c2b3bfd5883ff9529b72f2f08b28be0972a9f64a"
-  integrity sha512-DvHZ5OuavsfWs5yfVJZestsnc3wzPvLWNk6c2nRUfo6X+OtxypGt20vDDf7Ba+MJzjL3KS1og2nw2eBbLCOUTA==
+hdkey@^1.1.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-1.1.2.tgz#c60f9cf6f90fbf24a8a52ea06893f36a0108cd3e"
+  integrity sha512-PTQ4VKu0oRnCrYfLp04iQZ7T2Cxz0UsEXYauk2j8eh6PJXCpbXuCFhOmtIFtbET0i3PMWmHN9J11gU8LEgUljQ==
   dependencies:
-    coinstring "^2.0.0"
+    bs58check "^2.1.2"
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
@@ -24927,15 +24933,6 @@ scrypt.js@^0.2.0:
     scrypt "^6.0.2"
     scryptsy "^1.2.1"
 
-scrypt.js@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/scrypt.js/-/scrypt.js-0.3.0.tgz#6c62d61728ad533c8c376a2e5e3e86d41a95c4c0"
-  integrity sha512-42LTc1nyFsyv/o0gcHtDztrn+aqpkaCNt5Qh7ATBZfhEZU7IC/0oT/qbBH+uRNoAPvs2fwiOId68FDEoSRA8/A==
-  dependencies:
-    scryptsy "^1.2.1"
-  optionalDependencies:
-    scrypt "^6.0.2"
-
 scrypt@^6.0.2:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/scrypt/-/scrypt-6.0.3.tgz#04e014a5682b53fa50c2d5cce167d719c06d870d"
@@ -24943,7 +24940,7 @@ scrypt@^6.0.2:
   dependencies:
     nan "^2.0.8"
 
-scryptsy@2.1.0:
+scryptsy@2.1.0, scryptsy@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.1.0.tgz#8d1e8d0c025b58fdd25b6fa9a0dc905ee8faa790"
   integrity sha512-1CdSqHQowJBnMAFyPEBRfqag/YP9OF394FV+4YREIJX4ljD7OxvQRDayyoyyCk+senRjSkP6VnUNQmVQqB6g7w==
