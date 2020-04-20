@@ -308,11 +308,11 @@ export function getSelectedTokenContract (state) {
 
 export function getTotalUnapprovedCount (state) {
   const {
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedDecryptMsgCount,
-    unapprovedEncryptionPublicKeyMsgCount,
-    unapprovedTypedMessagesCount,
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
   } = state.metamask
 
   return getUnapprovedTxCount() + unapprovedMsgCount + unapprovedPersonalMsgCount +
