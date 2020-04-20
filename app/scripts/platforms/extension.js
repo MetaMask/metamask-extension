@@ -105,8 +105,6 @@ class ExtensionPlatform {
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
-
-    return await this.openWindow({ url: extensionURL })
   }
 
   getPlatformInfo (cb) {
