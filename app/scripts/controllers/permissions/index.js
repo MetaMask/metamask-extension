@@ -347,7 +347,9 @@ export class PermissionsController {
 
   /**
    * Removes an exposed account from the given origin. Changes the eth_accounts
-   * permissions and emits accountsChanged.
+   * permission and emits accountsChanged.
+   * If origin only has a single permitted account, removes the eth_accounts
+   * permission from the origin.
    *
    * Throws error if the origin or account is invalid, or if the update fails.
    *
