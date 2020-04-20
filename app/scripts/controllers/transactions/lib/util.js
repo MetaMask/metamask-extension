@@ -63,7 +63,7 @@ export function validateFrom (txParams) {
 
 /**
  * Validates the {@code to} field in the given tx params
- * @param {Object} txParams the tx params
+ * @param {Object} txParams - the tx params
  * @returns {Object} the tx params
  * @throws {Error} if the recipient is invalid OR there isn't tx data
  */
