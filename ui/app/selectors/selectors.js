@@ -306,7 +306,7 @@ export function getSelectedTokenContract (state) {
     : null
 }
 
-export function getTotalUnapprovedCount ({ metamask }) {
+export function getTotalUnapprovedCount (state) {
   const {
     unapprovedTxs = {},
     unapprovedMsgCount,
@@ -314,10 +314,11 @@ export function getTotalUnapprovedCount ({ metamask }) {
     unapprovedDecryptMsgCount,
     unapprovedEncryptionPublicKeyMsgCount,
     unapprovedTypedMessagesCount,
-  } = metamask
+  } = state.metamask
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
+    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
+    getPermissionsRequestCount(state)
 }
 
 export function getIsMainnet (state) {
@@ -364,6 +365,10 @@ export function getPermissionsDescriptions (state) {
 
 export function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests
+}
+
+export function getPermissionsRequestCount (state) {
+  return Object.keys(state.metamask.permissionsRequests).length
 }
 
 export function getDomainMetadata (state) {
