@@ -40,11 +40,13 @@ function start() {
 
 function setupControllerConnection(connectionStream, cb) {
   const eventEmitter = new EventEmitter()
+  // the "weak: false" option is for nodejs only (eg unit tests)
+  // it is a workaround for node v12 support
   const metaMaskControllerDnode = dnode({
     sendUpdate(state) {
       eventEmitter.emit('update', state)
     },
-  })
+  }, { weak: false })
   connectionStream.pipe(metaMaskControllerDnode).pipe(connectionStream)
   metaMaskControllerDnode.once('remote', (backgroundConnection) =>
     cb(null, backgroundConnection),
