@@ -16,7 +16,6 @@ yarn --frozen-lockfile --ignore-scripts --har --ignore-engines
 (cd node_modules/jpegtran-bin && yarn run postinstall)
 
 # for test
-(cd node_modules/scrypt && yarn run install)
 (cd node_modules/chromedriver && yarn run install)
 (cd node_modules/geckodriver && yarn run postinstall)
 
