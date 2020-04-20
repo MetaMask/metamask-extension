@@ -29,7 +29,7 @@ export function normalizeTxParams (txParams, lowerCase) {
 
 /**
  * Validates the given tx parameters
- * @param {Object} txParams the tx params
+ * @param {Object} txParams - the tx params
  * @throws {Error} if the tx params contains invalid fields
  */
 export function validateTxParams (txParams) {
@@ -92,4 +92,3 @@ export function getFinalStates () {
     'dropped', // the tx nonce was already used
   ]
 }
-
