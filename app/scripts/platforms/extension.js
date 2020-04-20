@@ -2,11 +2,6 @@ import extension from 'extensionizer'
 import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
-import pify from 'pify'
-
-const PIFY_OPTS = {
-  errorFirst: false,
-}
 
 class ExtensionPlatform {
 
@@ -239,7 +234,7 @@ class ExtensionPlatform {
 
   _viewOnEtherscan (txId) {
     if (txId.startsWith('http://')) {
-      this.openWindow({ url: txId })
+      this.openTab({ url: txId })
     }
   }
 }

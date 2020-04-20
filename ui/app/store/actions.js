@@ -2385,7 +2385,7 @@ export function getRequestAccountTabIds () {
   }
 }
 
-export function setOpenMetamaskTabIDs (openMetaMaskTabIDs) {
+export function setOpenMetamaskTabIds (openMetaMaskTabIDs) {
   return {
     type: actionConstants.SET_OPEN_METAMASK_TAB_IDS,
     value: openMetaMaskTabIDs,
@@ -2394,8 +2394,8 @@ export function setOpenMetamaskTabIDs (openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabIds () {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabIds()
-    dispatch(setOpenMetamaskTabIDs(openMetaMaskTabIDs))
+    const openMetamaskTabIDs = await promisifiedBackground.getOpenMetamaskTabIds()
+    dispatch(setOpenMetamaskTabIds(openMetamaskTabIDs))
   }
 }
 
