@@ -13,17 +13,7 @@ const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', '
 const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
-// Eventually this streaming injection could be replaced with:
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
-//
-// But for now that is only Firefox
-// If we create a FireFox-only code path using that API,
-// MetaMask will be much faster loading and performant on Firefox.
-
-if (shouldInjectProvider()) {
-  injectScript(inpageBundle)
-  start()
-}
+start()
 
 /**
  * Injects a script tag into the current document
@@ -233,3 +223,4 @@ async function domIsReady () {
   // wait for load
   return new Promise((resolve) => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }
+

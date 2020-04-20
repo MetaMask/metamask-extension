@@ -1,3 +1,4 @@
+const harden = require('@agoric/harden')
 /*global Web3*/
 
 // need to make sure we aren't affected by overlapping namespaces
@@ -34,68 +35,18 @@ cleanContextForImports()
 
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import MetamaskInpageProvider from 'metamask-inpage-provider'
-
-// TODO:deprecate:Q1-2020
-import 'web3/dist/web3.min.js'
-
-import setupDappAutoReload from './lib/auto-reload.js'
+const makeCapTpFromStream = require('captp-stream');
 
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-//
-// setup plugin communication
-//
-
-// setup background connection
 const metamaskStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
 })
 
-// compose the inpage provider
-const inpageProvider = new MetamaskInpageProvider(metamaskStream)
+console.log('INJECTING PROVIDER!')
+const cProvider = makeCapTpFromStream('client', metamaskStream, harden({}));
+window.cProvider = cProvider
 
-// set a high max listener count to avoid unnecesary warnings
-inpageProvider.setMaxListeners(100)
-
-// Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
-// `sendAsync` method on the prototype, causing `this` reference issues
-const proxiedInpageProvider = new Proxy(inpageProvider, {
-  // straight up lie that we deleted the property so that it doesnt
-  // throw an error in strict mode
-  deleteProperty: () => true,
-})
-
-//
-// TODO:deprecate:Q1-2020
-//
-
-// setup web3
-
-if (typeof window.web3 !== 'undefined') {
-  throw new Error(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
-}
-
-const web3 = new Web3(proxiedInpageProvider)
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
-}
-log.debug('MetaMask - injected web3')
-
-proxiedInpageProvider._web3Ref = web3.eth
-
-// setup dapp auto reload AND proxy web3
-setupDappAutoReload(web3, inpageProvider._publicConfigStore)
-
-//
-// end deprecate:Q1-2020
-//
-
-window.ethereum = proxiedInpageProvider

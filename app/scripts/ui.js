@@ -19,6 +19,8 @@ import ExtensionPlatform from './platforms/extension'
 import setupSentry from './lib/setupSentry'
 import { EventEmitter } from 'events'
 import Dnode from 'dnode'
+const makeCapTpFromStream = require('captp-stream');
+const harden = require('@agoric/harden')
 import Eth from 'ethjs'
 import EthQuery from 'eth-query'
 import urlUtil from 'url'
@@ -125,24 +127,7 @@ function initializeUi (activeTab, container, connectionStream, cb) {
  * @param {Function} cb - Called when controller connection is established
  */
 function connectToAccountManager (connectionStream, cb) {
-  const mx = setupMultiplex(connectionStream)
-  setupControllerConnection(mx.createStream('controller'), cb)
-  setupWeb3Connection(mx.createStream('provider'))
-}
-
-/**
- * Establishes a streamed connection to a Web3 provider
- *
- * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
- */
-function setupWeb3Connection (connectionStream) {
-  const providerStream = new StreamProvider()
-  providerStream.pipe(connectionStream).pipe(providerStream)
-  connectionStream.on('error', console.error.bind(console))
-  providerStream.on('error', console.error.bind(console))
-  global.ethereumProvider = providerStream
-  global.ethQuery = new EthQuery(providerStream)
-  global.eth = new Eth(providerStream)
+  setupControllerConnection(connectionStream, cb)
 }
 
 /**
@@ -152,15 +137,6 @@ function setupWeb3Connection (connectionStream) {
  * @param {Function} cb - Called when the remote account manager connection is established
  */
 function setupControllerConnection (connectionStream, cb) {
-  const eventEmitter = new EventEmitter()
-  const backgroundDnode = Dnode({
-    sendUpdate: function (state) {
-      eventEmitter.emit('update', state)
-    },
-  })
-  connectionStream.pipe(backgroundDnode).pipe(connectionStream)
-  backgroundDnode.once('remote', function (backgroundConnection) {
-    backgroundConnection.on = eventEmitter.on.bind(eventEmitter)
-    cb(null, backgroundConnection)
-  })
+  const cProvider = makeCapTpFromStream('client', connectionStream, harden({}));
+  window.cProvider = cProvider;
 }

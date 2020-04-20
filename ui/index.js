@@ -1,6 +1,10 @@
 import copyToClipboard from 'copy-to-clipboard'
 import log from 'loglevel'
 import { clone } from 'lodash'
+
+console.log('loaded basically nothing.')
+
+/*
 import React from 'react'
 import { render } from 'react-dom'
 import Root from './app/pages'
@@ -144,3 +148,4 @@ window.logState = function (toClipboard) {
     }
   })
 }
+*/
