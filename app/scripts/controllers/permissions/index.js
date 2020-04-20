@@ -316,27 +316,84 @@ export class PermissionsController {
    * @param {string} account - The new account to expose.
    */
   async addPermittedAccount (origin, account) {
+
     const domains = this.permissions.getDomains()
     if (!domains[origin]) {
       throw new Error('Unrecognized domain')
     }
+
     this.validatePermittedAccounts([account])
 
     const oldPermittedAccounts = this._getPermittedAccounts(origin)
     if (!oldPermittedAccounts) {
-      throw new Error('Origin does not have \'eth_accounts\' permission')
+      throw new Error(`Origin does not have 'eth_accounts' permission`)
     } else if (oldPermittedAccounts.includes(account)) {
-      throw new Error('Account is already permitted')
+      throw new Error('Account is already permitted for origin')
     }
 
     this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, [...oldPermittedAccounts, account]
+      origin, 'eth_accounts',
+      CAVEAT_NAMES.exposedAccounts,
+      [...oldPermittedAccounts, account]
     )
+
     const permittedAccounts = await this.getAccounts(origin)
 
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
       result: permittedAccounts,
+    })
+  }
+
+  /**
+   * Removes an exposed account from the given origin. Changes the eth_accounts
+   * permission and emits accountsChanged.
+   * If origin only has a single permitted account, removes the eth_accounts
+   * permission from the origin.
+   *
+   * Throws error if the origin or account is invalid, or if the update fails.
+   *
+   * @param {string} origin - The origin to remove the account from.
+   * @param {string} account - The account to remove.
+   */
+  async removePermittedAccount (origin, account) {
+
+    const domains = this.permissions.getDomains()
+    if (!domains[origin]) {
+      throw new Error('Unrecognized domain')
+    }
+
+    this.validatePermittedAccounts([account])
+
+    const oldPermittedAccounts = this._getPermittedAccounts(origin)
+    if (!oldPermittedAccounts) {
+      throw new Error(`Origin does not have 'eth_accounts' permission`)
+    } else if (!oldPermittedAccounts.includes(account)) {
+      throw new Error('Account is not permitted for origin')
+    }
+
+    let newPermittedAccounts = oldPermittedAccounts
+      .filter((acc) => acc !== account)
+
+    if (newPermittedAccounts.length === 0) {
+
+      this.permissions.removePermissionsFor(
+        origin, [{ parentCapability: 'eth_accounts' }]
+      )
+    } else {
+
+      this.permissions.updateCaveatFor(
+        origin, 'eth_accounts',
+        CAVEAT_NAMES.exposedAccounts,
+        newPermittedAccounts,
+      )
+
+      newPermittedAccounts = await this.getAccounts(origin)
+    }
+
+    this.notifyDomain(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: newPermittedAccounts,
     })
   }
 

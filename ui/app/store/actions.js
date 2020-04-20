@@ -1241,6 +1241,20 @@ export function addPermittedAccount (origin, address) {
   }
 }
 
+export function removePermittedAccount (origin, address) {
+  return async (dispatch) => {
+    await new Promise((resolve, reject) => {
+      background.removePermittedAccount(origin, address, (error) => {
+        if (error) {
+          return reject(error)
+        }
+        resolve()
+      })
+    })
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function showAccountsPage () {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,

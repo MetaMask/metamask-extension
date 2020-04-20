@@ -524,7 +524,7 @@ describe('permissions controller', function () {
 
     it('should throw if account is already permitted', async function () {
       await assert.rejects(
-        () => permController.addPermittedAccount(ORIGINS.a, ACCOUNT_ARRAYS.c[0]),
+        () => permController.addPermittedAccount(ORIGINS.a, ACCOUNT_ARRAYS.a[0]),
         ERRORS.addPermittedAccount.alreadyPermitted(),
         'should throw if account is already permitted'
       )
@@ -543,6 +543,116 @@ describe('permissions controller', function () {
       assert.deepEqual(
         notifications[ORIGINS.a][0],
         NOTIFICATIONS.newAccounts([...ACCOUNT_ARRAYS.a, EXTRA_ACCOUNT]),
+        'origin should have correct notification'
+      )
+    })
+  })
+
+  describe('removePermittedAccount', function () {
+    let permController, notifications
+
+    beforeEach(function () {
+      notifications = initNotifications()
+      permController = initPermController(notifications)
+      grantPermissions(
+        permController, ORIGINS.a,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
+      )
+      grantPermissions(
+        permController, ORIGINS.b,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.b)
+      )
+    })
+
+    it('should throw if account is not a string', async function () {
+      await assert.rejects(
+        () => permController.removePermittedAccount(ORIGINS.a, {}),
+        ERRORS.validatePermittedAccounts.nonKeyringAccount({}),
+        'should throw on non-string account param'
+      )
+    })
+
+    it('should throw if given account is not in keyring', async function () {
+      await assert.rejects(
+        () => permController.removePermittedAccount(ORIGINS.a, DUMMY_ACCOUNT),
+        ERRORS.validatePermittedAccounts.nonKeyringAccount(DUMMY_ACCOUNT),
+        'should throw on non-keyring account'
+      )
+    })
+
+    it('should throw if origin is invalid', async function () {
+      await assert.rejects(
+        () => permController.removePermittedAccount(false, EXTRA_ACCOUNT),
+        ERRORS.removePermittedAccount.invalidOrigin(),
+        'should throw on invalid origin'
+      )
+    })
+
+    it('should throw if origin lacks any permissions', async function () {
+      await assert.rejects(
+        () => permController.removePermittedAccount(ORIGINS.c, EXTRA_ACCOUNT),
+        ERRORS.removePermittedAccount.invalidOrigin(),
+        'should throw on origin without permissions'
+      )
+    })
+
+    it('should throw if origin lacks eth_accounts permission', async function () {
+      grantPermissions(
+        permController, ORIGINS.c,
+        PERMS.finalizedRequests.test_method()
+      )
+
+      await assert.rejects(
+        () => permController.removePermittedAccount(ORIGINS.c, EXTRA_ACCOUNT),
+        ERRORS.removePermittedAccount.noEthAccountsPermission(),
+        'should throw on origin without eth_accounts permission'
+      )
+    })
+
+    it('should throw if account is not permitted', async function () {
+      await assert.rejects(
+        () => permController.removePermittedAccount(ORIGINS.b, ACCOUNT_ARRAYS.c[0]),
+        ERRORS.removePermittedAccount.notPermitted(),
+        'should throw if account is not permitted'
+      )
+    })
+
+    it('should successfully remove permitted account', async function () {
+      await permController.removePermittedAccount(ORIGINS.a, ACCOUNT_ARRAYS.a[1])
+
+      const accounts = await permController.getAccounts(ORIGINS.a)
+
+      assert.deepEqual(
+        accounts, ACCOUNT_ARRAYS.a.filter((acc) => acc !== ACCOUNT_ARRAYS.a[1]),
+        'origin should have correct accounts'
+      )
+
+      assert.deepEqual(
+        notifications[ORIGINS.a][0],
+        NOTIFICATIONS.newAccounts(ACCOUNT_ARRAYS.a.filter((acc) => acc !== ACCOUNT_ARRAYS.a[1])),
+        'origin should have correct notification'
+      )
+    })
+
+    it('should remove eth_accounts permission if removing only permitted account', async function () {
+      await permController.removePermittedAccount(ORIGINS.b, ACCOUNT_ARRAYS.b[0])
+
+      const accounts = await permController.getAccounts(ORIGINS.b)
+
+      assert.deepEqual(
+        accounts, [],
+        'origin should have no accounts'
+      )
+
+      const permission = await permController.permissions.getPermission(
+        ORIGINS.b, PERM_NAMES.eth_accounts
+      )
+
+      assert.equal(permission, undefined, 'origin should not have eth_accounts permission')
+
+      assert.deepEqual(
+        notifications[ORIGINS.b][0],
+        NOTIFICATIONS.removedAccounts(),
         'origin should have correct notification'
       )
     })

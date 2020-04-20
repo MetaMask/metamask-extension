@@ -333,7 +333,7 @@ export const getters = deepFreeze({
     addPermittedAccount: {
       alreadyPermitted: () => {
         return {
-          message: 'Account is already permitted',
+          message: 'Account is already permitted for origin',
         }
       },
       invalidOrigin: () => {
@@ -343,7 +343,25 @@ export const getters = deepFreeze({
       },
       noEthAccountsPermission: () => {
         return {
-          message: 'Origin does not have \'eth_accounts\' permission',
+          message: `Origin does not have 'eth_accounts' permission`,
+        }
+      },
+    },
+
+    removePermittedAccount: {
+      notPermitted: () => {
+        return {
+          message: 'Account is not permitted for origin',
+        }
+      },
+      invalidOrigin: () => {
+        return {
+          message: 'Unrecognized domain',
+        }
+      },
+      noEthAccountsPermission: () => {
+        return {
+          message: `Origin does not have 'eth_accounts' permission`,
         }
       },
     },
