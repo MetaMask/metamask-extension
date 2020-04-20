@@ -36,8 +36,8 @@ describe('txUtils', function () {
 
       let normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
-      assert.ok(!normalizedTxParams.chainId, 'their should be no chainId')
-      assert.ok(!normalizedTxParams.to, 'their should be no to address if null')
+      assert.ok(!normalizedTxParams.chainId, 'there should be no chainId')
+      assert.ok(!normalizedTxParams.to, 'there should be no to address if null')
       assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hex-prefixed')
       assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hex-prefixed')
       assert.ok(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
