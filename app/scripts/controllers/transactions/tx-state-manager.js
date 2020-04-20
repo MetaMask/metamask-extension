@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import txStateHistoryHelper from './lib/tx-state-history-helper'
+import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import createId from '../../lib/random-id'
 import { getFinalStates, normalizeTxParams } from './lib/util'
 /**
@@ -146,7 +146,7 @@ class TransactionStateManager extends EventEmitter {
     // initialize history
     txMeta.history = []
     // capture initial snapshot of txMeta for history
-    const snapshot = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    const snapshot = snapshotFromTxMeta(txMeta)
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
@@ -197,11 +197,11 @@ class TransactionStateManager extends EventEmitter {
     }
 
     // create txMeta snapshot for history
-    const currentState = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    const currentState = snapshotFromTxMeta(txMeta)
     // recover previous tx state obj
-    const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
+    const previousState = replayHistory(txMeta.history)
     // generate history entry and add to history
-    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState, note)
+    const entry = generateHistoryEntry(previousState, currentState, note)
     txMeta.history.push(entry)
 
     // commit txMeta to state
