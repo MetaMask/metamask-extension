@@ -21,3 +21,6 @@ yarn --frozen-lockfile --ignore-scripts --har --ignore-engines
 
 # for release
 (cd node_modules/@sentry/cli && yarn run install)
+
+# patch for scrypt / scrypt.js
+node -e "p=require('scrypt.js/package.json');p.main='js.js';x=JSON.stringify(p, null, 2);fs.writeFileSync(require.resolve('scrypt.js/package.json'),x)"
