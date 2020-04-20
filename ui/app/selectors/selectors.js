@@ -306,18 +306,28 @@ export function getSelectedTokenContract (state) {
     : null
 }
 
-export function getTotalUnapprovedCount ({ metamask }) {
+export function getTotalUnapprovedCount (state) {
   const {
-    unapprovedTxs = {},
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedDecryptMsgCount,
-    unapprovedEncryptionPublicKeyMsgCount,
-    unapprovedTypedMessagesCount,
-  } = metamask
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask
 
-  return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
+  return unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount + unapprovedTypedMessagesCount +
+    getUnapprovedTxCount(state) + getPermissionsRequestCount(state) + getSuggestedTokenCount(state)
+}
+
+function getUnapprovedTxCount (state) {
+  const { unapprovedTxs = {} } = state.metamask
+  return Object.keys(unapprovedTxs).length
+}
+
+function getSuggestedTokenCount (state) {
+  const { suggestedTokens = {} } = state.metamask
+  return Object.keys(suggestedTokens).length
 }
 
 export function getIsMainnet (state) {
@@ -363,7 +373,12 @@ export function getPermissionsDescriptions (state) {
 }
 
 export function getPermissionsRequests (state) {
-  return state.metamask.permissionsRequests
+  return state.metamask.permissionsRequests || []
+}
+
+export function getPermissionsRequestCount (state) {
+  const permissionsRequests = getPermissionsRequests(state)
+  return permissionsRequests.length
 }
 
 export function getDomainMetadata (state) {
