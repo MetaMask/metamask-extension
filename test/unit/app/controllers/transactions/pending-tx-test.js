@@ -145,7 +145,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkPendingTxs', function () {
-    it("should warp all txMeta's in #updatePendingTxs", function (done) {
+    it("should wrap all txMeta's in #updatePendingTxs", function (done) {
       const txMeta2 = txMeta3 = txMeta
       txMeta2.id = 2
       txMeta3.id = 3
