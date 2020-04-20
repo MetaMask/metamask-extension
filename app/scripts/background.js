@@ -1,7 +1,9 @@
 import PortStream from 'extension-port-stream'
+import pump from 'pump'
 const makeCapTpFromStream = require('captp-stream')
 const harden = require('@agoric/harden')
 const extension = require('extensionizer')
+import ObjectMultiplex from 'obj-multiplex'
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -27,7 +29,6 @@ function connectRemote (remotePort) {
   if (!isMetaMaskInternalProcess) {
     return
   }
-
   const portStream = new PortStream(remotePort)
   const { abort } = makeCapTpFromStream('safe', portStream, api);
 
@@ -38,9 +39,23 @@ function connectRemote (remotePort) {
 // communication with page or other extension
 function connectExternal (remotePort) {
   const portStream = new PortStream(remotePort)
-  const { abort } = makeCapTpFromStream('external', remotePort, api);
+  const { abort } = makeCapTpFromStream('external', portStream, api);
 
   // Clean up references to remote pending functions
   portStream.on('end', () => abort())
+}
+
+/**
+ * Error handler for page to extension stream disconnections
+ *
+ * @param {string} remoteLabel - Remote stream name
+ * @param {Error} err - Stream connection error
+ */
+function logStreamDisconnectWarning (remoteLabel, err) {
+  let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
+  if (err) {
+    warningMsg += '\n' + err.stack
+  }
+  console.warn(warningMsg)
 }
 

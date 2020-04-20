@@ -13,8 +13,6 @@ const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', '
 const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
-start()
-
 /**
  * Injects a script tag into the current document
  *
@@ -31,6 +29,11 @@ function injectScript (content) {
   } catch (e) {
     console.error('MetaMask provider injection failed.', e)
   }
+}
+
+if (shouldInjectProvider()) {
+  injectScript(inpageBundle)
+  start()
 }
 
 /**
@@ -56,45 +59,12 @@ async function setupStreams () {
   const extensionPort = extension.runtime.connect({ name: 'contentscript' })
   const extensionStream = new PortStream(extensionPort)
 
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex()
-  pageMux.setMaxListeners(25)
-  const extensionMux = new ObjectMultiplex()
-  extensionMux.setMaxListeners(25)
-
   pump(
-    pageMux,
     pageStream,
-    pageMux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
-  )
-  pump(
-    extensionMux,
     extensionStream,
-    extensionMux,
-    (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
-  )
-
-  // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
-  forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
-
-  // connect "phishing" channel to warning system
-  const phishingStream = extensionMux.createStream('phishing')
-  phishingStream.once('data', redirectToPhishingWarning)
-}
-
-function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
-  const channelA = muxA.createStream(channelName)
-  const channelB = muxB.createStream(channelName)
-  pump(
-    channelA,
-    channelB,
-    channelA,
-    (err) => logStreamDisconnectWarning(`MetaMask muxed traffic for channel "${channelName}" failed.`, err)
-  )
-}
+    pageStream,
+    (err) => logStreamDisconnectWarning(`MetaMask relay stream failed.`, err)
+  )}
 
 /**
  * Error handler for page to extension stream disconnections
@@ -119,6 +89,7 @@ function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
     documentElementCheck() && !blacklistedDomainCheck()
 }
+
 
 /**
  * Checks the doctype of the current document if it exists
