@@ -370,17 +370,28 @@ export class PermissionsController {
       throw new Error('Account is not permitted for origin')
     }
 
-    this.permissions.updateCaveatFor(
-      origin, 'eth_accounts',
-      CAVEAT_NAMES.exposedAccounts,
-      oldPermittedAccounts.filter((acc) => acc !== account)
-    )
+    let newPermittedAccounts = oldPermittedAccounts
+      .filter((acc) => acc !== account)
 
-    const permittedAccounts = await this.getAccounts(origin)
+    if (newPermittedAccounts.length === 0) {
+
+      this.permissions.removePermissionsFor(
+        origin, [{ parentCapability: 'eth_accounts' }]
+      )
+    } else {
+
+      this.permissions.updateCaveatFor(
+        origin, 'eth_accounts',
+        CAVEAT_NAMES.exposedAccounts,
+        newPermittedAccounts,
+      )
+
+      newPermittedAccounts = await this.getAccounts(origin)
+    }
 
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
-      result: permittedAccounts,
+      result: newPermittedAccounts,
     })
   }
 

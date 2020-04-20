@@ -633,6 +633,29 @@ describe('permissions controller', function () {
         'origin should have correct notification'
       )
     })
+
+    it('should remove eth_accounts permission if removing only permitted account', async function () {
+      await permController.removePermittedAccount(ORIGINS.b, ACCOUNT_ARRAYS.b[0])
+
+      const accounts = await permController.getAccounts(ORIGINS.b)
+
+      assert.deepEqual(
+        accounts, [],
+        'origin should have no accounts'
+      )
+
+      const permission = await permController.permissions.getPermission(
+        ORIGINS.b, PERM_NAMES.eth_accounts
+      )
+
+      assert.equal(permission, undefined, 'origin should not have eth_accounts permission')
+
+      assert.deepEqual(
+        notifications[ORIGINS.b][0],
+        NOTIFICATIONS.removedAccounts(),
+        'origin should have correct notification'
+      )
+    })
   })
 
   describe('finalizePermissionsRequest', function () {
