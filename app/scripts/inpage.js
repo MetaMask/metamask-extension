@@ -34,9 +34,14 @@ cleanContextForImports()
 
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import MetamaskInpageProvider from 'metamask-inpage-provider'
+import {
+  MetamaskInpageProvider,
+  setGlobalProvider,
+  // TODO: use this instead once web3 and autoreload removed:
+  // initProvider,
+} from 'metamask-inpage-provider'
 
-// TODO:deprecate:Q1-2020
+// TODO:remove:2020
 import 'web3/dist/web3.min.js'
 
 import setupDappAutoReload from './lib/auto-reload.js'
@@ -58,9 +63,6 @@ const metamaskStream = new LocalMessageDuplexStream({
 // compose the inpage provider
 const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
-// set a high max listener count to avoid unnecesary warnings
-inpageProvider.setMaxListeners(100)
-
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues
 const proxiedInpageProvider = new Proxy(inpageProvider, {
@@ -70,7 +72,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 //
-// TODO:deprecate:Q1-2020
+// TODO:remove:2020
 //
 
 // setup web3
@@ -95,7 +97,7 @@ proxiedInpageProvider._web3Ref = web3.eth
 setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 
 //
-// end deprecate:Q1-2020
+// end remove:2020
 //
 
-window.ethereum = proxiedInpageProvider
+setGlobalProvider(proxiedInpageProvider)
