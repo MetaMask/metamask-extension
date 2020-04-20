@@ -71,12 +71,10 @@ describe('Fetch with cache', function () {
       .delay(100)
       .reply(200, '{"average": 4}')
 
-    try {
-      await fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { timeout: 20 })
-      assert.fail('Request should be aborted')
-    } catch (e) {
-      assert.deepEqual(e.message, 'Aborted')
-    }
+    await assert.rejects(
+      () => fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { timeout: 20 }),
+      { name: 'AbortError', message: 'Aborted' },
+    )
   })
 
   it('throws when the response is unsuccessful', async function () {
@@ -84,12 +82,9 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(500, '{"average": 6}')
 
-    try {
-      await fetchWithCache('https://fetchwithcache.metamask.io/price')
-      assert.fail('Request should throw')
-    } catch (e) {
-      assert.ok(e)
-    }
+    await assert.rejects(
+      () => fetchWithCache('https://fetchwithcache.metamask.io/price'),
+    )
   })
 
   it('throws when a POST request is attempted', async function () {
@@ -97,12 +92,9 @@ describe('Fetch with cache', function () {
       .post('/price')
       .reply(200, '{"average": 7}')
 
-    try {
-      await fetchWithCache('https://fetchwithcache.metamask.io/price', { method: 'POST' })
-      assert.fail('Request should throw')
-    } catch (e) {
-      assert.ok(e)
-    }
+    await assert.rejects(
+      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { method: 'POST' }),
+    )
   })
 
   it('throws when the request has a truthy body', async function () {
@@ -110,12 +102,9 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 8}')
 
-    try {
-      await fetch('https://fetchwithcache.metamask.io/price', { body: 1 })
-      assert.fail('Request should throw')
-    } catch (e) {
-      assert.ok(e)
-    }
+    await assert.rejects(
+      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
+    )
   })
 
   it('throws when the request has an invalid Content-Type header', async function () {
@@ -123,11 +112,9 @@ describe('Fetch with cache', function () {
       .get('/price')
       .reply(200, '{"average": 9}')
 
-    try {
-      await fetch('https://fetchwithcache.metamask.io/price', { headers: { 'Content-Type': 'text/plain' } })
-      assert.fail('Request should throw')
-    } catch (e) {
-      assert.ok(e)
-    }
+    await assert.rejects(
+      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { headers: { 'Content-Type': 'text/plain' } }),
+      { message: 'fetchWithCache only supports JSON responses' },
+    )
   })
 })

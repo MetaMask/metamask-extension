@@ -8,9 +8,6 @@
   "reject": {
     "message": "প্রত্যাখ্যান"
   },
-  "likeToConnect": {
-    "message": "$1 আপনার অ্যাকাউন্টের সাথে সংযোগ করতে চায়"
-  },
   "about": {
     "message": "সম্পর্কে"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "চেন আইডি"
-  },
-  "clickToAdd": {
-    "message": "আপনার অ্যাকাউন্টে $1যোগ করতে সেগুলিতে ক্লিক করুন"
   },
   "clickToRevealSeed": {
     "message": "গোপন শব্দগুলি প্রকাশ করতে এখানে ক্লিক করুন"
@@ -662,9 +656,6 @@
   },
   "memo": {
     "message": "মেমো"
-  },
-  "menu": {
-    "message": "মেনু"
   },
   "message": {
     "message": "বার্তা"

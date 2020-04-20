@@ -41,7 +41,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       return ''
     }
 
-    const words = trimmed.match(/\w+/g)
+    const words = trimmed.toLowerCase().match(/\w+/g)
     if (!words) {
       return ''
     }

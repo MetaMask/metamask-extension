@@ -243,18 +243,45 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x0')
       })
 
+      let startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
-      assert.deepEqual(metamaskController.getState().identities, {
+      let endTime = Date.now()
+
+      const firstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(
+        (
+          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
+          firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime
+        ),
+        `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+      )
+      delete firstVaultIdentities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(firstVaultIdentities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
       await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
-      assert.deepEqual(metamaskController.getState().identities, {
+
+      const labelledFirstVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(labelledFirstVaultIdentities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
 
+      startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
-      assert.deepEqual(metamaskController.getState().identities, {
+      endTime = Date.now()
+
+      const secondVaultIdentities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(
+        (
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime
+        ),
+        `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+      )
+      delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected
+      assert.deepEqual(secondVaultIdentities, {
         [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
       })
     })
@@ -271,8 +298,13 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x14ced5122ce0a000')
       })
 
+      const startTime = Date.now()
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
-      assert.deepEqual(metamaskController.getState().identities, {
+
+      const identities = cloneDeep(metamaskController.getState().identities)
+      assert.ok(identities[TEST_ADDRESS].lastSelected >= startTime && identities[TEST_ADDRESS].lastSelected <= Date.now())
+      delete identities[TEST_ADDRESS].lastSelected
+      assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
         [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       })
@@ -912,11 +944,12 @@ describe('MetaMaskController', function () {
   })
 
   describe('#_onKeyringControllerUpdate', function () {
+
     it('should do nothing if there are no keyrings in state', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -925,20 +958,16 @@ describe('MetaMaskController', function () {
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({ keyrings: [] })
 
-      assert.ok(addAddresses.notCalled)
+      assert.ok(syncAddresses.notCalled)
       assert.ok(syncWithAddresses.notCalled)
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
-    it('should update selected address if keyrings was locked', async function () {
-      const addAddresses = sinon.fake()
-      const getSelectedAddress = sinon.fake.returns('0x42')
-      const setSelectedAddress = sinon.fake()
+    it('should sync addresses if there are keyrings in state', async function () {
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
-        getSelectedAddress,
-        setSelectedAddress,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -946,23 +975,21 @@ describe('MetaMaskController', function () {
 
       const oldState = metamaskController.getState()
       await metamaskController._onKeyringControllerUpdate({
-        isUnlocked: false,
         keyrings: [{
           accounts: ['0x1', '0x2'],
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
-      assert.deepEqual(setSelectedAddress.args, [['0x1']])
       assert.deepEqual(metamaskController.getState(), oldState)
     })
 
     it('should NOT update selected address if already unlocked', async function () {
-      const addAddresses = sinon.fake()
+      const syncAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
-        addAddresses,
+        syncAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
@@ -976,7 +1003,7 @@ describe('MetaMaskController', function () {
         }],
       })
 
-      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
       assert.deepEqual(metamaskController.getState(), oldState)
     })

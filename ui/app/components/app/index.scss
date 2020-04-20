@@ -6,6 +6,8 @@
 
 @import 'app-header/index';
 
+@import 'asset-list/asset-list.scss';
+
 @import '../ui/breadcrumbs/index';
 
 @import '../ui/button-group/index';
@@ -48,6 +50,8 @@
 
 @import '../ui/token-balance/index';
 
+@import 'token-cell/token-cell';
+
 @import 'transaction-activity-log/index';
 
 @import 'transaction-breakdown/index';
@@ -83,3 +87,17 @@
 @import 'connected-sites-list/index';
 
 @import '../ui/icon-with-fallback/index';
+
+@import '../ui/circle-icon/index';
+
+@import '../ui/alert-circle-icon/index';
+
+@import './connected-status-indicator/index';
+
+@import './dropdowns/account-details-dropdown/index';
+
+@import '../ui/check-box/index';
+
+@import 'permissions-connect-header/index';
+
+@import 'permissions-connect-footer/index';

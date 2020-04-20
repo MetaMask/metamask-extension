@@ -4,6 +4,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
 } from '../../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
 import { addressSlicer } from '../../../../helpers/utils/util'
@@ -23,7 +24,7 @@ export default class ConfirmPageContainerHeader extends Component {
 
   renderTop () {
     const { onEdit, showEdit, accountAddress, showAccountInHeader } = this.props
-    const windowType = window.METAMASK_UI_TYPE
+    const windowType = getEnvironmentType()
     const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       windowType !== ENVIRONMENT_TYPE_POPUP
 

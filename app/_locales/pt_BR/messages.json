@@ -12,9 +12,6 @@
   "reject": {
     "message": "Rejeitar"
   },
-  "likeToConnect": {
-    "message": "$1 gostaria de se conectar à sua conta"
-  },
   "about": {
     "message": "Sobre"
   },
@@ -194,9 +191,6 @@
   "chainId": {
     "message": "ID da Cadeia"
   },
-  "clickToAdd": {
-    "message": "Clique em $1 para adicioná-los à sua conta"
-  },
   "clickToRevealSeed": {
     "message": "Clique aqui para revelar as palavras secretas"
   },
@@ -276,7 +270,7 @@
     "message": "ID da Transação Copiado"
   },
   "copyToClipboard": {
-    "message": "Copiar para a área de trabalho"
+    "message": "Copiar para a área de transferência"
   },
   "copyButton": {
     "message": "Copiar"

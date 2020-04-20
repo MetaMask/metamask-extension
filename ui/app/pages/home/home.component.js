@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Media from 'react-media'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
+import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
 import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
@@ -10,6 +11,8 @@ import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
+import ConnectedSites from '../connected-sites'
+import { Tabs, Tab } from '../../components/ui/tabs'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -17,6 +20,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
+  CONNECTED_ROUTE,
 } from '../../helpers/constants/routes'
 
 export default class Home extends PureComponent {
@@ -162,34 +166,49 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+    } else if (history.location.pathname.match(/^\/confirm-transaction/)) {
+      // This should only happen if this renders during the redirect to the confirm page
+      // Display nothing while the confirm page loads, to avoid side-effects of rendering normal home view
+      return null
     }
 
     return (
       <div className="main-container">
+        <Route path={CONNECTED_ROUTE} component={ConnectedSites} />
         <div className="home__container">
           <Media
             query="(min-width: 576px)"
           >
             {
               (isWideViewport) => (
-                <>
-                  { isWideViewport ? <WalletView /> : null }
-                  {
-                    !history.location.pathname.match(/^\/confirm-transaction/)
-                      ? (
-                        <div className="home__main-view">
-                          {
-                            !isWideViewport ? <MenuBar /> : null
-                          }
-                          <div className="home__balance-wrapper">
-                            <TransactionViewBalance />
-                          </div>
-                          <TransactionList />
+                isWideViewport
+                  ? (
+                    <>
+                      <WalletView />
+                      <div className="home__main-view">
+                        <div className="home__balance-wrapper">
+                          <TransactionViewBalance />
                         </div>
-                      )
-                      : null
-                  }
-                </>
+                        <TransactionList isWideViewport />
+                      </div>
+                    </>
+                  )
+                  : (
+                    <div className="home__main-view">
+                      <MenuBar />
+                      <div className="home__balance-wrapper">
+                        <TransactionViewBalance />
+                      </div>
+                      <Tabs>
+                        <Tab className="home__tab" data-testid="home__asset-tab" name="Assets">
+                          <AssetList />
+                        </Tab>
+                        <Tab className="home__tab" data-testid="home__history-tab" name="History">
+                          <TransactionList />
+                        </Tab>
+                      </Tabs>
+                    </div>
+                  )
               )
             }
           </Media>

@@ -21,9 +21,6 @@ $wallet-view-bg: $alabaster;
 .main-container {
   z-index: $main-container-z-index;
   font-family: Roboto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
 }
 
 .main-container::-webkit-scrollbar {

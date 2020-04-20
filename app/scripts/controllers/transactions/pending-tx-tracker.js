@@ -164,8 +164,8 @@ class PendingTransactionTracker extends EventEmitter {
     try {
       // check the network if the nonce is ahead the tx
       // and the tx has not been mined into a block
-
       dropped = await this._checkIftxWasDropped(txMeta, transactionReceipt)
+
       // the dropped buffer is in case we ask a node for the tx
       // that is behind the node we asked for tx count
       // IS A SECURITY FOR HITTING NODES IN INFURA THAT COULD GO OUT
@@ -185,21 +185,19 @@ class PendingTransactionTracker extends EventEmitter {
         // clean up
         delete this.droppedBuffer[txHash]
       }
-
     } catch (e) {
       log.error(e)
     }
+
     if (taken || dropped) {
       return this.emit('tx:dropped', txId)
     }
 
     // get latest transaction status
-    try {
-      const { blockNumber } = transactionReceipt
-      if (blockNumber) {
-        this.emit('tx:confirmed', txId, transactionReceipt)
-      }
-    } catch (err) {
+    if (transactionReceipt?.blockNumber) {
+      this.emit('tx:confirmed', txId, transactionReceipt)
+    } else {
+      const err = new Error('Missing transaction receipt or block number.')
       txMeta.warning = {
         error: err.message,
         message: 'There was a problem loading this transaction.',
@@ -215,10 +213,13 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {boolean}
   */
 
-  async _checkIftxWasDropped (txMeta, { blockNumber }) {
+  async _checkIftxWasDropped (txMeta, transactionReceipt) {
     const { txParams: { nonce, from } } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
-    if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
+    if (
+      !transactionReceipt?.blockNumber &&
+      parseInt(nextNonce) > parseInt(nonce)
+    ) {
       return true
     }
     return false

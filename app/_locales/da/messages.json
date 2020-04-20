@@ -8,9 +8,6 @@
   "reject": {
     "message": "Afvis"
   },
-  "likeToConnect": {
-    "message": "$1 ønsker at forbinde til din konto"
-  },
   "about": {
     "message": "Om"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "Kæde-ID"
-  },
-  "clickToAdd": {
-    "message": "Klik på $1 for at tilføje dem til din konto"
   },
   "clickToRevealSeed": {
     "message": "Klik her for at se hemmelige ord"

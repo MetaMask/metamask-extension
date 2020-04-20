@@ -3,13 +3,13 @@ function delay (time) {
 }
 
 async function loadFromMock3Box (key) {
-  const res = await fetch('http://localhost:8889?key=' + key)
+  const res = await window.fetch('http://localhost:8889?key=' + key)
   const text = await res.text()
   return text.length ? JSON.parse(text) : null
 }
 
 async function saveToMock3Box (key, newDataAtKey) {
-  const res = await fetch('http://localhost:8889', {
+  const res = await window.fetch('http://localhost:8889', {
     method: 'POST',
     body: JSON.stringify({
       key,

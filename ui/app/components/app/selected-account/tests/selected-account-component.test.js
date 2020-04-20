@@ -7,8 +7,7 @@ describe('SelectedAccount Component', function () {
   it('should render checksummed address', function () {
     const wrapper = render((
       <SelectedAccount
-        selectedAddress="0x1b82543566f41a7db9a9a75fc933c340ffb55c9d"
-        selectedIdentity={{ name: 'testName' }}
+        selectedIdentity={{ name: 'testName', address: '0x1b82543566f41a7db9a9a75fc933c340ffb55c9d' }}
       />
     ), { context: { t: () => {} } })
     // Checksummed version of address is displayed

@@ -237,7 +237,7 @@ export function getRandomFileName () {
 export function exportAsFile (filename, data, type = 'text/csv') {
   filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], { type })
+  const blob = new window.Blob([data], { type })
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
@@ -286,10 +286,6 @@ export function getOriginFromUrl (url) {
   url = new URL(url)
   const origin = url.hostname
   return origin
-}
-
-export function getTxById (transactions = [], targetId) {
-  return transactions.find(({ id }) => String(id) === targetId)
 }
 
 export function getAccountByAddress (accounts = [], targetAddress) {

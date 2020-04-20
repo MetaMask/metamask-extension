@@ -117,22 +117,13 @@
 
   &__tab {
     min-width: 5rem;
-    padding: 8px;
     color: $dusty-gray;
-    font-family: Roboto;
     font-size: 1rem;
-    text-align: center;
-    cursor: pointer;
     border-bottom: none;
     margin-right: 16px;
 
     &:last-of-type {
       margin-right: 0;
-    }
-
-    &--selected {
-      color: $curious-blue;
-      border-bottom: 2px solid $curious-blue;
     }
   }
 

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Rechazar"
   },
-  "likeToConnect": {
-    "message": "$1 desea conectarse a tu cuenta"
-  },
   "about": {
     "message": "Acerca de"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "ID de cadena"
-  },
-  "clickToAdd": {
-    "message": "Haz clic en $1 para agregarlos a tu cuenta"
   },
   "clickToRevealSeed": {
     "message": "Haz clic aquí para mostrar las palabras secretas"
@@ -647,9 +641,6 @@
   },
   "memorizePhrase": {
     "message": "Memoriza esta frase."
-  },
-  "menu": {
-    "message": "Menú"
   },
   "message": {
     "message": "Mensaje"

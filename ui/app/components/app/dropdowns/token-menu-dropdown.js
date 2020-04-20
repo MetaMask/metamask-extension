@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
-import { createAccountLink as genAccountLink } from 'etherscan-link'
+import { createAccountLink as genAccountLink } from '@metamask/etherscan-link'
 import { Menu, Item, CloseArea } from './components/menu'
 
 class TokenMenuDropdown extends Component {
@@ -40,7 +40,7 @@ class TokenMenuDropdown extends Component {
           onClick={(e) => {
             e.stopPropagation()
             const url = genAccountLink(this.props.token.address, this.props.network)
-            global.platform.openWindow({ url })
+            global.platform.openTab({ url })
             this.props.onClose()
           }}
           text={this.context.t('viewOnEtherscan')}

@@ -3,8 +3,8 @@
 
 package.json                         @danjm @whymarrh @Gudahtt
 yarn.lock                            @danjm @whymarrh @Gudahtt
-ui/                                  @danjm @whymarrh @Gudahtt
+ui/                                  @danjm @whymarrh @Gudahtt @jennypollack
 app/scripts/controllers/transactions @whymarrh @jennypollack
 .circleci/scripts/deps-install.sh    @kumavis @Gudahtt
 app/scripts/controllers/network      @jennypollack @rekmarks
-app/scripts/controllers/permissions  @rekmarks @danjm
+app/scripts/controllers/permissions  @rekmarks @danjm @jennypollack

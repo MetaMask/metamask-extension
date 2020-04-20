@@ -7,6 +7,7 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsDomains,
+  getTargetDomainMetadata,
 } from '../../selectors/selectors'
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
@@ -31,13 +32,11 @@ const mapStateToProps = (state, ownProps) => {
 
   const accountsWithLabels = getAccountsWithLabels(state)
 
-  const { requestAccountTabs = {} } = state.appState
-
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
 
   Object.keys(addressLastConnectedMap).forEach((key) => {
-    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
+    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-MM-dd')
   })
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`
@@ -52,6 +51,8 @@ const mapStateToProps = (state, ownProps) => {
     throw new Error('Incorrect path for permissions-connect component')
   }
 
+  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
+
   return {
     permissionsRequest,
     permissionsRequestId,
@@ -59,12 +60,12 @@ const mapStateToProps = (state, ownProps) => {
     originName: origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
-    requestAccountTabs,
     addressLastConnectedMap,
     domains: getPermissionsDomains(state),
     connectPath,
     confirmPermissionPath,
     page,
+    targetDomainMetadata,
   }
 }
 

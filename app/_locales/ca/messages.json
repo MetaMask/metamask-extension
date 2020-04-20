@@ -8,9 +8,6 @@
   "reject": {
     "message": "Rebutja"
   },
-  "likeToConnect": {
-    "message": "a $1 li agradaria connectar-se al teu compte"
-  },
   "about": {
     "message": "Informació"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "Cadena ID"
-  },
-  "clickToAdd": {
-    "message": "Fes clic a $1 per afegir-los al teu compte"
   },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
@@ -646,9 +640,6 @@
   },
   "memo": {
     "message": "notes"
-  },
-  "menu": {
-    "message": "Menú"
   },
   "message": {
     "message": "Missatge"

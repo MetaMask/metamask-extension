@@ -12,9 +12,6 @@
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
-    "message": "$1 ingin menghubungkan ke akun Anda"
-  },
   "about": {
     "message": "Tentang"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "ID Rantai"
-  },
-  "clickToAdd": {
-    "message": "Klik $1 untuk menambahkannya ke akun Anda"
   },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk mengungkapkan kata-kata rahasia"

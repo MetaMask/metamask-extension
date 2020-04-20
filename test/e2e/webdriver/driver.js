@@ -192,11 +192,11 @@ function collectMetrics () {
     navigation: [],
   }
 
-  performance.getEntriesByType('paint').forEach((paintEntry) => {
+  window.performance.getEntriesByType('paint').forEach((paintEntry) => {
     results.paint[paintEntry.name] = paintEntry.startTime
   })
 
-  performance.getEntriesByType('navigation').forEach((navigationEntry) => {
+  window.performance.getEntriesByType('navigation').forEach((navigationEntry) => {
     results.navigation.push({
       domContentLoaded: navigationEntry.domContentLoadedEventEnd,
       load: navigationEntry.loadEventEnd,

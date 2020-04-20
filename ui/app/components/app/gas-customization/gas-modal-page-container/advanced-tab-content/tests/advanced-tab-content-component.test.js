@@ -7,17 +7,16 @@ import AdvancedTabContent from '../advanced-tab-content.component.js'
 import GasPriceChart from '../../../gas-price-chart'
 import Loading from '../../../../../ui/loading-screen'
 
-const propsMethodSpies = {
-  updateCustomGasPrice: sinon.spy(),
-  updateCustomGasLimit: sinon.spy(),
-}
-
-sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
-
 describe('AdvancedTabContent Component', function () {
   let wrapper
 
   beforeEach(function () {
+    const propsMethodSpies = {
+      updateCustomGasPrice: sinon.spy(),
+      updateCustomGasLimit: sinon.spy(),
+    }
+    sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
+
     wrapper = shallow((
       <AdvancedTabContent
         updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
@@ -35,9 +34,7 @@ describe('AdvancedTabContent Component', function () {
   })
 
   afterEach(function () {
-    propsMethodSpies.updateCustomGasPrice.resetHistory()
-    propsMethodSpies.updateCustomGasLimit.resetHistory()
-    AdvancedTabContent.prototype.renderDataSummary.resetHistory()
+    sinon.restore()
   })
 
   describe('render()', function () {

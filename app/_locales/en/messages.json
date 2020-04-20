@@ -1,4 +1,27 @@
 {
+  "connectedSites": {
+    "message": "Connected Sites"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 is connected to these sites. They can view your account address.",
+    "description": "$1 is the account name"
+  },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 is not connected to any sites.",
+    "description": "$1 is the account name"
+  },
+  "connectManually": {
+    "message": "Manually connect to current site"
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
+  "disconnectSite": {
+    "message": "Disconnect $1?"
+  },
+  "disconnectAccountConfirmationDescription": {
+    "message": "Are you sure you want to disconnect? You may lose site functionality."
+  },
   "migrateSai": {
     "message": "A message from Maker: The new Multi-Collateral Dai token has been released. Your old tokens are now called Sai. Please upgrade your Sai tokens to the new Dai."
   },
@@ -14,14 +37,20 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "cancelling": {
+    "message": "Cancelling..."
+  },
   "cancelledConnectionWithMetaMask": {
     "message": "Cancelled Connection With MetaMask"
   },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "connectedSites": {
-    "message": "Connected Sites"
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectWithMetaMask": {
+    "message": "Connect With MetaMask"
   },
   "connectingWithMetaMask": {
     "message": "Connecting With MetaMask..."
@@ -30,17 +59,27 @@
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
-  "chooseAnAcount": {
-    "message": "Choose an account"
+  "connectToAll": {
+    "message": "Connect to all your $1",
+    "description": "$1 will be replaced by the translation of connectToAllAccounts"
+  },
+  "connectToAllAccounts": {
+    "message": "accounts",
+    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
+  },
+  "connectToMultiple": {
+    "message": "Connect to $1",
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
+  },
+  "connectToMultipleNumberOfAccounts": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts to which the site/dapp is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
   "reject": {
     "message": "Reject"
-  },
-  "redirectingBackToDapp": {
-    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
@@ -255,8 +294,8 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "clickToAdd": {
-    "message": "Click on $1 to add them to your account"
+  "chooseAccountsToUse": {
+    "message": "Choose the account(s) to use on this site"
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -281,6 +320,9 @@
   },
   "congratulations": {
     "message": "Congratulations"
+  },
+  "connectAccountOrCreate": {
+    "message": "Connect account or create new"
   },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
@@ -411,23 +453,11 @@
   "details": {
     "message": "Details"
   },
-  "disconnectAccount": {
-    "message": "Disconnect account"
-  },
   "disconnectAll": {
     "message": "Disconnect All"
   },
   "disconnectAllModalDescription": {
     "message": "Are you sure? You will be disconnected from all sites on all accounts."
-  },
-  "disconnectAccountModalDescription": {
-    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
-  },
-  "disconnectAccountQuestion": {
-    "message": "Disconnect account?"
-  },
-  "disconnectFromThisAccount": {
-    "message": "Disconnect from this account?"
   },
   "disconnectAllAccountsQuestion": {
     "message": "Disconnect all accounts?"
@@ -437,10 +467,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "domainLastConnect": {
-    "message": "Last Connected: $1",
-    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -501,10 +527,6 @@
   },
   "endOfFlowMessage10": {
     "message": "All Done"
-  },
-  "extensionId": {
-    "message": "Extension ID: $1",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -636,6 +658,14 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
+  },
+  "gdprMessage": {
+    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1.",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
+  },
+  "gdprMessagePrivacyPolicy": {
+    "message": "Privacy Policy here",
+    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
   "general": {
     "message": "General"
@@ -792,9 +822,6 @@
   "learnMore": {
     "message": "Learn more"
   },
-  "learnAboutRisks": {
-    "message": "Learn about the risks here."
-  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -803,10 +830,6 @@
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
-  },
-  "likeToConnect": {
-    "message": "$1 would like to connect to your MetaMask account",
-    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Links"
@@ -840,9 +863,6 @@
   },
   "memo": {
     "message": "memo"
-  },
-  "menu": {
-    "message": "Menu"
   },
   "message": {
     "message": "Message"
@@ -1013,8 +1033,18 @@
   "pending": {
     "message": "pending"
   },
+  "permissionCheckedIconDescription": {
+    "message": "You have approved this permission"
+  },
+  "permissionUncheckedIconDescription": {
+    "message": "You have not approved this permission"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
+  },
+  "plusXMore": {
+    "message": "+ $1 more",
+    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "prev": {
     "message": "Prev"
@@ -1132,9 +1162,6 @@
   "readyToConnect": {
     "message": "Ready to Connect?"
   },
-  "revokeInPermissions": {
-    "message": "* You can view and revoke permissions in MetaMask settings."
-  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -1191,6 +1218,12 @@
   },
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "selectingAllWillAllow": {
+    "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
+  },
+  "selectAll": {
+    "message": "Select all"
   },
   "selectCurrency": {
     "message": "Select Currency"
@@ -1331,6 +1364,12 @@
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
+  "statusConnected": {
+    "message": "Connected"
+  },
+  "statusNotConnected": {
+    "message": "Not connected"
+  },
   "step1HardwareWallet": {
     "message": "1. Connect Hardware Wallet"
   },
@@ -1422,10 +1461,6 @@
   },
   "toWithColon": {
     "message": "To:"
-  },
-  "toConnectWith": {
-    "message": "To connect with $1",
-    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
@@ -1594,6 +1629,10 @@
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
+  },
+  "xOfY": {
+    "message": "$1 of $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "Yes, let's try"

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Одбиј"
   },
-  "likeToConnect": {
-    "message": "$1 bi hteo da se poveže sa vašim nalogom"
-  },
   "about": {
     "message": "Основни подаци"
   },
@@ -196,9 +193,6 @@
   },
   "cancelled": {
     "message": "Otkazano"
-  },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj nalog"
   },
   "clickToRevealSeed": {
     "message": "Kliknite ovde kako biste otkrili tajne reči"
@@ -653,9 +647,6 @@
   },
   "memorizePhrase": {
     "message": "Zapamtite ovaj izraz."
-  },
-  "menu": {
-    "message": "Meni"
   },
   "message": {
     "message": "Poruka"

@@ -8,9 +8,6 @@
   "reject": {
     "message": "अस्‍वीकार करें"
   },
-  "likeToConnect": {
-    "message": "$1 आपके खाते से कनेक्ट होता चाहता हैं"
-  },
   "about": {
     "message": "इसके बारे में"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "चेन आई.डी."
-  },
-  "clickToAdd": {
-    "message": "उन्हें अपने खाते में जोड़ने के लिए $1 पर क्लिक करें"
   },
   "clickToRevealSeed": {
     "message": "सीक्रेट शब्दों को जानने के लिए यहाँ क्लिक करें"
@@ -659,9 +653,6 @@
   },
   "memo": {
     "message": "ज्ञापन"
-  },
-  "menu": {
-    "message": "मेनू"
   },
   "message": {
     "message": "संदेश"

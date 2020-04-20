@@ -42,7 +42,7 @@ if (routerPath) {
   queryString = qs.parse(routerPath.split('?')[1])
 }
 
-selectedView = queryString.view || 'send new ui'
+selectedView = queryString.view || 'confirm sig requests'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 

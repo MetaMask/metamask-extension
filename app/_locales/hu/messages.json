@@ -12,9 +12,6 @@
   "reject": {
     "message": "Elutasítás"
   },
-  "likeToConnect": {
-    "message": "$1 szeretne kapcsolódni az ön fiókjához"
-  },
   "about": {
     "message": "Névjegy"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "Lánc azonosítója"
-  },
-  "clickToAdd": {
-    "message": "Kattintson $1-re, hogy hozzáadja a fiókjához"
   },
   "clickToRevealSeed": {
     "message": "Kattintson ide a titkos szavak megjelenítéséhez"
@@ -655,9 +649,6 @@
   },
   "memo": {
     "message": "emlékeztető"
-  },
-  "menu": {
-    "message": "Menü"
   },
   "message": {
     "message": "Üzenet"

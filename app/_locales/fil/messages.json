@@ -8,9 +8,6 @@
   "reject": {
     "message": "Tanggihan"
   },
-  "likeToConnect": {
-    "message": "Gusto ng $1 na kumonekta sa iyong account"
-  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -175,9 +172,6 @@
   },
   "cancelled": {
     "message": "Nakansela"
-  },
-  "clickToAdd": {
-    "message": "Mag-click sa $1 para idagdag ang mga iyon sa iyong account"
   },
   "clickToRevealSeed": {
     "message": "Mag-click dito para ipakita ang iyong secret words"

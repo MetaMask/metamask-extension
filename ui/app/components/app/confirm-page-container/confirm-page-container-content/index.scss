@@ -66,4 +66,11 @@
     color: $black;
     padding-left: 5px;
   }
+
+  &__tab {
+    font-size: .75rem;
+    color: #8C8E94;
+    text-transform: uppercase;
+    margin: 0 8px;
+  }
 }

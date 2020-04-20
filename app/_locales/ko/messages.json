@@ -8,9 +8,6 @@
   "reject": {
     "message": "거부"
   },
-  "likeToConnect": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
   "about": {
     "message": "정보"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "체인 ID"
-  },
-  "clickToAdd": {
-    "message": "계정에 토큰을 추가하기 위해 $1를 클릭하세요."
   },
   "clickToRevealSeed": {
     "message": "비밀 단어를 보기 위해 여기를 클릭하세요."
@@ -656,9 +650,6 @@
   },
   "memo": {
     "message": "메모"
-  },
-  "menu": {
-    "message": "메뉴"
   },
   "message": {
     "message": "메시지"

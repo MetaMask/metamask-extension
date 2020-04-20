@@ -100,7 +100,6 @@ initialize().catch(log.error)
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
- * @property {boolean} isPopup - Returns true if the current view is an externally-triggered notification.
  * @property {string} rpcTarget - DEPRECATED - The URL of the current RPC provider.
  * @property {Object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
@@ -241,8 +240,8 @@ function setupController (initState, initLangCode) {
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
     showUnapprovedTx: triggerUi,
+    showPermissionRequest: triggerUi,
     openPopup: openPopup,
-    closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
     initState,
     // initial locale code
@@ -421,6 +420,7 @@ function setupController (initState, initLangCode) {
   controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
   controller.permissionsController.permissions.subscribe(updateBadge)
+  controller.appStateController.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -435,8 +435,9 @@ function setupController (initState, initLangCode) {
     const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
     const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
+    const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
-                 unapprovedTypedMessagesCount + pendingPermissionRequests
+                 unapprovedTypedMessagesCount + pendingPermissionRequests + waitingForUnlockCount
     if (count) {
       label = String(count)
     }
@@ -454,23 +455,21 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
-  extension.tabs.query({ active: true }, (tabs) => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
-      notificationManager.showPopup()
-      notificationIsOpen = true
-    }
-  })
+async function triggerUi () {
+  const tabs = await platform.getActiveTabs()
+  const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
+  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+    await notificationManager.showPopup()
+  }
 }
 
 /**
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function openPopup () {
-  triggerUi()
-  return new Promise(
+async function openPopup () {
+  await triggerUi()
+  await new Promise(
     (resolve) => {
       const interval = setInterval(() => {
         if (!notificationIsOpen) {

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Відхилити"
   },
-  "likeToConnect": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
   "about": {
     "message": "Про Google Chrome"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "ID мережі"
-  },
-  "clickToAdd": {
-    "message": "Клацніть на $1, щоб додати їх до вашого облікового запису"
   },
   "clickToRevealSeed": {
     "message": "Клацніть тут, щоб відкрити секретні слова"
@@ -662,9 +656,6 @@
   },
   "memo": {
     "message": "нотатка"
-  },
-  "menu": {
-    "message": "Меню"
   },
   "message": {
     "message": "Повідомлення"

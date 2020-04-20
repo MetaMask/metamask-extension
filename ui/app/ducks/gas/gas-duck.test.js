@@ -76,19 +76,19 @@ describe('Gas Duck', function () {
   })
 
   beforeEach(function () {
-    tempFetch = global.fetch
+    tempFetch = window.fetch
     tempDateNow = global.Date.now
 
     fakeLocalStorage.loadLocalStorageData = sinon.stub()
     fakeLocalStorage.saveLocalStorageData = sinon.spy()
-    global.fetch = sinon.stub().callsFake(fakeFetch)
+    window.fetch = sinon.stub().callsFake(fakeFetch)
     global.Date.now = () => 2000000
   })
 
   afterEach(function () {
     sinon.restore()
 
-    global.fetch = tempFetch
+    window.fetch = tempFetch
     global.Date.now = tempDateNow
   })
 
@@ -291,7 +291,7 @@ describe('Gas Duck', function () {
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
-        global.fetch.getCall(0).args,
+        window.fetch.getCall(0).args,
         [
           'https://ethgasstation.info/json/ethgasAPI.json',
           {
@@ -353,7 +353,7 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.ok(global.fetch.notCalled)
+      assert.ok(window.fetch.notCalled)
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
         [{
@@ -390,7 +390,7 @@ describe('Gas Duck', function () {
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
-        global.fetch.getCall(0).args,
+        window.fetch.getCall(0).args,
         [
           'https://ethgasstation.info/json/ethgasAPI.json',
           {
@@ -444,7 +444,7 @@ describe('Gas Duck', function () {
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
-        global.fetch.getCall(0).args,
+        window.fetch.getCall(0).args,
         [
           'https://ethgasstation.info/json/ethgasAPI.json',
           {
@@ -520,7 +520,7 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.ok(global.fetch.notCalled)
+      assert.ok(window.fetch.notCalled)
 
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
@@ -565,7 +565,7 @@ describe('Gas Duck', function () {
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
-        global.fetch.getCall(0).args,
+        window.fetch.getCall(0).args,
         [
           'https://ethgasstation.info/json/ethgasAPI.json',
           {
@@ -626,7 +626,7 @@ describe('Gas Duck', function () {
         [{ type: GAS_ESTIMATE_LOADING_STARTED } ]
       )
       assert.deepEqual(
-        global.fetch.getCall(0).args,
+        window.fetch.getCall(0).args,
         [
           'https://ethgasstation.info/json/predictTable.json',
           {
@@ -679,7 +679,7 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.equal(global.fetch.callCount, 0)
+      assert.equal(window.fetch.callCount, 0)
 
       assert.deepEqual(
         mockDistpatch.getCall(1).args,

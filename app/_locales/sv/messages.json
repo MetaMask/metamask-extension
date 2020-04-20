@@ -12,9 +12,6 @@
   "reject": {
     "message": "Avvisa"
   },
-  "likeToConnect": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
   "about": {
     "message": "Om"
   },
@@ -193,9 +190,6 @@
   },
   "cancelled": {
     "message": "Avbruten"
-  },
-  "clickToAdd": {
-    "message": "Tryck på $1 för att lägga till dem på ditt konto."
   },
   "clickToRevealSeed": {
     "message": "Klicka här för att visa hemliga ord"
@@ -646,9 +640,6 @@
   },
   "memorizePhrase": {
     "message": "Memorera denna fras."
-  },
-  "menu": {
-    "message": "Meny"
   },
   "message": {
     "message": "Meddelande"

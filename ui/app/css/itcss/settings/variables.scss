@@ -17,6 +17,8 @@ $white-linen: #faf6f0; // formerly 'faint orange (textfield shades)'
 $rajah: #f5c26d; // formerly 'light orange (button shades)'
 $buttercup: #f5a623; // formerly 'dark orange (text)'
 $tundora: #4a4a4a; // formerly 'borders/font/any gray'
+$flamingo: #F56821;
+$valencia: #D73A49;
 $gallery: #efefef;
 $alabaster: #f7f7f7;
 $shark: #22232c;
@@ -60,6 +62,20 @@ $polar: #fafcfe;
 $blizzard-blue: #bfdef3;
 $mischka: #dddee9;
 $web-orange: #f2a202;
+$mercury: #E5E5E5;
+$lochmara: #037DD6;
+
+/*
+  notification and error message colors
+  */
+$success-green: #28A745;
+$success-light-green: #E8F9F1;
+$danger-red: #D73A49;
+$danger-light-red: #F8EAE8;
+$info-blue: #037DD6;
+$info-light-blue: #E8F4FD;
+$warning-yellow: #FFD33D;
+$warning-light-yellow: #FEFAE8;
 
 /*
   Z-Indicies
@@ -160,6 +176,8 @@ $Orange-300: #faa66c;
 $Orange-600: #c65507;
 $Orange-500: #F66A0A;
 
+$Black-100: #24292E;
+
 // Font Sizes
 %h3 {
   font-size: 1.5rem;
@@ -249,7 +267,7 @@ $xxlarge-spacing: 64px;
 
 %header--24 {
   @extend %font;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 %content-text {

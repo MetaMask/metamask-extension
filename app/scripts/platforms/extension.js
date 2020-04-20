@@ -1,5 +1,5 @@
 import extension from 'extensionizer'
-import { createExplorerLink as explorerLink } from 'etherscan-link'
+import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 
@@ -12,8 +12,64 @@ class ExtensionPlatform {
     extension.runtime.reload()
   }
 
-  openWindow ({ url }) {
-    extension.tabs.create({ url })
+  openTab (options) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.create(options, (newTab) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newTab)
+      })
+    })
+  }
+
+  openWindow (options) {
+    return new Promise((resolve, reject) => {
+      extension.windows.create(options, (newWindow) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newWindow)
+      })
+    })
+  }
+
+  closeWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.remove(windowId, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  focusWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { focused: true }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  getLastFocusedWindow () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getLastFocused((windowObject) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windowObject)
+      })
+    })
   }
 
   closeCurrentWindow () {
@@ -36,7 +92,7 @@ class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`
     }
-    this.openWindow({ url: extensionURL })
+    this.openTab({ url: extensionURL })
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
@@ -63,6 +119,30 @@ class ExtensionPlatform {
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  getAllWindows () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getAll((windows) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windows)
+      })
+    })
+  }
+
+  getActiveTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({ active: true }, (tabs) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(tabs)
+      })
+    })
   }
 
   currentTab () {

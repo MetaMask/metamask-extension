@@ -8,9 +8,6 @@
   "reject": {
     "message": "Avslå"
   },
-  "likeToConnect": {
-    "message": "$1 ønsker å forbindes med kontoen din "
-  },
   "about": {
     "message": "Info"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "Blokkjede "
-  },
-  "clickToAdd": {
-    "message": "Klikk på $1 for a legge dem til kontoen din "
   },
   "clickToRevealSeed": {
     "message": "Klikk her for å vise hemmelige ord "
@@ -652,9 +646,6 @@
   },
   "memo": {
     "message": "beskjed"
-  },
-  "menu": {
-    "message": "Meny "
   },
   "message": {
     "message": "Melding "

@@ -45,6 +45,7 @@ import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
 import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
+import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import getBuyEthUrl from './lib/buy-eth-url'
@@ -120,9 +121,11 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.appStateController = new AppStateController({
-      preferencesStore: this.preferencesController.store,
-      onInactiveTimeout: () => this.setLocked(),
+      addUnlockListener: this.on.bind(this, 'unlock'),
+      isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
+      onInactiveTimeout: () => this.setLocked(),
+      preferencesStore: this.preferencesController.store,
     })
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
@@ -205,12 +208,16 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
+    this.keyringController.on('unlock', () => this.emit('unlock'))
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
-      platform: opts.platform,
+      getRestrictedMethods,
+      getUnlockPromise: this.appStateController.getUnlockPromise.bind(this.appStateController),
       notifyDomain: this.notifyConnections.bind(this),
       notifyAllDomains: this.notifyAllConnections.bind(this),
+      preferences: this.preferencesController.store,
+      showPermissionRequest: opts.showPermissionRequest,
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -350,9 +357,7 @@ export default class MetamaskController extends EventEmitter {
         if (origin === 'metamask') {
           const selectedAddress = this.preferencesController.getSelectedAddress()
           return selectedAddress ? [selectedAddress] : []
-        } else if (
-          this.keyringController.memStore.getState().isUnlocked
-        ) {
+        } else if (this.isUnlocked()) {
           return await this.permissionsController.getAccounts(origin)
         }
         return [] // changing this is a breaking change
@@ -538,7 +543,7 @@ export default class MetamaskController extends EventEmitter {
       signPersonalMessage: nodeify(this.signPersonalMessage, this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
 
-      // personalMessageManager
+      // typedMessageManager
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
@@ -571,9 +576,8 @@ export default class MetamaskController extends EventEmitter {
       getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
       rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
-      updatePermittedAccounts: nodeify(permissionsController.updatePermittedAccounts, permissionsController),
+      addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
-      handleNewAccountSelected: nodeify(this.handleNewAccountSelected, this),
 
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
@@ -611,11 +615,11 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
       }
-      releaseLock()
       return vault
     } catch (err) {
-      releaseLock()
       throw err
+    } finally {
+      releaseLock()
     }
   }
 
@@ -655,11 +659,11 @@ export default class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      releaseLock()
       return vault
     } catch (err) {
-      releaseLock()
       throw err
+    } finally {
+      releaseLock()
     }
   }
 
@@ -771,7 +775,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
-    const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
     const nonSimpleKeyrings = this.keyringController.keyrings.filter((keyring) => keyring.type !== 'Simple Key Pair')
@@ -779,7 +782,6 @@ export default class MetamaskController extends EventEmitter {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
-    await this.preferencesController.syncAddresses(accounts)
     await this.txController.pendingTxTracker.updatePendingTxs()
 
     try {
@@ -1037,17 +1039,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
     await this.preferencesController.setSelectedAddress(accounts[0])
-  }
-
-  /**
-   * Handle when a new account is selected for the given origin in the UI.
-   * Stores the address by origin and notifies external providers associated
-   * with the origin.
-   * @param {string} origin - The origin for which the address was selected.
-   * @param {string} address - The new selected address.
-   */
-  async handleNewAccountSelected (origin, address) {
-    this.permissionsController.handleNewAccountSelected(origin, address)
   }
 
   // ---------------------------------------------------------------------------
@@ -1412,8 +1403,8 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async createSpeedUpTransaction (originalTxId, customGasPrice) {
-    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
+  async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit)
     const state = await this.getState()
     return state
   }
@@ -1730,9 +1721,8 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyConnections (origin, payload) {
 
-    const { isUnlocked } = this.getState()
     const connections = this.connections[origin]
-    if (!isUnlocked || !connections) {
+    if (!this.isUnlocked() || !connections) {
       return
     }
 
@@ -1750,8 +1740,7 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyAllConnections (payload) {
 
-    const { isUnlocked } = this.getState()
-    if (!isUnlocked) {
+    if (!this.isUnlocked()) {
       return
     }
 
@@ -1771,7 +1760,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate (state) {
-    const { isUnlocked, keyrings } = state
+    const { keyrings } = state
     const addresses = keyrings.reduce((acc, { accounts }) => acc.concat(accounts), [])
 
     if (!addresses.length) {
@@ -1779,17 +1768,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.addAddresses(addresses)
+    this.preferencesController.syncAddresses(addresses)
     this.accountTracker.syncWithAddresses(addresses)
-
-    const wasLocked = !isUnlocked
-    if (wasLocked) {
-      const oldSelectedAddress = this.preferencesController.getSelectedAddress()
-      if (!addresses.includes(oldSelectedAddress)) {
-        const address = addresses[0]
-        await this.preferencesController.setSelectedAddress(address)
-      }
-    }
   }
 
   // misc
@@ -1800,6 +1780,13 @@ export default class MetamaskController extends EventEmitter {
    */
   privateSendUpdate () {
     this.emit('update', this.getState())
+  }
+
+  /**
+   * @returns {boolean} Whether the extension is unlocked.
+   */
+  isUnlocked () {
+    return this.keyringController.memStore.getState().isUnlocked
   }
 
   //=============================================================================
@@ -1908,7 +1895,7 @@ export default class MetamaskController extends EventEmitter {
     const network = this.networkController.getNetworkState()
     const url = getBuyEthUrl({ network, address, amount })
     if (url) {
-      this.platform.openWindow({ url })
+      this.platform.openTab({ url })
     }
   }
 
@@ -2092,7 +2079,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
   }
 

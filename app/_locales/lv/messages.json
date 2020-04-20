@@ -12,9 +12,6 @@
   "reject": {
     "message": "Noraidīt"
   },
-  "likeToConnect": {
-    "message": "$1 vēlas izveidot savienojumu ar jūsu kontu"
-  },
   "about": {
     "message": "Par"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "Ķēdes ID"
-  },
-  "clickToAdd": {
-    "message": "Noklikšķiniet uz $1, lai pievienotu tos savam kontam"
   },
   "clickToRevealSeed": {
     "message": "Klikšķiniet šeit, lai skatītu slepenos vārdus"
@@ -658,9 +652,6 @@
   },
   "memo": {
     "message": "atgādinājums"
-  },
-  "menu": {
-    "message": "Izvēlne"
   },
   "message": {
     "message": "Ziņojums"

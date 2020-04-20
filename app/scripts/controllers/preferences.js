@@ -302,7 +302,7 @@ class PreferencesController {
     this.store.updateState({ identities, accountTokens })
   }
 
-  /*
+  /**
    * Synchronizes identity entries with known accounts.
    * Removes any unknown identities, and returns the resulting selected address.
    *
@@ -310,6 +310,11 @@ class PreferencesController {
    * @returns {Promise<string>} - selectedAddress the selected address.
    */
   syncAddresses (addresses) {
+
+    if (!Array.isArray(addresses) || addresses.length === 0) {
+      throw new Error('Expected non-empty array of addresses.')
+    }
+
     const { identities, lostIdentities } = this.store.getState()
 
     const newlyLost = {}
@@ -365,8 +370,15 @@ class PreferencesController {
   setSelectedAddress (_address) {
     const address = normalizeAddress(_address)
     this._updateTokens(address)
-    this.store.updateState({ selectedAddress: address })
-    const tokens = this.store.getState().tokens
+
+    const { identities, tokens } = this.store.getState()
+    const selectedIdentity = identities[address]
+    if (!selectedIdentity) {
+      throw new Error(`Identity for '${address} not found`)
+    }
+
+    selectedIdentity.lastSelected = Date.now()
+    this.store.updateState({ identities, selectedAddress: address })
     return Promise.resolve(tokens)
   }
 

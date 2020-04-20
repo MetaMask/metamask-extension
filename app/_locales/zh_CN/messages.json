@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒绝"
   },
-  "likeToConnect": {
-    "message": "$1 希望关联您的账户"
-  },
   "about": {
     "message": "关于"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "链 ID"
-  },
-  "clickToAdd": {
-    "message": "点击 $1 将其加入您的个人账户"
   },
   "clickToRevealSeed": {
     "message": "点击此处显示密语"
@@ -650,9 +644,6 @@
   },
   "memo": {
     "message": "备忘录"
-  },
-  "menu": {
-    "message": "菜单"
   },
   "message": {
     "message": "消息"

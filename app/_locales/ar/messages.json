@@ -8,9 +8,6 @@
   "reject": {
     "message": "رفض"
   },
-  "likeToConnect": {
-    "message": "يرغب $1 في الاتصال بحسابك"
-  },
   "about": {
     "message": "حول"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "معرّف السلسلة"
-  },
-  "clickToAdd": {
-    "message": "انقر على $1لإضافتها إلى حسابك"
   },
   "clickToRevealSeed": {
     "message": "انقر هنا للكشف عن الكلمات السرية"
@@ -655,9 +649,6 @@
   },
   "memo": {
     "message": "مذكرة"
-  },
-  "menu": {
-    "message": "القائمة"
   },
   "message": {
     "message": "رسالة"

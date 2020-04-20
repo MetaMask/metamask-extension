@@ -8,9 +8,6 @@
   "reject": {
     "message": "Hylkää"
   },
-  "likeToConnect": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "Ketjun tunnus"
-  },
-  "clickToAdd": {
-    "message": "Napsauta kohdetta $1 lisätäksesi ne tiliisi"
   },
   "clickToRevealSeed": {
     "message": "Paljasta salaiset sanat napsauttamalla tästä"
@@ -659,9 +653,6 @@
   },
   "memo": {
     "message": "muistio"
-  },
-  "menu": {
-    "message": "Valikko"
   },
   "message": {
     "message": "Viesti"

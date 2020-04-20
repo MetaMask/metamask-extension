@@ -15,6 +15,7 @@ export default class TransactionList extends PureComponent {
   }
 
   static propTypes = {
+    isWideViewport: PropTypes.bool.isRequired,
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
     selectedToken: PropTypes.object,
@@ -80,7 +81,7 @@ export default class TransactionList extends PureComponent {
 
   renderTransactions () {
     const { t } = this.context
-    const { pendingTransactions = [], completedTransactions = [] } = this.props
+    const { isWideViewport, pendingTransactions = [], completedTransactions = [] } = this.props
     const pendingLength = pendingTransactions.length
 
     return (
@@ -100,9 +101,15 @@ export default class TransactionList extends PureComponent {
           )
         }
         <div className="transaction-list__completed-transactions">
-          <div className="transaction-list__header">
-            { t('history') }
-          </div>
+          {
+            isWideViewport || pendingLength > 0
+              ? (
+                <div className="transaction-list__header">
+                  { t('history') }
+                </div>
+              )
+              : null
+          }
           {
             completedTransactions.length > 0
               ? completedTransactions.map((transactionGroup, index) => (

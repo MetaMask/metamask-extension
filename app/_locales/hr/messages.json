@@ -12,9 +12,6 @@
   "reject": {
     "message": "Odbaci"
   },
-  "likeToConnect": {
-    "message": "Korisnik $1 želi se povezati na vaš račun"
-  },
   "about": {
     "message": "O opcijama"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
-  },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj račun"
   },
   "clickToRevealSeed": {
     "message": "Ovdje kliknite za otkrivanje tajnih riječi"
@@ -655,9 +649,6 @@
   },
   "memo": {
     "message": "podsjetnik"
-  },
-  "menu": {
-    "message": "Izbornik"
   },
   "message": {
     "message": "Poruka"

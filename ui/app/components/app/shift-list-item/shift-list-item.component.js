@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { createExplorerLink as explorerLink } from 'etherscan-link'
+import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { formatDate, addressSummary } from '../../../helpers/utils/util'
 import CopyButton from '../../ui/copyButton'
 import EthBalance from '../../ui/eth-balance'
@@ -146,7 +146,7 @@ export default class ShiftListItem extends Component {
               width: '200px',
               overflow: 'hidden',
             }}
-            onClick={() => global.platform.openWindow({ url })}
+            onClick={() => global.platform.openTab({ url })}
           >
             <div
               style={{

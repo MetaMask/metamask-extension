@@ -202,8 +202,8 @@ export default class SendTransactionScreen extends Component {
       this.props.scanQrCode()
 
       // Clear the queryString param after showing the modal
-      const cleanUrl = location.href.split('?')[0]
-      history.pushState({}, null, `${cleanUrl}`)
+      const cleanUrl = window.location.href.split('?')[0]
+      window.history.pushState({}, null, `${cleanUrl}`)
       window.location.hash = '#send'
     }
   }
@@ -236,8 +236,8 @@ export default class SendTransactionScreen extends Component {
       return this.setState({ toError: '', toWarning: '' })
     }
 
-    const toErrorObject = getToErrorObject(query, null, hasHexData, tokens, selectedToken, network)
-    const toWarningObject = getToWarningObject(query, null, tokens, selectedToken)
+    const toErrorObject = getToErrorObject(query, hasHexData, tokens, selectedToken, network)
+    const toWarningObject = getToWarningObject(query, tokens, selectedToken)
 
     this.setState({
       toError: toErrorObject.to,

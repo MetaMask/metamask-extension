@@ -25,10 +25,6 @@ module.exports = {
     'plugin:react/recommended',
   ],
 
-  env: {
-    'browser': true,
-  },
-
   plugins: [
     'babel',
     'react',
@@ -37,9 +33,10 @@ module.exports = {
   ],
 
   globals: {
-    'web3': true,
-    '$': false,
-    'QUnit': false,
+    '$': 'readonly',
+    document: 'readonly',
+    QUnit: 'readonly',
+    window: 'readonly',
   },
 
   rules: {
@@ -74,7 +71,7 @@ module.exports = {
     'react/jsx-closing-tag-location': 'error',
     'react/jsx-no-duplicate-props': 'error',
     'react/jsx-closing-bracket-location': 'error',
-    'react/jsx-first-prop-new-line': 'error',
+    'react/jsx-first-prop-new-line': ['error', 'multiline'],
     'react/jsx-max-props-per-line': ['error', { 'maximum': 1, 'when': 'multiline' } ],
     'react/jsx-tag-spacing': ['error', {
       'closingSlash': 'never',

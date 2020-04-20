@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
-import WalletView from '../wallet-view'
-import { WALLET_VIEW_SIDEBAR } from './sidebar.constants'
 import CustomizeGas from '../gas-customization/gas-modal-page-container'
 
 export default class Sidebar extends Component {
@@ -35,8 +33,6 @@ export default class Sidebar extends Component {
     const { type, sidebarProps = {} } = this.props
     const { transaction = {} } = sidebarProps
     switch (type) {
-      case WALLET_VIEW_SIDEBAR:
-        return <WalletView responsiveDisplayClassname="sidebar-right" />
       case 'customize-gas':
         return <div className="sidebar-left"><CustomizeGas transaction={transaction} /></div>
       default:

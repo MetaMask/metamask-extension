@@ -1,6 +1,6 @@
 import assert from 'assert'
 import reduceApp from '../../../../../ui/app/ducks/app/app'
-import { actionConstants } from '../../../../../ui/app/store/actions'
+import actionConstants from '../../../../../ui/app/store/actionConstants'
 
 const actions = actionConstants
 
@@ -140,17 +140,6 @@ describe('App State', function () {
       type: actions.SHOW_SEND_TOKEN_PAGE,
     })
 
-    assert.equal(state.transForward, true)
-    assert.equal(state.warning, null)
-  })
-
-  it('unlocks Metamask', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.UNLOCK_METAMASK,
-    })
-
-    assert.equal(state.forgottenPassword, null)
-    assert.deepEqual(state.detailView, {})
     assert.equal(state.transForward, true)
     assert.equal(state.warning, null)
   })

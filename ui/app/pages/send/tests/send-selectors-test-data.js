@@ -172,10 +172,7 @@ export default {
       'gasPrice': '0xaa',
       'gasTotal': '0xb451dc41b578',
       'tokenBalance': 3434,
-      'from': {
-        'address': '0xabcdefg',
-        'balance': '0x5f4e3d2c1',
-      },
+      'from': '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       'to': '0x987fedabc',
       'amount': '0x080',
       'memo': '',

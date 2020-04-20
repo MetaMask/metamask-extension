@@ -8,9 +8,6 @@
   "reject": {
     "message": "Rechazar"
   },
-  "likeToConnect": {
-    "message": "$1 quisiera conectar con tu cuenta"
-  },
   "about": {
     "message": "Acerca"
   },
@@ -159,9 +156,6 @@
   },
   "chainId": {
     "message": "ID Cadena"
-  },
-  "clickToAdd": {
-    "message": "Hazle clic en $1 para agregarles a su cuenta"
   },
   "clickToRevealSeed": {
     "message": "Haga clic aquí para revelar palabras secretas"
@@ -538,9 +532,6 @@
   },
   "mainnet": {
     "message": "Red principal de Ethereum (Main Net)"
-  },
-  "menu": {
-    "message": "Menú"
   },
   "message": {
     "message": "Mensaje"

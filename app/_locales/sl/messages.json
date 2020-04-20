@@ -8,9 +8,6 @@
   "reject": {
     "message": "Zavrni"
   },
-  "likeToConnect": {
-    "message": "$1 se želi povezati z vašim računom."
-  },
   "about": {
     "message": "O možnostih"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "ID verige"
-  },
-  "clickToAdd": {
-    "message": "Kliknite na $1 za dodajo v vaš račun"
   },
   "clickToRevealSeed": {
     "message": "Kliknite tukaj, če želite razkriti skrivne besede"
@@ -647,9 +641,6 @@
   },
   "memo": {
     "message": "okrožnica"
-  },
-  "menu": {
-    "message": "Meni"
   },
   "message": {
     "message": "Sporočilo"

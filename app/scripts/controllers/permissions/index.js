@@ -4,8 +4,8 @@ import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
+import { cloneDeep } from 'lodash'
 
-import getRestrictedMethods from './restrictedMethods'
 import createMethodMiddleware from './methodMiddleware'
 import PermissionsLogController from './permissionsLog'
 
@@ -24,7 +24,13 @@ export class PermissionsController {
 
   constructor (
     {
-      platform, notifyDomain, notifyAllDomains, getKeyringAccounts,
+      getKeyringAccounts,
+      getRestrictedMethods,
+      getUnlockPromise,
+      notifyDomain,
+      notifyAllDomains,
+      preferences,
+      showPermissionRequest,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -35,21 +41,39 @@ export class PermissionsController {
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
 
+    this.getKeyringAccounts = getKeyringAccounts
+    this.getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
-    this.getKeyringAccounts = getKeyringAccounts
-    this._platform = platform
-    this._restrictedMethods = getRestrictedMethods(this)
-    this.permissionsLogController = new PermissionsLogController({
+    this._showPermissionRequest = showPermissionRequest
+
+    this._restrictedMethods = getRestrictedMethods({
+      getKeyringAccounts: this.getKeyringAccounts.bind(this),
+      getIdentities: this._getIdentities.bind(this),
+    })
+    this.permissionsLog = new PermissionsLogController({
       restrictedMethods: Object.keys(this._restrictedMethods),
       store: this.store,
     })
     this.pendingApprovals = new Map()
     this.pendingApprovalOrigins = new Set()
     this._initializePermissions(restoredPermissions)
+    this._lastSelectedAddress = preferences.getState().selectedAddress
+    this.preferences = preferences
+
+    preferences.subscribe(async ({ selectedAddress }) => {
+      if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
+        this._lastSelectedAddress = selectedAddress
+        await this._handleAccountSelected(selectedAddress)
+      }
+    })
   }
 
   createMiddleware ({ origin, extensionId }) {
+
+    if (typeof origin !== 'string' || !origin.length) {
+      throw new Error('Must provide non-empty string origin.')
+    }
 
     if (extensionId) {
       this.store.updateState({
@@ -62,12 +86,14 @@ export class PermissionsController {
 
     const engine = new JsonRpcEngine()
 
-    engine.push(this.permissionsLogController.createMiddleware())
+    engine.push(this.permissionsLog.createMiddleware())
 
     engine.push(createMethodMiddleware({
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
+      getUnlockPromise: this.getUnlockPromise,
+      hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
       ),
@@ -76,6 +102,7 @@ export class PermissionsController {
     engine.push(this.permissions.providerMiddlewareFunction.bind(
       this.permissions, { origin }
     ))
+
     return asMiddleware(engine)
   }
 
@@ -106,6 +133,26 @@ export class PermissionsController {
   }
 
   /**
+   * Returns whether the given origin has the given permission.
+   *
+   * @param {string} origin - The origin to check.
+   * @param {string} permission - The permission to check for.
+   * @returns {boolean} Whether the origin has the permission.
+   */
+  hasPermission (origin, permission) {
+    return Boolean(this.permissions.getPermission(origin, permission))
+  }
+
+  /**
+   * Gets the identities from the preferences controller store
+   *
+   * @returns {Object} identities
+   */
+  _getIdentities () {
+    return this.preferences.getState().identities
+  }
+
+  /**
    * Submits a permissions request to rpc-cap. Internal, background use only.
    *
    * @param {string} origin - The origin string.
@@ -114,15 +161,18 @@ export class PermissionsController {
   _requestPermissions (origin, permissions) {
     return new Promise((resolve, reject) => {
 
+      // rpc-cap assigns an id to the request if there is none, as expected by
+      // requestUserApproval below
       const req = { method: 'wallet_requestPermissions', params: [permissions] }
       const res = {}
       this.permissions.providerMiddlewareFunction(
         { origin }, req, res, () => {}, _end
       )
 
-      function _end (err) {
-        if (err || res.error) {
-          reject(err || res.error)
+      function _end (_err) {
+        const err = _err || res.error
+        if (err) {
+          reject(err)
         } else {
           resolve(res.result)
         }
@@ -131,9 +181,11 @@ export class PermissionsController {
   }
 
   /**
-   * User approval callback. The request can fail if the request is invalid.
+   * User approval callback. Resolves the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
+   * The request will be rejected if finalizePermissionsRequest fails.
    *
-   * @param {Object} approved - the approved request object
+   * @param {Object} approved - The request object approved by the user
    * @param {Array} accounts - The accounts to expose, if any
    */
   async approvePermissionsRequest (approved, accounts) {
@@ -142,16 +194,27 @@ export class PermissionsController {
     const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.warn(`Permissions request with id '${id}' not found`)
+      log.error(`Permissions request with id '${id}' not found`)
       return
     }
 
     try {
 
-      // attempt to finalize the request and resolve it
-      await this.finalizePermissionsRequest(approved.permissions, accounts)
-      approval.resolve(approved.permissions)
+      if (Object.keys(approved.permissions).length === 0) {
 
+        approval.reject(ethErrors.rpc.invalidRequest({
+          message: 'Must request at least one permission.',
+        }))
+
+      } else {
+
+        // attempt to finalize the request and resolve it,
+        // settings caveats as necessary
+        approved.permissions = await this.finalizePermissionsRequest(
+          approved.permissions, accounts
+        )
+        approval.resolve(approved.permissions)
+      }
     } catch (err) {
 
       // if finalization fails, reject the request
@@ -164,15 +227,16 @@ export class PermissionsController {
   }
 
   /**
-   * User rejection callback.
+   * User rejection callback. Rejects the Promise for the permissions request
+   * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
    *
-   * @param {string} id - the id of the rejected request
+   * @param {string} id - The id of the request rejected by the user
    */
   async rejectPermissionsRequest (id) {
     const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.warn(`Permissions request with id '${id}' not found`)
+      log.error(`Permissions request with id '${id}' not found`)
       return
     }
 
@@ -181,6 +245,7 @@ export class PermissionsController {
   }
 
   /**
+   * @deprecated
    * Grants the given origin the eth_accounts permission for the given account(s).
    * This method should ONLY be called as a result of direct user action in the UI,
    * with the intention of supporting legacy dapps that don't support EIP 1102.
@@ -190,75 +255,111 @@ export class PermissionsController {
    */
   async legacyExposeAccounts (origin, accounts) {
 
-    const permissions = {
-      eth_accounts: {},
+    // accounts are validated by finalizePermissionsRequest
+    if (typeof origin !== 'string' || !origin.length) {
+      throw new Error('Must provide non-empty string origin.')
     }
 
-    await this.finalizePermissionsRequest(permissions, accounts)
+    const existingAccounts = await this.getAccounts(origin)
 
-    let error
+    if (existingAccounts.length > 0) {
+      throw new Error(
+        'May not call legacyExposeAccounts on origin with exposed accounts.'
+      )
+    }
+
+    const permissions = await this.finalizePermissionsRequest(
+      { eth_accounts: {} }, accounts
+    )
+
     try {
-      await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, (err) => (err ? resolve() : reject(err)))
-      })
-    } catch (err) {
-      error = err
-    }
 
-    if (error) {
-      if (error.code === 4001) {
-        throw error
-      } else {
-        throw ethErrors.rpc.internal({
-          message: `Failed to add 'eth_accounts' to '${origin}'.`,
-          data: {
-            originalError: error,
-            accounts,
-          },
-        })
-      }
+      await new Promise((resolve, reject) => {
+        this.permissions.grantNewPermissions(
+          origin, permissions, {}, _end
+        )
+
+        function _end (err) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve()
+          }
+        }
+      })
+
+      this.notifyDomain(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        result: accounts,
+      })
+      this.permissionsLog.logAccountExposure(origin, accounts)
+
+    } catch (error) {
+
+      throw ethErrors.rpc.internal({
+        message: `Failed to add 'eth_accounts' to '${origin}'.`,
+        data: {
+          originalError: error,
+          accounts,
+        },
+      })
     }
   }
 
   /**
-   * Update the accounts exposed to the given origin. Changes the eth_accounts
+   * Expose an account to the given origin. Changes the eth_accounts
    * permissions and emits accountsChanged.
-   * At least one account must be exposed. If no accounts are to be exposed, the
-   * eth_accounts permissions should be removed completely.
    *
-   * Throws error if the update fails.
+   * Throws error if the origin or account is invalid, or if the update fails.
    *
-   * @param {string} origin - The origin to change the exposed accounts for.
-   * @param {string[]} accounts - The new account(s) to expose.
+   * @param {string} origin - The origin to expose the account to.
+   * @param {string} account - The new account to expose.
    */
-  async updatePermittedAccounts (origin, accounts) {
+  async addPermittedAccount (origin, account) {
+    const domains = this.permissions.getDomains()
+    if (!domains[origin]) {
+      throw new Error('Unrecognized domain')
+    }
+    this.validatePermittedAccounts([account])
 
-    await this.validatePermittedAccounts(accounts)
+    const oldPermittedAccounts = this._getPermittedAccounts(origin)
+    if (!oldPermittedAccounts) {
+      throw new Error('Origin does not have \'eth_accounts\' permission')
+    } else if (oldPermittedAccounts.includes(account)) {
+      throw new Error('Account is already permitted')
+    }
 
     this.permissions.updateCaveatFor(
-      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, accounts
+      origin, 'eth_accounts', CAVEAT_NAMES.exposedAccounts, [...oldPermittedAccounts, account]
     )
+    const permittedAccounts = await this.getAccounts(origin)
 
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
-      result: accounts,
+      result: permittedAccounts,
     })
   }
 
   /**
-   * Finalizes a permissions request.
-   * Throws if request validation fails.
+   * Finalizes a permissions request. Throws if request validation fails.
+   * Clones the passed-in parameters to prevent inadvertent modification.
+   * Sets (adds or replaces) caveats for the following permissions:
+   * - eth_accounts: the permitted accounts caveat
    *
    * @param {Object} requestedPermissions - The requested permissions.
-   * @param {string[]} accounts - The accounts to expose, if any.
+   * @param {string[]} requestedAccounts - The accounts to expose, if any.
+   * @returns {Object} The finalized permissions request object.
    */
-  async finalizePermissionsRequest (requestedPermissions, accounts) {
+  async finalizePermissionsRequest (requestedPermissions, requestedAccounts) {
 
-    const { eth_accounts: ethAccounts } = requestedPermissions
+    const finalizedPermissions = cloneDeep(requestedPermissions)
+    const finalizedAccounts = cloneDeep(requestedAccounts)
+
+    const { eth_accounts: ethAccounts } = finalizedPermissions
 
     if (ethAccounts) {
 
-      await this.validatePermittedAccounts(accounts)
+      this.validatePermittedAccounts(finalizedAccounts)
 
       if (!ethAccounts.caveats) {
         ethAccounts.caveats = []
@@ -272,11 +373,13 @@ export class PermissionsController {
       ethAccounts.caveats.push(
         {
           type: 'filterResponse',
-          value: accounts,
+          value: finalizedAccounts,
           name: CAVEAT_NAMES.exposedAccounts,
         },
       )
     }
+
+    return finalizedPermissions
   }
 
   /**
@@ -285,16 +388,15 @@ export class PermissionsController {
    *
    * @param {string[]} accounts - An array of addresses.
    */
-  async validatePermittedAccounts (accounts) {
-
+  validatePermittedAccounts (accounts) {
     if (!Array.isArray(accounts) || accounts.length === 0) {
       throw new Error('Must provide non-empty array of account(s).')
     }
 
     // assert accounts exist
-    const allAccounts = await this.getKeyringAccounts()
+    const allIdentities = this._getIdentities()
     accounts.forEach((acc) => {
-      if (!allAccounts.includes(acc)) {
+      if (!allIdentities[acc]) {
         throw new Error(`Unknown account: ${acc}`)
       }
     })
@@ -309,7 +411,7 @@ export class PermissionsController {
       payload.method === NOTIFICATION_NAMES.accountsChanged &&
       Array.isArray(payload.result)
     ) {
-      this.permissionsLogController.updateAccountsHistory(
+      this.permissionsLog.updateAccountsHistory(
         origin, payload.result
       )
     }
@@ -325,6 +427,9 @@ export class PermissionsController {
 
   /**
    * Removes the given permissions for the given domain.
+   * Should only be called after confirming that the permissions exist, to
+   * avoid sending unnecessary notifications.
+   *
    * @param {Object} domains { origin: [permissions] }
    */
   removePermissionsFor (domains) {
@@ -349,31 +454,70 @@ export class PermissionsController {
   }
 
   /**
-   * When a new account is selected in the UI for 'origin', emit accountsChanged
-   * to 'origin' if the selected account is permitted.
-   * @param {string} origin - The origin.
+   * Get current set of permitted accounts for the given origin
+   *
+   * @param {string} origin - The origin to obtain permitted accounts for
+   * @returns {Array<string>|null} The list of permitted accounts
+   */
+  _getPermittedAccounts (origin) {
+    const permittedAccounts = this.permissions
+      .getPermission(origin, 'eth_accounts')
+      ?.caveats
+      ?.find((caveat) => caveat.name === CAVEAT_NAMES.exposedAccounts)
+      ?.value
+
+    return permittedAccounts || null
+  }
+
+  /**
+   * When a new account is selected in the UI, emit accountsChanged to each origin
+   * where the selected account is exposed.
+   *
+   * Note: This will emit "false positive" accountsChanged events, but they are
+   * handled by the inpage provider.
+   *
    * @param {string} account - The newly selected account's address.
    */
-  async handleNewAccountSelected (origin, account) {
-
-    const permittedAccounts = await this.getAccounts(origin)
-
-    // do nothing if the account is not permitted for the origin, or
-    // if it's already first in the array of permitted accounts
-    if (
-      !account || !permittedAccounts.includes(account) ||
-      permittedAccounts[0] === account
-    ) {
-      return
+  async _handleAccountSelected (account) {
+    if (typeof account !== 'string') {
+      throw new Error('Selected account should be a non-empty string.')
     }
 
-    const newPermittedAccounts = [account].concat(
-      permittedAccounts.filter((_account) => _account !== account)
-    )
+    const domains = this.permissions.getDomains() || {}
+    const connectedDomains = Object.entries(domains)
+      .filter(([_, { permissions }]) => {
+        const ethAccounts = permissions.find((permission) => permission.parentCapability === 'eth_accounts')
+        const exposedAccounts = ethAccounts
+          ?.caveats
+          .find((caveat) => caveat.name === 'exposedAccounts')
+          ?.value
+        return exposedAccounts?.includes(account)
+      })
+      .map(([domain]) => domain)
 
-    // update permitted accounts to ensure that accounts are returned
-    // in the same order every time
-    this.updatePermittedAccounts(origin, newPermittedAccounts)
+    await Promise.all(
+      connectedDomains
+        .map(
+          (origin) => this._handleConnectedAccountSelected(origin)
+        )
+    )
+  }
+
+  /**
+   * When a new account is selected in the UI, emit accountsChanged to 'origin'
+   *
+   * Note: This will emit "false positive" accountsChanged events, but they are
+   * handled by the inpage provider.
+   *
+   * @param {string} origin - The origin
+   */
+  async _handleConnectedAccountSelected (origin) {
+    const permittedAccounts = await this.getAccounts(origin)
+
+    this.notifyDomain(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: permittedAccounts,
+    })
   }
 
   /**
@@ -454,11 +598,11 @@ export class PermissionsController {
 
         if (this.pendingApprovalOrigins.has(origin)) {
           throw ethErrors.rpc.resourceUnavailable(
-            'Permission request already pending; please wait.'
+            'Permissions request already pending; please wait.'
           )
         }
 
-        this._platform.openExtensionInBrowser(`connect/${id}`)
+        this._showPermissionRequest()
 
         return new Promise((resolve, reject) => {
           this._addPendingApproval(id, origin, resolve, reject)

@@ -86,14 +86,14 @@ export default class SendAssetRow extends Component {
           onClick={this.closeDropdown}
         />
         <div className="send-v2__asset-dropdown__list">
-          { this.renderEth() }
-          { this.props.tokens.map((token) => this.renderAsset(token)) }
+          { this.renderEth(true) }
+          { this.props.tokens.map((token) => this.renderAsset(token, true)) }
         </div>
       </div>
     )
   }
 
-  renderEth () {
+  renderEth (insideDropdown = false) {
     const { t } = this.context
     const { accounts, selectedAddress } = this.props
 
@@ -117,12 +117,15 @@ export default class SendAssetRow extends Component {
             />
           </div>
         </div>
+        { !insideDropdown && this.props.tokens.length > 0 && (
+          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+        )}
       </div>
     )
   }
 
 
-  renderAsset (token) {
+  renderAsset (token, insideDropdown = false) {
     const { address, symbol } = token
     const { t } = this.context
 
@@ -147,6 +150,9 @@ export default class SendAssetRow extends Component {
             />
           </div>
         </div>
+        { !insideDropdown && (
+          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+        )}
       </div>
     )
   }

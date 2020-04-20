@@ -5,7 +5,7 @@ import { HashRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
 import ErrorPage from './error'
 import Routes from './routes'
-import I18nProvider from '../helpers/higher-order-components/i18n-provider'
+import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n'
 import MetaMetricsProvider from '../helpers/higher-order-components/metametrics/metametrics.provider'
 
 class Index extends PureComponent {
@@ -27,10 +27,12 @@ class Index extends PureComponent {
       return (
         <Provider store={store}>
           <I18nProvider>
-            <ErrorPage
-              error={error}
-              errorId={errorId}
-            />
+            <LegacyI18nProvider>
+              <ErrorPage
+                error={error}
+                errorId={errorId}
+              />
+            </LegacyI18nProvider>
           </I18nProvider>
         </Provider>
       )
@@ -41,7 +43,9 @@ class Index extends PureComponent {
         <HashRouter hashType="noslash">
           <MetaMetricsProvider>
             <I18nProvider>
-              <Routes />
+              <LegacyI18nProvider>
+                <Routes />
+              </LegacyI18nProvider>
             </I18nProvider>
           </MetaMetricsProvider>
         </HashRouter>

@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import withTokenTracker from '../with-token-tracker.component'
 import TokenBalance from '../../../../components/ui/token-balance/token-balance.component'
 // import sinon from 'sinon'
-import TokenTracker from 'eth-token-tracker'
+import TokenTracker from '@metamask/eth-token-tracker'
 
 const { createTestProviderTools } = require('../../../../../../test/stub/provider')
 

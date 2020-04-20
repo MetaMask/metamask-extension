@@ -1,4 +1,4 @@
-import { actionConstants } from '../../store/actions'
+import actionConstants from '../../store/actionConstants'
 
 export default function reduceLocaleMessages (state = {}, { type, value }) {
   switch (type) {
@@ -11,3 +11,7 @@ export default function reduceLocaleMessages (state = {}, { type, value }) {
       return state
   }
 }
+
+export const getCurrentLocaleMessages = (state) => state.localeMessages.current
+
+export const getEnLocaleMessages = (state) => state.localeMessages.en

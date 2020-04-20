@@ -1,6 +1,9 @@
 @import '../../../components/ui/button/buttons';
 @import '../../../components/ui/dialog/dialog';
 @import '../../../components/ui/snackbar/index';
+@import '../../../components/ui/list-item/index';
+@import '../../../components/ui/popover/index';
+@import '../../../components/ui/icon/preloader/index';
 
 @import './footer.scss';
 
@@ -20,15 +23,10 @@
 
 @import './loading-overlay.scss';
 
-// Balances
-@import './wallet-balance.scss';
-
 // Tx List and Sections
 @import './transaction-list.scss';
 
 @import './sections.scss';
-
-@import './token-list.scss';
 
 @import './currency-display.scss';
 
@@ -45,8 +43,6 @@
 @import './request-encryption-public-key.scss';
 
 @import './request-decrypt-message.scss';
-
-@import './account-details-dropdown.scss';
 
 @import './editable-label.scss';
 

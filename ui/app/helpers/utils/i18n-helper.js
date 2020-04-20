@@ -1,4 +1,5 @@
 // cross-browser connection to extension i18n API
+import React from 'react'
 import log from 'loglevel'
 
 import * as Sentry from '@sentry/browser'
@@ -39,19 +40,36 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   }
   const entry = localeMessages[key]
   let phrase = entry.message
+
+  const hasSubstitutions = Boolean(substitutions && substitutions.length)
+  const hasReactSubstitutions = hasSubstitutions &&
+    substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
+
   // perform substitutions
-  if (substitutions && substitutions.length) {
-    substitutions.forEach((substitution, index) => {
-      const regex = new RegExp(`\\$${index + 1}`, 'g')
-      phrase = phrase.replace(regex, substitution)
+  if (hasSubstitutions) {
+    const parts = phrase.split(/(\$\d)/g)
+    const partsToReplace = phrase.match(/(\$\d)/g)
+
+    if (partsToReplace.length > substitutions.length) {
+      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+    }
+
+    const substitutedParts = parts.map((part) => {
+      const subMatch = part.match(/\$(\d)/)
+      return subMatch ? substitutions[Number(subMatch[1]) - 1] : part
     })
+
+    phrase = hasReactSubstitutions
+      ? <span> { substitutedParts } </span>
+      : substitutedParts.join('')
   }
+
   return phrase
 }
 
 export async function fetchLocale (localeCode) {
   try {
-    const response = await fetch(`./_locales/${localeCode}/messages.json`)
+    const response = await window.fetch(`./_locales/${localeCode}/messages.json`)
     return await response.json()
   } catch (error) {
     log.error(`failed to fetch ${localeCode} locale because of ${error}`)

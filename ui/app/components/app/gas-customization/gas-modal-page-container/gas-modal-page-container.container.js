@@ -5,6 +5,7 @@ import {
   hideModal,
   setGasLimit,
   setGasPrice,
+  createRetryTransaction,
   createSpeedUpTransaction,
   hideSidebar,
   updateSendAmount,
@@ -106,9 +107,11 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const newTotalEth = maxModeOn ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+  const isTokenSelected = Boolean(getSelectedToken(state))
 
-  const sendAmount = maxModeOn ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+  const newTotalEth = maxModeOn && !isTokenSelected ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+
+  const sendAmount = maxModeOn && !isTokenSelected ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
@@ -185,8 +188,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))))
       return dispatch(updateTransaction(updatedTx))
     },
-    createSpeedUpTransaction: (txId, gasPrice) => {
-      return dispatch(createSpeedUpTransaction(txId, gasPrice))
+    createRetryTransaction: (txId, gasPrice, gasLimit) => {
+      return dispatch(createRetryTransaction(txId, gasPrice, gasLimit))
+    },
+    createSpeedUpTransaction: (txId, gasPrice, gasLimit) => {
+      return dispatch(createSpeedUpTransaction(txId, gasPrice, gasLimit))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     hideSidebar: () => dispatch(hideSidebar()),
@@ -247,11 +253,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice, updatedTx)
         dispatchHideModal()
       } else if (isSpeedUp) {
-        dispatchCreateSpeedUpTransaction(txId, gasPrice)
+        dispatchCreateSpeedUpTransaction(txId, gasPrice, gasLimit)
         dispatchHideSidebar()
         dispatchCancelAndClose()
       } else if (isRetry) {
-        dispatchCreateRetryTransaction(txId, gasPrice)
+        dispatchCreateRetryTransaction(txId, gasPrice, gasLimit)
         dispatchHideSidebar()
         dispatchCancelAndClose()
       } else {

@@ -12,9 +12,6 @@
   "reject": {
     "message": "Kataa"
   },
-  "likeToConnect": {
-    "message": "$1 ingependa kuunganishwa kwenye akaunti yako"
-  },
   "about": {
     "message": "Kuhusu"
   },
@@ -193,9 +190,6 @@
   },
   "chainId": {
     "message": "Utambulisho wa Mnyororo"
-  },
-  "clickToAdd": {
-    "message": "Bofya kwenye $1 ili kuongeza kwenye akaunti yako"
   },
   "clickToRevealSeed": {
     "message": "Bofya hapa ili uonyeshe maneno ya siri"
@@ -640,9 +634,6 @@
   },
   "memorizePhrase": {
     "message": "Kariri kirai hiki"
-  },
-  "menu": {
-    "message": "Menyu"
   },
   "message": {
     "message": "Ujumbe"

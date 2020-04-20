@@ -8,9 +8,6 @@
   "reject": {
     "message": "عدم پذیرش"
   },
-  "likeToConnect": {
-    "message": "1$1 میخواهید تا با حساب تان وصل شوید"
-  },
   "about": {
     "message": "درباره"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "آی دی زنجیره"
-  },
-  "clickToAdd": {
-    "message": "بالای 1$1 کلیک نموده و آنرا به حساب تان اضافه نمایید"
   },
   "clickToRevealSeed": {
     "message": "برای آشکار سازی کلمات مخفی اینجا کلیک نمایید"
@@ -662,9 +656,6 @@
   },
   "memo": {
     "message": "یادداشت"
-  },
-  "menu": {
-    "message": "مینو"
   },
   "message": {
     "message": "پیام"

@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒絕"
   },
-  "likeToConnect": {
-    "message": "$1 請求訪問帳戶權限"
-  },
   "about": {
     "message": "關於"
   },
@@ -196,9 +193,6 @@
   },
   "chainId": {
     "message": "鏈 ID"
-  },
-  "clickToAdd": {
-    "message": "點選下方 $1 新增資訊"
   },
   "clickToRevealSeed": {
     "message": "點選顯示助憶詞"
@@ -656,9 +650,6 @@
   },
   "memo": {
     "message": "備註"
-  },
-  "menu": {
-    "message": "選單"
   },
   "message": {
     "message": "訊息"

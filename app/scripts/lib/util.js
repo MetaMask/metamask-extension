@@ -45,7 +45,7 @@ const getEnvironmentType = (url = window.location.href) => {
  *
  */
 const getPlatform = (_) => {
-  const ua = navigator.userAgent
+  const ua = window.navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
   } else {

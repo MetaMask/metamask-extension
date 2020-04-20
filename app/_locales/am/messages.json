@@ -8,9 +8,6 @@
   "reject": {
     "message": "አይቀበሉ"
   },
-  "likeToConnect": {
-    "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
-  },
   "about": {
     "message": "ስለ"
   },
@@ -199,9 +196,6 @@
   },
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
-  },
-  "clickToAdd": {
-    "message": "ወደ መለያዎት ለማከል $1ላይ ጠቅ ያድርጉ"
   },
   "clickToRevealSeed": {
     "message": "ሚስጥራዊ ቃላትን ለመግለጽ እዚህ ጠቅ ያድርጉ"
@@ -659,9 +653,6 @@
   },
   "memo": {
     "message": "አጭር ማስታወሻ"
-  },
-  "menu": {
-    "message": "ምናሌ"
   },
   "message": {
     "message": "መልዕክት"
