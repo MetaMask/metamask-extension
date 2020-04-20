@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert'
+import sinon from 'sinon'
 import TxStateManager from '../../../../../app/scripts/controllers/transactions/tx-state-manager'
 import { snapshotFromTxMeta } from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helpers'
 
@@ -30,15 +31,18 @@ describe('TransactionStateManager', function () {
       assert.equal(result[0].status, 'signed')
     })
 
-    it('should emit a signed event to signal the exciton of callback', function (done) {
+    it('should emit a signed event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      const noop = function () {
-        done()
-      }
+      const clock = sinon.useFakeTimers()
+      const noop = sinon.spy()
+
       txStateManager.addTx(tx)
       txStateManager.on('1:signed', noop)
       txStateManager.setTxStatusSigned(1)
+      clock.runAll()
+      clock.restore()
 
+      assert.ok(noop.calledOnce)
     })
   })
 
@@ -52,14 +56,18 @@ describe('TransactionStateManager', function () {
       assert.equal(result.length, 0)
     })
 
-    it('should emit a rejected event to signal the exciton of callback', function (done) {
+    it('should emit a rejected event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const clock = sinon.useFakeTimers()
+      const noop = sinon.spy()
+
       txStateManager.addTx(tx)
-      const noop = () => {
-        done()
-      }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)
+      clock.runAll()
+      clock.restore()
+
+      assert.ok(noop.calledOnce)
     })
   })
 
