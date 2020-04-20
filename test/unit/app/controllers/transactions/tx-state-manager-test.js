@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert'
 import TxStateManager from '../../../../../app/scripts/controllers/transactions/tx-state-manager'
-import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
+import { snapshotFromTxMeta } from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helpers'
 
 const noop = () => true
 
@@ -229,7 +229,7 @@ describe('TransactionStateManager', function () {
       // verify tx was initialized correctly
       assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
       assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
-      assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      assert.deepEqual(updatedTx.history[0], snapshotFromTxMeta(updatedTx), 'first history item is initial state')
       // modify value and updateTx
       updatedTx.txParams.gasPrice = desiredGasPrice
       const before = new Date().getTime()
