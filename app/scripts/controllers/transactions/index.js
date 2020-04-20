@@ -25,7 +25,7 @@ import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import log from 'loglevel'
-import recipientBlacklistChecker from './lib/recipient-blacklist-checker'
+import { throwIfAccountIsBlacklisted } from './lib/recipient-blacklist-checker'
 
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -234,9 +234,7 @@ class TransactionController extends EventEmitter {
     this.emit('newUnapprovedTx', txMeta)
 
     try {
-      // check whether recipient account is blacklisted
-      recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
-      // add default tx params
+      throwIfAccountIsBlacklisted(txMeta.metamaskNetworkId, normalizedTxParams.to)
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
