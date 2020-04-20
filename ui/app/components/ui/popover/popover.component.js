@@ -80,7 +80,9 @@ Popover.propTypes = {
   footerClassName: PropTypes.string,
   onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
-  CustomBackground: PropTypes.node,
+  CustomBackground: PropTypes.func,
+  className: PropTypes.string,
+  showArrow: PropTypes.bool,
 }
 
 export default class PopoverPortal extends PureComponent {

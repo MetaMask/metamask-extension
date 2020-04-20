@@ -63,6 +63,26 @@
     .popover-content {
       overflow-y: auto;
     }
+
+    .popover-arrow {
+      top: -6px;
+      left: 24px;
+    }
+
+    .popover-footer {
+      justify-content: flex-end;
+
+      & :only-child {
+        margin: 0;
+      }
+
+      button {
+        height: 39px;
+        width: 133px;
+        border-radius: 39px;
+        padding: 0;
+      }
+    }
   }
 
   &__connected-status-popover-bg {
@@ -80,17 +100,5 @@
   &__connected-status-popover-bg-container {
     height: 100%;
     width: 100%;
-  }
-
-  &__connect-status-popover-footer {
-    margin: 0;
-    justify-content: flex-end;
-
-    button {
-      height: 39px;
-      width: 133px;
-      border-radius: 39px;
-      padding: 0;
-    }
   }
 }

@@ -57,10 +57,6 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
   }
 
-  state = {
-    hidePopover: false,
-  }
-
   UNSAFE_componentWillMount () {
     const {
       history,
@@ -185,7 +181,7 @@ export default class Home extends PureComponent {
     const { t } = this.context
     return (
       <Popover
-        title={ t('whatsthis') }
+        title={ t('whatsThis') }
         onClose={setConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
         showArrow
@@ -207,7 +203,6 @@ export default class Home extends PureComponent {
             { t('dismiss') }
           </Button>
         )}
-        footerClassName="home__connected-status-popover-footer"
       >
         <main className="home__connect-status-text">
           <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
