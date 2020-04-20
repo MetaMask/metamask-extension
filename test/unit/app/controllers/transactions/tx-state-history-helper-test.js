@@ -1,9 +1,8 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import txStateHistoryHelper from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper'
 import testVault from '../../../../data/v17-long-history.json'
 
 describe('Transaction state history helper', function () {
-
   describe('#snapshotFromTxMeta', function () {
     it('should clone deep', function () {
       const input = {
@@ -14,16 +13,16 @@ describe('Transaction state history helper', function () {
         },
       }
       const output = txStateHistoryHelper.snapshotFromTxMeta(input)
-      assert('foo' in output, 'has a foo key')
-      assert('bar' in output.foo, 'has a bar key')
-      assert('bam' in output.foo.bar, 'has a bar key')
+      assert.ok('foo' in output, 'has a foo key')
+      assert.ok('bar' in output.foo, 'has a bar key')
+      assert.ok('bam' in output.foo.bar, 'has a bar key')
       assert.equal(output.foo.bar.bam, 'baz', 'has a baz value')
     })
 
     it('should remove the history key', function () {
       const input = { foo: 'bar', history: 'remembered' }
       const output = txStateHistoryHelper.snapshotFromTxMeta(input)
-      assert(typeof output.history, 'undefined', 'should remove history')
+      assert.equal(typeof output.history, 'undefined', 'should remove history')
     })
   })
 
@@ -47,7 +46,7 @@ describe('Transaction state history helper', function () {
   })
 
   describe('#replayHistory', function () {
-    it('replaying history does not mutate the original obj', function () {
+    it('replaying history does not mutate the original object', function () {
       const initialState = { test: true, message: 'hello', value: 1 }
       const diff1 = [{
         'op': 'replace',
@@ -64,7 +63,6 @@ describe('Transaction state history helper', function () {
       const beforeStateSnapshot = JSON.stringify(initialState)
       const latestState = txStateHistoryHelper.replayHistory(history)
       const afterStateSnapshot = JSON.stringify(initialState)
-
       assert.notEqual(initialState, latestState, 'initial state is not the same obj as the latest state')
       assert.equal(beforeStateSnapshot, afterStateSnapshot, 'initial state is not modified during run')
     })
@@ -73,7 +71,6 @@ describe('Transaction state history helper', function () {
   describe('#generateHistoryEntry', function () {
 
     function generateHistoryEntryTest (note) {
-
       const prevState = {
         someValue: 'value 1',
         foo: {
@@ -97,7 +94,6 @@ describe('Transaction state history helper', function () {
       const before = new Date().getTime()
       const result = txStateHistoryHelper.generateHistoryEntry(prevState, nextState, note)
       const after = new Date().getTime()
-
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 3)
 
@@ -105,11 +101,7 @@ describe('Transaction state history helper', function () {
       assert.equal(result[0].op, expectedEntry1.op)
       assert.equal(result[0].path, expectedEntry1.path)
       assert.equal(result[0].value, expectedEntry1.value)
-      assert.equal(result[0].value, expectedEntry1.value)
-      if (note) {
-        assert.equal(result[0].note, note)
-      }
-
+      assert.equal(result[0].note, note)
       assert.ok(result[0].timestamp >= before && result[0].timestamp <= after)
 
       const expectedEntry2 = { op: 'replace', path: '/someValue', value: 'value 2' }

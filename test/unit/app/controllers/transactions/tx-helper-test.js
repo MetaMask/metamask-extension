@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import txHelper from '../../../../../ui/lib/tx-helper'
 
 describe('txHelper', function () {

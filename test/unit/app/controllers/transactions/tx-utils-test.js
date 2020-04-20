@@ -1,6 +1,5 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import * as txUtils from '../../../../../app/scripts/controllers/transactions/lib/util'
-
 
 describe('txUtils', function () {
   describe('#validateTxParams', function () {
@@ -37,27 +36,26 @@ describe('txUtils', function () {
 
       let normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
-      assert(!normalizedTxParams.chainId, 'their should be no chainId')
-      assert(!normalizedTxParams.to, 'their should be no to address if null')
-      assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hexPrefixd')
-      assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hexPrefixd')
-      assert(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
+      assert.ok(!normalizedTxParams.chainId, 'there should be no chainId')
+      assert.ok(!normalizedTxParams.to, 'there should be no to address if null')
+      assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hex-prefixed')
+      assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hex-prefixed')
+      assert.ok(!('random' in normalizedTxParams), 'there should be no random key in normalizedTxParams')
 
       txParams.to = 'a7df1beDBF813f57096dF77FCd515f0B3900e402'
       normalizedTxParams = txUtils.normalizeTxParams(txParams)
-      assert.equal(normalizedTxParams.to.slice(0, 2), '0x', 'to should be hexPrefixd')
-
+      assert.equal(normalizedTxParams.to.slice(0, 2), '0x', 'to should be hex-prefixed')
     })
   })
 
   describe('#validateRecipient', function () {
     it('removes recipient for txParams with 0x when contract data is provided', function () {
-      const zeroRecipientandDataTxParams = {
+      const zeroRecipientDataTxParams = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0x',
         data: 'bytecode',
       }
-      const sanitizedTxParams = txUtils.validateRecipient(zeroRecipientandDataTxParams)
+      const sanitizedTxParams = txUtils.validateRecipient(zeroRecipientDataTxParams)
       assert.deepEqual(sanitizedTxParams, { from: '0x1678a085c290ebd122dc42cba69373b5953b831d', data: 'bytecode' }, 'no recipient with 0x')
     })
 
