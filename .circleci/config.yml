@@ -248,9 +248,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Install Chrome
-          command: ./.circleci/scripts/chrome-install
+      # - run:
+      #     name: Install Chrome
+      #     command: ./.circleci/scripts/chrome-install
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
@@ -267,9 +267,9 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
+      # - run:
+      #     name: Install Firefox
+      #     command: ./.circleci/scripts/firefox-install
       - attach_workspace:
           at: .
       - run:
@@ -290,9 +290,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Install Chrome
-          command: ./.circleci/scripts/chrome-install
+      # - run:
+      #     name: Install Chrome
+      #     command: ./.circleci/scripts/chrome-install
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
