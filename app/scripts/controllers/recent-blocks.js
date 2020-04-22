@@ -2,9 +2,9 @@ import ObservableStore from 'obs-store'
 import EthQuery from 'eth-query'
 import log from 'loglevel'
 import pify from 'pify'
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI } from './network/enums'
+import { MAINNET, TESTNET } from './network/enums'
 
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+const INFURA_PROVIDER_TYPES = [TESTNET, MAINNET]
 
 class RecentBlocksController {
   /**

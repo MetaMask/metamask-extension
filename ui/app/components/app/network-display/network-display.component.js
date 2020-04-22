@@ -4,19 +4,11 @@ import classnames from 'classnames'
 import {
   MAINNET_CODE,
   TESTNET_CODE,
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
 } from '../../../../../app/scripts/controllers/network/enums'
 
 const networkToClassHash = {
   [MAINNET_CODE]: 'mainnet',
   [TESTNET_CODE]: 'testnet',
-  [ROPSTEN_CODE]: 'ropsten',
-  [RINKEBY_CODE]: 'rinkeby',
-  [GOERLI_CODE]: 'goerli',
-  [KOVAN_CODE]: 'kovan',
 }
 
 export default class NetworkDisplay extends Component {
