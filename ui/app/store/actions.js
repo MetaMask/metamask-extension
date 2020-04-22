@@ -1920,14 +1920,16 @@ export function setMouseUserState (isMouseUser) {
   }
 }
 
-// Call Background Then Update
-//
-// A function generator for a common pattern wherein:
-// We show loading indication.
-// We call a background method.
-// We hide loading indication.
-// If it errored, we show a warning.
-// If it didn't, we update the state.
+
+/**
+ * A function generator for a common pattern wherein:
+ * * We call a background method.
+ * * If it errored, we show a warning.
+ * * If it didn't, we update the state.
+ *
+ * @param {*} method - The background method to call
+ * @param  {...any} args - The args to invoke the background method with
+ */
 export function callBackgroundThenUpdateNoSpinner (method, ...args) {
   return (dispatch) => {
     method.call(background, ...args, (err) => {
