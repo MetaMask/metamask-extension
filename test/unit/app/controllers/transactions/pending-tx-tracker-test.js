@@ -25,7 +25,7 @@ describe('PendingTransactionTracker', function () {
       const warningListener = sinon.spy()
 
       pendingTxTracker.on('tx:warning', warningListener)
-      pendingTxTracker.resubmitPendingTxs('0x1')
+      await pendingTxTracker.resubmitPendingTxs('0x1')
 
       assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
       assert.ok(resubmitTx.notCalled, 'should NOT call _resubmitTx')
@@ -57,7 +57,7 @@ describe('PendingTransactionTracker', function () {
       const warningListener = sinon.spy()
 
       pendingTxTracker.on('tx:warning', warningListener)
-      pendingTxTracker.resubmitPendingTxs('0x1')
+      await pendingTxTracker.resubmitPendingTxs('0x1')
 
       assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
       assert.ok(resubmitTx.calledTwice, 'should call _resubmitTx')
@@ -87,11 +87,41 @@ describe('PendingTransactionTracker', function () {
       const warningListener = sinon.spy()
 
       pendingTxTracker.on('tx:warning', warningListener)
-      pendingTxTracker.resubmitPendingTxs('0x1')
+      await pendingTxTracker.resubmitPendingTxs('0x1')
 
       assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
       assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx')
       assert.ok(warningListener.notCalled, "should NOT emit 'tx:warning'")
+    })
+
+    it("should emit 'tx:warning' for unknown failed resubmission", async function () {
+      const getPendingTransactions = sinon.stub().returns([{
+        id: 1,
+      }])
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub(),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions,
+        getCompletedTransactions: sinon.stub().returns([]),
+        approveTransaction: sinon.spy(),
+        publishTransaction: sinon.spy(),
+        confirmTransaction: sinon.spy(),
+      })
+      const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects({ message: 'who dis' })
+      const warningListener = sinon.spy()
+
+      pendingTxTracker.on('tx:warning', warningListener)
+      await pendingTxTracker.resubmitPendingTxs('0x1')
+
+      assert.ok(getPendingTransactions.calledOnceWithExactly(), 'should call getPendingTransaction')
+      assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx')
+      assert.ok(warningListener.calledOnce, "should emit 'tx:warning'")
     })
   })
 
