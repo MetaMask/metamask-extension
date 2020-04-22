@@ -34,8 +34,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { markPasswordForgotten, tryUnlockMetamask, ...restDispatchProps } = dispatchProps
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps
 
-  const onImport = () => {
-    markPasswordForgotten()
+  const onImport = async () => {
+    await markPasswordForgotten()
     history.push(RESTORE_VAULT_ROUTE)
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {

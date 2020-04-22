@@ -1083,12 +1083,22 @@ export function cancelTxs (txDataList) {
 }
 
 export function markPasswordForgotten () {
-  return (dispatch) => {
-    return background.markPasswordForgotten(() => {
+  return async (dispatch) => {
+    try {
+      await new Promise((resolve, reject) => {
+        return background.markPasswordForgotten((error) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve()
+        })
+      })
+    } finally {
+      // TODO: handle errors
       dispatch(hideLoadingIndication())
       dispatch(forgotPassword())
       forceUpdateMetamaskState(dispatch)
-    })
+    }
   }
 }
 

@@ -1481,11 +1481,11 @@ describe('Actions', function () {
   })
 
   describe('#markPasswordForgotten', function () {
-    it('calls markPasswordForgotten', function () {
+    it('calls markPasswordForgotten', async function () {
       const store = mockStore()
       const markPasswordForgottenSpy = sinon.stub(background, 'markPasswordForgotten').callsArg(0)
 
-      store.dispatch(actions.markPasswordForgotten())
+      await store.dispatch(actions.markPasswordForgotten())
 
       const resultantActions = store.getActions()
       assert.deepEqual(resultantActions[1], { type: 'FORGOT_PASSWORD', value: true })
