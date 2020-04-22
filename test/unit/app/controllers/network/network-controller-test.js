@@ -68,37 +68,37 @@ describe('NetworkController', function () {
     it('getNetworkDisplayName should return the correct network name', function () {
       const tests = [
         {
-          input: 3,
-          expected: 'Ropsten',
+          input: 1,
+          expected: 'Conflux Test Network',
         },
-        {
-          input: 4,
-          expected: 'Rinkeby',
-        },
-        {
-          input: 42,
-          expected: 'Kovan',
-        },
-        {
-          input: 'ropsten',
-          expected: 'Ropsten',
-        },
-        {
-          input: 'rinkeby',
-          expected: 'Rinkeby',
-        },
-        {
-          input: 'kovan',
-          expected: 'Kovan',
-        },
+        // {
+        //   input: 4,
+        //   expected: 'Rinkeby',
+        // },
+        // {
+        //   input: 42,
+        //   expected: 'Kovan',
+        // },
+        // {
+        //   input: 'ropsten',
+        //   expected: 'Ropsten',
+        // },
+        // {
+        //   input: 'rinkeby',
+        //   expected: 'Rinkeby',
+        // },
+        // {
+        //   input: 'kovan',
+        //   expected: 'Kovan',
+        // },
         {
           input: 'mainnet',
           expected: 'Main Conflux Network',
         },
-        {
-          input: 'goerli',
-          expected: 'Goerli',
-        },
+        // {
+        //   input: 'goerli',
+        //   expected: 'Goerli',
+        // },
       ]
 
       tests.forEach(({ input, expected }) =>

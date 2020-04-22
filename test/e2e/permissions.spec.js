@@ -181,7 +181,7 @@ describe('MetaMask', function () {
       )
       assert.equal(
         await permissionDescription.getText(),
-        'View the address of the selected account'
+        'restrictedMethods_eth_accounts'
       )
     })
 

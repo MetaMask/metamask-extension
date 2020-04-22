@@ -116,7 +116,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           ) : (
             <i className="fa fa-circle fa-sm" />
           )}
-          <label>{description}</label>
+          <label>{t(description)}</label>
         </div>
       )
     })

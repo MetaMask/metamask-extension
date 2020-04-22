@@ -61,19 +61,19 @@ class ConnectScreen extends Component {
   renderButtons () {
     return (
       <div>
-        <div className="hw-connect__btn-wrapper">
-          {this.renderConnectToLedgerButton()}
-          {this.renderConnectToTrezorButton()}
-        </div>
-        <Button
-          type="primary"
-          large
-          className="hw-connect__connect-btn"
-          onClick={this.connect}
-          disabled={!this.state.selectedDevice}
-        >
-          {this.context.t('connect')}
-        </Button>
+        {/* <div className="hw-connect__btn-wrapper"> */}
+        {/*   {this.renderConnectToLedgerButton()} */}
+        {/*   {this.renderConnectToTrezorButton()} */}
+        {/* </div> */}
+        {/* <Button */}
+        {/*   type="primary" */}
+        {/*   large */}
+        {/*   className="hw-connect__connect-btn" */}
+        {/*   onClick={this.connect} */}
+        {/*   disabled={!this.state.selectedDevice} */}
+        {/* > */}
+        {/*   {this.context.t('connect')} */}
+        {/* </Button> */}
       </div>
     )
   }

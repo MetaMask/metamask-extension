@@ -1,4 +1,6 @@
-/*global confluxJS, conflux, ConfluxPortalOnboarding, HumanStandardTokenContractCode PiggyBankContractCode keccak256*/
+/*global confluxJS, conflux, ConfluxPortalOnboarding,
+  HumanStandardTokenContractCode, PiggyBankContractCode, keccak256,
+cfxBalanceTrackerBytecode */
 
 /*
 The `piggybankContract` is compiled from:
@@ -43,6 +45,8 @@ const initialize = () => {
   const withdrawButton = document.getElementById('withdrawButton')
   const sendButton = document.getElementById('sendButton')
   const createToken = document.getElementById('createToken')
+  const createBalanceTracker = document.getElementById('createBalanceTracker')
+  createBalanceTracker.style.display = 'none'
   const transferTokens = document.getElementById('transferTokens')
   const approveTokens = document.getElementById('approveTokens')
   const transferTokensWithoutGas = document.getElementById(
@@ -255,6 +259,79 @@ const initialize = () => {
         })
         .confirmed()
       console.log(txResult)
+    }
+
+    createBalanceTracker.onclick = async () => {
+      const balanceTrackerContract = confluxJS.Contract({
+        abi: [
+          {
+            constant: true,
+            inputs: [
+              {
+                name: 'user',
+                type: 'address',
+              },
+              {
+                name: 'token',
+                type: 'address',
+              },
+            ],
+            name: 'tokenBalance',
+            outputs: [
+              {
+                name: '',
+                type: 'uint256',
+              },
+            ],
+            payable: false,
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            constant: true,
+            inputs: [
+              {
+                name: 'users',
+                type: 'address[]',
+              },
+              {
+                name: 'tokens',
+                type: 'address[]',
+              },
+            ],
+            name: 'balances',
+            outputs: [
+              {
+                name: '',
+                type: 'uint256[]',
+              },
+            ],
+            payable: false,
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            payable: true,
+            stateMutability: 'payable',
+            type: 'fallback',
+          },
+        ],
+        bytecode: cfxBalanceTrackerBytecode,
+      })
+
+      const balanceTracker = await balanceTrackerContract
+        .constructor()
+        .sendTransaction({
+          from: accounts[0],
+          storageLimit: 5000,
+          gasPrice: 10000000000,
+        })
+        .confirmed()
+        .catch((error) => {
+          throw error
+        })
+
+      console.log('balanceTracker = ', balanceTracker.contractCreated)
     }
 
     createToken.onclick = async () => {

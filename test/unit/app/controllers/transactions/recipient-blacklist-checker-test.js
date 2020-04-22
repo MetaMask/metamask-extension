@@ -1,10 +1,7 @@
 import assert from 'assert'
 import recipientBlackListChecker from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
 import {
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
+  TESTNET_CODE,
 } from '../../../../../app/scripts/controllers/network/enums'
 import KeyringController from 'cfx-keyring-controller'
 
@@ -27,14 +24,14 @@ describe('Recipient Blacklist Checker', function () {
 
     it('does not fail on test networks', function () {
       let callCount = 0
-      const networks = [ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE]
+      const networks = [TESTNET_CODE]
       for (const networkId in networks) {
         publicAccounts.forEach((account) => {
           recipientBlackListChecker.checkAccount(networkId, account)
           callCount++
         })
       }
-      assert.equal(callCount, 40)
+      assert.equal(callCount, 10)
     })
 
     it('fails on mainnet', function () {

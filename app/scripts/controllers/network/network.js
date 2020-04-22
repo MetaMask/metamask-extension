@@ -18,18 +18,14 @@ import {
 const networks = { networkList: {} }
 
 import {
-  // ROPSTEN,
-  // RINKEBY,
-  // KOVAN,
   TESTNET,
   MAINNET,
   LOCALHOST,
-  // GOERLI,
 } from './enums'
 // const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 // TODO: add main net endpoint
-const CONFLUX_MAINNET = 'http://testnet-jsonrpc.conflux-chain.org:12537'
-const CONFLUX_TEST_NET = 'http://testnet-jsonrpc.conflux-chain.org:12537'
+const CONFLUX_MAINNET = 'http://wallet-mainnet-jsonrpc.conflux-chain.org:12537'
+const CONFLUX_TEST_NET = 'http://wallet-testnet-jsonrpc.conflux-chain.org:12537'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -43,7 +39,7 @@ if (process.env.IN_TEST === 'true') {
 } else if (env === 'test') {
   defaultProviderConfigType = LOCALHOST
 } else {
-  defaultProviderConfigType = TESTNET
+  defaultProviderConfigType = MAINNET
 }
 
 const defaultProviderConfig = {
@@ -127,9 +123,9 @@ export default class NetworkController extends EventEmitter {
         ? networks.networkList[type].chainId
         : network
     if (type === MAINNET) {
-      network = '1'
+      network = '0'
     } else if (type === TESTNET) {
-      network = '2'
+      network = '1'
     }
 
     return this.networkStore.putState(network)
@@ -223,16 +219,18 @@ export default class NetworkController extends EventEmitter {
     if (type === MAINNET) {
       this._configureStandardProvider({
         rpcUrl: CONFLUX_MAINNET,
-        chainId: 1,
+        chainId: 0,
         ticker: 'CFX',
-        nickname: 'conflux-main-net',
+        nickname: 'mainnet',
+        type,
       })
     } else if (type === TESTNET) {
       this._configureStandardProvider({
         rpcUrl: CONFLUX_TEST_NET,
-        chainId: 2,
+        chainId: 1,
         ticker: 'CFX',
-        nickname: 'conflux-test-net',
+        nickname: 'testnet',
+        type,
       })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -243,6 +241,7 @@ export default class NetworkController extends EventEmitter {
         chainId,
         ticker,
         nickname,
+        type,
       })
     } else {
       throw new Error(
@@ -270,11 +269,11 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
+  _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname, type }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
-    networks.networkList['rpc'] = {
+    networks.networkList[type || 'rpc'] = {
       chainId: chainId,
       rpcUrl,
       ticker: ticker || 'CFX',

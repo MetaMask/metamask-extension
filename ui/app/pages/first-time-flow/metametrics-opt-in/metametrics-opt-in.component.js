@@ -48,26 +48,26 @@ export default class MetaMetricsOptIn extends Component {
             </div>
 
             <div className="metametrics-opt-in__committments">
-              <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
-                <div className="metametrics-opt-in__row-description">
-                  Always allow you to opt-out via Settings
-                </div>
-              </div>
-              <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
-                <div className="metametrics-opt-in__row-description">
-                  Send anonymized click & pageview events (not doing this in
-                  test version yet)
-                </div>
-              </div>
-              <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
-                <div className="metametrics-opt-in__row-description">
-                  Maintain a public aggregate dashboard to educate the community
-                  (not doing this in test version yet)
-                </div>
-              </div>
+              {/* <div className="metametrics-opt-in__row"> */}
+              {/*   <i className="fa fa-check" /> */}
+              {/*   <div className="metametrics-opt-in__row-description"> */}
+              {/*     Always allow you to opt-out via Settings */}
+              {/*   </div> */}
+              {/* </div> */}
+              {/* <div className="metametrics-opt-in__row"> */}
+              {/*   <i className="fa fa-check" /> */}
+              {/*   <div className="metametrics-opt-in__row-description"> */}
+              {/*     Send anonymized click & pageview events (not doing this in */}
+              {/*     test version yet) */}
+              {/*   </div> */}
+              {/* </div> */}
+              {/* <div className="metametrics-opt-in__row"> */}
+              {/*   <i className="fa fa-check" /> */}
+              {/*   <div className="metametrics-opt-in__row-description"> */}
+              {/*     Maintain a public aggregate dashboard to educate the community */}
+              {/*     (not doing this in test version yet) */}
+              {/*   </div> */}
+              {/* </div> */}
               <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">

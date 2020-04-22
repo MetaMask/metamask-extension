@@ -41,18 +41,18 @@ function getBuyEthUrl ({ network, amount, address, service }) {
 
 function getDefaultServiceForNetwork (network) {
   switch (network) {
+    // case '1':
+    //   return 'wyre'
     case '1':
-      return 'wyre'
-    case '2':
       return 'conflux-test-faucet'
-    case '3':
-      return 'metamask-faucet'
-    case '4':
-      return 'rinkeby-faucet'
-    case '42':
-      return 'kovan-faucet'
-    case '5':
-      return 'goerli-faucet'
+    // case '3':
+    //   return 'metamask-faucet'
+    // case '4':
+    //   return 'rinkeby-faucet'
+    // case '42':
+    //   return 'kovan-faucet'
+    // case '5':
+    //   return 'goerli-faucet'
     default:
       throw new Error(
         `No default cryptocurrency exchange or faucet for networkId: "${network}"`
