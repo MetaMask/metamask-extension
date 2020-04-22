@@ -842,7 +842,7 @@
     "message": "Lock time is too great"
   },
   "mainnet": {
-    "message": "Conflux Main Network (not released yet, fallback to conflux test net)"
+    "message": "Conflux Main Network"
   },
   "memorizePhrase": {
     "message": "Memorize this phrase."

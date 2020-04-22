@@ -649,7 +649,7 @@
     "message": "锁定"
   },
   "mainnet": {
-    "message": "Conflux 主网 (未上线, 选择后依然连接测试网)"
+    "message": "Conflux 主网"
   },
   "memorizePhrase": {
     "message": "记住该密语。"

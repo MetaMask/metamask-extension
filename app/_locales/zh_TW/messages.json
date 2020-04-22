@@ -658,7 +658,7 @@
     "message": "鎖定"
   },
   "mainnet": {
-    "message": "Conflux 主網 (未上線, 選擇後依然連接測試網)"
+    "message": "Conflux 主網"
   },
   "memorizePhrase": {
     "message": "絕對不要忘記您的助憶詞。"
