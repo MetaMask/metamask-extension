@@ -36,4 +36,69 @@
   &__tab {
     flex-grow: 1;
   }
+
+  &__connect-status-text {
+    display: flex;
+    flex-direction: column;
+    @extend %content-text;
+    padding-left: 24px;
+    padding-right: 24px;
+
+    div {
+      &:last-child {
+        margin-top: 26px;
+      }
+    }
+  }
+
+  &__connected-status-popover {
+    width: 329px;
+    height: 295px;
+    margin-top: -12px;
+
+    .popover-header {
+      padding-bottom: 4px;
+    }
+
+    .popover-content {
+      overflow-y: auto;
+    }
+
+    .popover-arrow {
+      top: -6px;
+      left: 24px;
+    }
+
+    .popover-footer {
+      justify-content: flex-end;
+
+      & :only-child {
+        margin: 0;
+      }
+
+      button {
+        height: 39px;
+        width: 133px;
+        border-radius: 39px;
+        padding: 0;
+      }
+    }
+  }
+
+  &__connected-status-popover-bg {
+    height: 34px;
+    width: 110px;
+    border-radius: 34px;
+    position: absolute;
+    top: 82px;
+    left: 12px;
+    opacity: 1;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+    background: none;
+  }
+
+  &__connected-status-popover-bg-container {
+    height: 100%;
+    width: 100%;
+  }
 }

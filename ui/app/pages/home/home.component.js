@@ -11,6 +11,8 @@ import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
+import Popover from '../../components/ui/popover'
+import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
 import { Tabs, Tab } from '../../components/ui/tabs'
 
@@ -51,6 +53,8 @@ export default class Home extends PureComponent {
     hasDaiV1Token: PropTypes.bool,
     firstPermissionsRequestId: PropTypes.string,
     totalUnapprovedCount: PropTypes.number.isRequired,
+    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
+    connectedStatusPopoverHasBeenShown: PropTypes.bool,
   }
 
   UNSAFE_componentWillMount () {
@@ -172,11 +176,48 @@ export default class Home extends PureComponent {
       </MultipleNotifications>
     )
   }
+  renderPopover = () => {
+    const { setConnectedStatusPopoverHasBeenShown } = this.props
+    const { t } = this.context
+    return (
+      <Popover
+        title={ t('whatsThis') }
+        onClose={setConnectedStatusPopoverHasBeenShown}
+        className="home__connected-status-popover"
+        showArrow
+        CustomBackground={({ onClose }) => {
+          return (
+            <div
+              className="home__connected-status-popover-bg-container"
+              onClick={onClose}
+            >
+              <div className="home__connected-status-popover-bg" />
+            </div>
+          )
+        }}
+        footer={(
+          <Button
+            type="primary"
+            onClick={setConnectedStatusPopoverHasBeenShown}
+          >
+            { t('dismiss') }
+          </Button>
+        )}
+      >
+        <main className="home__connect-status-text">
+          <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
+          <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
+        </main>
+      </Popover>
+    )
+  }
 
   render () {
     const {
       forgottenPassword,
       history,
+      connectedStatusPopoverHasBeenShown,
+      isPopup,
     } = this.props
 
     if (forgottenPassword) {
@@ -191,6 +232,7 @@ export default class Home extends PureComponent {
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} />
         <div className="home__container">
+          { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
           <Media
             query="(min-width: 576px)"
           >

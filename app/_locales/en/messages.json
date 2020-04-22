@@ -22,6 +22,9 @@
   "disconnectAccountConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
+  "dismiss": {
+    "message": "Dismiss"
+  },
   "migrateSai": {
     "message": "A message from Maker: The new Multi-Collateral Dai token has been released. Your old tokens are now called Sai. Please upgrade your Sai tokens to the new Dai."
   },
@@ -867,6 +870,12 @@
   "message": {
     "message": "Message"
   },
+  "metaMaskConnectStatusParagraphOne": {
+    "message": "This is the new MetaMask Connect status indicator. From here you can easily see and manage sites you’ve connected to with your MetaMask wallet."
+  },
+  "metaMaskConnectStatusParagraphTwo": {
+    "message": "Click the Connect status to see your connected sites and their permissions."
+  },
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
   },
@@ -1626,6 +1635,9 @@
   },
   "welcome": {
     "message": "Welcome to MetaMask"
+  },
+  "whatsThis": {
+    "message": "What's this?"
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."

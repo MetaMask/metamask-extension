@@ -4,12 +4,27 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { I18nContext } from '../../../contexts/i18n'
 
-const Popover = ({ title, subtitle, children, footer, footerClassName, onBack, onClose }) => {
+const Popover = ({
+  title,
+  subtitle = '',
+  children,
+  footer,
+  footerClassName,
+  onBack,
+  onClose,
+  className,
+  showArrow,
+  CustomBackground,
+}) => {
   const t = useContext(I18nContext)
   return (
     <div className="popover-container">
-      <div className="popover-bg" onClick={onClose} />
-      <section className="popover-wrap">
+      { CustomBackground
+        ? <CustomBackground onClose={onClose} />
+        : <div className="popover-bg" onClick={onClose} />
+      }
+      <section className={classnames('popover-wrap', className)}>
+        { showArrow ? <div className="popover-arrow" /> : null}
         <header className="popover-header">
           <div className="popover-header__title">
             <h2 title={title}>
@@ -32,7 +47,7 @@ const Popover = ({ title, subtitle, children, footer, footerClassName, onBack, o
               onClick={onClose}
             />
           </div>
-          <p className="popover-header__subtitle">{subtitle}</p>
+          { subtitle ? <p className="popover-header__subtitle">{subtitle}</p> : null }
         </header>
         {
           children
@@ -59,12 +74,15 @@ const Popover = ({ title, subtitle, children, footer, footerClassName, onBack, o
 
 Popover.propTypes = {
   title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
   children: PropTypes.node,
   footer: PropTypes.node,
   footerClassName: PropTypes.string,
   onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
+  CustomBackground: PropTypes.func,
+  className: PropTypes.string,
+  showArrow: PropTypes.bool,
 }
 
 export default class PopoverPortal extends PureComponent {
