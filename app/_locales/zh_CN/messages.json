@@ -649,7 +649,7 @@
     "message": "锁定"
   },
   "mainnet": {
-    "message": "Conflux 主网"
+    "message": "Conflux Pontus"
   },
   "memorizePhrase": {
     "message": "记住该密语。"
@@ -927,6 +927,9 @@
   },
   "readyToConnect": {
     "message": "是否准备连接？"
+  },
+  "revokeInPermissions": {
+    "message": "* 您可以在 ConfluxPortal 的设置中查看和撤销这一权限."
   },
   "rinkeby": {
     "message": "Rinkeby 测试网络"
