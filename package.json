@@ -284,7 +284,7 @@
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0",
     "testem": "^2.16.0",
-    "through2": "^2.0.3",
+    "through2": "^3.0.1",
     "ttest": "^2.1.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",

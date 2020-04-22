@@ -1,7 +1,6 @@
 const harden = require('@agoric/harden')
 import ObjectMultiplex from 'obj-multiplex'
 import pump from 'pump'
-console.log('inpage script running!')
 
 /*global Web3*/
 
@@ -53,19 +52,4 @@ const metamaskStream = new LocalMessageDuplexStream({
 console.log('INJECTING PROVIDER!')
 const cProvider = makeCapTpFromStream('client', metamaskStream, harden({}));
 window.cProvider = cProvider
-
-/**
- * Error handler for page to extension stream disconnections
- *
- * @param {string} remoteLabel - Remote stream name
- * @param {Error} err - Stream connection error
- */
-function logStreamDisconnectWarning (remoteLabel, err) {
-  let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
-  if (err) {
-    warningMsg += '\n' + err.stack
-  }
-  console.warn(warningMsg)
-}
-
 

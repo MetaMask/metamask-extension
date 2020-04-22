@@ -1,9 +1,9 @@
 import PortStream from 'extension-port-stream'
-import pump from 'pump'
 const makeCapTpFromStream = require('captp-stream')
 const harden = require('@agoric/harden')
 const extension = require('extensionizer')
 import ObjectMultiplex from 'obj-multiplex'
+const createLogStream = require('./lib/create-log-stream')
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -26,13 +26,24 @@ function connectRemote (remotePort) {
   const processName = remotePort.name
   const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
-  if (!isMetaMaskInternalProcess) {
-    return
+  if (isMetaMaskInternalProcess) {
+    setupTrustedCommunication(remotePort)
+  } else {
+    setupUntrustedCommunication(remotePort)
   }
-  const portStream = new PortStream(remotePort)
-  const { abort } = makeCapTpFromStream('safe', portStream, api);
+}
 
-  // Clean up references to remote pending functions
+function setupUntrustedCommunication (port) {
+  const portStream = new PortStream(port)
+  portStream.pipe(createLogStream('incomingToBackground'))
+  const { abort } = makeCapTpFromStream('untrusted', portStream, api);
+  portStream.on('end', () => abort())
+}
+
+function setupTrustedCommunication (port) {
+  const portStream = new PortStream(port)
+  portStream.pipe(createLogStream('incomingToBackground'))
+  const { abort } = makeCapTpFromStream('trusted', portStream, api);
   portStream.on('end', () => abort())
 }
 

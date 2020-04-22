@@ -4,6 +4,7 @@ import LocalMessageDuplexStream from 'post-message-stream'
 import ObjectMultiplex from 'obj-multiplex'
 import extension from 'extensionizer'
 import PortStream from 'extension-port-stream'
+const createLogStream = require('./lib/create-log-stream')
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs')
@@ -61,7 +62,9 @@ async function setupStreams () {
 
   pump(
     pageStream,
+    createLogStream('pageToExtension'),
     extensionStream,
+    createLogStream('extensionToPage'),
     pageStream,
     (err) => logStreamDisconnectWarning(`MetaMask relay stream failed.`, err)
   )}
