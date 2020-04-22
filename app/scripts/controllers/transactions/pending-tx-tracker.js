@@ -215,7 +215,11 @@ class PendingTransactionTracker extends EventEmitter {
       const { outcomeStatus, epochNumber } = transactionReceipt
 
       if (outcomeStatus !== 0) {
-        this.emit('tx:skipped', txId, transactionReceipt)
+        const outcomeStatusErr = new Error(
+          'Out of gas or contract execution error'
+        )
+        outcomeStatusErr.name = 'OutcomeStatusErr'
+        this.emit('tx:failed', txId, outcomeStatusErr)
       } else if (epochNumber) {
         this.emit('tx:confirmed', txId, transactionReceipt)
       }

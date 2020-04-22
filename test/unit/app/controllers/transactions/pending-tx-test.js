@@ -164,7 +164,7 @@ describe('PendingTransactionTracker', function () {
         .catch(done)
     })
 
-    it("should emit tx:skipped with the txMetas id if tx recipient's outcomeStatus is none 0", function (done) {
+    it("should emit tx:failed with the txMetas id if tx recipient's outcomeStatus is none 0", function (done) {
       txMeta = {
         id: 1,
         hash:
@@ -186,10 +186,10 @@ describe('PendingTransactionTracker', function () {
         epochNumber: '0x9090',
       }
 
-      pendingTxTracker.once('tx:skipped', (id) => {
+      pendingTxTracker.once('tx:failed', (id) => {
         delete providerResultStub['eth_getTransactionCount']
         delete providerResultStub['eth_getTransactionReceipt']
-        assert(id, txMetaNoHash.id, 'should emit skipped')
+        assert(id, txMetaNoHash.id, 'should emit failed')
         done()
       })
       pendingTxTracker._checkPendingTx(txMeta)
