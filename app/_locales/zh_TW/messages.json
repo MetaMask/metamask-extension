@@ -673,7 +673,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal 是 Conflux 安全身份識別金庫"
+    "message": "ConfluxPortal 是安全的 Conflux 身份識別金庫"
   },
   "metamaskVersion": {
     "message": "ConfluxPortal 版本"
@@ -1120,6 +1120,9 @@
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
   },
+  "submit": {
+    "message": "提交"
+  },
   "submitted": {
     "message": "已送出"
   },
@@ -1164,6 +1167,10 @@
   },
   "thisWillCreate": {
     "message": "這將創建新的錢包與助記詞"
+  },
+  "thisWillAllow": {
+    "message": "這會允許 $1 進行如下操作",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
   },
   "tips": {
     "message": "提示"
@@ -1337,5 +1344,8 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速的 Gas 價格為 0"
+  },
+  "restrictedMethods_eth_accounts": {
+    "message": "查看已選中賬戶的地址"
   }
 }

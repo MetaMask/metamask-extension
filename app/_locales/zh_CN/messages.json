@@ -664,7 +664,7 @@
     "message": "消息"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal is a secure identity vault for Conflux."
+    "message": "ConfluxPortal 是安全的 Conflux 身份保险库"
   },
   "metamaskVersion": {
     "message": "ConfluxPortal 版本"
@@ -1126,6 +1126,9 @@
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"
   },
+  "submit": {
+    "message": "提交"
+  },
   "submitted": {
     "message": "已提交"
   },
@@ -1170,6 +1173,10 @@
   },
   "thisWillCreate": {
     "message": "该操作将为您创建新钱包和助记词"
+  },
+  "thisWillAllow": {
+    "message": " 这会允许 $1 进行如下操作:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
   },
   "tips": {
     "message": "赏金"
@@ -1340,5 +1347,8 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "燃气价格加速上涨"
+  },
+  "restrictedMethods_eth_accounts": {
+    "message": "查看已选中账户的地址"
   }
 }
