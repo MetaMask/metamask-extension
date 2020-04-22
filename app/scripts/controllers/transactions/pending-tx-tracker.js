@@ -164,7 +164,7 @@ class PendingTransactionTracker extends EventEmitter {
     try {
       // check the network if the nonce is ahead the tx
       // and the tx has not been mined into a block
-      dropped = await this._checkIftxWasDropped(txMeta, transactionReceipt)
+      dropped = await this._checkIfTxWasDropped(txMeta, transactionReceipt)
 
       // the dropped buffer is in case we ask a node for the tx
       // that is behind the node we asked for tx count
@@ -213,7 +213,7 @@ class PendingTransactionTracker extends EventEmitter {
     @returns {boolean}
   */
 
-  async _checkIftxWasDropped (txMeta, transactionReceipt) {
+  async _checkIfTxWasDropped (txMeta, transactionReceipt) {
     const { txParams: { nonce, from } } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
     if (
