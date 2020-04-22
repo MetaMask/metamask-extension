@@ -77,7 +77,7 @@ class DetectTokensController {
       )
       tokensToDetect.forEach((tokenAddress, index) => {
         const balance = balances[index]
-        if (balance && !balance.isZero()) {
+        if (balance && balance.toString() !== '0') {
           this._preferences.addToken(
             tokenAddress,
             contracts[tokenAddress].symbol,
