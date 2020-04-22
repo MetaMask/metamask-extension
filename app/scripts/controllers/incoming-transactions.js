@@ -3,34 +3,34 @@ import log from 'loglevel'
 import BN from 'bn.js'
 import createId from '../lib/random-id'
 import { bnToHex } from '../lib/util'
-import fetchWithTimeout from '../lib/fetch-with-timeout'
+// import fetchWithTimeout from '../lib/fetch-with-timeout'
 
 import {
   MAINNET_CODE,
   TESTNET_CODE,
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  GOERLI,
+  // ROPSTEN_CODE,
+  // RINKEBY_CODE,
+  // KOVAN_CODE,
+  // GOERLI_CODE,
+  // ROPSTEN,
+  // RINKEBY,
+  // KOVAN,
+  // GOERLI,
   MAINNET,
   TESTNET,
 } from './network/enums'
 
 const networkTypeToIdMap = {
-  [ROPSTEN]: String(ROPSTEN_CODE),
-  [RINKEBY]: String(RINKEBY_CODE),
-  [KOVAN]: String(KOVAN_CODE),
-  [GOERLI]: String(GOERLI_CODE),
+  // [ROPSTEN]: String(ROPSTEN_CODE),
+  // [RINKEBY]: String(RINKEBY_CODE),
+  // [KOVAN]: String(KOVAN_CODE),
+  // [GOERLI]: String(GOERLI_CODE),
   [MAINNET]: String(MAINNET_CODE),
   [TESTNET]: String(TESTNET_CODE),
 }
-const fetch = fetchWithTimeout({
-  timeout: 30000,
-})
+// const fetch = fetchWithTimeout({
+//   timeout: 30000,
+// })
 
 class IncomingTransactionsController {
   constructor (opts = {}) {
@@ -53,11 +53,12 @@ class IncomingTransactionsController {
       {
         incomingTransactions: {},
         incomingTxLastFetchedBlocksByNetwork: {
-          [ROPSTEN]: null,
-          [RINKEBY]: null,
-          [KOVAN]: null,
-          [GOERLI]: null,
+          // [ROPSTEN]: null,
+          // [RINKEBY]: null,
+          // [KOVAN]: null,
+          // [GOERLI]: null,
           [MAINNET]: null,
+          [TESTNET]: null,
         },
       },
       opts.initState
@@ -209,28 +210,34 @@ class IncomingTransactionsController {
   }
 
   async _fetchTxs (address, fromBlock, networkType) {
-    let etherscanSubdomain = 'api'
+    // const etherscanSubdomain = 'api'
     const currentNetworkID = networkTypeToIdMap[networkType]
-    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET]
+    // TODO: use confluxscan api
+    // const supportedNetworkTypes = [/* ROPSTEN, RINKEBY, KOVAN, GOERLI, */ TESTNET, MAINNET]
 
-    if (supportedNetworkTypes.indexOf(networkType) === -1) {
-      return {}
-    }
+    // if (supportedNetworkTypes.indexOf(networkType) === -1) {
+    //   return {}
+    // }
 
-    if (networkType !== MAINNET) {
-      etherscanSubdomain = `api-${networkType}`
-    }
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+    // if (networkType !== MAINNET) {
+    //   etherscanSubdomain = `api-${networkType}`
+    // }
+    // const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
+    // let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
 
-    if (fromBlock) {
-      url += `&startBlock=${parseInt(fromBlock, 10)}`
-    }
-    const response = await fetch(url)
-    const parsedResponse = await response.json()
+    // if (fromBlock) {
+    //   url += `&startBlock=${parseInt(fromBlock, 10)}`
+    // }
+    // const response = await fetch(url)
+    // const parsedResponse = await response.json()
 
     return {
-      ...parsedResponse,
+      fromBlock,
+      ...{
+        status: '0',
+        message: 'No transactions found',
+        result: [],
+      },
       address,
       currentNetworkID,
     }

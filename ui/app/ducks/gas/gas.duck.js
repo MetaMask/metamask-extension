@@ -178,12 +178,6 @@ export function gasEstimatesLoadingFinished () {
 
 export function fetchBasicGasEstimates () {
   return async (dispatch, getState) => {
-    const {
-      metamask: {
-        settings: { rpcUrl },
-      },
-    } = getState()
-
     const { basicPriceEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceEstimatesLastRetrieved ||
@@ -194,16 +188,12 @@ export function fetchBasicGasEstimates () {
 
     let basicEstimates
     if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasEstimates(dispatch, {
-        rpcUrl,
-      })
+      basicEstimates = await fetchExternalBasicGasEstimates(dispatch)
     } else {
       const cachedBasicEstimates = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
       basicEstimates =
         cachedBasicEstimates ||
-        (await fetchExternalBasicGasEstimates(dispatch, {
-          rpcUrl,
-        }))
+        (await fetchExternalBasicGasEstimates(dispatch))
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates))
@@ -213,11 +203,8 @@ export function fetchBasicGasEstimates () {
   }
 }
 
-async function fetchExternalBasicGasEstimates (
-  dispatch,
-  { rpcUrl = 'http://testnet-jsonrpc.conflux-chain.org:12537' }
-) {
-  const [response, estimateGasResult] = await Promise.all([
+async function fetchExternalBasicGasEstimates (dispatch) {
+  const [response, estimateGasDrip] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json', {
       headers: {},
       referrer: 'http://ethgasstation.info/json/',
@@ -226,18 +213,19 @@ async function fetchExternalBasicGasEstimates (
       method: 'GET',
       mode: 'cors',
     }),
-    fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: '1',
-        method: 'cfx_gasPrice',
-      }),
-    }),
+    (function () {
+      return new Promise((resolve, reject) => {
+        global.ethQuery.gasPrice((err, gasPrice) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(gasPrice)
+        })
+      })
+    })(),
   ])
 
-  const { result: estimateGasDrip } = await estimateGasResult.json()
+  // const { result: estimateGasDrip } = await estimateGasResult.json()
   const estimateGasGdripTimes10 =
     parseInt((estimateGasDrip * 10) / 1e8, 16) || 100 // this unit is gdrip * 10
 
@@ -277,11 +265,6 @@ async function fetchExternalBasicGasEstimates (
 
 export function fetchBasicGasAndTimeEstimates () {
   return async (dispatch, getState) => {
-    const {
-      metamask: {
-        settings: { rpcUrl },
-      },
-    } = getState()
     const { basicPriceAndTimeEstimatesLastRetrieved } = getState().gas
     const timeLastRetrieved =
       basicPriceAndTimeEstimatesLastRetrieved ||
@@ -292,18 +275,14 @@ export function fetchBasicGasAndTimeEstimates () {
 
     let basicEstimates
     if (Date.now() - timeLastRetrieved > 75000) {
-      basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch, {
-        rpcUrl,
-      })
+      basicEstimates = await fetchExternalBasicGasAndTimeEstimates(dispatch)
     } else {
       const cachedBasicEstimates = loadLocalStorageData(
         'BASIC_GAS_AND_TIME_API_ESTIMATES'
       )
       basicEstimates =
         cachedBasicEstimates ||
-        (await fetchExternalBasicGasAndTimeEstimates(dispatch, {
-          rpcUrl,
-        }))
+        (await fetchExternalBasicGasAndTimeEstimates(dispatch))
     }
 
     dispatch(setBasicGasEstimateData(basicEstimates))
@@ -312,11 +291,8 @@ export function fetchBasicGasAndTimeEstimates () {
   }
 }
 
-async function fetchExternalBasicGasAndTimeEstimates (
-  dispatch,
-  { rpcUrl = 'http://testnet-jsonrpc.conflux-chain.org:12537' }
-) {
-  const [response, estimateGasResult] = await Promise.all([
+async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
+  const [response, estimateGasDrip] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json', {
       headers: {},
       referrer: 'http://ethgasstation.info/json/',
@@ -325,18 +301,19 @@ async function fetchExternalBasicGasAndTimeEstimates (
       method: 'GET',
       mode: 'cors',
     }),
-    fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: '1',
-        method: 'cfx_gasPrice',
-      }),
-    }),
+    (function () {
+      return new Promise((resolve, reject) => {
+        global.ethQuery.gasPrice((err, gasPrice) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(gasPrice)
+        })
+      })
+    })(),
   ])
 
-  const { result: estimateGasDrip } = await estimateGasResult.json()
+  // const { result: estimateGasDrip } = await estimateGasResult.json()
   const estimateGasGdripTimes10 =
     parseInt((estimateGasDrip * 10) / 1e8, 16) || 100 // this unit is gdrip * 10
 
