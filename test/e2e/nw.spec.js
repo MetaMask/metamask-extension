@@ -8,10 +8,10 @@ const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const testsFolder = './test-cases'
 const setup = require(`${testsFolder}/setup.spec`)
 const login = require(`${testsFolder}/login.spec`)
-const { accountCreation } = require(`${testsFolder}/account-creation.spec`)
+const { accountCreation, getCreatedAccounts } = require(`${testsFolder}/account-creation.spec`)
 const connectHDWallet = require(`${testsFolder}/connect-hd-wallet.spec`)
 const importAccount = require(`${testsFolder}/import-account.spec`)
-// const importContractAccount = require(`${testsFolder}/import-contract-account.spec`)
+const importContractAccount = require(`${testsFolder}/import-contract-account.spec`)
 const deleteImportedAccount = require(`${testsFolder}/delete-imported-account.spec`)
 const signData = require(`${testsFolder}/sign-data.spec`)
 const exportPrivateKey = require(`${testsFolder}/export-private-key.spec`)
@@ -100,9 +100,9 @@ describe('Metamask popup page', async function () {
     await importAccount(f)
   })
 
-  // describe('Import Contract account', async () => {
-  //   await importContractAccount(f, account1, getCreatedAccounts)
-  // })
+  describe('Import Contract account', async () => {
+    await importContractAccount(f, account1, getCreatedAccounts)
+  })
 
   describe('Delete Imported Account', async () => {
     await deleteImportedAccount(f)

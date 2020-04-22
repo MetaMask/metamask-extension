@@ -42,7 +42,7 @@ class TokenCell extends Component {
     const tokenBalance = tokenBalanceRaw.toFixed(countSignificantDecimals(tokenBalanceRaw, 2))
 
     return (
-      <li
+      <span
         id={`token-cell_${ind}`}
         className="token-cell"
         style= {{
@@ -86,7 +86,7 @@ class TokenCell extends Component {
         >
           {this.renderTokenOptions(menuToTop, ind)}
         </div>
-      </li>
+      </span>
     )
   }
 

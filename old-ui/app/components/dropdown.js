@@ -60,8 +60,8 @@ class Dropdown extends Component {
       >
         <style>
         {`
-          div.dropdown-menu-item:hover { color:#ffffff; }
-          div.dropdown-menu-item { color: rgba(255, 255, 255, 0.5); position: relative }
+          li.dropdown-menu-item:hover { color:#ffffff; }
+          li.dropdown-menu-item { color: rgba(255, 255, 255, 0.5); position: relative }
         `}
         </style>
         {children}
@@ -94,17 +94,16 @@ class DropdownMenuItem extends Component {
     }, this.props.style)
 
     return (
-      <div
+      <li
         className={classnames('dropdown-menu-item', this.props.className)}
         onClick={() => {
           onClick()
           closeMenu()
         }}
-        key={`dropdown-menu-item_${Math.random()}`}
         style={style}
       >
         {children}
-      </div>
+      </li>
     )
   }
 
