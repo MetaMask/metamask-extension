@@ -302,7 +302,7 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#_checkIftxWasDropped', function () {
+  describe('#_checkIfTxWasDropped', function () {
     const txMeta = {
       id: 1,
       hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
@@ -317,14 +317,14 @@ describe('PendingTransactionTracker', function () {
     it('should return false when the nonce is the suggested network nonce', async function () {
       providerResultStub['eth_getTransactionCount'] = '0x01'
       providerResultStub['eth_getTransactionReceipt'] = {}
-      const dropped = await pendingTxTracker._checkIftxWasDropped(txMeta, {})
+      const dropped = await pendingTxTracker._checkIfTxWasDropped(txMeta, {})
       assert.ok(!dropped, 'should be false')
     })
 
     it('should return true when the network nonce is higher then the txMeta nonce', async function () {
       providerResultStub['eth_getTransactionCount'] = '0x02'
       providerResultStub['eth_getTransactionReceipt'] = {}
-      const dropped = await pendingTxTracker._checkIftxWasDropped(txMeta, {})
+      const dropped = await pendingTxTracker._checkIfTxWasDropped(txMeta, {})
       assert.ok(dropped, 'should be true')
     })
   })
