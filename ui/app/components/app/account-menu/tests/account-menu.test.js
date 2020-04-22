@@ -161,7 +161,7 @@ describe('Account Menu', function () {
     })
   })
 
-  describe('Connect Hardware Wallet', function () {
+  describe.skip('Connect Hardware Wallet', function () {
     let connectHardwareWallet
 
     it('renders import account item', function () {
