@@ -33,8 +33,10 @@ cleanContextForImports()
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import ConfluxPortalInpageProvider from '@yqrashawn/conflux-portal-inpage-provider'
-import { Conflux as ConfluxJS } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+import * as ConfluxJSSDK from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
 import setupDappAutoReload from './lib/auto-reload.js'
+
+const { Conflux: ConfluxJS } = ConfluxJSSDK
 
 restoreContextAfterImports()
 
@@ -87,3 +89,4 @@ proxiedInpageProvider._web3Ref = confluxJS
 setupDappAutoReload(confluxJS, inpageProvider._publicConfigStore)
 
 window.conflux = proxiedInpageProvider
+window.ConfluxJSSDK = ConfluxJSSDK
