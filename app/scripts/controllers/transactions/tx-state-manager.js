@@ -195,7 +195,9 @@ class TransactionStateManager extends EventEmitter {
     const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
     // generate history entry and add to history
     const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState, note)
-    txMeta.history.push(entry)
+    if (entry.length) {
+      txMeta.history.push(entry)
+    }
 
     // commit txMeta to state
     const txId = txMeta.id

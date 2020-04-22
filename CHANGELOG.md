@@ -4,6 +4,7 @@
 
 ## 7.7.9 Tue Apr 28 2020
 - [#8446](https://github.com/MetaMask/metamask-extension/pull/8446): Fix popup not opening
+- [#8449](https://github.com/MetaMask/metamask-extension/pull/8449): Skip adding history entry for empty txMeta diffs
 
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
