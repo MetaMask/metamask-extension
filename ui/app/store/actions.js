@@ -1640,12 +1640,12 @@ export function closeCurrentNotificationWindow () {
       !hasUnconfirmedTransactions(getState())) {
       global.platform.closeCurrentWindow()
 
-      dispatch(closeNotifacationWindow())
+      dispatch(closeNotificationWindow())
     }
   }
 }
 
-export function closeNotifacationWindow () {
+export function closeNotificationWindow () {
   return {
     type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   }
@@ -1734,7 +1734,7 @@ export function exportAccount (password, address) {
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
-          log.error('Error in submiting password.')
+          log.error('Error in submitting password.')
           dispatch(hideLoadingIndication())
           dispatch(displayWarning('Incorrect Password.'))
           return reject(err)
@@ -2230,13 +2230,13 @@ export function setConnectedStatusPopoverHasBeenShown () {
   }
 }
 
-export function loadingMethoDataStarted () {
+export function loadingMethodDataStarted () {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
   }
 }
 
-export function loadingMethoDataFinished () {
+export function loadingMethodDataFinished () {
   return {
     type: actionConstants.LOADING_METHOD_DATA_FINISHED,
   }
@@ -2251,12 +2251,12 @@ export function getContractMethodData (data = '') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
-    dispatch(loadingMethoDataStarted())
+    dispatch(loadingMethodDataStarted())
     log.debug(`loadingMethodData`)
 
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
-        dispatch(loadingMethoDataFinished())
+        dispatch(loadingMethodDataFinished())
 
         background.addKnownMethodData(fourBytePrefix, { name, params })
 
