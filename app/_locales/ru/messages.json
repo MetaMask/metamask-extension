@@ -25,7 +25,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -50,7 +50,7 @@
     "message": "Использовать Blockies Identicon"
   },
   "builtInCalifornia": {
-    "message": "MetaMask спроектирован и разработан в Калифорнии."
+    "message": "ConfluxPortal спроектирован и разработан в Калифорнии."
   },
   "buyCoinSwitch": {
     "message": "Купить на CoinSwitch"
@@ -294,7 +294,7 @@
     "message": "Сообщение"
   },
   "metamaskDescription": {
-    "message": "MetaMask – безопасный кошелек для Ethereum."
+    "message": "ConfluxPortal – безопасный кошелек для Ethereum."
   },
   "myAccounts": {
     "message": "Мои счета"
@@ -303,7 +303,7 @@
     "message": "Необходимо выбрать как минимум 1 токен."
   },
   "needEtherInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask нужен Ether в вашем кошельке."
+    "message": "Для взаимодействия с децентрализованными приложениями с помощью ConfluxPortal нужен Ether в вашем кошельке."
   },
   "needImportFile": {
     "message": "Вы должны выбрать файл для импорта.",
@@ -516,7 +516,7 @@
     "message": "Ключевая фраза кошелька"
   },
   "welcome": {
-    "message": "Добро пожаловать в MetaMask"
+    "message": "Добро пожаловать в ConfluxPortal"
   },
   "yourSigRequested": {
     "message": "Запрашивается ваша подпись"
@@ -582,7 +582,7 @@
     "message": "Добавить предложенные токены"
   },
   "addAcquiredTokens": {
-    "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
+    "message": "Добавьте токены, которые вы приобрели с помощью ConfluxPortal"
   },
   "asset": {
     "message": "Актив"
@@ -597,7 +597,7 @@
     "message": "Таймер автоматического выхода из кошелька (минуты)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Установите время простоя в минутах, прежде чем MetaMask автоматически заблокирует кошелек"
+    "message": "Установите время простоя в минутах, прежде чем ConfluxPortal автоматически заблокирует кошелек"
   },
   "average": {
     "message": "Средний"
@@ -633,7 +633,7 @@
     "message": "Купить ETH на Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre позволяет вам покупать ETH использую кредитную карту, прямо на ваш счет в MetaMask."
+    "message": "Wyre позволяет вам покупать ETH использую кредитную карту, прямо на ваш счет в ConfluxPortal."
   },
   "bytes": {
     "message": "Байт"
@@ -669,7 +669,7 @@
     "message": "Закрыть"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к своему аппаратному кошельку."
+    "message": "Вам необходимо использовать ConfluxPortal в Google Chrome, чтобы подключиться к своему аппаратному кошельку."
   },
   "confirmSecretBackupPhrase": {
     "message": "Подтвердите вашу резервную секретную фразу"
@@ -759,7 +759,7 @@
     "message": "Если у вас есть вопросы или вы видите что-то подозрительное, пишите на portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask не может восстановить вашу начальную фразу. Узнать больше."
+    "message": "ConfluxPortal не может восстановить вашу начальную фразу. Узнать больше."
   },
   "endOfFlowMessage9": {
     "message": "Узнать больше"
@@ -840,7 +840,7 @@
     "message": "Подключите аппаратный кошелек"
   },
   "hardwareWalletsMsg": {
-    "message": "Выберите аппаратный кошелек, который вы хотите использовать с MetaMask"
+    "message": "Выберите аппаратный кошелек, который вы хотите использовать с ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Возникли проблемы с подключением?"
@@ -900,7 +900,7 @@
     "message": "Меню"
   },
   "metamaskVersion": {
-    "message": "Версия MetaMask"
+    "message": "Версия ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "Не видите свои токены?"
@@ -912,7 +912,7 @@
     "message": "Мои кошельки"
   },
   "myWalletAccountsDescription": {
-    "message": "Все ваши учетные записи, созданные в MetaMask, будут автоматически добавлены в этот раздел."
+    "message": "Все ваши учетные записи, созданные в ConfluxPortal, будут автоматически добавлены в этот раздел."
   },
   "networkName": {
     "message": "Имя сети"
@@ -932,8 +932,8 @@
   "newNetwork": {
     "message": "Новая сеть"
   },
-  "newToMetaMask": {
-    "message": "Впервые в MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Впервые в ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Нет, у меня уже есть начальная фраза"
@@ -993,7 +993,7 @@
     "message": "Участвовать в MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Участвуйте в MetaMetrics, чтобы помочь нам сделать MetaMask лучше"
+    "message": "Участвуйте в MetaMetrics, чтобы помочь нам сделать ConfluxPortal лучше"
   },
   "password": {
     "message": "Пароль"
@@ -1144,7 +1144,7 @@
     "message": "Выберите аккаунт"
   },
   "selectAnAccountHelp": {
-    "message": "Выберите учетную запись для просмотра в MetaMask"
+    "message": "Выберите учетную запись для просмотра в ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Установите более высокую плату за газ, чтобы ускорить обработку вашей транзакции.*"
@@ -1222,16 +1222,16 @@
     "message": "Вы можете синхронизировать свои учетные записи и информацию с вашим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в «Настройки» и нажмите «Синхронизировать с расширением браузера»."
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Если вы впервые открываете приложение MetaMask Mobile, просто следуйте инструкциям на телефоне."
+    "message": "Если вы впервые открываете приложение ConfluxPortal Mobile, просто следуйте инструкциям на телефоне."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Сканируйте этот код с помощью мобильного приложения MetaMask."
+    "message": "Сканируйте этот код с помощью мобильного приложения ConfluxPortal."
   },
   "syncWithMobileBeCareful": {
     "message": "Убедитесь, что никто не смотрит на ваш экран при сканировании этого кода"
   },
   "syncWithMobileComplete": {
-    "message": "Ваши данные были успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
+    "message": "Ваши данные были успешно синхронизированы. Наслаждайтесь мобильным приложением ConfluxPortal!"
   },
   "thisWillCreate": {
     "message": "Это создаст новый кошелек и начальную фразу"

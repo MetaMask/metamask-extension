@@ -75,7 +75,7 @@
     "message": "Legg til foreslåtte tokener "
   },
   "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
+    "message": "Legg til sjetongene du har kjøpt med ConfluxPortal"
   },
   "amount": {
     "message": "Sum"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Timer for automatisk utlogging (minutter) "
   },
   "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
+    "message": "Innstill hviletiden i minutter før ConfluxPortal automatisk logger ut"
   },
   "average": {
     "message": "Gjennomsnitt"
@@ -156,13 +156,13 @@
     "message": "Nettleseren din støttes ikke ..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask ble bygget og designet i California."
+    "message": "ConfluxPortal ble bygget og designet i California."
   },
   "buyWithWyre": {
     "message": "Kjøp ETH med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lar deg bruke et kredittkort for å sette inn ETH rett på MetaMask-kontoen din."
+    "message": "Wyre lar deg bruke et kredittkort for å sette inn ETH rett på ConfluxPortal-kontoen din."
   },
   "buyCoinSwitch": {
     "message": "Kjøp på CoinSwitch "
@@ -207,7 +207,7 @@
     "message": "Lukk"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
+    "message": "Du må bruke ConfluxPortal på Google Chrome for å koble deg til maskinvare-lommeboken."
   },
   "confirm": {
     "message": "Bekreft"
@@ -387,7 +387,7 @@
     "message": "Aldri del frasen med noen."
   },
   "endOfFlowMessage5": {
-    "message": "Vær forsiktig med phishing! MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din spontant."
+    "message": "Vær forsiktig med phishing! ConfluxPortal vil aldri be om den mnemoniske gjenopprettingsfrasen din spontant."
   },
   "endOfFlowMessage6": {
     "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
@@ -396,7 +396,7 @@
     "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til portal@conflux-chain.org"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
+    "message": "ConfluxPortal klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
   },
   "endOfFlowMessage9": {
     "message": "Finn ut mer."
@@ -515,7 +515,7 @@
     "message": "Koble til en hardware-lommebok"
   },
   "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
+    "message": "Velg maskinvarelommeboken som du vil bruke med ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Har du problemer med å koble til?"
@@ -544,7 +544,7 @@
     "message": "Importér konto"
   },
   "importAccountMsg": {
-    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
+    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for ConfluxPortal-kontoen din. Finn ut mer om importerte kontoer"
   },
   "importAccountSeedPhrase": {
     "message": "Importer en konto med den mnemoniske gjenopprettingsfrasen "
@@ -663,7 +663,7 @@
     "message": "Kobler deg til Ethereum og det desentraliserte nettet."
   },
   "metamaskVersion": {
-    "message": "MetaMask-versjon "
+    "message": "ConfluxPortal-versjon "
   },
   "missingYourTokens": {
     "message": "Ser du ikke sjetongene dine?"
@@ -678,7 +678,7 @@
     "message": "mine lommebokkontoer"
   },
   "myWalletAccountsDescription": {
-    "message": "Alle dine opprettede MetaMask-kontoer vil automatisk bli lagt til denne seksjonen.  "
+    "message": "Alle dine opprettede ConfluxPortal-kontoer vil automatisk bli lagt til denne seksjonen.  "
   },
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "
@@ -727,8 +727,8 @@
   "newNetwork": {
     "message": "Nytt nettverk "
   },
-  "newToMetaMask": {
-    "message": "Ny på MetaMask? "
+  "newToConfluxPortal": {
+    "message": "Ny på ConfluxPortal? "
   },
   "noAlreadyHaveSeed": {
     "message": "Nei, jeg har allerede en mnemonisk gjenopprettingsfrase"
@@ -797,7 +797,7 @@
     "message": "Delta i MetaMetrics "
   },
   "participateInMetaMetricsDescription": {
-    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre MetaMask bedre"
+    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre ConfluxPortal bedre"
   },
   "password": {
     "message": "Passord"
@@ -1015,7 +1015,7 @@
     "message": "Velg en konto"
   },
   "selectAnAccountHelp": {
-    "message": "Velg konto for å vise i MetaMask"
+    "message": "Velg konto for å vise i ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Velg en høyere gassavgift for å fremskynde transaksjonsbehandlingen.*"
@@ -1129,16 +1129,16 @@
     "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for MetaMask, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Hvis du åpner mobilappen for MetaMask for første gang, følger du bare trinnene på telefonen."
+    "message": "Hvis du åpner mobilappen for ConfluxPortal for første gang, følger du bare trinnene på telefonen."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Skann denne koden med din mobilapp for MetaMask"
+    "message": "Skann denne koden med din mobilapp for ConfluxPortal"
   },
   "syncWithMobileBeCareful": {
     "message": "Pass på at ingen andre ser på skjermen din mens du skanner denne koden "
   },
   "syncWithMobileComplete": {
-    "message": "Dataene dine er blitt synkronisert med suksess. Kos deg med mobilappen for MetaMask!"
+    "message": "Dataene dine er blitt synkronisert med suksess. Kos deg med mobilappen for ConfluxPortal!"
   },
   "terms": {
     "message": "Brukervilkår"
@@ -1230,7 +1230,7 @@
     "message": "Prøv igjen"
   },
   "typePassword": {
-    "message": "Skriv inn MetaMask-passordet"
+    "message": "Skriv inn ConfluxPortal-passordet"
   },
   "unapproved": {
     "message": "Ikke godkjent "
@@ -1296,7 +1296,7 @@
     "message": "Velkommen tilbake!"
   },
   "welcome": {
-    "message": "Velkommen til MetaMask"
+    "message": "Velkommen til ConfluxPortal"
   },
   "writePhrase": {
     "message": "Skriv denne frasen på et papir og oppbevar på et sikkert sted. Hvis du vil ha enda mer sikkerhet, kan du skrive det ned på flere papirbiter og oppbevare hver på 2 - 3 forskjellige steder."

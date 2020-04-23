@@ -17,7 +17,7 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use ConfluxScan to show incoming transactions in the transactions list"
   },
-  "cancelledConnectionWithMetaMask": {
+  "cancelledConnectionWithConfluxPortal": {
     "message": "Cancelled Connection With ConfluxPortal"
   },
   "chartOnlyAvailableEth": {
@@ -26,7 +26,7 @@
   "connectedSites": {
     "message": "Connected Sites"
   },
-  "connectingWithMetaMask": {
+  "connectingWithConfluxPortal": {
     "message": "Connecting With ConfluxPortal..."
   },
   "connectTo": {
@@ -551,7 +551,7 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageTitle": {
-    "message": "MetaMask encountered an error",
+    "message": "ConfluxPortal encountered an error",
     "description": "Title of generic error page"
   },
   "errorPageMessage": {
@@ -924,7 +924,7 @@
   "newNetwork": {
     "message": "New Network"
   },
-  "newToMetaMask": {
+  "newToConfluxPortal": {
     "message": "New to ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {

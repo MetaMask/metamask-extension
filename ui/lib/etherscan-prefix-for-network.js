@@ -2,12 +2,11 @@ export default function etherscanNetworkPrefix (network) {
   const net = parseInt(network)
   let prefix
   switch (net) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
+    case 0:
       prefix = ''
+      break
+    case 1:
+      prefix = 'testnet.'
       break
     default:
       prefix = ''

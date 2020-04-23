@@ -31,7 +31,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -56,7 +56,7 @@
     "message": "ใช้งาน Blockies Identicon"
   },
   "builtInCalifornia": {
-    "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
+    "message": "ConfluxPortal ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
   },
   "buyCoinSwitch": {
     "message": "ซื้อด้วย CoinSwitch"
@@ -74,7 +74,7 @@
     "message": "ค่าธรรมเนียม Gas การยกเลิก"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
+    "message": "คุณต้องใช้ ConfluxPortal บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
   },
   "confirm": {
     "message": "ยืนยัน"
@@ -339,7 +339,7 @@
     "message": "ข้อความ"
   },
   "metamaskDescription": {
-    "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
+    "message": "ConfluxPortal คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
   },
   "myAccounts": {
     "message": "บัญชีของฉัน"
@@ -379,8 +379,8 @@
   "newPassword": {
     "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
   },
-  "newToMetaMask": {
-    "message": "เพิ่งเริ่มใช้ MetaMask?"
+  "newToConfluxPortal": {
+    "message": "เพิ่งเริ่มใช้ ConfluxPortal?"
   },
   "newTransactionFee": {
     "message": "ค่าธรรมเนียมธุรกรรมใหม่"
@@ -398,7 +398,7 @@
     "message": "ยังไม่มีรายการธุรกรรม"
   },
   "participateInMetaMetricsDescription": {
-    "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา MetaMask"
+    "message": "เข้าร่วมใน MetaMetrics เพื่อช่วยเราในการพัฒนา ConfluxPortal"
   },
   "pastePrivateKey": {
     "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
@@ -553,7 +553,7 @@
     "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
   "syncWithMobileComplete": {
-    "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
+    "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ ConfluxPortal ให้สนุกนะ!"
   },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"
@@ -621,7 +621,7 @@
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
   },
   "welcome": {
-    "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
+    "message": "ยินดีต้อนรับสู่ ConfluxPortal เบต้า"
   },
   "yourSigRequested": {
     "message": "ลายเซ็นของคุณกำลังได้รับการร้องขอ"

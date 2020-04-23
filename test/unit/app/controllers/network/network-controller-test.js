@@ -93,7 +93,7 @@ describe('NetworkController', function () {
         // },
         {
           input: 'mainnet',
-          expected: 'Main Conflux Network',
+          expected: 'Conflux Main Network',
         },
         // {
         //   input: 'goerli',

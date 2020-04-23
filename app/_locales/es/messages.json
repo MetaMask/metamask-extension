@@ -72,7 +72,7 @@
     "message": "Agregar tokens propuestos"
   },
   "addAcquiredTokens": {
-    "message": "Agregar los tokens que has adquirido usando MetaMask"
+    "message": "Agregar los tokens que has adquirido usando ConfluxPortal"
   },
   "amount": {
     "message": "Cantidad"
@@ -82,7 +82,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -110,7 +110,7 @@
     "message": "Temporizador Auto-Cierre (minutos)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Establece el tiempo de inactividad en minutos antes de que MetaMask cierre la sesión automáticamente."
+    "message": "Establece el tiempo de inactividad en minutos antes de que ConfluxPortal cierre la sesión automáticamente."
   },
   "average": {
     "message": "Promedio"
@@ -137,7 +137,7 @@
     "message": "Tu navegador no está admitido..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask fue diseñado y construido en California"
+    "message": "ConfluxPortal fue diseñado y construido en California"
   },
   "buyCoinSwitch": {
     "message": "Comprar en CoinSwitch"
@@ -170,7 +170,7 @@
     "message": "Cerrar"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Hay que usar MetaMask en Google Chrome para poder conectarse con tu Monedero Físico."
+    "message": "Hay que usar ConfluxPortal en Google Chrome para poder conectarse con tu Monedero Físico."
   },
   "confirm": {
     "message": "Confirmar"
@@ -332,7 +332,7 @@
     "message": "¡Envíanos un correo!"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask no puede recuperar tu seedphrase. Saber más."
+    "message": "ConfluxPortal no puede recuperar tu seedphrase. Saber más."
   },
   "endOfFlowMessage9": {
     "message": "Saber más."
@@ -422,7 +422,7 @@
     "message": "Conectarle un monedero físico"
   },
   "hardwareWalletsMsg": {
-    "message": "Seleccionar un monedero físico que quieres usar con MetaMask"
+    "message": "Seleccionar un monedero físico que quieres usar con ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "¿Tienes problemas para hacer la conexión?"
@@ -454,7 +454,7 @@
     "message": "Importar cuenta"
   },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas."
+    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu ConfluxPortal. Aprende más acerca de importar cuentas."
   },
   "importWallet": {
     "message": "Importar Wallet"
@@ -546,10 +546,10 @@
     "message": "Mensaje"
   },
   "metamaskDescription": {
-    "message": "MetaMask es una identidad segura en Ethereum"
+    "message": "ConfluxPortal es una identidad segura en Ethereum"
   },
   "metamaskVersion": {
-    "message": "Versión de MetaMask"
+    "message": "Versión de ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "¿No ves tus tokens?"
@@ -561,7 +561,7 @@
     "message": "Debe seleccionar al menos un (1) token"
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con una aplicación descentralizada usando MetaMask, necesitas tener Ether en tu billetera"
+    "message": "Para interactuar con una aplicación descentralizada usando ConfluxPortal, necesitas tener Ether en tu billetera"
   },
   "needImportFile": {
     "message": "Debes seleccionar un archivo para importar",
@@ -832,7 +832,7 @@
     "message": "Seleccionar una Cuenta"
   },
   "selectAnAccountHelp": {
-    "message": "Seleccionar la cuenta que quiere ver en MetaMask"
+    "message": "Seleccionar la cuenta que quiere ver en ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Seleccione una comisión de gas más elevada para agilizar el procesamiento de tu transacción.*"
@@ -1056,7 +1056,7 @@
     "message": "¡Bienvenido de nuevo!"
   },
   "welcome": {
-    "message": "Bienvenido a MetaMask"
+    "message": "Bienvenido a ConfluxPortal"
   },
   "yesLetsTry": {
     "message": "Sí, probemos"

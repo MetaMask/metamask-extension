@@ -75,7 +75,7 @@
     "message": "Добавете препоръчани жетони"
   },
   "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
+    "message": "Добавете жетоните, които сте придобили с помощта на ConfluxPortal"
   },
   "amount": {
     "message": "Сума"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Таймер за автоматично излизане (минути)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
+    "message": "Задайте времето на неактивност в минути, преди ConfluxPortal автоматично да Ви отпише от акаунта"
   },
   "average": {
     "message": "Средно аритметично"
@@ -156,13 +156,13 @@
     "message": "Браузърът ви не се поддържа ..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask е проектиран и създаден в Калифорния."
+    "message": "ConfluxPortal е проектиран и създаден в Калифорния."
   },
   "buyWithWyre": {
     "message": "Купете ETH с Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата MetaMask сметка."
+    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата ConfluxPortal сметка."
   },
   "buyCoinSwitch": {
     "message": "Купете на CoinSwitch"
@@ -210,7 +210,7 @@
     "message": "Затваряне"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
+    "message": "За да се свържете с хардуерния си портфейл, трябва да използвате ConfluxPortal в Google Chrome."
   },
   "confirm": {
     "message": "Потвърждаване"
@@ -390,7 +390,7 @@
     "message": "Никога не споделяйте фразата с никого."
   },
   "endOfFlowMessage5": {
-    "message": "Внимавайте с фишинга! MetaMask никога няма да поиска спонтанно вашата фраза зародиш."
+    "message": "Внимавайте с фишинга! ConfluxPortal никога няма да поиска спонтанно вашата фраза зародиш."
   },
   "endOfFlowMessage6": {
     "message": "Ако отново трябва да архивирате основната си фраза, можете да я намерите в Настройки -> Защита."
@@ -399,7 +399,7 @@
     "message": "Ако имате въпроси или забележите нещо съмнително, изпратете имейл на portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask не може да възстанови ключовата Ви фраза. Научете повече."
+    "message": "ConfluxPortal не може да възстанови ключовата Ви фраза. Научете повече."
   },
   "endOfFlowMessage9": {
     "message": "Научете повече."
@@ -518,7 +518,7 @@
     "message": "Свържете хардуерен портфейл"
   },
   "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
+    "message": "Изберете хардуерен портфейл, който искате да използвате с ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Имате проблеми със свързването?"
@@ -669,7 +669,7 @@
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
   },
   "metamaskVersion": {
-    "message": "Версия на MetaMask"
+    "message": "Версия на ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "Не виждате жетоните си?"
@@ -684,7 +684,7 @@
     "message": "Моите акаунти в портфейла"
   },
   "myWalletAccountsDescription": {
-    "message": "Всичките ви създадени от MetaMask акаунти ще бъдат автоматично добавени в този раздел."
+    "message": "Всичките ви създадени от ConfluxPortal акаунти ще бъдат автоматично добавени в този раздел."
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
@@ -733,8 +733,8 @@
   "newNetwork": {
     "message": "Нова мрежа"
   },
-  "newToMetaMask": {
-    "message": "Нови ли сте в MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Нови ли сте в ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Не, вече имам фраза зародиш"
@@ -803,7 +803,7 @@
     "message": "Участвайте в MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим MetaMask"
+    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим ConfluxPortal"
   },
   "password": {
     "message": "Парола"
@@ -1033,7 +1033,7 @@
     "message": "Изберете акаунт"
   },
   "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
+    "message": "Изберете акаунта за преглед в ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "\nИзберете по-висока такса за газ, за ​​да ускорите обработката на Вашата транзакция.*"
@@ -1150,16 +1150,16 @@
     "message": "Можете да синхронизирате вашите акаунти и информация с мобилното си устройство. Отворете мобилното приложение MetaMask, отидете на „Настройки“ и докоснете „Синхронизиране от разширението на браузъра“"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Ако отворите приложението MetaMask Mobile за първи път, просто следвайте стъпките в телефона си."
+    "message": "Ако отворите приложението ConfluxPortal Mobile за първи път, просто следвайте стъпките в телефона си."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Сканирайте този код с вашето мобилно приложение MetaMask"
+    "message": "Сканирайте този код с вашето мобилно приложение ConfluxPortal"
   },
   "syncWithMobileBeCareful": {
     "message": "Уверете се, че никой друг не гледа екрана ви, когато сканирате този код"
   },
   "syncWithMobileComplete": {
-    "message": "Вашите данни са синхронизирани успешно. Насладете се на мобилното приложение MetaMask!"
+    "message": "Вашите данни са синхронизирани успешно. Насладете се на мобилното приложение ConfluxPortal!"
   },
   "terms": {
     "message": "Условия за ползване"
@@ -1254,7 +1254,7 @@
     "message": "Нов опит"
   },
   "typePassword": {
-    "message": "Въведете паролата си за MetaMask"
+    "message": "Въведете паролата си за ConfluxPortal"
   },
   "unapproved": {
     "message": "Неодобрено"
@@ -1320,7 +1320,7 @@
     "message": "Добре дошли отново!"
   },
   "welcome": {
-    "message": "Добре дошли в MetaMask"
+    "message": "Добре дошли в ConfluxPortal"
   },
   "writePhrase": {
     "message": "Напишете тази фраза на лист хартия и я съхранявайте на сигурно място. Ако искате още по-голяма сигурност, запишете я на няколко листа хартия и ги съхранявайте на 2 - 3 различни места."

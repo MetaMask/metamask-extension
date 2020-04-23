@@ -75,7 +75,7 @@
     "message": "Tambah Token yang Disyorkan"
   },
   "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
+    "message": "Tambah token yang anda peroleh menggunakan ConfluxPortal"
   },
   "amount": {
     "message": "Jumlah"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Pemasa Logout Automatik (minit)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
+    "message": "Tetapkan masa melahu dalam minit sebelum ConfluxPortal log keluar secara automatik"
   },
   "average": {
     "message": "Purata"
@@ -156,13 +156,13 @@
     "message": "Pelayar anda tidak disokong..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask direka dan dibina di California."
+    "message": "ConfluxPortal direka dan dibina di California."
   },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit ETH secara terus ke dalam akaun MetaMask anda."
+    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit ETH secara terus ke dalam akaun ConfluxPortal anda."
   },
   "buyCoinSwitch": {
     "message": "Beli di CoinSwitch"
@@ -207,7 +207,7 @@
     "message": "Tutup"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
+    "message": "Anda perlu menggunakan ConfluxPortal di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
   },
   "confirm": {
     "message": "Sahkan"
@@ -378,7 +378,7 @@
     "message": "Jangan sesekali kongsi frasa ini dengan sesiapa."
   },
   "endOfFlowMessage5": {
-    "message": "Berhati-hati dengan pemancingan data! MetaMask tidak akan sesekali meminta frasa benih anda secara tiba-tiba."
+    "message": "Berhati-hati dengan pemancingan data! ConfluxPortal tidak akan sesekali meminta frasa benih anda secara tiba-tiba."
   },
   "endOfFlowMessage6": {
     "message": "Jika anda perlu membuat sandaran ungkapan benih anda sekali lagi, anda boleh lakukannya melalui Tetapan -> Keselamatan."
@@ -387,7 +387,7 @@
     "message": "JIka anda mempunyai soalan atau melihat sesuatu yang mencurigakan, hantarkan e-mel ke portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask tidak dapat memulihkan ungkapan benih anda. Ketahui lebih lanjut."
+    "message": "ConfluxPortal tidak dapat memulihkan ungkapan benih anda. Ketahui lebih lanjut."
   },
   "endOfFlowMessage9": {
     "message": "Ketahui lebih lanjut."
@@ -506,7 +506,7 @@
     "message": "Sambungkan dompet perkakasan"
   },
   "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
+    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Mengalami masalah untuk menyambungkan?"
@@ -534,7 +534,7 @@
     "message": "Import Akaun"
   },
   "importAccountMsg": {
-    "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
+    "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun ConfluxPortal asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
   },
   "importAccountSeedPhrase": {
     "message": "Import Akaun dengan Frasa Benih"
@@ -644,7 +644,7 @@
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
   },
   "metamaskVersion": {
-    "message": "Versi MetaMask"
+    "message": "Versi ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "Tidak nampak token anda?"
@@ -659,13 +659,13 @@
     "message": "Akaun Dompet Saya"
   },
   "myWalletAccountsDescription": {
-    "message": "Semua akaun ciptaan MetaMask anda akan ditambahkan secara automatik kepada bahagian ini."
+    "message": "Semua akaun ciptaan ConfluxPortal anda akan ditambahkan secara automatik kepada bahagian ini."
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
   },
   "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
+    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan ConfluxPortal, anda memerlukan Ether di dalam dompet anda."
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -708,8 +708,8 @@
   "newNetwork": {
     "message": "Rangkaian Baru"
   },
-  "newToMetaMask": {
-    "message": "Baru mengenali MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Baru mengenali ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Tidak, saya sudah pun memiliki frasa benih"
@@ -718,7 +718,7 @@
     "message": "Lindungi Kunci Anda!"
   },
   "protectYourKeysMessage1": {
-    "message": "Berhati-hati dengan ungkapan benih anda — terdapat laporan ada tapak web yang cuba meniru MetaMask. MetaMask tidak sekali-kali akan meminta ungkapan benih anda!"
+    "message": "Berhati-hati dengan ungkapan benih anda — terdapat laporan ada tapak web yang cuba meniru ConfluxPortal. ConfluxPortal tidak sekali-kali akan meminta ungkapan benih anda!"
   },
   "protectYourKeysMessage2": {
     "message": "Pastikan ungkapan anda selamat. Jika anda melihterlihat at sesuatu yang mencurigakan, atau anda tidak pasti mengenai tapak web tertentu, e-mel kepada portal@conflux-chain.org"
@@ -778,7 +778,7 @@
     "message": "Sertai MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Sertai MetaMetrics untuk membantu kami menambah baik MetaMask"
+    "message": "Sertai MetaMetrics untuk membantu kami menambah baik ConfluxPortal"
   },
   "password": {
     "message": "Kata laluan"
@@ -1008,7 +1008,7 @@
     "message": "Pilih Akaun"
   },
   "selectAnAccountHelp": {
-    "message": "Pilih akaun untuk dilihat dalam MetaMask"
+    "message": "Pilih akaun untuk dilihat dalam ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Pilih yuran gas yang lebih tinggi untuk mempercepatkan pemprosesan transaksi anda.*"
@@ -1122,19 +1122,19 @@
     "message": "Segerakkan dengan mudah alih"
   },
   "syncWithMobileDesc": {
-    "message": "Anda boleh menyegerakkan akaun dan maklumat anda dengan peranti mudah alih anda. Buka ap mudah alih MetaMask, pergi ke \"Tetapan\" dan ketik \"Segerakkan daripada Sambungan Pelayar\""
+    "message": "Anda boleh menyegerakkan akaun dan maklumat anda dengan peranti mudah alih anda. Buka ap mudah alih ConfluxPortal, pergi ke \"Tetapan\" dan ketik \"Segerakkan daripada Sambungan Pelayar\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Jika ini kali pertama anda membuka aplikasi mudah alih MetaMask, anda cuma perlu ikuti langkah-langkah di telefon anda."
+    "message": "Jika ini kali pertama anda membuka aplikasi mudah alih ConfluxPortal, anda cuma perlu ikuti langkah-langkah di telefon anda."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Imbas kod ini dengan aplikasi mudah alih MetaMask anda"
+    "message": "Imbas kod ini dengan aplikasi mudah alih ConfluxPortal anda"
   },
   "syncWithMobileBeCareful": {
     "message": "Pastikan tiada orang lain melihat skrin anda ketika anda mengimbas kod ini"
   },
   "syncWithMobileComplete": {
-    "message": "Data anda berjaya disegerakkan. Nikmati aplikasi mudah alih MetaMask!"
+    "message": "Data anda berjaya disegerakkan. Nikmati aplikasi mudah alih ConfluxPortal!"
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"
@@ -1226,7 +1226,7 @@
     "message": "Cuba lagi"
   },
   "typePassword": {
-    "message": "Taip kata laluan MetaMask anda"
+    "message": "Taip kata laluan ConfluxPortal anda"
   },
   "unapproved": {
     "message": "Belum Diluluskan"
@@ -1292,7 +1292,7 @@
     "message": "Selamat Kembali!"
   },
   "welcome": {
-    "message": "Selamat datang ke MetaMask"
+    "message": "Selamat datang ke ConfluxPortal"
   },
   "writePhrase": {
     "message": "Tulis frasa ini di atas kertas dan simpan di tempat yang selamat. JIka anda mahu lebih selamat, tuliskannya di beberapa helai kertas dan simpan setiap satunya di 2 -3 lokasi berbeza."

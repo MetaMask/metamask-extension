@@ -6,7 +6,7 @@
     "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "reject": {
@@ -79,7 +79,7 @@
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+    "message": "ConfluxPortal ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "amount": {
     "message": "ಮೊತ್ತ"
@@ -399,7 +399,7 @@
     "message": "ನೀವು ಎಂದಾದರೂ ಪ್ರಶ್ನೆಗಳನ್ನು ಹೊಂದಿದ್ದರೆ ಅಥವಾ ನೀವು ಯಾವಗಲಾದರೂ ಗೊಂದಲಮಯವಾಗಿದ್ದರೆ portal@conflux-chain.org ಗೆ ಇಮೇಲ್ ಮಾಡಿ."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask ಗೆ ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಮರಳಿಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
+    "message": "ConfluxPortal ಗೆ ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಮರಳಿಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
   },
   "endOfFlowMessage9": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
@@ -673,7 +673,7 @@
     "message": "ನಿಮ್ಮನ್ನು ಎಥೆರಿಯಮ್ ಮತ್ತು ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ."
   },
   "metamaskVersion": {
-    "message": "MetaMask ಆವೃತ್ತಿ"
+    "message": "ConfluxPortal ಆವೃತ್ತಿ"
   },
   "missingYourTokens": {
     "message": "ನಿಮ್ಮ ಟೋಕನ್‌ಗಳು ಕಾಣಿಸುತ್ತಿಲ್ಲವೇ?"
@@ -737,8 +737,8 @@
   "newNetwork": {
     "message": "ಹೊಸ ನೆಟ್‌ವರ್ಕ್"
   },
-  "newToMetaMask": {
-    "message": "MetaMask ಗೆ ಹೊಸಬರೇ?"
+  "newToConfluxPortal": {
+    "message": "ConfluxPortal ಗೆ ಹೊಸಬರೇ?"
   },
   "noAlreadyHaveSeed": {
     "message": "ಇಲ್ಲ, ನಾನು ಈಗಾಗಲೇ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿದ್ದೇನೆ"
@@ -807,7 +807,7 @@
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMask ಅನ್ನು ಉತ್ತಮಗೊಳಿಸಲು ನಮಗೆ ಸಹಾಯ ಮಾಡಲು MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
+    "message": "ConfluxPortal ಅನ್ನು ಉತ್ತಮಗೊಳಿಸಲು ನಮಗೆ ಸಹಾಯ ಮಾಡಲು MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
   "password": {
     "message": "ಪಾಸ್‌ವರ್ಡ್"
@@ -1037,7 +1037,7 @@
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "selectAnAccountHelp": {
-    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+    "message": "ConfluxPortal ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "selectAHigherGasFee": {
     "message": "ನಿಮ್ಮ ವಹಿವಾಟಿನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಸುಧಾರಿಸಲು ಅಧಿಕ ಗ್ಯಾಸ್ ಶುಲ್ಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ.*"
@@ -1157,7 +1157,7 @@
     "message": "ನೀವು ಮೊದಲ ಬಾರಿಗೆ MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ತೆರೆದರೆ, ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿರುವ ಹಂತಗಳನ್ನು ಅನುಸರಿಸಿ."
   },
   "syncWithMobileScanThisCode": {
-    "message": "ನಿಮ್ಮ MetaMask ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಮೂಲಕ ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
+    "message": "ನಿಮ್ಮ ConfluxPortal ಮೊಬೈಲ್ ಅಪ್ಲಿಕೇಶನ್ ಮೂಲಕ ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
   },
   "syncWithMobileBeCareful": {
     "message": "ನೀವು ಈ ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡುತ್ತಿರುವಾಗ ಯಾರೂ ನಿಮ್ಮ ಪರದೆಯ ಕಡೆಗೆ ನೋಡುತ್ತಿಲ್ಲವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
@@ -1258,7 +1258,7 @@
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"
   },
   "typePassword": {
-    "message": "ನಿಮ್ಮ MetaMask ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಟೈಪ್ ಮಾಡಿ"
+    "message": "ನಿಮ್ಮ ConfluxPortal ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಟೈಪ್ ಮಾಡಿ"
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"
@@ -1324,7 +1324,7 @@
     "message": "ಮರಳಿ ಸ್ವಾಗತ!"
   },
   "welcome": {
-    "message": "MetaMask ಗೆ ಸ್ವಾಗತ"
+    "message": "ConfluxPortal ಗೆ ಸ್ವಾಗತ"
   },
   "writePhrase": {
     "message": "ಕಾಗದದ ತುಂಡಿನ ಮೇಲೆ ಈ ಫ್ರೇಸ್ ಅನ್ನು ಬರೆಯಿರಿ ಮತ್ತು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿರಿಸಿ. ನೀವು ಇನ್ನೂ ಹೆಚ್ಚಿನ ಸುರಕ್ಷತೆಯನ್ನು ಬಯಸಿದರೆ, ಹಲವು ಕಾಗದದ ತುಂಡುಗಳ ಮೇಲೆ ಬರೆಯಿರಿ ಮತ್ತು ಪ್ರತಿಯೊಂದನ್ನು 2 - 3 ವಿವಿಧ ಸ್ಥಳಗಳಲ್ಲಿ ಇರಿಸಿ."

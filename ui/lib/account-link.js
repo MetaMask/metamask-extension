@@ -6,15 +6,14 @@ export default function getAccountLink (address, network, rpcPrefs) {
   const net = parseInt(network)
   let link
   switch (net) {
-    case 1: // main net
-    case 2: // test net
-    case 3:
-    case 4:
-    case 5:
+    case 0: // main net
       link = `https://confluxscan.io/accountdetail/${address}`
       break
+    case 1: // test net
+      link = `https://testnet.confluxscan.io/accountdetail/${address}`
+      break
     default:
-      link = ''
+      link = `https://confluxscan.io/accountdetail/${address}`
       break
   }
 
