@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#363](https://github.com/poanetwork/nifty-wallet/pull/363) - (Fix) token decimals display in pending tx screen
 - [#356](https://github.com/poanetwork/nifty-wallet/pull/356) - (Backwards-compatibility feature) Custom derivation paths and access to funds in accounts derived from ETH dPath
 
 ## 5.0.2 Thu Apr 16 2020

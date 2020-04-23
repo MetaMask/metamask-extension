@@ -120,7 +120,7 @@ TokenList.prototype.render = function () {
     }, [
       h('style', `
 
-        li.token-cell {
+        span.token-cell {
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -128,11 +128,11 @@ TokenList.prototype.render = function () {
           min-height: 50px;
         }
 
-        li.token-cell > h3 {
+        span.token-cell > h3 {
           margin-left: 12px;
         }
 
-        li.token-cell:hover {
+        span.token-cell:hover {
           background: white;
           cursor: pointer;
         }
