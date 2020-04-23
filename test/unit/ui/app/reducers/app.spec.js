@@ -376,13 +376,4 @@ describe('App State', function () {
 
     assert.equal(state.gasIsLoading, false)
   })
-
-  it('sets network nonce', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.SET_NETWORK_NONCE,
-      value: '33',
-    })
-
-    assert.equal(state.networkNonce, '33')
-  })
 })
