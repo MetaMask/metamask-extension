@@ -19,7 +19,6 @@ export default class TransactionList extends PureComponent {
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
     selectedToken: PropTypes.object,
-    updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
@@ -30,13 +29,10 @@ export default class TransactionList extends PureComponent {
   componentDidMount () {
     const {
       pendingTransactions,
-      updateNetworkNonce,
       fetchBasicGasAndTimeEstimates,
       fetchGasEstimates,
       transactionTimeFeatureActive,
     } = this.props
-
-    updateNetworkNonce()
 
     if (transactionTimeFeatureActive && pendingTransactions.length) {
       fetchBasicGasAndTimeEstimates()
@@ -48,15 +44,10 @@ export default class TransactionList extends PureComponent {
     const { pendingTransactions: prevPendingTransactions = [] } = prevProps
     const {
       pendingTransactions = [],
-      updateNetworkNonce,
       fetchBasicGasAndTimeEstimates,
       fetchGasEstimates,
       transactionTimeFeatureActive,
     } = this.props
-
-    if (pendingTransactions.length > prevPendingTransactions.length) {
-      updateNetworkNonce()
-    }
 
     const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
     const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0

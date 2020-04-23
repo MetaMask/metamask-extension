@@ -1891,28 +1891,6 @@ export function completeOnboarding () {
   }
 }
 
-export function setNetworkNonce (networkNonce) {
-  return {
-    type: actionConstants.SET_NETWORK_NONCE,
-    value: networkNonce,
-  }
-}
-
-export function updateNetworkNonce (address) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.getTransactionCount(address, (err, data) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(setNetworkNonce(data))
-        resolve(data)
-      })
-    })
-  }
-}
-
 export function setMouseUserState (isMouseUser) {
   return {
     type: actionConstants.SET_MOUSE_USER_STATE,

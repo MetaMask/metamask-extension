@@ -40,7 +40,6 @@ export default function reduceApp (state = {}, action) {
     buyView: {},
     isMouseUser: false,
     gasIsLoading: false,
-    networkNonce: null,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
@@ -312,12 +311,6 @@ export default function reduceApp (state = {}, action) {
       return {
         ...appState,
         gasIsLoading: false,
-      }
-
-    case actionConstants.SET_NETWORK_NONCE:
-      return {
-        ...appState,
-        networkNonce: action.value,
       }
 
     case actionConstants.SET_PREVIOUS_PROVIDER:

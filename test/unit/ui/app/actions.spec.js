@@ -1318,41 +1318,6 @@ describe('Actions', function () {
     })
   })
 
-  describe('#updateNetworkNonce', function () {
-    let getTransactionCountSpy
-
-    afterEach(function () {
-      getTransactionCountSpy.restore()
-    })
-
-    it('calls getTransactionCount', async function () {
-      const store = mockStore()
-      getTransactionCountSpy = sinon.spy(global.ethQuery, 'getTransactionCount')
-
-      await store.dispatch(actions.updateNetworkNonce())
-      assert(getTransactionCountSpy.calledOnce)
-    })
-
-    it('errors when getTransactionCount throws', async function () {
-      const store = mockStore()
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      getTransactionCountSpy = sinon.stub(global.ethQuery, 'getTransactionCount')
-      getTransactionCountSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      try {
-        await store.dispatch(actions.updateNetworkNonce())
-        assert.fail('Should have thrown error')
-      } catch (_) {
-        assert.deepEqual(store.getActions(), expectedActions)
-      }
-    })
-  })
-
   describe('#setUseBlockie', function () {
     let setUseBlockieSpy
 

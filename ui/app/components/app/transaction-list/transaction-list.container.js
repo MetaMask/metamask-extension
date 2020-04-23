@@ -7,7 +7,6 @@ import {
 } from '../../../selectors/transactions'
 import { getSelectedAddress, getAssetImages, getFeatureFlags } from '../../../selectors/selectors'
 import { selectedTokenSelector } from '../../../selectors/tokens'
-import { updateNetworkNonce } from '../../../store/actions'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
 
 const mapStateToProps = (state) => {
@@ -26,25 +25,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
   }
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { selectedAddress, ...restStateProps } = stateProps
-  const { updateNetworkNonce, ...restDispatchProps } = dispatchProps
-
-  return {
-    ...restStateProps,
-    ...restDispatchProps,
-    ...ownProps,
-    updateNetworkNonce: () => updateNetworkNonce(selectedAddress),
-  }
-}
-
-const TransactionListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransactionList)
+const TransactionListContainer = connect(mapStateToProps, mapDispatchToProps)(TransactionList)
 
 TransactionListContainer.propTypes = {
   isWideViewport: PropTypes.bool,
