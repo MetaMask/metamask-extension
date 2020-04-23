@@ -72,7 +72,7 @@
     "message": "Vorgeschlagene Token hinzufügen"
   },
   "addAcquiredTokens": {
-    "message": "Fügen Sie die Token hinzu, die Sie mittels MetaMask erlangt haben"
+    "message": "Fügen Sie die Token hinzu, die Sie mittels ConfluxPortal erlangt haben"
   },
   "amount": {
     "message": "Betrag"
@@ -82,7 +82,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -110,7 +110,7 @@
     "message": "Auto-Logout-Timer (Minuten)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll"
+    "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich ConfluxPortal automatisch ausloggen soll"
   },
   "average": {
     "message": "Durchschnitt"
@@ -153,13 +153,13 @@
     "message": "Ihr Browser wird nicht unterstützt …"
   },
   "builtInCalifornia": {
-    "message": "MetaMask wurde in Kalifornien entwickelt und gebaut."
+    "message": "ConfluxPortal wurde in Kalifornien entwickelt und gebaut."
   },
   "buyWithWyre": {
     "message": "ETH mit Wyre kaufen"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ermöglicht Ihnen die Verwendung einer Kreditkarte zum direkten Einzahlen von ETH auf Ihr MetaMask-Konto."
+    "message": "Wyre ermöglicht Ihnen die Verwendung einer Kreditkarte zum direkten Einzahlen von ETH auf Ihr ConfluxPortal-Konto."
   },
   "buyCoinSwitch": {
     "message": "Auf CoinSwitch kaufen"
@@ -198,7 +198,7 @@
     "message": "Schließen"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
+    "message": "Sie müssen ConfluxPortal unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
   },
   "confirm": {
     "message": "Bestätigen"
@@ -375,7 +375,7 @@
     "message": "Zeigen Sie diesen Schlüssel niemals einer anderen Person."
   },
   "endOfFlowMessage5": {
-    "message": "Vorsicht vor Phishing! MetaMask fragt Sie niemals spontan nach Ihrer mnemonischen Phrase."
+    "message": "Vorsicht vor Phishing! ConfluxPortal fragt Sie niemals spontan nach Ihrer mnemonischen Phrase."
   },
   "endOfFlowMessage6": {
     "message": "Wenn Sie Ihre mnemonische Phrase erneut sicherstellen müssen, finden Sie sie unter Einstellungen -> Sicherheit."
@@ -384,7 +384,7 @@
     "message": "Wenn Sie Fragen haben sollten oder etwas Suspektes bemerken, schreiben Sie eine E-Mail an portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask kann Ihren Seedschlüssel nicht wiederherstellen. Erfahren Sie mehr."
+    "message": "ConfluxPortal kann Ihren Seedschlüssel nicht wiederherstellen. Erfahren Sie mehr."
   },
   "endOfFlowMessage9": {
     "message": "Mehr hierzu."
@@ -507,7 +507,7 @@
     "message": "Ein Hardware-Wallet verknüpfen"
   },
   "hardwareWalletsMsg": {
-    "message": "Wählen Sie ein Hardware-Wallet aus, das Sie mit MetaMask verwenden möchten"
+    "message": "Wählen Sie ein Hardware-Wallet aus, das Sie mit ConfluxPortal verwenden möchten"
   },
   "havingTroubleConnecting": {
     "message": "Verbindungsprobleme?"
@@ -539,7 +539,7 @@
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge deines ursprünglichen ConfluxPortal Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
@@ -646,10 +646,10 @@
     "message": "Nachricht"
   },
   "metamaskDescription": {
-    "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
+    "message": "ConfluxPortal ist ein sicherer Identitätssafe für Ethereum."
   },
   "metamaskVersion": {
-    "message": "MetaMask-Version"
+    "message": "ConfluxPortal-Version"
   },
   "missingYourTokens": {
     "message": "Sie können Ihre Token nicht sehen?"
@@ -664,13 +664,13 @@
     "message": "Meine Wallet-Konten"
   },
   "myWalletAccountsDescription": {
-    "message": "Jedes Ihrer von MetaMask erstellten Konten wird automatisch zu diesem Abschnitt hinzugefügt."
+    "message": "Jedes Ihrer von ConfluxPortal erstellten Konten wird automatisch zu diesem Abschnitt hinzugefügt."
   },
   "mustSelectOne": {
     "message": "Du musst mindestens 1 Token auswählen."
   },
   "needEtherInWallet": {
-    "message": "Um dezentralisierte Applikationen mit MetaMask verwenden zu können, benötigst du Ether in deiner Wallet."
+    "message": "Um dezentralisierte Applikationen mit ConfluxPortal verwenden zu können, benötigst du Ether in deiner Wallet."
   },
   "needImportFile": {
     "message": "Für den Import musst du eine Datei auswählen.",
@@ -713,8 +713,8 @@
   "newNetwork": {
     "message": "Neues Netzwerk"
   },
-  "newToMetaMask": {
-    "message": "Neu bei MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Neu bei ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Nein, ich habe bereits einen Seed-Schlüssel"
@@ -723,7 +723,7 @@
     "message": "Schützen Sie Ihre Schlüssel!"
   },
   "protectYourKeysMessage1": {
-    "message": "Seien Sie mit Ihrer mnemonischen Phrase vorsichtig - es gab Berichte über Websites, die MetaMask zu imitieren versuchen. MetaMask fragt nie nach Ihrer mnemonischen Phrase!"
+    "message": "Seien Sie mit Ihrer mnemonischen Phrase vorsichtig - es gab Berichte über Websites, die ConfluxPortal zu imitieren versuchen. ConfluxPortal fragt nie nach Ihrer mnemonischen Phrase!"
   },
   "protectYourKeysMessage2": {
     "message": "Bewahren Sie Ihren Schlüssel sicher auf. Wenn etwas faul zu sein scheint oder Sie Zweifel wegen einer Website haben, schicken Sie eine E-Mail an portal@conflux-chain.org"
@@ -777,7 +777,7 @@
     "message": "Bei MetaMetrics teilnehmen"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Nehmen Sie an MetaMetrics teil, um uns bei der Verbesserung von MetaMask zu helfen"
+    "message": "Nehmen Sie an MetaMetrics teil, um uns bei der Verbesserung von ConfluxPortal zu helfen"
   },
   "password": {
     "message": "Passwort"
@@ -1003,7 +1003,7 @@
     "message": "Ein Konto auswählen"
   },
   "selectAnAccountHelp": {
-    "message": "Wählen Sie das Konto aus, das in MetaMask angezeigt werden soll."
+    "message": "Wählen Sie das Konto aus, das in ConfluxPortal angezeigt werden soll."
   },
   "selectAHigherGasFee": {
     "message": "Wählen Sie eine höhere Gasgebühr, um die Abwicklung Ihrer Transaktion zu beschleunigen.*"
@@ -1117,16 +1117,16 @@
     "message": "Sie können Ihre Konten und Informationen mit Ihrem Mobilgerät synchronisieren. Öffnen Sie die MetaMask-Mobilapp, gehen Sie zu \"Einstellungen\" und tippen Sie auf \"Von Browsererweiterung aus synchronisieren\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Wenn Sie die MetaMask-Mobilapp gerade zum ersten Mal öffnen, folgen Sie einfach den Schritten auf Ihrem Telefon."
+    "message": "Wenn Sie die ConfluxPortal-Mobilapp gerade zum ersten Mal öffnen, folgen Sie einfach den Schritten auf Ihrem Telefon."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scannen Sie diesen Code mit Ihrer MetaMask-Mobilapp"
+    "message": "Scannen Sie diesen Code mit Ihrer ConfluxPortal-Mobilapp"
   },
   "syncWithMobileBeCareful": {
     "message": "Stellen Sie sicher, dass niemand sonst auf Ihren Bildschirm blickt, wenn Sie diesen Code scannen"
   },
   "syncWithMobileComplete": {
-    "message": "Ihre Daten wurden erfolgreich synchronisiert. Viel Spaß mit der MetaMask-Handy-App!"
+    "message": "Ihre Daten wurden erfolgreich synchronisiert. Viel Spaß mit der ConfluxPortal-Handy-App!"
   },
   "terms": {
     "message": "Nutzungsbedingungen"
@@ -1278,7 +1278,7 @@
     "message": "Willkommen zurück!"
   },
   "welcome": {
-    "message": "Willkommen zu MetaMask"
+    "message": "Willkommen zu ConfluxPortal"
   },
   "writePhrase": {
     "message": "Schreiben Sie diese Phrase auf ein Stück Papier und bewahren Sie es an einem sicheren Ort auf. Wenn Sie noch mehr Sicherheit wollen, schreiben Sie sie auf mehrere Papierstücke und bewahren jedes an 2-3 verschiedenen Orten auf."

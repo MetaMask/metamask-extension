@@ -75,7 +75,7 @@
     "message": "أضف العملات الرمزية المقترحة"
   },
   "addAcquiredTokens": {
-    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
+    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام ConfluxPortal"
   },
   "amount": {
     "message": "المبلغ"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
+    "message": "اضبط مهلة السكون بالدقائق التي يقوم ConfluxPortal بتسجيل الخروج بعدها تلقائيًا"
   },
   "average": {
     "message": "المتوسط"
@@ -156,13 +156,13 @@
     "message": "متصفحك غير مدعوم..."
   },
   "builtInCalifornia": {
-    "message": "تم تصميم وإنشاء MetaMask في ولاية كاليفورنيا."
+    "message": "تم تصميم وإنشاء ConfluxPortal في ولاية كاليفورنيا."
   },
   "buyWithWyre": {
     "message": "قم بشراء عملة إيثير بواسطة Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع ETH مباشرة في حساب MetaMask الخاص بك."
+    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع ETH مباشرة في حساب ConfluxPortal الخاص بك."
   },
   "buyCoinSwitch": {
     "message": "قم بالشراء على CoinSwitch"
@@ -210,7 +210,7 @@
     "message": "إغلاق"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "تحتاج إلى استخدام MetaMask على Google Chrome للاتصال بمحفظة الأجهزة الخاصة بك."
+    "message": "تحتاج إلى استخدام ConfluxPortal على Google Chrome للاتصال بمحفظة الأجهزة الخاصة بك."
   },
   "confirm": {
     "message": "التأكيد"
@@ -390,7 +390,7 @@
     "message": "لا تشارك هذه الجملة مطلقًا مع أي شخص."
   },
   "endOfFlowMessage5": {
-    "message": "كن حذراً من الخداع الإلكتروني! لن يسأل MetaMask من تلقاء نفسه عن عبارة الأمان الخاصة بك أبداً."
+    "message": "كن حذراً من الخداع الإلكتروني! لن يسأل ConfluxPortal من تلقاء نفسه عن عبارة الأمان الخاصة بك أبداً."
   },
   "endOfFlowMessage6": {
     "message": "إذا كنت بحاجة إلى عمل نسخة احتياطية من عبارة الأمان الخاصة بك مرة أخرى، يمكنك العثور عليها في الإعدادات -> الأمان."
@@ -399,7 +399,7 @@
     "message": "إذا كانت لديك أسئلة أو ترى شيئاً ما مريباً، فأرسل بريداً إلكترونياً إلى portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "لا يمكن لـ MetaMask استعادة جملتك البذرية. تعلم المزيد."
+    "message": "لا يمكن لـ ConfluxPortal استعادة جملتك البذرية. تعلم المزيد."
   },
   "endOfFlowMessage9": {
     "message": "اعرف المزيد."
@@ -518,7 +518,7 @@
     "message": "الاتصال بمحفظة hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
+    "message": "حدد محفظة أجهزة ترغب في استخدامها مع ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "هل تواجه مشكلة في الاتصال؟"
@@ -666,7 +666,7 @@
     "message": "إيصالك بالإيثيريوم وبالشبكة اللامركزية."
   },
   "metamaskVersion": {
-    "message": "إصدار MetaMask "
+    "message": "إصدار ConfluxPortal "
   },
   "missingYourTokens": {
     "message": "لا تجد رموزك؟"
@@ -681,13 +681,13 @@
     "message": "حسابات محفظتي"
   },
   "myWalletAccountsDescription": {
-    "message": "ستتم إضافة جميع حسابات MetaMask الخاصة بك والتي تم إنشاؤها تلقائياً إلى هذا القسم."
+    "message": "ستتم إضافة جميع حسابات ConfluxPortal الخاصة بك والتي تم إنشاؤها تلقائياً إلى هذا القسم."
   },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
   },
   "needEtherInWallet": {
-    "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
+    "message": "للتفاعل مع التطبيقات اللامركزية باستخدام ConfluxPortal، ستحتاج إلى الإيثير في محفظتك."
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
@@ -730,8 +730,8 @@
   "newNetwork": {
     "message": "شبكة جديدة"
   },
-  "newToMetaMask": {
-    "message": "هل انت جديد في MetaMask؟"
+  "newToConfluxPortal": {
+    "message": "هل انت جديد في ConfluxPortal؟"
   },
   "noAlreadyHaveSeed": {
     "message": "لا، لدي جملة بذرية مسبقًا"
@@ -800,7 +800,7 @@
     "message": "المشاركة في MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "شارك في MetaMetrics لمساعدتنا في جعل MetaMask أفضل"
+    "message": "شارك في MetaMetrics لمساعدتنا في جعل ConfluxPortal أفضل"
   },
   "password": {
     "message": "كلمة المرور"
@@ -1030,7 +1030,7 @@
     "message": "قم بتحديد حساب"
   },
   "selectAnAccountHelp": {
-    "message": "حدد الحساب لعرضه في MetaMask"
+    "message": "حدد الحساب لعرضه في ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "حدد رسوم جاس أعلى لتسريع معالجة معاملتك. *"
@@ -1147,16 +1147,16 @@
     "message": "يمكنك مزامنة حساباتك ومعلوماتك مع جهازك المحمول. افتح تطبيق MetaMask على الجهاز المحمول وانتقل إلى \"الإعدادات\" ثم انقر على \"المزامنة من إضافة المتصفح\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "إذا قمت للتوّ بفتح تطبيق MetaMask للهواتف المحمولة لأول مرة، فاتبع الخطوات الموجودة في هاتفك."
+    "message": "إذا قمت للتوّ بفتح تطبيق ConfluxPortal للهواتف المحمولة لأول مرة، فاتبع الخطوات الموجودة في هاتفك."
   },
   "syncWithMobileScanThisCode": {
-    "message": "امسح هذا الرمز ضوئياً باستخدام تطبيق MetaMask للهواتف المحمولة"
+    "message": "امسح هذا الرمز ضوئياً باستخدام تطبيق ConfluxPortal للهواتف المحمولة"
   },
   "syncWithMobileBeCareful": {
     "message": "تأكد من عدم قيام أي شخص آخر بالنظر إلى شاشتك عند مسح هذا الرمز"
   },
   "syncWithMobileComplete": {
-    "message": "تمت مزامنة بياناتك بنجاح. استمتع بتطبيق MetaMask للهاتف المحمول!"
+    "message": "تمت مزامنة بياناتك بنجاح. استمتع بتطبيق ConfluxPortal للهاتف المحمول!"
   },
   "terms": {
     "message": "شروط الاستخدام"
@@ -1251,7 +1251,7 @@
     "message": "إعادة المحاولة"
   },
   "typePassword": {
-    "message": "أدخل كلمة مرور MetaMask الخاصة بك"
+    "message": "أدخل كلمة مرور ConfluxPortal الخاصة بك"
   },
   "unapproved": {
     "message": "تم الرفض"
@@ -1317,7 +1317,7 @@
     "message": "نرحب بعودتك!"
   },
   "welcome": {
-    "message": "مرحباً بك في MetaMask"
+    "message": "مرحباً بك في ConfluxPortal"
   },
   "writePhrase": {
     "message": "اكتب هذه العبارة على قطعة من الورق واحفظها في مكان آمن. إذا كنت ترغب في مزيد من الأمان، فاكتبها على عدة أجزاء من الورق واحفظها في مكانين أو 3 أماكن مختلفة."

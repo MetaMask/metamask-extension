@@ -137,9 +137,9 @@ export default class PermissionPageContainerContent extends PureComponent {
 
     let titleArgs
     if (redirect && permissionRejected) {
-      titleArgs = ['cancelledConnectionWithMetaMask']
+      titleArgs = ['cancelledConnectionWithConfluxPortal']
     } else if (redirect) {
-      titleArgs = ['connectingWithMetaMask']
+      titleArgs = ['connectingWithConfluxPortal']
     } else if (domainMetadata.extensionId) {
       titleArgs = ['externalExtension', [domainMetadata.extensionId]]
     } else {

@@ -75,7 +75,7 @@
     "message": "Pridėti siūlomų žetonų"
   },
   "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
+    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „ConfluxPortal“"
   },
   "amount": {
     "message": "Suma"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "„MetaMask“",
+    "message": "„ConfluxPortal“",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Automatinio atjungimo laikmatis (minutės)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
+    "message": "Nustatykite laukimo  trukmę minutėmis iki „ConfluxPortal“ automatinio atsijungimo"
   },
   "average": {
     "message": "Vidurkis"
@@ -156,13 +156,13 @@
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "builtInCalifornia": {
-    "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
+    "message": "„ConfluxPortal“ suprojektuota ir įdiegta Kalifornijoje."
   },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
   },
   "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „MetaMask“ paskyrą."
+    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „ConfluxPortal“ paskyrą."
   },
   "buyCoinSwitch": {
     "message": "Pirkti „CoinSwitch“"
@@ -210,7 +210,7 @@
     "message": "Uždaryti"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Norėdami prisijungti prie aparatinės įrangos slaptažodinės, „MetaMask“ naudokitės „Google Chrome“ naršyklėje."
+    "message": "Norėdami prisijungti prie aparatinės įrangos slaptažodinės, „ConfluxPortal“ naudokitės „Google Chrome“ naršyklėje."
   },
   "confirm": {
     "message": "Patvirtinti"
@@ -390,7 +390,7 @@
     "message": "Niekam niekada nepasakykite šios frazės."
   },
   "endOfFlowMessage5": {
-    "message": "Saugokitės informacijos vagių! „MetaMask“ niekada spontaniškai neklaus jūsų atkūrimo frazės."
+    "message": "Saugokitės informacijos vagių! „ConfluxPortal“ niekada spontaniškai neklaus jūsų atkūrimo frazės."
   },
   "endOfFlowMessage6": {
     "message": "Jeigu reikia dar kartą padaryti jūsų atkūrimo frazės kopiją, ją galite rasti pasirinkę Nuostatos -> Sauga."
@@ -399,7 +399,7 @@
     "message": "Jeigu turite klausimų arba pastebite ką nors įtartino, rašykite el. paštu portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "„MetaMask“ negali atkurti jūsų atkūrimo frazės. Sužinokite daugiau."
+    "message": "„ConfluxPortal“ negali atkurti jūsų atkūrimo frazės. Sužinokite daugiau."
   },
   "endOfFlowMessage9": {
     "message": "Sužinokite daugiau."
@@ -554,7 +554,7 @@
     "message": "Importuoti paskyrą"
   },
   "importAccountMsg": {
-    "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
+    "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „ConfluxPortal“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
   },
   "importAccountSeedPhrase": {
     "message": "Importuoti paskyrą su atkūrimo fraze"
@@ -673,7 +673,7 @@
     "message": "Prijungiame jus prie „Ethereum“ ir decentralizuotojo žiniatinklio."
   },
   "metamaskVersion": {
-    "message": "„MetaMask“ versija"
+    "message": "„ConfluxPortal“ versija"
   },
   "missingYourTokens": {
     "message": "Nematote savo žetonų?"
@@ -688,13 +688,13 @@
     "message": "Mano piniginės paskyros"
   },
   "myWalletAccountsDescription": {
-    "message": "Visos jūsų „MetaMask“ sukurtos paskyros bus automatiškai įtrauktos į šį skyrių."
+    "message": "Visos jūsų „ConfluxPortal“ sukurtos paskyros bus automatiškai įtrauktos į šį skyrių."
   },
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."
   },
   "needEtherInWallet": {
-    "message": "Norėdami dirbti su decentralizuotomis programomis „MetaMask“, savo piniginėje turite turėti eterių."
+    "message": "Norėdami dirbti su decentralizuotomis programomis „ConfluxPortal“, savo piniginėje turite turėti eterių."
   },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
@@ -737,8 +737,8 @@
   "newNetwork": {
     "message": "Naujas tinklas"
   },
-  "newToMetaMask": {
-    "message": "Tik pradedate naudotis „MetaMask“?"
+  "newToConfluxPortal": {
+    "message": "Tik pradedate naudotis „ConfluxPortal“?"
   },
   "noAlreadyHaveSeed": {
     "message": "Ne, jau turiu atkūrimo frazę."
@@ -807,7 +807,7 @@
     "message": "Dalyvaukite „MetaMetrics“"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Dalyvaukite „MetaMetrics“ ir padėkite mums tobulinti „MetaMask“"
+    "message": "Dalyvaukite „MetaMetrics“ ir padėkite mums tobulinti „ConfluxPortal“"
   },
   "password": {
     "message": "Slaptažodis"
@@ -1037,7 +1037,7 @@
     "message": "Pasirinkite paskyrą"
   },
   "selectAnAccountHelp": {
-    "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
+    "message": "Pasirinkite paskyrą peržiūrėti „ConfluxPortal“"
   },
   "selectAHigherGasFee": {
     "message": "Pasirinkite didesnį dujų mokestį, kad paspartintumėte savo operacijos apdorojimą.*"
@@ -1154,16 +1154,16 @@
     "message": "Galite sinchronizuoti paskyrą ir informaciją su savo mobiliuoju įrenginiu. Atverkite „MetaMask“ mobiliąją programą, eikite į „Nuostatos“ ir palieskite „Sinchronizuoti iš naršyklės plėtinio“"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Jeigu „MetaMask“ mobiliąją programą atveriate tik pirmą kartą, tiesiog sekite veiksmus telefone."
+    "message": "Jeigu „ConfluxPortal“ mobiliąją programą atveriate tik pirmą kartą, tiesiog sekite veiksmus telefone."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Nuskaitykite šį kodą su savo „MetaMask“ mobiliąja programa"
+    "message": "Nuskaitykite šį kodą su savo „ConfluxPortal“ mobiliąja programa"
   },
   "syncWithMobileBeCareful": {
     "message": "Pasirūpinkite, kad jums nuskaitant šį kodą niekas nežiūrėtų į jūsų ekraną."
   },
   "syncWithMobileComplete": {
-    "message": "Jūsų duomenys sėkmingai sinchronizuoti. Mėgaukitės „MetaMask“ mobiliąja programa! "
+    "message": "Jūsų duomenys sėkmingai sinchronizuoti. Mėgaukitės „ConfluxPortal“ mobiliąja programa! "
   },
   "terms": {
     "message": "Naudojimo sąlygos"
@@ -1258,7 +1258,7 @@
     "message": "Bandyti dar kartą"
   },
   "typePassword": {
-    "message": "Įveskite savo „MetaMask“ slaptažodį"
+    "message": "Įveskite savo „ConfluxPortal“ slaptažodį"
   },
   "unapproved": {
     "message": "Nepatvirtinta"
@@ -1324,7 +1324,7 @@
     "message": "Sveiki sugrįžę!"
   },
   "welcome": {
-    "message": "Sveiki, tai „MetaMask“"
+    "message": "Sveiki, tai „ConfluxPortal“"
   },
   "writePhrase": {
     "message": "Užrašykite šią frazę ant lapelio ir laikykite ją saugioje vietoje. Jeigu pageidaujate dar daugiau saugos, užrašykite ją ant kelių lapelių ir 2 ar 3 skirtingose vietose."

@@ -75,7 +75,7 @@
     "message": "सुझाए गए टोकन जोड़ें"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask का उपयोग करके आपके द्वारा अर्जित किए गए टोकन जोड़ें"
+    "message": "ConfluxPortal का उपयोग करके आपके द्वारा अर्जित किए गए टोकन जोड़ें"
   },
   "amount": {
     "message": "राशि "
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -522,7 +522,7 @@
     "message": "हार्डवेयर वॉलेट जोड़े"
   },
   "hardwareWalletsMsg": {
-    "message": "एक हार्डवेयर वॉलेट चुनें जिसका उपयोग आप MetaMask के साथ करना चाहते हैं"
+    "message": "एक हार्डवेयर वॉलेट चुनें जिसका उपयोग आप ConfluxPortal के साथ करना चाहते हैं"
   },
   "havingTroubleConnecting": {
     "message": "कनेक्ट करने में परेशानी हो रही है?"
@@ -670,7 +670,7 @@
     "message": "आपको Ethereum और विकेंद्रीकृत वेब से कनेक्ट कर रहे हैं।"
   },
   "metamaskVersion": {
-    "message": "MetaMask का संस्करण"
+    "message": "ConfluxPortal का संस्करण"
   },
   "missingYourTokens": {
     "message": "अपने टोकन को देख नहीं पा रहें हैं?"
@@ -734,8 +734,8 @@
   "newNetwork": {
     "message": "नया नेटवर्क"
   },
-  "newToMetaMask": {
-    "message": "MetaMask में नए है?"
+  "newToConfluxPortal": {
+    "message": "ConfluxPortal में नए है?"
   },
   "noAlreadyHaveSeed": {
     "message": "जी नहीं, मेरे पास पहले से ही एक बीज वाक्यांश है"
@@ -804,7 +804,7 @@
     "message": "मेटामेट्रिक्स में भाग लें"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMask को बेहतर बनाने में हमारी मदद के लिए MetaMetrics में भाग लें"
+    "message": "ConfluxPortal को बेहतर बनाने में हमारी मदद के लिए MetaMetrics में भाग लें"
   },
   "password": {
     "message": "पासवर्ड"
@@ -1318,7 +1318,7 @@
     "message": "वापस आने पर स्वागत है!"
   },
   "welcome": {
-    "message": "MetaMask में आपका स्वागत है"
+    "message": "ConfluxPortal में आपका स्वागत है"
   },
   "writePhrase": {
     "message": "इस वाक्यांश को कागज के टुकड़े पर लिखें और एक सुरक्षित स्थान पर संग्रहीत करें। यदि आप और भी अधिक सुरक्षा चाहते हैं, तो इसे कागज के कई टुकड़ों पर लिखें और प्रत्येक को 2 - 3 विभिन्न स्थानों में संग्रहीत करें।"

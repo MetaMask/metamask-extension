@@ -44,7 +44,7 @@ export default class SelectAction extends PureComponent {
         <div className="select-action__wrapper">
           <div className="select-action__body">
             <div className="select-action__body-header">
-              {t('newToMetaMask')}
+              {t('newToConfluxPortal')}
             </div>
             <div className="select-action__select-buttons">
               <div className="select-action__select-button">

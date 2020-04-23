@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -188,7 +188,7 @@
     "message": "Aking mga Account"
   },
   "needEtherInWallet": {
-    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang MetaMask, kakailanganin mo ng Ether sa iyong wallet."
+    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang ConfluxPortal, kakailanganin mo ng Ether sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file para i-import.",

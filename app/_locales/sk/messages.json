@@ -75,7 +75,7 @@
     "message": "Pridať navrhované tokeny"
   },
   "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
+    "message": "Pridajte tokeny, ktoré ste získali pomocou ConfluxPortal"
   },
   "amount": {
     "message": "Částka"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -110,7 +110,7 @@
     "message": "Časovač automatického odhlásenia (minúty)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
+    "message": "Nastavte čas nečinnosti v minútach skôr, než sa ConfluxPortal automaticky odhlási"
   },
   "average": {
     "message": "Priemerný"
@@ -125,7 +125,7 @@
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
   },
   "backupApprovalInfo": {
-    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
+    "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania ConfluxPortal alebo prístupu k peňaženke na inom zariadení."
   },
   "backupNow": {
     "message": "Zálohovať teraz"
@@ -150,13 +150,13 @@
     "message": "Váš prehliadač nie je podporovaný..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask je navržen a vytvořen v Kalifornii."
+    "message": "ConfluxPortal je navržen a vytvořen v Kalifornii."
   },
   "buyWithWyre": {
     "message": "Kúpte ETH s Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu ETH priamo na váš účet MetaMask."
+    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu ETH priamo na váš účet ConfluxPortal."
   },
   "buyCoinSwitch": {
     "message": "Kúpiť na CoinSwitch"
@@ -201,7 +201,7 @@
     "message": "Zavrieť"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť MetaMask."
+    "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť ConfluxPortal."
   },
   "confirm": {
     "message": "Potvrdit"
@@ -381,7 +381,7 @@
     "message": "Nikdy nezdieľajte frázu s niekým iným."
   },
   "endOfFlowMessage5": {
-    "message": "Dávajte pozor na phishing! MetaMask nikdy nebude spontánne požadovať vašu seed frázu."
+    "message": "Dávajte pozor na phishing! ConfluxPortal nikdy nebude spontánne požadovať vašu seed frázu."
   },
   "endOfFlowMessage6": {
     "message": "Ak potrebujete backup frázu znova zálohovať, nájdete ju v časti Nastavenia -> Zabezpečenie."
@@ -390,7 +390,7 @@
     "message": "Ak budete mať nejaké otázky alebo niečo zaujímavé, pošlite email na portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask nemôže obnoviť vašu seed frázu. Zistiť viac."
+    "message": "ConfluxPortal nemôže obnoviť vašu seed frázu. Zistiť viac."
   },
   "endOfFlowMessage9": {
     "message": "Dozvedieť sa viac."
@@ -513,7 +513,7 @@
     "message": "Pripojiť hardvérovú peňaženku"
   },
   "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
+    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Máte problémy s pripojením?"
@@ -538,7 +538,7 @@
     "message": "Import účtu"
   },
   "importAccountMsg": {
-    "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+    "message": "Importované účty nebudou spojeny s vaší původní ConfluxPortalovou klíčovou frází. Zjistěte více o importovaných účtech "
   },
   "importAccountSeedPhrase": {
     "message": "Importovať účet so seed frázou"
@@ -636,10 +636,10 @@
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
+    "message": "ConfluxPortal je bezpečný osobní trezor pro Ethereum."
   },
   "metamaskVersion": {
-    "message": "Verzia MetaMask"
+    "message": "Verzia ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "Nevidíte svoje tokeny?"
@@ -654,13 +654,13 @@
     "message": "Účty v Mojej peňaženke"
   },
   "myWalletAccountsDescription": {
-    "message": "Do tejto sekcie sa automaticky pridajú všetky vaše účty vytvorené pomocou MetaMask."
+    "message": "Do tejto sekcie sa automaticky pridajú všetky vaše účty vytvorené pomocou ConfluxPortal."
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },
   "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
+    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí ConfluxPortalu interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -703,8 +703,8 @@
   "newNetwork": {
     "message": "Nová sieť"
   },
-  "newToMetaMask": {
-    "message": "Ste noví na MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Ste noví na ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Nie, už mám seed frázu"
@@ -713,7 +713,7 @@
     "message": "Chráňte si svoje kľúče!"
   },
   "protectYourKeysMessage1": {
-    "message": "Pri seed fráze buďte opatrní – vyskytli sa správy o webových stránkach, ktoré sa snažia napodobniť MetaMask. MetaMask nikdy nebude žiadať vašu seed frázu!"
+    "message": "Pri seed fráze buďte opatrní – vyskytli sa správy o webových stránkach, ktoré sa snažia napodobniť ConfluxPortal. ConfluxPortal nikdy nebude žiadať vašu seed frázu!"
   },
   "protectYourKeysMessage2": {
     "message": "Držte svoju frázu v bezpečí. Ak zbadáte niečo podozrivé alebo si nie ste istí webom, pošlite email na adresu portal@conflux-chain.org"
@@ -773,7 +773,7 @@
     "message": "Zúčastnite sa na MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Zúčastnite sa na MetaMetrics a pomôžte nám vylepšiť MetaMask"
+    "message": "Zúčastnite sa na MetaMetrics a pomôžte nám vylepšiť ConfluxPortal"
   },
   "password": {
     "message": "Heslo"
@@ -997,7 +997,7 @@
     "message": "Vybrať účet"
   },
   "selectAnAccountHelp": {
-    "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
+    "message": "Vyberte účet, ktorý chcete zobraziť v ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Ak chcete urýchliť spracovanie transakcie, vyberte vyšší poplatok GAS.*"
@@ -1111,16 +1111,16 @@
     "message": "Svoje účty a informácie môžete synchronizovať so svojim mobilným zariadením. Otvorte mobilnú aplikáciu MetaMask, prejdite na „Nastavenia“ a kliknite na „Synchronizovať z rozšírenia prehliadača“."
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Ak otvoríte mobilnú aplikáciu MetaMask prvýkrát, postupujte podľa pokynov v telefóne."
+    "message": "Ak otvoríte mobilnú aplikáciu ConfluxPortal prvýkrát, postupujte podľa pokynov v telefóne."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Naskenujte tento kód pomocou mobilnej aplikácie MetaMask"
+    "message": "Naskenujte tento kód pomocou mobilnej aplikácie ConfluxPortal"
   },
   "syncWithMobileBeCareful": {
     "message": "Pri skenovaní tohto kódu sa uistite, že sa nikto iný nedíva na vašu obrazovku"
   },
   "syncWithMobileComplete": {
-    "message": "Vaše údaje boli úspešne synchronizované. Užite si mobilnú aplikáciu MetaMask!"
+    "message": "Vaše údaje boli úspešne synchronizované. Užite si mobilnú aplikáciu ConfluxPortal!"
   },
   "terms": {
     "message": "Podmínky použití"
@@ -1278,7 +1278,7 @@
     "message": "Vitajte späť!"
   },
   "welcome": {
-    "message": "Vitajte v MetaMask"
+    "message": "Vitajte v ConfluxPortal"
   },
   "writePhrase": {
     "message": "Túto frázu si zapíšte na papier a uložte na bezpečnom mieste. Kvôli vyššej bezpečnosti si ho môžete napísať na niekoľko papierov a uložiť na 2 – 3 rôzne miesta."

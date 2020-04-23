@@ -75,7 +75,7 @@
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Προσθέστε τα token που αποκτήσατε χρησιμοποιώντας το MetaMask"
+    "message": "Προσθέστε τα token που αποκτήσατε χρησιμοποιώντας το ConfluxPortal"
   },
   "amount": {
     "message": "Ποσό"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask"
+    "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το ConfluxPortal"
   },
   "average": {
     "message": "Μέσος Όρος"
@@ -156,7 +156,7 @@
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
   "builtInCalifornia": {
-    "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
+    "message": "Το ConfluxPortal έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
@@ -207,7 +207,7 @@
     "message": "Κλείσιμο"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
+    "message": "Θα πρέπει να χρησιμοποιήσετε το ConfluxPortal στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
   },
   "confirm": {
     "message": "Επιβεβαίωση"
@@ -387,7 +387,7 @@
     "message": "Μην μοιράζεστε ποτέ τη φράση με κανέναν."
   },
   "endOfFlowMessage5": {
-    "message": "Προσέξτε το ηλεκτρονικό \"ψάρεμα\"! Το MetaMask δεν θα ζητήσει ποτέ αυθόρμητα τη φράση φύτρου σας."
+    "message": "Προσέξτε το ηλεκτρονικό \"ψάρεμα\"! Το ConfluxPortal δεν θα ζητήσει ποτέ αυθόρμητα τη φράση φύτρου σας."
   },
   "endOfFlowMessage6": {
     "message": "Αν χρειάζεται να δημιουργήσετε ξανά αντίγραφο της φράσης επαναφοράς σας, μπορείτε να την βρείτε στη Ρυθμίσεις -> Ασφάλεια."
@@ -396,7 +396,7 @@
     "message": "Εάν έχετε οποιαδήποτε ερώτηση ή αντιληφθείτε κάτι ύποπτο στείλτε μας email στο portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τη φράση φύτρου σας. Μάθετε περισσότερα."
+    "message": "Το ConfluxPortal δεν μπορεί να ανακτήσει τη φράση φύτρου σας. Μάθετε περισσότερα."
   },
   "endOfFlowMessage9": {
     "message": "Μάθετε περισσότερα."
@@ -519,7 +519,7 @@
     "message": "Συνδέστε ένα πορτοφόλι εξοπλισμού"
   },
   "hardwareWalletsMsg": {
-    "message": "Επιλέξτε ένα πορτοφόλι εξοπλισμού το οποίο θέλετε να χρησιμοποιήσετε με το MetaMask"
+    "message": "Επιλέξτε ένα πορτοφόλι εξοπλισμού το οποίο θέλετε να χρησιμοποιήσετε με το ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Δυσκολεύεστε να συνδεθείτε;"
@@ -670,7 +670,7 @@
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
   },
   "metamaskVersion": {
-    "message": "Έκδοση MetaMask "
+    "message": "Έκδοση ConfluxPortal "
   },
   "missingYourTokens": {
     "message": "Δεν βλέπετε τα διακριτικά σας;"
@@ -734,8 +734,8 @@
   "newNetwork": {
     "message": "Νέο Δίκτυο"
   },
-  "newToMetaMask": {
-    "message": "Καινούριος στο MetaMask;"
+  "newToConfluxPortal": {
+    "message": "Καινούριος στο ConfluxPortal;"
   },
   "noAlreadyHaveSeed": {
     "message": "Όχι, έχω ήδη μια φράση φύτρου"
@@ -804,7 +804,7 @@
     "message": "Συμμετάσχετε στο MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Συμμετέχετε στο MetaMetrics για να μας βοηθήσετε να βελτιώσουμε το MetaMask"
+    "message": "Συμμετέχετε στο MetaMetrics για να μας βοηθήσετε να βελτιώσουμε το ConfluxPortal"
   },
   "password": {
     "message": "Κωδικός πρόσβασης"
@@ -1034,7 +1034,7 @@
     "message": "Επιλέξτε Λογαριασμό"
   },
   "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
+    "message": "Επιλέξτε τον λογαριασμό για προβολή στο ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Επιλέξτε ένα μεγαλύτερο τέλος gas για να επιταχύνετε την επεξεργασία της συναλλαγής σας.*"
@@ -1154,13 +1154,13 @@
     "message": "Εάν απλά ανοίξετε την εφαρμογή MetaMask Mobile για πρώτη φορά, απλώς ακολουθήστε τα βήματα στο τηλέφωνό σας."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Σαρώστε αυτόν τον κώδικα με την εφαρμογή MetaMask για κινητά"
+    "message": "Σαρώστε αυτόν τον κώδικα με την εφαρμογή ConfluxPortal για κινητά"
   },
   "syncWithMobileBeCareful": {
     "message": "Σιγουρευτείτε ότι κανένας δεν κοιτάζει στην οθόνη σας όταν κάνετε σάρωση αυτού του κωδικού"
   },
   "syncWithMobileComplete": {
-    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή MetaMask για κινητά!"
+    "message": "Τα δεδομένα σας έχουν συγχρονιστεί με επιτυχία. Απολαύστε την εφαρμογή ConfluxPortal για κινητά!"
   },
   "terms": {
     "message": "Όροι Χρήσης"
@@ -1252,7 +1252,7 @@
     "message": "Δοκιμάστε ξανά"
   },
   "typePassword": {
-    "message": "Πληκτρολογήστε τον κωδικό πρόσβασής σας MetaMask"
+    "message": "Πληκτρολογήστε τον κωδικό πρόσβασής σας ConfluxPortal"
   },
   "unapproved": {
     "message": "Μη εγκεκριμένο"
@@ -1318,7 +1318,7 @@
     "message": "Καλώς Ήλθατε και Πάλι!"
   },
   "welcome": {
-    "message": "Καλώς ήλθατε στο MetaMask"
+    "message": "Καλώς ήλθατε στο ConfluxPortal"
   },
   "writePhrase": {
     "message": "Γράψτε αυτήν τη φάση σε ένα κομμάτι χαρτί και αποθηκεύστε την σε μια ασφαλή τοποθεσία. Εάν θέλετε ακόμη περισσότερη ασφάλεια, γράψτε την σε περισσότερα κομμάτια χαρτί και αποθηκεύστε καθένα από αυτά σε 2-3 διαφορετικές τοποθεσίες."
