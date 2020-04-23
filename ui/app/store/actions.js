@@ -763,15 +763,18 @@ export function updateSendEnsResolutionError (errorMessage) {
 }
 
 export function signTokenTx (tokenAddress, toAddress, amount, txData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
-    token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
-      .catch((err) => {
-        dispatch(hideLoadingIndication())
-        dispatch(displayWarning(err.message))
-      })
-    dispatch(showConfTxPage())
+
+    try {
+      await token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(error.message))
+    } finally {
+      dispatch(showConfTxPage())
+    }
   }
 }
 

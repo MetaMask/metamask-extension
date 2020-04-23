@@ -845,11 +845,11 @@ describe('Actions', function () {
   })
 
   describe('#signTokenTx', function () {
-    it('calls eth.contract', function () {
+    it('calls eth.contract', async function () {
       global.eth = new Eth(provider)
       const tokenSpy = sinon.spy(global.eth, 'contract')
       const store = mockStore()
-      store.dispatch(actions.signTokenTx())
+      await store.dispatch(actions.signTokenTx())
       assert(tokenSpy.calledOnce)
       tokenSpy.restore()
     })
