@@ -274,39 +274,6 @@ describe('Actions', function () {
     })
   })
 
-  describe('#addNewKeyring', function () {
-    let addNewKeyringSpy
-
-    afterEach(function () {
-      addNewKeyringSpy.restore()
-    })
-
-    it('calls addNewKeyring', async function () {
-      addNewKeyringSpy = sinon.stub(background, 'addNewKeyring')
-        .callsArgWith(2, null)
-      const privateKey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
-
-      const store = mockStore()
-      await store.dispatch(actions.addNewKeyring('Simple Key Pair', [ privateKey ]))
-      assert(addNewKeyringSpy.calledOnce)
-    })
-
-    it('errors then addNewKeyring in background throws', async function () {
-      addNewKeyringSpy = sinon.stub(background, 'addNewKeyring')
-        .callsArgWith(2, new Error('error'))
-      const store = mockStore()
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ]
-
-      await store.dispatch(actions.addNewKeyring())
-      assert.deepEqual(store.getActions(), expectedActions)
-    })
-
-  })
-
   describe('#resetAccount', function () {
 
     let resetAccountSpy

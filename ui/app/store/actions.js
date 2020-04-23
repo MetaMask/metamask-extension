@@ -283,20 +283,6 @@ export function removeAccount (address) {
   }
 }
 
-export function addNewKeyring (type, opts) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.addNewKeyring`)
-    background.addNewKeyring(type, opts, (err) => {
-      dispatch(hideLoadingIndication())
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-      dispatch(showAccountsPage())
-    })
-  }
-}
-
 export function importNewAccount (strategy, args) {
   return async (dispatch) => {
     let newState
