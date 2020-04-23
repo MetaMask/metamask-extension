@@ -4,10 +4,11 @@ import etherscanNetworkPrefix from '../../../ui/lib/etherscan-prefix-for-network
 describe('Etherscan Network Prefix', function () {
   it('returns empy string as default value', function () {
     assert.equal(etherscanNetworkPrefix(), '')
+    assert.equal(etherscanNetworkPrefix(0), '')
   })
 
   it('returns empty string as a prefix for networkId of 1', function () {
-    assert.equal(etherscanNetworkPrefix(1), '')
+    assert.equal(etherscanNetworkPrefix(1), 'testnet.')
   })
 
   it.skip('returns ropsten as prefix for networkId of 3', function () {
