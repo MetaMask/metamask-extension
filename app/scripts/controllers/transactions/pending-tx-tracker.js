@@ -23,7 +23,7 @@ class PendingTransactionTracker extends EventEmitter {
   constructor (config) {
     super()
     this.droppedBuffer = {}
-    this.query = new EthQuery(config.provider)
+    this.query = config.query || (new EthQuery(config.provider))
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
@@ -49,10 +49,10 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    Will resubmit any transactions who have not been confirmed in a block
-    @param {Object} block - a block object
-    @emits tx:warning
-  */
+   * Resubmits each pending transaction
+   * @param {string} blockNumber - the latest block number in hex
+   * @emits tx:warning
+   */
   resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
@@ -94,12 +94,17 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    resubmits the individual txMeta used in resubmitPendingTxs
-    @param {Object} txMeta - txMeta object
-    @param {string} latestBlockNumber - hex string for the latest block number
-    @emits tx:retry
-    @returns {string} - txHash
-  */
+   * Attempts to resubmit the given transaction with exponential backoff
+   *
+   * Will only attempt to retry the given tx every {@code 2**(txMeta.retryCount)} blocks.
+   *
+   * @param {Object} txMeta - the transaction metadata
+   * @param {string} latestBlockNumber - the latest block number in hex
+   * @returns {Promise<string|undefined>} the tx hash if retried
+   * @emits tx:block-update
+   * @emits tx:retry
+   * @private
+   */
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
@@ -129,13 +134,15 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    Ask the network for the transaction to see if it has been include in a block
-    @param {Object} txMeta - the txMeta object
-    @emits tx:failed
-    @emits tx:dropped
-    @emits tx:confirmed
-    @emits tx:warning
-  */
+   * Query the network to see if the given {@code txMeta} has been included in a block
+   * @param {Object} txMeta - the transaction metadata
+   * @returns {Promise<void>}
+   * @emits tx:confirmed
+   * @emits tx:dropped
+   * @emits tx:failed
+   * @emits tx:warning
+   * @private
+   */
   async _checkPendingTx (txMeta) {
     const txHash = txMeta.hash
     const txId = txMeta.id
@@ -205,14 +212,14 @@ class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:warning', txMeta, err)
     }
   }
-  /**
-    checks to see if if the tx's nonce has been used by another transaction
-    @param {Object} txMeta - txMeta object
-    @param {Object} transactionReceipt - transactionReceipt object
-    @emits tx:dropped
-    @returns {boolean}
-  */
 
+  /**
+   * Checks whether the nonce in the given {@code txMeta} is correct against the network
+   * @param {Object} txMeta - the transaction metadata
+   * @param {Object} [transactionReceipt] - the transaction receipt
+   * @returns {Promise<boolean>}
+   * @private
+   */
   async _checkIfTxWasDropped (txMeta, transactionReceipt) {
     const { txParams: { nonce, from } } = txMeta
     const nextNonce = await this.query.getTransactionCount(from)
@@ -226,12 +233,11 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    checks local txs to see if a confirmed txMeta has the same nonce
-    @param {Object} txMeta - txMeta object
-    @returns {boolean}
-  */
-
-
+   * Checks whether the nonce in the given {@code txMeta} is correct against the local set of transactions
+   * @param {Object} txMeta - the transaction metadata
+   * @returns {Promise<boolean>}
+   * @private
+   */
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
