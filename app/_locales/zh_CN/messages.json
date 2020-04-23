@@ -648,6 +648,9 @@
   "loadMore": {
     "message": "加载更多"
   },
+  "localhost": {
+    "message": "Localhost 12539"
+  },
   "lock": {
     "message": "锁定"
   },
@@ -677,6 +680,9 @@
   },
   "mobileSyncText": {
     "message": "请输入密码确认个人身份！"
+  },
+  "myAccounts": {
+    "message": "我的账户"
   },
   "myWalletAccounts": {
     "message": "我的钱包账户"
@@ -1026,6 +1032,9 @@
   },
   "searchTokens": {
     "message": "搜索代币"
+  },
+  "noAccountsFound": {
+    "message": " 未找到查询的账户"
   },
   "selectAnAccount": {
     "message": "选择账户"

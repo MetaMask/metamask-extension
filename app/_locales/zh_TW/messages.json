@@ -657,6 +657,9 @@
   "loadMore": {
     "message": "載入更多"
   },
+  "localhost": {
+    "message": "Localhost 12539"
+  },
   "lock": {
     "message": "鎖定"
   },
