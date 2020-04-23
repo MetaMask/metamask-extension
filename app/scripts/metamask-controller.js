@@ -460,8 +460,6 @@ export default class MetamaskController extends EventEmitter {
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
-
-      // coinbase
       buyEth: this.buyEth.bind(this),
 
       // primary HD keyring management

@@ -68,7 +68,7 @@ export default {
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
-  // buy Eth with coinbase
+
   BUY_ETH: 'BUY_ETH',
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',

@@ -12,7 +12,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     toWyre: (address) => {
-      dispatch(buyEth({ service: 'wyre', address, amount: 0 }))
+      dispatch(buyEth({ service: 'wyre', address }))
     },
     toCoinSwitch: (address) => {
       dispatch(buyEth({ service: 'coinswitch', address }))
