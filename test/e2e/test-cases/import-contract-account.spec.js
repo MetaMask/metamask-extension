@@ -5,105 +5,105 @@ const { main } = screens
 let abiClipboard
 
 const importContractAccount = async (f, account1, getCreatedAccounts) => {
-  describe('Proxy contract', async () => {
-    const proxyContract = '0x0518ac3db78eb326f42dbcfb4b2978e8059989a5'
-    const proxyABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}] // eslint-disable-line no-unused-vars
-    const joinedABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}, {'constant': true, 'inputs': [], 'name': 'desc', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'methodFromImplementation', 'outputs': [{'name': 'yep', 'type': 'bool'}], 'payable': false, 'stateMutability': 'pure', 'type': 'function'}]
+  // describe('Proxy contract', async () => {
+  //   const proxyContract = '0x0518ac3db78eb326f42dbcfb4b2978e8059989a5'
+  //   const proxyABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}] // eslint-disable-line no-unused-vars
+  //   const joinedABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}, {'constant': true, 'inputs': [], 'name': 'desc', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'methodFromImplementation', 'outputs': [{'name': 'yep', 'type': 'bool'}], 'payable': false, 'stateMutability': 'pure', 'type': 'function'}]
 
-    describe('imports ABI of proxy and implementation together', async () => {
-      it('opens import account menu', async () => {
-        await f.setProvider(NETWORKS.SOKOL)
-        const menu = await f.waitUntilShowUp(menus.account.menu)
-        await menu.click()
-        const item = await f.waitUntilShowUp(menus.account.import2)
-        await item.click()
-        const importAccountTitle = await f.waitUntilShowUp(screens.importAccounts.title)
-        assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-      })
+  //   describe('imports ABI of proxy and implementation together', async () => {
+  //     it('opens import account menu', async () => {
+  //       await f.setProvider(NETWORKS.SOKOL)
+  //       const menu = await f.waitUntilShowUp(menus.account.menu)
+  //       await menu.click()
+  //       const item = await f.waitUntilShowUp(menus.account.import2)
+  //       await item.click()
+  //       const importAccountTitle = await f.waitUntilShowUp(screens.importAccounts.title)
+  //       assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+  //     })
 
-      it("Select type 'Proxy'", async () => {
-        await f.delay(1000)
-        const field = await f.waitUntilShowUp(screens.importAccounts.selectArrow)
-        await field.click()
-        await f.delay(1000)
-        const item = await f.waitUntilShowUp(screens.importAccounts.itemProxyContract)
-        await item.click()
-      })
+  //     it("Select type 'Proxy'", async () => {
+  //       await f.delay(1000)
+  //       const field = await f.waitUntilShowUp(screens.importAccounts.selectArrow)
+  //       await field.click()
+  //       await f.delay(1000)
+  //       const item = await f.waitUntilShowUp(screens.importAccounts.itemProxyContract)
+  //       await item.click()
+  //     })
 
-      it("Fill 'Address' with valid proxy contract , SOKOL", async () => {
-        const field = await f.waitUntilShowUp(screens.importAccounts.contractAddress)
-        await f.clearField(field, 100)
-        await field.sendKeys(proxyContract)
-      })
+  //     it("Fill 'Address' with valid proxy contract , SOKOL", async () => {
+  //       const field = await f.waitUntilShowUp(screens.importAccounts.contractAddress)
+  //       await f.clearField(field, 100)
+  //       await field.sendKeys(proxyContract)
+  //     })
 
-      it('ABI of Proxy + Implementation is fetched and matches the pattern', async () => {
-        await f.delay(10000)
-        const field = await f.waitUntilShowUp(screens.importAccounts.contractABI)
-        abiClipboard = await field.getText()
-        assert.deepEqual(JSON.parse(abiClipboard), joinedABI, "ABI isn't fetched")
-      })
+  //     it('ABI of Proxy + Implementation is fetched and matches the pattern', async () => {
+  //       await f.delay(10000)
+  //       const field = await f.waitUntilShowUp(screens.importAccounts.contractABI)
+  //       abiClipboard = await field.getText()
+  //       assert.deepEqual(JSON.parse(abiClipboard), joinedABI, "ABI isn't fetched")
+  //     })
 
-      it("Click button 'Import', main screen opens", async () => {
-        const button = await f.waitUntilShowUp(screens.importAccounts.buttonImport)
-        await f.click(button)
-        await f.delay(7000)
-        const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
-        assert.notEqual(ident, false, "main screen isn't opened")
-      })
-    })
+  //     it("Click button 'Import', main screen opens", async () => {
+  //       const button = await f.waitUntilShowUp(screens.importAccounts.buttonImport)
+  //       await f.click(button)
+  //       await f.delay(7000)
+  //       const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
+  //       assert.notEqual(ident, false, "main screen isn't opened")
+  //     })
+  //   })
 
-    describe("Check 3dots menu for 'Proxy' account", () => {
+  //   describe("Check 3dots menu for 'Proxy' account", () => {
 
-      it('open 3dots menu', async () => {
-        const menu = await f.waitUntilShowUp(menus.dot.menu)
-        await menu.click()
-        await f.waitUntilShowUp(menus.dot.item)
-        const items = await f.driver.findElements(menus.dot.item)
-        assert.equal(items.length, 5, '3dot menu has incorrect number of items')
-      })
+  //     it('open 3dots menu', async () => {
+  //       const menu = await f.waitUntilShowUp(menus.dot.menu)
+  //       await menu.click()
+  //       await f.waitUntilShowUp(menus.dot.item)
+  //       const items = await f.driver.findElements(menus.dot.item)
+  //       assert.equal(items.length, 5, '3dot menu has incorrect number of items')
+  //     })
 
-      it('Check text of items', async () => {
-        const items = await f.driver.findElements(menus.dot.item)
-        assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
-        assert.equal(await items[1].getText(), 'Show QR Code', '2nd item has incorrect text')
-        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3d item has incorrect text')
-        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4th item has incorrect text')
-        assert.equal(await items[4].getText(), 'Update implementation ABI', '5th item has incorrect text')
-      })
+  //     it('Check text of items', async () => {
+  //       const items = await f.driver.findElements(menus.dot.item)
+  //       assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
+  //       assert.equal(await items[1].getText(), 'Show QR Code', '2nd item has incorrect text')
+  //       assert.equal(await items[2].getText(), 'Copy address to clipboard', '3d item has incorrect text')
+  //       assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4th item has incorrect text')
+  //       assert.equal(await items[4].getText(), 'Update implementation ABI', '5th item has incorrect text')
+  //     })
 
-      it("Click 'Update implementation ABI'", async () => {
-        const items = await f.driver.findElements(menus.dot.item)
-        await items[4].click()
-        const menu = await f.waitUntilShowUp(menus.dot.item, 20)
-        assert.equal(menu, false, "3dot menu wasn't closed")
-      })
-    })
+  //     it("Click 'Update implementation ABI'", async () => {
+  //       const items = await f.driver.findElements(menus.dot.item)
+  //       await items[4].click()
+  //       const menu = await f.waitUntilShowUp(menus.dot.item, 20)
+  //       assert.equal(menu, false, "3dot menu wasn't closed")
+  //     })
+  //   })
 
-    const accountPosition = 1
+  //   const accountPosition = 1
 
-    describe("Remove imported 'Proxy' account", async () => {
-      it("Label 'PROXY' present", async () => {
-        const menu = await f.waitUntilShowUp(menus.account.menu)
-        await menu.click()
-        await f.delay(2000)
-        await f.waitUntilShowUp(menus.account.label)
-        const labels = await f.driver.findElements(menus.account.label)
-        const label = labels[accountPosition]
-        const text1 = await label.getText()
-        console.log(text1)
-        assert.equal(text1, 'PROXY', 'label incorrect')
-      })
-      it('Delete imported account', async () => {
-        const deleteButton = await f.waitUntilShowUp(menus.account.delete)
-        await deleteButton.click()
-        const yesButton = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-        await yesButton.click()
-        await f.driver.findElements(main.container)
-        const identicon = await f.waitUntilShowUp(screens.main.identicon)
-        assert.notEqual(identicon, false, 'main screen didn\'t opened')
-      })
-    })
-  })
+  //   describe("Remove imported 'Proxy' account", async () => {
+  //     it("Label 'PROXY' present", async () => {
+  //       const menu = await f.waitUntilShowUp(menus.account.menu)
+  //       await menu.click()
+  //       await f.delay(2000)
+  //       await f.waitUntilShowUp(menus.account.label)
+  //       const labels = await f.driver.findElements(menus.account.label)
+  //       const label = labels[accountPosition]
+  //       const text1 = await label.getText()
+  //       console.log(text1)
+  //       assert.equal(text1, 'PROXY', 'label incorrect')
+  //     })
+  //     it('Delete imported account', async () => {
+  //       const deleteButton = await f.waitUntilShowUp(menus.account.delete)
+  //       await deleteButton.click()
+  //       const yesButton = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+  //       await yesButton.click()
+  //       await f.driver.findElements(main.container)
+  //       const identicon = await f.waitUntilShowUp(screens.main.identicon)
+  //       assert.notEqual(identicon, false, 'main screen didn\'t opened')
+  //     })
+  //   })
+  // })
 
   describe('Simple contract', async () => {
     const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
@@ -127,7 +127,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         const field = await f.waitUntilShowUp(screens.importAccounts.selectArrow)
         await field.click()
         await f.delay(2000)
-        const item = await f.waitUntilShowUp(screens.importAccounts.itemContract)
+        const item = await f.waitUntilShowUp(screens.importAccounts.itemContract1)
         await item.click()
       })
 

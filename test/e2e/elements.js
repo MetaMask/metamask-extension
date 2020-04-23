@@ -244,6 +244,7 @@ module.exports = {
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
+        no2: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet'),
         yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
         arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
@@ -255,6 +256,7 @@ module.exports = {
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
       itemContract: By.id('react-select-4--option-2'),
+      itemContract1: By.id('react-select-3--option-2'),
       // itemContract2: By.id('react-select-3--option-2'),
       itemProxyContract: By.id('react-select-3--option-3'),
       // itemProxyContract2: By.id('react-select-2--option-3'),
