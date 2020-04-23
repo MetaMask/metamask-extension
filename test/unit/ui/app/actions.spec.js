@@ -760,32 +760,29 @@ describe('Actions', function () {
 
     let sendTransactionSpy
 
-    beforeEach(function () {
-      sendTransactionSpy = sinon.stub(global.ethQuery, 'sendTransaction')
-    })
-
     afterEach(function () {
       sendTransactionSpy.restore()
     })
 
-    it('calls sendTransaction in global ethQuery', function () {
+    it('calls sendTransaction in global ethQuery', async function () {
+      sendTransactionSpy = sinon.stub(global.ethQuery, 'sendTransaction')
+        .callsArgWith(1, null)
       const store = mockStore()
 
-      store.dispatch(actions.signTx())
+      await store.dispatch(actions.signTx())
       assert(sendTransactionSpy.calledOnce)
     })
 
-    it('errors in when sendTransaction throws', function () {
+    it('errors in when sendTransaction throws', async function () {
+      sendTransactionSpy = sinon.stub(global.ethQuery, 'sendTransaction')
+        .callsArgWith(1, new Error('error'))
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'SHOW_CONF_TX_PAGE', id: undefined },
       ]
-      sendTransactionSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
 
-      store.dispatch(actions.signTx())
+      await store.dispatch(actions.signTx())
       assert.deepEqual(store.getActions(), expectedActions)
     })
   })
