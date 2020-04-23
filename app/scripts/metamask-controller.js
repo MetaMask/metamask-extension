@@ -520,7 +520,6 @@ export default class MetamaskController extends EventEmitter {
       setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
-      addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
