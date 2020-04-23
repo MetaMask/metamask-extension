@@ -17,8 +17,10 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util'
 import actionConstants from './actionConstants'
 
 let background = null
+let promisifiedBackground = null
 export function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
+  promisifiedBackground = pify(background)
 }
 
 export function goHome () {
@@ -301,9 +303,9 @@ export function importNewAccount (strategy, args) {
     dispatch(showLoadingIndication('This may take a while, please be patient.'))
     try {
       log.debug(`background.importAccountWithStrategy`)
-      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      await promisifiedBackground.importAccountWithStrategy(strategy, args)
       log.debug(`background.getState`)
-      newState = await pify(background.getState).call(background)
+      newState = await promisifiedBackground.getState()
     } catch (err) {
       dispatch(hideLoadingIndication())
       dispatch(displayWarning(err.message))
@@ -1874,7 +1876,7 @@ export function setCompletedOnboarding () {
     dispatch(showLoadingIndication())
 
     try {
-      await pify(background.completeOnboarding).call(background)
+      await promisifiedBackground.completeOnboarding()
     } catch (err) {
       dispatch(displayWarning(err.message))
       throw err
@@ -2426,7 +2428,7 @@ export function setRequestAccountTabIds (requestAccountTabIds) {
 
 export function getRequestAccountTabIds () {
   return async (dispatch) => {
-    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds()
     dispatch(setRequestAccountTabIds(requestAccountTabIds))
   }
 }
@@ -2440,7 +2442,7 @@ export function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabsIds () {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds()
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
   }
 }
