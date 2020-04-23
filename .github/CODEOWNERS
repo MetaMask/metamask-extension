@@ -2,3 +2,5 @@
 # Each line is a file pattern followed by one or more owners.
 
 *                                    @MetaMask/extension-team
+.circleci/                           @MetaMask/extension-team @kumavis
+development/                         @MetaMask/extension-team @kumavis
