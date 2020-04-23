@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Kontraktanvendelse"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår"
-  },
-  "copiedButton": {
-    "message": "Kopieret"
-  },
   "copiedExclamation": {
     "message": "Kopieret!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiér til udklipsholderen"
-  },
-  "copyButton": {
-    "message": "Kopiér"
   },
   "copyPrivateKey": {
     "message": "Dette er din private nøgle (klik for at kopiere)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "Fra"
-  },
-  "fromShapeShift": {
-    "message": "Fra ShapeShift"
   },
   "functionType": {
     "message": "Funktionstype"
@@ -747,9 +735,6 @@
   },
   "noAddressForName": {
     "message": "Ingen adresse indstillet for dette navn."
-  },
-  "noDeposits": {
-    "message": "Ingen modtagne indskud"
   },
   "noConversionRateAvailable": {
     "message": "Ingen tilgængelig omregningskurs"
@@ -1142,10 +1127,6 @@
   },
   "to": {
     "message": "Til"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 til ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token er allerede blevet tilføjet."

@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Розгортання контракту"
   },
-  "conversionProgress": {
-    "message": "Конверсія триває"
-  },
-  "copiedButton": {
-    "message": "Скопійовано"
-  },
   "copiedExclamation": {
     "message": "Скопійовано!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
-  },
-  "copyButton": {
-    "message": "Копіювати"
   },
   "copyPrivateKey": {
     "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "Від"
-  },
-  "fromShapeShift": {
-    "message": "Від Ethereum"
   },
   "functionType": {
     "message": "Тип функції"
@@ -763,9 +751,6 @@
   },
   "noAddressForName": {
     "message": "На це ім'я не встановлено адреси."
-  },
-  "noDeposits": {
-    "message": "Немає отриманих внесків"
   },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
@@ -1167,10 +1152,6 @@
   },
   "to": {
     "message": "Кому"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Токен"

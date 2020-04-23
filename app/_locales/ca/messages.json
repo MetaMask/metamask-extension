@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Desplegament de Contracte"
   },
-  "conversionProgress": {
-    "message": "Conversió en curs"
-  },
-  "copiedButton": {
-    "message": "Copiat"
-  },
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
@@ -446,9 +437,6 @@
   },
   "from": {
     "message": "Des de"
-  },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
   },
   "functionType": {
     "message": "Tipus de Funció"
@@ -747,9 +735,6 @@
   },
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
-  },
-  "noDeposits": {
-    "message": "Cap dipòsit rebut"
   },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
@@ -1142,10 +1127,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ja s'ha afegit."

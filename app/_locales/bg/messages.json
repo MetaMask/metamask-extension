@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Разгръщане на договор"
   },
-  "conversionProgress": {
-    "message": "Извършва се конвертиране"
-  },
-  "copiedButton": {
-    "message": "Копирано"
-  },
   "copiedExclamation": {
     "message": "Копирано!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
-  },
-  "copyButton": {
-    "message": "Копиране"
   },
   "copyPrivateKey": {
     "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "От"
-  },
-  "fromShapeShift": {
-    "message": "От ShapeShift"
   },
   "functionType": {
     "message": "Тип функция"
@@ -759,9 +747,6 @@
   },
   "noAddressForName": {
     "message": "За това име не е зададен адрес."
-  },
-  "noDeposits": {
-    "message": "Не са получени депозити"
   },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
@@ -1163,10 +1148,6 @@
   },
   "to": {
     "message": "На"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 до ETH чрез ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Жетон"

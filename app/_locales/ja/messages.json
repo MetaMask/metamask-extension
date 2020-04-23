@@ -142,20 +142,11 @@
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
   },
-  "conversionProgress": {
-    "message": "変換中"
-  },
-  "copiedButton": {
-    "message": "コピー完了"
-  },
   "copiedExclamation": {
     "message": "コピー完了!"
   },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
-  },
-  "copyButton": {
-    "message": " コピー "
   },
   "copyPrivateKey": {
     "message": "これはあなたの秘密鍵です(クリックでコピー)"
@@ -227,9 +218,6 @@
   },
   "from": {
     "message": "送信元"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShiftから"
   },
   "gasLimit": {
     "message": "ガスリミット"
@@ -361,9 +349,6 @@
   "noAddressForName": {
     "message": "この名前にはアドレスが設定されていません。"
   },
-  "noDeposits": {
-    "message": "振込みがありません。"
-  },
   "noTransactions": {
     "message": "トランザクションがありません。"
   },
@@ -467,10 +452,6 @@
   },
   "to": {
     "message": "送信先"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShiftで $1をETHにする",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "トークン"

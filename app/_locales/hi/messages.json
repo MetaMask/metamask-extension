@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "कॉन्ट्रैक्ट का परिनियोजन"
   },
-  "conversionProgress": {
-    "message": "रुपांतरण प्रगति पर है"
-  },
-  "copiedButton": {
-    "message": "कॉपी किया गया"
-  },
   "copiedExclamation": {
     "message": "कॉपी की गई!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड में कॉपी करें"
-  },
-  "copyButton": {
-    "message": "कॉपी"
   },
   "copyPrivateKey": {
     "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "से\n"
-  },
-  "fromShapeShift": {
-    "message": "शेपशिफ्ट से"
   },
   "functionType": {
     "message": "कार्यप्रणाली प्रकार"
@@ -760,9 +748,6 @@
   },
   "noAddressForName": {
     "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है"
-  },
-  "noDeposits": {
-    "message": "कोई धनराशि प्राप्त नहीं हुई है"
   },
   "noConversionRateAvailable": {
     "message": "कोई रूपांतरण दर उपलब्ध नहीं है"
@@ -1161,10 +1146,6 @@
   },
   "to": {
     "message": "सेवा में"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift द्वारा ETH को $1",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "टोकन"

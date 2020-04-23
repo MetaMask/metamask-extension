@@ -67,20 +67,11 @@
   "contractDeployment": {
     "message": "Contractimplementatie"
   },
-  "conversionProgress": {
-    "message": "Bezig met conversie"
-  },
-  "copiedButton": {
-    "message": "gekopieerde"
-  },
   "copiedExclamation": {
     "message": "Gekopieerde!"
   },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
-  },
-  "copyButton": {
-    "message": " Kopiëren "
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -152,9 +143,6 @@
   },
   "from": {
     "message": "Van"
-  },
-  "fromShapeShift": {
-    "message": "Van ShapeShift"
   },
   "gasLimit": {
     "message": "Gaslimiet"
@@ -288,9 +276,6 @@
   "noAddressForName": {
     "message": "Er is geen adres ingesteld voor deze naam."
   },
-  "noDeposits": {
-    "message": "Geen aanbetalingen ontvangen"
-  },
   "noTransactions": {
     "message": "Geen transacties"
   },
@@ -409,10 +394,6 @@
   },
   "to": {
     "message": "Naar"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 tot ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token is al toegevoegd."

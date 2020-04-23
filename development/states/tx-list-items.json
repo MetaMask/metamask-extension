@@ -1055,7 +1055,6 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [],
     "send": {},
     "currentLocale": "en",
     "preferences": {

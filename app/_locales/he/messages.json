@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "שליחת חוזה (Contract Deployment)"
   },
-  "conversionProgress": {
-    "message": "המרה מתבצעת"
-  },
-  "copiedButton": {
-    "message": "הועתק"
-  },
   "copiedExclamation": {
     "message": "הועתק!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "העתק ללוח"
-  },
-  "copyButton": {
-    "message": "העתק"
   },
   "copyPrivateKey": {
     "message": "זה המפתח הפרטי שלך (נא להקיש כדי להעתיק)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "מאת"
-  },
-  "fromShapeShift": {
-    "message": "מ-ShapeShift"
   },
   "functionType": {
     "message": "סוג פונקציה"
@@ -760,9 +748,6 @@
   },
   "noAddressForName": {
     "message": "לא הוגדרה כתובת עבור שם זה."
-  },
-  "noDeposits": {
-    "message": "לא התקבלו פיקדונות"
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
@@ -1161,10 +1146,6 @@
   },
   "to": {
     "message": "אל"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ל-ETH באמצעות ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "טוקן"

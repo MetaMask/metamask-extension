@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Penerapan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Konversi sedang berlangsung"
-  },
-  "copiedButton": {
-    "message": "Tersalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini adalah kunci pribadi Anda (klik untuk menyalin)"
@@ -440,9 +431,6 @@
   },
   "from": {
     "message": "Dari"
-  },
-  "fromShapeShift": {
-    "message": "Dari ShapeShift"
   },
   "functionType": {
     "message": "Jenis Fungsi"
@@ -744,9 +732,6 @@
   },
   "noAddressForName": {
     "message": "Belum ada alamat yang dipasang untuk nama ini."
-  },
-  "noDeposits": {
-    "message": "Belum ada setoran yang diterima"
   },
   "noConversionRateAvailable": {
     "message": "Kurs Konversi Tidak Tersedia"
@@ -1148,10 +1133,6 @@
   },
   "to": {
     "message": "Ke"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ke ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token sudah ditambahkan."

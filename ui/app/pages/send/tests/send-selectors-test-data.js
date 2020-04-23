@@ -162,11 +162,6 @@ export default {
     'provider': {
       'type': 'testnet',
     },
-    'shapeShiftTxList': [
-      { id: 'shapeShiftTx1', 'time': 1675000000000 },
-      { id: 'shapeShiftTx2', 'time': 1575000000000 },
-      { id: 'shapeShiftTx3', 'time': 1475000000000 },
-    ],
     'send': {
       'gasLimit': '0xFFFF',
       'gasPrice': '0xaa',

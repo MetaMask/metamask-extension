@@ -91,20 +91,11 @@
   "contractDeployment": {
     "message": "Sözleşme kurulumu"
   },
-  "conversionProgress": {
-    "message": "Çevirim devam ediyor"
-  },
-  "copiedButton": {
-    "message": "Kopyalandı"
-  },
   "copiedExclamation": {
     "message": "Kopyalandı!"
   },
   "copyToClipboard": {
     "message": "Panoya kopyala"
-  },
-  "copyButton": {
-    "message": " Kopyala "
   },
   "copyPrivateKey": {
     "message": "Bu sizin özel anahtarınız (kopyalamak için tıklayın)"
@@ -185,9 +176,6 @@
   },
   "from": {
     "message": "Kimden"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShift'den"
   },
   "gasLimit": {
     "message": "Gas Limiti"
@@ -334,9 +322,6 @@
   "noAddressForName": {
     "message": "Bu isim için bir adres tanımlanmamış."
   },
-  "noDeposits": {
-    "message": "Yatırma alınmadı"
-  },
   "noTransactions": {
     "message": "İşlem yok"
   },
@@ -473,10 +458,6 @@
   },
   "to": {
     "message": "Kime"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift üstünden $1'dan ETH'e",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Jeton çoktan eklenmiş."

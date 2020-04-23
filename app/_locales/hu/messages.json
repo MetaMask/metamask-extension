@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Szerződés alkalmazása"
   },
-  "conversionProgress": {
-    "message": "Átváltás folyamatban"
-  },
-  "copiedButton": {
-    "message": "Másolva"
-  },
   "copiedExclamation": {
     "message": "Kimásolva!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Másolás a vágólapra"
-  },
-  "copyButton": {
-    "message": "Másolás"
   },
   "copyPrivateKey": {
     "message": "Ez a saját titkos kulcsod (kattints rá a másoláshoz)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "Feladó"
-  },
-  "fromShapeShift": {
-    "message": "A ShapeShifttől"
   },
   "functionType": {
     "message": "Függvénytípus"
@@ -756,9 +744,6 @@
   },
   "noAddressForName": {
     "message": "Nem lett cím beállítva ehhez a névhez."
-  },
-  "noDeposits": {
-    "message": "Nem érkezett letét"
   },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
@@ -1160,10 +1145,6 @@
   },
   "to": {
     "message": "Erre:"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 az ETH-hez a ShapeShift által",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "A tokent már hozzáadtuk. "

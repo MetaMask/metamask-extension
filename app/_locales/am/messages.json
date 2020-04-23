@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "የኮንትራት ስምሪት"
   },
-  "conversionProgress": {
-    "message": "ልወጣ በመካሄድ ላይ ነው"
-  },
-  "copiedButton": {
-    "message": "የተቀዳ"
-  },
   "copiedExclamation": {
     "message": "ተቀድቷል"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
-  },
-  "copyButton": {
-    "message": "ቅዳ"
   },
   "copyPrivateKey": {
     "message": "የግል ቁልፍዎ ይህ ነው (ለመቅዳት ጠቅ ያድርጉ)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "ከ"
-  },
-  "fromShapeShift": {
-    "message": "ከ ShapeShift "
   },
   "functionType": {
     "message": "የተግባር ዓይነት"
@@ -760,9 +748,6 @@
   },
   "noAddressForName": {
     "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
-  },
-  "noDeposits": {
-    "message": "ገቢ የሆነ ተቀማጭ የለም"
   },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
@@ -1164,10 +1149,6 @@
   },
   "to": {
     "message": "ለ"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1ወደ ETH በ ShapeShift በኩል",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "ተለዋጭ ስም"

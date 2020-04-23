@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Sopimuksen käyttö"
   },
-  "conversionProgress": {
-    "message": "Muuntaminen käynnissä"
-  },
-  "copiedButton": {
-    "message": "Kopioitu"
-  },
   "copiedExclamation": {
     "message": "Kopioitu"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Kopioi leikepöydälle"
-  },
-  "copyButton": {
-    "message": "Kopioi"
   },
   "copyPrivateKey": {
     "message": "Tämä on yksityinen avaimesi (kopioi napsauttamalla)"
@@ -450,9 +441,6 @@
   },
   "from": {
     "message": "Alkaen"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShiftistä"
   },
   "functionType": {
     "message": "Funktion tyyppi"
@@ -760,9 +748,6 @@
   },
   "noAddressForName": {
     "message": "Tälle nimelle ei ole määritetty osoitetta."
-  },
-  "noDeposits": {
-    "message": "Ei vastaanotettuja talletuksia"
   },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
@@ -1164,10 +1149,6 @@
   },
   "to": {
     "message": "Kohde"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH:hon ShapeShiftin kautta",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Poletti"
