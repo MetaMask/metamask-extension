@@ -1,8 +1,24 @@
 # Changelog
 
 ## Current Develop Branch
+- Version v0.1.5
 
 ## 0.1.5 Wed Apr 22 2020
+- Fix: don't count stroageLimit into total tx fee (#73)
+- Merge remote-tracking branch 'origin/master' into master->dev
+- Merge remote-tracking branch 'origin/master' into master->dev
+- Fix: confluxscan url (#77)
+- Fix: hardware wallet image
+- Add: balance track contract
+- Add: mainnet wording
+- Add: default to conflux pontus
+- Add: update network lite version
+- Add: export all sdk interface
+- Add: skipped -> failed
+- Add: fix lint
+- Add: hide hardware wallet
+- Add: auth page trans
+- Version v0.1.5
 
 ## 0.1.4 Fri Apr 17 2020
 - Fix: don't count stroageLimit into total tx fee (#73)
