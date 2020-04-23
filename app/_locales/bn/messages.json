@@ -75,7 +75,7 @@
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
+    "message": "ConfluxPortal ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
   },
   "amount": {
     "message": "পরিমান"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -156,7 +156,7 @@
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
+    "message": "ConfluxPortal ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
   },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
@@ -399,7 +399,7 @@
     "message": "আপনার কখনও কোনো প্রশ্ন থাকলে বা সন্দেহজনক কিছু দেখলে, portal@conflux-chain.org ঠিকানায় ইমেল করুন।"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
+    "message": "ConfluxPortal আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
   },
   "endOfFlowMessage9": {
     "message": "আরও জানুন।"
@@ -673,7 +673,7 @@
     "message": "আপনার Ethereum এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
   },
   "metamaskVersion": {
-    "message": "MetaMask সংস্করণ"
+    "message": "ConfluxPortal সংস্করণ"
   },
   "missingYourTokens": {
     "message": "আপনার টোকেনগুলি দেখতে পাচ্ছেন না?"
@@ -737,8 +737,8 @@
   "newNetwork": {
     "message": "নতুন নেটওয়ার্ক"
   },
-  "newToMetaMask": {
-    "message": "MetaMask এ নতুন?"
+  "newToConfluxPortal": {
+    "message": "ConfluxPortal এ নতুন?"
   },
   "noAlreadyHaveSeed": {
     "message": "না, আমার আগে থেকেই একটি সীড ফ্রেজ আছে"
@@ -807,7 +807,7 @@
     "message": "MetaMetrics এ অংশগ্রহণ করুন"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMask কে আরও উন্নত করতে আমাদের সহায়তা করার জন্য MetaMetrics এ অংশগ্রহণ করুন"
+    "message": "ConfluxPortal কে আরও উন্নত করতে আমাদের সহায়তা করার জন্য MetaMetrics এ অংশগ্রহণ করুন"
   },
   "password": {
     "message": "পাসওয়ার্ড"
@@ -1037,7 +1037,7 @@
     "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
   },
   "selectAnAccountHelp": {
-    "message": "MetaMask এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
+    "message": "ConfluxPortal এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
   },
   "selectAHigherGasFee": {
     "message": "আপনার লেনদেনটি প্রক্রিয়াকরণ ত্বরান্বিত করতে একটি উচ্চতর গ্যাস ফী নির্বাচন করুন।*"
@@ -1157,13 +1157,13 @@
     "message": "আপনি প্রথমবারের জন্য MetaMask খোলার পরে, শুধু আপনার ফোনে পদক্ষেপগুলি অনুসরণ করুন। "
   },
   "syncWithMobileScanThisCode": {
-    "message": "আপনার MetaMask মোবাইল অ্যাপ দিয়ে এই কোডটি স্ক্যান করুন"
+    "message": "আপনার ConfluxPortal মোবাইল অ্যাপ দিয়ে এই কোডটি স্ক্যান করুন"
   },
   "syncWithMobileBeCareful": {
     "message": "এই কোডটি স্ক্যান করার সময় কেউ আপনার স্ক্রিনটি দেখছে না তা নিশ্চিত করুন"
   },
   "syncWithMobileComplete": {
-    "message": "আপনার ডেটা সফলভাবে সিঙ্ক করা হয়েছে। MetaMask মোবাইল অ্যাপ উপভোগ করুন!"
+    "message": "আপনার ডেটা সফলভাবে সিঙ্ক করা হয়েছে। ConfluxPortal মোবাইল অ্যাপ উপভোগ করুন!"
   },
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"
@@ -1258,7 +1258,7 @@
     "message": "আবার করুন"
   },
   "typePassword": {
-    "message": "আপনার MetaMask পাসওয়ার্ড টাইপ করুন"
+    "message": "আপনার ConfluxPortal পাসওয়ার্ড টাইপ করুন"
   },
   "unapproved": {
     "message": "অননুমোদিত"
@@ -1324,7 +1324,7 @@
     "message": "পুনরায় স্বাগত!"
   },
   "welcome": {
-    "message": "MetaMask এ স্বাগতম"
+    "message": "ConfluxPortal এ স্বাগতম"
   },
   "writePhrase": {
     "message": "এই বাক্যাংশটি একটি কাগজের টুকরোর উপর লিখে একটি নিরাপদ স্থানে সংরক্ষণ করুন। আপনি আরও নিরাপত্তা চাইলে, সেটি একাধিক কাগজের টুকরোতে লিখে 2 - 3টি আলাদা আলাদা স্থানে সংরক্ষণ করুন।"

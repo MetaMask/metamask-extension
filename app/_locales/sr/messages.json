@@ -75,7 +75,7 @@
     "message": "Dodajte sugerisane tokene"
   },
   "addAcquiredTokens": {
-    "message": "Dodajte stečene tokene koristeći MetaMask."
+    "message": "Dodajte stečene tokene koristeći ConfluxPortal."
   },
   "amount": {
     "message": "Iznos"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
+    "message": "Podesite vreme mirovanja u minutima pre nego što se ConfluxPortal automatski odjavi. "
   },
   "average": {
     "message": "Prosečno"
@@ -156,13 +156,13 @@
     "message": "Vaš pregledač nije podržan..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask je dizajniran i izgrađen u Kaliforniji."
+    "message": "ConfluxPortal je dizajniran i izgrađen u Kaliforniji."
   },
   "buyWithWyre": {
     "message": "Kupite ETH preko servisa Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vam dozvoljava da koristite kreditnu karticu kako biste deponovali ETH pravo na vaš MetaMask nalog."
+    "message": "Wyre vam dozvoljava da koristite kreditnu karticu kako biste deponovali ETH pravo na vaš ConfluxPortal nalog."
   },
   "buyCoinSwitch": {
     "message": "Kupujte na CoinSwitch"
@@ -207,7 +207,7 @@
     "message": "Затвори"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Da biste se povezali sa Vašim hardverskim novčanikom morate da koristite MetaMask na Google Chrome-u."
+    "message": "Da biste se povezali sa Vašim hardverskim novčanikom morate da koristite ConfluxPortal na Google Chrome-u."
   },
   "confirm": {
     "message": "Потврди"
@@ -387,7 +387,7 @@
     "message": "Nikada ne delite frazu ni sa kim."
   },
   "endOfFlowMessage5": {
-    "message": "Čuvajte se pecanja (krađe podataka)! MetaMask nikad neće spontano tražiti vašu šifru za oporavak naloga (seed phrase)."
+    "message": "Čuvajte se pecanja (krađe podataka)! ConfluxPortal nikad neće spontano tražiti vašu šifru za oporavak naloga (seed phrase)."
   },
   "endOfFlowMessage6": {
     "message": "Ako treba ponovo da izradite rezervnu kopiju svoje početne fraze, možete je pronaći u Postavke -> Bezbednost."
@@ -396,7 +396,7 @@
     "message": "Ako imate bilo kakvih pitanja ili primetite nešto sumnjivo, pošaljite e-poruku na portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask ne može da oporavi vašu početnu frazu. Saznajte više."
+    "message": "ConfluxPortal ne može da oporavi vašu početnu frazu. Saznajte više."
   },
   "endOfFlowMessage9": {
     "message": "Saznajte više."
@@ -519,7 +519,7 @@
     "message": "Povežite hardverski novčanik"
   },
   "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
+    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa ConfluxPortal-om"
   },
   "havingTroubleConnecting": {
     "message": "Da li imate problem sa povezivanjem?"
@@ -551,7 +551,7 @@
     "message": "Uvezite nalog"
   },
   "importAccountMsg": {
-    "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
+    "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za ConfluxPortal nalog. Saznajte više o uvezenim nalozima."
   },
   "importAccountSeedPhrase": {
     "message": "Uvezi račun sa frazom početnih vrednosti"
@@ -664,7 +664,7 @@
     "message": "Povezivanje na Ethereum i decentralizovani veb."
   },
   "metamaskVersion": {
-    "message": "MetaMask verzija"
+    "message": "ConfluxPortal verzija"
   },
   "missingYourTokens": {
     "message": "Ne vidite svoje tokene?"
@@ -679,13 +679,13 @@
     "message": "Moji nalozi novčanika"
   },
   "myWalletAccountsDescription": {
-    "message": "Svi vaši nalozi kreirani u aplikaciji MetaMask biće automatski dodati u ovaj deo."
+    "message": "Svi vaši nalozi kreirani u aplikaciji ConfluxPortal biće automatski dodati u ovaj deo."
   },
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."
   },
   "needEtherInWallet": {
-    "message": "Da biste stupili u interakciju sa decentralizovanim aplikacijama koristeći MetaMask, biće vam potreban Ether u vašem novčaniku."
+    "message": "Da biste stupili u interakciju sa decentralizovanim aplikacijama koristeći ConfluxPortal, biće vam potreban Ether u vašem novčaniku."
   },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
@@ -728,8 +728,8 @@
   "newNetwork": {
     "message": "Nova mreža"
   },
-  "newToMetaMask": {
-    "message": "Novi ste u MetaMask-u?"
+  "newToConfluxPortal": {
+    "message": "Novi ste u ConfluxPortal-u?"
   },
   "noAlreadyHaveSeed": {
     "message": "Ne, već imam frazu početnih vrednosti"
@@ -738,7 +738,7 @@
     "message": "Zaštitite svoje ključeve!"
   },
   "protectYourKeysMessage1": {
-    "message": "Budite pažljivi sa vašom seed frazom - bilo je izveštaja o veb lokacijama koje pokušavaju da imitiraju MetaMask. MetaMask nikada neće tražiti vašu seed frazu!"
+    "message": "Budite pažljivi sa vašom seed frazom - bilo je izveštaja o veb lokacijama koje pokušavaju da imitiraju ConfluxPortal. ConfluxPortal nikada neće tražiti vašu seed frazu!"
   },
   "protectYourKeysMessage2": {
     "message": "Čuvajte svoju frazu. Ako primetite nešto sumnjivo, ili niste sigurni u vezi veb lokacije, pošaljite e-poruku na upport@metamask.io"
@@ -798,7 +798,7 @@
     "message": "Učestvujte u MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Učestvujte u MetaMetrics da biste nam pomogli da poboljšamo MetaMask."
+    "message": "Učestvujte u MetaMetrics da biste nam pomogli da poboljšamo ConfluxPortal."
   },
   "password": {
     "message": "Лозинка"
@@ -1028,7 +1028,7 @@
     "message": "Izaberite nalog"
   },
   "selectAnAccountHelp": {
-    "message": "Izaberite nalog za prikaz u MetaMask-u"
+    "message": "Izaberite nalog za prikaz u ConfluxPortal-u"
   },
   "selectAHigherGasFee": {
     "message": "Izaberite veću vrednost gas naknade da biste ubrzali procesuiranje vaše transakcije.*"
@@ -1145,16 +1145,16 @@
     "message": "Možete sinhronizovati vaše naloge i informacije sa svojim mobilnim uređajem. Otvorite mobilnu aplikaciju MetaMask, idite na \"Podešavanja\" i pritisnite \"Sinhronizuj iz ekstenzije za pregledač\""
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Ako prvi put otvorite aplikaciju MetaMask Mobile, samo sledite korake u svom telefonu."
+    "message": "Ako prvi put otvorite aplikaciju ConfluxPortal Mobile, samo sledite korake u svom telefonu."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Skenirajte ovaj kod uz pomoć svoje MetaMask mobilne aplikacije"
+    "message": "Skenirajte ovaj kod uz pomoć svoje ConfluxPortal mobilne aplikacije"
   },
   "syncWithMobileBeCareful": {
     "message": "Obratite pažnju da niko drugi ne gleda u vaš ekran kad skenirate ovaj kod"
   },
   "syncWithMobileComplete": {
-    "message": "Vaši podaci su uspešno sinhronizovani. Uživajte u mobilnoj aplikaciji MetaMask!"
+    "message": "Vaši podaci su uspešno sinhronizovani. Uživajte u mobilnoj aplikaciji ConfluxPortal!"
   },
   "terms": {
     "message": "Uslovi korišćenja"
@@ -1243,7 +1243,7 @@
     "message": "Пробај поново"
   },
   "typePassword": {
-    "message": "Ukucajte svoju MetaMask šifru"
+    "message": "Ukucajte svoju ConfluxPortal šifru"
   },
   "unapproved": {
     "message": "Neodobren"
@@ -1309,7 +1309,7 @@
     "message": "Dobro došli nazad!"
   },
   "welcome": {
-    "message": "Dobro došli na MetaMask"
+    "message": "Dobro došli na ConfluxPortal"
   },
   "writePhrase": {
     "message": "Napišite ovaj izraz na parčetu papira i stavite ga na bezbedno mesto. Ukoliko želite još više sigurnosti, zapišite ga na više komada papira i svaki stavite na 2-3 različita mesta."

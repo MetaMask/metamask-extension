@@ -75,7 +75,7 @@
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
   "addAcquiredTokens": {
-    "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
+    "message": "رمزیاب های را که با استفاده از ConfluxPortal بدست آورده اید، اضافه کنید"
   },
   "amount": {
     "message": "مبلغ"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
+    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج ConfluxPortal تنظیم کنید"
   },
   "average": {
     "message": "اوسط"
@@ -156,13 +156,13 @@
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
   "builtInCalifornia": {
-    "message": "MetaMask در کالیفورنیا طراحی و ساخته شده است."
+    "message": "ConfluxPortal در کالیفورنیا طراحی و ساخته شده است."
   },
   "buyWithWyre": {
     "message": "ETH را توسط Wyre خریداری نمایید"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت ETH مستقیمًا به حساب MetaMask تان استفاده نمایید."
+    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت ETH مستقیمًا به حساب ConfluxPortal تان استفاده نمایید."
   },
   "buyCoinSwitch": {
     "message": "خرید بر اساس CoinSwitch "
@@ -210,7 +210,7 @@
     "message": "بستن"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "برای وصل شدن به کیف سخت افزار شما باید MetaMask را در گوگل کروم استفاده نمایید."
+    "message": "برای وصل شدن به کیف سخت افزار شما باید ConfluxPortal را در گوگل کروم استفاده نمایید."
   },
   "confirm": {
     "message": "تأیید"
@@ -390,7 +390,7 @@
     "message": "هرگز عبارت را با هیچکس در میان نگذارید."
   },
   "endOfFlowMessage5": {
-    "message": "مراقب فیشینگ باشید! MetaMask هرگز در یک زمان عبارت بازیاب را نمی پرسد."
+    "message": "مراقب فیشینگ باشید! ConfluxPortal هرگز در یک زمان عبارت بازیاب را نمی پرسد."
   },
   "endOfFlowMessage6": {
     "message": "در صورتیکه شما نیاز به گرفتن دوباره پشتیبان عبارت بازیاب داشته باشید، میتوانید آنرا در Settings -> Security دریافت نمایید."
@@ -399,7 +399,7 @@
     "message": "در صورتیکه پرسشی داشته یا چیزی مشکوک را میبینید، به portal@conflux-chain.org ایمیل کنید."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask نمیتواند عبارت بازیاب تان را دوباره دریافت نماید.\nبیشتر بدانید."
+    "message": "ConfluxPortal نمیتواند عبارت بازیاب تان را دوباره دریافت نماید.\nبیشتر بدانید."
   },
   "endOfFlowMessage9": {
     "message": "بیشتر بدانید."
@@ -673,7 +673,7 @@
     "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
   },
   "metamaskVersion": {
-    "message": "نسخه MetaMask"
+    "message": "نسخه ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "آیا رمزیاب های تان را نمیبیند؟"
@@ -688,7 +688,7 @@
     "message": "حساب های کیف من"
   },
   "myWalletAccountsDescription": {
-    "message": "همه حساب های ایجاد شده MetaMask شما بصورت خودکار در این بخش اضافه خواهد شد."
+    "message": "همه حساب های ایجاد شده ConfluxPortal شما بصورت خودکار در این بخش اضافه خواهد شد."
   },
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
@@ -737,8 +737,8 @@
   "newNetwork": {
     "message": "شبکه جدید"
   },
-  "newToMetaMask": {
-    "message": "آیا به MetaMask جدید هستید؟"
+  "newToConfluxPortal": {
+    "message": "آیا به ConfluxPortal جدید هستید؟"
   },
   "noAlreadyHaveSeed": {
     "message": "نه خیر، من از قبل یک عبارت بازیاب داشتم"
@@ -807,7 +807,7 @@
     "message": "اشتراک در MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "در MetaMetrics اشتراک نمایید تا به ما کمک شود MetaMask را بهتر بسازیم"
+    "message": "در MetaMetrics اشتراک نمایید تا به ما کمک شود ConfluxPortal را بهتر بسازیم"
   },
   "password": {
     "message": "گذرواژه"
@@ -1037,7 +1037,7 @@
     "message": "یک حساب را انتخاب کنید"
   },
   "selectAnAccountHelp": {
-    "message": "برای مشاهده MetaMask حساب را انتخاب نمایید"
+    "message": "برای مشاهده ConfluxPortal حساب را انتخاب نمایید"
   },
   "selectAHigherGasFee": {
     "message": "یک فیس بالاتر گاز را انتخاب نمایید تا پروسس معامله تان تسریع یابد.*"
@@ -1157,13 +1157,13 @@
     "message": "در صورتیکه شما اپلیکیشن موبایل MetaMask را برای بار اول باز کرده اید، فقط گام ها را در موبایل تان دنبال نمایید."
   },
   "syncWithMobileScanThisCode": {
-    "message": "این کود را با اپلیکیشن موبایل MetaMask سکن نمایید"
+    "message": "این کود را با اپلیکیشن موبایل ConfluxPortal سکن نمایید"
   },
   "syncWithMobileBeCareful": {
     "message": "مطمئن شوید که هیچکس هنگامیکه این کود را سکن میکنید، به صفحه شما نمیبیند"
   },
   "syncWithMobileComplete": {
-    "message": "دیتای شما موفقانه همگام سازی شد. از اپلیکیشن موبایل MetaMask لذت ببرید!"
+    "message": "دیتای شما موفقانه همگام سازی شد. از اپلیکیشن موبایل ConfluxPortal لذت ببرید!"
   },
   "terms": {
     "message": "شرایط استفاده"
@@ -1258,7 +1258,7 @@
     "message": "امتحان مجدد"
   },
   "typePassword": {
-    "message": "رمز عبور MetaMask تان را تایپ نمایید"
+    "message": "رمز عبور ConfluxPortal تان را تایپ نمایید"
   },
   "unapproved": {
     "message": "تصدیق ناشده"
@@ -1324,7 +1324,7 @@
     "message": "بازگشت شما را خوش‌آمد می‌گوییم!"
   },
   "welcome": {
-    "message": "به MetaMask خوش آمدید"
+    "message": "به ConfluxPortal خوش آمدید"
   },
   "writePhrase": {
     "message": "این عبارت را در یک صفحه کاغذ نوشته و در یک موقعیت مصؤن نگهدارید. در صورتیکه شما امنیت بیشتر از این میخواهید، آنرا در صفحات متعدد کاغذ نوشته و در 2 - 3 موقعیت مختلف نگهدارید."

@@ -75,7 +75,7 @@
     "message": "Adăugați indicativele sugerate"
   },
   "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
+    "message": "Adăugați token-urile pe care le-ați achiziționat folosind ConfluxPortal"
   },
   "amount": {
     "message": "Sumă"
@@ -85,7 +85,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "ConfluxPortal",
     "description": "The name of the application"
   },
   "approve": {
@@ -113,7 +113,7 @@
     "message": "Temporizator deconectare automată (minute)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
+    "message": "Setați perioada de inactivitate în minute înainte ca ConfluxPortal să se deconecteze automat"
   },
   "average": {
     "message": "Mediu"
@@ -156,13 +156,13 @@
     "message": "Browserul dvs. nu este compatibil..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask este concepută și creată în California."
+    "message": "ConfluxPortal este concepută și creată în California."
   },
   "buyWithWyre": {
     "message": "Cumpărați ETH cu Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune ETH direct în contul dvs. MetaMask."
+    "message": "Wyre vă permite să folosiți un card de credit pentru a depune ETH direct în contul dvs. ConfluxPortal."
   },
   "buyCoinSwitch": {
     "message": "Cumpărați pe CoinSwitch"
@@ -210,7 +210,7 @@
     "message": "Închide"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
+    "message": "Trebuie să folosiți ConfluxPortal în Google Chrome pentru a vă conecta la portofelul hardware."
   },
   "confirm": {
     "message": "Confirmați"
@@ -390,7 +390,7 @@
     "message": "Nu comunicați niciodată fraza cuiva."
   },
   "endOfFlowMessage5": {
-    "message": "Aveți grijă la phishing! MetaMask nu vă va cere niciodată în mod spontan expresia sursă."
+    "message": "Aveți grijă la phishing! ConfluxPortal nu vă va cere niciodată în mod spontan expresia sursă."
   },
   "endOfFlowMessage6": {
     "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
@@ -399,7 +399,7 @@
     "message": "Dacă aveți întrebări sau vedeți ceva suspect, trimiteți un e-mail la portal@conflux-chain.org."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
+    "message": "ConfluxPortal nu vă poate recupera expresia sursă. Aflați mai multe."
   },
   "endOfFlowMessage9": {
     "message": "Aflați mai multe."
@@ -512,7 +512,7 @@
     "message": "Conectați un portofel hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
+    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu ConfluxPortal"
   },
   "havingTroubleConnecting": {
     "message": "Aveți probleme cu conectarea?"
@@ -544,7 +544,7 @@
     "message": "Importare cont"
   },
   "importAccountMsg": {
-    "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
+    "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră ConfluxPortal creat inițial. Aflați mai multe despre conturile importate"
   },
   "importAccountSeedPhrase": {
     "message": "Importați un cont cu fraza seed"
@@ -660,7 +660,7 @@
     "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
   },
   "metamaskVersion": {
-    "message": "Versiune MetaMask"
+    "message": "Versiune ConfluxPortal"
   },
   "missingYourTokens": {
     "message": "Nu vă vedeți token-urile?"
@@ -675,13 +675,13 @@
     "message": "Conturi My Wallet"
   },
   "myWalletAccountsDescription": {
-    "message": "Toate conturile dvs. create pe MetaMask vor fi adăugate automat la această secțiune."
+    "message": "Toate conturile dvs. create pe ConfluxPortal vor fi adăugate automat la această secțiune."
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
   },
   "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
+    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul ConfluxPortal, trebuie să aveți Ether în portofel."
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -724,8 +724,8 @@
   "newNetwork": {
     "message": "Rețea nouă"
   },
-  "newToMetaMask": {
-    "message": "Nefamiliarizat cu MetaMask?"
+  "newToConfluxPortal": {
+    "message": "Nefamiliarizat cu ConfluxPortal?"
   },
   "noAlreadyHaveSeed": {
     "message": "Nu, am deja o expresie sursă"
@@ -734,7 +734,7 @@
     "message": "Protejați-vă cheile!"
   },
   "protectYourKeysMessage1": {
-    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite MetaMask. MetaMask nu vă va cere niciodată expresia sursă!"
+    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite ConfluxPortal. ConfluxPortal nu vă va cere niciodată expresia sursă!"
   },
   "protectYourKeysMessage2": {
     "message": "Aveți grijă de fraza dvs. Dacă vedeți ceva care este în neregulă sau aveți dubii cu privire la un site, trimiteți un mesaj la portal@conflux-chain.org"
@@ -794,7 +794,7 @@
     "message": "Participați la MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Alăturați-vă MetaMetrics pentru a ne ajuta să îmbunătățim MetaMask."
+    "message": "Alăturați-vă MetaMetrics pentru a ne ajuta să îmbunătățim ConfluxPortal."
   },
   "password": {
     "message": "Parolă"
@@ -1024,7 +1024,7 @@
     "message": "Selectați un cont"
   },
   "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
+    "message": "Selectați contul de vizualizat în ConfluxPortal"
   },
   "selectAHigherGasFee": {
     "message": "Selectați o taxă gas mai mare pentru a accelera procesarea tranzacției.*"
@@ -1141,16 +1141,16 @@
     "message": "Vă puteți sincroniza conturile și informațiile cu dispozitivul dvs. mobil. Deschideți aplicația mobilă MetaMask, mergeți la „Setări” și atingeți „Sincronizare de la extensia de browser”"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Dacă deschideți aplicația pentru mobil MetaMask pentru prima oară, urmați pașii afișați pe telefonul dvs."
+    "message": "Dacă deschideți aplicația pentru mobil ConfluxPortal pentru prima oară, urmați pașii afișați pe telefonul dvs."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scanați acest cod folosind aplicația dvs. mobilă MetaMask"
+    "message": "Scanați acest cod folosind aplicația dvs. mobilă ConfluxPortal"
   },
   "syncWithMobileBeCareful": {
     "message": "Asigurați-vă că nimeni altcineva nu poate vedea ecranul dvs. când scanați acest cod"
   },
   "syncWithMobileComplete": {
-    "message": "Datele dvs. au fost sincronizate cu succes. Bucurați-vă de aplicația mobilă MetaMask!"
+    "message": "Datele dvs. au fost sincronizate cu succes. Bucurați-vă de aplicația mobilă ConfluxPortal!"
   },
   "terms": {
     "message": "Termeni și condiții"
@@ -1239,7 +1239,7 @@
     "message": "Încearcă din nou"
   },
   "typePassword": {
-    "message": "Scrieți parola dvs. pentru MetaMask"
+    "message": "Scrieți parola dvs. pentru ConfluxPortal"
   },
   "unapproved": {
     "message": "Neaprobat"
@@ -1305,7 +1305,7 @@
     "message": "Bine ai revenit!"
   },
   "welcome": {
-    "message": "Bun venit la MetaMask"
+    "message": "Bun venit la ConfluxPortal"
   },
   "writePhrase": {
     "message": "Scrieți această expresie pe o bucată de hârtie și păstrați-o într-un loc sigur. Dacă vreți și mai multă securitate, notați-o pe mai multe bucăți de hârtie și păstrați-le în 2 - 3 locuri diferite."

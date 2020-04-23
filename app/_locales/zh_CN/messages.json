@@ -162,16 +162,16 @@
     "message": "ConfluxPortal 是 fork MetaMask 代码并在其基础上进行更改从而适配 Conflux, MetaMask 在加利福尼亚设计和制造, 针对 Conflux 的修改在北京设计和制造."
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 CFX (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用 Wyre 购买 CFX (COnfluxPortal 目前不支持该功能)"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 ConfluxPortal 账户。(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您可以通过 Wyre 使用信用卡将 CFX 存入您的 ConfluxPortal 账户。(COnfluxPortal 目前不支持该功能)"
   },
   "buyCoinSwitch": {
-    "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "在CoinSwitch上购买 (COnfluxPortal 目前不支持该功能)"
   },
   "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。(COnfluxPortal 目前不支持该功能)"
   },
   "bytes": {
     "message": "字节"
@@ -232,6 +232,9 @@
   },
   "connectHardwareWallet": {
     "message": "链接硬件钱包"
+  },
+  "connectedSites": {
+    "message": "已授权的网站"
   },
   "connect": {
     "message": "连接"
@@ -414,7 +417,7 @@
     "message": "ENS 名称登记错误"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至主Conflux网络。(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "未在当前网络找到 ENS 名称。请尝试切换至主Conflux网络。(COnfluxPortal 目前不支持该功能)"
   },
   "enterAnAlias": {
     "message": "输入别名"
@@ -725,7 +728,7 @@
   "newNetwork": {
     "message": "新增网络"
   },
-  "newToMetaMask": {
+  "newToConfluxPortal": {
     "message": "新增至 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
@@ -792,10 +795,10 @@
     "message": "参数"
   },
   "participateInMetaMetrics": {
-    "message": "加入 MetaMetrics (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "加入 MetaMetrics (COnfluxPortal 目前不支持该功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "加入 MetaMetrics ，帮助我们改善 ConfluxPortal 服务 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "加入 MetaMetrics ，帮助我们改善 ConfluxPortal 服务 (COnfluxPortal 目前不支持该功能)"
   },
   "password": {
     "message": "密码"
@@ -1142,25 +1145,25 @@
     "message": "符号不得超过11个字符。"
   },
   "syncWithMobile": {
-    "message": "使用移动设备进行同步 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用移动设备进行同步 (COnfluxPortal 目前不支持该功能)"
   },
   "syncWithMobileTitle": {
-    "message": "使用移动设备进行同步 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用移动设备进行同步 (COnfluxPortal 目前不支持该功能)"
   },
   "syncWithMobileDesc": {
     "message": "您可以使用个人移动设备同步个人账户与信息。打开 ConfluxPortal 移动应用程序，进入“设置”选项，点击“通过浏览器扩展程序同步” (Conflux 版本的 MetaMask 目前不支持该功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如果您是首次启用 ConfluxPortal 移动应用程序，请通过个人手机完成如下操作。 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "如果您是首次启用 ConfluxPortal 移动应用程序，请通过个人手机完成如下操作。 (COnfluxPortal 目前不支持该功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "使用 ConfluxPortal 应用程序扫描编码 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "使用 ConfluxPortal 应用程序扫描编码 (COnfluxPortal 目前不支持该功能)"
   },
   "syncWithMobileBeCareful": {
-    "message": "扫描编码时，请确保身边无其他人正在查看您的显示页面 (Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "扫描编码时，请确保身边无其他人正在查看您的显示页面 (COnfluxPortal 目前不支持该功能)"
   },
   "syncWithMobileComplete": {
-    "message": "您的数据已同步成功。尽情体验 ConfluxPortal 应用程序！(Conflux 版本的 MetaMask 目前不支持该功能)"
+    "message": "您的数据已同步成功。尽情体验 ConfluxPortal 应用程序！(COnfluxPortal 目前不支持该功能)"
   },
   "terms": {
     "message": "使用条款"

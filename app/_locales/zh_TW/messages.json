@@ -162,16 +162,16 @@
     "message": "ConfluxPortal 是 fork MetaMask 代碼並在其基礎上進行更改從而適配 Conflux, MetaMask 在加利福尼亞設計和制造, 針對 Conflux 的修改在北京設計和制造."
   },
   "buyWithWyre": {
-    "message": "用 Wyre 購買 CFX (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "用 Wyre 購買 CFX (COnfluxPortal 目前不支持該功能)"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 ConfluxPortal 帳號中直接存入 CFX。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "Wyre 讓你使用信用卡在 ConfluxPortal 帳號中直接存入 CFX。(COnfluxPortal 目前不支持該功能)"
   },
   "buyCoinSwitch": {
-    "message": "在CoinSwitch上购买 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "在CoinSwitch上购买 (COnfluxPortal 目前不支持該功能)"
   },
   "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "CoinSwitch是以最优惠的价格交换超过300种加密货币的一站式目的地。(COnfluxPortal 目前不支持該功能)"
   },
   "bytes": {
     "message": "位元組"
@@ -229,6 +229,9 @@
   },
   "connectHardwareWallet": {
     "message": "連線硬體錢包"
+  },
+  "connectedSites": {
+    "message": "已授權的網站"
   },
   "connect": {
     "message": "連線"
@@ -411,7 +414,7 @@
     "message": "ENS 名稱註冊錯誤"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要 Conflux 測試網路。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要 Conflux 測試網路。(COnfluxPortal 目前不支持該功能)"
   },
   "enterAnAlias": {
     "message": "輸入化名"
@@ -740,7 +743,7 @@
   "newNetwork": {
     "message": "新增網路"
   },
-  "newToMetaMask": {
+  "newToConfluxPortal": {
     "message": "新來到 ConfluxPortal？"
   },
   "noAlreadyHaveSeed": {
@@ -804,10 +807,10 @@
     "message": "參數"
   },
   "participateInMetaMetrics": {
-    "message": "參與 MetaMetrics (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "參與 MetaMetrics (COnfluxPortal 目前不支持該功能)"
   },
   "participateInMetaMetricsDescription": {
-    "message": "參與 MetaMetrics 來協助我們打造更好的 ConfluxPortal (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "參與 MetaMetrics 來協助我們打造更好的 ConfluxPortal (COnfluxPortal 目前不支持該功能)"
   },
   "password": {
     "message": "密碼"
@@ -832,7 +835,7 @@
     "message": "主要顯示"
   },
   "primaryCurrencySettingDescription": {
-    "message": "選擇使用CFX(CFX)或是法定貨幣(例如：美金)為主要錢幣顯示單位 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "選擇使用CFX(CFX)或是法定貨幣(例如：美金)為主要錢幣顯示單位 (COnfluxPortal 目前不支持該功能)"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -1136,25 +1139,25 @@
     "message": "符號不得超過11個字符。"
   },
   "syncWithMobile": {
-    "message": "和移動裝置同步 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "和移動裝置同步 (COnfluxPortal 目前不支持該功能)"
   },
   "syncWithMobileTitle": {
-    "message": "和移動裝置同步 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "和移動裝置同步 (COnfluxPortal 目前不支持該功能)"
   },
   "syncWithMobileDesc": {
     "message": "你可以用移動裝置同步帳號與資訊。開啟 ConfluxPortal 移動 app，至「設定」並點擊「自瀏覽器擴充功能同步」 (Conflux 版本的 MetaMask 目前不支持該功能)"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "如你是第一次開啟 ConfluxPortal 移動 app，只要跟著手機上的指示操作即可。(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "如你是第一次開啟 ConfluxPortal 移動 app，只要跟著手機上的指示操作即可。(COnfluxPortal 目前不支持該功能)"
   },
   "syncWithMobileScanThisCode": {
-    "message": "用你的 ConfluxPortal 移動 app 掃描此代碼 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "用你的 ConfluxPortal 移動 app 掃描此代碼 (COnfluxPortal 目前不支持該功能)"
   },
   "syncWithMobileBeCareful": {
-    "message": "掃描代碼時確保沒有其他人在看你的螢幕 (Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "掃描代碼時確保沒有其他人在看你的螢幕 (COnfluxPortal 目前不支持該功能)"
   },
   "syncWithMobileComplete": {
-    "message": "你的資料已成功同步。開始活用 ConfluxPortal 移動 app！(Conflux 版本的 MetaMask 目前不支持該功能)"
+    "message": "你的資料已成功同步。開始活用 ConfluxPortal 移動 app！(COnfluxPortal 目前不支持該功能)"
   },
   "terms": {
     "message": "使用條款"
@@ -1179,7 +1182,7 @@
     "message": "目的帳戶"
   },
   "toETHviaShapeShift": {
-    "message": "$1 CFX 透過 ShapeShift (Conflux 版本的 MetaMask 目前不支持該功能)",
+    "message": "$1 CFX 透過 ShapeShift (COnfluxPortal 目前不支持該功能)",
     "description": "system will fill in deposit type in start of message"
   },
   "token": {
