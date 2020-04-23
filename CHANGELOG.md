@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.1.6 Thu Apr 23 2020
 - Version v0.1.5
 
 ## 0.1.5 Wed Apr 22 2020
