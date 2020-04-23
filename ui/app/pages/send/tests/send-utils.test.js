@@ -301,12 +301,11 @@ describe('send utils', function () {
       selectedAddress: 'mockAddress',
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
-        ({ to }, cb) => {
-          const err = typeof to === 'string' && to.match(/willFailBecauseOf:/)
-            ? new Error(to.match(/:(.+)$/)[1])
-            : null
-          const result = { toString: (n) => `0xabc${n}` }
-          return cb(err, result)
+        ({ to }) => {
+          if (typeof to === 'string' && to.match(/willFailBecauseOf:/)) {
+            throw new Error(to.match(/:(.+)$/)[1])
+          }
+          return { toString: (n) => `0xabc${n}` }
         }
       ),
     }

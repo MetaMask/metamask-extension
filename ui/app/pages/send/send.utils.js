@@ -256,24 +256,22 @@ async function estimateGas ({
   }))
 
   // run tx
-  return new Promise((resolve, reject) => {
-    return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
-      if (err) {
-        const simulationFailed = (
-          err.message.includes('Transaction execution error.') ||
-          err.message.includes('gas required exceeds allowance or always failing transaction')
-        )
-        if (simulationFailed) {
-          const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
-          return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
-        } else {
-          return reject(err)
-        }
-      }
-      const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
-      return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
-    })
-  })
+  try {
+    const estimatedGas = await estimateGasMethod(paramsForGasEstimate)
+    const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
+    return ethUtil.addHexPrefix(estimateWithBuffer)
+  } catch (error) {
+    const simulationFailed = (
+      error.message.includes('Transaction execution error.') ||
+      error.message.includes('gas required exceeds allowance or always failing transaction')
+    )
+    if (simulationFailed) {
+      const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
+      return ethUtil.addHexPrefix(estimateWithBuffer)
+    } else {
+      throw error
+    }
+  }
 }
 
 function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 1.5) {
