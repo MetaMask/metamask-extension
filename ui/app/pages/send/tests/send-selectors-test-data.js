@@ -223,7 +223,6 @@ export default {
       'modalState': {},
       'previousModalState': {},
     },
-    'transForward': true,
     'isLoading': false,
     'warning': null,
     'scrollToBottom': false,
