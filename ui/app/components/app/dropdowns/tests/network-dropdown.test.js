@@ -69,7 +69,7 @@ describe('Network Dropdown', function () {
           .at(0)
           .prop('backgroundColor'),
         '#29B6AF'
-      ) // Main Conflux Network Teal
+      ) // Conflux Main Network Teal
     })
 
     it('checks background color for second NetworkDropdownIcon', function () {
