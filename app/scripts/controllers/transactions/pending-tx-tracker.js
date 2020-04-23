@@ -197,7 +197,8 @@ class PendingTransactionTracker extends EventEmitter {
     }
 
     if (taken || dropped) {
-      return this.emit('tx:dropped', txId)
+      this.emit('tx:dropped', txId)
+      return
     }
 
     // get latest transaction status
