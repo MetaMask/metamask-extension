@@ -94,7 +94,7 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-   * Attempts to resubmits the given transaction with exponential backoff
+   * Attempts to resubmit the given transaction with exponential backoff
    *
    * Will only attempt to retry the given tx every {@code 2**(txMeta.retryCount)} blocks.
    *
