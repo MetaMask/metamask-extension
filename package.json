@@ -170,6 +170,8 @@
     "rpc-cap": "^2.0.0",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
+    "ses": "^0.7.6",
+    "ses-adapter": "^0.0.4",
     "single-call-balance-checker-abi": "^1.0.0",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
