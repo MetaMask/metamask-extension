@@ -653,7 +653,7 @@ export function updateGasData ({
   return (dispatch) => {
     dispatch(gasLoadingStarted())
     return estimateGas({
-      estimateGasMethod: background.estimateGas,
+      estimateGasMethod: promisifiedBackground.estimateGas,
       blockGasLimit,
       selectedAddress,
       selectedToken,
