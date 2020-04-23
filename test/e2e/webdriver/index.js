@@ -22,6 +22,7 @@ async function buildWebDriver ({ responsive, port } = {}) {
 }
 
 async function buildBrowserWebDriver (browser, webDriverOptions) {
+  console.log(`initiating webdriver with options ${JSON.stringify(webDriverOptions, null, 2)}`)
   switch (browser) {
     case Browser.CHROME: {
       return await ChromeDriver.build(webDriverOptions)
