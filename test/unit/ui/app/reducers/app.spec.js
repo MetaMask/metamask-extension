@@ -127,20 +127,11 @@ describe('App State', function () {
     assert.equal(newState.modal.modalState.name, null)
   })
 
-  it('transitions forwards', function () {
-    const state = reduceApp(metamaskState, {
-      type: actions.TRANSITION_FORWARD,
-    })
-
-    assert.equal(state.transForward, true)
-  })
-
   it('shows send token page', function () {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,
     })
 
-    assert.equal(state.transForward, true)
     assert.equal(state.warning, null)
   })
 
@@ -149,7 +140,6 @@ describe('App State', function () {
       type: actions.LOCK_METAMASK,
     })
 
-    assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
   })
 
@@ -161,7 +151,6 @@ describe('App State', function () {
     assert.equal(state.accountDetail.subview, 'transactions')
     assert.equal(state.accountDetail.accountExport, 'none')
     assert.equal(state.accountDetail.privateKey, '')
-    assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
 
   })
@@ -175,7 +164,6 @@ describe('App State', function () {
     assert.equal(state.accountDetail.subview, 'transactions') // default
     assert.equal(state.accountDetail.accountExport, 'none') // default
     assert.equal(state.accountDetail.privateKey, '') // default
-    assert.equal(state.transForward, false)
 
   })
 
@@ -184,7 +172,6 @@ describe('App State', function () {
       type: actions.SHOW_ACCOUNTS_PAGE,
     })
 
-    assert.equal(state.transForward, true)
     assert.equal(state.isLoading, false)
     assert.equal(state.warning, null)
     assert.equal(state.scrollToBottom, false)
@@ -206,11 +193,9 @@ describe('App State', function () {
     const state = reduceApp(oldState, {
       type: actions.SHOW_CONF_TX_PAGE,
       id: 2,
-      transForward: false,
     })
 
     assert.equal(state.txId, 2)
-    assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.isLoading, false)
 
@@ -238,7 +223,6 @@ describe('App State', function () {
     })
 
     assert.equal(state.txId, null)
-    assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
   })
 
@@ -250,7 +234,6 @@ describe('App State', function () {
       },
     })
 
-    assert.equal(state.transForward, false)
     assert.equal(state.warning, null)
     assert.equal(state.accountDetail.subview, 'transactions')
   })

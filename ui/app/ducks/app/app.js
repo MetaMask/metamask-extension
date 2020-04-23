@@ -31,8 +31,6 @@ export default function reduceApp (state = {}, action) {
     accountDetail: {
       subview: 'transactions',
     },
-    // Used to render transition direction
-    transForward: true,
     // Used to display loading indicator
     isLoading: false,
     // Used to display error text
@@ -138,13 +136,6 @@ export default function reduceApp (state = {}, action) {
         ),
       }
 
-    // transition methods
-    case actionConstants.TRANSITION_FORWARD:
-      return {
-        ...appState,
-        transForward: true,
-      }
-
     case actionConstants.FORGOT_PASSWORD:
       return {
         ...appState,
@@ -154,14 +145,12 @@ export default function reduceApp (state = {}, action) {
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
-        transForward: true,
         warning: null,
       }
 
     case actionConstants.LOCK_METAMASK:
       return {
         ...appState,
-        transForward: false,
         warning: null,
       }
 
@@ -175,7 +164,6 @@ export default function reduceApp (state = {}, action) {
           accountExport: 'none',
           privateKey: '',
         },
-        transForward: false,
         warning: null,
       }
 
@@ -188,13 +176,11 @@ export default function reduceApp (state = {}, action) {
           accountExport: 'none',
           privateKey: '',
         },
-        transForward: false,
       }
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
-        transForward: true,
         isLoading: false,
         warning: null,
         scrollToBottom: false,
@@ -205,7 +191,6 @@ export default function reduceApp (state = {}, action) {
       return {
         ...appState,
         txId: action.id,
-        transForward: action.transForward,
         warning: null,
         isLoading: false,
       }
@@ -214,7 +199,6 @@ export default function reduceApp (state = {}, action) {
       if (action.value.unconfirmedActionsCount > 0) {
         return {
           ...appState,
-          transForward: false,
           txId: null,
           warning: null,
         }
@@ -223,7 +207,6 @@ export default function reduceApp (state = {}, action) {
           ...appState,
           // indicate notification should close
           shouldClose: true,
-          transForward: false,
           warning: null,
           txId: null,
           accountDetail: {

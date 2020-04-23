@@ -63,7 +63,6 @@ export function tryUnlockMetamask (password) {
         })
       })
       .then(() => {
-        dispatch(transitionForward())
         dispatch(hideLoadingIndication())
       })
       .catch((err) => {
@@ -71,12 +70,6 @@ export function tryUnlockMetamask (password) {
         dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
-  }
-}
-
-export function transitionForward () {
-  return {
-    type: actionConstants.TRANSITION_FORWARD,
   }
 }
 
@@ -1259,10 +1252,9 @@ export function showAccountsPage () {
   }
 }
 
-export function showConfTxPage ({ transForward = true, id } = {}) {
+export function showConfTxPage ({ id } = {}) {
   return {
     type: actionConstants.SHOW_CONF_TX_PAGE,
-    transForward,
     id,
   }
 }
