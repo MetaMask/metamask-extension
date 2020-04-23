@@ -636,7 +636,10 @@ describe('MetaMask', function () {
 
       const confirmDataDiv = await driver.findElement(By.css('.confirm-page-container-content__data-box'))
       const confirmDataText = await confirmDataDiv.getText()
-      assert.equal(confirmDataText.match(/0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff/))
+      assert.ok(confirmDataText.includes('Origin:'))
+      assert.ok(confirmDataText.includes('127.0.0.1'))
+      assert.ok(confirmDataText.includes('Bytes:'))
+      assert.ok(confirmDataText.includes('675'))
 
       await driver.clickElement(By.xpath(`//li[contains(text(), 'Details')]`))
       await driver.delay(regularDelayMs)
