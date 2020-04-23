@@ -5,11 +5,11 @@
 // this needs to run before anything else
 require('./lib/setupFetchDebugging')()
 
-const endOfStream = require('end-of-stream')
-const pump = require('pump')
-const debounce = require('debounce-stream')
-const log = require('loglevel')
-const extension = require('extensionizer')
+import endOfStream from 'end-of-stream'
+import pump from 'pump'
+import debounce from 'debounce-stream'
+import log from 'loglevel'
+import extension from 'extensionizer'
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
@@ -19,13 +19,11 @@ const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
 const PortStream = require('extension-port-stream')
 const createStreamSink = require('./lib/createStreamSink')
-const NotificationManager = require('./lib/notification-manager.js')
+import NotificationManager from './lib/notification-manager.js'
 const MetamaskController = require('./metamask-controller')
 const rawFirstTimeState = require('./first-time-state')
 const setupRaven = require('./lib/setupRaven')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
-const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
 
@@ -51,12 +49,6 @@ global.METAMASK_NOTIFIER = notificationManager
 const release = platform.getVersion()
 const raven = setupRaven({ release })
 
-// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// Internet Explorer 6-11
-const isIE = !!document.documentMode
-// Edge 20+
-const isEdge = !isIE && !!window.StyleMedia
-
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -69,9 +61,6 @@ let versionedData
 
 // initialization flow
 initialize().catch(log.error)
-
-// setup metamask mesh testing container
-setupMetamaskMeshMetrics()
 
 
 /**
@@ -177,6 +166,7 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+  migrator.on('error', console.warn)
 
   // read from disk
   // first from preferred, async API:
@@ -256,7 +246,7 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    showWatchAssetUi: showWatchAssetUi,
+    openPopup: openPopup,
     // initial state
     initState,
     // initial locale code
@@ -269,7 +259,6 @@ function setupController (initState, initLangCode) {
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs
     },
-    encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
 
@@ -460,28 +449,27 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
-  extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    /**
-     * https://github.com/poanetwork/metamask-extension/issues/19
-     * !notificationIsOpen was removed from the check, because notification can be opened, but it can be behind the DApp
-     * for some reasons. For example, if notification popup was opened, but user moved focus to DApp.
-     * New transaction, in this case, will not appear in front of DApp.
-     */
-    if (!popupIsOpen && !currentlyActiveMetamaskTab) {
-      notificationManager.showPopup()
-    }
-  })
+async function triggerUi () {
+  const tabs = await platform.getActiveTabs()
+  const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
+  /**
+   * https://github.com/poanetwork/metamask-extension/issues/19
+   * !notificationIsOpen was removed from the check, because notification can be opened, but it can be behind the DApp
+   * for some reasons. For example, if notification popup was opened, but user moved focus to DApp.
+   * New transaction, in this case, will not appear in front of DApp.
+   */
+  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+    await notificationManager.showPopup()
+  }
 }
 
 /**
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function showWatchAssetUi () {
-  triggerUi()
-  return new Promise(
+async function openPopup () {
+  await triggerUi()
+  await new Promise(
     (resolve) => {
       const interval = setInterval(() => {
         if (!notificationIsOpen) {

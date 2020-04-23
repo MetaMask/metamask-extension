@@ -12,34 +12,69 @@ class ExtensionPlatform {
     extension.runtime.reload()
   }
 
-  openWindow ({ url }) {
-    extension.tabs.create({ url })
+  openTab (options) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.create(options, (newTab) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newTab)
+      })
+    })
+  }
+
+  openWindow (options) {
+    return new Promise((resolve, reject) => {
+      extension.windows.create(options, (newWindow) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newWindow)
+      })
+    })
+  }
+
+  closeWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.remove(windowId, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  focusWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { focused: true }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  getLastFocusedWindow () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getLastFocused((windowObject) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windowObject)
+      })
+    })
   }
 
   closeCurrentWindow () {
     return extension.windows.getCurrent((windowDetails) => {
       return extension.windows.remove(windowDetails.id)
-    })
-  }
-
-  /**
-   * Closes all notifications windows, when action is confirmed in popup
-   * or closes notification window itself, when action is confirmed from it
-   */
-  closeNotificationWindow () {
-    return extension.windows.getCurrent((curWindowsDetails) => {
-      if (curWindowsDetails.type === 'popup') {
-        return extension.windows.remove(curWindowsDetails.id)
-      } else {
-        extension.windows.getAll((windowsDetails) => {
-          const windowsDetailsFiltered = windowsDetails.filter((windowDetails) => windowDetails.id !== curWindowsDetails.id)
-          return windowsDetailsFiltered.forEach((windowDetails) => {
-            if (windowDetails.type === 'popup') {
-              extension.windows.remove(windowDetails.id)
-            }
-          })
-        })
-      }
     })
   }
 
@@ -57,7 +92,7 @@ class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`
     }
-    this.openWindow({ url: extensionURL })
+    this.openTab({ url: extensionURL })
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
@@ -84,6 +119,30 @@ class ExtensionPlatform {
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  getAllWindows () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getAll((windows) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windows)
+      })
+    })
+  }
+
+  getActiveTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({ active: true }, (tabs) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(tabs)
+      })
+    })
   }
 
   currentTab () {

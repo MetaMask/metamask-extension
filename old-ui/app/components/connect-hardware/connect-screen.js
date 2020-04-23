@@ -74,7 +74,7 @@ class ConnectScreen extends Component {
                 <Button
                     type="primary"
                     large={true}
-                    onClick={() => global.platform.openWindow({
+                    onClick={() => global.platform.openTab({
                         url: 'https://google.com/chrome',
                     })}
                 >Download Google Chrome</Button>
