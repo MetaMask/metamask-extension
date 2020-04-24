@@ -49,8 +49,8 @@ export default class EditContact extends PureComponent {
           <Button
             type="link"
             className="settings-page__address-book-button"
-            onClick={() => {
-              removeFromAddressBook(chainId, address)
+            onClick={async () => {
+              await removeFromAddressBook(chainId, address)
               history.push(listRoute)
             }}
           >
@@ -115,7 +115,7 @@ export default class EditContact extends PureComponent {
             if (this.state.newAddress !== '' && this.state.newAddress !== address) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
-                removeFromAddressBook(chainId, address)
+                await removeFromAddressBook(chainId, address)
                 await addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
                 setAccountLabel(this.state.newAddress, this.state.newName || name)
                 history.push(listRoute)

@@ -1551,8 +1551,8 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
 export function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
-  return () => {
-    background.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
+  return async () => {
+    await promisifiedBackground.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 
