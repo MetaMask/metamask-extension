@@ -267,7 +267,7 @@ export function checksumAddress (address) {
   return checksummed
 }
 
-export function addressSlicer (address = '') {
+export function shortenAddress (address = '') {
   if (address.length < 11) {
     return address
   }

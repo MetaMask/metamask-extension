@@ -7,7 +7,7 @@ import {
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
-import { addressSlicer } from '../../../../helpers/utils/util'
+import { shortenAddress } from '../../../../helpers/utils/util'
 
 export default class ConfirmPageContainerHeader extends Component {
   static contextTypes = {
@@ -65,7 +65,7 @@ export default class ConfirmPageContainerHeader extends Component {
                 />
               </div>
               <div className="confirm-page-container-header__address">
-                { addressSlicer(accountAddress) }
+                { shortenAddress(accountAddress) }
               </div>
             </div>
           )

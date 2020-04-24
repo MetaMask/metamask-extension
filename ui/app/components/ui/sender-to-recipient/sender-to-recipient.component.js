@@ -5,7 +5,7 @@ import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
-import { checksumAddress, addressSlicer } from '../../../helpers/utils/util'
+import { checksumAddress, shortenAddress } from '../../../helpers/utils/util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -66,7 +66,7 @@ export default class SenderToRecipient extends PureComponent {
               ? <p>{t('copyAddress')}</p>
               : (
                 <p>
-                  {addressSlicer(checksummedSenderAddress)}<br />
+                  {shortenAddress(checksummedSenderAddress)}<br />
                   {t('copyAddress')}
                 </p>
               )
@@ -126,7 +126,7 @@ export default class SenderToRecipient extends PureComponent {
                 ? <p>{t('copyAddress')}</p>
                 : (
                   <p>
-                    {addressSlicer(checksummedRecipientAddress)}<br />
+                    {shortenAddress(checksummedRecipientAddress)}<br />
                     {t('copyAddress')}
                   </p>
                 )

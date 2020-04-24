@@ -6,7 +6,7 @@ import { createSelector } from 'reselect'
 import abi from 'human-standard-token-abi'
 import { multiplyCurrencies } from '../helpers/utils/conversion-util'
 import {
-  addressSlicer,
+  shortenAddress,
   checksumAddress,
   getOriginFromUrl,
   getAccountByAddress,
@@ -217,7 +217,7 @@ export function getAddressBookEntry (state, address) {
 
 export function getAddressBookEntryName (state, address) {
   const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
-  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
+  return entry && entry.name !== '' ? entry.name : shortenAddress(address)
 }
 
 export function getDaiV1Token (state) {
