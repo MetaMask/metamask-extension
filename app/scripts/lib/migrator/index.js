@@ -12,7 +12,7 @@ import EventEmitter from 'events'
  * @property {number} [defaultVersion] - The version to use in the initial state
  */
 
-class Migrator extends EventEmitter {
+export default class Migrator extends EventEmitter {
 
   /**
    * @constructor
@@ -89,5 +89,3 @@ class Migrator extends EventEmitter {
   }
 
 }
-
-export default Migrator
