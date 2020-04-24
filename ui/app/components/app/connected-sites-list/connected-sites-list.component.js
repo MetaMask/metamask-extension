@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import IconWithFallBack from '../../ui/icon-with-fallback'
+import { shortenUrl } from '../../../helpers/utils/util'
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -28,9 +29,11 @@ export default class ConnectedSitesList extends Component {
               <IconWithFallBack icon={domain.icon} name={domain.name} />
               <span className="connected-sites__domain-name" title={domain.extensionId || domain.key}>
                 {
-                  domain.extensionId
-                    ? t('externalExtension')
-                    : domain.key
+                  shortenUrl(
+                    domain.extensionId
+                      ? t('externalExtension')
+                      : domain.key
+                  )
                 }
               </span>
             </div>

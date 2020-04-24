@@ -132,7 +132,6 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
   return formatted
 }
 
-
 export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]
   const label = formattedBalance.split(' ')[1]
@@ -267,12 +266,50 @@ export function checksumAddress (address) {
   return checksummed
 }
 
+/**
+ * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Returns the given address if it is no longer than 10 characters.
+ * Shortened addresses are 13 characters long.
+ *
+ * Example output: 0xabcd...1234
+ *
+ * @param {string} address - The address to shorten.
+ * @returns {string} The shortened address, or the original if it was no longer
+ * than 10 characters.
+ */
 export function addressSlicer (address = '') {
   if (address.length < 11) {
     return address
   }
 
   return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+/**
+ * Shortens a URL for display, preserving the beginning and end.
+ * Returns the given URL if it is no longer than maxLength characters.
+ * Shortened URLs are maxLength + 3 characters long.
+ *
+ * Example output: www.llanfairpwl...ogogochuchaf.eu
+ *
+ * @param {string} url - The URL to shorten.
+ * @param {number} maxLength - The maximum length of the address.
+ * @returns {string} The shortened URL, or the original if it was no longer
+ * than maxLength characters.
+ */
+export function shortenUrl (url = '', maxLength = 30) {
+  if (maxLength < 10) {
+    // it gets nonsensical somewhere around here
+    throw new Error('Expected maxLength >= 10')
+  }
+
+  if (url.length <= maxLength) {
+    return url
+  }
+
+  const halfPoint = Math.floor(maxLength / 2)
+
+  return `${url.slice(0, halfPoint)}...${url.slice(halfPoint - maxLength)}`
 }
 
 export function isValidAddressHead (address) {
