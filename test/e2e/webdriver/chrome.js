@@ -9,7 +9,6 @@ class ChromeDriver {
     const args = [
       `load-extension=${extensionPath}`,
       '--no-sandbox',
-      '--headless',
       '--disable-gpu',
       '--disable-dev-shm-usage',
       '--remote-debugging-port=9222',
