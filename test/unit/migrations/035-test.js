@@ -62,7 +62,6 @@ describe('migration #35', function () {
       data: {
         PreferencesController: {
           frequentRpcListDetail: [],
-          currentAccountTab: 'history',
           accountTokens: {},
           assetImages: {},
           tokens: [],

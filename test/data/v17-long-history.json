@@ -44,7 +44,6 @@
     },
     "PreferencesController": {
       "frequentRpcList": [],
-      "currentAccountTab": "history",
       "tokens": [],
       "selectedAddress": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c"
     },

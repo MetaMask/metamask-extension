@@ -11,7 +11,6 @@ class PreferencesController {
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
-   * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {object} store.assetImages Contains assets objects related to assets added
@@ -29,7 +28,6 @@ class PreferencesController {
   constructor (opts = {}) {
     const initState = Object.assign({
       frequentRpcListDetail: [],
-      currentAccountTab: 'history',
       accountTokens: {},
       assetImages: {},
       tokens: [],
@@ -475,20 +473,6 @@ class PreferencesController {
     identities[address].name = label
     this.store.updateState({ identities })
     return Promise.resolve(label)
-  }
-
-  /**
-   * Setter for the `currentAccountTab` property
-   *
-   * @param {string} currentAccountTab - Specifies the new tab to be marked as current
-   * @returns {Promise<void>} - Promise resolves with undefined
-   *
-   */
-  setCurrentAccountTab (currentAccountTab) {
-    return new Promise((resolve) => {
-      this.store.updateState({ currentAccountTab })
-      resolve()
-    })
   }
 
   /**

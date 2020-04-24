@@ -1174,11 +1174,6 @@ export function lockMetamask () {
   }
 }
 
-export function setCurrentAccountTab (newTabName) {
-  log.debug(`background.setCurrentAccountTab: ${newTabName}`)
-  return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
-}
-
 export function setSelectedToken (tokenAddress) {
   return {
     type: actionConstants.SET_SELECTED_TOKEN,
@@ -1875,27 +1870,6 @@ export function setMouseUserState (isMouseUser) {
   return {
     type: actionConstants.SET_MOUSE_USER_STATE,
     value: isMouseUser,
-  }
-}
-
-
-/**
- * A function generator for a common pattern wherein:
- * * We call a background method.
- * * If it errored, we show a warning.
- * * If it didn't, we update the state.
- *
- * @param {*} method - The background method to call
- * @param  {...any} args - The args to invoke the background method with
- */
-export function callBackgroundThenUpdateNoSpinner (method, ...args) {
-  return (dispatch) => {
-    method.call(background, ...args, (err) => {
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-      forceUpdateMetamaskState(dispatch)
-    })
   }
 }
 
