@@ -91,20 +91,11 @@
   "contractDeployment": {
     "message": "Развертывание контракта"
   },
-  "conversionProgress": {
-    "message": "Выполняется конвертация"
-  },
-  "copiedButton": {
-    "message": "Скопировано"
-  },
   "copiedExclamation": {
     "message": "Скопировано!"
   },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
-  },
-  "copyButton": {
-    "message": " Скопировать "
   },
   "copyPrivateKey": {
     "message": "Это ваш закрытый ключ (нажмите, чтобы скопировать)"
@@ -188,9 +179,6 @@
   },
   "from": {
     "message": "Отправитель"
-  },
-  "fromShapeShift": {
-    "message": "Из ShapeShift"
   },
   "gasLimit": {
     "message": "Лимит газа"
@@ -334,9 +322,6 @@
   "noAddressForName": {
     "message": "Дла этого названия не установлен адрес."
   },
-  "noDeposits": {
-    "message": "Пополнения не получены"
-  },
   "noTransactions": {
     "message": "Нет транзакций"
   },
@@ -467,10 +452,6 @@
   },
   "to": {
     "message": "Получатель"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже был добавлен."

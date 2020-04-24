@@ -23,5 +23,3 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_KEY = 'encryptionPublicKeyRequest'
 export const CONTRACT_INTERACTION_KEY = 'contractInteraction'
 export const CANCEL_ATTEMPT_ACTION_KEY = 'cancelAttempt'
 export const DEPOSIT_TRANSACTION_KEY = 'deposit'
-
-export const TRANSACTION_TYPE_SHAPESHIFT = 'shapeshift'

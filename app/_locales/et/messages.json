@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Lepingu juurutamine"
   },
-  "conversionProgress": {
-    "message": "Teisendamine on pooleli"
-  },
-  "copiedButton": {
-    "message": "Kopeeritud"
-  },
   "copiedExclamation": {
     "message": "Kopeeritud!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopeeri lõikelauale"
-  },
-  "copyButton": {
-    "message": "Kopeeri"
   },
   "copyPrivateKey": {
     "message": "See on teie privaatne võti (klõpsake kopeerimiseks)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "Saatja"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShiftist"
   },
   "functionType": {
     "message": "Funktsiooni tüüp"
@@ -753,9 +741,6 @@
   },
   "noAddressForName": {
     "message": "Sellele nimele pole registreeritud ühtegi aadressi."
-  },
-  "noDeposits": {
-    "message": "Sissemakseid pole laekunud"
   },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
@@ -1157,10 +1142,6 @@
   },
   "to": {
     "message": "Saaja"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH-le ShapeShifti kaudu",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Luba"

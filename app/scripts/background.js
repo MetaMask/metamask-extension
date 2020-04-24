@@ -140,7 +140,6 @@ initialize().catch(log.error)
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
  * @property {Object} infuraNetworkStatus - An object of infura network status checks.
  * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
- * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 

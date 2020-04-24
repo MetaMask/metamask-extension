@@ -73,14 +73,6 @@
   }
 }
 
-.tx-list-clickable {
-  cursor: pointer;
-
-  &:hover {
-    background: rgba($alto, .2);
-  }
-}
-
 .tx-list-pending-item-container {
   cursor: pointer;
   opacity: .5;

@@ -245,12 +245,6 @@
   "contractDeployment": {
     "message": "Déploiement de contrat"
   },
-  "conversionProgress": {
-    "message": "Conversion en cours"
-  },
-  "copiedButton": {
-    "message": "Copié"
-  },
   "copiedExclamation": {
     "message": "Copié!"
   },
@@ -265,9 +259,6 @@
   },
   "copyToClipboard": {
     "message": "Copier dans le presse-papier"
-  },
-  "copyButton": {
-    "message": " Copier "
   },
   "copyPrivateKey": {
     "message": "Ceci est votre clé privée (cliquez pour copier)"
@@ -441,9 +432,6 @@
   },
   "from": {
     "message": "de"
-  },
-  "fromShapeShift": {
-    "message": "de ShapeShift"
   },
   "functionType": {
     "message": "Type de fonction"
@@ -745,9 +733,6 @@
   },
   "noAddressForName": {
     "message": "Aucune adresse n'a été définie pour ce nom."
-  },
-  "noDeposits": {
-    "message": "Aucun dépôt reçu"
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
@@ -1149,10 +1134,6 @@
   },
   "to": {
     "message": "Destinataire"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 à ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Jeton"

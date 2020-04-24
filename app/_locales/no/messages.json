@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Distribusjon av kontrakten"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår "
-  },
-  "copiedButton": {
-    "message": "Kopiert"
-  },
   "copiedExclamation": {
     "message": "Kopiert!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiér til utklippstavlen"
-  },
-  "copyButton": {
-    "message": "Kopier"
   },
   "copyPrivateKey": {
     "message": "Dette er din private nøkkel (klikk for å kopiere)"
@@ -446,9 +437,6 @@
   },
   "from": {
     "message": "Fra "
-  },
-  "fromShapeShift": {
-    "message": "Fra ShapeShift"
   },
   "functionType": {
     "message": "Funksjonstype "
@@ -753,9 +741,6 @@
   },
   "noAddressForName": {
     "message": "Ingen adresse har blitt angitt for dette navnet. "
-  },
-  "noDeposits": {
-    "message": "Ingen mottatte innskudd"
   },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
@@ -1139,10 +1124,6 @@
   },
   "to": {
     "message": "Til "
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 til ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Token "

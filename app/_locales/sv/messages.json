@@ -251,12 +251,6 @@
   "contractDeployment": {
     "message": "Kontraktplacering"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår"
-  },
-  "copiedButton": {
-    "message": "Kopierat"
-  },
   "copiedExclamation": {
     "message": "Kopierades!"
   },
@@ -271,9 +265,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
-  },
-  "copyButton": {
-    "message": "Kopiera"
   },
   "copyPrivateKey": {
     "message": "Det här är din privata nyckel (klicka för att kopiera)"
@@ -443,9 +434,6 @@
   },
   "from": {
     "message": "Från"
-  },
-  "fromShapeShift": {
-    "message": "från ShapeShift"
   },
   "functionType": {
     "message": "Funktionstyp"
@@ -747,9 +735,6 @@
   },
   "noAddressForName": {
     "message": "Inga adresser har angetts för detta namn."
-  },
-  "noDeposits": {
-    "message": "Ingen deposition mottagen"
   },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
@@ -1148,10 +1133,6 @@
   },
   "to": {
     "message": "Till"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 till ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token har redan lagts till."

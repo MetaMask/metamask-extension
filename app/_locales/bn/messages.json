@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "কন্ট্র্যাক্ট নিয়োজন"
   },
-  "conversionProgress": {
-    "message": "বিনিময় চলছে"
-  },
-  "copiedButton": {
-    "message": "কপি  করা হয়েছে"
-  },
   "copiedExclamation": {
     "message": "কপি করা হয়েছে!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "ক্লিপবোর্ডে কপি করুন"
-  },
-  "copyButton": {
-    "message": "কপি করুন"
   },
   "copyPrivateKey": {
     "message": "এটি হল আপনার গোপন কী (কপি করতে ক্লিক করুন)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "থেকে"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShift থেকে"
   },
   "functionType": {
     "message": "কার্যকারিতার ধরণ"
@@ -763,9 +751,6 @@
   },
   "noAddressForName": {
     "message": "এই নামের জন্য কোনো ঠিকানা সেট করা হয় নি।"
-  },
-  "noDeposits": {
-    "message": "কোনো ডিপোজিট পাওয়া যায় নি"
   },
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
@@ -1167,10 +1152,6 @@
   },
   "to": {
     "message": "প্রতি"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift এর মাধ্যমে ETH এ $1",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "টোকেন"

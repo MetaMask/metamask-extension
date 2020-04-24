@@ -88,20 +88,11 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -182,9 +173,6 @@
   },
   "from": {
     "message": "Od"
-  },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
   },
   "gasLimit": {
     "message": "Limit paliva"
@@ -318,9 +306,6 @@
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
-  "noDeposits": {
-    "message": "Žádný vklad"
-  },
   "noTransactions": {
     "message": "Žádné transakce"
   },
@@ -451,10 +436,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."

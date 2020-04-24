@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "컨트랙트 배포"
   },
-  "conversionProgress": {
-    "message": "변환 진행 중"
-  },
-  "copiedButton": {
-    "message": "복사됨"
-  },
   "copiedExclamation": {
     "message": "복사됨!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
-  },
-  "copyButton": {
-    "message": " 복사 "
   },
   "copyPrivateKey": {
     "message": "비밀 키입니다 (클릭하여 복사)"
@@ -450,9 +441,6 @@
   },
   "from": {
     "message": "보내는 이"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShift로부터"
   },
   "functionType": {
     "message": "함수 유형"
@@ -757,9 +745,6 @@
   },
   "noAddressForName": {
     "message": "이 이름에 대해 주소가 설정되어 있지 않습니다."
-  },
-  "noDeposits": {
-    "message": "입금 내역이 없습니다."
   },
   "noConversionRateAvailable": {
     "message": "변환 비율을 찾을 수 없습니다"
@@ -1158,10 +1143,6 @@
   },
   "to": {
     "message": "받는이"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "토큰"

@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TransactionListItem from '../transaction-list-item'
-import ShapeShiftTransactionListItem from '../shift-list-item'
-import { TRANSACTION_TYPE_SHAPESHIFT } from '../../../helpers/constants/transactions'
 
 export default class TransactionList extends PureComponent {
   static contextTypes = {
@@ -115,26 +113,19 @@ export default class TransactionList extends PureComponent {
 
   renderTransaction (transactionGroup, index, isPendingTx = false) {
     const { selectedToken, assetImages, firstPendingTransactionId } = this.props
-    const { transactions = [] } = transactionGroup
 
-    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
-      ? (
-        <ShapeShiftTransactionListItem
-          { ...transactions[0] }
-          key={`shapeshift${index}`}
-        />
-      ) : (
-        <TransactionListItem
-          transactionGroup={transactionGroup}
-          key={`${transactionGroup.nonce}:${index}`}
-          showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
-          showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
-          isEarliestNonce={isPendingTx && index === 0}
-          token={selectedToken}
-          assetImages={assetImages}
-          firstPendingTransactionId={firstPendingTransactionId}
-        />
-      )
+    return (
+      <TransactionListItem
+        transactionGroup={transactionGroup}
+        key={`${transactionGroup.nonce}:${index}`}
+        showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
+        showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
+        isEarliestNonce={isPendingTx && index === 0}
+        token={selectedToken}
+        assetImages={assetImages}
+        firstPendingTransactionId={firstPendingTransactionId}
+      />
+    )
   }
 
   renderEmpty () {

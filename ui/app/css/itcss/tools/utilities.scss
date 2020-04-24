@@ -2,16 +2,6 @@
   Utility Classes
  */
 
-/* color */
-
-.color-orange {
-  color: #f7861c; // TODO: move to settings/variables
-}
-
-.color-forest {
-  color: #0a5448; // TODO: move to settings/variables
-}
-
 /* lib */
 
 .full-size {
@@ -239,11 +229,6 @@ hr.horizontal-line {
   padding: 4px;
   text-align: center;
   height: 15px;
-}
-
-.ether-balance {
-  display: flex;
-  align-items: center;
 }
 
 .tabSection {

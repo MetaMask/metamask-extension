@@ -79,20 +79,11 @@
   "contractDeployment": {
     "message": "ஒப்பந்த வரிசைப்படுத்தல்"
   },
-  "conversionProgress": {
-    "message": "மாற்றம் முன்னேற்றம்"
-  },
-  "copiedButton": {
-    "message": "நகலெடுக்கப்பட்டன"
-  },
   "copiedExclamation": {
     "message": "நகலெடுக்கப்பட்டன!"
   },
   "copyToClipboard": {
     "message": "கிளிப்போர்டுக்கு நகலெடு"
-  },
-  "copyButton": {
-    "message": " நகல் "
   },
   "copyPrivateKey": {
     "message": "இது உங்கள் தனிப்பட்ட விசை (நகலெடுக்க கிளிக் செய்யவும்)"
@@ -179,9 +170,6 @@
   },
   "from": {
     "message": "இருந்து"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShift இலிருந்து"
   },
   "gasLimit": {
     "message": "எரிவாயு வரம்பு"
@@ -328,9 +316,6 @@
   "noAddressForName": {
     "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
   },
-  "noDeposits": {
-    "message": "எந்த வைப்புகளும் கிடைக்கவில்லை"
-  },
   "noTransactions": {
     "message": "பரிவர்த்தனைகள் இல்லை"
   },
@@ -473,10 +458,6 @@
   },
   "to": {
     "message": "பெறுநர்"
-  },
-  "toETHviaShapeShift": {
-    "message": "$ 1 முதல் ETH வரை வடிவம்",
-    "description": "செய்தி தொடக்கத்தில் வைப்பு வகைகளில் நிரப்பப்படும்"
   },
   "tokenAlreadyAdded": {
     "message": "டோக்கன் ஏற்கனவே சேர்க்கப்பட்டது."

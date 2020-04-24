@@ -136,7 +136,6 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [],
     "send": {
       "gasLimit": "0xea60",
       "gasPrice": "0xba43b7400",
