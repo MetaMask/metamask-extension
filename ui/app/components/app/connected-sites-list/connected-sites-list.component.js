@@ -29,11 +29,9 @@ export default class ConnectedSitesList extends Component {
               <IconWithFallBack icon={domain.icon} name={domain.name} />
               <span className="connected-sites__domain-name" title={domain.extensionId || domain.key}>
                 {
-                  shortenUrl(
-                    domain.extensionId
-                      ? t('externalExtension')
-                      : domain.key
-                  )
+                  domain.extensionId
+                    ? t('externalExtension')
+                    : shortenUrl(domain.key)
                 }
               </span>
             </div>
