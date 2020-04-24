@@ -1082,28 +1082,27 @@ describe('Actions', function () {
 
     beforeEach(function () {
       store = mockStore({ metamask: { provider: {} } })
-      setProviderTypeSpy = sinon.stub(background, 'setProviderType')
     })
 
     afterEach(function () {
       setProviderTypeSpy.restore()
     })
 
-    it('calls setProviderType', function () {
-      store.dispatch(actions.setProviderType())
+    it('calls setProviderType', async function () {
+      setProviderTypeSpy = sinon.stub(background, 'setProviderType')
+        .callsArgWith(1, null)
+      await store.dispatch(actions.setProviderType())
       assert(setProviderTypeSpy.calledOnce)
     })
 
-    it('displays warning when setProviderType throws', function () {
+    it('displays warning when setProviderType throws', async function () {
+      setProviderTypeSpy = sinon.stub(background, 'setProviderType')
+        .callsArgWith(1, new Error('error'))
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 
-      setProviderTypeSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      store.dispatch(actions.setProviderType())
+      await store.dispatch(actions.setProviderType())
       assert(setProviderTypeSpy.calledOnce)
       assert.deepEqual(store.getActions(), expectedActions)
     })
