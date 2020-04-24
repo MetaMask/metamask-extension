@@ -39,7 +39,7 @@ export default class SendFooter extends Component {
     this.props.history.push(DEFAULT_ROUTE)
   }
 
-  onSubmit (event) {
+  async onSubmit (event) {
     event.preventDefault()
     const {
       addToAddressBookIfNew,
@@ -69,7 +69,7 @@ export default class SendFooter extends Component {
     // }
 
     // TODO: add nickname functionality
-    addToAddressBookIfNew(to, toAccounts)
+    await addToAddressBookIfNew(to, toAccounts)
     const promise = editingTransactionId
       ? update({
         amount,

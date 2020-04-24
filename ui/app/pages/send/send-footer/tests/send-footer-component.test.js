@@ -145,8 +145,8 @@ describe('SendFooter Component', function () {
       )
     })
 
-    it('should call props.update if editingTransactionId is truthy', function () {
-      wrapper.instance().onSubmit(MOCK_EVENT)
+    it('should call props.update if editingTransactionId is truthy', async function () {
+      await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
       assert.deepEqual(
         propsMethodSpies.update.getCall(0).args[0],
@@ -168,9 +168,9 @@ describe('SendFooter Component', function () {
       assert.equal(propsMethodSpies.sign.callCount, 0)
     })
 
-    it('should call props.sign if editingTransactionId is falsy', function () {
+    it('should call props.sign if editingTransactionId is falsy', async function () {
       wrapper.setProps({ editingTransactionId: null })
-      wrapper.instance().onSubmit(MOCK_EVENT)
+      await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
       assert.deepEqual(
         propsMethodSpies.sign.getCall(0).args[0],
@@ -190,13 +190,10 @@ describe('SendFooter Component', function () {
       assert.equal(propsMethodSpies.update.callCount, 0)
     })
 
-    it('should call history.push', function (done) {
-      Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT))
-        .then(() => {
-          assert.equal(historySpies.push.callCount, 1)
-          assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
-          done()
-        })
+    it('should call history.push', async function () {
+      await wrapper.instance().onSubmit(MOCK_EVENT)
+      assert.equal(historySpies.push.callCount, 1)
+      assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
     })
   })
 

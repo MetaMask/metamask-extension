@@ -18,9 +18,9 @@ export default class AddToAddressBookModal extends Component {
     alias: '',
   }
 
-  onSave = () => {
+  onSave = async () => {
     const { recipient, addToAddressBook, hideModal } = this.props
-    addToAddressBook(recipient, this.state.alias)
+    await addToAddressBook(recipient, this.state.alias)
     hideModal()
   }
 
@@ -30,7 +30,7 @@ export default class AddToAddressBookModal extends Component {
     })
   }
 
-  onKeyPress = (e) => {
+  onKeyPress = async (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSave()
     }

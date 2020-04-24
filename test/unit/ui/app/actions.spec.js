@@ -1131,10 +1131,11 @@ describe('Actions', function () {
   })
 
   describe('#addToAddressBook', function () {
-    it('calls setAddressBook', function () {
+    it('calls setAddressBook', async function () {
       const addToAddressBookSpy = sinon.stub(background, 'setAddressBook')
+        .callsArgWith(4, null, true)
       const store = mockStore()
-      store.dispatch(actions.addToAddressBook('test'))
+      await store.dispatch(actions.addToAddressBook('test'))
       assert(addToAddressBookSpy.calledOnce)
       addToAddressBookSpy.restore()
     })
