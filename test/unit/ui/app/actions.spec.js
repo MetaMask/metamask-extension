@@ -985,33 +985,30 @@ describe('Actions', function () {
   describe('#showAccountDetail', function () {
     let setSelectedAddressSpy
 
-    beforeEach(function () {
-      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
-    })
-
     afterEach(function () {
       setSelectedAddressSpy.restore()
     })
 
-    it('#showAccountDetail', function () {
+    it('#showAccountDetail', async function () {
+      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
+        .callsArgWith(1, null)
       const store = mockStore()
 
-      store.dispatch(actions.showAccountDetail())
+      await store.dispatch(actions.showAccountDetail())
       assert(setSelectedAddressSpy.calledOnce)
     })
 
-    it('displays warning if setSelectedAddress throws', function () {
+    it('displays warning if setSelectedAddress throws', async function () {
+      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
+        .callsArgWith(1, new Error('error'))
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
-      setSelectedAddressSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
 
-      store.dispatch(actions.showAccountDetail())
+      await store.dispatch(actions.showAccountDetail())
       assert.deepEqual(store.getActions(), expectedActions)
     })
   })
