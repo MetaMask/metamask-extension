@@ -1,9 +1,15 @@
 # Changelog
 
 ## Current Develop Branch
+- Version v0.1.6
+- Add: more trans
+- Fix: react network proptype
 
 ## 0.1.6 Thu Apr 23 2020
-- Version v0.1.5
+- Add: update changelog
+- Fix: Main Conflux Network -> Conflux Main Network
+- Fix: scan link, testnet scan link
+- Add: more i18n
 
 ## 0.1.5 Wed Apr 22 2020
 - Fix: don't count stroageLimit into total tx fee (#73)
