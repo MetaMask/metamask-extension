@@ -245,12 +245,6 @@
   "contractDeployment": {
     "message": "Smart Contract Ausführung"
   },
-  "conversionProgress": {
-    "message": "Umtausch in Arbeit"
-  },
-  "copiedButton": {
-    "message": "Kopiert"
-  },
   "copiedExclamation": {
     "message": "Kopiert!"
   },
@@ -265,9 +259,6 @@
   },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
-  },
-  "copyButton": {
-    "message": " Kopieren "
   },
   "copyPrivateKey": {
     "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
@@ -438,9 +429,6 @@
   },
   "from": {
     "message": "Von"
-  },
-  "fromShapeShift": {
-    "message": "Von ShapeShift"
   },
   "functionType": {
     "message": "Funktionstyp"
@@ -733,9 +721,6 @@
   },
   "noAddressForName": {
     "message": "Für den angegebene Namen wurde keine Adresse eingegeben."
-  },
-  "noDeposits": {
-    "message": "Keine Einzahlung erhalten"
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
@@ -1130,10 +1115,6 @@
   },
   "to": {
     "message": "An"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 an ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Der Token wurde bereits hinzugefügt."

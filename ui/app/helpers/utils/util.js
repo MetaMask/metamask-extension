@@ -277,7 +277,7 @@ export function checksumAddress (address) {
  * @returns {string} The shortened address, or the original if it was no longer
  * than 10 characters.
  */
-export function addressSlicer (address = '') {
+export function shortenAddress (address = '') {
   if (address.length < 11) {
     return address
   }

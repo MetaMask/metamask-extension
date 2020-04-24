@@ -70,20 +70,11 @@
   "contractDeployment": {
     "message": "अनुबंध परिनियोजन व तैनाती"
   },
-  "conversionProgress": {
-    "message": "रूपांतरण प्रगति में हे।"
-  },
-  "copiedButton": {
-    "message": "कॉपी किया गया"
-  },
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
   },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
-  },
-  "copyButton": {
-    "message": " कॉपी / प्रतिलिपि कर्रे [बत्तन] "
   },
   "copyPrivateKey": {
     "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
@@ -158,9 +149,6 @@
   },
   "from": {
     "message": "की तरफ से - संदेश"
-  },
-  "fromShapeShift": {
-    "message": "सेशशशफ्ट का"
   },
   "gasLimit": {
     "message": "गैस सीमा"
@@ -301,9 +289,6 @@
   "noAddressForName": {
     "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है।"
   },
-  "noDeposits": {
-    "message": "कोई जमा प्राप्त नहीं हुई"
-  },
   "noTransactions": {
     "message": "कोई लेन-देन नहीं"
   },
@@ -419,10 +404,6 @@
   },
   "to": {
     "message": "के लिए"
-  },
-  "toETHviaShapeShift": {
-    "message": "शैपशैफ्ट द्वारा $1 से ETH में जमा",
-    "description": "संदेश की शुरुआत में जमा प्रकार भर जाएगा"
   },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"

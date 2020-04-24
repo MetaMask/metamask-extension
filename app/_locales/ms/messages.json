@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Penyusunan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Penukaran sedang dilakukan"
-  },
-  "copiedButton": {
-    "message": "Disalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan keratan"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini kunci persendirian anda (klik untuk menyalin)"
@@ -437,9 +428,6 @@
   },
   "from": {
     "message": "Daripada"
-  },
-  "fromShapeShift": {
-    "message": "Daripada ShapeShift"
   },
   "functionType": {
     "message": "Jenis Fungsi"
@@ -737,9 +725,6 @@
   },
   "noAddressForName": {
     "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
-  "noDeposits": {
-    "message": "Tiada deposit diterima"
   },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
@@ -1141,10 +1126,6 @@
   },
   "to": {
     "message": "Kepada"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 kepada ETH melalui ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token telah pun ditambah."

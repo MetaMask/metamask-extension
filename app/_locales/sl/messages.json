@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Ustvarjanje pogodbe"
   },
-  "conversionProgress": {
-    "message": "Pretvorba v teku"
-  },
-  "copiedButton": {
-    "message": "Kopirano"
-  },
   "copiedExclamation": {
     "message": "Kopirano!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiraj v odložišče"
-  },
-  "copyButton": {
-    "message": " Kopiraj "
   },
   "copyPrivateKey": {
     "message": "To je vaš zesebni ključ (kliknite za kopiranje)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "Od"
-  },
-  "fromShapeShift": {
-    "message": "Od ShapeShift"
   },
   "functionType": {
     "message": "Vrsta funkcije"
@@ -748,9 +736,6 @@
   },
   "noAddressForName": {
     "message": "Za to ime ni naslovov."
-  },
-  "noDeposits": {
-    "message": "Prejetih ni nič vplačil"
   },
   "noConversionRateAvailable": {
     "message": "Menjalni tečaj ni na voljo"
@@ -1149,10 +1134,6 @@
   },
   "to": {
     "message": "Za"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 v ETH prek ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Žeton"

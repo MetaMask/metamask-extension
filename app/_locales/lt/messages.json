@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Sutarties išdėstymas"
   },
-  "conversionProgress": {
-    "message": "Vyksta keitimas"
-  },
-  "copiedButton": {
-    "message": "Nukopijuota"
-  },
   "copiedExclamation": {
     "message": "Nukopijuota!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopijuoti į iškarpinę"
-  },
-  "copyButton": {
-    "message": "Kopijuoti"
   },
   "copyPrivateKey": {
     "message": "Tai yra jūsų asmeninis raktas (spustelėkite, kad nukopijuotumėte)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "Nuo"
-  },
-  "fromShapeShift": {
-    "message": "Iš „ShapeShift“"
   },
   "functionType": {
     "message": "Funkcijos tipas"
@@ -763,9 +751,6 @@
   },
   "noAddressForName": {
     "message": "Šiam pavadinimui nenurodytas adresas."
-  },
-  "noDeposits": {
-    "message": "Negauta jokių indėlių"
   },
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
@@ -1167,10 +1152,6 @@
   },
   "to": {
     "message": "Iki"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 į ETH per „ShapeShift“",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Žetonas"

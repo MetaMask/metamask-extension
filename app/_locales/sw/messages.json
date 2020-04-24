@@ -251,12 +251,6 @@
   "contractDeployment": {
     "message": "Kutoa Mkataba"
   },
-  "conversionProgress": {
-    "message": "Ubadilishaji unaendelea"
-  },
-  "copiedButton": {
-    "message": "Imenakiliwa"
-  },
   "copiedExclamation": {
     "message": "Imenakiliwa!"
   },
@@ -271,9 +265,6 @@
   },
   "copyToClipboard": {
     "message": "Nakili kwenye ubao wa kunakili"
-  },
-  "copyButton": {
-    "message": "Nakili"
   },
   "copyPrivateKey": {
     "message": "Huu ni ufunguo wako wa kibinafsi (bofya ili unakili)"
@@ -443,9 +434,6 @@
   },
   "from": {
     "message": "Kutoka"
-  },
-  "fromShapeShift": {
-    "message": "Kutoka ShapeShift"
   },
   "functionType": {
     "message": "Aina ya Shughuli"
@@ -741,9 +729,6 @@
   },
   "noAddressForName": {
     "message": "Hakuna anwani iliyoundwa kwa jina hili."
-  },
-  "noDeposits": {
-    "message": "Hakuna maingizo yaliyopokelewa"
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
@@ -1145,10 +1130,6 @@
   },
   "to": {
     "message": "Kwenda"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 kwenda ETH kupitia ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Kianzio"

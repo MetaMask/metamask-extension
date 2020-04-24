@@ -26,7 +26,7 @@ import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
-import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
+import { checksumAddress, shortenAddress, valuesFor } from '../../helpers/utils/util'
 import { getMetaMaskAccounts, getCustomNonceValue, getUseNonceField, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
@@ -89,7 +89,7 @@ const mapStateToProps = (state, ownProps) => {
     : (
       casedContractMap[toAddress]
         ? casedContractMap[toAddress].name
-        : addressSlicer(checksumAddress(toAddress))
+        : shortenAddress(checksumAddress(toAddress))
     )
 
   const checksummedAddress = checksumAddress(toAddress)

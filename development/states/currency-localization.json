@@ -98,7 +98,6 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [],
     "send": {
       "gasLimit": null,
       "gasPrice": null,

@@ -55,20 +55,11 @@
   "contractDeployment": {
     "message": "Pag-deploy ng Contract"
   },
-  "conversionProgress": {
-    "message": "Isinasagawa ang conversion"
-  },
-  "copiedButton": {
-    "message": "Kinopya"
-  },
   "copiedExclamation": {
     "message": "Kinopya!"
   },
   "copyToClipboard": {
     "message": "Kinopya sa clipboard"
-  },
-  "copyButton": {
-    "message": " Kinopya "
   },
   "copyPrivateKey": {
     "message": "Ito ang iyong private key (i-click upang makopya)"
@@ -128,9 +119,6 @@
   },
   "from": {
     "message": "Mula sa"
-  },
-  "fromShapeShift": {
-    "message": "Mula sa ShapeShift"
   },
   "gasLimitTooLow": {
     "message": "Ang gas limit ay hindi dabat bababa sa 21000"
@@ -209,9 +197,6 @@
   "noAddressForName": {
     "message": "Walang naka-set na address para sa pangalang ito."
   },
-  "noDeposits": {
-    "message": "Walang natanggap na mga deposito"
-  },
   "noTransactions": {
     "message": "Walang mga Transaksyon"
   },
@@ -260,10 +245,6 @@
   },
   "sigRequest": {
     "message": "Hiling na Signature"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
-    "description": "Pupunan ng system ang deposit type sa simula ng mensahe"
   },
   "total": {
     "message": "Kabuuan"

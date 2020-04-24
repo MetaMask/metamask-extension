@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Ανάπτυξη Συμβολαίου"
   },
-  "conversionProgress": {
-    "message": "Μετατροπή σε εξέλιξη"
-  },
-  "copiedButton": {
-    "message": "Αντιγράφηκε"
-  },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
-  },
-  "copyButton": {
-    "message": "Αντιγραφή"
   },
   "copyPrivateKey": {
     "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
@@ -450,9 +441,6 @@
   },
   "from": {
     "message": "Από "
-  },
-  "fromShapeShift": {
-    "message": "Από το ShapeShift"
   },
   "functionType": {
     "message": "Τύπος Λειτουργίας"
@@ -760,9 +748,6 @@
   },
   "noAddressForName": {
     "message": "Δεν έχει ορισθεί καμιά διεύθυνση γ' αυτό το όνομα."
-  },
-  "noDeposits": {
-    "message": "Δεν λήφθηκε καμία κατάθεση"
   },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
@@ -1161,10 +1146,6 @@
   },
   "to": {
     "message": "Προς"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 στο ETH μέσω ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Διακριτικό"

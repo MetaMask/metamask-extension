@@ -70,20 +70,11 @@
   "contractDeployment": {
     "message": "Distribuição do Contrato"
   },
-  "conversionProgress": {
-    "message": "Conversão em progresso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "Copiado!"
   },
   "copyToClipboard": {
     "message": "Copiar para o clipboard"
-  },
-  "copyButton": {
-    "message": " Copiar "
   },
   "copyPrivateKey": {
     "message": "Esta é a sua chave privada (carregue para copiar)"
@@ -158,9 +149,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
   },
   "gasLimit": {
     "message": "Limite de Gas"
@@ -298,9 +286,6 @@
   "noAddressForName": {
     "message": "Nenhum endereço foi estabelecido para este nome."
   },
-  "noDeposits": {
-    "message": "Sem depósitos recebidos"
-  },
   "noTransactions": {
     "message": "Sem Transações"
   },
@@ -419,10 +404,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 para ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token já foi adicionado."

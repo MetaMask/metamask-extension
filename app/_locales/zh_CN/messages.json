@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "合约部署"
   },
-  "conversionProgress": {
-    "message": "正在进行转换"
-  },
-  "copiedButton": {
-    "message": "已复制"
-  },
   "copiedExclamation": {
     "message": "已复制"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
-  },
-  "copyButton": {
-    "message": " 复制 "
   },
   "copyPrivateKey": {
     "message": "这是你的私钥（点击复制）"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "来自"
-  },
-  "fromShapeShift": {
-    "message": "来自 ShapeShift"
   },
   "functionType": {
     "message": "功能类型"
@@ -745,9 +733,6 @@
   },
   "noAddressForName": {
     "message": "此 ENS 名字还没有指定地址。"
-  },
-  "noDeposits": {
-    "message": "没有已收的存款"
   },
   "noConversionRateAvailable": {
     "message": "无可用兑换率"
@@ -1149,10 +1134,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH 通过 ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "代币"

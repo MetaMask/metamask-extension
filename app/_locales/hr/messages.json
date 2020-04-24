@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Primjena ugovora"
   },
-  "conversionProgress": {
-    "message": "Konverzija u tijeku"
-  },
-  "copiedButton": {
-    "message": "Kopirano"
-  },
   "copiedExclamation": {
     "message": "Kopirano!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiraj u međuspremnik"
-  },
-  "copyButton": {
-    "message": "Kopiraj"
   },
   "copyPrivateKey": {
     "message": "Ovo je vaš privatni ključ (kliknite za kopiranje)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "Pošiljatelj"
-  },
-  "fromShapeShift": {
-    "message": "Od usluge ShapeShift"
   },
   "functionType": {
     "message": "Vrsta funkcije"
@@ -756,9 +744,6 @@
   },
   "noAddressForName": {
     "message": "Nijedna adresa nije postavljena za ovaj naziv."
-  },
-  "noDeposits": {
-    "message": "Nijedan polog nije primljen"
   },
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
@@ -1160,10 +1145,6 @@
   },
   "to": {
     "message": "Primatelj"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 za ETH uslugom ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token je već dodan."

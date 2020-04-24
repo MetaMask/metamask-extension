@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "تطبیق قرارداد"
   },
-  "conversionProgress": {
-    "message": "تبادل در حال اجراء"
-  },
-  "copiedButton": {
-    "message": "کاپی شد"
-  },
   "copiedExclamation": {
     "message": "کپی شد!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "کپی در بریده‌دان"
-  },
-  "copyButton": {
-    "message": "کاپی"
   },
   "copyPrivateKey": {
     "message": "این کلید خصوصی شما است (برای کاپی نمودن کلیک کنید)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "از"
-  },
-  "fromShapeShift": {
-    "message": "از ShapeShift"
   },
   "functionType": {
     "message": "نوعیت عملکرد"
@@ -763,9 +751,6 @@
   },
   "noAddressForName": {
     "message": "هیچ آدرسی برای این نام تنظیم نشده است."
-  },
-  "noDeposits": {
-    "message": "هیچ پرداختی دریافت نشده است"
   },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
@@ -1167,10 +1152,6 @@
   },
   "to": {
     "message": "به"
-  },
-  "toETHviaShapeShift": {
-    "message": "1$1 به ETH توسط ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "رمزیاب"

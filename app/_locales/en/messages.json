@@ -369,12 +369,6 @@
   "contractDeployment": {
     "message": "Contract Deployment"
   },
-  "conversionProgress": {
-    "message": "Conversion in progress"
-  },
-  "copiedButton": {
-    "message": "Copied"
-  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -389,9 +383,6 @@
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
-  },
-  "copyButton": {
-    "message": " Copy "
   },
   "copyPrivateKey": {
     "message": "This is your private key (click to copy)"
@@ -628,9 +619,6 @@
   },
   "from": {
     "message": "From"
-  },
-  "fromShapeShift": {
-    "message": "From ShapeShift"
   },
   "functionApprove": {
     "message": "Function: Approve"
@@ -986,9 +974,6 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
-  },
-  "noDeposits": {
-    "message": "No deposits received"
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -1470,10 +1455,6 @@
   },
   "toWithColon": {
     "message": "To:"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Token"

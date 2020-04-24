@@ -103,20 +103,11 @@
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
   },
-  "conversionProgress": {
-    "message": "กำลังดำเนินการแปลงหน่วย"
-  },
-  "copiedButton": {
-    "message": "คัดลอกแล้ว"
-  },
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
   "copyToClipboard": {
     "message": "คัดลอกไปคลิปบอร์ด"
-  },
-  "copyButton": {
-    "message": " คัดลอก "
   },
   "copyPrivateKey": {
     "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
@@ -230,9 +221,6 @@
   },
   "from": {
     "message": "จาก"
-  },
-  "fromShapeShift": {
-    "message": "จาก ShapeShift"
   },
   "gasLimit": {
     "message": "วงเงินแก็ส"
@@ -387,9 +375,6 @@
   },
   "noAddressForName": {
     "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
-  },
-  "noDeposits": {
-    "message": "ไม่มีเงินฝากเข้ามา"
   },
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
@@ -560,10 +545,6 @@
   },
   "to": {
     "message": "ถึง"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 เป็นอีเธอร์โดย ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "โทเคนได้ถูกเพิ่มไปแล้ว"

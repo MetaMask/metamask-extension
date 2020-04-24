@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "نشر العقد"
   },
-  "conversionProgress": {
-    "message": "جارِ التحويل"
-  },
-  "copiedButton": {
-    "message": "تم النسخ"
-  },
   "copiedExclamation": {
     "message": "تم النسخ."
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "نسخ إلى الحافظة"
-  },
-  "copyButton": {
-    "message": "نسخ"
   },
   "copyPrivateKey": {
     "message": "هذا هو مفتاحك الخاص (انقر للنسخ)"
@@ -449,9 +440,6 @@
   },
   "from": {
     "message": "من"
-  },
-  "fromShapeShift": {
-    "message": "من ShapeShift"
   },
   "functionType": {
     "message": "نوع الوظيفة"
@@ -756,9 +744,6 @@
   },
   "noAddressForName": {
     "message": "لم يتم تعيين عنوان لهذا الاسم."
-  },
-  "noDeposits": {
-    "message": "لم يتم استلام أي ودائع"
   },
   "noConversionRateAvailable": {
     "message": "لا يوجد معدل تحويل متاح"
@@ -1160,10 +1145,6 @@
   },
   "to": {
     "message": "إلى"
-  },
-  "toETHviaShapeShift": {
-    "message": "تحويل $1 إلى ETH عبر ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "عملة رمزية"

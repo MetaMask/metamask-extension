@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "ಒಪ್ಪಂದದ ನಿಯೋಜನೆ"
   },
-  "conversionProgress": {
-    "message": "ಪರಿವರ್ತನೆಯು ಪ್ರಗತಿಯಲ್ಲಿದೆ"
-  },
-  "copiedButton": {
-    "message": "ನಕಲಿಸಲಾಗಿದೆ"
-  },
   "copiedExclamation": {
     "message": "ನಕಲಿಸಲಾಗಿದೆ!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
-  },
-  "copyButton": {
-    "message": "ನಕಲಿಸು"
   },
   "copyPrivateKey": {
     "message": "ಇದು ನಿಮ್ಮ ಖಾಸಗಿ ಕೀ ಆಗಿದೆ (ನಕಲಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ)"
@@ -453,9 +444,6 @@
   },
   "from": {
     "message": "ನಿಂದ"
-  },
-  "fromShapeShift": {
-    "message": "ShapeShift ನಿಂದ"
   },
   "functionType": {
     "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
@@ -763,9 +751,6 @@
   },
   "noAddressForName": {
     "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
-  },
-  "noDeposits": {
-    "message": "ಯಾವುದೇ ಠೇವಣಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿಲ್ಲ"
   },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
@@ -1167,10 +1152,6 @@
   },
   "to": {
     "message": "ವರೆಗೆ"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift ಮೂಲಕ ETH ಗೆ $1",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "ಟೋಕನ್"
