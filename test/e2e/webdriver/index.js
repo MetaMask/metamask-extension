@@ -4,7 +4,7 @@ const ChromeDriver = require('./chrome')
 const FirefoxDriver = require('./firefox')
 const fetchMockResponses = require('../../data/fetch-mocks.json')
 
-async function buildWebDriver ({ responsive, port = 9222 } = {}) {
+async function buildWebDriver ({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER
   const extensionPath = `dist/${browser}`
 

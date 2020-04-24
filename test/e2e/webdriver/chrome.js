@@ -8,12 +8,18 @@ class ChromeDriver {
   static async build ({ extensionPath, responsive, port }) {
     const args = [
       `load-extension=${extensionPath}`,
+      '--no-sandbox',
+      '--headless',
+      '--disable-gpu',
+      '--disable-dev-shm-usage',
+      '--remote-debugging-port=9222',
     ]
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
     }
     const options = new chrome.Options()
       .addArguments(args)
+    console.log('chromedriver options', options)
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options)
