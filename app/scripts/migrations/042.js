@@ -2,7 +2,8 @@ const version = 42
 import { cloneDeep } from 'lodash'
 
 /**
- * PreferencesController.autoLogoutTimeLimit -> autoLockTimeLimit
+ * Initialize `connectedStatusPopoverHasBeenShown` to `false` if it hasn't yet been set,
+ * so that existing users are introduced to the new connected status indicator
  */
 export default {
   version,
