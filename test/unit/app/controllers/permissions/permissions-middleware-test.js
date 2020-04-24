@@ -536,7 +536,9 @@ describe('permissions middleware', function () {
 
       await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
 
-      // at this point, the permission should have been granted
+      // wait for permission to be granted
+      await pendingApproval
+
       const perms = permController.permissions.getPermissionsForDomain(ORIGINS.a)
 
       assert.equal(
@@ -550,8 +552,6 @@ describe('permissions middleware', function () {
         ORIGINS.a,
         [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
       )
-
-      await pendingApproval
 
       // we should also see the accounts on the response
       assert.ok(
