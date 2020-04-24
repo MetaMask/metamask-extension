@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
+import { shortenAddress, checksumAddress } from '../../../helpers/utils/util'
 
 import Tooltip from '../../ui/tooltip-v2.js'
 
@@ -42,7 +42,7 @@ class SelectedAccount extends Component {
               { selectedIdentity.name }
             </div>
             <div className="selected-account__address">
-              { addressSlicer(checksummedAddress) }
+              { shortenAddress(checksummedAddress) }
             </div>
           </div>
         </Tooltip>
