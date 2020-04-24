@@ -83,7 +83,6 @@
       },
       "assetImages": {},
       "completedOnboarding": true,
-      "currentAccountTab": "history",
       "currentLocale": "en",
       "featureFlags": {
         "showIncomingTransactions": true,
