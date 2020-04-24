@@ -1178,15 +1178,17 @@ export function setSelectedToken (tokenAddress) {
 }
 
 export function setSelectedAddress (address) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err) => {
+    try {
+      await promisifiedBackground.setSelectedAddress(address)
+    } catch (error) {
       dispatch(hideLoadingIndication())
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-    })
+      dispatch(displayWarning(error.message))
+      return
+    }
+    dispatch(hideLoadingIndication())
   }
 }
 

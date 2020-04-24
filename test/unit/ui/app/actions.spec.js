@@ -949,22 +949,22 @@ describe('Actions', function () {
   describe('#setSelectedAddress', function () {
     let setSelectedAddressSpy
 
-    beforeEach(function () {
-      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
-    })
-
     afterEach(function () {
       setSelectedAddressSpy.restore()
     })
 
-    it('calls setSelectedAddress in background', function () {
+    it('calls setSelectedAddress in background', async function () {
+      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
+        .callsArgWith(1, null)
       const store = mockStore({ metamask: devState })
 
-      store.dispatch(actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
+      await store.dispatch(actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
       assert(setSelectedAddressSpy.calledOnce)
     })
 
-    it('errors when setSelectedAddress throws', function () {
+    it('errors when setSelectedAddress throws', async function () {
+      setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
+        .callsArgWith(1, new Error('error'))
       const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -972,11 +972,7 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      setSelectedAddressSpy.callsFake((_, callback) => {
-        callback(new Error('error'))
-      })
-
-      store.dispatch(actions.setSelectedAddress())
+      await store.dispatch(actions.setSelectedAddress())
       assert.deepEqual(store.getActions(), expectedActions)
 
     })
