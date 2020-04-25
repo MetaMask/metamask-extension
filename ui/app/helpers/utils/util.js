@@ -285,44 +285,6 @@ export function shortenAddress (address = '') {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-/**
- * Shortens a URL for display, preserving the beginning and end.
- * Returns the given URL if it is no longer than maxLength characters.
- * Shortened URLs are maxLength + 3 characters long.
- *
- * Example output: llanfairpwllgw...ogogochuchaf.eu
- *
- * @param {string} url - The URL to shorten.
- * @param {string} opts - Options bag.
- * @param {number} opts.maxLength - The maximum length of the address.
- * @param {boolean} opts.stripWwwPrefix - Whether to strip 'www.' from the address if present.
- * @returns {string} The shortened URL, or the original if it was no longer
- * than maxLength characters.
- */
-export function shortenUrl (url = '', {
-  maxLength = 30,
-  stripWwwPrefix = true,
-} = {}) {
-  if (maxLength < 10) {
-    // it gets nonsensical somewhere around here
-    throw new Error('Expected maxLength >= 10')
-  }
-
-  let _url = url
-
-  if (stripWwwPrefix && _url.startsWith('www.')) {
-    _url = _url.slice(4)
-  }
-
-  if (_url.length <= maxLength) {
-    return _url
-  }
-
-  const halfPoint = Math.floor(maxLength / 2)
-
-  return `${_url.slice(0, halfPoint)}...${_url.slice(halfPoint - maxLength)}`
-}
-
 export function isValidAddressHead (address) {
   const addressLengthIsLessThanFull = address.length < 42
   const addressIsHex = isHex(address)

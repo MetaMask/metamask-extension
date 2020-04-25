@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import IconWithFallBack from '../../ui/icon-with-fallback'
-import { shortenUrl } from '../../../helpers/utils/util'
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -31,7 +30,7 @@ export default class ConnectedSitesList extends Component {
                 {
                   domain.extensionId
                     ? t('externalExtension')
-                    : shortenUrl(domain.key)
+                    : domain.key
                 }
               </span>
             </div>
