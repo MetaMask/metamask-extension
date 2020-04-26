@@ -542,12 +542,12 @@ describe('Send Component', function () {
       wrapper.setProps({ address: '0x888', decimals: 18, symbol: '888' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
-        '0x84206Cf2696cbbF856BeAE72003Abc271766E023'
+        '0x88A8f9b1835Ae66B6f1DA3c930b7D11220beBF78'
       )
 
       clock.tick(1001)
       assert.deepEqual(instance.state, {
-        query: '0x84206Cf2696cbbF856BeAE72003Abc271766E023',
+        query: '0x88A8f9b1835Ae66B6f1DA3c930b7D11220beBF78',
         toError: null,
         toWarning: 'knownAddressRecipient',
       })
