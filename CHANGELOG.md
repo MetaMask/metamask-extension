@@ -1,6 +1,22 @@
 # Changelog
 
 ## Current Develop Branch
+- Version v0.1.5
+- Add: update changelog
+- Fix: Main Conflux Network -> Conflux Main Network
+- Fix: scan link, testnet scan link
+- Add: more i18n
+- Version v0.1.6
+- Add: more trans
+- Fix: react network proptype
+- Fix: changelog
+- Add: favicon for e2e dapp demo
+- Add: mainnet faucet #89
+- Add: conflux logo to e2e test app
+- Fix: faucet url for two rpc
+- Add: use new fc address
+- Fix: convert gas price
+- Add: new ver fullnode
 - Version v0.1.6
 - Add: more trans
 - Fix: react network proptype
