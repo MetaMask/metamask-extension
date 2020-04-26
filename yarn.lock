@@ -2736,10 +2736,10 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.14":
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.14.tgz#851e44cbfe4fc73312ad920891eed939f1913f4c"
-  integrity sha512-GCCIy6KYaTl9TiCzwvNM6/sumSGGDtdEBggYGi53+VzoAwZemS1IrIi5QX5iGY3lUmpy76IFe5RzySq/HzeyHw==
+"@yqrashawn/conflux-local-network-lite@^2.0.15":
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.15.tgz#2d12e2e1f70080db0b3a8eafcfb37af5775b7691"
+  integrity sha512-8N8KtwWUwD5oqyEy0TinFDXjDR8SNBZyCtoiLqPkzcQHOgPguJ2Olx1J+7PX3Oia5Btl+htRWXgTv2ITROlU5w==
   dependencies:
     cfx-util "^0.0.2"
     cross-port-killer "^1.2.1"
