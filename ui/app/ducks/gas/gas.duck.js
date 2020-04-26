@@ -226,8 +226,7 @@ async function fetchExternalBasicGasEstimates (dispatch) {
   ])
 
   // const { result: estimateGasDrip } = await estimateGasResult.json()
-  const estimateGasGdripTimes10 =
-        ((estimateGasDrip * 10) / 1e9) || 100 // this unit is gdrip * 10
+  const estimateGasGdripTimes10 = new BigNumber(estimateGasDrip, 16).times(10).div(1e9).toNumber() || 100
 
   const {
     safeLow: safeLowTimes10,
@@ -314,8 +313,7 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
   ])
 
   // const { result: estimateGasDrip } = await estimateGasResult.json()
-  const estimateGasGdripTimes10 =
-        ((estimateGasDrip * 10) / 1e9) || 100 // this unit is gdrip * 10
+  const estimateGasGdripTimes10 = new BigNumber(estimateGasDrip, 16).times(10).div(1e9).toNumber() || 100
 
   const {
     // average: averageTimes10,
