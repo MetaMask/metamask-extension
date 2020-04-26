@@ -89,7 +89,7 @@ export default class DepositEtherModal extends Component {
     // const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
     const { network, address, toFaucet } = this.props
 
-    const isTestNetwork = ['1', '2', '3', '4', '42'].find((n) => n === network)
+    // const isTestNetwork = ['1', '2', '3', '4', '42'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
 
     return (
@@ -134,7 +134,7 @@ export default class DepositEtherModal extends Component {
               text: this.faucetRowText(networkName),
               buttonLabel: this.context.t('getEther'),
               onButtonClick: () => toFaucet({ network, address }),
-              hide: !isTestNetwork,
+              /* hide: !isTestNetwork, */
             })}
             {/* {this.renderRow({ */}
             {/*   logo: ( */}
