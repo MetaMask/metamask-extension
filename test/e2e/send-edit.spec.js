@@ -181,8 +181,8 @@ describe('Using MetaMask with an existing account', function () {
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '1')
 
-      const transactionFee = transactionAmounts[1]
-      assert.equal(await transactionFee.getText(), '0.00025')
+      // const transactionFee = transactionAmounts[1]
+      // assert.equal(await transactionFee.getText(), '0.00025')
     })
 
     it('edits the transaction', async function () {
