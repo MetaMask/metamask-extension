@@ -132,7 +132,6 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
   return formatted
 }
 
-
 export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]
   const label = formattedBalance.split(' ')[1]
@@ -267,6 +266,17 @@ export function checksumAddress (address) {
   return checksummed
 }
 
+/**
+ * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Returns the given address if it is no longer than 10 characters.
+ * Shortened addresses are 13 characters long.
+ *
+ * Example output: 0xabcd...1234
+ *
+ * @param {string} address - The address to shorten.
+ * @returns {string} The shortened address, or the original if it was no longer
+ * than 10 characters.
+ */
 export function shortenAddress (address = '') {
   if (address.length < 11) {
     return address

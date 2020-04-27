@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-top: 1px solid #D2D8DD;
   }
 
   &__content-row {
@@ -12,7 +11,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #D2D8DD;
+    border-top: 1px solid #D2D8DD;
     padding: 16px 24px;
   }
 
@@ -25,8 +24,10 @@
   }
 
   &__domain-name {
+    max-width: 215px;
     white-space: nowrap;
     overflow: hidden;
+    direction: rtl;
     text-overflow: ellipsis;
     margin-left: 6px;
   }
