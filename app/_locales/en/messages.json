@@ -1,6 +1,6 @@
 {
   "cfxTestWarning": {
-    "message": "Currently, the CFX are test-net tokens, and the amount in your wallet will be nulled when the test-net resets or upgrades"
+    "message": "Currently, the CFX are test tokens, and the amount in your wallet will be nulled when the test-net resets or upgrades"
   },
   "migrateSai": {
     "message": "A message from Maker: The new Multi-Collateral Dai token has been released. Your old tokens are now called Sai. Please upgrade your Sai tokens to the new Dai."
