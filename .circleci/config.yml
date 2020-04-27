@@ -110,10 +110,17 @@ jobs:
       - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
+      - restore_cache:
+          key: portal-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Install deps
           command: |
             .circleci/scripts/deps-install.sh
+      - save_cache:
+          paths:
+            - node_modules
+            - /home/circleci/.cache/yarn/
+          key: portal-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Collect yarn install HAR logs
           command: |
