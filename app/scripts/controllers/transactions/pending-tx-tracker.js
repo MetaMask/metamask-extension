@@ -20,9 +20,25 @@ import EthQuery from 'ethjs-query'
 */
 
 export default class PendingTransactionTracker extends EventEmitter {
+  /**
+   * We wait this many blocks before emitting a 'tx:dropped' event
+   *
+   * This is because we could be talking to a node that is out of sync.
+   *
+   * @type {number}
+   */
+  DROPPED_BUFFER_COUNT = 3
+
+  /**
+   * A map of transaction hashes to the number of blocks we've seen
+   * since first considering it dropped
+   *
+   * @type {Map<String, number>}
+   */
+  droppedBlocksBufferByHash = new Map()
+
   constructor (config) {
     super()
-    this.droppedBuffer = {}
     this.query = config.query || (new EthQuery(config.provider))
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
@@ -157,70 +173,61 @@ export default class PendingTransactionTracker extends EventEmitter {
 
       return
     }
-    // *note to self* hard failure point
-    const transactionReceipt = await this.query.getTransactionReceipt(txHash)
 
-
-    // If another tx with the same nonce is mined, set as dropped.
-    const taken = await this._checkIfNonceIsTaken(txMeta)
-    let dropped
-    try {
-      // check the network if the nonce is ahead the tx
-      // and the tx has not been mined into a block
-      dropped = await this._checkIfTxWasDropped(txMeta, transactionReceipt)
-
-      // the dropped buffer is in case we ask a node for the tx
-      // that is behind the node we asked for tx count
-      // IS A SECURITY FOR HITTING NODES IN INFURA THAT COULD GO OUT
-      // OF SYNC.
-      // on the next block event it will return fire as dropped
-      if (typeof this.droppedBuffer[txHash] !== 'number') {
-        this.droppedBuffer[txHash] = 0
-      }
-
-      // 3 block count buffer
-      if (dropped && this.droppedBuffer[txHash] < 3) {
-        dropped = false
-        ++this.droppedBuffer[txHash]
-      }
-
-      if (dropped && this.droppedBuffer[txHash] === 3) {
-        // clean up
-        delete this.droppedBuffer[txHash]
-      }
-    } catch (e) {
-      log.error(e)
-    }
-
-    if (taken || dropped) {
+    if (await this._checkIfNonceIsTaken(txMeta)) {
       this.emit('tx:dropped', txId)
       return
     }
 
-    // get latest transaction status
-    if (transactionReceipt?.blockNumber) {
-      this.emit('tx:confirmed', txId, transactionReceipt)
-    } else {
-      const err = new Error('Missing transaction receipt or block number.')
+    try {
+      const transactionReceipt = await this.query.getTransactionReceipt(txHash)
+      if (transactionReceipt?.blockNumber) {
+        this.emit('tx:confirmed', txId, transactionReceipt)
+        return
+      }
+    } catch (err) {
       txMeta.warning = {
         error: err.message,
         message: 'There was a problem loading this transaction.',
       }
       this.emit('tx:warning', txMeta, err)
+      return
+    }
+
+    if (await this._checkIfTxWasDropped(txMeta)) {
+      this.emit('tx:dropped', txId)
+      return
     }
   }
 
   /**
-   * Checks whether the nonce in the given {@code txMeta} is correct against the network
+   * Checks whether the nonce in the given {@code txMeta} is behind the network nonce
+   *
    * @param {Object} txMeta - the transaction metadata
-   * @param {Object} [transactionReceipt] - the transaction receipt
    * @returns {Promise<boolean>}
    * @private
    */
-  async _checkIfTxWasDropped (txMeta, transactionReceipt) {
-    const { txParams: { nonce, from } } = txMeta
-    const nextNonce = await this.query.getTransactionCount(from)
-    return !transactionReceipt?.blockNumber && parseInt(nextNonce) > parseInt(nonce)
+  async _checkIfTxWasDropped (txMeta) {
+    const { hash: txHash, txParams: { nonce, from } } = txMeta
+    const networkNonce = await this.query.getTransactionCount(from)
+
+    if (parseInt(nonce) > parseInt(networkNonce)) {
+      return false
+    }
+
+    if (!this.droppedBlocksBufferByHash.has(txHash)) {
+      this.droppedBlocksBufferByHash.set(txHash, 0)
+    }
+
+    const currentBlockBuffer = this.droppedBlocksBufferByHash.get(txHash)
+
+    if (currentBlockBuffer < this.DROPPED_BUFFER_COUNT) {
+      this.droppedBlocksBufferByHash.set(txHash, currentBlockBuffer + 1)
+      return false
+    }
+
+    this.droppedBlocksBufferByHash.delete(txHash)
+    return true
   }
 
   /**
