@@ -440,7 +440,6 @@ export function signMsg (msgData) {
       log.debug(`actions calling background.signMessage`)
       background.signMessage(msgData, (err, newState) => {
         log.debug('signMessage called back')
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
@@ -449,6 +448,7 @@ export function signMsg (msgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
@@ -466,7 +466,6 @@ export function signPersonalMsg (msgData) {
       log.debug(`actions calling background.signPersonalMessage`)
       background.signPersonalMessage(msgData, (err, newState) => {
         log.debug('signPersonalMessage called back')
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
@@ -475,6 +474,7 @@ export function signPersonalMsg (msgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
@@ -491,7 +491,6 @@ export function decryptMsgInline (decryptedMsgData) {
       log.debug(`actions calling background.decryptMessageInline`)
       background.decryptMessageInline(decryptedMsgData, (err, newState) => {
         log.debug('decryptMsgInline called back')
-        dispatch(updateMetamaskState(newState))
 
         if (err) {
           log.error(err)
@@ -499,6 +498,7 @@ export function decryptMsgInline (decryptedMsgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
         return resolve(decryptedMsgData)
       })
@@ -514,7 +514,6 @@ export function decryptMsg (decryptedMsgData) {
       log.debug(`actions calling background.decryptMessage`)
       background.decryptMessage(decryptedMsgData, (err, newState) => {
         log.debug('decryptMsg called back')
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
@@ -523,6 +522,7 @@ export function decryptMsg (decryptedMsgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(decryptedMsgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
         console.log(decryptedMsgData)
@@ -540,7 +540,6 @@ export function encryptionPublicKeyMsg (msgData) {
       log.debug(`actions calling background.encryptionPublicKey`)
       background.encryptionPublicKey(msgData, (err, newState) => {
         log.debug('encryptionPublicKeyMsg called back')
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
@@ -549,6 +548,7 @@ export function encryptionPublicKeyMsg (msgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
@@ -566,7 +566,6 @@ export function signTypedMsg (msgData) {
       log.debug(`actions calling background.signTypedMessage`)
       background.signTypedMessage(msgData, (err, newState) => {
         log.debug('signTypedMessage called back')
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
@@ -575,6 +574,7 @@ export function signTypedMsg (msgData) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(msgData.metamaskId))
         dispatch(closeCurrentNotificationWindow())
 
@@ -894,13 +894,13 @@ export function cancelMsg (msgData) {
     dispatch(showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.cancelMessage(msgData.id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(msgData.id))
         dispatch(closeCurrentNotificationWindow())
 
@@ -916,13 +916,13 @@ export function cancelPersonalMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelPersonalMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
@@ -938,13 +938,13 @@ export function cancelDecryptMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelDecryptMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
@@ -960,13 +960,13 @@ export function cancelEncryptionPublicKeyMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelEncryptionPublicKey(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
@@ -982,13 +982,13 @@ export function cancelTypedMsg (msgData) {
     return new Promise((resolve, reject) => {
       const id = msgData.id
       background.cancelTypedMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
         dispatch(hideLoadingIndication())
 
         if (err) {
           return reject(err)
         }
 
+        dispatch(updateMetamaskState(newState))
         dispatch(completedTx(id))
         dispatch(closeCurrentNotificationWindow())
 
