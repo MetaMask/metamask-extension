@@ -7,7 +7,6 @@ import {
 } from '../../selectors/confirm-transaction'
 import {
   getCurrentEthBalance,
-  getDaiV1Token,
   getFirstPermissionRequest,
   getTotalUnapprovedCount,
 } from '../../selectors/selectors'
@@ -60,7 +59,6 @@ const mapStateToProps = (state) => {
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
-    hasDaiV1Token: Boolean(getDaiV1Token(state)),
     firstPermissionsRequestId,
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,

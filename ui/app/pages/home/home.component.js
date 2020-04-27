@@ -5,7 +5,6 @@ import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
-import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
@@ -30,10 +29,6 @@ export default class Home extends PureComponent {
     t: PropTypes.func,
   }
 
-  static defaultProps = {
-    hasDaiV1Token: false,
-  }
-
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
@@ -50,7 +45,6 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
-    hasDaiV1Token: PropTypes.bool,
     firstPermissionsRequestId: PropTypes.string,
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
@@ -114,7 +108,6 @@ export default class Home extends PureComponent {
     const { t } = this.context
     const {
       history,
-      hasDaiV1Token,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
@@ -166,11 +159,6 @@ export default class Home extends PureComponent {
                 key="home-privacyModeDefault"
               />
             )
-            : null
-        }
-        {
-          hasDaiV1Token
-            ? <DaiMigrationNotification />
             : null
         }
       </MultipleNotifications>

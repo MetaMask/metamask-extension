@@ -1,13 +1,4 @@
 {
-  "migrateSai": {
-    "message": "Un messaggio da Maker: il nuovo Dai Multi-Collaterale è stato rilasciato. Ora i token precedenti si chiamano Sai. Aggiorna i tuoi Sai ai nuovi Dai."
-  },
-  "migrateSaiInfo": {
-    "message": "Per eliminare questa notifica puoi migrare i tuoi token o nascondere SAI dalla lista dei token."
-  },
-  "migrate": {
-    "message": "Migra"
-  },
   "showIncomingTransactions": {
     "message": "Mostra Transazioni in Ingresso"
   },

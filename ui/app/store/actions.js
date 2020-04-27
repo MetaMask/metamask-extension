@@ -2134,16 +2134,6 @@ export function setLastActiveTime () {
   }
 }
 
-export function setMkrMigrationReminderTimestamp (timestamp) {
-  return (dispatch) => {
-    background.setMkrMigrationReminderTimestamp(timestamp, (err) => {
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-    })
-  }
-}
-
 export function setConnectedStatusPopoverHasBeenShown () {
   return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
