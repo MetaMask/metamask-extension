@@ -3,7 +3,6 @@ import ObservableStore from 'obs-store'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
 import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
 import sinon from 'sinon'
-import { FC_TOKEN_MAP } from '../../../../app/scripts/lib/fc-helper'
 
 describe('preferences controller', function () {
   let preferencesController
@@ -121,7 +120,7 @@ describe('preferences controller', function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
 
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 1, 'fc should in the list')
+      assert.equal(tokens.length, 0, 'empty list of tokens')
     })
   })
 
@@ -135,9 +134,9 @@ describe('preferences controller', function () {
       await preferencesController.addToken(address, symbol, decimals)
 
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 2, 'one token added')
+      assert.equal(tokens.length, 1, 'one token added')
 
-      const added = tokens[1]
+      const added = tokens[0]
       assert.equal(added.address, address, 'set address correctly')
       assert.equal(added.symbol, symbol, 'set symbol correctly')
       assert.equal(added.decimals, decimals, 'set decimals correctly')
@@ -155,10 +154,9 @@ describe('preferences controller', function () {
       await preferencesController.addToken(address, symbol, newDecimals)
 
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 2, 'one token added')
+      assert.equal(tokens.length, 1, 'one token added')
 
-      assert.equal(tokens[0].symbol, FC_TOKEN_MAP.symbol, 'fist token is FC')
-      const added = tokens[1]
+      const added = tokens[0]
       assert.equal(added.address, address, 'set address correctly')
       assert.equal(added.symbol, symbol, 'set symbol correctly')
       assert.equal(added.decimals, newDecimals, 'updated decimals correctly')
@@ -173,7 +171,7 @@ describe('preferences controller', function () {
       await preferencesController.addToken(address, symbol, decimals)
       assert.equal(
         preferencesController.getTokens().length,
-        2,
+        1,
         'one token added for 1st address'
       )
 
@@ -181,7 +179,7 @@ describe('preferences controller', function () {
       await preferencesController.addToken(address, symbol, decimals)
       assert.equal(
         preferencesController.getTokens().length,
-        2,
+        1,
         'one token added for 2nd address'
       )
     })
@@ -240,13 +238,13 @@ describe('preferences controller', function () {
   })
 
   describe('removeToken', function () {
-    it('should remove the only none FC token from its state', async function () {
+    it('should remove the only token from its state', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken('0xa', 'A', 5)
       await preferencesController.removeToken('0xa')
 
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 1, 'one token removed')
+      assert.equal(tokens.length, 0, 'one token removed')
     })
 
     it('should remove a token from its state', async function () {
@@ -256,10 +254,9 @@ describe('preferences controller', function () {
       await preferencesController.removeToken('0xa')
 
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 2, 'one token removed')
+      assert.equal(tokens.length, 1, 'one token removed')
 
-      const [token0, token1] = tokens
-      assert.deepEqual(token0, FC_TOKEN_MAP)
+      const [token1] = tokens
       assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
     })
 
@@ -275,10 +272,9 @@ describe('preferences controller', function () {
       await preferencesController.removeToken('0xa')
 
       const tokensFirst = preferencesController.getTokens()
-      assert.equal(tokensFirst.length, 2, 'one token removed in account')
+      assert.equal(tokensFirst.length, 1, 'one token removed in account')
 
-      const [token0, token1] = tokensFirst
-      assert.deepEqual(token0, FC_TOKEN_MAP)
+      const [token1] = tokensFirst
       assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
 
       await preferencesController.setSelectedAddress('0x7e57e3')
@@ -302,10 +298,9 @@ describe('preferences controller', function () {
       await preferencesController.removeToken('0xa')
 
       const tokensFirst = preferencesController.getTokens()
-      assert.equal(tokensFirst.length, 2, 'one token removed in network')
+      assert.equal(tokensFirst.length, 1, 'one token removed in network')
 
-      const [token0, token1] = tokensFirst
-      assert.deepEqual(token0, FC_TOKEN_MAP)
+      const [token1] = tokensFirst
       assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 })
 
       network.providerStore.updateState({ type: 'rinkeby' })
@@ -508,8 +503,8 @@ describe('preferences controller', function () {
 
       await preferencesController._handleWatchAssetERC20(req.params.options)
       const tokens = preferencesController.getTokens()
-      assert.equal(tokens.length, 2, `two token added`)
-      const added = tokens[1]
+      assert.equal(tokens.length, 1, `one token added`)
+      const added = tokens[0]
       assert.equal(added.address, address, 'set address correctly')
       assert.equal(added.symbol, symbol, 'set symbol correctly')
       assert.equal(added.decimals, decimals, 'set decimals correctly')
