@@ -33,7 +33,7 @@ describe('buy-eth-url', function () {
     const testnetUrl = getBuyEthUrl(testnet)
     assert.equal(
       testnetUrl,
-      'http://test-faucet.conflux-chain.org:18088/faucet/dev/ask?address=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+      'http://test-faucet.conflux-chain.org:18088/dev/ask?address=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
     )
   })
 

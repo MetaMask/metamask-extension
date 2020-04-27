@@ -21,7 +21,7 @@ function getBuyEthUrl ({ network, amount, address, service }) {
     case 'conflux-main-faucet':
       return `https://wallet.confluxscan.io/faucet/dev/ask?address=${address}`
     case 'conflux-test-faucet':
-      return `http://test-faucet.conflux-chain.org:18088/faucet/dev/ask?address=${address}`
+      return `http://test-faucet.conflux-chain.org:18088/dev/ask?address=${address}`
     case 'wyre':
       return `https://pay.sendwyre.com/?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`
     case 'coinswitch':
