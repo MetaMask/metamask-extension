@@ -1574,14 +1574,6 @@ export function removeFromAddressBook (chainId, addressToRemove) {
   }
 }
 
-export function useEtherscanProvider () {
-  log.debug(`background.useEtherscanProvider`)
-  background.useEtherscanProvider()
-  return {
-    type: actionConstants.USE_ETHERSCAN_PROVIDER,
-  }
-}
-
 export function showNetworkDropdown () {
   return {
     type: actionConstants.NETWORK_DROPDOWN_OPEN,
