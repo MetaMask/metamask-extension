@@ -304,86 +304,79 @@ export function importNewAccount (strategy, args) {
 
 export function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.addNewAccount((err, { identities: newIdentities }) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-        const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
 
-        dispatch(hideLoadingIndication())
-
-        forceUpdateMetamaskState(dispatch)
-        return resolve(newAccountAddress)
-      })
-    })
+    let newIdentities
+    try {
+      const { identities } = await promisifiedBackground.addNewAccount()
+      newIdentities = identities
+    } catch (error) {
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
+    dispatch(hideLoadingIndication())
+    forceUpdateMetamaskState(dispatch)
+    return newAccountAddress
   }
 }
 
 export function checkHardwareStatus (deviceName, hdPath) {
   log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
 
-        dispatch(hideLoadingIndication())
+    let unlocked
+    try {
+      unlocked = await promisifiedBackground.checkHardwareStatus(deviceName, hdPath)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        forceUpdateMetamaskState(dispatch)
-        return resolve(unlocked)
-      })
-    })
+    dispatch(hideLoadingIndication())
+    forceUpdateMetamaskState(dispatch)
+    return unlocked
   }
 }
 
 export function forgetDevice (deviceName) {
   log.debug(`background.forgetDevice`, deviceName)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.forgetDevice(deviceName, (err) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
+    try {
+      await promisifiedBackground.forgetDevice(deviceName)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        dispatch(hideLoadingIndication())
-
-        forceUpdateMetamaskState(dispatch)
-        return resolve()
-      })
-    })
+    dispatch(hideLoadingIndication())
+    forceUpdateMetamaskState(dispatch)
   }
 }
 
 export function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
 
-        dispatch(hideLoadingIndication())
+    let accounts
+    try {
+      accounts = await promisifiedBackground.connectHardware(deviceName, page, hdPath)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    forceUpdateMetamaskState(dispatch)
 
-        forceUpdateMetamaskState(dispatch)
-        return resolve(accounts)
-      })
-    })
+    return accounts
   }
 }
 
