@@ -52,45 +52,41 @@ export default class PendingTransactionTracker extends EventEmitter {
    * Resubmits each pending transaction
    * @param {string} blockNumber - the latest block number in hex
    * @emits tx:warning
+   * @returns {Promise<void>}
    */
-  resubmitPendingTxs (blockNumber) {
+  async resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
-    // only try resubmitting if their are transactions to resubmit
     if (!pending.length) {
       return
     }
-    pending.forEach((txMeta) => this._resubmitTx(txMeta, blockNumber).catch((err) => {
-      /*
-      Dont marked as failed if the error is a "known" transaction warning
-      "there is already a transaction with the same sender-nonce
-      but higher/same gas price"
-
-      Also don't mark as failed if it has ever been broadcast successfully.
-      A successful broadcast means it may still be mined.
-      */
-      const errorMessage = err.message.toLowerCase()
-      const isKnownTx = (
-        // geth
-        errorMessage.includes('replacement transaction underpriced') ||
-        errorMessage.includes('known transaction') ||
-        // parity
-        errorMessage.includes('gas price too low to replace') ||
-        errorMessage.includes('transaction with the same hash was already imported') ||
-        // other
-        errorMessage.includes('gateway timeout') ||
-        errorMessage.includes('nonce too low')
-      )
-      // ignore resubmit warnings, return early
-      if (isKnownTx) {
-        return
+    for (const txMeta of pending) {
+      try {
+        await this._resubmitTx(txMeta, blockNumber)
+      } catch (err) {
+        const errorMessage = err.message.toLowerCase()
+        const isKnownTx = (
+          // geth
+          errorMessage.includes('replacement transaction underpriced') ||
+          errorMessage.includes('known transaction') ||
+          // parity
+          errorMessage.includes('gas price too low to replace') ||
+          errorMessage.includes('transaction with the same hash was already imported') ||
+          // other
+          errorMessage.includes('gateway timeout') ||
+          errorMessage.includes('nonce too low')
+        )
+        // ignore resubmit warnings, return early
+        if (isKnownTx) {
+          return
+        }
+        // encountered real error - transition to error state
+        txMeta.warning = {
+          error: errorMessage,
+          message: 'There was an error when resubmitting this transaction.',
+        }
+        this.emit('tx:warning', txMeta, err)
       }
-      // encountered real error - transition to error state
-      txMeta.warning = {
-        error: errorMessage,
-        message: 'There was an error when resubmitting this transaction.',
-      }
-      this.emit('tx:warning', txMeta, err)
-    }))
+    }
   }
 
   /**
