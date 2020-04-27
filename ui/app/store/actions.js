@@ -408,23 +408,26 @@ export function showQrScanner () {
 }
 
 export function setCurrentCurrency (currencyCode) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
-    background.setCurrentCurrency(currencyCode, (err, data) => {
+    let data
+    try {
+      data = await promisifiedBackground.setCurrentCurrency(currencyCode)
+    } catch (error) {
       dispatch(hideLoadingIndication())
-      if (err) {
-        log.error(err.stack)
-        return dispatch(displayWarning(err.message))
-      }
-      dispatch({
-        type: actionConstants.SET_CURRENT_FIAT,
-        value: {
-          currentCurrency: data.currentCurrency,
-          conversionRate: data.conversionRate,
-          conversionDate: data.conversionDate,
-        },
-      })
+      log.error(error.stack)
+      dispatch(displayWarning(error.message))
+      return
+    }
+    dispatch(hideLoadingIndication())
+    dispatch({
+      type: actionConstants.SET_CURRENT_FIAT,
+      value: {
+        currentCurrency: data.currentCurrency,
+        conversionRate: data.conversionRate,
+        conversionDate: data.conversionDate,
+      },
     })
   }
 }
