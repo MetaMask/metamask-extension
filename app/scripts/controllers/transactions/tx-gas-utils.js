@@ -15,7 +15,7 @@ and used to do things like calculate gas of a tx.
 @param {Object} provider - A network provider.
 */
 
-class TxGasUtil {
+export default class TxGasUtil {
 
   constructor (provider) {
     this.query = new EthQuery(provider)
@@ -150,5 +150,3 @@ class TxGasUtil {
     return bnToHex(upperGasLimitBn)
   }
 }
-
-export default TxGasUtil
