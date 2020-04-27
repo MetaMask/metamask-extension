@@ -318,7 +318,7 @@ export function addNewAccount () {
     }
     const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
     dispatch(hideLoadingIndication())
-    forceUpdateMetamaskState(dispatch)
+    await forceUpdateMetamaskState(dispatch)
     return newAccountAddress
   }
 }
@@ -338,7 +338,7 @@ export function checkHardwareStatus (deviceName, hdPath) {
     }
 
     dispatch(hideLoadingIndication())
-    forceUpdateMetamaskState(dispatch)
+    await forceUpdateMetamaskState(dispatch)
     return unlocked
   }
 }
@@ -356,7 +356,7 @@ export function forgetDevice (deviceName) {
     }
 
     dispatch(hideLoadingIndication())
-    forceUpdateMetamaskState(dispatch)
+    await forceUpdateMetamaskState(dispatch)
   }
 }
 
@@ -374,7 +374,7 @@ export function connectHardware (deviceName, page, hdPath) {
       throw error
     }
     dispatch(hideLoadingIndication())
-    forceUpdateMetamaskState(dispatch)
+    await forceUpdateMetamaskState(dispatch)
 
     return accounts
   }
@@ -1074,7 +1074,7 @@ export function markPasswordForgotten () {
       // TODO: handle errors
       dispatch(hideLoadingIndication())
       dispatch(forgotPassword())
-      forceUpdateMetamaskState(dispatch)
+      await forceUpdateMetamaskState(dispatch)
     }
   }
 }
