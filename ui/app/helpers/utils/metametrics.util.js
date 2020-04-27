@@ -13,7 +13,7 @@ const METAMETRICS_TRACKING_URL = inDevelopment
   : 'http://www.metamask.io/metametrics-prod'
 
 /** ***************Custom variables*************** **/
-// Custon variable declarations
+// Custom variable declarations
 const METAMETRICS_CUSTOM_GAS_LIMIT_CHANGE = 'gasLimitChange'
 const METAMETRICS_CUSTOM_GAS_PRICE_CHANGE = 'gasPriceChange'
 const METAMETRICS_CUSTOM_FUNCTION_TYPE = 'functionType'
@@ -55,7 +55,7 @@ const METAMETRICS_CUSTOM_ACTIVE_CURRENCY = 'activeCurrency'
 const METAMETRICS_CUSTOM_ACCOUNT_TYPE = 'accountType'
 const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
 const METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS = 'numberOfAccounts'
-
+const METAMETRICS_CUSTOM_VERSION = 'version'
 
 const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_NETWORK]: 5,
@@ -64,6 +64,7 @@ const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_ACCOUNT_TYPE]: 8,
   [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 9,
   [METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS]: 10,
+  [METAMETRICS_CUSTOM_VERSION]: 11,
 }
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
@@ -130,6 +131,7 @@ function composeUrl (config) {
     accountType,
     numberOfTokens,
     numberOfAccounts,
+    version,
     previousPath = '',
     currentPath,
     metaMetricsId,
@@ -156,6 +158,7 @@ function composeUrl (config) {
     environmentType,
     activeCurrency,
     accountType,
+    version,
     numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
     numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''

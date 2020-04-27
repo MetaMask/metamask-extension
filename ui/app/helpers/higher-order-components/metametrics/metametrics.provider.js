@@ -33,6 +33,7 @@ class MetaMetricsProvider extends Component {
     numberOfTokens: PropTypes.number,
     numberOfAccounts: PropTypes.number,
     participateInMetaMetrics: PropTypes.bool,
+    version: PropTypes.string,
   }
 
   static childContextTypes = {
@@ -67,6 +68,7 @@ class MetaMetricsProvider extends Component {
       metaMetricsSendCount,
       numberOfTokens,
       numberOfAccounts,
+      version,
     } = this.props
     const { previousPath, currentPath } = this.state
 
@@ -87,6 +89,7 @@ class MetaMetricsProvider extends Component {
             metaMetricsId,
             numberOfTokens,
             numberOfAccounts,
+            version,
             ...config,
             previousPath,
             currentPath,
@@ -117,6 +120,7 @@ const mapStateToProps = (state) => {
     metaMetricsSendCount: state.metamask.metaMetricsSendCount,
     numberOfTokens: getNumberOfTokens(state),
     numberOfAccounts: getNumberOfAccounts(state),
+    version: global.platform.getVersion(),
   }
 }
 
