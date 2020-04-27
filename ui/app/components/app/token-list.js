@@ -5,6 +5,7 @@ import TokenTracker from 'eth-token-tracker'
 import { connect } from 'react-redux'
 import { getSelectedAddress } from '../../selectors/selectors'
 import log from 'loglevel'
+import getAccountLink from '../../../lib/account-link'
 
 function mapStateToProps (state) {
   return {
@@ -127,7 +128,7 @@ class TokenList extends Component {
   }
 
   render () {
-    const { userAddress, assetImages } = this.props
+    const { network, userAddress, assetImages } = this.props
     const state = this.state
     const { tokens, isLoading, error } = state
     if (isLoading) {
@@ -164,7 +165,7 @@ class TokenList extends Component {
             }}
             onClick={() => {
               global.platform.openWindow({
-                url: `https://ethplorer.io/address/${userAddress}`,
+                url: getAccountLink(userAddress, parseInt(network, 10)),
               })
             }}
           >
