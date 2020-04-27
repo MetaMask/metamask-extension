@@ -220,12 +220,6 @@ export function getAddressBookEntryName (state, address) {
   return entry && entry.name !== '' ? entry.name : shortenAddress(address)
 }
 
-export function getDaiV1Token (state) {
-  const OLD_DAI_CONTRACT_ADDRESS = '0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359'
-  const tokens = state.metamask.tokens || []
-  return tokens.find(({ address }) => checksumAddress(address) === OLD_DAI_CONTRACT_ADDRESS)
-}
-
 export function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask

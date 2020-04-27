@@ -21,7 +21,6 @@ class AppStateController extends EventEmitter {
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
     this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
-      mkrMigrationReminderTimestamp: null,
       connectedStatusPopoverHasBeenShown: true,
     }, initState))
     this.timer = null
@@ -65,12 +64,6 @@ class AppStateController extends EventEmitter {
       }
       this.emit('updateBadge')
     }
-  }
-
-  setMkrMigrationReminderTimestamp (timestamp) {
-    this.store.updateState({
-      mkrMigrationReminderTimestamp: timestamp,
-    })
   }
 
   /**
