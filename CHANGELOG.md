@@ -1,6 +1,18 @@
 # Changelog
 
 ## Current Develop Branch
+- Version v0.1.7
+- Fix: firefox e2e test
+- Remove unused sinon sandboxes (#8063)
+- Implementation encrypt/decrypt feature (#7831)
+- Remove unused container prop (#8076)
+- Fix: faucet url
+- Fix: can't get token balance error link
+- Clean: only show fc if balance is not zero
+- Close notification UI if no unapproved confirmations (#8358)
+- Fix: focus popup no matter already opened
+- Revert "Fix: benchmark"
+- Fix: test-net token -> test token
 
 ## 0.1.7 Sun Apr 26 2020
 - Version v0.1.5
