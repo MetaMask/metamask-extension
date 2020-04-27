@@ -1865,19 +1865,19 @@ export function setMouseUserState (isMouseUser) {
   }
 }
 
-export function forceUpdateMetamaskState (dispatch) {
+export async function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
-  return new Promise((resolve, reject) => {
-    background.getState((err, newState) => {
-      if (err) {
-        dispatch(displayWarning(err.message))
-        return reject(err)
-      }
 
-      dispatch(updateMetamaskState(newState))
-      resolve(newState)
-    })
-  })
+  let newState
+  try {
+    newState = await promisifiedBackground.getState()
+  } catch (error) {
+    dispatch(displayWarning(error.message))
+    throw error
+  }
+
+  dispatch(updateMetamaskState(newState))
+  return newState
 }
 
 export function toggleAccountMenu () {
