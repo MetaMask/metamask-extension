@@ -65,7 +65,7 @@ import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
   @param {Object}  opts.preferencesStore
 */
 
-class TransactionController extends EventEmitter {
+export default class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.networkStore = opts.networkStore || new ObservableStore({})
@@ -765,5 +765,3 @@ class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
 }
-
-export default TransactionController

@@ -19,7 +19,7 @@ import EthQuery from 'ethjs-query'
 @class
 */
 
-class PendingTransactionTracker extends EventEmitter {
+export default class PendingTransactionTracker extends EventEmitter {
   constructor (config) {
     super()
     this.droppedBuffer = {}
@@ -251,5 +251,3 @@ class PendingTransactionTracker extends EventEmitter {
     return sameNonce.length > 0
   }
 }
-
-export default PendingTransactionTracker

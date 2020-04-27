@@ -26,7 +26,7 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
   @param {function} opts.getNetwork return network number
   @class
 */
-class TransactionStateManager extends EventEmitter {
+export default class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 
@@ -484,5 +484,3 @@ class TransactionStateManager extends EventEmitter {
     this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
   }
 }
-
-export default TransactionStateManager
