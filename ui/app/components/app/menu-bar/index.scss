@@ -4,13 +4,13 @@
   column-gap: 5px;
 
   margin-bottom: 24px;
-  padding: 0 24px;
+  padding: 0 8px;
   border-bottom: 1px solid $Grey-100;
 
   .menu-bar__account-options {
     background: none;
     font-size: inherit;
-    padding: 0 0 0 5px;
+    padding: 0 8px 0 5px;
 
     position: relative; // to allow the dropdown to position itself absolutely
     place-self: center end;
