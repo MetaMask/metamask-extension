@@ -1,5 +1,5 @@
 
-// TODO:deprecate:Q1-2020
+// TODO:deprecate:2020
 
 export default setupDappAutoReload
 
