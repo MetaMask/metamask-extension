@@ -1445,17 +1445,20 @@ export function setPreviousProvider (type) {
 }
 
 export function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-  return (dispatch) => {
+  return async (dispatch) => {
     log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem changing networks!'))
-      }
-      dispatch({
-        type: actionConstants.SET_RPC_TARGET,
-        value: newRpc,
-      })
+
+    try {
+      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
+
+    dispatch({
+      type: actionConstants.SET_RPC_TARGET,
+      value: newRpc,
     })
   }
 }
