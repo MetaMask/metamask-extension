@@ -9,27 +9,13 @@ const provider = createTestProviderTools({ scaffold: {} }).provider
 describe('Selectors', function () {
 
   describe('#getSelectedAddress', function () {
-    let state
-    beforeEach(function () {
-      state = {
-        metamask: {
-          accounts: {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-              'balance': '0x0',
-              'address': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            },
-          },
-          cachedBalances: {},
-        },
-      }
-    })
-
-    it('returns first account if selectedAddress is undefined', function () {
-      assert.equal(selectors.getSelectedAddress(state), '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+    it('returns undefined if selectedAddress is undefined', function () {
+      assert.equal(selectors.getSelectedAddress({ metamask: {} }), undefined)
     })
 
     it('returns selectedAddress', function () {
-      assert.equal(selectors.getSelectedAddress(mockState), '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+      assert.equal(selectors.getSelectedAddress({ metamask: { selectedAddress } }), selectedAddress)
     })
 
   })
