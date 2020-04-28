@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 7.7.9 Tue Apr 28 2020
+
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
 - [#8178](https://github.com/MetaMask/metamask-extension/pull/8178): Use specified gas limit when speeding up a transaction
