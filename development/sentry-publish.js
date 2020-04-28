@@ -21,13 +21,13 @@ async function start () {
     // create sentry release
     console.log(`creating Sentry release for "${VERSION}"...`)
     await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' new ${VERSION}`
+      `sentry-cli releases --org 'conflux' --project 'portal' new ${VERSION}`
     )
     console.log(
       `removing any existing files from Sentry release "${VERSION}"...`
     )
     await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} delete --all`
+      `sentry-cli releases --org 'conflux' --project 'portal' files ${VERSION} delete --all`
     )
   }
 
@@ -46,7 +46,7 @@ async function start () {
 
 async function checkIfAuthWorks () {
   const itWorked = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'metamask' --project 'metamask' list`)
+    await exec(`sentry-cli releases --org 'conflux' --project 'portal' list`)
   })
   return itWorked
 }
@@ -54,7 +54,7 @@ async function checkIfAuthWorks () {
 async function checkIfVersionExists () {
   const versionAlreadyExists = await doesNotFail(async () => {
     await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' info ${VERSION}`
+      `sentry-cli releases --org 'conflux' --project 'portal' info ${VERSION}`
     )
   })
   return versionAlreadyExists
@@ -62,7 +62,7 @@ async function checkIfVersionExists () {
 
 async function checkIfVersionHasArtifacts () {
   const artifacts = await exec(
-    `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} list`
+    `sentry-cli releases --org 'conflux' --project 'portal' files ${VERSION} list`
   )
   // When there's no artifacts, we get a response from the shell like this ['', '']
   return artifacts[0] && artifacts[0].length > 0
