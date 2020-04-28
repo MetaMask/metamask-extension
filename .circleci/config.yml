@@ -215,7 +215,7 @@ jobs:
           command: yarn lint
       - run:
           name: Verify locales
-          command: yarn verify-locales --quiet || true
+          command: yarn verify-locales --quiet
 
   test-lint-shellcheck:
     docker:
