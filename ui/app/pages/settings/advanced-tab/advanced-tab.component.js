@@ -311,7 +311,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="number"
               id="autoTimeout"
-              placeholder="5"
+              placeholder="0"
               value={this.state.autoLockTimeLimit}
               defaultValue={autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
