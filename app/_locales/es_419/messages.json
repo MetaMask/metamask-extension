@@ -545,7 +545,7 @@
     "message": "Importar cuenta"
   },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no estarán asociadas a la frase de inicialización que se creó en un principio para tu cuenta de MetaMask. Obtén más información sobre las cuentas importadas"
+    "message": "Las cuentas importadas no estarán asociadas a la frase de inicialización que se creó en un principio para tu cuenta de ConfluxPortal. Obtén más información sobre las cuentas importadas"
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con frase de inicialización"
@@ -1136,7 +1136,7 @@
     "message": "Sincronizar con un dispositivo móvil"
   },
   "syncWithMobileDesc": {
-    "message": "Puedes sincronizar tus cuentas e información con tu dispositivo móvil. Abre la aplicación de MetaMask para dispositivos móviles, dirígete a \"Configuración\" y selecciona \"Sincronizar desde una extensión del navegador\""
+    "message": "Puedes sincronizar tus cuentas e información con tu dispositivo móvil. Abre la aplicación de ConfluxPortal para dispositivos móviles, dirígete a \"Configuración\" y selecciona \"Sincronizar desde una extensión del navegador\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Si estás abriendo la aplicación de ConfluxPortal para dispositivos móviles por primera vez, sigue los pasos indicados en tu teléfono."

@@ -125,7 +125,7 @@
     "message": "Sauvegardez votre code de récupération secret pour garder votre portefeuille et vos fonds en sécurité."
   },
   "backupApprovalInfo": {
-    "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
+    "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller ConfluxPortal ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
   "backupNow": {
     "message": "Sauvegarder maintenant"
@@ -726,7 +726,7 @@
     "message": "Protégez vos clés !"
   },
   "protectYourKeysMessage1": {
-    "message": "Soyez prudent avec votre phrase mnémotechnique — on nous a signalé des sites web qui tentaient d'imiter MetaMask. MetaMask ne vous demandera jamais votre phrase mnémotechnique !"
+    "message": "Soyez prudent avec votre phrase mnémotechnique — on nous a signalé des sites web qui tentaient d'imiter ConfluxPortal. ConfluxPortal ne vous demandera jamais votre phrase mnémotechnique !"
   },
   "protectYourKeysMessage2": {
     "message": "Ne dévoilez pas votre phrase. Si vous remarquez quelque chose de suspect ou que vous avez un doute à propos d'un site web, envoyez un e-mail à : portal@conflux-chain.org"
@@ -1130,7 +1130,7 @@
     "message": "Synchroniser avec le mobile"
   },
   "syncWithMobileDesc": {
-    "message": "Vous pouvez synchroniser vos comptes et vos informations avec votre appareil mobile. Ouvrez l'application mobile MetaMask, allez dans « Paramètres » et appuyez sur « Synchroniser depuis l'extension de navigateur »"
+    "message": "Vous pouvez synchroniser vos comptes et vos informations avec votre appareil mobile. Ouvrez l'application mobile ConfluxPortal, allez dans « Paramètres » et appuyez sur « Synchroniser depuis l'extension de navigateur »"
   },
   "syncWithMobileDescNewUsers": {
     "message": "Si vous ouvrez l'application ConfluxPortal Mobile pour la première fois, suivez simplement les étapes dans votre téléphone."
