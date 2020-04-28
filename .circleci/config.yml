@@ -111,7 +111,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: portal-yarn-{{ checksum "yarn.lock" }}
+          key: conflux-portal-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Install deps
           command: |
@@ -120,7 +120,8 @@ jobs:
           paths:
             - node_modules
             - /home/circleci/.cache/yarn/
-          key: portal-yarn-{{ checksum "yarn.lock" }}
+            - ./*.har
+          key: conflux-portal-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Collect yarn install HAR logs
           command: |
