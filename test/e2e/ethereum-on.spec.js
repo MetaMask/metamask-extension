@@ -178,6 +178,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp)
       await driver.delay(largeDelayMs)
       const networkDiv = await driver.findElement(By.css('#network'))
+      await driver.wait(until.elementTextContains(networkDiv, '1'))
       assert.equal(await networkDiv.getText(), '1')
     })
 
