@@ -119,7 +119,7 @@ jobs:
       - run:
           name: Collect yarn install HAR logs
           command: |
-            .circleci/scripts/collect-har-artifact.sh
+            [ -d build-artifacts/yarn-install-har/ ] || .circleci/scripts/collect-har-artifact.sh
       - save_cache:
           paths:
             - node_modules
