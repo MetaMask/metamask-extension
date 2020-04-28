@@ -434,153 +434,134 @@ export function setCurrentCurrency (currencyCode) {
 
 export function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signMessage`)
-      background.signMessage(msgData, (err, newState) => {
-        log.debug('signMessage called back')
-        dispatch(hideLoadingIndication())
-
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    log.debug(`actions calling background.signMessage`)
+    let newState
+    try {
+      newState = await promisifiedBackground.signMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signPersonalMessage`)
-      background.signPersonalMessage(msgData, (err, newState) => {
-        log.debug('signPersonalMessage called back')
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.signPersonalMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.signPersonalMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function decryptMsgInline (decryptedMsgData) {
   log.debug('action - decryptMsgInline')
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.decryptMessageInline`)
-      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
-        log.debug('decryptMsgInline called back')
+  return async (dispatch) => {
+    log.debug(`actions calling background.decryptMessageInline`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
+    let newState
+    try {
+      newState = await promisifiedBackground.decryptMessageInline(decryptedMsgData)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        dispatch(updateMetamaskState(newState))
-        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-        return resolve(decryptedMsgData)
-      })
-    })
+    dispatch(updateMetamaskState(newState))
+    decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
+    return decryptedMsgData
   }
 }
 
 export function decryptMsg (decryptedMsgData) {
   log.debug('action - decryptMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.decryptMessage`)
-      background.decryptMessage(decryptedMsgData, (err, newState) => {
-        log.debug('decryptMsg called back')
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.decryptMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(decryptedMsgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-        console.log(decryptedMsgData)
-        return resolve(decryptedMsgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.decryptMessage(decryptedMsgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(decryptedMsgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return decryptedMsgData
   }
 }
 
 export function encryptionPublicKeyMsg (msgData) {
   log.debug('action - encryptionPublicKeyMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.encryptionPublicKey`)
-      background.encryptionPublicKey(msgData, (err, newState) => {
-        log.debug('encryptionPublicKeyMsg called back')
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.encryptionPublicKey`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.encryptionPublicKey(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signTypedMessage`)
-      background.signTypedMessage(msgData, (err, newState) => {
-        log.debug('signTypedMessage called back')
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.signTypedMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.signTypedMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
@@ -890,111 +871,87 @@ export function txError (err) {
 }
 
 export function cancelMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.cancelMessage(msgData.id, (err, newState) => {
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(msgData.id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelPersonalMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelPersonalMessage(id, (err, newState) => {
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelPersonalMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelDecryptMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelDecryptMessage(id, (err, newState) => {
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelDecryptMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelEncryptionPublicKeyMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelEncryptionPublicKey(id, (err, newState) => {
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelEncryptionPublicKey(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelTypedMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelTypedMessage(id, (err, newState) => {
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(updateMetamaskState(newState))
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelTypedMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
