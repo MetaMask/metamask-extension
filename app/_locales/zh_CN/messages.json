@@ -377,6 +377,9 @@
   "edit": {
     "message": "编辑"
   },
+  "contacts": {
+    "message": " 联系人"
+  },
   "editContact": {
     "message": "编辑联系人"
   },
@@ -710,7 +713,7 @@
     "message": "添加和编辑自定义 RPC 网络"
   },
   "nevermind": {
-    "message": "无所谓"
+    "message": " 算了"
   },
   "newAccount": {
     "message": "新账户"
