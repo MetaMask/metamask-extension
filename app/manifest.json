@@ -93,6 +93,8 @@
   "externally_connectable": {
     "matches": [
       "https://metamask.io/*",
+      "https://confluxscan.io/*",
+      "https://testnet.confluxscan.io/*",
       "https://conflux-chain.org/*"
     ],
     "ids": [

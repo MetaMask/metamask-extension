@@ -128,7 +128,7 @@
     "message": "Hifadhi msimbo wa Siri wa Kurejesha data ili kuweka salama waleti yako na fedha."
   },
   "backupApprovalInfo": {
-    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
+    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha ConfluxPortal, au unataka kufikia waleti yako kwenye kifaa kingine."
   },
   "backupNow": {
     "message": "Hifadhi sasa"
@@ -1129,7 +1129,7 @@
     "message": "Oanisha na simu"
   },
   "syncWithMobileDesc": {
-    "message": "Unaweza kuoanisha akaunti zako na taarifa kwa kifaa chako cha simu ya mkononi. Fungua programu ya simu ya MetaMask, kisha nenda kwenye \"Mipangilio\" na bofya kwenye \"Oanisha kutoka kwenye Kiendelezi cha Kivinjari\""
+    "message": "Unaweza kuoanisha akaunti zako na taarifa kwa kifaa chako cha simu ya mkononi. Fungua programu ya simu ya ConfluxPortal, kisha nenda kwenye \"Mipangilio\" na bofya kwenye \"Oanisha kutoka kwenye Kiendelezi cha Kivinjari\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Ikiwa ndio umefungua tu programu ya simu ya ConfluxPortal kwa mara ya kwanza, fuata hatua kwenye simu yako."

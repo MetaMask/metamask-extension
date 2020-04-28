@@ -128,7 +128,7 @@
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
   },
   "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
+    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere ConfluxPortal, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
   "backupNow": {
     "message": "Sikkerhetskopier nå"
@@ -737,7 +737,7 @@
     "message": "Beskytt nøklene dine! "
   },
   "protectYourKeysMessage1": {
-    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
+    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne ConfluxPortal. ConfluxPortal vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
   },
   "protectYourKeysMessage2": {
     "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til portal@conflux-chain.org"
@@ -1126,7 +1126,7 @@
     "message": "Synkronisér med mobil"
   },
   "syncWithMobileDesc": {
-    "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for MetaMask, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
+    "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for ConfluxPortal, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Hvis du åpner mobilappen for ConfluxPortal for første gang, følger du bare trinnene på telefonen."

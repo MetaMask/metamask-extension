@@ -122,7 +122,7 @@
     "message": "Esegui il backup del codice di recupero segreto per mantenere il portafoglio e i fondi al sicuro."
   },
   "backupApprovalInfo": {
-    "message": "Questo codice segreto è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
+    "message": "Questo codice segreto è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare ConfluxPortal o voglia accedere al tuo portafoglio su un altro dispositivo."
   },
   "backupNow": {
     "message": "Esegui il backup ora"
@@ -1114,7 +1114,7 @@
     "message": "Sincronizza con dispositivo mobile"
   },
   "syncWithMobileDesc": {
-    "message": "Puoi sincronizzare i tuoi account e le tue informazioni con il tuo dispositivo mobile. Apri l'app di MetaMask, vai su \"Impostazioni\" e tocca \"Sincronizza da Estensione sul Browser\""
+    "message": "Puoi sincronizzare i tuoi account e le tue informazioni con il tuo dispositivo mobile. Apri l'app di ConfluxPortal, vai su \"Impostazioni\" e tocca \"Sincronizza da Estensione sul Browser\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Se hai appena aperto l'app di ConfluxPortal per la prima volta, segui i passaggi sul tuo telefono."
