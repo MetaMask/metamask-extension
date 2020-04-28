@@ -1094,11 +1094,20 @@ export function updateMetamaskState (newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState()
 
-    const { currentLocale } = currentState
-    const { currentLocale: newLocale } = newState
+    const {
+      currentLocale,
+      selectedAddress,
+    } = currentState
+    const {
+      currentLocale: newLocale,
+      selectedAddress: newSelectedAddress,
+    } = newState
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale))
+    }
+    if (selectedAddress !== newSelectedAddress) {
+      dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED })
     }
 
     dispatch({
@@ -1192,7 +1201,7 @@ export function showAccountDetail (address) {
       value: address,
     })
     if (switchingToUnconnectedAddress) {
-      dispatch(switchedToUnconnectedAccount(address))
+      dispatch(switchedToUnconnectedAccount())
     }
     dispatch(setSelectedToken())
   }

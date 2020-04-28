@@ -232,6 +232,7 @@ describe('Actions', function () {
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
+        'SELECTED_ADDRESS_CHANGED',
         'UPDATE_METAMASK_STATE',
         'HIDE_LOADING_INDICATION',
         'SHOW_ACCOUNTS_PAGE',

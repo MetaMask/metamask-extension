@@ -3,7 +3,7 @@ import { captureException } from '@sentry/browser'
 
 import actionConstants from '../../store/actionConstants'
 import { addPermittedAccount } from '../../store/actions'
-import { getOriginOfCurrentTab } from '../../selectors/selectors'
+import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors/selectors'
 
 // Constants
 
@@ -18,7 +18,6 @@ const name = 'unconnectedAccount'
 
 const initialState = {
   state: ALERT_STATE.CLOSED,
-  address: null,
 }
 
 // Slice (reducer plus auto-generated actions and action creators)
@@ -35,26 +34,19 @@ const slice = createSlice({
     },
     connectAccountSucceeded: (state) => {
       state.state = ALERT_STATE.CLOSED
-      state.address = null
     },
     dismissAlert: (state) => {
       state.state = ALERT_STATE.CLOSED
-      state.address = null
     },
-    switchedToUnconnectedAccount: (state, action) => {
+    switchedToUnconnectedAccount: (state) => {
       state.state = ALERT_STATE.OPEN
-      state.address = action.payload
     },
   },
   extraReducers: {
-    [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
+    [actionConstants.SELECTED_ADDRESS_CHANGED]: (state) => {
       // close the alert if the account is switched while it's open
-      if (
-        state.state === ALERT_STATE.OPEN &&
-        state.address !== action.value.selectedAddress
-      ) {
+      if (state.state === ALERT_STATE.OPEN) {
         state.state = ALERT_STATE.CLOSED
-        state.address = null
       }
     },
   },
@@ -68,10 +60,7 @@ export default reducer
 
 export const getAlertState = (state) => state[name].state
 
-export const getAlertAccountAddress = (state) => state[name].address
-
 export const alertIsOpen = (state) => state[name].state !== ALERT_STATE.CLOSED
-
 
 // Actions / action-creators
 
@@ -86,11 +75,11 @@ export const {
 export const connectAccount = () => {
   return async (dispatch, getState) => {
     const state = getState()
-    const address = getAlertAccountAddress(state)
+    const selectedAddress = getSelectedAddress(state)
     const origin = getOriginOfCurrentTab(state)
     try {
       await dispatch(connectAccountRequested())
-      await dispatch(addPermittedAccount(origin, address))
+      await dispatch(addPermittedAccount(origin, selectedAddress))
       await dispatch(connectAccountSucceeded())
     } catch (error) {
       console.error(error)
