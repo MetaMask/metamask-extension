@@ -155,6 +155,12 @@
   "blockiesIdenticon": {
     "message": "使用像素風格代表圖案"
   },
+  "nonceField": {
+    "message": "自定 nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "開啟後可以在交易的確認界面自定 nonce. 這是壹個高級用法, 請慎用"
+  },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
