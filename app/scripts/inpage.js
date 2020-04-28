@@ -34,7 +34,7 @@ cleanContextForImports()
 
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
-import MetamaskInpageProvider from 'metamask-inpage-provider'
+import { MetamaskInpageProvider, setGlobalProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:Q1-2020
 import 'web3/dist/web3.min.js'
@@ -98,4 +98,4 @@ setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 // end deprecate:Q1-2020
 //
 
-window.ethereum = proxiedInpageProvider
+setGlobalProvider(proxiedInpageProvider)
