@@ -76,14 +76,6 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   backgroundConnection.on('update', function (metamaskState) {
-    const currentState = store.getState()
-    const { currentLocale } = currentState.metamask
-    const { currentLocale: newLocale } = metamaskState
-
-    if (currentLocale && newLocale && currentLocale !== newLocale) {
-      store.dispatch(actions.updateCurrentLocale(newLocale))
-    }
-
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 

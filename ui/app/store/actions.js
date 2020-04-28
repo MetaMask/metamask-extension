@@ -1086,9 +1086,20 @@ export function unlockSucceeded (message) {
 }
 
 export function updateMetamaskState (newState) {
-  return {
-    type: actionConstants.UPDATE_METAMASK_STATE,
-    value: newState,
+  return (dispatch, getState) => {
+    const { metamask: currentState } = getState()
+
+    const { currentLocale } = currentState
+    const { currentLocale: newLocale } = newState
+
+    if (currentLocale && newLocale && currentLocale !== newLocale) {
+      dispatch(updateCurrentLocale(newLocale))
+    }
+
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    })
   }
 }
 

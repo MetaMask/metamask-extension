@@ -35,7 +35,7 @@ describe('tx confirmation screen', function () {
           cb()
         },
         getState (cb) {
-          cb()
+          cb(null, {})
         },
       })
 
