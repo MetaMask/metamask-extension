@@ -155,6 +155,12 @@
   "blockiesIdenticon": {
     "message": "使用区块Identicon"
   },
+  "nonceField": {
+    "message": "自定义 nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "开启后可以在交易的确认界面自定义 nonce. 这是一个高级用法, 请慎用"
+  },
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能…"
   },
