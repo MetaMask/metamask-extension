@@ -340,7 +340,7 @@ const initialize = () => {
     ethereum.on('networkChanged', (networkId) => {
       networkDiv.innerHTML = networkId
     })
-    ethereum.on('chainIdChanged', (chainId) => {
+    ethereum.on('chainChanged', (chainId) => {
       chainIdDiv.innerHTML = chainId
     })
     ethereum.on('accountsChanged', (newAccounts) => {
