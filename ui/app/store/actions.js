@@ -1492,15 +1492,17 @@ export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcP
 }
 
 export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
-  return (dispatch) => {
+  return async (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem changing networks!'))
-      }
-      dispatch(setSelectedToken())
-    })
+
+    try {
+      await promisifiedBackground.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
+    dispatch(setSelectedToken())
   }
 }
 

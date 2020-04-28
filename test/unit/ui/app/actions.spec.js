@@ -1105,31 +1105,27 @@ describe('Actions', function () {
   describe('#setRpcTarget', function () {
     let setRpcTargetSpy
 
-    beforeEach(function () {
-      setRpcTargetSpy = sinon.stub(background, 'setCustomRpc')
-    })
-
     afterEach(function () {
       setRpcTargetSpy.restore()
     })
 
-    it('calls setRpcTarget', function () {
+    it('calls setRpcTarget', async function () {
+      setRpcTargetSpy = sinon.stub(background, 'setCustomRpc')
+        .callsArgWith(4, null)
       const store = mockStore()
-      store.dispatch(actions.setRpcTarget('http://localhost:8545'))
+      await store.dispatch(actions.setRpcTarget('http://localhost:8545'))
       assert(setRpcTargetSpy.calledOnce)
     })
 
-    it('displays warning when setRpcTarget throws', function () {
+    it('displays warning when setRpcTarget throws', async function () {
+      setRpcTargetSpy = sinon.stub(background, 'setCustomRpc')
+        .callsArgWith(4, new Error('error'))
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 
-      setRpcTargetSpy.callsFake((_, __, ___, ____, callback) => {
-        callback(new Error('error'))
-      })
-
-      store.dispatch(actions.setRpcTarget())
+      await store.dispatch(actions.setRpcTarget())
       assert.deepEqual(store.getActions(), expectedActions)
     })
   })
