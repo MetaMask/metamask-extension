@@ -11,11 +11,11 @@ import enLocale from '../../../../app/_locales/en/messages.json'
 import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
-import devState from '../../../data/2-state.json'
 
 const provider = createTestProviderTools({ scaffold: {} }).provider
 const middleware = [thunk]
-const mockStore = configureStore(middleware)
+const defaultState = { metamask: {} }
+const mockStore = (state = defaultState) => configureStore(middleware)(state)
 
 describe('Actions', function () {
 
@@ -75,7 +75,7 @@ describe('Actions', function () {
 
     it('calls submitPassword and verifySeedPhrase', async function () {
 
-      const store = mockStore({})
+      const store = mockStore()
 
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
       verifySeedPhraseSpy = sinon.spy(background, 'verifySeedPhrase')
@@ -87,7 +87,7 @@ describe('Actions', function () {
 
     it('errors on submitPassword will fail', async function () {
 
-      const store = mockStore({})
+      const store = mockStore()
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -112,7 +112,7 @@ describe('Actions', function () {
     })
 
     it('displays warning error and unlock failed when verifySeed fails', async function () {
-      const store = mockStore({})
+      const store = mockStore()
       const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
       const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
 
@@ -144,7 +144,7 @@ describe('Actions', function () {
 
     it('restores new vault', async function () {
 
-      const store = mockStore({})
+      const store = mockStore()
 
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
 
@@ -157,7 +157,7 @@ describe('Actions', function () {
     })
 
     it('errors when callback in createNewVaultAndRestore throws', async function () {
-      const store = mockStore({})
+      const store = mockStore()
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -228,7 +228,7 @@ describe('Actions', function () {
     })
 
     it('calls removeAccount in background and expect actions to show account', async function () {
-      const store = mockStore(devState)
+      const store = mockStore()
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
@@ -367,7 +367,7 @@ describe('Actions', function () {
   describe('#addNewAccount', function () {
 
     it('Adds a new account', async function () {
-      const store = mockStore({ metamask: devState })
+      const store = mockStore({ metamask: { identities: {} } })
 
       const addNewAccountSpy = sinon.spy(background, 'addNewAccount')
 
@@ -578,9 +578,7 @@ describe('Actions', function () {
     })
 
     it('calls signMsg in background', async function () {
-      const store = mockStore({
-        metamask: {},
-      })
+      const store = mockStore()
 
       signMessageSpy = sinon.spy(background, 'signMessage')
       await store.dispatch(actions.signMsg(msgParams))
@@ -589,9 +587,7 @@ describe('Actions', function () {
     })
 
     it('errors when signMessage in background throws', async function () {
-      const store = mockStore({
-        metamask: {},
-      })
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -635,9 +631,7 @@ describe('Actions', function () {
     })
 
     it('calls signPersonalMessage', async function () {
-      const store = mockStore({
-        metamask: {},
-      })
+      const store = mockStore()
 
       signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
 
@@ -726,8 +720,8 @@ describe('Actions', function () {
 
     it('calls signTypedMsg in background with no error', async function () {
       signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
-        .callsArgWith(1, null, devState)
-      const store = mockStore({ metamask: devState })
+        .callsArgWith(1, null, defaultState)
+      const store = mockStore()
 
       await store.dispatch(actions.signTypedMsg(msgParamsV3))
       assert(signTypedMsgSpy.calledOnce)
@@ -736,7 +730,7 @@ describe('Actions', function () {
     it('returns expected actions with error', async function () {
       signTypedMsgSpy = sinon.stub(background, 'signTypedMessage')
         .callsArgWith(1, new Error('error'))
-      const store = mockStore({ metamask: devState })
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -953,7 +947,7 @@ describe('Actions', function () {
     it('calls setSelectedAddress in background', async function () {
       setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
         .callsArgWith(1, null)
-      const store = mockStore({ metamask: devState })
+      const store = mockStore()
 
       await store.dispatch(actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
       assert(setSelectedAddressSpy.calledOnce)
@@ -1144,7 +1138,7 @@ describe('Actions', function () {
   describe('#addToAddressBook', function () {
     it('calls setAddressBook', function () {
       const addToAddressBookSpy = sinon.stub(background, 'setAddressBook')
-      const store = mockStore({ metamask: devState })
+      const store = mockStore()
       store.dispatch(actions.addToAddressBook('test'))
       assert(addToAddressBookSpy.calledOnce)
       addToAddressBookSpy.restore()
@@ -1160,7 +1154,7 @@ describe('Actions', function () {
     })
 
     it('returns expected actions for successful action', async function () {
-      const store = mockStore(devState)
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -1177,7 +1171,7 @@ describe('Actions', function () {
     })
 
     it('returns action errors when first func callback errors', async function () {
-      const store = mockStore(devState)
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -1198,7 +1192,7 @@ describe('Actions', function () {
     })
 
     it('returns action errors when second func callback errors', async function () {
-      const store = mockStore(devState)
+      const store = mockStore()
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
