@@ -116,16 +116,16 @@ jobs:
           name: Install deps
           command: |
             .circleci/scripts/deps-install.sh
-      - save_cache:
-          paths:
-            - node_modules
-            - /home/circleci/.cache/yarn/
-            - ./*.har
-          key: conflux-portal-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Collect yarn install HAR logs
           command: |
             .circleci/scripts/collect-har-artifact.sh
+      - save_cache:
+          paths:
+            - node_modules
+            - /home/circleci/.cache/yarn/
+            - build-artifacts/yarn-install-har/
+          key: conflux-portal-yarn-{{ checksum "yarn.lock" }}
       - persist_to_workspace:
           root: .
           paths:
