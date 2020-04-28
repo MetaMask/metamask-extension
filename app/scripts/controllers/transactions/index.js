@@ -757,7 +757,6 @@ export default class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore () {
-    this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     const currentNetworkTxList = this.txStateManager.getFilteredTxList({
       metamaskNetworkId: this.getNetwork(),
