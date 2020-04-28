@@ -22,6 +22,7 @@ export default class EditContact extends PureComponent {
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
     setAccountLabel: PropTypes.func,
+    showingMyAccounts: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -50,22 +51,25 @@ export default class EditContact extends PureComponent {
       viewRoute,
       listRoute,
       setAccountLabel,
+      showingMyAccounts,
     } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
           <Identicon address={address} diameter={60} />
-          <Button
-            type="link"
-            className="settings-page__address-book-button"
-            onClick={() => {
-              removeFromAddressBook(chainId, address)
-              history.push(listRoute)
-            }}
-          >
-            {t('deleteAccount')}
-          </Button>
+          {!showingMyAccounts && (
+            <Button
+              type="link"
+              className="settings-page__address-book-button"
+              onClick={() => {
+                removeFromAddressBook(chainId, address)
+                history.push(listRoute)
+              }}
+            >
+              {t('deleteAccount')}
+            </Button>
+          )}
         </div>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
