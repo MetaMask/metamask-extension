@@ -60,7 +60,7 @@ class ExtensionPlatform {
     })
   }
 
-  updateWindowPosition (left, top, windowId) {
+  updateWindowPosition (windowId, left, top) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { left, top }, () => {
         const error = checkForError()
