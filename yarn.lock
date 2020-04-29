@@ -1910,6 +1910,20 @@
   dependencies:
     bowser "^2.5.4"
 
+"@metamask/onboarding@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.1.tgz#76e864634d6436a486fcfa743f09a25b1934a11e"
+  integrity sha512-wSwgkIfVHM6IWja0xfNbK+wMFweOazNe1Z1RVqS0ZKG5v8vCPT93N5IQF2mKCDD+RnBpremE1VYslPPQxQz25g==
+  dependencies:
+    bowser "^2.5.4"
+
+"@metamask/test-dapp@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-1.0.0.tgz#71fe5bb4c1e0d1f2aee52a5ef01f2156b885d121"
+  integrity sha512-wQb3dWIHtyPesGosjCeLBJRbW+xAGosBBZFu2vkHWAnpA+s6AfGcOsgtGKuLJ3yylmsVe9KTWYUIiuedUzyakg==
+  dependencies:
+    "@metamask/onboarding" "^0.2.1"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
