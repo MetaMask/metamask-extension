@@ -18,8 +18,8 @@
 
 // helper functions for that ctx
   function write(buffer, offs) {
-    for (var i = 2; i < arguments.length; i++) {
-      for (var j = 0; j < arguments[i].length; j++) {
+    for (let i = 2; i < arguments.length; i++) {
+      for (let j = 0; j < arguments[i].length; j++) {
         buffer[offs++] = arguments[i].charAt(j);
       }
     }
@@ -37,7 +37,7 @@
     return String.fromCharCode(w & 255, (w >> 8) & 255);
   }
 
-  var PNG = function(width,height,depth) {
+  const PNG = function(width,height,depth) {
 
     this.width   = width;
     this.height  = height;
@@ -66,10 +66,10 @@
     this.palette = new Object();
     this.pindex  = 0;
 
-    var _crc32 = new Array();
+    const _crc32 = new Array();
 
     // initialize buffer with zero bytes
-    for (var i = 0; i < this.buffer_size; i++) {
+    for (let i = 0; i < this.buffer_size; i++) {
       this.buffer[i] = "\x00";
     }
 
@@ -81,14 +81,14 @@
     write(this.buffer, this.iend_offs, byte4(this.iend_size - 12), 'IEND');
 
     // initialize deflate header
-    var header = ((8 + (7 << 4)) << 8) | (3 << 6);
+    const header = ((8 + (7 << 4)) << 8) | (3 << 6);
     header+= 31 - (header % 31);
 
     write(this.buffer, this.idat_offs + 8, byte2(header));
 
     // initialize deflate block headers
-    for (var i = 0; (i << 16) - 1 < this.pix_size; i++) {
-      var size, bits;
+    for (let i = 0; (i << 16) - 1 < this.pix_size; i++) {
+      let size, bits;
       if (i + 0xffff < this.pix_size) {
         size = 0xffff;
         bits = "\x00";
@@ -100,9 +100,9 @@
     }
 
     /* Create crc32 lookup table */
-    for (var i = 0; i < 256; i++) {
-      var c = i;
-      for (var j = 0; j < 8; j++) {
+    for (let i = 0; i < 256; i++) {
+      const c = i;
+      for (let j = 0; j < 8; j++) {
         if (c & 1) {
           c = -306674912 ^ ((c >> 1) & 0x7fffffff);
         } else {
@@ -114,8 +114,8 @@
 
     // compute the index into a png for a given pixel
     this.index = function(x,y) {
-      var i = y * (this.width + 1) + x + 1;
-      var j = this.idat_offs + 8 + 2 + 5 * Math.floor((i / 0xffff) + 1) + i;
+      const i = y * (this.width + 1) + x + 1;
+      const j = this.idat_offs + 8 + 2 + 5 * Math.floor((i / 0xffff) + 1) + i;
       return j;
     };
 
@@ -123,12 +123,12 @@
     this.color = function(red, green, blue, alpha) {
 
       alpha = alpha >= 0 ? alpha : 255;
-      var color = (((((alpha << 8) | red) << 8) | green) << 8) | blue;
+      const color = (((((alpha << 8) | red) << 8) | green) << 8) | blue;
 
       if (typeof this.palette[color] == "undefined") {
         if (this.pindex == this.depth) return "\x00";
 
-        var ndx = this.plte_offs + 8 + 3 * this.pindex;
+        const ndx = this.plte_offs + 8 + 3 * this.pindex;
 
         this.buffer[ndx + 0] = String.fromCharCode(red);
         this.buffer[ndx + 1] = String.fromCharCode(green);
@@ -143,13 +143,13 @@
     // output a PNG string, Base64 encoded
     this.getBase64 = function() {
 
-      var s = this.getDump();
+      const s = this.getDump();
 
-      var ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-      var c1, c2, c3, e1, e2, e3, e4;
-      var l = s.length;
-      var i = 0;
-      var r = "";
+      const ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+      let c1, c2, c3, e1, e2, e3, e4;
+      const l = s.length;
+      const i = 0;
+      const r = "";
 
       do {
         c1 = s.charCodeAt(i);
@@ -168,14 +168,14 @@
     this.getDump = function() {
 
       // compute adler32 of output pixels + row filter bytes
-      var BASE = 65521; /* largest prime smaller than 65536 */
-      var NMAX = 5552;  /* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
-      var s1 = 1;
-      var s2 = 0;
-      var n = NMAX;
+      const BASE = 65521; /* largest prime smaller than 65536 */
+      const NMAX = 5552;  /* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
+      const s1 = 1;
+      const s2 = 0;
+      const n = NMAX;
 
-      for (var y = 0; y < this.height; y++) {
-        for (var x = -1; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        for (let x = -1; x < this.width; x++) {
           s1+= this.buffer[this.index(x, y)].charCodeAt(0);
           s2+= s1;
           if ((n-= 1) == 0) {
@@ -191,8 +191,8 @@
 
       // compute crc32 of the PNG chunks
       function crc32(png, offs, size) {
-        var crc = -1;
-        for (var i = 4; i < size-4; i += 1) {
+        const crc = -1;
+        for (let i = 4; i < size-4; i += 1) {
           crc = _crc32[(crc ^ png[offs+i].charCodeAt(0)) & 0xff] ^ ((crc >> 8) & 0x00ffffff);
         }
         write(png, offs+size-4, byte4(crc ^ -1));
@@ -209,8 +209,8 @@
     };
 
     this.fillRect = function (x, y, w, h, color) {
-      for(var i = 0; i < w; i++) {
-        for (var j = 0; j < h; j++) {
+      for(let i = 0; i < w; i++) {
+        for (let j = 0; j < h; j++) {
           this.buffer[this.index(x+i, y+j)] = color;
         }
       }
@@ -240,13 +240,13 @@
   }
 
   function hsl2rgb(h, s, l){
-    var r, g, b;
+    let r, g, b;
 
     if(s == 0){
       r = g = b = l; // achromatic
     }else{
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
       r = hue2rgb(p, q, h + 1/3);
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1/3);
@@ -256,20 +256,20 @@
   }
 
 // The random number is a js implementation of the Xorshift PRNG
-  var randseed = new Array(4); // Xorshift: [x, y, z, w] 32 bit values
+const randseed = new Array(4); // Xorshift: [x, y, z, w] 32 bit values
 
   function seedrand(seed) {
-    for (var i = 0; i < randseed.length; i++) {
+    for (let i = 0; i < randseed.length; i++) {
       randseed[i] = 0;
     }
-    for (var i = 0; i < seed.length; i++) {
+    for (let i = 0; i < seed.length; i++) {
       randseed[i % 4] = (randseed[i % 4] << 5) - randseed[i % 4] + seed.charCodeAt(i);
     }
   }
 
   function rand() {
     // based on Java's String.hashCode(), expanded to 4 32bit values
-    var t = randseed[0] ^ (randseed[0] << 11);
+    const t = randseed[0] ^ (randseed[0] << 11);
 
     randseed[0] = randseed[1];
     randseed[1] = randseed[2];
@@ -281,35 +281,35 @@
 
   function createColor() {
     //saturation is the whole color spectrum
-    var h = Math.floor(rand() * 360);
+    const h = Math.floor(rand() * 360);
     //saturation goes from 40 to 100, it avoids greyish colors
-    var s = rand() * 60 + 40;
+    const s = rand() * 60 + 40;
     //lightness can be anything from 0 to 100, but probabilities are a bell curve around 50%
-    var l = (rand() + rand() + rand() + rand()) * 25;
+    const l = (rand() + rand() + rand() + rand()) * 25;
 
     return [h / 360,s / 100,l / 100];
   }
 
   function createImageData(size) {
-    var width = size; // Only support square icons for now
-    var height = size;
+    const width = size; // Only support square icons for now
+    const height = size;
 
-    var dataWidth = Math.ceil(width / 2);
-    var mirrorWidth = width - dataWidth;
+    const dataWidth = Math.ceil(width / 2);
+    const mirrorWidth = width - dataWidth;
 
-    var data = [];
-    for (var y = 0; y < height; y++) {
-      var row = [];
-      for (var x = 0; x < dataWidth; x++) {
+    const data = [];
+    for (let y = 0; y < height; y++) {
+      const row = [];
+      for (let x = 0; x < dataWidth; x++) {
         // this makes foreground and background color to have a 43% (1/2.3) probability
         // spot color has 13% chance
         row[x] = Math.floor(rand() * 2.3);
       }
-      var r = row.slice(0, mirrorWidth);
+      const r = row.slice(0, mirrorWidth);
       r.reverse();
       row = row.concat(r);
 
-      for (var i = 0; i < row.length; i++) {
+      for (let i = 0; i < row.length; i++) {
         data.push(row[i]);
       }
     }
@@ -344,9 +344,9 @@
     const color = p.color(...hsl2rgb(...opts.color));
     const spotcolor = p.color(...hsl2rgb(...opts.spotcolor));
 
-    for (var i = 0; i < imageData.length; i++) {
-      var row = Math.floor(i / width);
-      var col = i % width;
+    for (let i = 0; i < imageData.length; i++) {
+      const row = Math.floor(i / width);
+      const col = i % width;
       // if data is 0, leave the background
       if (imageData[i]) {
         // if data is 2, choose spot color, if 1 choose foreground

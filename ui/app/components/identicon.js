@@ -25,9 +25,9 @@ function mapStateToProps (state) {
 }
 
 IdenticonComponent.prototype.render = function () {
-  var props = this.props
+  const props = this.props
   const { className = '', address, image } = props
-  var diameter = props.diameter || this.defaultDiameter
+  const diameter = props.diameter || this.defaultDiameter
   const style = {
     height: diameter,
     width: diameter,
@@ -66,14 +66,14 @@ IdenticonComponent.prototype.render = function () {
 }
 
 IdenticonComponent.prototype.componentDidMount = function () {
-  var props = this.props
+  const props = this.props
   const { address, useBlockie } = props
 
   if (!address) return
 
   if (!isNode) {
     // eslint-disable-next-line react/no-find-dom-node
-    var container = findDOMNode(this)
+    const container = findDOMNode(this)
 
     const diameter = props.diameter || this.defaultDiameter
 
@@ -86,17 +86,17 @@ IdenticonComponent.prototype.componentDidMount = function () {
 }
 
 IdenticonComponent.prototype.componentDidUpdate = function () {
-  var props = this.props
+  const props = this.props
   const { address, useBlockie } = props
 
   if (!address) return
 
   if (!isNode) {
     // eslint-disable-next-line react/no-find-dom-node
-    var container = findDOMNode(this)
+    const container = findDOMNode(this)
 
-    var children = container.children
-    for (var i = 0; i < children.length; i++) {
+    const children = container.children
+    for (let i = 0; i < children.length; i++) {
       container.removeChild(children[i])
     }
 

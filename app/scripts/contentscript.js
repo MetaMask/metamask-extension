@@ -30,10 +30,10 @@ if (shouldInjectWeb3()) {
 function setupInjection () {
   try {
     // inject in-page script
-    var scriptTag = document.createElement('script')
+    const scriptTag = document.createElement('script')
     scriptTag.textContent = inpageBundle
     scriptTag.onload = function () { this.parentNode.removeChild(this) }
-    var container = document.head || document.documentElement
+    const container = document.head || document.documentElement
     // append as first child
     container.insertBefore(scriptTag, container.children[0])
   } catch (e) {
@@ -163,7 +163,7 @@ function suffixCheck () {
  * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
-  var documentElement = document.documentElement.nodeName
+  const documentElement = document.documentElement.nodeName
   if (documentElement) {
     return documentElement.toLowerCase() === 'html'
   }
@@ -176,7 +176,7 @@ function documentElementCheck () {
  * @returns {boolean} {@code true} if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
-  var blacklistedDomains = [
+  const blacklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
@@ -187,8 +187,8 @@ function blacklistedDomainCheck () {
     'ani.gamer.com.tw',
     'blueskybooking.com',
   ]
-  var currentUrl = window.location.href
-  var currentRegex
+  const currentUrl = window.location.href
+  let currentRegex
   for (let i = 0; i < blacklistedDomains.length; i++) {
     const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
     currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
