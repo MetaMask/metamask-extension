@@ -1888,6 +1888,21 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
+"@metamask/inpage-provider@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-5.0.0.tgz#f3961ceb02821255785fe20b1b676bfd944532d7"
+  integrity sha512-DjQy/hJPKwEhk+L/XPHfR6bSTWsGGXjHCQ3Q/LgieQX/Kv91yyMu+QUu+tWuVi0qX0dSRmaTnFNCF9FWNV1XgA==
+  dependencies:
+    eth-json-rpc-errors "^2.0.2"
+    fast-deep-equal "^2.0.1"
+    json-rpc-engine "^5.1.5"
+    json-rpc-middleware-stream "^2.1.1"
+    loglevel "^1.6.1"
+    obj-multiplex "^1.0.0"
+    obs-store "^4.0.3"
+    pump "^3.0.0"
+    safe-event-emitter "^1.0.1"
+
 "@metamask/onboarding@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.0.tgz#9594f6a9a1c779083d71434b9f5e6a973af941f7"
@@ -18396,9 +18411,9 @@ loglevel@^1.4.1, loglevel@^1.5.0:
   integrity sha1-rgyqVhERSYxboTcj1vtjHSQAOTQ=
 
 loglevel@^1.6.1:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.3.tgz#77f2eb64be55a404c9fd04ad16d57c1d6d6b1280"
-  integrity sha512-LoEDv5pgpvWgPF4kNYuIp0qqSJVWak/dML0RY74xlzMZiT9w77teNAwKYKWBTYjlokMirg+o3jBwp+vlLrcfAA==
+  version "1.6.8"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.8.tgz#8a25fb75d092230ecd4457270d80b54e28011171"
+  integrity sha512-bsU7+gc9AJ2SqpzxwU3+1fedl8zAntbtC5XYlt3s2j1hJcn2PsXSmgN8TaLG/J1/2mod4+cE/3vNL70/c1RNCA==
 
 logplease@^1.2.14, logplease@~1.2.14, logplease@~1.2.15:
   version "1.2.15"
@@ -18926,21 +18941,6 @@ mersenne-twister@^1.0.1, mersenne-twister@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
   integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
-
-metamask-inpage-provider@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/metamask-inpage-provider/-/metamask-inpage-provider-4.1.2.tgz#8068004d51160dc5869c5aa881074284b8db03da"
-  integrity sha512-HLCW4DdvubLGntez5yB6kOqvptnpgUcUaRenEwzqN+hHQMnA2+1mNLp5IYks30kvX/fI2ACJgekFwIRDFWA9gQ==
-  dependencies:
-    eth-json-rpc-errors "^2.0.2"
-    fast-deep-equal "^2.0.1"
-    json-rpc-engine "^5.1.5"
-    json-rpc-middleware-stream "^2.1.1"
-    loglevel "^1.6.1"
-    obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
-    pump "^3.0.0"
-    safe-event-emitter "^1.0.1"
 
 metamask-logo@^2.1.4:
   version "2.1.4"

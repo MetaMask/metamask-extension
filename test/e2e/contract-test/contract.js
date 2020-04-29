@@ -89,7 +89,7 @@ const initialize = () => {
   }
 
   const onClickConnect = async () => {
-    await window.ethereum.enable()
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
   }
 
   const updateButtons = () => {
@@ -324,7 +324,7 @@ const initialize = () => {
 
     getAccountsButton.addEventListener('click', async () => {
       try {
-        const accounts = await ethereum.send({ method: 'eth_accounts' })
+        const accounts = await ethereum.request({ method: 'eth_accounts' })
         getAccountsResults.innerHTML = accounts[0] || 'Not able to get accounts'
       } catch (error) {
         console.error(error)
@@ -340,7 +340,7 @@ const initialize = () => {
     ethereum.on('networkChanged', (networkId) => {
       networkDiv.innerHTML = networkId
     })
-    ethereum.on('chainIdChanged', (chainId) => {
+    ethereum.on('chainChanged', (chainId) => {
       chainIdDiv.innerHTML = chainId
     })
     ethereum.on('accountsChanged', (newAccounts) => {

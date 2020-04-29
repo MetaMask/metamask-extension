@@ -1,5 +1,5 @@
 
-// TODO:deprecate:Q1-2020
+// TODO:deprecate:2020
 
 export default setupDappAutoReload
 
@@ -16,7 +16,7 @@ function setupDappAutoReload (web3, observable) {
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn(`MetaMask: In Q1 2020, MetaMask will no longer inject web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
+        console.warn(`MetaMask: We will soon stop injecting web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
         hasBeenWarned = true
       }
       // return value normally
