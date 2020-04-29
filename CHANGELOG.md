@@ -8,6 +8,7 @@
 - [#8447](https://github.com/MetaMask/metamask-extension/pull/8447): Delete Dai/Sai migration notification
 - [#8460](https://github.com/MetaMask/metamask-extension/pull/8460): Update deposit copy for Wyre
 - [#8458](https://github.com/MetaMask/metamask-extension/pull/8458): Snapshot txMeta without cloning history
+- [#8459](https://github.com/MetaMask/metamask-extension/pull/8459): Fix method registry initialization
 
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked

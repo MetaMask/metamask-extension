@@ -47,8 +47,7 @@ async function getMethodFrom4Byte (fourBytePrefix) {
     return null
   }
 }
-
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
+let registry
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
@@ -61,6 +60,10 @@ export async function getMethodDataAsync (fourBytePrefix) {
       log.error(e)
       return null
     })
+
+    if (!registry) {
+      registry = new MethodRegistry({ provider: global.ethereumProvider })
+    }
 
     let sig = await registry.lookup(fourBytePrefix)
 
