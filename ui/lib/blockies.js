@@ -88,7 +88,7 @@
 
     // initialize deflate block headers
     for (let i = 0; (i << 16) - 1 < this.pix_size; i++) {
-      const size, bits;
+      let size, bits;
       if (i + 0xffff < this.pix_size) {
         size = 0xffff;
         bits = "\x00";
@@ -146,7 +146,7 @@
       const s = this.getDump();
 
       const ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-      const c1, c2, c3, e1, e2, e3, e4;
+      let c1, c2, c3, e1, e2, e3, e4;
       const l = s.length;
       const i = 0;
       const r = "";
@@ -344,9 +344,9 @@ const randseed = new Array(4); // Xorshift: [x, y, z, w] 32 bit values
     const color = p.color(...hsl2rgb(...opts.color));
     const spotcolor = p.color(...hsl2rgb(...opts.spotcolor));
 
-    for (var i = 0; i < imageData.length; i++) {
-      var row = Math.floor(i / width);
-      var col = i % width;
+    for (let i = 0; i < imageData.length; i++) {
+      const row = Math.floor(i / width);
+      const col = i % width;
       // if data is 0, leave the background
       if (imageData[i]) {
         // if data is 2, choose spot color, if 1 choose foreground
