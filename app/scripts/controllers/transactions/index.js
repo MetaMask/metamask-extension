@@ -724,7 +724,6 @@ class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore () {
-    this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     const selectedAddressTxList = this.txStateManager.getFilteredTxList({
       from: this.getSelectedAddress(),
