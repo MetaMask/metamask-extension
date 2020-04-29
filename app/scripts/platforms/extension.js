@@ -60,6 +60,18 @@ class ExtensionPlatform {
     })
   }
 
+  updateWindowPosition (left, top, windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { left, top }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
   getLastFocusedWindow () {
     return new Promise((resolve, reject) => {
       extension.windows.getLastFocused((windowObject) => {
