@@ -229,7 +229,7 @@
     "message": "Buy ETH with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lets you use a credit card to deposit ETH right in to your MetaMask account."
+    "message": "Wyre lets you use a debit card to deposit ETH right in to your MetaMask account."
   },
   "buyCoinSwitch": {
     "message": "Buy on CoinSwitch"
