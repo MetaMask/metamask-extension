@@ -1944,9 +1944,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const recentBlock = recentBlocks
       .sort((block1, block2) => block1.number - block2.number)[recentBlocks.length - 1]
 
-    const gasPrice = recentBlock && recentBlock.minimumGasPrice
-
-    if (gasPrice !== 0) {
+    const gasPrice = recentBlock && recentBlock.minimumGasPrice && recentBlock.minimumGasPrice.toString()
+    
+    if (gasPrice !== '0x' && gasPrice !== '0x0' && gasPrice !== '') {
       return gasPrice
     } else {
       return '0x' + GWEI_BN.toString(16)
