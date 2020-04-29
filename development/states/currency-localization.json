@@ -472,5 +472,8 @@
     ],
     "priceAndTimeEstimatesLastRetrieved": 1541527901281,
     "errors": {}
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
   }
 }

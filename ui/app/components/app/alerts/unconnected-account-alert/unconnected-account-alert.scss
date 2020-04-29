@@ -1,0 +1,33 @@
+.unconnected-account-alert {
+  &__footer {
+    flex-direction: column;
+
+    :only-child {
+      margin: 0;
+    }
+  }
+
+  &__footer-buttons {
+    display: flex;
+    flex-direction: row;
+
+    button:first-child {
+      margin-right: 24px;
+    }
+
+    button {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 8px;
+    }
+  }
+
+  &__error {
+    margin-bottom: 16px;
+    padding: 16px;
+    font-size: 14px;
+    border: 1px solid #D73A49;
+    background: #F8EAE8;
+    border-radius: 3px;
+  }
+}

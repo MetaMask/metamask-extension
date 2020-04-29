@@ -588,6 +588,9 @@
   "failed": {
     "message": "Failed"
   },
+  "failureMessage": {
+    "message": "Something went wrong, and we were unable to complete the action"
+  },
   "fast": {
     "message": "Fast"
   },
@@ -1529,6 +1532,12 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unconnectedAccountAlertTitle": {
+    "message": "Not connected"
+  },
+  "unconnectedAccountAlertDescription": {
+    "message": "This account is not connected to this site"
   },
   "units": {
     "message": "units"
