@@ -252,6 +252,23 @@ describe('TransactionStateManager', function () {
       assert.deepEqual(result.history[1][0].value, expectedEntry.value, 'two history items (initial + diff) value')
       assert.ok(result.history[1][0].timestamp >= before && result.history[1][0].timestamp <= after)
     })
+
+    it('does NOT add empty history items', function () {
+      const txMeta = {
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasPrice: '0x01',
+        },
+      }
+
+      txStateManager.addTx(txMeta)
+      txStateManager.updateTx(txMeta)
+
+      const { history } = txStateManager.getTx('1')
+      assert.equal(history.length, 1, 'two history items (initial + diff)')
+    })
   })
 
   describe('#getUnapprovedTxList', function () {
