@@ -779,7 +779,7 @@ export default class MetamaskController extends EventEmitter {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
-    await this.txController.pendingTxTracker.updatePendingTxs()
+    await this.blockTracker.checkForLatestBlock()
 
     try {
       const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
