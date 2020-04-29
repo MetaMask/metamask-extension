@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#368](https://github.com/poanetwork/nifty-wallet/pull/368) - (Fix) Ability to import Keystore file if it is not secured by password
 - [#363](https://github.com/poanetwork/nifty-wallet/pull/363) - (Fix) token decimals display in pending tx screen
 
 ## 5.0.2 Thu Apr 16 2020
