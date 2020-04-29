@@ -1527,19 +1527,20 @@ export function delRpcTarget (oldRpc) {
 export function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const chainId = getState().metamask.network
-    background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo, (err, set) => {
-      if (err) {
-        log.error(err)
-        dispatch(displayWarning('Address book failed to update'))
-        throw err
-      }
-      if (!set) {
-        return dispatch(displayWarning('Address book failed to update'))
-      }
-    })
 
+    let set
+    try {
+      set = await promisifiedBackground.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Address book failed to update'))
+      throw error
+    }
+    if (!set) {
+      return dispatch(displayWarning('Address book failed to update'))
+    }
   }
 }
 

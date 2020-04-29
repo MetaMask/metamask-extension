@@ -111,12 +111,12 @@ export default class EditContact extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          onSubmit={() => {
+          onSubmit={async () => {
             if (this.state.newAddress !== '' && this.state.newAddress !== address) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
                 removeFromAddressBook(chainId, address)
-                addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
+                await addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
                 setAccountLabel(this.state.newAddress, this.state.newName || name)
                 history.push(listRoute)
               } else {
@@ -124,7 +124,7 @@ export default class EditContact extends PureComponent {
               }
             } else {
               // update name
-              addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
+              await addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
               setAccountLabel(address, this.state.newName || name)
               history.push(listRoute)
             }
