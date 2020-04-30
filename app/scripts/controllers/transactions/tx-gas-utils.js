@@ -2,11 +2,6 @@ import EthQuery from 'ethjs-query'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
 import { addHexPrefix } from 'ethereumjs-util'
-import { SEND_ETHER_ACTION_KEY } from '../../../../ui/app/helpers/constants/transactions.js'
-
-const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
-
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 /**
 tx-gas-utils are gas utility methods for Transaction manager
@@ -25,21 +20,17 @@ export default class TxGasUtil {
     @param {Object} txMeta - the txMeta object
     @returns {Object} - the txMeta object with the gas written to the txParams
   */
-  async analyzeGasUsage (txMeta, getCodeResponse) {
+  async analyzeGasUsage (txMeta) {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit, getCodeResponse)
+      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     } catch (err) {
       log.warn(err)
       txMeta.simulationFails = {
         reason: err.message,
         errorKey: err.errorKey,
         debug: { blockNumber: block.number, blockGasLimit: block.gasLimit },
-      }
-
-      if (err.errorKey === TRANSACTION_NO_CONTRACT_ERROR_KEY) {
-        txMeta.simulationFails.debug.getCodeResponse = err.getCodeResponse
       }
 
       return txMeta
@@ -54,7 +45,7 @@ export default class TxGasUtil {
     @param {string} blockGasLimitHex - hex string of the block's gas limit
     @returns {string} - the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta, blockGasLimitHex, getCodeResponse) {
+  async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
 
     // check if gasLimit is already specified
@@ -63,34 +54,6 @@ export default class TxGasUtil {
     // if it is, use that value
     if (txMeta.gasLimitSpecified) {
       return txParams.gas
-    }
-
-    const recipient = txParams.to
-    const hasRecipient = Boolean(recipient)
-
-    // see if we can set the gas based on the recipient
-    if (hasRecipient) {
-      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-      const categorizedAsSimple = txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
-
-      if (categorizedAsSimple) {
-        // if there's data in the params, but there's no contract code, it's not a valid transaction
-        if (txParams.data) {
-          const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
-          // set error key so ui can display localized error message
-          err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
-
-          // set the response on the error so that we can see in logs what the actual response was
-          err.getCodeResponse = getCodeResponse
-          throw err
-        }
-
-        // This is a standard ether simple send, gas requirement is exactly 21k
-        txParams.gas = SIMPLE_GAS_COST
-        // prevents buffer addition
-        txMeta.simpleSend = true
-        return SIMPLE_GAS_COST
-      }
     }
 
     // fallback to block gasLimit
@@ -114,7 +77,7 @@ export default class TxGasUtil {
 
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
-    if (txMeta.gasLimitSpecified || txMeta.simpleSend) {
+    if (txMeta.gasLimitSpecified) {
       txMeta.estimatedGas = txParams.gas
       return
     }
