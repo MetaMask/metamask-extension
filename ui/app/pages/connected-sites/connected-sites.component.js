@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ConnectedSitesList from '../../components/app/connected-sites-list'
 import Popover from '../../components/ui/popover/popover.component'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
 export default class ConnectSites extends Component {
@@ -15,10 +14,10 @@ export default class ConnectSites extends Component {
   }
 
   static propTypes = {
-    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
     accountLabel: PropTypes.string.isRequired,
-    disconnectAccount: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
+    closePopover: PropTypes.func.isRequired,
+    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
+    disconnectSite: PropTypes.func.isRequired,
     tabToConnect: PropTypes.object,
     legacyExposeAccount: PropTypes.func.isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
@@ -49,10 +48,10 @@ export default class ConnectSites extends Component {
   }
 
   disconnect = () => {
-    const { disconnectAccount } = this.props
+    const { disconnectSite } = this.props
     const { sitePendingDisconnect } = this.state
 
-    disconnectAccount(sitePendingDisconnect.domainKey)
+    disconnectSite(sitePendingDisconnect.domainKey)
     this.clearSitePendingDisconnect()
   }
 
@@ -66,7 +65,7 @@ export default class ConnectSites extends Component {
   }
 
   render () {
-    const { accountLabel, history, legacyExposeAccount, tabToConnect, connectedDomains } = this.props
+    const { accountLabel, closePopover, connectedDomains, legacyExposeAccount, tabToConnect } = this.props
     const { t } = this.context
     const { sitePendingDisconnect } = this.state
     return (
@@ -74,8 +73,8 @@ export default class ConnectSites extends Component {
         ? (
           <Popover
             title={t('disconnectSite', [sitePendingDisconnect.domainName])}
-            subtitle={t('disconnectAccountConfirmationDescription')}
-            onClose={() => history.push(DEFAULT_ROUTE)}
+            subtitle={t('disconnectSiteConfirmationDescription')}
+            onClose={closePopover}
             footer={(
               <>
                 <Button type="secondary" onClick={this.clearSitePendingDisconnect}>
@@ -96,7 +95,7 @@ export default class ConnectSites extends Component {
               ? t('connectedSitesDescription', [accountLabel])
               : t('connectedSitesEmptyDescription', [accountLabel])
             }
-            onClose={() => history.push(DEFAULT_ROUTE)}
+            onClose={closePopover}
             footer={
               tabToConnect
                 ? (

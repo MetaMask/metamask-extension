@@ -8,6 +8,7 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../../selectors/selectors'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import { getOriginFromUrl } from '../../helpers/utils/util'
 
 const mapStateToProps = (state) => {
@@ -36,7 +37,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
-    disconnectAccount: (domainKey, domain) => {
+    disconnectSite: (domainKey, domain) => {
       const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
       dispatch(removePermissionsFor({
         [domainKey]: permissionMethodNames,
@@ -47,17 +48,31 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { domains, selectedAddress, tabToConnect } = stateProps
   const {
-    disconnectAccount,
+    domains,
+    selectedAddress,
+    tabToConnect,
+    connectedDomains,
+  } = stateProps
+  const {
+    disconnectSite,
     legacyExposeAccounts: dispatchLegacyExposeAccounts,
   } = dispatchProps
+  const { history } = ownProps
+
+  const closePopover = () => history.push(DEFAULT_ROUTE)
 
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    disconnectAccount: (domainKey) => disconnectAccount(domainKey, domains[domainKey]),
+    closePopover,
+    disconnectSite: (domainKey) => {
+      disconnectSite(domainKey, domains[domainKey])
+      if (connectedDomains.length === 1) {
+        closePopover()
+      }
+    },
     legacyExposeAccount: () => dispatchLegacyExposeAccounts(tabToConnect.origin, selectedAddress),
   }
 }

@@ -19,7 +19,7 @@
   "disconnectSite": {
     "message": "Disconnect $1?"
   },
-  "disconnectAccountConfirmationDescription": {
+  "disconnectSiteConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
   "dismiss": {
