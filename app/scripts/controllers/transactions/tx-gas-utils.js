@@ -4,6 +4,15 @@ import log from 'loglevel'
 import { addHexPrefix } from 'ethereumjs-util'
 
 /**
+ * Result of gas analysis, including either a gas estimate for a successful analysis, or
+ * debug information for a failed analysis.
+ * @typedef {Object} GasAnalysisResult
+ * @property {string} blockGasLimit - The gas limit of the block used for the analysis
+ * @property {string} estimatedGasHex - The estimated gas, in hexidecimal
+ * @property {Object} simulationFails - Debug information about why an analysis failed
+ */
+
+/**
 tx-gas-utils are gas utility methods for Transaction manager
 its passed ethquery
 and used to do things like calculate gas of a tx.
@@ -18,25 +27,24 @@ export default class TxGasUtil {
 
   /**
     @param {Object} txMeta - the txMeta object
-    @returns {Object} - the txMeta object with the gas written to the txParams
+    @returns {GasAnalysisResult} The result of the gas analysis
   */
   async analyzeGasUsage (txMeta) {
     const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
+    let simulationFails
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     } catch (err) {
       log.warn(err)
-      txMeta.simulationFails = {
+      simulationFails = {
         reason: err.message,
         errorKey: err.errorKey,
         debug: { blockNumber: block.number, blockGasLimit: block.gasLimit },
       }
-
-      return txMeta
     }
-    this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
-    return txMeta
+
+    return { blockGasLimit: block.gasLimit, estimatedGasHex, simulationFails }
   }
 
   /**
