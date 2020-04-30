@@ -189,7 +189,7 @@
     "@metamask/eslint-config": "^1.1.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/onboarding": "^0.2.0",
-    "@metamask/test-dapp": "^1.0.0",
+    "@metamask/test-dapp": "^1.0.1",
     "@sentry/cli": "^1.49.0",
     "@storybook/addon-actions": "^5.3.14",
     "@storybook/addon-backgrounds": "^5.3.14",

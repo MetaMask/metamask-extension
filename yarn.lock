@@ -1917,10 +1917,10 @@
   dependencies:
     bowser "^2.5.4"
 
-"@metamask/test-dapp@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-1.0.0.tgz#71fe5bb4c1e0d1f2aee52a5ef01f2156b885d121"
-  integrity sha512-wQb3dWIHtyPesGosjCeLBJRbW+xAGosBBZFu2vkHWAnpA+s6AfGcOsgtGKuLJ3yylmsVe9KTWYUIiuedUzyakg==
+"@metamask/test-dapp@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-1.0.1.tgz#67961a53640faca827422fd7bc467d5b2ceb0292"
+  integrity sha512-RANP75a5UpCXYydaxZQ6p+4A9UjEg6YC5XS6dGatohtIKbGvN3TAU0wPot3GKcxfn9BbnGKMzQ8DIxmkrEaqSg==
   dependencies:
     "@metamask/onboarding" "^0.2.1"
 
