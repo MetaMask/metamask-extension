@@ -434,17 +434,15 @@ describe('MetaMask', function () {
       await driver.assertElementNotPresent(By.xpath(`//li[contains(text(), 'Data')]`))
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+
+      await gasLimitInput.clear()
       await driver.delay(50)
       await gasLimitInput.sendKeys('25000')
 
@@ -693,16 +691,13 @@ describe('MetaMask', function () {
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
       const gasLimitValue = await gasLimitInput.getAttribute('value')
       assert(Number(gasLimitValue) < 100000, 'Gas Limit too high')
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+
+      await gasLimitInput.clear()
       await driver.delay(50)
       await gasLimitInput.sendKeys('60001')
 
@@ -954,16 +949,13 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+
+      await gasLimitInput.clear()
       await driver.delay(50)
       await gasLimitInput.sendKeys('60000')
 
@@ -1060,16 +1052,13 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+
+      await gasLimitInput.clear()
       await driver.delay(50)
       await gasLimitInput.sendKeys('60001')
 
