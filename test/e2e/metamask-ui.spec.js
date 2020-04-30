@@ -732,7 +732,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(extension)
       await driver.delay(largeDelayMs * 2)
 
-      await driver.clickElement(By.css('.transaction-list-item'))
+      await driver.clickElement(By.css('.transaction-list__pending-transactions  .transaction-list-item'))
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Confirm')]`))
