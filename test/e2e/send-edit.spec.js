@@ -1,7 +1,7 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
-const { By, Key, until } = webdriver
+const { By, until } = webdriver
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -111,21 +111,16 @@ describe('Using MetaMask with an existing account', function () {
       const gasModal = await driver.findElement(By.css('span .modal'))
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
+      await gasLimitInput.clear()
+      await driver.delay(50)
       await gasLimitInput.sendKeys('25000')
 
       await driver.delay(1000)
@@ -154,9 +149,8 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
-      await inputAmount.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
-      await inputAmount.sendKeys(Key.BACK_SPACE)
+
+      await inputAmount.clear()
       await driver.delay(50)
       await inputAmount.sendKeys('2.2')
 
@@ -166,20 +160,16 @@ describe('Using MetaMask with an existing account', function () {
       const gasModal = await driver.findElement(By.css('span .modal'))
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('8')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
+      await gasLimitInput.clear()
+      await driver.delay(50)
       await gasLimitInput.sendKeys('100000')
 
       await driver.delay(1000)
