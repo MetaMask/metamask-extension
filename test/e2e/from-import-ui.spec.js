@@ -47,7 +47,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest)
     }
   })
 
