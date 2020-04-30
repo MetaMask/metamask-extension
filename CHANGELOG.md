@@ -10,6 +10,13 @@
 - [#8458](https://github.com/MetaMask/metamask-extension/pull/8458): Snapshot txMeta without cloning history
 - [#8459](https://github.com/MetaMask/metamask-extension/pull/8459): Fix method registry initialization
 - [#8455](https://github.com/MetaMask/metamask-extension/pull/8455): Add Dai/Sai to currency display
+- [#8461](https://github.com/MetaMask/metamask-extension/pull/8461): Prevent network switch upon close of network timeout overlay
+- [#8457](https://github.com/MetaMask/metamask-extension/pull/8457): Add INR currency option
+- [#8462](https://github.com/MetaMask/metamask-extension/pull/8462): Fix display of Kovan and Rinkeby chain IDs
+- [#8465](https://github.com/MetaMask/metamask-extension/pull/8465): Use ethereum-ens-network-map for network support
+- [#8463](https://github.com/MetaMask/metamask-extension/pull/8463): Update deprecated Etherscam link
+- [#8474](https://github.com/MetaMask/metamask-extension/pull/8474): Only update pending transactions upon block update
+- [#8476](https://github.com/MetaMask/metamask-extension/pull/8476): Update eth-contract-metadata
 
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
