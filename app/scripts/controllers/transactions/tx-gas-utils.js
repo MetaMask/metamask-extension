@@ -48,14 +48,6 @@ export default class TxGasUtil {
   async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
 
-    // check if gasLimit is already specified
-    txMeta.gasLimitSpecified = Boolean(txParams.gas)
-
-    // if it is, use that value
-    if (txMeta.gasLimitSpecified) {
-      return txParams.gas
-    }
-
     // fallback to block gasLimit
     const blockGasLimitBN = hexToBn(blockGasLimitHex)
     const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
@@ -75,12 +67,6 @@ export default class TxGasUtil {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     const txParams = txMeta.txParams
 
-    // if gasLimit was specified and doesnt OOG,
-    // use original specified amount
-    if (txMeta.gasLimitSpecified) {
-      txMeta.estimatedGas = txParams.gas
-      return
-    }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
     const recommendedGasHex = this.addGasBuffer(txMeta.estimatedGas, blockGasLimitHex)

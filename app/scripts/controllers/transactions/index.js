@@ -274,10 +274,13 @@ export default class TransactionController extends EventEmitter {
 
     // set gasLimit
 
-    if (
+    if (txParams.gas) {
+      txMeta.estimatedGas = txParams.gas
+      txMeta.gasLimitSpecified = Boolean(txParams.gas)
+      return txMeta
+    } else if (
       txParams.to &&
-      txMeta.transactionCategory === SEND_ETHER_ACTION_KEY &&
-      !txParams.gas
+      txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
       if (txParams.data) {
