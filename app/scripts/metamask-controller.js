@@ -767,7 +767,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
-    await this.txController.pendingTxTracker.updatePendingTxs()
+    await this.blockTracker.checkForLatestBlock()
 
     try {
       const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
