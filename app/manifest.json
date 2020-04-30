@@ -1,6 +1,6 @@
 {
-  "name": "__MSG_appName__",
-  "short_name": "__MSG_appName__",
+  "name": "ConfluxPortal",
+  "short_name": "ConfluxPortal",
   "version": "0.1.8",
   "manifest_version": 2,
   "author": "https://conflux-chain.org",
