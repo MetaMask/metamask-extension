@@ -278,7 +278,6 @@ export default class TransactionController extends EventEmitter {
     // set gasLimit
 
     if (txParams.gas) {
-      txMeta.estimatedGas = txParams.gas
       txMeta.gasLimitSpecified = Boolean(txParams.gas)
       return txMeta
     } else if (
@@ -298,7 +297,6 @@ export default class TransactionController extends EventEmitter {
 
       // This is a standard ether simple send, gas requirement is exactly 21k
       txParams.gas = SIMPLE_GAS_COST
-      txMeta.estimatedGas = SIMPLE_GAS_COST
       txMeta.simpleSend = true
       txMeta.gasLimitSpecified = Boolean(txParams.gas)
       return txMeta

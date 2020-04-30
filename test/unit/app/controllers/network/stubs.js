@@ -7,7 +7,6 @@ export default {}
 
 // for pending middlewares test
 export const txMetaStub = {
-  'estimatedGas': '0x5208',
   'firstRetryBlockNumber': '0x51a402',
   'gasLimitSpecified': true,
   'gasPriceSpecified': true,
@@ -45,11 +44,6 @@ export const txMetaStub = {
         'op': 'add',
         'path': '/gasLimitSpecified',
         'value': true,
-      },
-      {
-        'op': 'add',
-        'path': '/estimatedGas',
-        'value': '0x5208',
       },
     ],
     [

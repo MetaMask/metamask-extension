@@ -76,7 +76,6 @@
           "message": "Error: intrinsic gas too low",
           "stack": "Error: some error"
         },
-        "estimatedGas": "0xcf08",
         "gasLimitSpecified": true,
         "gasPriceSpecified": true,
         "history": [
@@ -109,11 +108,6 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [
@@ -280,11 +274,6 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [
@@ -305,11 +294,9 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
         "gasLimitSpecified": false,
         "gasPriceSpecified": false,
@@ -357,11 +344,6 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "8d41"
             }
           ],
           [
@@ -517,7 +499,6 @@
         }
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
         "gasLimitSpecified": false,
         "gasPriceSpecified": false,
@@ -565,11 +546,6 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "8d41"
             }
           ],
           [
@@ -769,11 +745,6 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [],
@@ -875,7 +846,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "nonceDetails": {
           "params": {
             "highestLocalNonce": 3,
@@ -946,17 +916,11 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       }
     ],
     "unapprovedTxs": {
@@ -1003,17 +967,11 @@
               "op": "add",
               "path": "/gasLimitSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       }
     },
     "unapprovedMsgs": {

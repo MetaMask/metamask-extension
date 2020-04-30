@@ -391,8 +391,7 @@
                 "gasPrice": "3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038869,
@@ -406,8 +405,7 @@
                 "gasPrice": "3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038869,
@@ -421,8 +419,7 @@
                 "gasPrice": "3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038869,
@@ -436,8 +433,7 @@
                 "gasPrice": "3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038869,
@@ -453,7 +449,6 @@
                 "nonce": 0
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -475,7 +470,6 @@
                 "nonce": 0
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -497,7 +491,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -519,7 +512,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -541,7 +533,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -564,7 +555,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -587,7 +577,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -611,7 +600,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -635,7 +623,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -659,7 +646,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -683,7 +669,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -708,7 +693,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16643c",
                 "baseCount": 0,
@@ -721,7 +705,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16643c",
             "baseCount": 0,
@@ -757,8 +740,7 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038870,
@@ -772,12 +754,10 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             }
           ],
-          "gasLimitSpecified": false,
-          "estimatedGas": "5209"
+          "gasLimitSpecified": false
         },
         {
           "id": 6616756286038871,
@@ -806,8 +786,7 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038871,
@@ -821,8 +800,7 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038871,
@@ -836,8 +814,7 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038871,
@@ -851,8 +828,7 @@
                 "gasPrice": "28fa6ae00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038871,
@@ -868,7 +844,6 @@
                 "nonce": 1
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -890,7 +865,6 @@
                 "nonce": 1
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -913,7 +887,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -936,7 +909,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -959,7 +931,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -983,7 +954,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1007,7 +977,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1032,7 +1001,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1057,7 +1025,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1082,7 +1049,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1107,7 +1073,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1133,7 +1098,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x168739",
                 "baseCount": 1,
@@ -1146,7 +1110,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x168739",
             "baseCount": 1,
@@ -1184,8 +1147,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038872,
@@ -1199,8 +1161,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038872,
@@ -1214,8 +1175,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038872,
@@ -1229,8 +1189,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038872,
@@ -1246,7 +1205,6 @@
                 "nonce": 2
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1268,7 +1226,6 @@
                 "nonce": 2
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1291,7 +1248,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1314,7 +1270,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1337,7 +1292,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1361,7 +1315,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1385,7 +1338,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1410,7 +1362,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1435,7 +1386,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1460,7 +1410,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1485,7 +1434,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1511,7 +1459,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b066",
                 "baseCount": 2,
@@ -1524,7 +1471,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16b066",
             "baseCount": 2,
@@ -1562,8 +1508,7 @@
                 "gasPrice": "0x3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038873,
@@ -1577,8 +1522,7 @@
                 "gasPrice": "0x3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038873,
@@ -1592,8 +1536,7 @@
                 "gasPrice": "0x3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038873,
@@ -1607,8 +1550,7 @@
                 "gasPrice": "0x3b9aca00",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038873,
@@ -1624,7 +1566,6 @@
                 "nonce": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1646,7 +1587,6 @@
                 "nonce": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1669,7 +1609,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1692,7 +1631,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1715,7 +1653,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1739,7 +1676,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1763,7 +1699,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1788,7 +1723,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1813,7 +1747,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1838,7 +1771,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1863,7 +1795,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1889,7 +1820,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -1902,7 +1832,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16b067",
             "baseCount": 2,
@@ -1940,8 +1869,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038874,
@@ -1955,8 +1883,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038874,
@@ -1970,8 +1897,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038874,
@@ -1985,8 +1911,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038874,
@@ -2002,7 +1927,6 @@
                 "nonce": 4
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2024,7 +1948,6 @@
                 "nonce": 4
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2047,7 +1970,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2070,7 +1992,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2093,7 +2014,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2117,7 +2037,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2141,7 +2060,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2166,7 +2084,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2191,7 +2108,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2216,7 +2132,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2241,7 +2156,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2267,7 +2181,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b067",
                 "baseCount": 2,
@@ -2280,7 +2193,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16b067",
             "baseCount": 2,
@@ -2318,8 +2230,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038875,
@@ -2333,8 +2244,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038875,
@@ -2348,8 +2258,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038875,
@@ -2363,8 +2272,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038875,
@@ -2380,7 +2288,6 @@
                 "nonce": 5
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2402,7 +2309,6 @@
                 "nonce": 5
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2425,7 +2331,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2448,7 +2353,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2471,7 +2375,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2495,7 +2398,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2519,7 +2421,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2544,7 +2445,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2569,7 +2469,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2594,7 +2493,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2619,7 +2517,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2645,7 +2542,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2658,7 +2554,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16b068",
             "baseCount": 3,
@@ -2696,8 +2591,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038876,
@@ -2711,8 +2605,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038876,
@@ -2726,8 +2619,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038876,
@@ -2741,8 +2633,7 @@
                 "gasPrice": "4a817c800",
                 "gas": "0x7b0d"
               },
-              "gasLimitSpecified": false,
-              "estimatedGas": "5209"
+              "gasLimitSpecified": false
             },
             {
               "id": 6616756286038876,
@@ -2758,7 +2649,6 @@
                 "nonce": 6
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2780,7 +2670,6 @@
                 "nonce": 6
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2803,7 +2692,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2826,7 +2714,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2849,7 +2736,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2873,7 +2759,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2897,7 +2782,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2922,7 +2806,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2947,7 +2830,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2972,7 +2854,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -2997,7 +2878,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -3023,7 +2903,6 @@
                 "chainId": 3
               },
               "gasLimitSpecified": false,
-              "estimatedGas": "5209",
               "nonceDetails": {
                 "blockNumber": "0x16b068",
                 "baseCount": 3,
@@ -3036,7 +2915,6 @@
             }
           ],
           "gasLimitSpecified": false,
-          "estimatedGas": "5209",
           "nonceDetails": {
             "blockNumber": "0x16b068",
             "baseCount": 3,
