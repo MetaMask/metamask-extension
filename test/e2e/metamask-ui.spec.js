@@ -599,8 +599,10 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Reject All')]`))
       await driver.delay(largeDelayMs * 2)
 
-      const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
-      assert.equal(confirmedTxes.length, 5, '5 transactions present')
+      await driver.wait(async () => {
+        const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        return confirmedTxes.length === 5
+      }, 10000)
     })
   })
 
