@@ -80,7 +80,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0x5208",
         "origin": "MetaMask"
       }
     },
@@ -327,7 +326,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -525,7 +523,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -723,7 +720,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -932,7 +928,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": false,
-        "estimatedGas": "40f14",
         "origin": "crypko.ai",
         "nonceDetails": {
           "params": {
@@ -1132,7 +1127,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xd508",
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -1251,7 +1245,6 @@
         "gasPriceSpecified": false,
         "gasLimitSpecified": false,
         "simpleSend": true,
-        "estimatedGas": "0x5208",
         "origin": "tmashuang.github.io"
       }
     ]

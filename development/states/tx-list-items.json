@@ -76,7 +76,6 @@
           "message": "Error: intrinsic gas too low",
           "stack": "Error: some error"
         },
-        "estimatedGas": "0xcf08",
         "gasLimitSpecified": true,
         "gasPriceSpecified": true,
         "history": [
@@ -305,11 +304,9 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
         "gasLimitSpecified": false,
         "gasPriceSpecified": false,
@@ -517,7 +514,6 @@
         }
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
         "gasLimitSpecified": false,
         "gasPriceSpecified": false,
@@ -875,7 +871,6 @@
         ],
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "nonceDetails": {
           "params": {
             "highestLocalNonce": 3,
@@ -955,8 +950,7 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       }
     ],
     "unapprovedTxs": {
@@ -1012,8 +1006,7 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        "gasLimitSpecified": true
       }
     },
     "unapprovedMsgs": {

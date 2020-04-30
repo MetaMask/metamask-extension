@@ -72,12 +72,11 @@ export default class TxGasUtil {
     @param {string} estimatedGasHex - the estimated gas hex
   */
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
-    txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     const txParams = txMeta.txParams
 
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
-    const recommendedGasHex = this.addGasBuffer(txMeta.estimatedGas, blockGasLimitHex)
+    const recommendedGasHex = this.addGasBuffer(addHexPrefix(estimatedGasHex), blockGasLimitHex)
     txParams.gas = recommendedGasHex
     return
   }

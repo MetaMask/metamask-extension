@@ -10,7 +10,6 @@ describe('TransactionActivityLog utils', function () {
     it('should return activities for an array of transactions', function () {
       const transactions = [
         {
-          estimatedGas: '0x5208',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           history: [
             {
