@@ -12,7 +12,7 @@ import {
   getAccountByAddress,
 } from '../helpers/utils/util'
 
-import { getPermittedAccountsMap } from './permissions'
+import { getPermittedAccountsByOrigin } from './permissions'
 
 export { getPermittedAccounts } from './permissions'
 
@@ -440,7 +440,7 @@ export function getAddressConnectedDomainMap (state) {
     domainMetadata,
   } = state.metamask
 
-  const accountsMap = getPermittedAccountsMap(state)
+  const accountsMap = getPermittedAccountsByOrigin(state)
   const addressConnectedIconMap = {}
 
   Object.keys(accountsMap).forEach((domainKey) => {
@@ -457,7 +457,7 @@ export function getAddressConnectedDomainMap (state) {
 }
 
 export function getPermittedAccountsForCurrentTab (state) {
-  const permittedAccountsMap = getPermittedAccountsMap(state)
+  const permittedAccountsMap = getPermittedAccountsByOrigin(state)
   const originOfCurrentTab = getOriginOfCurrentTab(state)
   return permittedAccountsMap[originOfCurrentTab] || []
 }
