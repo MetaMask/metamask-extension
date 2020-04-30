@@ -1,6 +1,10 @@
 import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
-import { getOpenMetamaskTabsIds, legacyExposeAccounts, removePermissionsFor } from '../../store/actions'
+import {
+  getOpenMetamaskTabsIds,
+  legacyExposeAccounts,
+  removePermissionsFor,
+} from '../../store/actions'
 import {
   getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
