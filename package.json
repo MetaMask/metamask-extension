@@ -88,7 +88,7 @@
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
     "eth-block-tracker": "^4.4.2",
-    "eth-contract-metadata": "^1.12.1",
+    "eth-contract-metadata": "^1.13.0",
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-errors": "^1.1.0",
     "eth-json-rpc-filters": "^4.1.1",
