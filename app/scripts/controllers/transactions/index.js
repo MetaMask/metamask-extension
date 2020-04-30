@@ -35,6 +35,9 @@ import {
 } from './enums'
 
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
+
+const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -258,7 +261,9 @@ export default class TransactionController extends EventEmitter {
    */
   async addTxGasDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
+
     // ensure value
+
     txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
@@ -266,8 +271,33 @@ export default class TransactionController extends EventEmitter {
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
+
     // set gasLimit
-    return await this.txGasUtil.analyzeGasUsage(txMeta, getCodeResponse)
+
+    if (
+      txParams.to &&
+      txMeta.transactionCategory === SEND_ETHER_ACTION_KEY &&
+      !txParams.gas
+    ) {
+      // if there's data in the params, but there's no contract code, it's not a valid transaction
+      if (txParams.data) {
+        const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+        // set error key so ui can display localized error message
+        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+
+        // set the response on the error so that we can see in logs what the actual response was
+        err.getCodeResponse = getCodeResponse
+        throw err
+      }
+
+      // This is a standard ether simple send, gas requirement is exactly 21k
+      txParams.gas = SIMPLE_GAS_COST
+      txMeta.estimatedGas = SIMPLE_GAS_COST
+      txMeta.simpleSend = true
+      txMeta.gasLimitSpecified = Boolean(txParams.gas)
+      return txMeta
+    }
+    return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
   /**
