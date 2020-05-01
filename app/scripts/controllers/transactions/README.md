@@ -60,7 +60,6 @@ txMeta = {
             },
             ...], // I've removed most of history for this
   "gasPriceSpecified": false, //whether or not the user/dapp has specified gasPrice
-  "gasLimitSpecified": false, //whether or not the user/dapp has specified gas
   "origin": "MetaMask", //debug
   "nonceDetails": {
     "params": {

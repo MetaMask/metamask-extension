@@ -56,11 +56,6 @@
               "op": "add",
               "path": "/gasPriceSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
             }
           ],
           [
@@ -74,7 +69,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
         "origin": "MetaMask"
       }
     },
@@ -191,11 +185,6 @@
             {
               "op": "add",
               "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
               "value": true
             }
           ],
@@ -315,7 +304,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -383,11 +371,6 @@
             {
               "op": "add",
               "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
               "value": true
             }
           ],
@@ -507,7 +490,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -575,11 +557,6 @@
             {
               "op": "add",
               "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
               "value": true
             }
           ],
@@ -699,7 +676,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -774,11 +750,6 @@
               "op": "add",
               "path": "/gasPriceSpecified",
               "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": false
             }
           ],
           [
@@ -896,7 +867,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": false,
         "origin": "crypko.ai",
         "nonceDetails": {
           "params": {
@@ -966,11 +936,6 @@
             {
               "op": "add",
               "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
               "value": true
             }
           ],
@@ -1090,7 +1055,6 @@
           ]
         ],
         "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
         "origin": "MetaMask",
         "nonceDetails": {
           "params": {
@@ -1173,11 +1137,6 @@
             },
             {
               "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": false
-            },
-            {
-              "op": "add",
               "path": "/simpleSend",
               "value": true
             }
@@ -1202,7 +1161,6 @@
           ]
         ],
         "gasPriceSpecified": false,
-        "gasLimitSpecified": false,
         "simpleSend": true,
         "origin": "tmashuang.github.io"
       }

@@ -175,11 +175,6 @@ describe('TransactionActivityLog utils', function () {
               path: '/gasPriceSpecified',
               value: true,
             },
-            {
-              op: 'add',
-              path: '/gasLimitSpecified',
-              value: true,
-            },
           ],
           [
             {
