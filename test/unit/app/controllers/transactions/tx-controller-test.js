@@ -182,6 +182,7 @@ describe('Transaction Controller', function () {
       assert.ok('metamaskNetworkId' in txMeta, 'should have a metamaskNetworkId')
       assert.ok('txParams' in txMeta, 'should have a txParams')
       assert.ok('history' in txMeta, 'should have a history')
+      assert.equal(txMeta.txParams.value, '0x0', 'should have added 0x0 as the value')
 
       const memTxMeta = txController.txStateManager.getTx(txMeta.id)
       assert.deepEqual(txMeta, memTxMeta)
@@ -241,7 +242,6 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_estimateGas = '5209'
 
       const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta)
-      assert.equal(txMetaWithDefaults.txParams.value, '0x0', 'should have added 0x0 as the value')
       assert.ok(txMetaWithDefaults.txParams.gasPrice, 'should have added the gas price')
       assert.ok(txMetaWithDefaults.txParams.gas, 'should have added the gas field')
     })
