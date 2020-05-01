@@ -247,13 +247,13 @@ export default class TransactionController extends EventEmitter {
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
+      txMeta = this.txStateManager.getTx(txMeta.id)
       txMeta.loadingDefaults = false
       this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.')
       throw error
     }
 
     txMeta.loadingDefaults = false
-
     // save txMeta
     this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.')
 
@@ -266,24 +266,53 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} - resolves with txMeta
    */
   async addTxGasDefaults (txMeta, getCodeResponse) {
-    const txParams = txMeta.txParams
+    const defaultGasPrice = await this._getDefaultGasPrice(txMeta)
+    const { gasLimit: defaultGasLimit, simulationFails } = await this._getDefaultGasLimit(txMeta, getCodeResponse)
 
-    let gasPrice = txParams.gasPrice
-    if (!gasPrice) {
-      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+    txMeta = this.txStateManager.getTx(txMeta.id)
+    if (simulationFails) {
+      txMeta.simulationFails = simulationFails
     }
-    txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
+    if (defaultGasPrice && !txMeta.txParams.gasPrice) {
+      txMeta.txParams.gasPrice = defaultGasPrice
+    }
+    if (defaultGasLimit && !txMeta.txParams.gas) {
+      txMeta.txParams.gas = defaultGasLimit
+    }
+    return txMeta
+  }
 
-    // set gasLimit
+  /**
+   * Gets default gas price, or returns `undefined` if gas price is already set
+   * @param {Object} txMeta - The txMeta object
+   * @returns {Promise<string>} The default gas price
+   */
+  async _getDefaultGasPrice (txMeta) {
+    if (txMeta.txParams.gasPrice) {
+      return
+    }
+    const gasPrice = this.getGasPrice
+      ? this.getGasPrice()
+      : await this.query.gasPrice()
 
-    if (txParams.gas) {
-      return txMeta
+    return ethUtil.addHexPrefix(gasPrice.toString(16))
+  }
+
+  /**
+   * Gets default gas limit, or debug information about why gas estimate failed.
+   * @param {Object} txMeta - The txMeta object
+   * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
+   * @returns {Promise<Object>} Object containing the default gas limit, or the simulation failure object
+   */
+  async _getDefaultGasLimit (txMeta, getCodeResponse) {
+    if (txMeta.txParams.gas) {
+      return {}
     } else if (
-      txParams.to &&
+      txMeta.txParams.to &&
       txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
-      if (txParams.data) {
+      if (txMeta.txParams.data) {
         const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
         // set error key so ui can display localized error message
         err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
@@ -294,17 +323,14 @@ export default class TransactionController extends EventEmitter {
       }
 
       // This is a standard ether simple send, gas requirement is exactly 21k
-      txParams.gas = SIMPLE_GAS_COST
-      return txMeta
+      return { gasLimit: SIMPLE_GAS_COST }
     }
 
     const { blockGasLimit, estimatedGasHex, simulationFails } = await this.txGasUtil.analyzeGasUsage(txMeta)
-    if (simulationFails) {
-      txMeta.simulationFails = simulationFails
-    } else {
-      this.txGasUtil.setTxGas(txMeta, blockGasLimit, estimatedGasHex)
-    }
-    return txMeta
+
+    // add additional gas buffer to our estimation for safety
+    const gasLimit = this.txGasUtil.addGasBuffer(ethUtil.addHexPrefix(estimatedGasHex), blockGasLimit)
+    return { gasLimit, simulationFails }
   }
 
   /**
@@ -647,14 +673,16 @@ export default class TransactionController extends EventEmitter {
       status: 'unapproved',
       loadingDefaults: true,
     }).forEach((tx) => {
+
       this.addTxGasDefaults(tx)
         .then((txMeta) => {
           txMeta.loadingDefaults = false
           this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
         }).catch((error) => {
-          tx.loadingDefaults = false
-          this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
-          this.txStateManager.setTxStatusFailed(tx.id, error)
+          const txMeta = this.txStateManager.getTx(tx.id)
+          txMeta.loadingDefaults = false
+          this.txStateManager.updateTx(txMeta, 'failed to estimate gas during boot cleanup.')
+          this.txStateManager.setTxStatusFailed(txMeta.id, error)
         })
     })
 

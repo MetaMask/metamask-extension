@@ -1,7 +1,6 @@
 import EthQuery from 'ethjs-query'
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
-import { addHexPrefix } from 'ethereumjs-util'
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
@@ -31,15 +30,19 @@ export default class TxGasUtil {
   */
   async analyzeGasUsage (txMeta) {
     const block = await this.query.getBlockByNumber('latest', false)
-    let estimatedGasHex
+
+    // fallback to block gasLimit
+    const blockGasLimitBN = hexToBn(block.gasLimit)
+    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+    let estimatedGasHex = bnToHex(saferGasLimitBN)
     let simulationFails
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
-    } catch (err) {
-      log.warn(err)
+    } catch (error) {
+      log.warn(error)
       simulationFails = {
-        reason: err.message,
-        errorKey: err.errorKey,
+        reason: error.message,
+        errorKey: error.errorKey,
         debug: { blockNumber: block.number, blockGasLimit: block.gasLimit },
       }
     }
@@ -50,35 +53,13 @@ export default class TxGasUtil {
   /**
     Estimates the tx's gas usage
     @param {Object} txMeta - the txMeta object
-    @param {string} blockGasLimitHex - hex string of the block's gas limit
     @returns {string} - the estimated gas limit as a hex string
   */
-  async estimateTxGas (txMeta, blockGasLimitHex) {
+  async estimateTxGas (txMeta) {
     const txParams = txMeta.txParams
-
-    // fallback to block gasLimit
-    const blockGasLimitBN = hexToBn(blockGasLimitHex)
-    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
-    txParams.gas = bnToHex(saferGasLimitBN)
 
     // estimate tx gas requirements
     return await this.query.estimateGas(txParams)
-  }
-
-  /**
-    Writes the gas on the txParams in the txMeta
-    @param {Object} txMeta - the txMeta object to write to
-    @param {string} blockGasLimitHex - the block gas limit hex
-    @param {string} estimatedGasHex - the estimated gas hex
-  */
-  setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
-    const txParams = txMeta.txParams
-
-    // if gasLimit not originally specified,
-    // try adding an additional gas buffer to our estimation for safety
-    const recommendedGasHex = this.addGasBuffer(addHexPrefix(estimatedGasHex), blockGasLimitHex)
-    txParams.gas = recommendedGasHex
-    return
   }
 
   /**
