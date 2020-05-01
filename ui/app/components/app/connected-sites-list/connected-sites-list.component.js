@@ -13,20 +13,20 @@ export default class ConnectedSitesList extends Component {
       icon: PropTypes.string,
       key: PropTypes.string,
     })).isRequired,
-    onDisconnectSite: PropTypes.func.isRequired,
+    onDisconnect: PropTypes.func.isRequired,
   }
 
   render () {
-    const { connectedDomains, onDisconnectSite } = this.props
+    const { connectedDomains, onDisconnect } = this.props
     const { t } = this.context
 
     return (
-      <main className="connected-sites__content-rows">
+      <main className="connected-sites-list__content-rows">
         { connectedDomains.map((domain) => (
-          <div key={domain.key} className="connected-sites__content-row">
-            <div className="connected-sites__domain-info">
+          <div key={domain.key} className="connected-sites-list__content-row">
+            <div className="connected-sites-list__domain-info">
               <IconWithFallBack icon={domain.icon} name={domain.name} />
-              <span className="connected-sites__domain-name" title={domain.extensionId || domain.key}>
+              <span className="connected-sites-list__domain-name" title={domain.extensionId || domain.key}>
                 {
                   domain.extensionId
                     ? t('externalExtension')
@@ -35,9 +35,9 @@ export default class ConnectedSitesList extends Component {
               </span>
             </div>
             <i
-              className="fas fa-trash-alt connected-sites__trash"
+              className="fas fa-trash-alt connected-sites-list__trash"
               title={t('disconnect')}
-              onClick={() => onDisconnectSite(domain.key, domain.name)}
+              onClick={() => onDisconnect(domain.key, domain.name)}
             />
           </div>
         )) }

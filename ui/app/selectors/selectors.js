@@ -14,7 +14,10 @@ import {
 
 import { getPermittedAccountsByOrigin } from './permissions'
 
-export { getPermittedAccounts } from './permissions'
+export {
+  getPermittedAccounts,
+  getPermittedAccountsByOrigin,
+} from './permissions'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state

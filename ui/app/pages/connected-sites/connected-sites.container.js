@@ -4,12 +4,14 @@ import {
   getOpenMetamaskTabsIds,
   legacyExposeAccounts,
   removePermissionsFor,
+  removePermittedAccount,
 } from '../../store/actions'
 import {
   getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
+  getOriginOfCurrentTab,
   getPermissionsDomains,
-  getPermittedAccountsForCurrentTab,
+  getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors/selectors'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
@@ -18,11 +20,17 @@ import { getOriginFromUrl } from '../../helpers/utils/util'
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
   const { title, url, id } = state.activeTab
-  const permittedAccounts = getPermittedAccountsForCurrentTab(state)
   const connectedDomains = getConnectedDomainsForSelectedAddress(state)
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
+  const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state)
+  const selectedAddress = getSelectedAddress(state)
+
+  const currentTabHasAccounts = permittedAccountsByOrigin[
+    originOfCurrentTab
+  ]?.length
 
   let tabToConnect
-  if (url && permittedAccounts.length === 0 && !openMetaMaskTabs[id]) {
+  if (url && !currentTabHasAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       title,
       origin: getOriginFromUrl(url),
@@ -33,7 +41,8 @@ const mapStateToProps = (state) => {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
     domains: getPermissionsDomains(state),
-    selectedAddress: getSelectedAddress(state),
+    permittedAccountsByOrigin,
+    selectedAddress,
     tabToConnect,
   }
 }
@@ -41,7 +50,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
-    disconnectSite: (domainKey, domain) => {
+    disconnectAccount: (domainKey, address) => {
+      dispatch(removePermittedAccount(domainKey, address))
+    },
+    disconnectAllAccounts: (domainKey, domain) => {
       const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
       dispatch(removePermissionsFor({
         [domainKey]: permissionMethodNames,
@@ -53,13 +65,14 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
+    connectedDomains,
     domains,
     selectedAddress,
     tabToConnect,
-    connectedDomains,
   } = stateProps
   const {
-    disconnectSite,
+    disconnectAccount,
+    disconnectAllAccounts,
     legacyExposeAccounts: dispatchLegacyExposeAccounts,
   } = dispatchProps
   const { history } = ownProps
@@ -71,8 +84,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     closePopover,
-    disconnectSite: (domainKey) => {
-      disconnectSite(domainKey, domains[domainKey])
+    disconnectAccount: (domainKey) => {
+      disconnectAccount(domainKey, selectedAddress)
+      if (connectedDomains.length === 1) {
+        closePopover()
+      }
+    },
+    disconnectAllAccounts: (domainKey) => {
+      disconnectAllAccounts(domainKey, domains[domainKey])
       if (connectedDomains.length === 1) {
         closePopover()
       }
