@@ -1903,13 +1903,6 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@metamask/onboarding@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.0.tgz#9594f6a9a1c779083d71434b9f5e6a973af941f7"
-  integrity sha512-QoMV1Gf1j3LxFhSb5gxudHOIywQQ/su8vPQ1ByC7ocQCVlZb1JqZ/+TYyoIzR2OTi1NPelhYHT3UMdhPozIAhA==
-  dependencies:
-    bowser "^2.5.4"
-
 "@metamask/onboarding@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.1.tgz#76e864634d6436a486fcfa743f09a25b1934a11e"
