@@ -300,7 +300,14 @@ export default class TransactionController extends EventEmitter {
       txMeta.gasLimitSpecified = Boolean(txParams.gas)
       return txMeta
     }
-    return await this.txGasUtil.analyzeGasUsage(txMeta)
+
+    const { blockGasLimit, estimatedGasHex, simulationFails } = await this.txGasUtil.analyzeGasUsage(txMeta)
+    if (simulationFails) {
+      txMeta.simulationFails = simulationFails
+    } else {
+      this.txGasUtil.setTxGas(txMeta, blockGasLimit, estimatedGasHex)
+    }
+    return txMeta
   }
 
   /**
