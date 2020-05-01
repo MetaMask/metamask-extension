@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 5.0.3 Fri May 01 2020
+
 - [#373](https://github.com/poanetwork/nifty-wallet/pull/373) - (Feature) Add STAKE token
 - [#372](https://github.com/poanetwork/nifty-wallet/pull/372) - (Chore) Update RSK contracts metadata repo
 - [#369](https://github.com/poanetwork/nifty-wallet/pull/369) - (Fix) RSK: fix GasPrice calculation (changed interface of minimumGasPrice - hex instead of integer)
