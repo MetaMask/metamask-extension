@@ -295,7 +295,6 @@ export default class TransactionController extends EventEmitter {
 
       // This is a standard ether simple send, gas requirement is exactly 21k
       txParams.gas = SIMPLE_GAS_COST
-      txMeta.simpleSend = true
       return txMeta
     }
 

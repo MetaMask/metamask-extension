@@ -1093,11 +1093,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/simpleSend",
-              "value": true
             }
           ],
           [
@@ -1119,7 +1114,6 @@
             }
           ]
         ],
-        "simpleSend": true,
         "origin": "tmashuang.github.io"
       }
     ]

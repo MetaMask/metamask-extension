@@ -519,7 +519,6 @@ describe('Confirm Transaction Duck', function () {
             loadingDefaults: false,
             metamaskNetworkId: '3',
             origin: 'faucet.metamask.io',
-            simpleSend: true,
             status: 'unapproved',
             time: 1530838113716,
           },
@@ -550,7 +549,6 @@ describe('Confirm Transaction Duck', function () {
         loadingDefaults: false,
         metamaskNetworkId: '3',
         origin: 'faucet.metamask.io',
-        simpleSend: true,
         status: 'unapproved',
         time: 1530838113716,
         txParams: {
@@ -621,7 +619,6 @@ describe('Confirm Transaction Duck', function () {
               loadingDefaults: false,
               metamaskNetworkId: '3',
               origin: 'faucet.metamask.io',
-              simpleSend: true,
               status: 'unapproved',
               time: 1530838113716,
               txParams: {
