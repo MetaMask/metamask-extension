@@ -327,6 +327,8 @@ describe('PendingTransactionTracker', function () {
         confirmTransaction: sinon.spy(),
       })
 
+      pendingTxTracker.DROPPED_BUFFER_COUNT = 0
+
       assert.ok(await pendingTxTracker._checkIfTxWasDropped({
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
@@ -472,6 +474,53 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkPendingTx', function () {
+    it("should emit 'tx:warning' if getTransactionReceipt rejects", async function () {
+      const txMeta = {
+        id: 1,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: 'submitted',
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        history: [{}],
+        rawTx: '0xf86c808504a817c80082471d',
+      }
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub().rejects(),
+          getTransactionCount: sinon.stub().resolves('0x02'),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions: sinon.stub().returns([]),
+        getCompletedTransactions: sinon.stub().returns([]),
+        publishTransaction: sinon.spy(),
+        confirmTransaction: sinon.spy(),
+      })
+      const listeners = {
+        confirmed: sinon.spy(),
+        dropped: sinon.spy(),
+        failed: sinon.spy(),
+        warning: sinon.spy(),
+      }
+
+      pendingTxTracker.once('tx:confirmed', listeners.confirmed)
+      pendingTxTracker.once('tx:dropped', listeners.dropped)
+      pendingTxTracker.once('tx:failed', listeners.failed)
+      pendingTxTracker.once('tx:warning', listeners.warning)
+      await pendingTxTracker._checkPendingTx(txMeta)
+
+      assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped")
+      assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
+      assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'")
+      assert.ok(listeners.warning.calledOnce, "should emit 'tx:warning'")
+    })
+
     it('should NOT emit anything if the tx is already not submitted', async function () {
       const pendingTxTracker = new PendingTransactionTracker({
         query: sinon.spy(),
@@ -489,11 +538,13 @@ describe('PendingTransactionTracker', function () {
         confirmed: sinon.spy(),
         dropped: sinon.spy(),
         failed: sinon.spy(),
+        warning: sinon.spy(),
       }
 
       pendingTxTracker.once('tx:confirmed', listeners.confirmed)
       pendingTxTracker.once('tx:dropped', listeners.dropped)
       pendingTxTracker.once('tx:failed', listeners.failed)
+      pendingTxTracker.once('tx:warning', listeners.warning)
       await pendingTxTracker._checkPendingTx({
         'status': 'confirmed',
         'history': [{}],
@@ -506,6 +557,7 @@ describe('PendingTransactionTracker', function () {
       assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'")
       assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
       assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped'")
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'")
     })
 
     it("should emit 'tx:failed' if the txMeta does NOT have a hash", async function () {
@@ -525,11 +577,13 @@ describe('PendingTransactionTracker', function () {
         confirmed: sinon.spy(),
         dropped: sinon.spy(),
         failed: sinon.spy(),
+        warning: sinon.spy(),
       }
 
       pendingTxTracker.once('tx:confirmed', listeners.confirmed)
       pendingTxTracker.once('tx:dropped', listeners.dropped)
       pendingTxTracker.once('tx:failed', listeners.failed)
+      pendingTxTracker.once('tx:warning', listeners.warning)
       await pendingTxTracker._checkPendingTx({
         id: '2',
         history: [{}],
@@ -540,6 +594,7 @@ describe('PendingTransactionTracker', function () {
       assert.ok(listeners.failed.calledOnceWithExactly('2', sinon.match.instanceOf(Error)), "should pass txId to 'tx:failed' listener")
       assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
       assert.ok(listeners.dropped.notCalled, "should not emit 'tx:dropped'")
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'")
     })
 
     it("should emit 'tx:dropped' if another tx with the same nonce succeeds", async function () {
@@ -559,9 +614,9 @@ describe('PendingTransactionTracker', function () {
         'hash': '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
       }]
       const pendingTxTracker = new PendingTransactionTracker({
-        query: sinon.stub({
-          getTransactionReceipt: () => undefined,
-        }),
+        query: {
+          getTransactionReceipt: sinon.stub().resolves(null),
+        },
         nonceTracker: {
           getGlobalLock: sinon.stub().resolves({
             releaseLock: sinon.spy(),
@@ -576,16 +631,19 @@ describe('PendingTransactionTracker', function () {
         confirmed: sinon.spy(),
         dropped: sinon.spy(),
         failed: sinon.spy(),
+        warning: sinon.spy(),
       }
 
       pendingTxTracker.once('tx:confirmed', listeners.confirmed)
       pendingTxTracker.once('tx:dropped', listeners.dropped)
       pendingTxTracker.once('tx:failed', listeners.failed)
+      pendingTxTracker.once('tx:warning', listeners.warning)
       await pendingTxTracker._checkPendingTx(txs[1])
 
       assert.ok(listeners.dropped.calledOnceWithExactly('123'))
       assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
       assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'")
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'")
     })
 
     it("should emit 'tx:dropped' with the txMetas id only after the fourth call", async function () {
@@ -603,7 +661,7 @@ describe('PendingTransactionTracker', function () {
       }
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
-          getTransactionReceipt: sinon.stub(),
+          getTransactionReceipt: sinon.stub().resolves(null),
           getTransactionCount: sinon.stub().resolves('0x02'),
         },
         nonceTracker: {
@@ -620,11 +678,13 @@ describe('PendingTransactionTracker', function () {
         confirmed: sinon.spy(),
         dropped: sinon.spy(),
         failed: sinon.spy(),
+        warning: sinon.spy(),
       }
 
       pendingTxTracker.once('tx:confirmed', listeners.confirmed)
       pendingTxTracker.once('tx:dropped', listeners.dropped)
       pendingTxTracker.once('tx:failed', listeners.failed)
+      pendingTxTracker.once('tx:warning', listeners.warning)
       await pendingTxTracker._checkPendingTx(txMeta)
       await pendingTxTracker._checkPendingTx(txMeta)
       await pendingTxTracker._checkPendingTx(txMeta)
@@ -633,6 +693,7 @@ describe('PendingTransactionTracker', function () {
       assert.ok(listeners.dropped.calledOnceWithExactly(1))
       assert.ok(listeners.confirmed.notCalled, "should not emit 'tx:confirmed'")
       assert.ok(listeners.failed.notCalled, "should not emit 'tx:failed'")
+      assert.ok(listeners.warning.notCalled, "should not emit 'tx:warning'")
     })
   })
 })
