@@ -230,7 +230,11 @@ describe('Transaction Controller', function () {
 
   describe('#addTxGasDefaults', function () {
     it('should add the tx defaults if their are none', async function () {
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+      ])
       const txMeta = {
+        id: 1,
         txParams: {
           from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
           to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
