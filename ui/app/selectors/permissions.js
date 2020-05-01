@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect'
-
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
@@ -26,20 +24,18 @@ export function getPermittedAccounts (state, origin) {
  * @param {Object} state - The current state.
  * @returns {Object} Permitted accounts by origin.
  */
-export const getPermittedAccountsMap = createSelector(
-  allDomainsSelector,
-  (domains = {}) => {
-    return Object.keys(domains).reduce((acc, domainKey) => {
-      const accounts = getAccountsFromPermission(
-        getAccountsPermissionFromDomain(domains[domainKey])
-      )
-      if (accounts.length > 0) {
-        acc[domainKey] = accounts
-      }
-      return acc
-    }, {})
-  }
-)
+export function getPermittedAccountsByOrigin (state) {
+  const domains = allDomainsSelector(state)
+  return Object.keys(domains).reduce((acc, domainKey) => {
+    const accounts = getAccountsFromPermission(
+      getAccountsPermissionFromDomain(domains[domainKey])
+    )
+    if (accounts.length > 0) {
+      acc[domainKey] = accounts
+    }
+    return acc
+  }, {})
+}
 
 // selector helpers
 
@@ -72,7 +68,7 @@ function getAccountsCaveatFromPermission (accountsPermission = {}) {
 }
 
 function allDomainsSelector (state) {
-  return state.metamask.domains
+  return state.metamask.domains || {}
 }
 
 function domainSelector (state, origin) {
