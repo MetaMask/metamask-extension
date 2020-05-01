@@ -514,7 +514,6 @@ describe('Confirm Transaction Duck', function () {
             tokenSymbol: '',
           },
           txData: {
-            gasPriceSpecified: false,
             history: [],
             id: 2603411941761054,
             loadingDefaults: false,
@@ -546,7 +545,6 @@ describe('Confirm Transaction Duck', function () {
 
     it('updates txData and updates gas values in confirmTransaction', function () {
       const txData = {
-        gasPriceSpecified: false,
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
@@ -618,7 +616,6 @@ describe('Confirm Transaction Duck', function () {
           network: '3',
           unapprovedTxs: {
             2603411941761054: {
-              gasPriceSpecified: false,
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,

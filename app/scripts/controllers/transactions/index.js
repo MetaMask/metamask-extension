@@ -268,7 +268,6 @@ export default class TransactionController extends EventEmitter {
   async addTxGasDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
 
-    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()

@@ -76,7 +76,6 @@
           "message": "Error: intrinsic gas too low",
           "stack": "Error: some error"
         },
-        "gasPriceSpecified": true,
         "history": [
           {
             "id": 4068311466147836,
@@ -97,11 +96,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
             }
           ],
           [
@@ -258,11 +252,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
             }
           ],
           [
@@ -281,12 +270,10 @@
               "note": "txStateManager: setting status to approved"
             }
           ]
-        ],
-        "gasPriceSpecified": true
+        ]
       },
       {
         "firstRetryBlockNumber": "0x2cbc70",
-        "gasPriceSpecified": false,
         "hash": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd",
         "history": [
           {
@@ -320,11 +307,6 @@
             {
               "op": "replace",
               "path": "/loadingDefaults",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
               "value": false
             }
           ],
@@ -482,7 +464,6 @@
       },
       {
         "firstRetryBlockNumber": "0x2cbc70",
-        "gasPriceSpecified": false,
         "hash": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd",
         "history": [
           {
@@ -516,11 +497,6 @@
             {
               "op": "replace",
               "path": "/loadingDefaults",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
               "value": false
             }
           ],
@@ -711,11 +687,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
             }
           ],
           [],
@@ -815,7 +786,6 @@
             }
           ]
         ],
-        "gasPriceSpecified": true,
         "nonceDetails": {
           "params": {
             "highestLocalNonce": 3,
@@ -876,15 +846,9 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
             }
           ]
-        ],
-        "gasPriceSpecified": true
+        ]
       }
     ],
     "unapprovedTxs": {
@@ -921,15 +885,9 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
             }
           ]
-        ],
-        "gasPriceSpecified": true
+        ]
       }
     },
     "unapprovedMsgs": {

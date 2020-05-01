@@ -8,7 +8,6 @@ export default {}
 // for pending middlewares test
 export const txMetaStub = {
   'firstRetryBlockNumber': '0x51a402',
-  'gasPriceSpecified': true,
   'hash': '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
   'history': [
     {
@@ -33,11 +32,6 @@ export const txMetaStub = {
         'path': '/loadingDefaults',
         'timestamp': 1572395156645,
         'value': false,
-      },
-      {
-        'op': 'add',
-        'path': '/gasPriceSpecified',
-        'value': true,
       },
     ],
     [

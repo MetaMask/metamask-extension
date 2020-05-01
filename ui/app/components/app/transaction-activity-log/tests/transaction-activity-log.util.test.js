@@ -170,11 +170,6 @@ describe('TransactionActivityLog utils', function () {
               timestamp: 1535507561515,
               value: false,
             },
-            {
-              op: 'add',
-              path: '/gasPriceSpecified',
-              value: true,
-            },
           ],
           [
             {
