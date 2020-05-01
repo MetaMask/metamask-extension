@@ -184,6 +184,7 @@ export default class Routes extends Component {
   render () {
     const {
       isLoading,
+      isUnlocked,
       alertMessage,
       textDirection,
       loadingMessage,
@@ -252,7 +253,13 @@ export default class Routes extends Component {
           { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
           { this.renderRoutes() }
         </div>
-        <Alerts />
+        {
+          isUnlocked
+            ? (
+              <Alerts />
+            )
+            : null
+        }
       </div>
     )
   }

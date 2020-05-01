@@ -7,8 +7,12 @@ import Root from './app/pages'
 import * as actions from './app/store/actions'
 import configureStore from './app/store/store'
 import txHelper from './lib/tx-helper'
+import { getEnvironmentType } from '../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
 import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
+import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
+import { ALERT_STATE } from './app/ducks/alerts/switch-to-connected'
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -43,7 +47,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     await switchDirection('rtl')
   }
 
-  const store = configureStore({
+  const draftInitialState = {
     activeTab: opts.activeTab,
 
     // metamaskState represents the cross-tab state
@@ -56,7 +60,24 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
-  })
+  }
+
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
+    const selectedAddress = getSelectedAddress(draftInitialState)
+    const switchToConnectedAlertShown = draftInitialState.metamask.switchToConnectedAlertShown
+
+    if (
+      !switchToConnectedAlertShown &&
+      permittedAccountsForCurrentTab.length > 0 &&
+      !permittedAccountsForCurrentTab.includes(selectedAddress)
+    ) {
+      draftInitialState.switchToConnected = { state: ALERT_STATE.OPEN }
+      actions.setSwitchToConnectedAlertShown()
+    }
+  }
+
+  const store = configureStore(draftInitialState)
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(

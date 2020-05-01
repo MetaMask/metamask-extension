@@ -15,27 +15,41 @@ export default class AppStateController extends EventEmitter {
       showUnlockRequest,
       preferencesStore,
     } = opts
-    const { preferences } = preferencesStore.getState()
+    const { preferences, selectedAddress } = preferencesStore.getState()
 
     super()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(Object.assign({
-      timeoutMinutes: 0,
-      connectedStatusPopoverHasBeenShown: true,
-    }, initState))
+    this.store = new ObservableStore(
+      Object.assign(
+        {
+          connectedStatusPopoverHasBeenShown: true,
+          timeoutMinutes: 0,
+        },
+        initState,
+        {
+          switchToConnectedAlertShown: false,
+        }
+      )
+    )
     this.timer = null
 
     this.isUnlocked = isUnlocked
     this.waitingForUnlock = []
+
+    this.selectedAddress = selectedAddress
     addUnlockListener(this.handleUnlock.bind(this))
 
     this._showUnlockRequest = showUnlockRequest
 
-    preferencesStore.subscribe(({ preferences }) => {
+    preferencesStore.subscribe(({ preferences, selectedAddress }) => {
       const currentState = this.store.getState()
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit)
+      }
+      if (currentState.switchToConnectedAlertShown && this.selectedAddress !== selectedAddress) {
+        this.selectedAddress = selectedAddress
+        this.store.updateState({ switchToConnectedAlertShown: false })
       }
     })
 
@@ -105,6 +119,10 @@ export default class AppStateController extends EventEmitter {
    */
   setLastActiveTime () {
     this._resetTimer()
+  }
+
+  setSwitchToConnectedAlertShown () {
+    this.store.updateState({ switchToConnectedAlertShown: true })
   }
 
   /**
