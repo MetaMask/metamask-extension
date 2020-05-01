@@ -1,9 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+import { connect } from 'react-redux'
 const actions = require('../../../../ui/app/actions')
 const FileInput = require('react-simple-file-input').default
-const PropTypes = require('prop-types')
+import PropTypes from 'prop-types'
 
 class JsonImportSubview extends Component {
   constructor (props) {
@@ -75,31 +75,26 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
+    const { displayWarning, importNewJsonAccount } = this.props
     const { fileContents } = this.state
 
     if (!fileContents) {
       const message = 'You must select a file to import.'
-      return this.props.displayWarning(message)
+      return displayWarning(message)
     }
 
     const passwordInput = document.getElementById('json-password-box')
     const password = passwordInput.value
 
-    if (!password) {
-      const message = 'You must enter a password for the selected file.'
-      return this.props.displayWarning(message)
-    }
-
-    this.props.importNewAccount([ fileContents, password ])
-      // JS runtime requires caught rejections but failures are handled by Redux
-      .catch()
+    importNewJsonAccount([ fileContents, password ])
+      .catch((err) => err && displayWarning(err.message || err))
   }
 }
 
 JsonImportSubview.propTypes = {
   error: PropTypes.string,
   displayWarning: PropTypes.func,
-  importNewAccount: PropTypes.func,
+  importNewJsonAccount: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -112,7 +107,7 @@ const mapDispatchToProps = dispatch => {
   return {
     goHome: () => dispatch(actions.goHome()),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
-    importNewAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
+    importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
   }
 }
 

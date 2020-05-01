@@ -254,15 +254,15 @@ const addTokeFromSearch = async (f) => {
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in RSK', async () => {
-        await f.setProvider(NETWORKS.RSK)
-        assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
-      })
+      // it('token should not be displayed in RSK', async () => {
+      //   await f.setProvider(NETWORKS.RSK)
+      //   assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
+      // })
 
-      it('token should not be displayed in RSK testnet', async () => {
-        await f.setProvider(NETWORKS.RSK_TESTNET)
-        assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
-      })
+      // it('token should not be displayed in RSK testnet', async () => {
+      //   await f.setProvider(NETWORKS.RSK_TESTNET)
+      //   assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
+      // })
     })
     describe('remove Mainnet\'s tokens', function () {
 

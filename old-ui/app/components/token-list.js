@@ -19,8 +19,8 @@ const defaultTokens = []
 
 const contractsETH = require('eth-contract-metadata')
 const contractsPOA = require('poa-contract-metadata')
-const contractsRSK = require('rsk-contract-metadata')
-const contractsRSKTest = require('rsk-test-contract-metadata')
+const contractsRSK = require('@rsksmart/rsk-contract-metadata')
+const contractsRSKTest = require('@rsksmart/rsk-testnet-contract-metadata')
 for (const address in contractsETH) {
   const contract = contractsETH[address]
   if (contract.erc20) {
@@ -120,7 +120,7 @@ TokenList.prototype.render = function () {
     }, [
       h('style', `
 
-        li.token-cell {
+        span.token-cell {
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -128,11 +128,11 @@ TokenList.prototype.render = function () {
           min-height: 50px;
         }
 
-        li.token-cell > h3 {
+        span.token-cell > h3 {
           margin-left: 12px;
         }
 
-        li.token-cell:hover {
+        span.token-cell:hover {
           background: white;
           cursor: pointer;
         }

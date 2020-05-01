@@ -1886,7 +1886,7 @@ module.exports = class MetamaskController extends EventEmitter {
           resolve(gasPrice)
         }
       } else if (isRSK) {
-        gasPrice = this.getGasPriceFromLastBlockRSK(networkId)
+        gasPrice = this.getGasPriceFromLastBlockRSK()
         resolve(gasPrice)
       } else {
         gasPrice = this.getGasPriceFromBlocks(networkId)
@@ -1937,19 +1937,17 @@ module.exports = class MetamaskController extends EventEmitter {
    * Related issue: https://github.com/poanetwork/nifty-wallet/issues/301
    * @returns {string} A hex representation of the suggested wei gas price.
    */
-  getGasPriceFromLastBlockRSK (networkId) {
+  getGasPriceFromLastBlockRSK () {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
 
     const recentBlock = recentBlocks
       .sort((block1, block2) => block1.number - block2.number)[recentBlocks.length - 1]
 
-    const gasPrice = recentBlock && recentBlock.minimumGasPrice
-
-    const gasPriceInt = parseInt(gasPrice, 10)
-
-    if (gasPriceInt !== 0) {
-      return '0x' + gasPriceInt.toString(16)
+    const gasPrice = recentBlock && recentBlock.minimumGasPrice && recentBlock.minimumGasPrice.toString()
+    
+    if (gasPrice !== '0x' && gasPrice !== '0x0' && gasPrice !== '') {
+      return gasPrice
     } else {
       return '0x' + GWEI_BN.toString(16)
     }

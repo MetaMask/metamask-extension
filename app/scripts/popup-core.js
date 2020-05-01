@@ -32,7 +32,7 @@ function initializePopup ({ container, connectionStream }, cb) {
 function connectToAccountManager (connectionStream, cb) {
   // setup communication with background
   // setup multiplexing
-  var mx = setupMultiplex(connectionStream)
+  const mx = setupMultiplex(connectionStream)
   // connect features
   setupControllerConnection(mx.createStream('controller'), cb)
   setupWeb3Connection(mx.createStream('provider'))
@@ -44,7 +44,7 @@ function connectToAccountManager (connectionStream, cb) {
  * @param {PortDuplexStream} connectionStream PortStream instance establishing a background connection
  */
 function setupWeb3Connection (connectionStream) {
-  var providerStream = new StreamProvider()
+  const providerStream = new StreamProvider()
   providerStream.pipe(connectionStream).pipe(providerStream)
   connectionStream.on('error', console.error.bind(console))
   providerStream.on('error', console.error.bind(console))
@@ -62,8 +62,8 @@ function setupWeb3Connection (connectionStream) {
 function setupControllerConnection (connectionStream, cb) {
   // this is a really sneaky way of adding EventEmitter api
   // to a bi-directional dnode instance
-  var eventEmitter = new EventEmitter()
-  var accountManagerDnode = Dnode({
+  const eventEmitter = new EventEmitter()
+  const accountManagerDnode = Dnode({
     sendUpdate: function (state) {
       eventEmitter.emit('update', state)
     },

@@ -2,6 +2,15 @@
 
 ## Current Master
 
+## 5.0.3 Fri May 01 2020
+
+- [#373](https://github.com/poanetwork/nifty-wallet/pull/373) - (Feature) Add STAKE token
+- [#372](https://github.com/poanetwork/nifty-wallet/pull/372) - (Chore) Update RSK contracts metadata repo
+- [#369](https://github.com/poanetwork/nifty-wallet/pull/369) - (Fix) RSK: fix GasPrice calculation (changed interface of minimumGasPrice - hex instead of integer)
+- [#368](https://github.com/poanetwork/nifty-wallet/pull/368) - (Fix) Ability to import Keystore file if it is not secured by password
+- [#366](https://github.com/poanetwork/nifty-wallet/pull/366) - (Fix) Increase max token symbol length up to 12
+- [#363](https://github.com/poanetwork/nifty-wallet/pull/363) - (Fix) token decimals display in pending tx screen
+
 ## 5.0.2 Thu Apr 16 2020
 
 - [#359](https://github.com/poanetwork/nifty-wallet/pull/359) - (Fix) Fix exposed accounts in wallet locked state
