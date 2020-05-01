@@ -34,7 +34,7 @@ export function getPermittedAccountsByOrigin (state) {
       acc[domainKey] = accounts
     }
     return acc
-  }, [])
+  }, {})
 }
 
 // selector helpers
