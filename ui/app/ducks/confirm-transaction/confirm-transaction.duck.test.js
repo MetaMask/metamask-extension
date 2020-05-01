@@ -514,15 +514,11 @@ describe('Confirm Transaction Duck', function () {
             tokenSymbol: '',
           },
           txData: {
-            estimatedGas: '0x5208',
-            gasLimitSpecified: false,
-            gasPriceSpecified: false,
             history: [],
             id: 2603411941761054,
             loadingDefaults: false,
             metamaskNetworkId: '3',
             origin: 'faucet.metamask.io',
-            simpleSend: true,
             status: 'unapproved',
             time: 1530838113716,
           },
@@ -548,15 +544,11 @@ describe('Confirm Transaction Duck', function () {
 
     it('updates txData and updates gas values in confirmTransaction', function () {
       const txData = {
-        estimatedGas: '0x5208',
-        gasLimitSpecified: false,
-        gasPriceSpecified: false,
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
         metamaskNetworkId: '3',
         origin: 'faucet.metamask.io',
-        simpleSend: true,
         status: 'unapproved',
         time: 1530838113716,
         txParams: {
@@ -622,15 +614,11 @@ describe('Confirm Transaction Duck', function () {
           network: '3',
           unapprovedTxs: {
             2603411941761054: {
-              estimatedGas: '0x5208',
-              gasLimitSpecified: false,
-              gasPriceSpecified: false,
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
               metamaskNetworkId: '3',
               origin: 'faucet.metamask.io',
-              simpleSend: true,
               status: 'unapproved',
               time: 1530838113716,
               txParams: {

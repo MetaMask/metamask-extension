@@ -268,7 +268,6 @@ export default class TransactionController extends EventEmitter {
   async addTxGasDefaults (txMeta, getCodeResponse) {
     const txParams = txMeta.txParams
 
-    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
@@ -278,8 +277,6 @@ export default class TransactionController extends EventEmitter {
     // set gasLimit
 
     if (txParams.gas) {
-      txMeta.estimatedGas = txParams.gas
-      txMeta.gasLimitSpecified = Boolean(txParams.gas)
       return txMeta
     } else if (
       txParams.to &&
@@ -298,9 +295,6 @@ export default class TransactionController extends EventEmitter {
 
       // This is a standard ether simple send, gas requirement is exactly 21k
       txParams.gas = SIMPLE_GAS_COST
-      txMeta.estimatedGas = SIMPLE_GAS_COST
-      txMeta.simpleSend = true
-      txMeta.gasLimitSpecified = Boolean(txParams.gas)
       return txMeta
     }
 

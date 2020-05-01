@@ -84,9 +84,6 @@ initialize().catch(log.error)
  * @property {boolean} loadingDefaults - TODO: Document
  * @property {Object} txParams - The tx params as passed to the network provider.
  * @property {Object[]} history - A history of mutations to this TransactionMeta object.
- * @property {boolean} gasPriceSpecified - True if the suggesting dapp specified a gas price, prevents auto-estimation.
- * @property {boolean} gasLimitSpecified - True if the suggesting dapp specified a gas limit, prevents auto-estimation.
- * @property {string} estimatedGas - A hex string represented the estimated gas limit required to complete the transaction.
  * @property {string} origin - A string representing the interface that suggested the transaction.
  * @property {Object} nonceDetails - A metadata object containing information used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction, ready to submit to the network.

@@ -10,7 +10,6 @@ describe('TransactionActivityLog utils', function () {
     it('should return activities for an array of transactions', function () {
       const transactions = [
         {
-          estimatedGas: '0x5208',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           history: [
             {
@@ -170,21 +169,6 @@ describe('TransactionActivityLog utils', function () {
               path: '/loadingDefaults',
               timestamp: 1535507561515,
               value: false,
-            },
-            {
-              op: 'add',
-              path: '/gasPriceSpecified',
-              value: true,
-            },
-            {
-              op: 'add',
-              path: '/gasLimitSpecified',
-              value: true,
-            },
-            {
-              op: 'add',
-              path: '/estimatedGas',
-              value: '0x5208',
             },
           ],
           [

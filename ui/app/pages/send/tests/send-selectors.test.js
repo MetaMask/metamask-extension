@@ -511,8 +511,6 @@ describe('send selectors', function () {
               metamaskNetworkId: '3',
               gas: '0x5209',
             },
-            gasLimitSpecified: false,
-            estimatedGas: '0x5209',
             txFee: '17e0186e60800',
             txValue: 'de0b6b3a7640000',
             maxCost: 'de234b52e4a0800',
