@@ -1159,12 +1159,18 @@ export function setSelectedToken (tokenAddress) {
   }
 }
 
+async function _setSelectedAddress (dispatch, address) {
+  log.debug(`background.setSelectedAddress`)
+  const tokens = await promisifiedBackground.setSelectedAddress(address)
+  dispatch(updateTokens(tokens))
+}
+
 export function setSelectedAddress (address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
     try {
-      await promisifiedBackground.setSelectedAddress(address)
+      await _setSelectedAddress(dispatch, address)
     } catch (error) {
       dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
@@ -1186,16 +1192,14 @@ export function showAccountDetail (address) {
     const currentTabIsConnectedToNextAddress = permittedAccountsForCurrentTab.includes(address)
     const switchingToUnconnectedAddress = currentTabIsConnectedToPreviousAddress && !currentTabIsConnectedToNextAddress
 
-    let tokens
     try {
-      tokens = await promisifiedBackground.setSelectedAddress(address)
+      await _setSelectedAddress(dispatch, address)
     } catch (error) {
       dispatch(hideLoadingIndication())
       dispatch(displayWarning(error.message))
       return
     }
     dispatch(hideLoadingIndication())
-    dispatch(updateTokens(tokens))
     dispatch({
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
