@@ -8,7 +8,20 @@
     border-bottom: 1px solid $Grey-100;
 
     &__header {
-      @extend %h3;
+      @extend %header--18;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__header-close::after {
+      content: '\00D7';
+      font-size: 32px;
+      font-weight: normal;
+      color: #24292E;
+      cursor: pointer;
+      line-height: 17px;
     }
   }
 

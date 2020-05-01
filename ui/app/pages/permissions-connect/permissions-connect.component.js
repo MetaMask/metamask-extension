@@ -52,7 +52,9 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddresses: new Set(),
+    selectedAccountAddresses: this.props.accounts.length === 1
+      ? new Set([this.props.accounts[0].address])
+      : new Set(),
     permissionAccepted: null,
     originName: this.props.originName,
   }

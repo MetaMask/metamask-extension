@@ -1345,14 +1345,6 @@
   "testFaucet": {
     "message": "Prova Faucet"
   },
-  "thisWillAllow": {
-    "message": "Questo consentirà $1 di:",
-    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
-  },
-  "thisWillAllowExternalExtension": {
-    "message": "Questo consentirà una estensione esterna con id $1 di:",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
-  },
   "thisWillCreate": {
     "message": "Questo creerà un nuovo portafoglio e frase seed"
   },
