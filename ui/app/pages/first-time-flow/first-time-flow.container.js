@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import FirstTimeFlow from './first-time-flow.component'
-import { getFirstTimeFlowTypeRoute } from './first-time-flow.selectors'
+import { getFirstTimeFlowTypeRoute } from '../../selectors'
 import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
