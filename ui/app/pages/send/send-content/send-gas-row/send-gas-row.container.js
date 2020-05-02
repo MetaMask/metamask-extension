@@ -8,6 +8,9 @@ import {
   getSendFromBalance,
   getTokenBalance,
   getSendMaxModeState,
+  getGasLoadingError,
+  gasFeeIsInError,
+  getGasButtonGroupShown,
 } from '../../send.selectors.js'
 import {
   isBalanceSufficient,
@@ -23,7 +26,6 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
-import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
 import {
   getAdvancedInlineGasShown,

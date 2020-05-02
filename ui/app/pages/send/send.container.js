@@ -23,12 +23,12 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
+  getTokens,
 } from './send.selectors'
 import {
   getSelectedAddress,
   getAddressBook,
 } from '../../selectors'
-import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
   updateSendTokenBalance,
