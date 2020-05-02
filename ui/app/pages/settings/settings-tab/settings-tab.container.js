@@ -7,7 +7,7 @@ import {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setParticipateInMetaMetrics,
 } from '../../../store/actions'
-import { preferencesSelector } from '../../../selectors/selectors'
+import { preferencesSelector } from '../../../selectors'
 
 const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state

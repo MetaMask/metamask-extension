@@ -6,7 +6,7 @@ import {
 } from '../helpers/utils/conversion-util'
 import {
   getCurrentCurrency, getIsMainnet, preferencesSelector,
-} from './selectors'
+} from '.'
 import {
   formatCurrency,
 } from '../helpers/utils/confirm-tx.util'

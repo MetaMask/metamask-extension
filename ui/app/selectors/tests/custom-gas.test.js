@@ -11,7 +11,7 @@ const {
   getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
-} = proxyquire('./custom-gas', {})
+} = proxyquire('../custom-gas', {})
 
 describe('custom-gas selectors', function () {
 

@@ -3,7 +3,7 @@ import SignatureRequest from './signature-request.component'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
   accountsWithSendEtherInfoSelector,
-} from '../../../selectors/selectors.js'
+} from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
 
 function mapStateToProps (state) {

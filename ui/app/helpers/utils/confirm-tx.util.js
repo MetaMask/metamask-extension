@@ -10,7 +10,7 @@ import {
   conversionGreaterThan,
 } from './conversion-util'
 
-import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+import { unconfirmedTransactionsCountSelector } from '../../selectors'
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {

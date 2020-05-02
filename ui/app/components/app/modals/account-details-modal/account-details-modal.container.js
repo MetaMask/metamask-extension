@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { showModal, setAccountLabel } from '../../../../store/actions'
-import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../../selectors/selectors'
+import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../../selectors'
 import AccountDetailsModal from './account-details-modal.component'
 
 const mapStateToProps = (state) => {

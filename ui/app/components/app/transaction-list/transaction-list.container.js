@@ -2,11 +2,13 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import TransactionList from './transaction-list.component'
 import {
+  getAssetImages,
+  getFeatureFlags,
+  getSelectedAddress,
+  selectedTokenSelector,
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
-} from '../../../selectors/transactions'
-import { getSelectedAddress, getAssetImages, getFeatureFlags } from '../../../selectors/selectors'
-import { selectedTokenSelector } from '../../../selectors/tokens'
+} from '../../../selectors'
 import { fetchBasicGasAndTimeEstimates, fetchGasEstimates } from '../../../ducks/gas/gas.duck'
 
 const mapStateToProps = (state) => {

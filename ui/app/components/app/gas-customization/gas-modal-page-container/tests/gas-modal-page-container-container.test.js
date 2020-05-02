@@ -35,19 +35,17 @@ proxyquire('../gas-modal-page-container.container.js', {
       return () => ({})
     },
   },
-  '../../../../selectors/custom-gas': {
+  '../../../../selectors/': {
     getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
     getRenderableBasicEstimateData: (s) => `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
     getDefaultActiveButtonIndex: (a, b) => a + b,
+    getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
+    getSelectedToken: () => null,
   },
   '../../../../store/actions': actionSpies,
   '../../../../ducks/gas/gas.duck': gasActionSpies,
   '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../../ducks/send/send.duck': sendActionSpies,
-  '../../../../selectors/selectors.js': {
-    getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
-    getSelectedToken: () => null,
-  },
   '../../../../pages/send/send.selectors': {
     getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
   },

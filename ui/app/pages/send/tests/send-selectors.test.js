@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 import {
   getBlockGasLimit,
   getAmountConversionRate,

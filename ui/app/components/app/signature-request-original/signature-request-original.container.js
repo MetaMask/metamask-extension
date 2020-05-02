@@ -6,7 +6,7 @@ import { goHome } from '../../../store/actions'
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-} from '../../../selectors/selectors.js'
+} from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import SignatureRequestOriginal from './signature-request-original.component'

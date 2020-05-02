@@ -1,18 +1,14 @@
-import { flatten, forOwn } from 'lodash'
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
 
 import abi from 'human-standard-token-abi'
-import { multiplyCurrencies } from '../helpers/utils/conversion-util'
 import {
   shortenAddress,
   checksumAddress,
   getOriginFromUrl,
   getAccountByAddress,
 } from '../helpers/utils/util'
-
-import { getPermittedAccountsByOrigin } from './permissions'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -193,10 +189,6 @@ export function getTokenExchangeRate (state, address) {
   return contractExchangeRates[address] || 0
 }
 
-export function conversionRateSelector (state) {
-  return state.metamask.conversionRate
-}
-
 export function getAddressBook (state) {
   const network = state.metamask.network
   if (!state.metamask.addressBook[network]) {
@@ -270,23 +262,6 @@ export function getSendMaxModeState (state) {
 
 export function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
-}
-
-export function getNativeCurrency (state) {
-  return state.metamask.nativeCurrency
-}
-
-export function getSelectedTokenToFiatRate (state) {
-  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
-  const conversionRate = conversionRateSelector(state)
-
-  const tokenToFiatRate = multiplyCurrencies(
-    conversionRate,
-    selectedTokenExchangeRate,
-    { toNumericBase: 'dec' }
-  )
-
-  return tokenToFiatRate
 }
 
 export function getSelectedTokenContract (state) {
@@ -429,33 +404,6 @@ export function hasPermissionRequests (state) {
   return Boolean(getFirstPermissionRequest(state))
 }
 
-export function getAddressConnectedDomainMap (state) {
-  const {
-    domainMetadata,
-  } = state.metamask
-
-  const accountsMap = getPermittedAccountsByOrigin(state)
-  const addressConnectedIconMap = {}
-
-  Object.keys(accountsMap).forEach((domainKey) => {
-    const { icon, name } = domainMetadata[domainKey] || {}
-    accountsMap[domainKey].forEach((address) => {
-      const nameToRender = name || domainKey
-      addressConnectedIconMap[address] = addressConnectedIconMap[address]
-        ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
-        : { [domainKey]: { icon, name: nameToRender } }
-    })
-  })
-
-  return addressConnectedIconMap
-}
-
-export function getPermittedAccountsForCurrentTab (state) {
-  const permittedAccountsMap = getPermittedAccountsByOrigin(state)
-  const originOfCurrentTab = getOriginOfCurrentTab(state)
-  return permittedAccountsMap[originOfCurrentTab] || []
-}
-
 export function getOriginOfCurrentTab (state) {
   const { activeTab } = state
   return activeTab && activeTab.url && getOriginFromUrl(activeTab.url)
@@ -475,38 +423,4 @@ export function getLastConnectedInfo (state) {
 
 export function getIpfsGateway (state) {
   return state.metamask.ipfsGateway
-}
-
-export function getConnectedDomainsForSelectedAddress (state) {
-  const {
-    domains = {},
-    domainMetadata,
-    selectedAddress,
-  } = state.metamask
-
-  const connectedDomains = []
-
-  forOwn(domains, (value, domain) => {
-    const exposedAccounts = flatten(value.permissions.map(
-      (p) => p.caveats?.find(({ name }) => name === 'exposedAccounts').value || []
-    ))
-    if (!exposedAccounts.includes(selectedAddress)) {
-      return
-    }
-
-    const {
-      extensionId,
-      name,
-      icon,
-    } = domainMetadata[domain] || {}
-
-    connectedDomains.push({
-      extensionId,
-      key: domain,
-      name,
-      icon,
-    })
-  })
-
-  return connectedDomains
 }

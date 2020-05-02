@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import TransactionListItemDetails from './transaction-list-item-details.component'
 import { checksumAddress } from '../../../helpers/utils/util'
 import { tryReverseResolveAddress } from '../../../store/actions'
-import { getAddressBook } from '../../../selectors/selectors'
+import { getAddressBook } from '../../../selectors'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state

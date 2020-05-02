@@ -18,7 +18,7 @@ import actionConstants from './actionConstants'
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-} from '../selectors/selectors'
+} from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 
 let background = null

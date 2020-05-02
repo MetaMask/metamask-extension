@@ -15,7 +15,7 @@ import { getFastPriceEstimateInHexWEI } from './custom-gas'
 import {
   getSelectedToken,
   getSelectedAddress,
-} from './selectors'
+} from '.'
 import txHelper from '../../lib/tx-helper'
 
 export const incomingTxListSelector = (state) => {

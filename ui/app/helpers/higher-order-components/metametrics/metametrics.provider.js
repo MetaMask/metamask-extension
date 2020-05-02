@@ -9,10 +9,10 @@ import {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
-} from '../../../selectors/selectors'
-import {
+
   txDataSelector,
-} from '../../../selectors/confirm-transaction'
+} from '../../../selectors'
+
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import {
   sendMetaMetricsEvent,

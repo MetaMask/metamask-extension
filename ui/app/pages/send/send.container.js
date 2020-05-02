@@ -27,7 +27,7 @@ import {
 import {
   getSelectedAddress,
   getAddressBook,
-} from '../../selectors/selectors'
+} from '../../selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,

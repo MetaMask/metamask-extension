@@ -7,10 +7,10 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getTargetDomainMetadata,
-} from '../../selectors/selectors'
-import {
-  getPermissionsDomains,
-} from '../../selectors/permissions'
+
+  getPermissionDomains,
+} from '../../selectors'
+
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
 import {
@@ -63,7 +63,7 @@ const mapStateToProps = (state, ownProps) => {
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
     addressLastConnectedMap,
-    domains: getPermissionsDomains(state),
+    domains: getPermissionDomains(state),
     connectPath,
     confirmPermissionPath,
     page,

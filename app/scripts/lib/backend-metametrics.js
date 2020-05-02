@@ -1,4 +1,4 @@
-import { getMetaMetricState } from '../../../ui/app/selectors/selectors'
+import { getMetaMetricState } from '../../../ui/app/selectors'
 import { sendMetaMetricsEvent } from '../../../ui/app/helpers/utils/metametrics.util'
 
 const inDevelopment = process.env.NODE_ENV === 'development'

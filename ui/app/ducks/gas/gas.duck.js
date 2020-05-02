@@ -9,7 +9,7 @@ import {
 } from '../../helpers/utils/conversions.util'
 import {
   isEthereumNetwork,
-} from '../../selectors/selectors'
+} from '../../selectors'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'

@@ -31,8 +31,6 @@ import {
   getSelectedToken,
   isEthereumNetwork,
   preferencesSelector,
-} from '../../../../selectors/selectors.js'
-import {
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
   getCustomGasLimit,
@@ -42,11 +40,9 @@ import {
   getEstimatedGasTimes,
   getRenderableBasicEstimateData,
   getBasicGasEstimateBlockTime,
-  isCustomPriceSafe,
-} from '../../../../selectors/custom-gas'
-import {
   getTxParams,
-} from '../../../../selectors/transactions'
+  isCustomPriceSafe,
+} from '../../../../selectors'
 import {
   getTokenBalance,
 } from '../../../../pages/send/send.selectors'

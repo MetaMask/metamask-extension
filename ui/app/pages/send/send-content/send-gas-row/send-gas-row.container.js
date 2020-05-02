@@ -17,11 +17,6 @@ import {
 } from '../../send.utils.js'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
 import {
-  getBasicGasEstimateLoadingStatus,
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  getDefaultActiveButtonIndex,
-} from '../../../../selectors/custom-gas'
-import {
   showGasButtonGroup,
   updateSendErrors,
 } from '../../../../ducks/send/send.duck'
@@ -32,7 +27,14 @@ import {
 } from '../../../../ducks/gas/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
+import {
+  getAdvancedInlineGasShown,
+  getCurrentEthBalance,
+  getSelectedToken,
+  getBasicGasEstimateLoadingStatus,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
+  getDefaultActiveButtonIndex,
+} from '../../../../selectors'
 import SendGasRow from './send-gas-row.component'
 
 

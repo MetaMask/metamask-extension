@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getSelectedAddress } from '../../../selectors/selectors'
+import { getSelectedAddress } from '../../../selectors'
 import TokenList from './token-list.component'
 
 function mapStateToProps (state) {

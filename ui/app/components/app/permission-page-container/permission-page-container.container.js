@@ -4,7 +4,7 @@ import {
   getPermissionsDescriptions,
   getTargetDomainMetadata,
   getMetaMaskIdentities,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 
 const mapStateToProps = (state, ownProps) => {
   const { request, cachedOrigin, selectedIdentities } = ownProps

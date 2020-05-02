@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import AssetList from './asset-list.component'
 import { setSelectedToken } from '../../../store/actions'
-import { getSelectedAccount } from '../../../selectors/selectors'
+import { getSelectedAccount } from '../../../selectors'
 
 function mapStateToProps (state) {
   return {
