@@ -7,10 +7,8 @@ import {
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
+  getSendMaxModeState,
 } from '../../send.selectors.js'
-import {
-  getMaxModeOn,
-} from '../send-amount-row/amount-max-button/amount-max-button.selectors'
 import {
   isBalanceSufficient,
   calcGasTotal,
@@ -73,7 +71,7 @@ function mapStateToProps (state) {
     gasPrice,
     gasLimit,
     insufficientBalance,
-    maxModeOn: getMaxModeOn(state),
+    maxModeOn: getSendMaxModeState(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
   }

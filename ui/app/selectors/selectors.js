@@ -256,10 +256,6 @@ export function getSendAmount (state) {
   return state.metamask.send.amount
 }
 
-export function getSendMaxModeState (state) {
-  return state.metamask.send.maxModeOn
-}
-
 export function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
 }

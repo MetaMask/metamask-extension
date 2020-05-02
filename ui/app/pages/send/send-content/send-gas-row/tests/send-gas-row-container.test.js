@@ -30,8 +30,8 @@ proxyquire('../send-gas-row.container.js', {
       return () => ({})
     },
   },
-  '../send-amount-row/amount-max-button/amount-max-button.selectors': {
-    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
+  '../../send.selectors.js': {
+    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
     isBalanceSufficient: ({

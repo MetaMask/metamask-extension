@@ -132,6 +132,10 @@ export function getSendErrors (state) {
   return state.send.errors
 }
 
+export function sendAmountIsInError (state) {
+  return Boolean(state.send.errors.amount)
+}
+
 export function getSendFrom (state) {
   return state.metamask.send.from
 }
