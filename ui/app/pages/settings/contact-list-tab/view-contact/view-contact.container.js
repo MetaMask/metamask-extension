@@ -2,7 +2,7 @@ import ViewContact from './view-contact.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { getAddressBookEntry } from '../../../../selectors/selectors'
+import { getAddressBookEntry } from '../../../../selectors'
 import { checksumAddress } from '../../../../helpers/utils/util'
 import {
   CONTACT_EDIT_ROUTE,

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-import { getMetaMaskAccounts } from '../../../selectors/selectors'
+import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
 
 class PrivateKeyImportView extends Component {

@@ -4,12 +4,12 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
   unconfirmedTransactionsCountSelector,
-} from '../../selectors/confirm-transaction'
-import {
+
   getCurrentEthBalance,
   getFirstPermissionRequest,
   getTotalUnapprovedCount,
-} from '../../selectors/selectors'
+} from '../../selectors'
+
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,

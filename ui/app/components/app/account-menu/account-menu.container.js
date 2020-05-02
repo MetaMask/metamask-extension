@@ -15,7 +15,7 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 import AccountMenu from './account-menu.component'
 
 /**

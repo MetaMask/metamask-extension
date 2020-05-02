@@ -10,7 +10,7 @@ import {
   getAddressConnectedDomainMap,
   getOriginOfCurrentTab,
   getSelectedAddress,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 
 
 const mapStateToProps = (state) => {

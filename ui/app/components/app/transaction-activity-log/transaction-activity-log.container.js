@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import R from 'ramda'
 import TransactionActivityLog from './transaction-activity-log.component'
-import { conversionRateSelector, getNativeCurrency } from '../../../selectors/selectors'
+import { conversionRateSelector, getNativeCurrency } from '../../../selectors'
 import { combineTransactionHistories } from './transaction-activity-log.util'
 import {
   TRANSACTION_RESUBMITTED_EVENT,

@@ -6,7 +6,7 @@ import {
 } from '../../send.selectors'
 import {
   getAddressBookEntry,
-} from '../../../../selectors/selectors'
+} from '../../../../selectors'
 import { connect } from 'react-redux'
 
 

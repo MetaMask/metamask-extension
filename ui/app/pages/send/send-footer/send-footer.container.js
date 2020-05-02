@@ -23,7 +23,6 @@ import {
   getUnapprovedTxs,
   getSendErrors,
 } from '../send.selectors'
-import { getGasIsLoading } from '../../../selectors/selectors'
 import {
   isSendFormInError,
 } from './send-footer.selectors'
@@ -33,9 +32,10 @@ import {
   constructUpdatedTx,
 } from './send-footer.utils'
 import {
+  getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
-} from '../../../selectors/custom-gas'
+} from '../../../selectors'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 

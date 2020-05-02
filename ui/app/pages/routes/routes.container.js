@@ -5,8 +5,8 @@ import {
   getNetworkIdentifier,
   hasPermissionRequests,
   preferencesSelector,
-} from '../../selectors/selectors'
-import { submittedPendingTransactionsSelector } from '../../selectors/transactions'
+  submittedPendingTransactionsSelector,
+} from '../../selectors'
 import Routes from './routes.component'
 import {
   hideSidebar,

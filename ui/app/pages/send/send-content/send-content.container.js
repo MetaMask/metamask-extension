@@ -6,7 +6,7 @@ import {
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 import * as actions from '../../../store/actions'
 
 function mapStateToProps (state) {

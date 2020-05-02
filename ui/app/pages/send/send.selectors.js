@@ -6,11 +6,9 @@ import {
   getSelectedAccount,
   getTargetAccount,
   getSelectedAddress,
-} from '../../selectors/selectors'
-import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
-import {
   getAveragePriceEstimateInHexWEI,
-} from '../../selectors/custom-gas'
+} from '../../selectors'
+import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
 
 export function getAmountConversionRate (state) {
   return getSelectedToken(state)

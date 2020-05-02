@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import SendAssetRow from './send-asset-row.component'
-import { getMetaMaskAccounts } from '../../../../selectors/selectors'
+import { getMetaMaskAccounts } from '../../../../selectors'
 import { setSelectedToken } from '../../../../store/actions'
 
 function mapStateToProps (state) {

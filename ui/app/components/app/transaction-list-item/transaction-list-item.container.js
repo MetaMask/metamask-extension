@@ -20,7 +20,7 @@ import {
   conversionRateSelector,
   getKnownMethodData,
   getFeatureFlags,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
 const mapStateToProps = (state, ownProps) => {

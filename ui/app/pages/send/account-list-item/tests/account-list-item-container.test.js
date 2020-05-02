@@ -15,7 +15,7 @@ proxyquire('../account-list-item.container.js', {
     getCurrentCurrency: () => `mockCurrentCurrency`,
     getNativeCurrency: () => `mockNativeCurrency`,
   },
-  '../../../selectors/selectors': {
+  '../../../selectors/': {
     isBalanceCached: () => `mockBalanceIsCached`,
     preferencesSelector: ({ showFiatInTestnets }) => ({
       showFiatInTestnets,

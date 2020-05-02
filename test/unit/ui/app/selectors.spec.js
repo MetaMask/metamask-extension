@@ -1,5 +1,5 @@
 import assert from 'assert'
-import * as selectors from '../../../../ui/app/selectors/selectors'
+import * as selectors from '../../../../ui/app/selectors'
 import mockState from '../../../data/mock-state.json'
 import Eth from 'ethjs'
 import { createTestProviderTools } from '../../../stub/provider'
@@ -118,11 +118,6 @@ describe('Selectors', function () {
   it('#getCurrentCurrency', function () {
     const currentCurrency = selectors.getCurrentCurrency(mockState)
     assert.equal(currentCurrency, 'usd')
-  })
-
-  it('#getSelectedTokenToFiatRate', function () {
-    const selectedTokenToFiatRate = selectors.getSelectedTokenToFiatRate(mockState)
-    assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 
   it('#getSelectedTokenContract', function () {

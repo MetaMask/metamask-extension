@@ -3,7 +3,7 @@ import {
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
   getNativeCurrency,
-} from '../../selectors/confirm-transaction'
+} from '../../selectors'
 
 import {
   getValueFromWeiHex,

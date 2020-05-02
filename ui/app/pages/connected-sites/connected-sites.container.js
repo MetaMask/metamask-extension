@@ -10,12 +10,10 @@ import {
   getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
   getOriginOfCurrentTab,
-  getSelectedAddress,
-} from '../../selectors/selectors'
-import {
-  getPermissionsDomains,
+  getPermissionDomains,
   getPermittedAccountsByOrigin,
-} from '../../selectors/permissions'
+  getSelectedAddress,
+} from '../../selectors'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import { getOriginFromUrl } from '../../helpers/utils/util'
 
@@ -42,7 +40,7 @@ const mapStateToProps = (state) => {
   return {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
-    domains: getPermissionsDomains(state),
+    domains: getPermissionDomains(state),
     permittedAccountsByOrigin,
     selectedAddress,
     tabToConnect,

@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom'
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 import {
   contractExchangeRateSelector,
+  tokenSelector,
   transactionFeeSelector,
-} from '../../selectors/confirm-transaction'
-import { tokenSelector } from '../../selectors/tokens'
+} from '../../selectors'
 import {
   getTokenData,
 } from '../../helpers/utils/transactions.util'

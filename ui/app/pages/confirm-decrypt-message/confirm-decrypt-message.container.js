@@ -11,7 +11,7 @@ import {
 import {
   getTargetAccountWithSendEtherInfo,
   conversionRateSelector,
-} from '../../selectors/selectors'
+} from '../../selectors'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 

@@ -1,12 +1,10 @@
 import { connect } from 'react-redux'
 import TransactionTimeRemaining from './transaction-time-remaining.component'
 import {
-  getTxParams,
-} from '../../../selectors/transactions'
-import {
   getEstimatedGasPrices,
   getEstimatedGasTimes,
-} from '../../../selectors/custom-gas'
+  getTxParams,
+} from '../../../selectors'
 import { getRawTimeEstimateData } from '../../../helpers/utils/gas-time-estimates.util'
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util'
 

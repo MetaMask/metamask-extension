@@ -3,7 +3,7 @@ import { captureException } from '@sentry/browser'
 
 import actionConstants from '../../store/actionConstants'
 import { addPermittedAccount } from '../../store/actions'
-import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors/selectors'
+import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors'
 
 // Constants
 

@@ -3,10 +3,10 @@ import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import {
   contractExchangeRateSelector,
+  tokenSelector,
   transactionFeeSelector,
-} from '../../selectors/confirm-transaction'
+} from '../../selectors'
 import { showModal } from '../../store/actions'
-import { tokenSelector } from '../../selectors/tokens'
 import {
   getTokenData,
 } from '../../helpers/utils/transactions.util'
