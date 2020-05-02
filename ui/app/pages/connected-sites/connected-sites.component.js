@@ -89,6 +89,7 @@ export default class ConnectedSites extends Component {
 
     return (
       <Popover
+        className="connected-sites"
         title={t('connectedSites')}
         subtitle={connectedDomains.length
           ? t('connectedSitesDescription', [accountLabel])
@@ -98,12 +99,12 @@ export default class ConnectedSites extends Component {
         footer={
           tabToConnect
             ? (
-              <div
+              <a
                 className="connected-sites__text-button"
                 onClick={legacyExposeAccount}
               >
                 {t('connectManually')}
-              </div>
+              </a>
             )
             : null
         }
@@ -141,20 +142,20 @@ export default class ConnectedSites extends Component {
                 { t('disconnect') }
               </Button>
             </div>
-            <div className="connected-sites__footer-row">
               {
                 numPermittedAccounts > 1
                   ? (
-                    <div
-                      className="connected-sites__text-button"
-                      onClick={this.disconnectAllAccounts}
-                    >
-                      {t('disconnectAllAccounts')}
+                    <div className="connected-sites__footer-row">
+                      <a
+                        className="connected-sites__text-button"
+                        onClick={this.disconnectAllAccounts}
+                      >
+                        {t('disconnectAllAccounts')}
+                      </a>
                     </div>
                   )
                   : null
               }
-            </div>
           </>
         )}
         footerClassName="connected-sites__confirmation"

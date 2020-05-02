@@ -14,11 +14,6 @@ import {
 
 import { getPermittedAccountsByOrigin } from './permissions'
 
-export {
-  getPermittedAccounts,
-  getPermittedAccountsByOrigin,
-} from './permissions'
-
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
 
@@ -432,10 +427,6 @@ export function getFirstPermissionRequest (state) {
 
 export function hasPermissionRequests (state) {
   return Boolean(getFirstPermissionRequest(state))
-}
-
-export function getPermissionsDomains (state) {
-  return state.metamask.domains
 }
 
 export function getAddressConnectedDomainMap (state) {

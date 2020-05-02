@@ -10,10 +10,12 @@ import {
   getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
   getOriginOfCurrentTab,
-  getPermissionsDomains,
-  getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors/selectors'
+import {
+  getPermissionsDomains,
+  getPermittedAccountsByOrigin,
+} from '../../selectors/permissions'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import { getOriginFromUrl } from '../../helpers/utils/util'
 
@@ -25,12 +27,12 @@ const mapStateToProps = (state) => {
   const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state)
   const selectedAddress = getSelectedAddress(state)
 
-  const currentTabHasAccounts = permittedAccountsByOrigin[
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin[
     originOfCurrentTab
   ]?.length
 
   let tabToConnect
-  if (url && !currentTabHasAccounts && !openMetaMaskTabs[id]) {
+  if (url && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       title,
       origin: getOriginFromUrl(url),

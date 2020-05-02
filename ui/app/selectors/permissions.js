@@ -25,7 +25,7 @@ export function getPermittedAccounts (state, origin) {
  * @returns {Object} Permitted accounts by origin.
  */
 export function getPermittedAccountsByOrigin (state) {
-  const domains = allDomainsSelector(state)
+  const domains = getPermissionsDomains(state)
   return Object.keys(domains).reduce((acc, domainKey) => {
     const accounts = getAccountsFromPermission(
       getAccountsPermissionFromDomain(domains[domainKey])
@@ -67,7 +67,7 @@ function getAccountsCaveatFromPermission (accountsPermission = {}) {
   )
 }
 
-function allDomainsSelector (state) {
+export function getPermissionsDomains (state) {
   return state.metamask.domains || {}
 }
 

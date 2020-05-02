@@ -1,6 +1,7 @@
 .connected-sites {
   h2 {
     text-overflow: ellipsis;
+    margin-right: 10px;
   }
 
   &__confirmation {
@@ -22,13 +23,10 @@
     margin-top: 15px;
   }
 
-  &__text-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  a, a:hover {
     font-size: 14px;
     line-height: 20px;
-    color: #2f9ae0;
+    color: #037DD6;
     cursor: pointer;
   }
 }
