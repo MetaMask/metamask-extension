@@ -6,9 +6,11 @@ import {
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getPermissionsDomains,
   getTargetDomainMetadata,
 } from '../../selectors/selectors'
+import {
+  getPermissionsDomains,
+} from '../../selectors/permissions'
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
 import {
