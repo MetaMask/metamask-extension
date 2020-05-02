@@ -16,10 +16,13 @@
   "disconnect": {
     "message": "Disconnect"
   },
-  "disconnectSite": {
-    "message": "Disconnect $1?"
+  "disconnectAllAccounts": {
+    "message": "Disconnect all accounts"
   },
-  "disconnectAccountConfirmationDescription": {
+  "disconnectPrompt": {
+    "message": "Disconnect $1"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
   "dismiss": {

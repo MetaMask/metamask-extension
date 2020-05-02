@@ -2,10 +2,9 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ConnectedSitesList from '../../components/app/connected-sites-list'
 import Popover from '../../components/ui/popover/popover.component'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
-export default class ConnectSites extends Component {
+export default class ConnectedSites extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -15,25 +14,29 @@ export default class ConnectSites extends Component {
   }
 
   static propTypes = {
-    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
     accountLabel: PropTypes.string.isRequired,
+    closePopover: PropTypes.func.isRequired,
+    connectedDomains: PropTypes.arrayOf(PropTypes.object).isRequired,
+    disconnectAllAccounts: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    tabToConnect: PropTypes.object,
-    legacyExposeAccount: PropTypes.func.isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
+    legacyExposeAccount: PropTypes.func.isRequired,
+    permittedAccountsByOrigin: PropTypes.objectOf(
+      PropTypes.arrayOf(PropTypes.string),
+    ).isRequired,
+    tabToConnect: PropTypes.object,
   }
 
   state = {
     sitePendingDisconnect: null,
   }
 
-  UNSAFE_componentWillMount () {
+  componentDidMount () {
     const { getOpenMetamaskTabsIds } = this.props
     getOpenMetamaskTabsIds()
   }
 
-  setSitePendingDisconnect = (domainKey, domainName) => {
+  setPendingDisconnect = (domainKey, domainName) => {
     this.setState({
       sitePendingDisconnect: {
         domainKey,
@@ -42,73 +45,130 @@ export default class ConnectSites extends Component {
     })
   }
 
-  clearSitePendingDisconnect = () => {
+  clearPendingDisconnect = () => {
     this.setState({
       sitePendingDisconnect: null,
     })
   }
 
-  disconnect = () => {
+  disconnectAccount = () => {
     const { disconnectAccount } = this.props
     const { sitePendingDisconnect } = this.state
 
     disconnectAccount(sitePendingDisconnect.domainKey)
-    this.clearSitePendingDisconnect()
+    this.clearPendingDisconnect()
   }
 
-  renderConnectedSites () {
+  disconnectAllAccounts = () => {
+    const { disconnectAllAccounts } = this.props
+    const { sitePendingDisconnect } = this.state
+
+    disconnectAllAccounts(sitePendingDisconnect.domainKey)
+    this.clearPendingDisconnect()
+  }
+
+  renderConnectedSitesList () {
     return (
       <ConnectedSitesList
         connectedDomains={this.props.connectedDomains}
-        onDisconnectSite={this.setSitePendingDisconnect}
+        onDisconnect={this.setPendingDisconnect}
+      />
+    )
+  }
+
+  renderConnectedSitesPopover () {
+
+    const {
+      accountLabel,
+      closePopover,
+      connectedDomains,
+      legacyExposeAccount,
+      tabToConnect,
+    } = this.props
+    const { t } = this.context
+
+    return (
+      <Popover
+        className="connected-sites"
+        title={t('connectedSites')}
+        subtitle={connectedDomains.length
+          ? t('connectedSitesDescription', [accountLabel])
+          : t('connectedSitesEmptyDescription', [accountLabel])
+        }
+        onClose={closePopover}
+        footer={
+          tabToConnect
+            ? (
+              <a
+                className="connected-sites__text-button"
+                onClick={legacyExposeAccount}
+              >
+                {t('connectManually')}
+              </a>
+            )
+            : null
+        }
+        footerClassName="connected-sites__add-site-manually"
+      >
+        {this.renderConnectedSitesList()}
+      </Popover>
+    )
+  }
+
+  renderDisconnectPopover () {
+
+    const { closePopover, permittedAccountsByOrigin } = this.props
+    const { t } = this.context
+    const { sitePendingDisconnect: { domainKey, domainName } } = this.state
+
+    const numPermittedAccounts = permittedAccountsByOrigin[domainKey].length
+
+    return (
+      <Popover
+        className="connected-sites"
+        title={t('disconnectPrompt', [domainName])}
+        subtitle={t('disconnectAllAccountsConfirmationDescription')}
+        onClose={closePopover}
+        footer={(
+          <>
+            <div className="connected-sites__footer-row">
+              <Button type="secondary" onClick={this.clearPendingDisconnect}>
+                { t('cancel') }
+              </Button>
+              <Button
+                type="primary"
+                onClick={this.disconnectAccount}
+              >
+                { t('disconnect') }
+              </Button>
+            </div>
+              {
+                numPermittedAccounts > 1
+                  ? (
+                    <div className="connected-sites__footer-row">
+                      <a
+                        className="connected-sites__text-button"
+                        onClick={this.disconnectAllAccounts}
+                      >
+                        {t('disconnectAllAccounts')}
+                      </a>
+                    </div>
+                  )
+                  : null
+              }
+          </>
+        )}
+        footerClassName="connected-sites__confirmation"
       />
     )
   }
 
   render () {
-    const { accountLabel, history, legacyExposeAccount, tabToConnect, connectedDomains } = this.props
-    const { t } = this.context
     const { sitePendingDisconnect } = this.state
     return (
       sitePendingDisconnect
-        ? (
-          <Popover
-            title={t('disconnectSite', [sitePendingDisconnect.domainName])}
-            subtitle={t('disconnectAccountConfirmationDescription')}
-            onClose={() => history.push(DEFAULT_ROUTE)}
-            footer={(
-              <>
-                <Button type="secondary" onClick={this.clearSitePendingDisconnect}>
-                  { t('cancel') }
-                </Button>
-                <Button type="primary" onClick={this.disconnect}>
-                  { t('disconnect') }
-                </Button>
-              </>
-            )}
-            footerClassName="connected-sites__confirmation"
-          />
-        )
-        : (
-          <Popover
-            title={t('connectedSites')}
-            subtitle={connectedDomains.length
-              ? t('connectedSitesDescription', [accountLabel])
-              : t('connectedSitesEmptyDescription', [accountLabel])
-            }
-            onClose={() => history.push(DEFAULT_ROUTE)}
-            footer={
-              tabToConnect
-                ? (
-                  <a onClick={legacyExposeAccount}>{ t('connectManually') }</a>
-                )
-                : null
-            }
-            footerClassName="connected-sites__add-site-manually"
-          >
-            {this.renderConnectedSites()}
-          </Popover>
-        )
+        ? this.renderDisconnectPopover()
+        : this.renderConnectedSitesPopover()
     )
   }
 }

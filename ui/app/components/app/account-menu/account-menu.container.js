@@ -15,7 +15,6 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
-  // getPermittedAccounts,
 } from '../../../selectors/selectors'
 import AccountMenu from './account-menu.component'
 

@@ -138,7 +138,7 @@ describe('MetaMask', function () {
 
       await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected Sites')]`))
 
-      const domains = await driver.findClickableElements(By.css('.connected-sites__domain-name'))
+      const domains = await driver.findClickableElements(By.css('.connected-sites-list__domain-name'))
       assert.equal(domains.length, 1)
     })
 
