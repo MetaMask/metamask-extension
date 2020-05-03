@@ -61,7 +61,7 @@ export default class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'ipfs.dweb.link',
+      ipfsGateway: 'dweb.link',
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
