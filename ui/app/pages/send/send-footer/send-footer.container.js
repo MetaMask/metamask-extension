@@ -22,10 +22,8 @@ import {
   getTokenBalance,
   getUnapprovedTxs,
   getSendErrors,
-} from '../send.selectors'
-import {
   isSendFormInError,
-} from './send-footer.selectors'
+} from '../send.selectors'
 import {
   addressIsNew,
   constructTxParams,

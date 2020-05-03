@@ -41,6 +41,7 @@ import {
   getGasButtonGroupShown,
   getTokens,
   getTitleKey,
+  isSendFormInError,
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
@@ -627,7 +628,7 @@ describe('send selectors', function () {
 
   describe('send-header selectors', function () {
 
-    const getMockStateWithSend = (send) => {
+    const getMetamaskSendMockState = (send) => {
       return {
         metamask: {
           send: { ...send },
@@ -637,13 +638,13 @@ describe('send selectors', function () {
 
     describe('getTitleKey()', function () {
       it('should return the correct key when "to" is empty', function () {
-        assert.equal(getTitleKey(getMockStateWithSend({})), 'addRecipient')
+        assert.equal(getTitleKey(getMetamaskSendMockState({})), 'addRecipient')
       })
 
       it('should return the correct key when getSendEditingTransactionId is truthy', function () {
         assert.equal(
           getTitleKey(
-            getMockStateWithSend({
+            getMetamaskSendMockState({
               to: true,
               editingTransactionId: true,
               token: true, // this can be whatever
@@ -654,7 +655,7 @@ describe('send selectors', function () {
       it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is truthy', function () {
         assert.equal(
           getTitleKey(
-            getMockStateWithSend({
+            getMetamaskSendMockState({
               to: true,
               editingTransactionId: false,
               token: true,
@@ -665,12 +666,44 @@ describe('send selectors', function () {
       it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is falsy', function () {
         assert.equal(
           getTitleKey(
-            getMockStateWithSend({
+            getMetamaskSendMockState({
               to: true,
               editingTransactionId: false,
               token: false,
             })
           ), 'sendETH')
+      })
+    })
+  })
+
+  describe('send-footer selectors', function () {
+
+    const getSendMockState = (send) => {
+      return {
+        send: { ...send },
+      }
+    }
+
+    describe('isSendFormInError()', function () {
+      it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [ true ],
+          })
+        ), true)
+      })
+
+      it('should return false if all of the values of the object returned by getSendErrors are falsy', function () {
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [],
+          })
+        ), false)
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [ false ],
+          })
+        ), false)
       })
     })
   })

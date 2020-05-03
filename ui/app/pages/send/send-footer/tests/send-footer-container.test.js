@@ -42,8 +42,8 @@ proxyquire('../send-footer.container.js', {
     getSendHexData: (s) => `mockHexData:${s}`,
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
     getSendErrors: (s) => `mockSendErrors:${s}`,
+    isSendFormInError: (s) => `mockInError:${s}`,
   },
-  './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
   './send-footer.utils': utilsStubs,
   '../../../selectors/': {
     getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ gasEstimateType: `mockGasEstimateType:${s}` }]),

@@ -229,3 +229,7 @@ export function getTitleKey (state) {
     return 'sendETH'
   }
 }
+
+export function isSendFormInError (state) {
+  return Object.values(getSendErrors(state)).some((n) => n)
+}
