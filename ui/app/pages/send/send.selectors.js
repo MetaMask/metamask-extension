@@ -212,3 +212,20 @@ export function getGasButtonGroupShown (state) {
 export function getTokens (state) {
   return state.metamask.tokens
 }
+
+export function getTitleKey (state) {
+  const isEditing = Boolean(getSendEditingTransactionId(state))
+  const isToken = Boolean(getSelectedToken(state))
+
+  if (!getSendTo(state)) {
+    return 'addRecipient'
+  }
+
+  if (isEditing) {
+    return 'edit'
+  } else if (isToken) {
+    return 'sendTokens'
+  } else {
+    return 'sendETH'
+  }
+}

@@ -40,6 +40,7 @@ import {
   getGasLoadingError,
   getGasButtonGroupShown,
   getTokens,
+  getTitleKey,
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
@@ -620,6 +621,56 @@ describe('send selectors', function () {
         }
 
         assert.deepStrictEqual(getTokens(state), [])
+      })
+    })
+  })
+
+  describe('send-header selectors', function () {
+
+    const getMockStateWithSend = (send) => {
+      return {
+        metamask: {
+          send: { ...send },
+        },
+      }
+    }
+
+    describe('getTitleKey()', function () {
+      it('should return the correct key when "to" is empty', function () {
+        assert.equal(getTitleKey(getMockStateWithSend({})), 'addRecipient')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is truthy', function () {
+        assert.equal(
+          getTitleKey(
+            getMockStateWithSend({
+              to: true,
+              editingTransactionId: true,
+              token: true, // this can be whatever
+            })
+          ), 'edit')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is truthy', function () {
+        assert.equal(
+          getTitleKey(
+            getMockStateWithSend({
+              to: true,
+              editingTransactionId: false,
+              token: true,
+            })
+          ), 'sendTokens')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is falsy', function () {
+        assert.equal(
+          getTitleKey(
+            getMockStateWithSend({
+              to: true,
+              editingTransactionId: false,
+              token: false,
+            })
+          ), 'sendETH')
       })
     })
   })

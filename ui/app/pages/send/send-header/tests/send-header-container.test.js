@@ -18,7 +18,7 @@ proxyquire('../send-header.container.js', {
     },
   },
   '../../../store/actions': actionSpies,
-  './send-header.selectors': {
+  '../send.selectors': {
     getTitleKey: (s) => `mockTitleKey:${s}`,
   },
 })
