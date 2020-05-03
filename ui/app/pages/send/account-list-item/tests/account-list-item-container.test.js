@@ -10,7 +10,7 @@ proxyquire('../account-list-item.container.js', {
       return () => ({})
     },
   },
-  '../send.selectors.js': {
+  '../../../selectors/send': {
     getConversionRate: () => `mockConversionRate`,
     getCurrentCurrency: () => `mockCurrentCurrency`,
     getNativeCurrency: () => `mockNativeCurrency`,

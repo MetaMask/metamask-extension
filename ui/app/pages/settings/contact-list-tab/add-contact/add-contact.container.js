@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { addToAddressBook, showQrScanner, qrCodeDetected } from '../../../../store/actions'
 import {
   getQrCodeData,
-} from '../../../send/send.selectors'
+} from '../../../../selectors/send'
 
 const mapStateToProps = (state) => {
   return {

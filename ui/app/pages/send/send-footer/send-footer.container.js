@@ -23,17 +23,17 @@ import {
   getUnapprovedTxs,
   getSendErrors,
   isSendFormInError,
-} from '../send.selectors'
-import {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-} from './send-footer.utils'
+} from '../../../selectors/send'
 import {
   getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
+import {
+  addressIsNew,
+  constructTxParams,
+  constructUpdatedTx,
+} from './send-footer.utils'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 

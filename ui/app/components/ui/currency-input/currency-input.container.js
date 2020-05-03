@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import CurrencyInput from './currency-input.component'
 import { ETH } from '../../../helpers/constants/common'
-import { getSendMaxModeState } from '../../../pages/send/send.selectors'
+import { getSendMaxModeState } from '../../../selectors/send'
 import { getIsMainnet, preferencesSelector } from '../../../selectors'
 
 const mapStateToProps = (state) => {

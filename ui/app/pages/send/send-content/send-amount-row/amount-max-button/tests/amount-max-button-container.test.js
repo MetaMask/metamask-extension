@@ -21,7 +21,7 @@ proxyquire('../amount-max-button.container.js', {
       return () => ({})
     },
   },
-  '../../../send.selectors.js': {
+  '../../../../../selectors/send': {
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendFromBalance: (s) => `mockBalance:${s}`,

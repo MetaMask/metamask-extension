@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
-} from '../../../selectors'
+} from '..'
 import {
   getBlockGasLimit,
   getConversionRate,
@@ -37,7 +37,7 @@ import {
   getTokens,
   getTitleKey,
   isSendFormInError,
-} from '../send.selectors.js'
+} from '../send'
 import mockState from './send-selectors-test-data'
 
 describe('send selectors', function () {

@@ -11,7 +11,15 @@ import {
   getGasLoadingError,
   gasFeeIsInError,
   getGasButtonGroupShown,
-} from '../../send.selectors.js'
+} from '../../../../selectors/send'
+import {
+  getAdvancedInlineGasShown,
+  getCurrentEthBalance,
+  getSelectedToken,
+  getBasicGasEstimateLoadingStatus,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
+  getDefaultActiveButtonIndex,
+} from '../../../../selectors'
 import {
   isBalanceSufficient,
   calcGasTotal,
@@ -27,14 +35,6 @@ import {
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
-import {
-  getAdvancedInlineGasShown,
-  getCurrentEthBalance,
-  getSelectedToken,
-  getBasicGasEstimateLoadingStatus,
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  getDefaultActiveButtonIndex,
-} from '../../../../selectors'
 import SendGasRow from './send-gas-row.component'
 
 

@@ -6,8 +6,8 @@ import {
   getTargetAccount,
   getSelectedAddress,
   getAveragePriceEstimateInHexWEI,
-} from '../../selectors'
-import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
+} from '.'
+import { estimateGasPriceFromRecentBlocks, calcGasTotal } from '../pages/send/send.utils'
 
 export function getBlockGasLimit (state) {
   return state.metamask.currentBlockGasLimit
