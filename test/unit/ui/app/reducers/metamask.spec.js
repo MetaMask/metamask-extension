@@ -204,7 +204,6 @@ describe('MetaMask Reducers', function () {
       memo: '0xMemo',
       errors: {},
       editingTransactionId: 22,
-      forceGasMin: '0xGas',
       ensResolution: null,
       ensResolutionError: '',
     }
@@ -231,7 +230,6 @@ describe('MetaMask Reducers', function () {
         errors: {},
         maxModeOn: false,
         editingTransactionId: null,
-        forceGasMin: null,
         toNickname: '' },
     }
 
@@ -249,7 +247,6 @@ describe('MetaMask Reducers', function () {
         memo: '0xMemo',
         errors: {},
         editingTransactionId: 22,
-        forceGasMin: '0xGas',
       },
     }
 

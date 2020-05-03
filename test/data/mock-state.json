@@ -136,7 +136,6 @@
       "errors": {},
       "maxModeOn": false,
       "editingTransactionId": null,
-      "forceGasMin": null,
       "toNickname": ""
     },
     "currentNetworkTxList": [

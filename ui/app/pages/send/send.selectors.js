@@ -36,10 +36,6 @@ export function getCurrentNetwork (state) {
   return state.metamask.network
 }
 
-export function getForceGasMin (state) {
-  return state.metamask.send.forceGasMin
-}
-
 export function getGasLimit (state) {
   return state.metamask.send.gasLimit || '0'
 }

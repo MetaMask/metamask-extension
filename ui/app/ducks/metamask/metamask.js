@@ -28,7 +28,6 @@ export default function reduceMetamask (state = {}, action) {
       errors: {},
       maxModeOn: false,
       editingTransactionId: null,
-      forceGasMin: null,
       toNickname: '',
       ensResolution: null,
       ensResolutionError: '',
@@ -262,7 +261,6 @@ export default function reduceMetamask (state = {}, action) {
           errors: {},
           maxModeOn: false,
           editingTransactionId: null,
-          forceGasMin: null,
           toNickname: '',
         },
       }
