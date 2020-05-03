@@ -10,10 +10,6 @@ export default class SendAmountRow extends Component {
 
   static propTypes = {
     amount: PropTypes.string,
-    amountConversionRate: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
     gasTotal: PropTypes.string,
@@ -50,7 +46,6 @@ export default class SendAmountRow extends Component {
 
   validateAmount (amount) {
     const {
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
@@ -63,7 +58,6 @@ export default class SendAmountRow extends Component {
 
     updateSendAmountError({
       amount,
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
@@ -74,7 +68,6 @@ export default class SendAmountRow extends Component {
 
     if (selectedToken) {
       updateGasFeeError({
-        amountConversionRate,
         balance,
         conversionRate,
         gasTotal,

@@ -19,7 +19,6 @@ describe('SendAmountRow Component', function () {
 
       assert.ok(updateSendAmountError.calledOnceWithExactly({
         amount: 'someAmount',
-        amountConversionRate: 'mockAmountConversionRate',
         balance: 'mockBalance',
         conversionRate: 7,
         gasTotal: 'mockGasTotal',
@@ -37,7 +36,6 @@ describe('SendAmountRow Component', function () {
       instance.validateAmount('someAmount')
 
       assert.ok(updateGasFeeError.calledOnceWithExactly({
-        amountConversionRate: 'mockAmountConversionRate',
         balance: 'mockBalance',
         conversionRate: 7,
         gasTotal: 'mockGasTotal',
@@ -148,7 +146,6 @@ function shallowRenderSendAmountRow () {
   const wrapper = shallow((
     <SendAmountRow
       amount="mockAmount"
-      amountConversionRate="mockAmountConversionRate"
       balance="mockBalance"
       conversionRate={7}
       convertedCurrency="mockConvertedCurrency"

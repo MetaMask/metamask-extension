@@ -140,7 +140,6 @@ describe('send utils', function () {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amount: 15,
-        amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
         gasTotal: 17,
@@ -149,7 +148,6 @@ describe('send utils', function () {
       },
       'should not return insufficientFunds error if selectedToken is truthy': {
         amount: '0x0',
-        amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
         gasTotal: 17,
@@ -161,7 +159,6 @@ describe('send utils', function () {
       },
       'should return insufficientTokens error if token is selected and isTokenBalanceSufficient returns false': {
         amount: '0x10',
-        amountConversionRate: 2,
         balance: 100,
         conversionRate: 3,
         decimals: 10,
@@ -182,7 +179,6 @@ describe('send utils', function () {
   describe('getGasFeeErrorObject()', function () {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
-        amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
         gasTotal: 17,
@@ -190,7 +186,6 @@ describe('send utils', function () {
         expectedResult: { gasFee: INSUFFICIENT_FUNDS_ERROR },
       },
       'should return null error if isBalanceSufficient returns true': {
-        amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
         gasTotal: 15,
@@ -223,7 +218,6 @@ describe('send utils', function () {
       stubs.conversionGTE.resetHistory()
       const result = isBalanceSufficient({
         amount: 15,
-        amountConversionRate: 2,
         balance: 100,
         conversionRate: 3,
         gasTotal: 17,
@@ -251,7 +245,7 @@ describe('send utils', function () {
           {
             value: 32,
             fromNumericBase: 'hex',
-            conversionRate: 2,
+            conversionRate: 3,
             fromCurrency: 'ABC',
           },
         ]

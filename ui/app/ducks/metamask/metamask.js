@@ -12,7 +12,6 @@ export default function reduceMetamask (state = {}, action) {
     addressBook: [],
     selectedTokenAddress: null,
     contractExchangeRates: {},
-    tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
     customNonceValue: '',

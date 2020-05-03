@@ -184,11 +184,6 @@ export function getAssetImages (state) {
   return assetImages
 }
 
-export function getTokenExchangeRate (state, address) {
-  const contractExchangeRates = state.metamask.contractExchangeRates
-  return contractExchangeRates[address] || 0
-}
-
 export function getAddressBook (state) {
   const network = state.metamask.network
   if (!state.metamask.addressBook[network]) {

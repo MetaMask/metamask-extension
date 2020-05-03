@@ -20,10 +20,6 @@ export default class SendTransactionScreen extends Component {
   static propTypes = {
     addressBook: PropTypes.arrayOf(PropTypes.object),
     amount: PropTypes.string,
-    amountConversionRate: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
     blockGasLimit: PropTypes.string,
     conversionRate: PropTypes.number,
     editingTransactionId: PropTypes.string,
@@ -77,7 +73,6 @@ export default class SendTransactionScreen extends Component {
   componentDidUpdate (prevProps) {
     const {
       amount,
-      amountConversionRate,
       conversionRate,
       from: { address, balance },
       gasTotal,
@@ -122,7 +117,6 @@ export default class SendTransactionScreen extends Component {
     if (amountErrorRequiresUpdate) {
       const amountErrorObject = getAmountErrorObject({
         amount,
-        amountConversionRate,
         balance,
         conversionRate,
         gasTotal,
@@ -132,7 +126,6 @@ export default class SendTransactionScreen extends Component {
       })
       const gasFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
-          amountConversionRate,
           balance,
           conversionRate,
           gasTotal,

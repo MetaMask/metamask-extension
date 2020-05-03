@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import {
-  getAmountConversionRate,
   getConversionRate,
   getGasTotal,
   getPrimaryCurrency,
@@ -26,7 +25,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)
 function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
-    amountConversionRate: getAmountConversionRate(state),
     balance: getSendFromBalance(state),
     conversionRate: getConversionRate(state),
     gasTotal: getGasTotal(state),

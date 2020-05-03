@@ -84,13 +84,9 @@ export default {
         'symbol': 'GHI',
       },
     ],
-    'tokenExchangeRates': {
-      'def_eth': {
-        rate: 2.0,
-      },
-      'ghi_eth': {
-        rate: 31.01,
-      },
+    'contractExchangeRates': {
+      '0x8d6b81208414189a58339873ab429b6c47ab92d3': 0.00039345803819379796,
+      '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
     },
     'transactions': {},
     'currentNetworkTxList': [
