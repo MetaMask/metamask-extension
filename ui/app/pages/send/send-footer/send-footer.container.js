@@ -7,7 +7,6 @@ import {
   signTx,
   updateTransaction,
 } from '../../../store/actions'
-import SendFooter from './send-footer.component'
 import {
   getGasLimit,
   getGasPrice,
@@ -27,7 +26,7 @@ import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
-
+import SendFooter from './send-footer.component'
 import {
   addressIsNew,
   constructTxParams,

@@ -5,7 +5,6 @@ import {
   isBalanceCached,
   preferencesSelector,
 } from '../../../selectors'
-
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)

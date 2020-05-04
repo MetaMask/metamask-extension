@@ -18,7 +18,6 @@ import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../../selectors'
-
 import {
   isBalanceSufficient,
   calcGasTotal,
