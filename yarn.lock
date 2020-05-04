@@ -10049,10 +10049,10 @@ eth-block-tracker@^4.4.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.12.1:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.12.1.tgz#41014c8c0123453cee15acbcc14299c4d470c759"
-  integrity sha512-9u2jUcdxaKIv4RvA9RtjyD4+M2yWt4yCulR5bpdQTiG3HUFnN9lHtNL5NIRDpvQVJKerFhexrgEM2WdGP3a6VA==
+eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.13.0.tgz#9819d0e556ea2187da91d6b49ce96abc5fce2a73"
+  integrity sha512-9CjXHX8IdXysUEvOHdbCsjdAwM1E98jaeK2HeOqm/9S/vOZ8YryaBBt/YSiBq3MkpCwf+d1pEQ53p96rsdy52w==
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
@@ -10369,7 +10369,7 @@ ethereum-common@^0.0.18:
   resolved "https://registry.yarnpkg.com/ethereum-common/-/ethereum-common-0.0.18.tgz#2fdc3576f232903358976eb39da783213ff9523f"
   integrity sha1-L9w1dvIykDNYl26znaeDIT/5Uj8=
 
-ethereum-ens-network-map@^1.0.0:
+ethereum-ens-network-map@^1.0.0, ethereum-ens-network-map@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.2.tgz#4e27bad18dae7bd95d84edbcac2c9e739fc959b9"
   integrity sha512-5qwJ5n3YhjSpE6O/WEBXCAb2nagUgyagJ6C0lGUBWC4LjKp/rRzD+pwtDJ6KCiITFEAoX4eIrWOjRy0Sylq5Hg==

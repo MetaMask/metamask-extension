@@ -57,13 +57,12 @@ function replayHistory (_shortHistory) {
 }
 
 /**
-  @param txMeta {Object}
-  @returns {object} a clone object of the txMeta with out history
-*/
+ * Snapshot {@code txMeta}
+ * @param {Object} txMeta - the tx metadata object
+ * @returns {Object} a deep clone without history
+ */
 function snapshotFromTxMeta (txMeta) {
-  // create txMeta snapshot for history
-  const snapshot = clone(txMeta)
-  // dont include previous history in this snapshot
-  delete snapshot.history
-  return snapshot
+  const shallow = { ...txMeta }
+  delete shallow.history
+  return clone(shallow)
 }

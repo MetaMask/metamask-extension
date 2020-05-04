@@ -4,7 +4,6 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import HomeNotification from '../../components/app/home-notification'
-import DaiMigrationNotification from '../../components/app/dai-migration-component'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionView from '../../components/app/transaction-view'
@@ -24,7 +23,6 @@ export default class Home extends PureComponent {
 
   static defaultProps = {
     unsetMigratedPrivacyMode: null,
-    hasDaiV1Token: false,
   }
 
   static propTypes = {
@@ -45,7 +43,6 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
-    hasDaiV1Token: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -89,7 +86,6 @@ export default class Home extends PureComponent {
       forgottenPassword,
       providerRequests,
       history,
-      hasDaiV1Token,
       showPrivacyModeNotification,
       unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
@@ -174,11 +170,6 @@ export default class Home extends PureComponent {
                         }}
                         key="home-privacyModeDefault"
                       />
-                      : null
-                  }
-                  {
-                    hasDaiV1Token
-                      ? <DaiMigrationNotification />
                       : null
                   }
                 </MultipleNotifications>
