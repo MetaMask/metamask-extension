@@ -12,12 +12,12 @@ describe('BinaryRenderer', function () {
   })
 
   it('recovers message', function () {
-    const result = binaryRenderer.hexToText(hex)
+    const result = binaryRenderer.msgHexToText(hex)
     assert.equal(result, message)
   })
 
   it('recovers message with hex prefix', function () {
-    const result = binaryRenderer.hexToText('0x' + hex)
+    const result = binaryRenderer.msgHexToText('0x' + hex)
     assert.equal(result, message)
   })
 })

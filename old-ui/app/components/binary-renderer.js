@@ -1,8 +1,8 @@
-const Component = require('react').Component
+import { Component } from 'react'
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const ethUtil = require('ethereumjs-util')
-const extend = require('xtend')
+import ethUtil from 'ethereumjs-util'
+import extend from 'xtend'
 
 module.exports = BinaryRenderer
 
@@ -14,7 +14,7 @@ function BinaryRenderer () {
 BinaryRenderer.prototype.render = function () {
   const props = this.props
   const { value, style } = props
-  const text = this.hexToText(value)
+  const message = this.msgHexToText(value)
 
   const defaultStyle = extend({
     width: '100%',
@@ -30,16 +30,16 @@ BinaryRenderer.prototype.render = function () {
     h('textarea.font-small', {
       readOnly: true,
       style: defaultStyle,
-      defaultValue: text,
+      defaultValue: message,
     })
   )
 }
 
-BinaryRenderer.prototype.hexToText = function (hex) {
+BinaryRenderer.prototype.msgHexToText = (hex) => {
   try {
     const stripped = ethUtil.stripHexPrefix(hex)
     const buff = Buffer.from(stripped, 'hex')
-    return buff.toString('utf8')
+    return buff.length === 32 ? hex : buff.toString('utf8')
   } catch (e) {
     return hex
   }
