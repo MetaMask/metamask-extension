@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 import {
   getNativeCurrency,
-} from '../../../selectors/send'
-import {
   getIsMainnet,
   isBalanceCached,
   preferencesSelector,
 } from '../../../selectors'
+
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)

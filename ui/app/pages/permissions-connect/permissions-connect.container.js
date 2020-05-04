@@ -7,7 +7,6 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getTargetDomainMetadata,
-
   getPermissionDomains,
 } from '../../selectors'
 

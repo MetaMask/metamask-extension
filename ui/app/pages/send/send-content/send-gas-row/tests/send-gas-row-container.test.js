@@ -30,7 +30,7 @@ proxyquire('../send-gas-row.container.js', {
       return () => ({})
     },
   },
-  '../../../../selectors/send': {
+  '../../../../selectors': {
     getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {

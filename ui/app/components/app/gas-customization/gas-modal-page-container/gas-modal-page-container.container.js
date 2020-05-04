@@ -42,11 +42,10 @@ import {
   getBasicGasEstimateBlockTime,
   getTxParams,
   isCustomPriceSafe,
-} from '../../../../selectors'
-import {
   getTokenBalance,
   getSendMaxModeState,
-} from '../../../../selectors/send'
+} from '../../../../selectors'
+
 import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'

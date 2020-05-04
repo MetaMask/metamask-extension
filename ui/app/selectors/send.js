@@ -4,7 +4,6 @@ import {
   getAddressBook,
   getSelectedAccount,
   getTargetAccount,
-  getSelectedAddress,
   getAveragePriceEstimateInHexWEI,
 } from '.'
 import { estimateGasPriceFromRecentBlocks, calcGasTotal } from '../pages/send/send.utils'
@@ -15,10 +14,6 @@ export function getBlockGasLimit (state) {
 
 export function getConversionRate (state) {
   return state.metamask.conversionRate
-}
-
-export function getCurrentCurrency (state) {
-  return state.metamask.currentCurrency
 }
 
 export function getNativeCurrency (state) {
@@ -54,25 +49,17 @@ export function getRecentBlocks (state) {
   return state.metamask.recentBlocks
 }
 
-export function getSelectedIdentity (state) {
-  const selectedAddress = getSelectedAddress(state)
-  const identities = state.metamask.identities
-
-  return identities[selectedAddress]
-}
-
 export function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask.send.token
+  const sendToken = state.metamask?.send.token
 
   return selectedToken || sendToken || null
 }
 
 export function getSelectedTokenContract (state) {
   const selectedToken = getSelectedToken(state)
-
   return selectedToken
     ? global.eth.contract(abi).at(selectedToken.address)
     : null

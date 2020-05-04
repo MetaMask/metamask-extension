@@ -2,11 +2,10 @@ import { connect } from 'react-redux'
 import SendContent from './send-content.component'
 import {
   getSendTo,
-} from '../../../selectors/send'
-import {
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
 } from '../../../selectors'
+
 import * as actions from '../../../store/actions'
 
 function mapStateToProps (state) {

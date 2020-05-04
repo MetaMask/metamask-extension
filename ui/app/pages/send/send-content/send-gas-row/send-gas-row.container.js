@@ -11,8 +11,6 @@ import {
   getGasLoadingError,
   gasFeeIsInError,
   getGasButtonGroupShown,
-} from '../../../../selectors/send'
-import {
   getAdvancedInlineGasShown,
   getCurrentEthBalance,
   getSelectedToken,
@@ -20,6 +18,7 @@ import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../../selectors'
+
 import {
   isBalanceSufficient,
   calcGasTotal,

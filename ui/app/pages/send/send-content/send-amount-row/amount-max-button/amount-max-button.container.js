@@ -5,8 +5,8 @@ import {
   getSendFromBalance,
   getTokenBalance,
   getSendMaxModeState,
-} from '../../../../../selectors/send'
-import { getBasicGasEstimateLoadingStatus } from '../../../../../selectors'
+  getBasicGasEstimateLoadingStatus,
+} from '../../../../../selectors'
 import { calcMaxAmount } from './amount-max-button.utils.js'
 import {
   updateSendAmount,

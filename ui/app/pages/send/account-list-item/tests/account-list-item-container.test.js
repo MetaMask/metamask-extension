@@ -10,12 +10,10 @@ proxyquire('../account-list-item.container.js', {
       return () => ({})
     },
   },
-  '../../../selectors/send': {
+  '../../../selectors': {
     getConversionRate: () => `mockConversionRate`,
     getCurrentCurrency: () => `mockCurrentCurrency`,
     getNativeCurrency: () => `mockNativeCurrency`,
-  },
-  '../../../selectors/': {
     isBalanceCached: () => `mockBalanceIsCached`,
     preferencesSelector: ({ showFiatInTestnets }) => ({
       showFiatInTestnets,

@@ -23,12 +23,11 @@ import {
   getUnapprovedTxs,
   getSendErrors,
   isSendFormInError,
-} from '../../../selectors/send'
-import {
   getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../selectors'
+
 import {
   addressIsNew,
   constructTxParams,

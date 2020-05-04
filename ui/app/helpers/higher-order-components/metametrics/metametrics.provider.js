@@ -9,7 +9,6 @@ import {
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
-
   txDataSelector,
 } from '../../../selectors'
 

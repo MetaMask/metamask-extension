@@ -19,7 +19,7 @@ proxyquire('../send-amount-row.container.js', {
       return () => ({})
     },
   },
-  '../../../../selectors/send': { sendAmountIsInError: (s) => `mockInError:${s}` },
+  '../../../../selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': {
     getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
     getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
