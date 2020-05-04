@@ -110,11 +110,6 @@ describe('Selectors', function () {
     assert.equal(sendAmount, '1bc16d674ec80000')
   })
 
-  it('#getSendMaxModeState', function () {
-    const sendMaxModeState = selectors.getSendMaxModeState(mockState)
-    assert.equal(sendMaxModeState, false)
-  })
-
   it('#getCurrentCurrency', function () {
     const currentCurrency = selectors.getCurrentCurrency(mockState)
     assert.equal(currentCurrency, 'usd')

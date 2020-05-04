@@ -2,7 +2,7 @@ import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
-} from '../../helpers/constants/routes'
+} from '../helpers/constants/routes'
 
 export function getFirstTimeFlowTypeRoute (state) {
   const { firstTimeFlowType } = state.metamask

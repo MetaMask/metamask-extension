@@ -132,6 +132,10 @@ export function getSendErrors (state) {
   return state.send.errors
 }
 
+export function sendAmountIsInError (state) {
+  return Boolean(state.send.errors.amount)
+}
+
 export function getSendFrom (state) {
   return state.metamask.send.from
 }
@@ -191,4 +195,41 @@ export function getUnapprovedTxs (state) {
 
 export function getQrCodeData (state) {
   return state.appState.qrCodeData
+}
+
+export function getGasLoadingError (state) {
+  return state.send.errors.gasLoading
+}
+
+export function gasFeeIsInError (state) {
+  return Boolean(state.send.errors.gasFee)
+}
+
+export function getGasButtonGroupShown (state) {
+  return state.send.gasButtonGroupShown
+}
+
+export function getTokens (state) {
+  return state.metamask.tokens
+}
+
+export function getTitleKey (state) {
+  const isEditing = Boolean(getSendEditingTransactionId(state))
+  const isToken = Boolean(getSelectedToken(state))
+
+  if (!getSendTo(state)) {
+    return 'addRecipient'
+  }
+
+  if (isEditing) {
+    return 'edit'
+  } else if (isToken) {
+    return 'sendTokens'
+  } else {
+    return 'sendETH'
+  }
+}
+
+export function isSendFormInError (state) {
+  return Object.values(getSendErrors(state)).some((n) => n)
 }

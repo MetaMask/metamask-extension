@@ -23,6 +23,7 @@ import {
   getSelectedTokenExchangeRate,
   getSelectedTokenToFiatRate,
   getSendAmount,
+  sendAmountIsInError,
   getSendEditingTransactionId,
   getSendErrors,
   getSendFrom,
@@ -35,6 +36,12 @@ import {
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
+  gasFeeIsInError,
+  getGasLoadingError,
+  getGasButtonGroupShown,
+  getTokens,
+  getTitleKey,
+  isSendFormInError,
 } from '../send.selectors.js'
 import mockState from './send-selectors-test-data'
 
@@ -518,6 +525,186 @@ describe('send selectors', function () {
           },
         }
       )
+    })
+  })
+
+  describe('send-amount-row selectors', function () {
+
+    describe('sendAmountIsInError()', function () {
+      it('should return true if send.errors.amount is truthy', function () {
+        const state = {
+          send: {
+            errors: {
+              amount: 'abc',
+            },
+          },
+        }
+
+        assert.equal(sendAmountIsInError(state), true)
+      })
+
+      it('should return false if send.errors.amount is falsy', function () {
+        const state = {
+          send: {
+            errors: {
+              amount: null,
+            },
+          },
+        }
+
+        assert.equal(sendAmountIsInError(state), false)
+      })
+    })
+  })
+
+  describe('send-gas-row selectors', function () {
+
+    describe('getGasLoadingError()', function () {
+      it('should return send.errors.gasLoading', function () {
+        const state = {
+          send: {
+            errors: {
+              gasLoading: 'abc',
+            },
+          },
+        }
+
+        assert.equal(getGasLoadingError(state), 'abc')
+      })
+    })
+
+    describe('gasFeeIsInError()', function () {
+      it('should return true if send.errors.gasFee is truthy', function () {
+        const state = {
+          send: {
+            errors: {
+              gasFee: 'def',
+            },
+          },
+        }
+
+        assert.equal(gasFeeIsInError(state), true)
+      })
+
+      it('should return false send.errors.gasFee is falsely', function () {
+        const state = {
+          send: {
+            errors: {
+              gasFee: null,
+            },
+          },
+        }
+
+        assert.equal(gasFeeIsInError(state), false)
+      })
+    })
+
+    describe('getGasButtonGroupShown()', function () {
+      it('should return send.gasButtonGroupShown', function () {
+        const state = {
+          send: {
+            gasButtonGroupShown: 'foobar',
+          },
+        }
+
+        assert.equal(getGasButtonGroupShown(state), 'foobar')
+      })
+    })
+  })
+
+  describe('add-recipient selectors', function () {
+    describe('getTokens()', function () {
+      it('should return empty array if no tokens in state', function () {
+        const state = {
+          metamask: {
+            tokens: [],
+          },
+        }
+
+        assert.deepStrictEqual(getTokens(state), [])
+      })
+    })
+  })
+
+  describe('send-header selectors', function () {
+
+    const getMetamaskSendMockState = (send) => {
+      return {
+        metamask: {
+          send: { ...send },
+        },
+      }
+    }
+
+    describe('getTitleKey()', function () {
+      it('should return the correct key when "to" is empty', function () {
+        assert.equal(getTitleKey(getMetamaskSendMockState({})), 'addRecipient')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is truthy', function () {
+        assert.equal(
+          getTitleKey(
+            getMetamaskSendMockState({
+              to: true,
+              editingTransactionId: true,
+              token: true, // this can be whatever
+            })
+          ), 'edit')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is truthy', function () {
+        assert.equal(
+          getTitleKey(
+            getMetamaskSendMockState({
+              to: true,
+              editingTransactionId: false,
+              token: true,
+            })
+          ), 'sendTokens')
+      })
+
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is falsy', function () {
+        assert.equal(
+          getTitleKey(
+            getMetamaskSendMockState({
+              to: true,
+              editingTransactionId: false,
+              token: false,
+            })
+          ), 'sendETH')
+      })
+    })
+  })
+
+  describe('send-footer selectors', function () {
+
+    const getSendMockState = (send) => {
+      return {
+        send: { ...send },
+      }
+    }
+
+    describe('isSendFormInError()', function () {
+      it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [ true ],
+          })
+        ), true)
+      })
+
+      it('should return false if all of the values of the object returned by getSendErrors are falsy', function () {
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [],
+          })
+        ), false)
+        assert.equal(isSendFormInError(
+          getSendMockState({
+            errors: [ false ],
+          })
+        ), false)
+      })
     })
   })
 })

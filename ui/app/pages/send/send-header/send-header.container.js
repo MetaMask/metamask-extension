@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { clearSend } from '../../../store/actions'
 import SendHeader from './send-header.component'
-import { getTitleKey } from './send-header.selectors'
+import { getTitleKey } from '../send.selectors'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendHeader)
 

@@ -45,6 +45,7 @@ import {
 } from '../../../../selectors'
 import {
   getTokenBalance,
+  getSendMaxModeState,
 } from '../../../../pages/send/send.selectors'
 import {
   formatCurrency,
@@ -64,7 +65,6 @@ import {
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
-import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
@@ -93,7 +93,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
-  const maxModeOn = getMaxModeOn(state)
+  const maxModeOn = getSendMaxModeState(state)
 
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)

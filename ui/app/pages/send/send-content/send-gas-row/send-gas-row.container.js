@@ -7,10 +7,11 @@ import {
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
+  getSendMaxModeState,
+  getGasLoadingError,
+  gasFeeIsInError,
+  getGasButtonGroupShown,
 } from '../../send.selectors.js'
-import {
-  getMaxModeOn,
-} from '../send-amount-row/amount-max-button/amount-max-button.selectors'
 import {
   isBalanceSufficient,
   calcGasTotal,
@@ -25,7 +26,6 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
-import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
 import {
   getAdvancedInlineGasShown,
@@ -73,7 +73,7 @@ function mapStateToProps (state) {
     gasPrice,
     gasLimit,
     insufficientBalance,
-    maxModeOn: getMaxModeOn(state),
+    maxModeOn: getSendMaxModeState(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
   }

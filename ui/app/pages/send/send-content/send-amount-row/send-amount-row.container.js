@@ -9,10 +9,8 @@ import {
   getSendFromBalance,
   getTokenBalance,
   getSendMaxModeState,
-} from '../../send.selectors'
-import {
   sendAmountIsInError,
-} from './send-amount-row.selectors'
+} from '../../send.selectors'
 import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
 import {
   setMaxModeTo,
