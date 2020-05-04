@@ -1,14 +1,11 @@
+import { connect } from 'react-redux'
 import EnsInput from './ens-input.component'
 import {
   getCurrentNetwork,
   getSendTo,
   getSendToNickname,
-} from '../../../../selectors/send'
-import {
   getAddressBookEntry,
 } from '../../../../selectors'
-import { connect } from 'react-redux'
-
 
 export default connect(
   (state) => {

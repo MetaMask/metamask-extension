@@ -23,11 +23,10 @@ import {
   getTokenBalance,
   getQrCodeData,
   getTokens,
-} from '../../selectors/send'
-import {
   getSelectedAddress,
   getAddressBook,
 } from '../../selectors'
+
 import {
   updateSendTo,
   updateSendTokenBalance,

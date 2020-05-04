@@ -21,15 +21,15 @@ proxyquire('../amount-max-button.container.js', {
       return () => ({})
     },
   },
-  '../../../../../selectors/send': {
+  '../../../../../selectors': {
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendFromBalance: (s) => `mockBalance:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
+    getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}`,
   },
   './amount-max-button.utils.js': { calcMaxAmount: (mockObj) => mockObj.val + 1 },
-  '../../../../../selectors/': { getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}` },
   '../../../../../store/actions': actionSpies,
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })

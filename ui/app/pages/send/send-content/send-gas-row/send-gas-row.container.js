@@ -11,8 +11,6 @@ import {
   getGasLoadingError,
   gasFeeIsInError,
   getGasButtonGroupShown,
-} from '../../../../selectors/send'
-import {
   getAdvancedInlineGasShown,
   getCurrentEthBalance,
   getSelectedToken,

@@ -1,14 +1,15 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
-
-import abi from 'human-standard-token-abi'
 import {
   shortenAddress,
   checksumAddress,
   getOriginFromUrl,
   getAccountByAddress,
 } from '../helpers/utils/util'
+import {
+  getSelectedToken,
+} from '.'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -156,15 +157,6 @@ export function getTargetAccount (state, targetAddress) {
   return accounts[targetAddress]
 }
 
-export function getSelectedToken (state) {
-  const tokens = state.metamask.tokens || []
-  const selectedTokenAddress = state.metamask.selectedTokenAddress
-  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask.send && state.metamask.send.token
-
-  return selectedToken || sendToken || null
-}
-
 export function getSelectedTokenExchangeRate (state) {
   const contractExchangeRates = state.metamask.contractExchangeRates
   const selectedToken = getSelectedToken(state) || {}
@@ -243,19 +235,8 @@ export function getGasIsLoading (state) {
   return state.appState.gasIsLoading
 }
 
-export function getSendAmount (state) {
-  return state.metamask.send.amount
-}
-
 export function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
-}
-
-export function getSelectedTokenContract (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken
-    ? global.eth.contract(abi).at(selectedToken.address)
-    : null
 }
 
 export function getTotalUnapprovedCount (state) {

@@ -10,7 +10,7 @@ proxyquire('../send-row-error-message.container.js', {
       return () => ({})
     },
   },
-  '../../../../../selectors/send': { getSendErrors: (s) => `mockErrors:${s}` },
+  '../../../../../selectors': { getSendErrors: (s) => `mockErrors:${s}` },
 })
 
 describe('send-row-error-message container', function () {

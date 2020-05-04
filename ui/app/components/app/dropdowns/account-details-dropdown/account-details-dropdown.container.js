@@ -3,8 +3,11 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import AccountDetailsDropdown from './account-details-dropdown.component'
 import * as actions from '../../../../store/actions'
-import { getSelectedIdentity, getRpcPrefsForCurrentProvider } from '../../../../selectors'
-import genAccountLink from '../../../../../lib/account-link.js'
+import {
+  getSelectedIdentity,
+  getRpcPrefsForCurrentProvider,
+} from '../../../../selectors'
+import genAccountLink from '../../../../../lib/account-link'
 
 function mapStateToProps (state) {
   return {

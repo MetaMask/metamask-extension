@@ -1,10 +1,6 @@
 import assert from 'assert'
 import * as selectors from '../../../../ui/app/selectors'
 import mockState from '../../../data/mock-state.json'
-import Eth from 'ethjs'
-import { createTestProviderTools } from '../../../stub/provider'
-
-const provider = createTestProviderTools({ scaffold: {} }).provider
 
 describe('Selectors', function () {
 
@@ -21,9 +17,13 @@ describe('Selectors', function () {
   })
 
   it('returns selected identity', function () {
-    const identity = selectors.getSelectedIdentity(mockState)
-    assert.equal(identity.address, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
-    assert.equal(identity.name, 'Test Account')
+    assert.deepEqual(
+      selectors.getSelectedIdentity(mockState),
+      {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        name: 'Test Account',
+      }
+    )
   })
 
   it('returns selected account', function () {
@@ -76,20 +76,9 @@ describe('Selectors', function () {
     assert.equal(gasIsLoading, false)
   })
 
-  it('#getSendAmount', function () {
-    const sendAmount = selectors.getSendAmount(mockState)
-    assert.equal(sendAmount, '1bc16d674ec80000')
-  })
-
   it('#getCurrentCurrency', function () {
     const currentCurrency = selectors.getCurrentCurrency(mockState)
     assert.equal(currentCurrency, 'usd')
-  })
-
-  it('#getSelectedTokenContract', function () {
-    global.eth = new Eth(provider)
-    const selectedTokenContract = selectors.getSelectedTokenContract(mockState)
-    assert(selectedTokenContract.abi)
   })
 
   it('#getTotalUnapprovedCount', function () {

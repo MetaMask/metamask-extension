@@ -7,7 +7,6 @@ import {
 import {
   getBlockGasLimit,
   getConversionRate,
-  getCurrentCurrency,
   getCurrentNetwork,
   getNativeCurrency,
   getGasLimit,
@@ -15,7 +14,6 @@ import {
   getGasTotal,
   getPrimaryCurrency,
   getRecentBlocks,
-  getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
   getSendAmount,
@@ -125,15 +123,6 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getCurrentCurrency()', function () {
-    it('should return the currently selected currency', function () {
-      assert.equal(
-        getCurrentCurrency(mockState),
-        'USD'
-      )
-    })
-  })
-
   describe('getNativeCurrency()', function () {
     it('should return the ticker symbol of the selected network', function () {
       assert.equal(
@@ -193,18 +182,6 @@ describe('send selectors', function () {
       assert.deepEqual(
         getRecentBlocks(mockState),
         ['mockBlock1', 'mockBlock2', 'mockBlock3']
-      )
-    })
-  })
-
-  describe('getSelectedIdentity()', function () {
-    it('should return the identity object of the currently selected address', function () {
-      assert.deepEqual(
-        getSelectedIdentity(mockState),
-        {
-          address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          name: 'Send Account 4',
-        }
       )
     })
   })

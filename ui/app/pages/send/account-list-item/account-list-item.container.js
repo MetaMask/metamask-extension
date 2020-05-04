@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
 import {
   getNativeCurrency,
-} from '../../../selectors/send'
-import {
   getIsMainnet,
   isBalanceCached,
   preferencesSelector,

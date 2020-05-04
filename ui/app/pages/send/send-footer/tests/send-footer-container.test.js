@@ -27,7 +27,7 @@ proxyquire('../send-footer.container.js', {
     },
   },
   '../../../store/actions': actionSpies,
-  '../../../selectors/send': {
+  '../../../selectors': {
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
@@ -43,12 +43,10 @@ proxyquire('../send-footer.container.js', {
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
     getSendErrors: (s) => `mockSendErrors:${s}`,
     isSendFormInError: (s) => `mockInError:${s}`,
-  },
-  './send-footer.utils': utilsStubs,
-  '../../../selectors/': {
     getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ gasEstimateType: `mockGasEstimateType:${s}` }]),
     getDefaultActiveButtonIndex: () => 0,
   },
+  './send-footer.utils': utilsStubs,
 })
 
 describe('send-footer container', function () {
