@@ -345,7 +345,6 @@ describe('Transaction Controller', function () {
           to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           gasPrice: '0x77359400',
           gas: '0x7b0d',
-          nonce: '0x4b',
         },
         metamaskNetworkId: currentNetworkId,
       }
