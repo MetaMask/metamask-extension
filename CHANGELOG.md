@@ -2,7 +2,8 @@
 
 ## Current Master
 
-- [#364](https://github.com/poanetwork/nifty-wallet/pull/364) - Fix notifications order in batch requests
+- [#377](https://github.com/poanetwork/nifty-wallet/pull/377) - (Fix) Sign message screen: do not decode message if it is not hex encoded
+- [#364](https://github.com/poanetwork/nifty-wallet/pull/364) - (Fix) notifications order in batch requests
 
 ## 5.0.3 Fri May 01 2020
 
