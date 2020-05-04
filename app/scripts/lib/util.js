@@ -6,23 +6,13 @@ const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } = require('./enums')
-
-/**
- * Generates an example stack trace
- *
- * @returns {string} A stack trace
- *
- */
-function getStack () {
-  const stack = new Error('Stack trace generator - not an error').stack
-  return stack
-}
 
 /**
  * Used to determine the window type through which the app is being viewed.
@@ -34,12 +24,15 @@ function getStack () {
  *
  */
 const getEnvironmentType = (url = window.location.href) => {
-  if (url.match(/popup.html(?:#.*)*$/)) {
+  const parsedUrl = new URL(url)
+  if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
-  } else if (url.match(/home.html(?:\?.+)*$/) || url.match(/home.html(?:#.*)*$/)) {
+  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN
-  } else {
+  } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION
+  } else {
+    return ENVIRONMENT_TYPE_BACKGROUND
   }
 }
 
@@ -175,7 +168,6 @@ module.exports = {
   removeListeners,
   applyListeners,
   getPlatform,
-  getStack,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,

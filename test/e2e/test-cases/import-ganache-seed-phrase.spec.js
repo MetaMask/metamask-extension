@@ -60,6 +60,8 @@ const importGanacheSeedPhrase = async (f, account2, password) => {
   })
 
   it('finds the transaction in the transactions list', async () => {
+    const sentTab = await f.waitUntilShowUp(screens.main.sent.menu)
+    await sentTab.click()
     const transactionAmount = await f.waitUntilShowUp(screens.main.transactionList)
     assert.equal(await transactionAmount.getText(), '10.0')
   })

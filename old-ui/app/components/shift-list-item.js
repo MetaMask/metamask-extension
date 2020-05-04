@@ -212,7 +212,7 @@ ShiftListItem.prototype.renderInfo = function () {
           paddingLeft: '29px',
           textAlign: 'left',
         },
-        onClick: () => global.platform.openWindow({ url }),
+        onClick: () => global.platform.openTab({ url }),
       }, [
         h('div', {
           style: {

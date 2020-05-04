@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#364](https://github.com/poanetwork/nifty-wallet/pull/364) - Fix notifications order in batch requests
+
 ## 5.0.3 Fri May 01 2020
 
 - [#373](https://github.com/poanetwork/nifty-wallet/pull/373) - (Feature) Add STAKE token
