@@ -7,6 +7,17 @@
   margin-right: auto;
   height: 100%;
 
+  .fa-info-circle {
+    color: $Grey-200;
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 0.9rem;
+  }
+
+  .fa-info-circle:hover {
+    color: $Grey-300;
+  }
+
   @media screen and (min-width: 576px) {
     width: 426px;
   }
@@ -60,6 +71,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    min-width:0;
   }
 
   &__list-check-box {
@@ -78,21 +90,6 @@
     display: flex;
     margin-left: 16px;
     align-items: center;
-
-    .fa-info-circle, .fa-info-circle:hover {
-      color: $silver;
-      cursor: pointer;
-      margin-left: 8px;
-      font-size: 0.9rem;
-    }
-
-    .fa-info-circle {
-      cursor: pointer;
-    }
-
-    .fa-info-circle:hover {
-      color: $mid-gray;
-    }
   }
 
   &__account {
@@ -115,11 +112,15 @@
       display: flex;
       flex-direction: column;
       margin-left: 16px;
+      min-width: 0;
     }
 
     &__label {
       @extend %content-text;
       color: $Black-100;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     &__balance {

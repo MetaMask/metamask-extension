@@ -110,10 +110,9 @@ export default class ChooseAccount extends Component {
                 </div>
                 { addressLastConnectedMap[address]
                   ? (
-                    <div className="permissions-connect-choose-account__account__last-connected">
-                      <span>{ this.context.t('lastConnected') }</span>
-                      { addressLastConnectedMap[address] }
-                    </div>
+                    <Tooltip title={`${this.context.t('lastConnected')} ${addressLastConnectedMap[address]}`}>
+                      <i className="fa fa-info-circle" />
+                    </Tooltip>
                   )
                   : null
                 }

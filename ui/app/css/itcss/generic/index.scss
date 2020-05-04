@@ -18,10 +18,7 @@ body {
   margin: 0;
   padding: 0;
   font-size: 16px;
-
-  @media screen and (max-width: $break-small) {
-    overflow-y: overlay;
-  }
+  overflow: auto;
 }
 
 html {
