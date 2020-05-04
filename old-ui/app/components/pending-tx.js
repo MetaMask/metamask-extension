@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import clone from 'clone'
 import log from 'loglevel'
 
-const ethUtil = require('ethereumjs-util')
+import ethUtil from 'ethereumjs-util'
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
@@ -47,12 +47,12 @@ class PendingTx extends Component {
     isUnlocked: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionRate: PropTypes.number,
-    unconfTxListLength: PropTypes.number,
     provider: PropTypes.object,
     index: PropTypes.number,
     blockGasLimit: PropTypes.string,
     tokensToSend: PropTypes.objectOf(BigNumber),
     tokensTransferTo: PropTypes.string,
+    unapprovedTxs: PropTypes.object,
   }
 
   constructor (opts = {}) {
@@ -132,12 +132,13 @@ class PendingTx extends Component {
 
     const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
 
+    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation } = this.getNavigateTxData()
+
     const balanceBn = hexToBn(balance)
     const insufficientBalance = balanceBn.lt(maxCost)
     const dangerousGasLimit = gasBn.gte(saferGasLimitBN)
     const gasLimitSpecified = txMeta.gasLimitSpecified
     const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
-    const showRejectAll = props.unconfTxListLength > 1
 
     const isNotification = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
 
@@ -159,7 +160,6 @@ class PendingTx extends Component {
 
 
     const isError = txMeta.simulationFails || !isValidAddress || insufficientBalance || (dangerousGasLimit && !gasLimitSpecified)
-
     return (
 
       h('div', {
@@ -180,7 +180,7 @@ class PendingTx extends Component {
             h('.flex-row.flex-center', {
               style: {
                 maxWidth: '100%',
-                padding: showRejectAll ? '20px 20px 50px 20px' : '20px 20px 20px 20px',
+                padding: showNavigation ? '20px 20px 50px 20px' : '20px 20px 20px 20px',
                 background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
                 position: 'relative',
               },
@@ -198,22 +198,22 @@ class PendingTx extends Component {
                 h('h3', {
                   style: {
                     alignSelf: 'center',
-                    display: props.unconfTxListLength > 1 ? 'block' : 'none',
+                    display: showNavigation ? 'block' : 'none',
                     fontSize: '14px',
                   },
                 }, [
                   h('i.fa.white-arrow-left.fa-lg.cursor-pointer', {
                     style: {
-                      display: props.index === 0 ? 'none' : 'inline-block',
+                      display: positionOfCurrentTx === 1 ? 'none' : 'inline-block',
                     },
-                    onClick: () => props.actions.previousTx(),
+                    onClick: () => props.actions.nextTx(prevTxId),
                   }),
-                  ` ${props.index + 1} of ${props.unconfTxListLength} `,
+                  ` ${positionOfCurrentTx} of ${totalTx} `,
                   h('i.fa.white-arrow-right.fa-lg.cursor-pointer', {
                     style: {
-                      display: props.index + 1 === props.unconfTxListLength ? 'none' : 'inline-block',
+                      display: positionOfCurrentTx === totalTx ? 'none' : 'inline-block',
                     },
-                    onClick: () => props.actions.nextTx(),
+                    onClick: () => props.actions.nextTx(nextTxId),
                   }),
                 ])],
               ),
@@ -520,7 +520,7 @@ class PendingTx extends Component {
               onClick: props.cancelTransaction,
             }, 'Reject'),
           ]),
-          showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
+          showNavigation ? h('.flex-row.flex-space-around.conf-buttons', {
             style: {
               display: 'flex',
               justifyContent: 'flex-end',
@@ -732,6 +732,23 @@ class PendingTx extends Component {
     }
   }
 
+  getNavigateTxData () {
+    const { unapprovedTxs, network, txData: { id } = {} } = this.props
+    const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+    .filter((key) => unapprovedTxs[key].metamaskNetworkId === network)
+    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {})
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
+    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
+
+    return {
+      totalTx: enumUnapprovedTxs.length,
+      positionOfCurrentTx: currentPosition + 1,
+      nextTxId: enumUnapprovedTxs[currentPosition + 1],
+      prevTxId: enumUnapprovedTxs[currentPosition - 1],
+      showNavigation: enumUnapprovedTxs.length > 1,
+    }
+  }
+
 }
 
 function forwardCarrat () {
@@ -756,7 +773,7 @@ function mapStateToProps (state) {
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
-    index: state.appState.currentView.pendingTxIndex || 0,
+    index: state.appState.currentView.key || 0,
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
@@ -765,14 +782,14 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     computedBalances: state.metamask.computedBalances,
+    pendingTxIndex: state.appState.currentView.pendingTxIndex || 0,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
-      previousTx: () => dispatch(actions.previousTx()),
-      nextTx: () => dispatch(actions.nextTx()),
+      nextTx: (txId) => dispatch(actions.nextTx(txId)),
       displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
       goHome: () => dispatch(actions.goHome()),
     },

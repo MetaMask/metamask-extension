@@ -2,8 +2,8 @@ import log from 'loglevel'
 import BigNumber from 'bignumber.js'
 import contractMapETH from 'eth-contract-metadata'
 import contractMapPOA from 'poa-contract-metadata'
-import contractMapRSK from 'rsk-contract-metadata'
-import contractMapRSKTest from 'rsk-test-contract-metadata'
+import contractMapRSK from '@rsksmart/rsk-contract-metadata'
+import contractMapRSKTest from '@rsksmart/rsk-testnet-contract-metadata'
 const util = require('./util')
 
 const casedContractMapETH = Object.keys(contractMapETH).reduce((acc, base) => {

@@ -19,6 +19,7 @@ const { POA,
   CLASSIC } = require('../../app/scripts/controllers/network/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
+import { getEnvironmentType } from '../../app/scripts/lib/util'
 
 const actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -30,6 +31,9 @@ const actions = {
   MODAL_CLOSE: 'UI_MODAL_CLOSE',
   showModal: showModal,
   hideModal: hideModal,
+
+  CLOSE_NOTIFICATION_WINDOW: 'CLOSE_NOTIFICATION_WINDOW',
+
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -173,7 +177,6 @@ const actions = {
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
-  PREVIOUS_TX: 'PREV_TX',
   EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
@@ -186,14 +189,12 @@ const actions = {
   signTokenTx: signTokenTx,
   updateTransaction,
   updateAndApproveTx,
-  cancelTx: cancelTx,
+  cancelTx,
   cancelTxs,
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
   editTx,
-  previousTx: previousTx,
-  cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
@@ -370,8 +371,9 @@ const actions = {
   getRequestAccountTabIds,
   setOpenMetamaskTabsIDs,
   getOpenMetamaskTabsIds,
-
   isCreatedWithCorrectDPath,
+  closeCurrentNotificationWindow,
+  closeNotificationWindow,
 }
 
 module.exports = actions
@@ -945,9 +947,8 @@ function setCurrentCurrency (currencyCode) {
 
 function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-
     return new Promise((resolve, reject) => {
       log.debug(`actions calling background.signMessage`)
       background.signMessage(msgData, (err, newState) => {
@@ -962,10 +963,7 @@ function signMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
-
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -975,7 +973,7 @@ function signMsg (msgData) {
 
 function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -993,9 +991,7 @@ function signPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1005,7 +1001,7 @@ function signPersonalMsg (msgData) {
 
 function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1023,9 +1019,7 @@ function signTypedMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1232,7 +1226,7 @@ function clearSend () {
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
       if (err) {
@@ -1241,10 +1235,7 @@ function sendTx (txData) {
         return log.error(err)
       }
       dispatch(actions.completedTx(txData.id))
-
-      if (!hasUnconfirmedTransactions(getState())) {
-        return global.platform.closeNotificationWindow()
-      }
+      dispatch(actions.closeCurrentNotificationWindow())
     })
   }
 }
@@ -1294,10 +1285,9 @@ function updateTransaction (txData) {
 
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
-
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
         dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
@@ -1320,11 +1310,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-        dispatch(actions.setCurrentAccountTab('history'))
-
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1358,7 +1344,7 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1373,9 +1359,7 @@ function cancelMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.id))
 
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1384,7 +1368,7 @@ function cancelMsg (msgData) {
 }
 
 function cancelPersonalMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1399,9 +1383,7 @@ function cancelPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1410,7 +1392,7 @@ function cancelPersonalMsg (msgData) {
 }
 
 function cancelTypedMsg (msgData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1425,9 +1407,7 @@ function cancelTypedMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return resolve(msgData)
       })
@@ -1436,12 +1416,11 @@ function cancelTypedMsg (msgData) {
 }
 
 function cancelTx (txData) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
-
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, err => {
+      background.cancelTransaction(txData.id, (err) => {
         if (err) {
           return reject(err)
         }
@@ -1450,15 +1429,12 @@ function cancelTx (txData) {
       })
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then((newState) => dispatch(actions.updateMetamaskState(newState)))
       .then(() => {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
-
-        if (!hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeNotificationWindow()
-        }
+        dispatch(actions.closeCurrentNotificationWindow())
 
         return txData
       })
@@ -1471,9 +1447,9 @@ function cancelTx (txData) {
  * @return {function(*): Promise<void>}
  */
 function cancelTxs (txDataList) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    const txIds = txDataList.map(({id}) => id)
+    const txIds = txDataList.map(({ id }) => id)
     const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
       background.cancelTransaction(id, (err) => {
         if (err) {
@@ -1495,30 +1471,12 @@ function cancelTxs (txDataList) {
 
     dispatch(actions.hideLoadingIndication())
 
-    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       return global.platform.closeCurrentWindow()
     }
   }
 }
 
-/**
- * @deprecated
- * @param {Array<object>} txsData
- * @return {Function}
- */
-function cancelAllTx (txsData) {
-  return (dispatch) => {
-    txsData.forEach((txData, i) => {
-      background.cancelTransaction(txData.id, () => {
-        dispatch(actions.completedTx(txData.id))
-        if (i === txsData.length - 1) {
-          dispatch(actions.goHome())
-          global.platform.closeNotificationWindow()
-        }
-      })
-    })
-  }
-}
 //
 // initialize screen
 //
@@ -1789,9 +1747,10 @@ function showConfTxPage (screenParams) {
   }
 }
 
-function nextTx () {
+function nextTx (txId) {
   return {
     type: actions.NEXT_TX,
+    value: txId,
   }
 }
 
@@ -1799,12 +1758,6 @@ function viewPendingTx (txId) {
   return {
     type: actions.VIEW_PENDING_TX,
     value: txId,
-  }
-}
-
-function previousTx () {
-  return {
-    type: actions.PREVIOUS_TX,
   }
 }
 
@@ -2158,6 +2111,23 @@ function hideModal (payload) {
   }
 }
 
+function closeCurrentNotificationWindow () {
+  return (dispatch, getState) => {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
+      !hasUnconfirmedTransactions(getState())) {
+      global.platform.closeCurrentWindow()
+
+      dispatch(actions.closeNotificationWindow())
+    }
+  }
+}
+
+function closeNotificationWindow () {
+  return {
+    type: actions.CLOSE_NOTIFICATION_WINDOW,
+  }
+}
+
 function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
@@ -2362,7 +2332,7 @@ function showSendContractPage ({methodSelected, methodABI, inputValues}) {
 function buyEth (opts) {
   return (dispatch) => {
     const url = getBuyEthUrl(opts)
-    global.platform.openWindow({ url })
+    global.platform.openTab({ url })
     dispatch({
       type: actions.BUY_ETH,
     })

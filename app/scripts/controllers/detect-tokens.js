@@ -1,8 +1,8 @@
 import Web3 from 'web3'
 import contractsETH from 'eth-contract-metadata'
 import contractsPOA from 'poa-contract-metadata'
-import contractsRSK from 'rsk-contract-metadata'
-import contractsRSKTest from 'rsk-test-contract-metadata'
+import contractsRSK from '@rsksmart/rsk-contract-metadata'
+import contractsRSKTest from '@rsksmart/rsk-testnet-contract-metadata'
 import { warn } from 'loglevel'
 const { MAINNET, POA, RSK, RSK_TESTNET } = require('./network/enums')
 // By default, poll every 3 minutes

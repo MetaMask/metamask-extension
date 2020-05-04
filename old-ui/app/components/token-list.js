@@ -19,8 +19,8 @@ const defaultTokens = []
 
 const contractsETH = require('eth-contract-metadata')
 const contractsPOA = require('poa-contract-metadata')
-const contractsRSK = require('rsk-contract-metadata')
-const contractsRSKTest = require('rsk-test-contract-metadata')
+const contractsRSK = require('@rsksmart/rsk-contract-metadata')
+const contractsRSKTest = require('@rsksmart/rsk-testnet-contract-metadata')
 for (const address in contractsETH) {
   const contract = contractsETH[address]
   if (contract.erc20) {
