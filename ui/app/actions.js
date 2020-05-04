@@ -184,7 +184,6 @@ const actions = {
   cancelPersonalMsg,
   signTypedMsg,
   cancelTypedMsg,
-  sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
   updateTransaction,
@@ -1197,22 +1196,6 @@ function clearSend () {
   }
 }
 
-
-function sendTx (txData) {
-  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch) => {
-    log.debug(`actions calling background.approveTransaction`)
-    background.approveTransaction(txData.id, (err) => {
-      if (err) {
-        err = err.message || err.error || err
-        dispatch(actions.txError(err))
-        return log.error(err)
-      }
-      dispatch(actions.completedTx(txData.id))
-      dispatch(actions.closeCurrentNotificationWindow())
-    })
-  }
-}
 
 function signTokenTx (tokenAddress, toAddress, amount, txData, confTxScreenParams) {
   return dispatch => {

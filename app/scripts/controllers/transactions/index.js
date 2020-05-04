@@ -290,7 +290,8 @@ class TransactionController extends EventEmitter {
   */
   async updateAndApproveTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
-    await this.approveTransaction(txMeta.id)
+    const customNonce = txMeta.txParams.nonce
+    await this.approveTransaction(txMeta.id, customNonce)
   }
 
   /**
@@ -301,7 +302,7 @@ class TransactionController extends EventEmitter {
   if any of these steps fails the tx status will be set to failed
     @param txId {number} - the tx's Id
   */
-  async approveTransaction (txId) {
+  async approveTransaction (txId, customNonce) {
     let nonceLock
     try {
       // approve
@@ -315,7 +316,7 @@ class TransactionController extends EventEmitter {
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
+      txMeta.txParams.nonce = customNonce || ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
