@@ -12,7 +12,7 @@ class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      openPopup,
+      showUnlockRequest,
       preferencesStore,
     } = opts
     const { preferences } = preferencesStore.getState()
@@ -30,7 +30,7 @@ class AppStateController extends EventEmitter {
     this.waitingForUnlock = []
     addUnlockListener(this.handleUnlock.bind(this))
 
-    this._openPopup = openPopup
+    this._showUnlockRequest = showUnlockRequest
 
     preferencesStore.subscribe((state) => {
       this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
@@ -43,16 +43,16 @@ class AppStateController extends EventEmitter {
    * Get a Promise that resolves when the extension is unlocked.
    * This Promise will never reject.
    *
-   * @param {boolean} openPopup - Whether the extension notification popup should be opened.
+   * @param {boolean} showUnlockRequest - Whether the extension notification popup should be opened.
    * @returns {Promise<void>} A promise that resolves when the extension is
    * unlocked, or immediately if the extension is already unlocked.
    */
-  getUnlockPromise (openPopup) {
+  getUnlockPromise (showUnlockRequest) {
     return new Promise((resolve) => {
       if (this.isUnlocked()) {
         resolve()
       } else {
-        this.waitForUnlock(resolve, openPopup)
+        this.waitForUnlock(resolve, showUnlockRequest)
       }
     })
   }
@@ -63,13 +63,13 @@ class AppStateController extends EventEmitter {
    *
    * @param {Promise.resolve} resolve - A Promise's resolve function that will
    * be called when the extension is unlocked.
-   * @param {boolean} openPopup - Whether the extension notification popup should be opened.
+   * @param {boolean} showUnlockRequest - Whether the extension notification popup should be opened.
    */
-  waitForUnlock (resolve, openPopup) {
+  waitForUnlock (resolve, showUnlockRequest) {
     this.waitingForUnlock.push({ resolve })
     this.emit('updateBadge')
-    if (openPopup) {
-      this._openPopup()
+    if (showUnlockRequest) {
+      this._showUnlockRequest()
     }
   }
 
