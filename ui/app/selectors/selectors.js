@@ -248,10 +248,6 @@ export function getGasIsLoading (state) {
   return state.appState.gasIsLoading
 }
 
-export function getForceGasMin (state) {
-  return state.metamask.send.forceGasMin
-}
-
 export function getSendAmount (state) {
   return state.metamask.send.amount
 }

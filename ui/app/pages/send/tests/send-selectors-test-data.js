@@ -176,7 +176,6 @@ export default {
       },
       'maxModeOn': false,
       'editingTransactionId': 97531,
-      'forceGasMin': true,
     },
     'unapprovedTxs': {
       '4768706228115573': {

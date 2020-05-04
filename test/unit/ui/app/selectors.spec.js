@@ -100,11 +100,6 @@ describe('Selectors', function () {
     assert.equal(gasIsLoading, false)
   })
 
-  it('#getForceGasMin', function () {
-    const forceGasMin = selectors.getForceGasMin(mockState)
-    assert.equal(forceGasMin, null)
-  })
-
   it('#getSendAmount', function () {
     const sendAmount = selectors.getSendAmount(mockState)
     assert.equal(sendAmount, '1bc16d674ec80000')
