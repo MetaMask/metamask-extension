@@ -43,8 +43,9 @@ export default class NewAccountModal extends Component {
         <div className="new-account-modal__content">
           <div className="new-account-modal__content__header">
             {t('newAccount')}
-            <div
-              className="new-account-modal__content__header-close"
+            <button
+              className="fas fa-times new-account-modal__content__header-close"
+              title={t('close')}
               onClick={this.props.hideModal}
             />
           </div>
