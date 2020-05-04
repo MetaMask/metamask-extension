@@ -46,7 +46,7 @@ import {
 import {
   getTokenBalance,
   getSendMaxModeState,
-} from '../../../../pages/send/send.selectors'
+} from '../../../../selectors/send'
 import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'

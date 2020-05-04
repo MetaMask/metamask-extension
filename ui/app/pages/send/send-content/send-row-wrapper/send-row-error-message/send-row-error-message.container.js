@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getSendErrors } from '../../../send.selectors'
+import { getSendErrors } from '../../../../../selectors/send'
 import SendRowErrorMessage from './send-row-error-message.component'
 
 export default connect(mapStateToProps)(SendRowErrorMessage)

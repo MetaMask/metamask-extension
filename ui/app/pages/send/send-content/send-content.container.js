@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import SendContent from './send-content.component'
 import {
   getSendTo,
-} from '../send.selectors'
+} from '../../../selectors/send'
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,

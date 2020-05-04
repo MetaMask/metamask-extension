@@ -23,7 +23,7 @@ import {
   getTokenBalance,
   getQrCodeData,
   getTokens,
-} from './send.selectors'
+} from '../../selectors/send'
 import {
   getSelectedAddress,
   getAddressBook,

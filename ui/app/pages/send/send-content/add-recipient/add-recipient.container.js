@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
   getSendEnsResolution,
   getSendEnsResolutionError,
-} from '../../send.selectors.js'
+} from '../../../../selectors/send'
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,

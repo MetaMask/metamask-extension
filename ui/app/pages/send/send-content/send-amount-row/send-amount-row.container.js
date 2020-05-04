@@ -9,7 +9,7 @@ import {
   getTokenBalance,
   getSendMaxModeState,
   sendAmountIsInError,
-} from '../../send.selectors'
+} from '../../../../selectors/send'
 import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
 import {
   setMaxModeTo,

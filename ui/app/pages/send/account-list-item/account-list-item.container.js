@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {
   getNativeCurrency,
-} from '../send.selectors.js'
+} from '../../../selectors/send'
 import {
   getIsMainnet,
   isBalanceCached,

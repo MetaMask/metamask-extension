@@ -46,7 +46,7 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../../ducks/gas/gas.duck': gasActionSpies,
   '../../../../ducks/confirm-transaction/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../../ducks/send/send.duck': sendActionSpies,
-  '../../../../pages/send/send.selectors': {
+  '../../../../selectors/send': {
     getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
   },
 })

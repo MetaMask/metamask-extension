@@ -27,7 +27,7 @@ proxyquire('../send-footer.container.js', {
     },
   },
   '../../../store/actions': actionSpies,
-  '../send.selectors': {
+  '../../../selectors/send': {
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,

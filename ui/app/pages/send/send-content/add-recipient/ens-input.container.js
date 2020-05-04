@@ -3,7 +3,7 @@ import {
   getCurrentNetwork,
   getSendTo,
   getSendToNickname,
-} from '../../send.selectors'
+} from '../../../../selectors/send'
 import {
   getAddressBookEntry,
 } from '../../../../selectors'

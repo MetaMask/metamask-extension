@@ -17,7 +17,7 @@ proxyquire('../add-recipient.container.js', {
       return () => ({})
     },
   },
-  '../../send.selectors.js': {
+  '../../../../selectors/send': {
     getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
   },
