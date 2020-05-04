@@ -15,7 +15,7 @@ const deleteImportedAccount = async (f) => {
     })
 
     it("Can't remove imported account with 'No' button", async function () {
-      const button = await f.waitUntilShowUp(deleteImportedAccountScr.buttons.no)
+      const button = await f.waitUntilShowUp(deleteImportedAccountScr.buttons.no2)
       assert.equal(await button.getText(), 'No', 'button has incorrect name')
       await f.click(button)
       await f.driver.findElements(main.container)
