@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 
 import {
-  getAmountConversionRate,
   getBlockGasLimit,
   getConversionRate,
   getCurrentNetwork,
@@ -59,7 +58,6 @@ function mapStateToProps (state) {
   return {
     addressBook: getAddressBook(state),
     amount: getSendAmount(state),
-    amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
     editingTransactionId,

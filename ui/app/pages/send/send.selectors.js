@@ -1,5 +1,4 @@
 import abi from 'human-standard-token-abi'
-import { multiplyCurrencies } from '../../helpers/utils/conversion-util'
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,
@@ -9,12 +8,6 @@ import {
   getAveragePriceEstimateInHexWEI,
 } from '../../selectors'
 import { estimateGasPriceFromRecentBlocks, calcGasTotal } from './send.utils'
-
-export function getAmountConversionRate (state) {
-  return getSelectedToken(state)
-    ? getSelectedTokenToFiatRate(state)
-    : getConversionRate(state)
-}
 
 export function getBlockGasLimit (state) {
   return state.metamask.currentBlockGasLimit
@@ -85,29 +78,6 @@ export function getSelectedTokenContract (state) {
     : null
 }
 
-export function getSelectedTokenExchangeRate (state) {
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const selectedToken = getSelectedToken(state) || {}
-  const { symbol = '' } = selectedToken
-  const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = (tokenExchangeRates && tokenExchangeRates[pair]) || {}
-
-  return tokenExchangeRate
-}
-
-export function getSelectedTokenToFiatRate (state) {
-  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
-  const conversionRate = getConversionRate(state)
-
-  const tokenToFiatRate = multiplyCurrencies(
-    conversionRate,
-    selectedTokenExchangeRate,
-    { toNumericBase: 'dec' }
-  )
-
-  return tokenToFiatRate
-}
-
 export function getSendAmount (state) {
   return state.metamask.send.amount
 }
@@ -175,14 +145,6 @@ export function getSendEnsResolution (state) {
 
 export function getSendEnsResolutionError (state) {
   return state.metamask.send.ensResolutionError
-}
-
-export function getTokenExchangeRate (state, tokenSymbol) {
-  const pair = `${tokenSymbol.toLowerCase()}_eth`
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
 }
 
 export function getUnapprovedTxs (state) {

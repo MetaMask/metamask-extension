@@ -6,7 +6,6 @@ import {
 } from '../../../selectors'
 import {
   getBlockGasLimit,
-  getAmountConversionRate,
   getConversionRate,
   getCurrentCurrency,
   getCurrentNetwork,
@@ -19,8 +18,6 @@ import {
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
-  getSelectedTokenExchangeRate,
-  getSelectedTokenToFiatRate,
   getSendAmount,
   sendAmountIsInError,
   getSendEditingTransactionId,
@@ -33,7 +30,6 @@ import {
   getSendTo,
   getSendToAccounts,
   getTokenBalance,
-  getTokenExchangeRate,
   getUnapprovedTxs,
   gasFeeIsInError,
   getGasLoadingError,
@@ -92,34 +88,6 @@ describe('send selectors', function () {
             name: 'Send Account 4',
           },
         ]
-      )
-    })
-  })
-
-  // describe('autoAddToBetaUI()', () => {
-  //   it('should', () => {
-  //     assert.deepEqual(
-  //       autoAddToBetaUI(mockState),
-
-  //     )
-  //   })
-  // })
-
-  describe('getAmountConversionRate()', function () {
-    it('should return the token conversion rate if a token is selected', function () {
-      assert.equal(
-        getAmountConversionRate(mockState),
-        2401.76400654
-      )
-    })
-
-    it('should return the eth conversion rate if no token is selected', function () {
-      const editedMockState = {
-        metamask: Object.assign({}, mockState.metamask, { selectedTokenAddress: null }),
-      }
-      assert.equal(
-        getAmountConversionRate(editedMockState),
-        1200.88200327
       )
     })
   })
@@ -291,24 +259,6 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getSelectedTokenExchangeRate()', function () {
-    it('should return the exchange rate for the selected token', function () {
-      assert.equal(
-        getSelectedTokenExchangeRate(mockState),
-        2.0
-      )
-    })
-  })
-
-  describe('getSelectedTokenToFiatRate()', function () {
-    it('should return rate for converting the selected token to fiat', function () {
-      assert.equal(
-        getSelectedTokenToFiatRate(mockState),
-        2401.76400654
-      )
-    })
-  })
-
   describe('getSendAmount()', function () {
     it('should return the send.amount', function () {
       assert.equal(
@@ -476,15 +426,6 @@ describe('send selectors', function () {
       assert.equal(
         getTokenBalance(mockState),
         3434
-      )
-    })
-  })
-
-  describe('getTokenExchangeRate()', function () {
-    it('should return the passed tokens exchange rates', function () {
-      assert.equal(
-        getTokenExchangeRate(mockState, 'GHI'),
-        31.01
       )
     })
   })

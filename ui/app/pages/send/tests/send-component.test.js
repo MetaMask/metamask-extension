@@ -45,7 +45,6 @@ describe('Send Component', function () {
     wrapper = shallow((
       <SendTransactionScreen
         amount="mockAmount"
-        amountConversionRate="mockAmountConversionRate"
         blockGasLimit="mockBlockGasLimit"
         conversionRate={10}
         editingTransactionId="mockEditingTransactionId"
@@ -171,7 +170,6 @@ describe('Send Component', function () {
         utilsMethodStubs.getAmountErrorObject.getCall(0).args[0],
         {
           amount: 'mockAmount',
-          amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
           gasTotal: 'mockGasTotal',
@@ -193,7 +191,6 @@ describe('Send Component', function () {
       assert.deepEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
-          amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
           gasTotal: 'mockGasTotal',

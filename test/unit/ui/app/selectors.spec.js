@@ -46,30 +46,6 @@ describe('Selectors', function () {
     })
   })
 
-
-  describe('#getTokenExchangeRate', function () {
-    let missingTokenRate
-
-    beforeEach(function () {
-      missingTokenRate = {
-        metamask: {
-          'contractExchangeRates': {},
-        },
-      }
-    })
-
-    it('returns 0 token exchange rate for a token not in state', function () {
-      const tokenRate = selectors.getTokenExchangeRate(missingTokenRate, '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5')
-      assert.equal(tokenRate, 0)
-    })
-
-    it('returns token exchange rate for specified token in state', function () {
-      const tokenRate = selectors.getTokenExchangeRate(mockState, '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5')
-      assert.equal(tokenRate, 0.00008189274407698049)
-    })
-
-  })
-
   it('returns conversionRate from state', function () {
     assert.equal(selectors.conversionRateSelector(mockState), 556.12)
   })
