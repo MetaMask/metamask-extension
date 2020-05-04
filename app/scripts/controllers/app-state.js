@@ -43,16 +43,17 @@ class AppStateController extends EventEmitter {
    * Get a Promise that resolves when the extension is unlocked.
    * This Promise will never reject.
    *
-   * @param {boolean} showUnlockRequest - Whether the extension notification popup should be opened.
+   * @param {boolean} shouldShowUnlockRequest - Whether the extension notification
+   * popup should be opened.
    * @returns {Promise<void>} A promise that resolves when the extension is
    * unlocked, or immediately if the extension is already unlocked.
    */
-  getUnlockPromise (showUnlockRequest) {
+  getUnlockPromise (shouldShowUnlockRequest) {
     return new Promise((resolve) => {
       if (this.isUnlocked()) {
         resolve()
       } else {
-        this.waitForUnlock(resolve, showUnlockRequest)
+        this.waitForUnlock(resolve, shouldShowUnlockRequest)
       }
     })
   }
@@ -63,12 +64,13 @@ class AppStateController extends EventEmitter {
    *
    * @param {Promise.resolve} resolve - A Promise's resolve function that will
    * be called when the extension is unlocked.
-   * @param {boolean} showUnlockRequest - Whether the extension notification popup should be opened.
+   * @param {boolean} shouldShowUnlockRequest - Whether the extension notification
+   * popup should be opened.
    */
-  waitForUnlock (resolve, showUnlockRequest) {
+  waitForUnlock (resolve, shouldShowUnlockRequest) {
     this.waitingForUnlock.push({ resolve })
     this.emit('updateBadge')
-    if (showUnlockRequest) {
+    if (shouldShowUnlockRequest) {
       this._showUnlockRequest()
     }
   }
