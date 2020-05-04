@@ -152,6 +152,12 @@
     "message": "Allow $1 to spend your $2?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },
+  "allowThisSiteTo": {
+    "message": "Allow this site to:"
+  },
+  "allowExternalExtensionTo": {
+    "message": "Allow this external extension to:"
+  },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -290,9 +296,6 @@
   },
   "chainId": {
     "message": "Chain ID"
-  },
-  "chooseAccountsToUse": {
-    "message": "Choose the account(s) to use on this site"
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -1213,6 +1216,9 @@
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
+  "selectAccounts": {
+    "message": "Select account(s)"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -1432,14 +1438,6 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
-  },
-  "thisWillAllow": {
-    "message": "This will allow $1 to:",
-    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
-  },
-  "thisWillAllowExternalExtension": {
-    "message": "This will allow an external extension with id $1 to:",
-    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"

@@ -190,8 +190,8 @@ export default class PermissionPageContainerContent extends PureComponent {
                 iconName={domainMetadata.origin}
                 headerTitle={title}
                 headerText={ domainMetadata.extensionId
-                  ? t('thisWillAllowExternalExtension', [domainMetadata.extensionId])
-                  : t('thisWillAllow', [domainMetadata.origin])
+                  ? t('allowExternalExtensionTo', [domainMetadata.extensionId])
+                  : t('allowThisSiteTo')
                 }
               />
               <section className="permission-approval-container__permissions-container">
