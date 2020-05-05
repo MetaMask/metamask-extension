@@ -3,7 +3,7 @@ import Wallet from 'ethereumjs-wallet'
 import importers from 'ethereumjs-wallet/thirdparty'
 import ethUtil from 'ethereumjs-util'
 
-const accountImporter = {
+export default {
 
   importAccount (strategy, args) {
     try {
@@ -50,5 +50,3 @@ function walletToPrivateKey (wallet) {
   const privateKeyBuffer = wallet.getPrivateKey()
   return ethUtil.bufferToHex(privateKeyBuffer)
 }
-
-export default accountImporter
