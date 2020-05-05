@@ -293,10 +293,6 @@ export function getUseNonceField (state) {
   return Boolean(state.metamask.useNonceField)
 }
 
-export function getUsePhishDetect (state) {
-  return Boolean(state.metamask.usePhishDetect)
-}
-
 export function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
 }
