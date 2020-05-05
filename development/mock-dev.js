@@ -62,6 +62,11 @@ function updateQueryParams (newView) {
 // MetaMask Controller
 //
 
+// some extension platform APIs must be mocked
+function mockPlatformApis () {
+  global.platform.getVersion = () => '0.0.0'
+}
+
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
@@ -72,6 +77,7 @@ const controller = new MetamaskController({
 })
 global.metamaskController = controller
 global.platform = new ExtensionPlatform()
+mockPlatformApis()
 
 //
 // User Interface
