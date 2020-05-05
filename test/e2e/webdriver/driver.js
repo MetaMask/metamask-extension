@@ -94,7 +94,7 @@ class Driver {
       }
       await this.delay(1000)
     }
-    this.assertElementNotPresent(locator)
+    await this.assertElementNotPresent(locator)
   }
 
   // Navigation
