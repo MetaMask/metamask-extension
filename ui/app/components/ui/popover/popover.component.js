@@ -13,6 +13,7 @@ const Popover = ({
   onBack,
   onClose,
   className,
+  contentClassName,
   showArrow,
   CustomBackground,
 }) => {
@@ -52,7 +53,7 @@ const Popover = ({
         {
           children
             ? (
-              <div className="popover-content">
+              <div className={classnames('popover-content', contentClassName)}>
                 {children}
               </div>
             )
@@ -81,6 +82,7 @@ Popover.propTypes = {
   onBack: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   CustomBackground: PropTypes.func,
+  contentClassName: PropTypes.string,
   className: PropTypes.string,
   showArrow: PropTypes.bool,
 }
