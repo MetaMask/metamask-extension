@@ -36,18 +36,6 @@ class ExtensionPlatform {
     })
   }
 
-  closeWindow (windowId) {
-    return new Promise((resolve, reject) => {
-      extension.windows.remove(windowId, () => {
-        const error = checkForError()
-        if (error) {
-          return reject(error)
-        }
-        return resolve()
-      })
-    })
-  }
-
   focusWindow (windowId) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { focused: true }, () => {
