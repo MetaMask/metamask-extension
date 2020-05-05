@@ -5,6 +5,7 @@ import {
   approveTokenAmountAndToAddressSelector,
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
+  conversionRateSelector,
 } from '../confirm-transaction'
 
 describe('Confirm Transaction Selector', function () {
@@ -153,7 +154,14 @@ describe('Confirm Transaction Selector', function () {
     it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', function () {
       assert.equal(contractExchangeRateSelector(state), 10)
     })
+  })
 
+  describe('conversionRateSelector', function () {
+    it('returns conversionRate from state', function () {
+      const state = {
+        metamask: { conversionRate: 556.12 },
+      }
+      assert.equal(conversionRateSelector(state), 556.12)
+    })
   })
 })
-
