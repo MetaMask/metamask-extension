@@ -236,7 +236,6 @@ describe('MetaMask', function () {
 
         await driver.findElement(By.xpath(`//div[contains(text(), 'Test User Name 11')]`))
         await driver.delay(regularDelayMs)
-        throw new Error('GREAT SUCCESS')
       })
     })
   })
