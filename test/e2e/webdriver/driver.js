@@ -86,19 +86,14 @@ class Driver {
   }
 
   async waitForElementNotPresent (locator) {
-    let elements = await this.driver.findElements(locator)
-    if (elements.length === 0) {
-      return
-    }
-
-    for (let i = 0; i < 10; i++) {
-      await this.delay(1000)
-      elements = await this.driver.findElements(locator)
+    for (let i = 0; i < 11; i++) {
+      i > 0 && await this.delay(1000)
+      const elements = await this.driver.findElements(locator)
       if (elements.length === 0) {
         return
       }
     }
-    assert.fail('Element is still present.')
+    assert.fail(`At least one '${locator.value}' element is still present.`)
   }
 
   // Navigation
