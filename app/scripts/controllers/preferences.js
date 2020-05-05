@@ -3,7 +3,7 @@ import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
 
-class PreferencesController {
+export default class PreferencesController {
 
   /**
    *
@@ -743,5 +743,3 @@ class PreferencesController {
     }
   }
 }
-
-export default PreferencesController

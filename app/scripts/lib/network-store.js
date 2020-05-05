@@ -7,7 +7,7 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
 /**
  * A read-only network-based storage wrapper
  */
-class ReadOnlyNetworkStore {
+export default class ReadOnlyNetworkStore {
   constructor () {
     this._initialized = false
     this._initializing = this._init()
@@ -58,5 +58,3 @@ class ReadOnlyNetworkStore {
     this._state = state
   }
 }
-
-export default ReadOnlyNetworkStore

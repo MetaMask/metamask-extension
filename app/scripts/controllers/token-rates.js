@@ -11,7 +11,7 @@ const DEFAULT_INTERVAL = 180 * 1000
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-class TokenRatesController {
+export default class TokenRatesController {
   /**
    * Creates a TokenRatesController
    *
@@ -86,5 +86,3 @@ class TokenRatesController {
     this.updateExchangeRates()
   }
 }
-
-export default TokenRatesController

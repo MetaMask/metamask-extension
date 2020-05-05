@@ -1,7 +1,7 @@
 import { BN } from 'ethereumjs-util'
 import { normalize } from 'eth-sig-util'
 
-class PendingBalanceCalculator {
+export default class PendingBalanceCalculator {
 
   /**
    * Used for calculating a users "pending balance": their current balance minus the total possible cost of all their
@@ -77,5 +77,3 @@ class PendingBalanceCalculator {
   }
 
 }
-
-export default PendingBalanceCalculator

@@ -7,7 +7,7 @@ const METAMETRICS_TRACKING_URL = inDevelopment
   ? 'http://www.metamask.io/metametrics'
   : 'http://www.metamask.io/metametrics-prod'
 
-function backEndMetaMetricsEvent (metaMaskState, eventData) {
+export default function backEndMetaMetricsEvent (metaMaskState, eventData) {
   const stateEventData = getMetaMetricState({ metamask: metaMaskState })
 
   if (stateEventData.participateInMetaMetrics) {
@@ -18,5 +18,3 @@ function backEndMetaMetricsEvent (metaMaskState, eventData) {
     })
   }
 }
-
-export default backEndMetaMetricsEvent

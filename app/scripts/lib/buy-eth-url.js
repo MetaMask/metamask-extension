@@ -1,5 +1,3 @@
-export default getBuyEthUrl
-
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
@@ -10,7 +8,7 @@ export default getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, address, service }) {
+export default function getBuyEthUrl ({ network, address, service }) {
   // default service by network if not specified
   if (!service) {
     service = getDefaultServiceForNetwork(network)

@@ -4,7 +4,7 @@ import log from 'loglevel'
 // every ten minutes
 const POLLING_INTERVAL = 10 * 60 * 1000
 
-class InfuraController {
+export default class InfuraController {
 
   constructor (opts = {}) {
     const initState = Object.assign({
@@ -37,5 +37,3 @@ class InfuraController {
     }, POLLING_INTERVAL)
   }
 }
-
-export default InfuraController

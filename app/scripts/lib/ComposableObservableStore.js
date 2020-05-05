@@ -4,7 +4,7 @@ import ObservableStore from 'obs-store'
  * An ObservableStore that can composes a flat
  * structure of child stores based on configuration
  */
-class ComposableObservableStore extends ObservableStore {
+export default class ComposableObservableStore extends ObservableStore {
   /**
    * Create a new store
    *
@@ -47,5 +47,3 @@ class ComposableObservableStore extends ObservableStore {
     return flatState
   }
 }
-
-export default ComposableObservableStore

@@ -22,7 +22,7 @@ allLocales.forEach((locale) => {
  * @returns {Promise<string>} - Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  *
  */
-async function getFirstPreferredLangCode () {
+export default async function getFirstPreferredLangCode () {
   let userPreferredLocaleCodes
 
   try {
@@ -44,6 +44,3 @@ async function getFirstPreferredLangCode () {
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }
-
-export default getFirstPreferredLangCode
-

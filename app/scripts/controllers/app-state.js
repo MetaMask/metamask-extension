@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
 import EventEmitter from 'events'
 
-class AppStateController extends EventEmitter {
+export default class AppStateController extends EventEmitter {
   /**
    * @constructor
    * @param opts
@@ -141,6 +141,3 @@ class AppStateController extends EventEmitter {
     this.timer = setTimeout(() => this.onInactiveTimeout(), timeoutMinutes * 60 * 1000)
   }
 }
-
-export default AppStateController
-

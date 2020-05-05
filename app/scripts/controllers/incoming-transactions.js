@@ -29,7 +29,7 @@ const fetch = fetchWithTimeout({
   timeout: 30000,
 })
 
-class IncomingTransactionsController {
+export default class IncomingTransactionsController {
 
   constructor (opts = {}) {
     const {
@@ -268,8 +268,6 @@ class IncomingTransactionsController {
     }
   }
 }
-
-export default IncomingTransactionsController
 
 function pairwise (fn) {
   let first = true
