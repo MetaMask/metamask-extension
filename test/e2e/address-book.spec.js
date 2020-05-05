@@ -55,6 +55,7 @@ describe('MetaMask', function () {
   describe('Going through the first time flow', function () {
     it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'))
+      await driver.delay(largeDelayMs)
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
       await driver.delay(largeDelayMs)
     })
