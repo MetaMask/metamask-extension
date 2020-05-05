@@ -29,9 +29,9 @@ workflows:
       # - test-lint-lockfile:
       #     requires:
       #       - prep-deps
-      # - test-e2e-chrome:
-      #     requires:
-      #       - prep-build-test
+      - test-e2e-chrome:
+          requires:
+            - prep-build-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
