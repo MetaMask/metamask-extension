@@ -86,7 +86,7 @@ class Driver {
   }
 
   async waitForElementNotPresent (locator) {
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 31; i++) {
       i > 0 && await this.delay(1000)
       const elements = await this.driver.findElements(locator)
       if (elements.length === 0) {
