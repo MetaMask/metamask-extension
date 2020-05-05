@@ -6,8 +6,7 @@ import { ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI } from './network/enums'
 
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
 
-
-class RecentBlocksController {
+export default class RecentBlocksController {
 
   /**
    * Controller responsible for storing, updating and managing the recent history of blocks. Blocks are back filled
@@ -174,5 +173,3 @@ class RecentBlocksController {
   }
 
 }
-
-export default RecentBlocksController

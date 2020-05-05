@@ -11,7 +11,7 @@ const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-class DetectTokensController {
+export default class DetectTokensController {
   /**
    * Creates a DetectTokensController
    *
@@ -162,5 +162,3 @@ class DetectTokensController {
     return this.isOpen && this.isUnlocked
   }
 }
-
-export default DetectTokensController

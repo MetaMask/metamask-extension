@@ -16,8 +16,6 @@ class AsyncWritableStream extends WritableStream {
 
 }
 
-function createStreamSink (asyncWriteFn, _opts) {
+export default function createStreamSink (asyncWriteFn, _opts) {
   return new AsyncWritableStream(asyncWriteFn, _opts)
 }
-
-export default createStreamSink

@@ -4,9 +4,7 @@ import resolveEnsToIpfsContentId from './resolver.js'
 
 const supportedTopLevelDomains = ['eth']
 
-export default setupEnsIpfsResolver
-
-function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
+export default function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`)

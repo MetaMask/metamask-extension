@@ -11,7 +11,7 @@ import ObservableStore from 'obs-store'
  * Background controller responsible for maintaining
  * a cache of account balances in local storage
  */
-class CachedBalancesController {
+export default class CachedBalancesController {
   /**
    * Creates a new controller instance
    *
@@ -78,5 +78,3 @@ class CachedBalancesController {
     this.accountTracker.store.subscribe(update)
   }
 }
-
-export default CachedBalancesController

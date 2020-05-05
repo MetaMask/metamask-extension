@@ -5,10 +5,7 @@ import registryAbi from './contracts/registry'
 import resolverAbi from './contracts/resolver'
 import contentHash from 'content-hash'
 
-export default resolveEnsToIpfsContentId
-
-
-async function resolveEnsToIpfsContentId ({ provider, name }) {
+export default async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)

@@ -3,7 +3,7 @@ import ExtensionPlatform from '../platforms/extension'
 const NOTIFICATION_HEIGHT = 620
 const NOTIFICATION_WIDTH = 360
 
-class NotificationManager {
+export default class NotificationManager {
 
   /**
    * A collection of methods for controlling the showing and hiding of the notification popup.
@@ -103,5 +103,3 @@ class NotificationManager {
   }
 
 }
-
-export default NotificationManager

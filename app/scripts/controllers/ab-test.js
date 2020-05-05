@@ -13,7 +13,7 @@ import { getRandomArrayItem } from '../lib/util'
  *     browser tab
  */
 
-class ABTestController {
+export default class ABTestController {
   /**
    * @constructor
    * @param opts
@@ -51,6 +51,3 @@ class ABTestController {
 ABTestController.abTestGroupNames = {
   fullScreenVsPopup: ['control', 'fullScreen'],
 }
-
-export default ABTestController
-

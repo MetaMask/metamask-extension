@@ -2,7 +2,7 @@ import ObservableStore from 'obs-store'
 import PendingBalanceCalculator from '../lib/pending-balance-calculator'
 import { BN } from 'ethereumjs-util'
 
-class BalanceController {
+export default class BalanceController {
 
   /**
    * Controller responsible for storing and updating an account's balance.
@@ -132,5 +132,3 @@ class BalanceController {
   }
 
 }
-
-export default BalanceController

@@ -24,8 +24,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
 } from '../controllers/network/contract-addresses'
 
-
-class AccountTracker {
+export default class AccountTracker {
 
   /**
    * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -260,5 +259,3 @@ class AccountTracker {
   }
 
 }
-
-export default AccountTracker

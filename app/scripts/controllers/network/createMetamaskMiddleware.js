@@ -3,9 +3,7 @@ import createScaffoldMiddleware from 'json-rpc-engine/src/createScaffoldMiddlewa
 import createWalletSubprovider from 'eth-json-rpc-middleware/wallet'
 import { createPendingNonceMiddleware, createPendingTxMiddleware } from './middleware/pending'
 
-export default createMetamaskMiddleware
-
-function createMetamaskMiddleware ({
+export default function createMetamaskMiddleware ({
   version,
   getAccounts,
   processTransaction,

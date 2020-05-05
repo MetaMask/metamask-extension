@@ -1,9 +1,7 @@
 
 // TODO:deprecate:2020
 
-export default setupDappAutoReload
-
-function setupDappAutoReload (web3, observable) {
+export default function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
