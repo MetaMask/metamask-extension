@@ -125,6 +125,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
+      showUnlockRequest: opts.showUnlockRequest,
       preferencesStore: this.preferencesController.store,
     })
 

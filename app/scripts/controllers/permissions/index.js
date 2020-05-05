@@ -42,7 +42,7 @@ export class PermissionsController {
     })
 
     this.getKeyringAccounts = getKeyringAccounts
-    this.getUnlockPromise = getUnlockPromise
+    this._getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
     this._showPermissionRequest = showPermissionRequest
@@ -92,7 +92,7 @@ export class PermissionsController {
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
-      getUnlockPromise: this.getUnlockPromise,
+      getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, origin, { eth_accounts: {} }
@@ -602,7 +602,7 @@ export class PermissionsController {
       this.pendingApprovals.has(id)
     ) {
       throw new Error(
-        `Pending approval with id ${id} or origin ${origin} already exists.`
+        `Pending approval with id '${id}' or origin '${origin}' already exists.`
       )
     }
 
