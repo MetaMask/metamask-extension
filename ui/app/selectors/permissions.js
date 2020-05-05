@@ -6,10 +6,22 @@ import {
 
 // selectors
 
+/**
+ * Get the permission domains object.
+ *
+ * @param {Object} state - The current state.
+ * @returns {Object} The permissions domains object.
+ */
 export function getPermissionDomains (state) {
   return state.metamask.domains || {}
 }
 
+/**
+ * Get the permission domains metadata object.
+ *
+ * @param {Object} state - The current state.
+ * @returns {Object} The permission domains metadata object.
+ */
 export function getPermissionDomainsMetadata (state) {
   return state.metamask.domainMetadata || {}
 }
