@@ -64,18 +64,6 @@ export default class NotificationManager {
   }
 
   /**
-   * Closes a MetaMask notification if it window exists.
-   *
-   */
-  async closePopup () {
-    const popup = this._getPopup()
-    if (!popup) {
-      return
-    }
-    await this.platform.removeWindow(popup.id)
-  }
-
-  /**
    * Checks all open MetaMask windows, and returns the first one it finds that is a notification window (i.e. has the
    * type 'popup')
    *
