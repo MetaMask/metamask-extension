@@ -85,6 +85,18 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present')
   }
 
+  async waitForElementNotPresent (locator) {
+    let elements
+    for (let i = 0; i < 10; i++) {
+      elements = await this.findElements(locator)
+      if (elements.length === 0) {
+        return
+      }
+      await this.delay(1000)
+    }
+    this.assertElementNotPresent(locator)
+  }
+
   // Navigation
 
   async navigate (page = Driver.PAGES.HOME) {

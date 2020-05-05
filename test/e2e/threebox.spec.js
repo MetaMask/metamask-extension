@@ -59,7 +59,7 @@ describe('MetaMask', function () {
     describe('First time flow starting from an existing seed phrase', function () {
       it('clicks the continue button on the welcome screen', async function () {
         await driver.findElement(By.css('.welcome-page__header'))
-        await driver.delay(largeDelayMs)
+        await driver.waitForElementNotPresent(By.css('.loading-overlay'))
         await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         await driver.delay(largeDelayMs)
       })
@@ -166,7 +166,7 @@ describe('MetaMask', function () {
     describe('First time flow starting from an existing seed phrase', function () {
       it('clicks the continue button on the welcome screen', async function () {
         await driver2.findElement(By.css('.welcome-page__header'))
-        await driver.delay(largeDelayMs)
+        await driver2.waitForElementNotPresent(By.css('.loading-overlay'))
         await driver2.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`))
         await driver2.delay(largeDelayMs)
       })
