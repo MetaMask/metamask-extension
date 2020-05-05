@@ -9,88 +9,88 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
-      - prep-build:
-          requires:
-            - prep-deps
+      # - test-deps
+      # - prep-build:
+      #     requires:
+      #       - prep-deps
       - prep-build-test:
           requires:
             - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
-      - prep-scss:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
+      # - prep-build-storybook:
+      #     requires:
+      #       - prep-deps
+      # - prep-scss:
+      #     requires:
+      #       - prep-deps
+      # - test-lint:
+      #     requires:
+      #       - prep-deps
+      # - test-lint-shellcheck
+      # - test-lint-lockfile:
+      #     requires:
+      #       - prep-deps
+      # - test-e2e-chrome:
+      #     requires:
+      #       - prep-build-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
-      - test-unit:
-          requires:
-            - prep-deps
-      - test-unit-global:
-          requires:
-            - prep-deps
-      - test-mozilla-lint:
-          requires:
-            - prep-deps
-            - prep-build
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps
-            - prep-scss
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-unit
-            - test-unit-global
-            - test-mozilla-lint
-            - test-e2e-chrome
-            - test-e2e-firefox
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
-      - benchmark:
-          requires:
-            - prep-build-test
-      - job-publish-prerelease:
-          requires:
-            - prep-deps
-            - prep-build
-            - benchmark
-            - all-tests-pass
-      - job-publish-release:
-          filters:
-            branches:
-              only: master
-          requires:
-            - prep-deps
-            - prep-build
-            - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-storybook
-      - coveralls-upload:
-          requires:
-            - test-unit
+      # - test-unit:
+      #     requires:
+      #       - prep-deps
+      # - test-unit-global:
+      #     requires:
+      #       - prep-deps
+      # - test-mozilla-lint:
+      #     requires:
+      #       - prep-deps
+      #       - prep-build
+      # - test-integration-flat-chrome:
+      #     requires:
+      #       - prep-deps
+      #       - prep-scss
+      # - test-integration-flat-firefox:
+      #     requires:
+      #       - prep-deps
+      #       - prep-scss
+      # - all-tests-pass:
+      #     requires:
+      #       - test-lint
+      #       - test-lint-shellcheck
+      #       - test-lint-lockfile
+      #       - test-unit
+      #       - test-unit-global
+      #       - test-mozilla-lint
+      #       - test-e2e-chrome
+      #       - test-e2e-firefox
+      #       - test-integration-flat-chrome
+      #       - test-integration-flat-firefox
+      # - benchmark:
+      #     requires:
+      #       - prep-build-test
+      # - job-publish-prerelease:
+      #     requires:
+      #       - prep-deps
+      #       - prep-build
+      #       - benchmark
+      #       - all-tests-pass
+      # - job-publish-release:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     requires:
+      #       - prep-deps
+      #       - prep-build
+      #       - all-tests-pass
+      # - job-publish-storybook:
+      #     filters:
+      #       branches:
+      #         only: develop
+      #     requires:
+      #       - prep-build-storybook
+      # - coveralls-upload:
+      #     requires:
+      #       - test-unit
 
 jobs:
   create_release_pull_request:
