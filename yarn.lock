@@ -6062,10 +6062,10 @@ cfx-hd-keyring@^0.0.3:
     events "^1.1.1"
     xtend "^4.0.1"
 
-cfx-keyring-controller@^5.6.6:
-  version "5.6.6"
-  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.6.tgz#628e3328a2e4536e72b6102ed45c745a192e1f29"
-  integrity sha512-7Mh1TIrXd5w5X1PctDYhE8Oqnd+cbO2D61K0rvB+jnsG3FswNwgHEiCBVZp0TFyNuzbnHxhKC2chTL74FrXJrA==
+cfx-keyring-controller@^5.6.7:
+  version "5.6.7"
+  resolved "https://registry.yarnpkg.com/cfx-keyring-controller/-/cfx-keyring-controller-5.6.7.tgz#871c5ec740a0c162c71187be1dc4d5728500d101"
+  integrity sha512-tyFJhGNb5GzIl2xMN41yAmj3RTM9AGh0oEaf/OWh/pdjIWmN9wfbojx1vrWNnhpbzyBv8pMsKaS4YLd8/1EKqg==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
