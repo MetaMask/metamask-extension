@@ -1768,7 +1768,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Add existing token using search', function () {
+  describe.skip('Add existing token using search', function () {
     it('clicks on the Add Token button', async function () {
       await driver.clickElement(
         By.xpath(`//div[contains(text(), 'Add Token')]`)

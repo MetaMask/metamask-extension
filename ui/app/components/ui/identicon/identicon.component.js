@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
 
 import BlockieIdenticon from './blockieIdenticon'
 import { checksumAddress } from '../../../helpers/utils/util'
@@ -21,6 +20,7 @@ export default class Identicon extends PureComponent {
     diameter: PropTypes.number,
     image: PropTypes.string,
     useBlockie: PropTypes.bool,
+    trustedTokenMap: PropTypes.object,
   }
 
   static defaultProps = {
@@ -40,12 +40,13 @@ export default class Identicon extends PureComponent {
   }
 
   renderJazzicon () {
-    const { address, className, diameter } = this.props
+    const { address, className, diameter, trustedTokenMap = {} } = this.props
 
     return (
       <Jazzicon
         address={address}
         diameter={diameter}
+        trustedTokenMap={trustedTokenMap}
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       />
@@ -73,6 +74,7 @@ export default class Identicon extends PureComponent {
       diameter,
       useBlockie,
       addBorder,
+      trustedTokenMap = {},
     } = this.props
 
     if (image) {
@@ -83,8 +85,8 @@ export default class Identicon extends PureComponent {
       const checksummedAddress = checksumAddress(address)
 
       if (
-        contractMap[checksummedAddress] &&
-        contractMap[checksummedAddress].logo
+        trustedTokenMap[checksummedAddress] &&
+        trustedTokenMap[checksummedAddress].logo
       ) {
         return this.renderJazzicon()
       }

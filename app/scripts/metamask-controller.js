@@ -61,7 +61,6 @@ import LedgerBridgeKeyring from 'eth-ledger-bridge-keyring'
 import EthQuery from './eth-query'
 
 import nanoid from 'nanoid'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
 import {
   AddressBookController,
   CurrencyRateController,
@@ -860,6 +859,7 @@ export default class MetamaskController extends EventEmitter {
       identities,
       selectedAddress,
       tokens,
+      trustedTokenMap = {},
     } = this.preferencesController.store.getState()
 
     // Filter ERC20 tokens
@@ -874,8 +874,8 @@ export default class MetamaskController extends EventEmitter {
               ? accountTokens[address][networkType]
               : accountTokens[address][networkType].filter(({ address }) => {
                 const tokenAddress = toChecksumAddress(address)
-                return contractMap[tokenAddress]
-                  ? contractMap[tokenAddress].erc20
+                return trustedTokenMap[tokenAddress]
+                  ? trustedTokenMap[tokenAddress].erc20
                   : true
               }))
       )

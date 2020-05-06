@@ -1,6 +1,7 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
+import { toChecksumAddress } from 'cfx-util'
 
 import {
   REQUIRED_ERROR,
@@ -140,7 +141,8 @@ describe('add-recipient utils', function () {
           '0x88a8f9b1835ae66b6f1da3c930b7d11220bebf78',
           undefined,
           [{ address: '0xabc123' }],
-          { address: '0xabc123' }
+          { address: '0xabc123' },
+          { [toChecksumAddress('0x88a8f9b1835ae66b6f1da3c930b7d11220bebf78')]: true }
         ),
         {
           to: KNOWN_RECIPIENT_ADDRESS_ERROR,
@@ -154,7 +156,8 @@ describe('add-recipient utils', function () {
           '0x88a8f9b1835ae66b6f1da3c930b7d11220bebf78',
           undefined,
           [{ address: '0xabc123' }],
-          { address: '0xabc123' }
+          { address: '0xabc123' },
+          { [toChecksumAddress('0x88a8f9b1835ae66b6f1da3c930b7d11220bebf78')]: true }
         ),
         {
           to: KNOWN_RECIPIENT_ADDRESS_ERROR,

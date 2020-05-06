@@ -72,6 +72,7 @@ function mapStateToProps (state) {
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
+    trustedTokenMap: state.metamask.trustedTokenMap,
   }
 }
 

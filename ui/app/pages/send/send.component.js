@@ -60,6 +60,7 @@ export default class SendTransactionScreen extends Component {
     scanQrCode: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
+    trustedTokenMap: PropTypes.object,
   }
 
   static contextTypes = {
@@ -235,7 +236,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   validate (query) {
-    const { hasHexData, tokens, selectedToken, network } = this.props
+    const { hasHexData, tokens, selectedToken, network, trustedTokenMap } = this.props
 
     if (!query) {
       return this.setState({ toError: '', toWarning: '' })
@@ -253,7 +254,8 @@ export default class SendTransactionScreen extends Component {
       query,
       null,
       tokens,
-      selectedToken
+      selectedToken,
+      trustedTokenMap
     )
 
     this.setState({

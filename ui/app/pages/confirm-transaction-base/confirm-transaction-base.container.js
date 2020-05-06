@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
 import { isValidContractAddress } from 'cfx-util'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
@@ -44,13 +43,6 @@ import {
 } from '../../selectors/selectors'
 import { transactionFeeSelector } from '../../selectors/confirm-transaction'
 
-const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
-  return {
-    ...acc,
-    [base.toLowerCase()]: contractMap[base],
-  }
-}, {})
-
 let customNonceValue = ''
 const customNonceMerge = (txData) =>
   (customNonceValue
@@ -69,6 +61,14 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
+  const trustedTokenMap = state.metamask.trustedTokenMap
+  const casedContractMap = Object.keys(trustedTokenMap).reduce((acc, base) => {
+    return {
+      ...acc,
+      [base.toLowerCase()]: trustedTokenMap[base],
+    }
+  }, {})
+
   const { confirmTransaction, metamask } = state
   const {
     ensResolutionsByAddress,

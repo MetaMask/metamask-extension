@@ -56,6 +56,7 @@ export default function reduceMetamask (state = {}, action) {
       participateInMetaMetrics: null,
       metaMetricsSendCount: 0,
       nextNonce: null,
+      trustedTokenMap: {},
     },
     state
   )

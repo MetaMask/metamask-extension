@@ -13,19 +13,20 @@ function mapStateToProps (state) {
     tokens: state.metamask.tokens,
     userAddress: getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
+    // trustedTokenMap: state.metamask.trustedTokenMap,
   }
 }
 
-const defaultTokens = []
-import contracts from '@yqrashawn/cfx-contract-metadata'
+// const defaultTokens = []
+// import contracts from '@yqrashawn/cfx-contract-metadata'
 
-for (const address in contracts) {
-  const contract = contracts[address]
-  if (contract.erc20) {
-    contract.address = address
-    defaultTokens.push(contract)
-  }
-}
+// for (const address in contracts) {
+//   const contract = contracts[address]
+//   if (contract.erc20) {
+//     contract.address = address
+//     defaultTokens.push(contract)
+//   }
+// }
 
 class TokenList extends Component {
   static contextTypes = {
@@ -37,6 +38,7 @@ class TokenList extends Component {
     userAddress: PropTypes.string.isRequired,
     network: PropTypes.string.isRequired,
     assetImages: PropTypes.object.isRequired,
+    // trustedTokenMap: PropTypes.object.isRequired
   }
 
   state = {

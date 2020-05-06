@@ -91,6 +91,7 @@ describe('Send Component', function () {
         updateToNicknameIfNecessary={
           propsMethodSpies.updateToNicknameIfNecessary
         }
+        trustedTokenMap={{ '0x88A8f9b1835Ae66B6f1DA3c930b7D11220beBF78': true }}
       />
     )
   })

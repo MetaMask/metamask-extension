@@ -4,11 +4,12 @@ import AddToken from './add-token.component'
 import { setPendingTokens, clearPendingTokens } from '../../store/actions'
 
 const mapStateToProps = ({ metamask }) => {
-  const { identities, tokens, pendingTokens } = metamask
+  const { identities, tokens, pendingTokens, trustedTokenMap } = metamask
   return {
     identities,
     tokens,
     pendingTokens,
+    trustedTokenMap,
   }
 }
 

@@ -1,28 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
+import { connect } from 'react-redux'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../components/ui/text-field'
 
-const contractList = Object.entries(contractMap)
-  .map(([_, tokenData]) => tokenData)
-  .filter((tokenData) => Boolean(tokenData.erc20))
+let fuse
 
-const fuse = new Fuse(contractList, {
-  shouldSort: true,
-  threshold: 0.45,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    { name: 'name', weight: 0.5 },
-    { name: 'symbol', weight: 0.5 },
-  ],
-})
+const mapStateToProps = ({ metamask }) => {
+  const contractMap = metamask.trustedTokenMap || {}
+  const contractList = Object.entries(contractMap)
+    .map(([_, tokenData]) => tokenData)
+    .filter((tokenData) => Boolean(tokenData.erc20))
 
-export default class TokenSearch extends Component {
+  return {
+    contractList,
+  }
+}
+
+class TokenSearch extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -34,13 +30,19 @@ export default class TokenSearch extends Component {
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
+    contractList: PropTypes.array,
   }
 
   state = {
     searchQuery: '',
   }
 
+  componentWillUnmount () {
+    fuse = null
+  }
+
   handleSearch (searchQuery) {
+    const { contractList } = this.props
     this.setState({ searchQuery })
     const fuseSearchResult = fuse.search(searchQuery)
     const addressSearchResult = contractList.filter((token) => {
@@ -59,7 +61,20 @@ export default class TokenSearch extends Component {
   }
 
   render () {
-    const { error } = this.props
+    const { error, contractList } = this.props
+    fuse = new Fuse(contractList, {
+      shouldSort: true,
+      threshold: 0.45,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [
+        { name: 'name', weight: 0.5 },
+        { name: 'symbol', weight: 0.5 },
+      ],
+    })
+
     const { searchQuery } = this.state
 
     return (
@@ -76,3 +91,5 @@ export default class TokenSearch extends Component {
     )
   }
 }
+
+export default connect(mapStateToProps)(TokenSearch)

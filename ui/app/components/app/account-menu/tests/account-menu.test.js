@@ -14,6 +14,7 @@ describe('Account Menu', function () {
       provider: {
         type: 'test',
       },
+      trustedTokenMap: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },

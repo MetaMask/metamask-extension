@@ -1,14 +1,6 @@
 import log from 'loglevel'
 import * as util from './util'
 import BigNumber from 'bignumber.js'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
-
-const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
-  return {
-    ...acc,
-    [base.toLowerCase()]: contractMap[base],
-  }
-}, {})
 
 const DEFAULT_SYMBOL = ''
 const DEFAULT_DECIMALS = '0'
@@ -42,15 +34,15 @@ async function getDecimalsFromContract (tokenAddress) {
   }
 }
 
-function getContractMetadata (tokenAddress) {
+function getContractMetadata (tokenAddress, casedContractMap) {
   return tokenAddress && casedContractMap[tokenAddress.toLowerCase()]
 }
 
-async function getSymbol (tokenAddress) {
+async function getSymbol (tokenAddress, contractMap) {
   let symbol = await getSymbolFromContract(tokenAddress)
 
   if (!symbol) {
-    const contractMetadataInfo = getContractMetadata(tokenAddress)
+    const contractMetadataInfo = getContractMetadata(tokenAddress, contractMap)
 
     if (contractMetadataInfo) {
       symbol = contractMetadataInfo.symbol
@@ -60,11 +52,11 @@ async function getSymbol (tokenAddress) {
   return symbol
 }
 
-async function getDecimals (tokenAddress) {
+async function getDecimals (tokenAddress, contractMap) {
   let decimals = await getDecimalsFromContract(tokenAddress)
 
   if (!decimals || decimals === '0') {
-    const contractMetadataInfo = getContractMetadata(tokenAddress)
+    const contractMetadataInfo = getContractMetadata(tokenAddress, contractMap)
 
     if (contractMetadataInfo) {
       decimals = contractMetadataInfo.decimals
@@ -74,12 +66,12 @@ async function getDecimals (tokenAddress) {
   return decimals
 }
 
-export async function fetchSymbolAndDecimals (tokenAddress) {
+export async function fetchSymbolAndDecimals (tokenAddress, contractMap) {
   let symbol, decimals
 
   try {
-    symbol = await getSymbol(tokenAddress)
-    decimals = await getDecimals(tokenAddress)
+    symbol = await getSymbol(tokenAddress, contractMap)
+    decimals = await getDecimals(tokenAddress, contractMap)
   } catch (error) {
     log.warn(
       `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
@@ -93,7 +85,7 @@ export async function fetchSymbolAndDecimals (tokenAddress) {
   }
 }
 
-export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
+export async function getSymbolAndDecimals (tokenAddress, contractMap, existingTokens = []) {
   const existingToken = existingTokens.find(
     ({ address }) => tokenAddress === address
   )
@@ -108,8 +100,8 @@ export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   let symbol, decimals
 
   try {
-    symbol = await getSymbol(tokenAddress)
-    decimals = await getDecimals(tokenAddress)
+    symbol = await getSymbol(tokenAddress, contractMap)
+    decimals = await getDecimals(tokenAddress, contractMap)
   } catch (error) {
     log.warn(
       `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
@@ -123,7 +115,7 @@ export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   }
 }
 
-export function tokenInfoGetter () {
+export function tokenInfoGetter (contractMap) {
   const tokens = {}
 
   return async (address) => {
@@ -131,7 +123,7 @@ export function tokenInfoGetter () {
       return tokens[address]
     }
 
-    tokens[address] = await getSymbolAndDecimals(address)
+    tokens[address] = await getSymbolAndDecimals(address, contractMap)
 
     return tokens[address]
   }
