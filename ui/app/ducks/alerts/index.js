@@ -1,5 +1,1 @@
-import unconnectedAccount from './unconnected-account'
-
-export default {
-  unconnectedAccount,
-}
+export { default as unconnectedAccount } from './unconnected-account'
