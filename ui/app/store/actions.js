@@ -2242,12 +2242,6 @@ export function setSeedPhraseBackedUp (seedPhraseBackupState) {
   }
 }
 
-export function hideSeedPhraseBackupAfterOnboarding () {
-  return {
-    type: actionConstants.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
-  }
-}
-
 export function initializeThreeBox () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
