@@ -1,4 +1,4 @@
-import actionConstants from '../../store/actionConstants'
+import * as actionConstants from '../../store/actionConstants'
 
 // actionConstants
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'

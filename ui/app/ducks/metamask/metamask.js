@@ -1,4 +1,4 @@
-import actionConstants from '../../store/actionConstants'
+import * as actionConstants from '../../store/actionConstants'
 
 export default function reduceMetamask (state = {}, action) {
   const metamaskState = Object.assign({

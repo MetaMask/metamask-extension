@@ -1,6 +1,6 @@
 import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/ducks/metamask/metamask'
-import actionConstants from '../../../../../ui/app/store/actionConstants'
+import * as actionConstants from '../../../../../ui/app/store/actionConstants'
 
 describe('MetaMask Reducers', function () {
 

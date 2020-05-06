@@ -1,7 +1,7 @@
 import assert from 'assert'
 import freeze from 'deep-freeze-strict'
 import reducers from '../../../ui/app/ducks'
-import actionConstants from '../../../ui/app/store/actionConstants'
+import * as actionConstants from '../../../ui/app/store/actionConstants'
 
 describe('config view actions', function () {
   const initialState = {

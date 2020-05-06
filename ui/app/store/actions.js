@@ -14,7 +14,7 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import actionConstants from './actionConstants'
+import * as actionConstants from './actionConstants'
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,

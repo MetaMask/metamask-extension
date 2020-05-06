@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
-import actionConstants from '../../store/actionConstants'
+import * as actionConstants from '../../store/actionConstants'
 import { addPermittedAccount } from '../../store/actions'
 import {
   getOriginOfCurrentTab,
