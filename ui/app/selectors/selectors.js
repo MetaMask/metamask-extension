@@ -270,16 +270,20 @@ export function accountsWithSendEtherInfoSelector (state) {
 
 export function getAccountsWithLabels (state) {
   const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
-  const accountsWithLabels = accountsWithoutLabel.map((account) => {
+  const accountsWithLabels = accountsWithoutLabel.reduce((acc, account) => {
     const { address, name, balance } = account
-    return {
-      address,
-      truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
-      label: name,
-      balance,
+    if (name !== undefined) {
+      acc.push({
+        address,
+        truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
+        addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+        label: name,
+        balance,
+      })
     }
-  })
+
+    return acc
+  }, [])
   return accountsWithLabels
 }
 
