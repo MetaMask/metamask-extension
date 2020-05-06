@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const Dropdown = ({ className, disabled, name, onChange, options, selectedOption, style }) => {
+const Dropdown = ({ className, disabled, onChange, options, selectedOption, style, title }) => {
   const _onChange = useCallback(
     (event) => {
       event.preventDefault()
@@ -16,7 +16,7 @@ const Dropdown = ({ className, disabled, name, onChange, options, selectedOption
     <select
       className={classnames('dropdown', className)}
       disabled={disabled}
-      name={name}
+      title={title}
       onChange={_onChange}
       style={style}
       value={selectedOption}
@@ -40,7 +40,7 @@ const Dropdown = ({ className, disabled, name, onChange, options, selectedOption
 Dropdown.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
-  name: PropTypes.string,
+  title: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.exact({
@@ -55,7 +55,7 @@ Dropdown.propTypes = {
 Dropdown.defaultProps = {
   className: undefined,
   disabled: false,
-  name: undefined,
+  title: undefined,
   selectedOption: null,
   style: undefined,
 }

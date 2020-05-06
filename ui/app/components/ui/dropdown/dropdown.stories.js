@@ -23,7 +23,7 @@ const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
 export const simple = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
-    name={text('Name', 'Test dropdown name')}
+    title={text('Title', 'Test dropdown name')}
     onChange={action('Selection changed')}
     options={namedOptions}
     required={boolean('Required', false)}
@@ -40,7 +40,7 @@ export const simple = () => (
 export const optionsWithoutNames = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
-    name={text('Name', 'Test dropdown name')}
+    title={text('Title', 'Test dropdown name')}
     onChange={action('Selection changed')}
     options={unnamedOptions}
     required={boolean('Required', false)}
@@ -57,7 +57,7 @@ export const optionsWithoutNames = () => (
 export const optionsWithLongNames = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
-    name={text('Name', 'Test dropdown name')}
+    title={text('Title', 'Test dropdown name')}
     onChange={action('Selection changed')}
     options={namedOptionsWithVeryLongNames}
     required={boolean('Required', false)}
@@ -74,7 +74,7 @@ export const optionsWithLongNames = () => (
 export const optionsWithLongNamesAndShortWidth = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
-    name={text('Name', 'Test dropdown name')}
+    title={text('Title', 'Test dropdown name')}
     onChange={action('Selection changed')}
     options={namedOptionsWithVeryLongNames}
     required={boolean('Required', false)}
