@@ -5,7 +5,7 @@ import sendReducer from './send/send.duck'
 import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
-import alerts from './alerts'
+import * as alerts from './alerts'
 
 export default combineReducers({
   ...alerts,
