@@ -1,7 +1,6 @@
 let iconFactory
 import { isValidAddress } from 'cfx-util'
 import { checksumAddress } from '../app/helpers/utils/util'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
 
 export default function iconFactoryGenerator (jazzicon) {
   if (!iconFactory) {
@@ -15,10 +14,10 @@ function IconFactory (jazzicon) {
   this.cache = {}
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter) {
+IconFactory.prototype.iconForAddress = function (address, diameter, contractMap) {
   const addr = checksumAddress(address)
-  if (iconExistsFor(addr)) {
-    return imageElFor(addr)
+  if (iconExistsFor(addr, contractMap)) {
+    return imageElFor(addr, contractMap)
   }
 
   return this.generateIdenticonSvg(address, diameter)
@@ -45,16 +44,16 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
-function iconExistsFor (address) {
+function iconExistsFor (address, contractMap) {
   return (
     contractMap[address] && isValidAddress(address) && contractMap[address].logo
   )
 }
 
-function imageElFor (address) {
+function imageElFor (address, contractMap) {
   const contract = contractMap[address]
   const fileName = contract.logo
-  const path = `images/contract/${fileName}`
+  const path = fileName.startsWith('data:image') ? fileName : `images/contract/${fileName}`
   const img = document.createElement('img')
   img.src = path
   img.style.width = '100%'

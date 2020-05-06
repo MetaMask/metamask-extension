@@ -8,8 +8,7 @@ import {
 import { isValidAddress, isEthNetwork } from '../../../../helpers/utils/util'
 import { checkExistingAddresses } from '../../../add-token/util'
 
-import * as ethUtil from 'cfx-util'
-import contractMap from '@yqrashawn/cfx-contract-metadata'
+import { toChecksumAddress } from 'cfx-util'
 
 export function getToErrorObject (
   to,
@@ -36,11 +35,12 @@ export function getToWarningObject (
   to,
   toWarning = null,
   tokens = [],
-  selectedToken = null
+  selectedToken = null,
+  trustedTokenMap = {}
 ) {
   if (
     selectedToken &&
-    (ethUtil.toChecksumAddress(to) in contractMap ||
+    (toChecksumAddress(to) in trustedTokenMap ||
       checkExistingAddresses(to, tokens))
   ) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR

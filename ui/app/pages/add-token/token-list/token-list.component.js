@@ -37,6 +37,7 @@ export default class InfoBox extends Component {
             .map((_, i) => {
               const { logo, symbol, name, address } = results[i] || {}
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens)
+              const imageUrl = logo && logo.startsWith('data:image') ? `url("${logo}")` : `url(images/contract/${logo})`
 
               return (
                 Boolean(logo || symbol || name) && (
@@ -53,7 +54,7 @@ export default class InfoBox extends Component {
                     <div
                       className="token-list__token-icon"
                       style={{
-                        backgroundImage: logo && `url(images/contract/${logo})`,
+                        backgroundImage: imageUrl,
                       }}
                     >
                     </div>

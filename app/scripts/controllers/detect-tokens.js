@@ -1,7 +1,7 @@
 import Web3 from './ConfluxWeb/index'
-import contracts from '@yqrashawn/cfx-contract-metadata'
 import { warn } from 'loglevel'
 import { MAINNET, TESTNET } from './network/enums'
+import { toChecksumAddress } from 'cfx-util'
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [
@@ -16,6 +16,19 @@ const ERC20_ABI = [
 ]
 import SINGLE_CALL_BALANCES_ABI from './cfx-single-call-balance-checker-abi'
 import { SINGLE_CALL_BALANCES_ADDRESS } from './network/contract-addresses.js'
+
+const CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API =
+  '/contract-manager/api/contract/list'
+const CONFLUX_SCAN_CONTRACT_MANAGER_QUERY_API =
+  '/contract-manager/api/contract/query'
+
+function getScanUrl (network) {
+  if (network.store.getState().provider.type === MAINNET) {
+    return 'https://confluxscan.io'
+  } else if (network.store.getState().provider.type === TESTNET) {
+    return 'http://testnet.confluxscan.io'
+  }
+}
 
 /**
  * A controller that polls for token exchange
@@ -39,6 +52,82 @@ class DetectTokensController {
     this.keyringMemStore = keyringMemStore
   }
 
+  async refreshCachedTokenList () {
+    const endpoint = getScanUrl(this._network)
+    if (!endpoint) {
+      return {}
+    }
+
+    const res = await fetch(
+      endpoint + CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API
+    ).catch(() => {})
+
+    if (!res.ok) {
+      console.warn(`Failed to fetch token whitelist from confluxscan`)
+      return {}
+    }
+
+    const {
+      code,
+      message,
+      result: { list: tokenList },
+    } = await res.json()
+
+    if (code !== 0) {
+      console.warn(
+        `Failed to fetch token whitelist from confluxscan, message: ${message}`
+      )
+      return {}
+    }
+
+    const validTokens = await Promise.all(
+      tokenList.reduce((acc, token) => {
+        if (token && token.tokenSymbol) {
+          acc.push(
+            fetch(
+              endpoint +
+                CONFLUX_SCAN_CONTRACT_MANAGER_QUERY_API +
+                '?address=' +
+                token.address +
+                '&fields=address,name,icon,tokenIcon,tokenSymbol,tokenDecimal,tokenName'
+            )
+              .then((res) => res.json())
+              .catch(() => {})
+          )
+        }
+        return acc
+      }, [])
+    )
+
+    const contractMap = {}
+    validTokens.forEach((tokenRes) => {
+      if (tokenRes && tokenRes.code === 0) {
+        const {
+          result: {
+            address,
+            name,
+            icon,
+            tokenIcon,
+            tokenSymbol,
+            tokenDecimal,
+            tokenName,
+          },
+        } = tokenRes
+        const checkSumedAddress = toChecksumAddress(address)
+        contractMap[checkSumedAddress] = {
+          address: checkSumedAddress,
+          name: tokenName || name,
+          symbol: tokenSymbol,
+          decimals: parseInt(tokenDecimal, 10) || 0,
+          logo: tokenIcon || icon || undefined,
+          erc20: true,
+        }
+      }
+    })
+    this._preferences.store.updateState({ trustedTokenMap: contractMap })
+    return contractMap
+  }
+
   /**
    * For each token in eth-contract-metada, find check selectedAddress balance.
    *
@@ -55,6 +144,7 @@ class DetectTokensController {
     }
     const tokensToDetect = []
     this.web3.setProvider(this._network._provider)
+    const contracts = this._preferences.store.getState().trustedTokenMap
     for (const contractAddress in contracts) {
       if (
         contracts[contractAddress].erc20 &&
@@ -104,6 +194,7 @@ class DetectTokensController {
    */
   async detectTokenBalance (contractAddress) {
     const ethContract = this.web3.eth.contract(ERC20_ABI).at(contractAddress)
+    const contracts = this._preferences.store.getState().trustedTokenMap
     ethContract.balanceOf(this.selectedAddress, (error, result) => {
       if (!error) {
         if (!result.isZero()) {
@@ -131,8 +222,10 @@ class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return
     }
-    this.detectNewTokens()
-    this.interval = DEFAULT_INTERVAL
+    this.refreshCachedTokenList().then(() => {
+      this.detectNewTokens()
+      this.interval = DEFAULT_INTERVAL
+    })
   }
 
   /**
@@ -178,6 +271,12 @@ class DetectTokensController {
       return
     }
     this._network = network
+    this._network.on('networkDidChange', (net) => {
+      if (net !== MAINNET && net !== TESTNET) {
+        return
+      }
+      this.restartTokenDetection()
+    })
     this.web3 = new Web3(network._provider)
   }
 

@@ -2612,7 +2612,7 @@ export function loadingTokenParamsFinished () {
 
 export function getTokenParams (tokenAddress) {
   return (dispatch, getState) => {
-    const existingTokens = getState().metamask.tokens
+    const { tokens: existingTokens, trustedTokenMap } = getState().metamask
     const existingToken = existingTokens.find(
       ({ address }) => tokenAddress === address
     )
@@ -2627,7 +2627,7 @@ export function getTokenParams (tokenAddress) {
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
-    return fetchSymbolAndDecimals(tokenAddress, existingTokens).then(
+    return fetchSymbolAndDecimals(tokenAddress, trustedTokenMap, existingTokens).then(
       ({ symbol, decimals }) => {
         dispatch(addToken(tokenAddress, symbol, decimals))
         dispatch(loadingTokenParamsFinished())

@@ -55,6 +55,7 @@ class PreferencesController {
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,
         },
+        trustedTokenMap: {},
         completedOnboarding: false,
         metaMetricsId: null,
         metaMetricsSendCount: 0,

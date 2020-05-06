@@ -27,6 +27,7 @@ class AddToken extends Component {
     clearPendingTokens: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    trustedTokenMap: PropTypes.object,
   }
 
   state = {
@@ -44,8 +45,8 @@ class AddToken extends Component {
   }
 
   componentDidMount () {
-    this.tokenInfoGetter = tokenInfoGetter()
-    const { pendingTokens = {} } = this.props
+    const { pendingTokens = {}, trustedTokenMap = {} } = this.props
+    this.tokenInfoGetter = tokenInfoGetter(trustedTokenMap)
     const pendingTokenKeys = Object.keys(pendingTokens)
 
     if (pendingTokenKeys.length > 0) {

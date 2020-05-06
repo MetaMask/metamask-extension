@@ -18,6 +18,7 @@ describe('Confirm Remove Account', function () {
     hideModal: sinon.spy(),
     removeAccount: sinon.stub().resolves(),
     network: '101',
+    trustedTokenMap: {},
     identity: {
       address: '0xAddress',
       name: 'Account 1',
