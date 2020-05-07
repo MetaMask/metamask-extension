@@ -158,6 +158,7 @@ class PendingTx extends Component {
       fontSize: '14px',
     }
 
+
     const isError = txMeta.simulationFails || !isValidAddress || insufficientBalance || (dangerousGasLimit && !gasLimitSpecified)
     return (
 
