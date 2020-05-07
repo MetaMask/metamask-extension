@@ -40,7 +40,7 @@ import EncryptionPublicKeyManager from './lib/encryption-public-key-manager'
 import PersonalMessageManager from './lib/personal-message-manager'
 import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
-import TokenRatesController from './controllers/token-rates'
+// import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
 import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
@@ -142,10 +142,10 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker
 
     // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      currency: this.currencyRateController,
-      preferences: this.preferencesController.store,
-    })
+    // this.tokenRatesController = new TokenRatesController({
+    //   currency: this.currencyRateController,
+    //   preferences: this.preferencesController.store,
+    // })
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
@@ -350,7 +350,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       CachedBalancesController: this.cachedBalancesController.store,
-      TokenRatesController: this.tokenRatesController.store,
+      // TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
@@ -2360,7 +2360,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
+    // this.tokenRatesController.isActive = active
   }
 
   /**
