@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.1.9 Thu May 07 2020
+
 ## 0.1.8 Mon Apr 27 2020
 - Version v0.1.7
 - Fix: firefox e2e test
