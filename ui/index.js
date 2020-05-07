@@ -63,17 +63,19 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    const origin = draftInitialState.activeTab.origin
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
     const selectedAddress = getSelectedAddress(draftInitialState)
     const switchToConnectedAlertShown = draftInitialState.metamask.switchToConnectedAlertShown
 
     if (
-      !switchToConnectedAlertShown &&
+      origin &&
+      !switchToConnectedAlertShown[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
       draftInitialState.switchToConnected = { state: ALERT_STATE.OPEN }
-      actions.setSwitchToConnectedAlertShown()
+      actions.setSwitchToConnectedAlertShown(origin)
     }
   }
 

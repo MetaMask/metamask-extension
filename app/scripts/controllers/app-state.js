@@ -28,7 +28,7 @@ export default class AppStateController extends EventEmitter {
         },
         initState,
         {
-          switchToConnectedAlertShown: false,
+          switchToConnectedAlertShown: {},
         }
       )
     )
@@ -49,7 +49,7 @@ export default class AppStateController extends EventEmitter {
       }
       if (currentState.switchToConnectedAlertShown && this.selectedAddress !== selectedAddress) {
         this.selectedAddress = selectedAddress
-        this.store.updateState({ switchToConnectedAlertShown: false })
+        this.store.updateState({ switchToConnectedAlertShown: {} })
       }
     })
 
@@ -121,8 +121,14 @@ export default class AppStateController extends EventEmitter {
     this._resetTimer()
   }
 
-  setSwitchToConnectedAlertShown () {
-    this.store.updateState({ switchToConnectedAlertShown: true })
+  /**
+   * Sets the "switch to connected" alert as shown for the given origin
+   * @param {string} origin - The origin the alert has been shown for
+   */
+  setSwitchToConnectedAlertShown (origin) {
+    const { switchToConnectedAlertShown } = this.store.getState()
+    switchToConnectedAlertShown[origin] = true
+    this.store.updateState({ switchToConnectedAlertShown })
   }
 
   /**

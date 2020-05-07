@@ -2162,8 +2162,8 @@ export function setAlertEnabledness (alertId, enabledness) {
   }
 }
 
-export async function setSwitchToConnectedAlertShown () {
-  await promisifiedBackground.setSwitchToConnectedAlertShown()
+export async function setSwitchToConnectedAlertShown (origin) {
+  await promisifiedBackground.setSwitchToConnectedAlertShown(origin)
 }
 
 export function loadingMethodDataStarted () {
