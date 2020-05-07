@@ -10,12 +10,12 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps
-      # - prep-build:
-      #     requires:
-      #       - prep-deps
-      # - prep-build-test:
-      #     requires:
-      #       - prep-deps
+      - prep-build:
+          requires:
+            - prep-deps
+      - prep-build-test:
+          requires:
+            - prep-deps
       # - prep-build-storybook:
       #     requires:
       #       - prep-deps
