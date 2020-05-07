@@ -25,7 +25,7 @@ export default class LoadingNetworkScreen extends PureComponent {
   }
 
   componentDidMount = () => {
-    this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+    this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 45000)
   }
 
   getConnectingLabel = function (loadingMessage) {
@@ -93,7 +93,7 @@ export default class LoadingNetworkScreen extends PureComponent {
               this.setState({ showErrorScreen: false })
               setProviderType(...setProviderArgs)
               window.clearTimeout(this.cancelCallTimeout)
-              this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+              this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 45000)
             }}
           >
             { this.context.t('tryAgain') }
@@ -117,7 +117,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     if (provider.type !== prevProvider.type) {
       window.clearTimeout(this.cancelCallTimeout)
       this.setState({ showErrorScreen: false })
-      this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 15000)
+      this.cancelCallTimeout = setTimeout(this.cancelCall, this.props.cancelTime || 45000)
     }
   }
 

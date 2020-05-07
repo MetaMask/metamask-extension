@@ -8,11 +8,13 @@ class Driver {
    * @param {string} browser - The type of browser this driver is controlling
    * @param {number} timeout
    */
-  constructor (driver, browser, extensionUrl, timeout = 10000) {
+  constructor (driver, browser, extensionUrl, extensionBackgroundUrl, timeout = 10000) {
     this.driver = driver
     this.browser = browser
     this.extensionUrl = extensionUrl
-    this.timeout = timeout
+    this.extensionBackgroundUrl = extensionBackgroundUrl
+    this._backgroundPageHandle = null
+    this.timeout = 120000
   }
 
   async delay (time) {
@@ -109,6 +111,12 @@ class Driver {
     await this.driver.switchTo().window(handle)
   }
 
+  async openBackgroundPage () {
+    const backgroundPageHandle = await this.openNewPage(this.extensionBackgroundUrl)
+    this._backgroundPageHandle = backgroundPageHandle
+    return backgroundPageHandle
+  }
+
   async getAllWindowHandles () {
     return await this.driver.getAllWindowHandles()
   }
@@ -149,10 +157,13 @@ class Driver {
    * @returns {Promise<void>}
    */
   async closeAllWindowHandlesExcept (exceptions, windowHandles) {
-    windowHandles = windowHandles || await this.driver.getAllWindowHandles()
+    const _exceptions = exceptions.includes(this._backgroundPageHandle)
+      ? exceptions
+      : [ ...exceptions, this._backgroundPageHandle ]
+    const _windowHandles = windowHandles || await this.driver.getAllWindowHandles()
 
-    for (const handle of windowHandles) {
-      if (!exceptions.includes(handle)) {
+    for (const handle of _windowHandles) {
+      if (!_exceptions.includes(handle)) {
         await this.driver.switchTo().window(handle)
         await this.delay(1000)
         await this.driver.close()

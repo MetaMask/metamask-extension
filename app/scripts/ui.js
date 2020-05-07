@@ -45,7 +45,8 @@ async function start () {
       : {}
     // remove unnecessary data
     delete state.localeMessages
-    delete state.metamask.recentBlocks
+    // delete state?.metamask.recentBlocks
+    state.metamask && delete state.metamask.recentBlocks
     // return state to be added to request
     return state
   }
@@ -159,7 +160,7 @@ function setupControllerConnection (connectionStream, cb) {
     },
   })
   connectionStream.pipe(backgroundDnode).pipe(connectionStream)
-  backgroundDnode.once('remote', function (backgroundConnection) {
+  backgroundDnode.on('remote', function (backgroundConnection) {
     backgroundConnection.on = eventEmitter.on.bind(eventEmitter)
     cb(null, backgroundConnection)
   })

@@ -8,11 +8,25 @@ async function buildWebDriver ({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER
   const extensionPath = `dist/${browser}`
 
-  const { driver: seleniumDriver, extensionId, extensionUrl } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
-  setupFetchMocking(seleniumDriver)
-  const driver = new Driver(seleniumDriver, browser, extensionUrl)
-  await driver.navigate()
+  const {
+    driver: seleniumDriver,
+    extensionId,
+    extensionUrl,
+    extensionBackgroundUrl,
+  } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
 
+  setupFetchMocking(seleniumDriver)
+
+  const driver = new Driver(
+    seleniumDriver,
+    browser,
+    extensionUrl,
+    extensionBackgroundUrl,
+  )
+
+  await driver.openBackgroundPage()
+  await driver.openNewPage('about:blank')
+  await driver.navigate()
   await driver.delay(1000)
 
   return {

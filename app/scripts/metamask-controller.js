@@ -341,6 +341,9 @@ export default class MetamaskController extends EventEmitter {
       EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
+    setTimeout(() => {
+      console.error('FOOBAR')
+    }, 5000)
   }
 
   /**

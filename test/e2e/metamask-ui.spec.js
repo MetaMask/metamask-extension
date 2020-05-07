@@ -114,6 +114,7 @@ describe('MetaMask', function () {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
+      throw new Error('KAPLAR')
     })
   })
 
@@ -131,7 +132,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Lock an unlock', function () {
+  describe('Lock and unlock', function () {
     it('logs out of the account', async function () {
       await driver.clickElement(By.css('.account-menu__icon'))
       await driver.delay(regularDelayMs)

@@ -16,6 +16,8 @@ const GeckoDriverCommand = {
   INSTALL_ADDON: 'install addon',
 }
 
+const EXTENSION_BACKGROUND_PAGE_PATH = '_generated_background_page.html'
+
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
  */
@@ -44,6 +46,8 @@ class FirefoxDriver {
 
     const extensionId = await fxDriver.installExtension(extensionPath)
     const internalExtensionId = await fxDriver.getInternalId()
+    const extensionUrl = `moz-extension://${internalExtensionId}`
+    const extensionBackgroundUrl = `${extensionUrl}/${EXTENSION_BACKGROUND_PAGE_PATH}`
 
     if (responsive) {
       await driver.manage().window().setRect({ width: 320, height: 600 })
@@ -52,7 +56,8 @@ class FirefoxDriver {
     return {
       driver,
       extensionId,
-      extensionUrl: `moz-extension://${internalExtensionId}`,
+      extensionUrl,
+      extensionBackgroundUrl,
     }
   }
 

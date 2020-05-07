@@ -1,6 +1,8 @@
 const { Builder } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome')
 
+const EXTENSION_BACKGROUND_PAGE_PATH = '_generated_background_page.html'
+
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
@@ -25,10 +27,13 @@ class ChromeDriver {
     const driver = builder.build()
     const chromeDriver = new ChromeDriver(driver)
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask')
+    const extensionUrl = `chrome-extension://${extensionId}`
+    const extensionBackgroundUrl = `${extensionUrl}/${EXTENSION_BACKGROUND_PAGE_PATH}`
 
     return {
       driver,
-      extensionUrl: `chrome-extension://${extensionId}`,
+      extensionUrl,
+      extensionBackgroundUrl,
     }
   }
 
