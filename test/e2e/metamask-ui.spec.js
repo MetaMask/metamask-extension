@@ -44,7 +44,7 @@ describe('MetaMask', function () {
 
   after(async function () {
     await ganacheServer.quit()
-    await driver.quit()
+    // await driver.quit()
   })
 
   describe('Going through the first time flow', function () {
@@ -214,6 +214,7 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask using default gas', function () {
     it('starts a send transaction', async function () {
+      await driver.delay(120000)
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Send')]`))
       await driver.delay(regularDelayMs)
 
