@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
-import blacklistJSON from 'eth-phishing-detect/src/config'
 import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
 import EthQuery from 'eth-query'
@@ -58,11 +57,6 @@ describe('MetaMaskController', function () {
   const noop = () => {}
 
   beforeEach(function () {
-
-    nock('https://api.infura.io')
-      .persist()
-      .get('/v2/blacklist')
-      .reply(200, blacklistJSON)
 
     nock('https://api.infura.io')
       .get('/v1/ticker/ethusd')
@@ -803,12 +797,11 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setupUntrustedCommunication', function () {
-    it('sets up phishing stream for untrusted communication ', async function () {
+    it('sets up phishing stream for untrusted communication', async function () {
       const phishingMessageSender = {
         url: 'http://myethereumwalletntw.com',
         tab: {},
       }
-      await metamaskController.phishingController.updatePhishingLists()
 
       const { promise, resolve } = deferredPromise()
       const streamTest = createThoughStream((chunk, _, cb) => {
