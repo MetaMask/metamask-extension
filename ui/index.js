@@ -12,29 +12,31 @@ import switchDirection from './app/helpers/utils/switch-direction'
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
+let startAppCalled = false
+
 export default function launchMetamaskUi (opts, cb) {
   console.log(`LAUNCH UI`)
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
-  let startAppCalled = false
   backgroundConnection.getState(function (err, metamaskState) {
     console.log('GET_STATE', err, backgroundConnection.on)
     if (err) {
       return cb(err)
     }
-    if (!startAppCalled) {
-      startAppCalled = true
-      startApp(metamaskState, backgroundConnection, opts)
-        .then((store) => {
-          setupDebuggingHelpers(store)
-          cb(null, store)
-        })
-    }
+    startApp(metamaskState, backgroundConnection, opts)
+      .then((store) => {
+        setupDebuggingHelpers(store)
+        cb(null, store)
+      })
   })
 }
 
 async function startApp (metamaskState, backgroundConnection, opts) {
+  if (startAppCalled) {
+    return
+  }
+  startAppCalled = true
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {}
