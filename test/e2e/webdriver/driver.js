@@ -14,7 +14,7 @@ class Driver {
     this.extensionUrl = extensionUrl
     this.extensionBackgroundUrl = extensionBackgroundUrl
     this._backgroundPageHandle = null
-    this.timeout = 120000
+    this.timeout = timeout
   }
 
   async delay (time) {

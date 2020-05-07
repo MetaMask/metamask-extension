@@ -114,7 +114,6 @@ describe('MetaMask', function () {
       await driver.findElement(By.xpath(`//div[contains(text(), 'Congratulations')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`))
       await driver.delay(regularDelayMs)
-      throw new Error('KAPLAR')
     })
   })
 
