@@ -7,6 +7,7 @@ const CONNECTIONS_ROUTE = '/settings/connections'
 const ADVANCED_ROUTE = '/settings/advanced'
 const SECURITY_ROUTE = '/settings/security'
 const ABOUT_US_ROUTE = '/settings/about-us'
+const ALERTS_ROUTE = '/settings/alerts'
 const NETWORKS_ROUTE = '/settings/networks'
 const CONTACT_LIST_ROUTE = '/settings/contact-list'
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
@@ -54,6 +55,7 @@ const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 
 export {
   DEFAULT_ROUTE,
+  ALERTS_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,
   SETTINGS_ROUTE,

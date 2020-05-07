@@ -31,6 +31,7 @@ import PreferencesController from './controllers/preferences'
 import AppStateController from './controllers/app-state'
 import InfuraController from './controllers/infura'
 import CachedBalancesController from './controllers/cached-balances'
+import AlertController from './controllers/alert'
 import OnboardingController from './controllers/onboarding'
 import ThreeBoxController from './controllers/threebox'
 import RecentBlocksController from './controllers/recent-blocks'
@@ -233,6 +234,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
+    this.alertController = new AlertController({ initState: initState.AlertController })
+
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -305,6 +308,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       ABTestController: this.abTestController.store,
@@ -331,6 +335,7 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       InfuraController: this.infuraController.store,
+      AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionsController: this.permissionsController.permissions,
@@ -440,6 +445,7 @@ export default class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const networkController = this.networkController
     const onboardingController = this.onboardingController
+    const alertController = this.alertController
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
     const threeBoxController = this.threeBoxController
@@ -555,6 +561,9 @@ export default class MetamaskController extends EventEmitter {
 
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
+
+      // alert controller
+      setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
 
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),

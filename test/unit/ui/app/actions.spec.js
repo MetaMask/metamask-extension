@@ -980,7 +980,7 @@ describe('Actions', function () {
     it('#showAccountDetail', async function () {
       setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
         .callsArgWith(1, null)
-      const store = mockStore({ metamask: { selectedAddress: '0x123' } })
+      const store = mockStore({ metamask: { alertEnabledness: {}, selectedAddress: '0x123' } })
 
       await store.dispatch(actions.showAccountDetail())
       assert(setSelectedAddressSpy.calledOnce)
@@ -989,7 +989,7 @@ describe('Actions', function () {
     it('displays warning if setSelectedAddress throws', async function () {
       setSelectedAddressSpy = sinon.stub(background, 'setSelectedAddress')
         .callsArgWith(1, new Error('error'))
-      const store = mockStore({ metamask: { selectedAddress: '0x123' } })
+      const store = mockStore({ metamask: { alertEnabledness: {}, selectedAddress: '0x123' } })
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
