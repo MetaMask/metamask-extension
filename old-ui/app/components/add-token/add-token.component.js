@@ -368,9 +368,9 @@ export default class AddTokenScreen extends Component {
     }
 
     const symbolLen = symbol.trim().length
-    const validSymbol = symbolLen > 0 && symbolLen < 10
+    const validSymbol = symbolLen > 0 && symbolLen < 23
     if (!validSymbol) {
-      msg += 'Symbol must be between 0 and 10 characters.'
+      msg += 'Symbol must be between 0 and 23 characters.'
     }
 
     let ownAddress = identitiesList.includes(standardAddress)
@@ -527,8 +527,8 @@ export default class AddTokenScreen extends Component {
     const symbolLength = customSymbol.length
     let customSymbolError = null
 
-    if (symbolLength <= 0 || symbolLength >= 10) {
-      customSymbolError = 'Symbol must be between 0 and 10 characters.' /* this.context.t('symbolBetweenZeroTen')*/
+    if (symbolLength <= 0 || symbolLength >= 23) {
+      customSymbolError = 'Symbol must be between 0 and 23 characters.' /* this.context.t('symbolBetweenZeroTen')*/
     }
 
     this.setState({ customSymbol, customSymbolError })

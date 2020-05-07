@@ -161,12 +161,13 @@ function numericBalance (balance) {
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
 function parseBalance (balance) {
+  let afterDecimal
   const wei = numericBalance(balance)
   const weiString = wei.toString()
   const trailingZeros = /0+$/
 
   const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  let afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
+  afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') { afterDecimal = '0' }
   return [beforeDecimal, afterDecimal]
 }

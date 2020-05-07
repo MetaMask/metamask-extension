@@ -244,6 +244,7 @@ module.exports = {
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
+        no2: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet'),
         yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
         arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
@@ -255,6 +256,7 @@ module.exports = {
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
       itemContract: By.id('react-select-4--option-2'),
+      itemContract1: By.id('react-select-3--option-2'),
       // itemContract2: By.id('react-select-3--option-2'),
       itemProxyContract: By.id('react-select-3--option-3'),
       // itemProxyContract2: By.id('react-select-2--option-3'),
@@ -296,7 +298,7 @@ module.exports = {
       accountName: By.className('font-medium color-forest'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
-      transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
+      transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div.flex-column > div > div:nth-child(1)'),
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
@@ -307,7 +309,7 @@ module.exports = {
       },
       network: By.className('network-name'),
       sent: {
-        menu: By.className('wallet-view__tab-history'),
+        menu: By.css('#wallet-view__tab-history'),
         tokens: By.className('activeForm right'),
       },
       // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),

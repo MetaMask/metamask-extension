@@ -161,9 +161,9 @@ describe('MetaMaskController', function () {
         getState: () => {
           return {
             recentBlocks: [
-              { number: '0x1', minimumGasPrice: '59240010' },
-              { number: '0x2', minimumGasPrice: '59240005' },
-              { number: '0x3', minimumGasPrice: '59240000' },
+              { number: '0x1', minimumGasPrice: '0x387ee48' },
+              { number: '0x2', minimumGasPrice: '0x387ee42' },
+              { number: '0x3', minimumGasPrice: '0x387ee40' },
             ],
           }
         },
@@ -175,7 +175,7 @@ describe('MetaMaskController', function () {
         getState: () => {
           return {
             recentBlocks: [
-              { number: '0x4', minimumGasPrice: '0' },
+              { number: '0x4', minimumGasPrice: '0x' },
             ],
           }
         },

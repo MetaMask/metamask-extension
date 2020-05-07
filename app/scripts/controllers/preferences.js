@@ -47,7 +47,7 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
-    this.showWatchAssetUi = opts.showWatchAssetUi
+    this.openPopup = opts.openPopup
     this._subscribeProviderType()
   }
 // PUBLIC METHODS
@@ -591,7 +591,7 @@ class PreferencesController {
     }
     const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
-    return this.showWatchAssetUi().then(() => {
+    return this.openPopup().then(() => {
       const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
       return tokenAddresses.length > 0
     })

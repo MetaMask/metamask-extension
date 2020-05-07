@@ -3,11 +3,8 @@ const OldMetaMaskUiCss = require('../../old-ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
 import extension from 'extensionizer'
 const ExtensionPlatform = require('./platforms/extension')
-const NotificationManager = require('./lib/notification-manager')
-const notificationManager = new NotificationManager()
 const setupRaven = require('./lib/setupRaven')
 const log = require('loglevel')
 
@@ -29,7 +26,6 @@ async function start () {
   // identify window type (popup, notification)
   const windowType = getEnvironmentType(window.location.href)
   global.METAMASK_UI_TYPE = windowType
-  closePopupIfOpen(windowType)
 
   // setup stream to background
   const extensionPort = extension.runtime.connect({ name: windowType })
@@ -50,13 +46,6 @@ async function start () {
     injectCss(css)
   })
 
-
-  function closePopupIfOpen (windowType) {
-    if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
-      // should close only chrome popup
-      notificationManager.closePopup()
-    }
-  }
 
   function displayCriticalError (err) {
     container.innerHTML = '<div class="critical-error">The Nifty Wallet app failed to load: please open and close Nifty Wallet again to restart.</div>'

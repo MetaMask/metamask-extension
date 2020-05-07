@@ -1,167 +1,169 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const Identicon = require('./identicon')
-const ethNetProps = require('eth-net-props')
-const Dropdown = require('./dropdown').Dropdown
-const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-const copyToClipboard = require('copy-to-clipboard')
-const actions = require('../../../ui/app/actions')
-const connect = require('react-redux').connect
-const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Identicon from './identicon'
+import ethNetProps from 'eth-net-props'
+import { Dropdown, DropdownMenuItem } from './dropdown'
+import copyToClipboard from 'copy-to-clipboard'
+import { connect } from 'react-redux'
 import { countSignificantDecimals, toChecksumAddress } from '../util'
+import actions from '../../../ui/app/actions'
+const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
 
-inherits(TokenCell, Component)
-function TokenCell () {
-  Component.call(this)
-
-  this.state = {
-    optionsMenuActive: false,
+class TokenCell extends Component {
+  static propTypes = {
+    address: PropTypes.string,
+    symbol: PropTypes.string,
+    string: PropTypes.string,
+    network: PropTypes.string,
+    ind: PropTypes.number,
+    showSendTokenPage: PropTypes.func,
+    isLastTokenCell: PropTypes.bool,
+    userAddress: PropTypes.string,
+    menuToTop: PropTypes.bool,
+    removeToken: PropTypes.func,
   }
-  this.optionsMenuToggleClassName = 'token-dropdown'
-}
 
-TokenCell.prototype.render = function () {
-  const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop, ind } = this.props
-  const { optionsMenuActive } = this.state
+  constructor () {
+    super()
 
-  const tokenBalanceRaw = Number.parseFloat(string)
-  const tokenBalance = tokenBalanceRaw.toFixed(countSignificantDecimals(tokenBalanceRaw, 2))
+    this.state = {
+      optionsMenuActive: false,
+    }
+    this.optionsMenuToggleClassName = 'token-dropdown'
+  }
 
-  return (
-    h(`li#token-cell_${ind}.token-cell`, {
-      style: {
-        cursor: Number(network) === MAINNET_CODE ? 'pointer' : 'default',
-        borderBottom: isLastTokenCell ? 'none' : '1px solid #e2e2e2',
-        padding: '20px 0',
-        margin: '0 30px',
-      },
-      onClick: this.view.bind(this, address, userAddress, network),
-    }, [
+  render () {
+    const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop, ind } = this.props
+    const { optionsMenuActive } = this.state
 
-      h(Identicon, {
-        diameter: 50,
-        address,
-        network,
-      }),
+    const tokenBalanceRaw = Number.parseFloat(string)
+    const tokenBalance = tokenBalanceRaw.toFixed(countSignificantDecimals(tokenBalanceRaw, 2))
 
-      h('h3', {
-        style: {
-          fontFamily: 'Nunito Bold',
-          fontSize: '14px',
-        },
-      }, `${tokenBalance || 0} ${symbol}`),
+    return (
+      <span
+        id={`token-cell_${ind}`}
+        className="token-cell"
+        style= {{
+          cursor: Number(network) === MAINNET_CODE ? 'pointer' : 'default',
+          borderBottom: isLastTokenCell ? 'none' : '1px solid #e2e2e2',
+          padding: '20px 0',
+          margin: '0 30px',
+        }}
+        key={`token-cell_${ind}`}
+        onClick= {this.view.bind(this, address, userAddress, network)}
+      >
+        <Identicon
+          diameter= {50}
+          address={address}
+          network={network}
+        />
 
-      h('span', { style: { flex: '1 0 auto' } }),
+        <h3
+          style= {{
+            fontFamily: 'Nunito Bold',
+            fontSize: '14px',
+          }}
+        >
+          {`${tokenBalance || 0} ${symbol}`}
+        </h3>
 
-      h(`div#${tokenCellDropDownPrefix}${ind}.address-dropdown.token-dropdown`,
-        {
-          style: { cursor: 'pointer' },
-          onClick: (event) => {
-            event.stopPropagation()
-            this.setState({
-              optionsMenuActive: !optionsMenuActive,
-            })
-          },
-        },
-        this.renderTokenOptions(menuToTop, ind),
-      ),
+        <span
+          style= {{ flex: '1 0 auto' }}
+        />
 
-      /*
-      h('button', {
-        onClick: this.send.bind(this, address),
-      }, 'SEND'),
-      */
+        <div
+          id={`${tokenCellDropDownPrefix}${ind}`}
+          className="address-dropdown token-dropdown"
+          style= {{ cursor: 'pointer' }}
+          onClick= {(event) => {
+              event.stopPropagation()
+              this.setState({
+                optionsMenuActive: !optionsMenuActive,
+              })
+            }}
+        >
+          {this.renderTokenOptions(menuToTop, ind)}
+        </div>
+      </span>
+    )
+  }
 
-    ])
-  )
-}
+  renderTokenOptions (menuToTop, ind) {
+    const { address, symbol, string, network, userAddress, showSendTokenPage } = this.props
+    const { optionsMenuActive } = this.state
 
-TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
-  const { address, symbol, string, network, userAddress, showSendTokenPage } = this.props
-  const { optionsMenuActive } = this.state
-
-  return h(
-    Dropdown,
-    {
-      style: {
+    return (
+    <Dropdown
+      style= {{
         position: 'relative',
         marginLeft: menuToTop ? '-273px' : '-263px',
         minWidth: '180px',
         marginTop: menuToTop ? '-214px' : '30px',
         width: '280px',
-      },
-      isOpen: optionsMenuActive,
-      onClickOutside: (event) => {
+      }}
+      isOpen={optionsMenuActive}
+      onClickOutside={(event) => {
         const { classList, id: targetID } = event.target
         const isNotToggleCell = !classList.contains(this.optionsMenuToggleClassName)
         const isAnotherCell = targetID !== `${tokenCellDropDownPrefix}${ind}`
         if (optionsMenuActive && (isNotToggleCell || (!isNotToggleCell && isAnotherCell))) {
           this.setState({ optionsMenuActive: false })
         }
-      },
-    },
-    [
-      h(
-        DropdownMenuItem,
-        {
-          closeMenu: () => {},
-          onClick: () => {
-            showSendTokenPage(address)
-          },
-        },
-        `Send`,
-      ),
-      h(
-        DropdownMenuItem,
-        {
-          closeMenu: () => {},
-          onClick: () => {
-            const { network } = this.props
-            const url = ethNetProps.explorerLinks.getExplorerTokenLinkFor(address, userAddress, network)
-            global.platform.openWindow({ url })
-          },
-        },
-        `View token on block explorer`,
-      ),
-      h(
-        DropdownMenuItem,
-        {
-          closeMenu: () => {},
-          onClick: () => {
-            const checkSumAddress = address && toChecksumAddress(network, address)
-            copyToClipboard(checkSumAddress)
-          },
-        },
-        'Copy address to clipboard',
-      ),
-      h(
-        DropdownMenuItem,
-        {
-          closeMenu: () => {},
-          onClick: () => {
-            this.props.removeToken({ address, symbol, string, network, userAddress })
-          },
-        },
-        'Remove',
-      ),
-    ],
-  )
-}
+      }}
+    >
+        <DropdownMenuItem
+            closeMenu={() => {}}
+            onClick={() => {
+              showSendTokenPage(address)
+            }}
+        >
+          Send
+        </DropdownMenuItem>
+        <DropdownMenuItem
+            closeMenu={() => {}}
+            onClick={() => {
+              const { network } = this.props
+              const url = ethNetProps.explorerLinks.getExplorerTokenLinkFor(address, userAddress, network)
+              global.platform.openWindow({ url })
+            }}
+        >
+          View token on block explorer
+        </DropdownMenuItem>
+        <DropdownMenuItem
+            closeMenu={() => {}}
+            onClick={() => {
+              const checkSumAddress = address && toChecksumAddress(network, address)
+              copyToClipboard(checkSumAddress)
+            }}
+        >
+          Copy address to clipboard
+        </DropdownMenuItem>
+        <DropdownMenuItem
+            closeMenu={() => {}}
+            onClick={() => {
+              this.props.removeToken({ address, symbol, string, network, userAddress })
+            }}
+        >
+          Remove
+        </DropdownMenuItem>
+    </Dropdown>
+    )
+  }
 
-TokenCell.prototype.send = function (address, event) {
-  event.preventDefault()
-  event.stopPropagation()
-  const url = tokenFactoryFor(address)
-  navigateTo(url)
-}
-
-TokenCell.prototype.view = function (address, userAddress, network, event) {
-  const url = ethNetProps.explorerLinks.getExplorerTokenLinkFor(address, userAddress, network)
-  if (url) {
+  send (address, event) {
+    event.preventDefault()
+    event.stopPropagation()
+    const url = tokenFactoryFor(address)
     navigateTo(url)
+  }
+
+  view (address, userAddress, network, _event) {
+    const url = ethNetProps.explorerLinks.getExplorerTokenLinkFor(address, userAddress, network)
+    if (url) {
+      navigateTo(url)
+    }
   }
 }
 
