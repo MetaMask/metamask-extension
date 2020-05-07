@@ -15,7 +15,7 @@ import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
-import ToastComponent from '../toast'
+import * as Toast from '../toast'
 
 const optionalDataLabelStyle = {
   background: '#ffffff',
@@ -42,7 +42,7 @@ class SendTransactionScreen extends PersistentForm {
 
     return (
       <div className="send-screen flex-column flex-grow">
-        <ToastComponent isSuccess={false} />
+        <Toast.ToastComponent type={Toast.TOAST_TYPE_ERROR} />
         <SendProfile/>
 
         <SendHeader

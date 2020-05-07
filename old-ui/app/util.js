@@ -39,7 +39,7 @@ const {
   RSK,
   RSK_TESTNET,
   RSK_TICK,
-  // customDPaths,
+  customDPaths,
 } = require('../../app/scripts/controllers/network/enums')
 
 const valueTable = {
@@ -88,6 +88,7 @@ module.exports = {
   ifHardwareAcc,
   getAllKeyRingsAccounts,
   ifRSK,
+  ifETC,
   ifRSKByProviderType,
   ifPOA,
   toChecksumAddress,
@@ -432,6 +433,12 @@ function ifRSK (network) {
   return numericNet === RSK_CODE || numericNet === RSK_TESTNET_CODE
 }
 
+function ifETC (network) {
+  if (!network) return false
+  const numericNet = isNaN(network) ? network : parseInt(network)
+  return numericNet === CLASSIC_CODE
+}
+
 function ifRSKByProviderType (type) {
   if (!type) return false
   return type === RSK || type === RSK_TESTNET
@@ -557,14 +564,16 @@ function getNetworkID ({ network }) {
   }
 }
 
-function getDPath (network) {
-  // todo: return when the robust solution will be ready
-  return `m/44'/60'/0'/0`
-  // return customDPaths[network] || `m/44'/60'/0'/0`
+function getDPath (networkType, isCreatedWithCorrectDPath) {
+  if (isCreatedWithCorrectDPath) {
+    return customDPaths[networkType] || `m/44'/60'/0'/0`
+  } else {
+    return `m/44'/60'/0'/0`
+  }
 }
 
-function setDPath (keyring, network) {
-  const dPath = getDPath(network)
+function setDPath (keyring, networkType, isCreatedWithCorrectDPath) {
+  const dPath = getDPath(networkType, isCreatedWithCorrectDPath)
   if (dPath && keyring.setHdPath) {
     keyring.setHdPath(dPath)
   }

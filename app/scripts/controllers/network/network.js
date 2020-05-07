@@ -12,10 +12,10 @@ import createJsonRpcClient from './createJsonRpcClient'
 import createLocalhostClient from './createLocalhostClient'
 const createPocketClient = require('./createPocketClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
-const ethNetProps = require('eth-net-props')
+import ethNetProps from 'eth-net-props'
 import parse from 'url-parse'
 const networks = { networkList: {} }
-const { isKnownProvider, getDPath } = require('../../../../old-ui/app/util')
+const { isKnownProvider } = require('../../../../old-ui/app/util')
 
 const {
   ROPSTEN,
@@ -205,8 +205,6 @@ module.exports = class NetworkController extends EventEmitter {
     const previousNetworkID = this.getNetworkState()
     this.setNetworkState('loading')
     this._configureProvider(opts)
-    const dPath = getDPath(opts.type)
-    this.store.updateState({ dPath })
     this.emit('networkDidChange', opts.type, previousNetworkID)
   }
 

@@ -4,10 +4,11 @@ import actions from '../../../../ui/app/actions'
 import { connect } from 'react-redux'
 import { DropdownMenuItem } from '../dropdown'
 import Identicon from '../identicon'
-import { ifLooseAcc, ifContractAcc, ifHardwareAcc } from '../../util'
+import { ifLooseAcc, ifContractAcc, ifHardwareAcc, ifRSK, ifETC } from '../../util'
 import { getHdPaths, isLedger } from '../connect-hardware/util'
 import { LEDGER } from '../connect-hardware/enum'
 import { importTypes, labels } from '../../accounts/import/enums'
+import { ERROR_ON_INCORRECT_DPATH } from '../toast'
 
 class AccountsDropdownItemView extends Component {
   static propTypes = {
@@ -100,7 +101,7 @@ class AccountsDropdownItemView extends Component {
     }
   }
 
-  ifProxyAcc (address, setProxy) {
+  ifProxyAcc (address, _setProxy) {
     return new Promise((resolve, reject) => {
       this.props.actions.getContract(address)
       .then(contractProps => {
@@ -138,6 +139,15 @@ class AccountsDropdownItemView extends Component {
       } else {
         this.preventToast()
       }
+    } else if (!ifLooseAcc(keyring) && !ifContractAcc(keyring) && (ifRSK(this.props.network) || ifETC(this.props.network))) {
+      this.props.actions.isCreatedWithCorrectDPath()
+      .then(isCreatedWithCorrectDPath => {
+        if (isCreatedWithCorrectDPath) {
+          this.preventToast()
+        } else {
+          this.props.actions.displayToast(ERROR_ON_INCORRECT_DPATH)
+        }
+      })
     } else {
         this.preventToast()
     }
@@ -152,6 +162,13 @@ class AccountsDropdownItemView extends Component {
   }
 }
 
+function mapStateToProps (state) {
+  const result = {
+    network: state.metamask.network,
+  }
+
+  return result
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -163,10 +180,11 @@ const mapDispatchToProps = (dispatch) => {
         return dispatch(actions.connectHardwareAndUnlockAddress(deviceName, hdPath, address))
       },
       displayToast: (msg) => dispatch(actions.displayToast(msg)),
+      isCreatedWithCorrectDPath: () => dispatch(actions.isCreatedWithCorrectDPath()),
     },
   }
 }
 
 module.exports = {
-  AccountsDropdownItemView: connect(null, mapDispatchToProps)(AccountsDropdownItemView),
+  AccountsDropdownItemView: connect(mapStateToProps, mapDispatchToProps)(AccountsDropdownItemView),
 }

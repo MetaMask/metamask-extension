@@ -1,8 +1,8 @@
-const extend = require('xtend')
+import extend from 'xtend'
+import log from 'loglevel'
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
 const { customHdPaths } = require('../../../old-ui/app/components/connect-hardware/util.js')
-const log = require('loglevel')
 
 module.exports = reduceApp
 

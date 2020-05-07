@@ -4,7 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const { getCurrentKeyring, ifContractAcc, valuesFor, toChecksumAddress } = require('./util')
+const { getCurrentKeyring, ifContractAcc, valuesFor, toChecksumAddress, ifLooseAcc, ifRSK, ifETC } = require('./util')
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
@@ -14,10 +14,10 @@ const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns/account-dropdowns.component').AccountDropdowns
 const CopyButton = require('./components/copy/copy-button')
-const ToastComponent = require('./components/toast')
+import * as Toast from './components/toast'
 import { getMetaMaskAccounts } from '../../ui/app/selectors'
 
-module.exports = connect(mapStateToProps)(AccountDetailScreen)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
   const accounts = getMetaMaskAccounts(state)
@@ -42,9 +42,64 @@ function mapStateToProps (state) {
   }
 }
 
+function mapDispatchToProps (dispatch) {
+  return {
+    actions: {
+      showSendPage: () => dispatch(actions.showSendPage()),
+      showSendContractPage: ({ methodSelected, methodABI, inputValues }) => dispatch(actions.showSendContractPage({methodSelected, methodABI, inputValues})),
+      buyEthView: (selected) => dispatch(actions.buyEthView(selected)),
+      viewPendingTx: (txId) => dispatch(actions.viewPendingTx(txId)),
+      setAccountLabel: (account, label) => dispatch(actions.setAccountLabel(account, label)),
+      showRemoveTokenPage: (token) => dispatch(actions.showRemoveTokenPage(token)),
+      showAddSuggestedTokenPage: () => dispatch(actions.showAddSuggestedTokenPage()),
+      showAddTokenPage: () => dispatch(actions.showAddTokenPage()),
+      setCurrentAccountTab: (key) => dispatch(actions.setCurrentAccountTab(key)),
+      displayToast: (msg) => dispatch(actions.displayToast(msg)),
+      isCreatedWithCorrectDPath: () => dispatch(actions.isCreatedWithCorrectDPath()),
+    },
+  }
+}
+
 inherits(AccountDetailScreen, Component)
 function AccountDetailScreen () {
   Component.call(this)
+}
+
+AccountDetailScreen.prototype.componentDidMount = function () {
+  const props = this.props
+  const { address, network, keyrings, identities } = props
+  props.actions.isCreatedWithCorrectDPath()
+  .then(isCreatedWithCorrectDPath => {
+    if (!isCreatedWithCorrectDPath) {
+      const currentKeyring = getCurrentKeyring(address, network, keyrings, identities)
+      if (!ifLooseAcc(currentKeyring) && !ifContractAcc(currentKeyring) && (ifRSK(network) || ifETC(network))) {
+        props.actions.displayToast(Toast.ERROR_ON_INCORRECT_DPATH)
+      }
+    }
+  })
+}
+
+AccountDetailScreen.prototype.componentWillUpdate = function (nextProps) {
+  const {
+    network: oldNet,
+  } = this.props
+  const {
+    network: newNet,
+  } = nextProps
+
+  if (oldNet !== newNet) {
+    const props = this.props
+    const { address, keyrings, identities } = props
+    props.actions.isCreatedWithCorrectDPath()
+    .then(isCreatedWithCorrectDPath => {
+      if (!isCreatedWithCorrectDPath) {
+        const currentKeyring = getCurrentKeyring(address, newNet, keyrings, identities)
+        if (!ifLooseAcc(currentKeyring) && !ifContractAcc(currentKeyring) && (ifRSK(newNet) || ifETC(newNet))) {
+          props.actions.displayToast(Toast.ERROR_ON_INCORRECT_DPATH)
+        }
+      }
+    })
+  }
 }
 
 AccountDetailScreen.prototype.render = function () {
@@ -56,7 +111,7 @@ AccountDetailScreen.prototype.render = function () {
   const account = props.accounts[selected]
 
   if (Object.keys(props.suggestedTokens).length > 0) {
-    this.props.dispatch(actions.showAddSuggestedTokenPage())
+    this.props.actions.showAddSuggestedTokenPage()
   }
 
   const currentKeyring = getCurrentKeyring(props.address, network, props.keyrings, props.identities)
@@ -65,8 +120,9 @@ AccountDetailScreen.prototype.render = function () {
 
     h('.account-detail-section.full-flex-height', [
 
-      h(ToastComponent, {
-        isSuccess: false,
+      h(Toast.ToastComponent, {
+        type: Toast.TOAST_TYPE_ERROR,
+        hideManually: true,
       }),
 
     // identicon, label, balance, etc
@@ -108,7 +164,7 @@ AccountDetailScreen.prototype.render = function () {
                 isEditingLabel: false,
               },
               saveText: (text) => {
-                props.dispatch(actions.setAccountLabel(selected, text))
+                props.actions.setAccountLabel(selected, text)
               },
             }, [
 
@@ -223,16 +279,16 @@ AccountDetailScreen.prototype.render = function () {
           h('.flex-grow'),
 
           !ifContractAcc(currentKeyring) ? h('button', {
-            onClick: () => props.dispatch(actions.buyEthView(selected)),
+            onClick: () => props.actions.buyEthView(selected),
             style: { marginRight: '10px' },
           }, 'Buy') : null,
 
           h('button', {
             onClick: () => {
               if (ifContractAcc(currentKeyring)) {
-                return props.dispatch(actions.showSendContractPage({}))
+                return props.actions.showSendContractPage({})
               } else {
-                return props.dispatch(actions.showSendPage())
+                return props.actions.showSendPage()
               }
             },
           }, ifContractAcc(currentKeyring) ? 'Execute methods' : 'Send'),
@@ -278,7 +334,7 @@ AccountDetailScreen.prototype.tabSections = function () {
       ],
       defaultTab: currentAccountTab || 'history',
       tabSelected: (key) => {
-        this.props.dispatch(actions.setCurrentAccountTab(key))
+        this.props.actions.setCurrentAccountTab(key)
       },
     }),
 
@@ -297,8 +353,8 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
         userAddress: address,
         network,
         tokens,
-        addToken: () => this.props.dispatch(actions.showAddTokenPage()),
-        removeToken: (token) => this.props.dispatch(actions.showRemoveTokenPage(token)),
+        addToken: () => this.props.actions.showAddTokenPage(),
+        removeToken: (token) => this.props.actions.showRemoveTokenPage(token),
       })
     default:
       return this.transactionList()
@@ -317,7 +373,7 @@ AccountDetailScreen.prototype.transactionList = function () {
     address,
     shapeShiftTxList,
     viewPendingTx: (txId) => {
-      this.props.dispatch(actions.viewPendingTx(txId))
+      this.props.actions.viewPendingTx(txId)
     },
   })
 }

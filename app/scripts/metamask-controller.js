@@ -52,7 +52,7 @@ const version = require('../manifest.json').version
 import ethUtil, { BN } from 'ethereumjs-util'
 const GWEI_BN = new BN('1000000000')
 import percentile from 'percentile'
-const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
+import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
@@ -169,26 +169,32 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // ensure accountTracker updates balances after network change
-    this.networkController.on('networkDidChange', (newType, previousNetworkIDStr) => {
-      const dPath = getDPath(newType)
-      this.deriveKeyringFromNewDPath(dPath)
-      .then(accounts => {
-        this.accountTracker._updateAccounts()
-        this.detectTokensController.restartTokenDetection()
+    this.networkController.on('networkDidChange', (newNetworkType, previousNetworkIDStr) => {
+      this.keyringController.isCreatedWithCorrectDPath()
+      .then(isCreatedWithCorrectDPath => {
+        const dPath = getDPath(newNetworkType, isCreatedWithCorrectDPath)
+        this.deriveKeyringFromNewDPath(dPath)
+        .then(_accounts => {
+          this.accountTracker._updateAccounts()
+          this.detectTokensController.restartTokenDetection()
 
-        const previousNetworkID = parseInt(previousNetworkIDStr, 10)
-        const nextNetwork = getNetworkID({network: newType})
-        const nextNetworkID = parseInt(nextNetwork && nextNetwork.netId, 10)
-        if (nextNetworkID !== previousNetworkID) {
-          const isPreviousETC = previousNetworkID === CLASSIC_CODE
-          const isPreviousRSK = ifRSK(previousNetworkID)
-          const isNextETC = nextNetworkID === CLASSIC_CODE
-          const isNextRSK = ifRSK(nextNetworkID)
-          if (isPreviousETC || isPreviousRSK || isNextETC || isNextRSK) {
-            this.forgetDevice(LEDGER, false)
-            this.forgetDevice(TREZOR, false)
+          const previousNetworkID = parseInt(previousNetworkIDStr, 10)
+          const nextNetwork = getNetworkID({network: newNetworkType})
+          const nextNetworkID = parseInt(nextNetwork && nextNetwork.netId, 10)
+          if (nextNetworkID !== previousNetworkID) {
+            const isPreviousETC = previousNetworkID === CLASSIC_CODE
+            const isPreviousRSK = ifRSK(previousNetworkID)
+            const isNextETC = nextNetworkID === CLASSIC_CODE
+            const isNextRSK = ifRSK(nextNetworkID)
+            if (isPreviousETC || isPreviousRSK || isNextETC || isNextRSK) {
+              this.forgetDevice(LEDGER, false)
+              this.forgetDevice(TREZOR, false)
+            }
           }
-        }
+        })
+        .catch(e => {
+          console.log(e)
+        })
       })
       .catch(e => {
         console.log(e)
@@ -493,6 +499,7 @@ module.exports = class MetamaskController extends EventEmitter {
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       addNewMultisig: nodeify(keyringController.addNewMultisig, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
+      isCreatedWithCorrectDPath: nodeify(keyringController.isCreatedWithCorrectDPath, keyringController),
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
@@ -582,7 +589,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {} password
    * @param  {} seed
    */
-  async createNewVaultAndRestore (password, seed) {
+  async createNewVaultAndRestore (password, seed, dPath) {
     const releaseLock = await this.createVaultMutex.acquire()
     try {
       let accounts, lastBalance
@@ -592,9 +599,8 @@ module.exports = class MetamaskController extends EventEmitter {
       // clear known identities
       this.preferencesController.setAddresses([])
       // create new vault
-      const network = this.networkController.getProviderConfig().type
-      const dPath = getDPath(network)
-      this.store.updateState({dPath})
+      const networkType = this.networkController.getProviderConfig().type
+      const isCreatedWithCorrectDPath = true
       const vault = await keyringController.createNewVaultAndRestore(password, seed, dPath)
 
       const ethQuery = new EthQuery(this.provider)
@@ -606,7 +612,7 @@ module.exports = class MetamaskController extends EventEmitter {
         throw new Error('MetamaskController - No HD Key Tree found')
       }
 
-      setDPath(primaryKeyring, network)
+      setDPath(primaryKeyring, networkType, isCreatedWithCorrectDPath)
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
@@ -911,13 +917,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount () {
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const keyringController = this.keyringController
+    const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
-    const network = this.networkController.getProviderConfig().type
-    setDPath(primaryKeyring, network)
-    const keyringController = this.keyringController
+    const networkType = this.networkController.getProviderConfig().type
+    const isCreatedWithCorrectDPath = await keyringController.isCreatedWithCorrectDPath()
+    setDPath(primaryKeyring, networkType, isCreatedWithCorrectDPath)
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
@@ -965,12 +972,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase () {
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const keyringController = this.keyringController
+    const isCreatedWithCorrectDPath = await keyringController.isCreatedWithCorrectDPath()
+    const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
-    const network = this.networkController.getProviderConfig().type
-    setDPath(primaryKeyring, network)
+    const networkType = this.networkController.getProviderConfig().type
+    setDPath(primaryKeyring, networkType, isCreatedWithCorrectDPath)
 
     const serialized = await primaryKeyring.serialize()
     const seedWords = serialized.mnemonic
@@ -981,7 +990,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedWords, network)
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords, networkType, isCreatedWithCorrectDPath)
       return seedWords
     } catch (err) {
       log.error(err.message)
@@ -1086,8 +1095,6 @@ module.exports = class MetamaskController extends EventEmitter {
       const privateKey = await accountImporter.importAccount(strategy, args)
       keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
     }
-    const network = this.networkController.getProviderConfig().type
-    setDPath(keyring, network)
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()
