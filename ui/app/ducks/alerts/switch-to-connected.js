@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
+import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 import * as actionConstants from '../../store/actionConstants'
 import { setSelectedAddress } from '../../store/actions'
 
@@ -13,7 +14,7 @@ export const ALERT_STATE = {
   OPEN: 'OPEN',
 }
 
-const name = 'switchToConnected'
+const name = ALERT_TYPES.switchToConnected
 
 const initialState = {
   state: ALERT_STATE.CLOSED,

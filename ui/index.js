@@ -8,6 +8,7 @@ import * as actions from './app/store/actions'
 import configureStore from './app/store/store'
 import txHelper from './lib/tx-helper'
 import { getEnvironmentType } from '../app/scripts/lib/util'
+import { ALERT_TYPES } from '../app/scripts/controllers/alert'
 import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
 import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
@@ -74,7 +75,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState.switchToConnected = { state: ALERT_STATE.OPEN }
+      draftInitialState[ALERT_TYPES.switchToConnected] = { state: ALERT_STATE.OPEN }
       actions.setSwitchToConnectedAlertShown(origin)
     }
   }

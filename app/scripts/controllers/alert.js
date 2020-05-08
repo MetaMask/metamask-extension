@@ -12,6 +12,7 @@ import ObservableStore from 'obs-store'
  */
 
 export const ALERT_TYPES = {
+  switchToConnected: 'switchToConnected',
   unconnectedAccount: 'unconnectedAccount',
 }
 
