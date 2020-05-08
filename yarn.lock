@@ -1849,6 +1849,34 @@
     scroll "^2.0.3"
     warning "^3.0.0"
 
+"@metamask/controllers@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-2.0.0.tgz#e57762c213d2722fd178d4c5c288ad98a2ee8bdf"
+  integrity sha512-J2DSoyyPRAilTdohl43O5tZdqOSMvB94Kx1ApRpkPZxQwtDUIzWHRpTXptyCEwkhaOdkNz9BvWMoaRQxjktfKw==
+  dependencies:
+    await-semaphore "^0.1.3"
+    eth-contract-metadata "^1.11.0"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-errors "^2.0.2"
+    eth-json-rpc-infura "^4.0.1"
+    eth-keyring-controller "^5.6.1"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-sig-util "^2.3.0"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "0.6.0"
+    ethjs-query "^0.3.8"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    isomorphic-fetch "^2.2.1"
+    jsonschema "^1.2.4"
+    percentile "^1.2.1"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^15.0.4"
+
 "@metamask/eslint-config@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.1.0.tgz#03c6fbec8ba3d95fa017d8b98ab5d0701f7458a4"
@@ -12554,7 +12582,7 @@ fuse.js@^3.4.6:
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.6.tgz#545c3411fed88bf2e27c457cab6e73e7af697a45"
   integrity sha512-H6aJY4UpLFwxj1+5nAvufom5b2BT2v45P1MkPvdGIK8fWjQx/7o6tTT1+ALV0yawQvbmvCF0ufl2et8eJ7v7Cg==
 
-gaba@^1.11.0, gaba@^1.9.3:
+gaba@^1.9.3:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.11.0.tgz#7ff49cad2f2b95941222121a1984bb63783fe076"
   integrity sha512-rQcLgR/FHQ8W6oNza/vxFnkbav0vgauBxm6LKqK6BkbjJGB979qoBRVja9fU/H5dUMiYmHJO9CrHjL0ofG/ukA==

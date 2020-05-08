@@ -1,6 +1,6 @@
 const version = 37
 import { cloneDeep } from 'lodash'
-import { util } from 'gaba'
+import { util } from '@metamask/controllers'
 
 /**
  * The purpose of this migration is to update the address book state
