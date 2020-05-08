@@ -28,6 +28,7 @@ import KeyringController from 'eth-keyring-controller'
 import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
+import TokensController from './controllers/tokens'
 import AppStateController from './controllers/app-state'
 import InfuraController from './controllers/infura'
 import CachedBalancesController from './controllers/cached-balances'
@@ -42,7 +43,6 @@ import PersonalMessageManager from './lib/personal-message-manager'
 import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
-import DetectTokensController from './controllers/detect-tokens'
 import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
@@ -65,6 +65,7 @@ import nanoid from 'nanoid'
 import contractMap from 'eth-contract-metadata'
 
 import {
+  AssetsController,
   AddressBookController,
   CurrencyRateController,
   PhishingController,
@@ -113,6 +114,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.networkController = new NetworkController(initState.NetworkController)
 
+    this.assetsController = new AssetsController(undefined, initState.AssetsController)
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
@@ -143,10 +146,19 @@ export default class MetamaskController extends EventEmitter {
     this.provider = this.networkController.getProviderAndBlockTracker().provider
     this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker
 
+    this.tokensController = new TokensController({
+      openPopup: opts.openPopup,
+      assets: this.assetsController,
+      network: this.networkController,
+      preferences: this.preferencesController,
+      provider: this.provider,
+      initState: initState.TokensController,
+    })
+
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
       currency: this.currencyRateController,
-      preferences: this.preferencesController.store,
+      tokensController: this.tokensController.store,
     })
 
     this.recentBlocksController = new RecentBlocksController({
@@ -220,12 +232,6 @@ export default class MetamaskController extends EventEmitter {
       preferences: this.preferencesController.store,
       showPermissionRequest: opts.showPermissionRequest,
     }, initState.PermissionsController, initState.PermissionsMetadata)
-
-    this.detectTokensController = new DetectTokensController({
-      preferences: this.preferencesController,
-      network: this.networkController,
-      keyringMemStore: this.keyringController.memStore,
-    })
 
     this.abTestController = new ABTestController({
       initState: initState.ABTestController,
@@ -311,6 +317,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      TokensController: this.tokensController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -339,6 +346,7 @@ export default class MetamaskController extends EventEmitter {
       ABTestController: this.abTestController.store,
       // ENS Controller
       EnsController: this.ensController.store,
+      TokensController: this.tokensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -442,6 +450,7 @@ export default class MetamaskController extends EventEmitter {
     const onboardingController = this.onboardingController
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
+    const tokensController = this.tokensController
     const threeBoxController = this.threeBoxController
     const abTestController = this.abTestController
     const txController = this.txController
@@ -488,11 +497,14 @@ export default class MetamaskController extends EventEmitter {
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
+      // Tokens/Assets Controller
+      addToken: nodeify(tokensController.assets.addToken, tokensController.assets),
+      removeToken: nodeify(tokensController.assets.removeToken, tokensController.assets),
+      removeSuggestedTokens: nodeify(tokensController.removeSuggestedTokens, tokensController),
+      addCollectible: nodeify(tokensController.assets.addCollectible, tokensController.assets),
+
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
-      addToken: nodeify(preferencesController.addToken, preferencesController),
-      removeToken: nodeify(preferencesController.removeToken, preferencesController),
-      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
@@ -1010,6 +1022,8 @@ export default class MetamaskController extends EventEmitter {
   async removeAccount (address) {
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
+    // Remove account from the tokens controller
+    this.tokensController.removeAccountAssets(address)
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address])
 
@@ -1627,7 +1641,7 @@ export default class MetamaskController extends EventEmitter {
     // permissions
     engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
     // watch asset
-    engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    engine.push(this.tokensController.requestWatchAsset.bind(this.tokensController))
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
@@ -2078,7 +2092,6 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.isUnlocked() && open
-    this.detectTokensController.isOpen = open
   }
 
   /**

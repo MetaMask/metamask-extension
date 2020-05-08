@@ -151,14 +151,14 @@ describe('Transaction Selectors', function () {
             showIncomingTransactions: false,
           },
           selectedAddress: '0xAddress',
-          selectedTokenAddress: '0xToken',
+          selectedTokenAddress: '0xToKeN',
           currentNetworkTxList: [
             {
               id: 0,
               time: 0,
               txParams: {
                 from: '0xAddress',
-                to: '0xToken',
+                to: '0xtoken',
               },
             },
             {
@@ -174,7 +174,7 @@ describe('Transaction Selectors', function () {
               time: 2,
               txParams: {
                 from: '0xAddress',
-                to: '0xToken',
+                to: '0xtoken',
               },
             },
           ],
@@ -182,7 +182,7 @@ describe('Transaction Selectors', function () {
       }
 
       const orderedTxList = state.metamask.currentNetworkTxList
-        .filter((tx) => tx.txParams.to === '0xToken')
+        .filter((tx) => tx.txParams.to === '0xtoken')
         .sort((a, b) => b.time - a.time)
 
       const selectedTx = transactionsSelector(state)

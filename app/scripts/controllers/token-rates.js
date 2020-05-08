@@ -1,7 +1,6 @@
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import { normalize as normalizeAddress } from 'eth-sig-util'
-import ethUtil from 'ethereumjs-util'
+import { toChecksumAddress } from 'ethereumjs-util'
 
 
 // By default, poll every 3 minutes
@@ -17,10 +16,10 @@ export default class TokenRatesController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, currency, preferences } = {}) {
+  constructor ({ interval = DEFAULT_INTERVAL, currency, tokensController } = {}) {
     this.store = new ObservableStore()
     this.currency = currency
-    this.preferences = preferences
+    this.tokensController = tokensController
     this.interval = interval
   }
 
@@ -40,8 +39,8 @@ export default class TokenRatesController {
         const response = await window.fetch(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`)
         const prices = await response.json()
         this._tokens.forEach((token) => {
-          const price = prices[token.address.toLowerCase()] || prices[ethUtil.toChecksumAddress(token.address)]
-          contractExchangeRates[normalizeAddress(token.address)] = price ? price[nativeCurrency] : 0
+          const price = prices[token.address.toLowerCase()] || prices[toChecksumAddress(token.address)]
+          contractExchangeRates[toChecksumAddress(token.address)] = price ? price[nativeCurrency] : 0
         })
       } catch (error) {
         log.warn(`MetaMask - TokenRatesController exchange rate fetch failed.`, error)
@@ -66,14 +65,14 @@ export default class TokenRatesController {
   /**
    * @type {Object}
    */
-  set preferences (preferences) {
-    this._preferences && this._preferences.unsubscribe()
-    if (!preferences) {
+  set tokensController (tokensController) {
+    this._tokensController && this._tokensController.unsubscribe()
+    if (!tokensController) {
       return
     }
-    this._preferences = preferences
-    this.tokens = preferences.getState().tokens
-    preferences.subscribe(({ tokens = [] }) => {
+    this._tokensController = tokensController
+    this.tokens = this._tokensController.getState().tokens
+    this._tokensController.subscribe(({ tokens = [] }) => {
       this.tokens = tokens
     })
   }

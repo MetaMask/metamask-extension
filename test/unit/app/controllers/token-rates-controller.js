@@ -5,9 +5,9 @@ import ObservableStore from 'obs-store'
 
 describe('TokenRatesController', function () {
   it('should listen for preferences store updates', function () {
-    const preferences = new ObservableStore({ tokens: [] })
-    const controller = new TokenRatesController({ preferences })
-    preferences.putState({ tokens: ['foo'] })
+    const tokensController = new ObservableStore({ tokens: [] })
+    const controller = new TokenRatesController({ tokensController })
+    tokensController.putState({ tokens: ['foo'] })
     assert.deepEqual(controller._tokens, ['foo'])
   })
 
