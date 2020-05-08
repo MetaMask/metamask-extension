@@ -4,7 +4,10 @@ import pify from 'pify'
 import JsonRpcEngine from 'json-rpc-engine'
 import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
 
-import createSinkMiddleware, { METHOD_PREFIXES_TO_DRAIN } from '../../../app/scripts/lib/createSinkMiddleware'
+import createSinkMiddleware, {
+  METHOD_PREFIXES_TO_DRAIN,
+  METHODS_TO_DRAIN,
+} from '../../../app/scripts/lib/createSinkMiddleware'
 
 const createMockEngine = (fake) => {
   const engine = new JsonRpcEngine()
@@ -38,6 +41,23 @@ describe('Sink middleware', function () {
     const engine = createMockEngine(fake)
 
     for (const method of methods) {
+
+      const payload = createMockPayload(method)
+      const response = await engine.handleAsync(payload)
+      assert.ok(fake.notCalled, 'fake should not have been called')
+      assert.equal(
+        response.result, null,
+        'response should have null result'
+      )
+    }
+  })
+
+  it('terminates requests for target methods', async function () {
+
+    const fake = sinon.fake()
+    const engine = createMockEngine(fake)
+
+    for (const method of METHODS_TO_DRAIN) {
 
       const payload = createMockPayload(method)
       const response = await engine.handleAsync(payload)
