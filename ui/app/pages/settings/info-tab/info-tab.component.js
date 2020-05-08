@@ -89,7 +89,7 @@ export default class InfoTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { t } = this.context
 
     return (
@@ -120,9 +120,5 @@ export default class InfoTab extends PureComponent {
         </div>
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }

@@ -179,7 +179,7 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { warning } = this.props
 
     return (
@@ -191,9 +191,5 @@ export default class SettingsTab extends PureComponent {
         { this.renderBlockieOptIn() }
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }

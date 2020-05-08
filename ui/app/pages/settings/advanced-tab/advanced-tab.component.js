@@ -437,7 +437,7 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { warning } = this.props
 
     return (
@@ -455,10 +455,6 @@ export default class AdvancedTab extends PureComponent {
         { this.renderIpfsGatewayControl() }
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }
 
