@@ -1556,7 +1556,7 @@
     "message": "This account is not connected to this site"
   },
   "unconnectedAccountAlertDisableTooltip": {
-    "message": "This can also be changed in Settings -> Alerts"
+    "message": "This can be changed in \"Settings > Alerts\""
   },
   "units": {
     "message": "units"
