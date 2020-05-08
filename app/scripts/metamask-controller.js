@@ -22,6 +22,7 @@ import createLoggerMiddleware from './lib/createLoggerMiddleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
+import createSinkMiddleware from './lib/createSinkMiddleware'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils.js'
 import KeyringController from 'eth-keyring-controller'
@@ -1628,6 +1629,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    // drain methods that should never hit the provider
+    engine.push(createSinkMiddleware())
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider))
     return engine
