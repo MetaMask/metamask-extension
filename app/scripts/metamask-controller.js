@@ -234,7 +234,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
-    this.alertController = new AlertController({ initState: initState.AlertController })
+    this.alertController = new AlertController({
+      initState: initState.AlertController,
+      preferencesStore: this.preferencesController.store,
+    })
 
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
@@ -515,7 +518,6 @@ export default class MetamaskController extends EventEmitter {
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
       setConnectedStatusPopoverHasBeenShown: nodeify(this.appStateController.setConnectedStatusPopoverHasBeenShown, this.appStateController),
-      setSwitchToConnectedAlertShown: nodeify(this.appStateController.setSwitchToConnectedAlertShown, this.appStateController),
 
       // EnsController
       tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),
@@ -565,6 +567,7 @@ export default class MetamaskController extends EventEmitter {
 
       // alert controller
       setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
+      setSwitchToConnectedAlertShown: nodeify(this.alertController.setSwitchToConnectedAlertShown, this.alertController),
 
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),

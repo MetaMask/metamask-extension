@@ -15,41 +15,27 @@ export default class AppStateController extends EventEmitter {
       showUnlockRequest,
       preferencesStore,
     } = opts
-    const { preferences, selectedAddress } = preferencesStore.getState()
+    const { preferences } = preferencesStore.getState()
 
     super()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
-    this.store = new ObservableStore(
-      Object.assign(
-        {
-          connectedStatusPopoverHasBeenShown: true,
-          timeoutMinutes: 0,
-        },
-        initState,
-        {
-          switchToConnectedAlertShown: {},
-        }
-      )
-    )
+    this.store = new ObservableStore(Object.assign({
+      timeoutMinutes: 0,
+      connectedStatusPopoverHasBeenShown: true,
+    }, initState))
     this.timer = null
 
     this.isUnlocked = isUnlocked
     this.waitingForUnlock = []
-
-    this.selectedAddress = selectedAddress
     addUnlockListener(this.handleUnlock.bind(this))
 
     this._showUnlockRequest = showUnlockRequest
 
-    preferencesStore.subscribe(({ preferences, selectedAddress }) => {
+    preferencesStore.subscribe(({ preferences }) => {
       const currentState = this.store.getState()
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit)
-      }
-      if (currentState.switchToConnectedAlertShown && this.selectedAddress !== selectedAddress) {
-        this.selectedAddress = selectedAddress
-        this.store.updateState({ switchToConnectedAlertShown: {} })
       }
     })
 
@@ -119,16 +105,6 @@ export default class AppStateController extends EventEmitter {
    */
   setLastActiveTime () {
     this._resetTimer()
-  }
-
-  /**
-   * Sets the "switch to connected" alert as shown for the given origin
-   * @param {string} origin - The origin the alert has been shown for
-   */
-  setSwitchToConnectedAlertShown (origin) {
-    const { switchToConnectedAlertShown } = this.store.getState()
-    switchToConnectedAlertShown[origin] = true
-    this.store.updateState({ switchToConnectedAlertShown })
   }
 
   /**
