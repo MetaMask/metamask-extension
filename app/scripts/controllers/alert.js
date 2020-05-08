@@ -46,7 +46,8 @@ export default class AlertController {
   }
 
   setAlertEnabledness (alertId, enabledness) {
-    const { alertEnabledness } = this.store.getState()
+    let { alertEnabledness } = this.store.getState()
+    alertEnabledness = { ...alertEnabledness }
     alertEnabledness[alertId] = enabledness
     this.store.updateState({ alertEnabledness })
   }
