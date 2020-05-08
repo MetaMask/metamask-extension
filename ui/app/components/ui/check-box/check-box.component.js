@@ -26,8 +26,8 @@ const CheckBox = ({ className, disabled, id, onClick, checked }) => {
       checked={checked === CHECKBOX_STATE.CHECKED}
       className={classnames('check-box', className, {
         'far fa-square': checked === CHECKBOX_STATE.UNCHECKED,
-        'fa fa-check-square': checked === CHECKBOX_STATE.CHECKED,
-        'fa fa-minus-square': checked === CHECKBOX_STATE.INDETERMINATE,
+        'fa fa-check-square check-box__checked': checked === CHECKBOX_STATE.CHECKED,
+        'fa fa-minus-square check-box__indeterminate': checked === CHECKBOX_STATE.INDETERMINATE,
       })}
       disabled={disabled}
       id={id}
