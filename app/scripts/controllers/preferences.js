@@ -9,7 +9,7 @@ export default class PreferencesController {
    * @typedef {Object} PreferencesController
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
-	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
+   * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
