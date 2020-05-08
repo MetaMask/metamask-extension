@@ -1,11 +1,11 @@
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import Identicon from '../../ui/identicon'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
 import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
 import Tooltip from '../../ui/tooltip-v2'
 import { I18nContext } from '../../../contexts/i18n'
+import AssetListItem from '../asset-list-item'
 
 export default class TokenCell extends Component {
   static contextType = I18nContext
@@ -71,55 +71,8 @@ export default class TokenCell extends Component {
 
     const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
-    return (
-      <div
-        className={classnames('token-cell', {
-          'token-cell--active': selectedTokenAddress === address,
-          'token-cell--outdated': outdatedBalance,
-        })}
-        onClick={onClick.bind(null, address)}
-      >
-        <Identicon
-          className="token-cell__identicon"
-          diameter={50}
-          address={address}
-          image={image}
-        />
-        <div className="token-cell__balance-ellipsis">
-          <div className="token-cell__balance-wrapper">
-            <div className="token-cell__token-balance">{string || 0}</div>
-            <div className="token-cell__token-symbol">{symbol}</div>
-            {showFiat && (
-              <div className="token-cell__fiat-amount">
-                {formattedFiat}
-              </div>
-            )}
-          </div>
-        </div>
-        {
-          outdatedBalance && (
-            <Tooltip
-              interactive
-              position="bottom"
-              html={(
-                <div className="token-cell__outdated-tooltip">
-                  { t('troubleTokenBalances') }
-                  <a
-                    href={`https://ethplorer.io/address/${userAddress}`}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    style={{ color: '#F7861C' }}
-                  >
-                    { t('here') }
-                  </a>
-                </div>
-              )}
-            >
-              <i className={classnames(['fa', 'fa-exclamation-circle', 'token-cell__outdated-icon'])} />
-            </Tooltip>
-          )
-        }
-
+    const menu = (
+      <>
         <div>
           <i
             className="fa fa-ellipsis-h fa-lg token-cell__ellipsis cursor-pointer"
@@ -135,7 +88,54 @@ export default class TokenCell extends Component {
             token={{ symbol, address }}
           />
         )}
-      </div>
+      </>
+    )
+
+    const warning = outdatedBalance
+      ? (
+        <Tooltip
+          interactive
+          position="bottom"
+          html={(
+            <div className="token-cell__outdated-tooltip">
+              { t('troubleTokenBalances') }
+              <a
+                href={`https://ethplorer.io/address/${userAddress}`}
+                rel="noopener noreferrer"
+                target="_blank"
+                style={{ color: '#F7861C' }}
+              >
+                { t('here') }
+              </a>
+            </div>
+          )}
+        >
+          <i className={classnames(['fa', 'fa-exclamation-circle', 'token-cell__outdated-icon'])} />
+        </Tooltip>
+      )
+      : null
+
+    return (
+      <AssetListItem
+        active={selectedTokenAddress === address}
+        className={classnames('token-cell', { 'token-cell--outdated': outdatedBalance })}
+        iconClassName="token-cell__icon"
+        menu={menu}
+        onClick={onClick.bind(null, address)}
+        tokenAddress={address}
+        tokenImage={image}
+        warning={warning}
+      >
+        <div className="token-cell__balance-wrapper">
+          <div className="token-cell__token-balance">{string || 0}</div>
+          <div className="token-cell__token-symbol">{symbol}</div>
+          {showFiat && (
+            <div className="token-cell__fiat-amount">
+              {formattedFiat}
+            </div>
+          )}
+        </div>
+      </AssetListItem>
     )
   }
 }

@@ -1,0 +1,20 @@
+.asset-list-item {
+  &__container {
+    display: flex;
+    padding: 20px 25px;
+    align-items: center;
+
+    &--active {
+      background: $manatee;
+      color: $white;
+    }
+  }
+
+  &__balance {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    flex: 1;
+    min-width: 0;
+  }
+}

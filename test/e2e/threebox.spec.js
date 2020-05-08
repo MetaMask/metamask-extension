@@ -96,7 +96,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver.findElement(By.css('.balance-display .token-amount'))
+        const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver.delay(regularDelayMs)
       })
@@ -202,7 +202,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver2.findElement(By.css('.balance-display .token-amount'))
+        const balance = await driver2.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
         await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver2.delay(regularDelayMs)
       })
