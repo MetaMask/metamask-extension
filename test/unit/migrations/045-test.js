@@ -1,5 +1,5 @@
 import assert from 'assert'
-import migration43 from '../../../app/scripts/migrations/043'
+import migration45 from '../../../app/scripts/migrations/045'
 
 const accountTokens = {
   '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {},
@@ -43,7 +43,7 @@ const tokens = [
 
 const oldStorage = {
   meta: {
-    version: 42,
+    version: 44,
   },
   data: {
     PreferencesController: {
@@ -55,7 +55,7 @@ const oldStorage = {
 
 const expectedStorage = {
   meta: {
-    version: 43,
+    version: 45,
   },
   data: {
     PreferencesController: {},
@@ -104,7 +104,7 @@ const expectedStorage = {
 
 describe('storage is migrated successfully', function () {
   it('should update the version metadata', function (done) {
-    migration43.migrate(oldStorage)
+    migration45.migrate(oldStorage)
       .then((newStorage) => {
         assert.equal(newStorage.meta.version, expectedStorage.meta.version)
         done()
@@ -112,7 +112,7 @@ describe('storage is migrated successfully', function () {
   })
 
   it('should move tokens from Preferences Controller to Token Controller while checksumming the account addresses and contract addresses', function (done) {
-    migration43.migrate(oldStorage)
+    migration45.migrate(oldStorage)
       .then((newStorage) => {
         assert.deepEqual(newStorage.data, expectedStorage.data)
         done()

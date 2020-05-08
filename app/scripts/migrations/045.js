@@ -1,6 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util'
 // next version number
-const version = 43
+const version = 45
 
 /*
 Move tokens from Preferences Controller to Tokens Controller while convertiing the token addresses to checksum

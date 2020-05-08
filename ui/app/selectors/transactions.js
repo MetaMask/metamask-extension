@@ -94,7 +94,7 @@ export const transactionSubSelector = createSelector(
 const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => {
   return selectedTokenAddress
     ? transactions
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
+      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress.toLowerCase())
       .sort((a, b) => b.time - a.time)
     : transactions
       .sort((a, b) => b.time - a.time)
