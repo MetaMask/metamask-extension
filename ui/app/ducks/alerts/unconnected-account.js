@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
+import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 import * as actionConstants from '../../store/actionConstants'
 import { addPermittedAccount, setAlertEnabledness } from '../../store/actions'
 import {
@@ -17,7 +18,7 @@ export const ALERT_STATE = {
   OPEN: 'OPEN',
 }
 
-const name = 'unconnectedAccount'
+const name = ALERT_TYPES.unconnectedAccount
 
 const initialState = {
   state: ALERT_STATE.CLOSED,

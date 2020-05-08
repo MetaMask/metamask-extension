@@ -11,11 +11,19 @@ import ObservableStore from 'obs-store'
  * @property {AlertControllerInitState} initState - The initial controller state
  */
 
+export const ALERT_TYPES = {
+  unconnectedAccount: 'unconnectedAccount',
+}
 
 const defaultState = {
-  alertEnabledness: {
-    unconnectedAccount: true,
-  },
+  alertEnabledness: Object.keys(ALERT_TYPES)
+    .reduce(
+      (alertEnabledness, alertType) => {
+        alertEnabledness[alertType] = true
+        return alertEnabledness
+      },
+      {}
+    ),
 }
 
 /**

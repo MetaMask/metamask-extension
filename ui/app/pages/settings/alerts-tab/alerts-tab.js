@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
 import { I18nContext } from '../../../contexts/i18n'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import ToggleButton from '../../../components/ui/toggle-button'
@@ -45,7 +46,7 @@ const AlertsTab = () => {
   const t = useContext(I18nContext)
 
   const alertConfig = {
-    unconnectedAccount: {
+    [ALERT_TYPES.unconnectedAccount]: {
       title: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccountDescription'),
     },

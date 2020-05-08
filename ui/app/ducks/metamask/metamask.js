@@ -1,4 +1,5 @@
 import * as actionConstants from '../../store/actionConstants'
+import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 
 export default function reduceMetamask (state = {}, action) {
   const metamaskState = Object.assign({
@@ -370,4 +371,4 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
-export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)['unconnectedAccount']
+export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
