@@ -46,7 +46,7 @@ const mapStateToProps = (state, ownProps) => {
     fiatTransactionTotal,
   } = transactionFeeSelector(state, transaction)
   const tokens = tokenSelector(state)
-  const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address)
+  const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address.toLowerCase())
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
   const tokenData = getTokenData(data)

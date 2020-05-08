@@ -251,7 +251,7 @@ export function exportAsFile (filename, data, type = 'text/csv') {
 }
 
 export function getTokenAddressFromTokenObject (token) {
-  return Object.values(token)[0].address.toLowerCase()
+  return Object.values(token)[0].address
 }
 
 /**
