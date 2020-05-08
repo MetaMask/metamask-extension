@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
+import ethUtil, { toChecksumAddress } from 'ethereumjs-util'
 import { checkExistingAddresses } from './util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
 import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
@@ -121,8 +121,10 @@ class AddToken extends Component {
       selectedTokens,
     } = this.state
 
+    const checksumTokenAddress = toChecksumAddress(address)
+
     const customToken = {
-      address,
+      address: checksumTokenAddress,
       symbol,
       decimals,
     }
