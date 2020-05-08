@@ -6,23 +6,21 @@ import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
 
 import createSinkMiddleware, { METHOD_PREFIXES_TO_DRAIN } from '../../../app/scripts/lib/createSinkMiddleware'
 
-const createMockMiddleware = (fake) => {
-  return createAsyncMiddleware(async (req, res, _next) => {
+const createMockEngine = (fake) => {
+  const engine = new JsonRpcEngine()
+  engine.handleAsync = pify(engine.handle)
+
+  engine.push(createSinkMiddleware())
+  engine.push(createAsyncMiddleware(async (req, res, _next) => {
     fake(req.method)
     res.result = true
     return
-  })
-}
+  }))
 
-const createMockEngine = (fake) => {
-  const engine = new JsonRpcEngine()
-  engine.push(createSinkMiddleware())
-  engine.push(createMockMiddleware(fake))
-  engine.handleAsync = pify(engine.handle)
   return engine
 }
 
-const getMockPayload = (method) => {
+const createMockPayload = (method) => {
   return {
     method,
     jsonrpc: '2.0',
@@ -41,7 +39,7 @@ describe('Sink middleware', function () {
 
     for (const method of methods) {
 
-      const payload = getMockPayload(method)
+      const payload = createMockPayload(method)
       const response = await engine.handleAsync(payload)
       assert.ok(fake.notCalled, 'fake should not have been called')
       assert.equal(
@@ -58,7 +56,7 @@ describe('Sink middleware', function () {
     const fake = sinon.fake()
     const engine = createMockEngine(fake)
 
-    const payload = getMockPayload(method)
+    const payload = createMockPayload(method)
     const response = await engine.handleAsync(payload)
     assert.ok(fake.calledOnce, 'fake should have been called once')
     assert.equal(
