@@ -34,10 +34,11 @@
   &__content {
     align-items: center;
     margin-bottom: 16px;
+    padding: 0 24px;
   }
 
   &__dropdown {
     background-color: white;
-    width: 80%;
+    width: 100%;
   }
 }
