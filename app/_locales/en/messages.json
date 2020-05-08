@@ -154,6 +154,12 @@
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
   },
+  "alertSettingsSwitchToConnected": {
+    "message": "Opening popup with an unconnected account selected"
+  },
+  "alertSettingsSwitchToConnectedDescription": {
+    "message": "This alert is shown when you open the popup with an unconnected account selected."
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Switching to an unconnected account"
   },

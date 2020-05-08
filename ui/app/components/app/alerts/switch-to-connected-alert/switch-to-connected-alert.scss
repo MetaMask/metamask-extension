@@ -33,12 +33,34 @@
 
   &__content {
     align-items: center;
-    margin-bottom: 16px;
     padding: 0 24px;
   }
 
   &__dropdown {
     background-color: white;
     width: 100%;
+  }
+
+  &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    padding: 24px 0;
+    width: 100%;
+  }
+
+  &__checkbox {
+    margin-right: 8px;
+  }
+
+  &__checkbox-label {
+    font-size: 14px;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: $Grey-500;
+    display: flex;
+  }
+
+  &__checkbox-label-tooltip {
+    margin-left: 8px;
   }
 }

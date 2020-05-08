@@ -46,6 +46,10 @@ const AlertsTab = () => {
   const t = useContext(I18nContext)
 
   const alertConfig = {
+    [ALERT_TYPES.switchToConnected]: {
+      title: t('alertSettingsSwitchToConnected'),
+      description: t('alertSettingsSwitchToConnectedDescription'),
+    },
     [ALERT_TYPES.unconnectedAccount]: {
       title: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccountDescription'),

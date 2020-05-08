@@ -3,7 +3,7 @@ import { captureException } from '@sentry/browser'
 
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 import * as actionConstants from '../../store/actionConstants'
-import { setSelectedAddress } from '../../store/actions'
+import { setAlertEnabledness, setSelectedAddress } from '../../store/actions'
 
 // Constants
 
@@ -26,6 +26,18 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
+    disableAlertFailed: (state) => {
+      state.state = ALERT_STATE.ERROR
+    },
+    disableAlertRequested: (state) => {
+      state.state = ALERT_STATE.LOADING
+    },
+    disableAlertSucceeded: (state) => {
+      state.state = ALERT_STATE.CLOSED
+    },
+    dismissAlert: (state) => {
+      state.state = ALERT_STATE.CLOSED
+    },
     switchAccountFailed: (state) => {
       state.state = ALERT_STATE.ERROR
     },
@@ -33,9 +45,6 @@ const slice = createSlice({
       state.state = ALERT_STATE.LOADING
     },
     switchAccountSucceeded: (state) => {
-      state.state = ALERT_STATE.CLOSED
-    },
-    dismissAlert: (state) => {
       state.state = ALERT_STATE.CLOSED
     },
   },
@@ -61,12 +70,31 @@ export const alertIsOpen = (state) => state[name].state !== ALERT_STATE.CLOSED
 
 // Actions / action-creators
 
-export const {
+const {
+  disableAlertFailed,
+  disableAlertRequested,
+  disableAlertSucceeded,
   dismissAlert,
   switchAccountFailed,
   switchAccountRequested,
   switchAccountSucceeded,
 } = actions
+
+export { dismissAlert }
+
+export const dismissAndDisableAlert = () => {
+  return async (dispatch) => {
+    try {
+      await dispatch(disableAlertRequested())
+      await dispatch(setAlertEnabledness(name, false))
+      await dispatch(disableAlertSucceeded())
+    } catch (error) {
+      console.error(error)
+      captureException(error)
+      await dispatch(disableAlertFailed())
+    }
+  }
+}
 
 export const switchToAccount = (address) => {
   return async (dispatch) => {
