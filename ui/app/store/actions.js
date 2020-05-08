@@ -20,6 +20,7 @@ import {
   getSelectedAddress,
 } from '../selectors'
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 
 let background = null
 let promisifiedBackground = null
@@ -1186,6 +1187,7 @@ export function showAccountDetail (address) {
     log.debug(`background.setSelectedAddress`)
 
     const state = getState()
+    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(state)
     const selectedAddress = getSelectedAddress(state)
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(state)
     const currentTabIsConnectedToPreviousAddress = permittedAccountsForCurrentTab.includes(selectedAddress)
@@ -1204,7 +1206,7 @@ export function showAccountDetail (address) {
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
     })
-    if (switchingToUnconnectedAddress) {
+    if (unconnectedAccountAlertIsEnabled && switchingToUnconnectedAddress) {
       dispatch(switchedToUnconnectedAccount())
     }
     dispatch(setSelectedToken())
@@ -2151,6 +2153,12 @@ export function setConnectedStatusPopoverHasBeenShown () {
         throw new Error(err.message)
       }
     })
+  }
+}
+
+export function setAlertEnabledness (alertId, enabledness) {
+  return async () => {
+    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
   }
 }
 

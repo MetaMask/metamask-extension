@@ -30,4 +30,25 @@
     background: #F8EAE8;
     border-radius: 3px;
   }
+
+  &__content {
+    flex-direction: row;
+    padding: 0 24px 24px 24px;
+  }
+
+  &__checkbox {
+    margin-right: 8px;
+  }
+
+  &__checkbox-label {
+    font-size: 14px;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: $Grey-500;
+    display: flex;
+  }
+
+  &__checkbox-label-tooltip {
+    margin-left: 8px;
+  }
 }

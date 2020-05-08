@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { captureException } from '@sentry/browser'
 
+import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 import * as actionConstants from '../../store/actionConstants'
-import { addPermittedAccount } from '../../store/actions'
+import { addPermittedAccount, setAlertEnabledness } from '../../store/actions'
 import {
   getOriginOfCurrentTab,
   getSelectedAddress,
@@ -17,7 +18,7 @@ export const ALERT_STATE = {
   OPEN: 'OPEN',
 }
 
-const name = 'unconnectedAccount'
+const name = ALERT_TYPES.unconnectedAccount
 
 const initialState = {
   state: ALERT_STATE.CLOSED,
@@ -39,6 +40,15 @@ const slice = createSlice({
       state.state = ALERT_STATE.CLOSED
     },
     dismissAlert: (state) => {
+      state.state = ALERT_STATE.CLOSED
+    },
+    disableAlertFailed: (state) => {
+      state.state = ALERT_STATE.ERROR
+    },
+    disableAlertRequested: (state) => {
+      state.state = ALERT_STATE.LOADING
+    },
+    disableAlertSucceeded: (state) => {
       state.state = ALERT_STATE.CLOSED
     },
     switchedToUnconnectedAccount: (state) => {
@@ -67,13 +77,32 @@ export const alertIsOpen = (state) => state[name].state !== ALERT_STATE.CLOSED
 
 // Actions / action-creators
 
-export const {
+const {
   connectAccountFailed,
   connectAccountRequested,
   connectAccountSucceeded,
   dismissAlert,
+  disableAlertFailed,
+  disableAlertRequested,
+  disableAlertSucceeded,
   switchedToUnconnectedAccount,
 } = actions
+
+export { dismissAlert, switchedToUnconnectedAccount }
+
+export const dismissAndDisableAlert = () => {
+  return async (dispatch) => {
+    try {
+      await dispatch(disableAlertRequested())
+      await dispatch(setAlertEnabledness(name), false)
+      await dispatch(disableAlertSucceeded())
+    } catch (error) {
+      console.error(error)
+      captureException(error)
+      await dispatch(disableAlertFailed())
+    }
+  }
+}
 
 export const connectAccount = () => {
   return async (dispatch, getState) => {

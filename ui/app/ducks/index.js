@@ -5,10 +5,11 @@ import sendReducer from './send/send.duck'
 import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
-import * as alerts from './alerts'
+import { unconnectedAccount } from './alerts'
+import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 
 export default combineReducers({
-  ...alerts,
+  [ALERT_TYPES.unconnectedAccount]: unconnectedAccount,
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
   appState: appStateReducer,
