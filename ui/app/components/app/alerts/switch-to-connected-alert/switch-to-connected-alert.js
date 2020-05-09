@@ -74,24 +74,25 @@ const SwitchToUnconnectedAccountAlert = () => {
       footerClassName="switch-to-connected-alert__footer"
       onClose={onClose}
       subtitle={
-        t(
-          'switchToConnectedAlertDescription',
-          [
-            connectedAccounts.length > 1
-              ? t('switchToMultipleNumberOfAccounts', [connectedAccounts.length])
-              : t('switchToOneAccount'),
-          ]
-        )
+        connectedAccounts.length > 1
+          ? t('switchToConnectedAlertMultipleAccountsDescription')
+          : t('switchToConnectedAlertSingleAccountDescription', [connectedAccounts[0].name])
       }
       title={t('notConnected')}
     >
-      <Dropdown
-        className="switch-to-connected-alert__dropdown"
-        title="Switch to account"
-        onChange={(address) => setAccountToSwitchTo(address)}
-        options={options}
-        selectedOption={accountToSwitchTo}
-      />
+      {
+        connectedAccounts.length > 1
+          ? (
+            <Dropdown
+              className="switch-to-connected-alert__dropdown"
+              title="Switch to account"
+              onChange={(address) => setAccountToSwitchTo(address)}
+              options={options}
+              selectedOption={accountToSwitchTo}
+            />
+          )
+          : null
+      }
       <div className="switch-to-connected-alert__checkbox-wrapper">
         <Checkbox
           id="switchToConnected_dontShowThisAgain"

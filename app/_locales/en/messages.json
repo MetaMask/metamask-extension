@@ -1424,17 +1424,12 @@
   "switchAccounts": {
     "message": "Switch accounts"
   },
-  "switchToConnectedAlertDescription": {
-    "message": "This account is not connected. You have $1 connected to this site. Switch to a connected account?",
-    "description": "$1 will be replaced by the translation of either 'switchToMultipleNumberOfAccounts' if there are multiple accounts, or 'switchToOneAccount' if there is one account"
+  "switchToConnectedAlertMultipleAccountsDescription": {
+    "message": "This account is not connected. Switch to a connected account?"
   },
-  "switchToOneAccount": {
-    "message": "1 account",
-    "description": "This will substitute $1 in 'switchToConnectedAlertDescription' when only a single account is connected"
-  },
-  "switchToMultipleNumberOfAccounts": {
-    "message": "$1 accounts",
-    "description": "$1 is the number of accounts to which the site/dapp connected; this will substitute $1 in 'switchToConnectedAlertDescription'"
+  "switchToConnectedAlertSingleAccountDescription": {
+    "message": "This account is not connected. Switch to a connected account ($1)?",
+    "description": "$1 will be replaced by the name of the connected account"
   },
   "symbol": {
     "message": "Symbol"
