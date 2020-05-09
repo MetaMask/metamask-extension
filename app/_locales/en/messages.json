@@ -1553,7 +1553,7 @@
     "message": "Not connected"
   },
   "unconnectedAccountAlertDescription": {
-    "message": "This account is not connected to this site"
+    "message": "This account is not connected to this site."
   },
   "unconnectedAccountAlertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
