@@ -13,13 +13,11 @@ export default class AssetList extends Component {
   }
 
   static defaultProps = {
-    selectedAccount: undefined,
     selectedTokenAddress: undefined,
   }
 
   static propTypes = {
     history: PropTypes.object.isRequired,
-    selectedAccount: PropTypes.object,
     selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
     unsetSelectedToken: PropTypes.func.isRequired,
@@ -28,7 +26,6 @@ export default class AssetList extends Component {
   renderWalletBalance () {
     const {
       selectedTokenAddress,
-      selectedAccount,
       unsetSelectedToken,
     } = this.props
 
@@ -44,9 +41,7 @@ export default class AssetList extends Component {
             unsetSelectedToken()
           }}
         >
-          <BalanceComponent
-            balanceValue={selectedAccount ? selectedAccount.balance : ''}
-          />
+          <BalanceComponent />
         </div>
       </div>
     )
