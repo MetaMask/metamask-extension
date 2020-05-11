@@ -200,7 +200,7 @@ export function accountsWithSendEtherInfoSelector (state) {
   const { identities } = state.metamask
 
   const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
-    return Object.assign({}, identity, accounts[key])
+    return Object.assign({}, accounts[key], identity)
   })
 
   return accountsWithSendEtherInfo
