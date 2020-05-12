@@ -1350,29 +1350,6 @@ export function clearPendingTokens () {
   }
 }
 
-export function retryTransaction (txId, gasPrice) {
-  log.debug(`background.retryTransaction`)
-  let newTxId
-
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      background.retryTransaction(txId, gasPrice, (err, newState) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        const { currentNetworkTxList } = newState
-        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
-        newTxId = id
-        resolve(newState)
-      })
-    })
-      .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => newTxId)
-  }
-}
-
 export function createCancelTransaction (txId, customGasPrice) {
   log.debug('background.cancelTransaction')
   let newTxId

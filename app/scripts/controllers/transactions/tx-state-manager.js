@@ -84,6 +84,19 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * Gets the number of approved and submitted transactions, i.e. unmined
+   * unmined that will be or have been submitted to the network.
+   *
+   * @param {string} [address] - Hex-prefixed address to sort the txMetas for [optional]
+   * @returns {number} The number of approved and submitted transactions.
+   */
+  getPendingTransactionCount (address) {
+    const numApproved = this.getApprovedTransactions(address).length
+    const numSubmitted = this.getPendingTransactions(address).length
+    return numApproved + numSubmitted
+  }
+
+  /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
     @returns {array} - the tx list whos status is approved if no address is provide
     returns all txMetas who's status is approved for the current network

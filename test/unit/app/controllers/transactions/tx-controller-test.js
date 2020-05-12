@@ -482,29 +482,6 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#retryTransaction', function () {
-    it('should create a new txMeta with the same txParams as the original one but with a higher gasPrice', async function () {
-      const txParams = {
-        gasPrice: '0xee6b2800',
-        nonce: '0x00',
-        from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
-        to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
-        data: '0x0',
-      }
-      txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
-      ])
-      const txMeta = await txController.retryTransaction(1)
-      assert.equal(txMeta.txParams.gasPrice, '0x10642ac00', 'gasPrice should have a %10 gasPrice bump')
-      assert.equal(txMeta.txParams.nonce, txParams.nonce, 'nonce should be the same')
-      assert.equal(txMeta.txParams.from, txParams.from, 'from should be the same')
-      assert.equal(txMeta.txParams.to, txParams.to, 'to should be the same')
-      assert.equal(txMeta.txParams.data, txParams.data, 'data should be the same')
-      assert.ok(('lastGasPrice' in txMeta), 'should have the key `lastGasPrice`')
-      assert.equal(txController.txStateManager.getTxList().length, 2)
-    })
-  })
-
   describe('#_markNonceDuplicatesDropped', function () {
     it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function () {
       txController.txStateManager._saveTxList([

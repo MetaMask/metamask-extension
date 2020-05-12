@@ -520,7 +520,6 @@ export default class MetamaskController extends EventEmitter {
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
-      retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
@@ -1372,18 +1371,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
-
-  /**
-   * Allows a user to try to speed up a transaction by retrying it
-   * with higher gas.
-   *
-   * @param {string} txId - The ID of the transaction to speed up.
-   */
-  async retryTransaction (txId, gasPrice) {
-    await this.txController.retryTransaction(txId, gasPrice)
-    const state = await this.getState()
-    return state
-  }
 
   /**
    * Allows a user to attempt to cancel a previously submitted transaction by creating a new
