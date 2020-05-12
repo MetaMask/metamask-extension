@@ -138,7 +138,6 @@
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
     "obs-store": "^4.0.3",
-    "percentile": "^1.2.0",
     "pify": "^5.0.0",
     "post-message-stream": "^3.0.0",
     "promise-to-callback": "^1.0.0",
