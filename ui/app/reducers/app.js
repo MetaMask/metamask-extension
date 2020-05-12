@@ -1,8 +1,8 @@
-const extend = require('xtend')
+import extend from 'xtend'
+import log from 'loglevel'
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
 const { customHdPaths } = require('../../../old-ui/app/components/connect-hardware/util.js')
-const log = require('loglevel')
 
 module.exports = reduceApp
 
@@ -79,7 +79,8 @@ function reduceApp (state, action) {
     customHdPaths: customHdPaths,
   }, state.appState)
 
-  let curPendingTxIndex = appState.currentView.pendingTxIndex || 0
+  const curPendingTxIndex = appState.currentView.pendingTxIndex || 0
+  const curPendingTxId = appState.currentView.pendingTxId || 0
 
   switch (action.type) {
     // dropdown methods
@@ -507,6 +508,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'confTx',
           pendingTxIndex: action.id ? indexForPending(state, action.id) : 0,
+          pendingTxId: action.id,
           screenParams: action.value,
         },
         transForward: action.transForward,
@@ -559,11 +561,14 @@ function reduceApp (state, action) {
       }
 
     case actions.NEXT_TX:
+      const increment = (action.value - curPendingTxId)
       return extend(appState, {
         transForward: true,
         currentView: {
           name: 'confTx',
-          pendingTxIndex: ++curPendingTxIndex,
+          pendingTxIndex: curPendingTxIndex + increment,
+          pendingTxId: action.value,
+          index: curPendingTxIndex + increment,
           warning: null,
         },
       })
@@ -575,16 +580,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'confTx',
           pendingTxIndex,
-          warning: null,
-        },
-      })
-
-    case actions.PREVIOUS_TX:
-      return extend(appState, {
-        transForward: false,
-        currentView: {
-          name: 'confTx',
-          pendingTxIndex: --curPendingTxIndex,
+          pendingTxId: action.value,
           warning: null,
         },
       })

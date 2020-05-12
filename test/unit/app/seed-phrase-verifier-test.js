@@ -1,8 +1,8 @@
-const assert = require('assert')
-const clone = require('clone')
-const KeyringController = require('eth-keychain-controller')
+import assert from 'assert'
+import clone from 'clone'
+import KeyringController from 'eth-keychain-controller'
+import seedPhraseVerifier from '../../../app/scripts/lib/seed-phrase-verifier'
 const firstTimeState = require('../../../app/scripts/first-time-state')
-const seedPhraseVerifier = require('../../../app/scripts/lib/seed-phrase-verifier')
 const mockEncryptor = require('../../lib/mock-encryptor')
 
 describe('SeedPhraseVerifier', function () {

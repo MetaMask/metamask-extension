@@ -298,7 +298,7 @@ module.exports = {
       accountName: By.className('font-medium color-forest'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
-      transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
+      transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div.flex-column > div > div:nth-child(1)'),
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
@@ -309,7 +309,7 @@ module.exports = {
       },
       network: By.className('network-name'),
       sent: {
-        menu: By.className('wallet-view__tab-history'),
+        menu: By.css('#wallet-view__tab-history'),
         tokens: By.className('activeForm right'),
       },
       // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),

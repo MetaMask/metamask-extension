@@ -5,7 +5,7 @@ import PersistentForm from '../../../lib/persistent-form'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
-import ToastComponent from '../toast'
+import * as Toast from '../toast'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abi from 'web3-eth-abi'
@@ -154,7 +154,7 @@ class SendTransactionScreen extends PersistentForm {
 				<SendProfile />
 				<SendHeader title="Execute Method" />
 				<ErrorComponent error={error} />
-				<ToastComponent isSuccess={true} />
+				<Toast.ToastComponent type={Toast.TOAST_TYPE_SUCCESS} />
 				<div style={{ padding: '0 30px' }}>
 					<Select
 						clearable={false}

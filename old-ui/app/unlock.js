@@ -111,11 +111,13 @@ UnlockScreen.prototype.onKeyPress = function (event) {
 UnlockScreen.prototype.submitPassword = async function (event) {
   const element = event.target
   const password = element.value
+  const props = this.props
   // reset input
   element.value = ''
   try {
-    const dPath = getDPath(this.props.provider.type) || this.props.dPath
-    await this.props.dispatch(actions.tryUnlockMetamask(password, dPath))
+    const isCreatedWithCorrectDPath = await props.dispatch(actions.isCreatedWithCorrectDPath())
+    const dPath = getDPath(props.provider.type, isCreatedWithCorrectDPath) || props.dPath
+    await props.dispatch(actions.tryUnlockMetamask(password, dPath))
   } catch (e) {
     log.error(e)
   }

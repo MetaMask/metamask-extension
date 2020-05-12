@@ -2,6 +2,13 @@
 
 ## Current Master
 
+## 5.1.0 Tue May 12 2020
+
+- [#356](https://github.com/poanetwork/nifty-wallet/pull/356) - (Backwards-compatibility feature) Custom derivation paths and access to funds in accounts derived from ETH dPath
+- [#379](https://github.com/poanetwork/nifty-wallet/pull/379) - (Feature) Ability to set custom nonce of tx
+- [#377](https://github.com/poanetwork/nifty-wallet/pull/377) - (Fix) Sign message screen: do not decode message if it is not hex encoded
+- [#364](https://github.com/poanetwork/nifty-wallet/pull/364) - (Fix) notifications order in batch requests
+
 ## 5.0.3 Fri May 01 2020
 
 - [#373](https://github.com/poanetwork/nifty-wallet/pull/373) - (Feature) Add STAKE token
