@@ -60,7 +60,7 @@ const {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getGasAndCollateralFeeErrorObject,
+  getGasFeeErrorObject,
   getToAddressForGasUpdate,
   calcTokenBalance,
   isBalanceSufficient,
@@ -114,8 +114,6 @@ describe('send utils', function () {
         prevBalance: 1,
         storageTotal: 1,
         prevStorageTotal: 1,
-        gasAndCollateralTotal: 1,
-        prevGasAndCollateralTotal: 1,
         gasTotal: 1,
         prevGasTotal: 1,
         tokenBalance: 1,
@@ -175,7 +173,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
-        gasAndCollateralTotal: 17,
+        gasTotal: 17,
         primaryCurrency: 'ABC',
         expectedResult: { amount: INSUFFICIENT_FUNDS_ERROR },
       },
@@ -184,7 +182,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 1,
         conversionRate: 3,
-        gasAndCollateralTotal: 17,
+        gasTotal: 17,
         primaryCurrency: 'ABC',
         selectedToken: { symbole: 'DEF', decimals: 0 },
         decimals: 0,
@@ -197,7 +195,7 @@ describe('send utils', function () {
         balance: 100,
         conversionRate: 3,
         decimals: 10,
-        gasAndCollateralTotal: 17,
+        gasTotal: 17,
         primaryCurrency: 'ABC',
         selectedToken: 'someToken',
         tokenBalance: 123,
@@ -211,13 +209,13 @@ describe('send utils', function () {
     })
   })
 
-  describe('getGasAndCollateralFeeErrorObject()', function () {
+  describe('getGasFeeErrorObject()', function () {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
-        gasAndCollateralTotal: 17,
+        gasTotal: 17,
         primaryCurrency: 'ABC',
         expectedResult: { gasAndCollateralFee: INSUFFICIENT_FUNDS_ERROR },
       },
@@ -225,14 +223,14 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 16,
         conversionRate: 3,
-        gasAndCollateralTotal: 15,
+        gasTotal: 15,
         primaryCurrency: 'ABC',
         expectedResult: { gasAndCollateralFee: null },
       },
     }
     Object.entries(config).map(([description, obj]) => {
       it(description, function () {
-        assert.deepEqual(getGasAndCollateralFeeErrorObject(obj), obj.expectedResult)
+        assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
       })
     })
   })
@@ -261,7 +259,7 @@ describe('send utils', function () {
         amountConversionRate: 2,
         balance: 100,
         conversionRate: 3,
-        gasAndCollateralTotal: 17,
+        gasTotal: 17,
         primaryCurrency: 'ABC',
       })
       assert.deepEqual(stubs.addCurrencies.getCall(0).args, [

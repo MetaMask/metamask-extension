@@ -276,6 +276,7 @@ class TransactionController extends EventEmitter {
       )
       // add default tx params
       txMeta = await this.addTxGasAndCollateralDefaults(txMeta, getCodeResponse)
+      txMeta = await this.addTxSponsorshipInfo(txMeta)
     } catch (error) {
       log.warn(error)
       txMeta.loadingDefaults = false
@@ -312,6 +313,44 @@ class TransactionController extends EventEmitter {
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta, getCodeResponse)
+  }
+
+  async addTxSponsorshipInfo (txMeta) {
+    const {
+      txParams: { gasPrice, gas, storageLimit, to, from },
+    } = txMeta
+    const { trustedTokenMap = {} } = this.preferencesStore.getState()
+
+
+    let sponsorshipInfo = {
+      isBalanceEnough: true,
+      willPayCollateral: true,
+      willPayTxFee: true,
+    }
+
+    if (to && ethUtil.toChecksumAddress(to) in trustedTokenMap) {
+      sponsorshipInfo = await new Promise((resolve) => {
+        this.query.checkBalanceAgainstTransaction(
+          from,
+          to,
+          gas,
+          gasPrice,
+          storageLimit,
+          (err, res) => {
+            if (err) {
+              resolve(sponsorshipInfo)
+            }
+            resolve(res)
+          }
+        )
+      })
+    }
+    const { isBalanceEnough, willPayCollateral, willPayTxFee } = sponsorshipInfo
+    txMeta.isUserBalanceEnough = isBalanceEnough
+    txMeta.willUserPayCollateral = willPayCollateral
+    txMeta.willUserPayTxFee = willPayTxFee
+
+    return txMeta
   }
 
   /**
@@ -423,7 +462,7 @@ class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction (txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
+    this.txStateManager.updateTx(await this.addTxSponsorshipInfo(txMeta), 'confTx: user updated transaction')
   }
 
   /**
@@ -673,6 +712,9 @@ class TransactionController extends EventEmitter {
         this.addTxGasAndCollateralDefaults(tx)
           .then((txMeta) => {
             txMeta.loadingDefaults = false
+            return this.addTxSponsorshipInfo(txMeta)
+          })
+          .then((txMeta) => {
             this.txStateManager.updateTx(
               txMeta,
               'transactions: gas estimation for tx on boot'

@@ -3,7 +3,7 @@ import { multiplyCurrencies } from './conversion-util'
 
 export function storageToDrip (storageLimit = '0x0') {
   if (typeof storageLimit === 'string') {
-    storageLimit = addHexPrefix('0x0')
+    storageLimit = addHexPrefix(storageLimit)
   }
   // 1024B storage = 1CFX = 1e9 gdrip
   // 1024B storage = 1CFX = 1e18 gdrip

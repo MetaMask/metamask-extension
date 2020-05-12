@@ -39,7 +39,7 @@ describe('Transaction Controller', function () {
     const blockTrackerStub = new EventEmitter()
     blockTrackerStub.getCurrentBlock = noop
     blockTrackerStub.getLatestBlock = () =>
-      Promise.resolve(('0xabcd').toString(16))
+      Promise.resolve('0xabcd'.toString(16))
     txController = new TransactionController({
       provider,
       getGasPrice: function () {
@@ -415,7 +415,9 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
       providerResultStub.eth_estimateGas = '5209'
 
-      const txMetaWithDefaults = await txController.addTxGasAndCollateralDefaults(txMeta)
+      const txMetaWithDefaults = await txController.addTxGasAndCollateralDefaults(
+        txMeta
+      )
       assert(
         txMetaWithDefaults.txParams.value,
         '0x0',
@@ -426,6 +428,37 @@ describe('Transaction Controller', function () {
         'should have added the gas price'
       )
       assert(txMetaWithDefaults.txParams.gas, 'should have added the gas field')
+    })
+  })
+
+  describe('#addTxSponsorshipInfo', function () {
+    it('should add the tx sponsorshipInfo default', async function () {
+      const txMeta = {
+        txParams: {
+          from: '0x1684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0x1684832530fcbddae4b4230a47e991ddcec2831d',
+          gasPrice: '4a817c800',
+          gas: '47b784',
+          storageLimit: '0',
+        },
+        history: [{}],
+      }
+
+
+      const txMetaWithDefaults = await txController.addTxSponsorshipInfo(txMeta)
+
+      assert(
+        txMetaWithDefaults.isUserBalanceEnough,
+        'should have added default sponsorship isUserBalanceEnough'
+      )
+      assert(
+        txMetaWithDefaults.willUserPayTxFee,
+        'should have added default sponsorship willUserPayTxFee'
+      )
+      assert(
+        txMetaWithDefaults.willUserPayCollateral,
+        'should have added default sponsorship willUserPayCollateral'
+      )
     })
   })
 
@@ -544,7 +577,7 @@ describe('Transaction Controller', function () {
   })
 
   describe('#updateAndApproveTransaction', function () {
-    // TODO: this won't pass if run this test 2nd time in watch mode (same once error)
+    // TODO: this won't pass if run this test 2nd time in watch mode (same nonce error)
     it('should update and approve transactions', async function () {
       const txMeta = {
         id: 1,

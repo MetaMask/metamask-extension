@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
-import { isValidContractAddress } from 'cfx-util'
+import { isValidContractAddress, toChecksumAddress } from 'cfx-util'
 import {
   getSendTo,
   getConversionRate,
-  getGasAndCollateralTotal,
   getStorageTotal,
   getGasTotal,
   getGasPrice,
@@ -12,6 +11,7 @@ import {
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
+  getSponsorshipInfo,
 } from '../../send.selectors.js'
 import { getMaxModeOn } from '../send-amount-row/amount-max-button/amount-max-button.selectors'
 import {
@@ -48,11 +48,14 @@ import {
   setStorageTotal,
   updateSendAmount,
   resetAllCustomData,
+  updateSponsorshipInfo,
 } from '../../../../store/actions'
 import {
+  getTrustedTokenMap,
   getAdvancedInlineGasShown,
   getCurrentEthBalance,
   getSelectedToken,
+  getSelectedAddress,
 } from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
 
@@ -63,6 +66,7 @@ export default connect(
 )(SendGasRow)
 
 function mapStateToProps (state) {
+  const selectedAddress = getSelectedAddress(state)
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const gasLimit = getGasLimit(state)
@@ -71,15 +75,31 @@ function mapStateToProps (state) {
 
   const gasTotal = getGasTotal(state)
   const storageTotal = getStorageTotal(state)
-  const gasAndCollateralTotal = getGasAndCollateralTotal(state)
   const conversionRate = getConversionRate(state)
   const balance = getCurrentEthBalance(state)
   const selectedToken = getSelectedToken(state)
-  const isSimpleTx = !(selectedToken || isValidContractAddress(getSendTo(state)))
+  const isSimpleTx = !(
+    selectedToken || isValidContractAddress(getSendTo(state))
+  )
+  const trustedTokenMap = getTrustedTokenMap(state)
+  const isTrustedToken =
+    selectedToken && toChecksumAddress(selectedToken.address) in trustedTokenMap
+
+  let sponsorshipInfo = { willUserPayTxFee: true }
+  if (isTrustedToken) {
+    sponsorshipInfo = getSponsorshipInfo(state)
+  }
+
+  const { willUserPayTxFee } = sponsorshipInfo
 
   const insufficientBalance = !isBalanceSufficient({
     amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
-    gasAndCollateralTotal,
+    gasTotal: isTrustedToken
+      ? calcGasTotal(
+        willUserPayTxFee ? gasLimit : '0',
+        willUserPayTxFee ? gasPrice : '0',
+      )
+      : gasTotal,
     balance,
     conversionRate,
   })
@@ -89,7 +109,6 @@ function mapStateToProps (state) {
     balance: getSendFromBalance(state),
     gasTotal,
     storageTotal,
-    gasAndCollateralTotal,
     gasAndCollateralFeeError: gasAndCollateralFeeIsInError(state),
     gasLoadingError: getGasLoadingError(state),
     gasPriceButtonGroupProps: {
@@ -105,7 +124,8 @@ function mapStateToProps (state) {
     storageLimit,
     insufficientBalance,
     maxModeOn: getMaxModeOn(state),
-    selectedToken: getSelectedToken(state),
+    selectedToken,
+    selectedAddress,
     tokenBalance: getTokenBalance(state),
   }
 }
@@ -141,32 +161,73 @@ function mapDispatchToProps (dispatch) {
     },
     showGasButtonGroup: () => dispatch(showGasButtonGroup()),
     resetCustomData: () => dispatch(resetAllCustomData()),
+    updateSponsorshipInfo: (params) => dispatch(updateSponsorshipInfo(params)),
   }
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
-  const { gasPriceButtonGroupProps } = stateProps
+  const {
+    gasPriceButtonGroupProps,
+    selectedAddress,
+    selectedToken,
+    gasPrice,
+    gasLimit,
+    storageLimit,
+  } = stateProps
   const { gasButtonInfo } = gasPriceButtonGroupProps
   const {
     setGasPrice: dispatchSetGasPrice,
     showGasButtonGroup: dispatchShowGasButtonGroup,
     resetCustomData: dispatchResetCustomData,
+    setGasLimit: dispatchSetGasLimit,
+    setStorageLimit: dispatchSetStorageLimit,
+    updateSponsorshipInfo: dispatchUpdateSponsorshipInfo,
     ...otherDispatchProps
   } = dispatchProps
+  const updateSponsorInfoParams = {
+    selectedAddress,
+    selectedToken,
+    gasPrice,
+    gasLimit,
+    storageLimit,
+  }
+  const dispatchSetGasPriceAndUpdateSponsorshipInfo = (...args) => {
+    dispatchSetGasPrice(...args)
+    dispatchUpdateSponsorshipInfo({
+      ...updateSponsorInfoParams,
+      gasPrice: args[0],
+    })
+  }
+  const dispatchSetGasLimitAndUpdateSponsorshipInfo = (...args) => {
+    dispatchSetGasLimit(...args)
+    dispatchUpdateSponsorshipInfo({
+      ...updateSponsorInfoParams,
+      gasLimit: args[0],
+    })
+  }
+  const dispatchSetStorageLimitAndUpdateSponsorshipInfo = (...args) => {
+    dispatchSetStorageLimit(...args)
+    dispatchUpdateSponsorshipInfo({
+      ...updateSponsorInfoParams,
+      storageLimit: args[0],
+    })
+  }
 
   return {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
+    setGasPrice: dispatchSetGasPriceAndUpdateSponsorshipInfo,
+    setGasLimit: dispatchSetGasLimitAndUpdateSponsorshipInfo,
+    setStorageLimit: dispatchSetStorageLimitAndUpdateSponsorshipInfo,
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
-      handleGasPriceSelection: dispatchSetGasPrice,
+      handleGasPriceSelection: dispatchSetGasPriceAndUpdateSponsorshipInfo,
     },
     resetGasButtons: () => {
       dispatchResetCustomData()
       dispatchSetGasPrice(gasButtonInfo[1].priceInHexWei)
       dispatchShowGasButtonGroup()
     },
-    setGasPrice: dispatchSetGasPrice,
   }
 }

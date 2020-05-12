@@ -7,6 +7,7 @@ import confirmTransactionReducer from './confirm-transaction/confirm-transaction
 import gasReducer from './gas/gas.duck'
 import storageLimitReducer from './storageLimit/storageLimit.duck'
 import gasAndCollateralReducer from './gasAndCollateral/gasAndCollateral.duck'
+import sponsorshipReducer from './sponsorship/sponsorship.duck'
 
 export default combineReducers({
   activeTab: (s) => (s === undefined ? null : s),
@@ -18,4 +19,5 @@ export default combineReducers({
   storageLimit: storageLimitReducer,
   gasAndCollateral: gasAndCollateralReducer,
   localeMessages: localeMessagesReducer,
+  sponsorship: sponsorshipReducer,
 })

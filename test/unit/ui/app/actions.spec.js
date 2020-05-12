@@ -893,7 +893,11 @@ describe('Actions', function () {
       global.eth = {
         getCode: sinon.stub().returns('0x'),
       }
-      const store = mockStore()
+      const store = mockStore({
+        metamask: {
+          trustedTokenMap: {},
+        },
+      })
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
@@ -901,10 +905,36 @@ describe('Actions', function () {
         { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
         { type: 'UPDATE_STORAGE_LIMIT', value: '0x0' },
         { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
-        { type: 'metamask/storageLimit/SET_CUSTOM_STORAGE_LIMIT', value: '0x0' },
-        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null, storageLoadingError: null } },
+        {
+          type: 'metamask/storageLimit/SET_CUSTOM_STORAGE_LIMIT',
+          value: '0x0',
+        },
+        { type: 'SPONSORSHIP_INFO_LOADING_STARTED' },
+        {
+          type: 'UPDATE_SEND_ERRORS',
+          value: { gasLoadingError: null, storageLoadingError: null },
+        },
         { type: 'GAS_LOADING_FINISHED' },
         { type: 'STORAGE_LOADING_FINISHED' },
+        {
+          'type': 'UPDATE_SPONSORSHIP_INFO',
+          'value': {
+            'isUserBalanceEnough': true,
+            'willUserPayGas': true,
+            'willUserPayStorage': true,
+          },
+        },
+        {
+          'type': 'metamask/sponsorship/SET_SPONSORSHIP_INFO',
+          'value': {
+            'isUserBalanceEnough': true,
+            'willUserPayGas': true,
+            'willUserPayStorage': true,
+          },
+        },
+        {
+          'type': 'SPONSORSHIP_INFO_LOADING_FINISHED',
+        },
       ]
 
       await store.dispatch(actions.updateGasAndCollateralData(mockData))
@@ -1261,7 +1291,7 @@ describe('Actions', function () {
         {
           type: 'SHOW_PRIVATE_KEY',
           value:
-          '9edb63a4efd4d9f599b603a7563eae77eb1986f73a095ea8c904965164aa4a26',
+            '9edb63a4efd4d9f599b603a7563eae77eb1986f73a095ea8c904965164aa4a26',
         },
       ]
 

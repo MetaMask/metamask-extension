@@ -4,7 +4,8 @@ import { calcTokenAmount } from '../helpers/utils/token-util'
 import {
   roundExponential,
   getValueFromWeiHex,
-  getHexGasAndCollateralTotal,
+  getHexGasTotal,
+  getHexStorageTotal,
   getTransactionFee,
   addFiat,
   addEth,
@@ -272,6 +273,8 @@ export const transactionFeeSelector = function (state, txData) {
       gasPrice = '0x0',
       storageLimit = '0x0',
     } = {},
+    willUserPayCollateral = true,
+    willUserPayTxFee = true,
   } = txData
 
   const fiatTransactionAmount = getValueFromWeiHex({
@@ -289,21 +292,26 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   })
 
-  const hexTransactionFee = getHexGasAndCollateralTotal({
-    gasLimit,
-    gasPrice,
+  const hexTransactionCollateral = getHexStorageTotal({
     storageLimit,
   })
 
+  const hexTransactionFee = getHexGasTotal({
+    gasLimit,
+    gasPrice,
+  })
+
+  const hexTransactionFeeCountSponsor = willUserPayTxFee ? hexTransactionFee : '0x0'
+
   const fiatTransactionFee = getTransactionFee({
-    value: hexTransactionFee,
+    value: hexTransactionFeeCountSponsor,
     fromCurrency: nativeCurrency,
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
   const ethTransactionFee = getTransactionFee({
-    value: hexTransactionFee,
+    value: hexTransactionFeeCountSponsor,
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
     numberOfDecimals: 6,
@@ -315,13 +323,16 @@ export const transactionFeeSelector = function (state, txData) {
     fiatTransactionAmount
   )
   const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
-  const hexTransactionTotal = sumHexes(value, hexTransactionFee)
+  const hexTransactionTotal = sumHexes(value, hexTransactionFeeCountSponsor)
 
   return {
     hexTransactionAmount: value,
     fiatTransactionAmount,
     ethTransactionAmount,
-    hexTransactionFee,
+    hexTransactionFee: hexTransactionFeeCountSponsor,
+    hexTransactionCollateral: willUserPayCollateral ? hexTransactionCollateral : '0x0',
+    hexSponsoredTransactionFee: willUserPayTxFee ? '0x0' : hexTransactionFee,
+    hexSponsoredTransactionCollateral: willUserPayCollateral ? '0x0' : hexTransactionCollateral,
     fiatTransactionFee,
     ethTransactionFee,
     fiatTransactionTotal,

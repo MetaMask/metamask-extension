@@ -95,6 +95,20 @@ export function getGasAndCollateralTotal (state) {
   )
 }
 
+export function getSponsorshipInfo (state) {
+  const {
+    isUserBalanceEnough,
+    willUserPayStorage,
+    willUserPayGas,
+  } = state.metamask.send
+
+  return {
+    isUserBalanceEnough,
+    willUserPayStorage,
+    willUserPayGas,
+  }
+}
+
 export function getPrimaryCurrency (state) {
   const selectedToken = getSelectedToken(state)
   return selectedToken && selectedToken.symbol

@@ -150,6 +150,7 @@ describe('gas-modal-page-container container', function () {
       const baseExpectedResult = {
         balance: '0x0',
         isConfirm: true,
+        customGasTotal: 'aaaaaaa955555556',
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
         customStorageLimit: 4132,
@@ -160,7 +161,6 @@ describe('gas-modal-page-container container', function () {
         customModalStorageLimitInHex: '1024',
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
-        customGasAndCollateralTotal: 'aaaaaaa955555556',
         customPriceIsSafe: true,
         gasChartProps: {
           currentPrice: 4.294967295,

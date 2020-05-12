@@ -25,7 +25,8 @@ import {
 import { storageToDrip as calcStorageTotal } from '../../helpers/utils/storage-util'
 
 import abi from 'ethereumjs-abi'
-import * as ethUtil from 'cfx-util'
+
+import { addHexPrefix, toChecksumAddress } from 'cfx-util'
 
 export {
   addGasBuffer,
@@ -34,11 +35,12 @@ export {
   calcGasAndCollateralTotal,
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
+  checkSponsorshipInfo,
   estimateGasAndCollateral,
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getGasAndCollateralFeeErrorObject,
+  getGasFeeErrorObject,
   getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -62,19 +64,15 @@ function calcGasAndCollateralTotal (
   storageTotal
 ) {
   if (gasTotal !== undefined && storageTotal !== undefined) {
-    return addCurrencies(
-      ethUtil.addHexPrefix(gasTotal),
-      ethUtil.addHexPrefix(storageTotal),
-      {
-        aBase: 16,
-        bBase: 16,
-        toNumericBase: 'hex',
-      }
-    )
+    return addCurrencies(addHexPrefix(gasTotal), addHexPrefix(storageTotal), {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    })
   }
   return addCurrencies(
-    ethUtil.addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
-    ethUtil.addHexPrefix(calcStorageTotal(storageLimit)),
+    addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
+    addHexPrefix(calcStorageTotal(storageLimit)),
     {
       aBase: 16,
       bBase: 16,
@@ -88,10 +86,11 @@ function isBalanceSufficient ({
   amountConversionRate = 1,
   balance = '0x0',
   conversionRate = 1,
-  gasAndCollateralTotal = '0x0',
+  // gasAndCollateralTotal = '0x0',
+  gasTotal = '0x0',
   primaryCurrency,
 }) {
-  const totalAmount = addCurrencies(amount, gasAndCollateralTotal, {
+  const totalAmount = addCurrencies(amount, gasTotal, {
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',
@@ -138,19 +137,19 @@ function getAmountErrorObject ({
   amountConversionRate,
   balance,
   conversionRate,
-  gasAndCollateralTotal,
+  gasTotal,
   primaryCurrency,
   selectedToken,
   tokenBalance,
 }) {
   let insufficientFunds = false
-  if (gasAndCollateralTotal && conversionRate && !selectedToken) {
+  if (gasTotal && conversionRate && !selectedToken) {
     insufficientFunds = !isBalanceSufficient({
       amount,
       amountConversionRate,
       balance,
       conversionRate,
-      gasAndCollateralTotal,
+      gasTotal,
       primaryCurrency,
     })
   }
@@ -183,22 +182,22 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getGasAndCollateralFeeErrorObject ({
+function getGasFeeErrorObject ({
   amountConversionRate,
   balance,
   conversionRate,
-  gasAndCollateralTotal,
+  gasTotal,
   primaryCurrency,
 }) {
   let gasAndCollateralFeeError = null
 
-  if (gasAndCollateralTotal && conversionRate) {
+  if (gasTotal && conversionRate) {
     const insufficientFunds = !isBalanceSufficient({
       amount: '0x0',
       amountConversionRate,
       balance,
       conversionRate,
-      gasAndCollateralTotal,
+      gasTotal,
       primaryCurrency,
     })
 
@@ -217,8 +216,6 @@ function calcTokenBalance ({ selectedToken, usersToken }) {
 
 function doesAmountErrorRequireUpdate ({
   balance,
-  gasAndCollateralTotal,
-  prevGasAndCollateralTotal,
   storageTotal,
   prevStorageTotal,
   gasTotal,
@@ -231,18 +228,61 @@ function doesAmountErrorRequireUpdate ({
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
   const storageTotalHasChange = storageTotal !== prevStorageTotal
-  const gasAndCollateralTotalHasChange =
-    gasAndCollateralTotal !== prevGasAndCollateralTotal
   const tokenBalanceHasChanged =
     selectedToken && tokenBalance !== prevTokenBalance
   const amountErrorRequiresUpdate =
     balanceHasChanged ||
     gasTotalHasChange ||
     tokenBalanceHasChanged ||
-    storageTotalHasChange ||
-    gasAndCollateralTotalHasChange
+    storageTotalHasChange
 
   return amountErrorRequiresUpdate
+}
+
+async function checkSponsorshipInfo ({
+  selectedAddress,
+  selectedToken,
+  gasLimit,
+  gasPrice,
+  storageLimit,
+  checkSponsorshipInfoMethod,
+  trustedTokenMap,
+}) {
+  const defaultRst = {
+    isUserBalanceEnough: true,
+    willUserPayCollateral: true,
+    willUserPayTxFee: true,
+  }
+
+  if (
+    !selectedToken ||
+    !(toChecksumAddress(selectedToken.address) in trustedTokenMap)
+  ) {
+    return defaultRst
+  }
+
+  return new Promise((resolve) => {
+    return checkSponsorshipInfoMethod(
+      [
+        selectedAddress,
+        selectedToken.address,
+        gasLimit,
+        gasPrice,
+        storageLimit,
+      ],
+      (err, result) => {
+        if (err) {
+          resolve(defaultRst)
+        }
+        const { isBalanceEnough, willPayCollateral, willPayTxFee } = result
+        resolve({
+          isUserBalanceEnough: isBalanceEnough,
+          willUserPayCollateral: willPayCollateral,
+          willUserPayTxFee: willPayTxFee,
+        })
+      }
+    )
+  })
 }
 
 async function estimateGasAndCollateral ({
@@ -271,7 +311,7 @@ async function estimateGasAndCollateral ({
     result.gas = BASE_TOKEN_GAS_COST
   }
 
-  if (!(!selectedToken && !data) || !(selectedToken && !to)) {
+  if (selectedToken || data || to) {
     if (selectedToken) {
       paramsForEstimate.value = '0x0'
       paramsForEstimate.data = generateTokenTransferData({
@@ -309,7 +349,7 @@ async function estimateGasAndCollateral ({
     paramsForEstimate.to = paramsForEstimate.to || selectedToken.address
   }
 
-  paramsForEstimate.gas = ethUtil.addHexPrefix(
+  paramsForEstimate.gas = addHexPrefix(
     multiplyCurrencies(blockGasLimit, 0.95, {
       multiplicandBase: 16,
       multiplierBase: 10,
@@ -334,7 +374,7 @@ async function estimateGasAndCollateral ({
             blockGasLimit,
             1.5
           )
-          return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
+          return resolve(addHexPrefix(estimateWithBuffer))
         } else {
           return reject(err)
         }
@@ -346,7 +386,7 @@ async function estimateGasAndCollateral ({
 
       // only need the storageLimit here
       if (result.gas !== undefined) {
-        result.storageLimit = ethUtil.addHexPrefix(estimatedStorage)
+        result.storageLimit = addHexPrefix(estimatedStorage)
         return result
       }
       const estimateWithBuffer = addGasBuffer(
@@ -355,8 +395,8 @@ async function estimateGasAndCollateral ({
         1.5
       )
       return resolve({
-        gas: ethUtil.addHexPrefix(estimateWithBuffer),
-        storageLimit: ethUtil.addHexPrefix(estimatedStorage),
+        gas: addHexPrefix(estimateWithBuffer),
+        storageLimit: addHexPrefix(estimatedStorage),
       })
     })
   })
@@ -420,7 +460,7 @@ function generateTokenTransferData ({
       .call(
         abi.rawEncode(
           ['address', 'uint256'],
-          [toAddress, ethUtil.addHexPrefix(amount)]
+          [toAddress, addHexPrefix(amount)]
         ),
         (x) => ('00' + x.toString(16)).slice(-2)
       )

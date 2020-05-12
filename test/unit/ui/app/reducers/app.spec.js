@@ -466,6 +466,24 @@ describe('App State', function () {
     assert.equal(state.isMouseUser, true)
   })
 
+  it('sets sponsorshipInfo loading', function () {
+    const state = reduceApp(metamaskState, {
+      type: actions.SPONSORSHIP_INFO_LOADING_STARTED,
+    })
+
+    assert.equal(state.sponsorshipInfoIsLoading, true)
+  })
+
+  it('unsets sponsorshipInfo loading', function () {
+    const sponsorshipInfoLoadingState = { sponsorshipInfoIsLoading: true }
+    const oldState = { ...metamaskState, ...sponsorshipInfoLoadingState }
+    const state = reduceApp(oldState, {
+      type: actions.SPONSORSHIP_INFO_LOADING_FINISHED,
+    })
+
+    assert.equal(state.sponsorshipInfoIsLoading, false)
+  })
+
   it('sets gas loading', function () {
     const state = reduceApp(metamaskState, {
       type: actions.GAS_LOADING_STARTED,

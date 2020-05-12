@@ -18,6 +18,19 @@
     min-width: 0;
   }
 
+  &__primary-group {
+    display: flex;
+    justify-content: flex-end;
+
+
+  }
+
+  &__primary-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   &__primary {
     font-size: 1.5rem;
     justify-content: flex-end;

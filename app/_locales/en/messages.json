@@ -634,6 +634,9 @@
   "gasUsed": {
     "message": "Gas Used"
   },
+  "storageCollateralized": {
+    "message": "Storage Collaterized"
+  },
   "gasPrice": {
     "message": "Gas Price (GDrip)"
   },
@@ -1464,6 +1467,9 @@
   "total": {
     "message": "Total"
   },
+  "storageCollaterizedFee": {
+    "message": "Collaterized Storage Fee"
+  },
   "transaction": {
     "message": "transaction"
   },
@@ -1502,6 +1508,9 @@
   },
   "transactionFee": {
     "message": "Transaction Fee"
+  },
+  "transactionCollateral": {
+    "message": "Transaction Collateral"
   },
   "transactionTime": {
     "message": "Transaction Time"
@@ -1657,5 +1666,8 @@
   },
   "restrictedMethods_eth_accounts": {
     "message": "Read the address of the selected account"
+  },
+  "alreadySponsoredByContract": {
+    "message": "Smart contract sponsored"
   }
 }

@@ -78,7 +78,9 @@ describe('SendGasRow Component', function () {
 
     it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', function () {
       wrapper.setProps({ gasButtonGroupShown: true })
-      const rendered = wrapper.find(SendRowWrapper).childAt(0)
+      const rendered = wrapper
+        .find(SendRowWrapper)
+        .childAt(0)
       assert.equal(rendered.children().length, 1)
 
       const gasPriceButtonGroup = rendered.childAt(0)
@@ -97,7 +99,9 @@ describe('SendGasRow Component', function () {
 
     it('should render an advanced options button if gasButtonGroupShown is true', function () {
       wrapper.setProps({ gasButtonGroupShown: true })
-      const rendered = wrapper.find(SendRowWrapper).childAt(0)
+      const rendered = wrapper
+        .find(SendRowWrapper)
+        .childAt(0)
       assert.equal(rendered.children().length, 1)
 
       // const advancedOptionsButton = rendered.childAt(1)

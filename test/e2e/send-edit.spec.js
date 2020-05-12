@@ -256,7 +256,10 @@ describe('Using MetaMask with an existing account', function () {
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '2.2')
 
-      const transactionFee = transactionAmounts[1]
+      const sponsorTxFee = transactionAmounts[1]
+      assert.equal(await sponsorTxFee.getText(), '0')
+
+      const transactionFee = transactionAmounts[2]
       assert.equal(await transactionFee.getText(), '0.0008')
     })
 

@@ -383,6 +383,18 @@ export default function reduceApp (state = {}, action) {
         storageIsLoading: false,
       }
 
+    case actions.SPONSORSHIP_INFO_LOADING_STARTED:
+      return {
+        ...appState,
+        sponsorshipInfoIsLoading: true,
+      }
+
+    case actions.SPONSORSHIP_INFO_LOADING_FINISHED:
+      return {
+        ...appState,
+        sponsorshipInfoIsLoading: false,
+      }
+
     case actions.GAS_LOADING_STARTED:
       return {
         ...appState,

@@ -14,6 +14,7 @@ const actionSpies = {
   setGasAndCollateralTotal: sinon.spy(),
   setStorageLimit: sinon.spy(),
   resetAllCustomData: sinon.spy(),
+  updateSponsorshipInfo: sinon.spy(),
 }
 
 const sendDuckSpies = {
@@ -198,6 +199,7 @@ describe('send-gas-row container', function () {
       }
       const dispatchProps = {
         setGasPrice: sinon.spy(),
+        updateSponsorshipInfo: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
       }
       const ownProps = { someOwnProp: 123 }
@@ -215,8 +217,10 @@ describe('send-gas-row container', function () {
       assert.equal(result.someOwnProp, 123)
 
       assert.equal(dispatchProps.setGasPrice.callCount, 0)
+      assert.equal(dispatchProps.updateSponsorshipInfo.callCount, 0)
       result.gasPriceButtonGroupProps.handleGasPriceSelection()
       assert.equal(dispatchProps.setGasPrice.callCount, 1)
+      assert.equal(dispatchProps.updateSponsorshipInfo.callCount, 1)
 
       assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
       result.someOtherDispatchProp()

@@ -5,7 +5,7 @@ import { multiplyCurrencies } from '../../../../helpers/utils/conversion-util'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import CancelTransaction from './cancel-transaction.component'
 import { showModal, createCancelTransaction } from '../../../../store/actions'
-import { getHexGasAndCollateralTotal } from '../../../../helpers/utils/confirm-tx.util'
+import { getHexGasTotal } from '../../../../helpers/utils/confirm-tx.util'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
@@ -24,10 +24,9 @@ const mapStateToProps = (state, ownProps) => {
     })
   )
 
-  const newGasFee = getHexGasAndCollateralTotal({
+  const newGasFee = getHexGasTotal({
     gasPrice: defaultNewGasPrice,
     gasLimit: '0x5208',
-    storageLimit: '0x0',
   })
 
   return {

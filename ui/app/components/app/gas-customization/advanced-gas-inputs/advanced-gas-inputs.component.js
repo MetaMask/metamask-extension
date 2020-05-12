@@ -22,6 +22,7 @@ export default class AdvancedGasInputs extends Component {
     showGasPriceInfoModal: PropTypes.func,
     showGasLimitInfoModal: PropTypes.func,
     showStorageLimitInfoModal: PropTypes.func,
+    showInputType: PropTypes.oneOf(['fee', 'collateral', 'all']),
   }
 
   constructor (props) {
@@ -212,7 +213,11 @@ export default class AdvancedGasInputs extends Component {
       showGasPriceInfoModal,
       showGasLimitInfoModal,
       showStorageLimitInfoModal,
+      showInputType = 'all',
     } = this.props
+    const showFee = showInputType === 'all' || showInputType === 'fee'
+    const showCollateral = (showInputType === 'all' || showInputType === 'collateral') && !isSimpleTx
+
     const { gasPrice, gasLimit } = this.state
 
     const {
@@ -250,7 +255,7 @@ export default class AdvancedGasInputs extends Component {
     } = this.storageLimitError({ insufficientBalance })
     const storageLimitErrorComponent = storageLimitErrorType ? (
       <div
-        className={`advanced-storage-inputs__storage-edit-row__${storageLimitErrorType}-text`}
+        className={`advanced-gas-inputs__gas-edit-row__${storageLimitErrorType}-text`}
       >
         {storageLimitErrorText}
       </div>
@@ -258,7 +263,7 @@ export default class AdvancedGasInputs extends Component {
 
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
-        {this.renderGasOrStorageInput({
+        {showFee && this.renderGasOrStorageInput({
           label: this.context.t('gasPrice'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
@@ -266,7 +271,7 @@ export default class AdvancedGasInputs extends Component {
           errorType: gasPriceErrorType,
           infoOnClick: showGasPriceInfoModal,
         })}
-        {this.renderGasOrStorageInput({
+        {showFee && this.renderGasOrStorageInput({
           label: this.context.t('gasLimit'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
@@ -274,7 +279,7 @@ export default class AdvancedGasInputs extends Component {
           errorType: gasLimitErrorType,
           infoOnClick: showGasLimitInfoModal,
         })}
-        {!isSimpleTx && this.renderGasOrStorageInput({
+        {showCollateral && this.renderGasOrStorageInput({
           label: this.context.t('storageLimit'),
           value: this.state.storageLimit,
           onChange: this.onChangeStorageLimit,

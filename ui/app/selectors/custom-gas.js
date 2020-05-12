@@ -12,7 +12,7 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util'
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util'
 import { formatETHFee } from '../helpers/utils/formatters'
-import { calcGasAndCollateralTotal } from '../pages/send/send.utils'
+import { calcGasTotal } from '../pages/send/send.utils'
 import { addHexPrefix } from 'cfx-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
@@ -129,10 +129,9 @@ export function getBasicGasEstimateBlockTime (state) {
 export function basicPriceEstimateToETHTotal (
   estimate,
   gasLimit,
-  storageLimit,
   numberOfDecimals = 9
 ) {
-  return conversionUtil(calcGasAndCollateralTotal(gasLimit, estimate, storageLimit), {
+  return conversionUtil(calcGasTotal(gasLimit, estimate), {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'GWEI',
@@ -143,7 +142,7 @@ export function basicPriceEstimateToETHTotal (
 export function getRenderableEthFee (estimate, gasLimit, storageLimit, numberOfDecimals = 9) {
   return pipe(
     (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit, storageLimit, numberOfDecimals]),
+    partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
     formatETHFee
   )(estimate, gasLimit, storageLimit)
 }
@@ -157,7 +156,7 @@ export function getRenderableConvertedCurrencyFee (
 ) {
   return pipe(
     (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit, storageLimit]),
+    partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
     partialRight(ethTotalToConvertedCurrency, [
       convertedCurrency,
       conversionRate,

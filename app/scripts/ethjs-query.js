@@ -1,4 +1,4 @@
-const format = require('ethjs-format')
+const format = require('cfxjs-format')
 const EthRPC = require('ethjs-rpc')
 
 module.exports = Eth
@@ -90,12 +90,7 @@ function generateFnFor (method, methodObject) {
                 "' with raw outputs: " +
                 JSON.stringify(callbackResult, null, self.options.jsonSpace)
             )
-            let methodOutputs
-            if (method === 'eth_estimateGas') {
-              methodOutputs = callbackResult
-            } else {
-              methodOutputs = format.formatOutputs(method, callbackResult)
-            }
+            const methodOutputs = format.formatOutputs(method, callbackResult)
             self.log(
               "method formatting success for '" +
                 protoMethod +

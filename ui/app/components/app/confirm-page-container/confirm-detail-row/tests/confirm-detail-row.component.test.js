@@ -54,10 +54,10 @@ describe('Confirm Detail Row Component', function () {
       )
     })
 
-    it('should render the primaryText as a child of the confirm-detail-row__primary', function () {
+    it('should render the primaryText as a child of the confirm-detail-row__primary-group/confirm-detail-row__primary', function () {
       assert.equal(
         wrapper
-          .find('.confirm-detail-row__details > .confirm-detail-row__primary')
+          .find('.confirm-detail-row__details > .confirm-detail-row__primary-group > .confirm-detail-row__primary')
           .childAt(0)
           .text(),
         'mockFiatText'

@@ -39,6 +39,9 @@ export default function reduceMetamask (state = {}, action) {
         toNickname: '',
         ensResolution: null,
         ensResolutionError: '',
+        willUserPayGas: true,
+        willUserPayStorage: true,
+        isUserBalanceEnough: false,
       },
       coinOptions: {},
       useBlockie: false,
@@ -215,6 +218,16 @@ export default function reduceMetamask (state = {}, action) {
           gasAndCollateralTotal: action.value,
         },
       }
+
+    case actions.UPDATE_SPONSORSHIP_INFO:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          ...action.value,
+        },
+      }
+
 
     case actions.UPDATE_SEND_TOKEN_BALANCE:
       return {
