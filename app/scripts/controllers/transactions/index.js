@@ -330,38 +330,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-    Creates a new txMeta with the same txParams as the original
-    to allow the user to resign the transaction with a higher gas values
-    @param {number} originalTxId - the id of the txMeta that
-    you want to attempt to retry
-    @param {string} [gasPrice] - Optional gas price to be increased to use as the retry
-    transaction's gas price
-    @returns {txMeta}
-  */
-
-  async retryTransaction (originalTxId, gasPrice) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
-    const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
-    const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
-    // essentially lastGasPrice * 1.1
-    const lastGasPriceBNBumped = lastGasPriceBN
-      .mul(new ethUtil.BN(110, 10))
-      .div(new ethUtil.BN(100, 10))
-    txParams.gasPrice = `0x${lastGasPriceBNBumped.toString(16)}`
-
-    const txMeta = this.txStateManager.generateTxMeta({
-      txParams: originalTxMeta.txParams,
-      lastGasPrice,
-      loadingDefaults: false,
-      type: TRANSACTION_TYPE_RETRY,
-    })
-    this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
-    return txMeta
-  }
-
-  /**
    * Creates a new approved transaction to attempt to cancel a previously submitted transaction. The
    * new transaction contains the same nonce as the previous, is a basic ETH transfer of 0x value to
    * the sender's address, and has a higher gasPrice than that of the previous transaction.
