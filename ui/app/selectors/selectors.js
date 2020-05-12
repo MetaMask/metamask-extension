@@ -285,6 +285,12 @@ export function preferencesSelector ({ metamask }) {
   return metamask.preferences
 }
 
+export function getShouldShowFiat (state) {
+  const isMainNet = getIsMainnet(state)
+  const { showFiatInTestnets } = preferencesSelector(state)
+  return isMainNet || showFiatInTestnets
+}
+
 export function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }

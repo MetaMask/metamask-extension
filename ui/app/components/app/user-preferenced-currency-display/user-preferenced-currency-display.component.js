@@ -1,47 +1,42 @@
-import React, { PureComponent } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common'
 import CurrencyDisplay from '../../ui/currency-display'
+import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
 
-export default class UserPreferencedCurrencyDisplay extends PureComponent {
-  static propTypes = {
-    className: PropTypes.string,
-    prefix: PropTypes.string,
-    value: PropTypes.string,
-    numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    hideLabel: PropTypes.bool,
-    hideTitle: PropTypes.bool,
-    style: PropTypes.object,
-    showEthLogo: PropTypes.bool,
-    ethLogoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    // Used in container
-    type: PropTypes.oneOf([PRIMARY, SECONDARY]),
-    ethNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    fiatNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    ethPrefix: PropTypes.string,
-    fiatPrefix: PropTypes.string,
-    // From container
-    currency: PropTypes.string,
-    nativeCurrency: PropTypes.string,
-  }
+export default function UserPreferencedCurrencyDisplay ({ type, showEthLogo, ethLogoHeight = 12, ethNumberOfDecimals, fiatNumberOfDecimals, numberOfDecimals: propsNumberOfDecimals, ...restProps }) {
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, { ethNumberOfDecimals, fiatNumberOfDecimals, numberOfDecimals: propsNumberOfDecimals })
 
-  renderEthLogo () {
-    const { currency, showEthLogo, ethLogoHeight = 12 } = this.props
-
+  const prefixComponent = useMemo(() => {
     return currency === ETH && showEthLogo && (
       <img
         src="/images/eth.svg"
         height={ethLogoHeight}
       />
     )
-  }
+  }, [currency, showEthLogo, ethLogoHeight])
 
-  render () {
-    return (
-      <CurrencyDisplay
-        {...this.props}
-        prefixComponent={this.renderEthLogo()}
-      />
-    )
-  }
+  return (
+    <CurrencyDisplay
+      {...restProps}
+      currency={currency}
+      numberOfDecimals={numberOfDecimals}
+      prefixComponent={prefixComponent}
+    />
+  )
+}
+
+UserPreferencedCurrencyDisplay.propTypes = {
+  className: PropTypes.string,
+  prefix: PropTypes.string,
+  value: PropTypes.string,
+  numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  hideLabel: PropTypes.bool,
+  hideTitle: PropTypes.bool,
+  style: PropTypes.object,
+  showEthLogo: PropTypes.bool,
+  ethLogoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  type: PropTypes.oneOf([PRIMARY, SECONDARY]),
+  ethNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  fiatNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }

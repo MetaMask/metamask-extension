@@ -3,9 +3,17 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display.component'
 import CurrencyDisplay from '../../../ui/currency-display'
+import * as currencyHook from '../../../../hooks/useCurrencyDisplay'
+import * as currencyPrefHook from '../../../../hooks/useUserPreferencedCurrency'
+import sinon from 'sinon'
+
 
 describe('UserPreferencedCurrencyDisplay Component', function () {
   describe('rendering', function () {
+    beforeEach(function () {
+      sinon.stub(currencyHook, 'useCurrencyDisplay').returns(['1', {}])
+      sinon.stub(currencyPrefHook, 'useUserPreferencedCurrency').returns({ currency: 'ETH', decimals: 6 })
+    })
     it('should render properly', function () {
       const wrapper = shallow(
         <UserPreferencedCurrencyDisplay />
@@ -29,6 +37,9 @@ describe('UserPreferencedCurrencyDisplay Component', function () {
       assert.equal(wrapper.find(CurrencyDisplay).props().prop1, true)
       assert.equal(wrapper.find(CurrencyDisplay).props().prop2, 'test')
       assert.equal(wrapper.find(CurrencyDisplay).props().prop3, 1)
+    })
+    afterEach(function () {
+      sinon.restore()
     })
   })
 })
