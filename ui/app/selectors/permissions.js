@@ -192,5 +192,5 @@ function getAccountsCaveatFromPermission (accountsPermission = {}) {
 }
 
 function domainSelector (state, origin) {
-  return origin && state.metamask?.domains[origin]
+  return origin && state.metamask.domains?.[origin]
 }
