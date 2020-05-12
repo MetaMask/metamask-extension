@@ -135,6 +135,11 @@ describe('Selectors', function () {
     assert.equal(gasIsLoading, false)
   })
 
+  it('#getSponsorshipInfoIsLoading', function () {
+    const sponsorshipInfoIsLoading = selectors.getSponsorshipInfoIsLoading(mockState)
+    assert.equal(sponsorshipInfoIsLoading, false)
+  })
+
   describe('Send From', function () {
     it('#getSendFrom', function () {
       const sendFrom = selectors.getSendFrom(mockState)

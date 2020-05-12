@@ -20,7 +20,9 @@ export default class TransactionBreakdown extends PureComponent {
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    storageCollateralized: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    collateralized: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }
 
   static defaultProps = {
@@ -37,7 +39,9 @@ export default class TransactionBreakdown extends PureComponent {
       nativeCurrency,
       showFiat,
       totalInHex,
+      collateralized,
       gasUsed,
+      storageCollateralized,
     } = this.props
 
     return (
@@ -87,6 +91,37 @@ export default class TransactionBreakdown extends PureComponent {
             '?'
           )}
         </TransactionBreakdownRow>
+        {typeof storageCollateralized === 'string' && storageCollateralized && storageCollateralized !== '0x0' && (
+          <TransactionBreakdownRow
+            title={`${t('storageCollateralized')} (${t('units')})`}
+            className="transaction-breakdown__row-title"
+          >
+            <HexToDecimal
+              className="transaction-breakdown__value"
+              value={storageCollateralized}
+            />
+          </TransactionBreakdownRow>
+        )}
+        {collateralized && collateralized !== '0x0' &&
+          (
+            <TransactionBreakdownRow title={t('storageCollaterizedFee')}>
+              <div>
+                <UserPreferencedCurrencyDisplay
+                  className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+                  type={PRIMARY}
+                  value={collateralized}
+                />
+                {showFiat && (
+                  <UserPreferencedCurrencyDisplay
+                    className="transaction-breakdown__value"
+                    type={SECONDARY}
+                    value={collateralized}
+                  />
+                )}
+              </div>
+            </TransactionBreakdownRow>
+          )
+        }
         <TransactionBreakdownRow title={t('total')}>
           <div>
             <UserPreferencedCurrencyDisplay

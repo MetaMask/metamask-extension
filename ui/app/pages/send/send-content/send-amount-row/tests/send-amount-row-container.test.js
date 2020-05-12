@@ -27,7 +27,7 @@ proxyquire('../send-amount-row.container.js', {
       ...mockDataObject,
       mockChange: true,
     }),
-    getGasAndCollateralFeeErrorObject: (mockDataObject) => ({
+    getGasFeeErrorObject: (mockDataObject) => ({
       ...mockDataObject,
       mockGasAndCollateralFeeErrorChange: true,
     }),

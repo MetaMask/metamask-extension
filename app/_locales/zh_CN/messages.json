@@ -493,6 +493,9 @@
   "gasUsed": {
     "message": "已使用燃气量"
   },
+  "storageCollateralized": {
+    "message": "已抵押的存储"
+  },
   "gasPriceExtremelyLow": {
     "message": "燃气价格极低"
   },
@@ -1224,6 +1227,9 @@
   "total": {
     "message": "总量"
   },
+  "storageCollaterizedFee": {
+    "message": " 已抵押的存储费用"
+  },
   "transaction": {
     "message": "交易"
   },
@@ -1262,6 +1268,9 @@
   },
   "transactionFee": {
     "message": "交易费"
+  },
+  "transactionCollateral": {
+    "message": "抵押存储费用"
   },
   "transactionTime": {
     "message": "交易时间"
@@ -1371,5 +1380,8 @@
   },
   "restrictedMethods_eth_accounts": {
     "message": "查看已选中账户的地址"
+  },
+  "alreadySponsoredByContract": {
+    "message": " 已由合约代付"
   }
 }

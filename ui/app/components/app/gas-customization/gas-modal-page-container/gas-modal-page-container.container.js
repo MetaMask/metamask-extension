@@ -65,7 +65,7 @@ import {
 import { getRenderableTimeEstimate } from '../../../../helpers/utils/gas-time-estimates.util'
 import { formatETHFee } from '../../../../helpers/utils/formatters'
 import {
-  calcGasAndCollateralTotal,
+  calcGasTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 
@@ -98,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex =
     getCustomGasLimit(state) || currentGasLimit || '0x5208'
-  const customGasAndCollateralTotal = calcGasAndCollateralTotal(
+  const customGasTotal = calcGasTotal(
     customModalGasLimitInHex,
     customModalGasPriceInHex,
     customModalStorageLimitInHex
@@ -115,7 +115,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(
     value,
-    customGasAndCollateralTotal,
+    customGasTotal,
     currentCurrency,
     conversionRate
   )
@@ -136,17 +136,17 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalEth = maxModeOn
     ? addHexWEIsToRenderableEth(balance, '0x0')
-    : addHexWEIsToRenderableEth(value, customGasAndCollateralTotal)
+    : addHexWEIsToRenderableEth(value, customGasTotal)
 
   const sendAmount = maxModeOn
-    ? subtractHexWEIsFromRenderableEth(balance, customGasAndCollateralTotal)
+    ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
     : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn
     ? false
     : !isBalanceSufficient({
       amount: value,
-      gasAndCollateralTotal: customGasAndCollateralTotal,
+      gasTotal: customGasTotal,
       balance,
       conversionRate,
     })
@@ -161,7 +161,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasPrice,
     customGasLimit: calcCustomGasOrStorageLimit(customModalGasLimitInHex),
     customStorageLimit: calcCustomGasOrStorageLimit(customModalStorageLimitInHex),
-    customGasAndCollateralTotal,
+    customGasTotal,
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(
       customGasPrice,
@@ -189,19 +189,19 @@ const mapStateToProps = (state, ownProps) => {
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(
         value,
-        customGasAndCollateralTotal,
+        customGasTotal,
         currentCurrency,
         conversionRate
       ),
       originalTotalEth: addHexWEIsToRenderableEth(
         value,
-        customGasAndCollateralTotal
+        customGasTotal
       ),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
       transactionFee: addHexWEIsToRenderableEth(
         '0x0',
-        customGasAndCollateralTotal
+        customGasTotal
       ),
       sendAmount,
     },
@@ -284,7 +284,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     insufficientBalance,
     maxModeOn,
     customGasPrice,
-    customGasAndCollateralTotal,
+    customGasTotal,
     balance,
     selectedToken,
     tokenBalance,
@@ -345,7 +345,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       if (maxModeOn) {
         dispatchSetAmountToMax({
           balance,
-          gasAndCollateralTotal: customGasAndCollateralTotal,
+          gasAndCollateralTotal: customGasTotal,
           selectedToken,
           tokenBalance,
         })

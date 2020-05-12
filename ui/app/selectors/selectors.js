@@ -298,6 +298,14 @@ export function getCurrentEthBalance (state) {
   return getCurrentAccountWithSendEtherInfo(state).balance
 }
 
+export function getSponsorshipInfoIsLoading (state) {
+  return state.appState.sponsorshipInfoIsLoading
+}
+
+export function getTrustedTokenMap (state) {
+  return state.metamask.trustedTokenMap
+}
+
 export function getGasIsLoading (state) {
   return state.appState.gasIsLoading
 }

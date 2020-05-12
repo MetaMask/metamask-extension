@@ -10,7 +10,7 @@ import {
   getTokenBalance,
 } from '../../send.selectors'
 import { sendAmountIsInError } from './send-amount-row.selectors'
-import { getAmountErrorObject, getGasAndCollateralFeeErrorObject } from '../../send.utils'
+import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
 import { setMaxModeTo, updateSendAmount } from '../../../../store/actions'
 import { updateSendErrors } from '../../../../ducks/send/send.duck'
 import SendAmountRow from './send-amount-row.component'
@@ -36,7 +36,7 @@ function mapDispatchToProps (dispatch) {
     setMaxModeTo: (bool) => dispatch(setMaxModeTo(bool)),
     updateSendAmount: (newAmount) => dispatch(updateSendAmount(newAmount)),
     updateGasFeeError: (amountDataObject) => {
-      dispatch(updateSendErrors(getGasAndCollateralFeeErrorObject(amountDataObject)))
+      dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
     },
     updateSendAmountError: (amountDataObject) => {
       dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))

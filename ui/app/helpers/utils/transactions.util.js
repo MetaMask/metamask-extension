@@ -215,7 +215,7 @@ export async function isSmartContractAddress (address) {
 
 export function sumHexes (...args) {
   const total = args.reduce((acc, base) => {
-    return addCurrencies(acc, base, {
+    return addCurrencies(ethUtil.addHexPrefix(acc), base, {
       toNumericBase: 'hex',
     })
   })
@@ -260,9 +260,9 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl}/transactiondetail/${hash}`
   }
   // eslint-disable-next-line no-unused-vars
   const prefix = prefixForNetwork(networkId)
-  return `https://confluxscan.io/transactionsdetail/${hash}`
+  return `https://${prefix}confluxscan.io/transactionsdetail/${hash}`
 }

@@ -88,7 +88,7 @@ describe('Advanced Gas Inputs', function () {
     const renderError = wrapper.find(
       '.advanced-gas-inputs__gas-edit-row__error-text'
     )
-    assert.equal(renderError.length, 2)
+    assert.equal(renderError.length, 3)
 
     assert.equal(renderError.at(0).text(), 'insufficientBalance')
     assert.equal(renderError.at(1).text(), 'insufficientBalance')

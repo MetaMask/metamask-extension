@@ -24,7 +24,7 @@ import {
   getUnapprovedTxs,
   getSendErrors,
 } from '../send.selectors'
-import { getGasIsLoading } from '../../../selectors/selectors'
+import { getGasIsLoading, getSponsorshipInfoIsLoading } from '../../../selectors/selectors'
 import { isSendFormInError } from './send-footer.selectors'
 import {
   addressIsNew,
@@ -65,6 +65,7 @@ function mapStateToProps (state) {
     sendErrors: getSendErrors(state),
     gasEstimateType,
     gasIsLoading: getGasIsLoading(state),
+    sponsorshipIsLoading: getSponsorshipInfoIsLoading(state),
   }
 }
 

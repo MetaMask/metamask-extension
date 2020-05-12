@@ -198,7 +198,7 @@ describe('TransactionActivityLog utils', function () {
             '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
           timestamp: 1543958848147,
-          value: '0x1319718a5000',
+          value: '0xde0c9cd18ee5000',
         },
         {
           id: 6400627574331060,
@@ -206,7 +206,7 @@ describe('TransactionActivityLog utils', function () {
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
           timestamp: 1543958860061,
-          value: '0x171c3a061400',
+          value: '0xde0cdcfe16a1400',
         },
         {
           id: 6400627574331060,
@@ -214,7 +214,7 @@ describe('TransactionActivityLog utils', function () {
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
           timestamp: 1543958897165,
-          value: '0x171c3a061400',
+          value: '0xde0cdcfe16a1400',
         },
       ]
 

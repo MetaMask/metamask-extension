@@ -29,7 +29,7 @@ export default class TransactionListItem extends PureComponent {
     setSelectedToken: PropTypes.func,
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
-    hasEnoughCancelGas: PropTypes.bool,
+    hasEnoughCancelGasAndCollateral: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     showFiat: PropTypes.bool,
@@ -183,7 +183,7 @@ export default class TransactionListItem extends PureComponent {
       nonceAndDate,
       primaryTransaction,
       showCancel,
-      hasEnoughCancelGas,
+      hasEnoughCancelGasAndCollateral,
       showSpeedUp,
       tokenData,
       transactionGroup,
@@ -258,7 +258,7 @@ export default class TransactionListItem extends PureComponent {
                 isEarliestNonce={isEarliestNonce}
                 onCancel={this.handleCancel}
                 showCancel={showCancel}
-                cancelDisabled={!hasEnoughCancelGas}
+                cancelDisabled={!hasEnoughCancelGasAndCollateral}
                 rpcPrefs={rpcPrefs}
                 senderAddress={fromAddress}
                 recipientAddress={toAddress}

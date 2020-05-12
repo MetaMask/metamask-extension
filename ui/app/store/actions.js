@@ -8,6 +8,7 @@ import {
 import {
   calcGasAndCollateralTotal,
   calcTokenBalance,
+  checkSponsorshipInfo,
   estimateGasAndCollateral,
 } from '../pages/send/send.utils'
 import * as ethUtil from 'cfx-util'
@@ -19,6 +20,10 @@ import log from 'loglevel'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit, resetCustomGasData } from '../ducks/gas/gas.duck'
+import {
+  setCustomSponsorshipInfo,
+  resetCustomSponsorshipInfo,
+} from '../ducks/sponsorship/sponsorship.duck'
 import {
   setCustomStorageLimit,
   resetCustomStorageData,
@@ -81,6 +86,9 @@ export const actionConstants = {
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
   UPDATE_STORAGE_TOTAL: 'UPDATE_STORAGE_TOTAL',
   UPDATE_GAS_AND_COLLATERAL_TOTAL: 'UPDATE_GAS_AND_COLLATERAL_TOTAL',
+  SPONSORSHIP_INFO_LOADING_STARTED: 'SPONSORSHIP_INFO_LOADING_STARTED',
+  SPONSORSHIP_INFO_LOADING_FINISHED: 'SPONSORSHIP_INFO_LOADING_FINISHED',
+  UPDATE_SPONSORSHIP_INFO: 'UPDATE_SPONSORSHIP_INFO',
   UPDATE_SEND_HEX_DATA: 'UPDATE_SEND_HEX_DATA',
   UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
@@ -794,7 +802,11 @@ export function setGasPrice (gasPrice) {
 
 export function setGasTotal (gasTotal) {
   return (dispatch, getState) => {
-    const { metamask: { send: { storageTotal } } } = getState()
+    const {
+      metamask: {
+        send: { storageTotal },
+      },
+    } = getState()
     dispatch({
       type: actionConstants.UPDATE_GAS_TOTAL,
       value: gasTotal,
@@ -805,7 +817,11 @@ export function setGasTotal (gasTotal) {
 
 export function setStorageTotal (storageTotal) {
   return (dispatch, getState) => {
-    const { metamask: { send: { gasTotal } } } = getState()
+    const {
+      metamask: {
+        send: { gasTotal },
+      },
+    } = getState()
     dispatch({
       type: actionConstants.UPDATE_STORAGE_TOTAL,
       value: storageTotal,
@@ -814,16 +830,70 @@ export function setStorageTotal (storageTotal) {
   }
 }
 
-export function setGasAndCollateralTotal (gasTotal, storageTotal, gasAndCollateralTotal) {
+export function setSponsorshipInfo ({
+  isUserBalanceEnough,
+  willUserPayCollateral,
+  willUserPayTxFee,
+}) {
+  return {
+    type: actionConstants.UPDATE_SPONSORSHIP_INFO,
+    value: {
+      isUserBalanceEnough: isUserBalanceEnough,
+      willUserPayStorage: willUserPayCollateral,
+      willUserPayGas: willUserPayTxFee,
+    },
+  }
+}
+
+export function setGasAndCollateralTotal (
+  gasTotal,
+  storageTotal,
+  gasAndCollateralTotal
+) {
   if (gasAndCollateralTotal === undefined) {
     return {
       type: actionConstants.UPDATE_GAS_AND_COLLATERAL_TOTAL,
-      value: calcGasAndCollateralTotal(null, null, null, gasTotal, storageTotal),
+      value: calcGasAndCollateralTotal(
+        null,
+        null,
+        null,
+        gasTotal,
+        storageTotal
+      ),
     }
   }
   return {
     type: actionConstants.UPDATE_GAS_AND_COLLATERAL_TOTAL,
     value: gasAndCollateralTotal,
+  }
+}
+
+export function updateSponsorshipInfo ({
+  selectedAddress,
+  selectedToken,
+  gasLimit,
+  gasPrice,
+  storageLimit,
+}) {
+  return (dispatch, getState) => {
+    const {
+      metamask: { trustedTokenMap },
+    } = getState()
+    dispatch(sponsorshipInfoLoadingStarted())
+
+    return checkSponsorshipInfo({
+      selectedAddress,
+      selectedToken,
+      gasLimit,
+      gasPrice,
+      storageLimit,
+      trustedTokenMap,
+      checkSponsorshipInfoMethod: background.checkBalanceAgainstTransaction,
+    }).then((sponsorshipInfo) => {
+      dispatch(setSponsorshipInfo(sponsorshipInfo))
+      dispatch(setCustomSponsorshipInfo(sponsorshipInfo))
+      dispatch(sponsorshipInfoLoadingFinished())
+    })
   }
 }
 
@@ -855,6 +925,15 @@ export function updateGasAndCollateralData ({
         dispatch(setCustomGasLimit(gas))
         dispatch(setCustomStorageLimit(storageLimit))
         dispatch(
+          updateSponsorshipInfo({
+            selectedAddress,
+            selectedToken,
+            gasLimit: gas,
+            gasPrice,
+            storageLimit,
+          })
+        )
+        dispatch(
           updateSendErrors({ gasLoadingError: null, storageLoadingError: null })
         )
         dispatch(gasLoadingFinished())
@@ -871,6 +950,18 @@ export function updateGasAndCollateralData ({
         dispatch(gasLoadingFinished())
         dispatch(storageLoadingFinished())
       })
+  }
+}
+
+export function sponsorshipInfoLoadingStarted () {
+  return {
+    type: actionConstants.SPONSORSHIP_INFO_LOADING_STARTED,
+  }
+}
+
+export function sponsorshipInfoLoadingFinished () {
+  return {
+    type: actionConstants.SPONSORSHIP_INFO_LOADING_FINISHED,
   }
 }
 
@@ -2627,12 +2718,14 @@ export function getTokenParams (tokenAddress) {
     dispatch(loadingTokenParamsStarted())
     log.debug(`loadingTokenParams`)
 
-    return fetchSymbolAndDecimals(tokenAddress, trustedTokenMap, existingTokens).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, decimals))
-        dispatch(loadingTokenParamsFinished())
-      }
-    )
+    return fetchSymbolAndDecimals(
+      tokenAddress,
+      trustedTokenMap,
+      existingTokens
+    ).then(({ symbol, decimals }) => {
+      dispatch(addToken(tokenAddress, symbol, decimals))
+      dispatch(loadingTokenParamsFinished())
+    })
   }
 }
 
@@ -2823,6 +2916,7 @@ export function getCurrentWindowTab () {
 
 export function resetAllCustomData () {
   return (dispatch) => {
+    dispatch(resetCustomSponsorshipInfo)
     dispatch(resetCustomGasData)
     dispatch(resetCustomStorageData)
     dispatch(resetCustomGasAndCollateralData)

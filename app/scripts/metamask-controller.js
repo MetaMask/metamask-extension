@@ -631,6 +631,7 @@ export default class MetamaskController extends EventEmitter {
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
+      checkBalanceAgainstTransaction: nodeify(this.checkBalanceAgainstTransaction, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
 
@@ -1635,6 +1636,20 @@ export default class MetamaskController extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.txController.txGasUtil.query.estimateGas(
         { ...estimateGasParams, nonce },
+        (err, res) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(res)
+        }
+      )
+    })
+  }
+
+  async checkBalanceAgainstTransaction (checkBalanceAgainstTransactionParams) {
+    return new Promise((resolve, reject) => {
+      this.txController.query.checkBalanceAgainstTransaction(
+        ...checkBalanceAgainstTransactionParams,
         (err, res) => {
           if (err) {
             reject(err)

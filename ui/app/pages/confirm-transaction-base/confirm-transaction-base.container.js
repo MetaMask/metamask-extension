@@ -23,7 +23,7 @@ import {
 import { getHexGasAndCollateralTotal } from '../../helpers/utils/confirm-tx.util'
 import {
   isBalanceSufficient,
-  calcGasAndCollateralTotal,
+  calcGasTotal,
 } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
@@ -87,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
     lastGasPrice,
     id: transactionId,
     transactionCategory,
+    willUserPayTxFee,
   } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
@@ -124,6 +125,8 @@ const mapStateToProps = (state, ownProps) => {
     hexTransactionAmount,
     hexTransactionFee,
     hexTransactionTotal,
+    hexSponsoredTransactionFee,
+    hexSponsoredTransactionCollateral,
   } = transactionFeeSelector(state, transaction)
 
   if (transaction && transaction.simulationFails) {
@@ -137,10 +140,9 @@ const mapStateToProps = (state, ownProps) => {
 
   const insufficientBalance = !isBalanceSufficient({
     amount,
-    gasAndCollateralTotal: calcGasAndCollateralTotal(
-      gasLimit,
-      gasPrice,
-      storageLimit
+    gasTotal: calcGasTotal(
+      willUserPayTxFee ? gasLimit : '0',
+      willUserPayTxFee ? gasPrice : '0',
     ),
     balance,
     conversionRate,
@@ -196,6 +198,8 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue: getCustomNonceValue(state),
     insufficientBalance,
+    hexSponsoredTransactionFee,
+    hexSponsoredTransactionCollateral,
     hideSubtitle: !isMainnet && !showFiatInTestnets,
     hideFiatConversion: !isMainnet && !showFiatInTestnets,
     metaMetricsSendCount,
@@ -247,7 +251,11 @@ export const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const getValidateEditGas = ({ balance, conversionRate, txData }) => {
+const getValidateEditGasAndCollateral = ({
+  balance,
+  conversionRate,
+  txData,
+}) => {
   const { txParams: { value: amount } = {} } = txData
 
   return ({ gasLimit, gasPrice, storageLimit }) => {
@@ -307,7 +315,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps
   } = dispatchProps
 
-  const validateEditGas = getValidateEditGas({
+  const validateEditGasAndCollateral = getValidateEditGasAndCollateral({
     balance,
     conversionRate,
     txData,
@@ -322,14 +330,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         txData,
         onSubmit: (customGasAndCollateral) =>
           dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
-        validate: validateEditGas,
+        validate: validateEditGasAndCollateral,
       }),
     showCustomizeStorageModal: () =>
       dispatchShowCustomizeStorageModal({
         txData,
         onSubmit: (customGasAndCollateral) =>
           dispatchUpdateGasAndCollateralAndCalculate(customGasAndCollateral),
-        validate: validateEditGas,
+        validate: validateEditGasAndCollateral,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),

@@ -30,7 +30,7 @@ describe('Send Component', function () {
   }
   const utilsMethodStubs = {
     getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
-    getGasAndCollateralFeeErrorObject: sinon
+    getGasFeeErrorObject: sinon
       .stub()
       .returns({ gasAndCollateralFee: 'mockGasAndCollateralFeeError' }),
     doesAmountErrorRequireUpdate: sinon
@@ -63,7 +63,6 @@ describe('Send Component', function () {
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
         storageTotal="mockStorageTotal"
-        gasAndCollateralTotal="mockGasAndCollateralTotal"
         history={{ mockProp: 'history-abc' }}
         network="3"
         primaryCurrency="mockPrimaryCurrency"
@@ -101,7 +100,7 @@ describe('Send Component', function () {
     SendTransactionScreen.prototype.updateGas.resetHistory()
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
-    utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
+    utilsMethodStubs.getGasFeeErrorObject.resetHistory()
     propsMethodSpies.fetchBasicGasEstimates.resetHistory()
     propsMethodSpies.updateAndSetGasAndStorageLimit.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
@@ -159,11 +158,9 @@ describe('Send Component', function () {
           balance: 'mockBalance',
           gasTotal: 'mockGasTotal',
           storageTotal: 'mockStorageTotal',
-          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
           prevBalance: '',
           prevGasTotal: undefined,
           prevStorageTotal: undefined,
-          prevGasAndCollateralTotal: undefined,
           prevTokenBalance: undefined,
           selectedToken: {
             address: 'mockTokenAddress',
@@ -200,7 +197,7 @@ describe('Send Component', function () {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
+          gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
@@ -212,24 +209,24 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call getGasAndCollateralFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
-      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
+    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', function () {
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
         },
       })
       assert.equal(
-        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        utilsMethodStubs.getGasFeeErrorObject.callCount,
         1
       )
       assert.deepEqual(
-        utilsMethodStubs.getGasAndCollateralFeeErrorObject.getCall(0).args[0],
+        utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasAndCollateralTotal: 'mockGasAndCollateralTotal',
+          gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
@@ -240,19 +237,19 @@ describe('Send Component', function () {
       )
     })
 
-    it('should not call getGasAndCollateralFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
-      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', function () {
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: { address: 'mockAddress', balance: 'mockBalance' },
       })
       assert.equal(
-        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        utilsMethodStubs.getGasFeeErrorObject.callCount,
         0
       )
     })
 
     it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', function () {
-      utilsMethodStubs.getGasAndCollateralFeeErrorObject.resetHistory()
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
       wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
         from: {
@@ -260,7 +257,7 @@ describe('Send Component', function () {
         },
       })
       assert.equal(
-        utilsMethodStubs.getGasAndCollateralFeeErrorObject.callCount,
+        utilsMethodStubs.getGasFeeErrorObject.callCount,
         0
       )
     })

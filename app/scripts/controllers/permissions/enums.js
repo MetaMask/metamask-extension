@@ -76,6 +76,7 @@ export const SAFE_METHODS = [
   'cfx_coinbase',
   'cfx_estimateGas',
   'cfx_estimateGasAndCollateral',
+  'cfx_checkBalanceAgainstTransaction',
   'cfx_gasPrice',
   'cfx_getBalance',
   'cfx_getEpochByHash',

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   getAmountErrorObject,
-  getGasAndCollateralFeeErrorObject,
+  getGasFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
@@ -35,7 +35,6 @@ export default class SendTransactionScreen extends Component {
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     storageTotal: PropTypes.string,
-    gasAndCollateralTotal: PropTypes.string,
     hasHexData: PropTypes.bool,
     history: PropTypes.object,
     network: PropTypes.string,
@@ -87,7 +86,6 @@ export default class SendTransactionScreen extends Component {
       from: { address, balance },
       gasTotal,
       storageTotal,
-      gasAndCollateralTotal,
       network,
       primaryCurrency,
       selectedToken,
@@ -109,7 +107,6 @@ export default class SendTransactionScreen extends Component {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
       storageTotal: prevStorageTotal,
-      gasAndCollateralTotal: prevGasAndCollateralTotal,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
       selectedToken: prevSelectedToken,
@@ -120,8 +117,6 @@ export default class SendTransactionScreen extends Component {
 
     const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
       balance,
-      gasAndCollateralTotal,
-      prevGasAndCollateralTotal,
       storageTotal,
       prevStorageTotal,
       gasTotal,
@@ -138,17 +133,17 @@ export default class SendTransactionScreen extends Component {
         amountConversionRate,
         balance,
         conversionRate,
-        gasAndCollateralTotal,
+        gasTotal,
         primaryCurrency,
         selectedToken,
         tokenBalance,
       })
       const gasAndCollateralFeeErrorObject = selectedToken
-        ? getGasAndCollateralFeeErrorObject({
+        ? getGasFeeErrorObject({
           amountConversionRate,
           balance,
           conversionRate,
-          gasAndCollateralTotal,
+          gasTotal,
           primaryCurrency,
           selectedToken,
         })
