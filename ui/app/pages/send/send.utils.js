@@ -15,7 +15,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
-  ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
@@ -29,7 +28,6 @@ export {
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
   estimateGas,
-  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -309,25 +307,6 @@ function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selecte
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
     (x) => ('00' + x.toString(16)).slice(-2)
   ).join('')
-}
-
-function estimateGasPriceFromRecentBlocks (recentBlocks) {
-  // Return 1 gwei if no blocks have been observed:
-  if (!recentBlocks || recentBlocks.length === 0) {
-    return ONE_GWEI_IN_WEI_HEX
-  }
-
-  const lowestPrices = recentBlocks.map((block) => {
-    if (!block.gasPrices || block.gasPrices.length < 1) {
-      return ONE_GWEI_IN_WEI_HEX
-    }
-    return block.gasPrices.reduce((currentLowest, next) => {
-      return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
-    })
-  })
-    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
-
-  return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
 
 function getToAddressForGasUpdate (...addresses) {

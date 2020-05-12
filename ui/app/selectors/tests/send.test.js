@@ -13,7 +13,6 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
-  getRecentBlocks,
   getSelectedToken,
   getSelectedTokenContract,
   getSendAmount,
@@ -173,15 +172,6 @@ describe('send selectors', function () {
       assert.equal(
         getPrimaryCurrency(mockState),
         'DEF'
-      )
-    })
-  })
-
-  describe('getRecentBlocks()', function () {
-    it('should return the recent blocks', function () {
-      assert.deepEqual(
-        getRecentBlocks(mockState),
-        ['mockBlock1', 'mockBlock2', 'mockBlock3']
       )
     })
   })

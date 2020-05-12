@@ -6,7 +6,7 @@ import {
   getTargetAccount,
   getAveragePriceEstimateInHexWEI,
 } from '.'
-import { estimateGasPriceFromRecentBlocks, calcGasTotal } from '../pages/send/send.utils'
+import { calcGasTotal } from '../pages/send/send.utils'
 
 export function getBlockGasLimit (state) {
   return state.metamask.currentBlockGasLimit
@@ -32,10 +32,6 @@ export function getGasPrice (state) {
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
 
-export function getGasPriceFromRecentBlocks (state) {
-  return estimateGasPriceFromRecentBlocks(state.metamask.recentBlocks)
-}
-
 export function getGasTotal (state) {
   return calcGasTotal(getGasLimit(state), getGasPrice(state))
 }
@@ -43,10 +39,6 @@ export function getGasTotal (state) {
 export function getPrimaryCurrency (state) {
   const selectedToken = getSelectedToken(state)
   return selectedToken && selectedToken.symbol
-}
-
-export function getRecentBlocks (state) {
-  return state.metamask.recentBlocks
 }
 
 export function getSelectedToken (state) {

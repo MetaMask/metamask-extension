@@ -62,7 +62,6 @@ const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
   @param {Object}  opts.provider - A network provider.
   @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
   @param {Object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
-  @param {Function}  [opts.getGasPrice] - optional gas price calculator
   @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
   @param {number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
   @param {Object}  opts.preferencesStore
@@ -77,7 +76,6 @@ export default class TransactionController extends EventEmitter {
     this.getPermittedAccounts = opts.getPermittedAccounts
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
-    this.getGasPrice = opts.getGasPrice
     this.inProcessOfSigning = new Set()
 
     this.memStore = new ObservableStore({})
@@ -291,9 +289,7 @@ export default class TransactionController extends EventEmitter {
     if (txMeta.txParams.gasPrice) {
       return
     }
-    const gasPrice = this.getGasPrice
-      ? this.getGasPrice()
-      : await this.query.gasPrice()
+    const gasPrice = await this.query.gasPrice()
 
     return ethUtil.addHexPrefix(gasPrice.toString(16))
   }
@@ -347,13 +343,12 @@ export default class TransactionController extends EventEmitter {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
     const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
-    const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
     const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
-    // essentially lastGasPrice * 1.1 but
-    // dont trust decimals so a round about way of doing that
-    const lastGasPriceBNBumped = lastGasPriceBN.mul(new ethUtil.BN(110, 10)).div(new ethUtil.BN(100, 10))
-    // transactions that are being retried require a >=%10 bump or the clients will throw an error
-    txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped) ? `0x${suggestedGasPriceBN.toString(16)}` : `0x${lastGasPriceBNBumped.toString(16)}`
+    // essentially lastGasPrice * 1.1
+    const lastGasPriceBNBumped = lastGasPriceBN
+      .mul(new ethUtil.BN(110, 10))
+      .div(new ethUtil.BN(100, 10))
+    txParams.gasPrice = `0x${lastGasPriceBNBumped.toString(16)}`
 
     const txMeta = this.txStateManager.generateTxMeta({
       txParams: originalTxMeta.txParams,
