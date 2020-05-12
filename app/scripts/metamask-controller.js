@@ -69,7 +69,7 @@ import {
   AddressBookController,
   CurrencyRateController,
   PhishingController,
-} from 'gaba'
+} from '@metamask/controllers'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
 
