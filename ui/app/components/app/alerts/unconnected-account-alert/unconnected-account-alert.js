@@ -34,7 +34,7 @@ const SwitchToUnconnectedAccountAlert = () => {
   return (
     <Popover
       contentClassName="unconnected-account-alert__content"
-      title={t('unconnectedAccountAlertTitle')}
+      title={t('notConnected')}
       subtitle={t('unconnectedAccountAlertDescription')}
       onClose={onClose}
       footer={(

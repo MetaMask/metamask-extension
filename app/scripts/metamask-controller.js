@@ -234,7 +234,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
-    this.alertController = new AlertController({ initState: initState.AlertController })
+    this.alertController = new AlertController({
+      initState: initState.AlertController,
+      preferencesStore: this.preferencesController.store,
+    })
 
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
@@ -564,6 +567,7 @@ export default class MetamaskController extends EventEmitter {
 
       // alert controller
       setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
+      setSwitchToConnectedAlertShown: nodeify(this.alertController.setSwitchToConnectedAlertShown, this.alertController),
 
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),

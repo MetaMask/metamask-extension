@@ -371,4 +371,8 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
 
+export const getSwitchToConnectedAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.switchToConnected]
+
 export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+
+export const getSwitchToConnectedAlertShown = (state) => state.metamask.switchToConnectedAlertShown

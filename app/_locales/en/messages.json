@@ -154,6 +154,12 @@
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
   },
+  "alertSettingsSwitchToConnected": {
+    "message": "Opening popup with an unconnected account selected"
+  },
+  "alertSettingsSwitchToConnectedDescription": {
+    "message": "This alert is shown when you open the popup with an unconnected account selected."
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Switching to an unconnected account"
   },
@@ -953,6 +959,9 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
+  "notConnected": {
+    "message": "Not connected"
+  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
@@ -1412,6 +1421,16 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "switchAccounts": {
+    "message": "Switch accounts"
+  },
+  "switchToConnectedAlertMultipleAccountsDescription": {
+    "message": "This account is not connected. Switch to a connected account?"
+  },
+  "switchToConnectedAlertSingleAccountDescription": {
+    "message": "This account is not connected. Switch to a connected account ($1)?",
+    "description": "$1 will be replaced by the name of the connected account"
+  },
   "symbol": {
     "message": "Symbol"
   },
@@ -1548,9 +1567,6 @@
   },
   "unapproved": {
     "message": "Unapproved"
-  },
-  "unconnectedAccountAlertTitle": {
-    "message": "Not connected"
   },
   "unconnectedAccountAlertDescription": {
     "message": "This account is not connected to this site."

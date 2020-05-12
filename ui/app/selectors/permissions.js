@@ -1,5 +1,5 @@
 import { forOwn } from 'lodash'
-import { getOriginOfCurrentTab } from './selectors'
+import { getMetaMaskIdentities, getOriginOfCurrentTab } from './selectors'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
@@ -115,6 +115,12 @@ export function getConnectedDomainsForSelectedAddress (state) {
   })
 
   return connectedDomains
+}
+
+export function getPermittedIdentitiesForCurrentTab (state) {
+  const permittedAccounts = getPermittedAccountsForCurrentTab(state)
+  const identities = getMetaMaskIdentities(state)
+  return permittedAccounts.map((address) => identities[address])
 }
 
 /**
