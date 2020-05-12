@@ -3,12 +3,10 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import {
   BASE_TOKEN_GAS_COST,
-  ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
 } from '../send.constants'
-import { addCurrencies, subtractCurrencies } from '../../../helpers/utils/conversion-util'
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
@@ -48,7 +46,6 @@ const {
   calcGasTotal,
   estimateGas,
   doesAmountErrorRequireUpdate,
-  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -415,68 +412,6 @@ describe('send utils', function () {
       } catch (err) {
         assert.equal(err.message, 'some other error')
       }
-    })
-  })
-
-  describe('estimateGasPriceFromRecentBlocks', function () {
-    const ONE_GWEI_IN_WEI_HEX_PLUS_ONE = addCurrencies(ONE_GWEI_IN_WEI_HEX, '0x1', {
-      aBase: 16,
-      bBase: 16,
-      toNumericBase: 'hex',
-    })
-    const ONE_GWEI_IN_WEI_HEX_PLUS_TWO = addCurrencies(ONE_GWEI_IN_WEI_HEX, '0x2', {
-      aBase: 16,
-      bBase: 16,
-      toNumericBase: 'hex',
-    })
-    const ONE_GWEI_IN_WEI_HEX_MINUS_ONE = subtractCurrencies(ONE_GWEI_IN_WEI_HEX, '0x1', {
-      aBase: 16,
-      bBase: 16,
-      toNumericBase: 'hex',
-    })
-
-    it(`should return ${ONE_GWEI_IN_WEI_HEX} if recentBlocks is falsy`, function () {
-      assert.equal(estimateGasPriceFromRecentBlocks(), ONE_GWEI_IN_WEI_HEX)
-    })
-
-    it(`should return ${ONE_GWEI_IN_WEI_HEX} if recentBlocks is empty`, function () {
-      assert.equal(estimateGasPriceFromRecentBlocks([]), ONE_GWEI_IN_WEI_HEX)
-    })
-
-    it(`should estimate a block's gasPrice as ${ONE_GWEI_IN_WEI_HEX} if it has no gas prices`, function () {
-      const mockRecentBlocks = [
-        { gasPrices: null },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
-      ]
-      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX)
-    })
-
-    it(`should estimate a block's gasPrice as ${ONE_GWEI_IN_WEI_HEX} if it has empty gas prices`, function () {
-      const mockRecentBlocks = [
-        { gasPrices: [] },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
-      ]
-      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX)
-    })
-
-    it(`should return the middle value of all blocks lowest prices`, function () {
-      const mockRecentBlocks = [
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_TWO ] },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
-        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
-      ]
-      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX_PLUS_ONE)
-    })
-
-    it(`should work if a block has multiple gas prices`, function () {
-      const mockRecentBlocks = [
-        { gasPrices: [ '0x1', '0x2', '0x3', '0x4', '0x5' ] },
-        { gasPrices: [ '0x101', '0x100', '0x103', '0x104', '0x102' ] },
-        { gasPrices: [ '0x150', '0x50', '0x100', '0x200', '0x5' ] },
-      ]
-      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), '0x5')
     })
   })
 

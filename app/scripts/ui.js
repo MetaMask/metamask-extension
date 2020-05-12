@@ -45,7 +45,6 @@ async function start () {
       : {}
     // remove unnecessary data
     delete state.localeMessages
-    delete state.metamask.recentBlocks
     // return state to be added to request
     return state
   }

@@ -21742,11 +21742,6 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-percentile@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/percentile/-/percentile-1.2.0.tgz#fa3b05c1ffd355b35228529834e5fa37f0bd465d"
-  integrity sha1-+jsFwf/TVbNSKFKYNOX6N/C9Rl0=
-
 percentile@^1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/percentile/-/percentile-1.2.2.tgz#8966abc4bb36aaacaee91405f17095d9c881d1cb"
