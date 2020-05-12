@@ -104,7 +104,6 @@ export default class ChooseAccount extends Component {
                       value={balance}
                       style={{ color: '#6A737D' }}
                       suffix={nativeCurrency}
-                      hideLabel
                     />
                   </div>
                 </div>
