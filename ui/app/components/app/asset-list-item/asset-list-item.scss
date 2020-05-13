@@ -1,12 +1,11 @@
 .asset-list-item {
   &__container {
     display: flex;
-    padding: 20px 25px;
+    padding: 24px 16px;
     align-items: center;
 
     &--active {
-      background: $manatee;
-      color: $white;
+      background: #D9D7DA;
     }
   }
 
