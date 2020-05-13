@@ -119,7 +119,8 @@ $wallet-view-bg: $alabaster;
 
   .main-container {
     width: 85vw;
-    height: 90vh;
+    margin-bottom: 10vh;
+    min-height: 90vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
@@ -127,7 +128,7 @@ $wallet-view-bg: $alabaster;
 @media screen and (min-width: 769px) {
   .main-container {
     width: 80vw;
-    height: 82vh;
+    min-height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
@@ -135,7 +136,7 @@ $wallet-view-bg: $alabaster;
 @media screen and (min-width: 1281px) {
   .main-container {
     width: 62vw;
-    height: 82vh;
+    min-height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
