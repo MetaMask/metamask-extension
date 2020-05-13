@@ -14,7 +14,7 @@ class TokenMenuDropdown extends Component {
     onClose: PropTypes.func.isRequired,
     showHideTokenConfirmationModal: PropTypes.func.isRequired,
     token: PropTypes.object.isRequired,
-    network: PropTypes.number.isRequired,
+    network: PropTypes.string.isRequired,
   }
 
   onClose = (e) => {
