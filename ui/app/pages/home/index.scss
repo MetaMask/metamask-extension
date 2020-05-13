@@ -32,8 +32,18 @@
     }
   }
 
-  &__tab {
+  // TODO: fix style import order so this isn't required to override specificity of `tab` class
+  &__main-view &__tab {
     flex-grow: 1;
+    color: $Grey-500;
+    padding: 16px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 130%;
+  }
+
+  &__main-view &__tab--active {
+    color: $Blue-500;
   }
 
   &__connect-status-text {
