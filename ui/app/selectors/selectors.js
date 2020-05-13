@@ -288,7 +288,7 @@ export function preferencesSelector ({ metamask }) {
 export function getShouldShowFiat (state) {
   const isMainNet = getIsMainnet(state)
   const { showFiatInTestnets } = preferencesSelector(state)
-  return isMainNet || showFiatInTestnets
+  return Boolean(isMainNet || showFiatInTestnets)
 }
 
 export function getAdvancedInlineGasShown (state) {
