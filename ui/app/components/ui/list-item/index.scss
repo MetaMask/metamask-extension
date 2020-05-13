@@ -1,14 +1,13 @@
 .list-item {
   width: 100%;
-  min-width: 374px;
   min-height: 86px;
-  margin: 0 20px;
+  margin: 0px;
   background: #FFFFFF;
   padding: 24px 16px;
   @extend %font;
   border-top: 1px solid $mercury;
   border-bottom: 1px solid $mercury;
-  color: $Grey-500;
+  color: $Black-100;
 
   display: flex;
   justify-content: flex-start;
@@ -20,6 +19,9 @@
 
   &__col {
     align-self: flex-start;
+    &-main {
+      flex-grow: 1;
+    }
   }
 
   &__heading {
@@ -40,24 +42,10 @@
   &__subheading {
     font-size: 12px;
     line-height: 14px;
+    color: $Grey-500;
   }
 
-  &__status {
-    &--unapproved {
-      color: $flamingo;
-    }
-    &--failed {
-      color: $valencia;
-    }
-  }
-
-  &__approved {
-    .list-item__heading {
-      color: $shark;
-    }
-  }
-
-  &__amount {
+  &__rightContent {
     margin: 0 0 0 auto;
     text-align: right;
   }
