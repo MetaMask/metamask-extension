@@ -1,7 +1,7 @@
 .list-item {
   width: 100%;
   min-height: 86px;
-  margin: 0px;
+  margin: 0;
   background: #FFFFFF;
   padding: 24px 16px;
   @extend %font;
@@ -13,7 +13,7 @@
   justify-content: flex-start;
   align-items: stretch;
 
-  &__icon {
+  &__icon > * {
     margin: 8px 14px 0 0;
   }
 

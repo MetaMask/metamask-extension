@@ -32,8 +32,7 @@ const failColor = '#D73A49'
 
 export const send = () => (
   <ListItem
-    Icon={Send}
-    iconColor={okColor}
+    icon={<Send color={okColor} size={28} />}
     titleIcon={ (
       <Preloader
         size={16}
@@ -61,8 +60,7 @@ export const send = () => (
 
 export const pending = () => (
   <ListItem
-    Icon={Interaction}
-    iconColor={failColor}
+    icon={<Interaction color={failColor} size={28} />}
     title={text('title', 'Hatch Turtles')}
     className="list-item"
     subtitleStatus={<span><span style={{ color: '#F56821' }}>Unapproved</span> · </span>}
@@ -74,8 +72,7 @@ export const pending = () => (
 
 export const approve = () => (
   <ListItem
-    Icon={Approve}
-    iconColor={okColor}
+    icon={<Approve color={okColor} size={28} />}
     title={text('title', 'Approve spend limit')}
     className="list-item"
     subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
@@ -85,8 +82,7 @@ export const approve = () => (
 
 export const receive = () => (
   <ListItem
-    Icon={Receive}
-    iconColor={okColor}
+    icon={<Receive color={okColor} size={28} />}
     title={text('title', 'Hatch Turtles')}
     className="list-item"
     subtitle={text('subtitle', 'Sept 20 · From: 00X4...3058')}
