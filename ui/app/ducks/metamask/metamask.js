@@ -39,8 +39,9 @@ export default function reduceMetamask (state = {}, action) {
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
     },
     firstTimeFlowType: null,
     completedOnboarding: false,
