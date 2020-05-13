@@ -5,51 +5,51 @@
 @import '../../../components/ui/popover/index';
 @import '../../../components/ui/icon/preloader/index';
 
-@import './footer.scss';
+@import './footer';
 
-@import './network.scss';
+@import './network';
 
-@import './modal.scss';
+@import './modal';
 
-@import './alert.scss';
+@import './alert';
 
-@import './newui-sections.scss';
+@import './newui-sections';
 
-@import './account-dropdown.scss';
+@import './account-dropdown';
 
-@import './send.scss';
+@import './send';
 
-@import './confirm.scss';
+@import './confirm';
 
-@import './loading-overlay.scss';
+@import './loading-overlay';
 
 // Tx List and Sections
-@import './transaction-list.scss';
+@import './transaction-list';
 
-@import './sections.scss';
+@import './sections';
 
-@import './currency-display.scss';
+@import './currency-display';
 
-@import './menu.scss';
+@import './menu';
 
-@import './gas-slider.scss';
+@import './gas-slider';
 
-@import './tab-bar.scss';
+@import './tab-bar';
 
-@import './simple-dropdown.scss';
+@import './simple-dropdown';
 
-@import './request-signature.scss';
+@import './request-signature';
 
-@import './request-encryption-public-key.scss';
+@import './request-encryption-public-key';
 
-@import './request-decrypt-message.scss';
+@import './request-decrypt-message';
 
-@import './editable-label.scss';
+@import './editable-label';
 
-@import './pages/index.scss';
+@import './pages/index';
 
-@import './new-account.scss';
+@import './new-account';
 
-@import './tooltip.scss';
+@import './tooltip';
 
 @import '../../../components/app/index';
