@@ -1,64 +1,10 @@
-$wallet-balance-bg: #e7e7e7;
-$wallet-balance-breakpoint: 890px;
-$wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
-
-.wallet-balance-wrapper {
-  flex: 0 0 auto;
-  transition: linear 200ms;
-  background: rgba($wallet-balance-bg, 0);
-
-  &--active {
-    background: $manatee;
-    color: $white;
-  }
-}
-
-.wallet-balance {
-  background: inherit;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  flex: 0 0 auto;
-  cursor: pointer;
-  border-top: 1px solid $wallet-balance-bg;
-
-  .balance-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 20px 24px;
-    flex-direction: row;
-    min-width: 0;
-
-    @media #{$wallet-balance-breakpoint-range} {
-      margin: 10% 4%;
-    }
+.asset-list {
+  &__primary-amount {
+    font-size: 1.5rem;
   }
 
-  .balance-display {
-    margin-left: 15px;
-    min-width: 0;
-
-    .token-amount {
-      font-size: 1.5rem;
-    }
-
-    .fiat-amount {
-      margin-top: .25%;
-      font-size: 105%;
-    }
-
-    @media #{$wallet-balance-breakpoint-range} {
-      margin-left: 4%;
-
-      .token-amount {
-        font-size: 105%;
-      }
-
-      .fiat-amount {
-        font-size: 95%;
-      }
-    }
+  &__secondary-amount {
+    margin-top: .25%;
+    font-size: 105%;
   }
 }

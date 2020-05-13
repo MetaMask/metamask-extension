@@ -3,10 +3,13 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import AssetList from './asset-list.component'
 import { setSelectedToken } from '../../../store/actions'
+import { getCurrentAccountWithSendEtherInfo, getShouldShowFiat } from '../../../selectors/selectors'
 
 function mapStateToProps (state) {
   return {
+    selectedAccountBalance: getCurrentAccountWithSendEtherInfo(state).balance,
     selectedTokenAddress: state.metamask.selectedTokenAddress,
+    showFiat: getShouldShowFiat(state),
   }
 }
 

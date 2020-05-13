@@ -2,16 +2,8 @@ $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
 .token-cell {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  padding: 20px 24px;
   cursor: pointer;
-  transition: linear 200ms;
-  background-color: rgba($wallet-balance-bg, 0);
   position: relative;
-  flex: 1;
-  min-width: 0;
 
   &__token-balance {
     margin-right: 4px;
@@ -42,37 +34,10 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     }
   }
 
-  @media #{$wallet-balance-breakpoint-range} {
-    padding: 10% 4%;
-  }
-
-  &--active {
-    background-color: $manatee;
-    color: $white;
-  }
-
-  &__identicon {
-    margin-right: 15px;
-    border: '1px solid #dedede';
-    min-width: 50px;
-
-    @media #{$wallet-balance-breakpoint-range} {
-      margin-right: 4%;
-    }
-  }
-
-  &--outdated > &__identicon {
+  &--outdated &__icon {
     opacity: 0.5
   }
-
-  &__balance-ellipsis {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-    flex: 1;
-  }
-
-  &--outdated > &__balance-ellipsis {
+  &--outdated &__balance-wrapper {
     opacity: 0.5
   }
 

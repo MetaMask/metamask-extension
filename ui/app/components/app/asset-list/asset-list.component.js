@@ -1,10 +1,11 @@
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import BalanceComponent from '../../ui/balance'
 import AddTokenButton from '../add-token-button'
 import TokenList from '../token-list'
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
+import AssetListItem from '../asset-list-item'
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
 export default class AssetList extends Component {
   static contextTypes = {
@@ -18,32 +19,44 @@ export default class AssetList extends Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
+    selectedAccountBalance: PropTypes.string,
     selectedTokenAddress: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
+    showFiat: PropTypes.bool.isRequired,
     unsetSelectedToken: PropTypes.func.isRequired,
   }
 
   renderWalletBalance () {
     const {
+      selectedAccountBalance,
       selectedTokenAddress,
+      showFiat,
       unsetSelectedToken,
     } = this.props
 
     return (
-      <div
-        className={classnames('flex-column', 'wallet-balance-wrapper', {
-          'wallet-balance-wrapper--active': !selectedTokenAddress,
-        })}
+      <AssetListItem
+        active={!selectedTokenAddress}
+        onClick={unsetSelectedToken}
+        data-testid="wallet-balance"
       >
-        <div
-          className="wallet-balance"
-          onClick={() => {
-            unsetSelectedToken()
-          }}
-        >
-          <BalanceComponent />
-        </div>
-      </div>
+        <UserPreferencedCurrencyDisplay
+          className="asset-list__primary-amount"
+          ethNumberOfDecimals={4}
+          type={PRIMARY}
+          value={selectedAccountBalance}
+        />
+        {
+          showFiat && (
+            <UserPreferencedCurrencyDisplay
+              className="asset-list__secondary-amount"
+              ethNumberOfDecimals={4}
+              type={SECONDARY}
+              value={selectedAccountBalance}
+            />
+          )
+        }
+      </AssetListItem>
     )
   }
 
