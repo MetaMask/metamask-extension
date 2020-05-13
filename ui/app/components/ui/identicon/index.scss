@@ -19,4 +19,9 @@
     border-width: 2px;
     border-color: $curious-blue;
   }
+
+  &__eth-logo {
+    border: 1px solid $alto;
+    background: $white;
+  }
 }
