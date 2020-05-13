@@ -1,6 +1,6 @@
 import { getTokenValue, calcTokenAmount } from '../helpers/utils/token-util'
-import { getTokenData } from '../helpers/utils/transactions.util'
 import { useMemo } from 'react'
+import { useTokenData } from './useTokenData'
 
 /**
  * Defines the shape for the Token input parameter for useTokenDisplayValue
@@ -23,7 +23,7 @@ export function useTokenDisplayValue (transactionData, token) {
   if (!transactionData || !token) {
     return null
   }
-  const tokenData = useMemo(() => getTokenData(transactionData), [transactionData])
+  const tokenData = useTokenData(transactionData)
   if (!tokenData?.params?.length) {
     return null
   }

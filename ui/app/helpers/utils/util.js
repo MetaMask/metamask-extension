@@ -8,6 +8,12 @@ export function formatDate (date, format = 'M/d/y \'at\' T') {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
+export function formatDateWithYearContext (date, formatThisYear = 'MMM d', fallback = 'MMM d, y') {
+  const dateTime = DateTime.fromMillis(date)
+  const now = DateTime.local()
+  return dateTime.toFormat(now.year === dateTime.year ? formatThisYear : fallback)
+}
+
 const valueTable = {
   wei: '1000000000000000000',
   kwei: '1000000000000000',

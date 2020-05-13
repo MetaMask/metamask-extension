@@ -11,6 +11,7 @@ import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
 import Copy from '../../ui/icon/copy-icon.component'
+import Popover from '../../ui/popover'
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -31,6 +32,8 @@ export default class TransactionListItemDetails extends PureComponent {
     isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
+    title: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
     recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string.isRequired,
     rpcPrefs: PropTypes.object,
@@ -150,108 +153,112 @@ export default class TransactionListItemDetails extends PureComponent {
       senderAddress,
       isEarliestNonce,
       senderNickname,
+      title,
+      onClose,
       recipientNickname,
     } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
     return (
-      <div className="transaction-list-item-details">
-        <div className="transaction-list-item-details__header">
-          <div>{ t('details') }</div>
-          <div className="transaction-list-item-details__header-buttons">
-            {
-              showSpeedUp && (
-                <Button
-                  type="raised"
-                  onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
-                >
-                  { t('speedUp') }
-                </Button>
-              )
-            }
-            { this.renderCancel() }
-            <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
-              <Button
-                type="raised"
-                onClick={this.handleCopyTxId}
-                className="transaction-list-item-details__header-button"
-                disabled={!hash}
-              >
-                <Copy size={10} color="#3098DC" />
-              </Button>
-            </Tooltip>
-            <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
-              <Button
-                type="raised"
-                onClick={this.handleEtherscanClick}
-                className="transaction-list-item-details__header-button"
-                disabled={!hash}
-              >
-                <img src="/images/arrow-popout.svg" />
-              </Button>
-            </Tooltip>
-            {
-              showRetry && (
-                <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+      <Popover title={title} onClose={onClose}>
+        <div className="transaction-list-item-details">
+          <div className="transaction-list-item-details__header">
+            <div>{ t('details') }</div>
+            <div className="transaction-list-item-details__header-buttons">
+              {
+                showSpeedUp && (
                   <Button
                     type="raised"
                     onClick={this.handleRetry}
                     className="transaction-list-item-details__header-button"
                   >
-                    <i className="fa fa-sync"></i>
+                    { t('speedUp') }
                   </Button>
-                </Tooltip>
-              )
-            }
+                )
+              }
+              { this.renderCancel() }
+              <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
+                <Button
+                  type="raised"
+                  onClick={this.handleCopyTxId}
+                  className="transaction-list-item-details__header-button"
+                  disabled={!hash}
+                >
+                  <Copy size={10} color="#3098DC" />
+                </Button>
+              </Tooltip>
+              <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('viewOnEtherscan')}>
+                <Button
+                  type="raised"
+                  onClick={this.handleEtherscanClick}
+                  className="transaction-list-item-details__header-button"
+                  disabled={!hash}
+                >
+                  <img src="/images/arrow-popout.svg" />
+                </Button>
+              </Tooltip>
+              {
+                showRetry && (
+                  <Tooltip title={blockExplorerUrl ? t('viewOnCustomBlockExplorer', [blockExplorerUrl]) : t('retryTransaction')}>
+                    <Button
+                      type="raised"
+                      onClick={this.handleRetry}
+                      className="transaction-list-item-details__header-button"
+                    >
+                      <i className="fa fa-sync"></i>
+                    </Button>
+                  </Tooltip>
+                )
+              }
+            </div>
+          </div>
+          <div className="transaction-list-item-details__body">
+            <div className="transaction-list-item-details__sender-to-recipient-container">
+              <SenderToRecipient
+                variant={FLAT_VARIANT}
+                addressOnly
+                recipientEns={recipientEns}
+                recipientAddress={recipientAddress}
+                recipientNickname={recipientNickname}
+                senderName={senderNickname}
+                senderAddress={senderAddress}
+                onRecipientClick={() => {
+                  this.context.metricsEvent({
+                    eventOpts: {
+                      category: 'Navigation',
+                      action: 'Activity Log',
+                      name: 'Copied "To" Address',
+                    },
+                  })
+                }}
+                onSenderClick={() => {
+                  this.context.metricsEvent({
+                    eventOpts: {
+                      category: 'Navigation',
+                      action: 'Activity Log',
+                      name: 'Copied "From" Address',
+                    },
+                  })
+                }}
+              />
+            </div>
+            <div className="transaction-list-item-details__cards-container">
+              <TransactionBreakdown
+                transaction={transaction}
+                className="transaction-list-item-details__transaction-breakdown"
+              />
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                onCancel={onCancel}
+                onRetry={onRetry}
+                isEarliestNonce={isEarliestNonce}
+              />
+            </div>
           </div>
         </div>
-        <div className="transaction-list-item-details__body">
-          <div className="transaction-list-item-details__sender-to-recipient-container">
-            <SenderToRecipient
-              variant={FLAT_VARIANT}
-              addressOnly
-              recipientEns={recipientEns}
-              recipientAddress={recipientAddress}
-              recipientNickname={recipientNickname}
-              senderName={senderNickname}
-              senderAddress={senderAddress}
-              onRecipientClick={() => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Navigation',
-                    action: 'Activity Log',
-                    name: 'Copied "To" Address',
-                  },
-                })
-              }}
-              onSenderClick={() => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Navigation',
-                    action: 'Activity Log',
-                    name: 'Copied "From" Address',
-                  },
-                })
-              }}
-            />
-          </div>
-          <div className="transaction-list-item-details__cards-container">
-            <TransactionBreakdown
-              transaction={transaction}
-              className="transaction-list-item-details__transaction-breakdown"
-            />
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              onCancel={onCancel}
-              onRetry={onRetry}
-              isEarliestNonce={isEarliestNonce}
-            />
-          </div>
-        </div>
-      </div>
+      </Popover>
     )
   }
 }

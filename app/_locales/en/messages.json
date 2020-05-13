@@ -231,6 +231,9 @@
   "approved": {
     "message": "Approved"
   },
+  "approveSpendLimit": {
+    "message": "Approve spend limit"
+  },
   "asset": {
     "message": "Asset"
   },
@@ -1117,6 +1120,9 @@
   "queue": {
     "message": "Queue"
   },
+  "queued": {
+    "message": "Queued"
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
   },
@@ -1300,6 +1306,9 @@
   },
   "sentTokens": {
     "message": "sent tokens"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Send $1"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"

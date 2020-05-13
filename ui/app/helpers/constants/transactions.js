@@ -14,7 +14,7 @@ export const TOKEN_METHOD_TRANSFER_FROM = 'transferfrom'
 
 export const SEND_ETHER_ACTION_KEY = 'sentEther'
 export const DEPLOY_CONTRACT_ACTION_KEY = 'contractDeployment'
-export const APPROVE_ACTION_KEY = 'approve'
+export const APPROVE_ACTION_KEY = 'approveSpendLimit'
 export const SEND_TOKEN_ACTION_KEY = 'sentTokens'
 export const TRANSFER_FROM_ACTION_KEY = 'transferFrom'
 export const SIGNATURE_REQUEST_KEY = 'signatureRequest'

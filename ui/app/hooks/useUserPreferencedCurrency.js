@@ -1,4 +1,4 @@
-import { getPreferences, getShouldShowFiat } from '../selectors'
+import { getPreferences, getShouldShowFiat, getNativeCurrency } from '../selectors'
 import { useSelector } from 'react-redux'
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
 
@@ -30,7 +30,7 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
  * @return {UserPreferredCurrency}
  */
 export function useUserPreferencedCurrency (type, opts = {}) {
-  const nativeCurrency = useSelector((state) => state.metamask.nativeCurrency)
+  const nativeCurrency = useSelector(getNativeCurrency)
   const {
     useNativeCurrencyAsPrimaryCurrency,
   } = useSelector(getPreferences)
