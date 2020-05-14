@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.2.0 Thu May 14 2020
 - Add: sponsor feature (#124)
 - Add: chinese trans in send and confirm page (#126)
 - Add: add cfx_checkBalanceAgainstTransaction method support
