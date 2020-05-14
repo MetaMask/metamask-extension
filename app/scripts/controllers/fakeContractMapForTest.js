@@ -1,4 +1,4 @@
-export default {
+export const fakeContractMapForTest = {
   '0x88A8f9b1835Ae66B6f1DA3c930b7D11220beBF78': {
     'address': '0x88A8f9b1835Ae66B6f1DA3c930b7D11220beBF78',
     'name': 'FansCoin',

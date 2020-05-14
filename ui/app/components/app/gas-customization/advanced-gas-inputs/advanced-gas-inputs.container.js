@@ -4,7 +4,9 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
+  hexWEIToDecEth,
 } from '../../../../helpers/utils/conversions.util'
+import { calcStorageTotal } from '../../../../pages/send/send.utils.js'
 import AdvancedGasInputs from './advanced-gas-inputs.component'
 
 function convertGasPriceForInputs (gasPriceInHexWEI) {
@@ -21,8 +23,13 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(showModal({ name: 'GAS_PRICE_INFO_MODAL' })),
     showGasLimitInfoModal: () =>
       dispatch(showModal({ name: 'GAS_LIMIT_INFO_MODAL' })),
-    showStorageLimitInfoModal: () =>
-      dispatch(showModal({ name: 'STORAGE_LIMIT_INFO_MODAL' })),
+    showStorageLimitInfoModal: (storageLimit) =>
+      dispatch(
+        showModal({
+          name: 'STORAGE_LIMIT_INFO_MODAL',
+          i18nArgs: [storageLimit],
+        })
+      ),
   }
 }
 
@@ -35,16 +42,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     updateCustomGasLimit,
     updateCustomStorageLimit,
   } = ownProps
+  const {
+    showStorageLimitInfoModal: dispatchShowStorageLimitInfoModal,
+  } = dispatchProps
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    showStorageLimitInfoModal: () =>
+      dispatchShowStorageLimitInfoModal(
+        hexWEIToDecEth(calcStorageTotal(customStorageLimit))
+      ),
     customGasPrice: convertGasPriceForInputs(customGasPrice),
     customGasLimit: convertGasOrStorageLimitForInputs(customGasLimit),
     customStorageLimit: convertGasOrStorageLimitForInputs(customStorageLimit),
     updateCustomGasPrice: (price) => updateCustomGasPrice(decGWEIToHexWEI(price)),
     updateCustomGasLimit: (limit) => updateCustomGasLimit(decimalToHex(limit)),
-    updateCustomStorageLimit: (limit) => updateCustomStorageLimit(decimalToHex(limit)),
+    updateCustomStorageLimit: (limit) =>
+      updateCustomStorageLimit(decimalToHex(limit)),
   }
 }
 

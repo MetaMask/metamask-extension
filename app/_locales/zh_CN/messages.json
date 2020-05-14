@@ -158,6 +158,9 @@
   "nonceField": {
     "message": "自定义 nonce"
   },
+  "nonceFieldHeading": {
+    "message": "自定义 nonce"
+  },
   "nonceFieldDescription": {
     "message": "开启后可以在交易的确认界面自定义 nonce. 这是一个高级用法, 请慎用"
   },
@@ -332,6 +335,9 @@
   "customRPC": {
     "message": "自定义 RPC"
   },
+  "data": {
+    "message": "数据"
+  },
   "decimalsMustZerotoTen": {
     "message": "小数位最小为0并且不超过36位."
   },
@@ -481,17 +487,33 @@
   "functionType": {
     "message": "功能类型"
   },
+  "storageFee": {
+    "message": "存储费"
+  },
+  "storageLimit": {
+    "message": "存储上限"
+  },
   "storageLimitInfoModalContent": {
-    "message": "存储空间限制即您个人希望购买的最大存储空间单位数量。"
+    "message": "存储费上限为 $1 CFX，仅扣除实际使用部分的存储费用，待存储资源被释放后将返还该笔费用。",
+    "description": "$1 为由 storageLimit 计算出来的需要抵押的 storage fee"
+  },
+  "gasFee": {
+    "message": "燃气费"
+  },
+  "gasLimit": {
+    "message": "燃气上限"
   },
   "gasLimitInfoModalContent": {
     "message": "燃气限制即您个人希望购买的最大燃气单位数量。"
   },
   "gasLimitTooLow": {
-    "message": "Gas Limit 至少要 21000"
+    "message": " 燃气上限至少要 21000"
   },
   "gasUsed": {
     "message": "已使用燃气量"
+  },
+  "gasPrice": {
+    "message": " 燃气价格 (GDrip)"
   },
   "storageCollateralized": {
     "message": "已抵押的存储"
@@ -1383,5 +1405,11 @@
   },
   "alreadySponsoredByContract": {
     "message": " 已由合约代付"
+  },
+  "optional": {
+    "message": "可选"
+  },
+  "amountPlusGasFee": {
+    "message": "交易量 + 燃气费"
   }
 }

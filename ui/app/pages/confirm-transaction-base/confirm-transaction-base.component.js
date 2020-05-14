@@ -255,6 +255,8 @@ export default class ConfirmTransactionBase extends Component {
       isSimpleTx,
     } = this.props
 
+    const { t } = this.context
+
     if (hideDetails) {
       return null
     }
@@ -264,7 +266,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__details">
           <div className="confirm-page-container-content__gas-fee">
             <ConfirmDetailRow
-              label="Gas Fee"
+              label={ t('gasFee') }
               type="fee"
               value={hexTransactionFee}
               primaryPrefix={this.renderSponsoredTxFee()}
@@ -275,7 +277,7 @@ export default class ConfirmTransactionBase extends Component {
               }
               secondaryText={
                 hideFiatConversion
-                  ? this.context.t('noConversionRateAvailable')
+                  ? t('noConversionRateAvailable')
                   : ''
               }
             />
@@ -311,7 +313,7 @@ export default class ConfirmTransactionBase extends Component {
             ) : null}
             {!isSimpleTx && (
               <ConfirmDetailRow
-                label="Storage Collateral"
+                label={ t('storageFee') }
                 type="collateral"
                 value={hexTransactionFee}
                 headerText={advancedInlineGasShown ? '' : 'Edit'}
@@ -321,7 +323,7 @@ export default class ConfirmTransactionBase extends Component {
                 }
                 secondaryText={
                   hideFiatConversion
-                    ? this.context.t('noConversionRateAvailable')
+                    ? t('noConversionRateAvailable')
                     : ''
                 }
               />
@@ -364,15 +366,15 @@ export default class ConfirmTransactionBase extends Component {
             }
           >
             <ConfirmDetailRow
-              label="Total"
+              label={ t('total') }
               value={hexTransactionTotal}
               primaryText={primaryTotalTextOverride}
               secondaryText={
                 hideFiatConversion
-                  ? this.context.t('noConversionRateAvailable')
+                  ? t('noConversionRateAvailable')
                   : secondaryTotalTextOverride
               }
-              headerText="Amount + Gas Fee"
+              headerText={ t('amountPlusGasFee') }
               headerTextClassName="confirm-detail-row__header-text--total"
               primaryValueTextColor="#2f9ae0"
             />
@@ -381,7 +383,7 @@ export default class ConfirmTransactionBase extends Component {
             <div>
               <div className="confirm-detail-row">
                 <div className="confirm-detail-row__label">
-                  {this.context.t('nonceFieldHeading')}
+                  {t('nonceFieldHeading')}
                 </div>
                 <div className="custom-nonce-input">
                   <TextField
@@ -621,6 +623,9 @@ export default class ConfirmTransactionBase extends Component {
 
   renderSponsoredTxFee () {
     const { hexSponsoredTransactionFee } = this.props
+    if (hexSponsoredTransactionFee === '0x0') {
+      return <div></div>
+    }
 
     return (
       <div style={{ display: 'flex', fontSize: '0.7rem', color: '#2F9AE0' }}>

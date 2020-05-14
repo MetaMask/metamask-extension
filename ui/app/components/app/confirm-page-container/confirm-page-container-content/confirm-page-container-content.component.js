@@ -6,6 +6,10 @@ import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.'
 import ErrorMessage from '../../../ui/error-message'
 
 export default class ConfirmPageContainerContent extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
@@ -36,11 +40,12 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs () {
     const { detailsComponent, dataComponent } = this.props
+    const { t } = this.context
 
     return (
       <Tabs>
-        <Tab name="Details">{detailsComponent}</Tab>
-        <Tab name="Data">{dataComponent}</Tab>
+        <Tab name={ t('details') }>{detailsComponent}</Tab>
+        <Tab name={ t('data') }>{dataComponent}</Tab>
       </Tabs>
     )
   }
