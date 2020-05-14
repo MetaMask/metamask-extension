@@ -1,7 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
-- Version v0.1.9
+- Add: sponsor feature (#124)
+- Add: chinese trans in send and confirm page (#126)
 - Add: add cfx_checkBalanceAgainstTransaction method support
 - Add: seperate fee and collateral ui
 
