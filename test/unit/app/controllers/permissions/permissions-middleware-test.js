@@ -716,7 +716,7 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore,
-        { [ORIGINS.c]: { name, extensionId: undefined } },
+        { [ORIGINS.c]: { name } },
         'metadata should have been added to store'
       )
     })

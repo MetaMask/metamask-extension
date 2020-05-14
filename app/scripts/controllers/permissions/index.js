@@ -75,13 +75,10 @@ export class PermissionsController {
       throw new Error('Must provide non-empty string origin.')
     }
 
-    if (extensionId) {
-      this.store.updateState({
-        [METADATA_STORE_KEY]: {
-          ...this.store.getState()[METADATA_STORE_KEY],
-          [origin]: { extensionId },
-        },
-      })
+    const metadataState = this.store.getState()[METADATA_STORE_KEY]
+
+    if (extensionId && metadataState[origin]?.extensionId !== extensionId) {
+      this.addDomainMetadata(origin, { extensionId })
     }
 
     const engine = new JsonRpcEngine()
@@ -520,17 +517,21 @@ export class PermissionsController {
     })
   }
 
+  /**
+   * Stores domain metadata for the given origin.
+   *
+   * @param {string} origin - The origin whose domain metadata to store.
+   * @param {Object} metadata - The metadata to store.
+   */
   addDomainMetadata (origin, metadata) {
 
     const metadataState = this.store.getState()[METADATA_STORE_KEY]
-
-    const extensionId = metadataState[origin]?.extensionId
 
     this.store.updateState({
       [METADATA_STORE_KEY]: {
         ...metadataState,
         [origin]: {
-          extensionId,
+          ...metadataState[origin],
           ...metadata,
         },
       },
