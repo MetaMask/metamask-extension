@@ -21,11 +21,7 @@ const outdatedGateways = [
 ]
 
 function transformState (state) {
-  if (!state.PreferencesController) {
-    return state
-  }
-
-  if (!state.PreferencesController.ipfsGateway || outdatedGateways.includes(state.PreferencesController.ipfsGateway)) {
+  if (outdatedGateways.includes(state?.PreferencesController?.ipfsGateway)) {
     state.PreferencesController.ipfsGateway = 'dweb.link'
   }
   return state
