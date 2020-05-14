@@ -2,7 +2,7 @@ const version = 45
 import { cloneDeep } from 'lodash'
 
 /**
- * Replace ipfsGateway by 'dweb.link'.
+ * Replaces {@code PreferencesController.ipfsGateway} with 'dweb.link' if set
  */
 export default {
   version,
