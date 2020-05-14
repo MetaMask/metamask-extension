@@ -5,6 +5,5 @@ export function useTokenData (transactionData) {
   if (!transactionData) {
     return null
   }
-  const tokenData = useMemo(() => getTokenData(transactionData), [transactionData])
-  return tokenData
+  return useMemo(() => getTokenData(transactionData), [transactionData])
 }
