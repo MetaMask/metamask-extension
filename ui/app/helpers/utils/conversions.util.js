@@ -134,11 +134,20 @@ export function decGWEIToHexWEI (decGWEI) {
   })
 }
 
-export function hexWEIToDecGWEI (decGWEI) {
-  return conversionUtil(decGWEI, {
+export function hexWEIToDecGWEI (hexGWEI) {
+  return conversionUtil(hexGWEI, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
+  })
+}
+
+export function hexWEIToDecEth (hexWei) {
+  return conversionUtil(hexWei, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
   })
 }

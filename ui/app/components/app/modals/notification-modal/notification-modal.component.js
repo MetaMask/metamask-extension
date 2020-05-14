@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hideModal } from '../../../store/actions'
+import { hideModal } from '../../../../store/actions'
 
 class NotificationModal extends Component {
   static contextProps = {
@@ -16,6 +16,7 @@ class NotificationModal extends Component {
       showConfirmButton = false,
       hideModal,
       onConfirm,
+      i18nArgs = [],
     } = this.props
 
     const { t } = this.context
@@ -30,7 +31,7 @@ class NotificationModal extends Component {
           </div>
           <div className="notification-modal__message-wrapper">
             <div className="notification-modal__message">
-              {this.context.t(message)}
+              {this.context.t(message, i18nArgs)}
             </div>
           </div>
           <div className="modal-close-x" onClick={hideModal} />
@@ -70,6 +71,7 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
+  i18nArgs: PropTypes.arrayOf(PropTypes.string),
 }
 
 const mapDispatchToProps = (dispatch) => {

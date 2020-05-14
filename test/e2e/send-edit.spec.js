@@ -253,14 +253,15 @@ describe('Using MetaMask with an existing account', function () {
       const transactionAmounts = await driver.findElements(
         By.css('.currency-display-component__text')
       )
+
       const transactionAmount = transactionAmounts[0]
       assert.equal(await transactionAmount.getText(), '2.2')
 
       const sponsorTxFee = transactionAmounts[1]
-      assert.equal(await sponsorTxFee.getText(), '0')
+      assert.equal(await sponsorTxFee.getText(), '0.0008')
 
       const transactionFee = transactionAmounts[2]
-      assert.equal(await transactionFee.getText(), '0.0008')
+      assert.equal(await transactionFee.getText(), '2.2008')
     })
 
     it('confirms the transaction', async function () {

@@ -2,11 +2,11 @@ import Web3 from './ConfluxWeb/index'
 import { warn } from 'loglevel'
 import { MAINNET, TESTNET } from './network/enums'
 import { toChecksumAddress } from 'cfx-util'
-import fakeContractMapForTest from './fakeContractMapForTest'
+import { fakeContractMapForTest } from './fakeContractMapForTest'
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-const IN_TEST = process.env.IN_TEST
+const IN_TEST = process.env.IN_TEST === 'true' || process.env.METAMASK_ENVIRONMEN === 'testing'
 const ERC20_ABI = [
   {
     constant: true,
@@ -56,11 +56,11 @@ class DetectTokensController {
   }
 
   async refreshCachedTokenList () {
-    if (METAMASK_DEBUG || IN_TEST) {
-      return fakeContractMapForTest
-    }
     const endpoint = getScanUrl(this._network)
     if (!endpoint) {
+      if (METAMASK_DEBUG || IN_TEST) {
+        return fakeContractMapForTest
+      }
       return {}
     }
 
