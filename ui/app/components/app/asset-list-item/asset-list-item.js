@@ -25,7 +25,7 @@ const AssetListItem = ({
     >
       <Identicon
         className={iconClassName}
-        diameter={50}
+        diameter={32}
         address={tokenAddress}
         image={tokenImage}
       />

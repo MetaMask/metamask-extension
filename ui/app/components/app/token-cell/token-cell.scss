@@ -2,7 +2,6 @@ $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
 .token-cell {
-  cursor: pointer;
   position: relative;
 
   &__token-balance {
@@ -15,23 +14,18 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   }
 
   &__token-balance, &__token-symbol {
-    font-size: 1.5rem;
+    font-size: 16px;
     flex: 0 0 auto;
-
-    @media #{$wallet-balance-breakpoint-range} {
-      font-size: 95%;
-    }
+    height: 16px;
+    color: $Black-100;
   }
 
   &__fiat-amount {
-    margin-top: .25%;
-    font-size: 105%;
+    margin-top: 6px;
+    font-size: 14px;
     width: 100%;
     text-transform: uppercase;
-
-    @media #{$wallet-balance-breakpoint-range} {
-      font-size: 95%;
-    }
+    color: $Grey-500;
   }
 
   &--outdated &__icon {
@@ -42,7 +36,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   }
 
   &__ellipsis {
-    line-height: 45px;
+    line-height: 38px;
   }
 
   &__balance-wrapper {
