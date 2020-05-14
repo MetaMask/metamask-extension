@@ -89,8 +89,7 @@ export class PermissionsController {
     engine.push(this.permissionsLog.createMiddleware())
 
     engine.push(createMethodMiddleware({
-      store: this.store,
-      storeKey: METADATA_STORE_KEY,
+      addDomainMetadata: this.addDomainMetadata.bind(this),
       getAccounts: this.getAccounts.bind(this, origin),
       getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
@@ -511,6 +510,34 @@ export class PermissionsController {
   }
 
   /**
+   * Removes all known domains and their related permissions.
+   */
+  clearPermissions () {
+    this.permissions.clearDomains()
+    this.notifyAllDomains({
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: [],
+    })
+  }
+
+  addDomainMetadata (origin, metadata) {
+
+    const metadataState = this.store.getState()[METADATA_STORE_KEY]
+
+    const extensionId = metadataState[origin]?.extensionId
+
+    this.store.updateState({
+      [METADATA_STORE_KEY]: {
+        ...metadataState,
+        [origin]: {
+          extensionId,
+          ...metadata,
+        },
+      },
+    })
+  }
+
+  /**
    * Get current set of permitted accounts for the given origin
    *
    * @param {string} origin - The origin to obtain permitted accounts for
@@ -574,17 +601,6 @@ export class PermissionsController {
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
       result: permittedAccounts,
-    })
-  }
-
-  /**
-   * Removes all known domains and their related permissions.
-   */
-  clearPermissions () {
-    this.permissions.clearDomains()
-    this.notifyAllDomains({
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: [],
     })
   }
 
