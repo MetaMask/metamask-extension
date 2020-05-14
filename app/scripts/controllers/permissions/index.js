@@ -14,6 +14,8 @@ import {
   SAFE_METHODS, // methods that do not require any permissions to use
   WALLET_PREFIX,
   METADATA_STORE_KEY,
+  METADATA_STORE_MAX_SIZE,
+  METADATA_STORE_TRIM_AMOUNT,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
   CAVEAT_NAMES,
@@ -35,8 +37,8 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {}) {
 
+    // more state set further down
     this.store = new ObservableStore({
-      [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
@@ -60,6 +62,10 @@ export class PermissionsController {
     this._initializePermissions(restoredPermissions)
     this._lastSelectedAddress = preferences.getState().selectedAddress
     this.preferences = preferences
+
+    // _trimAndSetDomainMetadata requires this._initializePermissions
+    const metadataState = restoredState[METADATA_STORE_KEY] || {}
+    this._trimAndSetDomainMetadata(metadataState, true)
 
     preferences.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
@@ -519,6 +525,7 @@ export class PermissionsController {
 
   /**
    * Stores domain metadata for the given origin.
+   * Trims the metadata store by a quarter if it becomes too big.
    *
    * @param {string} origin - The origin whose domain metadata to store.
    * @param {Object} metadata - The metadata to store.
@@ -526,16 +533,52 @@ export class PermissionsController {
   addDomainMetadata (origin, metadata) {
 
     const metadataState = this.store.getState()[METADATA_STORE_KEY]
+    const newMetadataState = { ...metadataState }
+    newMetadataState[origin] = {
+      ...metadataState[origin],
+      ...metadata,
+      lastUpdated: Date.now(),
+    }
 
-    this.store.updateState({
-      [METADATA_STORE_KEY]: {
-        ...metadataState,
-        [origin]: {
-          ...metadataState[origin],
-          ...metadata,
-        },
-      },
-    })
+    this._trimAndSetDomainMetadata(newMetadataState)
+  }
+
+  /**
+   * Trims and sets the permissions domain metadata state, given a new state object.
+   * By default, only a constant number of the oldest entries will be trimmed,
+   * and only if there are too many entries.
+   * If specified, all domains without permissions will be trimmed.
+   *
+   * @param {Object} newMetadataState - The new metadata store state.
+   * @param {boolean} trimByPermissions - Whether to trim by permissions or age.
+   * Default: false
+   */
+  _trimAndSetDomainMetadata (newMetadataState, trimByPermissions = false) {
+
+    const origins = Object.keys(newMetadataState)
+    let originsToDelete = []
+
+    if (trimByPermissions) { // trim any domains without permissions
+
+      const permissionsDomains = this.permissions.getDomains()
+      originsToDelete = origins
+        .filter((origin) => !permissionsDomains[origin])
+
+    } else if (origins.length > METADATA_STORE_MAX_SIZE) { // trim X oldest
+
+      origins.sort((a, b) => {
+        return newMetadataState[a].lastUpdated - newMetadataState[b].lastUpdated
+      })
+      originsToDelete = origins.slice(0, METADATA_STORE_TRIM_AMOUNT)
+    }
+
+    if (originsToDelete.length > 0) {
+      originsToDelete.forEach((origin) => {
+        delete newMetadataState[origin]
+      })
+    }
+
+    this.store.updateState({ [METADATA_STORE_KEY]: newMetadataState })
   }
 
   /**

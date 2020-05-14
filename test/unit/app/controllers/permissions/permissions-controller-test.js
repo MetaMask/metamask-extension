@@ -1190,10 +1190,15 @@ describe('permissions controller', function () {
   // see permissions-middleware-test for testing the middleware itself
   describe('createMiddleware', function () {
 
-    let permController
+    let permController, clock
 
     beforeEach(function () {
       permController = initPermController()
+      clock = sinon.useFakeTimers(1)
+    })
+
+    afterEach(function () {
+      clock.restore()
     })
 
     it('should throw on bad origin', function () {
@@ -1266,7 +1271,7 @@ describe('permissions controller', function () {
       const metadataStore = permController.store.getState()[METADATA_STORE_KEY]
 
       assert.deepEqual(
-        metadataStore[ORIGINS.a], { extensionId },
+        metadataStore[ORIGINS.a], { extensionId, lastUpdated: 1 },
         'metadata should be stored'
       )
     })
