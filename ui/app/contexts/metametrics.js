@@ -6,11 +6,11 @@ import { captureException } from '@sentry/browser'
 
 import {
   getCurrentNetworkId,
-  getSelectedAsset,
   getAccountType,
   getNumberOfAccounts,
   getNumberOfTokens,
 } from '../selectors/selectors'
+import { getSendToken } from '../selectors/send'
 import {
   txDataSelector,
 } from '../selectors/confirm-transaction'
@@ -31,7 +31,7 @@ export function MetaMetricsProvider ({ children }) {
   const txData = useSelector(txDataSelector) || {}
   const network = useSelector(getCurrentNetworkId)
   const environmentType = getEnvironmentType()
-  const activeCurrency = useSelector(getSelectedAsset)
+  const activeCurrency = useSelector(getSendToken)?.symbol
   const accountType = useSelector(getAccountType)
   const confirmTransactionOrigin = txData.origin
   const metaMetricsId = useSelector((state) => state.metamask.metaMetricsId)

@@ -519,9 +519,6 @@
   "hide": {
     "message": "লুকান"
   },
-  "hideToken": {
-    "message": "টোকেন লুকান"
-  },
   "hideTokenPrompt": {
     "message": "টোকেন লুকাবেন?"
   },

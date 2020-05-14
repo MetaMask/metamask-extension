@@ -516,9 +516,6 @@
   "hide": {
     "message": "隱藏"
   },
-  "hideToken": {
-    "message": "隱藏代幣"
-  },
   "hideTokenPrompt": {
     "message": "隱藏代幣？"
   },

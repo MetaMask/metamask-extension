@@ -52,15 +52,6 @@ describe('MetaMask Reducers', function () {
     assert.equal(state.selectedAddress, 'test address')
   })
 
-  it('sets select ', function () {
-    const state = reduceMetamask({}, {
-      type: actionConstants.SET_SELECTED_TOKEN,
-      value: 'test token',
-    })
-
-    assert.equal(state.selectedTokenAddress, 'test token')
-  })
-
   it('sets account label', function () {
     const state = reduceMetamask({}, {
       type: actionConstants.SET_ACCOUNT_LABEL,

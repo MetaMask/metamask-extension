@@ -519,9 +519,6 @@
   "hide": {
     "message": "Сховати"
   },
-  "hideToken": {
-    "message": "Приховати токен"
-  },
   "hideTokenPrompt": {
     "message": "Приховати токен?"
   },

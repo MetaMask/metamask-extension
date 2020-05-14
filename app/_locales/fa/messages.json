@@ -519,9 +519,6 @@
   "hide": {
     "message": "عدم نمایش"
   },
-  "hideToken": {
-    "message": "مخفی سازی رمزیاب"
-  },
   "hideTokenPrompt": {
     "message": "آیا رمزیاب مخفی شود؟"
   },

@@ -519,9 +519,6 @@
   "hide": {
     "message": "הסתר"
   },
-  "hideToken": {
-    "message": "הסתר טוקן"
-  },
   "hideTokenPrompt": {
     "message": "להסתיר טוקן?"
   },

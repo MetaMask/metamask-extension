@@ -149,9 +149,6 @@
   "hide": {
     "message": "Ẩn"
   },
-  "hideToken": {
-    "message": "Ẩn mã token"
-  },
   "hideTokenPrompt": {
     "message": "Ẩn mã token?"
   },

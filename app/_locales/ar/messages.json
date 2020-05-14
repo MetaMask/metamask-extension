@@ -515,9 +515,6 @@
   "hide": {
     "message": "إخفاء"
   },
-  "hideToken": {
-    "message": "إخفاء الرمز"
-  },
   "hideTokenPrompt": {
     "message": "أتريد إخفاء العملة الرمزية؟"
   },

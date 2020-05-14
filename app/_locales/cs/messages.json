@@ -197,9 +197,6 @@
   "hide": {
     "message": "Skrýt"
   },
-  "hideToken": {
-    "message": "Skrýt token"
-  },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
   },

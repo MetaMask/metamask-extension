@@ -759,8 +759,9 @@
   "hide": {
     "message": "Hide"
   },
-  "hideToken": {
-    "message": "Hide Token"
+  "hideTokenSymbol": {
+    "message": "Hide $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
   "hideTokenPrompt": {
     "message": "Hide Token?"
@@ -1543,6 +1544,9 @@
   },
   "tokenContractAddress": {
     "message": "Token Contract Address"
+  },
+  "tokenOptions": {
+    "message": "Token options"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

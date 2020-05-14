@@ -515,9 +515,6 @@
   "hide": {
     "message": "Elrejtés"
   },
-  "hideToken": {
-    "message": "Token elrejtése"
-  },
   "hideTokenPrompt": {
     "message": "Elrejted a tokent?"
   },

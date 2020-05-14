@@ -633,9 +633,6 @@
   "hide": {
     "message": "Nascondi"
   },
-  "hideToken": {
-    "message": "Nascondi Token"
-  },
   "hideTokenPrompt": {
     "message": "Nascondi Token?"
   },

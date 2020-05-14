@@ -3,11 +3,12 @@
   justify-content: space-between;
   align-items: center;
   flex: 1;
-  height: 54px;
+  height: 209px;
   min-width: 0;
 
+  padding-top: 10px;
+
   flex-direction: column;
-  height: initial;
   width: 100%;
 
   &__balance {
@@ -21,7 +22,8 @@
   &__buttons {
     display: flex;
     flex-direction: row;
-    margin-bottom: 16px;
+    height: 44px;
+    margin-bottom: 24px;
   }
 }
 

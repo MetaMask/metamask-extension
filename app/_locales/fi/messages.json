@@ -516,9 +516,6 @@
   "hide": {
     "message": "Piilota"
   },
-  "hideToken": {
-    "message": "Piilota tietue"
-  },
   "hideTokenPrompt": {
     "message": "Piilotetaanko tietue?"
   },

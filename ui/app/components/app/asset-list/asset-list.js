@@ -1,5 +1,6 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import AddTokenButton from '../add-token-button'
 import TokenList from '../token-list'
@@ -9,14 +10,12 @@ import CurrencyDisplay from '../../ui/currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
-import { getCurrentAccountWithSendEtherInfo, getShouldShowFiat } from '../../../selectors/selectors'
-import { setSelectedToken } from '../../../store/actions'
+import { getCurrentAccountWithSendEtherInfo, getNativeCurrency, getShouldShowFiat } from '../../../selectors'
 
-const AssetList = () => {
-  const dispatch = useDispatch()
+const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
   const selectedAccountBalance = useSelector((state) => getCurrentAccountWithSendEtherInfo(state).balance)
-  const selectedTokenAddress = useSelector((state) => state.metamask.selectedTokenAddress)
+  const nativeCurrency = useSelector(getNativeCurrency)
   const showFiat = useSelector(getShouldShowFiat)
   const selectTokenEvent = useMetricEvent({
     eventOpts: {
@@ -45,8 +44,7 @@ const AssetList = () => {
   return (
     <>
       <AssetListItem
-        active={!selectedTokenAddress}
-        onClick={() => dispatch(setSelectedToken())}
+        onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
       >
         <CurrencyDisplay
@@ -68,7 +66,7 @@ const AssetList = () => {
       </AssetListItem>
       <TokenList
         onTokenClick={(tokenAddress) => {
-          dispatch(setSelectedToken(tokenAddress))
+          onClickAsset(tokenAddress)
           selectTokenEvent()
         }}
       />
@@ -80,6 +78,10 @@ const AssetList = () => {
       />
     </>
   )
+}
+
+AssetList.propTypes = {
+  onClickAsset: PropTypes.func.isRequired,
 }
 
 export default AssetList

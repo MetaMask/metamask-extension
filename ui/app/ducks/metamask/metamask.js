@@ -11,7 +11,6 @@ export default function reduceMetamask (state = {}, action) {
     unapprovedTxs: {},
     frequentRpcList: [],
     addressBook: [],
-    selectedTokenAddress: null,
     contractExchangeRates: {},
     tokens: [],
     pendingTokens: {},
@@ -86,33 +85,6 @@ export default function reduceMetamask (state = {}, action) {
         isInitialized: true,
         selectedAddress: action.value,
       }
-
-    case actionConstants.SET_SELECTED_TOKEN: {
-      const newState = {
-        ...metamaskState,
-        selectedTokenAddress: action.value,
-      }
-      const newSend = { ...metamaskState.send }
-
-      if (metamaskState.send.editingTransactionId && !action.value) {
-        delete newSend.token
-        const unapprovedTx = newState.unapprovedTxs[newSend.editingTransactionId] || {}
-        const txParams = unapprovedTx.txParams || {}
-        newState.unapprovedTxs = {
-          ...newState.unapprovedTxs,
-          [newSend.editingTransactionId]: {
-            ...unapprovedTx,
-            txParams: { ...txParams, data: '' },
-          },
-        }
-        newSend.tokenBalance = null
-        newSend.balance = '0'
-        newSend.from = unapprovedTx.from || ''
-      }
-
-      newState.send = newSend
-      return newState
-    }
 
     case actionConstants.SET_ACCOUNT_LABEL:
       const account = action.value.account

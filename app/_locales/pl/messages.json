@@ -516,9 +516,6 @@
   "hide": {
     "message": "Schowaj"
   },
-  "hideToken": {
-    "message": "Schowaj token"
-  },
   "hideTokenPrompt": {
     "message": "Schować token?"
   },

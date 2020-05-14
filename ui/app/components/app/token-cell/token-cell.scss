@@ -34,10 +34,6 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     opacity: 0.5
   }
 
-  &__ellipsis {
-    line-height: 38px;
-  }
-
   &__balance-wrapper {
     flex: 1;
     flex-flow: row wrap;

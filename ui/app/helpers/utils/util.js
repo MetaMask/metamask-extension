@@ -256,10 +256,6 @@ export function exportAsFile (filename, data, type = 'text/csv') {
   }
 }
 
-export function getTokenAddressFromTokenObject (token) {
-  return Object.values(token)[0].address.toLowerCase()
-}
-
 /**
  * Safely checksumms a potentially-null address
  *

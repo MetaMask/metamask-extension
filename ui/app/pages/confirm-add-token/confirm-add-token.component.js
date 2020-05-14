@@ -103,7 +103,12 @@ export default class ConfirmAddToken extends Component {
                 addTokens(pendingTokens)
                   .then(() => {
                     clearPendingTokens()
-                    history.push(DEFAULT_ROUTE)
+                    const firstTokenAddress = Object.values(pendingTokens)?.[0].address?.toLowerCase()
+                    if (firstTokenAddress) {
+                      history.push(`${ASSET_ROUTE}/${firstTokenAddress}`)
+                    } else {
+                      history.push(DEFAULT_ROUTE)
+                    }
                   })
               }}
             >
