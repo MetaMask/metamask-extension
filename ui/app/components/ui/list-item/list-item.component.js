@@ -30,7 +30,7 @@ export default function ListItem ({ title, subtitle, onClick, subtitleStatus, ch
         )}
       </div>
       {rightContent && (
-        <div className="list-item__col list-item__rightContent">
+        <div className="list-item__col list-item__right-content">
           {rightContent}
         </div>
       )}

@@ -22,8 +22,6 @@ export default function TransactionList ({ isWideViewport = false } = {}) {
   const dispatch = useDispatch()
   const pendingTransactions = useSelector(nonceSortedPendingTransactionsSelector)
   const completedTransactions = useSelector(nonceSortedCompletedTransactionsSelector)
-  console.log('groups', JSON.stringify(pendingTransactions), JSON.stringify(completedTransactions))
-  // const selectedAddress = useSelector(getSelectedAddress)
   const { transactionTime: transactionTimeFeatureActive } = useSelector(getFeatureFlags)
 
   const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(() => ({

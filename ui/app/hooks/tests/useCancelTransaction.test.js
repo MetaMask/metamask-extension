@@ -8,14 +8,13 @@ import { useCancelTransaction } from '../useCancelTransaction'
 import { showModal } from '../../store/actions'
 import { increaseLastGasPrice } from '../../helpers/utils/confirm-tx.util'
 
-let useSelector, useDispatch
-
-const dispatch = sinon.spy()
 
 describe('useCancelTransaction', function () {
+  let useSelector
+  const dispatch = sinon.spy()
+
   before(function () {
-    useDispatch = sinon.stub(reactRedux, 'useDispatch')
-    useDispatch.returns(dispatch)
+    sinon.stub(reactRedux, 'useDispatch').returns(dispatch)
   })
 
   afterEach(function () {
@@ -99,7 +98,6 @@ describe('useCancelTransaction', function () {
 
 
   after(function () {
-    useSelector.restore()
-    useDispatch.restore()
+    sinon.restore()
   })
 })

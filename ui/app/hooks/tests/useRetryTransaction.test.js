@@ -8,21 +8,15 @@ import * as metricEventHook from '../useMetricEvent'
 import { showSidebar } from '../../store/actions'
 import { useRetryTransaction } from '../useRetryTransaction'
 
-let useDispatch, useMethodData, useMetricEvent
-
-const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
-const trackEvent = sinon.spy()
-
-const event = { preventDefault: () => {}, stopPropagation: () => {} }
-
 describe('useCancelTransaction', function () {
+  const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
+  const trackEvent = sinon.spy()
+  const event = { preventDefault: () => {}, stopPropagation: () => {} }
+
   before(function () {
-    useDispatch = sinon.stub(reactRedux, 'useDispatch')
-    useDispatch.returns(dispatch)
-    useMethodData = sinon.stub(methodDataHook, 'useMethodData')
-    useMethodData.returns({})
-    useMetricEvent = sinon.stub(metricEventHook, 'useMetricEvent')
-    useMetricEvent.returns(trackEvent)
+    sinon.stub(reactRedux, 'useDispatch').returns(dispatch)
+    sinon.stub(methodDataHook, 'useMethodData').returns({})
+    sinon.stub(metricEventHook, 'useMetricEvent').returns(trackEvent)
   })
 
   afterEach(function () {
@@ -118,8 +112,6 @@ describe('useCancelTransaction', function () {
   })
 
   after(function () {
-    useDispatch.restore()
-    useMethodData.restore()
-    useMetricEvent.restore()
+    sinon.restore()
   })
 })

@@ -137,12 +137,12 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         subtitleStatus={subtitleStatus}
         rightContent={(
           <>
-            <h2 className="transaction-list-item__primaryCurrency">{primaryCurrency}</h2>
-            <h3 className="transaction-list-item__secondaryCurrency">{secondaryCurrency}</h3>
+            <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
+            <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>
           </>
         )}
       >
-        <div className="transaction-list-item__pendingActions">
+        <div className="transaction-list-item__pending-actions">
           {speedUpButton}
           {cancelButton}
         </div>
