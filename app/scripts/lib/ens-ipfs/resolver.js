@@ -32,7 +32,7 @@ export default async function resolveEnsToIpfsContentId ({ provider, name }) {
     let decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
 
-    if (type === 'ipfs-ns') {
+    if (type === 'ipfs-ns' || type === 'ipns-ns') {
       decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
     }
 

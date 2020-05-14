@@ -44,8 +44,8 @@ export default function setupEnsIpfsResolver ({ provider, getCurrentNetwork, get
     let url = `https://app.ens.domains/name/${name}`
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
-      if (type === 'ipfs-ns') {
-        const resolvedUrl = `https://${hash}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
+      if (type === 'ipfs-ns' || type === 'ipns-ns') {
+        const resolvedUrl = `https://${hash}.${type.slice(0, 4)}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
           const response = await window.fetch(resolvedUrl, { method: 'HEAD' })
