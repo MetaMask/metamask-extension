@@ -4,6 +4,7 @@ import classnames from 'classnames'
 
 const Tab = (props) => {
   const {
+    activeClassName,
     className,
     'data-testid': dataTestId,
     isActive,
@@ -17,7 +18,10 @@ const Tab = (props) => {
       className={classnames(
         'tab',
         className,
-        { 'tab--active': isActive },
+        {
+          'tab--active': isActive,
+          [activeClassName]: isActive,
+        },
       )}
       data-testid={dataTestId}
       onClick={(event) => {
@@ -31,6 +35,7 @@ const Tab = (props) => {
 }
 
 Tab.propTypes = {
+  activeClassName: PropTypes.string,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
@@ -40,6 +45,7 @@ Tab.propTypes = {
 }
 
 Tab.defaultProps = {
+  activeClassName: undefined,
   className: undefined,
   onClick: undefined,
 }

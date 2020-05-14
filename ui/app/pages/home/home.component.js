@@ -245,10 +245,20 @@ export default class Home extends PureComponent {
                         <TransactionViewBalance />
                       </div>
                       <Tabs>
-                        <Tab className="home__tab" data-testid="home__asset-tab" name="Assets">
+                        <Tab
+                          activeClassName="home__tab--active"
+                          className="home__tab"
+                          data-testid="home__asset-tab"
+                          name="Assets"
+                        >
                           <AssetList />
                         </Tab>
-                        <Tab className="home__tab" data-testid="home__history-tab" name="History">
+                        <Tab
+                          activeClassName="home__tab--active"
+                          className="home__tab"
+                          data-testid="home__history-tab"
+                          name="History"
+                        >
                           <TransactionList />
                         </Tab>
                       </Tabs>
