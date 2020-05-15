@@ -344,7 +344,7 @@ export default class MetamaskController extends EventEmitter {
       password && !this.isUnlocked() &&
       this.onboardingController.completedOnboarding
     ) {
-      await this.submitPassword(password)
+      this.submitPassword(password)
     }
   }
 
