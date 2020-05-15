@@ -21,6 +21,8 @@ import {
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
+const password = process.env.CONF?.password
+
 export default function launchMetamaskUi (opts, cb) {
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
@@ -120,6 +122,10 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     setFeatureFlag: (key, value) => {
       store.dispatch(actions.setFeatureFlag(key, value))
     },
+  }
+
+  if (password) {
+    !metamaskState.isUnlocked && await store.dispatch(actions.tryUnlockMetamask(password))
   }
 
   // start app

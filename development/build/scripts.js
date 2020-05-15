@@ -15,6 +15,7 @@ const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 const { makeStringTransform } = require('browserify-transform-tools')
 
+const conf = require('rc')('metamask', {})
 
 const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const packageJSON = require('../../package.json')
@@ -337,6 +338,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       IN_TEST: opts.testing ? 'true' : false,
       PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
       PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+      CONF: opts.devMode ? conf : ({}),
     }), {
       global: true,
     })
