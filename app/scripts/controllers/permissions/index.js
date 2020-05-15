@@ -534,7 +534,7 @@ export class PermissionsController {
     const newMetadataState = { ...oldMetadataState }
 
     if (Object.keys(newMetadataState).length >= METADATA_STORE_MAX_SIZE) {
-      this._popMetadata(newMetadataState)
+      this._popDomainMetadata(newMetadataState)
     }
 
     newMetadataState[origin] = {
@@ -556,7 +556,7 @@ export class PermissionsController {
    *
    * @param {Object} metadataState - The metadata state to mutate.
    */
-  _popMetadata (metadataState) {
+  _popDomainMetadata (metadataState) {
 
     const permissionsDomains = this.permissions.getDomains()
 
