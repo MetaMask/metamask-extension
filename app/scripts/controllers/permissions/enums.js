@@ -9,8 +9,6 @@ export const METADATA_STORE_KEY = 'domainMetadata'
 
 export const METADATA_STORE_MAX_SIZE = 100
 
-export const METADATA_STORE_TRIM_AMOUNT = 25
-
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
 }

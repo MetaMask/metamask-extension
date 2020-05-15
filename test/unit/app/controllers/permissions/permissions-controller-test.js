@@ -5,6 +5,7 @@ import sinon from 'sinon'
 
 import {
   METADATA_STORE_KEY,
+  METADATA_STORE_MAX_SIZE,
   WALLET_PREFIX,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
@@ -1319,6 +1320,174 @@ describe('permissions controller', function () {
         notifications[ORIGINS.a],
         [ NOTIFICATIONS.test() ],
         'origin should have correct notification'
+      )
+    })
+  })
+
+  describe('addDomainMetadata', function () {
+
+    let permController, clock
+
+    function getMockMetadata (size) {
+      const dummyData = {}
+      for (let i = 0; i < size; i++) {
+        const key = i.toString()
+        dummyData[key] = {}
+      }
+      return dummyData
+    }
+
+    beforeEach(function () {
+      permController = initPermController()
+      permController._setDomainMetadata = sinon.fake()
+      clock = sinon.useFakeTimers(1)
+    })
+
+    afterEach(function () {
+      clock.restore()
+    })
+
+    it('calls setter function with expected new state when adding domain', function () {
+
+      permController.store.getState = sinon.fake.returns({
+        [METADATA_STORE_KEY]: {
+          [ORIGINS.a]: {
+            foo: 'bar',
+          },
+        },
+      })
+
+      permController.addDomainMetadata(ORIGINS.b, { foo: 'bar' })
+
+      assert.ok(
+        permController.store.getState.called,
+        'should have called store.getState'
+      )
+      assert.equal(
+        permController._setDomainMetadata.getCalls().length, 1,
+        'should have called _setDomainMetadata  once'
+      )
+      assert.deepEqual(
+        permController._setDomainMetadata.lastCall.args,
+        [{
+          [ORIGINS.a]: {
+            foo: 'bar',
+          },
+          [ORIGINS.b]: {
+            foo: 'bar',
+            lastUpdated: 1,
+          },
+        }]
+      )
+    })
+
+    it('calls setter function with expected new states when updating existing domain', function () {
+
+      permController.store.getState = sinon.fake.returns({
+        [METADATA_STORE_KEY]: {
+          [ORIGINS.a]: {
+            foo: 'bar',
+          },
+          [ORIGINS.b]: {
+            bar: 'baz',
+          },
+        },
+      })
+
+      permController.addDomainMetadata(ORIGINS.b, { foo: 'bar' })
+
+      assert.ok(
+        permController.store.getState.called,
+        'should have called store.getState'
+      )
+      assert.equal(
+        permController._setDomainMetadata.getCalls().length, 1,
+        'should have called _setDomainMetadata once'
+      )
+      assert.deepEqual(
+        permController._setDomainMetadata.lastCall.args,
+        [{
+          [ORIGINS.a]: {
+            foo: 'bar',
+          },
+          [ORIGINS.b]: {
+            foo: 'bar',
+            bar: 'baz',
+            lastUpdated: 1,
+          },
+        }]
+      )
+    })
+
+    it('pops metadata when the metadata store is too large', function () {
+
+      const mockMetadata = getMockMetadata(METADATA_STORE_MAX_SIZE)
+      const expectedDeletedOrigin = Object.keys(mockMetadata)[0]
+
+      permController.store.getState = sinon.fake.returns({
+        [METADATA_STORE_KEY]: { ...mockMetadata },
+      })
+
+      // populate permController.newMetadataOrigins, as though these origins
+      // were actually added
+      Object.keys(mockMetadata).forEach((origin) => {
+        permController._newMetadataOrigins.add(origin)
+      })
+
+      permController.addDomainMetadata(ORIGINS.a, { foo: 'bar' })
+
+      assert.ok(
+        permController.store.getState.called,
+        'should have called store.getState'
+      )
+
+      const expectedMetadata = {
+        ...mockMetadata,
+        [ORIGINS.a]: {
+          foo: 'bar',
+          lastUpdated: 1,
+        },
+      }
+      delete expectedMetadata[expectedDeletedOrigin]
+
+      assert.equal(
+        permController._setDomainMetadata.getCalls().length, 1,
+        'should have called _setDomainMetadata once'
+      )
+      assert.deepEqual(
+        permController._setDomainMetadata.lastCall.args,
+        [expectedMetadata],
+      )
+    })
+  })
+
+  describe('_trimDomainMetadata', function () {
+
+    const permController = initPermController()
+
+    it('trims domain metadata for domains without permissions', function () {
+
+      const metadataArg = {
+        [ORIGINS.a]: {},
+        [ORIGINS.b]: {},
+      }
+
+      permController.permissions.getDomains = sinon.fake.returns({
+        [ORIGINS.a]: {},
+      })
+
+      const metadataResult = permController._trimDomainMetadata(metadataArg)
+
+      assert.equal(
+        permController.permissions.getDomains.getCalls().length, 1,
+        'should have called permissions.getDomains once'
+      )
+      assert.deepEqual(
+        metadataResult,
+        {
+          [ORIGINS.a]: {},
+        },
+        'should have produced expected state'
       )
     })
   })

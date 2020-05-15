@@ -15,7 +15,6 @@ import {
   WALLET_PREFIX,
   METADATA_STORE_KEY,
   METADATA_STORE_MAX_SIZE,
-  METADATA_STORE_TRIM_AMOUNT,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
   CAVEAT_NAMES,
@@ -63,9 +62,8 @@ export class PermissionsController {
     this._lastSelectedAddress = preferences.getState().selectedAddress
     this.preferences = preferences
 
-    // _trimAndSetDomainMetadata requires this._initializePermissions
-    const metadataState = restoredState[METADATA_STORE_KEY] || {}
-    this._trimAndSetDomainMetadata(metadataState, true)
+    // _initializeMetadataStore requires _initializePermissions
+    this._initializeMetadataStore(restoredState)
 
     preferences.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
@@ -378,10 +376,7 @@ export class PermissionsController {
       .filter((acc) => acc !== account)
 
     if (newPermittedAccounts.length === 0) {
-
-      this.permissions.removePermissionsFor(
-        origin, [{ parentCapability: 'eth_accounts' }]
-      )
+      this.removePermissionsFor({ [origin]: [ 'eth_accounts' ] })
     } else {
 
       this.permissions.updateCaveatFor(
@@ -524,60 +519,104 @@ export class PermissionsController {
   }
 
   /**
-   * Stores domain metadata for the given origin.
-   * Trims the metadata store by a quarter if it becomes too big.
+   * Stores domain metadata for the given origin (domain).
+   * Deletes metadata for domains without permissions in a FIFO manner.
+   * Metadata is only deleted for domains with permissions on boot in order to
+   * prevent a degraded user experience, as metadata currently can't be
+   * requested on-demand.
    *
    * @param {string} origin - The origin whose domain metadata to store.
-   * @param {Object} metadata - The metadata to store.
+   * @param {Object} metadata - The domain's metadata that will be stored.
    */
   addDomainMetadata (origin, metadata) {
 
-    const metadataState = this.store.getState()[METADATA_STORE_KEY]
-    const newMetadataState = { ...metadataState }
+    const oldMetadataState = this.store.getState()[METADATA_STORE_KEY]
+    const newMetadataState = { ...oldMetadataState }
+
+    if (Object.keys(newMetadataState).length >= METADATA_STORE_MAX_SIZE) {
+      this._popMetadata(newMetadataState)
+    }
+
     newMetadataState[origin] = {
-      ...metadataState[origin],
+      ...oldMetadataState[origin],
       ...metadata,
       lastUpdated: Date.now(),
     }
+    this._newMetadataOrigins.add(origin)
 
-    this._trimAndSetDomainMetadata(newMetadataState)
+    this._setDomainMetadata(newMetadataState)
   }
 
   /**
-   * Trims and sets the permissions domain metadata state, given a new state object.
-   * By default, only a constant number of the oldest entries will be trimmed,
-   * and only if there are too many entries.
-   * If specified, all domains without permissions will be trimmed.
+   * Deletes metadata for domains without permissions when the metadata store
+   * has grown too large. Highly dependent on logic of addDomainMetadata.
+   * The caller should add newOrigin to _newMetadataOrigins after this function
+   * returns.
+   * Mutates the passed-in metadata state object.
    *
-   * @param {Object} newMetadataState - The new metadata store state.
-   * @param {boolean} trimByPermissions - Whether to trim by permissions or age.
-   * Default: false
+   * @param {Object} metadataState - The metadata state to mutate.
    */
-  _trimAndSetDomainMetadata (newMetadataState, trimByPermissions = false) {
+  _popMetadata (metadataState) {
 
-    const origins = Object.keys(newMetadataState)
-    let originsToDelete = []
+    const permissionsDomains = this.permissions.getDomains()
 
-    if (trimByPermissions) { // trim any domains without permissions
+    for (const origin of this._newMetadataOrigins.values()) {
 
-      const permissionsDomains = this.permissions.getDomains()
-      originsToDelete = origins
-        .filter((origin) => !permissionsDomains[origin])
+      // there's no point in iterating over a domain again:
+      // - If it has permissions, this function won't delete its metadata
+      // - If not, this function will delete its metadata
+      this._newMetadataOrigins.delete(origin)
 
-    } else if (origins.length > METADATA_STORE_MAX_SIZE) { // trim X oldest
-
-      origins.sort((a, b) => {
-        return newMetadataState[a].lastUpdated - newMetadataState[b].lastUpdated
-      })
-      originsToDelete = origins.slice(0, METADATA_STORE_TRIM_AMOUNT)
+      if (!permissionsDomains[origin]) {
+        delete metadataState[origin]
+        return // we popped a domain without permissions, so return
+      }
     }
+  }
 
-    if (originsToDelete.length > 0) {
-      originsToDelete.forEach((origin) => {
+  /**
+   * Removes all domains without permissions from the restored metadata state,
+   * and rehydrates the metadata store.
+   *
+   * @param {Object} restoredState - The restored permissions controller state.
+   */
+  _initializeMetadataStore (restoredState) {
+
+    const metadataState = restoredState[METADATA_STORE_KEY] || {}
+    const newMetadataState = this._trimDomainMetadata(metadataState)
+
+    this._newMetadataOrigins = new Set()
+    this._setDomainMetadata(newMetadataState)
+  }
+
+  /**
+   * Trims the given metadataState object by removing metadata for all origins
+   * without permissions.
+   * Returns a new object; does not mutate the argument.
+   *
+   * @param {Object} metadataState - The metadata store state object to trim.
+   * @returns {Object} The mutated metadata state object.
+   */
+  _trimDomainMetadata (metadataState) {
+
+    const newMetadataState = { ...metadataState }
+    const origins = Object.keys(metadataState)
+    const permissionsDomains = this.permissions.getDomains()
+
+    origins.forEach((origin) => {
+      if (!permissionsDomains[origin]) {
         delete newMetadataState[origin]
-      })
-    }
+      }
+    })
 
+    return newMetadataState
+  }
+
+  /**
+   * Replaces the existing domain metadata with the passed-in object.
+   * @param {Object} newMetadataState - The new metadata to set.
+   */
+  _setDomainMetadata (newMetadataState) {
     this.store.updateState({ [METADATA_STORE_KEY]: newMetadataState })
   }
 
