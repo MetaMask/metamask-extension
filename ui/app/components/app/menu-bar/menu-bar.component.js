@@ -6,6 +6,7 @@ import ConnectedStatusIndicator from '../connected-status-indicator'
 import AccountDetailsDropdown from '../dropdowns/account-details-dropdown'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes'
 
 export default class MenuBar extends PureComponent {
   static contextTypes = {
@@ -13,9 +14,14 @@ export default class MenuBar extends PureComponent {
     metricsEvent: PropTypes.func,
   }
 
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  }
+
   state = { accountDetailsMenuOpen: false }
 
   render () {
+    const { history } = this.props
     const { t } = this.context
     const { accountDetailsMenuOpen } = this.state
 
@@ -23,7 +29,7 @@ export default class MenuBar extends PureComponent {
       <div className="menu-bar">
         {
           getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-            ? <ConnectedStatusIndicator />
+            ? <ConnectedStatusIndicator onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)} />
             : null
         }
 

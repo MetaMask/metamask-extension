@@ -1,5 +1,5 @@
 import { forOwn } from 'lodash'
-import { getMetaMaskIdentities, getOriginOfCurrentTab } from './selectors'
+import { getMetaMaskIdentities, getOriginOfCurrentTab, getSelectedAddress } from '.'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
@@ -193,4 +193,63 @@ function getAccountsCaveatFromPermission (accountsPermission = {}) {
 
 function domainSelector (state, origin) {
   return origin && state.metamask.domains?.[origin]
+}
+
+export function getAccountToConnectToActiveTab (state) {
+  const selectedAddress = getSelectedAddress(state)
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state)
+
+  const { metamask: { identities } } = state
+  const numberOfAccounts = Object.keys(identities).length
+
+  if (connectedAccounts.length && connectedAccounts.length !== numberOfAccounts) {
+    if (connectedAccounts.findIndex((address) => address === selectedAddress) === -1) {
+      return identities[selectedAddress]
+    }
+  }
+
+  return undefined
+}
+
+export function getOrderedConnectedAccountsForActiveTab (state) {
+  const { activeTab, metamask } = state
+  const { identities, permissionsHistory } = metamask
+
+  const permissionsHistoryByAccount = permissionsHistory[activeTab.origin]?.['eth_accounts']?.accounts
+
+  return getPermittedAccountsForCurrentTab(state)
+    .map((address) => ({
+      address,
+      name: identities[address].name,
+      lastActive: permissionsHistoryByAccount[address],
+    }))
+    .sort(({ address: addressA }, { address: addressB }) => {
+      const lastSelectedA = identities[addressA].lastSelected
+      const lastSelectedB = identities[addressB].lastSelected
+      if (lastSelectedA === lastSelectedB) {
+        return 0
+      } else if (lastSelectedA === undefined) {
+        return 1
+      } else if (lastSelectedB === undefined) {
+        return -1
+      }
+
+      return lastSelectedB - lastSelectedA
+    })
+}
+
+export function getPermissionsForActiveTab (state) {
+  const { activeTab, metamask } = state
+  const {
+    domains = {},
+    permissionsDescriptions,
+  } = metamask
+
+  return domains[activeTab.origin]?.permissions?.map(({ parentCapability }) => {
+    const description = permissionsDescriptions[parentCapability]
+    return {
+      key: parentCapability,
+      description,
+    }
+  })
 }

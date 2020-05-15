@@ -10,6 +10,40 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
+  "connectedAccountsDescriptionSingular": {
+    "message": "You have 1 account connected to this site."
+  },
+  "connectedAccountsDescriptionPlural": {
+    "message": "You have $1 accounts connected to this site.",
+    "description": "$1 is the number of accounts"
+  },
+  "connectedAccountsEmptyDescription": {
+    "message": "MetaMask is not connected this site. To connect to a decentralized app (dapp), find the connect button on their site."
+  },
+  "primary": {
+    "message": "Primary"
+  },
+  "lastActive": {
+    "message": "Last active"
+  },
+  "switchToThisAccount": {
+    "message": "Switch to this account"
+  },
+  "disconnectThisAccount": {
+    "message": "Disconnect this account"
+  },
+  "viewConnectedSites": {
+    "message": "View connected sites"
+  },
+  "permissions": {
+    "message": "Permissions"
+  },
+  "showPermissions": {
+    "message": "Show permissions"
+  },
+  "authorizedPermissions": {
+    "message": "You have authorized the following permissions"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
