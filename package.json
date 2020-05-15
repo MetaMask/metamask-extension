@@ -264,6 +264,7 @@
     "qs": "^6.2.0",
     "qunitjs": "^2.4.1",
     "randomcolor": "^0.5.4",
+    "rc": "^1.2.8",
     "react-devtools": "^4.4.0",
     "react-test-renderer": "^16.12.0",
     "read-installed": "^4.0.3",
