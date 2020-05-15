@@ -340,7 +340,10 @@ export default class MetamaskController extends EventEmitter {
     this.memStore.subscribe(this.sendUpdate.bind(this))
 
     const password = process.env.CONF?.password
-    if (password && !this.isUnlocked()) {
+    if (
+      password && !this.isUnlocked() &&
+      this.onboardingController.completedOnboarding
+    ) {
       await this.submitPassword(password)
     }
   }
