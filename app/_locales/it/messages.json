@@ -384,15 +384,6 @@
   "details": {
     "message": "Dettagli"
   },
-  "disconnectAll": {
-    "message": "Disconnetti Tutti"
-  },
-  "disconnectAllModalDescription": {
-    "message": "Sei sicuro? Sarai disconnesso da tutti i siti su tutti gli account."
-  },
-  "disconnectAllAccountsQuestion": {
-    "message": "Disconnettere tutti gli account?"
-  },
   "directDepositEther": {
     "message": "Deposita Direttamente Ether"
   },

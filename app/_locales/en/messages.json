@@ -462,15 +462,6 @@
   "details": {
     "message": "Details"
   },
-  "disconnectAll": {
-    "message": "Disconnect All"
-  },
-  "disconnectAllModalDescription": {
-    "message": "Are you sure? You will be disconnected from all sites on all accounts."
-  },
-  "disconnectAllAccountsQuestion": {
-    "message": "Disconnect all accounts?"
-  },
   "directDepositEther": {
     "message": "Directly Deposit Ether"
   },
