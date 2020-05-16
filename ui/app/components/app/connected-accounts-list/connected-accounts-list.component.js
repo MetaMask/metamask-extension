@@ -36,16 +36,30 @@ export default class ConnectedAccountsList extends PureComponent {
     setSelectedAddress: PropTypes.func.isRequired,
   }
 
+  state = {
+    accountWithOptionsShown: null,
+  }
+
   connectAccount = (address) => () => {
     this.props.addPermittedAccount(address)
   }
 
   disconnectAccount = (address) => () => {
+    this.hideAccountOptions()
     this.props.removePermittedAccount(address)
   }
 
   switchAccount = (address) => () => {
+    this.hideAccountOptions()
     this.props.setSelectedAddress(address)
+  }
+
+  hideAccountOptions = () => {
+    this.setState({ accountWithOptionsShown: null })
+  }
+
+  showAccountOptions = (address) => () => {
+    this.setState({ accountWithOptionsShown: address })
   }
 
   renderUnconnectedAccount () {
@@ -77,6 +91,7 @@ export default class ConnectedAccountsList extends PureComponent {
 
   render () {
     const { connectedAccounts, permissions, selectedAddress } = this.props
+    const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
     return (
@@ -90,7 +105,11 @@ export default class ConnectedAccountsList extends PureComponent {
               name={`${name} (…${address.substr(-4, 4)})`}
               status={index === 0 ? t('primary') : `${t('lastActive')}: ${DateTime.fromMillis(lastActive).toISODate()}`}
               options={(
-                <ConnectedAccountsListOptions>
+                <ConnectedAccountsListOptions
+                  onHideOptions={this.hideAccountOptions}
+                  onShowOptions={this.showAccountOptions(address)}
+                  show={accountWithOptionsShown === address}
+                >
                   {
                     address === selectedAddress ? null : (
                       <ConnectedAccountsListOptionsItem
