@@ -1815,6 +1815,12 @@ export function updatePreferences (value) {
   }
 }
 
+export function setDefaultHomeActiveTabName (value) {
+  return async () => {
+    await promisifiedBackground.setDefaultHomeActiveTabName(value)
+  }
+}
+
 export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }

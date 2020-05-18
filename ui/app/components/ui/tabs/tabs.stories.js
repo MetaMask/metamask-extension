@@ -1,7 +1,7 @@
 import React from 'react'
 import Tab from './tab/tab.component'
 import Tabs from './tabs.component'
-import { number, text } from '@storybook/addon-knobs/react'
+import { text } from '@storybook/addon-knobs/react'
 
 export default {
   title: 'Tabs',
@@ -20,9 +20,7 @@ function renderTab (id) {
 
 export const twoTabs = () => {
   return (
-    <Tabs
-      defaultActiveTabIndex={number('Default Active Tab Index', 0, { min: 0 })}
-    >
+    <Tabs>
       {
         ['A', 'B']
           .map(renderTab)
@@ -33,9 +31,7 @@ export const twoTabs = () => {
 
 export const manyTabs = () => {
   return (
-    <Tabs
-      defaultActiveTabIndex={number('Default Active Tab Index', 0, { min: 0 })}
-    >
+    <Tabs>
       {
         ['A', 'B', 'C', 'D', 'E']
           .map(renderTab)
