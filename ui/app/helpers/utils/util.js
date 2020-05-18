@@ -292,12 +292,6 @@ export function isValidAddressHead (address) {
   return addressLengthIsLessThanFull && addressIsHex
 }
 
-export function getOriginFromUrl (url) {
-  url = new URL(url)
-  const origin = url.hostname
-  return origin
-}
-
 export function getAccountByAddress (accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress)
 }

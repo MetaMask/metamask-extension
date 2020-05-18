@@ -4,7 +4,6 @@ import { createSelector } from 'reselect'
 import {
   shortenAddress,
   checksumAddress,
-  getOriginFromUrl,
   getAccountByAddress,
 } from '../helpers/utils/util'
 import {
@@ -375,8 +374,7 @@ export function hasPermissionRequests (state) {
 }
 
 export function getOriginOfCurrentTab (state) {
-  const { activeTab } = state
-  return activeTab && activeTab.url && getOriginFromUrl(activeTab.url)
+  return state.activeTab?.origin
 }
 
 export function getLastConnectedInfo (state) {
