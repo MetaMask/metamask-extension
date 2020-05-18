@@ -71,7 +71,7 @@ export default class TransactionViewBalance extends PureComponent {
               )}
               value={balance}
               type={PRIMARY}
-              ethNumberOfDecimals={4}
+              ethNumberOfDecimals={6}
               hideTitle
             />
             <Tooltip position="bottom" title={t('cfxTestWarning')}>
@@ -96,7 +96,7 @@ export default class TransactionViewBalance extends PureComponent {
               })}
               value={balance}
               type={SECONDARY}
-              ethNumberOfDecimals={4}
+              ethNumberOfDecimals={6}
               hideTitle
             />
           )}

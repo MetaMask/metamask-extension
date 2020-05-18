@@ -65,7 +65,7 @@ export default class Balance extends PureComponent {
           className="token-amount"
           value={balanceValue}
           type={PRIMARY}
-          ethNumberOfDecimals={4}
+          ethNumberOfDecimals={6}
         />
         <Tooltip position="bottom" title={t('cfxTestWarning')}>
           <div
@@ -84,7 +84,7 @@ export default class Balance extends PureComponent {
           <UserPreferencedCurrencyDisplay
             value={balanceValue}
             type={SECONDARY}
-            ethNumberOfDecimals={4}
+            ethNumberOfDecimals={6}
           />
         )}
       </div>
