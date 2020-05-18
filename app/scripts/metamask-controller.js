@@ -43,7 +43,6 @@ import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
-import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
@@ -219,10 +218,6 @@ export default class MetamaskController extends EventEmitter {
       keyringMemStore: this.keyringController.memStore,
     })
 
-    this.abTestController = new ABTestController({
-      initState: initState.ABTestController,
-    })
-
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
 
     this.alertController = new AlertController({
@@ -304,7 +299,6 @@ export default class MetamaskController extends EventEmitter {
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
-      ABTestController: this.abTestController.store,
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
@@ -333,7 +327,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
-      ABTestController: this.abTestController.store,
       // ENS Controller
       EnsController: this.ensController.store,
     })
@@ -449,7 +442,6 @@ export default class MetamaskController extends EventEmitter {
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
     const threeBoxController = this.threeBoxController
-    const abTestController = this.abTestController
     const txController = this.txController
 
     return {
@@ -571,9 +563,6 @@ export default class MetamaskController extends EventEmitter {
       getThreeBoxLastUpdated: nodeify(threeBoxController.getLastUpdated, threeBoxController),
       turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
-
-      // a/b test controller
-      getAssignedABTestGroupName: nodeify(abTestController.getAssignedABTestGroupName, abTestController),
 
       // permissions
       approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
