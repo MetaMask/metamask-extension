@@ -166,20 +166,24 @@ describe('selectors', function () {
         'url': 'https://remix.ethereum.org/',
       },
       metamask: {
-        identities: {
-          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
-            'address': '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-            'name': 'Really Long Name That Should Be Truncated',
+        accounts: {
+          0x7250739de134d33ec7ab1ee592711e15098c9d2d: {
+            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
           },
-          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
-            'address': '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-            'name': 'Account 1',
+          0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5: {
+            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
           },
-          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
-            'address': '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-            'name': 'Account 2',
+          0xb3958fb96c8201486ae20be1d5c9f58083df343a: {
+            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          },
+          0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc: {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
+          0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4: {
+            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
           },
         },
+        cachedBalances: {},
         domains: {
           'remix.ethereum.org': {
             'permissions': [
@@ -194,6 +198,9 @@ describe('selectors', function () {
                     'value': [
                       '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
                       '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                      '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+                      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                      '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
                     ],
                   },
                 ],
@@ -226,62 +233,89 @@ describe('selectors', function () {
               },
             ],
           },
-          'uniswap.exchange': {
-            'permissions': [
-              {
-                '@context': [
-                  'https://github.com/MetaMask/rpc-cap',
-                ],
-                'caveats': [
-                  {
-                    'name': 'exposedAccounts',
-                    'type': 'filterResponse',
-                    'value': [
-                      '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                    ],
-                  },
-                ],
-                'date': 1585616816623,
-                'id': 'ce625215-f2e9-48e7-93ca-21ba193244ff',
-                'invoker': 'uniswap.exchange',
-                'parentCapability': 'eth_accounts',
-              },
-            ],
+        },
+        identities: {
+          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
+            'address': '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+            'name': 'Really Long Name That Should Be Truncated',
+          },
+          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
+            'address': '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+            lastSelected: 1586359844192,
+            'name': 'Account 1',
+          },
+          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
+            lastSelected: 1586359844193,
+            'address': '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+            'name': 'Account 2',
+          },
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            'address': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            lastSelected: 1586359844192,
+            'name': 'Account 3',
+          },
+          '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': {
+            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+            name: 'Account 4',
           },
         },
-        domainMetadata: {
-          'remix.ethereum.org': {
-            'icon': 'https://remix.ethereum.org/icon.png',
-            'name': 'Remix - Ethereum IDE',
-          },
-        },
+        keyrings: [{
+          accounts: [
+            '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+            '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+            '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          ],
+        }],
         permissionsHistory: {
           'remix.ethereum.org': {
             'eth_accounts': {
               'accounts': {
                 '0x7250739de134d33ec7ab1ee592711e15098c9d2d': 1586359844192,
                 '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': 1586359844192,
+                '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': 1586359844192,
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1586359844192,
+                '0xb3958fb96c8201486ae20be1d5c9f58083df343a': 1586359844192,
               },
               'lastApproved': 1586359844192,
             },
           },
         },
-        permissionsDescriptions: {
-          'eth_accounts': "View the addresses of the user's chosen accounts.",
-        },
       },
     }
 
-    it('should return a list of connected accounts', function () {
-      assert.deepEqual(getOrderedConnectedAccountsForActiveTab(mockState), [{
-        address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-        name: 'Account 1',
-        lastActive: 1586359844192,
-      }, {
-        address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-        name: 'Really Long Name That Should Be Truncated',
-        lastActive: 1586359844192,
-      }])
+    it('should return connected accounts sorted by last selected, then by keyring controller order', function () {
+      assert.deepEqual(getOrderedConnectedAccountsForActiveTab(mockState), [
+        {
+          address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          name: 'Account 2',
+          lastActive: 1586359844192,
+          lastSelected: 1586359844193,
+        },
+        {
+          address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+          name: 'Account 1',
+          lastActive: 1586359844192,
+          lastSelected: 1586359844192,
+        },
+        {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          name: 'Account 3',
+          lastActive: 1586359844192,
+          lastSelected: 1586359844192,
+        },
+        {
+          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          name: 'Really Long Name That Should Be Truncated',
+          lastActive: 1586359844192,
+        },
+        {
+          address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+          name: 'Account 4',
+          lastActive: 1586359844192,
+        },
+      ])
     })
   })
 

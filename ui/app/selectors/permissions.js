@@ -1,5 +1,5 @@
 import { forOwn } from 'lodash'
-import { getMetaMaskIdentities, getOriginOfCurrentTab, getSelectedAddress } from '.'
+import { getMetaMaskAccountsOrdered, getMetaMaskIdentities, getOriginOfCurrentTab, getSelectedAddress } from '.'
 import {
   CAVEAT_NAMES,
 } from '../../../app/scripts/controllers/permissions/enums'
@@ -212,20 +212,19 @@ export function getAccountToConnectToActiveTab (state) {
 }
 
 export function getOrderedConnectedAccountsForActiveTab (state) {
-  const { activeTab, metamask } = state
-  const { identities, permissionsHistory } = metamask
+  const { activeTab, metamask: { permissionsHistory } } = state
 
   const permissionsHistoryByAccount = permissionsHistory[activeTab.origin]?.['eth_accounts']?.accounts
+  const orderedAccounts = getMetaMaskAccountsOrdered(state)
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state)
 
-  return getPermittedAccountsForCurrentTab(state)
-    .map((address) => ({
-      address,
-      name: identities[address].name,
-      lastActive: permissionsHistoryByAccount[address],
+  return orderedAccounts
+    .filter((account) => connectedAccounts.includes(account.address))
+    .map((account) => ({
+      ...account,
+      lastActive: permissionsHistoryByAccount[account.address],
     }))
-    .sort(({ address: addressA }, { address: addressB }) => {
-      const lastSelectedA = identities[addressA].lastSelected
-      const lastSelectedB = identities[addressB].lastSelected
+    .sort(({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
       if (lastSelectedA === lastSelectedB) {
         return 0
       } else if (lastSelectedA === undefined) {
