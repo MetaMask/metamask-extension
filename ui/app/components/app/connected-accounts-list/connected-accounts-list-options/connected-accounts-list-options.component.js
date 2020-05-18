@@ -8,7 +8,9 @@ const ConnectedAccountsListOptions = ({ children, onShowOptions, onHideOptions, 
   const [popperElement, setPopperElement] = useState(null)
   const popoverContainerElement = useRef(document.getElementById('popover-content'))
 
-  const { attributes, styles } = usePopper(optionsButtonElement, popperElement)
+  const { attributes, styles } = usePopper(optionsButtonElement, popperElement, {
+    modifiers: [{ name: 'preventOverflow', options: { altBoundary: true } }],
+  })
   return (
     <>
       <button className="fas fa-ellipsis-v connected-accounts-options__button" onClick={onShowOptions} ref={setOptionsButtonElement} />
