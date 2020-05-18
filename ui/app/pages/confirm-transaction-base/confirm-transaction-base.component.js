@@ -288,7 +288,7 @@ export default class ConfirmTransactionBase extends Component {
                   <TextField
                     type="number"
                     min="0"
-                    placeholder={ nextNonce ? nextNonce.toString() : null }
+                    placeholder={ typeof nextNonce === 'number' ? nextNonce.toString() : null }
                     onChange={({ target: { value } }) => {
                       if (!value.length || Number(value) < 0) {
                         updateCustomNonce('')
