@@ -36,16 +36,30 @@ export default class ConnectedAccountsList extends PureComponent {
     setSelectedAddress: PropTypes.func.isRequired,
   }
 
-  connectAccount = (address) => () => {
-    this.props.addPermittedAccount(address)
+  state = {
+    accountWithOptionsShown: null,
   }
 
-  disconnectAccount = (address) => () => {
-    this.props.removePermittedAccount(address)
+  connectAccount = () => {
+    this.props.addPermittedAccount(this.props.accountToConnect?.address)
   }
 
-  switchAccount = (address) => () => {
-    this.props.setSelectedAddress(address)
+  disconnectAccount = () => {
+    this.hideAccountOptions()
+    this.props.removePermittedAccount(this.state.accountWithOptionsShown)
+  }
+
+  switchAccount = () => {
+    this.hideAccountOptions()
+    this.props.setSelectedAddress(this.state.accountWithOptionsShown)
+  }
+
+  hideAccountOptions = () => {
+    this.setState({ accountWithOptionsShown: null })
+  }
+
+  showAccountOptions = (address) => {
+    this.setState({ accountWithOptionsShown: address })
   }
 
   renderUnconnectedAccount () {
@@ -66,7 +80,7 @@ export default class ConnectedAccountsList extends PureComponent {
           <>
             {t('statusNotConnected')}
             &nbsp;&middot;&nbsp;
-            <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount(address)}>
+            <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount}>
               {t('connect')}
             </a>
           </>
@@ -77,6 +91,7 @@ export default class ConnectedAccountsList extends PureComponent {
 
   render () {
     const { connectedAccounts, permissions, selectedAddress } = this.props
+    const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
     return (
@@ -90,12 +105,16 @@ export default class ConnectedAccountsList extends PureComponent {
               name={`${name} (…${address.substr(-4, 4)})`}
               status={index === 0 ? t('primary') : `${t('lastActive')}: ${DateTime.fromMillis(lastActive).toISODate()}`}
               options={(
-                <ConnectedAccountsListOptions>
+                <ConnectedAccountsListOptions
+                  onHideOptions={this.hideAccountOptions}
+                  onShowOptions={this.showAccountOptions.bind(null, address)}
+                  show={accountWithOptionsShown === address}
+                >
                   {
                     address === selectedAddress ? null : (
                       <ConnectedAccountsListOptionsItem
                         iconClassNames="fas fa-random"
-                        onClick={this.switchAccount(address)}
+                        onClick={this.switchAccount}
                       >
                         {t('switchToThisAccount')}
                       </ConnectedAccountsListOptionsItem>
@@ -103,7 +122,7 @@ export default class ConnectedAccountsList extends PureComponent {
                   }
                   <ConnectedAccountsListOptionsItem
                     iconClassNames="fas fa-ban"
-                    onClick={this.disconnectAccount(address)}
+                    onClick={this.disconnectAccount}
                   >
                     {t('disconnectThisAccount')}
                   </ConnectedAccountsListOptionsItem>

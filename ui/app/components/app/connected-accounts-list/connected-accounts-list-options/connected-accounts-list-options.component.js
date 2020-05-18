@@ -1,34 +1,46 @@
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Tooltip } from 'react-tippy'
+import React, { useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { usePopper } from 'react-popper'
 
-export default class ConnectedAccountsListOptions extends PureComponent {
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-  }
+const ConnectedAccountsListOptions = ({ children, onShowOptions, onHideOptions, show }) => {
+  const [optionsButtonElement, setOptionsButtonElement] = useState(null)
+  const [popperElement, setPopperElement] = useState(null)
+  const popoverContainerElement = useRef(document.getElementById('popover-content'))
 
-  render () {
-    return (
-      <Tooltip
-        arrow={false}
-        animation="none"
-        animateFill={false}
-        transitionFlip={false}
-        hideDuration={0}
-        duration={0}
-        trigger="click"
-        interactive
-        theme="none"
-        position="bottom-end"
-        unmountHTMLWhenHide
-        html={(
-          <div className="connected-accounts-options">
-            {this.props.children}
-          </div>
-        )}
-      >
-        <i className="fas fa-ellipsis-v" />
-      </Tooltip>
-    )
-  }
+  const { attributes, styles } = usePopper(optionsButtonElement, popperElement, {
+    modifiers: [{ name: 'preventOverflow', options: { altBoundary: true } }],
+  })
+  return (
+    <>
+      <button className="fas fa-ellipsis-v connected-accounts-options__button" onClick={onShowOptions} ref={setOptionsButtonElement} />
+      {
+        show
+          ? createPortal(
+            <>
+              <div className="connected-accounts-options__background" onClick={onHideOptions} />
+              <div
+                className="connected-accounts-options"
+                ref={setPopperElement}
+                style={styles.popper}
+                {...attributes.popper}
+              >
+                { children }
+              </div>
+            </>,
+            popoverContainerElement.current
+          )
+          : null
+      }
+    </>
+  )
 }
+
+ConnectedAccountsListOptions.propTypes = {
+  children: PropTypes.node.isRequired,
+  onHideOptions: PropTypes.func.isRequired,
+  onShowOptions: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+}
+
+export default ConnectedAccountsListOptions
