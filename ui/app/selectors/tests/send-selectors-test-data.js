@@ -1,4 +1,4 @@
-export default {
+const state = {
   'metamask': {
     'isInitialized': true,
     'isUnlocked': true,
@@ -218,3 +218,5 @@ export default {
     'errors': { 'someError': null },
   },
 }
+
+export default state
