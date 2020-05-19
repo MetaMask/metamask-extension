@@ -123,10 +123,10 @@
     max-height: 0px;
     overflow: hidden;
     height: auto;
-    transition: max-height 0.8s;
+    transition: max-height 0.8s ease-out;
     &--expanded {
       // arbitrarily set hard coded value for effect to work
-      max-height: 600px;
+      max-height: 100px;
     }
   }
 }

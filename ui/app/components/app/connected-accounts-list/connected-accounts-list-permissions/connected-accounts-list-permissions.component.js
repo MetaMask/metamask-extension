@@ -50,22 +50,21 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
             onClick={this.toggleExpanded}
           />
         </p>
-        {
-          expanded
-            ? (
-              <>
-                <p>{t('authorizedPermissions')}:</p>
-                <ul className="connected-accounts-permissions__list">
-                  {permissions.map(({ key, description }) => (
-                    <li key={key} className="connected-accounts-permissions__list-item">
-                      <i className="fas fa-check-square" />&nbsp;{description}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )
-            : null
-        }
+        <div
+          className={classnames('connected-accounts-permissions__permissions', {
+            'connected-accounts-permissions__permissions--expanded': expanded,
+          })}
+        >
+          <p>{t('authorizedPermissions')}:</p>
+          <ul className="connected-accounts-permissions__list">
+            {permissions.map(({ key, description }) => (
+              <li key={key} className="connected-accounts-permissions__list-item">
+                <i className="fas fa-check-square" />&nbsp;{description}
+              </li>
+            ))}
+          </ul>
+        </div>
+
       </div>
     )
   }

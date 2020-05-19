@@ -132,9 +132,9 @@ describe('MetaMask', function () {
     })
 
     it('shows connected sites', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected Sites')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected sites')]`))
 
-      await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected Sites')]`))
+      await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected sites')]`))
 
       const domains = await driver.findClickableElements(By.css('.connected-sites-list__domain-name'))
       assert.equal(domains.length, 1)

@@ -32,9 +32,6 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
-  "viewConnectedSites": {
-    "message": "View connected sites"
-  },
   "permissions": {
     "message": "Permissions"
   },
