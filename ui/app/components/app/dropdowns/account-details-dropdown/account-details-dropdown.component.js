@@ -44,7 +44,7 @@ export default class AccountDetailsDropdown extends Component {
       return kr.accounts.includes(address)
     })
 
-    const isRemovable = keyring.type !== 'HD Key Tree'
+    const isRemovable = keyring && keyring.type !== 'HD Key Tree'
 
     return (
       <Menu className="account-details-dropdown" isShowing>
