@@ -1594,7 +1594,7 @@
     "message": "Unapproved"
   },
   "unconnectedAccountAlertDescription": {
-    "message": "This account is not connected to this site."
+    "message": "$1 is not connected to $2."
   },
   "unconnectedAccountAlertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
