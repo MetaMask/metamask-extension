@@ -19,7 +19,6 @@ import {
   MAINNET,
   LOCALHOST,
   INFURA_PROVIDER_TYPES,
-  NETWORK_TYPE_TO_ID_MAP,
 } from './enums'
 
 const env = process.env.METAMASK_ENV
