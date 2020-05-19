@@ -40,7 +40,7 @@ const getEnvironmentTypeMemo = memoize((url) => {
  *  - `notification` refers to the popup that appears in its own window when taking action outside of metamask
  *  - `background` refers to the background page
  *
- * NOTE: this should oly be called on internal URLs.
+ * NOTE: This should only be called on internal URLs.
  *
  * @param {string} [url] - the URL of the window
  * @returns {string} the environment ENUM
