@@ -533,10 +533,22 @@ export class PermissionsController {
     const oldMetadataState = this.store.getState()[METADATA_STORE_KEY]
     const newMetadataState = { ...oldMetadataState }
 
+    // attempt to pop domain metadata of domain without permissions if store is too large
     if (Object.keys(newMetadataState).length >= METADATA_STORE_MAX_SIZE) {
-      this._popDomainMetadata(newMetadataState)
+      const permissionsDomains = this.permissions.getDomains()
+
+      for (const origin of this._newMetadataOrigins.values()) {
+
+        this._newMetadataOrigins.delete(origin)
+
+        if (!permissionsDomains[origin]) {
+          delete newMetadataState[origin]
+          break
+        }
+      }
     }
 
+    // add new metadata after popping
     newMetadataState[origin] = {
       ...oldMetadataState[origin],
       ...metadata,
@@ -545,33 +557,6 @@ export class PermissionsController {
     this._newMetadataOrigins.add(origin)
 
     this._setDomainMetadata(newMetadataState)
-  }
-
-  /**
-   * Deletes metadata for domains without permissions when the metadata store
-   * has grown too large. Highly dependent on logic of addDomainMetadata.
-   * The caller should add newOrigin to _newMetadataOrigins after this function
-   * returns.
-   * Mutates the passed-in metadata state object.
-   *
-   * @param {Object} metadataState - The metadata state to mutate.
-   */
-  _popDomainMetadata (metadataState) {
-
-    const permissionsDomains = this.permissions.getDomains()
-
-    for (const origin of this._newMetadataOrigins.values()) {
-
-      // there's no point in iterating over a domain again:
-      // - If it has permissions, this function won't delete its metadata
-      // - If not, this function will delete its metadata
-      this._newMetadataOrigins.delete(origin)
-
-      if (!permissionsDomains[origin]) {
-        delete metadataState[origin]
-        return // we popped a domain without permissions, so return
-      }
-    }
   }
 
   /**
