@@ -129,10 +129,6 @@ function removeListeners (listeners, emitter) {
   })
 }
 
-function getRandomArrayItem (array) {
-  return array[Math.floor((Math.random() * array.length))]
-}
-
 function mapObjectValues (object, cb) {
   const mappedObject = {}
   Object.keys(object).forEach((key) => {
@@ -167,7 +163,6 @@ export {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
-  getRandomArrayItem,
   mapObjectValues,
   checkForError,
 }

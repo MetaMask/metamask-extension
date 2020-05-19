@@ -24,7 +24,6 @@ const mapStateToProps = (state, ownProps) => {
     metamask: {
       send,
       unapprovedTxs,
-      abTests: { fullScreenVsPopup },
     },
   } = state
   const { match: { params = {} } } = ownProps
@@ -37,8 +36,6 @@ const mapStateToProps = (state, ownProps) => {
     : {}
   const { id: transactionId, transactionCategory } = transaction
 
-  const trackABTest = false
-
   return {
     totalUnapprovedCount: totalUnconfirmed,
     send,
@@ -48,8 +45,6 @@ const mapStateToProps = (state, ownProps) => {
     transactionId: transactionId && String(transactionId),
     transaction,
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
-    trackABTest,
-    fullScreenVsPopupTestGroup: fullScreenVsPopup,
   }
 }
 

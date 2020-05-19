@@ -45,8 +45,6 @@ export default class ConfirmTransaction extends Component {
     paramsTransactionId: PropTypes.string,
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
-    fullScreenVsPopupTestGroup: PropTypes.string,
-    trackABTest: PropTypes.bool,
   }
 
   componentDidMount () {
@@ -61,8 +59,6 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
-      fullScreenVsPopupTestGroup,
-      trackABTest,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -78,16 +74,6 @@ export default class ConfirmTransaction extends Component {
     const txId = transactionId || paramsTransactionId
     if (txId) {
       this.props.setTransactionToConfirm(txId)
-    }
-
-    if (trackABTest) {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'abtesting',
-          action: 'fullScreenVsPopup',
-          name: fullScreenVsPopupTestGroup === 'fullScreen' ? 'fullscreen' : 'original',
-        },
-      })
     }
   }
 
