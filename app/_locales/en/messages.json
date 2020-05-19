@@ -1,6 +1,6 @@
 {
   "connectedSites": {
-    "message": "Connected Sites"
+    "message": "Connected sites"
   },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
@@ -132,7 +132,7 @@
     "message": "Account"
   },
   "accountDetails": {
-    "message": "Account Details"
+    "message": "Account details"
   },
   "accountName": {
     "message": "Account Name"
@@ -632,7 +632,7 @@
     "message": "Estimated Processing Times"
   },
   "expandView": {
-    "message": "Expand View"
+    "message": "Expand view"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
