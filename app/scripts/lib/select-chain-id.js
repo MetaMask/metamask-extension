@@ -4,7 +4,7 @@ import {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   GOERLI_CHAIN_ID,
-} from './enums'
+} from '../controllers/network/enums'
 
 const standardNetworkId = {
   '1': MAINNET_CHAIN_ID,

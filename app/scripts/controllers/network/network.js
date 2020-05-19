@@ -171,25 +171,6 @@ export default class NetworkController extends EventEmitter {
     this.emit('networkDidChange', opts.type)
   }
 
-  _getNetworkDidChangeInfo (opts) {
-
-    const { type } = opts
-    let { chainId } = opts
-    let networkId
-
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-    if (isInfura) {
-      networkId = NETWORK_TYPE_TO_ID_MAP[type].networkId
-      chainId = NETWORK_TYPE_TO_ID_MAP[type].chainId
-    }
-
-    return {
-      type,
-      chainId,
-      networkId,
-    }
-  }
-
   _configureProvider (opts) {
     const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
