@@ -16,7 +16,6 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__token-balance, &__token-symbol {
     font-size: 16px;
     flex: 0 0 auto;
-    height: 16px;
     color: $Black-100;
   }
 
