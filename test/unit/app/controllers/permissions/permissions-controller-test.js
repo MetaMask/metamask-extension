@@ -5,7 +5,7 @@ import sinon from 'sinon'
 
 import {
   METADATA_STORE_KEY,
-  METADATA_STORE_MAX_SIZE,
+  METADATA_CACHE_MAX_SIZE,
   WALLET_PREFIX,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
@@ -1421,7 +1421,7 @@ describe('permissions controller', function () {
 
     it('pops metadata when the metadata store is too large', function () {
 
-      const mockMetadata = getMockMetadata(METADATA_STORE_MAX_SIZE)
+      const mockMetadata = getMockMetadata(METADATA_CACHE_MAX_SIZE)
       const expectedDeletedOrigin = Object.keys(mockMetadata)[0]
 
       permController.store.getState = sinon.fake.returns({

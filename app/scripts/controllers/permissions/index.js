@@ -14,7 +14,7 @@ import {
   SAFE_METHODS, // methods that do not require any permissions to use
   WALLET_PREFIX,
   METADATA_STORE_KEY,
-  METADATA_STORE_MAX_SIZE,
+  METADATA_CACHE_MAX_SIZE,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
   CAVEAT_NAMES,
@@ -535,7 +535,7 @@ export class PermissionsController {
 
     // attempt to pop metadata of a single domain without permissions if the
     // store is too large overall
-    if (Object.keys(newMetadataState).length >= METADATA_STORE_MAX_SIZE) {
+    if (this._newMetadataOrigins.size >= METADATA_CACHE_MAX_SIZE) {
       const permissionsDomains = this.permissions.getDomains()
 
       for (const origin of this._newMetadataOrigins.values()) {
