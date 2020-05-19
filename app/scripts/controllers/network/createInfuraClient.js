@@ -9,6 +9,8 @@ import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddlewa
 import createInfuraMiddleware from 'eth-json-rpc-infura'
 import BlockTracker from 'eth-block-tracker'
 
+import { NETWORK_TYPE_TO_ID_MAP } from './enums'
+
 export default function createInfuraClient ({ network }) {
   const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
   const infuraProvider = providerFromMiddleware(infuraMiddleware)
@@ -27,36 +29,15 @@ export default function createInfuraClient ({ network }) {
 }
 
 function createNetworkAndChainIdMiddleware ({ network }) {
-  let chainId
-  let netId
 
-  switch (network) {
-    case 'mainnet':
-      netId = '1'
-      chainId = '0x01'
-      break
-    case 'ropsten':
-      netId = '3'
-      chainId = '0x03'
-      break
-    case 'rinkeby':
-      netId = '4'
-      chainId = '0x04'
-      break
-    case 'kovan':
-      netId = '42'
-      chainId = '0x2a'
-      break
-    case 'goerli':
-      netId = '5'
-      chainId = '0x05'
-      break
-    default:
-      throw new Error(`createInfuraClient - unknown network "${network}"`)
+  if (!NETWORK_TYPE_TO_ID_MAP[network]) {
+    throw new Error(`createInfuraClient - unknown network "${network}"`)
   }
+
+  const { chainId, networkId } = NETWORK_TYPE_TO_ID_MAP[network]
 
   return createScaffoldMiddleware({
     eth_chainId: chainId,
-    net_version: netId,
+    net_version: networkId.toString(),
   })
 }

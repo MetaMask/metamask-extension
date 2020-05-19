@@ -14,9 +14,13 @@ import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-pro
 
 const networks = { networkList: {} }
 
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI } from './enums'
-
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+import {
+  RINKEBY,
+  MAINNET,
+  LOCALHOST,
+  INFURA_PROVIDER_TYPES,
+  NETWORK_TYPE_TO_ID_MAP,
+} from './enums'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -165,6 +169,25 @@ export default class NetworkController extends EventEmitter {
     this.setNetworkState('loading')
     this._configureProvider(opts)
     this.emit('networkDidChange', opts.type)
+  }
+
+  _getNetworkDidChangeInfo (opts) {
+
+    const { type } = opts
+    let { chainId } = opts
+    let networkId
+
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    if (isInfura) {
+      networkId = NETWORK_TYPE_TO_ID_MAP[type].networkId
+      chainId = NETWORK_TYPE_TO_ID_MAP[type].chainId
+    }
+
+    return {
+      type,
+      chainId,
+      networkId,
+    }
   }
 
   _configureProvider (opts) {

@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert'
 import { throwIfAccountIsBlacklisted } from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
-import { ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE } from '../../../../../app/scripts/controllers/network/enums'
+import { ROPSTEN_NETWORK_ID, RINKEBY_NETWORK_ID, KOVAN_NETWORK_ID, GOERLI_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 
 describe('Recipient Blacklist Checker', function () {
   describe('#throwIfAccountIsBlacklisted', function () {
@@ -19,7 +19,7 @@ describe('Recipient Blacklist Checker', function () {
     ]
 
     it('does not fail on test networks', function () {
-      const networks = [ROPSTEN_CODE, RINKEBY_CODE, KOVAN_CODE, GOERLI_CODE]
+      const networks = [ROPSTEN_NETWORK_ID, RINKEBY_NETWORK_ID, KOVAN_NETWORK_ID, GOERLI_NETWORK_ID]
       for (const networkId of networks) {
         for (const account of publicAccounts) {
           assert.doesNotThrow(() => throwIfAccountIsBlacklisted(networkId, account))

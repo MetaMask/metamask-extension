@@ -1,33 +1,6 @@
-import {
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  MAINNET,
-  GOERLI,
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
-  ROPSTEN_DISPLAY_NAME,
-  RINKEBY_DISPLAY_NAME,
-  KOVAN_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  GOERLI_DISPLAY_NAME,
-} from './enums'
+import { NETWORK_TO_NAME_MAP } from './enums'
 
-const networkToNameMap = {
-  [ROPSTEN]: ROPSTEN_DISPLAY_NAME,
-  [RINKEBY]: RINKEBY_DISPLAY_NAME,
-  [KOVAN]: KOVAN_DISPLAY_NAME,
-  [MAINNET]: MAINNET_DISPLAY_NAME,
-  [GOERLI]: GOERLI_DISPLAY_NAME,
-  [ROPSTEN_CODE]: ROPSTEN_DISPLAY_NAME,
-  [RINKEBY_CODE]: RINKEBY_DISPLAY_NAME,
-  [KOVAN_CODE]: KOVAN_DISPLAY_NAME,
-  [GOERLI_CODE]: GOERLI_DISPLAY_NAME,
-}
-
-export const getNetworkDisplayName = (key) => networkToNameMap[key]
+export const getNetworkDisplayName = (key) => NETWORK_TO_NAME_MAP[key]
 
 export function formatTxMetaForRpcResult (txMeta) {
   return {
