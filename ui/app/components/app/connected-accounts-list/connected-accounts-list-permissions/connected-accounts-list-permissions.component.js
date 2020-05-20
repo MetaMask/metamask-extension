@@ -39,7 +39,7 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
 
     return (
       <div className="connected-accounts-permissions">
-        <p className="connected-accounts-permissions__header">
+        <p className="connected-accounts-permissions__header" onClick={this.toggleExpanded}>
           <strong>{t('permissions')}</strong>
           <button
             className={classnames('fas', {
@@ -47,12 +47,11 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
               'fa-angle-up': expanded,
             })}
             title={t('showPermissions')}
-            onClick={this.toggleExpanded}
           />
         </p>
         <div
-          className={classnames('connected-accounts-permissions__permissions', {
-            'connected-accounts-permissions__permissions--expanded': expanded,
+          className={classnames('connected-accounts-permissions__list-container', {
+            'connected-accounts-permissions__list-container--expanded': expanded,
           })}
         >
           <p>{t('authorizedPermissions')}:</p>

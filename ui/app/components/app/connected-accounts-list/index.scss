@@ -92,6 +92,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 
     font-size: 14px;
     line-height: 20px;
@@ -119,11 +120,12 @@
     }
   }
 
-  &__permissions {
+  &__list-container {
     max-height: 0px;
     overflow: hidden;
     height: auto;
-    transition: max-height 0.8s ease-out;
+    transition: max-height 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+
     &--expanded {
       // arbitrarily set hard coded value for effect to work
       max-height: 100px;
