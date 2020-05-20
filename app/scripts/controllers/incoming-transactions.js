@@ -6,25 +6,14 @@ import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
 
 import {
-  MAINNET_CODE,
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
   ROPSTEN,
   RINKEBY,
   KOVAN,
   GOERLI,
   MAINNET,
+  NETWORK_TYPE_TO_ID_MAP,
 } from './network/enums'
 
-const networkTypeToIdMap = {
-  [ROPSTEN]: String(ROPSTEN_CODE),
-  [RINKEBY]: String(RINKEBY_CODE),
-  [KOVAN]: String(KOVAN_CODE),
-  [GOERLI]: String(GOERLI_CODE),
-  [MAINNET]: String(MAINNET_CODE),
-}
 const fetch = fetchWithTimeout({
   timeout: 30000,
 })
@@ -185,10 +174,9 @@ export default class IncomingTransactionsController {
 
   async _fetchTxs (address, fromBlock, networkType) {
     let etherscanSubdomain = 'api'
-    const currentNetworkID = networkTypeToIdMap[networkType]
-    const supportedNetworkTypes = [ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET]
+    const currentNetworkID = NETWORK_TYPE_TO_ID_MAP[networkType]?.networkId
 
-    if (supportedNetworkTypes.indexOf(networkType) === -1) {
+    if (!currentNetworkID) {
       return {}
     }
 

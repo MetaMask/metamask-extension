@@ -14,9 +14,12 @@ import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-pro
 
 const networks = { networkList: {} }
 
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI } from './enums'
-
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+import {
+  RINKEBY,
+  MAINNET,
+  LOCALHOST,
+  INFURA_PROVIDER_TYPES,
+} from './enums'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
