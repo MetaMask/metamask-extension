@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react'
 import ConnectedAccountsListPermissions from './connected-accounts-list-permissions'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
-import ConnectedAccountsListOptionsItem from './connected-accounts-list-options-item'
+import { MenuItem } from '../../ui/menu'
 
 export default class ConnectedAccountsList extends PureComponent {
   static contextTypes = {
@@ -112,20 +112,20 @@ export default class ConnectedAccountsList extends PureComponent {
                 >
                   {
                     address === selectedAddress ? null : (
-                      <ConnectedAccountsListOptionsItem
-                        iconClassNames="fas fa-random"
+                      <MenuItem
+                        iconClassName="fas fa-random"
                         onClick={this.switchAccount}
                       >
                         {t('switchToThisAccount')}
-                      </ConnectedAccountsListOptionsItem>
+                      </MenuItem>
                     )
                   }
-                  <ConnectedAccountsListOptionsItem
-                    iconClassNames="fas fa-ban"
+                  <MenuItem
+                    iconClassName="fas fa-ban"
                     onClick={this.disconnectAccount}
                   >
                     {t('disconnectThisAccount')}
-                  </ConnectedAccountsListOptionsItem>
+                  </MenuItem>
                 </ConnectedAccountsListOptions>
               )}
             />
