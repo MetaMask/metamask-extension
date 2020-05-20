@@ -34,11 +34,14 @@ const SwitchToUnconnectedAccountAlert = () => {
       : dispatch(dismissAlert())
   }
 
+  const accountName = selectedIdentity?.name || t('thisAccount')
+  const siteName = origin || t('thisSite')
+
   return (
     <Popover
       contentClassName="unconnected-account-alert__content"
       title={t('notConnected')}
-      subtitle={t('unconnectedAccountAlertDescription', [selectedIdentity?.name || 'This account', origin || 'this site' ])}
+      subtitle={t('unconnectedAccountAlertDescription', [ accountName, siteName ])}
       onClose={onClose}
       footer={(
         <>
