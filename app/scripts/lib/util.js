@@ -132,20 +132,6 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function removeListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
-    emitter.removeListener(key, listeners[key])
-  })
-}
-
-function mapObjectValues (object, cb) {
-  const mappedObject = {}
-  Object.keys(object).forEach((key) => {
-    mappedObject[key] = cb(key, object[key])
-  })
-  return mappedObject
-}
-
 /**
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object thats used
@@ -165,13 +151,11 @@ function checkForError () {
 }
 
 export {
-  removeListeners,
   getPlatform,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
-  mapObjectValues,
   checkForError,
 }
