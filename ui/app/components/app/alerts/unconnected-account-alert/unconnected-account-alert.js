@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -8,12 +8,12 @@ import {
   dismissAndDisableAlert,
   getAlertState,
 } from '../../../../ducks/alerts/unconnected-account'
-import { I18nContext } from '../../../../contexts/i18n'
 import Popover from '../../../ui/popover'
 import Button from '../../../ui/button'
 import Checkbox from '../../../ui/check-box'
 import Tooltip from '../../../ui/tooltip-v2'
 import { getSelectedIdentity, getOriginOfCurrentTab } from '../../../../selectors'
+import { useI18nContext } from '../../../../hooks/useI18nContext'
 
 const {
   ERROR,
@@ -21,7 +21,7 @@ const {
 } = ALERT_STATE
 
 const SwitchToUnconnectedAccountAlert = () => {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const dispatch = useDispatch()
   const alertState = useSelector(getAlertState)
   const origin = useSelector(getOriginOfCurrentTab)
