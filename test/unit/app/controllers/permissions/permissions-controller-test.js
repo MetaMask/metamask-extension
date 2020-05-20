@@ -1419,7 +1419,9 @@ describe('permissions controller', function () {
       )
     })
 
-    it('pops metadata when the metadata store is too large', function () {
+    it('pops metadata on add when too many origins are pending', function () {
+
+      sinon.spy(permController._pendingSiteMetadata, 'delete')
 
       const mockMetadata = getMockMetadata(METADATA_CACHE_MAX_SIZE)
       const expectedDeletedOrigin = Object.keys(mockMetadata)[0]
@@ -1428,10 +1430,10 @@ describe('permissions controller', function () {
         [METADATA_STORE_KEY]: { ...mockMetadata },
       })
 
-      // populate permController.newMetadataOrigins, as though these origins
+      // populate permController._pendingSiteMetadata, as though these origins
       // were actually added
       Object.keys(mockMetadata).forEach((origin) => {
-        permController._newMetadataOrigins.add(origin)
+        permController._pendingSiteMetadata.add(origin)
       })
 
       permController.addDomainMetadata(ORIGINS.a, { foo: 'bar' })
@@ -1450,6 +1452,10 @@ describe('permissions controller', function () {
       }
       delete expectedMetadata[expectedDeletedOrigin]
 
+      assert.ok(
+        permController._pendingSiteMetadata.delete.calledOnceWithExactly(expectedDeletedOrigin),
+        'should have called _pendingSiteMetadata.delete once'
+      )
       assert.equal(
         permController._setDomainMetadata.getCalls().length, 1,
         'should have called _setDomainMetadata once'

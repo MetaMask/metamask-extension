@@ -535,20 +535,13 @@ export class PermissionsController {
 
     // attempt to pop metadata of a single domain without permissions if the
     // store is too large overall
-    if (this._newMetadataOrigins.size >= METADATA_CACHE_MAX_SIZE) {
+    if (this._pendingSiteMetadata.size >= METADATA_CACHE_MAX_SIZE) {
       const permissionsDomains = this.permissions.getDomains()
 
-      for (const origin of this._newMetadataOrigins.values()) {
-
-        // We can stop keeping track of all domains we iterate over, because
-        // we will either delete 'origin' now if it does not have permissions,
-        // or we won't delete 'origin' until the next time MetaMask boots.
-        this._newMetadataOrigins.delete(origin)
-
-        if (!permissionsDomains[origin]) {
-          delete newMetadataState[origin]
-          break
-        }
+      const oldOrigin = this._pendingSiteMetadata.values().next().value
+      this._pendingSiteMetadata.delete(oldOrigin)
+      if (!permissionsDomains[oldOrigin]) {
+        delete newMetadataState[oldOrigin]
       }
     }
 
@@ -558,7 +551,7 @@ export class PermissionsController {
       ...metadata,
       lastUpdated: Date.now(),
     }
-    this._newMetadataOrigins.add(origin)
+    this._pendingSiteMetadata.add(origin)
     this._setDomainMetadata(newMetadataState)
   }
 
@@ -573,7 +566,7 @@ export class PermissionsController {
     const metadataState = restoredState[METADATA_STORE_KEY] || {}
     const newMetadataState = this._trimDomainMetadata(metadataState)
 
-    this._newMetadataOrigins = new Set()
+    this._pendingSiteMetadata = new Set()
     this._setDomainMetadata(newMetadataState)
   }
 
