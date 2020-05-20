@@ -199,7 +199,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should fail if recipient is public', async function () {
-      txController.networkStore = new ObservableStore(1)
+      txController.networkStore = new ObservableStore('1')
       await assert.rejects(
         () => txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' }),
         { message: 'Recipient is a public account' },
