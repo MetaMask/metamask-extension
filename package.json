@@ -133,7 +133,7 @@
     "lodash": "^4.17.15",
     "loglevel": "^1.4.1",
     "luxon": "^1.23.0",
-    "metamask-logo": "^2.1.4",
+    "metamask-logo": "MetaMask/metamask-logo#Fox8",
     "multihashes": "^0.4.12",
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
