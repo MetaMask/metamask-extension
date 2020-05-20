@@ -127,7 +127,7 @@ export default class AccountDetailsDropdown extends Component {
           }}
           text={this.context.t('connectedSites')}
           icon={(
-            <img src="images/connect-white.svg" style={{ height: '15px' }} alt="" />
+            <img src="images/icons/connected-sites-white.svg" style={{ height: '15px' }} alt="" />
           )}
         />
         {

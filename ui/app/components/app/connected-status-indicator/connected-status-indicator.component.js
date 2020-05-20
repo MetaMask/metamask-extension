@@ -32,7 +32,9 @@ export default class ConnectedStatusIndicator extends Component {
           'connected-status-indicator__yellow-circle': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
           'connected-status-indicator__grey-circle': status === STATUS_NOT_CONNECTED,
         })}
-      />
+      >
+        <span className="connected-status-indicator__inner-circle" />
+      </div>
     )
   }
 

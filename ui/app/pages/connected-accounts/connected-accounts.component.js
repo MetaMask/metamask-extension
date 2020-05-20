@@ -54,11 +54,6 @@ export default class ConnectedAccounts extends PureComponent {
         subtitle={connectedAccounts.length ? connectedAccountsDescription : t('connectedAccountsEmptyDescription')}
         onClose={() => history.push(DEFAULT_ROUTE)}
         footerClassName="connected-accounts__footer"
-        footer={
-          connectedAccounts.length
-            ? null
-            : <a onClick={this.viewConnectedSites}>{t('viewConnectedSites')}</a>
-        }
       >
         <ConnectedAccountsList
           accountToConnect={accountToConnect}

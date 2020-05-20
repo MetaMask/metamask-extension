@@ -1,6 +1,6 @@
 {
   "connectedSites": {
-    "message": "Connected Sites"
+    "message": "Connected sites"
   },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
@@ -31,9 +31,6 @@
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
-  },
-  "viewConnectedSites": {
-    "message": "View connected sites"
   },
   "permissions": {
     "message": "Permissions"
@@ -132,7 +129,7 @@
     "message": "Account"
   },
   "accountDetails": {
-    "message": "Account Details"
+    "message": "Account details"
   },
   "accountName": {
     "message": "Account Name"
@@ -632,7 +629,7 @@
     "message": "Estimated Processing Times"
   },
   "expandView": {
-    "message": "Expand View"
+    "message": "Expand view"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
@@ -1594,7 +1591,7 @@
     "message": "Unapproved"
   },
   "unconnectedAccountAlertDescription": {
-    "message": "This account is not connected to this site."
+    "message": "$1 is not connected to $2."
   },
   "unconnectedAccountAlertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -1734,5 +1731,11 @@
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is website or dapp name"
+  },
+  "thisSite": {
+    "message": "this site"
+  },
+  "thisAccount": {
+    "message": "This account"
   }
 }

@@ -13,6 +13,7 @@ import Popover from '../../../ui/popover'
 import Button from '../../../ui/button'
 import Checkbox from '../../../ui/check-box'
 import Tooltip from '../../../ui/tooltip-v2'
+import { getSelectedIdentity, getOriginOfCurrentTab } from '../../../../selectors'
 
 const {
   ERROR,
@@ -23,6 +24,8 @@ const SwitchToUnconnectedAccountAlert = () => {
   const t = useContext(I18nContext)
   const dispatch = useDispatch()
   const alertState = useSelector(getAlertState)
+  const origin = useSelector(getOriginOfCurrentTab)
+  const selectedIdentity = useSelector(getSelectedIdentity)
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false)
 
   const onClose = async () => {
@@ -31,11 +34,14 @@ const SwitchToUnconnectedAccountAlert = () => {
       : dispatch(dismissAlert())
   }
 
+  const accountName = selectedIdentity?.name || t('thisAccount')
+  const siteName = origin || t('thisSite')
+
   return (
     <Popover
       contentClassName="unconnected-account-alert__content"
       title={t('notConnected')}
-      subtitle={t('unconnectedAccountAlertDescription')}
+      subtitle={t('unconnectedAccountAlertDescription', [ accountName, siteName ])}
       onClose={onClose}
       footer={(
         <>

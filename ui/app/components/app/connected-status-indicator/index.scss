@@ -16,22 +16,37 @@
     background-color: #EDEDED;
   }
 
+  &__inner-circle {
+    border-radius: 4px;
+    height: 4px;
+    width: 4px;
+    background-color: transparent;
+  }
+
   &__green-circle, &__yellow-circle, &__grey-circle {
     border-radius: 4px;
     height: 8px;
     width: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__green-circle {
-    background: #4CD964;
+    border-color: #4CD964;
+  }
+
+  &__green-circle &__inner-circle {
+    background-color: #4CD964;
   }
 
   &__yellow-circle {
-    background: #FFD33D;
+    border-color: #FFD33D;
   }
 
   &__grey-circle {
-    background: $Grey-100;
+    border-color: $Grey-500;
   }
 
   &__text {
