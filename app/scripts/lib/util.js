@@ -2,6 +2,7 @@ import extension from 'extensionizer'
 import ethUtil from 'ethereumjs-util'
 import assert from 'assert'
 import BN from 'bn.js'
+import { memoize } from 'lodash'
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -16,16 +17,9 @@ import {
 } from './enums'
 
 /**
- * Used to determine the window type through which the app is being viewed.
- *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
- *  - 'fullscreen' refers to the main browser window
- *  - 'notification' refers to the popup that appears in its own window when taking action outside of metamask
- *  - 'background' refers to the background page
- *
- * @returns {string} - A single word label that represents the type of window through which the app is being viewed
- *
+ * @see {@link getEnvironmentType}
  */
-const getEnvironmentType = (url = window.location.href) => {
+const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url)
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
@@ -36,7 +30,22 @@ const getEnvironmentType = (url = window.location.href) => {
   } else {
     return ENVIRONMENT_TYPE_BACKGROUND
   }
-}
+})
+
+/**
+ * Returns the window type for the application
+ *
+ *  - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
+ *  - `fullscreen` refers to the main browser window
+ *  - `notification` refers to the popup that appears in its own window when taking action outside of metamask
+ *  - `background` refers to the background page
+ *
+ * NOTE: This should only be called on internal URLs.
+ *
+ * @param {string} [url] - the URL of the window
+ * @returns {string} the environment ENUM
+ */
+const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMemo(url)
 
 /**
  * Returns the platform (browser) where the extension is running.
