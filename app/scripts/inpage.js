@@ -33,8 +33,7 @@ const restoreContextAfterImports = () => {
 cleanContextForImports()
 
 import log from 'loglevel'
-import LocalMessageDuplexStream from 'post-message-stream'
-import { initProvider } from '@metamask/inpage-provider'
+import { initializeProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:2020
 import 'web3/dist/web3.min.js'
@@ -46,18 +45,10 @@ restoreContextAfterImports()
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 //
-// setup plugin communication
+// initialize inpage provider
 //
 
-// setup background connection
-const metamaskStream = new LocalMessageDuplexStream({
-  name: 'inpage',
-  target: 'contentscript',
-})
-
-initProvider({
-  connectionStream: metamaskStream,
-})
+initializeProvider()
 
 //
 // TODO:deprecate:2020
