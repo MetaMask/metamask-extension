@@ -533,8 +533,8 @@ export class PermissionsController {
     const oldMetadataState = this.store.getState()[METADATA_STORE_KEY]
     const newMetadataState = { ...oldMetadataState }
 
-    // attempt to pop metadata of a single domain without permissions if the
-    // store is too large overall
+    // delete pending metadata origin from queue, and delete its metadata if
+    // it doesn't have any permissions
     if (this._pendingSiteMetadata.size >= METADATA_CACHE_MAX_SIZE) {
       const permissionsDomains = this.permissions.getDomains()
 
