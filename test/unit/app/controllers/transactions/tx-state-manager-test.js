@@ -7,8 +7,8 @@ const noop = () => true
 
 describe('TransactionStateManager', function () {
   let txStateManager
-  const currentNetworkId = 42
-  const otherNetworkId = 2
+  const currentNetworkId = '42'
+  const otherNetworkId = '2'
 
   beforeEach(function () {
     txStateManager = new TxStateManager({

@@ -21,7 +21,7 @@ describe('Actions', function () {
 
   const noop = () => {}
 
-  const currentNetworkId = 42
+  const currentNetworkId = '42'
 
   let background, metamaskController
 

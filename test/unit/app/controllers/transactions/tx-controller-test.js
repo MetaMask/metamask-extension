@@ -18,7 +18,7 @@ import {
 import { createTestProviderTools, getTestAccounts } from '../../../../stub/provider'
 
 const noop = () => true
-const currentNetworkId = 42
+const currentNetworkId = '42'
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -324,7 +324,7 @@ describe('Transaction Controller', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       const rawTx = await txController.signTransaction('1')
       const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
-      assert.equal(ethTx.getChainId(), currentNetworkId)
+      assert.equal(ethTx.getChainId(), parseInt(currentNetworkId))
     })
   })
 

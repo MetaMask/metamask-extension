@@ -393,7 +393,7 @@ describe('IncomingTransactionsController', function () {
       assert.deepEqual(result, {
         someKey: 'someValue',
         address: '0xfakeaddress',
-        currentNetworkID: 3,
+        currentNetworkID: '3',
       })
     })
   })

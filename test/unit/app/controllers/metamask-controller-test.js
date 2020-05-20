@@ -64,7 +64,7 @@ const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controll
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default
 
-const currentNetworkId = 42
+const currentNetworkId = '42'
 const DEFAULT_LABEL = 'Account 1'
 const DEFAULT_LABEL_2 = 'Account 2'
 const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
@@ -605,7 +605,7 @@ describe('MetaMaskController', function () {
       metamaskController.txController.txStateManager._saveTxList([
         createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
         createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } }),
-        createTxMeta({ id: 2, status: 'rejected', metamaskNetworkId: 32 }),
+        createTxMeta({ id: 2, status: 'rejected', metamaskNetworkId: '32' }),
         createTxMeta({ id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' } }),
       ])
 
