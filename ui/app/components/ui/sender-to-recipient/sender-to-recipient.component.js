@@ -7,6 +7,8 @@ import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
 import { checksumAddress, shortenAddress } from '../../../helpers/utils/util'
 import { I18nContext } from '../../../contexts/i18n'
+import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component'
+
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',

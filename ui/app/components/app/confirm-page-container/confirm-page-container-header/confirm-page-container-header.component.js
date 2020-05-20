@@ -9,6 +9,7 @@ import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
 import { shortenAddress } from '../../../../helpers/utils/util'
 import { I18nContext } from '../../../../contexts/i18n'
+import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
 
 
 export default function ConfirmPageContainerHeader ({
@@ -62,6 +63,7 @@ export default function ConfirmPageContainerHeader ({
               <div className="confirm-page-container-header__address">
                 { shortenAddress(accountAddress) }
               </div>
+              <AccountMismatchWarning address={accountAddress} />
             </div>
           )
           : null

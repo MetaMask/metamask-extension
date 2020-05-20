@@ -8,7 +8,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import { I18nContext } from '../../../contexts/i18n'
 
-export default class AccountListItem extends Component {
+import AccountMismatchWarning from '../../../components/ui/account-mismatch-warning/account-mismatch-warning.component'
 
 export default function AccountListItem ({
   account,
@@ -40,6 +40,7 @@ export default function AccountListItem ({
 
         {icon && <div className="account-list-item__icon">{ icon }</div>}
 
+        <AccountMismatchWarning address={address} />
       </div>
 
       {displayAddress && name && (
