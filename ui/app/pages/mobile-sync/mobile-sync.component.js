@@ -25,6 +25,8 @@ export default class MobileSyncPage extends Component {
     fetchInfoToSync: PropTypes.func.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requestRevealSeedWords: PropTypes.func.isRequired,
+    exportAccount: PropTypes.func.isRequired,
+    keyrings: PropTypes.array,
   }
 
 
@@ -32,6 +34,7 @@ export default class MobileSyncPage extends Component {
     screen: PASSWORD_PROMPT_SCREEN,
     password: '',
     seedWords: null,
+    importedAccounts: [],
     error: null,
     syncing: false,
     completed: false,
@@ -62,9 +65,24 @@ export default class MobileSyncPage extends Component {
       .then((seedWords) => {
         this.startKeysGeneration()
         this.startIdleTimeout()
-        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
+        this.exportAccounts()
+          .then((importedAccounts) => {
+            this.setState({ seedWords, importedAccounts, screen: REVEAL_SEED_SCREEN })
+          })
       })
       .catch((error) => this.setState({ error: error.message }))
+  }
+
+  async exportAccounts () {
+    const importedAccountPromises = []
+    this.props.keyrings.forEach((keyring) => {
+      if (keyring.type === 'Simple Key Pair') {
+        const privateKeyPromise = this.props.exportAccount(this.state.password, keyring.accounts[0])
+        importedAccountPromises.push(privateKeyPromise)
+      }
+    })
+    const importedAccounts = await Promise.all(importedAccountPromises)
+    return importedAccounts
   }
 
   startKeysGeneration () {
@@ -201,6 +219,7 @@ export default class MobileSyncPage extends Component {
       udata: {
         pwd: this.state.password,
         seed: this.state.seedWords,
+        importedAccounts: this.state.importedAccounts,
       },
     })
 
