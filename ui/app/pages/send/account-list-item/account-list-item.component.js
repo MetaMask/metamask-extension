@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { checksumAddress } from '../../../helpers/utils/util'
@@ -6,9 +6,8 @@ import Identicon from '../../../components/ui/identicon'
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import Tooltip from '../../../components/ui/tooltip-v2'
-import { I18nContext } from '../../../contexts/i18n'
-
 import AccountMismatchWarning from '../../../components/ui/account-mismatch-warning/account-mismatch-warning.component'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 export default function AccountListItem ({
   account,
@@ -20,7 +19,7 @@ export default function AccountListItem ({
   balanceIsCached,
   showFiat = true,
 }) {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const { name, address, balance } = account || {}
 
   return (

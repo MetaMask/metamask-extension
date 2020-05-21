@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -8,8 +8,8 @@ import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
 import { shortenAddress } from '../../../../helpers/utils/util'
-import { I18nContext } from '../../../../contexts/i18n'
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
+import { useI18nContext } from '../../../../hooks/useI18nContext'
 
 
 export default function ConfirmPageContainerHeader ({
@@ -19,7 +19,7 @@ export default function ConfirmPageContainerHeader ({
   showAccountInHeader,
   children,
 }) {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const windowType = getEnvironmentType()
   const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../identicon'
@@ -6,8 +6,8 @@ import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
 import { checksumAddress, shortenAddress } from '../../../helpers/utils/util'
-import { I18nContext } from '../../../contexts/i18n'
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 
 const variantHash = {
@@ -23,7 +23,7 @@ function SenderAddress ({
   onSenderClick,
   senderAddress,
 }) {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const [addressCopied, setAddressCopied] = useState(false)
   let tooltipHtml = <p>{t('copiedExclamation')}</p>
   if (!addressCopied) {
@@ -92,7 +92,7 @@ function RecipientWithAddress ({
   recipientEns,
   recipientName,
 }) {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const [addressCopied, setAddressCopied] = useState(false)
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>
@@ -199,7 +199,7 @@ export default function SenderToRecipient ({
   recipientAddress,
   variant = DEFAULT_VARIANT,
 }) {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const checksummedSenderAddress = checksumAddress(senderAddress)
   const checksummedRecipientAddress = checksumAddress(recipientAddress)
 

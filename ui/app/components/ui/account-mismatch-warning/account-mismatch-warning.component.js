@@ -1,15 +1,14 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import Tooltip from '../tooltip-v2'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getSelectedAccount } from '../../../selectors'
 import InfoIcon from '../icon/info-icon.component'
-
-import { I18nContext } from '../../../contexts/i18n'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 export default function AccountMismatchWarning ({ address }) {
   const selectedAccount = useSelector(getSelectedAccount)
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   if (selectedAccount.address === address) {
     return null
   }
