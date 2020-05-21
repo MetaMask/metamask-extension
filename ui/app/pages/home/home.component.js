@@ -8,13 +8,13 @@ import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
 import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
-import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
 import Popover from '../../components/ui/popover'
 import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
+import { EthOverview, TokenOverview } from '../../components/app/wallet-overview'
 
 import {
   RESTORE_VAULT_ROUTE,
@@ -51,6 +51,11 @@ export default class Home extends PureComponent {
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
+    selectedToken: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      decimals: PropTypes.number,
+      symbol: PropTypes.string,
+    }),
   }
 
   UNSAFE_componentWillMount () {
@@ -208,6 +213,7 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
+      selectedToken,
     } = this.props
 
     if (forgottenPassword) {
@@ -217,6 +223,10 @@ export default class Home extends PureComponent {
       // Display nothing while the confirm page loads, to avoid side-effects of rendering normal home view
       return null
     }
+
+    const homeOverview = selectedToken
+      ? <TokenOverview token={selectedToken} />
+      : <EthOverview />
 
     return (
       <div className="main-container">
@@ -235,7 +245,7 @@ export default class Home extends PureComponent {
                       <WalletView />
                       <div className="home__main-view">
                         <div className="home__balance-wrapper">
-                          <TransactionViewBalance />
+                          { homeOverview }
                         </div>
                         <TransactionList isWideViewport />
                       </div>
@@ -245,7 +255,7 @@ export default class Home extends PureComponent {
                     <div className="home__main-view">
                       <MenuBar />
                       <div className="home__balance-wrapper">
-                        <TransactionViewBalance />
+                        { homeOverview }
                       </div>
                       <Tabs>
                         <Tab
