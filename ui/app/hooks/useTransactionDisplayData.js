@@ -62,7 +62,7 @@ export function useTransactionDisplayData (transactionGroup) {
   const { from: senderAddress, to } = initialTransaction.txParams || {}
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
-  const methodData = useSelector((state) => getKnownMethodData(state, primaryTransaction?.txParams?.data)) || {}
+  const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
 
   const actionKey = getTransactionActionKey(initialTransaction)
   const statusKey = getStatusKey(primaryTransaction)
