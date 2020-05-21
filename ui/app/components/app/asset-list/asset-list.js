@@ -18,7 +18,20 @@ const AssetList = () => {
   const selectedAccountBalance = useSelector((state) => getCurrentAccountWithSendEtherInfo(state).balance)
   const selectedTokenAddress = useSelector((state) => state.metamask.selectedTokenAddress)
   const showFiat = useSelector(getShouldShowFiat)
-  const metricsEvent = useMetricEvent()
+  const selectTokenEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Token Menu',
+      name: 'Clicked Token',
+    },
+  })
+  const addTokenEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Token Menu',
+      name: 'Clicked "Add Token"',
+    },
+  })
 
   const {
     currency: primaryCurrency,
@@ -56,25 +69,13 @@ const AssetList = () => {
       <TokenList
         onTokenClick={(tokenAddress) => {
           dispatch(setSelectedToken(tokenAddress))
-          metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Token Menu',
-              name: 'Clicked Token',
-            },
-          })
+          selectTokenEvent()
         }}
       />
       <AddTokenButton
         onClick={() => {
           history.push(ADD_TOKEN_ROUTE)
-          metricsEvent({
-            eventOpts: {
-              category: 'Navigation',
-              action: 'Token Menu',
-              name: 'Clicked "Add Token"',
-            },
-          })
+          addTokenEvent()
         }}
       />
     </>
