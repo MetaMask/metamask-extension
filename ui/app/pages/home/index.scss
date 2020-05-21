@@ -13,23 +13,12 @@
   }
 
   &__balance-wrapper {
-    @media screen and (max-width: $break-small) {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      flex: 0 0 auto;
-      padding-top: 16px;
-    }
-
-    @media screen and (min-width: $break-large) {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      margin: 2.3em 2.37em .8em;
-      flex: 0 0 auto;
-    }
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 0 0 auto;
+    padding-top: 16px;
   }
 
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
