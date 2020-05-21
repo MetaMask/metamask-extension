@@ -1,16 +1,16 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
-import { I18nContext } from '../../../contexts/i18n'
 import Tooltip from '../../../components/ui/tooltip-v2'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { setAlertEnabledness } from '../../../store/actions'
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   const dispatch = useDispatch()
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId])
 
@@ -43,7 +43,7 @@ AlertSettingsEntry.propTypes = {
 }
 
 const AlertsTab = () => {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
 
   const alertConfig = {
     [ALERT_TYPES.switchToConnected]: {
