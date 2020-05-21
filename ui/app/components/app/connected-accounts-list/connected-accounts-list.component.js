@@ -121,7 +121,7 @@ export default class ConnectedAccountsList extends PureComponent {
                     )
                   }
                   <MenuItem
-                    iconClassNames="disconnect-icon"
+                    iconClassName="disconnect-icon"
                     onClick={this.disconnectAccount}
                   >
                     {t('disconnectThisAccount')}
