@@ -15,7 +15,7 @@ describe('MetaMask Browser Extension', function () {
       const passwordField = await driver.findElement(By.css('#password'))
       await passwordField.sendKeys('correct horse battery staple')
       await passwordField.sendKeys(Key.ENTER)
-      await driver.clickElement(By.css('[data-testid="transaction-view-send"]'))
+      await driver.clickElement(By.css('[data-testid="eth-overview-send"]'))
       const recipientAddressField = await driver.findElement(By.css('[data-testid="ens-input"]'))
       await recipientAddressField.sendKeys('0x985c30949c92df7a0bd42e0f3e3d539ece98db24')
       const amountField = await driver.findElement(By.css('.unit-input__input'))

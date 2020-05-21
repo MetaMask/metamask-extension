@@ -751,7 +751,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the correct ETH balance', async function () {
-      const balance = await driver.findElement(By.css('.transaction-view-balance__primary-balance'))
+      const balance = await driver.findElement(By.css('.eth-overview__primary-balance'))
       await driver.delay(regularDelayMs)
       await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/), 10000)
       const tokenAmount = await balance.getText()
@@ -829,7 +829,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the new token', async function () {
-      const balance = await driver.findElement(By.css('.transaction-view-balance .transaction-view-balance__primary-balance'))
+      const balance = await driver.findElement(By.css('.wallet-overview .token-overview__primary-balance'))
       await driver.wait(until.elementTextMatches(balance, /^10.000\s*TST\s*$/))
       const tokenAmount = await balance.getText()
       assert.ok(/^10.000\s*TST\s*$/.test(tokenAmount))
@@ -996,7 +996,7 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('.token-cell'))
       await driver.delay(1000)
 
-      const tokenBalanceAmount = await driver.findElements(By.css('.transaction-view-balance__primary-balance'))
+      const tokenBalanceAmount = await driver.findElements(By.css('.token-overview__primary-balance'))
       await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/), 10000)
     })
   })
@@ -1254,7 +1254,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the chosen token', async function () {
-      const balance = await driver.findElement(By.css('.transaction-view-balance__primary-balance'))
+      const balance = await driver.findElement(By.css('.token-overview__primary-balance'))
       await driver.wait(until.elementTextMatches(balance, /0\s*BAT/))
       await driver.delay(regularDelayMs)
     })

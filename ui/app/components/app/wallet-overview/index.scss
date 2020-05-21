@@ -1,4 +1,4 @@
-.transaction-view-balance {
+.wallet-overview {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,6 +12,30 @@
     width: 100%;
   }
 
+  &__balance {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+
+    @media screen and (max-width: $break-small) {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.eth-overview {
   &__balance {
     margin: 0 12px;
     display: flex;
@@ -40,7 +64,6 @@
       line-height: 45px;
       width: 100%;
       justify-content: center;
-
     }
   }
 
@@ -65,25 +88,41 @@
     color: $Grey-400;
   }
 
-  &__balance-container {
-    flex: 1;
+  &__button {
+    min-width: initial;
+    width: 100px;
+
+    &:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+}
+
+.token-overview {
+  &__balance {
+    margin: 0 12px;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
     min-width: 0;
+    position: relative;
 
     @media screen and (max-width: $break-small) {
-      flex-direction: column;
-      width: 100%;
+      align-items: center;
+      margin: 16px 0;
+      padding: 0 16px;
+      max-width: 100%;
     }
   }
 
-  &__buttons {
-    display: flex;
-    flex-direction: row;
+  &__primary-balance {
+    font-size: 1.5rem;
+    color: $black;
 
     @media screen and (max-width: $break-small) {
-      margin-bottom: 16px;
+      font-size: 32px;
+      line-height: 45px;
+      width: 100%;
+      justify-content: center;
     }
   }
 
