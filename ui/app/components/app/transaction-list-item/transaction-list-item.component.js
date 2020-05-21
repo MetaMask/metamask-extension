@@ -16,6 +16,7 @@ import Tooltip from '../../ui/tooltip'
 import TransactionListItemDetails from '../transaction-list-item-details/transaction-list-item-details.component'
 import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
+import Identicon from '../../ui/identicon/identicon.component'
 
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
@@ -32,8 +33,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const { title, subtitle, category, primaryCurrency, recipientAddress, secondaryCurrency, status, senderAddress } = useTransactionDisplayData(transactionGroup)
 
   const isApprove = category === 'approval'
+  const isSignatureReq = category === 'signature-request'
+  const isInteraction = category === 'interaction'
   const isSend = category === 'send'
-  const isReceive = category === 'deposit'
+  const isReceive = category === 'receive'
   const isUnapproved = status === 'unapproved'
   const isPending = status === 'pending'
   const isFailed = status === 'failed'
@@ -41,13 +44,15 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
 
   const color = isFailed ? '#D73A49' : '#2F80ED'
 
-  let Icon = Interaction
+  let Icon
   if (isApprove) {
     Icon = Approve
   } else if (isSend) {
     Icon = Send
   } else if (isReceive) {
     Icon = Receive
+  } else if (isInteraction) {
+    Icon = Interaction
   }
 
   let subtitleStatus = null
@@ -132,10 +137,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
             color="#D73A49"
           />
         )}
-        icon={<Icon color={color} size={28} />}
+        icon={isSignatureReq ? <Identicon diameter={25} /> : <Icon color={color} size={28} />}
         subtitle={subtitle}
         subtitleStatus={subtitleStatus}
-        rightContent={(
+        rightContent={!isSignatureReq && (
           <>
             <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
             <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>
@@ -155,7 +160,8 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={isEarliestNonce && isPending}
+          showRetry={isFailed}
+          showSpeedUp={isEarliestNonce && isPending}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
