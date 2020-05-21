@@ -1,5 +1,3 @@
-/*global Web3*/
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -36,9 +34,7 @@ import log from 'loglevel'
 import { initializeProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:2020
-import 'web3/dist/web3.min.js'
-
-import setupDappAutoReload from './lib/auto-reload.js'
+import setupWeb3 from './lib/setupWeb3'
 
 restoreContextAfterImports()
 
@@ -50,32 +46,5 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 initializeProvider()
 
-//
 // TODO:deprecate:2020
-//
-
-// setup web3
-
-if (typeof window.web3 !== 'undefined') {
-  throw new Error(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
-}
-
-const web3 = new Web3(window.ethereum)
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
-}
-log.debug('MetaMask - injected web3')
-
-Object.defineProperty(window.ethereum, '_web3Ref', {
-  enumerable: false,
-  writable: true,
-  configurable: true,
-  value: web3.eth,
-})
-
-// setup dapp auto reload AND proxy web3
-setupDappAutoReload(web3, window.ethereum._publicConfigStore)
+setupWeb3()

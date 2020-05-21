@@ -6,6 +6,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
  */
 export default function createMethodMiddleware ({
   getAccounts,
+  getProviderState,
   getUnlockPromise,
   hasPermission,
   requestAccountsPermission,
@@ -16,6 +17,8 @@ export default function createMethodMiddleware ({
   let isProcessingRequestAccounts = false
 
   return createAsyncMiddleware(async (req, res, next) => {
+
+    let accounts
 
     switch (req.method) {
 
@@ -43,7 +46,7 @@ export default function createMethodMiddleware ({
         }
 
         // first, just try to get accounts
-        let accounts = await getAccounts()
+        accounts = await getAccounts()
         if (accounts.length > 0) {
           res.result = accounts
           return
@@ -70,6 +73,15 @@ export default function createMethodMiddleware ({
           )
         }
 
+        return
+
+      case 'wallet_getProviderState':
+
+        accounts = await getAccounts()
+        res.result = {
+          ...getProviderState(),
+          accounts,
+        }
         return
 
       // custom method for getting metadata from the requesting domain,

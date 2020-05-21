@@ -11,9 +11,23 @@ export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
 }
 
+/**
+ * All notification names.
+ */
 export const NOTIFICATION_NAMES = {
   accountsChanged: 'wallet_accountsChanged',
+  unlockStateChanged: 'wallet_unlockStateChanged',
+  chainChanged: 'wallet_chainChanged',
 }
+
+/**
+ * Notifications that should be sent regardless of whether
+ * the extension is locked or the domain is permitted.
+ */
+export const SAFE_NOTIFICATIONS = new Set([
+  NOTIFICATION_NAMES.unlockStateChanged,
+  NOTIFICATION_NAMES.chainChanged,
+])
 
 export const LOG_IGNORE_METHODS = [
   'wallet_sendDomainMetadata',

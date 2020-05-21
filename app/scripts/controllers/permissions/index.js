@@ -31,6 +31,7 @@ export class PermissionsController {
       notifyAllDomains,
       preferences,
       showPermissionRequest,
+      getProviderState,
     } = {},
     restoredPermissions = {},
     restoredState = {}) {
@@ -46,6 +47,7 @@ export class PermissionsController {
     this._notifyDomain = notifyDomain
     this.notifyAllDomains = notifyAllDomains
     this._showPermissionRequest = showPermissionRequest
+    this._getProviderState = getProviderState
 
     this._restrictedMethods = getRestrictedMethods({
       getKeyringAccounts: this.getKeyringAccounts.bind(this),
@@ -92,6 +94,7 @@ export class PermissionsController {
       store: this.store,
       storeKey: METADATA_STORE_KEY,
       getAccounts: this.getAccounts.bind(this, origin),
+      getProviderState: this._getProviderState,
       getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(

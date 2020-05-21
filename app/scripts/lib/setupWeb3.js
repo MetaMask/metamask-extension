@@ -1,11 +1,35 @@
+/* global Web3 */
 
 // TODO:deprecate:2020
 
-export default function setupDappAutoReload (web3, observable) {
+import log from 'loglevel'
+import 'web3/dist/web3.min.js'
+
+/**
+ * Inject window.web3 and set up auto reload on chain/network change.
+ */
+export default function setupWeb3 () {
+
+  if (typeof window.web3 !== 'undefined') {
+    throw new Error(`MetaMask detected another web3.
+      MetaMask will not work reliably with another web3 extension.
+      This usually happens if you have two MetaMasks installed,
+      or MetaMask and another web3 extension. Please remove one
+      and try again.`)
+  }
+
+  const web3 = new Web3(window.ethereum)
+  web3.setProvider = function () {
+    log.debug('MetaMask - overrode web3.setProvider')
+  }
+  log.debug('MetaMask - injected web3')
+
+  window.ethereum._web3Ref = web3.eth
+
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
-  let lastSeenNetwork
+  let previousChainId
   let hasBeenWarned = false
 
   const web3Proxy = new Proxy(web3, {
@@ -26,14 +50,14 @@ export default function setupDappAutoReload (web3, observable) {
     },
   })
 
-  Object.defineProperty(global, 'web3', {
+  Object.defineProperty(window, 'web3', {
     enumerable: false,
     writable: true,
     configurable: true,
     value: web3Proxy,
   })
 
-  observable.subscribe(function (state) {
+  window.ethereum.on('chainChanged', (currentChainId) => {
     // if the auto refresh on network change is false do not
     // do anything
     if (!window.ethereum.autoRefreshOnNetworkChange) {
@@ -45,11 +69,9 @@ export default function setupDappAutoReload (web3, observable) {
       return
     }
 
-    const currentNetwork = state.networkVersion
-
-    // set the initial network
-    if (!lastSeenNetwork) {
-      lastSeenNetwork = currentNetwork
+    // set the initial chain
+    if (!previousChainId) {
+      previousChainId = currentChainId
       return
     }
 
@@ -58,8 +80,8 @@ export default function setupDappAutoReload (web3, observable) {
       return
     }
 
-    // if network did not change, exit
-    if (currentNetwork === lastSeenNetwork) {
+    // if chain did not change, exit
+    if (currentChainId === previousChainId) {
       return
     }
 
@@ -68,14 +90,9 @@ export default function setupDappAutoReload (web3, observable) {
     const timeSinceUse = Date.now() - lastTimeUsed
     // if web3 was recently used then delay the reloading of the page
     if (timeSinceUse > 500) {
-      triggerReset()
+      window.location.reload()
     } else {
-      setTimeout(triggerReset, 500)
+      setTimeout(window.location.reload, 500)
     }
   })
-}
-
-// reload the page
-function triggerReset () {
-  global.location.reload()
 }

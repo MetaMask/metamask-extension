@@ -1923,10 +1923,9 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-5.0.0.tgz#f3961ceb02821255785fe20b1b676bfd944532d7"
-  integrity sha512-DjQy/hJPKwEhk+L/XPHfR6bSTWsGGXjHCQ3Q/LgieQX/Kv91yyMu+QUu+tWuVi0qX0dSRmaTnFNCF9FWNV1XgA==
+"@metamask/inpage-provider@./metamask-inpage-provider-v5.0.1.tgz":
+  version "5.0.1"
+  resolved "./metamask-inpage-provider-v5.0.1.tgz#7e71fa2744588c9a4f04736a10879252da5ebe7c"
   dependencies:
     eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
@@ -1934,7 +1933,7 @@
     json-rpc-middleware-stream "^2.1.1"
     loglevel "^1.6.1"
     obj-multiplex "^1.0.0"
-    obs-store "^4.0.3"
+    post-message-stream "^3.0.0"
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 

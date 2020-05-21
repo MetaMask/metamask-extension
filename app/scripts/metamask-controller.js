@@ -9,9 +9,7 @@ import EventEmitter from 'events'
 import pump from 'pump'
 import Dnode from 'dnode'
 import extension from 'extensionizer'
-import ObservableStore from 'obs-store'
 import ComposableObservableStore from './lib/ComposableObservableStore'
-import asStream from 'obs-store/lib/asStream'
 import AccountTracker from './lib/account-tracker'
 import RpcEngine from 'json-rpc-engine'
 import { debounce } from 'lodash'
@@ -44,13 +42,17 @@ import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
 import { PermissionsController } from './controllers/permissions'
+import {
+  NOTIFICATION_NAMES,
+  SAFE_NOTIFICATIONS,
+} from './controllers/permissions/enums'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import getBuyEthUrl from './lib/buy-eth-url'
-import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
 import { version } from '../manifest/_base.json'
+import selectChainId from './lib/select-chain-id'
 import ethUtil from 'ethereumjs-util'
 
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
@@ -200,7 +202,8 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
-    this.keyringController.on('unlock', () => this.emit('unlock'))
+    this.keyringController.on('unlock', () => this._onUnlock())
+    this.keyringController.on('lock', () => this._onLock())
 
     this.permissionsController = new PermissionsController({
       getKeyringAccounts: this.keyringController.getAccounts.bind(this.keyringController),
@@ -210,6 +213,7 @@ export default class MetamaskController extends EventEmitter {
       notifyAllDomains: this.notifyAllConnections.bind(this),
       preferences: this.preferencesController.store,
       showPermissionRequest: opts.showPermissionRequest,
+      getProviderState: this.getProviderState.bind(this),
     }, initState.PermissionsController, initState.PermissionsMetadata)
 
     this.detectTokensController = new DetectTokensController({
@@ -271,7 +275,7 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
+      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency)
     })
 
     this.networkController.lookupNetwork()
@@ -282,9 +286,7 @@ export default class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
-      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
-    })
+    this.on('update', (memState) => this._onStateUpdate(memState))
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -379,33 +381,29 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Constructor helper: initialize a public config store.
-   * This store is used to make some config info available to Dapps synchronously.
+   * Gets state relevant for external providers.
+   * @returns {Object} An object with relevant state properties.
    */
-  createPublicConfigStore () {
-    // subset of state for metamask inpage provider
-    const publicConfigStore = new ObservableStore()
-
-    // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore)
-    updatePublicConfigStore(this.getState())
-
-    publicConfigStore.destroy = () => {
-      this.removeEventListener && this.removeEventListener('update', updatePublicConfigStore)
+  getProviderState () {
+    return {
+      isUnlocked: this.isUnlocked(),
+      ...this.getProviderNetworkState(),
     }
+  }
 
-    function updatePublicConfigStore (memState) {
-      publicConfigStore.putState(selectPublicState(memState))
+  /**
+   * Gets network state relevant for external providers.
+   *
+   * @param {Object} [memState] - The MetaMask memState. If not provided,
+   * this function will retrieve the most recent state.
+   * @returns {Object} An object with relevant network state properties.
+   */
+  getProviderNetworkState (memState) {
+    const { network, provider } = memState || this.getState()
+    return {
+      networkVersion: network,
+      chainId: selectChainId({ network, provider }),
     }
-
-    function selectPublicState ({ isUnlocked, network, provider }) {
-      return {
-        isUnlocked,
-        networkVersion: network,
-        chainId: selectChainId({ network, provider }),
-      }
-    }
-    return publicConfigStore
   }
 
   //=============================================================================
@@ -1459,7 +1457,6 @@ export default class MetamaskController extends EventEmitter {
 
     // messages between inpage and background
     this.setupProviderConnection(mux.createStream('provider'), sender)
-    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   /**
@@ -1619,33 +1616,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for providing our public config info over a stream.
-   * This includes info we like to be synchronous if possible, like
-   * the current selected account, and network ID.
-   *
-   * Since synchronous methods have been deprecated in web3,
-   * this is a good candidate for deprecation.
-   *
-   * @param {*} outStream - The stream to provide public config over.
-   */
-  setupPublicConfig (outStream) {
-    const configStore = this.createPublicConfigStore()
-    const configStream = asStream(configStore)
-
-    pump(
-      configStream,
-      outStream,
-      (err) => {
-        configStore.destroy()
-        configStream.destroy()
-        if (err) {
-          log.error(err)
-        }
-      }
-    )
-  }
-
-  /**
    * Adds a reference to a connection by origin. Ignores the 'metamask' origin.
    * Caller must ensure that the returned id is stored such that the reference
    * can be deleted later.
@@ -1705,7 +1675,10 @@ export default class MetamaskController extends EventEmitter {
   notifyConnections (origin, payload) {
 
     const connections = this.connections[origin]
-    if (!this.isUnlocked() || !connections) {
+    if (
+      !connections || !this.isUnlocked() ||
+      !SAFE_NOTIFICATIONS.has(payload.method)
+    ) {
       return
     }
 
@@ -1717,13 +1690,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
-   * Does nothing if the extension is locked.
+   *
+   * Does nothing if the extension is locked, unless the notification pertains
+   * to the lock/unlock state of the extension, indicated by the method
+   * wallet_unlockStateChanged.
    *
    * @param {any} payload - The event payload.
    */
   notifyAllConnections (payload) {
 
-    if (!this.isUnlocked()) {
+    if (!this.isUnlocked() && !SAFE_NOTIFICATIONS.has(payload.method)) {
       return
     }
 
@@ -1753,6 +1729,44 @@ export default class MetamaskController extends EventEmitter {
     // Ensure preferences + identities controller know about all addresses
     this.preferencesController.syncAddresses(addresses)
     this.accountTracker.syncWithAddresses(addresses)
+  }
+
+  /**
+   * Handle global unlock, triggered by KeyringController unlock.
+   * Notifies all connections that the extension is locked.
+   */
+  _onUnlock () {
+    this.notifyAllConnections({
+      method: NOTIFICATION_NAMES.unlockStateChanged,
+      result: true,
+    })
+    this.emit('unlock')
+  }
+
+  /**
+   * Handle global lock, triggered by KeyringController lock.
+   * Notifies all connections that the extension is locked.
+   */
+  _onLock () {
+    this.notifyAllConnections({
+      method: NOTIFICATION_NAMES.unlockStateChanged,
+      result: false,
+    })
+    this.emit('lock')
+  }
+
+  /**
+   * Handle memory state updates.
+   * - Ensure isClientOpenAndUnlocked is updated
+   * - Notifies all connections with the new provider network state
+   *   - The external providers handle diffing the state
+   */
+  _onStateUpdate (newState) {
+    this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen
+    this.notifyAllConnections({
+      method: NOTIFICATION_NAMES.chainChanged,
+      result: this.getProviderNetworkState(newState),
+    })
   }
 
   // misc
@@ -1815,7 +1829,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} currencyCode - The code of the preferred currency.
    * @param {Function} cb - A callback function returning currency info.
    */
-  setCurrentCurrency (currencyCode, cb) {
+  setCurrentCurrency (currencyCode, cb = function () {}) {
     const { ticker } = this.networkController.getNetworkConfig()
     try {
       const currencyState = {
