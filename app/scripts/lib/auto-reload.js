@@ -8,7 +8,7 @@ export default function setupDappAutoReload (web3, observable) {
   let lastSeenNetwork
   let hasBeenWarned = false
 
-  global.web3 = new Proxy(web3, {
+  const web3Proxy = new Proxy(web3, {
     get: (_web3, key) => {
       // get the time of use
       lastTimeUsed = Date.now()
@@ -24,6 +24,13 @@ export default function setupDappAutoReload (web3, observable) {
       // set value normally
       _web3[key] = value
     },
+  })
+
+  Object.defineProperty(global, 'web3', {
+    enumerable: false,
+    writable: true,
+    configurable: true,
+    value: web3Proxy,
   })
 
   observable.subscribe(function (state) {

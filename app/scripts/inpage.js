@@ -79,7 +79,12 @@ web3.setProvider = function () {
 }
 log.debug('MetaMask - injected web3')
 
-window.ethereum._web3Ref = web3.eth
+Object.defineProperty(window.ethereum, '_web3Ref', {
+  enumerable: false,
+  writable: true,
+  configurable: true,
+  value: web3.eth,
+})
 
 // setup dapp auto reload AND proxy web3
 setupDappAutoReload(web3, window.ethereum._publicConfigStore)
