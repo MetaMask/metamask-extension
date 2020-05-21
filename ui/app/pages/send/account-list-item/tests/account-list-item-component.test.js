@@ -2,27 +2,21 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import proxyquire from 'proxyquire'
+import * as utils from '../../../../helpers/utils/util'
 import Identicon from '../../../../components/ui/identicon'
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-
-const utilsMethodStubs = {
-  checksumAddress: sinon.stub().returns('mockCheckSumAddress'),
-}
-
-const AccountListItem = proxyquire('../account-list-item.component.js', {
-  '../../../helpers/utils/util': utilsMethodStubs,
-}).default
-
-
-const propsMethodSpies = {
-  handleClick: sinon.spy(),
-}
+import AccountListItem from '../account-list-item.component'
 
 describe('AccountListItem Component', function () {
-  let wrapper
+  let wrapper, propsMethodSpies, checksumAddressStub
 
   describe('render', function () {
+    before(function () {
+      checksumAddressStub = sinon.stub(utils, 'checksumAddress').returns('mockCheckSumAddress')
+      propsMethodSpies = {
+        handleClick: sinon.spy(),
+      }
+    })
     beforeEach(function () {
       wrapper = shallow((
         <AccountListItem
@@ -41,6 +35,11 @@ describe('AccountListItem Component', function () {
 
     afterEach(function () {
       propsMethodSpies.handleClick.resetHistory()
+      checksumAddressStub.resetHistory()
+    })
+
+    after(function () {
+      sinon.restore()
     })
 
     it('should render a div with the passed className', function () {
@@ -100,7 +99,7 @@ describe('AccountListItem Component', function () {
       assert.equal(wrapper.find('.account-list-item__account-address').length, 1)
       assert.equal(wrapper.find('.account-list-item__account-address').text(), 'mockCheckSumAddress')
       assert.deepEqual(
-        utilsMethodStubs.checksumAddress.getCall(0).args,
+        checksumAddressStub.getCall(0).args,
         ['mockAddress']
       )
     })
