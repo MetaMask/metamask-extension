@@ -38,6 +38,12 @@ const pendingStatusMap = {
   [SUBMITTED_STATUS]: true,
 }
 
+const tokenCategoryMap = {
+  [TOKEN_METHOD_APPROVE]: true,
+  [TOKEN_METHOD_TRANSFER]: true,
+  [TOKEN_METHOD_TRANSFER_FROM]: true,
+}
+
 /**
  * @typedef {Object} TransactionDisplayData
  * @property {string} title               - primary description of the transaction
@@ -82,7 +88,9 @@ export function useTransactionDisplayData (transactionGroup) {
   let subtitle
   let recipientAddress = to
 
-  const isTokenTransfer = transactionCategory === TOKEN_METHOD_TRANSFER || transactionCategory === TOKEN_METHOD_TRANSFER_FROM
+  // This value is used to determine whether we should look inside txParams.data
+  // to pull out and render token related information
+  const isTokenCategory = tokenCategoryMap[transactionCategory]
 
   // these values are always instantiated because they are either
   // used by or returned from hooks. Hooks must be called at the top level,
@@ -90,9 +98,9 @@ export function useTransactionDisplayData (transactionGroup) {
   // transfers, we explicitly pass undefined to the two following hook calls
   // if the transactionCategory doesn't indicate a token transfer.
   // These hooks will return null if any argument is null or undefined.
-  const token = isTokenTransfer && knownTokens.find((token) => token.address === recipientAddress)
-  const tokenData = useTokenData(isTokenTransfer && initialTransaction?.txParams?.data)
-  const tokenDisplayValue = useTokenDisplayValue(isTokenTransfer && initialTransaction?.txParams?.data, token)
+  const token = isTokenCategory && knownTokens.find((token) => token.address === recipientAddress)
+  const tokenData = useTokenData(isTokenCategory && initialTransaction?.txParams?.data)
+  const tokenDisplayValue = useTokenDisplayValue(isTokenCategory && initialTransaction?.txParams?.data, token)
 
   let category
   let title
@@ -120,7 +128,7 @@ export function useTransactionDisplayData (transactionGroup) {
     title = t('receive')
     prefix = ''
     subtitle = `${t('from')}: ${shortenAddress(senderAddress)}`
-  } else if (isTokenTransfer) {
+  } else if (transactionCategory === TOKEN_METHOD_TRANSFER_FROM || transactionCategory === TOKEN_METHOD_TRANSFER) {
     category = TRANSACTION_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')])
     recipientAddress = getTokenToAddress(tokenData.params)
@@ -136,14 +144,14 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: isTokenTransfer && tokenDisplayValue,
+    displayValue: isTokenCategory && tokenDisplayValue,
     suffix: token?.symbol,
     ...primaryCurrencyPreferences,
   })
 
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: isTokenTransfer && tokenDisplayValue,
+    displayValue: isTokenCategory && tokenDisplayValue,
     ...secondaryCurrencyPreferences,
   })
 
@@ -155,7 +163,7 @@ export function useTransactionDisplayData (transactionGroup) {
     primaryCurrency,
     senderAddress,
     recipientAddress,
-    secondaryCurrency: isTokenTransfer ? undefined : secondaryCurrency,
+    secondaryCurrency: isTokenCategory ? undefined : secondaryCurrency,
     status,
   }
 }
