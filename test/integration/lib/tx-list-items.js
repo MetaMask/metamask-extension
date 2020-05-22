@@ -54,10 +54,14 @@ async function runTxListItemsTest (assert) {
   assert.equal(approvedTxRenderedStatus[0].textContent, 'Queued', 'approvedTx has correct label')
 
   const confirmedTokenTx1 = txListItems[4]
+  const confirmedTokenTx1Token = await findAsync($(confirmedTokenTx1), '.list-item__heading')
   const confirmedTokenTx1Address = await findAsync($(confirmedTokenTx1), '.list-item__subheading')
-  assert.equal(confirmedTokenTx1Address[0].textContent, 'Mar 29, 2018 · To: 0x66f3...e1ec', 'confirmedTokenTx has correct status')
+  assert.equal(confirmedTokenTx1Token[0].textContent, 'Send FTO ', 'Confirm token symbol is correct')
+  assert.equal(confirmedTokenTx1Address[0].textContent, 'Mar 29, 2018 · To: 0xe788...81a9', 'confirmedTokenTx has correct status')
 
   const confirmedTokenTx2 = txListItems[5]
   const confirmedTokenTx2Address = await findAsync($(confirmedTokenTx2), '.list-item__subheading')
-  assert.equal(confirmedTokenTx2Address[0].textContent, 'Mar 29, 2018 · To: 0x66f3...e1eb', 'confirmedTokenTx has correct status')
+  const confirmedTokenTx2Token = await findAsync($(confirmedTokenTx2), '.list-item__heading')
+  assert.equal(confirmedTokenTx2Token[0].textContent, 'Send FTT ', 'Confirm token symbol is correct')
+  assert.equal(confirmedTokenTx2Address[0].textContent, 'Mar 29, 2018 · To: 0xe788...81a9', 'confirmedTokenTx has correct status')
 }
