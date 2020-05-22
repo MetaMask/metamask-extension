@@ -26,8 +26,9 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
+  getSponsorshipInfo,
 } from './send.selectors'
-import { getSelectedAddress, getAddressBook } from '../../selectors/selectors'
+import { getTrustedTokenMap, getSelectedAddress, getAddressBook } from '../../selectors/selectors'
 import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
 import {
   updateSendTo,
@@ -44,9 +45,24 @@ import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck'
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck'
 import { calcGasTotal, calcStorageTotal } from './send.utils.js'
 import { isValidDomainName } from '../../helpers/utils/util'
+import { toChecksumAddress } from 'cfx-util'
 
 function mapStateToProps (state) {
+  const selectedToken = getSelectedToken(state)
+  const trustedTokenMap = getTrustedTokenMap(state)
+  const isTrustedToken =
+        selectedToken && toChecksumAddress(selectedToken.address) in trustedTokenMap
+
+  let sponsorshipInfo = { willUserPayTxFee: true }
+  if (isTrustedToken) {
+    sponsorshipInfo = getSponsorshipInfo(state)
+  }
+  const { willUserPayTxFee } = sponsorshipInfo
+  const gasTotal = getGasTotal(state)
+
   return {
+    gasTotalCountSponsorshipInfo: willUserPayTxFee ? gasTotal : '0',
+    willUserPayTxFee,
     addressBook: getAddressBook(state),
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
@@ -57,7 +73,7 @@ function mapStateToProps (state) {
     storageLimit: getStorageLimit(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
-    gasTotal: getGasTotal(state),
+    gasTotal,
     storageTotal: getStorageTotal(state),
     gasAndCollateralTotal: getGasAndCollateralTotal(state),
     network: getCurrentNetwork(state),
@@ -65,7 +81,7 @@ function mapStateToProps (state) {
     qrCodeData: getQrCodeData(state),
     recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
-    selectedToken: getSelectedToken(state),
+    selectedToken,
     showHexData: getSendHexDataFeatureFlagState(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),

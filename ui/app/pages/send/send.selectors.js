@@ -98,14 +98,14 @@ export function getGasAndCollateralTotal (state) {
 export function getSponsorshipInfo (state) {
   const {
     isUserBalanceEnough,
-    willUserPayStorage,
-    willUserPayGas,
+    willUserPayCollateral,
+    willUserPayTxFee,
   } = state.metamask.send
 
   return {
     isUserBalanceEnough,
-    willUserPayStorage,
-    willUserPayGas,
+    willUserPayCollateral,
+    willUserPayTxFee,
   }
 }
 

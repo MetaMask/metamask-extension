@@ -839,8 +839,8 @@ export function setSponsorshipInfo ({
     type: actionConstants.UPDATE_SPONSORSHIP_INFO,
     value: {
       isUserBalanceEnough: isUserBalanceEnough,
-      willUserPayStorage: willUserPayCollateral,
-      willUserPayGas: willUserPayTxFee,
+      willUserPayCollateral: willUserPayCollateral,
+      willUserPayTxFee: willUserPayTxFee,
     },
   }
 }

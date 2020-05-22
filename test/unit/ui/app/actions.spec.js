@@ -920,16 +920,16 @@ describe('Actions', function () {
           'type': 'UPDATE_SPONSORSHIP_INFO',
           'value': {
             'isUserBalanceEnough': true,
-            'willUserPayGas': true,
-            'willUserPayStorage': true,
+            'willUserPayTxFee': true,
+            'willUserPayCollateral': true,
           },
         },
         {
           'type': 'metamask/sponsorship/SET_SPONSORSHIP_INFO',
           'value': {
             'isUserBalanceEnough': true,
-            'willUserPayGas': true,
-            'willUserPayStorage': true,
+            'willUserPayTxFee': true,
+            'willUserPayCollateral': true,
           },
         },
         {

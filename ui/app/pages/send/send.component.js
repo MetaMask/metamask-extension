@@ -19,6 +19,7 @@ import EnsInput from './send-content/add-recipient/ens-input'
 
 export default class SendTransactionScreen extends Component {
   static propTypes = {
+    gasTotalCountSponsorshipInfo: PropTypes.string,
     addressBook: PropTypes.arrayOf(PropTypes.object),
     amount: PropTypes.string,
     amountConversionRate: PropTypes.oneOfType([
@@ -84,7 +85,6 @@ export default class SendTransactionScreen extends Component {
       amountConversionRate,
       conversionRate,
       from: { address, balance },
-      gasTotal,
       storageTotal,
       network,
       primaryCurrency,
@@ -100,6 +100,7 @@ export default class SendTransactionScreen extends Component {
       updateToNicknameIfNecessary,
       qrCodeData,
       qrCodeDetected,
+      gasTotalCountSponsorshipInfo,
     } = this.props
 
     let updateGas = false
@@ -111,6 +112,7 @@ export default class SendTransactionScreen extends Component {
       network: prevNetwork,
       selectedToken: prevSelectedToken,
       to: prevTo,
+      gasTotalCountSponsorshipInfo: prevGasTotalCountSponsorshipInfo,
     } = prevProps
 
     const uninitialized = [prevBalance, prevGasTotal].every((n) => n === null)
@@ -119,9 +121,9 @@ export default class SendTransactionScreen extends Component {
       balance,
       storageTotal,
       prevStorageTotal,
-      gasTotal,
+      gasTotal: gasTotalCountSponsorshipInfo,
       prevBalance,
-      prevGasTotal,
+      prevGasTotal: prevGasTotalCountSponsorshipInfo,
       prevTokenBalance,
       selectedToken,
       tokenBalance,
@@ -133,7 +135,7 @@ export default class SendTransactionScreen extends Component {
         amountConversionRate,
         balance,
         conversionRate,
-        gasTotal,
+        gasTotal: gasTotalCountSponsorshipInfo,
         primaryCurrency,
         selectedToken,
         tokenBalance,
@@ -143,7 +145,7 @@ export default class SendTransactionScreen extends Component {
           amountConversionRate,
           balance,
           conversionRate,
-          gasTotal,
+          gasTotal: gasTotalCountSponsorshipInfo,
           primaryCurrency,
           selectedToken,
         })

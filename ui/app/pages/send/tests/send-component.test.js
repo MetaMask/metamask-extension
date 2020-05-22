@@ -62,6 +62,7 @@ describe('Send Component', function () {
         gasLimit="mockGasLimit"
         gasPrice="mockGasPrice"
         gasTotal="mockGasTotal"
+        gasTotalCountSponsorshipInfo="mockGasTotalCountSponsorshipInfo"
         storageTotal="mockStorageTotal"
         history={{ mockProp: 'history-abc' }}
         network="3"
@@ -156,7 +157,7 @@ describe('Send Component', function () {
         utilsMethodStubs.doesAmountErrorRequireUpdate.getCall(0).args[0],
         {
           balance: 'mockBalance',
-          gasTotal: 'mockGasTotal',
+          gasTotal: 'mockGasTotalCountSponsorshipInfo',
           storageTotal: 'mockStorageTotal',
           prevBalance: '',
           prevGasTotal: undefined,
@@ -197,7 +198,7 @@ describe('Send Component', function () {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasTotal: 'mockGasTotal',
+          gasTotal: 'mockGasTotalCountSponsorshipInfo',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
@@ -226,7 +227,7 @@ describe('Send Component', function () {
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
-          gasTotal: 'mockGasTotal',
+          gasTotal: 'mockGasTotalCountSponsorshipInfo',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: {
             address: 'mockTokenAddress',
