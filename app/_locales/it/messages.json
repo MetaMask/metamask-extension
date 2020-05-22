@@ -352,6 +352,9 @@
   "ensNameNotFound": {
     "message": "Nome ENS non trovato"
   },
+  "rnsNameNotFound": {
+    "message": "Nome RNS non trovato"
+  },
   "enterPassword": {
     "message": "Inserisci password"
   },

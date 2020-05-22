@@ -67,6 +67,7 @@ module.exports = {
   isAllOneCase,
   isValidAddress,
   isValidENSAddress,
+  isValidRNSAddress,
   numericBalance,
   parseBalance,
   formatBalance,
@@ -137,6 +138,10 @@ function isValidAddress (address, network) {
 
 function isValidENSAddress (address) {
   return address.match(/^.{7,}\.(eth|test)$/)
+}
+
+function isValidRNSAddress (address) {
+  return address.match(/([a-z0-9])+\.(rsk)/)
 }
 
 function isInvalidChecksumAddress (address, network) {
