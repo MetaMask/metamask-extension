@@ -83,9 +83,11 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const isTokenTransfer = transactionCategory === TOKEN_METHOD_TRANSFER || transactionCategory === TOKEN_METHOD_TRANSFER_FROM
 
-  // these values are always instantiated because they are either used by or returned from hooks
-  // hooks must be called at the top level, so as an additional safeguard against inappropriately
-  // associating token transfers, we explicitly pass undefined to the two following hook calls.
+  // these values are always instantiated because they are either
+  // used by or returned from hooks. Hooks must be called at the top level,
+  // so as an additional safeguard against inappropriately associating token
+  // transfers, we explicitly pass undefined to the two following hook calls
+  // if the transactionCategory doesn't indicate a token transfer.
   // These hooks will return null if any argument is null or undefined.
   const token = isTokenTransfer && knownTokens.find((token) => token.address === recipientAddress)
   const tokenData = useTokenData(isTokenTransfer && initialTransaction?.txParams?.data)
