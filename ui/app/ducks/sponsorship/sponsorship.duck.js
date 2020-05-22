@@ -3,8 +3,8 @@ const RESET_SPONSORSHIP_INFO = 'metamask/sponsorship/RESET_SPONSORSHIP_INFO'
 
 // state.sponsorship
 const initState = {
-  willUserPayGas: true,
-  willUserPayStorage: true,
+  willUserPayTxFee: true,
+  willUserPayCollateral: true,
   isUserBalanceEnough: false,
 }
 
@@ -28,8 +28,8 @@ export function setCustomSponsorshipInfo ({
     type: SET_SPONSORSHIP_INFO,
     value: {
       isUserBalanceEnough: isUserBalanceEnough,
-      willUserPayStorage: willUserPayCollateral,
-      willUserPayGas: willUserPayTxFee,
+      willUserPayCollateral: willUserPayCollateral,
+      willUserPayTxFee: willUserPayTxFee,
     },
   }
 }
