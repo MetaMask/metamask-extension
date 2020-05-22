@@ -79,7 +79,7 @@ export default function TransactionList ({ isWideViewport = false } = {}) {
           {
             completedTransactions.length > 0
               ? completedTransactions.slice(0, limit).map((transactionGroup, index) => (
-                <TransactionListItem transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${index}`} />
+                <TransactionListItem transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${limit + index - 10}`} />
               ))
               : (
                 <div className="transaction-list__empty">
@@ -89,7 +89,7 @@ export default function TransactionList ({ isWideViewport = false } = {}) {
                 </div>
               )
           }
-          {completedTransactions.length > limit + PAGE_INCREMENT && (
+          {(completedTransactions.length - limit + PAGE_INCREMENT) > 0 && (
             <Button className="transaction-list__view-more" type="secondary" rounded onClick={viewMore}>View More</Button>
           )}
         </div>
