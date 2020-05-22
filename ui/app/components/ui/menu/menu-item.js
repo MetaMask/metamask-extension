@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const MenuItem = ({ children, className, iconClassName, onClick }) => (
+const MenuItem = ({ children, className, iconClassName, onClick, subtitle }) => (
   <button className={classnames('menu-item', className)} onClick={onClick}>
     {
       iconClassName
@@ -12,6 +12,7 @@ const MenuItem = ({ children, className, iconClassName, onClick }) => (
         : null
     }
     <span>{children}</span>
+    { subtitle }
   </button>
 )
 
@@ -20,12 +21,14 @@ MenuItem.propTypes = {
   className: PropTypes.string,
   iconClassName: PropTypes.string,
   onClick: PropTypes.func,
+  subtitle: PropTypes.node,
 }
 
 MenuItem.defaultProps = {
   className: undefined,
   iconClassName: undefined,
   onClick: undefined,
+  subtitle: undefined,
 }
 
 export default MenuItem

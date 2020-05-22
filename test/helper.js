@@ -57,6 +57,13 @@ global.document = window.document
 // required by `react-tippy`
 global.navigator = window.navigator
 global.Element = window.Element
+// required by `react-popper`
+global.HTMLElement = window.HTMLElement
+
+// required by any components anchored on `popover-content`
+const popoverContent = window.document.createElement('div')
+popoverContent.setAttribute('id', 'popover-content')
+window.document.body.appendChild(popoverContent)
 
 // delete AbortController added by jsdom so it can be polyfilled correctly below
 delete window.AbortController

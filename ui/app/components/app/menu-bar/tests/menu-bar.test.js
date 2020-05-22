@@ -36,11 +36,11 @@ describe('MenuBar', function () {
         <MenuBar />
       </Provider>
     )
-    assert.ok(!wrapper.exists('AccountDetailsDropdown'))
+    assert.ok(!wrapper.exists('AccountOptionsMenu'))
     const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')
     wrapper.update()
-    assert.ok(wrapper.exists('AccountDetailsDropdown'))
+    assert.ok(wrapper.exists('AccountOptionsMenu'))
   })
 
   it('sets accountDetailsMenuOpen to false when closed', function () {
@@ -53,10 +53,10 @@ describe('MenuBar', function () {
     const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')
     wrapper.update()
-    assert.ok(wrapper.exists('AccountDetailsDropdown'))
-    const accountDetailsMenu = wrapper.find('AccountDetailsDropdown')
+    assert.ok(wrapper.exists('AccountOptionsMenu'))
+    const accountDetailsMenu = wrapper.find('AccountOptionsMenu')
     accountDetailsMenu.prop('onClose')()
     wrapper.update()
-    assert.ok(!wrapper.exists('AccountDetailsDropdown'))
+    assert.ok(!wrapper.exists('AccountOptionsMenu'))
   })
 })

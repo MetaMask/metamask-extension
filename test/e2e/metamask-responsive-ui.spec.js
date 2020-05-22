@@ -117,9 +117,12 @@ describe('MetaMask', function () {
 
   describe('Show account information', function () {
     it('show account details dropdown menu', async function () {
-      await driver.clickElement(By.css('button.menu-bar__account-options'))
-      const options = await driver.findElements(By.css('div.menu.account-details-dropdown div.menu__item'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      const options = await driver.findElements(By.css('.account-options-menu .menu-item'))
       assert.equal(options.length, 4) // HD Wallet type does not have to show the Remove Account option
+      // click outside of menu to dismiss
+      // account menu button chosen because the menu never covers it.
+      await driver.clickPoint(By.css('.account-menu__icon'), 0, 0)
       await driver.delay(regularDelayMs)
     })
   })
