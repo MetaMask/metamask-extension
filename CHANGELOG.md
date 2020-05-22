@@ -25,6 +25,9 @@
 - Clean: readme
 - Add: disabled token rates controller
 - Add: get trusted token from confluxscan
+- modify decimal of balance (#129)
+- bugfix: check whether keyring is null (#131)
+- Fix: insufficientFunds error while sending token at send page with 0 CFX (#133)
 
 ## 0.2.0 Thu May 14 2020
 - Add: sponsor feature (#124)
