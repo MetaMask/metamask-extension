@@ -22,6 +22,7 @@ import {
   TRANSACTION_CATEGORY_SEND,
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
   PENDING_STATUS,
+  TOKEN_METHOD_APPROVE,
 } from '../helpers/constants/transactions'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
@@ -106,7 +107,7 @@ export function useTransactionDisplayData (transactionGroup) {
     category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
     subtitle = origin || ''
-  } else if (transactionCategory === APPROVED_STATUS) {
+  } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('approveSpendLimit')
     subtitle = initialTransaction.origin
