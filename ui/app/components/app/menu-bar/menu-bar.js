@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Tooltip from '../../ui/tooltip'
 import SelectedAccount from '../selected-account'
 import ConnectedStatusIndicator from '../connected-status-indicator'
 import AccountDetailsDropdown from '../dropdowns/account-details-dropdown'
@@ -32,17 +31,14 @@ export default function MenuBar () {
 
       <SelectedAccount />
 
-      <Tooltip title={t('accountOptions')} position="left">
-        <button
-          className="fas fa-ellipsis-v menu-bar__account-options"
-          title={t('accountOptions')}
-          onClick={() => {
-            openAccountOptionsEvent()
-            setAccountDetailsMenuOpen(true)
-          }}
-        >
-        </button>
-      </Tooltip>
+      <button
+        className="fas fa-ellipsis-v menu-bar__account-options"
+        title={t('accountOptions')}
+        onClick={() => {
+          openAccountOptionsEvent()
+          setAccountDetailsMenuOpen(true)
+        }}
+      />
 
       {
         accountDetailsMenuOpen && (
