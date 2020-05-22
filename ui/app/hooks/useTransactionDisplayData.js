@@ -121,7 +121,7 @@ export function useTransactionDisplayData (transactionGroup) {
     subtitle = `${t('from')}: ${shortenAddress(senderAddress)}`
   } else if (isTokenTransfer) {
     category = TRANSACTION_CATEGORY_SEND
-    title = t('sendSpecifiedTokens', [token?.symbol])
+    title = t('sendSpecifiedTokens', [token?.symbol || t('token')])
     recipientAddress = getTokenToAddress(tokenData.params)
     subtitle = `${t('to')}: ${shortenAddress(recipientAddress)}`
   } else if (transactionCategory === SEND_ETHER_ACTION_KEY) {
