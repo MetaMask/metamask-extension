@@ -81,9 +81,15 @@ export function useTransactionDisplayData (transactionGroup) {
   let subtitle
   let recipientAddress = to
 
-  const token = knownTokens.find((token) => token.address === recipientAddress)
-  const tokenData = useTokenData(initialTransaction?.txParams?.data)
-  const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token)
+  const isTokenTransfer = transactionCategory === TOKEN_METHOD_TRANSFER || transactionCategory === TOKEN_METHOD_TRANSFER_FROM
+
+  // these values are always instantiated because they are either used by or returned from hooks
+  // hooks must be called at the top level, so as an additional safeguard against inappropriately
+  // associating token transfers, we explicitly pass undefined to the two following hook calls.
+  // These hooks will return null if any argument is null or undefined.
+  const token = isTokenTransfer && knownTokens.find((token) => token.address === recipientAddress)
+  const tokenData = useTokenData(isTokenTransfer && initialTransaction?.txParams?.data)
+  const tokenDisplayValue = useTokenDisplayValue(isTokenTransfer && initialTransaction?.txParams?.data, token)
 
   let category
   let title
@@ -111,7 +117,7 @@ export function useTransactionDisplayData (transactionGroup) {
     title = t('receive')
     prefix = ''
     subtitle = `${t('from')}: ${shortenAddress(senderAddress)}`
-  } else if (transactionCategory === TOKEN_METHOD_TRANSFER || transactionCategory === TOKEN_METHOD_TRANSFER_FROM) {
+  } else if (isTokenTransfer) {
     category = TRANSACTION_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol])
     recipientAddress = getTokenToAddress(tokenData.params)
@@ -127,14 +133,14 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: tokenDisplayValue,
+    displayValue: isTokenTransfer && tokenDisplayValue,
     suffix: token?.symbol,
     ...primaryCurrencyPreferences,
   })
 
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: tokenDisplayValue,
+    displayValue: isTokenTransfer && tokenDisplayValue,
     ...secondaryCurrencyPreferences,
   })
 
@@ -146,7 +152,7 @@ export function useTransactionDisplayData (transactionGroup) {
     primaryCurrency,
     senderAddress,
     recipientAddress,
-    secondaryCurrency: token ? undefined : secondaryCurrency,
+    secondaryCurrency: isTokenTransfer ? undefined : secondaryCurrency,
     status,
   }
 }
