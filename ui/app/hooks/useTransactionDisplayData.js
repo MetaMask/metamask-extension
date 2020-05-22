@@ -87,9 +87,10 @@ export function useTransactionDisplayData (transactionGroup) {
   // 3. Site interaction
   // 4. Approval
   if (transactionCategory == null) {
+    const origin = initialTransaction.msgParams?.origin || initialTransaction.origin
     category = SIGNATURE_REQUEST
     title = t('signatureRequest')
-    subtitle += ` · ${initialTransaction.msgParams?.origin || initialTransaction.origin || ''}`
+    subtitle += origin ? ` · ${origin}` : ''
   } else if (transactionCategory === 'approve') {
     category = APPROVAL
     title = t('approveSpendLimit')
@@ -103,7 +104,7 @@ export function useTransactionDisplayData (transactionGroup) {
     title = t('receive')
     prefix = ''
     subtitle += ` · From: ${shortenAddress(senderAddress)}`
-  } else if (transactionCategory === 'transfer') {
+  } else if (transactionCategory === 'transfer' || transactionCategory === 'transferfrom') {
     category = SEND
     title = t('sendSpecifiedTokens', [token?.symbol])
     recipientAddress = getTokenToAddress(tokenData.params)
