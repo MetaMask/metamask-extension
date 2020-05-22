@@ -1,31 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
-- Add: sponsor feature (#124)
-- Add: chinese trans in send and confirm page (#126)
-- Add: add cfx_checkBalanceAgainstTransaction method support
-- Add: seperate fee and collateral ui
 
-## 0.1.9 Thu May 07 2020
-- Fix: firefox e2e back into all-test-pass
-- Add: cfx pontus warning
-- Add: ci cache yarn cache and node_modules
-- Add: zh_CN trans
-- Fix: hide delete contact button when it's 'myAccounts'
-- Fix: cache .har file
-- Add: auto lock timer placeholder to 0 #100
-- Add: more trans
-- Add: update sentry org and project name #106
-- Fix: ci cache .har file
-- Fix: verify local error
-- Fix: ci cache har error
-- Fix: e2e test change network to testnet
-- Fix: i18n MetaMask -> ConfluxPortal, add confluxscan.io into manifest.json
-- Add: set appName to ConfluxPortal directly in manifest.json
-- Fix: react error after reimport different seed phrase
-- Clean: readme
-- Add: disabled token rates controller
-- Add: get trusted token from confluxscan
+## 0.2.1 Fri May 22 2020
 - modify decimal of balance (#129)
 - bugfix: check whether keyring is null (#131)
 - Fix: insufficientFunds error while sending token at send page with 0 CFX (#133)
