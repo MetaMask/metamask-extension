@@ -10,17 +10,23 @@ import { formatDateWithYearContext, shortenAddress } from '../helpers/utils/util
 import {
   APPROVED_STATUS,
   SUBMITTED_STATUS,
+  CONTRACT_INTERACTION_KEY,
+  DEPLOY_CONTRACT_ACTION_KEY,
+  INCOMING_TRANSACTION_KEY,
+  TOKEN_METHOD_TRANSFER,
+  TOKEN_METHOD_TRANSFER_FROM,
+  SEND_ETHER_ACTION_KEY,
+  TRANSACTION_CATEGORY_APPROVAL,
+  TRANSACTION_CATEGORY_INTERACTION,
+  TRANSACTION_CATEGORY_RECEIVE,
+  TRANSACTION_CATEGORY_SEND,
+  TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
+  PENDING_STATUS,
 } from '../helpers/constants/transactions'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
 import { useTokenData } from './useTokenData'
 import { tokenSelector } from '../selectors'
-
-const SEND = 'send'
-const RECEIVE = 'receive'
-const INTERACTION = 'interaction'
-const APPROVAL = 'approval'
-const SIGNATURE_REQUEST = 'signature-request'
 
 // This is duplicated from transactions selectors, additionally
 // from the history view we will already know the pending status
@@ -67,12 +73,12 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const actionKey = getTransactionActionKey(initialTransaction)
   const statusKey = getStatusKey(primaryTransaction)
-  const status = statusKey in pendingStatusMap ? 'pending' : statusKey
+  const status = statusKey in pendingStatusMap ? PENDING_STATUS : statusKey
 
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = '-'
   const date = formatDateWithYearContext(initialTransaction.time || 0)
-  let subtitle = date
+  let subtitle
   let recipientAddress = to
 
   const token = knownTokens.find((token) => token.address === recipientAddress)
@@ -82,44 +88,65 @@ export function useTransactionDisplayData (transactionGroup) {
   let category
   let title
   // There are four types of transaction entries that are currently differentiated in the design
-  // 1. Send (sendEth sendTokens)
-  // 2. Deposit
-  // 3. Site interaction
-  // 4. Approval
+  // 1. (PENDING DESIGN) signature request
+  // 2. Send (sendEth sendTokens)
+  // 3. Deposit
+  // 4. Site interaction
+  // 5. Approval
   if (transactionCategory == null) {
     const origin = initialTransaction.msgParams?.origin || initialTransaction.origin
-    category = SIGNATURE_REQUEST
+    category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
-    subtitle += origin ? ` · ${origin}` : ''
-  } else if (transactionCategory === 'approve') {
-    category = APPROVAL
+    subtitle = origin || ''
+  } else if (transactionCategory === APPROVED_STATUS) {
+    category = TRANSACTION_CATEGORY_APPROVAL
     title = t('approveSpendLimit')
-    subtitle += ` · ${initialTransaction.origin}`
-  } else if (transactionCategory === 'contractDeployment' || transactionCategory === 'contractInteraction') {
-    category = INTERACTION
+    subtitle = initialTransaction.origin
+  } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
+    category = TRANSACTION_CATEGORY_INTERACTION
     title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || (actionKey && t(actionKey)) || ''
-    subtitle += ` · ${initialTransaction.origin}`
-  } else if (transactionCategory === 'incoming') {
-    category = RECEIVE
+    subtitle = initialTransaction.origin
+  } else if (transactionCategory === INCOMING_TRANSACTION_KEY) {
+    category = TRANSACTION_CATEGORY_RECEIVE
     title = t('receive')
     prefix = ''
-    subtitle += ` · From: ${shortenAddress(senderAddress)}`
-  } else if (transactionCategory === 'transfer' || transactionCategory === 'transferfrom') {
-    category = SEND
+    subtitle = `${t('from')}: ${shortenAddress(senderAddress)}`
+  } else if (transactionCategory === TOKEN_METHOD_TRANSFER || transactionCategory === TOKEN_METHOD_TRANSFER_FROM) {
+    category = TRANSACTION_CATEGORY_SEND
     title = t('sendSpecifiedTokens', [token?.symbol])
     recipientAddress = getTokenToAddress(tokenData.params)
-    subtitle += ` · To: ${shortenAddress(recipientAddress)}`
-  } else if (transactionCategory === 'sentEther') {
-    category = SEND
+    subtitle = `${t('to')}: ${shortenAddress(recipientAddress)}`
+  } else if (transactionCategory === SEND_ETHER_ACTION_KEY) {
+    category = TRANSACTION_CATEGORY_SEND
     title = t('sendETH')
-    subtitle += ` · To: ${shortenAddress(recipientAddress)}`
+    subtitle = `${t('to')}: ${shortenAddress(recipientAddress)}`
   }
 
   const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY)
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY)
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, { prefix, displayValue: tokenDisplayValue, suffix: token?.symbol, ...primaryCurrencyPreferences })
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, { prefix, displayValue: tokenDisplayValue, ...secondaryCurrencyPreferences })
+  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
+    prefix,
+    displayValue: tokenDisplayValue,
+    suffix: token?.symbol,
+    ...primaryCurrencyPreferences,
+  })
 
-  return { title, category, subtitle, primaryCurrency, senderAddress, recipientAddress, secondaryCurrency: token ? undefined : secondaryCurrency, status }
+  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
+    prefix,
+    displayValue: tokenDisplayValue,
+    ...secondaryCurrencyPreferences,
+  })
+
+  return {
+    title,
+    category,
+    date,
+    subtitle,
+    primaryCurrency,
+    senderAddress,
+    recipientAddress,
+    secondaryCurrency: token ? undefined : secondaryCurrency,
+    status,
+  }
 }

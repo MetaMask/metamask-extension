@@ -17,6 +17,17 @@ import TransactionListItemDetails from '../transaction-list-item-details/transac
 import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import Identicon from '../../ui/identicon/identicon.component'
+import {
+  TRANSACTION_CATEGORY_APPROVAL,
+  TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
+  TRANSACTION_CATEGORY_INTERACTION,
+  TRANSACTION_CATEGORY_SEND,
+  TRANSACTION_CATEGORY_RECEIVE,
+  UNAPPROVED_STATUS,
+  PENDING_STATUS,
+  FAILED_STATUS,
+  CANCELLED_STATUS,
+} from '../../../helpers/constants/transactions'
 
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
@@ -30,17 +41,17 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
   const [retryEnabled, retryTransaction] = useRetryTransaction(transactionGroup, isEarliestNonce)
 
-  const { title, subtitle, category, primaryCurrency, recipientAddress, secondaryCurrency, status, senderAddress } = useTransactionDisplayData(transactionGroup)
+  const { title, subtitle, date, category, primaryCurrency, recipientAddress, secondaryCurrency, status, senderAddress } = useTransactionDisplayData(transactionGroup)
 
-  const isApprove = category === 'approval'
-  const isSignatureReq = category === 'signature-request'
-  const isInteraction = category === 'interaction'
-  const isSend = category === 'send'
-  const isReceive = category === 'receive'
-  const isUnapproved = status === 'unapproved'
-  const isPending = status === 'pending'
-  const isFailed = status === 'failed'
-  const isCancelled = status === 'cancelled'
+  const isApprove = category === TRANSACTION_CATEGORY_APPROVAL
+  const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
+  const isInteraction = category === TRANSACTION_CATEGORY_INTERACTION
+  const isSend = category === TRANSACTION_CATEGORY_SEND
+  const isReceive = category === TRANSACTION_CATEGORY_RECEIVE
+  const isUnapproved = status === UNAPPROVED_STATUS
+  const isPending = status === PENDING_STATUS
+  const isFailed = status === FAILED_STATUS
+  const isCancelled = status === CANCELLED_STATUS
 
   const color = isFailed ? '#D73A49' : '#2F80ED'
 
@@ -55,7 +66,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     Icon = Interaction
   }
 
-  let subtitleStatus = null
+  let subtitleStatus = <span><span className="transaction-list-item__date">{date}</span> · </span>
   if (isUnapproved) {
     subtitleStatus = (
       <span><span className="transaction-list-item__status--unapproved">{t('unapproved')}</span> · </span>
