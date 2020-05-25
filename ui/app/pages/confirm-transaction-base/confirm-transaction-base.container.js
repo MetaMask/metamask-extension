@@ -34,7 +34,7 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
-  preferencesSelector,
+  getPreferences,
   transactionFeeSelector,
 } from '../../selectors'
 
@@ -54,7 +54,7 @@ const customNonceMerge = (txData) => (customNonceValue ? ({
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {

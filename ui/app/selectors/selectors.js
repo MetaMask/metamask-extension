@@ -280,13 +280,13 @@ export function isEthereumNetwork (state) {
   return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
-export function preferencesSelector ({ metamask }) {
+export function getPreferences ({ metamask }) {
   return metamask.preferences
 }
 
 export function getShouldShowFiat (state) {
   const isMainNet = getIsMainnet(state)
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   return Boolean(isMainNet || showFiatInTestnets)
 }
 

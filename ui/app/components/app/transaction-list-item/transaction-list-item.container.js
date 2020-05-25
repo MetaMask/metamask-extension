@@ -15,7 +15,7 @@ import {
 } from '../../../ducks/gas/gas.duck'
 import {
   getIsMainnet,
-  preferencesSelector,
+  getPreferences,
   getSelectedAddress,
   conversionRateSelector,
   getKnownMethodData,
@@ -25,7 +25,7 @@ import { isBalanceSufficient } from '../../../pages/send/send.utils'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask: { accounts, provider, frequentRpcListDetail } } = state
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const { transactionGroup: { primaryTransaction } = {} } = ownProps
   const { txParams: { gas: gasLimit, gasPrice, data } = {}, transactionCategory } = primaryTransaction

@@ -4,12 +4,12 @@ import {
   getIsMainnet,
   getSelectedToken,
   getSelectedTokenExchangeRate,
-  preferencesSelector,
+  getPreferences,
 } from '../../../selectors'
 
 const mapStateToProps = (state) => {
   const { metamask: { currentCurrency } } = state
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
 
   return {
