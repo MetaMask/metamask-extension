@@ -16,6 +16,7 @@ import {
   getThreeBoxLastUpdated,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
+  setDefaultHomeActiveTabName,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -34,6 +35,7 @@ const mapStateToProps = (state) => {
     showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
+    defaultHomeActiveTabName,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
@@ -63,6 +65,7 @@ const mapStateToProps = (state) => {
     firstPermissionsRequestId,
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
+    defaultHomeActiveTabName,
   }
 }
 
@@ -82,6 +85,7 @@ const mapDispatchToProps = (dispatch) => ({
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () => dispatch(setConnectedStatusPopoverHasBeenShown()),
+  onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
 })
 
 export default compose(

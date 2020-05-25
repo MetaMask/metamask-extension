@@ -3,24 +3,31 @@ import PropTypes from 'prop-types'
 
 export default class Tabs extends Component {
   static defaultProps = {
-    defaultActiveTabIndex: 0,
+    defaultActiveTabName: null,
+    onTabClick: null,
   }
 
   static propTypes = {
-    defaultActiveTabIndex: PropTypes.number,
+    defaultActiveTabName: PropTypes.string,
+    onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
   }
 
   state = {
-    activeTabIndex: this.props.defaultActiveTabIndex,
+    activeTabIndex: Math.max(this._findChildByName(this.props.defaultActiveTabName), 0),
   }
 
-  handleTabClick (tabIndex) {
+  handleTabClick (tabIndex, tabName) {
+    const { onTabClick } = this.props
     const { activeTabIndex } = this.state
 
     if (tabIndex !== activeTabIndex) {
       this.setState({
         activeTabIndex: tabIndex,
+      }, () => {
+        if (onTabClick) {
+          onTabClick(tabName)
+        }
       })
     }
   }
@@ -29,11 +36,11 @@ export default class Tabs extends Component {
     const numberOfTabs = React.Children.count(this.props.children)
 
     return React.Children.map(this.props.children, (child, index) => {
+      const tabName = child?.props.name
       return child && React.cloneElement(child, {
-        onClick: (index) => this.handleTabClick(index),
+        onClick: (index) => this.handleTabClick(index, tabName),
         tabIndex: index,
         isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
-        key: index,
       })
     })
   }
@@ -65,5 +72,15 @@ export default class Tabs extends Component {
         </div>
       </div>
     )
+  }
+
+  /**
+   * Returns the index of the child with the given key
+   * @param {string} key - the child key to search for
+   * @returns {number}
+   * @private
+   */
+  _findChildByName (name) {
+    return React.Children.toArray(this.props.children).findIndex((c) => c?.props.name === name)
   }
 }

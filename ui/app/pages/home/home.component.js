@@ -56,6 +56,8 @@ export default class Home extends PureComponent {
       decimals: PropTypes.number,
       symbol: PropTypes.string,
     }),
+    defaultHomeActiveTabName: PropTypes.string.isRequired,
+    onTabClick: PropTypes.func.isRequired,
   }
 
   UNSAFE_componentWillMount () {
@@ -209,6 +211,8 @@ export default class Home extends PureComponent {
 
   render () {
     const {
+      defaultHomeActiveTabName,
+      onTabClick,
       forgottenPassword,
       history,
       connectedStatusPopoverHasBeenShown,
@@ -257,7 +261,7 @@ export default class Home extends PureComponent {
                       <div className="home__balance-wrapper">
                         { homeOverview }
                       </div>
-                      <Tabs>
+                      <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick}>
                         <Tab
                           activeClassName="home__tab--active"
                           className="home__tab"
