@@ -4,12 +4,12 @@ import { ETH } from '../../../helpers/constants/common'
 import {
   getSendMaxModeState,
   getIsMainnet,
-  preferencesSelector,
+  getPreferences,
 } from '../../../selectors'
 
 const mapStateToProps = (state) => {
   const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const maxModeOn = getSendMaxModeState(state)
 

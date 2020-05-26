@@ -5,7 +5,7 @@ import {
   conversionGreaterThan,
 } from '../helpers/utils/conversion-util'
 import {
-  getCurrentCurrency, getIsMainnet, preferencesSelector,
+  getCurrentCurrency, getIsMainnet, getPreferences,
 } from '.'
 import {
   formatCurrency,
@@ -208,7 +208,7 @@ export function getRenderableBasicEstimateData (state, gasLimit) {
     return []
   }
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
   const conversionRate = state.metamask.conversionRate
@@ -262,7 +262,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
     return []
   }
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
   const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'

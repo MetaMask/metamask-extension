@@ -1,4 +1,4 @@
-import { preferencesSelector, getShouldShowFiat } from '../selectors'
+import { getPreferences, getShouldShowFiat } from '../selectors'
 import { useSelector } from 'react-redux'
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
 
@@ -33,7 +33,7 @@ export function useUserPreferencedCurrency (type, opts = {}) {
   const nativeCurrency = useSelector((state) => state.metamask.nativeCurrency)
   const {
     useNativeCurrencyAsPrimaryCurrency,
-  } = useSelector(preferencesSelector)
+  } = useSelector(getPreferences)
   const showFiat = useSelector(getShouldShowFiat)
 
   let currency, numberOfDecimals

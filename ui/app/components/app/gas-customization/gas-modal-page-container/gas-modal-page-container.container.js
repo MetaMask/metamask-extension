@@ -30,7 +30,7 @@ import {
   getIsMainnet,
   getSelectedToken,
   isEthereumNetwork,
-  preferencesSelector,
+  getPreferences,
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
   getCustomGasLimit,
@@ -98,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 

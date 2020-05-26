@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import {
   getNetworkIdentifier,
   hasPermissionRequests,
-  preferencesSelector,
+  getPreferences,
   submittedPendingTransactionsSelector,
 } from '../../selectors'
 import Routes from './routes.component'
@@ -25,7 +25,7 @@ function mapStateToProps (state) {
     isLoading,
     loadingMessage,
   } = appState
-  const { autoLockTimeLimit = 0 } = preferencesSelector(state)
+  const { autoLockTimeLimit = 0 } = getPreferences(state)
 
   return {
     sidebar,

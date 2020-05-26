@@ -13,7 +13,7 @@ import {
   setUseNonceField,
   setIpfsGateway,
 } from '../../../store/actions'
-import { preferencesSelector } from '../../../selectors'
+import { getPreferences } from '../../../selectors'
 
 export const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
@@ -27,7 +27,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  const { showFiatInTestnets, autoLockTimeLimit } = preferencesSelector(state)
+  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state)
 
   return {
     warning,
