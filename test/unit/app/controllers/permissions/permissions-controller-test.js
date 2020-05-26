@@ -1365,7 +1365,7 @@ describe('permissions controller', function () {
       )
       assert.equal(
         permController._setDomainMetadata.getCalls().length, 1,
-        'should have called _setDomainMetadata  once'
+        'should have called _setDomainMetadata once'
       )
       assert.deepEqual(
         permController._setDomainMetadata.lastCall.args,
