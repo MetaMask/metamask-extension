@@ -256,7 +256,7 @@
     "karma-qunit": "^1.2.1",
     "koa": "^2.7.0",
     "lockfile-lint": "^4.0.0",
-    "mocha": "^7.0.1",
+    "mocha": "^7.2.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
