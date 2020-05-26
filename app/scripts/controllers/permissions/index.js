@@ -36,6 +36,7 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {}) {
 
+    // additional top-level store key set in _initializeMetadataStore
     this.store = new ObservableStore({
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
