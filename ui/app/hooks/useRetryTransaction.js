@@ -31,6 +31,9 @@ export function useRetryTransaction (transactionGroup) {
     },
   }))
   const dispatch = useDispatch()
+
+  const { name: methodName } = methodData || {}
+
   const retryTransaction = useCallback(async (event) => {
     event.stopPropagation()
 
@@ -46,14 +49,14 @@ export function useRetryTransaction (transactionGroup) {
       type: 'customize-gas',
       props: { transaction },
     }))
-  }, [dispatch, trackMetricsEvent, initialTransaction, gasPrice])
 
-  if (
-    methodData?.name === TOKEN_METHOD_TRANSFER &&
-    initialTransaction.txParams?.to
-  ) {
-    dispatch(setSelectedToken(initialTransaction.txParams.to))
-  }
+    if (
+      methodName === TOKEN_METHOD_TRANSFER &&
+      initialTransaction.txParams.to
+    ) {
+      dispatch(setSelectedToken(initialTransaction.txParams.to))
+    }
+  }, [dispatch, methodName, trackMetricsEvent, initialTransaction, gasPrice])
 
   return retryTransaction
 }
