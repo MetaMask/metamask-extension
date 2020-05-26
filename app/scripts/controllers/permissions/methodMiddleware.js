@@ -5,12 +5,11 @@ import { ethErrors } from 'eth-json-rpc-errors'
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
 export default function createMethodMiddleware ({
+  addDomainMetadata,
   getAccounts,
   getUnlockPromise,
   hasPermission,
   requestAccountsPermission,
-  store,
-  storeKey,
 }) {
 
   let isProcessingRequestAccounts = false
@@ -73,30 +72,12 @@ export default function createMethodMiddleware ({
         return
 
       // custom method for getting metadata from the requesting domain,
-      // sent automatically by the inpage provider
+      // sent automatically by the inpage provider when it's initialized
       case 'wallet_sendDomainMetadata':
 
-        const storeState = store.getState()[storeKey]
-        const extensionId = storeState[req.origin]
-          ? storeState[req.origin].extensionId
-          : undefined
-
-        if (
-          req.domainMetadata &&
-          typeof req.domainMetadata.name === 'string'
-        ) {
-
-          store.updateState({
-            [storeKey]: {
-              ...storeState,
-              [req.origin]: {
-                extensionId,
-                ...req.domainMetadata,
-              },
-            },
-          })
+        if (typeof req.domainMetadata?.name === 'string') {
+          addDomainMetadata(req.origin, req.domainMetadata)
         }
-
         res.result = true
         return
 

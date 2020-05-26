@@ -14,6 +14,7 @@ import {
   SAFE_METHODS, // methods that do not require any permissions to use
   WALLET_PREFIX,
   METADATA_STORE_KEY,
+  METADATA_CACHE_MAX_SIZE,
   LOG_STORE_KEY,
   HISTORY_STORE_KEY,
   CAVEAT_NAMES,
@@ -35,8 +36,8 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {}) {
 
+    // additional top-level store key set in _initializeMetadataStore
     this.store = new ObservableStore({
-      [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
     })
@@ -61,6 +62,8 @@ export class PermissionsController {
     this._lastSelectedAddress = preferences.getState().selectedAddress
     this.preferences = preferences
 
+    this._initializeMetadataStore(restoredState)
+
     preferences.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== this._lastSelectedAddress) {
         this._lastSelectedAddress = selectedAddress
@@ -75,13 +78,10 @@ export class PermissionsController {
       throw new Error('Must provide non-empty string origin.')
     }
 
-    if (extensionId) {
-      this.store.updateState({
-        [METADATA_STORE_KEY]: {
-          ...this.store.getState()[METADATA_STORE_KEY],
-          [origin]: { extensionId },
-        },
-      })
+    const metadataState = this.store.getState()[METADATA_STORE_KEY]
+
+    if (extensionId && metadataState[origin]?.extensionId !== extensionId) {
+      this.addDomainMetadata(origin, { extensionId })
     }
 
     const engine = new JsonRpcEngine()
@@ -89,8 +89,7 @@ export class PermissionsController {
     engine.push(this.permissionsLog.createMiddleware())
 
     engine.push(createMethodMiddleware({
-      store: this.store,
-      storeKey: METADATA_STORE_KEY,
+      addDomainMetadata: this.addDomainMetadata.bind(this),
       getAccounts: this.getAccounts.bind(this, origin),
       getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
@@ -376,10 +375,7 @@ export class PermissionsController {
       .filter((acc) => acc !== account)
 
     if (newPermittedAccounts.length === 0) {
-
-      this.permissions.removePermissionsFor(
-        origin, [{ parentCapability: 'eth_accounts' }]
-      )
+      this.removePermissionsFor({ [origin]: [ 'eth_accounts' ] })
     } else {
 
       this.permissions.updateCaveatFor(
@@ -511,6 +507,102 @@ export class PermissionsController {
   }
 
   /**
+   * Removes all known domains and their related permissions.
+   */
+  clearPermissions () {
+    this.permissions.clearDomains()
+    this.notifyAllDomains({
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: [],
+    })
+  }
+
+  /**
+   * Stores domain metadata for the given origin (domain).
+   * Deletes metadata for domains without permissions in a FIFO manner, once
+   * more than 100 distinct origins have been added since boot.
+   * Metadata is never deleted for domains with permissions, to prevent a
+   * degraded user experience, since metadata cannot yet be requested on demand.
+   *
+   * @param {string} origin - The origin whose domain metadata to store.
+   * @param {Object} metadata - The domain's metadata that will be stored.
+   */
+  addDomainMetadata (origin, metadata) {
+
+    const oldMetadataState = this.store.getState()[METADATA_STORE_KEY]
+    const newMetadataState = { ...oldMetadataState }
+
+    // delete pending metadata origin from queue, and delete its metadata if
+    // it doesn't have any permissions
+    if (this._pendingSiteMetadata.size >= METADATA_CACHE_MAX_SIZE) {
+      const permissionsDomains = this.permissions.getDomains()
+
+      const oldOrigin = this._pendingSiteMetadata.values().next().value
+      this._pendingSiteMetadata.delete(oldOrigin)
+      if (!permissionsDomains[oldOrigin]) {
+        delete newMetadataState[oldOrigin]
+      }
+    }
+
+    // add new metadata to store after popping
+    newMetadataState[origin] = {
+      ...oldMetadataState[origin],
+      ...metadata,
+      lastUpdated: Date.now(),
+    }
+    this._pendingSiteMetadata.add(origin)
+    this._setDomainMetadata(newMetadataState)
+  }
+
+  /**
+   * Removes all domains without permissions from the restored metadata state,
+   * and rehydrates the metadata store.
+   *
+   * Requires PermissionsController._initializePermissions to have been called first.
+   *
+   * @param {Object} restoredState - The restored permissions controller state.
+   */
+  _initializeMetadataStore (restoredState) {
+
+    const metadataState = restoredState[METADATA_STORE_KEY] || {}
+    const newMetadataState = this._trimDomainMetadata(metadataState)
+
+    this._pendingSiteMetadata = new Set()
+    this._setDomainMetadata(newMetadataState)
+  }
+
+  /**
+   * Trims the given metadataState object by removing metadata for all origins
+   * without permissions.
+   * Returns a new object; does not mutate the argument.
+   *
+   * @param {Object} metadataState - The metadata store state object to trim.
+   * @returns {Object} The new metadata state object.
+   */
+  _trimDomainMetadata (metadataState) {
+
+    const newMetadataState = { ...metadataState }
+    const origins = Object.keys(metadataState)
+    const permissionsDomains = this.permissions.getDomains()
+
+    origins.forEach((origin) => {
+      if (!permissionsDomains[origin]) {
+        delete newMetadataState[origin]
+      }
+    })
+
+    return newMetadataState
+  }
+
+  /**
+   * Replaces the existing domain metadata with the passed-in object.
+   * @param {Object} newMetadataState - The new metadata to set.
+   */
+  _setDomainMetadata (newMetadataState) {
+    this.store.updateState({ [METADATA_STORE_KEY]: newMetadataState })
+  }
+
+  /**
    * Get current set of permitted accounts for the given origin
    *
    * @param {string} origin - The origin to obtain permitted accounts for
@@ -574,17 +666,6 @@ export class PermissionsController {
     this.notifyDomain(origin, {
       method: NOTIFICATION_NAMES.accountsChanged,
       result: permittedAccounts,
-    })
-  }
-
-  /**
-   * Removes all known domains and their related permissions.
-   */
-  clearPermissions () {
-    this.permissions.clearDomains()
-    this.notifyAllDomains({
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: [],
     })
   }
 

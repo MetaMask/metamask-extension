@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert'
+import { useFakeTimers } from 'sinon'
 
 import {
   METADATA_STORE_KEY,
@@ -690,10 +691,15 @@ describe('permissions middleware', function () {
 
   describe('wallet_sendDomainMetadata', function () {
 
-    let permController
+    let permController, clock
 
     beforeEach(function () {
       permController = initPermController()
+      clock = useFakeTimers(1)
+    })
+
+    afterEach(function () {
+      clock.restore()
     })
 
     it('records domain metadata', async function () {
@@ -716,7 +722,7 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore,
-        { [ORIGINS.c]: { name, extensionId: undefined } },
+        { [ORIGINS.c]: { name, lastUpdated: 1 } },
         'metadata should have been added to store'
       )
     })
@@ -743,7 +749,7 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore,
-        { [ORIGINS.c]: { name, extensionId } },
+        { [ORIGINS.c]: { name, extensionId, lastUpdated: 1 } },
         'metadata should have been added to store'
       )
     })

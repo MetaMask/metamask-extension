@@ -7,6 +7,8 @@ export const LOG_STORE_KEY = 'permissionsLog'
 
 export const METADATA_STORE_KEY = 'domainMetadata'
 
+export const METADATA_CACHE_MAX_SIZE = 100
+
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
 }
