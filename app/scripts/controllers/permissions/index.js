@@ -36,7 +36,6 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {}) {
 
-    // more state set further down
     this.store = new ObservableStore({
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
       [HISTORY_STORE_KEY]: restoredState[HISTORY_STORE_KEY] || {},
@@ -62,7 +61,6 @@ export class PermissionsController {
     this._lastSelectedAddress = preferences.getState().selectedAddress
     this.preferences = preferences
 
-    // _initializeMetadataStore requires _initializePermissions
     this._initializeMetadataStore(restoredState)
 
     preferences.subscribe(async ({ selectedAddress }) => {
@@ -520,10 +518,10 @@ export class PermissionsController {
 
   /**
    * Stores domain metadata for the given origin (domain).
-   * Deletes metadata for domains without permissions in a FIFO manner.
-   * Metadata is only deleted for domains with permissions on boot in order to
-   * prevent a degraded user experience, as metadata currently can't be
-   * requested on-demand.
+   * Deletes metadata for domains without permissions in a FIFO manner, once
+   * more than 100 distinct origins have been added since boot.
+   * Metadata is never deleted for domains with permissions, to prevent a
+   * degraded user experience, since metadata cannot yet be requested on demand.
    *
    * @param {string} origin - The origin whose domain metadata to store.
    * @param {Object} metadata - The domain's metadata that will be stored.
@@ -559,6 +557,8 @@ export class PermissionsController {
    * Removes all domains without permissions from the restored metadata state,
    * and rehydrates the metadata store.
    *
+   * Requires PermissionsController._initializePermissions to have been called first.
+   *
    * @param {Object} restoredState - The restored permissions controller state.
    */
   _initializeMetadataStore (restoredState) {
@@ -576,7 +576,7 @@ export class PermissionsController {
    * Returns a new object; does not mutate the argument.
    *
    * @param {Object} metadataState - The metadata store state object to trim.
-   * @returns {Object} The mutated metadata state object.
+   * @returns {Object} The new metadata state object.
    */
   _trimDomainMetadata (metadataState) {
 
