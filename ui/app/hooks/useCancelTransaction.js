@@ -6,7 +6,8 @@ import { getHexGasTotal, increaseLastGasPrice } from '../helpers/utils/confirm-t
 import { getConversionRate, getSelectedAccount } from '../selectors'
 
 /**
- * useCancelTransaction
+ * Determine whether a transaction can be cancelled and provide a method to
+ * kick off the process of cancellation.
  *
  * Provides a reusable hook that, given a transactionGroup, will return
  * whether or not the account has enough funds to cover the gas cancellation
@@ -37,7 +38,6 @@ export function useCancelTransaction (transactionGroup) {
   })
 
   const cancelTransaction = useCallback((event) => {
-    event.preventDefault()
     event.stopPropagation()
     if (!hasEnoughCancelGas) {
       return

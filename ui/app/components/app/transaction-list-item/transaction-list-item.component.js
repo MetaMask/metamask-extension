@@ -24,10 +24,10 @@ import {
   TRANSACTION_CATEGORY_SEND,
   TRANSACTION_CATEGORY_RECEIVE,
   UNAPPROVED_STATUS,
-  PENDING_STATUS,
   FAILED_STATUS,
   CANCELLED_STATUS,
 } from '../../../helpers/constants/transactions'
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
 
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
@@ -39,9 +39,21 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const { initialTransaction: { id } } = transactionGroup
 
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
-  const [retryEnabled, retryTransaction] = useRetryTransaction(transactionGroup, isEarliestNonce)
+  const retryTransaction = useRetryTransaction(transactionGroup)
+  const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
 
-  const { title, subtitle, date, category, primaryCurrency, recipientAddress, secondaryCurrency, status, senderAddress } = useTransactionDisplayData(transactionGroup)
+  const {
+    title,
+    subtitle,
+    date,
+    category,
+    primaryCurrency,
+    recipientAddress,
+    secondaryCurrency,
+    status,
+    isPending,
+    senderAddress,
+  } = useTransactionDisplayData(transactionGroup)
 
   const isApprove = category === TRANSACTION_CATEGORY_APPROVAL
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
@@ -49,7 +61,6 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const isSend = category === TRANSACTION_CATEGORY_SEND
   const isReceive = category === TRANSACTION_CATEGORY_RECEIVE
   const isUnapproved = status === UNAPPROVED_STATUS
-  const isPending = status === PENDING_STATUS
   const isFailed = status === FAILED_STATUS
   const isCancelled = status === CANCELLED_STATUS
 
@@ -106,7 +117,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         { t('cancel') }
       </Button>
     )
-    if (hasCancelled || !isPending) {
+    if (hasCancelled || !isPending || isUnapproved) {
       return null
     }
 
@@ -121,7 +132,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   }, [cancelEnabled, cancelTransaction, hasCancelled])
 
   const speedUpButton = useMemo(() => {
-    if (!retryEnabled || !isPending) {
+    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
       return null
     }
     return (
@@ -134,7 +145,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         { t('speedUp') }
       </Button>
     )
-  }, [retryEnabled, isPending, retryTransaction])
+  }, [shouldShowSpeedUp, isPending, retryTransaction])
 
   return (
     <>
@@ -142,7 +153,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         onClick={toggleShowDetails}
         className={className}
         title={title}
-        titleIcon={isPending && isEarliestNonce && (
+        titleIcon={!isUnapproved && isPending && isEarliestNonce && (
           <Preloader
             size={16}
             color="#D73A49"
@@ -172,7 +183,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           showRetry={isFailed}
-          showSpeedUp={isEarliestNonce && isPending}
+          showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}

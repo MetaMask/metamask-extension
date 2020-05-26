@@ -8,69 +8,22 @@ import * as metricEventHook from '../useMetricEvent'
 import { showSidebar } from '../../store/actions'
 import { useRetryTransaction } from '../useRetryTransaction'
 
-describe('useCancelTransaction', function () {
-  const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
-  const trackEvent = sinon.spy()
-  const event = { preventDefault: () => {}, stopPropagation: () => {} }
-
-  before(function () {
-    sinon.stub(reactRedux, 'useDispatch').returns(dispatch)
-    sinon.stub(methodDataHook, 'useMethodData').returns({})
-    sinon.stub(metricEventHook, 'useMetricEvent').returns(trackEvent)
-  })
-
-  afterEach(function () {
-    dispatch.resetHistory()
-    trackEvent.resetHistory()
-  })
-
-  describe('when transaction has previously been retried', function () {
-    const retryDisabledByPreviousRetryTransaction = {
-      ...transactions[0],
-      transactions: [
-        {
-          submittedTime: new Date() - 5001,
-        },
-      ],
-      hasRetried: true,
-    }
-    it('should indicate that retry is disabled', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryDisabledByPreviousRetryTransaction, true))
-      assert.equal(result.current[0], false)
-    })
-
-    it('retryTransaction function should eject before tracking metrics', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryDisabledByPreviousRetryTransaction, true))
-      const [, retry] = result.current
-      retry(event)
-      assert.equal(dispatch.notCalled, true)
-    })
-  })
-
-  describe('when transaction has not yet waited for 5 seconds', function () {
-    const retryDisabledByTimeTransaction = {
-      ...transactions[0],
-      transactions: [
-        {
-          submittedTime: new Date() - 1 + 50001,
-        },
-      ],
-      hasRetried: false,
-    }
-    it('should indicate that retry is disabled', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryDisabledByTimeTransaction, true))
-      assert.equal(result.current[0], false)
-    })
-
-    it('retryTransaction function should eject before tracking metrics', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryDisabledByTimeTransaction, true))
-      const [, retry] = result.current
-      retry(event)
-      assert.equal(dispatch.notCalled, true)
-    })
-  })
-
+describe('useRetryTransaction', function () {
   describe('when transaction meets retry enabled criteria', function () {
+    const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
+    const trackEvent = sinon.spy()
+    const event = { preventDefault: () => {}, stopPropagation: () => {} }
+
+    before(function () {
+      sinon.stub(reactRedux, 'useDispatch').returns(dispatch)
+      sinon.stub(methodDataHook, 'useMethodData').returns({})
+      sinon.stub(metricEventHook, 'useMetricEvent').returns(trackEvent)
+    })
+
+    afterEach(function () {
+      dispatch.resetHistory()
+      trackEvent.resetHistory()
+    })
     const retryEnabledTransaction = {
       ...transactions[0],
       transactions: [
@@ -80,21 +33,17 @@ describe('useCancelTransaction', function () {
       ],
       hasRetried: false,
     }
-    it('should indicate that retry is disabled', function () {
-      const { result } = renderHook(() => useRetryTransaction(retryEnabledTransaction, true))
-      assert.equal(result.current[0], true)
-    })
 
     it('retryTransaction function should track metrics', function () {
       const { result } = renderHook(() => useRetryTransaction(retryEnabledTransaction, true))
-      const [, retry] = result.current
+      const retry = result.current
       retry(event)
       assert.equal(trackEvent.calledOnce, true)
     })
 
     it('retryTransaction function should show retry sidebar', async function () {
       const { result } = renderHook(() => useRetryTransaction(retryEnabledTransaction, true))
-      const [, retry] = result.current
+      const retry = result.current
       await retry(event)
       const calls = dispatch.getCalls()
       assert.equal(calls.length, 5)
@@ -109,9 +58,9 @@ describe('useCancelTransaction', function () {
         true
       )
     })
-  })
 
-  after(function () {
-    sinon.restore()
+    after(function () {
+      sinon.restore()
+    })
   })
 })

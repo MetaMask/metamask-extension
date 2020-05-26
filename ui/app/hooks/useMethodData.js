@@ -5,7 +5,7 @@ import { getContractMethodData as getContractMethodDataAction } from '../store/a
 import { getKnownMethodData } from '../selectors/selectors'
 
 /**
- * useMethodData
+ * Access known method data and attempt to resolve unknown method data
  *
  * encapsulates an effect that will fetch methodData when the component mounts,
  * and subsequently anytime the provided data attribute changes. Note that

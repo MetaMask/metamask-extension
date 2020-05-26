@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
 import {
-  UNAPPROVED_STATUS,
-  APPROVED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
+  PRIORITY_STATUS_HASH,
+  PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -71,17 +71,6 @@ export const unapprovedMessagesSelector = createSelector(
     network
   ) || []
 )
-
-const pendingStatusHash = {
-  [UNAPPROVED_STATUS]: true,
-  [APPROVED_STATUS]: true,
-  [SUBMITTED_STATUS]: true,
-}
-
-const priorityStatusHash = {
-  ...pendingStatusHash,
-  [CONFIRMED_STATUS]: true,
-}
 
 export const transactionSubSelector = createSelector(
   unapprovedMessagesSelector,
@@ -250,7 +239,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
-        if (status in priorityStatusHash) {
+        if (status in PRIORITY_STATUS_HASH) {
           const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
@@ -302,7 +291,7 @@ export const nonceSortedTransactionsSelector = createSelector(
 export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in pendingStatusHash)
+    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
   )
 )
 
@@ -316,7 +305,7 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
     transactions
-      .filter(({ primaryTransaction }) => !(primaryTransaction.status in pendingStatusHash))
+      .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
       .reverse()
   )
 )

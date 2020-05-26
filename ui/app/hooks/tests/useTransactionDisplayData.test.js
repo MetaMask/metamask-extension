@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import sinon from 'sinon'
 import transactions from '../../../../test/data/transaction-data.json'
 import { useTransactionDisplayData } from '../useTransactionDisplayData'
-import { tokenSelector, preferencesSelector, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
+import { tokenSelector, getPreferences, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
 import * as i18nhooks from '../useI18nContext'
 import { getMessage } from '../../helpers/utils/i18n-helper'
 import messages from '../../../../app/_locales/en/messages.json'
@@ -19,6 +19,7 @@ const expectedResults = [
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
+    isPending: false,
     status: 'confirmed' },
   { title: 'Send ETH',
     category: 'send',
@@ -28,6 +29,7 @@ const expectedResults = [
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
+    isPending: false,
     status: 'confirmed' },
   { title: 'Send ETH',
     category: 'send',
@@ -37,6 +39,7 @@ const expectedResults = [
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
+    isPending: false,
     status: 'confirmed' },
   { title: 'Receive',
     category: 'receive',
@@ -46,6 +49,7 @@ const expectedResults = [
     senderAddress: '0x31b98d14007bdee637298086988a0bbd31184523',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
+    isPending: false,
     status: 'confirmed' },
   { title: 'Receive',
     category: 'receive',
@@ -55,6 +59,7 @@ const expectedResults = [
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
+    isPending: false,
     status: 'confirmed' },
   { title: 'Receive',
     category: 'receive',
@@ -64,6 +69,7 @@ const expectedResults = [
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
+    isPending: false,
     status: 'confirmed' },
 ]
 
@@ -77,7 +83,7 @@ describe('useTransactionDisplayData', function () {
     useSelector.callsFake((selector) => {
       if (selector === tokenSelector) {
         return []
-      } else if (selector === preferencesSelector) {
+      } else if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
         }

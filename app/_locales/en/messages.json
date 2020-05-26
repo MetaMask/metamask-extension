@@ -226,13 +226,10 @@
     "description": "The name of the application"
   },
   "approve": {
-    "message": "Approve"
+    "message": "Approve spend limit"
   },
   "approved": {
     "message": "Approved"
-  },
-  "approveSpendLimit": {
-    "message": "Approve spend limit"
   },
   "asset": {
     "message": "Asset"
@@ -665,6 +662,10 @@
   },
   "from": {
     "message": "From"
+  },
+  "fromAddress": {
+    "message": "From: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "functionApprove": {
     "message": "Function: Approve"
@@ -1519,6 +1520,10 @@
   },
   "to": {
     "message": "To"
+  },
+  "toAddress": {
+    "message": "To: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toWithColon": {
     "message": "To:"
