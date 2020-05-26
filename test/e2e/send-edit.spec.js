@@ -202,7 +202,7 @@ describe('Using MetaMask with an existing account', function () {
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
       assert.equal(txValues.length, 1)
       assert.ok(/-2.2\s*ETH/.test(await txValues[0].getText()))
     })

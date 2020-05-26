@@ -226,7 +226,7 @@
     "description": "The name of the application"
   },
   "approve": {
-    "message": "Approve"
+    "message": "Approve spend limit"
   },
   "approved": {
     "message": "Approved"
@@ -662,6 +662,10 @@
   },
   "from": {
     "message": "From"
+  },
+  "fromAddress": {
+    "message": "From: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "functionApprove": {
     "message": "Function: Approve"
@@ -1117,11 +1121,17 @@
   "queue": {
     "message": "Queue"
   },
+  "queued": {
+    "message": "Queued"
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
   },
   "recents": {
     "message": "Recents"
+  },
+  "receive": {
+    "message": "Receive"
   },
   "recipientAddress": {
     "message": "Recipient Address"
@@ -1300,6 +1310,10 @@
   },
   "sentTokens": {
     "message": "sent tokens"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Send $1",
+    "description": "Symbol of the specified token"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -1506,6 +1520,10 @@
   },
   "to": {
     "message": "To"
+  },
+  "toAddress": {
+    "message": "To: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toWithColon": {
     "message": "To:"

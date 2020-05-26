@@ -67,7 +67,17 @@
         "name": "Address Book Account 1"
       }
     ],
-    "tokens": [],
+    "tokens": [{
+      "name": "FakeTokenOne",
+      "address": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1ec",
+      "symbol": "FTO",
+      "decimals": 2
+    }, {
+      "name": "FakeTokenTwo",
+      "address": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1eb",
+      "symbol": "FTT",
+      "decimals": 2
+    }],
     "transactions": {},
     "incomingTransactions": {},
     "currentNetworkTxList": [
@@ -208,6 +218,7 @@
         "rawTx": "0xf8610384773594008094f45d68f31b3c9ac84ff0d07b86c59b753a60b1e3808029a052e5246c9a404f756a246b8cec545099741aeb4e6e0add935a5b7a366fa88f95a0538eaa2421e50377c534244dcdcd15ace00bf9c0adbd9eb162baae2b9e89a36f",
         "status": "failed",
         "time": 1522378334455,
+        "transactionCategory": "sentEther",
         "txParams": {
           "chainId": "0x3",
           "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
@@ -224,6 +235,7 @@
         "status": "approved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
           "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
@@ -451,6 +463,7 @@
         "status": "confirmed",
         "submittedTime": 1522346282571,
         "time": 1522348270251,
+        "transactionCategory": "transfer",
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
@@ -641,6 +654,7 @@
         "status": "confirmed",
         "submittedTime": 1522346282571,
         "time": 1522346270251,
+        "transactionCategory": "transfer",
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
@@ -658,6 +672,7 @@
         "status": "submitted",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
           "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
@@ -819,6 +834,7 @@
         "status": "unapproved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
           "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
@@ -858,6 +874,7 @@
         "status": "unapproved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
           "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",

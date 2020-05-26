@@ -200,7 +200,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElement(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
     })
   })
@@ -237,7 +237,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 2
       }, 10000)
 
-      const txValues = await driver.findElement(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/), 10000)
     })
   })
