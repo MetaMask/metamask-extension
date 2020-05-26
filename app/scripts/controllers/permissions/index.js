@@ -424,7 +424,7 @@ export class PermissionsController {
 
       // caveat names are unique, and we will only construct this caveat here
       ethAccounts.caveats = ethAccounts.caveats.filter((c) => (
-        c.name !== CAVEAT_NAMES.exposedAccounts
+        c.name !== CAVEAT_NAMES.exposedAccounts && c.name !== CAVEAT_NAMES.primaryAccountOnly
       ))
 
       ethAccounts.caveats.push(
@@ -434,6 +434,8 @@ export class PermissionsController {
           name: CAVEAT_NAMES.exposedAccounts,
         },
       )
+
+      ethAccounts.caveats.push({ type: 'limitResponseLength', value: 1, name: CAVEAT_NAMES.primaryAccountOnly })
     }
 
     return finalizedPermissions

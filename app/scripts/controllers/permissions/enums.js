@@ -9,6 +9,7 @@ export const METADATA_STORE_KEY = 'domainMetadata'
 
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
+  primaryAccountOnly: 'primaryAccountOnly',
 }
 
 export const NOTIFICATION_NAMES = {
