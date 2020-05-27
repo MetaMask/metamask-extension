@@ -12,7 +12,6 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    permissionsDescriptions: PropTypes.object.isRequired,
     request: PropTypes.object,
     redirect: PropTypes.bool,
     permissionRejected: PropTypes.bool,
@@ -116,7 +115,6 @@ export default class PermissionPageContainer extends Component {
     const {
       requestMetadata,
       targetDomainMetadata,
-      permissionsDescriptions,
       selectedIdentities,
       redirect,
       permissionRejected,
@@ -129,7 +127,6 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
-          permissionsDescriptions={permissionsDescriptions}
           onPermissionToggle={this.onPermissionToggle}
           selectedIdentities={selectedIdentities}
           redirect={redirect}

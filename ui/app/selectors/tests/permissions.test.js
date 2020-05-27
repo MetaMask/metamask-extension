@@ -428,16 +428,12 @@ describe('selectors', function () {
             },
           },
         },
-        permissionsDescriptions: {
-          'eth_accounts': "View the addresses of the user's chosen accounts.",
-        },
       },
     }
 
     it('should return a list of permissions strings', function () {
       assert.deepEqual(getPermissionsForActiveTab(mockState), [{
         key: 'eth_accounts',
-        description: "View the addresses of the user's chosen accounts.",
       }])
     })
   })

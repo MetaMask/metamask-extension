@@ -302,10 +302,6 @@ export function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
 }
 
-export function getPermissionsDescriptions (state) {
-  return state.metamask.permissionsDescriptions
-}
-
 export function getPermissionsRequests (state) {
   return state.metamask.permissionsRequests || []
 }
