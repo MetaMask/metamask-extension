@@ -427,6 +427,12 @@ export class PermissionsController {
         c.name !== CAVEAT_NAMES.exposedAccounts && c.name !== CAVEAT_NAMES.primaryAccountOnly
       ))
 
+      ethAccounts.caveats.push({
+        type: 'limitResponseLength',
+        value: 1,
+        name: CAVEAT_NAMES.primaryAccountOnly,
+      })
+
       ethAccounts.caveats.push(
         {
           type: 'filterResponse',
@@ -434,8 +440,6 @@ export class PermissionsController {
           name: CAVEAT_NAMES.exposedAccounts,
         },
       )
-
-      ethAccounts.caveats.push({ type: 'limitResponseLength', value: 1, name: CAVEAT_NAMES.primaryAccountOnly })
     }
 
     return finalizedPermissions

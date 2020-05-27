@@ -28,7 +28,7 @@ const {
 } = getters
 
 const {
-  ACCOUNT_ARRAYS,
+  ACCOUNTS,
   EXPECTED_HISTORIES,
   ORIGINS,
   PERM_NAMES,
@@ -123,7 +123,7 @@ describe('permissions log', function () {
 
       req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
       req.id = REQUEST_IDS.c
-      res = { result: ACCOUNT_ARRAYS.c }
+      res = { result: ACCOUNTS.c.permitted }
 
       logMiddleware({ ...req }, res)
 
@@ -250,7 +250,7 @@ describe('permissions log', function () {
       // next request should be handled as normal
       req = RPC_REQUESTS.eth_accounts(ORIGINS.b)
       req.id = REQUEST_IDS.b
-      res = { result: ACCOUNT_ARRAYS.b }
+      res = { result: ACCOUNTS.b.permitted }
 
       logMiddleware({ ...req }, res)
 
@@ -399,7 +399,7 @@ describe('permissions log', function () {
         ORIGINS.a, PERM_NAMES.eth_accounts
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
 
       logMiddleware({ ...req }, { ...res })
@@ -418,7 +418,7 @@ describe('permissions log', function () {
 
       clock.tick(1)
 
-      res.result = [ PERMS.granted.eth_accounts([ ACCOUNT_ARRAYS.a[0] ]) ]
+      res.result = [ PERMS.granted.eth_accounts([ ACCOUNTS.a.permitted[0] ]) ]
 
       logMiddleware({ ...req }, { ...res })
 
@@ -437,7 +437,7 @@ describe('permissions log', function () {
         ORIGINS.a, PERM_NAMES.eth_accounts
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
       delete res.result[0].caveats
 
@@ -457,7 +457,7 @@ describe('permissions log', function () {
         ORIGINS.a, PERM_NAMES.eth_accounts
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
       res.result[0].caveats.push({ foo: 'bar' })
 
@@ -481,7 +481,7 @@ describe('permissions log', function () {
       )
       const res = {
         result: [
-          PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a),
+          PERMS.granted.eth_accounts(ACCOUNTS.a.permitted),
           PERMS.granted.test_method(),
         ],
       }
@@ -567,7 +567,7 @@ describe('permissions log', function () {
           ORIGINS.b, PERM_NAMES.eth_accounts
         ),
         res: {
-          result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.b) ],
+          result: [ PERMS.granted.eth_accounts(ACCOUNTS.b.permitted) ],
         },
       })
 
@@ -580,7 +580,7 @@ describe('permissions log', function () {
         res: {
           result: [
             PERMS.granted.test_method(),
-            PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.c),
+            PERMS.granted.eth_accounts(ACCOUNTS.c.permitted),
           ],
         },
       })
@@ -628,7 +628,7 @@ describe('permissions log', function () {
         }),
         res: {
           result: [
-            PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.b),
+            PERMS.granted.eth_accounts(ACCOUNTS.b.permitted),
           ],
         },
       })
@@ -656,7 +656,7 @@ describe('permissions log', function () {
 
       assert.throws(
         () => {
-          permLog.logAccountExposure('', ACCOUNT_ARRAYS.a)
+          permLog.logAccountExposure('', ACCOUNTS.a.permitted)
         },
         ERRORS.logAccountExposure.invalidParams(),
         'should throw expected error'
@@ -664,7 +664,7 @@ describe('permissions log', function () {
 
       assert.throws(
         () => {
-          permLog.logAccountExposure(null, ACCOUNT_ARRAYS.a)
+          permLog.logAccountExposure(null, ACCOUNTS.a.permitted)
         },
         ERRORS.logAccountExposure.invalidParams(),
         'should throw expected error'

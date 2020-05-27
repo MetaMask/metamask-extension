@@ -28,7 +28,7 @@ const {
 } = getters
 
 const {
-  ACCOUNT_ARRAYS,
+  ACCOUNTS,
   ORIGINS,
   PERM_NAMES,
 } = constants
@@ -81,7 +81,7 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq, ACCOUNTS.a.permitted)
       await pendingApproval
 
       assert.ok(
@@ -98,12 +98,12 @@ describe('permissions middleware', function () {
         res.result[0],
         PERM_NAMES.eth_accounts,
         ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted)
       )
 
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.a,
+        aAccounts, [ACCOUNTS.a.primary],
         'origin should have correct accounts'
       )
     })
@@ -120,7 +120,7 @@ describe('permissions middleware', function () {
       const res1 = {}
 
       // send, approve, and validate first request
-      // note use of ACCOUNT_ARRAYS.a
+      // note use of ACCOUNTS.a.permitted
 
       const pendingApproval1 = assert.doesNotReject(
         aMiddleware(req1, res1),
@@ -130,7 +130,7 @@ describe('permissions middleware', function () {
       const id1 = permController.pendingApprovals.keys().next().value
       const approvedReq1 = PERMS.approvedRequest(id1, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq1, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq1, ACCOUNTS.a.permitted)
       await pendingApproval1
 
       assert.ok(
@@ -147,12 +147,12 @@ describe('permissions middleware', function () {
         res1.result[0],
         PERM_NAMES.eth_accounts,
         ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted)
       )
 
       const accounts1 = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
-        accounts1, ACCOUNT_ARRAYS.a,
+        accounts1, [ACCOUNTS.a.primary],
         'origin should have correct accounts'
       )
 
@@ -169,7 +169,7 @@ describe('permissions middleware', function () {
       const res2 = {}
 
       // send, approve, and validate second request
-      // note use of ACCOUNT_ARRAYS.b
+      // note use of ACCOUNTS.b.permitted
 
       const pendingApproval2 = assert.doesNotReject(
         aMiddleware(req2, res2),
@@ -179,7 +179,7 @@ describe('permissions middleware', function () {
       const id2 = permController.pendingApprovals.keys().next().value
       const approvedReq2 = PERMS.approvedRequest(id2, { ...requestedPerms2 })
 
-      await permController.approvePermissionsRequest(approvedReq2, ACCOUNT_ARRAYS.b)
+      await permController.approvePermissionsRequest(approvedReq2, ACCOUNTS.b.permitted)
       await pendingApproval2
 
       assert.ok(
@@ -196,7 +196,7 @@ describe('permissions middleware', function () {
         res2.result[0],
         PERM_NAMES.eth_accounts,
         ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.b)]
+        CAVEATS.eth_accounts(ACCOUNTS.b.permitted)
       )
 
       validatePermission(
@@ -207,7 +207,7 @@ describe('permissions middleware', function () {
 
       const accounts2 = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
-        accounts2, ACCOUNT_ARRAYS.b,
+        accounts2, [ACCOUNTS.b.primary],
         'origin should have correct accounts'
       )
     })
@@ -480,7 +480,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(
         permController, ORIGINS.a,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.a.permitted)
       )
 
       const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
@@ -496,7 +496,7 @@ describe('permissions middleware', function () {
         'response should have result and no error'
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.a,
+        res.result, [ACCOUNTS.a.primary],
         'response should have correct result'
       )
     })
@@ -534,7 +534,7 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq, ACCOUNTS.a.permitted)
 
       // wait for permission to be granted
       await pendingApproval
@@ -550,7 +550,7 @@ describe('permissions middleware', function () {
         perms[0],
         PERM_NAMES.eth_accounts,
         ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted)
       )
 
       // we should also see the accounts on the response
@@ -560,14 +560,14 @@ describe('permissions middleware', function () {
       )
 
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.a,
+        res.result, [ACCOUNTS.a.primary],
         'result should have correct accounts'
       )
 
       // we should also be able to get the accounts independently
       const aAccounts = await permController.getAccounts(ORIGINS.a)
       assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.a, 'origin should have have correct accounts'
+        aAccounts, [ACCOUNTS.a.primary], 'origin should have have correct accounts'
       )
     })
 
@@ -620,7 +620,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(
         permController, ORIGINS.c,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.c.permitted)
       )
 
       const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
@@ -636,7 +636,7 @@ describe('permissions middleware', function () {
         'response should have result and no error'
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.c,
+        res.result, [ACCOUNTS.c.primary],
         'response should have correct result'
       )
     })
@@ -654,7 +654,7 @@ describe('permissions middleware', function () {
 
       grantPermissions(
         permController, ORIGINS.c,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.c.permitted)
       )
 
       const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
@@ -682,7 +682,7 @@ describe('permissions middleware', function () {
         'response should have result and no error'
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.c,
+        res.result, [ACCOUNTS.c.primary],
         'response should have correct result'
       )
     })
