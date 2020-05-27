@@ -1,5 +1,4 @@
 import React, { useMemo, useEffect, useRef, useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -15,7 +14,7 @@ import Button from '../../ui/button'
 
 const PAGE_INCREMENT = 10
 
-export default function TransactionList ({ isWideViewport = false } = {}) {
+export default function TransactionList () {
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
@@ -68,7 +67,7 @@ export default function TransactionList ({ isWideViewport = false } = {}) {
         }
         <div className="transaction-list__completed-transactions">
           {
-            isWideViewport || pendingLength > 0
+            pendingLength > 0
               ? (
                 <div className="transaction-list__header">
                   { t('history') }
@@ -96,8 +95,4 @@ export default function TransactionList ({ isWideViewport = false } = {}) {
       </div>
     </div>
   )
-}
-
-TransactionList.propTypes = {
-  isWideViewport: PropTypes.bool.isRequired,
 }
