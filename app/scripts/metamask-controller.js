@@ -106,7 +106,7 @@ export default class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // next, we will initialize the controllers
-    // controller initializaiton order matters
+    // controller initialization order matters
 
     this.networkController = new NetworkController(initState.NetworkController)
 
