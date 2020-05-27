@@ -36,11 +36,10 @@ export default class ConnectedSites extends Component {
     getOpenMetamaskTabsIds()
   }
 
-  setPendingDisconnect = (domainKey, domainName) => {
+  setPendingDisconnect = (domainKey) => {
     this.setState({
       sitePendingDisconnect: {
         domainKey,
-        domainName,
       },
     })
   }
@@ -119,14 +118,14 @@ export default class ConnectedSites extends Component {
 
     const { closePopover, permittedAccountsByOrigin } = this.props
     const { t } = this.context
-    const { sitePendingDisconnect: { domainKey, domainName } } = this.state
+    const { sitePendingDisconnect: { domainKey } } = this.state
 
     const numPermittedAccounts = permittedAccountsByOrigin[domainKey].length
 
     return (
       <Popover
         className="connected-sites"
-        title={t('disconnectPrompt', [domainName])}
+        title={t('disconnectPrompt', [domainKey])}
         subtitle={t('disconnectAllAccountsConfirmationDescription')}
         onClose={closePopover}
         footer={(
