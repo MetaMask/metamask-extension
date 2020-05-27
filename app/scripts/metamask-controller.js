@@ -32,7 +32,7 @@ import AppStateController from './controllers/app-state'
 import CachedBalancesController from './controllers/cached-balances'
 import OnboardingController from './controllers/onboarding'
 // import ThreeBoxController from './controllers/threebox'
-import RecentBlocksController from './controllers/recent-blocks'
+// import RecentBlocksController from './controllers/recent-blocks'
 import IncomingTransactionsController from './controllers/incoming-transactions'
 // import MessageManager from './lib/message-manager'
 import DecryptMessageManager from './lib/decrypt-message-manager'
@@ -50,10 +50,10 @@ import getBuyEthUrl from './lib/buy-eth-url'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
 import { version } from '../manifest.json'
-import { stripHexPrefix, toChecksumAddress, BN } from 'cfx-util'
+import { stripHexPrefix, toChecksumAddress } from 'cfx-util'
 
-const GWEI_BN = new BN('1000000000')
-import percentile from 'percentile'
+// const GWEI_BN = new BN('1000000000')
+// import percentile from 'percentile'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
 import TrezorKeyring from 'eth-trezor-keyring'
@@ -145,12 +145,6 @@ export default class MetamaskController extends EventEmitter {
     //   currency: this.currencyRateController,
     //   preferences: this.preferencesController.store,
     // })
-
-    this.recentBlocksController = new RecentBlocksController({
-      blockTracker: this.blockTracker,
-      provider: this.provider,
-      networkController: this.networkController,
-    })
 
     this.ensController = new EnsController({
       provider: this.provider,
@@ -357,7 +351,6 @@ export default class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
-      RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       ShapeshiftController: this.shapeshiftController,
@@ -2045,38 +2038,12 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * A method for estimating a good gas price at recent prices.
-   * Returns the lowest price that would have been included in
-   * 50% of recent blocks.
+   * call gasPrice rpc method
    *
    * @returns {string} - A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
-    const { recentBlocksController } = this
-    const { recentBlocks } = recentBlocksController.store.getState()
-
-    // Return 1 gwei if no blocks have been observed:
-    if (recentBlocks.length === 0) {
-      return '0x' + GWEI_BN.toString(16)
-    }
-
-    const lowestPrices = recentBlocks
-      .map((block) => {
-        if (!block.gasPrices || block.gasPrices.length < 1) {
-          return GWEI_BN
-        }
-        return block.gasPrices
-          .map((hexPrefix) => hexPrefix.substr(2))
-          .map((hex) => new BN(hex, 16))
-          .sort((a, b) => {
-            return a.gt(b) ? 1 : -1
-          })[0]
-      })
-      .map((number) => number.div(GWEI_BN).toNumber())
-
-    const percentileNum = percentile(65, lowestPrices)
-    const percentileNumBn = new BN(percentileNum)
-    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+    return this.txController.query.gasPrice()
   }
 
   /**

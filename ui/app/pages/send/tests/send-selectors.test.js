@@ -15,7 +15,6 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
-  getRecentBlocks,
   getSelectedAccount,
   getSelectedIdentity,
   getSelectedToken,
@@ -184,15 +183,15 @@ describe('send selectors', function () {
     })
   })
 
-  describe('getRecentBlocks()', function () {
-    it('should return the recent blocks', function () {
-      assert.deepEqual(getRecentBlocks(mockState), [
-        'mockBlock1',
-        'mockBlock2',
-        'mockBlock3',
-      ])
-    })
-  })
+  // describe('getRecentBlocks()', function () {
+  //   it('should return the recent blocks', function () {
+  //     assert.deepEqual(getRecentBlocks(mockState), [
+  //       'mockBlock1',
+  //       'mockBlock2',
+  //       'mockBlock3',
+  //     ])
+  //   })
+  // })
 
   describe('getSelectedAccount()', function () {
     it('should return the currently selected account', function () {

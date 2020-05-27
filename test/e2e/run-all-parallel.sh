@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -x
+set -e
 set -o pipefail
 
 export PATH="$PATH:./node_modules/.bin"

@@ -32,7 +32,6 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     currentCurrency: state.metamask.currentCurrency,
-    blockGasLimit: state.metamask.currentBlockGasLimit,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
@@ -60,7 +59,6 @@ class ConfirmTxScreen extends Component {
 
     selectedAddressTxList: PropTypes.array,
     currentCurrency: PropTypes.string,
-    blockGasLimit: PropTypes.string,
     history: PropTypes.object,
     identities: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
@@ -229,7 +227,7 @@ class ConfirmTxScreen extends Component {
   }
 
   render () {
-    const { currentCurrency, blockGasLimit } = this.props
+    const { currentCurrency } = this.props
 
     const txData = this.getTxData() || {}
     const {
@@ -250,7 +248,6 @@ class ConfirmTxScreen extends Component {
         key={txData.id}
         identities={this.props.identities}
         currentCurrency={currentCurrency}
-        blockGasLimit={blockGasLimit}
         signMessage={this.signMessage.bind(this, txData)}
         signPersonalMessage={this.signPersonalMessage.bind(this, txData)}
         signTypedMessage={this.signTypedMessage.bind(this, txData)}

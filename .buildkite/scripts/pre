@@ -47,7 +47,7 @@ function docker-build {
   image=$(target2image $target)
   latest_image=$(target2imagelatest $target)
   use_depends_as_cache=$([ -z "$DOCKER_PULL_DEPENDS_TARGET" ] && echo "" || echo "--cache-from $(target2imagelatest $DOCKER_PULL_DEPENDS_TARGET)")
-  time maybe_docker_pull
+  # time maybe_docker_pull
   docker_build="docker build \
          --progress=plain \
          --target=$target \
@@ -66,7 +66,7 @@ function docker-build {
          ."
   eval $docker_build
   docker tag $image $latest_image
-  time maybe_docker_push $latest_image
+  # time maybe_docker_push $latest_image
 }
 
 function docker-run {
