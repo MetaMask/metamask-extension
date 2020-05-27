@@ -756,7 +756,7 @@ describe('permissions controller', function () {
       // notification should also have been sent
       assert.deepEqual(
         notifications[ORIGINS.a][0],
-        NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted),
+        NOTIFICATIONS.newAccounts([ACCOUNTS.a.primary]),
         'first origin should have correct notification'
       )
     })

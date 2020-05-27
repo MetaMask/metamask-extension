@@ -289,9 +289,11 @@ export class PermissionsController {
         }
       })
 
+      const newPermittedAccounts = await this.getAccounts(origin)
+
       this.notifyDomain(origin, {
         method: NOTIFICATION_NAMES.accountsChanged,
-        result: accounts,
+        result: newPermittedAccounts,
       })
       this.permissionsLog.logAccountExposure(origin, accounts)
 
