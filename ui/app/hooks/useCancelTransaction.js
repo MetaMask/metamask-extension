@@ -5,6 +5,7 @@ import { isBalanceSufficient } from '../pages/send/send.utils'
 import { getHexGasTotal, increaseLastGasPrice } from '../helpers/utils/confirm-tx.util'
 import { getConversionRate, getSelectedAccount } from '../selectors'
 
+
 /**
  * Determine whether a transaction can be cancelled and provide a method to
  * kick off the process of cancellation.
@@ -22,7 +23,9 @@ export function useCancelTransaction (transactionGroup) {
   const dispatch = useDispatch()
   const selectedAccount = useSelector(getSelectedAccount)
   const conversionRate = useSelector(getConversionRate)
-  const showCancelModal = useCallback(() => {
+  const cancelTransaction = useCallback((event) => {
+    event.stopPropagation()
+
     return dispatch(showModal({ name: 'CANCEL_TRANSACTION', transactionId: id, originalGasPrice: gasPrice }))
   }, [dispatch, id, gasPrice])
 
@@ -36,15 +39,6 @@ export function useCancelTransaction (transactionGroup) {
     balance: selectedAccount.balance,
     conversionRate,
   })
-
-  const cancelTransaction = useCallback((event) => {
-    event.stopPropagation()
-    if (!hasEnoughCancelGas) {
-      return
-    }
-
-    showCancelModal()
-  }, [showCancelModal, hasEnoughCancelGas])
 
   return [hasEnoughCancelGas, cancelTransaction]
 }
