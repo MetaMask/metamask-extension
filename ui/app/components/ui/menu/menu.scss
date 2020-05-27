@@ -33,8 +33,9 @@
   font-family: inherit;
   font-size: inherit;
 
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: min-content auto;
+  text-align: start;
   align-items: center;
   width: 100%;
   padding: 14px 0;
@@ -42,6 +43,7 @@
 
   &__icon {
     margin-right: 8px;
+    grid-row: 1 / span 2;
   }
 
   .disconnect-icon {
