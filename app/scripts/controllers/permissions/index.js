@@ -1,3 +1,4 @@
+import nanoid from 'nanoid'
 import JsonRpcEngine from 'json-rpc-engine'
 import asMiddleware from 'json-rpc-engine/src/asMiddleware'
 import ObservableStore from 'obs-store'
@@ -94,7 +95,7 @@ export class PermissionsController {
       getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
-        this, origin, { eth_accounts: {} }
+        this, { origin }, { eth_accounts: {} },
       ),
     }))
 
@@ -103,6 +104,17 @@ export class PermissionsController {
     ))
 
     return asMiddleware(engine)
+  }
+
+  /**
+   * Request {@code eth_accounts} permissions
+   * @param {string} origin - The origin
+   * @returns {Promise<string>} the request ID
+   */
+  async requestAccountsPermission (origin) {
+    const id = nanoid()
+    this._requestPermissions({ origin, id }, { eth_accounts: {} })
+    return id
   }
 
   /**
@@ -154,10 +166,10 @@ export class PermissionsController {
   /**
    * Submits a permissions request to rpc-cap. Internal, background use only.
    *
-   * @param {string} origin - The origin string.
+   * @param {IOriginMetadata} metadata - The origin metadata.
    * @param {IRequestedPermissions} permissions - The requested permissions.
    */
-  _requestPermissions (origin, permissions) {
+  _requestPermissions (metadata, permissions) {
     return new Promise((resolve, reject) => {
 
       // rpc-cap assigns an id to the request if there is none, as expected by
@@ -165,7 +177,7 @@ export class PermissionsController {
       const req = { method: 'wallet_requestPermissions', params: [permissions] }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
+        metadata, req, res, () => {}, _end
       )
 
       function _end (_err) {
@@ -241,68 +253,6 @@ export class PermissionsController {
 
     approval.reject(ethErrors.provider.userRejectedRequest())
     this._removePendingApproval(id)
-  }
-
-  /**
-   * @deprecated
-   * Grants the given origin the eth_accounts permission for the given account(s).
-   * This method should ONLY be called as a result of direct user action in the UI,
-   * with the intention of supporting legacy dapps that don't support EIP 1102.
-   *
-   * @param {string} origin - The origin to expose the account(s) to.
-   * @param {Array<string>} accounts - The account(s) to expose.
-   */
-  async legacyExposeAccounts (origin, accounts) {
-
-    // accounts are validated by finalizePermissionsRequest
-    if (typeof origin !== 'string' || !origin.length) {
-      throw new Error('Must provide non-empty string origin.')
-    }
-
-    const existingAccounts = await this.getAccounts(origin)
-
-    if (existingAccounts.length > 0) {
-      throw new Error(
-        'May not call legacyExposeAccounts on origin with exposed accounts.'
-      )
-    }
-
-    const permissions = await this.finalizePermissionsRequest(
-      { eth_accounts: {} }, accounts
-    )
-
-    try {
-
-      await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(
-          origin, permissions, {}, _end
-        )
-
-        function _end (err) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve()
-          }
-        }
-      })
-
-      this.notifyDomain(origin, {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        result: accounts,
-      })
-      this.permissionsLog.logAccountExposure(origin, accounts)
-
-    } catch (error) {
-
-      throw ethErrors.rpc.internal({
-        message: `Failed to add 'eth_accounts' to '${origin}'.`,
-        data: {
-          originalError: error,
-          accounts,
-        },
-      })
-    }
   }
 
   /**

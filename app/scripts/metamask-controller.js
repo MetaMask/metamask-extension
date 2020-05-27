@@ -573,7 +573,7 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
-      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+      requestAccountsPermission: nodeify(permissionsController.requestAccountsPermission, permissionsController),
 
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),

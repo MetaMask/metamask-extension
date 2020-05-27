@@ -20,11 +20,11 @@ export default class ConnectedSites extends Component {
     disconnectAllAccounts: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
-    legacyExposeAccount: PropTypes.func.isRequired,
     permittedAccountsByOrigin: PropTypes.objectOf(
       PropTypes.arrayOf(PropTypes.string),
     ).isRequired,
     tabToConnect: PropTypes.object,
+    requestAccountsPermission: PropTypes.func.isRequired,
   }
 
   state = {
@@ -76,13 +76,12 @@ export default class ConnectedSites extends Component {
   }
 
   renderConnectedSitesPopover () {
-
     const {
       accountLabel,
       closePopover,
       connectedDomains,
-      legacyExposeAccount,
       tabToConnect,
+      requestAccountsPermission,
     } = this.props
     const { t } = this.context
 
@@ -100,7 +99,7 @@ export default class ConnectedSites extends Component {
             ? (
               <a
                 className="connected-sites__text-button"
-                onClick={legacyExposeAccount}
+                onClick={requestAccountsPermission}
               >
                 {t('connectManually')}
               </a>

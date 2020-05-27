@@ -2035,6 +2035,14 @@ export function setPendingTokens (pendingTokens) {
 
 // Permissions
 
+export function requestAccountsPermission (origin) {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.requestAccountsPermission(origin)
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
 /**
  * Approves the permissions request.
  * @param {Object} request - The permissions request to approve
@@ -2061,16 +2069,6 @@ export function rejectPermissionsRequest (requestId) {
         resolve()
       })
     })
-  }
-}
-
-/**
- * Exposes the given account(s) to the given origin.
- * Call ONLY as a result of direct user action.
- */
-export function legacyExposeAccounts (origin, accounts) {
-  return () => {
-    return background.legacyExposeAccounts(origin, accounts)
   }
 }
 
