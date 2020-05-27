@@ -16,7 +16,6 @@ import Tooltip from '../../ui/tooltip'
 import TransactionListItemDetails from '../transaction-list-item-details/transaction-list-item-details.component'
 import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
-import Identicon from '../../ui/identicon/identicon.component'
 import {
   TRANSACTION_CATEGORY_APPROVAL,
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
@@ -28,6 +27,7 @@ import {
   CANCELLED_STATUS,
 } from '../../../helpers/constants/transactions'
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
+import Sign from '../../ui/icon/sign-icon.component'
 
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
@@ -75,6 +75,8 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     Icon = Receive
   } else if (isInteraction) {
     Icon = Interaction
+  } else if (isSignatureReq) {
+    Icon = Sign
   }
 
   let subtitleStatus = <span><span className="transaction-list-item__date">{date}</span> · </span>
@@ -159,7 +161,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
             color="#D73A49"
           />
         )}
-        icon={isSignatureReq ? <Identicon diameter={25} /> : <Icon color={color} size={28} />}
+        icon={<Icon color={color} size={28} />}
         subtitle={subtitle}
         subtitleStatus={subtitleStatus}
         rightContent={!isSignatureReq && (
