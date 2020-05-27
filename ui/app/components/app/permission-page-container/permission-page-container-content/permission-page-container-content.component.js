@@ -10,7 +10,6 @@ export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     domainMetadata: PropTypes.object.isRequired,
     selectedPermissions: PropTypes.object.isRequired,
-    permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
@@ -64,17 +63,13 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderRequestedPermissions () {
     const {
-      selectedPermissions, permissionsDescriptions, onPermissionToggle,
+      selectedPermissions, onPermissionToggle,
     } = this.props
     const { t } = this.context
 
     const items = Object.keys(selectedPermissions).map((methodName) => {
 
-      // the request will almost certainly be reject by rpc-cap if this happens
-      if (!permissionsDescriptions[methodName]) {
-        console.warn(`Unknown permission requested: ${methodName}`)
-      }
-      const description = permissionsDescriptions[methodName] || methodName
+      const description = t(methodName)
       // don't allow deselecting eth_accounts
       const isDisabled = methodName === 'eth_accounts'
 

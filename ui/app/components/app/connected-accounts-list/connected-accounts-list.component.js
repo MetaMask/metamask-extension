@@ -28,7 +28,6 @@ export default class ConnectedAccountsList extends PureComponent {
     })).isRequired,
     permissions: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
     })),
     selectedAddress: PropTypes.string.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,

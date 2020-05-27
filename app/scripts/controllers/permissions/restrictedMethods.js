@@ -1,8 +1,6 @@
 export default function getRestrictedMethods ({ getIdentities, getKeyringAccounts }) {
   return {
-
     'eth_accounts': {
-      description: `View your public address (required)`,
       method: (_, res, __, end) => {
         getKeyringAccounts()
           .then((accounts) => {
