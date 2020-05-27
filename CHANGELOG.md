@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Feature) Add RNS integration
+- [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Fix) ENS/RNS integration when sending tokens
+
 ## 5.1.0 Tue May 12 2020
 
 - [#356](https://github.com/poanetwork/nifty-wallet/pull/356) - (Backwards-compatibility feature) Custom derivation paths and access to funds in accounts derived from ETH dPath
