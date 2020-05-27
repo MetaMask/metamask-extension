@@ -12,6 +12,11 @@ export const CAVEAT_NAMES = {
   primaryAccountOnly: 'primaryAccountOnly',
 }
 
+export const CAVEAT_TYPES = {
+  limitResponseLength: 'limitResponseLength',
+  filterResponse: 'filterResponse',
+}
+
 export const NOTIFICATION_NAMES = {
   accountsChanged: 'wallet_accountsChanged',
 }

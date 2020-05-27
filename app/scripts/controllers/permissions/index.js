@@ -18,6 +18,7 @@ import {
   HISTORY_STORE_KEY,
   CAVEAT_NAMES,
   NOTIFICATION_NAMES,
+  CAVEAT_TYPES,
 } from './enums'
 
 export class PermissionsController {
@@ -428,18 +429,16 @@ export class PermissionsController {
       ))
 
       ethAccounts.caveats.push({
-        type: 'limitResponseLength',
+        type: CAVEAT_TYPES.limitResponseLength,
         value: 1,
         name: CAVEAT_NAMES.primaryAccountOnly,
       })
 
-      ethAccounts.caveats.push(
-        {
-          type: 'filterResponse',
-          value: finalizedAccounts,
-          name: CAVEAT_NAMES.exposedAccounts,
-        },
-      )
+      ethAccounts.caveats.push({
+        type: CAVEAT_TYPES.filterResponse,
+        value: finalizedAccounts,
+        name: CAVEAT_NAMES.exposedAccounts,
+      })
     }
 
     return finalizedPermissions
