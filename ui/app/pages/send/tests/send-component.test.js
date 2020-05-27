@@ -67,7 +67,6 @@ describe('Send Component', function () {
         history={{ mockProp: 'history-abc' }}
         network="3"
         primaryCurrency="mockPrimaryCurrency"
-        recentBlocks={['mockBlock']}
         selectedAddress="mockSelectedAddress"
         selectedToken={{
           address: 'mockTokenAddress',
@@ -398,7 +397,6 @@ describe('Send Component', function () {
           storageLimit: 'mockStorageLimit',
           gasLimit: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
-          recentBlocks: ['mockBlock'],
           selectedAddress: 'mockSelectedAddress',
           selectedToken: {
             address: 'mockTokenAddress',

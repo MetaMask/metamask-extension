@@ -60,7 +60,6 @@ import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
   @param {Object}  opts.provider - A network provider.
   @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
   @param {Object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
-  @param {Function}  [opts.getGasPrice] - optional gas price calculator
   @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
   @param {number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
   @param {Object}  opts.preferencesStore
@@ -75,7 +74,6 @@ class TransactionController extends EventEmitter {
     this.getPermittedAccounts = opts.getPermittedAccounts
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
-    this.getGasPrice = opts.getGasPrice
     this.inProcessOfSigning = new Set()
 
     this.memStore = new ObservableStore({})
@@ -306,9 +304,7 @@ class TransactionController extends EventEmitter {
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
-      gasPrice = this.getGasPrice
-        ? this.getGasPrice()
-        : await this.query.gasPrice()
+      gasPrice = await this.query.gasPrice()
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     // set gasLimit
@@ -367,10 +363,10 @@ class TransactionController extends EventEmitter {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
     const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
-    const suggestedGasPriceBN = new ethUtil.BN(
-      ethUtil.stripHexPrefix(this.getGasPrice()),
-      16
-    )
+    // const suggestedGasPriceBN = new ethUtil.BN(
+    //   ethUtil.stripHexPrefix(await this.query.gasPrice()),
+    //   16
+    // )
     const lastGasPriceBN = new ethUtil.BN(
       ethUtil.stripHexPrefix(lastGasPrice),
       16
@@ -380,10 +376,12 @@ class TransactionController extends EventEmitter {
     const lastGasPriceBNBumped = lastGasPriceBN
       .mul(new ethUtil.BN(110, 10))
       .div(new ethUtil.BN(100, 10))
-    // transactions that are being retried require a >=%10 bump or the clients will throw an error
-    txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped)
-      ? `0x${suggestedGasPriceBN.toString(16)}`
-      : `0x${lastGasPriceBNBumped.toString(16)}`
+    // XXX: don't use gasPrice method, just bump the original gas price by 10
+    // // transactions that are being retried require a >=%10 bump or the clients will throw an error
+    // txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped)
+    //   ? `0x${suggestedGasPriceBN.toString(16)}`
+    //   : `0x${lastGasPriceBNBumped.toString(16)}`
+    txParams.gasPrice = `0x${lastGasPriceBNBumped.toString(16)}`
 
     const txMeta = this.txStateManager.generateTxMeta({
       txParams: originalTxMeta.txParams,

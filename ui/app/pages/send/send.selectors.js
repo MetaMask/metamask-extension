@@ -7,7 +7,6 @@ import {
   getAddressBook,
 } from '../../selectors/selectors'
 import {
-  estimateGasPriceFromRecentBlocks,
   calcGasTotal,
   calcStorageTotal,
   calcGasAndCollateralTotal,
@@ -75,10 +74,6 @@ export function getGasPrice (state) {
   return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
 }
 
-export function getGasPriceFromRecentBlocks (state) {
-  return estimateGasPriceFromRecentBlocks(state.metamask.recentBlocks)
-}
-
 export function getGasTotal (state) {
   return calcGasTotal(getGasLimit(state), getGasPrice(state))
 }
@@ -112,10 +107,6 @@ export function getSponsorshipInfo (state) {
 export function getPrimaryCurrency (state) {
   const selectedToken = getSelectedToken(state)
   return selectedToken && selectedToken.symbol
-}
-
-export function getRecentBlocks (state) {
-  return state.metamask.recentBlocks
 }
 
 export function getSelectedAccount (state) {

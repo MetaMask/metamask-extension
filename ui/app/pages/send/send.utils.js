@@ -16,7 +16,6 @@ import {
   MIN_GAS_LIMIT_HEX,
   MAX_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
-  ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   SIMPLE_STORAGE_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
@@ -37,7 +36,6 @@ export {
   doesAmountErrorRequireUpdate,
   checkSponsorshipInfo,
   estimateGasAndCollateral,
-  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -466,28 +464,6 @@ function generateTokenTransferData ({
       )
       .join('')
   )
-}
-
-function estimateGasPriceFromRecentBlocks (recentBlocks) {
-  // Return 1 gwei if no blocks have been observed:
-  if (!recentBlocks || recentBlocks.length === 0) {
-    return ONE_GWEI_IN_WEI_HEX
-  }
-
-  const lowestPrices = recentBlocks
-    .map((block) => {
-      if (!block.gasPrices || block.gasPrices.length < 1) {
-        return ONE_GWEI_IN_WEI_HEX
-      }
-      return block.gasPrices.reduce((currentLowest, next) => {
-        return parseInt(next, 16) < parseInt(currentLowest, 16)
-          ? next
-          : currentLowest
-      })
-    })
-    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
-
-  return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
 
 function getToAddressForGasUpdate (...addresses) {

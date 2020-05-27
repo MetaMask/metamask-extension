@@ -8,6 +8,7 @@ const MethodsWithDefaultEpochParameter = {
   cfx_getBlockByEpochNumber: 0,
   cfx_epochNumber: 0,
   cfx_getBlocksByEpoch: 0,
+  cfx_call: 1,
 }
 
 function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
@@ -22,7 +23,8 @@ function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
     MethodsWithDefaultEpochParameter[method] !== undefined &&
     (!Array.isArray(params) ||
       params[MethodsWithDefaultEpochParameter[method]] === undefined ||
-      params[MethodsWithDefaultEpochParameter[method]] === 'latest_mined')
+     params[MethodsWithDefaultEpochParameter[method]] === 'latest_mined' ||
+     params[MethodsWithDefaultEpochParameter[method]] === 'latest')
   ) {
     if (!Array.isArray(params)) {
       params = []

@@ -215,35 +215,35 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#getGasPrice', function () {
-    it('gives the 50th percentile lowest accepted gas price from recentBlocksController', async function () {
-      const realRecentBlocksController =
-        metamaskController.recentBlocksController
-      metamaskController.recentBlocksController = {
-        store: {
-          getState: () => {
-            return {
-              recentBlocks: [
-                { gasPrices: ['0x3b9aca00', '0x174876e800'] },
-                { gasPrices: ['0x3b9aca00', '0x174876e800'] },
-                { gasPrices: ['0x174876e800', '0x174876e800'] },
-                { gasPrices: ['0x174876e800', '0x174876e800'] },
-              ],
-            }
-          },
-        },
-      }
+  // describe('#getGasPrice', function () {
+  //   it('gives the 50th percentile lowest accepted gas price from recentBlocksController', async function () {
+  //     const realRecentBlocksController =
+  //       metamaskController.recentBlocksController
+  //     metamaskController.recentBlocksController = {
+  //       store: {
+  //         getState: () => {
+  //           return {
+  //             recentBlocks: [
+  //               { gasPrices: ['0x3b9aca00', '0x174876e800'] },
+  //               { gasPrices: ['0x3b9aca00', '0x174876e800'] },
+  //               { gasPrices: ['0x174876e800', '0x174876e800'] },
+  //               { gasPrices: ['0x174876e800', '0x174876e800'] },
+  //             ],
+  //           }
+  //         },
+  //       },
+  //     }
 
-      const gasPrice = metamaskController.getGasPrice()
-      assert.equal(
-        gasPrice,
-        '0x174876e800',
-        'accurately estimates 65th percentile accepted gas price'
-      )
+  //     const gasPrice = metamaskController.getGasPrice()
+  //     assert.equal(
+  //       gasPrice,
+  //       '0x174876e800',
+  //       'accurately estimates 65th percentile accepted gas price'
+  //     )
 
-      metamaskController.recentBlocksController = realRecentBlocksController
-    })
-  })
+  //     metamaskController.recentBlocksController = realRecentBlocksController
+  //   })
+  // })
 
   describe('#createNewVaultAndKeychain', function () {
     it('can only create new vault on keyringController once', async function () {

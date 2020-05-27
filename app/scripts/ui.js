@@ -42,7 +42,6 @@ async function start () {
     const state = window.getCleanAppState ? window.getCleanAppState() : {}
     // remove unnecessary data
     delete state.localeMessages
-    delete state.metamask.recentBlocks
     // return state to be added to request
     return state
   }
