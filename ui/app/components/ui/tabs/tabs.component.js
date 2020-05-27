@@ -75,9 +75,9 @@ export default class Tabs extends Component {
   }
 
   /**
-   * Returns the index of the child with the given key
-   * @param {string} key - the child key to search for
-   * @returns {number}
+   * Returns the index of the child with the given name
+   * @param {string} name - the name to search for
+   * @returns {number} the index of the child with the given name
    * @private
    */
   _findChildByName (name) {
