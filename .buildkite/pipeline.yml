@@ -1,0 +1,310 @@
+steps:
+  # L1
+  - key: 'base'
+    label: ':docker: build base image'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  # L2
+  - key: 'audit-deps'
+    label: ':nsp: yarn audit'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'base'
+    depends_on: 'base'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-deps'
+    label: ':parcel: yarn install'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'base'
+    depends_on: 'base'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  # L3
+  - key: 'prep-deps-with-files'
+    label: ':parcel: install deps with all files'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps'
+    depends_on: 'prep-deps'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-deps-with-prod-files'
+    label: ':parcel: install deps with prod files'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps'
+    depends_on: 'prep-deps'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'test-lint-lockfile'
+    label: ':nsp: lint lockfile'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps'
+    depends_on: 'prep-deps'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  # L4
+  - key: 'prep-deps-browser'
+    label: ':parcel: install deps with browsers'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-files'
+    depends_on: 'prep-deps-with-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-test'
+    label: ':parcel: unit prep'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-prod-files'
+    depends_on: 'prep-deps-with-prod-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-build'
+    label: ':parcel: yarn dist'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-prod-files'
+    depends_on: 'prep-deps-with-prod-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-build-storybook'
+    label: ':storybook: build storybook'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-prod-files'
+    depends_on: 'prep-deps-with-prod-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'shellcheck'
+    label: ':heavy_check_mark: shellcheck'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-files'
+    depends_on: 'prep-deps-with-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'test-lint'
+    label: ':eslint: lint'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-files'
+    depends_on: 'prep-deps-with-files'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  # L5
+  - key: 'prep-build-test'
+    label: ':parcel: build test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-browser'
+    depends_on: 'prep-deps-browser'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'prep-test-flat'
+    label: ':parcel: build test flat'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-browser'
+    depends_on: 'prep-deps-browser'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'test-unit'
+    label: ':mocha: unit test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test'
+    depends_on: 'prep-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+      - 'cpout .nyc_output'
+      - 'cpout coverage .nyc_output'
+
+    # artifact_paths:
+    #   - ".nyc_output/**/*"
+    #   - "coverage/**/*"
+  - key: 'test-unit-global'
+    label: ':mocha: unit test global'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test'
+    depends_on: 'prep-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  - key: 'test-mozilla-lint'
+    label: ':firefox: mozilla lint'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build'
+    depends_on: 'prep-build'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+  # L6
+  - key: 'test-flat-chrome'
+    label: ':chrome: chrome integration test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
+    depends_on: 'prep-test-flat'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["Chrome"]'''
+
+  - key: 'test-flat-firefox'
+    label: ':firefox: firefox integration test'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-test-flat'
+    depends_on: 'prep-test-flat'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'BUILD_TARGET=test-flat docker-build --build-arg browsers=''["FireFox"]'''
+
+  - key: 'e2e-chrome'
+    label: ':chrome: chrome e2e test %n'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build-test'
+    depends_on: 'prep-build-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-run yarn test:e2e:chrome:parallel'
+      # - 'cpout test-artifacts || true'
+    parallelism: 9
+    artifact_paths:
+      - 'test-artifacts/**/*'
+
+  - key: 'e2e-firefox'
+    label: ':firefox: firefox e2e test %n'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build-test'
+    depends_on: 'prep-build-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-run yarn test:e2e:firefox:parallel'
+      # - 'cpout test-artifacts || true'
+    parallelism: 9
+    artifact_paths:
+      - 'test-artifacts/**/*'
+
+  - key: 'benchmark'
+    label: ':chrome: benchmark'
+    env:
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-build-test'
+    depends_on: 'prep-build-test'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-run yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json'
+      # - 'cpout test-artifacts || true'
+    artifact_paths:
+      - 'test-artifacts/**/*'
+
+  - wait
+
+  - key: 'all-test-pass'
+    label: ':white_check_mark:    all test pass'
+    command: "echo 'all test pass'"
+
+  # - key: 'prerelease'
+  #   label: ':arrow_upper_right:    prerelease'
+  #   env:
+  #     'DOCKER_PULL_DEPENDS_TARGET': 'prep-build'
+  #   depends_on: 'prep-build'
+  #   retry:
+  #     automatic:
+  #       limit: 2
+  #   commands:
+  #     - 'source .buildkite/scripts/pre'
+  #     - 'docker-build'
+  #     - 'cpout build-artifacts'
+  #     - 'cpout test-artifacts || true'
+  #     - 'cpout builds'
+  #     - 'cpout dist'
+  #   artifact_paths:
+  #     - 'build-artifacts/**/*'
+  #     - 'builds/**/*'
+  #     - 'test-artifacts/**/*'
+  #     - 'dist/sourcemaps/*'

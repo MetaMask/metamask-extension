@@ -6,9 +6,15 @@ const chrome = require('selenium-webdriver/chrome')
  */
 class ChromeDriver {
   static async build ({ extensionPath, responsive, port }) {
-    const args = [`load-extension=${extensionPath}`]
+    const args = [`load-extension=${extensionPath}`, '--remote-debugging-port=9222']
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs')
+    }
+    if (process.env.BUILDKITE === 'true') {
+      // fix the DevToolsActivePort file doesn't exist error
+      // https://stackoverflow.com/a/50642913/5671288
+      // https://github.com/puppeteer/puppeteer/issues/1834
+      args.push('--disable-dev-shm-usage')
     }
     const options = new chrome.Options().addArguments(args)
     if (responsive) {

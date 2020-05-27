@@ -7,7 +7,7 @@ const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('./helpers')
 const { PAGES } = require('./webdriver/driver')
 
-const DEFAULT_NUM_SAMPLES = 20
+const DEFAULT_NUM_SAMPLES = 12
 const ALL_PAGES = Object.values(PAGES)
 
 async function measurePage (pageName) {
