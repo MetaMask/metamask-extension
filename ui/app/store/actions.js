@@ -367,7 +367,6 @@ var actions = {
   // AppStateController-related actions
   SET_LAST_ACTIVE_TIME: 'SET_LAST_ACTIVE_TIME',
   setLastActiveTime,
-  setMkrMigrationReminderTimestamp,
 
   getContractMethodData,
   loadingMethoDataStarted,
@@ -2749,16 +2748,6 @@ function setNetworksTabAddMode (isInAddMode) {
 function setLastActiveTime () {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-    })
-  }
-}
-
-function setMkrMigrationReminderTimestamp (timestamp) {
-  return (dispatch) => {
-    background.setMkrMigrationReminderTimestamp(timestamp, (err) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }

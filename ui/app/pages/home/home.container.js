@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token } from '../../selectors/selectors'
+import { getCurrentEthBalance } from '../../selectors/selectors'
 import {
   unsetMigratedPrivacyMode,
   restoreFromThreeBox,
@@ -44,7 +44,6 @@ const mapStateToProps = state => {
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
-    hasDaiV1Token: Boolean(getDaiV1Token(state)),
   }
 }
 

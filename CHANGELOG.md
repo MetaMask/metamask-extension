@@ -2,6 +2,23 @@
 
 ## Current Develop Branch
 
+## 7.7.9 Tue Apr 28 2020
+- [#8446](https://github.com/MetaMask/metamask-extension/pull/8446): Fix popup not opening
+- [#8449](https://github.com/MetaMask/metamask-extension/pull/8449): Skip adding history entry for empty txMeta diffs
+- [#8447](https://github.com/MetaMask/metamask-extension/pull/8447): Delete Dai/Sai migration notification
+- [#8460](https://github.com/MetaMask/metamask-extension/pull/8460): Update deposit copy for Wyre
+- [#8458](https://github.com/MetaMask/metamask-extension/pull/8458): Snapshot txMeta without cloning history
+- [#8459](https://github.com/MetaMask/metamask-extension/pull/8459): Fix method registry initialization
+- [#8455](https://github.com/MetaMask/metamask-extension/pull/8455): Add Dai/Sai to currency display
+- [#8461](https://github.com/MetaMask/metamask-extension/pull/8461): Prevent network switch upon close of network timeout overlay
+- [#8457](https://github.com/MetaMask/metamask-extension/pull/8457): Add INR currency option
+- [#8462](https://github.com/MetaMask/metamask-extension/pull/8462): Fix display of Kovan and Rinkeby chain IDs
+- [#8465](https://github.com/MetaMask/metamask-extension/pull/8465): Use ethereum-ens-network-map for network support
+- [#8463](https://github.com/MetaMask/metamask-extension/pull/8463): Update deprecated Etherscam link
+- [#8474](https://github.com/MetaMask/metamask-extension/pull/8474): Only update pending transactions upon block update
+- [#8476](https://github.com/MetaMask/metamask-extension/pull/8476): Update eth-contract-metadata
+- [#8509](https://github.com/MetaMask/metamask-extension/pull/8509): Fix Tohen Typo
+
 ## 7.7.8 Wed Mar 11 2020
 - [#8176](https://github.com/MetaMask/metamask-extension/pull/8176): Handle and set gas estimation when max mode is clicked
 - [#8178](https://github.com/MetaMask/metamask-extension/pull/8178): Use specified gas limit when speeding up a transaction

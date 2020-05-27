@@ -7,7 +7,7 @@ import { ellipsify } from '../../send.utils'
 import debounce from 'debounce'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
-import networkMap from 'ethjs-ens/lib/network-map.json'
+import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
 
 

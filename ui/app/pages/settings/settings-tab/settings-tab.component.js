@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import infuraCurrencies from '../../../helpers/constants/infura-conversion.json'
+import availableCurrencies from '../../../helpers/constants/available-conversions'
 import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
 import ToggleButton from '../../../components/ui/toggle-button'
 import locales from '../../../../../app/_locales/index.json'
 
-const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
-  return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
+const sortedCurrencies = availableCurrencies.sort((a, b) => {
+  return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
 })
 
-const infuraCurrencyOptions = sortedCurrencies.map(({ quote: { code, name } }) => {
+const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   return {
     displayValue: `${code.toUpperCase()} - ${name}`,
     key: code,
@@ -63,7 +63,7 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <SimpleDropdown
               placeholder={t('selectCurrency')}
-              options={infuraCurrencyOptions}
+              options={currencyOptions}
               selectedOption={currentCurrency}
               onSelect={newCurrency => setCurrentCurrency(newCurrency)}
             />
