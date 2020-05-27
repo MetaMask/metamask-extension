@@ -403,10 +403,10 @@ textarea.twelve-word-phrase {
 }
 
 .qr-ellip-address, .ellip-address {
-  /*rtl:ignore*/
   direction: ltr;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
 .qr-header {
