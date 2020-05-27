@@ -69,6 +69,7 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
         { t('expandView') }
       </MenuItem>
       <MenuItem
+        data-testid="account-options-menu__account-details"
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
           viewAccountDetailsEvent()
@@ -102,6 +103,7 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
         }
       </MenuItem>
       <MenuItem
+        data-testid="account-options-menu__connected-sites"
         onClick={() => {
           openConnectedSitesEvent()
           history.push(CONNECTED_ROUTE)

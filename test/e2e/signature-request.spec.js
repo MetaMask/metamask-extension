@@ -120,7 +120,8 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.delay(regularDelayMs)
 
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))

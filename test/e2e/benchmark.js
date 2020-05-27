@@ -16,7 +16,7 @@ async function measurePage (pageName) {
     const passwordField = await driver.findElement(By.css('#password'))
     await passwordField.sendKeys('correct horse battery staple')
     await passwordField.sendKeys(Key.ENTER)
-    await driver.findElement(By.css('.account-details__account-name'))
+    await driver.findElement(By.css('.selected-account__name'))
     await driver.navigate(pageName)
     await driver.delay(1000)
     metrics = await driver.collectMetrics()

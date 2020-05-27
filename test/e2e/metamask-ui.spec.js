@@ -119,7 +119,8 @@ describe('MetaMask', function () {
 
   describe('Show account information', function () {
     it('shows the QR code for the account', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       await driver.delay(regularDelayMs)
 
@@ -169,7 +170,7 @@ describe('MetaMask', function () {
     })
 
     it('should display correct account name', async function () {
-      const accountName = await driver.findElement(By.css('.account-details__account-name'))
+      const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), '2nd account')
       await driver.delay(regularDelayMs)
     })
@@ -265,6 +266,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
@@ -810,6 +812,7 @@ describe('MetaMask', function () {
     })
 
     it('clicks on the Add Token button', async function () {
+      await driver.clickElement(By.css(`[data-testid="home__asset-tab"]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })
@@ -900,6 +903,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css(`[data-testid="home__history-tab"]`))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
@@ -992,6 +996,8 @@ describe('MetaMask', function () {
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/), 10000)
 
+      await driver.clickElement(By.css('[data-testid="home__asset-tab"]'))
+
       await driver.clickElement(By.css('[data-testid="wallet-balance"]'))
 
       await driver.clickElement(By.css('.token-cell'))
@@ -1018,6 +1024,8 @@ describe('MetaMask', function () {
 
       await driver.switchToWindow(extension)
       await driver.delay(regularDelayMs)
+
+      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(By.css('.transaction-list__pending-transactions .transaction-list-item'))
@@ -1219,6 +1227,8 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
+      await driver.clickElement(By.css('[data-testid="home__asset-tab"]'))
+
       await driver.clickElement(By.css('.token-cell__ellipsis'))
 
       const byTokenMenuDropdownOption = By.css('.menu__item--clickable')

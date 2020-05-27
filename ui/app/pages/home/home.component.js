@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Media from 'react-media'
 import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
-import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
 import MenuBar from '../../components/app/menu-bar'
 import Popover from '../../components/ui/popover'
@@ -238,52 +236,30 @@ export default class Home extends PureComponent {
         <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
         <div className="home__container">
           { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
-          <Media
-            query="(min-width: 576px)"
-          >
-            {
-              (isWideViewport) => (
-                isWideViewport
-                  ? (
-                    <>
-                      <WalletView />
-                      <div className="home__main-view">
-                        <div className="home__balance-wrapper">
-                          { homeOverview }
-                        </div>
-                        <TransactionList isWideViewport />
-                      </div>
-                    </>
-                  )
-                  : (
-                    <div className="home__main-view">
-                      <MenuBar />
-                      <div className="home__balance-wrapper">
-                        { homeOverview }
-                      </div>
-                      <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick}>
-                        <Tab
-                          activeClassName="home__tab--active"
-                          className="home__tab"
-                          data-testid="home__asset-tab"
-                          name="Assets"
-                        >
-                          <AssetList />
-                        </Tab>
-                        <Tab
-                          activeClassName="home__tab--active"
-                          className="home__tab"
-                          data-testid="home__history-tab"
-                          name="History"
-                        >
-                          <TransactionList />
-                        </Tab>
-                      </Tabs>
-                    </div>
-                  )
-              )
-            }
-          </Media>
+          <div className="home__main-view">
+            <MenuBar />
+            <div className="home__balance-wrapper">
+              { homeOverview }
+            </div>
+            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick}>
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__asset-tab"
+                name="Assets"
+              >
+                <AssetList />
+              </Tab>
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__history-tab"
+                name="History"
+              >
+                <TransactionList />
+              </Tab>
+            </Tabs>
+          </div>
           { this.renderNotifications() }
         </div>
       </div>

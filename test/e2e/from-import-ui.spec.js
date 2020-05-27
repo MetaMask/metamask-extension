@@ -98,7 +98,8 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Show account information', function () {
     it('shows the correct account address', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       await driver.delay(regularDelayMs)
 
@@ -110,7 +111,8 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('shows a QR code for the account', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.findVisibleElement(By.css('.qr-wrapper'))
       const detailModal = await driver.findElement(By.css('span .modal'))
       await driver.delay(regularDelayMs)
@@ -167,7 +169,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), '2nd account')
       await driver.delay(regularDelayMs)
     })
@@ -214,6 +216,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
@@ -243,23 +246,26 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should show the correct account name', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), 'Account 4')
       await driver.delay(regularDelayMs)
     })
 
     it('should show the imported label', async function () {
-      const [importedLabel] = await driver.findElements(By.css('.account-details__keyring-label'))
+      await driver.clickElement(By.css('.account-menu__icon'))
+
+      // confirm 4th account is account 4, as expected
+      const accountMenuItemSelector = '.account-menu__account:nth-child(4)'
+      const accountName = await driver.findElement(By.css(`${accountMenuItemSelector} .account-menu__name`))
+      assert.equal(await accountName.getText(), 'Account 4')
+      // confirm label is present on the same menu item
+      const importedLabel = await driver.findElement(By.css(`${accountMenuItemSelector} .keyring-label`))
       assert.equal(await importedLabel.getText(), 'IMPORTED')
-      await driver.delay(regularDelayMs)
     })
   })
 
   describe('Imports and removes an account', function () {
     it('choose Create Account from the account menu', async function () {
-      await driver.clickElement(By.css('.account-menu__icon'))
-      await driver.delay(regularDelayMs)
-
       await driver.clickElement(By.xpath(`//div[contains(text(), 'Import Account')]`))
       await driver.delay(regularDelayMs)
     })
@@ -273,7 +279,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the remove account modal', async function () {
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), 'Account 5')
       await driver.delay(regularDelayMs)
 
@@ -294,7 +300,7 @@ describe('Using MetaMask with an existing account', function () {
 
       await driver.delay(regularDelayMs)
 
-      const [accountName] = await driver.findElements(By.css('.account-details__account-name'))
+      const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), 'Account 1')
       await driver.delay(regularDelayMs)
 
