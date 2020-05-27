@@ -10,20 +10,21 @@ function docker_login {
   echo $REGISTRY_PWD | docker login --password-stdin --username ConfluxTech http://$REGISTRY
 }
 
+valid_branch=$(echo $BUILDKITE_BRANCH | tr '[:upper:]' '[:lower:]' | sed -e "s/\//00/" | sed -e "s/>/0/g" | sed -e "s/</0/g")
 
 # target to docker image
 function target2image {
   if [[ $1 == "e2e-"* ]]; then
-    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT-$BUILDKITE_PARALLEL_JOB"
+    echo "$REGISTRY/$1-$valid_branch-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT-$BUILDKITE_PARALLEL_JOB"
   else
-    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT"
+    echo "$REGISTRY/$1-$valid_branch-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT"
   fi
 }
 function target2imagelatest {
   if [[ $1 == "e2e-"* ]]; then
-    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_PARALLEL_JOB:latest"
+    echo "$REGISTRY/$1-$valid_branch-$BUILDKITE_PARALLEL_JOB:latest"
   else
-    echo "$REGISTRY/$1-$BUILDKITE_BRANCH:latest"
+    echo "$REGISTRY/$1-$valid_branch:latest"
   fi
 }
 
@@ -54,7 +55,7 @@ function docker-build {
          --cache-from $latest_image \
          --build-arg BUILDKIT_INLINE_CACHE=1 \
          --build-arg BUILDKITE=\"$BUILDKITE\" \
-         --build-arg BUILDKITE_BRANCH=\"$BUILDKITE_BRANCH\" \
+         --build-arg BUILDKITE_BRANCH=\"$valid_branch\" \
          --build-arg BUILDKITE_ORGANIZATION_SLUG=\"$BUILDKITE_ORGANIZATION_SLUG\" \
          --build-arg BUILDKITE_PARALLEL_JOB=\"$BUILDKITE_PARALLEL_JOB\" \
          --build-arg BUILDKITE_PARALLEL_JOB_COUNT=\"$BUILDKITE_PARALLEL_JOB_COUNT\" \
@@ -73,7 +74,7 @@ function docker-run {
   [ -z "$DOCKER_PULL_DEPENDS_TARGET" ] || \
     docker run --rm \
            --env BUILDKITE="$BUILDKITE" \
-           --env BUILDKITE_BRANCH="$BUILDKITE_BRANCH" \
+           --env BUILDKITE_BRANCH="$valid_branch" \
            --env BUILDKITE_ORGANIZATION_SLUG="$BUILDKITE_ORGANIZATION_SLUG" \
            --env BUILDKITE_PARALLEL_JOB="$BUILDKITE_PARALLEL_JOB" \
            --env BUILDKITE_PARALLEL_JOB_COUNT="$BUILDKITE_PARALLEL_JOB_COUNT" \
