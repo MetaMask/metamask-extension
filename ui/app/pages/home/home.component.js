@@ -256,7 +256,7 @@ export default class Home extends PureComponent {
                 data-testid="home__history-tab"
                 name="History"
               >
-                <TransactionList />
+                <TransactionList tokenAddress={selectedToken?.address} />
               </Tab>
             </Tabs>
           </div>
