@@ -6,6 +6,7 @@ import _getRestrictedMethods
 
 import {
   CAVEAT_NAMES,
+  CAVEAT_TYPES,
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
@@ -164,7 +165,7 @@ const PERM_NAMES = {
 
 const ACCOUNTS = {
   a: {
-    permitted: [...keyringAccounts.slice(0, 3)],
+    permitted: keyringAccounts.slice(0, 3),
     primary: keyringAccounts[0],
   },
   b: {
@@ -190,11 +191,11 @@ const CAVEATS = {
    */
   eth_accounts: (accounts) => {
     return [{
-      type: 'limitResponseLength',
+      type: CAVEAT_TYPES.limitResponseLength,
       value: 1,
       name: CAVEAT_NAMES.primaryAccountOnly,
     }, {
-      type: 'filterResponse',
+      type: CAVEAT_TYPES.filterResponse,
       value: accounts,
       name: CAVEAT_NAMES.exposedAccounts,
     }]

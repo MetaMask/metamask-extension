@@ -543,7 +543,7 @@ describe('permissions controller', function () {
 
       assert.deepEqual(
         notifications[ORIGINS.a][0],
-        NOTIFICATIONS.newAccounts([ACCOUNTS.a.primary /* EXTRA_ACCOUNT */]),
+        NOTIFICATIONS.newAccounts([ACCOUNTS.a.primary]),
         'origin should have correct notification'
       )
     })
@@ -631,7 +631,6 @@ describe('permissions controller', function () {
       assert.deepEqual(
         notifications[ORIGINS.a][0],
         NOTIFICATIONS.newAccounts([ACCOUNTS.a.primary]),
-        // NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted.filter((acc) => acc !== ACCOUNTS.a.permitted[1])),
         'origin should have correct notification'
       )
     })
@@ -927,7 +926,6 @@ describe('permissions controller', function () {
       assert.deepEqual(
         notifications[ORIGINS.b],
         [NOTIFICATIONS.newAccounts([EXTRA_ACCOUNT])],
-        // [NOTIFICATIONS.newAccounts([ EXTRA_ACCOUNT, ...ACCOUNTS.a.permitted ])],
         'should have emitted notification'
       )
       assert.deepEqual(
@@ -944,9 +942,6 @@ describe('permissions controller', function () {
 
       await onPreferencesUpdate({ selectedAddress: ACCOUNTS.a.permitted[1] })
 
-      // const accountsWithoutFirst = ACCOUNTS.a.permitted
-      //   .filter((account) => account !== ACCOUNTS.a.permitted[1])
-      // const expectedAccounts = [ ACCOUNTS.a.permitted[1], ...accountsWithoutFirst ]
       assert.deepEqual(
         notifications[ORIGINS.b],
         [NOTIFICATIONS.newAccounts([ACCOUNTS.a.permitted[1]])],
