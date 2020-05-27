@@ -53,6 +53,7 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow, but skipping the seed phrase challenge', function () {
     it('clicks the continue button on the welcome screen', async function () {
+      await driver.delay(regularDelayMs)
       await driver.findElement(By.css('.welcome-page__header'))
       await driver.clickElement(
         By.xpath(

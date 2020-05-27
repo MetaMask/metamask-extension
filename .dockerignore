@@ -1,0 +1,15 @@
+*.md
+.log
+.github
+.git
+.buildkite
+.dir-locals.el
+.git
+.editorconfig
+.gitattributes
+builds
+dist
+docs
+test-artifacts
+node_modules
+Dockerfile

@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# The `pre-command` hook will run just before your build command runs
+
+set -x
+set -e
+set -o pipefail
+
+function docker_login {
+  echo $REGISTRY_PWD | docker login --password-stdin --username ConfluxTech http://$REGISTRY
+}
+
+
+# target to docker image
+function target2image {
+  if [[ $1 == "e2e-"* ]]; then
+    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT-$BUILDKITE_PARALLEL_JOB"
+  else
+    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_BUILD_NUMBER-$BUILDKITE_COMMIT"
+  fi
+}
+function target2imagelatest {
+  if [[ $1 == "e2e-"* ]]; then
+    echo "$REGISTRY/$1-$BUILDKITE_BRANCH-$BUILDKITE_PARALLEL_JOB:latest"
+  else
+    echo "$REGISTRY/$1-$BUILDKITE_BRANCH:latest"
+  fi
+}
+
+function maybe_docker_push {
+  # $1 is docker build target
+  # if [[ "$DOCKER_PUSH" = "true" ]]; then
+  docker push $1
+  # fi
+}
+
+function maybe_docker_pull {
+  target=${BUILD_TARGET:-$BUILDKITE_STEP_KEY}
+  docker pull $(target2imagelatest $target) || true
+  [ -z "$DOCKER_PULL_DEPENDS_TARGET" ] || docker pull $(target2imagelatest $DOCKER_PULL_DEPENDS_TARGET) || true
+}
+
+function docker-build {
+  export DOCKER_BUILDKIT=1
+  target=${BUILD_TARGET:-$BUILDKITE_STEP_KEY}
+  image=$(target2image $target)
+  latest_image=$(target2imagelatest $target)
+  use_depends_as_cache=$([ -z "$DOCKER_PULL_DEPENDS_TARGET" ] && echo "" || echo "--cache-from $(target2imagelatest $DOCKER_PULL_DEPENDS_TARGET)")
+  time maybe_docker_pull
+  docker_build="docker build \
+         --progress=plain \
+         --target=$target \
+         $use_depends_as_cache \
+         --cache-from $latest_image \
+         --build-arg BUILDKIT_INLINE_CACHE=1 \
+         --build-arg BUILDKITE=\"$BUILDKITE\" \
+         --build-arg BUILDKITE_BRANCH=\"$BUILDKITE_BRANCH\" \
+         --build-arg BUILDKITE_ORGANIZATION_SLUG=\"$BUILDKITE_ORGANIZATION_SLUG\" \
+         --build-arg BUILDKITE_PARALLEL_JOB=\"$BUILDKITE_PARALLEL_JOB\" \
+         --build-arg BUILDKITE_PARALLEL_JOB_COUNT=\"$BUILDKITE_PARALLEL_JOB_COUNT\" \
+         --build-arg BUILDKITE_REPO=\"$BUILDKITE_REPO\" \
+         --build-arg CI=\"$CI\" \
+         $@ \
+         -t $image \
+         ."
+  eval $docker_build
+  docker tag $image $latest_image
+  time maybe_docker_push $latest_image
+}
+
+function docker-run {
+  [ -z "$DOCKER_PULL_DEPENDS_TARGET" ] || docker pull $(target2imagelatest $DOCKER_PULL_DEPENDS_TARGET) || true
+  [ -z "$DOCKER_PULL_DEPENDS_TARGET" ] || \
+    docker run --rm \
+           --env BUILDKITE="$BUILDKITE" \
+           --env BUILDKITE_BRANCH="$BUILDKITE_BRANCH" \
+           --env BUILDKITE_ORGANIZATION_SLUG="$BUILDKITE_ORGANIZATION_SLUG" \
+           --env BUILDKITE_PARALLEL_JOB="$BUILDKITE_PARALLEL_JOB" \
+           --env BUILDKITE_PARALLEL_JOB_COUNT="$BUILDKITE_PARALLEL_JOB_COUNT" \
+           --env BUILDKITE_REPO="$BUILDKITE_REPO" \
+           --env CI="$CI" \
+           $(target2imagelatest $DOCKER_PULL_DEPENDS_TARGET) \
+           $@
+}
+
+function cpout {
+  image=$(target2image $target)
+  container_id=$(docker create $image)
+  docker cp --follow-link $container_id:/home/circleci/portal/$1 ${2:-.}
+  docker rm -v $container_id
+}

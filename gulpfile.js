@@ -13,7 +13,6 @@ const zip = require('gulp-zip')
 const { assign } = require('lodash')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const manifest = require('./app/manifest.json')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
@@ -606,7 +605,7 @@ function zipTask (target) {
   return () => {
     return gulp
       .src(`dist/${target}/**`)
-      .pipe(zip(`conflux-portal-${target}-${manifest.version}.zip`))
+      .pipe(zip(`conflux-portal-${target}-${require('./app/manifest.json').version}.zip`))
       .pipe(gulp.dest('builds'))
   }
 }
@@ -670,15 +669,15 @@ function generateBundler (opts, performBundle) {
     environment = 'development'
   } else if (opts.testing) {
     environment = 'testing'
-  } else if (process.env.CIRCLE_BRANCH === 'master') {
+  } else if (process.env.CIRCLE_BRANCH === 'master' || process.env.BUILDKITE_BRANCH === 'master') {
     environment = 'production'
   } else if (
     /^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)
   ) {
     environment = 'release-candidate'
-  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+  } else if (process.env.CIRCLE_BRANCH === 'develop' || process.env.BUILDKITE_BRANCH === 'develop') {
     environment = 'staging'
-  } else if (process.env.CIRCLE_PULL_REQUEST) {
+  } else if (process.env.CIRCLE_PULL_REQUEST || process.env.BUILDKITE_PULL_REQUEST === 'true') {
     environment = 'pull-request'
   } else {
     environment = 'other'

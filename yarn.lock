@@ -2212,11 +2212,6 @@
   dependencies:
     defer-to-connect "^1.1.1"
 
-"@testim/chrome-version@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@testim/chrome-version/-/chrome-version-1.0.7.tgz#0cd915785ec4190f08a3a6acc9b61fc38fb5f1a9"
-  integrity sha512-8UT/J+xqCYfn3fKtOznAibsHpiuDshCb0fwgWxRazTT19Igp9ovoXMPhXyLD6m3CKQGTMHgqoxaFfMWaL40Rnw==
-
 "@types/babel__core@^7.1.0":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.3.tgz#e441ea7df63cd080dfcd02ab199e6d16a735fc30"
@@ -2747,25 +2742,25 @@
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@yqrashawn/conflux-local-network-lite@^2.0.16":
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.16.tgz#dab6198505e900cd7f2d8dadbd42a309166db860"
-  integrity sha512-JFq7A03mHwfSskAwEjyRbCa6DJ99qWUA9qCy/ylwwnFQ0Fz1CtY72J+I+cYGVlNfqquU7eDBxQmENuDaNig7eg==
+"@yqrashawn/conflux-local-network-lite@^2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@yqrashawn/conflux-local-network-lite/-/conflux-local-network-lite-2.0.20.tgz#8dd6630fb4feb8ba6184a6e43e90b4acf7a473be"
+  integrity sha512-+O+PZnM51LbFoAyUid57HqID5vpc9noHa5FPqQATLNyEkOb0FEFIjwnzduXAKI6ikDExfLlhFVwFgD33Pl7lJw==
   dependencies:
     cfx-util "^0.0.2"
     cross-port-killer "^1.2.1"
     express "^4.17.1"
     express-async-errors "^3.1.1"
     got "^10.7.0"
-    jayson "^3.2.0"
-    js-conflux-sdk "^0.9.1"
-    make-dir "^3.0.2"
+    jayson "^3.2.1"
+    js-conflux-sdk "^0.9.2"
+    make-dir "^3.1.0"
     platform-is "^1.0.4"
     real-executable-path "^3.0.0"
     rimraf "^3.0.1"
     sleep-promise "^8.0.1"
-    tmp "^0.1.0"
-    unzipper "^0.10.10"
+    tmp "^0.2.0"
+    unzipper "^0.10.11"
 
 "@yqrashawn/conflux-portal-inpage-provider@^4.0.8":
   version "4.0.8"
@@ -6417,12 +6412,11 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@79.0.3:
-  version "79.0.3"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-79.0.3.tgz#b3a5d62017e68b9a86e3475b66e3eb23fca26273"
-  integrity sha512-XkgXrYF+M1oAT02aIIEjaM4x0oaUXTBoB+PvCNdh3rKUhn596byCc6Jy3USutZj4/0R/K+Bqf4I+4RESvfjehg==
+chromedriver@79.0.0:
+  version "79.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-79.0.0.tgz#1660ac29924dfcd847911025593d6b6746aeea35"
+  integrity sha512-DO29C7ntJfzu6q1vuoWwCON8E9x5xzopt7Q41A7Dr7hBKcdNpGw1l9DTt9b+l1qviOWiJLGsD+jHw21ptEHubA==
   dependencies:
-    "@testim/chrome-version" "^1.0.7"
     del "^4.1.1"
     extract-zip "^1.6.7"
     mkdirp "^0.5.1"
@@ -10012,13 +10006,6 @@ eth-phishing-detect@^1.1.13:
   version "1.1.13"
   resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.13.tgz#ed718b933c8a69fef0cefa6604538824b472dbea"
   integrity sha512-1KQcKvAQIjJgFMVwxaw2+BlzM9Momzl0e+/torPdMjg7WGq6LmCIS7ddg84diH5zIQp9quGyRVIEawCCuErgVQ==
-  dependencies:
-    fast-levenshtein "^2.0.6"
-
-eth-phishing-detect@^1.1.4:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.12.tgz#3db7e88c754510c94e6736db85108b90e227fe41"
-  integrity sha512-wzEqAB4mUY0gkrn+ZOlzyxHmsouKT6rrzYIxy/FFalqoZVvX/9McPdFwWkHCYrv4KzTKgJJh8tKzvMnTae8Naw==
   dependencies:
     fast-levenshtein "^2.0.6"
 
@@ -14852,10 +14839,10 @@ java-properties@^0.2.9:
   resolved "https://registry.yarnpkg.com/java-properties/-/java-properties-0.2.10.tgz#2551560c25fa1ad94d998218178f233ad9b18f60"
   integrity sha512-CpKJh9VRNhS+XqZtg1UMejETGEiqwCGDC/uwPEEQwc2nfdbSm73SIE29TplG2gLYuBOOTNDqxzG6A9NtEPLt0w==
 
-jayson@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/jayson/-/jayson-3.2.0.tgz#df6d8139cd9f6ee2f56c8c2deaee448da7eccf1b"
-  integrity sha512-DZQnwA57GcStw4soSYB2VntWXFfoWvmSarlaWePDYOWhjxT72PBM4atEBomaTaS1uqk3jFC9UO9AyWjlujo3xw==
+jayson@^3.2.1:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/jayson/-/jayson-3.3.0.tgz#72089c4cd8c848fc6f992da0cdd28973ab6a6e78"
+  integrity sha512-QrsIeK9spSBEsXEvRMIAQ3X9cfT7u0EVD0L7XVpX4JqzIRgziJeei4iRWs+bZovdqyrmg8WgKgY9zKO4HY6eYQ==
   dependencies:
     "@types/connect" "^3.4.32"
     "@types/express-serve-static-core" "^4.16.9"
@@ -15289,6 +15276,20 @@ js-conflux-sdk@^0.9.1:
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
 
+js-conflux-sdk@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.9.2.tgz#af81e7b0e3e4627af340dd5b1d42d446d6dbde72"
+  integrity sha512-AplA35GHml74b7HrAMwJxsDrkTcR/LiL5N98qMoDv0pPn2hPgjC0JEvY0Rd+twJi1+/BbnTH70QDdibPillJNw==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
+    esm "^3.2.25"
+    jsbi "^3.1.1"
+    keccak "^2.0.0"
+    lodash "^4.17.15"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
@@ -15631,6 +15632,11 @@ jsonschema@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/jsonschema/-/jsonschema-1.2.4.tgz#a46bac5d3506a254465bc548876e267c6d0d6464"
   integrity sha512-lz1nOH69GbsVHeVgEdvyavc/33oymY1AZwtePMiMj4HZPMbP5OIKK3zT9INMWjwua/V4Z4yq7wSlBbSG+g4AEw==
+
+jsonschema@^1.2.5:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/jsonschema/-/jsonschema-1.2.6.tgz#52b0a8e9dc06bbae7295249d03e4b9faee8a0c0b"
+  integrity sha512-SqhURKZG07JyKKeo/ir24QnS4/BV7a6gQy93bUSe4lUdNp0QNpIz2c9elWJQ9dpc5cQYY6cvCzgRwy0MQCLyqA==
 
 jsonwebtoken@^8.3.0:
   version "8.5.1"
@@ -17011,10 +17017,10 @@ make-dir@^3.0.0:
   dependencies:
     semver "^6.0.0"
 
-make-dir@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.0.2.tgz#04a1acbf22221e1d6ef43559f43e05a90dbb4392"
-  integrity sha512-rYKABKutXa6vXTXhoV18cBE7PaewPXHe/Bdq4v+ZLMhxbWApkFFplT0LcbMW+6BbjnQXzZ/sAvSE/JdguApG5w==
+make-dir@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
+  integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
   dependencies:
     semver "^6.0.0"
 
@@ -25072,6 +25078,13 @@ tmp@0.1.0, tmp@^0.1.0:
   dependencies:
     rimraf "^2.6.3"
 
+tmp@^0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.1.tgz#8457fc3037dcf4719c251367a1af6500ee1ccf14"
+  integrity sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==
+  dependencies:
+    rimraf "^3.0.0"
+
 tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
@@ -25711,10 +25724,10 @@ unzip-response@^2.0.1:
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
   integrity sha1-0vD3N9FrBhXnKmk17QQhRXLVb5c=
 
-unzipper@^0.10.10:
-  version "0.10.10"
-  resolved "https://registry.yarnpkg.com/unzipper/-/unzipper-0.10.10.tgz#d82d41fbdfa1f0731123eb11c2cfc028b45d3d42"
-  integrity sha512-wEgtqtrnJ/9zIBsQb8UIxOhAH1eTHfi7D/xvmrUoMEePeI6u24nq1wigazbIFtHt6ANYXdEVTvc8XYNlTurs7A==
+unzipper@^0.10.11:
+  version "0.10.11"
+  resolved "https://registry.yarnpkg.com/unzipper/-/unzipper-0.10.11.tgz#0b4991446472cbdb92ee7403909f26c2419c782e"
+  integrity sha512-+BrAq2oFqWod5IESRjL3S8baohbevGcVA+teAIOYWM3pDVdseogqbzhhvvmiyQrUNKFUnDMtELW3X8ykbyDCJw==
   dependencies:
     big-integer "^1.6.17"
     binary "~0.3.0"
