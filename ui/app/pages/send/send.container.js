@@ -21,7 +21,6 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
-  getTokens,
   getSelectedAddress,
   getAddressBook,
 } from '../../selectors'
@@ -43,6 +42,7 @@ import {
 import {
   fetchBasicGasEstimates,
 } from '../../ducks/gas/gas.duck'
+import { getTokens } from '../../ducks/metamask/metamask'
 import {
   calcGasTotal,
 } from './send.utils.js'

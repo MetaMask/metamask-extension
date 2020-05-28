@@ -146,10 +146,6 @@ export function getGasButtonGroupShown (state) {
   return state.send.gasButtonGroupShown
 }
 
-export function getTokens (state) {
-  return state.metamask.tokens
-}
-
 export function getTitleKey (state) {
   const isEditing = Boolean(getSendEditingTransactionId(state))
   const isToken = Boolean(getSelectedToken(state))

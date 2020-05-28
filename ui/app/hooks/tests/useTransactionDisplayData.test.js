@@ -4,7 +4,8 @@ import { renderHook } from '@testing-library/react-hooks'
 import sinon from 'sinon'
 import transactions from '../../../../test/data/transaction-data.json'
 import { useTransactionDisplayData } from '../useTransactionDisplayData'
-import { tokenSelector, getPreferences, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
+import { getPreferences, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
+import { getTokens } from '../../ducks/metamask/metamask'
 import * as i18nhooks from '../useI18nContext'
 import { getMessage } from '../../helpers/utils/i18n-helper'
 import messages from '../../../../app/_locales/en/messages.json'
@@ -81,7 +82,7 @@ describe('useTransactionDisplayData', function () {
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext')
     useI18nContext.returns((key, variables) => getMessage('en', messages, key, variables))
     useSelector.callsFake((selector) => {
-      if (selector === tokenSelector) {
+      if (selector === getTokens) {
         return []
       } else if (selector === getPreferences) {
         return {

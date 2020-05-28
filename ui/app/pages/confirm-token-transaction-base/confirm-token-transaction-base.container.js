@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom'
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component'
 import {
   contractExchangeRateSelector,
-  tokenSelector,
   transactionFeeSelector,
 } from '../../selectors'
+import { getTokens } from '../../ducks/metamask/metamask'
 import {
   getTokenData,
 } from '../../helpers/utils/transactions.util'
@@ -38,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     ethTransactionTotal,
     fiatTransactionTotal,
   } = transactionFeeSelector(state, transaction)
-  const tokens = tokenSelector(state)
+  const tokens = getTokens(state)
   const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address)
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
