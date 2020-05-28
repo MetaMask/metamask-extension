@@ -213,10 +213,10 @@ class ConnectHardwareForm extends Component {
 
   render () {
     return (
-      <div>
+      <>
         {this.renderError()}
         {this.renderContent()}
-      </div>
+      </>
     )
   }
 }
