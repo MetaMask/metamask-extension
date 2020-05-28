@@ -55,21 +55,20 @@
     display: flex;
     flex-direction: column;
     z-index: 200;
-    scrollbar-width: none;
-
-    max-height: 256px;
-
-    @media screen and (max-width: 575px) {
-      max-height: 228px;
-    }
   }
 
   &__accounts {
     overflow-y: auto;
     position: relative;
+    max-height: 256px;
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;
+    }
+
+    @media screen and (max-width: 575px) {
+      max-height: 228px;
     }
 
     .keyring-label {
