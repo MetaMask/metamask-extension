@@ -380,20 +380,6 @@ export const getters = deepFreeze({
       },
     },
 
-    legacyExposeAccounts: {
-      badOrigin: () => {
-        return {
-          message: 'Must provide non-empty string origin.',
-        }
-      },
-      forbiddenUsage: () => {
-        return {
-          name: 'Error',
-          message: 'May not call legacyExposeAccounts on origin with exposed accounts.',
-        }
-      },
-    },
-
     _handleAccountSelected: {
       invalidParams: () => {
         return {
@@ -436,14 +422,6 @@ export const getters = deepFreeze({
       unauthorized: () => {
         return {
           code: 4100,
-        }
-      },
-    },
-
-    logAccountExposure: {
-      invalidParams: () => {
-        return {
-          message: 'Must provide non-empty string origin and array of accounts.',
         }
       },
     },

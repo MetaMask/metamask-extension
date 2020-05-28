@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
 import {
   getOpenMetamaskTabsIds,
-  legacyExposeAccounts,
+  requestAccountsPermission,
   removePermissionsFor,
   removePermittedAccount,
 } from '../../store/actions'
@@ -14,7 +14,7 @@ import {
   getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import { CONNECT_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
@@ -57,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
         [domainKey]: permissionMethodNames,
       }))
     },
-    legacyExposeAccounts: (origin, account) => dispatch(legacyExposeAccounts(origin, [account])),
+    requestAccountsPermission: (origin) => dispatch(requestAccountsPermission(origin)),
   }
 }
 
@@ -71,7 +71,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     disconnectAccount,
     disconnectAllAccounts,
-    legacyExposeAccounts: dispatchLegacyExposeAccounts,
+    requestAccountsPermission: dispatchRequestAccountsPermission,
   } = dispatchProps
   const { history } = ownProps
 
@@ -94,7 +94,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         closePopover()
       }
     },
-    legacyExposeAccount: () => dispatchLegacyExposeAccounts(tabToConnect.origin, selectedAddress),
+    requestAccountsPermission: async () => {
+      const id = await dispatchRequestAccountsPermission(tabToConnect.origin)
+      history.push(`${CONNECT_ROUTE}/${id}`)
+    },
   }
 }
 

@@ -716,119 +716,6 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('legacyExposeAccounts', function () {
-
-    let permController, notifications
-
-    beforeEach(function () {
-      notifications = initNotifications()
-      permController = initPermController(notifications)
-    })
-
-    it('successfully exposes accounts and updates permissions history', async function () {
-
-      let aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, [], 'origin should have no accounts')
-
-      await permController.legacyExposeAccounts(ORIGINS.a, ACCOUNTS.a.permitted)
-
-      aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, [ACCOUNTS.a.primary], 'origin should have correct accounts')
-
-      // now, permissions history should be updated
-      const permissionsHistory = permController.permissionsLog.getHistory()
-      const historyOrigins = Object.keys(permissionsHistory)
-
-      assert.equal(historyOrigins.length, 1, 'should have single origin')
-      assert.equal(historyOrigins[0], ORIGINS.a, 'should have correct origin')
-
-      assert.ok(
-        permissionsHistory[ORIGINS.a].eth_accounts,
-        'history should have eth_accounts entry'
-      )
-
-      assert.deepEqual(
-        Object.keys(permissionsHistory[ORIGINS.a].eth_accounts.accounts),
-        ACCOUNTS.a.permitted,
-        'should have expected eth_accounts entry accounts'
-      )
-
-      // notification should also have been sent
-      assert.deepEqual(
-        notifications[ORIGINS.a][0],
-        NOTIFICATIONS.newAccounts([ACCOUNTS.a.primary]),
-        'first origin should have correct notification'
-      )
-    })
-
-    it('throws if called on origin with existing exposed accounts', async function () {
-
-      grantPermissions(
-        permController, ORIGINS.a,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.a.permitted)
-      )
-
-      const aAccounts = await permController.getAccounts(ORIGINS.a)
-      assert.deepEqual(aAccounts, [ACCOUNTS.a.primary], 'origin should have correct accounts')
-
-      await assert.rejects(
-        permController.legacyExposeAccounts(ORIGINS.a, ACCOUNTS.b.permitted),
-        ERRORS.legacyExposeAccounts.forbiddenUsage(),
-        'should throw if called on origin with existing exposed accounts'
-      )
-
-      const permissionsHistory = permController.permissionsLog.getHistory()
-      assert.deepEqual(
-        permissionsHistory, {},
-        'should not have modified history'
-      )
-      assert.deepEqual(
-        notifications[ORIGINS.a], [],
-        'should not have sent notification'
-      )
-    })
-
-    it('throws if called with bad accounts', async function () {
-
-      await assert.rejects(
-        permController.legacyExposeAccounts(ORIGINS.a, []),
-        ERRORS.validatePermittedAccounts.invalidParam(),
-        'should throw if called with no accounts'
-      )
-
-      const permissionsHistory = permController.permissionsLog.getHistory()
-      assert.deepEqual(
-        permissionsHistory, {},
-        'should not have modified history'
-      )
-      assert.deepEqual(
-        notifications[ORIGINS.a], [],
-        'should not have sent notification'
-      )
-    })
-
-    it('throws if called with bad origin', async function () {
-
-      await assert.rejects(
-        permController.legacyExposeAccounts(null, ACCOUNTS.a.permitted),
-        ERRORS.legacyExposeAccounts.badOrigin(),
-        'should throw if called with invalid origin'
-      )
-
-      const permissionsHistory = permController.permissionsLog.getHistory()
-      assert.deepEqual(
-        permissionsHistory, {},
-        'should not have modified history'
-      )
-      Object.keys(notifications).forEach((domain) => {
-        assert.deepEqual(
-          notifications[domain], [],
-          'should not have sent notification'
-        )
-      })
-    })
-  })
-
   describe('preferences state update', function () {
 
     let permController, notifications, preferences, identities
@@ -1502,6 +1389,16 @@ describe('permissions controller', function () {
 
     beforeEach(function () {
       permController = initPermController()
+    })
+
+    it('requestAccountsPermission calls _requestAccountsPermission with an explicit request ID', async function () {
+      const _requestPermissions = sinon.stub(permController, '_requestPermissions').resolves()
+      await permController.requestAccountsPermission('example.com')
+      assert.ok(_requestPermissions.calledOnceWithExactly(
+        sinon.match.object.and(sinon.match.has('origin')).and(sinon.match.has('id')),
+        { eth_accounts: {} },
+      ))
+      _requestPermissions.restore()
     })
 
     it('_addPendingApproval: should throw if adding origin twice', function () {

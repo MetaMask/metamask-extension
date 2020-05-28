@@ -22,7 +22,6 @@ import {
 } from './mocks'
 
 const {
-  ERRORS,
   PERMS,
   RPC_REQUESTS,
 } = getters
@@ -644,46 +643,6 @@ describe('permissions log', function () {
       assert.deepEqual(
         permHistory, EXPECTED_HISTORIES.case3[1],
         'should have expected history'
-      )
-    })
-  })
-
-  describe('instance method edge cases', function () {
-
-    it('logAccountExposure errors on invalid params', function () {
-
-      const permLog = initPermLog()
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('', ACCOUNTS.a.permitted)
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure(null, ACCOUNTS.a.permitted)
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('foo', {})
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('foo', [])
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
       )
     })
   })
