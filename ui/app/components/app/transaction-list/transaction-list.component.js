@@ -112,7 +112,7 @@ export default function TransactionList ({ tokenAddress }) {
                 </div>
               )
           }
-          {(completedTransactions.length - limit + PAGE_INCREMENT) > 0 && (
+          {completedTransactions.length > limit && (
             <Button className="transaction-list__view-more" type="secondary" rounded onClick={viewMore}>View More</Button>
           )}
         </div>

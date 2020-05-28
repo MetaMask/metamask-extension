@@ -35,12 +35,12 @@ export default class TransactionListItemDetails extends PureComponent {
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     recipientEns: PropTypes.string,
-    recipientAddress: PropTypes.string.isRequired,
+    recipientAddress: PropTypes.string,
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
-    recipientNickname: PropTypes.string.isRequired,
+    recipientNickname: PropTypes.string,
   }
 
   state = {
@@ -95,10 +95,12 @@ export default class TransactionListItemDetails extends PureComponent {
     })
   }
 
-  async componentDidMount () {
+  componentDidMount () {
     const { recipientAddress, tryReverseResolveAddress } = this.props
 
-    tryReverseResolveAddress(recipientAddress)
+    if (recipientAddress) {
+      tryReverseResolveAddress(recipientAddress)
+    }
   }
 
   renderCancel () {
