@@ -54,7 +54,7 @@ export default class Home extends PureComponent {
       decimals: PropTypes.number,
       symbol: PropTypes.string,
     }),
-    defaultHomeActiveTabName: PropTypes.string.isRequired,
+    defaultHomeActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func.isRequired,
   }
 
