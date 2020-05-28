@@ -1,6 +1,6 @@
 {
   "eth_accounts": {
-    "message": "Interact with your permitted address(es) [required]",
+    "message": "View its permitted addresses (required)",
     "description": "The description for the `eth_accounts` permission"
   },
   "connectedSites": {
