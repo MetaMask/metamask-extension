@@ -67,23 +67,23 @@ export default class PermissionPageContainerContent extends PureComponent {
     } = this.props
     const { t } = this.context
 
-    const items = Object.keys(selectedPermissions).map((methodName) => {
+    const items = Object.keys(selectedPermissions).map((permissionName) => {
 
-      const description = t(methodName)
+      const description = t(permissionName)
       // don't allow deselecting eth_accounts
-      const isDisabled = methodName === 'eth_accounts'
+      const isDisabled = permissionName === 'eth_accounts'
 
       return (
         <div
           className="permission-approval-container__content__permission"
-          key={methodName}
+          key={permissionName}
           onClick={() => {
             if (!isDisabled) {
-              onPermissionToggle(methodName)
+              onPermissionToggle(permissionName)
             }
           }}
         >
-          { selectedPermissions[methodName]
+          { selectedPermissions[permissionName]
             ? <i title={t('permissionCheckedIconDescription')} className="fa fa-check-square" />
             : <i title={t('permissionUncheckedIconDescription')} className="fa fa-square" />
           }
