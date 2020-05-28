@@ -60,7 +60,7 @@ export default class SelectHardware extends Component {
 
   renderButtons () {
     return (
-      <div>
+      <>
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
@@ -74,7 +74,7 @@ export default class SelectHardware extends Component {
         >
           {this.context.t('connect')}
         </Button>
-      </div>
+      </>
     )
   }
 
