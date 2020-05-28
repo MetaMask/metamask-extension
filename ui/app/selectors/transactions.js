@@ -10,7 +10,6 @@ import {
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
-import { selectedTokenAddressSelector } from './tokens'
 import { getFastPriceEstimateInHexWEI } from './custom-gas'
 import {
   getSelectedToken,
@@ -80,23 +79,14 @@ export const transactionSubSelector = createSelector(
   }
 )
 
-const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => {
-  return selectedTokenAddress
-    ? transactions
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : transactions
-      .sort((a, b) => b.time - a.time)
-}
-
 export const transactionsSelector = createSelector(
-  selectedTokenAddressSelector,
   transactionSubSelector,
   selectedAddressTxListSelector,
-  (selectedTokenAddress, subSelectorTxList = [], selectedAddressTxList = []) => {
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList)
 
-    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
+    return txsToRender
+      .sort((a, b) => b.time - a.time)
   }
 )
 

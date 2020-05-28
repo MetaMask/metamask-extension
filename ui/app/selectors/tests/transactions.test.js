@@ -139,57 +139,6 @@ describe('Transaction Selectors', function () {
       assert(Array.isArray(selectedTx))
       assert.deepEqual(selectedTx, orderedTxList)
     })
-
-    it('returns token transactions from currentNetworkTxList when selectedTokenAddress is valid', function () {
-
-      const state = {
-        metamask: {
-          provider: {
-            nickname: 'mainnet',
-          },
-          featureFlags: {
-            showIncomingTransactions: false,
-          },
-          selectedAddress: '0xAddress',
-          selectedTokenAddress: '0xToken',
-          currentNetworkTxList: [
-            {
-              id: 0,
-              time: 0,
-              txParams: {
-                from: '0xAddress',
-                to: '0xToken',
-              },
-            },
-            {
-              id: 1,
-              time: 1,
-              txParams: {
-                from: '0xAddress',
-                to: '0xRecipient',
-              },
-            },
-            {
-              id: 2,
-              time: 2,
-              txParams: {
-                from: '0xAddress',
-                to: '0xToken',
-              },
-            },
-          ],
-        },
-      }
-
-      const orderedTxList = state.metamask.currentNetworkTxList
-        .filter((tx) => tx.txParams.to === '0xToken')
-        .sort((a, b) => b.time - a.time)
-
-      const selectedTx = transactionsSelector(state)
-
-      assert(Array.isArray(selectedTx))
-      assert.deepEqual(selectedTx, orderedTxList)
-    })
   })
 
   describe('nonceSortedTransactionsSelector', function () {

@@ -11,6 +11,12 @@ export const METADATA_CACHE_MAX_SIZE = 100
 
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
+  primaryAccountOnly: 'primaryAccountOnly',
+}
+
+export const CAVEAT_TYPES = {
+  limitResponseLength: 'limitResponseLength',
+  filterResponse: 'filterResponse',
 }
 
 export const NOTIFICATION_NAMES = {
