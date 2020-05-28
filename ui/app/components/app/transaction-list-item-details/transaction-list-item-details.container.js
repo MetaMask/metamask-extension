@@ -10,8 +10,11 @@ const mapStateToProps = (state, ownProps) => {
     ensResolutionsByAddress,
   } = metamask
   const { recipientAddress, senderAddress } = ownProps
-  const address = checksumAddress(recipientAddress)
-  const recipientEns = ensResolutionsByAddress[address] || ''
+  let recipientEns
+  if (recipientAddress) {
+    const address = checksumAddress(recipientAddress)
+    recipientEns = ensResolutionsByAddress[address] || ''
+  }
   const addressBook = getAddressBook(state)
 
   const getNickName = (address) => {
@@ -26,7 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     rpcPrefs,
     recipientEns,
     senderNickname: getNickName(senderAddress),
-    recipientNickname: getNickName(recipientAddress),
+    recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
   }
 }
 
