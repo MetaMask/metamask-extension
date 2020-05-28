@@ -41,6 +41,9 @@ const copyTargets = [
   {
     src: `./app/`,
     pattern: `*.html`,
+    replacements: [
+      { search: 'browser-classname', replacement: (platform) => `${platform}-browser` },
+    ],
     dest: ``,
   },
 ]
@@ -81,9 +84,29 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
   async function performCopy (target) {
     await Promise.all(browserPlatforms.map(async (platform) => {
       if (target.pattern) {
-        await copyGlob(target.src, `${target.src}${target.pattern}`, `./dist/${platform}/${target.dest}`)
+        if (target.replacements) {
+          await copyGlobAndInjectReplacements(
+            target.src,
+            `${target.src}${target.pattern}`,
+            `./dist/${platform}/${target.dest}`,
+            platform,
+            target.replacements
+          )
+        } else {
+          await copyGlob(target.src, `${target.src}${target.pattern}`, `./dist/${platform}/${target.dest}`)
+        }
       } else {
-        await copyGlob(target.src, `${target.src}`, `./dist/${platform}/${target.dest}`)
+        if (target.replacements) {
+          await copyGlobAndInjectReplacements(
+            target.src,
+            `${target.src}`,
+            `./dist/${platform}/${target.dest}`,
+            platform,
+            target.replacements
+          )
+        } else {
+          await copyGlob(target.src, `${target.src}`, `./dist/${platform}/${target.dest}`)
+        }
       }
     }))
   }
@@ -93,6 +116,22 @@ function createStaticAssetTasks ({ livereload, browserPlatforms }) {
     await Promise.all(sources.map(async (src) => {
       const relativePath = path.relative(baseDir, src)
       await fs.copy(src, `${dest}${relativePath}`)
+    }))
+  }
+
+  async function copyGlobAndInjectReplacements (baseDir, srcGlob, dest, platform, replacements) {
+    const sources = await glob(srcGlob, { onlyFiles: false })
+    await Promise.all(sources.map(async (src) => {
+      const relativePath = path.relative(baseDir, src)
+      let fileAsString = await fs.readFile(src, 'utf8')
+      replacements.forEach(({ search, replacement }) => {
+        let replacementString = replacement
+        if (typeof replacement === 'function') {
+          replacementString = replacement(platform, dest, src, baseDir)
+        }
+        fileAsString = fileAsString.replace(search, replacementString)
+      })
+      await fs.writeFile(`${dest}${relativePath}`, fileAsString, 'utf8')
     }))
   }
 
