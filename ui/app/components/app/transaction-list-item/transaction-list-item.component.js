@@ -13,7 +13,7 @@ import { useCancelTransaction } from '../../../hooks/useCancelTransaction'
 import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
-import TransactionListItemDetails from '../transaction-list-item-details/transaction-list-item-details.component'
+import TransactionListItemDetails from '../transaction-list-item-details'
 import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import {
