@@ -156,12 +156,7 @@ export function getTargetAccount (state, targetAddress) {
   return accounts[targetAddress]
 }
 
-export function getSelectedTokenExchangeRate (state) {
-  const contractExchangeRates = state.metamask.contractExchangeRates
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return contractExchangeRates[address] || 0
-}
+export const getTokenExchangeRates = (state) => state.metamask.contractExchangeRates
 
 export function getAssetImages (state) {
   const assetImages = state.metamask.assetImages || {}

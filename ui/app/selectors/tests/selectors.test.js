@@ -32,10 +32,13 @@ describe('Selectors', function () {
     assert.equal(account.address, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
   })
 
-  describe('#getSelectedTokenExchangeRate', function () {
-    it('returns token exchange rate for first token', function () {
-      const tokenRate = selectors.getSelectedTokenExchangeRate(mockState)
-      assert.equal(tokenRate, '0.00039345803819379796')
+  describe('#getTokenExchangeRates', function () {
+    it('returns token exchange rates', function () {
+      const tokenExchangeRates = selectors.getTokenExchangeRates(mockState)
+      assert.deepEqual(tokenExchangeRates, {
+        '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
+        '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
+      })
     })
   })
 
