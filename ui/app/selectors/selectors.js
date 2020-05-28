@@ -163,13 +163,6 @@ export function getSelectedTokenExchangeRate (state) {
   return contractExchangeRates[address] || 0
 }
 
-export function getSelectedTokenAssetImage (state) {
-  const assetImages = state.metamask.assetImages || {}
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return assetImages[address]
-}
-
 export function getAssetImages (state) {
   const assetImages = state.metamask.assetImages || {}
   return assetImages
