@@ -49,7 +49,7 @@ export default class NewAccountCreateForm extends Component {
         <div className="new-account-create-form__input-label">
           {this.context.t('accountName')}
         </div>
-        <div className="new-account-create-form__account-name">
+        <div>
           <input
             className="new-account-create-form__input"
             value={newAccountName}
