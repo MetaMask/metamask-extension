@@ -40,10 +40,10 @@ import {
   getEstimatedGasTimes,
   getRenderableBasicEstimateData,
   getBasicGasEstimateBlockTime,
-  getTxParams,
   isCustomPriceSafe,
   getTokenBalance,
   getSendMaxModeState,
+  getFastPriceEstimateInHexWEI,
 } from '../../../../selectors'
 
 import {
@@ -67,7 +67,7 @@ import { addHexPrefix } from 'ethereumjs-util'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
-  const { currentNetworkTxList } = state.metamask
+  const { currentNetworkTxList, send } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
   const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
@@ -75,8 +75,18 @@ const mapStateToProps = (state, ownProps) => {
 
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
+  const selectedToken = getSelectedToken(state)
 
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, selectedTransaction)
+  // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
+  const txParams = selectedTransaction?.txParams
+    ? selectedTransaction.txParams
+    : {
+      gas: send.gasLimit || '0x5208',
+      gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+      value: selectedToken ? '0x0' : send.amount,
+    }
+
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = txParams
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit || '0x5208'
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
@@ -102,7 +112,7 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const isTokenSelected = Boolean(getSelectedToken(state))
+  const isTokenSelected = Boolean(selectedToken)
 
   const newTotalEth = maxModeOn && !isTokenSelected ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 

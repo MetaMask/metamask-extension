@@ -21,8 +21,8 @@ import { useMethodData } from './useMethodData'
  */
 export function useRetryTransaction (transactionGroup) {
   const { primaryTransaction, initialTransaction } = transactionGroup
-  const gasPrice = primaryTransaction.txParams?.gasPrice
-  const methodData = useMethodData(primaryTransaction.txParams?.data)
+  const gasPrice = primaryTransaction.txParams.gasPrice
+  const methodData = useMethodData(primaryTransaction.txParams.data)
   const trackMetricsEvent = useMetricEvent(({
     eventOpts: {
       category: 'Navigation',
@@ -42,8 +42,8 @@ export function useRetryTransaction (transactionGroup) {
     await dispatch(fetchGasEstimates(basicEstimates.blockTime))
     const transaction = initialTransaction
     const increasedGasPrice = increaseLastGasPrice(gasPrice)
-    dispatch(setCustomGasPriceForRetry(increasedGasPrice || transaction.txParams?.gasPrice))
-    dispatch(setCustomGasLimit(transaction.txParams?.gas))
+    dispatch(setCustomGasPriceForRetry(increasedGasPrice || transaction.txParams.gasPrice))
+    dispatch(setCustomGasLimit(transaction.txParams.gas))
     dispatch(showSidebar({
       transitionName: 'sidebar-left',
       type: 'customize-gas',
