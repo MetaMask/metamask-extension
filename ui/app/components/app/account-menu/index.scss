@@ -67,6 +67,7 @@
   &__accounts {
     overflow-y: auto;
     position: relative;
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;
