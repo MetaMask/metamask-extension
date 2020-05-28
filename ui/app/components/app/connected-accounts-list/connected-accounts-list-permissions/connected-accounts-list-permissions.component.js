@@ -57,7 +57,7 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
           <ul className="connected-accounts-permissions__list">
             {permissions.map(({ key: permissionName }) => (
               <li key={permissionName} className="connected-accounts-permissions__list-item">
-                <i className="fas fa-check-square" />&nbsp;{t(permissionName)}
+                <i className="fas fa-check-square" />{t(permissionName)}
               </li>
             ))}
           </ul>
