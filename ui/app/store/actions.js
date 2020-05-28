@@ -2216,7 +2216,7 @@ export function getTokenParams (tokenAddress) {
 
     return fetchSymbolAndDecimals(tokenAddress, existingTokens)
       .then(({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, decimals))
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)))
         dispatch(loadingTokenParamsFinished())
       })
   }
