@@ -218,6 +218,7 @@ export default class TransactionListItemDetails extends PureComponent {
           <div className="transaction-list-item-details__body">
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
+                warnUserOnAccountMismatch={false}
                 variant={FLAT_VARIANT}
                 addressOnly
                 recipientEns={recipientEns}

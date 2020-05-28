@@ -22,6 +22,7 @@ function SenderAddress ({
   senderName,
   onSenderClick,
   senderAddress,
+  warnUserOnAccountMismatch,
 }) {
   const t = useI18nContext()
   const [addressCopied, setAddressCopied] = useState(false)
@@ -70,7 +71,7 @@ function SenderAddress ({
           }
         </div>
       </Tooltip>
-      <AccountMismatchWarning address={senderAddress} />
+      {warnUserOnAccountMismatch && <AccountMismatchWarning address={senderAddress} />}
     </div>
   )
 }
@@ -81,6 +82,7 @@ SenderAddress.propTypes = {
   addressOnly: PropTypes.bool,
   senderAddress: PropTypes.string,
   onSenderClick: PropTypes.func,
+  warnUserOnAccountMismatch: PropTypes.bool,
 }
 
 function RecipientWithAddress ({
@@ -197,7 +199,8 @@ export default function SenderToRecipient ({
   onRecipientClick,
   onSenderClick,
   recipientAddress,
-  variant = DEFAULT_VARIANT,
+  variant,
+  warnUserOnAccountMismatch,
 }) {
   const t = useI18nContext()
   const checksummedSenderAddress = checksumAddress(senderAddress)
@@ -211,6 +214,7 @@ export default function SenderToRecipient ({
         senderName={senderName}
         onSenderClick={onSenderClick}
         senderAddress={senderAddress}
+        warnUserOnAccountMismatch={warnUserOnAccountMismatch}
       />
       <Arrow variant={variant} />
       {recipientAddress
@@ -238,6 +242,11 @@ export default function SenderToRecipient ({
   )
 }
 
+SenderToRecipient.defaultProps = {
+  variant: DEFAULT_VARIANT,
+  warnUserOnAccountMismatch: true,
+}
+
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
@@ -250,4 +259,5 @@ SenderToRecipient.propTypes = {
   assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
+  warnUserOnAccountMismatch: PropTypes.bool,
 }
