@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Button from '../../../components/ui/button'
 
-class ConnectScreen extends Component {
+export default class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -60,7 +60,7 @@ class ConnectScreen extends Component {
 
   renderButtons () {
     return (
-      <div>
+      <>
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
@@ -74,13 +74,13 @@ class ConnectScreen extends Component {
         >
           {this.context.t('connect')}
         </Button>
-      </div>
+      </>
     )
   }
 
   renderUnsupportedBrowser () {
     return (
-      <div className="new-account-connect-form unsupported-browser">
+      <div className="new-external-account-form unsupported-browser">
         <div className="hw-connect">
           <h3 className="hw-connect__title">{this.context.t('browserNotSupported')}</h3>
           <p className="hw-connect__msg">{this.context.t('chromeRequiredForHardwareWallets')}</p>
@@ -206,7 +206,7 @@ class ConnectScreen extends Component {
 
   renderConnectScreen () {
     return (
-      <div className="new-account-connect-form">
+      <div className="new-external-account-form">
         {this.renderHeader()}
         {this.renderButtons()}
         {this.renderTrezorAffiliateLink()}
@@ -224,6 +224,3 @@ class ConnectScreen extends Component {
     return this.renderUnsupportedBrowser()
   }
 }
-
-export default ConnectScreen
-

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import { getMetaMaskAccounts } from '../../../selectors'
-import ConnectScreen from './connect-screen'
+import SelectHardware from './select-hardware'
 import AccountList from './account-list'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { formatBalance } from '../../../helpers/utils/util'
@@ -186,7 +186,7 @@ class ConnectHardwareForm extends Component {
   renderContent () {
     if (!this.state.accounts.length) {
       return (
-        <ConnectScreen
+        <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
         />
@@ -213,10 +213,10 @@ class ConnectHardwareForm extends Component {
 
   render () {
     return (
-      <div>
+      <>
         {this.renderError()}
         {this.renderContent()}
-      </div>
+      </>
     )
   }
 }

@@ -4,6 +4,12 @@
   box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   z-index: 25;
   height: unset;
+  overflow: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media screen and (min-width: 576px) {
     position: absolute;
@@ -204,7 +210,7 @@
 
   &__btn {
     background: #fbfbfb;
-    border: 1px solid #e5e5e5;
+    border: 2px solid #e5e5e5;
     height: 100px;
     width: 150px;
     flex: 1;
@@ -212,6 +218,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 5px;
+    padding: 0;
 
     &__img {
       width: 95px;
@@ -458,16 +465,20 @@
   }
 }
 
-.new-account-connect-form {
+.new-external-account-form {
   display: flex;
   flex-flow: column;
   align-items: center;
   padding: 15px 30px 0;
-  height: 710px;
-  overflow: auto;
 
   &.unsupported-browser {
     height: 210px;
+    overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &.account-list {
