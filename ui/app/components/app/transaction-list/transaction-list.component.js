@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useRef, useState, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -14,14 +15,37 @@ import Button from '../../ui/button'
 
 const PAGE_INCREMENT = 10
 
-export default function TransactionList () {
+const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
+  return ({ initialTransaction: { txParams } }) => txParams && txParams.to === recipientAddress
+}
+
+export default function TransactionList ({ tokenAddress }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
   const dispatch = useDispatch()
-  const pendingTransactions = useSelector(nonceSortedPendingTransactionsSelector)
-  const completedTransactions = useSelector(nonceSortedCompletedTransactionsSelector)
+  const unfilteredPendingTransactions = useSelector(nonceSortedPendingTransactionsSelector)
+  const unfilteredCompletedTransactions = useSelector(nonceSortedCompletedTransactionsSelector)
   const { transactionTime: transactionTimeFeatureActive } = useSelector(getFeatureFlags)
+
+  const pendingTransactions = useMemo(
+    () => (
+      tokenAddress && tokenAddress.startsWith('0x')
+        ? unfilteredPendingTransactions
+          .filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
+        : unfilteredPendingTransactions
+    ),
+    [unfilteredPendingTransactions, tokenAddress]
+  )
+  const completedTransactions = useMemo(
+    () => (
+      tokenAddress && tokenAddress.startsWith('0x')
+        ? unfilteredCompletedTransactions
+          .filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
+        : unfilteredCompletedTransactions
+    ),
+    [unfilteredCompletedTransactions, tokenAddress]
+  )
 
   const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(() => ({
     fetchGasEstimates: (blockTime) => dispatch(actions.fetchGasEstimates(blockTime)),
@@ -95,4 +119,12 @@ export default function TransactionList () {
       </div>
     </div>
   )
+}
+
+TransactionList.propTypes = {
+  tokenAddress: PropTypes.string,
+}
+
+TransactionList.defaultProps = {
+  tokenAddress: undefined,
 }
