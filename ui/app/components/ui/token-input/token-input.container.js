@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import TokenInput from './token-input.component'
 import {
   getIsMainnet,
-  getSelectedToken,
-  getSelectedTokenExchangeRate,
+  getTokenExchangeRates,
   getPreferences,
 } from '../../../selectors'
 
@@ -14,22 +14,19 @@ const mapStateToProps = (state) => {
 
   return {
     currentCurrency,
-    selectedToken: getSelectedToken(state),
-    selectedTokenExchangeRate: getSelectedTokenExchangeRate(state),
+    tokenExchangeRates: getTokenExchangeRates(state),
     hideConversion: (!isMainnet && !showFiatInTestnets),
   }
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { selectedToken } = stateProps
-  const suffix = selectedToken && selectedToken.symbol
+const TokenInputContainer = connect(mapStateToProps)(TokenInput)
 
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    suffix,
-  }
+TokenInputContainer.propTypes = {
+  token: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    decimals: PropTypes.number,
+    symbol: PropTypes.string,
+  }).isRequired,
 }
 
-export default connect(mapStateToProps, null, mergeProps)(TokenInput)
+export default TokenInputContainer

@@ -101,15 +101,23 @@ export default class SendAmountRow extends Component {
 
   renderInput () {
     const { amount, inError, selectedToken } = this.props
-    const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
 
-    return (
-      <Component
-        onChange={this.handleChange}
-        error={inError}
-        value={amount}
-      />
-    )
+    return selectedToken ?
+      (
+        <UserPreferencedTokenInput
+          error={inError}
+          onChange={this.handleChange}
+          token={selectedToken}
+          value={amount}
+        />
+      )
+      : (
+        <UserPreferencedCurrencyInput
+          error={inError}
+          onChange={this.handleChange}
+          value={amount}
+        />
+      )
   }
 
   render () {
