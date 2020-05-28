@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+## 0.2.2 Thu May 28 2020
+- Add: buildkite to speed up ci (#136)
+- Fix: buildkite invalid branch name
+- remove reent block tracker, use 'cfx_gasPrice' method to get gas price (#141)
+- Fix: sentry project name (#143)
+
 ## 0.2.1 Fri May 22 2020
 - modify decimal of balance (#129)
 - bugfix: check whether keyring is null (#131)
@@ -33,8 +39,6 @@
 - Clean: readme
 - Add: disabled token rates controller
 - Add: get trusted token from confluxscan
-
-## 0.1.9 Thu May 07 2020
 
 ## 0.1.8 Mon Apr 27 2020
 - Version v0.1.7
