@@ -10,7 +10,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
-
 import { getOriginOfCurrentTab } from '../../../selectors'
 
 export default function MenuBar () {
