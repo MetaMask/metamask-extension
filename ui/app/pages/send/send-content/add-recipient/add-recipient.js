@@ -11,7 +11,7 @@ import { checkExistingAddresses } from '../../../add-token/util'
 import ethUtil from 'ethereumjs-util'
 import contractMap from 'eth-contract-metadata'
 
-export function getToErrorObject (to, hasHexData = false, _, __, network) {
+export function getToErrorObject (to, hasHexData = false, network) {
   let toError = null
   if (!to) {
     if (!hasHexData) {
