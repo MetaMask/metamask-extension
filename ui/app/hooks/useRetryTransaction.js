@@ -1,16 +1,14 @@
 import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { setSelectedToken, showSidebar } from '../store/actions'
+import { showSidebar } from '../store/actions'
 import {
   fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../ducks/gas/gas.duck'
-import { TOKEN_METHOD_TRANSFER } from '../helpers/constants/transactions'
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util'
 import { useMetricEvent } from './useMetricEvent'
-import { useMethodData } from './useMethodData'
 
 
 /**
@@ -22,7 +20,6 @@ import { useMethodData } from './useMethodData'
 export function useRetryTransaction (transactionGroup) {
   const { primaryTransaction, initialTransaction } = transactionGroup
   const gasPrice = primaryTransaction.txParams.gasPrice
-  const methodData = useMethodData(primaryTransaction.txParams.data)
   const trackMetricsEvent = useMetricEvent(({
     eventOpts: {
       category: 'Navigation',
@@ -31,8 +28,6 @@ export function useRetryTransaction (transactionGroup) {
     },
   }))
   const dispatch = useDispatch()
-
-  const { name: methodName } = methodData || {}
 
   const retryTransaction = useCallback(async (event) => {
     event.stopPropagation()
@@ -49,14 +44,7 @@ export function useRetryTransaction (transactionGroup) {
       type: 'customize-gas',
       props: { transaction },
     }))
-
-    if (
-      methodName === TOKEN_METHOD_TRANSFER &&
-      initialTransaction.txParams.to
-    ) {
-      dispatch(setSelectedToken(initialTransaction.txParams.to))
-    }
-  }, [dispatch, methodName, trackMetricsEvent, initialTransaction, gasPrice])
+  }, [dispatch, trackMetricsEvent, initialTransaction, gasPrice])
 
   return retryTransaction
 }

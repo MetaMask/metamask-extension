@@ -55,7 +55,7 @@ describe('add-recipient utils', function () {
       })
     })
 
-    it('should null if to is truthy part of tokens but selectedToken falsy', function () {
+    it('should null if to is truthy part of tokens but sendToken falsy', function () {
       assert.deepEqual(getToErrorObject('0xabc123', false, [{ 'address': '0xabc123' }]), {
         to: null,
       })
@@ -66,7 +66,7 @@ describe('add-recipient utils', function () {
         to: null,
       })
     })
-    it('should null if to is truthy part of contract metadata but selectedToken falsy', function () {
+    it('should null if to is truthy part of contract metadata but sendToken falsy', function () {
       assert.deepEqual(getToErrorObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', false, [{ 'address': '0xabc123' }], { 'address': '0xabc123' }), {
         to: null,
       })
@@ -80,7 +80,7 @@ describe('add-recipient utils', function () {
       })
     })
 
-    it('should null if to is truthy part of tokens but selectedToken falsy', function () {
+    it('should null if to is truthy part of tokens but sendToken falsy', function () {
       assert.deepEqual(getToWarningObject('0xabc123', [{ 'address': '0xabc123' }]), {
         to: null,
       })
@@ -91,7 +91,7 @@ describe('add-recipient utils', function () {
         to: KNOWN_RECIPIENT_ADDRESS_ERROR,
       })
     })
-    it('should null if to is truthy part of contract metadata but selectedToken falsy', function () {
+    it('should null if to is truthy part of contract metadata but sendToken falsy', function () {
       assert.deepEqual(getToWarningObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', [{ 'address': '0xabc123' }], { 'address': '0xabc123' }), {
         to: KNOWN_RECIPIENT_ADDRESS_ERROR,
       })

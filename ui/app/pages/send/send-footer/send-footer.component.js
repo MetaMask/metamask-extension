@@ -17,7 +17,7 @@ export default class SendFooter extends Component {
     gasTotal: PropTypes.string,
     history: PropTypes.object,
     inError: PropTypes.bool,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
@@ -49,7 +49,7 @@ export default class SendFooter extends Component {
       from: { address: from },
       gasLimit: gas,
       gasPrice,
-      selectedToken,
+      sendToken,
       sign,
       to,
       unapprovedTxs,
@@ -78,11 +78,11 @@ export default class SendFooter extends Component {
         from,
         gas,
         gasPrice,
-        selectedToken,
+        sendToken,
         to,
         unapprovedTxs,
       })
-      : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
+      : sign({ data, sendToken, to, amount, from, gas, gasPrice })
 
     Promise.resolve(promise)
       .then(() => {
@@ -101,8 +101,8 @@ export default class SendFooter extends Component {
   }
 
   formShouldBeDisabled () {
-    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
-    const missingTokenBalance = selectedToken && !tokenBalance
+    const { data, inError, sendToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
+    const missingTokenBalance = sendToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
     const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow || gasIsLoading
     return shouldBeDisabled

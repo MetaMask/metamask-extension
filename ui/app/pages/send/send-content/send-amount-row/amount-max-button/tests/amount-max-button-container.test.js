@@ -23,7 +23,7 @@ proxyquire('../amount-max-button.container.js', {
   },
   '../../../../../selectors': {
     getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendToken: (s) => `mockSendToken:${s}`,
     getSendFromBalance: (s) => `mockBalance:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
@@ -44,7 +44,7 @@ describe('amount-max-button container', function () {
         buttonDataLoading: 'mockButtonDataLoading:mockState',
         gasTotal: 'mockGasTotal:mockState',
         maxModeOn: 'mockMaxModeOn:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
+        sendToken: 'mockSendToken:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
       })
     })

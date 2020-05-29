@@ -34,7 +34,7 @@ export default class SendTransactionScreen extends Component {
     primaryCurrency: PropTypes.string,
     resetSendState: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     showHexData: PropTypes.bool,
     to: PropTypes.string,
     toNickname: PropTypes.string,
@@ -77,7 +77,7 @@ export default class SendTransactionScreen extends Component {
       gasTotal,
       network,
       primaryCurrency,
-      selectedToken,
+      sendToken,
       tokenBalance,
       updateSendErrors,
       updateSendTo,
@@ -97,7 +97,7 @@ export default class SendTransactionScreen extends Component {
       gasTotal: prevGasTotal,
       tokenBalance: prevTokenBalance,
       network: prevNetwork,
-      selectedToken: prevSelectedToken,
+      sendToken: prevSendToken,
       to: prevTo,
     } = prevProps
 
@@ -109,7 +109,7 @@ export default class SendTransactionScreen extends Component {
       prevBalance,
       prevGasTotal,
       prevTokenBalance,
-      selectedToken,
+      sendToken,
       tokenBalance,
     })
 
@@ -120,16 +120,16 @@ export default class SendTransactionScreen extends Component {
         conversionRate,
         gasTotal,
         primaryCurrency,
-        selectedToken,
+        sendToken,
         tokenBalance,
       })
-      const gasFeeErrorObject = selectedToken
+      const gasFeeErrorObject = sendToken
         ? getGasFeeErrorObject({
           balance,
           conversionRate,
           gasTotal,
           primaryCurrency,
-          selectedToken,
+          sendToken,
         })
         : { gasFee: null }
       updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))
@@ -139,7 +139,7 @@ export default class SendTransactionScreen extends Component {
 
       if (network !== prevNetwork && network !== 'loading') {
         updateSendTokenBalance({
-          selectedToken,
+          sendToken,
           tokenContract,
           address,
         })
@@ -148,10 +148,10 @@ export default class SendTransactionScreen extends Component {
       }
     }
 
-    const prevTokenAddress = prevSelectedToken && prevSelectedToken.address
-    const selectedTokenAddress = selectedToken && selectedToken.address
+    const prevTokenAddress = prevSendToken && prevSendToken.address
+    const sendTokenAddress = sendToken && sendToken.address
 
-    if (selectedTokenAddress && prevTokenAddress !== selectedTokenAddress) {
+    if (sendTokenAddress && prevTokenAddress !== sendTokenAddress) {
       this.updateSendToken()
       updateGas = true
     }
@@ -220,7 +220,7 @@ export default class SendTransactionScreen extends Component {
     const {
       hasHexData,
       tokens,
-      selectedToken,
+      sendToken,
       network,
     } = this.props
 
@@ -228,8 +228,8 @@ export default class SendTransactionScreen extends Component {
       return this.setState({ toError: '', toWarning: '' })
     }
 
-    const toErrorObject = getToErrorObject(query, hasHexData, tokens, selectedToken, network)
-    const toWarningObject = getToWarningObject(query, tokens, selectedToken)
+    const toErrorObject = getToErrorObject(query, hasHexData, tokens, sendToken, network)
+    const toWarningObject = getToWarningObject(query, tokens, sendToken)
 
     this.setState({
       toError: toErrorObject.to,
@@ -240,13 +240,13 @@ export default class SendTransactionScreen extends Component {
   updateSendToken () {
     const {
       from: { address },
-      selectedToken,
+      sendToken,
       tokenContract,
       updateSendTokenBalance,
     } = this.props
 
     updateSendTokenBalance({
-      selectedToken,
+      sendToken,
       tokenContract,
       address,
     })
@@ -260,7 +260,7 @@ export default class SendTransactionScreen extends Component {
       gasLimit,
       gasPrice,
       selectedAddress,
-      selectedToken = {},
+      sendToken = {},
       to: currentToAddress,
       updateAndSetGasLimit,
     } = this.props
@@ -271,7 +271,7 @@ export default class SendTransactionScreen extends Component {
       gasLimit,
       gasPrice,
       selectedAddress,
-      selectedToken,
+      sendToken,
       to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
       value: value || amount,
       data,

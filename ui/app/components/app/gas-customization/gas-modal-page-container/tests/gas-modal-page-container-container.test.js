@@ -40,7 +40,7 @@ proxyquire('../gas-modal-page-container.container.js', {
     getRenderableBasicEstimateData: (s) => `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
     getDefaultActiveButtonIndex: (a, b) => a + b,
     getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
-    getSelectedToken: () => null,
+    getSendToken: () => null,
     getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
   },
   '../../../../store/actions': actionSpies,
@@ -158,7 +158,7 @@ describe('gas-modal-page-container container', function () {
         isEthereumNetwork: true,
         isMainnet: true,
         maxModeOn: false,
-        selectedToken: null,
+        sendToken: null,
         tokenBalance: '0x0',
         transaction: {
           id: 34,

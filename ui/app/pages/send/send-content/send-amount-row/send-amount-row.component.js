@@ -15,7 +15,7 @@ export default class SendAmountRow extends Component {
     gasTotal: PropTypes.string,
     inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
     updateGasFeeError: PropTypes.func,
@@ -31,9 +31,9 @@ export default class SendAmountRow extends Component {
 
   componentDidUpdate (prevProps) {
     const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps
-    const { maxModeOn, amount, gasTotal, selectedToken } = this.props
+    const { maxModeOn, amount, gasTotal, sendToken } = this.props
 
-    if (maxModeOn && selectedToken && !prevMaxModeOn) {
+    if (maxModeOn && sendToken && !prevMaxModeOn) {
       this.updateGas(amount)
     }
 
@@ -50,7 +50,7 @@ export default class SendAmountRow extends Component {
       conversionRate,
       gasTotal,
       primaryCurrency,
-      selectedToken,
+      sendToken,
       tokenBalance,
       updateGasFeeError,
       updateSendAmountError,
@@ -62,17 +62,17 @@ export default class SendAmountRow extends Component {
       conversionRate,
       gasTotal,
       primaryCurrency,
-      selectedToken,
+      sendToken,
       tokenBalance,
     })
 
-    if (selectedToken) {
+    if (sendToken) {
       updateGasFeeError({
         balance,
         conversionRate,
         gasTotal,
         primaryCurrency,
-        selectedToken,
+        sendToken,
         tokenBalance,
       })
     }
@@ -86,9 +86,9 @@ export default class SendAmountRow extends Component {
   }
 
   updateGas (amount) {
-    const { selectedToken, updateGas } = this.props
+    const { sendToken, updateGas } = this.props
 
-    if (selectedToken) {
+    if (sendToken) {
       updateGas({ amount })
     }
   }
@@ -100,14 +100,14 @@ export default class SendAmountRow extends Component {
   }
 
   renderInput () {
-    const { amount, inError, selectedToken } = this.props
+    const { amount, inError, sendToken } = this.props
 
-    return selectedToken ?
+    return sendToken ?
       (
         <UserPreferencedTokenInput
           error={inError}
           onChange={this.handleChange}
-          token={selectedToken}
+          token={sendToken}
           value={amount}
         />
       )
