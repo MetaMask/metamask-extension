@@ -13,7 +13,7 @@ import {
   getGasButtonGroupShown,
   getAdvancedInlineGasShown,
   getCurrentEthBalance,
-  getSelectedToken,
+  getSendToken,
   getBasicGasEstimateLoadingStatus,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
@@ -49,7 +49,7 @@ function mapStateToProps (state) {
   const balance = getCurrentEthBalance(state)
 
   const insufficientBalance = !isBalanceSufficient({
-    amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
+    amount: getSendToken(state) ? '0x0' : getSendAmount(state),
     gasTotal,
     balance,
     conversionRate,
@@ -72,7 +72,7 @@ function mapStateToProps (state) {
     gasLimit,
     insufficientBalance,
     maxModeOn: getSendMaxModeState(state),
-    selectedToken: getSelectedToken(state),
+    sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
   }
 }

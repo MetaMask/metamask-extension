@@ -37,23 +37,22 @@ export function getGasTotal (state) {
 }
 
 export function getPrimaryCurrency (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken && selectedToken.symbol
+  const sendToken = getSendToken(state)
+  return sendToken?.symbol
 }
 
-export function getSelectedToken (state) {
-  const tokens = state.metamask.tokens || []
-  const selectedTokenAddress = state.metamask.selectedTokenAddress
-  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask?.send.token
-
-  return selectedToken || sendToken || null
+export function getSendToken (state) {
+  return state.metamask.send.token
 }
 
-export function getSelectedTokenContract (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken
-    ? global.eth.contract(abi).at(selectedToken.address)
+export function getSendTokenAddress (state) {
+  return getSendToken(state)?.address
+}
+
+export function getSendTokenContract (state) {
+  const sendTokenAddress = getSendTokenAddress(state)
+  return sendTokenAddress
+    ? global.eth.contract(abi).at(sendTokenAddress)
     : null
 }
 
@@ -148,7 +147,7 @@ export function getGasButtonGroupShown (state) {
 
 export function getTitleKey (state) {
   const isEditing = Boolean(getSendEditingTransactionId(state))
-  const isToken = Boolean(getSelectedToken(state))
+  const isToken = Boolean(getSendToken(state))
 
   if (!getSendTo(state)) {
     return 'addRecipient'

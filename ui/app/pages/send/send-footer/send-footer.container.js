@@ -11,7 +11,7 @@ import {
   getGasLimit,
   getGasPrice,
   getGasTotal,
-  getSelectedToken,
+  getSendToken,
   getSendAmount,
   getSendEditingTransactionId,
   getSendFromObject,
@@ -54,7 +54,7 @@ function mapStateToProps (state) {
     gasPrice: getGasPrice(state),
     gasTotal: getGasTotal(state),
     inError: isSendFormInError(state),
-    selectedToken: getSelectedToken(state),
+    sendToken: getSendToken(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
     tokenBalance: getTokenBalance(state),
@@ -68,19 +68,19 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ selectedToken, to, amount, from, gas, gasPrice, data }) => {
+    sign: ({ sendToken, to, amount, from, gas, gasPrice, data }) => {
       const txParams = constructTxParams({
         amount,
         data,
         from,
         gas,
         gasPrice,
-        selectedToken,
+        sendToken,
         to,
       })
 
-      selectedToken
-        ? dispatch(signTokenTx(selectedToken.address, to, amount, txParams))
+      sendToken
+        ? dispatch(signTokenTx(sendToken.address, to, amount, txParams))
         : dispatch(signTx(txParams))
     },
     update: ({
@@ -90,7 +90,7 @@ function mapDispatchToProps (dispatch) {
       from,
       gas,
       gasPrice,
-      selectedToken,
+      sendToken,
       to,
       unapprovedTxs,
     }) => {
@@ -101,7 +101,7 @@ function mapDispatchToProps (dispatch) {
         from,
         gas,
         gasPrice,
-        selectedToken,
+        sendToken,
         to,
         unapprovedTxs,
       })

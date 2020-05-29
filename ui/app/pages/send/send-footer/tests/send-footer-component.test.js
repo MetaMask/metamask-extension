@@ -40,7 +40,7 @@ describe('SendFooter Component', function () {
         gasTotal="mockGasTotal"
         history={historySpies}
         inError={false}
-        selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+        sendToken={{ mockProp: 'mockSendTokenProp' }}
         sign={propsMethodSpies.sign}
         to="mockTo"
         toAccounts={['mockAccount']}
@@ -103,8 +103,8 @@ describe('SendFooter Component', function () {
         expectedResult: true,
         gasIsLoading: false,
       },
-      'should return true if selectedToken is truthy and tokenBalance is falsy': {
-        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+      'should return true if sendToken is truthy and tokenBalance is falsy': {
+        sendToken: { mockProp: 'mockSendTokenProp' },
         tokenBalance: '',
         expectedResult: true,
         gasIsLoading: false,
@@ -112,7 +112,7 @@ describe('SendFooter Component', function () {
       'should return true if gasIsLoading is truthy but all other params are falsy': {
         inError: false,
         gasTotal: '',
-        selectedToken: null,
+        sendToken: null,
         tokenBalance: '',
         expectedResult: true,
         gasIsLoading: true,
@@ -120,7 +120,7 @@ describe('SendFooter Component', function () {
       'should return false if inError is false and all other params are truthy': {
         inError: false,
         gasTotal: '0x123',
-        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+        sendToken: { mockProp: 'mockSendTokenProp' },
         tokenBalance: '123',
         expectedResult: false,
         gasIsLoading: false,
@@ -157,7 +157,7 @@ describe('SendFooter Component', function () {
           from: 'mockAddress',
           gas: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
-          selectedToken: { mockProp: 'mockSelectedTokenProp' },
+          sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
           unapprovedTxs: {},
         }
@@ -180,7 +180,7 @@ describe('SendFooter Component', function () {
           from: 'mockAddress',
           gas: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
-          selectedToken: { mockProp: 'mockSelectedTokenProp' },
+          sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
         }
       )
@@ -214,7 +214,7 @@ describe('SendFooter Component', function () {
           gasTotal="mockGasTotal"
           history={historySpies}
           inError={false}
-          selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+          sendToken={{ mockProp: 'mockSendTokenProp' }}
           sign={propsMethodSpies.sign}
           to="mockTo"
           toAccounts={['mockAccount']}

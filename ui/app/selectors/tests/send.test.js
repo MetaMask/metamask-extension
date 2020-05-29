@@ -13,8 +13,8 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
-  getSelectedToken,
-  getSelectedTokenContract,
+  getSendToken,
+  getSendTokenContract,
   getSendAmount,
   sendAmountIsInError,
   getSendEditingTransactionId,
@@ -167,18 +167,28 @@ describe('send selectors', function () {
   })
 
   describe('getPrimaryCurrency()', function () {
-    it('should return the symbol of the selected token', function () {
+    it('should return the symbol of the send token', function () {
       assert.equal(
-        getPrimaryCurrency(mockState),
+        getPrimaryCurrency({ metamask: { send: { token: { symbol: 'DEF' } } } }),
         'DEF'
       )
     })
   })
 
-  describe('getSelectedToken()', function () {
-    it('should return the currently selected token if selected', function () {
+  describe('getSendToken()', function () {
+    it('should return the current send token if set', function () {
       assert.deepEqual(
-        getSelectedToken(mockState),
+        getSendToken({
+          metamask: {
+            send: {
+              token: {
+                address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+                decimals: 4,
+                symbol: 'DEF',
+              },
+            },
+          },
+        }),
         {
           address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
           decimals: 4,
@@ -186,40 +196,30 @@ describe('send selectors', function () {
         }
       )
     })
-
-    it('should return the send token if none is currently selected, but a send token exists', function () {
-      const mockSendToken = {
-        address: '0x123456708414189a58339873ab429b6c47ab92d3',
-        decimals: 4,
-        symbol: 'JKL',
-      }
-      const editedMockState = {
-        metamask: Object.assign({}, mockState.metamask, {
-          selectedTokenAddress: null,
-          send: {
-            token: mockSendToken,
-          },
-        }),
-      }
-      assert.deepEqual(
-        getSelectedToken(editedMockState),
-        Object.assign({}, mockSendToken)
-      )
-    })
   })
 
-  describe('getSelectedTokenContract()', function () {
-    it('should return the contract at the selected token address', function () {
+  describe('getSendTokenContract()', function () {
+    it('should return the contract at the send token address', function () {
       assert.equal(
-        getSelectedTokenContract(mockState),
+        getSendTokenContract({
+          metamask: {
+            send: {
+              token: {
+                address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+                decimals: 4,
+                symbol: 'DEF',
+              },
+            },
+          },
+        }),
         'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3'
       )
     })
 
-    it('should return null if no token is selected', function () {
-      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { selectedTokenAddress: false })
+    it('should return null if send token is not set', function () {
+      const modifiedMetamaskState = Object.assign({}, mockState.metamask, { send: {} })
       assert.equal(
-        getSelectedTokenContract(Object.assign({}, mockState, { metamask: modifiedMetamaskState })),
+        getSendTokenContract(Object.assign({}, mockState, { metamask: modifiedMetamaskState })),
         null
       )
     })
@@ -530,29 +530,29 @@ describe('send selectors', function () {
             getMetamaskSendMockState({
               to: true,
               editingTransactionId: true,
-              token: true, // this can be whatever
+              token: {},
             })
           ), 'edit')
       })
 
-      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is truthy', function () {
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is truthy', function () {
         assert.equal(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
               editingTransactionId: false,
-              token: true,
+              token: {},
             })
           ), 'sendTokens')
       })
 
-      it('should return the correct key when getSendEditingTransactionId is falsy and getSelectedToken is falsy', function () {
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is falsy', function () {
         assert.equal(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
               editingTransactionId: false,
-              token: false,
+              token: null,
             })
           ), 'sendETH')
       })

@@ -607,7 +607,7 @@ export function updateGasData ({
   gasPrice,
   blockGasLimit,
   selectedAddress,
-  selectedToken,
+  sendToken,
   to,
   value,
   data,
@@ -618,7 +618,7 @@ export function updateGasData ({
       estimateGasMethod: promisifiedBackground.estimateGas,
       blockGasLimit,
       selectedAddress,
-      selectedToken,
+      sendToken,
       to,
       value,
       estimateGasPrice: gasPrice,
@@ -651,7 +651,7 @@ export function gasLoadingFinished () {
 }
 
 export function updateSendTokenBalance ({
-  selectedToken,
+  sendToken,
   tokenContract,
   address,
 }) {
@@ -662,7 +662,7 @@ export function updateSendTokenBalance ({
     return tokenBalancePromise
       .then((usersToken) => {
         if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          const newTokenBalance = calcTokenBalance({ sendToken, usersToken })
           dispatch(setSendTokenBalance(newTokenBalance))
         }
       })

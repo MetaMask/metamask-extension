@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {
   getGasTotal,
-  getSelectedToken,
+  getSendToken,
   getSendFromBalance,
   getTokenBalance,
   getSendMaxModeState,
@@ -26,7 +26,7 @@ function mapStateToProps (state) {
     buttonDataLoading: getBasicGasEstimateLoadingStatus(state),
     gasTotal: getGasTotal(state),
     maxModeOn: getSendMaxModeState(state),
-    selectedToken: getSelectedToken(state),
+    sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
   }
 }

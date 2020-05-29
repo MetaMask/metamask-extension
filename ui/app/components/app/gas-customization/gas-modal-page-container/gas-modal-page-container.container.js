@@ -28,7 +28,7 @@ import {
   getCurrentCurrency,
   getCurrentEthBalance,
   getIsMainnet,
-  getSelectedToken,
+  getSendToken,
   isEthereumNetwork,
   getPreferences,
   getBasicGasEstimateLoadingStatus,
@@ -75,7 +75,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
-  const selectedToken = getSelectedToken(state)
+  const sendToken = getSendToken(state)
 
   // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
   const txParams = selectedTransaction?.txParams
@@ -83,7 +83,7 @@ const mapStateToProps = (state, ownProps) => {
     : {
       gas: send.gasLimit || '0x5208',
       gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-      value: selectedToken ? '0x0' : send.amount,
+      value: sendToken ? '0x0' : send.amount,
     }
 
   const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = txParams
@@ -112,11 +112,11 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const isTokenSelected = Boolean(selectedToken)
+  const isSendTokenSet = Boolean(sendToken)
 
-  const newTotalEth = maxModeOn && !isTokenSelected ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+  const newTotalEth = maxModeOn && !isSendTokenSet ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 
-  const sendAmount = maxModeOn && !isTokenSelected ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+  const sendAmount = maxModeOn && !isSendTokenSet ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
@@ -167,7 +167,7 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimatesLoading,
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
-    selectedToken: getSelectedToken(state),
+    sendToken,
     balance,
     tokenBalance: getTokenBalance(state),
   }
@@ -223,7 +223,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     customGasPrice,
     customGasTotal,
     balance,
-    selectedToken,
+    sendToken,
     tokenBalance,
     customGasLimit,
     transaction,
@@ -274,7 +274,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchSetAmountToMax({
           balance,
           gasTotal: customGasTotal,
-          selectedToken,
+          sendToken,
           tokenBalance,
         })
       }
