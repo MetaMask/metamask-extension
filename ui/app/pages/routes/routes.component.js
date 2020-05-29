@@ -80,6 +80,7 @@ export default class Routes extends Component {
     providerId: PropTypes.string,
     hasPermissionsRequests: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
+    pageChanged: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -88,7 +89,7 @@ export default class Routes extends Component {
   }
 
   UNSAFE_componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -96,6 +97,7 @@ export default class Routes extends Component {
 
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
+        pageChanged(locationObj.pathname)
         const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
         this.context.metricsEvent({}, {
           currentPath: '',

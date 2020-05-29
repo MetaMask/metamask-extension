@@ -5,9 +5,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
 import FileInput from 'react-simple-file-input'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
@@ -20,7 +20,7 @@ class JsonImportSubview extends Component {
   inputRef = React.createRef()
 
   render () {
-    const { error } = this.props
+    const { error, history, mostRecentOverviewPage } = this.props
     const enabled = !this.state.isEmpty && this.state.fileContents !== ''
 
     return (
@@ -52,7 +52,7 @@ class JsonImportSubview extends Component {
             type="default"
             large
             className="new-account-create-form__button"
-            onClick={() => this.props.history.push(DEFAULT_ROUTE)}
+            onClick={() => history.push(mostRecentOverviewPage)}
           >
             {this.context.t('cancel')}
           </Button>
@@ -89,7 +89,14 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
-    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
+    const {
+      firstAddress,
+      displayWarning,
+      history,
+      importNewJsonAccount,
+      mostRecentOverviewPage,
+      setSelectedAddress,
+    } = this.props
     const { fileContents } = this.state
 
     if (!fileContents) {
@@ -102,7 +109,7 @@ class JsonImportSubview extends Component {
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',
@@ -143,12 +150,14 @@ JsonImportSubview.propTypes = {
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
   setSelectedAddress: PropTypes.func,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
 }
 
 const mapStateToProps = (state) => {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

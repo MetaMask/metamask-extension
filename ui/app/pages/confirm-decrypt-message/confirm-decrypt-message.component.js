@@ -11,7 +11,6 @@ import Tooltip from '../../components/ui/tooltip-v2'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -31,6 +30,7 @@ export default class ConfirmDecryptMessage extends Component {
     decryptMessageInline: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     domainMetadata: PropTypes.object,
@@ -278,7 +278,14 @@ export default class ConfirmDecryptMessage extends Component {
   }
 
   renderFooter = () => {
-    const { txData } = this.props
+    const {
+      cancelDecryptMessage,
+      clearConfirmTransaction,
+      decryptMessage,
+      history,
+      mostRecentOverviewPage,
+      txData,
+    } = this.props
 
     return (
       <div className="request-decrypt-message__footer">
@@ -288,7 +295,7 @@ export default class ConfirmDecryptMessage extends Component {
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
             this._removeBeforeUnload()
-            await this.props.cancelDecryptMessage(txData, event)
+            await cancelDecryptMessage(txData, event)
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Messages',
@@ -296,8 +303,8 @@ export default class ConfirmDecryptMessage extends Component {
                 name: 'Cancel',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('cancel') }
@@ -308,7 +315,7 @@ export default class ConfirmDecryptMessage extends Component {
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {
             this._removeBeforeUnload()
-            await this.props.decryptMessage(txData, event)
+            await decryptMessage(txData, event)
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Messages',
@@ -316,8 +323,8 @@ export default class ConfirmDecryptMessage extends Component {
                 name: 'Confirm',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('decrypt') }

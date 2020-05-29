@@ -10,7 +10,6 @@ import { getTokens } from '../../ducks/metamask/metamask'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import { showModal } from '../../store/actions'
 
-
 import AssetNavigation from './components/asset-navigation'
 import TokenOptions from './components/token-options'
 

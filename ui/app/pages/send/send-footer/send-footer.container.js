@@ -32,6 +32,7 @@ import {
   constructTxParams,
   constructUpdatedTx,
 } from './send-footer.utils'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
@@ -62,6 +63,7 @@ function mapStateToProps (state) {
     sendErrors: getSendErrors(state),
     gasEstimateType,
     gasIsLoading: getGasIsLoading(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

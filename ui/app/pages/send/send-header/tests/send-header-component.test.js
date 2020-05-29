@@ -2,7 +2,6 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
 import SendHeader from '../send-header.component.js'
 import PageContainerHeader from '../../../../components/ui/page-container/page-container-header'
 
@@ -25,6 +24,7 @@ describe('SendHeader Component', function () {
       <SendHeader
         clearSend={propsMethodSpies.clearSend}
         history={historySpies}
+        mostRecentOverviewPage="mostRecentOverviewPage"
         titleKey="mockTitleKey"
       />
     ), { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } })
@@ -51,7 +51,7 @@ describe('SendHeader Component', function () {
       assert.equal(historySpies.push.callCount, 0)
       wrapper.instance().onClose()
       assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], DEFAULT_ROUTE)
+      assert.equal(historySpies.push.getCall(0).args[0], 'mostRecentOverviewPage')
     })
   })
 

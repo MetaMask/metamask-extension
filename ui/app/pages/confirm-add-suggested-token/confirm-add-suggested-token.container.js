@@ -3,12 +3,14 @@ import { compose } from 'redux'
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 import { withRouter } from 'react-router-dom'
 import { addToken, removeSuggestedTokens } from '../../store/actions'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
-const mapStateToProps = ({ metamask }) => {
-  const { pendingTokens, suggestedTokens, tokens } = metamask
+const mapStateToProps = (state) => {
+  const { metamask: { pendingTokens, suggestedTokens, tokens } } = state
   const params = { ...pendingTokens, ...suggestedTokens }
 
   return {
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pendingTokens: params,
     tokens,
   }

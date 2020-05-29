@@ -12,7 +12,6 @@ import SecurityTab from './security-tab'
 import ContactListTab from './contact-list-tab'
 import {
   ALERTS_ROUTE,
-  DEFAULT_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -40,6 +39,7 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
@@ -47,7 +47,7 @@ class SettingsPage extends PureComponent {
   }
 
   render () {
-    const { history, backRoute, currentPath } = this.props
+    const { history, backRoute, currentPath, mostRecentOverviewPage } = this.props
 
     return (
       <div
@@ -67,7 +67,7 @@ class SettingsPage extends PureComponent {
           { this.renderTitle() }
           <div
             className="settings-page__close-button"
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => history.push(mostRecentOverviewPage)}
           />
         </div>
         <div className="settings-page__content">

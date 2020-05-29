@@ -478,5 +478,8 @@
   },
   "unconnectedAccount": {
     "state": "CLOSED"
+  },
+  "history": {
+    "mostRecentOverviewPage": "/"
   }
 }

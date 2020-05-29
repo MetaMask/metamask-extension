@@ -37,6 +37,7 @@ import {
   getPreferences,
   transactionFeeSelector,
 } from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -178,6 +179,7 @@ const mapStateToProps = (state, ownProps) => {
     metaMetricsSendCount,
     transactionCategory,
     nextNonce,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

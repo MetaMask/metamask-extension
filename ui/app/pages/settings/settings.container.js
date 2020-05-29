@@ -6,6 +6,7 @@ import { getAddressBookEntryName } from '../../selectors'
 import { isValidAddress } from '../../helpers/utils/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import {
   CONNECTIONS_ROUTE,
@@ -87,6 +88,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     breadCrumbTextKey,
     initialBreadCrumbKey,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

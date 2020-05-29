@@ -15,6 +15,7 @@ import {
   setLastActiveTime,
   setMouseUserState,
 } from '../../store/actions'
+import { pageChanged } from '../../ducks/history/history'
 
 function mapStateToProps (state) {
   const { appState } = state
@@ -54,6 +55,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
+    pageChanged: (path) => dispatch(pageChanged(path)),
   }
 }
 
