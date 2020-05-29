@@ -452,6 +452,9 @@
   "currencyConversion": {
     "message": "Currency Conversion"
   },
+  "currentExtension": {
+    "message": "Current extension page"
+  },
   "currentLanguage": {
     "message": "Current Language"
   },
