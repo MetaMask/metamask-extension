@@ -1548,7 +1548,7 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id
     }
 
-    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId, isInternal })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1581,8 +1581,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.location - The full URL of the sender
    * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {boolean} [options.isInternal] - True if called for a connection to an internal process
    **/
-  setupProviderEngine ({ origin, location, extensionId, tabId }) {
+  setupProviderEngine ({ origin, location, extensionId, tabId, isInternal = false }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1610,8 +1611,10 @@ export default class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
-    // permissions
-    engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    if (!isInternal) {
+      // permissions
+      engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    }
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider
