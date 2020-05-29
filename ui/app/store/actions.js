@@ -729,6 +729,13 @@ export function updateSend (newSend) {
   }
 }
 
+export function updateSendToken (token) {
+  return {
+    type: actionConstants.UPDATE_SEND_TOKEN,
+    value: token,
+  }
+}
+
 export function clearSend () {
   return {
     type: actionConstants.CLEAR_SEND,

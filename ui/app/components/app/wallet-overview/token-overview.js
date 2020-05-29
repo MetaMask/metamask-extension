@@ -11,7 +11,7 @@ import WalletOverview from './wallet-overview'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { getAssetImages } from '../../../selectors/selectors'
-import { updateSend } from '../../../store/actions'
+import { updateSendToken } from '../../../store/actions'
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch()
@@ -43,7 +43,7 @@ const TokenOverview = ({ className, token }) => {
           className="token-overview__button"
           onClick={() => {
             sendTokenEvent()
-            dispatch(updateSend({ token }))
+            dispatch(updateSendToken(token))
             history.push(SEND_ROUTE)
           }}
         >
