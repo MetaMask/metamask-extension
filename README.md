@@ -61,7 +61,6 @@ yarn dist
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
-- [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 
