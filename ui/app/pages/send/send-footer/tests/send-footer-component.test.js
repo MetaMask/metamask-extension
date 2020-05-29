@@ -214,7 +214,7 @@ describe('SendFooter Component', function () {
           gasTotal="mockGasTotal"
           history={historySpies}
           inError={false}
-          sendToken={{ mockProp: 'mockSenTokenProp' }}
+          sendToken={{ mockProp: 'mockSendTokenProp' }}
           sign={propsMethodSpies.sign}
           to="mockTo"
           toAccounts={['mockAccount']}

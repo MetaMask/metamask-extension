@@ -139,7 +139,7 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
           editingTransactionId: 'mockEditingTransactionId',
-          sendToken: 'mockSendToken',
+          sendToken: { address: 'mockAddress' },
           unapprovedTxs: 'mockUnapprovedTxs',
         })
         assert(dispatchSpy.calledOnce)
@@ -153,7 +153,7 @@ describe('send-footer container', function () {
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
             editingTransactionId: 'mockEditingTransactionId',
-            sendToken: 'mockSendToken',
+            sendToken: { address: 'mockAddress' },
             unapprovedTxs: 'mockUnapprovedTxs',
           }
         )

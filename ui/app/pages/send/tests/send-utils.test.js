@@ -89,7 +89,7 @@ describe('send utils', function () {
       'should return true if token balances are different': {
         tokenBalance: 0,
         prevTokenBalance: 1,
-        sendToken: 'someToken',
+        sendToken: { address: '0x0' },
         expectedResult: true,
       },
       'should return false if they are all the same': {
@@ -99,7 +99,7 @@ describe('send utils', function () {
         prevGasTotal: 1,
         tokenBalance: 1,
         prevTokenBalance: 1,
-        sendToken: 'someToken',
+        sendToken: { address: '0x0' },
         expectedResult: false,
       },
     }
@@ -112,13 +112,13 @@ describe('send utils', function () {
   })
 
   describe('generateTokenTransferData()', function () {
-    it('should return undefined if not passed a selected token', function () {
-      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', sendToken: false }), undefined)
+    it('should return undefined if not passed a send token', function () {
+      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', sendToken: undefined }), undefined)
     })
 
     it('should call abi.rawEncode with the correct params', function () {
       stubs.rawEncode.resetHistory()
-      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', sendToken: true })
+      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', sendToken: { address: '0x0' } })
       assert.deepEqual(
         stubs.rawEncode.getCall(0).args,
         [['address', 'uint256'], ['mockAddress', '0xab']]
@@ -127,7 +127,7 @@ describe('send utils', function () {
 
     it('should return encoded token transfer data', function () {
       assert.equal(
-        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', sendToken: true }),
+        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', sendToken: { address: '0x0' } }),
         '0xa9059cbb104c'
       )
     })
@@ -149,7 +149,7 @@ describe('send utils', function () {
         conversionRate: 3,
         gasTotal: 17,
         primaryCurrency: 'ABC',
-        sendToken: { symbole: 'DEF', decimals: 0 },
+        sendToken: { address: '0x0', symbol: 'DEF', decimals: 0 },
         decimals: 0,
         tokenBalance: 'sometokenbalance',
         expectedResult: { amount: null },
@@ -161,7 +161,7 @@ describe('send utils', function () {
         decimals: 10,
         gasTotal: 17,
         primaryCurrency: 'ABC',
-        sendToken: 'someToken',
+        sendToken: { address: '0x0' },
         tokenBalance: 123,
         expectedResult: { amount: INSUFFICIENT_TOKENS_ERROR },
       },
@@ -201,6 +201,7 @@ describe('send utils', function () {
     it('should return the calculated token blance', function () {
       assert.equal(calcTokenBalance({
         sendToken: {
+          address: '0x0',
           decimals: 11,
         },
         usersToken: {
@@ -381,12 +382,12 @@ describe('send utils', function () {
 
     it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', sendToken: { address: '' } }))
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', sendToken: { address: '0x0' } }))
       assert.notEqual(result, SIMPLE_GAS_COST)
     })
 
     it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async function () {
-      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null, sendToken: { address: '' } }))
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null, sendToken: { address: '0x0' } }))
       assert.equal(result, BASE_TOKEN_GAS_COST)
     })
 

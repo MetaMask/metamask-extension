@@ -69,7 +69,7 @@ describe('send-footer utils', function () {
       assert.deepEqual(
         constructTxParams({
           data: 'someData',
-          sendToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -90,7 +90,7 @@ describe('send-footer utils', function () {
     it('should return a new txParams object with value and to properties if there is no sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          sendToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -111,7 +111,7 @@ describe('send-footer utils', function () {
     it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          sendToken: true,
+          sendToken: { address: '0x0' },
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',

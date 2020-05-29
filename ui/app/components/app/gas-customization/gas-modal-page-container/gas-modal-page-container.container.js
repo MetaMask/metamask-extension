@@ -167,7 +167,7 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimatesLoading,
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
-    sendToken: sendToken,
+    sendToken,
     balance,
     tokenBalance: getTokenBalance(state),
   }
