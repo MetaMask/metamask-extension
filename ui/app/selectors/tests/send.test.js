@@ -31,7 +31,6 @@ import {
   gasFeeIsInError,
   getGasLoadingError,
   getGasButtonGroupShown,
-  getTokens,
   getTitleKey,
   isSendFormInError,
 } from '../send'
@@ -506,20 +505,6 @@ describe('send selectors', function () {
         }
 
         assert.equal(getGasButtonGroupShown(state), 'foobar')
-      })
-    })
-  })
-
-  describe('add-recipient selectors', function () {
-    describe('getTokens()', function () {
-      it('should return empty array if no tokens in state', function () {
-        const state = {
-          metamask: {
-            tokens: [],
-          },
-        }
-
-        assert.deepStrictEqual(getTokens(state), [])
       })
     })
   })

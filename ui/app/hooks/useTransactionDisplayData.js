@@ -26,7 +26,7 @@ import {
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
 import { useTokenData } from './useTokenData'
-import { tokenSelector } from '../selectors'
+import { getTokens } from '../ducks/metamask/metamask'
 
 /**
  * @typedef {Object} TransactionDisplayData
@@ -51,7 +51,7 @@ import { tokenSelector } from '../selectors'
  * @return {TransactionDisplayData}
  */
 export function useTransactionDisplayData (transactionGroup) {
-  const knownTokens = useSelector(tokenSelector)
+  const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
   const { initialTransaction, primaryTransaction } = transactionGroup
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group

@@ -377,3 +377,5 @@ export const getSwitchToConnectedAlertEnabledness = (state) => getAlertEnabledne
 export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
 
 export const getSwitchToConnectedAlertShown = (state) => state.metamask.switchToConnectedAlertShown
+
+export const getTokens = (state) => state.metamask.tokens
