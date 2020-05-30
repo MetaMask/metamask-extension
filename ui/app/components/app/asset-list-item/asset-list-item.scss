@@ -3,6 +3,13 @@
     display: flex;
     padding: 24px 16px;
     align-items: center;
+    border-top: 1px solid $mercury;
+    border-bottom: 1px solid $mercury;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $Grey-000;
+    }
   }
 
   &__balance {
