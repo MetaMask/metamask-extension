@@ -7,6 +7,7 @@ import ErrorPage from './error'
 import Routes from './routes'
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n'
 import { MetaMetricsProvider, LegacyMetaMetricsProvider } from '../contexts/metametrics'
+import { ApolloProvider } from '@apollo/react-hooks'
 
 class Index extends PureComponent {
   state = {}
@@ -39,25 +40,28 @@ class Index extends PureComponent {
     }
 
     return (
-      <Provider store={store}>
-        <HashRouter hashType="noslash">
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <Routes />
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
-      </Provider>
+      <ApolloProvider client={this.props.apolloClient}>
+        <Provider store={store}>
+          <HashRouter hashType="noslash">
+            <MetaMetricsProvider>
+              <LegacyMetaMetricsProvider>
+                <I18nProvider>
+                  <LegacyI18nProvider>
+                    <Routes />
+                  </LegacyI18nProvider>
+                </I18nProvider>
+              </LegacyMetaMetricsProvider>
+            </MetaMetricsProvider>
+          </HashRouter>
+        </Provider>
+      </ApolloProvider>
     )
   }
 }
 
 Index.propTypes = {
   store: PropTypes.object,
+  apolloClient: PropTypes.object,
 }
 
 export default Index

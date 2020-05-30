@@ -68,6 +68,7 @@ import {
 } from '@metamask/controllers'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
+import DnodeGraphQLServer from '../graphql/dnode-graphql-server'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -191,6 +192,8 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
     })
+
+    this.graphql = new DnodeGraphQLServer()
 
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
@@ -443,6 +446,7 @@ export default class MetamaskController extends EventEmitter {
     const preferencesController = this.preferencesController
     const threeBoxController = this.threeBoxController
     const txController = this.txController
+    const graphql = this.graphql
 
     return {
       // etc
@@ -577,6 +581,9 @@ export default class MetamaskController extends EventEmitter {
 
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
+
+      // graphql
+      sendGraphQLMsg: graphql.sendGraphQLMsg.bind(this.graphql),
     }
   }
 
@@ -1524,8 +1531,12 @@ export default class MetamaskController extends EventEmitter {
       // push updates to popup
       const sendUpdate = (update) => remote.sendUpdate(update)
       this.on('update', sendUpdate)
+      const graphqlOnEnd = this.graphql.onRemote(remote)
       // remove update listener once the connection ends
-      dnode.on('end', () => this.removeListener('update', sendUpdate))
+      dnode.on('end', () => {
+        this.removeListener('update', sendUpdate)
+        graphqlOnEnd()
+      })
     })
   }
 

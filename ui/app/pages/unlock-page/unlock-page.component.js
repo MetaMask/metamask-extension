@@ -6,6 +6,7 @@ import getCaretCoordinates from 'textarea-caret'
 import { EventEmitter } from 'events'
 import Mascot from '../../components/ui/mascot'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import Counter from './counter'
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -147,6 +148,7 @@ export default class UnlockPage extends Component {
               height="120"
             />
           </div>
+          <Counter />
           <h1 className="unlock-page__title">
             { t('welcomeBack') }
           </h1>

@@ -18,10 +18,118 @@ import {
   getSwitchToConnectedAlertEnabledness,
   getSwitchToConnectedAlertShown,
 } from './app/ducks/metamask/metamask'
+import { ApolloLink } from 'apollo-link'
+import ApolloClient from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import $$observable from 'symbol-observable'
+
+let apolloClient
+
+class DnodeApolloLink extends ApolloLink {
+  constructor (background) {
+    super()
+    this.background = background
+    this.operations = {}
+    this.nextOperationId = 0
+    this.background.on('graphql:message', this.handleMessage.bind(this))
+  }
+
+  unsubscribe (opId) {
+    if (this.operations[opId]) {
+      delete this.operations[opId]
+    }
+  }
+
+  // Handles making sure we are dealing with an observer
+  getObserver (
+    observerOrNext,
+    error,
+    complete,
+  ) {
+    if (typeof observerOrNext === 'function') {
+      return {
+        next: (v) => observerOrNext(v),
+        error: (e) => error && error(e),
+        complete: () => complete && complete(),
+      }
+    }
+
+    return observerOrNext
+  }
+
+  // Called by Apollo when a query is issued
+  request (request) {
+    // const getObserver = this.getObserver.bind(this)
+    // const executeOperation = this.executeOperation.bind(this)
+    const unsubscribe = this.unsubscribe.bind(this)
+    const getObserver = this.getObserver.bind(this)
+    const executeOperation = this.executeOperation.bind(this)
+
+    let opId
+
+    return {
+      [$$observable] () {
+        return this
+      },
+      subscribe (
+        observerOrNext,
+        onError,
+        onComplete,
+      ) {
+        const observer = getObserver(observerOrNext, onError, onComplete)
+
+        opId = executeOperation(request, (error, result) => {
+          if (error === null && result === null) {
+            if (observer.complete) {
+              observer.complete()
+            }
+          } else if (error) {
+            if (observer.error) {
+              observer.error(error[0])
+            }
+          } else {
+            if (observer.next) {
+              observer.next(result)
+            }
+          }
+        })
+
+        return {
+          unsubscribe: () => {
+            if (opId) {
+              unsubscribe(opId)
+              opId = null
+            }
+          },
+        }
+      },
+    }
+  }
+
+  generateOperationId () {
+    return String(++this.nextOperationId)
+  }
+
+  executeOperation (request, handler) {
+
+    const opId = this.generateOperationId()
+    this.operations[opId] = { request, handler }
+
+    this.background.sendGraphQLMsg({ opId, request })
+  }
+
+  handleMessage ({ opId, type, result }) {
+    this.operations[opId].handler(null, result)
+  }
+}
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 export default function launchMetamaskUi (opts, cb) {
+  apolloClient = new ApolloClient({
+    link: new DnodeApolloLink(opts.backgroundConnection),
+    cache: new InMemoryCache(),
+  })
   const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
@@ -126,6 +234,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   render(
     <Root
       store={store}
+      apolloClient={apolloClient}
     />,
     opts.container,
   )

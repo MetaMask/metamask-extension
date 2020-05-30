@@ -156,6 +156,9 @@ function setupControllerConnection (connectionStream, cb) {
     sendUpdate: function (state) {
       eventEmitter.emit('update', state)
     },
+    sendGraphQLMsg: function (data) {
+      eventEmitter.emit('graphql:message', data)
+    },
   })
   connectionStream.pipe(backgroundDnode).pipe(connectionStream)
   backgroundDnode.once('remote', function (backgroundConnection) {
