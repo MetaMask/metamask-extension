@@ -22,7 +22,7 @@ export default class PermissionsConnectHeader extends Component {
     return (
       <div className="permissions-connect-header__icon">
         <IconWithFallBack icon={ icon } name={ iconName } />
-        <div className="permissions-connect-header__text">{iconName }</div>
+        <div className="permissions-connect-header__text">{iconName}</div>
       </div>
     )
   }

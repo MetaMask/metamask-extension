@@ -36,6 +36,9 @@
     @extend %content-text;
     text-align: center;
     color: $Grey-500;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__subtitle {
