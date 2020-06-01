@@ -19,7 +19,8 @@ import { useMetricEvent } from './useMetricEvent'
  */
 export function useRetryTransaction (transactionGroup) {
   const { primaryTransaction, initialTransaction } = transactionGroup
-  const gasPrice = primaryTransaction.txParams.gasPrice
+  // Signature requests do not have a txParams, but this hook is called indiscriminately
+  const gasPrice = primaryTransaction.txParams?.gasPrice
   const trackMetricsEvent = useMetricEvent(({
     eventOpts: {
       category: 'Navigation',
