@@ -384,7 +384,7 @@ function setupController (initState, initLangCode) {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id
         const url = new URL(remotePort.sender.url)
-        const origin = url.hostname
+        const { origin } = url
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

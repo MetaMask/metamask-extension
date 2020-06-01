@@ -1487,7 +1487,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {string} hostname - The URL that triggered the suspicion.
+   * @param {string} hostname - The hostname that triggered the suspicion.
    */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
@@ -1538,7 +1538,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, sender, isInternal) {
     const origin = isInternal
       ? 'metamask'
-      : (new URL(sender.url)).hostname
+      : (new URL(sender.url)).origin
     let extensionId
     if (sender.id !== extension.runtime.id) {
       extensionId = sender.id
@@ -1577,7 +1577,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    * @param {Object} options - Provider engine options
-   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.origin - The origin of the sender
    * @param {string} options.location - The full URL of the sender
    * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
