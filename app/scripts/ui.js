@@ -21,7 +21,6 @@ import { EventEmitter } from 'events'
 import Dnode from 'dnode'
 import Eth from 'ethjs'
 import EthQuery from 'eth-query'
-import urlUtil from 'url'
 import launchMetaMaskUi from '../../ui'
 import StreamProvider from 'web3-stream-provider'
 import { setupMultiplex } from './lib/stream-utils.js'
@@ -95,10 +94,14 @@ async function queryCurrentActiveTab (windowType) {
     extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const [activeTab] = tabs
       const { title, url } = activeTab
-      const { origin, protocol } = url ? urlUtil.parse(url) : {}
-      resolve({
-        title, origin, protocol, url,
-      })
+
+      let urlData = {}
+      try {
+        urlData = new URL(url)
+      } catch (_) {}
+      const { origin, protocol } = urlData
+
+      resolve({ title, origin, protocol, url })
     })
   })
 }
