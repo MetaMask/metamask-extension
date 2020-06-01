@@ -1,0 +1,38 @@
+.disconnect-all-modal {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__description {
+    color: #24292E;
+    margin-bottom: 24px;
+  }
+
+  &__cancel-button {
+    border: none;
+    margin-top: 12px;
+  }
+
+  .btn-secondary {
+    border: none;
+  }
+}
+
+.disconnect-all-modal-container {
+  .modal-container__header-text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    color: #24292E;
+  }
+
+  .modal-container__content {
+    padding-bottom: 18px;
+
+    @media screen and (max-width: 575px) {
+      padding-bottom: 18px;
+    }
+  }
+}

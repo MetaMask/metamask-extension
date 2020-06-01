@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Naka-enable ang Privacy Mode bilang default"
-  },
   "chartOnlyAvailableEth": {
     "message": "Available lang ang chart sa mga Ethereum network."
-  },
-  "confirmClear": {
-    "message": "Sigurado ka bang gusto mong i-clear ang mga inaprubahang website?"
   },
   "contractInteraction": {
     "message": "Paggamit sa Contract"
   },
-  "clearApprovalData": {
-    "message": "I-clear ang Privacy Data"
-  },
   "reject": {
     "message": "Tanggihan"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "Gusto ng $1 na kumonekta sa iyong account"
-  },
-  "providerRequestInfo": {
-    "message": "Humihiling ng access ang site na ito na tingnan ang kasalukuyan mong account address. Palaging tiyaking pinagkakatiwalaan mo ang mga site na pinupuntahan mo."
   },
   "about": {
     "message": "Tungkol sa"
   },
   "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan."
+    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
   },
   "acceleratingATransaction": {
     "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
@@ -57,7 +45,7 @@
     "message": "Magdagdag ng Recipient"
   },
   "advancedSettingsDescription": {
-    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC."
+    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC"
   },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
@@ -144,10 +132,6 @@
   },
   "basic": {
     "message": "Pangunahin"
-  },
-  "betweenMinAndMax": {
-    "message": "dapat ay mas malaki sa o katumbas ng $1 at mas maliit sa o katumbas ng $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Tingnan ang account sa $1",
@@ -342,9 +326,6 @@
   "directDepositEtherExplainer": {
     "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
   },
-  "dismiss": {
-    "message": "Balewalain"
-  },
   "done": {
     "message": "Tapos na"
   },
@@ -503,10 +484,6 @@
   "getStarted": {
     "message": "Magsimula"
   },
-  "greaterThanMin": {
-    "message": "dapat ay mas malaki sa o katumbas ng $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Masaya kaming makita ka."
   },
@@ -605,10 +582,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
-  },
-  "lessThanMax": {
-    "message": "dapat ay mas mababa sa o katumbas ng $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"
@@ -791,9 +764,6 @@
   "pastePrivateKey": {
     "message": "I-paste ang iyong private key string dito:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "I-paste ang iyong seed phrase dito!"
   },
   "pending": {
     "message": "nakabinbin"
@@ -1083,9 +1053,6 @@
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."
   },
-  "submit": {
-    "message": "Isumite"
-  },
   "submitted": {
     "message": "Isinumite"
   },
@@ -1240,9 +1207,6 @@
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang client"
-  },
-  "validFileImport": {
-    "message": "Dapat kang pumili ng valid na file na ii-import."
   },
   "viewAccount": {
     "message": "Tingnan ang Account"

@@ -21,14 +21,14 @@ export default function reduceApp (state, action) {
     name = 'confTx'
   }
 
-  var defaultView = {
+  const defaultView = {
     name,
     detailView: null,
     context: selectedAddress,
   }
 
   // default state
-  var appState = extend({
+  const appState = extend({
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -75,6 +75,9 @@ export default function reduceApp (state, action) {
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
+    requestAccountTabs: {},
+    openMetaMaskTabs: {},
+    currentWindowTab: {},
   }, state.appState)
 
   switch (action.type) {
@@ -761,6 +764,21 @@ export default function reduceApp (state, action) {
     case SET_THREEBOX_LAST_UPDATED:
       return extend(appState, {
         threeBoxLastUpdated: action.value,
+      })
+
+    case actions.SET_REQUEST_ACCOUNT_TABS:
+      return extend(appState, {
+        requestAccountTabs: action.value,
+      })
+
+    case actions.SET_OPEN_METAMASK_TAB_IDS:
+      return extend(appState, {
+        openMetaMaskTabs: action.value,
+      })
+
+    case actions.SET_CURRENT_WINDOW_TAB:
+      return extend(appState, {
+        currentWindowTab: action.value,
       })
 
     default:

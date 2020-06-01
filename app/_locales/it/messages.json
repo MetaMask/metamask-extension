@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "La modalità privacy è ora abilitata per impostazione predefinita"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
-  },
-  "confirmClear": {
-    "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
   },
-  "clearApprovalData": {
-    "message": "Cancella i dati di approvazione"
-  },
   "reject": {
     "message": "Annulla"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 vorrebbe connettersi al tuo account"
-  },
-  "providerRequestInfo": {
-    "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ethereum in modo che possa interagire con la blockchain di Ethereum. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ethereum."
   },
   "about": {
     "message": "Informazioni"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centro di supporto e contatti."
+    "message": "Version, centro di supporto e contatti"
   },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
@@ -60,7 +48,7 @@
     "message": "Avanzate"
   },
   "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata."
+    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
   },
   "advancedOptions": {
     "message": "Opzioni Avanzate"
@@ -151,10 +139,6 @@
   "basic": {
     "message": "Base"
   },
-  "betweenMinAndMax": {
-    "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -231,9 +215,6 @@
   "connect": {
     "message": "Connetti"
   },
-  "connectRequest": {
-    "message": "Richiesta Connessione"
-  },
   "connectingTo": {
     "message": "Connessione in corso a $1"
   },
@@ -272,9 +253,6 @@
   },
   "copiedExclamation": {
     "message": "Copiato!"
-  },
-  "copy": {
-    "message": "Copia"
   },
   "copyAddress": {
     "message": "Copia l'indirizzo"
@@ -353,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
-  },
-  "dismiss": {
-    "message": "Ignora"
   },
   "done": {
     "message": "Finito"
@@ -522,10 +497,6 @@
   "getStarted": {
     "message": "Inizia"
   },
-  "greaterThanMin": {
-    "message": "deve essere maggiore o uguale a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Siamo contenti di vederti."
   },
@@ -640,10 +611,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
-  },
-  "lessThanMax": {
-    "message": "deve essere minore o uguale a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Si, iniziamo!"
@@ -832,9 +799,6 @@
   "pastePrivateKey": {
     "message": "Incolla la tua chiave privata qui:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Incolla la tua frase seed qui!"
   },
   "pending": {
     "message": "in corso"
@@ -1149,9 +1113,6 @@
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
   },
-  "submit": {
-    "message": "Invia"
-  },
   "submitted": {
     "message": "Inviata"
   },
@@ -1316,9 +1277,6 @@
   "userName": {
     "message": "Nome utente"
   },
-  "validFileImport": {
-    "message": "Devi selezionare un file valido da importare."
-  },
   "viewAccount": {
     "message": "Vedi Account"
   },
@@ -1366,24 +1324,6 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Prezzo del gas maggiore di zero"
-  },
-  "connections": {
-    "message": "Connessioni"
-  },
-  "connectionsSettingsDescription": {
-    "message": "Siti autorizzati ad accedere ai tuoi accounts"
-  },
-  "addSite": {
-    "message": "Aggiungi Sito"
-  },
-  "addSiteDescription": {
-    "message": "Aggiungi un sito autorizzato ad accedere ai tuoi accounts, utile per dapps obsolete"
-  },
-  "connected": {
-    "message": "Connesso"
-  },
-  "connectedDescription": {
-    "message": "La lista di siti web autorizzati ad accedere ai tuoi indirizzi"
   },
   "contacts": {
     "message": "Contatti"

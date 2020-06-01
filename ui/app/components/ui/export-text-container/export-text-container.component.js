@@ -1,6 +1,5 @@
-const { Component } = require('react')
+import React, { Component } from 'react'
 const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
 const copyToClipboard = require('copy-to-clipboard')
 const { exportAsFile } = require('../../../helpers/utils/util')
 
@@ -10,25 +9,33 @@ class ExportTextContainer extends Component {
     const { t } = this.context
 
     return (
-      h('.export-text-container', [
-        h('.export-text-container__text-container', [
-          h('.export-text-container__text.notranslate', text),
-        ]),
-        h('.export-text-container__buttons-container', [
-          h('.export-text-container__button.export-text-container__button--copy', {
-            onClick: () => copyToClipboard(text),
-          }, [
-            h('img', { src: 'images/copy-to-clipboard.svg' }),
-            h('.export-text-container__button-text', t('copyToClipboard')),
-          ]),
-          h('.export-text-container__button', {
-            onClick: () => exportAsFile(filename, text),
-          }, [
-            h('img', { src: 'images/download.svg' }),
-            h('.export-text-container__button-text', t('saveAsCsvFile')),
-          ]),
-        ]),
-      ])
+      <div className="export-text-container">
+        <div className="export-text-container__text-container">
+          <div className="export-text-container__text notranslate">
+            {text}
+          </div>
+        </div>
+        <div className="export-text-container__buttons-container">
+          <div
+            className="export-text-container__button export-text-container__button--copy"
+            onClick={() => copyToClipboard(text)}
+          >
+            <img src="images/copy-to-clipboard.svg" alt="" />
+            <div className="export-text-container__button-text">
+              {t('copyToClipboard')}
+            </div>
+          </div>
+          <div
+            className="export-text-container__button"
+            onClick={() => exportAsFile(filename, text)}
+          >
+            <img src="images/download.svg" alt="" />
+            <div className="export-text-container__button-text">
+              {t('saveAsCsvFile')}
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 }

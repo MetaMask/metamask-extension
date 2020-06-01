@@ -22,7 +22,9 @@ function setupMetamaskMeshMetrics () {
 
   function submitMeshMetricsEntry (message) {
     // ignore if we haven't loaded yet
-    if (!didLoad) return
+    if (!didLoad) {
+      return
+    }
     // submit the message
     testingContainer.contentWindow.postMessage(message, targetOrigin)
   }

@@ -1,5 +1,5 @@
+import React from 'react'
 const render = require('react-dom').render
-const h = require('react-hyperscript')
 const Root = require('./app/pages')
 const actions = require('./app/store/actions')
 const configureStore = require('./app/store/store')
@@ -13,11 +13,13 @@ module.exports = launchMetamaskUi
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {
-  var {backgroundConnection} = opts
+  const {backgroundConnection} = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
         cb(null, store)
@@ -27,7 +29,9 @@ function launchMetamaskUi (opts, cb) {
 
 async function startApp (metamaskState, backgroundConnection, opts) {
   // parse opts
-  if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
+  if (!metamaskState.featureFlags) {
+    metamaskState.featureFlags = {}
+  }
 
   const currentLocaleMessages = metamaskState.currentLocale
     ? await fetchLocale(metamaskState.currentLocale)
@@ -92,11 +96,11 @@ async function startApp (metamaskState, backgroundConnection, opts) {
 
   // start app
   render(
-    h(Root, {
-      // inject initial state
-      store: store,
-    }
-    ), opts.container)
+    <Root
+      store={store}
+    />,
+    opts.container,
+  )
 
   return store
 }

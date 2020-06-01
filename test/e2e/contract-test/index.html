@@ -1,51 +1,69 @@
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>E2E Test Dapp</title>
+  <script src="node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js"></script>
+  <script src="contract.js" defer></script>
 </head>
 <body>
-  <div style="display: flex; flex-flow: column;">
-    <div style="display: flex; font-size: 1.25rem;">Contract</div>
-    <div style="display: flex;">
-      <button id="deployButton">Deploy Contract</button>
-      <button id="depositButton">Deposit</button>
-      <button id="withdrawButton">Withdraw</button>
-    </div>
-    <div id="contractStatus" style="display: flex; font-size: 1rem;">
-      Not clicked
-    </div>
-  </div>
-  <div style="display: flex; flex-flow: column;">
-    <div style="display: flex; font-size: 1.25rem;">Send eth</div>
-    <div style="display: flex;">
+  <header>
+    <h1>E2E Test Dapp</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Connect</h2>
+      <button id="connectButton">Connect</button>
+    </section>
+    <section>
+      <h2>Contract</h2>
+      <div>
+        <button id="deployButton">Deploy Contract</button>
+        <button id="depositButton">Deposit</button>
+        <button id="withdrawButton">Withdraw</button>
+      </div>
+      <div>
+        Contract Status: <span id="contractStatus">Not clicked</span>
+      </div>
+    </section>
+    <section>
+      <h2>Send Eth</h2>
       <button id="sendButton">Send</button>
-    </div>
-  </div>
-  <div style="display: flex; flex-flow: column;">
-    <div style="display: flex; font-size: 1.25rem;">Send tokens</div>
-    <div id="tokenAddress"></div>
-    <div style="display: flex;">
-      <button id="createToken">Create Token</button>
-      <button id="transferTokens">Transfer Tokens</button>
-      <button id="approveTokens">Approve Tokens</button>
-      <button id="transferTokensWithoutGas">Transfer Tokens Without Gas</button>
-      <button id="approveTokensWithoutGas">Approve Tokens Without Gas</button>
-    </div>
-  </div>
-  <div style="display: flex; flex-flow: column;">
-    <div>Network: <div id="network"></div></div>
-    <div>ChainId: <div id="chainId"></div></div>
-    <div>Accounts: <div id="accounts"></div></div>
-    <div style="display: flex;">
-  </div>
-  <div style="display: flex; flex-flow: column;">
-    <div style="display: flex; font-size: 1.25rem;">Sign Typed Data</div>
-    <div style="display: flex;">
+    </section>
+    <section>
+      <h2>Send Tokens</h2>
+      <div>
+        Token: <span id="tokenAddress"></span>
+      </div>
+      <div>
+        <button id="createToken">Create Token</button>
+        <button id="transferTokens">Transfer Tokens</button>
+        <button id="approveTokens">Approve Tokens</button>
+        <button id="transferTokensWithoutGas">Transfer Tokens Without Gas</button>
+        <button id="approveTokensWithoutGas">Approve Tokens Without Gas</button>
+      </div>
+    </section>
+    <section>
+      <h2>Get Accounts</h2>
+      <button id="getAccounts">eth_accounts</button>
+      <div id="getAccountsResult"></div>
+    </section>
+    <section>
+      <h2>Status</h2>
+      <div>
+        Network: <span id="network"></span>
+      </div>
+      <div>
+        ChainId: <span id="chainId"></span>
+      </div>
+      <div>
+        Accounts: <span id="accounts"></span>
+      </div>
+    </section>
+    <section>
+      <h2>Sign Typed Data</h2>
       <button id="signTypedData">Sign</button>
-      <div>Sign Typed Data Result: <div id="signTypedDataResult"></div></div>
-    </div>
-  </div>
-
-<script src="contract.js"></script>
+      <div>Sign Typed Data Result: <span id="signTypedDataResult"></span></div>
+    </section>
+  </main>
 </body>
-
 </html>

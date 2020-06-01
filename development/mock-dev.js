@@ -10,13 +10,13 @@
  * without having to re-open the plugin or even re-build it.
  */
 
+import React from 'react'
 const render = require('react-dom').render
-const h = require('react-hyperscript')
 const Root = require('../ui/app/pages')
 const configureStore = require('../ui/app/store/store')
 const actions = require('../ui/app/store/actions')
 const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
-const Selector = require('./selector')
+import Selector from './selector'
 const MetamaskController = require('../app/scripts/metamask-controller')
 const firstTimeState = require('../app/scripts/first-time-state')
 const ExtensionPlatform = require('../app/scripts/platforms/extension')
@@ -94,7 +94,7 @@ function modifyBackgroundConnection (backgroundConnectionModifier) {
 }
 
 // parse opts
-var store = configureStore(firstState)
+const store = configureStore(firstState)
 
 // start app
 startApp()
@@ -106,40 +106,38 @@ function startApp () {
   body.appendChild(container)
 
   render(
-    h('.super-dev-container', [
-
-      h('button', {
-        onClick: (ev) => {
+    <div className="super-dev-container">
+      <button
+        onClick={(ev) => {
           ev.preventDefault()
           store.dispatch(actions.update('terms'))
-        },
-        style: {
+        }}
+        style={{
           margin: '19px 19px 0px 19px',
-        },
-      }, 'Reset State'),
-
-      h(Selector, {
-        actions,
-        selectedKey: selectedView,
-        states,
-        store,
-        modifyBackgroundConnection,
-        backGroundConnectionModifiers,
-      }),
-
-      h('#app-content', {
-        style: {
+        }}
+      >
+        Reset State
+      </button>
+      <Selector
+        states={states}
+        selectedKey={selectedView}
+        actions={actions}
+        store={store}
+        modifyBackgroundConnection={modifyBackgroundConnection}
+        backGroundConnectionModifiers={backGroundConnectionModifiers}
+      />
+      <div
+        id="app-content"
+        style={{
           height: '500px',
           width: '360px',
           boxShadow: 'grey 0px 2px 9px',
           margin: '20px',
-        },
-      }, [
-        h(Root, {
-          store: store,
-        }),
-      ]),
-
-    ]
-    ), container)
+        }}
+      >
+        <Root store={store} />
+      </div>
+    </div>,
+    container,
+  )
 }

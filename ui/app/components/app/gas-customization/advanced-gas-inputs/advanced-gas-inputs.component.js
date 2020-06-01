@@ -119,10 +119,12 @@ export default class AdvancedGasInputs extends Component {
             value={value}
             onChange={onChange}
           />
-          <div className={classnames('advanced-gas-inputs__gas-edit-row__input-arrows', {
-            'advanced-gas-inputs__gas-edit-row__input--error': errorType === 'error',
-            'advanced-gas-inputs__gas-edit-row__input--warning': errorType === 'warning',
-          })}>
+          <div
+            className={classnames('advanced-gas-inputs__gas-edit-row__input-arrows', {
+              'advanced-gas-inputs__gas-edit-row__input--error': errorType === 'error',
+              'advanced-gas-inputs__gas-edit-row__input--warning': errorType === 'warning',
+            })}
+          >
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               onClick={() => onChange({ target: { value: value + 1 } })}
@@ -159,21 +161,21 @@ export default class AdvancedGasInputs extends Component {
       errorText: gasPriceErrorText,
       errorType: gasPriceErrorType,
     } = this.gasPriceError({ insufficientBalance, customPriceIsSafe, isSpeedUp, gasPrice })
-    const gasPriceErrorComponent = gasPriceErrorType ?
+    const gasPriceErrorComponent = gasPriceErrorType ? (
       <div className={`advanced-gas-inputs__gas-edit-row__${gasPriceErrorType}-text`}>
         { gasPriceErrorText }
-      </div> :
-      null
+      </div>
+    ) : null
 
     const {
       errorText: gasLimitErrorText,
       errorType: gasLimitErrorType,
     } = this.gasLimitError({ insufficientBalance, gasLimit })
-    const gasLimitErrorComponent = gasLimitErrorType ?
+    const gasLimitErrorComponent = gasLimitErrorType ? (
       <div className={`advanced-gas-inputs__gas-edit-row__${gasLimitErrorType}-text`}>
         { gasLimitErrorText }
-      </div> :
-      null
+      </div>
+    ) : null
 
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">

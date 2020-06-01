@@ -56,7 +56,9 @@ class PendingTransactionTracker extends EventEmitter {
   resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
-    if (!pending.length) return
+    if (!pending.length) {
+      return
+    }
     pending.forEach((txMeta) => this._resubmitTx(txMeta, blockNumber).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
@@ -79,7 +81,9 @@ class PendingTransactionTracker extends EventEmitter {
         errorMessage.includes('nonce too low')
       )
       // ignore resubmit warnings, return early
-      if (isKnownTx) return
+      if (isKnownTx) {
+        return
+      }
       // encountered real error - transition to error state
       txMeta.warning = {
         error: errorMessage,
@@ -107,10 +111,14 @@ class PendingTransactionTracker extends EventEmitter {
     const retryCount = txMeta.retryCount || 0
 
     // Exponential backoff to limit retries at publishing
-    if (txBlockDistance <= Math.pow(2, retryCount) - 1) return
+    if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
+      return
+    }
 
     // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) return this.approveTransaction(txMeta.id)
+    if (!('rawTx' in txMeta)) {
+      return this.approveTransaction(txMeta.id)
+    }
 
     const rawTx = txMeta.rawTx
     const txHash = await this.publishTransaction(rawTx)
@@ -132,7 +140,9 @@ class PendingTransactionTracker extends EventEmitter {
     const txId = txMeta.id
 
     // Only check submitted txs
-    if (txMeta.status !== 'submitted') return
+    if (txMeta.status !== 'submitted') {
+      return
+    }
 
     // extra check in case there was an uncaught error during the
     // signature and submission process

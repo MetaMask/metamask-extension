@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "O Modo de Privacidade está ativado por padrão"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabela disponível apenas em redes de Ethereum."
   },
-  "confirmClear": {
-    "message": "Tem certeza de que deseja limpar os sites aprovados?"
-  },
   "contractInteraction": {
     "message": "Interação do Contrato"
-  },
-  "clearApprovalData": {
-    "message": "Limpar Dados de Privacidade"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,14 @@
   "reject": {
     "message": "Rejeitar"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 gostaria de se conectar à sua conta"
-  },
-  "providerRequestInfo": {
-    "message": "Este site está solicitando acesso para visualizar o seu endereço de conta atual. Certifique-se sempre de confiar nos sites com os quais você interage."
   },
   "about": {
     "message": "Sobre"
   },
   "aboutSettingsDescription": {
-    "message": "Versão, centro de apoio e informações de contato."
+    "message": "Versão, centro de apoio e informações de contato"
   },
   "acceleratingATransaction": {
     "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta suas chances de a rede processá-la de forma mais rápida, mas isso nem sempre é garantido."
@@ -67,7 +55,7 @@
     "message": "Avançado"
   },
   "advancedSettingsDescription": {
-    "message": "Acesse recursos do desenvolvedor, baixe registros de estado, redefina a conta, configure testnets e personalize RPC."
+    "message": "Acesse recursos do desenvolvedor, baixe registros de estado, redefina a conta, configure testnets e personalize RPC"
   },
   "advancedOptions": {
     "message": "Opções avançadas"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Básicas"
   },
-  "betweenMinAndMax": {
-    "message": "deve ser maior ou igual a $1 e menor ou igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerView": {
     "message": "Ver conta em $1",
     "description": "$1 replaced by URL for custom block explorer"
@@ -246,9 +230,6 @@
   "connect": {
     "message": "Conectar-se"
   },
-  "connectRequest": {
-    "message": "Solicitação de Conexão"
-  },
   "connectingTo": {
     "message": "Conectando a $1"
   },
@@ -287,9 +268,6 @@
   },
   "copiedExclamation": {
     "message": "Copiado!"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
@@ -368,9 +346,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Se você já tem Ether, a forma mais rápida de colocá-lo em sua nova carteira é o depósito direto."
-  },
-  "dismiss": {
-    "message": "Dispensar"
   },
   "done": {
     "message": "Concluído"
@@ -537,10 +512,6 @@
   "getStarted": {
     "message": "Primeiros passos"
   },
-  "greaterThanMin": {
-    "message": "deve ser maior ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Estamos felizes em vê-lo."
   },
@@ -658,10 +629,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
-  },
-  "lessThanMax": {
-    "message": "deve ser inferior ou igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Sim, vamos configurar!"
@@ -854,9 +821,6 @@
   "pastePrivateKey": {
     "message": "Cole a string de sua chave particular aqui:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Cole sua seed phrase aqui!"
   },
   "pending": {
     "message": "pendente"
@@ -1171,9 +1135,6 @@
   "storePhrase": {
     "message": "Guarde esta frase em um gerenciador de senhas como o 1Password."
   },
-  "submit": {
-    "message": "Enviar"
-  },
   "submitted": {
     "message": "Enviado"
   },
@@ -1334,9 +1295,6 @@
   },
   "userName": {
     "message": "Nome de usuário"
-  },
-  "validFileImport": {
-    "message": "Você precisa selecionar um arquivo válido para importar."
   },
   "viewAccount": {
     "message": "Visualizar conta"

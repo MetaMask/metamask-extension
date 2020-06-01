@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Integritetsläge är nu aktiverat som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
   },
-  "confirmClear": {
-    "message": "Är du säker på att du vill rensa godkända webbplatser?"
-  },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
-  },
-  "clearApprovalData": {
-    "message": "Rensa personlig data"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,14 @@
   "reject": {
     "message": "Avvisa"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 vill ansluta till ditt konto"
-  },
-  "providerRequestInfo": {
-    "message": "Den här sidan begär åtkomst till din aktuella kontoadress. Se till att du kan lita på de sidor du använder dig av."
   },
   "about": {
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation."
+    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -67,7 +55,7 @@
     "message": "Avancerat"
   },
   "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC."
+    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Grunder"
   },
-  "betweenMinAndMax": {
-    "message": "måste vara större än/lika med $1, eller mindre än/lika med $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blockera Utforskaren"
   },
@@ -246,9 +230,6 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectRequest": {
-    "message": "Anslutningsförfrågan"
-  },
   "connectingTo": {
     "message": "Ansluter till $1"
   },
@@ -287,9 +268,6 @@
   },
   "copiedExclamation": {
     "message": "Kopierades!"
-  },
-  "copy": {
-    "message": "Kopiera"
   },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
@@ -368,9 +346,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
-  "dismiss": {
-    "message": "Ta bort permanent"
   },
   "done": {
     "message": "Klart"
@@ -533,10 +508,6 @@
   "getStarted": {
     "message": "Komma igång"
   },
-  "greaterThanMin": {
-    "message": "måste vara större än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Vi är glada att se dig."
   },
@@ -654,10 +625,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
-  },
-  "lessThanMax": {
-    "message": "måste vara mindre än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ja, kör igång!"
@@ -853,9 +820,6 @@
   "pastePrivateKey": {
     "message": "Klistra in din privata nyckel här:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Klistra in din nyckelfras här!"
   },
   "pending": {
     "message": "väntar"
@@ -1170,9 +1134,6 @@
   "storePhrase": {
     "message": "Lagra denna fras i en lösenordshanterare såsom 1Password."
   },
-  "submit": {
-    "message": "Skicka"
-  },
   "submitted": {
     "message": "Inskickat"
   },
@@ -1330,9 +1291,6 @@
   },
   "userName": {
     "message": "Användarnamn"
-  },
-  "validFileImport": {
-    "message": "Du måste välja en giltig fil för att importera."
   },
   "viewAccount": {
     "message": "Visa konto"

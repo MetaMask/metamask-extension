@@ -27,23 +27,25 @@ describe('SendAmountRow Component', function () {
   let instance
 
   beforeEach(() => {
-    wrapper = shallow(<SendAmountRow
-      amount="mockAmount"
-      amountConversionRate="mockAmountConversionRate"
-      balance="mockBalance"
-      conversionRate={7}
-      convertedCurrency="mockConvertedCurrency"
-      gasTotal="mockGasTotal"
-      inError={false}
-      primaryCurrency="mockPrimaryCurrency"
-      selectedToken={ { address: 'mockTokenAddress' } }
-      setMaxModeTo={propsMethodSpies.setMaxModeTo}
-      tokenBalance="mockTokenBalance"
-      updateGasFeeError={propsMethodSpies.updateGasFeeError}
-      updateSendAmount={propsMethodSpies.updateSendAmount}
-      updateSendAmountError={propsMethodSpies.updateSendAmountError}
-      updateGas={propsMethodSpies.updateGas}
-    />, { context: { t: str => str + '_t' } })
+    wrapper = shallow((
+      <SendAmountRow
+        amount="mockAmount"
+        amountConversionRate="mockAmountConversionRate"
+        balance="mockBalance"
+        conversionRate={7}
+        convertedCurrency="mockConvertedCurrency"
+        gasTotal="mockGasTotal"
+        inError={false}
+        primaryCurrency="mockPrimaryCurrency"
+        selectedToken={ { address: 'mockTokenAddress' } }
+        setMaxModeTo={propsMethodSpies.setMaxModeTo}
+        tokenBalance="mockTokenBalance"
+        updateGasFeeError={propsMethodSpies.updateGasFeeError}
+        updateSendAmount={propsMethodSpies.updateSendAmount}
+        updateSendAmountError={propsMethodSpies.updateSendAmountError}
+        updateGas={propsMethodSpies.updateGas}
+      />
+    ), { context: { t: str => str + '_t' } })
     instance = wrapper.instance()
   })
 

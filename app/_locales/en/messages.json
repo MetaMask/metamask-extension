@@ -5,53 +5,39 @@
   "showIncomingTransactionsDescription": {
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
+  "cancelledConnectionWithMetaMask": {
+    "message": "Cancelled Connection With MetaMask"
+  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
-  "confirmClear": {
-    "message": "Are you sure you want to clear approved websites?"
+  "connectedSites": {
+    "message": "Connected Sites"
   },
-  "connections": {
-    "message": "Connections"
+  "connectingWithMetaMask": {
+    "message": "Connecting With MetaMask..."
   },
-  "connectionsSettingsDescription": {
-    "message": "Sites allowed to read your accounts"
+  "connectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
   },
-  "addSite": {
-    "message": "Add Site"
-  },
-  "addSiteDescription": {
-    "message": "Manually add a site to allow it access to your accounts, useful for older dapps"
-  },
-  "connected": {
-    "message": "Connected"
-  },
-  "connectedDescription": {
-    "message": "The list of sites allowed access to your addresses"
-  },
-  "privacyModeDefault": {
-    "message": "Privacy Mode is now enabled by default"
+  "chooseAnAcount": {
+    "message": "Choose an account"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
   },
-  "clearApprovalData": {
-    "message": "Remove all sites"
-  },
   "reject": {
     "message": "Reject"
   },
-  "providerRequest": {
-    "message": "$1 would like to connect to your account"
-  },
-  "providerRequestInfo": {
-    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
+  "redirectingBackToDapp": {
+    "message": "Redirecting back to dapp..."
   },
   "about": {
     "message": "About"
   },
   "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info."
+    "message": "Version, support center, and contact info"
   },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
@@ -91,7 +77,7 @@
     "message": "Advanced"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC."
+    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -196,10 +182,6 @@
   "basic": {
     "message": "Basic"
   },
-  "betweenMinAndMax": {
-    "message": "must be greater than or equal to $1 and less than or equal to $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Block Explorer"
   },
@@ -300,9 +282,6 @@
   "connect": {
     "message": "Connect"
   },
-  "connectRequest": {
-    "message": "Connect Request"
-  },
   "connectingTo": {
     "message": "Connecting to $1"
   },
@@ -347,9 +326,6 @@
   },
   "copiedExclamation": {
     "message": "Copied!"
-  },
-  "copy": {
-    "message": "Copy"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -429,14 +405,36 @@
   "details": {
     "message": "Details"
   },
+  "disconnectAccount": {
+    "message": "Disconnect account"
+  },
+  "disconnectAll": {
+    "message": "Disconnect All"
+  },
+  "disconnectAllModalDescription": {
+    "message": "Are you sure? You will be disconnected from all sites on all accounts."
+  },
+  "disconnectAccountModalDescription": {
+    "message": "Are you sure? Your account (\"$1\") will be disconnected from this site."
+  },
+  "disconnectAccountQuestion": {
+    "message": "Disconnect account?"
+  },
+  "disconnectFromThisAccount": {
+    "message": "Disconnect from this account?"
+  },
+  "disconnectAllAccountsQuestion": {
+    "message": "Disconnect all accounts?"
+  },
   "directDepositEther": {
     "message": "Directly Deposit Ether"
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
-  "dismiss": {
-    "message": "Dismiss"
+  "domainLastConnect": {
+    "message": "Last Connected: $1",
+    "description": "$1 is the date at which the user was last connected to a given domain"
   },
   "done": {
     "message": "Done"
@@ -497,6 +495,17 @@
   },
   "endOfFlowMessage10": {
     "message": "All Done"
+  },
+  "extensionId": {
+    "message": "Extension ID: $1",
+    "description": "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+  },
+  "externalExtension": {
+    "message": "External Extension"
+  },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" will close this tab and direct back to $2",
+    "description": "Return the user to the site that initiated onboarding"
   },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
@@ -614,10 +623,6 @@
   },
   "getStarted": {
     "message": "Get Started"
-  },
-  "greaterThanMin": {
-    "message": "must be greater than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -737,21 +742,27 @@
   "max": {
     "message": "Max"
   },
+  "lastConnected": {
+    "message": "Last Connected"
+  },
   "learnMore": {
     "message": "Learn more"
   },
+  "learnAboutRisks": {
+    "message": "Learn about the risks here."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
-  },
-  "lessThanMax": {
-    "message": "must be less than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
+  },
+  "likeToConnect": {
+    "message": "$1 would like to connect to your MetaMask account",
+    "description": "$1 is the name/url of a site/dapp asking to connect to MetaMask"
   },
   "links": {
     "message": "Links"
@@ -884,6 +895,9 @@
   "rpcUrl": {
     "message": "New RPC URL"
   },
+  "onlyConnectTrust": {
+    "message": "Only connect with sites you trust."
+  },
   "optionalChainId": {
     "message": "ChainID (optional)"
   },
@@ -957,9 +971,6 @@
   "pastePrivateKey": {
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Paste your seed phrase here!"
   },
   "pending": {
     "message": "pending"
@@ -1088,6 +1099,9 @@
   },
   "readyToConnect": {
     "message": "Ready to Connect?"
+  },
+  "revokeInPermissions": {
+    "message": "* You can view and revoke permissions in MetaMask settings."
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -1351,6 +1365,14 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "thisWillAllow": {
+    "message": "This will allow $1 to:",
+    "description": "$1 is the name or domain of a site/dapp that is requesting permissions"
+  },
+  "thisWillAllowExternalExtension": {
+    "message": "This will allow an external extension with id $1 to:",
+    "description":  "$1 is a string of random letters that are the id of another extension connecting to MetaMask"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and seed phrase"
   },
@@ -1362,6 +1384,10 @@
   },
   "toWithColon": {
     "message": "To:"
+  },
+  "toConnectWith": {
+    "message": "To connect with $1",
+    "description": "$1 is the name or domain of a site/dapp that asking to connect with MetaMask"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
@@ -1491,9 +1517,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "validFileImport": {
-    "message": "You must select a valid file to import."
   },
   "viewAccount": {
     "message": "View Account"

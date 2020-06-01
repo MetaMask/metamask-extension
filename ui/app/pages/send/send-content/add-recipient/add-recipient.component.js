@@ -64,7 +64,6 @@ export default class AddRecipient extends Component {
 
   state = {
     isShowingTransfer: false,
-    isShowingAllRecent: false,
   }
 
   selectRecipient = (to, nickname = '') => {
@@ -156,7 +155,7 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={() => this.setState({ isShowingTransfer: false })}
         >
-          <div className="send__select-recipient-wrapper__list__back-caret"/>
+          <div className="send__select-recipient-wrapper__list__back-caret" />
           { t('backToAll') }
         </div>
         <RecipientGroup

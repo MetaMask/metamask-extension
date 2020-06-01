@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
-  },
-  "clearApprovalData": {
-    "message": "Onay verilerini temizle"
-  },
   "reject": {
     "message": "Reddetmek"
-  },
-  "providerRequestInfo": {
-    "message": "Aşağıda listelenen etki alanı, Ethereum API'sine erişim talep etmeye çalışmaktadır, böylece Ethereum blockchain ile etkileşime girebilir. Web3 erişimini onaylamadan önce her zaman doğru sitede olduğunuzu kontrol edin."
   },
   "account": {
     "message": "Hesap"
@@ -57,10 +48,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Toplam gas için yetersiz bakiye"
-  },
-  "betweenMinAndMax": {
-    "message": "$1'e eşit veya daha büyük olmalı ve $2'den küçük veya eşit olmalı",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
@@ -115,9 +102,6 @@
   },
   "copiedExclamation": {
     "message": "Kopyalandı!"
-  },
-  "copy": {
-    "message": "Kopyala"
   },
   "copyToClipboard": {
     "message": "Panoya kopyala"
@@ -294,10 +278,6 @@
   "learnMore": {
     "message": "Daha fazla bilgi."
   },
-  "lessThanMax": {
-    "message": "$1'den az veya eşit olmalıdır.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "Bu jetonlara adres eklemek ister misiniz?"
   },
@@ -378,9 +358,6 @@
   "pastePrivateKey": {
     "message": "Özel anahtar dizinizi buraya yapıştırın:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Kaynak ifadenizi buraya yapıştırın!"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres tespit edilidi. Jeton sözleşme adresini girin."
@@ -494,9 +471,6 @@
   "stateLogError": {
     "message": "Durum kayıtlarını alma hatası"
   },
-  "submit": {
-    "message": "Gönder"
-  },
   "submitted": {
     "message": "Gönderildi"
   },
@@ -552,9 +526,6 @@
   },
   "usedByClients": {
     "message": "Farklı istemciler tarafından kullanılmakta"
-  },
-  "validFileImport": {
-    "message": "Almak için geçerli bir dosya seçmelisiniz"
   },
   "viewAccount": {
     "message": "Hesabı İncele"

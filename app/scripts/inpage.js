@@ -1,6 +1,5 @@
 /*global Web3*/
 
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -32,14 +31,14 @@ const restoreContextAfterImports = () => {
 }
 
 cleanContextForImports()
-require('web3/dist/web3.min.js')
+
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
-const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
-const createStandardProvider = require('./createStandardProvider').default
 
-let warned = false
+// TODO:deprecate:2020-01-13
+require('web3/dist/web3.min.js')
+const setupDappAutoReload = require('./lib/auto-reload.js')
 
 restoreContextAfterImports()
 
@@ -61,89 +60,6 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-let warnedOfAutoRefreshDeprecation = false
-// augment the provider with its enable method
-inpageProvider.enable = function ({ force } = {}) {
-  if (
-    !warnedOfAutoRefreshDeprecation &&
-    inpageProvider.autoRefreshOnNetworkChange
-  ) {
-    console.warn(`MetaMask: MetaMask will soon stop reloading pages on network change.
-If you rely upon this behavior, add a 'networkChanged' event handler to trigger the reload manually: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback)
-Set 'ethereum.autoRefreshOnNetworkChange' to 'false' to silence this warning: https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.autorefreshonnetworkchange'
-`)
-    warnedOfAutoRefreshDeprecation = true
-  }
-  return new Promise((resolve, reject) => {
-    inpageProvider.sendAsync({ method: 'eth_requestAccounts', params: [force] }, (error, response) => {
-      if (error || response.error) {
-        reject(error || response.error)
-      } else {
-        resolve(response.result)
-      }
-    })
-  })
-}
-
-// give the dapps control of a refresh they can toggle this off on the window.ethereum
-// this will be default true so it does not break any old apps.
-inpageProvider.autoRefreshOnNetworkChange = true
-
-
-// publicConfig isn't populated until we get a message from background.
-// Using this getter will ensure the state is available
-const getPublicConfigWhenReady = async () => {
-  const store = inpageProvider.publicConfigStore
-  let state = store.getState()
-  // if state is missing, wait for first update
-  if (!state.networkVersion) {
-    state = await new Promise(resolve => store.once('update', resolve))
-    console.log('new state', state)
-  }
-  return state
-}
-
-// add metamask-specific convenience methods
-inpageProvider._metamask = new Proxy({
-  /**
-   * Synchronously determines if this domain is currently enabled, with a potential false negative if called to soon
-   *
-   * @returns {boolean} - returns true if this domain is currently enabled
-   */
-  isEnabled: function () {
-    const { isEnabled } = inpageProvider.publicConfigStore.getState()
-    return Boolean(isEnabled)
-  },
-
-  /**
-   * Asynchronously determines if this domain is currently enabled
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain is currently enabled
-   */
-  isApproved: async function () {
-    const { isEnabled } = await getPublicConfigWhenReady()
-    return Boolean(isEnabled)
-  },
-
-  /**
-   * Determines if MetaMask is unlocked by the user
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
-   */
-  isUnlocked: async function () {
-    const { isUnlocked } = await getPublicConfigWhenReady()
-    return Boolean(isUnlocked)
-  },
-}, {
-  get: function (obj, prop) {
-    !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
-    'not been standardized yet. This means that these methods may not be implemented ' +
-    'in other dapp browsers and may be removed from MetaMask in the future.')
-    warned = true
-    return obj[prop]
-  },
-})
-
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues
 const proxiedInpageProvider = new Proxy(inpageProvider, {
@@ -152,11 +68,11 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = createStandardProvider(proxiedInpageProvider)
+//
+// TODO:deprecate:2020-01-13
+//
 
-//
 // setup web3
-//
 
 if (typeof window.web3 !== 'undefined') {
   throw new Error(`MetaMask detected another web3.
@@ -172,15 +88,13 @@ web3.setProvider = function () {
 }
 log.debug('MetaMask - injected web3')
 
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+proxiedInpageProvider._web3Ref = web3.eth
 
-// set web3 defaultAccount
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
-})
+// setup dapp auto reload AND proxy web3
+setupDappAutoReload(web3, inpageProvider._publicConfigStore)
 
-inpageProvider.publicConfigStore.subscribe(function (state) {
-  if (state.onboardingcomplete) {
-    window.postMessage('onboardingcomplete', '*')
-  }
-})
+//
+// end deprecate:2020-01-13
+//
+
+window.ethereum = proxiedInpageProvider

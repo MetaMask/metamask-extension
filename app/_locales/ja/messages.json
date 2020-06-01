@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "プライバシーモードがデフォルトで有効になりました"
-  },
   "chartOnlyAvailableEth": {
     "message": "チャートはEthereumネットワークでのみ利用可能です。"
-  },
-  "confirmClear": {
-    "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
   },
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
   },
-  "clearApprovalData": {
-    "message": "承認データのクリア"
-  },
   "reject": {
     "message": "拒否"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 はあなたのアカウントにアクセスしようとしています。"
-  },
-  "providerRequestInfo": {
-    "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
   },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
@@ -84,7 +72,7 @@
     "message": "推奨トークンを追加"
   },
   "addAcquiredTokens": {
-    "message": "Metamaskで獲得したトークンを追加する"
+    "message": "MetaMaskで獲得したトークンを追加する"
   },
   "amount": {
     "message": "金額"
@@ -136,10 +124,6 @@
   "balanceIsInsufficientGas": {
     "message": "現在のガス総量に対して残高が不足しています"
   },
-  "betweenMinAndMax": {
-    "message": " $1以上 $2以下にして下さい。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
   },
@@ -172,9 +156,6 @@
   },
   "copiedExclamation": {
     "message": "コピー完了!"
-  },
-  "copy": {
-    "message": "コピー"
   },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
@@ -278,10 +259,6 @@
     "message": "フォーセットで $1のEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": " $1以上にして下さい。",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "ここ",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -333,10 +310,6 @@
   },
   "learnMore": {
     "message": "詳細"
-  },
-  "lessThanMax": {
-    "message": " $1以下にして下さい。",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "トークンを追加しますか?"
@@ -415,9 +388,6 @@
   "pastePrivateKey": {
     "message": "秘密鍵をここにペーストして下さい:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "パスフレーズをここにペーストして下さい!"
   },
   "privacyMsg": {
     "message": "プライバシーポリシー"
@@ -509,9 +479,6 @@
   },
   "sigRequest": {
     "message": "署名リクエスト"
-  },
-  "submit": {
-    "message": "送信"
   },
   "terms": {
     "message": "利用規約"

@@ -30,12 +30,12 @@ describe('Typed Message Manager', () => {
           'EIP712Domain': [
             {'name': 'name', 'type': 'string' },
             {'name': 'version', 'type': 'string' },
-            {'name': 'chainId', ' type': 'uint256' },
-            {'name': 'verifyingContract', ' type': 'address' },
+            {'name': 'chainId', 'type': 'uint256' },
+            {'name': 'verifyingContract', 'type': 'address' },
           ],
           'Person': [
             {'name': 'name', 'type': 'string' },
-            {'name': 'wallet', ' type': 'address' },
+            {'name': 'wallet', 'type': 'address' },
           ],
           'Mail': [
             {'name': 'from', 'type': 'Person' },
@@ -64,7 +64,7 @@ describe('Typed Message Manager', () => {
       }),
     }
 
-    typedMessageManager.addUnapprovedMessage(msgParamsV3, 'V3')
+    typedMessageManager.addUnapprovedMessage(msgParamsV3, null, 'V3')
     typedMsgs = typedMessageManager.getUnapprovedMsgs()
     messages = typedMessageManager.messages
     msgId = Object.keys(typedMsgs)[0]
@@ -73,7 +73,7 @@ describe('Typed Message Manager', () => {
   })
 
   it('supports version 1 of signedTypedData', () => {
-    typedMessageManager.addUnapprovedMessage(msgParamsV1, 'V1')
+    typedMessageManager.addUnapprovedMessage(msgParamsV1, null, 'V1')
     assert.equal(messages[messages.length - 1].msgParams.data, msgParamsV1.data)
   })
 
@@ -87,7 +87,7 @@ describe('Typed Message Manager', () => {
 
   it('validates params', function () {
     assert.doesNotThrow(() => {
-      typedMessageManager.validateParams(messages[0])
+      typedMessageManager.validateParams(messages[0].msgParams)
     }, 'Does not throw with valid parameters')
   })
 

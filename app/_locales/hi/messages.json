@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "गोपनीय मोड अब डिफ़ॉल्ट रूप से सक्षम है"
-  },
   "chartOnlyAvailableEth": {
     "message": "केवल ईथरअम नेटवर्क पर उपलब्ध चार्ट।"
-  },
-  "confirmClear": {
-    "message": "क्या आप वाकई स्वीकृत वेबसाइटों को क्लियर करना चाहते हैं?"
   },
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट की बातचीत"
   },
-  "clearApprovalData": {
-    "message": "गोपनीयता डेटा रिक्त करें"
-  },
   "reject": {
     "message": "अस्‍वीकार करें"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 आपके खाते से कनेक्ट होता चाहता हैं"
-  },
-  "providerRequestInfo": {
-    "message": "यह साइट आपके वर्तमान खाते का पता देखने के लिए एक्सेस का अनुरोध कर रही है। हमेशा सुनिश्चित करें कि आप जिन साइटों पर जाते हैं वे विश्वसनीय हैं।"
   },
   "about": {
     "message": "इसके बारे में"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "मूलभूत"
   },
-  "betweenMinAndMax": {
-    "message": "$1 से अधिक या बराबर होना चाहिए और $2 के बराबर या उससे कम होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "एक्सप्लोरर को ब्लॉक करें"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "कनेक्ट करें"
   },
-  "connectRequest": {
-    "message": "संपर्क अनुरोध"
-  },
   "connectingTo": {
     "message": "$1 से कनेक्ट हो रहा है"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "कॉपी की गई!"
-  },
-  "copy": {
-    "message": "कॉपी बनाएं"
   },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "यदि आपके पास पहले से ही कुछ Ether हैं, तो अपने नए वॉलेट में Ether पाने का सबसे तेज़ तरीका सीधे जमा करना है।"
-  },
-  "dismiss": {
-    "message": "खारिज करें"
   },
   "done": {
     "message": "पूर्ण"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "आरंभ करें"
   },
-  "greaterThanMin": {
-    "message": "$1 से बड़ा या उसके बराबर होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "आपको देखकर हमें बहुत ख़ुशी हुई।"
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने पिछले खाते का उपयोग करना होगा।"
-  },
-  "lessThanMax": {
-    "message": "$1 से कम या उसके बराबर होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "जी हां, सेट होने दें!"
@@ -866,9 +833,6 @@
   "pastePrivateKey": {
     "message": "अपनी निजी कुंजी स्ट्रिंग यहां पेस्ट करें:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "अपना बीज वाक्यांश यहाँ पेस्ट करें!"
   },
   "pending": {
     "message": "विलंबित"
@@ -1180,9 +1144,6 @@
   "storePhrase": {
     "message": "इस वाक्यांश को 1पासवर्ड जैसे पासवर्ड मैनेजर में संग्रहीत करें।"
   },
-  "submit": {
-    "message": "सबमिट करें"
-  },
   "submitted": {
     "message": "प्रस्तुत किया गया"
   },
@@ -1349,9 +1310,6 @@
   },
   "userName": {
     "message": "उपयोगकर्ता नाम"
-  },
-  "validFileImport": {
-    "message": "आयात करने के लिए आपको एक मान्य फ़ाइल को चुनना होगा।"
   },
   "viewAccount": {
     "message": "खाता देखें"

@@ -90,7 +90,9 @@ class RecentBlocksController {
   async processBlock (newBlockNumberHex) {
     const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
     const newBlock = await this.getBlockByNumber(newBlockNumber, true)
-    if (!newBlock) return
+    if (!newBlock) {
+      return
+    }
 
     const block = this.mapTransactionsToPrices(newBlock)
 
@@ -162,7 +164,9 @@ class RecentBlocksController {
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
           const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
-          if (!newBlock) return
+          if (!newBlock) {
+            return
+          }
 
           this.backfillBlock(newBlock)
         } catch (e) {

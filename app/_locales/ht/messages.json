@@ -1,13 +1,4 @@
 {
-  "confirmClear": {
-    "message": "Èske ou sèten ou vle klè sitwèb apwouve?"
-  },
-  "clearApprovalData": {
-    "message": "Klè Done sou vi prive"
-  },
-  "providerRequestInfo": {
-    "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ethereum ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
-  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -78,10 +69,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Ensifizan balans pou total gaz aktyèl la"
-  },
-  "betweenMinAndMax": {
-    "message": "dwe plis pase oswa egal a $ 1 mwens ke oswa egal a $ 2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Itilize Blockies Identicon"
@@ -160,9 +147,6 @@
   },
   "copiedExclamation": {
     "message": "Kopye!"
-  },
-  "copy": {
-    "message": "Kopye"
   },
   "copyAddress": {
     "message": "Kopi adrès clipboard"
@@ -305,10 +289,6 @@
   "getHelp": {
     "message": "Jwenn èd."
   },
-  "greaterThanMin": {
-    "message": "dwe pi gran pase oswa egal a $ 1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -402,10 +382,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
-  },
-  "lessThanMax": {
-    "message": "dwe mwens pase oswa egal a $ 1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
@@ -523,9 +499,6 @@
   "pastePrivateKey": {
     "message": "Kole fraz prive ou a la:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Kole seed fraz ou a la!"
   },
   "pending": {
     "message": "l ap mache"
@@ -756,9 +729,6 @@
   "step3HardwareWalletMsg": {
     "message": "Sèvi ak kont materyèl ou menm jan ou t ap fè pou kont Etherum. Ouvri sesyon an nan dApps, voye Eth, achte ak stòke ERC20 tokens ak e ki pake chanje tokens tankou CryptoKitties."
   },
-  "submit": {
-    "message": "Soumèt"
-  },
   "submitted": {
     "message": "Te Soumèt"
   },
@@ -856,9 +826,6 @@
   },
   "usedByClients": {
     "message": "Itilize pa yon varyete de kliyan diferan"
-  },
-  "validFileImport": {
-    "message": "Ou dwe chwazi yon dosye ki valab pou enpòte."
   },
   "viewAccount": {
     "message": "Wè Kont"

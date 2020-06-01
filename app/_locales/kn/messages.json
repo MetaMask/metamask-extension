@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "ಗೌಪ್ಯತೆ ಮೋಡ್ ಅನ್ನು ಡೀಫಾಲ್ಟ್‌ ಆಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
-  },
   "chartOnlyAvailableEth": {
     "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
   },
-  "confirmClear": {
-    "message": "ನೀವು ಅನುಮೋದಿಸಿದ ವೆಬ್‌‌ಸೈಟ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಲು ಬಯಸುವಿರಾ?"
-  },
   "contractInteraction": {
     "message": "ಒಪ್ಪಂದದ ಸಂವಹನ"
-  },
-  "clearApprovalData": {
-    "message": "ಗೌಪ್ಯತೆ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,14 @@
   "reject": {
     "message": "ತಿರಸ್ಕರಿಸಿ"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ನಿಮ್ಮ ಖಾತೆಗೆ ಸಂಪರ್ಕಿಸಲು ಬಯಸುತ್ತಿದೆ"
-  },
-  "providerRequestInfo": {
-    "message": "ಈ ಸೈಟ್ ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಖಾತೆ ವಿಳಾಸವನ್ನು ವೀಕ್ಷಿಸಲು ಪ್ರವೇಶವನ್ನು ವಿನಂತಿಸುತ್ತಿದೆ. ನೀವು ಸಂವಹನ ನಡೆಸುವ ಸೈಟ್‌ಗಳನ್ನು ನೀವು ನಂಬಿರುವಿರಿ ಎಂಬುದನ್ನು ಯಾವಾಗಲೂ ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
   },
   "about": {
     "message": "ಕುರಿತು"
   },
   "aboutSettingsDescription": {
-    "message": "ಆವೃತ್ತಿ, ಬೆಂಬಲ ಕೇಂದ್ರ ಮತ್ತು ಸಂಪರ್ಕ ಮಾಹಿತಿ."
+    "message": "ಆವೃತ್ತಿ, ಬೆಂಬಲ ಕೇಂದ್ರ ಮತ್ತು ಸಂಪರ್ಕ ಮಾಹಿತಿ"
   },
   "acceleratingATransaction": {
     "message": "* ಹೆಚ್ಚಿನ ಗ್ಯಾಸ್ ಬೆಲೆಯನ್ನು ಬಳಸಿಕೊಂಡು ವಹಿವಾಟನ್ನು ವೇಗಗೊಳಿಸುವುದರಿಂದ ನೆಟ್‌ವರ್ಕ್ ವೇಗವಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುವ ಸಾಧ್ಯತೆಗಳನ್ನು ಅದು ಹೆಚ್ಚಿಸುತ್ತದೆ, ಆದರೆ ಇದು ಯಾವಾಗಲೂ ಖಚಿತವಾಗಿರುವುದಿಲ್ಲ."
@@ -67,7 +55,7 @@
     "message": "ಸುಧಾರಿತ"
   },
   "advancedSettingsDescription": {
-    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC."
+    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC"
   },
   "advancedOptions": {
     "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
@@ -156,10 +144,6 @@
   },
   "basic": {
     "message": "ಮೂಲ"
-  },
-  "betweenMinAndMax": {
-    "message": " $1 ಗಿಂತಲೂ ಹೆಚ್ಚಾಗಿರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು ಮತ್ತು $2 ಗಿಂತಲೂ ಕಡಿಮೆ ಇರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕವನ್ನು ನಿರ್ಬಂಧಿಸಿ"
@@ -252,9 +236,6 @@
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
-  "connectRequest": {
-    "message": "ವಿನಂತಿಯನ್ನು ಸಂಪರ್ಕಪಡಿಸಿ"
-  },
   "connectingTo": {
     "message": "$1 ಗೆ ಸಂಪರ್ಕಪಡಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "ನಕಲಿಸಲಾಗಿದೆ!"
-  },
-  "copy": {
-    "message": "ನಕಲಿಸು"
   },
   "copyAddress": {
     "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ನೀವು ಈಗಾಗಲೇ ಕೆಲವು ಎಥರ್ ಹೊಂದಿದ್ದರೆ, ನೇರ ಠೇವಣಿ ಮೂಲಕ ನಿಮ್ಮ ಹೊಸ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ಎಥರ್ ಅನ್ನು ಪಡೆಯುವ ತ್ವರಿತ ಮಾರ್ಗ."
-  },
-  "dismiss": {
-    "message": "ವಜಾಗೊಳಿಸಿ"
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "ಪ್ರಾರಂಭಗೊಂಡಿದೆ"
   },
-  "greaterThanMin": {
-    "message": " $1 ಗಿಂತಲೂ ಹೆಚ್ಚಾಗಿರಬೇಕು ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "ನಿಮ್ಮನ್ನು ನೋಡಿ ನಮಗೆ ಸಂತೋಷವಾಗಿದೆ."
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "ನೀವು ಹೊಸದನ್ನು ಸೇರಿಸುವುದರ ಮೊದಲು ನಿಮ್ಮ ಹಿಂದಿನ ಖಾತೆಯನ್ನು ನೀವು ಬಳಸಬೇಕು."
-  },
-  "lessThanMax": {
-    "message": "$1 ಗಿಂತ ಕಡಿಮೆ ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
@@ -869,9 +836,6 @@
   "pastePrivateKey": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಪ್ರಮುಖ ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಇಲ್ಲಿ ನಕಲಿಸಿ!"
   },
   "pending": {
     "message": "ಬಾಕಿಯಿರುವುದು"
@@ -1186,9 +1150,6 @@
   "storePhrase": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಪಾಸ್‌ವರ್ಡ್ ನಿರ್ವಾಹಕದಲ್ಲಿ 1Password ರೂಪದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ."
   },
-  "submit": {
-    "message": "ಸಲ್ಲಿಸು"
-  },
   "submitted": {
     "message": "ಸಲ್ಲಿಸಲಾಗಿದೆ"
   },
@@ -1355,9 +1316,6 @@
   },
   "userName": {
     "message": "ಬಳಕೆದಾರಹೆಸರು"
-  },
-  "validFileImport": {
-    "message": "ನೀವು ಆಮದು ಮಾಡಲು ಮಾನ್ಯ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
   },
   "viewAccount": {
     "message": "ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"

@@ -33,7 +33,9 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
     const domainParts = name.split('.')
     const topLevelDomain = domainParts[domainParts.length - 1]
     // if unsupported TLD, abort
-    if (!supportedTopLevelDomains.includes(topLevelDomain)) return
+    if (!supportedTopLevelDomains.includes(topLevelDomain)) {
+      return
+    }
     // otherwise attempt resolve
     attemptResolve({ tabId, name, path, search, fragment })
   }
@@ -48,7 +50,9 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
         try {
           // check if ipfs gateway has result
           const response = await fetch(resolvedUrl, { method: 'HEAD' })
-          if (response.status === 200) url = resolvedUrl
+          if (response.status === 200) {
+            url = resolvedUrl
+          }
         } catch (err) {
           console.warn(err)
         }

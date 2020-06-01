@@ -7,7 +7,9 @@ module.exports = setupFetchDebugging
 //
 
 function setupFetchDebugging () {
-  if (!global.fetch) return
+  if (!global.fetch) {
+    return
+  }
   const originalFetch = global.fetch
 
   global.fetch = wrappedFetch

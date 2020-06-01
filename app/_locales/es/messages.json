@@ -1,27 +1,15 @@
 {
-  "privacyModeDefault": {
-    "message": "Modo Privado está activado ahora por defecto"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabla solo disponible en redes Ethereum."
-  },
-  "confirmClear": {
-    "message": "¿Seguro que quieres borrar los sitios web aprobados?"
   },
   "contractInteraction": {
     "message": "Interacción con contrato"
   },
-  "clearApprovalData": {
-    "message": "Borrar datos de aprobación"
-  },
   "reject": {
     "message": "Rechazar"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 quisiera conectar con tu cuenta"
-  },
-  "providerRequestInfo": {
-    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la blockchain de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
   },
   "about": {
     "message": "Acerca"
@@ -145,10 +133,6 @@
   "basic": {
     "message": "Básico"
   },
-  "betweenMinAndMax": {
-    "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon (Iconos)"
   },
@@ -209,9 +193,6 @@
   "connect": {
     "message": "Conectar"
   },
-  "connectRequest": {
-    "message": "Petición para conectar"
-  },
   "connectingTo": {
     "message": "Conectánodse a $1"
   },
@@ -250,9 +231,6 @@
   },
   "copiedExclamation": {
     "message": "¡Copiado!"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar la dirección al portapapeles"
@@ -331,9 +309,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si posees Ether, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
-  },
-  "dismiss": {
-    "message": "Descartar"
   },
   "done": {
     "message": "Completo"
@@ -449,10 +424,6 @@
   "getHelp": {
     "message": "Pedir ayuda."
   },
-  "greaterThanMin": {
-    "message": "Debe ser mayor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardwareWalletConnected": {
     "message": "Se ha conectado el monedero físico"
   },
@@ -552,10 +523,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Hay que hacer uso de tu última cuenta antes de agregarle una nueva."
-  },
-  "lessThanMax": {
-    "message": "Debe ser menor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "¿Te gustaría agregar estos tokens?"
@@ -700,9 +667,6 @@
   "pastePrivateKey": {
     "message": "Pega tu clave privada aqui",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "¡Pega tu frase semilla aquí!"
   },
   "pending": {
     "message": "pendiente"
@@ -966,9 +930,6 @@
   "step3HardwareWalletMsg": {
     "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
   },
-  "submit": {
-    "message": "Enviar"
-  },
   "submitted": {
     "message": "Enviado"
   },
@@ -1096,9 +1057,6 @@
   },
   "usedByClients": {
     "message": "Utilizado por una variedad de clientes diferentes"
-  },
-  "validFileImport": {
-    "message": "Debes selecionar un archivo valido para importar"
   },
   "viewAccount": {
     "message": "Mirar cuenta"

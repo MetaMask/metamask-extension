@@ -4,6 +4,13 @@ import {
   setCompletedOnboarding,
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
+import { getOnboardingInitiator } from '../../first-time-flow.selectors'
+
+const mapStateToProps = (state) => {
+  return {
+    onboardingInitiator: getOnboardingInitiator(state),
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -12,4 +19,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(RevealSeedPhrase)
+export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPhrase)

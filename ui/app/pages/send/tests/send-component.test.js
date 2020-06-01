@@ -40,33 +40,35 @@ describe('Send Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendTransactionScreen
-      amount="mockAmount"
-      amountConversionRate="mockAmountConversionRate"
-      blockGasLimit="mockBlockGasLimit"
-      conversionRate={10}
-      editingTransactionId="mockEditingTransactionId"
-      fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
-      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      from={ { address: 'mockAddress', balance: 'mockBalance' } }
-      gasLimit="mockGasLimit"
-      gasPrice="mockGasPrice"
-      gasTotal="mockGasTotal"
-      history={{ mockProp: 'history-abc'}}
-      network="3"
-      primaryCurrency="mockPrimaryCurrency"
-      recentBlocks={['mockBlock']}
-      selectedAddress="mockSelectedAddress"
-      selectedToken={{ address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }}
-      showHexData
-      tokenBalance="mockTokenBalance"
-      tokenContract={{ method: 'mockTokenMethod' }}
-      updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
-      updateSendErrors={propsMethodSpies.updateSendErrors}
-      updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
-      resetSendState={propsMethodSpies.resetSendState}
-      updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}
-    />)
+    wrapper = shallow((
+      <SendTransactionScreen
+        amount="mockAmount"
+        amountConversionRate="mockAmountConversionRate"
+        blockGasLimit="mockBlockGasLimit"
+        conversionRate={10}
+        editingTransactionId="mockEditingTransactionId"
+        fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        from={ { address: 'mockAddress', balance: 'mockBalance' } }
+        gasLimit="mockGasLimit"
+        gasPrice="mockGasPrice"
+        gasTotal="mockGasTotal"
+        history={{ mockProp: 'history-abc'}}
+        network="3"
+        primaryCurrency="mockPrimaryCurrency"
+        recentBlocks={['mockBlock']}
+        selectedAddress="mockSelectedAddress"
+        selectedToken={{ address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }}
+        showHexData
+        tokenBalance="mockTokenBalance"
+        tokenContract={{ method: 'mockTokenMethod' }}
+        updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
+        updateSendErrors={propsMethodSpies.updateSendErrors}
+        updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
+        resetSendState={propsMethodSpies.resetSendState}
+        updateToNicknameIfNecessary={propsMethodSpies.updateToNicknameIfNecessary}
+      />
+    ))
   })
 
   afterEach(() => {

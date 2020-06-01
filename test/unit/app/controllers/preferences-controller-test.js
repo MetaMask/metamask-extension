@@ -1,6 +1,7 @@
 const assert = require('assert')
 const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
+const { addInternalMethodPrefix } = require('../../../../app/scripts/controllers/permissions')
 const sinon = require('sinon')
 
 describe('preferences controller', function () {
@@ -342,7 +343,7 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset', function () {
-    var stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
+    let stubNext, stubEnd, stubHandleWatchAssetERC20, asy, req, res
     const sandbox = sinon.createSandbox()
 
     beforeEach(() => {
@@ -359,8 +360,8 @@ describe('preferences controller', function () {
 
     it('shouldn not do anything if method not corresponds', async function () {
       const asy = {next: () => {}, end: () => {}}
-      var stubNext = sandbox.stub(asy, 'next')
-      var stubEnd = sandbox.stub(asy, 'end').returns(0)
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.notCalled(stubEnd)
@@ -368,14 +369,14 @@ describe('preferences controller', function () {
     })
     it('should do something if method is supported', async function () {
       const asy = {next: () => {}, end: () => {}}
-      var stubNext = sandbox.stub(asy, 'next')
-      var stubEnd = sandbox.stub(asy, 'end').returns(0)
+      const stubNext = sandbox.stub(asy, 'next')
+      const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask_watchAsset'
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.called(stubEnd)
       sandbox.assert.notCalled(stubNext)
-      req.method = 'wallet_watchAsset'
+      req.method = addInternalMethodPrefix('watchAsset')
       req.params.type = 'someasset'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.calledTwice(stubEnd)
@@ -400,7 +401,7 @@ describe('preferences controller', function () {
   })
 
   describe('on watchAsset of type ERC20', function () {
-    var req
+    let req
 
     const sandbox = sinon.createSandbox()
     beforeEach(() => {
@@ -455,28 +456,44 @@ describe('preferences controller', function () {
     })
     it('should validate ERC20 asset correctly', async function () {
       const validateSpy = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpy({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0}) } catch (e) {}
+      try {
+        validateSpy({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0})
+      } catch (e) {}
       assert.equal(validateSpy.threw(), false, 'correct options object')
       const validateSpyAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyAddress({symbol: 'ABC', decimals: 0}) } catch (e) {}
+      try {
+        validateSpyAddress({symbol: 'ABC', decimals: 0})
+      } catch (e) {}
       assert.equal(validateSpyAddress.threw(), true, 'options object with no address')
       const validateSpySymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpySymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0}) } catch (e) {}
+      try {
+        validateSpySymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0})
+      } catch (e) {}
       assert.equal(validateSpySymbol.threw(), true, 'options object with no symbol')
       const validateSpyDecimals = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyDecimals({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC'}) } catch (e) {}
+      try {
+        validateSpyDecimals({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC'})
+      } catch (e) {}
       assert.equal(validateSpyDecimals.threw(), true, 'options object with no decimals')
       const validateSpyInvalidSymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyInvalidSymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0}) } catch (e) {}
+      try {
+        validateSpyInvalidSymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0})
+      } catch (e) {}
       assert.equal(validateSpyInvalidSymbol.threw(), true, 'options object with invalid symbol')
       const validateSpyInvalidDecimals1 = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyInvalidDecimals1({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: -1}) } catch (e) {}
+      try {
+        validateSpyInvalidDecimals1({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: -1})
+      } catch (e) {}
       assert.equal(validateSpyInvalidDecimals1.threw(), true, 'options object with decimals less than zero')
       const validateSpyInvalidDecimals2 = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyInvalidDecimals2({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 38}) } catch (e) {}
+      try {
+        validateSpyInvalidDecimals2({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 38})
+      } catch (e) {}
       assert.equal(validateSpyInvalidDecimals2.threw(), true, 'options object with decimals more than 36')
       const validateSpyInvalidAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
-      try { validateSpyInvalidAddress({rawAddress: '0x123', symbol: 'ABC', decimals: 0}) } catch (e) {}
+      try {
+        validateSpyInvalidAddress({rawAddress: '0x123', symbol: 'ABC', decimals: 0})
+      } catch (e) {}
       assert.equal(validateSpyInvalidAddress.threw(), true, 'options object with address invalid')
     })
   })

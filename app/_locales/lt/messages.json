@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Dabar privatumo režimas suaktyvintas pagal numatytąją nuostatą"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagramos yra tik „Ethereum“ tinkluose."
-  },
-  "confirmClear": {
-    "message": "Ar tikrai norite panaikinti patvirtintas svetaines?"
   },
   "contractInteraction": {
     "message": "Sutartinė sąveika"
   },
-  "clearApprovalData": {
-    "message": "Išvalyti asmeninius duomenis"
-  },
   "reject": {
     "message": "Atmesti"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 norėtų prisijungti prie jūsų paskyros"
-  },
-  "providerRequestInfo": {
-    "message": "Ši svetainė prašo prieigos peržiūrėti jūsų dabartinės paskyros adresą. Visada patikrinkite, ar pasitikite svetainėmis, su kuriomis sąveikaujate."
   },
   "about": {
     "message": "Apie"
   },
   "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija."
+    "message": "Versija, palaikymo centras ir kontaktinė informacija"
   },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
@@ -63,7 +51,7 @@
     "message": "Išplėstiniai"
   },
   "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC."
+    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Bendrieji"
   },
-  "betweenMinAndMax": {
-    "message": "turi būti ne mažiau kaip $1 ir ne daugiau kaip $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokuoti naršyklę"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "connectRequest": {
-    "message": "Prijungimo užklausa"
-  },
   "connectingTo": {
     "message": "Jungiamasi prie $1"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "Nukopijuota!"
-  },
-  "copy": {
-    "message": "Kopijuoti"
   },
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
-  },
-  "dismiss": {
-    "message": "Atsisakyti"
   },
   "done": {
     "message": "Atlikta"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "Darbo pradžia"
   },
-  "greaterThanMin": {
-    "message": "turi būti daugiau arba lygu $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Džiaugiamės jus matydami."
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Prieš įtraukdami naują, turite pasinaudoti paskutine paskyra."
-  },
-  "lessThanMax": {
-    "message": "turi būti mažiau arba lygu $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"
@@ -869,9 +836,6 @@
   "pastePrivateKey": {
     "message": "Čia įklijuokite asmeninio rakto eilutę:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Čia įklijuokite savo atkūrimo frazę!"
   },
   "pending": {
     "message": "laukiama patvirtinimo"
@@ -1186,9 +1150,6 @@
   "storePhrase": {
     "message": "Laikykite šią frazę slaptažodžių tvarkyklėje kaip 1 slaptažodį."
   },
-  "submit": {
-    "message": "Pateikti"
-  },
   "submitted": {
     "message": "Pateikta"
   },
@@ -1355,9 +1316,6 @@
   },
   "userName": {
     "message": "Vartotojo vardas"
-  },
-  "validFileImport": {
-    "message": "Turite pasirinkti galiojantį failą, kurį pageidaujate importuoti."
   },
   "viewAccount": {
     "message": "Žiūrėti paskyrą"

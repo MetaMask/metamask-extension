@@ -1,0 +1,436 @@
+import React, { Component } from 'react'
+
+const PropTypes = require('prop-types')
+const classnames = require('classnames')
+const PubNub = require('pubnub')
+const qrCode = require('qrcode-generator')
+
+const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
+
+import Button from '../../components/ui/button'
+import LoadingScreen from '../../components/ui/loading-screen'
+
+const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
+const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
+const KEYS_GENERATION_TIME = 30000
+
+export default class MobileSyncPage extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    selectedAddress: PropTypes.string.isRequired,
+    displayWarning: PropTypes.func.isRequired,
+    fetchInfoToSync: PropTypes.func.isRequired,
+    requestRevealSeedWords: PropTypes.func.isRequired,
+  }
+
+
+  state = {
+    screen: PASSWORD_PROMPT_SCREEN,
+    password: '',
+    seedWords: null,
+    error: null,
+    syncing: false,
+    completed: false,
+    channelName: undefined,
+    cipherKey: undefined,
+  }
+
+  syncing = false
+
+  componentDidMount () {
+    const passwordBox = document.getElementById('password-box')
+    if (passwordBox) {
+      passwordBox.focus()
+    }
+  }
+
+  handleSubmit (event) {
+    event.preventDefault()
+    this.setState({ seedWords: null, error: null })
+    this.props.requestRevealSeedWords(this.state.password)
+      .then(seedWords => {
+        this.startKeysGeneration()
+        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
+      })
+      .catch(error => this.setState({ error: error.message }))
+  }
+
+  startKeysGeneration () {
+    this.handle && clearTimeout(this.handle)
+    this.disconnectWebsockets()
+    this.generateCipherKeyAndChannelName()
+    this.initWebsockets()
+    this.handle = setTimeout(() => {
+      this.startKeysGeneration()
+    }, KEYS_GENERATION_TIME)
+  }
+
+  generateCipherKeyAndChannelName () {
+    this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    this.channelName = `mm-${PubNub.generateUUID()}`
+    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
+  }
+
+  initWithCipherKeyAndChannelName (cipherKey, channelName) {
+    this.cipherKey = cipherKey
+    this.channelName = channelName
+  }
+
+  initWebsockets () {
+    // Make sure there are no existing listeners
+    this.disconnectWebsockets()
+
+    this.pubnub = new PubNub({
+      subscribeKey: process.env.PUBNUB_SUB_KEY,
+      publishKey: process.env.PUBNUB_PUB_KEY,
+      cipherKey: this.cipherKey,
+      ssl: true,
+    })
+
+    this.pubnubListener = {
+      message: (data) => {
+        const {channel, message} = data
+        // handle message
+        if (channel !== this.channelName || !message) {
+          return false
+        }
+
+        if (message.event === 'start-sync') {
+          this.startSyncing()
+        } else if (message.event === 'connection-info') {
+          this.handle && clearTimeout(this.handle)
+          this.disconnectWebsockets()
+          this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
+          this.initWebsockets()
+        } else if (message.event === 'end-sync') {
+          this.disconnectWebsockets()
+          this.setState({syncing: false, completed: true})
+        }
+      },
+    }
+
+    this.pubnub.addListener(this.pubnubListener)
+
+    this.pubnub.subscribe({
+      channels: [this.channelName],
+      withPresence: false,
+    })
+
+  }
+
+  disconnectWebsockets () {
+    if (this.pubnub && this.pubnubListener) {
+      this.pubnub.removeListener(this.pubnubListener)
+    }
+  }
+
+  // Calculating a PubNub Message Payload Size.
+  calculatePayloadSize (channel, message) {
+    return encodeURIComponent(
+      channel + JSON.stringify(message)
+    ).length + 100
+  }
+
+  chunkString (str, size) {
+    const numChunks = Math.ceil(str.length / size)
+    const chunks = new Array(numChunks)
+    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+      chunks[i] = str.substr(o, size)
+    }
+    return chunks
+  }
+
+  notifyError (errorMsg) {
+    return new Promise((resolve, reject) => {
+      this.pubnub.publish(
+        {
+          message: {
+            event: 'error-sync',
+            data: errorMsg,
+          },
+          channel: this.channelName,
+          sendByPost: false, // true to send via post
+          storeInHistory: false,
+        },
+        (status, response) => {
+          if (!status.error) {
+            resolve()
+          } else {
+            reject(response)
+          }
+        })
+    })
+  }
+
+  async startSyncing () {
+    if (this.syncing) {
+      return false
+    }
+    this.syncing = true
+    this.setState({syncing: true})
+
+    const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
+
+    const allDataStr = JSON.stringify({
+      accounts,
+      network,
+      preferences,
+      transactions,
+      udata: {
+        pwd: this.state.password,
+        seed: this.state.seedWords,
+      },
+    })
+
+    const chunks = this.chunkString(allDataStr, 17000)
+    const totalChunks = chunks.length
+    try {
+      for (let i = 0; i < totalChunks; i++) {
+        await this.sendMessage(chunks[i], i + 1, totalChunks)
+      }
+    } catch (e) {
+      this.props.displayWarning('Sync failed :(')
+      this.setState({syncing: false})
+      this.syncing = false
+      this.notifyError(e.toString())
+    }
+  }
+
+  sendMessage (data, pkg, count) {
+    return new Promise((resolve, reject) => {
+      this.pubnub.publish(
+        {
+          message: {
+            event: 'syncing-data',
+            data,
+            totalPkg: count,
+            currentPkg: pkg,
+          },
+          channel: this.channelName,
+          sendByPost: false, // true to send via post
+          storeInHistory: false,
+        },
+        (status, response) => {
+          if (!status.error) {
+            resolve()
+          } else {
+            reject(response)
+          }
+        }
+      )
+    })
+  }
+
+
+  componentWillUnmount () {
+    this.disconnectWebsockets()
+  }
+
+  renderWarning (text) {
+    return (
+      <div className="page-container__warning-container">
+        <div className="page-container__warning-message">
+          <div>{text}</div>
+        </div>
+      </div>
+    )
+  }
+
+  renderContent () {
+    const { syncing, completed, screen } = this.state
+    const { t } = this.context
+
+    if (syncing) {
+      return (
+        <LoadingScreen loadingMessage="Sync in progress" />
+      )
+    }
+
+    if (completed) {
+      return (
+        <div className="reveal-seed__content">
+          <label
+            className="reveal-seed__label"
+            style={{
+              width: '100%',
+              textAlign: 'center',
+            }}
+          >
+            {t('syncWithMobileComplete')}
+          </label>
+        </div>
+      )
+    }
+
+    return screen === PASSWORD_PROMPT_SCREEN
+      ? (
+        <div>
+          {this.renderWarning(this.context.t('mobileSyncText'))}
+          <div className="reveal-seed__content">
+            {this.renderPasswordPromptContent()}
+          </div>
+        </div>
+      )
+      : (
+        <div>
+          {this.renderWarning(this.context.t('syncWithMobileBeCareful'))}
+          <div className="reveal-seed__content">
+            {this.renderRevealSeedContent()}
+          </div>
+        </div>
+      )
+  }
+
+  renderPasswordPromptContent () {
+    const { t } = this.context
+
+    return (
+      <form onSubmit={event => this.handleSubmit(event)}>
+        <label className="input-label" htmlFor="password-box">
+          {t('enterPasswordContinue')}
+        </label>
+        <div className="input-group">
+          <input
+            type="password"
+            placeholder={t('password')}
+            id="password-box"
+            value={this.state.password}
+            onChange={event => this.setState({ password: event.target.value })}
+            className={classnames('form-control', {
+              'form-control--error': this.state.error,
+            })}
+          />
+        </div>
+        {this.state.error && (
+          <div className="reveal-seed__error">
+            {this.state.error}
+          </div>
+        )}
+      </form>
+    )
+  }
+
+  renderRevealSeedContent () {
+    const qrImage = qrCode(0, 'M')
+    qrImage.addData(`metamask-sync:${this.state.channelName}|@|${this.state.cipherKey}`)
+    qrImage.make()
+
+    const { t } = this.context
+    return (
+      <div>
+        <label
+          className="reveal-seed__label"
+          style={{
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          {t('syncWithMobileScanThisCode')}
+        </label>
+        <div
+          className="div qr-wrapper"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+          dangerouslySetInnerHTML={{
+            __html: qrImage.createTableTag(4),
+          }}
+        />
+      </div>
+    )
+  }
+
+  renderFooter () {
+    return this.state.screen === PASSWORD_PROMPT_SCREEN
+      ? this.renderPasswordPromptFooter()
+      : this.renderRevealSeedFooter()
+  }
+
+  renderPasswordPromptFooter () {
+    const { t } = this.context
+    const { history } = this.props
+    const { password } = this.state
+
+    return (
+      <div className="new-account-import-form__buttons" style={{ padding: 30 }}>
+        <Button
+          type="default"
+          large
+          className="new-account-create-form__button"
+          onClick={() => history.push(DEFAULT_ROUTE)}
+        >
+          {t('cancel')}
+        </Button>
+        <Button
+          type="secondary"
+          large
+          className="new-account-create-form__button"
+          onClick={event => this.handleSubmit(event)}
+          disabled={password === ''}
+        >
+          {t('next')}
+        </Button>
+      </div>
+    )
+  }
+
+  renderRevealSeedFooter () {
+    const { t } = this.context
+    const { history } = this.props
+
+    return (
+      <div className="page-container__footer" style={{ padding: 30 }}>
+        <Button
+          type="default"
+          large
+          className="page-container__footer-button"
+          onClick={() => history.push(DEFAULT_ROUTE)}
+        >
+          {t('close')}
+        </Button>
+      </div>
+    )
+  }
+
+  render () {
+    const { t } = this.context
+    const { screen } = this.state
+
+    return (
+      <div className="page-container">
+        <div className="page-container__header">
+          <div className="page-container__title">
+            {t('syncWithMobileTitle')}
+          </div>
+          {
+            screen === PASSWORD_PROMPT_SCREEN
+              ? (
+                <div className="page-container__subtitle">
+                  {t('syncWithMobileDesc')}
+                </div>
+              )
+              : null
+          }
+          {
+            screen === PASSWORD_PROMPT_SCREEN
+              ? (
+                <div className="page-container__subtitle">
+                  {t('syncWithMobileDescNewUsers')}
+                </div>
+              )
+              : null
+          }
+        </div>
+        <div className="page-container__content">
+          {this.renderContent()}
+        </div>
+        {this.renderFooter()}
+      </div>
+    )
+  }
+}

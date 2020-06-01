@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "El mode de privacitat ara està activat per defecte"
-  },
   "chartOnlyAvailableEth": {
     "message": "Mostra només els disponibles a les xarxes Ethereum."
-  },
-  "confirmClear": {
-    "message": "Estàs segur que vols eliminar totes les pàgines web aprovades?"
   },
   "contractInteraction": {
     "message": "Contractar Interacció"
   },
-  "clearApprovalData": {
-    "message": "Elimina les dades de privacitat"
-  },
   "reject": {
     "message": "Rebutja"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "a $1 li agradaria connectar-se al teu compte"
-  },
-  "providerRequestInfo": {
-    "message": "Aquesta pàgina està demanant accès a la teva adreça"
   },
   "about": {
     "message": "Informació"
   },
   "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte."
+    "message": "Versió, centre de suport, i informació de contacte"
   },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
@@ -63,7 +51,7 @@
     "message": "Configuració avançada"
   },
   "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC."
+    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Opcions bàsiques"
   },
-  "betweenMinAndMax": {
-    "message": "ha de ser igual o superior a $1 i menor o igual a $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Bloqueja l'explorador"
   },
@@ -249,9 +233,6 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectRequest": {
-    "message": "Sol·licitud de connexió"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "S'ha copiat!"
-  },
-  "copy": {
-    "message": "Copia"
   },
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
-  "dismiss": {
-    "message": "Omet"
   },
   "done": {
     "message": "Fet"
@@ -533,10 +508,6 @@
   "getStarted": {
     "message": "Comença"
   },
-  "greaterThanMin": {
-    "message": "ha de ser major o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Ens alegrem de veure't."
   },
@@ -649,10 +620,6 @@
   "ledgerAccountRestriction": {
     "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
   },
-  "lessThanMax": {
-    "message": "ha de ser igual o menor a $1 .",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Sí, posem-nos en marxa!"
   },
@@ -702,7 +669,7 @@
     "message": "Conectant-te a Ethereum i la web descentralitzada."
   },
   "metamaskSeedWords": {
-    "message": "Frase de recuperació de Metamask"
+    "message": "Frase de recuperació de MetaMask"
   },
   "metamaskVersion": {
     "message": "Versió MetaMask"
@@ -853,9 +820,6 @@
   "pastePrivateKey": {
     "message": "Enganxa la teva cadena clau privada aquí:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Enganxa la teva frase de seeds aquí!"
   },
   "pending": {
     "message": "pendent"
@@ -1164,9 +1128,6 @@
   "storePhrase": {
     "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"
   },
-  "submit": {
-    "message": "Envia"
-  },
   "submitted": {
     "message": "Enviat"
   },
@@ -1324,9 +1285,6 @@
   },
   "userName": {
     "message": "Nom d'usuari"
-  },
-  "validFileImport": {
-    "message": "Has de seleccionar un arxiu vàlid per a importar."
   },
   "viewAccount": {
     "message": "Mostra el compte"

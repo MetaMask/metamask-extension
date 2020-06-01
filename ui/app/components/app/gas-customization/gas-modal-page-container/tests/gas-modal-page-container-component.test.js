@@ -63,23 +63,25 @@ describe('GasModalPageContainer Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<GasModalPageContainer
-      cancelAndClose={propsMethodSpies.cancelAndClose}
-      onSubmit={propsMethodSpies.onSubmit}
-      fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
-      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
-      updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-      customGasPrice={21}
-      customGasLimit={54321}
-      gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-      infoRowProps={mockInfoRowProps}
-      currentTimeEstimate="1 min 31 sec"
-      customGasPriceInHex="mockCustomGasPriceInHex"
-      customGasLimitInHex="mockCustomGasLimitInHex"
-      insufficientBalance={false}
-      disableSave={false}
-    />)
+    wrapper = shallow((
+      <GasModalPageContainer
+        cancelAndClose={propsMethodSpies.cancelAndClose}
+        onSubmit={propsMethodSpies.onSubmit}
+        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+        updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+        customGasPrice={21}
+        customGasLimit={54321}
+        gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+        infoRowProps={mockInfoRowProps}
+        currentTimeEstimate="1 min 31 sec"
+        customGasPriceInHex="mockCustomGasPriceInHex"
+        customGasLimitInHex="mockCustomGasLimitInHex"
+        insufficientBalance={false}
+        disableSave={false}
+      />
+    ))
   })
 
   afterEach(() => {
@@ -134,10 +136,12 @@ describe('GasModalPageContainer Component', function () {
 
     it('should pass the correct renderTabs property to PageContainer', () => {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
-      const renderTabsWrapperTester = shallow(<GasModalPageContainer
-        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
-        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-      />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+      const renderTabsWrapperTester = shallow((
+        <GasModalPageContainer
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+        />
+      ), { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()
@@ -184,24 +188,26 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should not render the basic tab if hideBasic is true', () => {
-      wrapper = shallow(<GasModalPageContainer
-        cancelAndClose={propsMethodSpies.cancelAndClose}
-        onSubmit={propsMethodSpies.onSubmit}
-        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
-        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-        updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
-        updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
-        customGasPrice={21}
-        customGasLimit={54321}
-        gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-        infoRowProps={mockInfoRowProps}
-        currentTimeEstimate="1 min 31 sec"
-        customGasPriceInHex="mockCustomGasPriceInHex"
-        customGasLimitInHex="mockCustomGasLimitInHex"
-        insufficientBalance={false}
-        disableSave={false}
-        hideBasic
-      />)
+      wrapper = shallow((
+        <GasModalPageContainer
+          cancelAndClose={propsMethodSpies.cancelAndClose}
+          onSubmit={propsMethodSpies.onSubmit}
+          fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+          updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+          updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+          customGasPrice={21}
+          customGasLimit={54321}
+          gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+          infoRowProps={mockInfoRowProps}
+          currentTimeEstimate="1 min 31 sec"
+          customGasPriceInHex="mockCustomGasPriceInHex"
+          customGasLimitInHex="mockCustomGasLimitInHex"
+          insufficientBalance={false}
+          disableSave={false}
+          hideBasic
+        />
+      ))
       const renderTabsResult = wrapper.instance().renderTabs()
 
       const renderedTabs = shallow(renderTabsResult)

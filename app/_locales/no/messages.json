@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Personvernmodus er nå aktivert som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
-  },
-  "confirmClear": {
-    "message": "Er du sikker på at du vil tømme godkjente nettsteder?"
   },
   "contractInteraction": {
     "message": "Kontraktssamhandling"
   },
-  "clearApprovalData": {
-    "message": "Tøm personvernsdata"
-  },
   "reject": {
     "message": "Avslå"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 ønsker å forbindes med kontoen din "
-  },
-  "providerRequestInfo": {
-    "message": "Dette nettstedet ber om tilgang til å vise din nåværende kontoadresse. Alltid kontroller at du stoler på nettstedene du samhandler med."
   },
   "about": {
     "message": "Info"
   },
   "aboutSettingsDescription": {
-    "message": "Versjon, brukerstøtte og kontaktinformasjon."
+    "message": "Versjon, brukerstøtte og kontaktinformasjon"
   },
   "acceleratingATransaction": {
     "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
@@ -63,7 +51,7 @@
     "message": "Avansert"
   },
   "advancedSettingsDescription": {
-    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC."
+    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
   },
   "advancedOptions": {
     "message": "Avanserte valg"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Enkle"
   },
-  "betweenMinAndMax": {
-    "message": "må være større enn eller det samme som $1 og mindre enn eller det samme som $2. ",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Blokkér Explorer"
   },
@@ -249,9 +233,6 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectRequest": {
-    "message": "Kontaktforespørsel "
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "Kopiert!"
-  },
-  "copy": {
-    "message": "Kopier"
   },
   "copyAddress": {
     "message": "Kopier adresse til  utklippstavlen "
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
-  },
-  "dismiss": {
-    "message": "Lukk"
   },
   "done": {
     "message": "Ferdig"
@@ -536,10 +511,6 @@
   "getStarted": {
     "message": "Kom i gang"
   },
-  "greaterThanMin": {
-    "message": "Må være mer enn eller tilsvarende $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Vi er glade for å se deg "
   },
@@ -654,10 +625,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Du må bruke den siste kontoen din før du kan legge til en ny."
-  },
-  "lessThanMax": {
-    "message": "Må være mindre eller likt som $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Ja, la oss komme i gang!"
@@ -859,9 +826,6 @@
   "pastePrivateKey": {
     "message": "Lim inn din private nøkkelstreng her:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Lim inn seed-frasen din her!"
   },
   "pending": {
     "message": "i påvente "
@@ -1164,9 +1128,6 @@
   "storePhrase": {
     "message": "Lagre denne frasen i en passordbehandler slik som 1Password."
   },
-  "submit": {
-    "message": "Send"
-  },
   "submitted": {
     "message": "Sendt inn"
   },
@@ -1327,9 +1288,6 @@
   },
   "userName": {
     "message": "Brukernavn"
-  },
-  "validFileImport": {
-    "message": "Du må velge en gyldig fil å importere"
   },
   "viewAccount": {
     "message": "Se konto"

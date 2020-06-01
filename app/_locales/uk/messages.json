@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "Режим конфіденційності тепер увімкнено за замовчуванням"
-  },
   "chartOnlyAvailableEth": {
     "message": "Таблиця доступна тільки в мережах Ethereum."
-  },
-  "confirmClear": {
-    "message": "Ви впевнені, що хочете очистити затверджені веб-сайти?"
   },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
-  "clearApprovalData": {
-    "message": "Очистити приватні дані"
-  },
   "reject": {
     "message": "Відхилити"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1 бажає підключитися до вашого облікового запису"
-  },
-  "providerRequestInfo": {
-    "message": "Цей сайт запитує доступ на перегляд вашої поточної адреси облікового запису. Завжди взаємодійте лише з веб-сайтами, яким довіряєте."
   },
   "about": {
     "message": "Про Google Chrome"
   },
   "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація."
+    "message": "Версія, центр підтримки та контактна інформація"
   },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
@@ -63,7 +51,7 @@
     "message": "Розширені"
   },
   "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC."
+    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
   },
   "advancedOptions": {
     "message": "Додаткові параметри"
@@ -157,10 +145,6 @@
   "basic": {
     "message": "Основні параметри"
   },
-  "betweenMinAndMax": {
-    "message": "має бути більшим або дорівнювати $1 і меншим або дорівнювати $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockExplorerUrl": {
     "message": "Блокувати Explorer"
   },
@@ -252,9 +236,6 @@
   "connect": {
     "message": "Під’єднатися"
   },
-  "connectRequest": {
-    "message": "Запит на з'єднання"
-  },
   "connectingTo": {
     "message": "Під'єднуємось до $1"
   },
@@ -293,9 +274,6 @@
   },
   "copiedExclamation": {
     "message": "Скопійовано!"
-  },
-  "copy": {
-    "message": "Копіювати"
   },
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
@@ -374,9 +352,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
-  "dismiss": {
-    "message": "Відхилити"
   },
   "done": {
     "message": "Готово"
@@ -543,10 +518,6 @@
   "getStarted": {
     "message": "Почати"
   },
-  "greaterThanMin": {
-    "message": "має бути більшим або рівним $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "happyToSeeYou": {
     "message": "Раді вас бачити."
   },
@@ -664,10 +635,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
-  },
-  "lessThanMax": {
-    "message": "має бути більшим або дорівнювати $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
@@ -869,9 +836,6 @@
   "pastePrivateKey": {
     "message": "Вставте ваш рядок з особистим ключем сюди:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Вставте сюди свою мнемонічну фразу!"
   },
   "pending": {
     "message": "очікує"
@@ -1186,9 +1150,6 @@
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."
   },
-  "submit": {
-    "message": "Надіслати"
-  },
   "submitted": {
     "message": "Надіслано"
   },
@@ -1355,9 +1316,6 @@
   },
   "userName": {
     "message": "Ім’я користувача"
-  },
-  "validFileImport": {
-    "message": "Потрібно вибрати дійсний файл для імпорту."
   },
   "viewAccount": {
     "message": "Переглянути обліковий запис"

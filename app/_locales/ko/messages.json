@@ -1,33 +1,21 @@
 {
-  "privacyModeDefault": {
-    "message": "이제 프라이버시 모드가 기본 설정으로 활성화됐습니다"
-  },
   "chartOnlyAvailableEth": {
     "message": "이더리움 네트워크에서만 사용 가능한 차트."
-  },
-  "confirmClear": {
-    "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
   },
   "contractInteraction": {
     "message": "계약 상호 작용"
   },
-  "clearApprovalData": {
-    "message": "승인 데이터 삭제"
-  },
   "reject": {
     "message": "거부"
   },
-  "providerRequest": {
+  "likeToConnect": {
     "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
-  "providerRequestInfo": {
-    "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
   },
   "about": {
     "message": "정보"
   },
   "aboutSettingsDescription": {
-    "message": "버전, 지원 센터, 그리고 연락처 정보."
+    "message": "버전, 지원 센터, 그리고 연락처 정보"
   },
   "acceleratingATransaction": {
     "message": "* 더 높은 가스 요금을 사용하여 트랜잭션을 가속화하면 네트워크에 의해 더 빨리 처리될 가능성이 증가하지만 항상 빠른 처리가 보장되는 것은 아닙니다."
@@ -63,7 +51,7 @@
     "message": "고급"
   },
   "advancedSettingsDescription": {
-    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정."
+    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정"
   },
   "advancedOptions": {
     "message": "고급 옵션"
@@ -153,10 +141,6 @@
   },
   "balanceIsInsufficientGas": {
     "message": "현재 가스 총합에 대해 잔액이 부족합니다"
-  },
-  "betweenMinAndMax": {
-    "message": "$1 이상 $2 이하여야 합니다.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "익스플로러 차단"
@@ -249,9 +233,6 @@
   "connect": {
     "message": "연결"
   },
-  "connectRequest": {
-    "message": "연결 요청"
-  },
   "connectingTo": {
     "message": "$1에 연결"
   },
@@ -290,9 +271,6 @@
   },
   "copiedExclamation": {
     "message": "복사됨!"
-  },
-  "copy": {
-    "message": "복사"
   },
   "copyAddress": {
     "message": "클립보드로 주소 복사"
@@ -371,9 +349,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "약간의 이더를 이미 보유하고 있다면, 새로 만든 지갑에 직접 입금하여 이더를 보유할 수 있습니다."
-  },
-  "dismiss": {
-    "message": "숨기기"
   },
   "done": {
     "message": "완료"
@@ -540,10 +515,6 @@
   "getStarted": {
     "message": "시작하기"
   },
-  "greaterThanMin": {
-    "message": "$1 이상이어야 합니다.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "hardware": {
     "message": "하드웨어"
   },
@@ -658,10 +629,6 @@
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
-  },
-  "lessThanMax": {
-    "message": "$1 이하여야합니다.",
-    "description": "helper for inputting hex as decimal input"
   },
   "letsGoSetUp": {
     "message": "네, 설정해볼게요!"
@@ -860,9 +827,6 @@
   "pastePrivateKey": {
     "message": "개인키를 입력해주세요:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "시드 구문을 이곳에 붙여넣어 주세요!"
   },
   "pending": {
     "message": "펜딩 중"
@@ -1177,9 +1141,6 @@
   "storePhrase": {
     "message": "이 구문을 1Password같은 암호 관리자에 저장하세요."
   },
-  "submit": {
-    "message": "제출"
-  },
   "submitted": {
     "message": "제출됨"
   },
@@ -1346,9 +1307,6 @@
   },
   "userName": {
     "message": "사용자이름"
-  },
-  "validFileImport": {
-    "message": "가져오기 위해 유효한 파일을 선택해야 합니다."
   },
   "viewAccount": {
     "message": "계정 보기"

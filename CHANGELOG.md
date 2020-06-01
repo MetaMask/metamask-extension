@@ -67,6 +67,7 @@
 - [#7558](https://github.com/MetaMask/metamask-extension/pull/7558): Use localized messages for NotificationModal buttons
 
 ## 7.7.0 Thu Nov 28 2019 [WITHDRAWN]
+## 7.7.0 Thu Nov 28 2019
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Connect distinct accounts per site
 - [#7480](https://github.com/MetaMask/metamask-extension/pull/7480): Fixed link on root README.md
 - [#7482](https://github.com/MetaMask/metamask-extension/pull/7482): Update Wyre ETH purchase url
