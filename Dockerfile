@@ -8,24 +8,23 @@
 ### base -> prep-deps -> prep-deps-with-files
 ### base -> prep-deps -> prep-deps-with-prod-files
 ### base -> prep-deps -> test-lint-lockfile @
+### base -> prep-deps -> (browsers) prep-deps-browser
+### base -> prep-deps -> prep-test
 # 4
-#### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser
-#### base -> prep-deps -> prep-deps-with-prod-files -> prep-test
 #### base -> prep-deps -> prep-deps-with-prod-files -> prep-build
 #### base -> prep-deps -> prep-deps-with-prod-files -> prep-build-storybook @
 #### base -> prep-deps -> prep-deps-with-files -> shellcheck @
 #### base -> prep-deps -> prep-deps-with-files -> test-lint @
+#### base -> prep-deps -> prep-deps-browser -> prep-build-test
+#### base -> prep-deps -> prep-deps-browser -> prep-test-flat
+#### base -> prep-deps -> prep-test -> test-unit @
+#### base -> prep-deps -> prep-test -> test-unit-global @
 # 5
-##### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-build-test
-##### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-test-flat
-##### base -> prep-deps -> prep-deps-with-prod-files -> prep-test -> test-unit @
-##### base -> prep-deps -> prep-deps-with-prod-files -> prep-test -> test-unit-global @
 ##### base -> prep-deps -> prep-deps-with-prod-files -> prep-build -> test-mozilla-lint @
-# 6
-###### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-test-flat -> test-flat chrome/firefox
-###### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-build-test -> e2e-chrome
-###### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-build-test -> e2e-firefox
-###### base -> prep-deps -> prep-deps-with-files -> prep-deps-browser -> prep-build-test -> benchmark
+##### base -> prep-deps -> prep-deps-browser -> prep-test-flat -> test-flat chrome/firefox
+##### base -> prep-deps -> prep-deps-browser -> prep-build-test -> e2e-chrome
+##### base -> prep-deps -> prep-deps-browser -> prep-build-test -> e2e-firefox
+##### base -> prep-deps -> prep-deps-browser -> prep-build-test -> benchmark
 
 ############################################################################# Level 1
 # base
@@ -44,12 +43,12 @@ RUN ./yarn-audit
 FROM base as prep-deps
 COPY --chown=circleci:circleci .circleci/scripts/deps-install.sh .
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn ./deps-install.sh
+COPY --chown=circleci:circleci ./development/prepare-conflux-local-netowrk-lite.js ./development/prepare-conflux-local-netowrk-lite.js
+RUN yarn test:prepare-conflux-local
 
 ############################################################################# Level 3
 # prep-deps-with-files without browser
 FROM prep-deps as prep-deps-with-files
-COPY --chown=circleci:circleci ./development/prepare-conflux-local-netowrk-lite.js ./development/
-RUN yarn test:prepare-conflux-local
 COPY --chown=circleci:circleci . .
 
 RUN printf '#!/bin/sh\nexec "$@"\n' > /tmp/entrypoint-prep-deps \
@@ -66,14 +65,6 @@ COPY --chown=circleci:circleci app ./app
 # test-lint-lockfile
 FROM prep-deps AS test-lint-lockfile
 RUN yarn lint:lockfile
-
-############################################################################# Level 4
-# prep-test
-FROM prep-deps-with-prod-files AS prep-test
-COPY --chown=circleci:circleci ./development/prepare-conflux-local-netowrk-lite.js ./development/prepare-conflux-local-netowrk-lite.js
-COPY --chown=circleci:circleci ./test/env.js ./test/env.js
-COPY --chown=circleci:circleci ./test/helper.js ./test/helper.js
-COPY --chown=circleci:circleci ./test/setup.js ./test/setup.js
 
 # prep-deps with browser
 FROM circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88 AS browser
@@ -102,11 +93,22 @@ ENV BUILDKITE_BRANCH ${BUILDKITE_BRANCH}
 ENV BUILDKITE_ORGANIZATION_SLUG ${BUILDKITE_ORGANIZATION_SLUG}
 ENV BUILDKITE_REPO ${BUILDKITE_REPO}
 
-COPY --chown=circleci:circleci --from=prep-deps-with-files /home/circleci/portal/ .
+# COPY --chown=circleci:circleci --from=prep-deps-with-files /home/circleci/portal/ .
+COPY --chown=circleci:circleci --from=prep-deps /home/circleci/portal/ .
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
 
+# prep-test
+FROM prep-deps AS prep-test
+COPY --chown=circleci:circleci ./test/env.js ./test/env.js
+COPY --chown=circleci:circleci ./test/helper.js ./test/helper.js
+COPY --chown=circleci:circleci ./test/setup.js ./test/setup.js
+COPY --chown=circleci:circleci babel.config.js .
+COPY --chown=circleci:circleci ./ui ./ui
+COPY --chown=circleci:circleci ./app ./app
+
+############################################################################# Level 4
 # prep-build
 FROM prep-deps-with-prod-files AS prep-build
 RUN yarn dist
@@ -117,19 +119,34 @@ FROM prep-deps-with-prod-files AS prep-build-storybook
 COPY --chown=circleci:circleci .storybook .
 RUN yarn storybook:build
 
+FROM buildpack-deps:stretch AS prep-shellcheck
+RUN apt update && apt install jq shellcheck -y && rm -rf /var/lib/apt/lists/*
+
 # test-lint-shellcheck
-FROM prep-deps-with-files AS shellcheck
-RUN sudo apt update && sudo apt install jq shellcheck -y && sudo rm -rf /var/lib/apt/lists/*
-RUN yarn lint:shellcheck
+FROM prep-shellcheck AS shellcheck
+WORKDIR /portal
+COPY --chown=circleci:circleci ./test/e2e/run-web3.sh ./test/e2e/run-web3.sh
+COPY --chown=circleci:circleci ./development/shellcheck.sh ./development/shellcheck.sh
+COPY --chown=circleci:circleci ./development/auto-changelog.sh ./development/auto-changelog.sh
+COPY --chown=circleci:circleci ./development/generate-migration.sh ./development/generate-migration.sh
+COPY --chown=circleci:circleci ./development/source-map-explorer.sh ./development/source-map-explorer.sh
+COPY --chown=circleci:circleci ./development/gource-viz.sh ./development/gource-viz.sh
+COPY --chown=circleci:circleci ./.circleci/scripts/collect-har-artifact.sh ./.circleci/scripts/collect-har-artifact.sh
+COPY --chown=circleci:circleci ./.circleci/scripts/deps-install.sh ./.circleci/scripts/deps-install.sh
+COPY --chown=circleci:circleci ./development/sentry-upload-artifacts.sh ./development/sentry-upload-artifacts.sh
+COPY --chown=circleci:circleci ./test/e2e/run-all.sh ./test/e2e/run-all.sh
+COPY --chown=circleci:circleci ./test/e2e/run-all-parallel.sh ./test/e2e/run-all-parallel.sh
+COPY --chown=circleci:circleci ./package.json ./package.json
+RUN ./development/shellcheck.sh
 
 # test-lint
 FROM prep-deps-with-files AS test-lint
 RUN yarn lint
 RUN yarn verify-locales --quiet
-############################################################################# Level 5
+
 # test-unit
 FROM prep-test AS test-unit
-COPY --chown=circleci:circleci test/stub ./test/stub
+COPY --chown=circleci:circleci ./test/stub ./test/stub
 COPY --chown=circleci:circleci ./test/lib ./test/lib
 COPY --chown=circleci:circleci ./test/data ./test/data
 COPY --chown=circleci:circleci ./test/unit ./test/unit
@@ -143,23 +160,39 @@ RUN yarn test:unit:global
 
 # prep-build-test
 FROM prep-deps-browser AS prep-build-test
+COPY --chown=circleci:circleci gulpfile.js babel.config.js .
+COPY --chown=circleci:circleci ./app ./app
+COPY --chown=circleci:circleci ./ui ./ui
 RUN yarn build:test
+COPY --chown=circleci:circleci ./test ./test
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
 
 # test-integration-flat
 FROM prep-deps-browser AS prep-test-flat
+COPY --chown=circleci:circleci ./development/genStates.js ./development/genStates.js
+COPY --chown=circleci:circleci ./development/mock-dev.js ./development/mock-dev.js
+COPY --chown=circleci:circleci ./development/selector.js ./development/selector.js
+COPY --chown=circleci:circleci ./development/backGroundConnectionModifiers.js ./development/backGroundConnectionModifiers.js
+COPY --chown=circleci:circleci ./development/states ./development/states
+COPY --chown=circleci:circleci ./test/lib ./test/lib
+COPY --chown=circleci:circleci ./test/data ./test/data
+COPY --chown=circleci:circleci ./test/integration ./test/integration
+COPY --chown=circleci:circleci ./test/flat.conf.js ./test/flat.conf.js
+COPY --chown=circleci:circleci ./test/base.conf.js ./test/base.conf.js
+COPY --chown=circleci:circleci gulpfile.js babel.config.js .
+COPY --chown=circleci:circleci ./app ./app
+COPY --chown=circleci:circleci ./ui ./ui
 RUN find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
 RUN yarn test:integration:build
 RUN yarn test:flat:build
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
-
+############################################################################# Level 5
 # test-mozilla-lint
 FROM prep-build AS test-mozilla-lint
 RUN NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
-############################################################################# Level 6
 # test-integration-flat
 FROM prep-test-flat AS test-flat
 ARG BROWSERS='["Chrome"]'
