@@ -1,22 +1,20 @@
 
-// TODO:deprecate:2020-01-13
+// TODO:deprecate:2020
 
-module.exports = setupDappAutoReload
-
-function setupDappAutoReload (web3, observable) {
+export default function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
   let lastSeenNetwork
   let hasBeenWarned = false
 
-  global.web3 = new Proxy(web3, {
+  const web3Proxy = new Proxy(web3, {
     get: (_web3, key) => {
       // get the time of use
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn(`MetaMask: On 2020-01-13, MetaMask will no longer inject web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
+        console.warn(`MetaMask: We will soon stop injecting web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
         hasBeenWarned = true
       }
       // return value normally
@@ -26,6 +24,13 @@ function setupDappAutoReload (web3, observable) {
       // set value normally
       _web3[key] = value
     },
+  })
+
+  Object.defineProperty(global, 'web3', {
+    enumerable: false,
+    writable: true,
+    configurable: true,
+    value: web3Proxy,
   })
 
   observable.subscribe(function (state) {

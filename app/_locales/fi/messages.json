@@ -8,9 +8,6 @@
   "reject": {
     "message": "Hylkää"
   },
-  "likeToConnect": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Attribuutiot"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Määritä, montako minuuttia MetaMask on ollut joutilaana ennen kuin sinut kirjataan automaattisesti ulos"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo saattaa olla vanhentunut"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo ei kata nykyistä polttoaineen kokonaismäärää"
   },
   "basic": {
     "message": "Perusvaihtoehdot"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "Ketjun tunnus"
-  },
-  "clickToAdd": {
-    "message": "Napsauta kohdetta $1 lisätäksesi ne tiliisi"
   },
   "clickToRevealSeed": {
     "message": "Paljasta salaiset sanat napsauttamalla tästä"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Sopimuksen käyttö"
   },
-  "conversionProgress": {
-    "message": "Muuntaminen käynnissä"
-  },
-  "copiedButton": {
-    "message": "Kopioitu"
-  },
   "copiedExclamation": {
     "message": "Kopioitu"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Kopioi leikepöydälle"
-  },
-  "copyButton": {
-    "message": "Kopioi"
   },
   "copyPrivateKey": {
     "message": "Tämä on yksityinen avaimesi (kopioi napsauttamalla)"
@@ -460,17 +442,11 @@
   "from": {
     "message": "Alkaen"
   },
-  "fromShapeShift": {
-    "message": "ShapeShiftistä"
-  },
   "functionType": {
     "message": "Funktion tyyppi"
   },
   "gasLimit": {
     "message": "Gas-raja"
-  },
-  "gasLimitCalculation": {
-    "message": "Laskemme ehdotetun gas-arvon verkon onnistumistason perusteella."
   },
   "gasLimitInfoModalContent": {
     "message": "Polttoaineraja tarkoittaa suurinta mahdollista polttoainemäärää, jonka olet valmis kuluttamaan."
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Bensan hinta"
-  },
-  "gasPriceCalculation": {
-    "message": "Laskemme ehdotetut polttoaineiden hinnat verkoston menestyksen perusteella."
   },
   "general": {
     "message": "Yleistä"
@@ -542,9 +515,6 @@
   },
   "hide": {
     "message": "Piilota"
-  },
-  "hideToken": {
-    "message": "Piilota tietue"
   },
   "hideTokenPrompt": {
     "message": "Piilotetaanko tietue?"
@@ -657,10 +627,7 @@
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },
-  "login": {
-    "message": "Kirjaudu sisään"
-  },
-  "logout": {
+  "lock": {
     "message": "Kirjaudu ulos"
   },
   "mainnet": {
@@ -672,17 +639,11 @@
   "memo": {
     "message": "muistio"
   },
-  "menu": {
-    "message": "Valikko"
-  },
   "message": {
     "message": "Viesti"
   },
   "metamaskDescription": {
     "message": "Sinua yhdistetään Ethereumiin ja hajautettuun verkkoon."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMaskin siemensanat"
   },
   "metamaskVersion": {
     "message": "MetaMask-versio"
@@ -785,9 +746,6 @@
   "noAddressForName": {
     "message": "Tälle nimelle ei ole määritetty osoitetta."
   },
-  "noDeposits": {
-    "message": "Ei vastaanotettuja talletuksia"
-  },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
   },
@@ -861,9 +819,6 @@
   },
   "privateNetwork": {
     "message": "Yksityinen verkko"
-  },
-  "qrCode": {
-    "message": "Näytä QR-koodi"
   },
   "queue": {
     "message": "Jono"
@@ -939,9 +894,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
-  },
-  "revert": {
-    "message": "Palauta"
   },
   "remove": {
     "message": "Poista"
@@ -1157,7 +1109,7 @@
     "message": "Symboli"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolin on oltava 0-12 merkkiä pitkä."
+    "message": "Symbolin on oltava 11 merkkiä tai vähemmän."
   },
   "syncWithMobile": {
     "message": "Synkronoi mobiililaitteelle"
@@ -1194,10 +1146,6 @@
   },
   "to": {
     "message": "Kohde"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH:hon ShapeShiftin kautta",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Poletti"

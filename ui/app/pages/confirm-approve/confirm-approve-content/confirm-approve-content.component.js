@@ -13,14 +13,11 @@ export default class ConfirmApproveContent extends Component {
   }
 
   static propTypes = {
-    amount: PropTypes.string,
-    txFeeTotal: PropTypes.string,
     decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
-    tokenAddress: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
     showEditApprovalPermissionModal: PropTypes.func,
     origin: PropTypes.string,
@@ -199,10 +196,11 @@ export default class ConfirmApproveContent extends Component {
                   <div className="confirm-approve-content__small-blue-text">
                     View full transaction details
                   </div>
-                  <i className={classnames({
-                    'fa fa-caret-up': showFullTxDetails,
-                    'fa fa-caret-down': !showFullTxDetails,
-                  })}
+                  <i
+                    className={classnames({
+                      'fa fa-caret-up': showFullTxDetails,
+                      'fa fa-caret-down': !showFullTxDetails,
+                    })}
                   />
                 </div>
               </div>

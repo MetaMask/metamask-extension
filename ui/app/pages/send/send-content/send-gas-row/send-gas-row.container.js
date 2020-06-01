@@ -1,27 +1,28 @@
 import { connect } from 'react-redux'
 import {
   getConversionRate,
-  getCurrentCurrency,
   getGasTotal,
   getGasPrice,
   getGasLimit,
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
-} from '../../send.selectors.js'
-import {
-  getMaxModeOn,
-} from '../send-amount-row/amount-max-button/amount-max-button.selectors'
+  getSendMaxModeState,
+  getGasLoadingError,
+  gasFeeIsInError,
+  getGasButtonGroupShown,
+  getAdvancedInlineGasShown,
+  getCurrentEthBalance,
+  getSendToken,
+  getBasicGasEstimateLoadingStatus,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
+  getDefaultActiveButtonIndex,
+} from '../../../../selectors'
 import {
   isBalanceSufficient,
   calcGasTotal,
 } from '../../send.utils.js'
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils'
-import {
-  getBasicGasEstimateLoadingStatus,
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  getDefaultActiveButtonIndex,
-} from '../../../../selectors/custom-gas'
 import {
   showGasButtonGroup,
   updateSendErrors,
@@ -31,9 +32,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck'
-import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal, updateSendAmount } from '../../../../store/actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors/selectors'
 import SendGasRow from './send-gas-row.component'
 
 
@@ -50,7 +49,7 @@ function mapStateToProps (state) {
   const balance = getCurrentEthBalance(state)
 
   const insufficientBalance = !isBalanceSufficient({
-    amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
+    amount: getSendToken(state) ? '0x0' : getSendAmount(state),
     gasTotal,
     balance,
     conversionRate,
@@ -58,8 +57,6 @@ function mapStateToProps (state) {
 
   return {
     balance: getSendFromBalance(state),
-    conversionRate,
-    convertedCurrency: getCurrentCurrency(state),
     gasTotal,
     gasFeeError: gasFeeIsInError(state),
     gasLoadingError: getGasLoadingError(state),
@@ -74,8 +71,8 @@ function mapStateToProps (state) {
     gasPrice,
     gasLimit,
     insufficientBalance,
-    maxModeOn: getMaxModeOn(state),
-    selectedToken: getSelectedToken(state),
+    maxModeOn: getSendMaxModeState(state),
+    sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
   }
 }
@@ -97,7 +94,7 @@ function mapDispatchToProps (dispatch) {
         dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
       }
     },
-    setAmountToMax: maxAmountDataObject => {
+    setAmountToMax: (maxAmountDataObject) => {
       dispatch(updateSendErrors({ amount: null }))
       dispatch(updateSendAmount(calcMaxAmount(maxAmountDataObject)))
     },

@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import MetaFoxLogo from '../../ui/metafox-logo'
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
-const NetworkIndicator = require('../network')
+import NetworkIndicator from '../network'
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -103,7 +103,7 @@ export default class AppHeader extends PureComponent {
                   <NetworkIndicator
                     network={network}
                     provider={provider}
-                    onClick={event => this.handleNetworkIndicatorClick(event)}
+                    onClick={(event) => this.handleNetworkIndicatorClick(event)}
                     disabled={disabled}
                   />
                 </div>

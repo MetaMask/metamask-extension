@@ -8,9 +8,6 @@
   "reject": {
     "message": "Afvis"
   },
-  "likeToConnect": {
-    "message": "$1 ønsker at forbinde til din konto"
-  },
   "about": {
     "message": "Om"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Tilskrivninger"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer for automatisk udlogning (minutter)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Indstil den passive tid i minutter, før MetaMask automatisk logger dig ud"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldoen kan være forældet"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Utilstrækkelig saldo for nuværende brændstoftotalbeløb"
   },
   "basic": {
     "message": "Grundlæggende oplysninger"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Kæde-ID"
   },
-  "clickToAdd": {
-    "message": "Klik på $1 for at tilføje dem til din konto"
-  },
   "clickToRevealSeed": {
     "message": "Klik her for at se hemmelige ord"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Kontraktanvendelse"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår"
-  },
-  "copiedButton": {
-    "message": "Kopieret"
-  },
   "copiedExclamation": {
     "message": "Kopieret!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiér til udklipsholderen"
-  },
-  "copyButton": {
-    "message": "Kopiér"
   },
   "copyPrivateKey": {
     "message": "Dette er din private nøgle (klik for at kopiere)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "Fra"
   },
-  "fromShapeShift": {
-    "message": "Fra ShapeShift"
-  },
   "functionType": {
     "message": "Funktionstype"
   },
   "gasLimit": {
     "message": "Gas-grænse"
-  },
-  "gasLimitCalculation": {
-    "message": "Vi beregner den foreslåede gasgrænse baseret på netværkssuccesrater."
   },
   "gasLimitInfoModalContent": {
     "message": "Gasgrænse er den maksimale mængde gasenheder, du er villig til at bruge."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Brændstofpris"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi beregner de anbefalede brændstofpriser baseret på netværkernes succesrater."
   },
   "general": {
     "message": "Generelt"
@@ -538,9 +511,6 @@
   },
   "hide": {
     "message": "Skjul"
-  },
-  "hideToken": {
-    "message": "Skjul token"
   },
   "hideTokenPrompt": {
     "message": "Skjul Token?"
@@ -647,10 +617,7 @@
   "loadMore": {
     "message": "Indlæs Mere"
   },
-  "login": {
-    "message": "Log Ind"
-  },
-  "logout": {
+  "lock": {
     "message": "Log ud"
   },
   "mainnet": {
@@ -667,9 +634,6 @@
   },
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seedord"
   },
   "missingYourTokens": {
     "message": "Kan du ikke se dine tokens?"
@@ -769,9 +733,6 @@
   "noAddressForName": {
     "message": "Ingen adresse indstillet for dette navn."
   },
-  "noDeposits": {
-    "message": "Ingen modtagne indskud"
-  },
   "noConversionRateAvailable": {
     "message": "Ingen tilgængelig omregningskurs"
   },
@@ -842,9 +803,6 @@
   },
   "privateNetwork": {
     "message": "Privat netværk"
-  },
-  "qrCode": {
-    "message": "Vis QR Kode"
   },
   "queue": {
     "message": "Kø"
@@ -920,9 +878,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
-  },
-  "revert": {
-    "message": "Vend tilbage"
   },
   "remove": {
     "message": "Fjern"
@@ -1132,7 +1087,7 @@
     "message": "Besøg vores supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol skal være mellem 0 og 12 tegn."
+    "message": "Symbolet skal være mindst 11 tegn."
   },
   "syncWithMobile": {
     "message": "Synkronisér med mobil"
@@ -1169,10 +1124,6 @@
   },
   "to": {
     "message": "Til"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 til ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token er allerede blevet tilføjet."

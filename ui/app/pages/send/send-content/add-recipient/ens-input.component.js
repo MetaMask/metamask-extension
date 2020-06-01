@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import c from 'classnames'
+import classnames from 'classnames'
 import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 import { ellipsify } from '../../send.utils'
 
-import debounce from 'debounce'
+import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
 import networkMap from 'ethereum-ens-network-map'
@@ -26,7 +26,6 @@ export default class EnsInput extends Component {
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     onChange: PropTypes.func,
-    updateSendTo: PropTypes.func,
     updateEnsResolution: PropTypes.func,
     scanQrCode: PropTypes.func,
     updateEnsResolutionError: PropTypes.func,
@@ -103,15 +102,15 @@ export default class EnsInput extends Component {
       })
   }
 
-  onPaste = event => {
-    event.clipboardData.items[0].getAsString(text => {
+  onPaste = (event) => {
+    event.clipboardData.items[0].getAsString((text) => {
       if (isValidAddress(text)) {
         this.props.onPaste(text)
       }
     })
   }
 
-  onChange = e => {
+  onChange = (e) => {
     const { network, onChange, updateEnsResolution, updateEnsResolutionError, onValidAddressTyped } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
@@ -147,9 +146,9 @@ export default class EnsInput extends Component {
     }
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={classnames('ens-input', className)}>
         <div
-          className={c('ens-input__wrapper', {
+          className={classnames('ens-input__wrapper', {
             'ens-input__wrapper__status-icon--error': false,
             'ens-input__wrapper__status-icon--valid': false,
           })}
@@ -164,9 +163,10 @@ export default class EnsInput extends Component {
             onPaste={this.onPaste}
             value={selectedAddress || input}
             autoFocus
+            data-testid="ens-input"
           />
           <div
-            className={c('ens-input__wrapper__action-icon', {
+            className={classnames('ens-input__wrapper__action-icon', {
               'ens-input__wrapper__action-icon--erase': input,
               'ens-input__wrapper__action-icon--qrcode': !input,
             })}
@@ -190,7 +190,7 @@ export default class EnsInput extends Component {
 
 
     return (
-      <div className={c('ens-input', className)}>
+      <div className={classnames('ens-input', className)}>
         <div
           className="ens-input__wrapper ens-input__wrapper--valid"
         >
@@ -261,7 +261,7 @@ export default class EnsInput extends Component {
         <i
           className="fa fa-check-circle fa-lg cursor-pointer"
           style={{ color: 'green' }}
-          onClick={event => {
+          onClick={(event) => {
             event.preventDefault()
             event.stopPropagation()
             copyToClipboard(ensResolution)

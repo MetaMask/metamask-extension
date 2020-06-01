@@ -1,5 +1,5 @@
-const WritableStream = require('readable-stream').Writable
-const promiseToCallback = require('promise-to-callback')
+import { Writable as WritableStream } from 'readable-stream'
+import promiseToCallback from 'promise-to-callback'
 
 class AsyncWritableStream extends WritableStream {
 
@@ -16,8 +16,6 @@ class AsyncWritableStream extends WritableStream {
 
 }
 
-function createStreamSink (asyncWriteFn, _opts) {
+export default function createStreamSink (asyncWriteFn, _opts) {
   return new AsyncWritableStream(asyncWriteFn, _opts)
 }
-
-module.exports = createStreamSink

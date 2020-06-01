@@ -46,9 +46,6 @@
   "balance": {
     "message": "Bakiye:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Toplam gas için yetersiz bakiye"
-  },
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
   },
@@ -94,20 +91,11 @@
   "contractDeployment": {
     "message": "Sözleşme kurulumu"
   },
-  "conversionProgress": {
-    "message": "Çevirim devam ediyor"
-  },
-  "copiedButton": {
-    "message": "Kopyalandı"
-  },
   "copiedExclamation": {
     "message": "Kopyalandı!"
   },
   "copyToClipboard": {
     "message": "Panoya kopyala"
-  },
-  "copyButton": {
-    "message": " Kopyala "
   },
   "copyPrivateKey": {
     "message": "Bu sizin özel anahtarınız (kopyalamak için tıklayın)"
@@ -189,23 +177,14 @@
   "from": {
     "message": "Kimden"
   },
-  "fromShapeShift": {
-    "message": "ShapeShift'den"
-  },
   "gasLimit": {
     "message": "Gas Limiti"
-  },
-  "gasLimitCalculation": {
-    "message": "Önerilen gas limitini ağ başarı oranını baz alarak hesaplıyoruz."
   },
   "gasLimitTooLow": {
     "message": "Gas limiti en az 21000 olmalıdır"
   },
   "gasPrice": {
     "message": "Gas Fiyatı (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Önerilen gas fiyatını ağ başarı oranını baz alarak hesaplıyoruz."
   },
   "getEther": {
     "message": "Ether Al"
@@ -220,9 +199,6 @@
   },
   "hide": {
     "message": "Gizle"
-  },
-  "hideToken": {
-    "message": "Jetonu gizle"
   },
   "hideTokenPrompt": {
     "message": "Jetonu gizle?"
@@ -290,10 +266,10 @@
   "loadingTokens": {
     "message": "Jetonlar yükleniyor..."
   },
-  "login": {
+  "unlock": {
     "message": "Giriş yap"
   },
-  "logout": {
+  "lock": {
     "message": "Çıkış"
   },
   "mainnet": {
@@ -343,9 +319,6 @@
   "noAddressForName": {
     "message": "Bu isim için bir adres tanımlanmamış."
   },
-  "noDeposits": {
-    "message": "Yatırma alınmadı"
-  },
   "noTransactions": {
     "message": "İşlem yok"
   },
@@ -375,9 +348,6 @@
   "privateNetwork": {
     "message": "Özel Ağ"
   },
-  "qrCode": {
-    "message": "QR Kodunu göster"
-  },
   "readdToken": {
     "message": "Gelecekte Bu jetonu hesap seçenekleri menüsünde “Jeton ekle”'ye giderek geri ekleyebilirsiniz."
   },
@@ -401,9 +371,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Açık bir yerde kaynak kelimeliriniz geri getirmeyin! Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
-  },
-  "revert": {
-    "message": "Geri döndür"
   },
   "rinkeby": {
     "message": "Rinkeby Test Ağı"
@@ -478,7 +445,7 @@
     "message": "Destek merkezimizi ziyaret edin"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sembol 0 ve 12 karakter aralığında olmalıdır."
+    "message": "Sembol 11 karakter veya daha az olmalıdır."
   },
   "terms": {
     "message": "Kullanım şartları"
@@ -488,10 +455,6 @@
   },
   "to": {
     "message": "Kime"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift üstünden $1'dan ETH'e",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Jeton çoktan eklenmiş."

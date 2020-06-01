@@ -4,46 +4,45 @@
 
 
 // these need to run before anything else
-require('./lib/freezeGlobals')
-require('./lib/setupFetchDebugging')()
+import './lib/freezeGlobals'
+import setupFetchDebugging from './lib/setupFetchDebugging'
+
+setupFetchDebugging()
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
-const endOfStream = require('end-of-stream')
-const pump = require('pump')
-const debounce = require('debounce-stream')
-const log = require('loglevel')
-const extension = require('extensionizer')
-const LocalStore = require('./lib/local-store')
-const storeTransform = require('obs-store/lib/transform')
-const asStream = require('obs-store/lib/asStream')
-const ExtensionPlatform = require('./platforms/extension')
-const Migrator = require('./lib/migrator/')
-const migrations = require('./migrations/')
-const PortStream = require('extension-port-stream')
-const createStreamSink = require('./lib/createStreamSink')
-const NotificationManager = require('./lib/notification-manager.js')
-const MetamaskController = require('./metamask-controller')
-const rawFirstTimeState = require('./first-time-state')
-const setupSentry = require('./lib/setupSentry')
-const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
-const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
-const EdgeEncryptor = require('./edge-encryptor')
-const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
-const getObjStructure = require('./lib/getObjStructure')
-const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
+import endOfStream from 'end-of-stream'
+import pump from 'pump'
+import debounce from 'debounce-stream'
+import log from 'loglevel'
+import extension from 'extensionizer'
+import ReadOnlyNetworkStore from './lib/network-store'
+import LocalStore from './lib/local-store'
+import storeTransform from 'obs-store/lib/transform'
+import asStream from 'obs-store/lib/asStream'
+import ExtensionPlatform from './platforms/extension'
+import Migrator from './lib/migrator'
+import migrations from './migrations'
+import PortStream from 'extension-port-stream'
+import createStreamSink from './lib/createStreamSink'
+import NotificationManager from './lib/notification-manager.js'
+import MetamaskController from './metamask-controller'
+import rawFirstTimeState from './first-time-state'
+import setupSentry from './lib/setupSentry'
+import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
+import getObjStructure from './lib/getObjStructure'
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
 
-const {
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-} = require('./lib/enums')
+} from './lib/enums'
 
 // METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
-
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -55,26 +54,24 @@ global.METAMASK_NOTIFIER = notificationManager
 const release = platform.getVersion()
 const sentry = setupSentry({ release })
 
-// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// Internet Explorer 6-11
-const isIE = !!document.documentMode
-// Edge 20+
-const isEdge = !isIE && !!window.StyleMedia
-
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
 const requestAccountTabIds = {}
 
 // state persistence
-const localStore = new LocalStore()
+const inTest = process.env.IN_TEST === 'true'
+const localStore = inTest
+  ? new ReadOnlyNetworkStore()
+  : new LocalStore()
 let versionedData
+
+if (inTest || process.env.METAMASK_DEBUG) {
+  global.metamaskGetState = localStore.get.bind(localStore)
+}
 
 // initialization flow
 initialize().catch(log.error)
-
-// setup metamask mesh testing container
-const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -87,9 +84,6 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
  * @property {boolean} loadingDefaults - TODO: Document
  * @property {Object} txParams - The tx params as passed to the network provider.
  * @property {Object[]} history - A history of mutations to this TransactionMeta object.
- * @property {boolean} gasPriceSpecified - True if the suggesting dapp specified a gas price, prevents auto-estimation.
- * @property {boolean} gasLimitSpecified - True if the suggesting dapp specified a gas limit, prevents auto-estimation.
- * @property {string} estimatedGas - A hex string represented the estimated gas limit required to complete the transaction.
  * @property {string} origin - A string representing the interface that suggested the transaction.
  * @property {Object} nonceDetails - A metadata object containing information used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction, ready to submit to the network.
@@ -103,14 +97,12 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
- * @property {boolean} isPopup - Returns true if the current view is an externally-triggered notification.
  * @property {string} rpcTarget - DEPRECATED - The URL of the current RPC provider.
  * @property {Object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {address} selectedTokenAddress - Used to indicate if a token is globally selected. Should be deprecated in favor of UI-centric token selection.
- * @property {Object} tokenExchangeRates - Info about current token prices.
+ * @property {Object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {Object} send - TODO: Document
  * @property {Object} coinOptions - TODO: Document
@@ -125,23 +117,24 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
  * @property {string} network - A stringified number of the current network ID.
  * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {TransactionMeta[]} selectedAddressTxList - An array of transactions associated with the currently selected account.
- * @property {Object} unapprovedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
+ * @property {Object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
- * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
- * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {Object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
+ * @property {Object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
+ * @property {Object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
- * @property {string} currentAccountTab - A view identifying string for displaying the current displayed view, allows user to have a preferred tab in the old UI (between tokens and history).
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
  * @property {Object} infuraNetworkStatus - An object of infura network status checks.
- * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
- * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -153,7 +146,7 @@ const { submitMeshMetricsEntry } = setupMetamaskMeshMetrics()
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
- * @returns {Promise} Setup complete.
+ * @returns {Promise} - Setup complete.
  */
 async function initialize () {
   const initState = await loadStateFromPersistence()
@@ -169,11 +162,12 @@ async function initialize () {
 /**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<MetaMaskState>} - Last data emitted from previous instance of MetaMask.
  */
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+  migrator.on('error', console.warn)
 
   // read from disk
   // first from preferred, async API:
@@ -227,8 +221,8 @@ async function loadStateFromPersistence () {
  * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
- * @param {String} initLangCode - The region code for the language preferred by the current user.
- * @returns {Promise} After setup is complete.
+ * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @returns {Promise} - After setup is complete.
  */
 function setupController (initState, initLangCode) {
   //
@@ -239,15 +233,15 @@ function setupController (initState, initLangCode) {
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    openPopup: openPopup,
-    closePopup: notificationManager.closePopup.bind(notificationManager),
+    showPermissionRequest: triggerUi,
+    showUnlockRequest: triggerUi,
+    openPopup,
     // initial state
     initState,
     // initial locale code
     initLangCode,
     // platform specific api
     platform,
-    encryptor: isEdge ? new EdgeEncryptor() : undefined,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds
     },
@@ -256,15 +250,10 @@ function setupController (initState, initLangCode) {
     },
   })
 
-  const provider = controller.provider
   setupEnsIpfsResolver({
     getCurrentNetwork: controller.getCurrentNetwork,
-    provider,
-  })
-
-  // submit rpc requests to mesh-metrics
-  controller.networkController.on('rpc-req', (data) => {
-    submitMeshMetricsEntry({ type: 'rpc', data })
+    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
+    provider: controller.provider,
   })
 
   // report failed transactions to Sentry
@@ -294,7 +283,7 @@ function setupController (initState, initLangCode) {
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    * @param {Object} state - The state object as emitted by the MetaMaskController.
-   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
+   * @returns {VersionedData} - The state object wrapped in an object that includes a metadata key.
    */
   function versionifyData (state) {
     versionedData.data = state
@@ -303,10 +292,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing', state)
+      throw new Error('MetaMask - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data', state)
+      throw new Error('MetaMask - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {
@@ -323,7 +312,6 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
-  extension.runtime.onMessage.addListener(controller.onMessage.bind(controller))
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -363,10 +351,7 @@ function setupController (initState, initLangCode) {
       const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
-      // construct fake URL for identifying internal messages
-      const metamaskUrl = new URL(window.location)
-      metamaskUrl.hostname = 'metamask'
-      controller.setupTrustedCommunication(portStream, metamaskUrl)
+      controller.setupTrustedCommunication(portStream, remotePort.sender)
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true
@@ -401,7 +386,7 @@ function setupController (initState, initLangCode) {
         const url = new URL(remotePort.sender.url)
         const origin = url.hostname
 
-        remotePort.onMessage.addListener(msg => {
+        remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
             requestAccountTabIds[origin] = tabId
           }
@@ -413,13 +398,8 @@ function setupController (initState, initLangCode) {
 
   // communication with page or other extension
   function connectExternal (remotePort) {
-    const senderUrl = new URL(remotePort.sender.url)
-    let extensionId
-    if (remotePort.sender.id !== extension.runtime.id) {
-      extensionId = remotePort.sender.id
-    }
     const portStream = new PortStream(remotePort)
-    controller.setupUntrustedCommunication(portStream, senderUrl, extensionId)
+    controller.setupUntrustedCommunication(portStream, remotePort.sender)
   }
 
   //
@@ -430,8 +410,11 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.decryptMessageManager.on('updateBadge', updateBadge)
+  controller.encryptionPublicKeyManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
   controller.permissionsController.permissions.subscribe(updateBadge)
+  controller.appStateController.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -441,10 +424,14 @@ function setupController (initState, initLangCode) {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
+    const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
+    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
+    const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
+    const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingPermissionRequests
+    const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
+    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +
+                 unapprovedTypedMessagesCount + pendingPermissionRequests + waitingForUnlockCount
     if (count) {
       label = String(count)
     }
@@ -462,22 +449,21 @@ function setupController (initState, initLangCode) {
 /**
  * Opens the browser popup for user confirmation
  */
-function triggerUi () {
-  extension.tabs.query({ active: true }, tabs => {
-    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
-      notificationManager.showPopup()
-    }
-  })
+async function triggerUi () {
+  const tabs = await platform.getActiveTabs()
+  const currentlyActiveMetamaskTab = Boolean(tabs.find((tab) => openMetamaskTabsIDs[tab.id]))
+  if (!popupIsOpen && !currentlyActiveMetamaskTab) {
+    await notificationManager.showPopup()
+  }
 }
 
 /**
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function openPopup () {
-  triggerUi()
-  return new Promise(
+async function openPopup () {
+  await triggerUi()
+  await new Promise(
     (resolve) => {
       const interval = setInterval(() => {
         if (!notificationIsOpen) {
@@ -490,8 +476,8 @@ function openPopup () {
 }
 
 // On first install, open a new tab with MetaMask
-extension.runtime.onInstalled.addListener(({reason}) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+extension.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === 'install' && !(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
     platform.openExtensionInBrowser()
   }
 })

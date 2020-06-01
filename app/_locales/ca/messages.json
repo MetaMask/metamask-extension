@@ -8,9 +8,6 @@
   "reject": {
     "message": "Rebutja"
   },
-  "likeToConnect": {
-    "message": "a $1 li agradaria connectar-se al teu compte"
-  },
   "about": {
     "message": "Informació"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atribucions"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "El balanç pot ser obsolet"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficient per al total de gas actual"
   },
   "basic": {
     "message": "Opcions bàsiques"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "Cadena ID"
-  },
-  "clickToAdd": {
-    "message": "Fes clic a $1 per afegir-los al teu compte"
   },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Desplegament de Contracte"
   },
-  "conversionProgress": {
-    "message": "Conversió en curs"
-  },
-  "copiedButton": {
-    "message": "Copiat"
-  },
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
@@ -456,17 +438,11 @@
   "from": {
     "message": "Des de"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipus de Funció"
   },
   "gasLimit": {
     "message": "Límit de gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Calculem el límit suggerit del gas  basant-nos en les taxes d'èxit de la xarxa."
   },
   "gasLimitInfoModalContent": {
     "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
@@ -488,9 +464,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Preu del Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculem els preus suggerits del gas  basant-nos en les taxes d'èxit de la xarxa."
   },
   "generalSettingsDescription": {
     "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
@@ -532,9 +505,6 @@
   },
   "hide": {
     "message": "Amaga"
-  },
-  "hideToken": {
-    "message": "Amagar Fitxa"
   },
   "hideTokenPrompt": {
     "message": "Amagar fitxa?"
@@ -644,10 +614,7 @@
   "localhost": {
     "message": "Host local 8545"
   },
-  "login": {
-    "message": "Inicia sessió"
-  },
-  "logout": {
+  "lock": {
     "message": "Tanca la sessió"
   },
   "mainnet": {
@@ -659,17 +626,11 @@
   "memo": {
     "message": "notes"
   },
-  "menu": {
-    "message": "Menú"
-  },
   "message": {
     "message": "Missatge"
   },
   "metamaskDescription": {
     "message": "Conectant-te a Ethereum i la web descentralitzada."
-  },
-  "metamaskSeedWords": {
-    "message": "Frase de recuperació de MetaMask"
   },
   "metamaskVersion": {
     "message": "Versió MetaMask"
@@ -772,9 +733,6 @@
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
   },
-  "noDeposits": {
-    "message": "Cap dipòsit rebut"
-  },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
   },
@@ -845,9 +803,6 @@
   },
   "privateNetwork": {
     "message": "Xarxa privada"
-  },
-  "qrCode": {
-    "message": "Mostra el codi QR"
   },
   "queue": {
     "message": "Cua"
@@ -920,9 +875,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "Suprimeix"
@@ -1138,7 +1090,7 @@
     "message": "Símbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "El símbol ha de tenir entre 0 i 12 caràcters."
+    "message": "El símbol ha de tenir com a mínim 11 caràcters."
   },
   "syncWithMobile": {
     "message": "Sincronitza amb el mòbil"
@@ -1172,10 +1124,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ja s'ha afegit."

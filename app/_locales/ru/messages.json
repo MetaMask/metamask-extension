@@ -46,9 +46,6 @@
   "balance": {
     "message": "Баланс:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Недостаточный баланс для текущего объема газа"
-  },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
   },
@@ -94,20 +91,11 @@
   "contractDeployment": {
     "message": "Развертывание контракта"
   },
-  "conversionProgress": {
-    "message": "Выполняется конвертация"
-  },
-  "copiedButton": {
-    "message": "Скопировано"
-  },
   "copiedExclamation": {
     "message": "Скопировано!"
   },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
-  },
-  "copyButton": {
-    "message": " Скопировать "
   },
   "copyPrivateKey": {
     "message": "Это ваш закрытый ключ (нажмите, чтобы скопировать)"
@@ -126,6 +114,9 @@
   },
   "customRPC": {
     "message": "Пользовательский RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Некоторые данные вашей учетной записи были экспортированы во время предыдущей установки MetaMask. Это может включать ваши настройки, контакты и токены. Вы хотите импортировать эти данные сейчас?"
   },
   "decimalsMustZerotoTen": {
     "message": "Количество десятичных разрядов должно быть минимум 0 и максимум 36."
@@ -189,23 +180,14 @@
   "from": {
     "message": "Отправитель"
   },
-  "fromShapeShift": {
-    "message": "Из ShapeShift"
-  },
   "gasLimit": {
     "message": "Лимит газа"
-  },
-  "gasLimitCalculation": {
-    "message": "Мы расчитываем предлагаемый лимит газа на основании успешных ставок в сети."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть как минимум 21000"
   },
   "gasPrice": {
     "message": "Цена за газ (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Мы расчитываем предлагаемые цены за газ на основании успешных ставок в сети."
   },
   "getEther": {
     "message": "Получить Ether"
@@ -220,9 +202,6 @@
   },
   "hide": {
     "message": "Скрыть"
-  },
-  "hideToken": {
-    "message": "Скрыть токен"
   },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
@@ -290,10 +269,7 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Выход"
   },
   "mainnet": {
@@ -343,9 +319,6 @@
   "noAddressForName": {
     "message": "Дла этого названия не установлен адрес."
   },
-  "noDeposits": {
-    "message": "Пополнения не получены"
-  },
   "noTransactions": {
     "message": "Нет транзакций"
   },
@@ -368,9 +341,6 @@
   },
   "privateNetwork": {
     "message": "Частная сеть"
-  },
-  "qrCode": {
-    "message": "Показать QR-код"
   },
   "readdToken": {
     "message": "Вы можете в будущем добавить обратно этот токен, выбрав пункт меню “Добавить токен”."
@@ -395,9 +365,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Не восстанавливайте ключевую фразу в общественном месте! Она может быть использована для кражи всех ваших счетов."
-  },
-  "revert": {
-    "message": "Восстановить"
   },
   "rinkeby": {
     "message": "Тестовая сеть Rinkeby"
@@ -472,7 +439,7 @@
     "message": "Перейти в наш Центр поддержки"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символ должен быть от 0 до 12 символов."
+    "message": "Символ должен быть не более 11 символов."
   },
   "terms": {
     "message": "Условия пользования"
@@ -482,10 +449,6 @@
   },
   "to": {
     "message": "Получатель"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже был добавлен."
@@ -541,9 +504,6 @@
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
-  },
-  "likeToConnect": {
-    "message": "$1 запрашивает доступ к вашему аккаунту"
   },
   "about": {
     "message": "О нас"
@@ -605,10 +565,10 @@
   "attemptToCancelDescription": {
     "message": "Отправка этой попытки не гарантирует отмену вашей первоначальной транзакции. Если попытка отмены окажется успешной комиссия за исходную транзакцию будет возвращена."
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматического выхода из кошелька (минуты)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Установите время простоя в минутах, прежде чем MetaMask автоматически заблокирует кошелек"
   },
   "average": {
@@ -670,9 +630,6 @@
   },
   "chainId": {
     "message": "ID сети"
-  },
-  "clickToAdd": {
-    "message": "Нажмите на $1, для добавления в свой аккаунт"
   },
   "clickToRevealSeed": {
     "message": "Нажмите здесь, чтобы показать секретную фразу (сид)"
@@ -908,12 +865,6 @@
   "memo": {
     "message": "Мнемотик"
   },
-  "menu": {
-    "message": "Меню"
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask ключевая фраза (сид)"
-  },
   "metamaskVersion": {
     "message": "Версия MetaMask"
   },
@@ -980,8 +931,11 @@
   "noConversionRateAvailable": {
     "message": "Курсы валют недоступны"
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "notEnoughGas": {
-    "message": "Нехватает газа"
+    "message": "Не хватает газа"
   },
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
@@ -1063,6 +1017,10 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой аккаунт с помощью секретной фразы"
+  },
+  "restoreWalletPreferences": {
+    "message": "Были найдены данные экспортированные от $1. Вы желаете восстановить настройки вашего кошелька?",
+    "description": "$1 is the date at which the data was backed up"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
@@ -1357,5 +1315,35 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
+  },
+  "decryptRequest": {
+    "message": "Запрос расшифровки"
+  },
+  "decrypt": {
+    "message": "Расшифровать"
+  },
+  "decryptMessageNotice": {
+    "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Расшифровать сообщение"
+  },
+  "decryptCopy": {
+    "message": "Скопировать расшифрованное сообщение"
+  },
+  "decryptInlineError": {
+    "message": "Это сообщение не может быть дешифровано из-за ошибки: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Предоставить"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Запрос публичного ключа шифрования"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения.",
+    "description": "$1 is website or dapp name"
   }
 }

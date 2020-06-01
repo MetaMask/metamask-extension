@@ -43,9 +43,6 @@
   "balance": {
     "message": "उपलब्ध बैलेंस।"
   },
-  "balanceIsInsufficientGas": {
-    "message": "वर्तमान गैस कुल के लिए अपर्याप्त शेष"
-  },
   "blockiesIdenticon": {
     "message": "ब्लॉकीज पहचान का उपयोग करें"
   },
@@ -73,20 +70,11 @@
   "contractDeployment": {
     "message": "अनुबंध परिनियोजन व तैनाती"
   },
-  "conversionProgress": {
-    "message": "रूपांतरण प्रगति में हे।"
-  },
-  "copiedButton": {
-    "message": "कॉपी किया गया"
-  },
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
   },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
-  },
-  "copyButton": {
-    "message": " कॉपी / प्रतिलिपि कर्रे [बत्तन] "
   },
   "copyPrivateKey": {
     "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
@@ -162,23 +150,14 @@
   "from": {
     "message": "की तरफ से - संदेश"
   },
-  "fromShapeShift": {
-    "message": "सेशशशफ्ट का"
-  },
   "gasLimit": {
     "message": "गैस सीमा"
-  },
-  "gasLimitCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाई गई गैस सीमा की गणना करते हैं।"
   },
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाए गए गैस की कीमतों की गणना करते हैं।"
   },
   "getEther": {
     "message": "ईथर प्राप्त करें"
@@ -193,9 +172,6 @@
   },
   "hide": {
     "message": "छुपाएं"
-  },
-  "hideToken": {
-    "message": "टोकन छिपाएं"
   },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएंn?"
@@ -257,10 +233,10 @@
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },
-  "login": {
+  "unlock": {
     "message": "लॉग इन करें"
   },
-  "logout": {
+  "lock": {
     "message": "लॉग आउट करें"
   },
   "mainnet": {
@@ -310,9 +286,6 @@
   "noAddressForName": {
     "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है।"
   },
-  "noDeposits": {
-    "message": "कोई जमा प्राप्त नहीं हुई"
-  },
   "noTransactions": {
     "message": "कोई लेन-देन नहीं"
   },
@@ -335,9 +308,6 @@
   },
   "privateNetwork": {
     "message": "निजी नेटवर्क"
-  },
-  "qrCode": {
-    "message": "QR कोड दिखाएं"
   },
   "readdToken": {
     "message": "आप अपने खाता विकल्प मेनू में .टोकन जोड़ें. पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
@@ -362,9 +332,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
-  },
-  "revert": {
-    "message": "वापस"
   },
   "rinkeby": {
     "message": "रिचीव टेस्ट नेटवर्क"
@@ -424,7 +391,7 @@
     "message": "हमारे सहायता केंद्र पर जाएं"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "प्रतीक 0 और 12 अक्षरों के बीच होना चाहिए"
+    "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
   "terms": {
     "message": "उपयोग की शर्तें"
@@ -434,10 +401,6 @@
   },
   "to": {
     "message": "के लिए"
-  },
-  "toETHviaShapeShift": {
-    "message": "शैपशैफ्ट द्वारा $1 से ETH में जमा",
-    "description": "संदेश की शुरुआत में जमा प्रकार भर जाएगा"
   },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"

@@ -1,12 +1,12 @@
 const version = 4
 
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (versionedData) {
-    const safeVersionedData = clone(versionedData)
+    const safeVersionedData = cloneDeep(versionedData)
     safeVersionedData.meta.version = version
     try {
       if (safeVersionedData.data.config.provider.type !== 'rpc') {

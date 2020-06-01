@@ -1,36 +1,36 @@
 import SecurityTab from './security-tab.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
-  displayWarning,
-  revealSeedConfirmation,
   setFeatureFlag,
   setParticipateInMetaMetrics,
+  setUsePhishDetect,
 } from '../../../store/actions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
       showIncomingTransactions,
     } = {},
     participateInMetaMetrics,
+    usePhishDetect,
   } = metamask
 
   return {
     warning,
     showIncomingTransactions,
     participateInMetaMetrics,
+    usePhishDetect,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    displayWarning: warning => dispatch(displayWarning(warning)),
-    revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
-    setShowIncomingTransactionsFeatureFlag: shouldShow => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+    setShowIncomingTransactionsFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+    setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
   }
 }
 

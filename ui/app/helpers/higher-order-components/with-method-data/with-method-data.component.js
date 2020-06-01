@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { getMethodData, getFourBytePrefix } from '../../utils/transactions.util'
+import { getMethodDataAsync, getFourBytePrefix } from '../../utils/transactions.util'
 
 export default function withMethodData (WrappedComponent) {
   return class MethodDataWrappedComponent extends PureComponent {
@@ -36,7 +36,7 @@ export default function withMethodData (WrappedComponent) {
           if (fourBytePrefix in knownMethodData) {
             methodData = knownMethodData[fourBytePrefix]
           } else {
-            methodData = await getMethodData(data)
+            methodData = await getMethodDataAsync(data)
             if (!Object.entries(methodData).length === 0) {
               addKnownMethodData(fourBytePrefix, methodData)
             }

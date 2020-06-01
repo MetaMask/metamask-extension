@@ -9,7 +9,7 @@ import {
 } from '../../helpers/utils/conversions.util'
 import {
   isEthereumNetwork,
-} from '../../selectors/selectors'
+} from '../../selectors'
 
 // Actions
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
@@ -28,7 +28,6 @@ const SET_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_API_ESTIMATES_LAST_RE
 const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_API_ESTIMATES_LAST_RETRIEVED'
 const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
-// TODO: determine if this approach to initState is consistent with conventional ducks pattern
 const initState = {
   customData: {
     price: null,
@@ -57,96 +56,94 @@ const initState = {
 }
 
 // Reducer
-export default function reducer ({ gas: gasState = initState }, action = {}) {
-  const newState = clone(gasState)
-
+export default function reducer (state = initState, action) {
   switch (action.type) {
     case BASIC_GAS_ESTIMATE_LOADING_STARTED:
       return {
-        ...newState,
+        ...state,
         basicEstimateIsLoading: true,
       }
     case BASIC_GAS_ESTIMATE_LOADING_FINISHED:
       return {
-        ...newState,
+        ...state,
         basicEstimateIsLoading: false,
       }
     case GAS_ESTIMATE_LOADING_STARTED:
       return {
-        ...newState,
+        ...state,
         gasEstimatesLoading: true,
       }
     case GAS_ESTIMATE_LOADING_FINISHED:
       return {
-        ...newState,
+        ...state,
         gasEstimatesLoading: false,
       }
     case SET_BASIC_GAS_ESTIMATE_DATA:
       return {
-        ...newState,
+        ...state,
         basicEstimates: action.value,
       }
     case SET_CUSTOM_GAS_PRICE:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           price: action.value,
         },
       }
     case SET_CUSTOM_GAS_LIMIT:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           limit: action.value,
         },
       }
     case SET_CUSTOM_GAS_TOTAL:
       return {
-        ...newState,
+        ...state,
         customData: {
-          ...newState.customData,
+          ...state.customData,
           total: action.value,
         },
       }
     case SET_PRICE_AND_TIME_ESTIMATES:
       return {
-        ...newState,
+        ...state,
         priceAndTimeEstimates: action.value,
       }
     case SET_CUSTOM_GAS_ERRORS:
       return {
-        ...newState,
+        ...state,
         errors: {
-          ...newState.errors,
+          ...state.errors,
           ...action.value,
         },
       }
     case SET_API_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         priceAndTimeEstimatesLastRetrieved: action.value,
       }
     case SET_BASIC_API_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         basicPriceAndTimeEstimatesLastRetrieved: action.value,
       }
     case SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED:
       return {
-        ...newState,
+        ...state,
         basicPriceEstimatesLastRetrieved: action.value,
       }
     case RESET_CUSTOM_DATA:
       return {
-        ...newState,
+        ...state,
         customData: clone(initState.customData),
       }
     case RESET_CUSTOM_GAS_STATE:
       return clone(initState)
     default:
-      return newState
+      return state
   }
 }
 
@@ -198,7 +195,7 @@ export function fetchBasicGasEstimates () {
 }
 
 async function fetchExternalBasicGasEstimates (dispatch) {
-  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+  const response = await window.fetch('https://ethgasstation.info/json/ethgasAPI.json', {
     'headers': {},
     'referrer': 'http://ethgasstation.info/json/',
     'referrerPolicy': 'no-referrer-when-downgrade',
@@ -221,7 +218,7 @@ async function fetchExternalBasicGasEstimates (dispatch) {
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
-  ].map(price => (new BigNumber(price)).div(10).toNumber())
+  ].map((price) => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
     safeLow,
@@ -262,7 +259,7 @@ export function fetchBasicGasAndTimeEstimates () {
 }
 
 async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
-  const response = await fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+  const response = await window.fetch('https://ethgasstation.info/json/ethgasAPI.json', {
     'headers': {},
     'referrer': 'http://ethgasstation.info/json/',
     'referrerPolicy': 'no-referrer-when-downgrade',
@@ -289,7 +286,7 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
     fastTimes10,
     fastestTimes10,
     safeLowTimes10,
-  ].map(price => (new BigNumber(price)).div(10).toNumber())
+  ].map((price) => (new BigNumber(price)).div(10).toNumber())
 
   const basicEstimates = {
     average,
@@ -353,11 +350,11 @@ function quartiles (data) {
 }
 
 function inliersByIQR (data, prop) {
-  const { lowerQuartile, upperQuartile } = quartiles(data.map(d => prop ? d[prop] : d))
+  const { lowerQuartile, upperQuartile } = quartiles(data.map((d) => (prop ? d[prop] : d)))
   const IQR = upperQuartile - lowerQuartile
-  const lowerBound = lowerQuartile - 1.5 * IQR
-  const upperBound = upperQuartile + 1.5 * IQR
-  return data.filter(d => {
+  const lowerBound = lowerQuartile - (1.5 * IQR)
+  const upperBound = upperQuartile + (1.5 * IQR)
+  return data.filter((d) => {
     const value = prop ? d[prop] : d
     return value >= lowerBound && value <= upperBound
   })
@@ -380,16 +377,16 @@ export function fetchGasEstimates (blockTime) {
     dispatch(gasEstimatesLoadingStarted())
 
     const promiseToFetch = Date.now() - timeLastRetrieved > 75000
-      ? fetch('https://ethgasstation.info/json/predictTable.json', {
+      ? window.fetch('https://ethgasstation.info/json/predictTable.json', {
         'headers': {},
         'referrer': 'http://ethgasstation.info/json/',
         'referrerPolicy': 'no-referrer-when-downgrade',
         'body': null,
         'method': 'GET',
-        'mode': 'cors'}
+        'mode': 'cors' }
       )
-        .then(r => r.json())
-        .then(r => {
+        .then((r) => r.json())
+        .then((r) => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
           const estimatedTimeWithUniquePrices = uniqBy(({ expectedTime }) => expectedTime, estimatedPricesAndTimes)
 
@@ -442,7 +439,7 @@ export function fetchGasEstimates (blockTime) {
         : loadLocalStorageData('GAS_API_ESTIMATES')
       )
 
-    return promiseToFetch.then(estimates => {
+    return promiseToFetch.then((estimates) => {
       dispatch(setPricesAndTimeEstimates(estimates))
       dispatch(gasEstimatesLoadingFinished())
     })

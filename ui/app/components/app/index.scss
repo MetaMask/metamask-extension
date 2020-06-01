@@ -1,10 +1,14 @@
-@import 'account-details/index';
-
 @import 'account-menu/index';
 
 @import 'add-token-button/index';
 
+@import 'alerts/alerts';
+
 @import 'app-header/index';
+
+@import 'asset-list/asset-list';
+
+@import 'asset-list-item/asset-list-item';
 
 @import '../ui/breadcrumbs/index';
 
@@ -23,6 +27,8 @@
 @import '../ui/export-text-container/index';
 
 @import '../ui/identicon/index';
+
+@import '../ui/menu/menu';
 
 @import 'info-box/index';
 
@@ -48,13 +54,11 @@
 
 @import '../ui/token-balance/index';
 
+@import 'token-cell/token-cell';
+
 @import 'transaction-activity-log/index';
 
 @import 'transaction-breakdown/index';
-
-@import 'transaction-view/index';
-
-@import 'transaction-view-balance/index';
 
 @import 'transaction-list/index';
 
@@ -84,4 +88,26 @@
 
 @import 'connected-sites-list/index';
 
+@import 'connected-accounts-list/index';
+
 @import '../ui/icon-with-fallback/index';
+
+@import '../ui/icon/index';
+
+@import '../ui/circle-icon/index';
+
+@import '../ui/alert-circle-icon/index';
+
+@import './connected-status-indicator/index';
+
+@import '../ui/check-box/index';
+
+@import '../ui/dropdown/dropdown';
+
+@import 'permissions-connect-header/index';
+
+@import 'permissions-connect-footer/index';
+
+@import 'wallet-overview/index';
+
+@import '../ui/account-mismatch-warning/index';

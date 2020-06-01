@@ -1,24 +1,19 @@
-const Config = require('./recipient-blacklist.js')
-
-/** @module*/
-module.exports = {
-  checkAccount,
-}
+import blacklist from './recipient-blacklist'
 
 /**
- * Checks if a specified account on a specified network is blacklisted.
-  @param networkId {number}
-  @param account {string}
-*/
-function checkAccount (networkId, account) {
-
+ * Checks if a specified account on a specified network is blacklisted
+ * @param {number} networkId
+ * @param {string} account
+ * @throws {Error} if the account is blacklisted on mainnet
+ */
+export function throwIfAccountIsBlacklisted (networkId, account) {
   const mainnetId = 1
   if (networkId !== mainnetId) {
     return
   }
 
   const accountToCheck = account.toLowerCase()
-  if (Config.blacklist.includes(accountToCheck)) {
+  if (blacklist.includes(accountToCheck)) {
     throw new Error('Recipient is a public account')
   }
 }

@@ -1,19 +1,14 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const proxyquire = require('proxyquire')
+import assert from 'assert'
+import sinon from 'sinon'
+import proxyquire from 'proxyquire'
+
 const IncomingTransactionsController = proxyquire('../../../../app/scripts/controllers/incoming-transactions', {
-  '../lib/random-id': () => 54321,
-})
+  '../lib/random-id': { default: () => 54321 },
+}).default
 
-const {
-  ROPSTEN,
-  RINKEBY,
-  KOVAN,
-  GOERLI,
-  MAINNET,
-} = require('../../../../app/scripts/controllers/network/enums')
+import { ROPSTEN, RINKEBY, KOVAN, GOERLI, MAINNET } from '../../../../app/scripts/controllers/network/enums'
 
-describe('IncomingTransactionsController', () => {
+describe('IncomingTransactionsController', function () {
   const EMPTY_INIT_STATE = {
     incomingTransactions: {},
     incomingTxLastFetchedBlocksByNetwork: {
@@ -76,8 +71,8 @@ describe('IncomingTransactionsController', () => {
     },
   }
 
-  describe('constructor', () => {
-    it('should set up correct store, listeners and properties in the constructor', () => {
+  describe('constructor', function () {
+    it('should set up correct store, listeners and properties in the constructor', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -107,7 +102,7 @@ describe('IncomingTransactionsController', () => {
       incomingTransactionsController._update.resetHistory()
     })
 
-    it('should set the store to a provided initial state', () => {
+    it('should set the store to a provided initial state', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -119,8 +114,8 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('#start', () => {
-    it('should set up a listener for the latest block', () => {
+  describe('#start', function () {
+    it('should set up a listener for the latest block', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -144,8 +139,8 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('_getDataForUpdate', () => {
-    it('should call fetchAll with the correct params when passed a new block number and the current network has no stored block', async () => {
+  describe('_getDataForUpdate', function () {
+    it('should call fetchAll with the correct params when passed a new block number and the current network has no stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -163,7 +158,7 @@ describe('IncomingTransactionsController', () => {
       ])
     })
 
-    it('should call fetchAll with the correct params when passed a new block number but the current network has a stored block', async () => {
+    it('should call fetchAll with the correct params when passed a new block number but the current network has a stored block', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -181,7 +176,7 @@ describe('IncomingTransactionsController', () => {
       ])
     })
 
-    it('should call fetchAll with the correct params when passed a new network type but no block info exists', async () => {
+    it('should call fetchAll with the correct params when passed a new network type but no block info exists', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -202,25 +197,7 @@ describe('IncomingTransactionsController', () => {
       ])
     })
 
-    it('should call fetchAll with the correct params when passed a new block number but the current network has a stored block', async () => {
-      const incomingTransactionsController = new IncomingTransactionsController({
-        blockTracker: MOCK_BLOCKTRACKER,
-        networkController: MOCK_NETWORK_CONTROLLER,
-        preferencesController: MOCK_PREFERENCES_CONTROLLER,
-        initState: NON_EMPTY_INIT_STATE_WITH_FAKE_NETWORK_STATE,
-      })
-      incomingTransactionsController._fetchAll = sinon.stub().returns({})
-
-      await incomingTransactionsController._getDataForUpdate({ address: 'fakeAddress', newBlockNumberDec: 999 })
-
-      assert(incomingTransactionsController._fetchAll.calledOnce)
-
-      assert.deepEqual(incomingTransactionsController._fetchAll.getCall(0).args, [
-        'fakeAddress', 1111, 'FAKE_NETWORK',
-      ])
-    })
-
-    it('should return the expected data', async () => {
+    it('should return the expected data', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -257,7 +234,7 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('_updateStateWithNewTxData', () => {
+  describe('_updateStateWithNewTxData', function () {
     const MOCK_INPUT_WITHOUT_LASTEST = {
       newTxs: [{ id: 555, hash: '0xfff' }],
       currentIncomingTxs: {
@@ -280,7 +257,7 @@ describe('IncomingTransactionsController', () => {
       latestIncomingTxBlockNumber: 444,
     }
 
-    it('should update state with correct blockhash and transactions when passed a truthy latestIncomingTxBlockNumber', async () => {
+    it('should update state with correct blockhash and transactions when passed a truthy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -305,7 +282,7 @@ describe('IncomingTransactionsController', () => {
       })
     })
 
-    it('should update state with correct blockhash and transactions when passed a falsy latestIncomingTxBlockNumber', async () => {
+    it('should update state with correct blockhash and transactions when passed a falsy latestIncomingTxBlockNumber', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -331,22 +308,22 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('_fetchTxs', () => {
+  describe('_fetchTxs', function () {
     const mockFetch = sinon.stub().returns(Promise.resolve({
       json: () => Promise.resolve({ someKey: 'someValue' }),
     }))
     let tempFetch
-    beforeEach(() => {
-      tempFetch = global.fetch
-      global.fetch = mockFetch
+    beforeEach(function () {
+      tempFetch = window.fetch
+      window.fetch = mockFetch
     })
 
-    afterEach(() => {
-      global.fetch = tempFetch
+    afterEach(function () {
+      window.fetch = tempFetch
       mockFetch.resetHistory()
     })
 
-    it('should call fetch with the expected url when passed an address, block number and supported network', async () => {
+    it('should call fetch with the expected url when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -360,7 +337,7 @@ describe('IncomingTransactionsController', () => {
       assert.equal(mockFetch.getCall(0).args[0], `https://api-${ROPSTEN}.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1&startBlock=789`)
     })
 
-    it('should call fetch with the expected url when passed an address, block number and MAINNET', async () => {
+    it('should call fetch with the expected url when passed an address, block number and MAINNET', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -374,7 +351,7 @@ describe('IncomingTransactionsController', () => {
       assert.equal(mockFetch.getCall(0).args[0], `https://api.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1&startBlock=789`)
     })
 
-    it('should call fetch with the expected url when passed an address and supported network, but a falsy block number', async () => {
+    it('should call fetch with the expected url when passed an address and supported network, but a falsy block number', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -388,7 +365,7 @@ describe('IncomingTransactionsController', () => {
       assert.equal(mockFetch.getCall(0).args[0], `https://api-${ROPSTEN}.etherscan.io/api?module=account&action=txlist&address=0xfakeaddress&tag=latest&page=1`)
     })
 
-    it('should not fetch and return an empty object when passed an unsported network', async () => {
+    it('should not fetch and return an empty object when passed an unsported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -402,7 +379,7 @@ describe('IncomingTransactionsController', () => {
       assert.deepEqual(result, {})
     })
 
-    it('should return the results from the fetch call, plus the address and currentNetworkID, when passed an address, block number and supported network', async () => {
+    it('should return the results from the fetch call, plus the address and currentNetworkID, when passed an address, block number and supported network', async function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -421,8 +398,8 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('_processTxFetchResponse', () => {
-    it('should return a null block number and empty tx array if status is 0', () => {
+  describe('_processTxFetchResponse', function () {
+    it('should return a null block number and empty tx array if status is 0', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -442,7 +419,7 @@ describe('IncomingTransactionsController', () => {
       })
     })
 
-    it('should return a null block number and empty tx array if the passed result array is empty', () => {
+    it('should return a null block number and empty tx array if the passed result array is empty', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -462,7 +439,7 @@ describe('IncomingTransactionsController', () => {
       })
     })
 
-    it('should return the expected block number and tx list when passed data from a successful fetch', () => {
+    it('should return the expected block number and tx list when passed data from a successful fetch', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -580,8 +557,8 @@ describe('IncomingTransactionsController', () => {
     })
   })
 
-  describe('_normalizeTxFromEtherscan', () => {
-    it('should return the expected data when the tx is in error', () => {
+  describe('_normalizeTxFromEtherscan', function () {
+    it('should return the expected data when the tx is in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,
@@ -621,7 +598,7 @@ describe('IncomingTransactionsController', () => {
       })
     })
 
-    it('should return the expected data when the tx is not in error', () => {
+    it('should return the expected data when the tx is not in error', function () {
       const incomingTransactionsController = new IncomingTransactionsController({
         blockTracker: MOCK_BLOCKTRACKER,
         networkController: MOCK_NETWORK_CONTROLLER,

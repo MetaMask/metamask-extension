@@ -8,9 +8,6 @@
   "reject": {
     "message": "Отхвърляне"
   },
-  "likeToConnect": {
-    "message": "$1 би искал да се свърже с вашия акаунт"
-  },
   "about": {
     "message": "Информация"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Функции"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Балансът може да е остарял"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатъчен баланс за текущия общ газ"
   },
   "basic": {
     "message": "Основни"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Идентификатор на веригата"
   },
-  "clickToAdd": {
-    "message": "Кликнете върху $1, за да ги добавите към вашия акаунт"
-  },
   "clickToRevealSeed": {
     "message": "Кликнете тук, за да разкриете тайните думи"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Разгръщане на договор"
   },
-  "conversionProgress": {
-    "message": "Извършва се конвертиране"
-  },
-  "copiedButton": {
-    "message": "Копирано"
-  },
   "copiedExclamation": {
     "message": "Копирано!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
-  },
-  "copyButton": {
-    "message": "Копиране"
   },
   "copyPrivateKey": {
     "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "От"
   },
-  "fromShapeShift": {
-    "message": "От ShapeShift"
-  },
   "functionType": {
     "message": "Тип функция"
   },
   "gasLimit": {
     "message": "Ограничение на газ"
-  },
-  "gasLimitCalculation": {
-    "message": "Изчисляваме препоръчителния лимит за газ въз основа на степента на успех на мрежата."
   },
   "gasLimitInfoModalContent": {
     "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Цена на газа"
-  },
-  "gasPriceCalculation": {
-    "message": "Изчисляваме предложените цени на газ въз основа на успеваемостта на мрежата."
   },
   "general": {
     "message": "Общ"
@@ -541,9 +514,6 @@
   },
   "hide": {
     "message": "Скриване"
-  },
-  "hideToken": {
-    "message": "Скриване на жетон"
   },
   "hideTokenPrompt": {
     "message": "Скриване на жетон?"
@@ -656,10 +626,7 @@
   "localhost": {
     "message": "Локален хост 8545"
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Излизане"
   },
   "mainnet": {
@@ -671,17 +638,11 @@
   "memo": {
     "message": "бележка"
   },
-  "menu": {
-    "message": "Меню"
-  },
   "message": {
     "message": "Съобщение"
   },
   "metamaskDescription": {
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
-  },
-  "metamaskSeedWords": {
-    "message": "Думи зародиш на MetaMask"
   },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
@@ -784,9 +745,6 @@
   "noAddressForName": {
     "message": "За това име не е зададен адрес."
   },
-  "noDeposits": {
-    "message": "Не са получени депозити"
-  },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
   },
@@ -860,9 +818,6 @@
   },
   "privateNetwork": {
     "message": "Частна мрежа"
-  },
-  "qrCode": {
-    "message": "Показване на QR кода"
   },
   "queue": {
     "message": "Опашка"
@@ -938,9 +893,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
-  },
-  "revert": {
-    "message": "Обръщане"
   },
   "remove": {
     "message": "Премахване"
@@ -1156,7 +1108,7 @@
     "message": "Символ"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символът трябва да е между 0 и 12 знака."
+    "message": "Символът трябва да е 11 символа или по-малко."
   },
   "syncWithMobile": {
     "message": "Синхронизиране с мобилни устройства"
@@ -1193,10 +1145,6 @@
   },
   "to": {
     "message": "На"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 до ETH чрез ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Жетон"

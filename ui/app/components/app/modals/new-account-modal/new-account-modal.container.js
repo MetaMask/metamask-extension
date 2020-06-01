@@ -1,19 +1,19 @@
 import { connect } from 'react-redux'
 import NewAccountModal from './new-account-modal.component'
-import actions from '../../../../store/actions'
+import * as actions from '../../../../store/actions'
 
 function mapStateToProps (state) {
   return {
-    ...state.appState.modal.modalState.props || {},
+    ...(state.appState.modal.modalState.props || {}),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    createAccount: newAccountName => {
+    createAccount: (newAccountName) => {
       return dispatch(actions.addNewAccount())
-        .then(newAccountAddress => {
+        .then((newAccountAddress) => {
           if (newAccountName) {
             dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
           }
@@ -36,7 +36,7 @@ function mergeProps (stateProps, dispatchProps) {
     ...dispatchProps,
     onSave: (newAccountName) => {
       return createAccount(newAccountName)
-        .then(newAccountAddress => onCreateNewAccount(newAccountAddress))
+        .then((newAccountAddress) => onCreateNewAccount(newAccountAddress))
     },
   }
 }

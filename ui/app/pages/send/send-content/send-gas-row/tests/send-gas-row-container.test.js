@@ -2,7 +2,6 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 
-let mapStateToProps
 let mapDispatchToProps
 let mergeProps
 
@@ -25,30 +24,14 @@ const gasDuckSpies = {
 
 proxyquire('../send-gas-row.container.js', {
   'react-redux': {
-    connect: (ms, md, mp) => {
-      mapStateToProps = ms
+    connect: (_, md, mp) => {
       mapDispatchToProps = md
       mergeProps = mp
       return () => ({})
     },
   },
-  '../../../../selectors/selectors': {
-    getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
-    getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
-    getSelectedToken: () => false,
-  },
-  '../../send.selectors.js': {
-    getConversionRate: (s) => `mockConversionRate:${s}`,
-    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getSendAmount: (s) => `mockSendAmount:${s}`,
-    getSendFromBalance: (s) => `mockBalance:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
-  },
-  '../send-amount-row/amount-max-button/amount-max-button.selectors': {
-    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
+  '../../../../selectors': {
+    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
     isBalanceSufficient: ({
@@ -59,64 +42,25 @@ proxyquire('../send-gas-row.container.js', {
     }) => `${amount}:${gasTotal}:${balance}:${conversionRate}`,
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
-  './send-gas-row.selectors.js': {
-    getGasLoadingError: (s) => `mockGasLoadingError:${s}`,
-    gasFeeIsInError: (s) => `mockGasFeeError:${s}`,
-    getGasButtonGroupShown: (s) => `mockGetGasButtonGroupShown:${s}`,
-  },
   '../../../../store/actions': actionSpies,
-  '../../../../selectors/custom-gas': {
-    getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
-    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => `mockGasButtonInfo:${s}`,
-    getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
-  },
   '../../../../ducks/send/send.duck': sendDuckSpies,
   '../../../../ducks/gas/gas.duck': gasDuckSpies,
 })
 
-describe('send-gas-row container', () => {
+describe('send-gas-row container', function () {
 
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
-      assert.deepEqual(mapStateToProps('mockState'), {
-        balance: 'mockBalance:mockState',
-        conversionRate: 'mockConversionRate:mockState',
-        convertedCurrency: 'mockConvertedCurrency:mockState',
-        gasTotal: 'mockGasTotal:mockState',
-        gasFeeError: 'mockGasFeeError:mockState',
-        gasLoadingError: 'mockGasLoadingError:mockState',
-        gasPriceButtonGroupProps: {
-          buttonDataLoading: `mockBasicGasEstimateLoadingStatus:mockState`,
-          defaultActiveButtonIndex: 1,
-          newActiveButtonIndex: 49,
-          gasButtonInfo: `mockGasButtonInfo:mockState`,
-        },
-        gasButtonGroupShown: `mockGetGasButtonGroupShown:mockState`,
-        advancedInlineGasShown: 'mockAdvancedInlineGasShown:mockState',
-        gasLimit: 'mockGasLimit:mockState',
-        gasPrice: 'mockGasPrice:mockState',
-        insufficientBalance: false,
-        maxModeOn: 'mockMaxModeOn:mockState',
-        selectedToken: false,
-        tokenBalance: 'mockTokenBalance:mockState',
-      })
-    })
-
-  })
-
-  describe('mapDispatchToProps()', () => {
+  describe('mapDispatchToProps()', function () {
     let dispatchSpy
     let mapDispatchToPropsObject
 
-    beforeEach(() => {
+    beforeEach(function () {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
       actionSpies.setGasTotal.resetHistory()
     })
 
-    describe('showCustomizeGasModal()', () => {
-      it('should dispatch an action', () => {
+    describe('showCustomizeGasModal()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.showCustomizeGasModal()
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
@@ -126,8 +70,8 @@ describe('send-gas-row container', () => {
       })
     })
 
-    describe('setGasPrice()', () => {
-      it('should dispatch an action', () => {
+    describe('setGasPrice()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.setGasPrice('mockNewPrice', 'mockLimit')
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasPrice.calledOnce)
@@ -138,8 +82,8 @@ describe('send-gas-row container', () => {
       })
     })
 
-    describe('setGasLimit()', () => {
-      it('should dispatch an action', () => {
+    describe('setGasLimit()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice')
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasLimit.calledOnce)
@@ -150,45 +94,37 @@ describe('send-gas-row container', () => {
       })
     })
 
-    describe('showGasButtonGroup()', () => {
-      it('should dispatch an action', () => {
+    describe('showGasButtonGroup()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.showGasButtonGroup()
         assert(dispatchSpy.calledOnce)
         assert(sendDuckSpies.showGasButtonGroup.calledOnce)
       })
     })
 
-    describe('resetCustomData()', () => {
-      it('should dispatch an action', () => {
+    describe('resetCustomData()', function () {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.resetCustomData()
         assert(dispatchSpy.calledOnce)
         assert(gasDuckSpies.resetCustomData.calledOnce)
       })
     })
-
   })
 
-  describe('mergeProps', () => {
-    let stateProps
-    let dispatchProps
-    let ownProps
-
-    beforeEach(() => {
-      stateProps = {
+  describe('mergeProps', function () {
+    it('should return the expected props when isConfirm is true', function () {
+      const stateProps = {
         gasPriceButtonGroupProps: {
           someGasPriceButtonGroupProp: 'foo',
           anotherGasPriceButtonGroupProp: 'bar',
         },
         someOtherStateProp: 'baz',
       }
-      dispatchProps = {
+      const dispatchProps = {
         setGasPrice: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
       }
-      ownProps = { someOwnProp: 123 }
-    })
-
-    it('should return the expected props when isConfirm is true', () => {
+      const ownProps = { someOwnProp: 123 }
       const result = mergeProps(stateProps, dispatchProps, ownProps)
 
       assert.equal(result.someOtherStateProp, 'baz')
@@ -205,5 +141,4 @@ describe('send-gas-row container', () => {
       assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
     })
   })
-
 })

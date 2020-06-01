@@ -1,16 +1,14 @@
-const urlUtil = require('url')
-const extension = require('extensionizer')
-const resolveEnsToIpfsContentId = require('./resolver.js')
+import urlUtil from 'url'
+import extension from 'extensionizer'
+import resolveEnsToIpfsContentId from './resolver.js'
 
 const supportedTopLevelDomains = ['eth']
 
-module.exports = setupEnsIpfsResolver
-
-function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
+export default function setupEnsIpfsResolver ({ provider, getCurrentNetwork, getIpfsGateway }) {
 
   // install listener
-  const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
-  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame']})
+  const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`)
+  extension.webRequest.onErrorOccurred.addListener(webRequestDidFail, { urls: urlPatterns, types: ['main_frame'] })
 
   // return api object
   return {
@@ -41,15 +39,16 @@ function setupEnsIpfsResolver ({ provider, getCurrentNetwork }) {
   }
 
   async function attemptResolve ({ tabId, name, path, search, fragment }) {
+    const ipfsGateway = getIpfsGateway()
     extension.tabs.update(tabId, { url: `loading.html` })
     let url = `https://app.ens.domains/name/${name}`
     try {
-      const {type, hash} = await resolveEnsToIpfsContentId({ provider, name })
-      if (type === 'ipfs-ns') {
-        const resolvedUrl = `https://gateway.ipfs.io/ipfs/${hash}${path}${search || ''}${fragment || ''}`
+      const { type, hash } = await resolveEnsToIpfsContentId({ provider, name })
+      if (type === 'ipfs-ns' || type === 'ipns-ns') {
+        const resolvedUrl = `https://${hash}.${type.slice(0, 4)}.${ipfsGateway}${path}${search || ''}${fragment || ''}`
         try {
           // check if ipfs gateway has result
-          const response = await fetch(resolvedUrl, { method: 'HEAD' })
+          const response = await window.fetch(resolvedUrl, { method: 'HEAD' })
           if (response.status === 200) {
             url = resolvedUrl
           }

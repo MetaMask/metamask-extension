@@ -1,89 +1,19 @@
 import { NETWORK_TYPES } from '../helpers/constants/common'
-import { mapObjectValues } from '../../../app/scripts/lib/util'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
-
-const abi = require('human-standard-token-abi')
-const {
-  multiplyCurrencies,
-} = require('../helpers/utils/conversion-util')
+import { createSelector } from 'reselect'
 import {
-  addressSlicer,
+  shortenAddress,
   checksumAddress,
-  formatDate,
-  getOriginFromUrl,
+  getAccountByAddress,
 } from '../helpers/utils/util'
 
-const selectors = {
-  getSelectedAddress,
-  getSelectedIdentity,
-  getSelectedAccount,
-  getSelectedToken,
-  getSelectedTokenExchangeRate,
-  getSelectedTokenAssetImage,
-  getAssetImages,
-  getTokenExchangeRate,
-  conversionRateSelector,
-  accountsWithSendEtherInfoSelector,
-  getAccountsWithLabels,
-  getCurrentAccountWithSendEtherInfo,
-  getGasIsLoading,
-  getForceGasMin,
-  getAddressBook,
-  getSendFrom,
-  getCurrentCurrency,
-  getNativeCurrency,
-  getSendAmount,
-  getSelectedTokenToFiatRate,
-  getSelectedTokenContract,
-  getSendMaxModeState,
-  getCurrentViewContext,
-  getTotalUnapprovedCount,
-  preferencesSelector,
-  getMetaMaskAccounts,
-  getCurrentEthBalance,
-  getNetworkIdentifier,
-  isBalanceCached,
-  getAdvancedInlineGasShown,
-  getUseNonceField,
-  getCustomNonceValue,
-  getIsMainnet,
-  getCurrentNetworkId,
-  getSelectedAsset,
-  getCurrentKeyring,
-  getAccountType,
-  getNumberOfAccounts,
-  getNumberOfTokens,
-  isEthereumNetwork,
-  getPermissionsRequests,
-  getPermissionsDescriptions,
-  getDomainMetadata,
-  getActiveTab,
-  getMetaMetricState,
-  getRpcPrefsForCurrentProvider,
-  getKnownMethodData,
-  getAddressBookEntry,
-  getAddressBookEntryName,
-  getFeatureFlags,
-  getFirstPermissionRequest,
-  hasPermissionRequests,
-  getRenderablePermissionsDomains,
-  getPermissionsDomains,
-  getAddressConnectedDomainMap,
-  getDomainToConnectedAddressMap,
-  getOriginOfCurrentTab,
-  getAddressConnectedToCurrentTab,
-  getLastConnectedInfo,
-}
-
-module.exports = selectors
-
-function getNetworkIdentifier (state) {
+export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
 
   return nickname || rpcTarget || type
 }
 
-function getCurrentKeyring (state) {
+export function getCurrentKeyring (state) {
   const identity = getSelectedIdentity(state)
 
   if (!identity) {
@@ -100,7 +30,7 @@ function getCurrentKeyring (state) {
   return keyring
 }
 
-function getAccountType (state) {
+export function getAccountType (state) {
   const currentKeyring = getCurrentKeyring(state)
   const type = currentKeyring && currentKeyring.type
 
@@ -115,115 +45,117 @@ function getAccountType (state) {
   }
 }
 
-function getSelectedAsset (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken && selectedToken.symbol || 'ETH'
-}
-
-function getCurrentNetworkId (state) {
+export function getCurrentNetworkId (state) {
   return state.metamask.network
 }
 
-function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
+export const getMetaMaskAccounts = createSelector(
+  getMetaMaskAccountsRaw,
+  getMetaMaskCachedBalances,
+  (currentAccounts, cachedBalances) => Object.entries(currentAccounts).reduce((selectedAccounts, [accountID, account]) => {
+    if (account.balance === null || account.balance === undefined) {
+      return {
+        ...selectedAccounts,
+        [accountID]: {
+          ...account,
+          balance: cachedBalances && cachedBalances[accountID],
+        },
 
-  return selectedAddress
+      }
+    } else {
+      return {
+        ...selectedAccounts,
+        [accountID]: account,
+      }
+    }
+  }, {})
+)
+
+export function getSelectedAddress (state) {
+  return state.metamask.selectedAddress
 }
 
-function getSelectedIdentity (state) {
+export function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
   const identities = state.metamask.identities
 
   return identities[selectedAddress]
 }
 
-function getNumberOfAccounts (state) {
+export function getNumberOfAccounts (state) {
   return Object.keys(state.metamask.accounts).length
 }
 
-function getNumberOfTokens (state) {
+export function getNumberOfTokens (state) {
   const tokens = state.metamask.tokens
   return tokens ? tokens.length : 0
 }
 
-function getMetaMaskAccounts (state) {
-  const currentAccounts = state.metamask.accounts
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
-  const selectedAccounts = {}
-
-  Object.keys(currentAccounts).forEach(accountID => {
-    const account = currentAccounts[accountID]
-    if (account && account.balance === null || account.balance === undefined) {
-      selectedAccounts[accountID] = {
-        ...account,
-        balance: cachedBalances && cachedBalances[accountID],
-      }
-    } else {
-      selectedAccounts[accountID] = account
-    }
-  })
-  return selectedAccounts
+export function getMetaMaskKeyrings (state) {
+  return state.metamask.keyrings
 }
 
-function isBalanceCached (state) {
+export function getMetaMaskIdentities (state) {
+  return state.metamask.identities
+}
+
+export function getMetaMaskAccountsRaw (state) {
+  return state.metamask.accounts
+}
+
+export function getMetaMaskCachedBalances (state) {
+  const network = getCurrentNetworkId(state)
+
+  return state.metamask.cachedBalances[network]
+}
+
+/**
+ * Get ordered (by keyrings) accounts with identity and balance
+ */
+export const getMetaMaskAccountsOrdered = createSelector(
+  getMetaMaskKeyrings,
+  getMetaMaskIdentities,
+  getMetaMaskAccounts,
+  (keyrings, identities, accounts) => keyrings
+    .reduce((list, keyring) => list.concat(keyring.accounts), [])
+    .filter((address) => !!identities[address])
+    .map((address) => ({ ...identities[address], ...accounts[address] }))
+)
+
+export function isBalanceCached (state) {
   const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance
   const cachedBalance = getSelectedAccountCachedBalance(state)
 
   return Boolean(!selectedAccountBalance && cachedBalance)
 }
 
-function getSelectedAccountCachedBalance (state) {
+export function getSelectedAccountCachedBalance (state) {
   const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
   const selectedAddress = getSelectedAddress(state)
 
   return cachedBalances && cachedBalances[selectedAddress]
 }
 
-function getSelectedAccount (state) {
+export function getSelectedAccount (state) {
   const accounts = getMetaMaskAccounts(state)
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
 }
 
-function getSelectedToken (state) {
-  const tokens = state.metamask.tokens || []
-  const selectedTokenAddress = state.metamask.selectedTokenAddress
-  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
-  const sendToken = state.metamask.send && state.metamask.send.token
-
-  return selectedToken || sendToken || null
+export function getTargetAccount (state, targetAddress) {
+  const accounts = getMetaMaskAccounts(state)
+  return accounts[targetAddress]
 }
 
-function getSelectedTokenExchangeRate (state) {
-  const contractExchangeRates = state.metamask.contractExchangeRates
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return contractExchangeRates[address] || 0
-}
+export const getTokenExchangeRates = (state) => state.metamask.contractExchangeRates
 
-function getSelectedTokenAssetImage (state) {
-  const assetImages = state.metamask.assetImages || {}
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return assetImages[address]
-}
-
-function getAssetImages (state) {
+export function getAssetImages (state) {
   const assetImages = state.metamask.assetImages || {}
   return assetImages
 }
 
-function getTokenExchangeRate (state, address) {
-  const contractExchangeRates = state.metamask.contractExchangeRates
-  return contractExchangeRates[address] || 0
-}
-
-function conversionRateSelector (state) {
-  return state.metamask.conversionRate
-}
-
-function getAddressBook (state) {
+export function getAddressBook (state) {
   const network = state.metamask.network
   if (!state.metamask.addressBook[network]) {
     return []
@@ -231,125 +163,91 @@ function getAddressBook (state) {
   return Object.values(state.metamask.addressBook[network])
 }
 
-function getAddressBookEntry (state, address) {
+export function getAddressBookEntry (state, address) {
   const addressBook = getAddressBook(state)
-  const entry = addressBook.find(contact => contact.address === checksumAddress(address))
+  const entry = addressBook.find((contact) => contact.address === checksumAddress(address))
   return entry
 }
 
-function getAddressBookEntryName (state, address) {
+export function getAddressBookEntryName (state, address) {
   const entry = getAddressBookEntry(state, address) || state.metamask.identities[address]
-  return entry && entry.name !== '' ? entry.name : addressSlicer(address)
+  return entry && entry.name !== '' ? entry.name : shortenAddress(address)
 }
 
-function accountsWithSendEtherInfoSelector (state) {
+export function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
   const { identities } = state.metamask
 
-  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
-    return Object.assign({}, account, identities[key])
+  const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
+    return Object.assign({}, accounts[key], identity)
   })
 
   return accountsWithSendEtherInfo
 }
 
-function getAccountsWithLabels (state) {
-  const accountsWithoutLabel = accountsWithSendEtherInfoSelector(state)
-  const accountsWithLabels = accountsWithoutLabel.map(account => {
-    const { address, name, balance } = account
-    return {
-      address,
-      truncatedAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
-      label: name,
-      balance,
-    }
-  })
-  return accountsWithLabels
+export function getAccountsWithLabels (state) {
+  return accountsWithSendEtherInfoSelector(state).map(({ address, name, balance }) => ({
+    address,
+    addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+    label: name,
+    balance,
+  }))
 }
 
-function getCurrentAccountWithSendEtherInfo (state) {
+export function getCurrentAccountWithSendEtherInfo (state) {
   const currentAddress = getSelectedAddress(state)
   const accounts = accountsWithSendEtherInfoSelector(state)
 
-  return accounts.find(({ address }) => address === currentAddress)
+  return getAccountByAddress(accounts, currentAddress)
 }
 
-function getCurrentEthBalance (state) {
+export function getTargetAccountWithSendEtherInfo (state, targetAddress) {
+  const accounts = accountsWithSendEtherInfoSelector(state)
+  return getAccountByAddress(accounts, targetAddress)
+}
+
+export function getCurrentEthBalance (state) {
   return getCurrentAccountWithSendEtherInfo(state).balance
 }
 
-function getGasIsLoading (state) {
+export function getGasIsLoading (state) {
   return state.appState.gasIsLoading
 }
 
-function getForceGasMin (state) {
-  return state.metamask.send.forceGasMin
-}
-
-function getSendFrom (state) {
-  return state.metamask.send.from
-}
-
-function getSendAmount (state) {
-  return state.metamask.send.amount
-}
-
-function getSendMaxModeState (state) {
-  return state.metamask.send.maxModeOn
-}
-
-function getCurrentCurrency (state) {
+export function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
 }
 
-function getNativeCurrency (state) {
-  return state.metamask.nativeCurrency
-}
-
-function getSelectedTokenToFiatRate (state) {
-  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
-  const conversionRate = conversionRateSelector(state)
-
-  const tokenToFiatRate = multiplyCurrencies(
-    conversionRate,
-    selectedTokenExchangeRate,
-    { toNumericBase: 'dec' }
-  )
-
-  return tokenToFiatRate
-}
-
-function getSelectedTokenContract (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken
-    ? global.eth.contract(abi).at(selectedToken.address)
-    : null
-}
-
-function getCurrentViewContext (state) {
-  const { currentView = {} } = state.appState
-  return currentView.context
-}
-
-function getTotalUnapprovedCount ({ metamask }) {
+export function getTotalUnapprovedCount (state) {
   const {
-    unapprovedTxs = {},
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-  } = metamask
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask
 
-  return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
-    unapprovedTypedMessagesCount
+  return unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount + unapprovedTypedMessagesCount +
+    getUnapprovedTxCount(state) + getPermissionsRequestCount(state) + getSuggestedTokenCount(state)
 }
 
-function getIsMainnet (state) {
+function getUnapprovedTxCount (state) {
+  const { unapprovedTxs = {} } = state.metamask
+  return Object.keys(unapprovedTxs).length
+}
+
+function getSuggestedTokenCount (state) {
+  const { suggestedTokens = {} } = state.metamask
+  return Object.keys(suggestedTokens).length
+}
+
+export function getIsMainnet (state) {
   const networkType = getNetworkIdentifier(state)
   return networkType === NETWORK_TYPES.MAINNET
 }
 
-function isEthereumNetwork (state) {
+export function isEthereumNetwork (state) {
   const networkType = getNetworkIdentifier(state)
   const {
     KOVAN,
@@ -362,42 +260,55 @@ function isEthereumNetwork (state) {
   return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
-function preferencesSelector ({ metamask }) {
+export function getPreferences ({ metamask }) {
   return metamask.preferences
 }
 
-function getAdvancedInlineGasShown (state) {
+export function getShouldShowFiat (state) {
+  const isMainNet = getIsMainnet(state)
+  const { showFiatInTestnets } = getPreferences(state)
+  return Boolean(isMainNet || showFiatInTestnets)
+}
+
+export function getAdvancedInlineGasShown (state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }
 
-function getUseNonceField (state) {
+export function getUseNonceField (state) {
   return Boolean(state.metamask.useNonceField)
 }
 
-function getCustomNonceValue (state) {
+export function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
 }
 
-function getPermissionsDescriptions (state) {
-  return state.metamask.permissionsDescriptions
+export function getPermissionsRequests (state) {
+  return state.metamask.permissionsRequests || []
 }
 
-function getPermissionsRequests (state) {
-  return state.metamask.permissionsRequests
+export function getPermissionsRequestCount (state) {
+  const permissionsRequests = getPermissionsRequests(state)
+  return permissionsRequests.length
 }
 
-function getDomainMetadata (state) {
+export function getDomainMetadata (state) {
   return state.metamask.domainMetadata
 }
 
-function getActiveTab (state) {
-  return state.activeTab
+export function getTargetDomainMetadata (state, request, defaultOrigin) {
+  const domainMetadata = getDomainMetadata(state)
+
+  const { metadata: requestMetadata = {} } = request || {}
+  const origin = requestMetadata.origin || defaultOrigin
+  const targetDomainMetadata = (domainMetadata[origin] || { name: origin, icon: null })
+  targetDomainMetadata.origin = origin
+
+  return targetDomainMetadata
 }
 
-function getMetaMetricState (state) {
+export const getBackgroundMetaMetricState = (state) => {
   return {
     network: getCurrentNetworkId(state),
-    activeCurrency: getSelectedAsset(state),
     accountType: getAccountType(state),
     metaMetricsId: state.metamask.metaMetricsId,
     numberOfTokens: getNumberOfTokens(state),
@@ -406,14 +317,14 @@ function getMetaMetricState (state) {
   }
 }
 
-function getRpcPrefsForCurrentProvider (state) {
+export function getRpcPrefsForCurrentProvider (state) {
   const { frequentRpcListDetail, provider } = state.metamask
-  const selectRpcInfo = frequentRpcListDetail.find(rpcInfo => rpcInfo.rpcUrl === provider.rpcTarget)
+  const selectRpcInfo = frequentRpcListDetail.find((rpcInfo) => rpcInfo.rpcUrl === provider.rpcTarget)
   const { rpcPrefs = {} } = selectRpcInfo || {}
   return rpcPrefs
 }
 
-function getKnownMethodData (state, data) {
+export function getKnownMethodData (state, data) {
   if (!data) {
     return null
   }
@@ -424,140 +335,24 @@ function getKnownMethodData (state, data) {
   return knownMethodData && knownMethodData[fourBytePrefix]
 }
 
-function getFeatureFlags (state) {
+export function getFeatureFlags (state) {
   return state.metamask.featureFlags
 }
 
-function getFirstPermissionRequest (state) {
+export function getFirstPermissionRequest (state) {
   const requests = getPermissionsRequests(state)
   return requests && requests[0] ? requests[0] : null
 }
 
-function hasPermissionRequests (state) {
+export function hasPermissionRequests (state) {
   return Boolean(getFirstPermissionRequest(state))
 }
 
-function getPermissionsDomains (state) {
-  return state.metamask.domains
+export function getOriginOfCurrentTab (state) {
+  return state.activeTab?.origin
 }
 
-function getAddressConnectedDomainMap (state) {
-  const {
-    domains,
-    domainMetadata,
-  } = state.metamask
-
-  const addressConnectedIconMap = {}
-
-  if (domains) {
-    Object.keys(domains).forEach(domainKey => {
-      const { permissions } = domains[domainKey]
-      const { icon, name } = domainMetadata[domainKey] || {}
-      permissions.forEach(perm => {
-        const caveats = perm.caveats || []
-        const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
-        if (exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length) {
-          exposedAccountCaveat.value.forEach(address => {
-            const nameToRender = name || domainKey
-            addressConnectedIconMap[address] = addressConnectedIconMap[address]
-              ? { ...addressConnectedIconMap[address], [domainKey]: { icon, name: nameToRender } }
-              : { [domainKey]: { icon, name: nameToRender } }
-          })
-        }
-      })
-    })
-  }
-
-  return addressConnectedIconMap
-}
-
-function getDomainToConnectedAddressMap (state) {
-  const { domains = {} } = state.metamask
-
-  const domainToConnectedAddressMap = mapObjectValues(domains, (_, { permissions }) => {
-    const ethAccountsPermissions = permissions.filter(permission => permission.parentCapability === 'eth_accounts')
-    const ethAccountsPermissionsExposedAccountAddresses = ethAccountsPermissions.map(permission => {
-      const caveats = permission.caveats
-      const exposedAccountsCaveats = caveats.filter(caveat => caveat.name === 'exposedAccounts')
-      const exposedAccountsAddresses = exposedAccountsCaveats.map(caveat => caveat.value[0])
-      return exposedAccountsAddresses
-    })
-    const allAddressesConnectedToDomain = ethAccountsPermissionsExposedAccountAddresses.reduce((acc, arrayOfAddresses) => {
-      return [ ...acc, ...arrayOfAddresses ]
-    }, [])
-    return allAddressesConnectedToDomain
-  })
-
-  return domainToConnectedAddressMap
-}
-
-function getAddressConnectedToCurrentTab (state) {
-  const domainToConnectedAddressMap = getDomainToConnectedAddressMap(state)
-  const originOfCurrentTab = getOriginOfCurrentTab(state)
-  const addressesConnectedToCurrentTab = domainToConnectedAddressMap[originOfCurrentTab]
-  const addressConnectedToCurrentTab = addressesConnectedToCurrentTab && addressesConnectedToCurrentTab[0]
-  return addressConnectedToCurrentTab
-}
-
-function getRenderablePermissionsDomains (state) {
-  const {
-    domains = {},
-    domainMetadata,
-    permissionsHistory,
-    permissionsDescriptions,
-    selectedAddress,
-  } = state.metamask
-
-  const renderableDomains = Object.keys(domains).reduce((acc, domainKey) => {
-    const { permissions } = domains[domainKey]
-    const permissionsWithCaveatsForSelectedAddress = permissions.filter(perm => {
-      const caveats = perm.caveats || []
-      const exposedAccountCaveat = caveats.find(caveat => caveat.name === 'exposedAccounts')
-      const exposedAccountCaveatValue = exposedAccountCaveat && exposedAccountCaveat.value && exposedAccountCaveat.value.length
-        ? exposedAccountCaveat.value[0]
-        : {}
-      return exposedAccountCaveatValue === selectedAddress
-    })
-
-    if (permissionsWithCaveatsForSelectedAddress.length) {
-      const permissionKeys = permissions.map(permission => permission.parentCapability)
-      const {
-        name,
-        icon,
-        extensionId,
-      } = domainMetadata[domainKey] || {}
-      const permissionsHistoryForDomain = permissionsHistory[domainKey] || {}
-      const ethAccountsPermissionsForDomain = permissionsHistoryForDomain['eth_accounts'] || {}
-      const accountsLastConnectedTime = ethAccountsPermissionsForDomain.accounts || {}
-      const selectedAddressLastConnectedTime = accountsLastConnectedTime[selectedAddress]
-
-      const lastConnectedTime = selectedAddressLastConnectedTime
-        ? formatDate(selectedAddressLastConnectedTime, 'yyyy-M-d')
-        : ''
-
-      return [ ...acc, {
-        name: name || domainKey,
-        secondaryName: name ? domainKey : '',
-        icon,
-        key: domainKey,
-        lastConnectedTime,
-        permissionDescriptions: permissionKeys.map(permissionKey => permissionsDescriptions[permissionKey]),
-        extensionId,
-      }]
-    } else {
-      return acc
-    }
-  }, [])
-
-  return renderableDomains
-}
-
-function getOriginOfCurrentTab (state) {
-  const { activeTab } = state
-  return activeTab && activeTab.url && getOriginFromUrl(activeTab.url)
-}
-
-function getLastConnectedInfo (state) {
+export function getLastConnectedInfo (state) {
   const { permissionsHistory = {} } = state.metamask
   const lastConnectedInfoData = Object.keys(permissionsHistory).reduce((acc, origin) => {
     const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
@@ -567,4 +362,8 @@ function getLastConnectedInfo (state) {
     }
   }, {})
   return lastConnectedInfoData
+}
+
+export function getIpfsGateway (state) {
+  return state.metamask.ipfsGateway
 }

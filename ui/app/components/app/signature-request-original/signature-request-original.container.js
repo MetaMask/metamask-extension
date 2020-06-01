@@ -1,31 +1,31 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 
-import actions from '../../../store/actions'
+import { goHome } from '../../../store/actions'
 import {
-  getSelectedAccount,
-  getCurrentAccountWithSendEtherInfo,
-  getSelectedAddress,
+  accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-} from '../../../selectors/selectors.js'
+} from '../../../selectors'
+import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import SignatureRequestOriginal from './signature-request-original.component'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 function mapStateToProps (state) {
   return {
-    balance: getSelectedAccount(state).balance,
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
-    selectedAddress: getSelectedAddress(state),
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    // not passed to component
+    allAccounts: accountsWithSendEtherInfoSelector(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
+    goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
@@ -41,7 +41,12 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps
 
-  const { type } = txData
+  const { allAccounts } = stateProps
+  delete stateProps.allAccounts
+
+  const { type, msgParams: { from } } = txData
+
+  const fromAccount = getAccountByAddress(allAccounts, from)
 
   let cancel
   let sign
@@ -60,6 +65,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    fromAccount,
     txData,
     cancel,
     sign,

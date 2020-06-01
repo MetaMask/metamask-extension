@@ -43,9 +43,6 @@
   "balance": {
     "message": "Saldo:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para a quantidade de gas total"
-  },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
@@ -73,20 +70,11 @@
   "contractDeployment": {
     "message": "Distribuição do Contrato"
   },
-  "conversionProgress": {
-    "message": "Conversão em progresso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "Copiado!"
   },
   "copyToClipboard": {
     "message": "Copiar para o clipboard"
-  },
-  "copyButton": {
-    "message": " Copiar "
   },
   "copyPrivateKey": {
     "message": "Esta é a sua chave privada (carregue para copiar)"
@@ -162,23 +150,14 @@
   "from": {
     "message": "De"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "gasLimit": {
     "message": "Limite de Gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Calculamos o limite sugerido do gas com base nas taxas de sucesso da rede."
   },
   "gasLimitTooLow": {
     "message": "Limite de Gas deve ser no mínimo 21000"
   },
   "gasPrice": {
     "message": "Preço Gas (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Calculamos o gas sugerido com base nas taxas de sucesso da rede."
   },
   "getEther": {
     "message": "Obter Ether"
@@ -193,9 +172,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar Token"
   },
   "hideTokenPrompt": {
     "message": "Ocultar Token?"
@@ -254,10 +230,10 @@
   "loadingTokens": {
     "message": "A carregar Tokens..."
   },
-  "login": {
+  "unlock": {
     "message": "Entrar"
   },
-  "logout": {
+  "lock": {
     "message": "Sair"
   },
   "mainnet": {
@@ -307,9 +283,6 @@
   "noAddressForName": {
     "message": "Nenhum endereço foi estabelecido para este nome."
   },
-  "noDeposits": {
-    "message": "Sem depósitos recebidos"
-  },
   "noTransactions": {
     "message": "Sem Transações"
   },
@@ -332,9 +305,6 @@
   },
   "privateNetwork": {
     "message": "Rede Privada"
-  },
-  "qrCode": {
-    "message": "Mostrar Código QR"
   },
   "readdToken": {
     "message": "Pode adicionar este token de novo clicando na opção “Adicionar token” no menu de opções da sua conta."
@@ -359,9 +329,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revert": {
-    "message": "Reverter"
   },
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"
@@ -424,7 +391,7 @@
     "message": "Visitar o nosso Centro de Suporte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo deve conter entre 0 e 12 characters."
+    "message": "O símbolo deve ter 11 caracteres ou menos."
   },
   "terms": {
     "message": "Termos de Uso"
@@ -434,10 +401,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 para ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token já foi adicionado."

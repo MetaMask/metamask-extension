@@ -4,7 +4,7 @@ import SendRowWrapper from '../send-row-wrapper'
 import Identicon from '../../../../components/ui/identicon/identicon.component'
 import TokenBalance from '../../../../components/ui/token-balance'
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-import {PRIMARY} from '../../../../helpers/constants/common'
+import { PRIMARY } from '../../../../helpers/constants/common'
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -17,8 +17,8 @@ export default class SendAssetRow extends Component {
     ).isRequired,
     accounts: PropTypes.object.isRequired,
     selectedAddress: PropTypes.string.isRequired,
-    selectedTokenAddress: PropTypes.string,
-    setSelectedToken: PropTypes.func.isRequired,
+    sendTokenAddress: PropTypes.string,
+    setSendToken: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -34,7 +34,7 @@ export default class SendAssetRow extends Component {
 
   closeDropdown = () => this.setState({ isShowingDropdown: false })
 
-  selectToken = address => {
+  selectToken = (token) => {
     this.setState({
       isShowingDropdown: false,
     }, () => {
@@ -45,10 +45,10 @@ export default class SendAssetRow extends Component {
           name: 'User clicks "Assets" dropdown',
         },
         customVariables: {
-          assetSelected: address ? 'ERC20' : 'ETH',
+          assetSelected: token ? 'ERC20' : 'ETH',
         },
       })
-      this.props.setSelectedToken(address)
+      this.props.setSendToken(token)
     })
   }
 
@@ -58,16 +58,16 @@ export default class SendAssetRow extends Component {
     return (
       <SendRowWrapper label={`${t('asset')}:`}>
         <div className="send-v2__asset-dropdown">
-          { this.renderSelectedToken() }
+          { this.renderSendToken() }
           { this.props.tokens.length > 0 ? this.renderAssetDropdown() : null }
         </div>
       </SendRowWrapper>
     )
   }
 
-  renderSelectedToken () {
-    const { selectedTokenAddress } = this.props
-    const token = this.props.tokens.find(({ address }) => address === selectedTokenAddress)
+  renderSendToken () {
+    const { sendTokenAddress } = this.props
+    const token = this.props.tokens.find(({ address }) => address === sendTokenAddress)
     return (
       <div
         className="send-v2__asset-dropdown__input-wrapper"
@@ -86,14 +86,14 @@ export default class SendAssetRow extends Component {
           onClick={this.closeDropdown}
         />
         <div className="send-v2__asset-dropdown__list">
-          { this.renderEth() }
-          { this.props.tokens.map(token => this.renderAsset(token)) }
+          { this.renderEth(true) }
+          { this.props.tokens.map((token) => this.renderAsset(token, true)) }
         </div>
       </div>
     )
   }
 
-  renderEth () {
+  renderEth (insideDropdown = false) {
     const { t } = this.context
     const { accounts, selectedAddress } = this.props
 
@@ -117,12 +117,15 @@ export default class SendAssetRow extends Component {
             />
           </div>
         </div>
+        { !insideDropdown && this.props.tokens.length > 0 && (
+          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+        )}
       </div>
     )
   }
 
 
-  renderAsset (token) {
+  renderAsset (token, insideDropdown = false) {
     const { address, symbol } = token
     const { t } = this.context
 
@@ -130,7 +133,7 @@ export default class SendAssetRow extends Component {
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken(address)}
+        onClick={() => this.selectToken(token)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon address={address} diameter={36} />
@@ -147,6 +150,9 @@ export default class SendAssetRow extends Component {
             />
           </div>
         </div>
+        { !insideDropdown && (
+          <i className="fa fa-caret-down fa-lg simple-dropdown__caret" />
+        )}
       </div>
     )
   }

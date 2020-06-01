@@ -1,9 +1,9 @@
-const { createStore, applyMiddleware } = require('redux')
-const { default: thunkMiddleware } = require('redux-thunk')
-const { composeWithDevTools } = require('remote-redux-devtools')
-const rootReducer = require('../ducks')
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import { composeWithDevTools } from 'remote-redux-devtools'
+import rootReducer from '../ducks'
 
-module.exports = function configureStore (initialState) {
+export default function configureStore (initialState) {
   const composeEnhancers = composeWithDevTools({
     name: 'MetaMask',
     hostname: 'localhost',

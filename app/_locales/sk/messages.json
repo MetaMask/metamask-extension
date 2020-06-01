@@ -8,9 +8,6 @@
   "reject": {
     "message": "Odmítnout"
   },
-  "likeToConnect": {
-    "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
   "about": {
     "message": "Informácie"
   },
@@ -106,10 +103,10 @@
   "attributions": {
     "message": "Zásluhy"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
   },
   "average": {
@@ -135,9 +132,6 @@
   },
   "balanceOutdated": {
     "message": "Zostatok môže byť neaktuálny"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
   },
   "basic": {
     "message": "Základné"
@@ -193,9 +187,6 @@
   },
   "chainId": {
     "message": "ID reťazca"
-  },
-  "clickToAdd": {
-    "message": "Kliknutím na $1 ich pridáte do svojho účtu"
   },
   "clickToRevealSeed": {
     "message": "Kliknutím sem odkryjete tajné slová"
@@ -257,12 +248,6 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
@@ -277,9 +262,6 @@
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -454,17 +436,11 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "functionType": {
     "message": "Typ funkcie"
   },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
   },
   "gasLimitInfoModalContent": {
     "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
@@ -486,9 +462,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena GAS"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "general": {
     "message": "Všeobecne"
@@ -533,9 +506,6 @@
   },
   "hide": {
     "message": "Skrýt"
-  },
-  "hideToken": {
-    "message": "Skrýt token"
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
@@ -635,10 +605,7 @@
   "loadMore": {
     "message": "Načítať viac"
   },
-  "login": {
-    "message": "Přihlásit"
-  },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "memorizePhrase": {
@@ -649,9 +616,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Seed slová MetaMask"
   },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
@@ -754,9 +718,6 @@
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
-  "noDeposits": {
-    "message": "Žádný vklad"
-  },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
   },
@@ -830,9 +791,6 @@
   },
   "privateNetwork": {
     "message": "Soukromá síť"
-  },
-  "qrCode": {
-    "message": "Ukázat QR kód"
   },
   "queue": {
     "message": "Poradie"
@@ -908,9 +866,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "remove": {
     "message": "Odstrániť"
@@ -1154,10 +1109,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."

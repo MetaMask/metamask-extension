@@ -6,14 +6,15 @@ const version = 25
 normalizes txParams on unconfirmed txs
 
 */
-const ethUtil = require('ethereumjs-util')
-const clone = require('clone')
+import ethUtil from 'ethereumjs-util'
 
-module.exports = {
+import { cloneDeep } from 'lodash'
+
+export default {
   version,
 
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     const newState = transformState(state)
@@ -44,13 +45,13 @@ function transformState (state) {
 function normalizeTxParams (txParams) {
   // functions that handle normalizing of that key in txParams
   const whiteList = {
-    from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+    from: (from) => ethUtil.addHexPrefix(from).toLowerCase(),
     to: () => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
-    nonce: nonce => ethUtil.addHexPrefix(nonce),
-    value: value => ethUtil.addHexPrefix(value),
-    data: data => ethUtil.addHexPrefix(data),
-    gas: gas => ethUtil.addHexPrefix(gas),
-    gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    nonce: (nonce) => ethUtil.addHexPrefix(nonce),
+    value: (value) => ethUtil.addHexPrefix(value),
+    data: (data) => ethUtil.addHexPrefix(data),
+    gas: (gas) => ethUtil.addHexPrefix(gas),
+    gasPrice: (gasPrice) => ethUtil.addHexPrefix(gasPrice),
   }
 
   // apply only keys in the whiteList

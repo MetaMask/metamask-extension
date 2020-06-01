@@ -1,8 +1,8 @@
 import EditContact from './edit-contact.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { getAddressBookEntry } from '../../../../selectors/selectors'
+import { getAddressBookEntry } from '../../../../selectors'
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_ROUTE,
@@ -36,7 +36,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     addToAddressBook: (recipient, nickname, memo) => dispatch(addToAddressBook(recipient, nickname, memo)),
     removeFromAddressBook: (chainId, addressToRemove) => dispatch(removeFromAddressBook(chainId, addressToRemove)),

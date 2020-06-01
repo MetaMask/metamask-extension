@@ -1,14 +1,11 @@
-const namehash = require('eth-ens-namehash')
-const Eth = require('ethjs-query')
-const EthContract = require('ethjs-contract')
-const registryAbi = require('./contracts/registry')
-const resolverAbi = require('./contracts/resolver')
-const contentHash = require('content-hash')
+import namehash from 'eth-ens-namehash'
+import Eth from 'ethjs-query'
+import EthContract from 'ethjs-contract'
+import registryAbi from './contracts/registry'
+import resolverAbi from './contracts/resolver'
+import contentHash from 'content-hash'
 
-module.exports = resolveEnsToIpfsContentId
-
-
-async function resolveEnsToIpfsContentId ({ provider, name }) {
+export default async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
@@ -32,9 +29,14 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   if (isEIP1577Compliant[0]) {
     const contentLookupResult = await Resolver.contenthash(hash)
     const rawContentHash = contentLookupResult[0]
-    const decodedContentHash = contentHash.decode(rawContentHash)
+    let decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
-    return {type: type, hash: decodedContentHash}
+
+    if (type === 'ipfs-ns' || type === 'ipns-ns') {
+      decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
+    }
+
+    return { type: type, hash: decodedContentHash }
   }
   if (isLegacyResolver[0]) {
     // lookup content id
@@ -43,7 +45,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
     if (hexValueIsEmpty(content)) {
       throw new Error(`EnsIpfsResolver - no content ID found for name "${name}"`)
     }
-    return {type: 'swarm-ns', hash: content.slice(2)}
+    return { type: 'swarm-ns', hash: content.slice(2) }
   }
   throw new Error(`EnsIpfsResolver - the resolver for name "${name}" is not standard, it should either supports contenthash() or content()`)
 }

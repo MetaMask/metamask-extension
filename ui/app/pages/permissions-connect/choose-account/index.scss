@@ -1,34 +1,96 @@
 .permissions-connect-choose-account {
   display: flex;
   flex-direction: column;
-  margin-top: 40px;
-  width: 100%;
   align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+
+  .fa-info-circle {
+    color: $Grey-200;
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 0.9rem;
+  }
+
+  .fa-info-circle:hover {
+    color: $Grey-300;
+  }
+
+  @media screen and (min-width: 576px) {
+    width: 426px;
+  }
+
 
   &__title {
     @extend %header--18;
   }
 
-  &__text {
+  &__text, &__text-blue, &__text-grey {
     @extend %content-text;
-    line-height: 25px;
+  }
+
+  &__text-blue {
+    color: $curious-blue;
+    cursor: pointer;
+  }
+
+  &__text-grey {
+    color: $Grey-500;
   }
 
   &__accounts-list {
-    width: 393px;
+    flex: 1 1 0;
+    width: 92%;
     border: 1px solid #D0D5DA;
     box-sizing: border-box;
     border-radius: 8px;
-    margin-top: 36px;
+    margin-top: 8px;
+    overflow-y: auto;
+  }
 
-    @media screen and (max-width: 575px) {
-      width: 100%;
-    }
+  &__accounts-list-header--one-item,
+  &__accounts-list-header--two-items {
+    display: flex;
+    flex: 0;
+    margin-top: 36px;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 17px;
+  }
+
+  &__accounts-list-header--one-item {
+    justify-content: flex-end;
+  }
+
+  &__accounts-list-header--two-items {
+    justify-content: space-between;
   }
 
   &__account-info-wrapper {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    min-width:0;
+  }
+
+  &__list-check-box {
+    margin-right: 16px;
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  &__header-check-box {
+    margin-right: 16px;
+  }
+
+  &__select-all {
+    display: flex;
+    margin-left: 16px;
+    align-items: center;
   }
 
   &__account {
@@ -43,7 +105,7 @@
     }
 
     &:hover {
-      background: aliceblue;
+      background: $Grey-000;
       cursor: pointer;
     }
 
@@ -51,18 +113,21 @@
       display: flex;
       flex-direction: column;
       margin-left: 16px;
+      min-width: 0;
     }
 
     &__label {
-      @extend %header--18;
-      line-height: 25px;
-      color: #000000;
+      @extend %content-text;
+      color: $Black-100;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     &__balance {
       @extend %content-text;
-      line-height: 17px;
-      color: #6A737D;
+      font-size: 12px;
+      color: $Grey-500;
     }
 
     &__last-connected {
@@ -76,22 +141,49 @@
     }
   }
 
-  &__new-account, &__cancel {
-    @extend %content-text;
-    line-height: 20px;
-    color: #037DD6;
-    margin-top: 24px;
-    cursor: pointer;
-  }
-
   &__cancel {
     color: $Red-400;
   }
 
+  &__footer-container {
+    width: 100%;
+    flex: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    @media screen and (min-width: 576px) {
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding-bottom: 20px;
+    }
+  }
+
   &__bottom-buttons {
     display: flex;
-    justify-content: space-around;
-    width: 393px;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: 8px;
+    border-top: 1px solid #D6D9DC;
+
+    @media screen and (min-width: 576px) {
+      border-top: none;
+    }
+
+    button {
+      width: 124px;
+    }
+
+    .btn-default {
+      background: white;
+      margin-left: 16px;
+    }
+
+    .btn-primary {
+      margin-right: 16px;
+    }
   }
 
 }

@@ -1,18 +1,16 @@
 const version = 37
-const clone = require('clone')
-const {
-  util,
-} = require('gaba')
+import { cloneDeep } from 'lodash'
+import { util } from '@metamask/controllers'
 
 /**
  * The purpose of this migration is to update the address book state
  * to the new schema with chainId as a key.
  * and to add the isEns flag to all entries
  */
-module.exports = {
+export default {
   version,
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     versionedData.data = transformState(state)

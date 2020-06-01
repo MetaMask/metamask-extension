@@ -4,7 +4,7 @@ import {
   setCompletedOnboarding,
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
-import { getOnboardingInitiator } from '../../first-time-flow.selectors'
+import { getOnboardingInitiator } from '../../../../selectors'
 
 const mapStateToProps = (state) => {
   return {
@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setSeedPhraseBackedUp: (seedPhraseBackupState) => dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
     setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),

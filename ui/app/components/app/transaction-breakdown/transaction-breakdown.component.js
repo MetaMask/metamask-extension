@@ -13,9 +13,8 @@ export default class TransactionBreakdown extends PureComponent {
   }
 
   static propTypes = {
-    transaction: PropTypes.object,
     className: PropTypes.string,
-    nativeCurrency: PropTypes.string.isRequired,
+    nativeCurrency: PropTypes.string,
     showFiat: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -25,7 +24,6 @@ export default class TransactionBreakdown extends PureComponent {
   }
 
   static defaultProps = {
-    transaction: {},
     showFiat: true,
   }
 

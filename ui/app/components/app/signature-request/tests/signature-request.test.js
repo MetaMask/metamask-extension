@@ -5,23 +5,24 @@ import SignatureRequest from '../signature-request.component'
 
 
 describe('Signature Request Component', function () {
-  let wrapper
+  describe('render', function () {
+    const fromAddress = '0x123456789abcdef'
+    it('should render a div with one child', function () {
+      const wrapper = shallow((
+        <SignatureRequest
+          clearConfirmTransaction={() => {}}
+          cancel={() => {}}
+          sign={() => {}}
+          txData={{
+            msgParams: {
+              data: '{"message": {"from": {"name": "hello"}}}',
+              from: fromAddress,
+            },
+          }}
+          fromAccount={{ address: fromAddress }}
+        />
+      ))
 
-  beforeEach(() => {
-    wrapper = shallow((
-      <SignatureRequest
-        txData={{
-          msgParams: {
-            data: '{"message": {"from": {"name": "hello"}}}',
-            from: '0x123456789abcdef',
-          },
-        }}
-      />
-    ))
-  })
-
-  describe('render', () => {
-    it('should render a div with one child', () => {
       assert(wrapper.is('div'))
       assert.equal(wrapper.length, 1)
       assert(wrapper.hasClass('signature-request'))

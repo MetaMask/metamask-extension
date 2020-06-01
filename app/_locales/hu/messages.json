@@ -12,9 +12,6 @@
   "reject": {
     "message": "Elutasítás"
   },
-  "likeToConnect": {
-    "message": "$1 szeretne kapcsolódni az ön fiókjához"
-  },
   "about": {
     "message": "Névjegy"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Attribúciók"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automatikus kijelentkezés időzítő (perc)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Adja meg a MetaMask automatikus kijelentkezéséig tartó tétlen állapot idejét percekben "
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Az egyenleg elavult lehet"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Egyenlege nem elegendő a jelenlegi gáz végösszegéhez"
   },
   "basic": {
     "message": "Alapvető"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Lánc azonosítója"
   },
-  "clickToAdd": {
-    "message": "Kattintson $1-re, hogy hozzáadja a fiókjához"
-  },
   "clickToRevealSeed": {
     "message": "Kattintson ide a titkos szavak megjelenítéséhez"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Szerződés alkalmazása"
   },
-  "conversionProgress": {
-    "message": "Átváltás folyamatban"
-  },
-  "copiedButton": {
-    "message": "Másolva"
-  },
   "copiedExclamation": {
     "message": "Kimásolva!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Másolás a vágólapra"
-  },
-  "copyButton": {
-    "message": "Másolás"
   },
   "copyPrivateKey": {
     "message": "Ez a saját titkos kulcsod (kattints rá a másoláshoz)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "Feladó"
   },
-  "fromShapeShift": {
-    "message": "A ShapeShifttől"
-  },
   "functionType": {
     "message": "Függvénytípus"
   },
   "gasLimit": {
     "message": "Gáz határértéke"
-  },
-  "gasLimitCalculation": {
-    "message": "A javasolt gázhatárértéket a hálózat sikeressége alapján számoljuk ki."
   },
   "gasLimitInfoModalContent": {
     "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gázár"
-  },
-  "gasPriceCalculation": {
-    "message": "A javasolt gázárakat a hálózat sikerességi rátája alapján számoljuk ki."
   },
   "general": {
     "message": "Általános"
@@ -541,9 +514,6 @@
   },
   "hide": {
     "message": "Elrejtés"
-  },
-  "hideToken": {
-    "message": "Token elrejtése"
   },
   "hideTokenPrompt": {
     "message": "Elrejted a tokent?"
@@ -653,10 +623,7 @@
   "loadMore": {
     "message": "Továbbiak betöltése"
   },
-  "login": {
-    "message": "Belépés"
-  },
-  "logout": {
+  "lock": {
     "message": "Kilépés"
   },
   "mainnet": {
@@ -668,17 +635,11 @@
   "memo": {
     "message": "emlékeztető"
   },
-  "menu": {
-    "message": "Menü"
-  },
   "message": {
     "message": "Üzenet"
   },
   "metamaskDescription": {
     "message": "Csatlakozás az Ethereumhoz és a decentralizált hálózathoz."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask seed szavak"
   },
   "metamaskVersion": {
     "message": "MetaMask verzió"
@@ -781,9 +742,6 @@
   "noAddressForName": {
     "message": "Nem lett cím beállítva ehhez a névhez."
   },
-  "noDeposits": {
-    "message": "Nem érkezett letét"
-  },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
   },
@@ -857,9 +815,6 @@
   },
   "privateNetwork": {
     "message": "Magánhálózat"
-  },
-  "qrCode": {
-    "message": "QR kód megmutatása"
   },
   "queue": {
     "message": "Nyomtatólista"
@@ -935,9 +890,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
-  },
-  "revert": {
-    "message": "Visszatérít"
   },
   "remove": {
     "message": "Eltávolítás"
@@ -1190,10 +1142,6 @@
   },
   "to": {
     "message": "Erre:"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 az ETH-hez a ShapeShift által",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "A tokent már hozzáadtuk. "

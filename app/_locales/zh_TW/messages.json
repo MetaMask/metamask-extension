@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒絕"
   },
-  "likeToConnect": {
-    "message": "$1 請求訪問帳戶權限"
-  },
   "about": {
     "message": "關於"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "來源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "當前餘額不足以支付 Gas"
   },
   "basic": {
     "message": "基本"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "鏈 ID"
-  },
-  "clickToAdd": {
-    "message": "點選下方 $1 新增資訊"
   },
   "clickToRevealSeed": {
     "message": "點選顯示助憶詞"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "部署合約"
   },
-  "conversionProgress": {
-    "message": "正在取得匯率"
-  },
-  "copiedButton": {
-    "message": "已複製"
-  },
   "copiedExclamation": {
     "message": "已複製！"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "複製到剪貼簿"
-  },
-  "copyButton": {
-    "message": " 複製 "
   },
   "copyPrivateKey": {
     "message": "這是您的私鑰（點擊複製）"
@@ -460,17 +442,11 @@
   "from": {
     "message": "來源帳戶"
   },
-  "fromShapeShift": {
-    "message": "來自 ShapeShift"
-  },
   "functionType": {
     "message": "功能類型"
   },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 上限。"
   },
   "gasLimitInfoModalContent": {
     "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas 價格"
-  },
-  "gasPriceCalculation": {
-    "message": "我們根據網路成功率算出建議的 Gas 價格"
   },
   "general": {
     "message": "一般"
@@ -542,9 +515,6 @@
   },
   "hide": {
     "message": "隱藏"
-  },
-  "hideToken": {
-    "message": "隱藏代幣"
   },
   "hideTokenPrompt": {
     "message": "隱藏代幣？"
@@ -654,11 +624,8 @@
   "loadMore": {
     "message": "載入更多"
   },
-  "login": {
-    "message": "登入"
-  },
-  "logout": {
-    "message": "登出"
+  "lock": {
+    "message": "鎖定"
   },
   "mainnet": {
     "message": "乙太坊 主網路"
@@ -668,9 +635,6 @@
   },
   "memo": {
     "message": "備註"
-  },
-  "menu": {
-    "message": "選單"
   },
   "message": {
     "message": "訊息"
@@ -779,9 +743,6 @@
   "noAddressForName": {
     "message": "此 ENS 尚未指定位址。"
   },
-  "noDeposits": {
-    "message": "尚未有存款"
-  },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
   },
@@ -849,9 +810,6 @@
   },
   "privateNetwork": {
     "message": "私有網路"
-  },
-  "qrCode": {
-    "message": "顯示 QR Code"
   },
   "queue": {
     "message": "佇列"
@@ -924,9 +882,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
-  },
-  "revert": {
-    "message": "還原"
   },
   "remove": {
     "message": "移除"
@@ -1136,7 +1091,7 @@
     "message": "符號"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "代號必須介於 0 到 12 字元間."
+    "message": "符號不得超過11個字符。"
   },
   "syncWithMobile": {
     "message": "和移動裝置同步"
@@ -1173,10 +1128,6 @@
   },
   "to": {
     "message": "目的帳戶"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH 透過 ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "代碼"
@@ -1274,6 +1225,9 @@
   },
   "unknownCameraError": {
     "message": "無法存取攝影鏡頭。請再試一次..."
+  },
+  "unlock": {
+    "message": "解鎖"
   },
   "unlockMessage": {
     "message": "去中心化網路世界等待著您"

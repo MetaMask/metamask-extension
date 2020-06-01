@@ -1,4 +1,4 @@
-import React, { Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
 import genAccountLink from '../../../../../lib/account-link.js'
@@ -46,7 +46,7 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-modal__name"
           defaultValue={name}
-          onSubmit={label => setAccountLabel(address, label)}
+          onSubmit={(label) => setAccountLabel(address, label)}
         />
 
         <QrView
@@ -62,7 +62,7 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-modal__button"
           onClick={() => {
-            global.platform.openWindow({ url: genAccountLink(address, network, rpcPrefs) })
+            global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
           }}
         >
           {rpcPrefs.blockExplorerUrl

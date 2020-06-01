@@ -67,9 +67,6 @@
   "balance": {
     "message": "Balans"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Ensifizan balans pou total gaz aktyèl la"
-  },
   "blockiesIdenticon": {
     "message": "Itilize Blockies Identicon"
   },
@@ -96,9 +93,6 @@
   },
   "cancellationGasFee": {
     "message": "Anilasyon Gaz Chaj"
-  },
-  "clickToAdd": {
-    "message": "Klike sou $ 1 pou ajoute yo nan kont ou"
   },
   "close": {
     "message": "Fèmen"
@@ -139,12 +133,6 @@
   "contractDeployment": {
     "message": "Kontra Deplwaman"
   },
-  "conversionProgress": {
-    "message": "Konvèsyon nan Pwogrè"
-  },
-  "copiedButton": {
-    "message": "Kopye"
-  },
   "copiedExclamation": {
     "message": "Kopye!"
   },
@@ -153,9 +141,6 @@
   },
   "copyToClipboard": {
     "message": "Kopi clipboard"
-  },
-  "copyButton": {
-    "message": " Kopi "
   },
   "copyPrivateKey": {
     "message": "Sa a se kle prive ou (klike pou ou kopye)"
@@ -255,17 +240,11 @@
   "from": {
     "message": "Soti nan"
   },
-  "fromShapeShift": {
-    "message": "Soti nan ShapeShift"
-  },
   "functionType": {
     "message": "Kalite Fonksyon"
   },
   "gasLimit": {
     "message": "Limit gaz"
-  },
-  "gasLimitCalculation": {
-    "message": "Nou kalkile gaz limit sijere a ki baze sou pousantaj siksè rezo a."
   },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
@@ -275,9 +254,6 @@
   },
   "gasPrice": {
     "message": "Pri gaz (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Nou kalkile pri yo gaz ki sijere ki baze sou pousantaj siksè rezo."
   },
   "getEther": {
     "message": "Jwenn Ether"
@@ -310,9 +286,6 @@
   },
   "hide": {
     "message": "Kache"
-  },
-  "hideToken": {
-    "message": "Kache Token"
   },
   "hideTokenPrompt": {
     "message": "Kache Token?"
@@ -395,26 +368,17 @@
   "loadingTokens": {
     "message": "Telechaje Tokens..."
   },
-  "login": {
-    "message": "Ouvri"
-  },
-  "logout": {
+  "lock": {
     "message": "Dekonekte"
   },
   "mainnet": {
     "message": "Prensipal Ethereum Rezo a"
-  },
-  "menu": {
-    "message": "Opsyon"
   },
   "message": {
     "message": "Mesaje"
   },
   "metamaskDescription": {
     "message": "MetaMask sekirize idantite pou Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask Seed Mo"
   },
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
@@ -462,9 +426,6 @@
   },
   "noAddressForName": {
     "message": "Pa gen adrès ki etabli pou non sa a."
-  },
-  "noDeposits": {
-    "message": "Pa gen depo ou te resevwa"
   },
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"
@@ -528,9 +489,6 @@
   "privateNetwork": {
     "message": "Rezo Prive"
   },
-  "qrCode": {
-    "message": "Montre QR Kòd"
-  },
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
   },
@@ -587,9 +545,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
-  },
-  "revert": {
-    "message": "Retounen"
   },
   "remove": {
     "message": "retire"
@@ -736,7 +691,7 @@
     "message": "Vizite Sant Sipò Nou"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Senbòl yo dwe ant 0 ak 12 karaktè."
+    "message": "Senbòl yo dwe 11 karaktè oswa mwens."
   },
   "terms": {
     "message": "Tèm pou itilize"
@@ -746,10 +701,6 @@
   },
   "to": {
     "message": "Pou"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 pou ETH pa ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Ou te deja ajoute token."

@@ -1,0 +1,52 @@
+.list-item {
+  width: 100%;
+  min-height: 86px;
+  margin: 0;
+  background: #FFFFFF;
+  padding: 24px 16px;
+  @extend %font;
+  border-top: 1px solid $mercury;
+  border-bottom: 1px solid $mercury;
+  color: $Black-100;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  &__icon > * {
+    margin: 8px 14px 0 0;
+  }
+
+  &__col {
+    align-self: flex-start;
+    &-main {
+      flex-grow: 1;
+    }
+  }
+
+  &__heading {
+    font-size: 16px;
+    line-height: 160%;
+    position: relative;
+
+    &-wrap {
+      display: inline-block;
+      position: absolute;
+      top: 2px;
+      width: 16px;
+      height: 16px;
+      margin-left: 8px;
+    }
+  }
+
+  &__subheading {
+    font-size: 12px;
+    line-height: 14px;
+    color: $Grey-500;
+  }
+
+  &__right-content {
+    margin: 0 0 0 auto;
+    text-align: right;
+  }
+}

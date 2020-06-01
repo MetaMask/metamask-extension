@@ -46,9 +46,6 @@
   "balance": {
     "message": "Zůstatek:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
   },
@@ -91,20 +88,11 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -186,23 +174,14 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
   },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -217,9 +196,6 @@
   },
   "hide": {
     "message": "Skrýt"
-  },
-  "hideToken": {
-    "message": "Skrýt token"
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
@@ -277,10 +253,10 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "login": {
+  "unlock": {
     "message": "Přihlásit"
   },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "message": {
@@ -327,9 +303,6 @@
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
-  "noDeposits": {
-    "message": "Žádný vklad"
-  },
   "noTransactions": {
     "message": "Žádné transakce"
   },
@@ -359,9 +332,6 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "qrCode": {
-    "message": "Ukázat QR kód"
-  },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
@@ -385,9 +355,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "save": {
     "message": "Uložit"
@@ -456,7 +423,7 @@
     "message": "Navštivte naše centrum podpory"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+    "message": "Symbol musí mít 11 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"
@@ -466,10 +433,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."

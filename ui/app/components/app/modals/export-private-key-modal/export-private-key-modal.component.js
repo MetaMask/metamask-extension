@@ -2,10 +2,10 @@ import log from 'loglevel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
-const { stripHexPrefix } = require('ethereumjs-util')
-const copyToClipboard = require('copy-to-clipboard')
-const { checksumAddress } = require('../../../../helpers/utils/util')
-const ReadOnlyInput = require('../../../ui/readonly-input')
+import { stripHexPrefix } from 'ethereumjs-util'
+import copyToClipboard from 'copy-to-clipboard'
+import { checksumAddress } from '../../../../helpers/utils/util'
+import ReadOnlyInput from '../../../ui/readonly-input'
 import Button from '../../../ui/button'
 import AccountModalContainer from '../account-modal-container'
 
@@ -38,7 +38,7 @@ export default class ExportPrivateKeyModal extends Component {
     const { exportAccount } = this.props
 
     exportAccount(password, address)
-      .then(privateKey => this.setState({
+      .then((privateKey) => this.setState({
         privateKey,
         showWarning: false,
       }))
@@ -65,7 +65,7 @@ export default class ExportPrivateKeyModal extends Component {
         <input
           type="password"
           className="private-key-password-input"
-          onChange={event => this.setState({ password: event.target.value })}
+          onChange={(event) => this.setState({ password: event.target.value })}
         />
       )
     }

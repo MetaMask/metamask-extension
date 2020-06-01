@@ -1,37 +1,34 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
 } from '../../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
 import NetworkDisplay from '../../network-display'
 import Identicon from '../../../ui/identicon'
-import { addressSlicer } from '../../../../helpers/utils/util'
+import { shortenAddress } from '../../../../helpers/utils/util'
+import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component'
+import { useI18nContext } from '../../../../hooks/useI18nContext'
 
-export default class ConfirmPageContainerHeader extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
+
+export default function ConfirmPageContainerHeader ({
+  onEdit,
+  showEdit,
+  accountAddress,
+  showAccountInHeader,
+  children,
+}) {
+  const t = useI18nContext()
+  const windowType = getEnvironmentType()
+  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP
+
+  if (!showEdit && isFullScreen) {
+    return null
   }
-
-  static propTypes = {
-    accountAddress: PropTypes.string,
-    showAccountInHeader: PropTypes.bool,
-    showEdit: PropTypes.bool,
-    onEdit: PropTypes.func,
-    children: PropTypes.node,
-  }
-
-  renderTop () {
-    const { onEdit, showEdit, accountAddress, showAccountInHeader } = this.props
-    const windowType = window.METAMASK_UI_TYPE
-    const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-      windowType !== ENVIRONMENT_TYPE_POPUP
-
-    if (!showEdit && isFullScreen) {
-      return null
-    }
-
-    return (
+  return (
+    <div className="confirm-page-container-header">
       <div className="confirm-page-container-header__row">
         { !showAccountInHeader
           ? (
@@ -48,7 +45,7 @@ export default class ConfirmPageContainerHeader extends Component {
                 className="confirm-page-container-header__back-button"
                 onClick={() => onEdit()}
               >
-                { this.context.t('edit') }
+                { t('edit') }
               </span>
             </div>
           )
@@ -64,25 +61,24 @@ export default class ConfirmPageContainerHeader extends Component {
                 />
               </div>
               <div className="confirm-page-container-header__address">
-                { addressSlicer(accountAddress) }
+                { shortenAddress(accountAddress) }
               </div>
+              <AccountMismatchWarning address={accountAddress} />
             </div>
           )
           : null
         }
         { !isFullScreen && <NetworkDisplay /> }
       </div>
-    )
-  }
+      { children }
+    </div>
+  )
+}
 
-  render () {
-    const { children } = this.props
-
-    return (
-      <div className="confirm-page-container-header">
-        { this.renderTop() }
-        { children }
-      </div>
-    )
-  }
+ConfirmPageContainerHeader.propTypes = {
+  accountAddress: PropTypes.string,
+  showAccountInHeader: PropTypes.bool,
+  showEdit: PropTypes.bool,
+  onEdit: PropTypes.func,
+  children: PropTypes.node,
 }

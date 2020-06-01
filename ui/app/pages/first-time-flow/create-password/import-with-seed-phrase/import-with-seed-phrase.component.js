@@ -1,4 +1,4 @@
-import {validateMnemonic} from 'bip39'
+import { validateMnemonic } from 'bip39'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../components/ui/text-field'
@@ -41,7 +41,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       return ''
     }
 
-    const words = trimmed.match(/\w+/g)
+    const words = trimmed.toLowerCase().match(/\w+/g)
     if (!words) {
       return ''
     }
@@ -49,7 +49,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return words.join(' ')
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this._onBeforeUnload = () => this.context.metricsEvent({
       eventOpts: {
         category: 'Onboarding',
@@ -73,7 +73,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     if (seedPhrase) {
       const parsedSeedPhrase = this.parseSeedPhrase(seedPhrase)
-      if (parsedSeedPhrase.split(' ').length !== 12) {
+      const wordCount = parsedSeedPhrase.split(new RegExp('\\s')).length
+      if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
       } else if (!validateMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
@@ -86,7 +87,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   handlePasswordChange (password) {
     const { t } = this.context
 
-    this.setState(state => {
+    this.setState((state) => {
       const { confirmPassword } = state
       let confirmPasswordError = ''
       let passwordError = ''
@@ -110,7 +111,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   handleConfirmPasswordChange (confirmPassword) {
     const { t } = this.context
 
-    this.setState(state => {
+    this.setState((state) => {
       const { password } = state
       let confirmPasswordError = ''
 
@@ -125,7 +126,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     })
   }
 
-  handleImport = async event => {
+  handleImport = async (event) => {
     event.preventDefault()
 
     if (!this.isValid()) {
@@ -175,7 +176,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
-  onTermsKeyPress = ({key}) => {
+  onTermsKeyPress = ({ key }) => {
     if (key === ' ' || key === 'Enter') {
       this.toggleTermsCheck()
     }
@@ -205,7 +206,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
       >
         <div className="first-time-flow__create-back">
           <a
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               this.context.metricsEvent({
                 eventOpts: {
@@ -235,7 +236,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <label>{ t('walletSeed') }</label>
           <textarea
             className="first-time-flow__textarea"
-            onChange={e => this.handleSeedPhraseChange(e.target.value)}
+            onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
             value={this.state.seedPhrase}
             placeholder={t('seedPhrasePlaceholder')}
           />
@@ -253,7 +254,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           type="password"
           className="first-time-flow__input"
           value={this.state.password}
-          onChange={event => this.handlePasswordChange(event.target.value)}
+          onChange={(event) => this.handlePasswordChange(event.target.value)}
           error={passwordError}
           autoComplete="new-password"
           margin="normal"
@@ -265,7 +266,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           type="password"
           className="first-time-flow__input"
           value={this.state.confirmPassword}
-          onChange={event => this.handleConfirmPasswordChange(event.target.value)}
+          onChange={(event) => this.handleConfirmPasswordChange(event.target.value)}
           error={confirmPasswordError}
           autoComplete="confirm-password"
           margin="normal"
@@ -290,16 +291,16 @@ export default class ImportWithSeedPhrase extends PureComponent {
               rel="noopener noreferrer"
             >
               <span className="first-time-flow__link-text">
-                { 'Terms of Use' }
+                { t('terms') }
               </span>
             </a>
           </span>
         </div>
         <Button
           type="primary"
+          submit
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
-          onClick={this.handleImport}
         >
           { t('import') }
         </Button>

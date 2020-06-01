@@ -8,9 +8,6 @@
   "reject": {
     "message": "거부"
   },
-  "likeToConnect": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
   "about": {
     "message": "정보"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "속성"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "자동 로그아웃 타이머 (분)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask가 자동으로 로그아웃되기 전 유휴 시간을 분 단위로 설정하세요"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "잔액이 오래된 정보일 수 있습니다"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "현재 가스 총합에 대해 잔액이 부족합니다"
   },
   "blockExplorerUrl": {
     "message": "익스플로러 차단"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "체인 ID"
-  },
-  "clickToAdd": {
-    "message": "계정에 토큰을 추가하기 위해 $1를 클릭하세요."
   },
   "clickToRevealSeed": {
     "message": "비밀 단어를 보기 위해 여기를 클릭하세요."
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "컨트랙트 배포"
   },
-  "conversionProgress": {
-    "message": "변환 진행 중"
-  },
-  "copiedButton": {
-    "message": "복사됨"
-  },
   "copiedExclamation": {
     "message": "복사됨!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
-  },
-  "copyButton": {
-    "message": " 복사 "
   },
   "copyPrivateKey": {
     "message": "비밀 키입니다 (클릭하여 복사)"
@@ -460,17 +442,11 @@
   "from": {
     "message": "보내는 이"
   },
-  "fromShapeShift": {
-    "message": "ShapeShift로부터"
-  },
   "functionType": {
     "message": "함수 유형"
   },
   "gasLimit": {
     "message": "가스 한도"
-  },
-  "gasLimitCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 한도를 계산합니다."
   },
   "gasLimitInfoModalContent": {
     "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 수량입니다."
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "가스 가격"
-  },
-  "gasPriceCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 가격을 계산합니다."
   },
   "general": {
     "message": "일반"
@@ -539,9 +512,6 @@
   },
   "hide": {
     "message": "숨기기"
-  },
-  "hideToken": {
-    "message": "토큰 숨기기"
   },
   "hideTokenPrompt": {
     "message": "토큰 숨기기?"
@@ -654,10 +624,7 @@
   "localhost": {
     "message": "로컬호스트 8545"
   },
-  "login": {
-    "message": "로그인"
-  },
-  "logout": {
+  "lock": {
     "message": "로그아웃"
   },
   "mainnet": {
@@ -669,17 +636,11 @@
   "memo": {
     "message": "메모"
   },
-  "menu": {
-    "message": "메뉴"
-  },
   "message": {
     "message": "메시지"
   },
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 저장소입니다."
-  },
-  "metamaskSeedWords": {
-    "message": "메타마스크 시드 단어"
   },
   "metamaskVersion": {
     "message": "메타마스크 버전"
@@ -782,9 +743,6 @@
   "noAddressForName": {
     "message": "이 이름에 대해 주소가 설정되어 있지 않습니다."
   },
-  "noDeposits": {
-    "message": "입금 내역이 없습니다."
-  },
   "noConversionRateAvailable": {
     "message": "변환 비율을 찾을 수 없습니다"
   },
@@ -855,9 +813,6 @@
   },
   "privateNetwork": {
     "message": "프라이빗 네트워크"
-  },
-  "qrCode": {
-    "message": "QR 코드 보기"
   },
   "queue": {
     "message": "큐"
@@ -933,9 +888,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "이 단어 모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
-  },
-  "revert": {
-    "message": "되돌림"
   },
   "remove": {
     "message": "제거"
@@ -1188,10 +1140,6 @@
   },
   "to": {
     "message": "받는이"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "토큰"

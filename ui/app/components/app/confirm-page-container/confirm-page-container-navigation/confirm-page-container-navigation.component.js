@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ConfirmPageContainerNavigation = props => {
+const ConfirmPageContainerNavigation = (props) => {
   const { onNextTx, totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = props
 
   return (
@@ -19,12 +19,14 @@ const ConfirmPageContainerNavigation = props => {
       >
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
           onClick={() => onNextTx(firstTx)}
         >
           <img src="/images/double-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
           onClick={() => onNextTx(prevTxId)}
         >
           <img src="/images/single-arrow.svg" />
@@ -46,12 +48,14 @@ const ConfirmPageContainerNavigation = props => {
       >
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
           onClick={() => onNextTx(nextTxId)}
         >
           <img className="confirm-page-container-navigation__imageflip" src="/images/single-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
           onClick={() => onNextTx(lastTx)}
         >
           <img className="confirm-page-container-navigation__imageflip" src="/images/double-arrow.svg" />

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Ablehnen"
   },
-  "likeToConnect": {
-    "message": "$1 möchte sich mit deinem Account verbinden"
-  },
   "about": {
     "message": "Über"
   },
@@ -106,10 +103,10 @@
   "attributions": {
     "message": "Was wir verwenden"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout-Timer (Minuten)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll"
   },
   "average": {
@@ -135,9 +132,6 @@
   },
   "balanceOutdated": {
     "message": "Kontostand könnte überholt sein"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Guthaben unzureichend für den aktuellen gesamten Gasbetrag"
   },
   "basic": {
     "message": "Grundlegend"
@@ -190,9 +184,6 @@
   },
   "cancelled": {
     "message": "Abgebrochen"
-  },
-  "clickToAdd": {
-    "message": "Klicken Sie auf $1, um sie zu Ihrem Konto hinzuzufügen"
   },
   "clickToRevealSeed": {
     "message": "Hier klicken, um Geheimwörter zu enthüllen"
@@ -254,12 +245,6 @@
   "contractDeployment": {
     "message": "Smart Contract Ausführung"
   },
-  "conversionProgress": {
-    "message": "Umtausch in Arbeit"
-  },
-  "copiedButton": {
-    "message": "Kopiert"
-  },
   "copiedExclamation": {
     "message": "Kopiert!"
   },
@@ -274,9 +259,6 @@
   },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
-  },
-  "copyButton": {
-    "message": " Kopieren "
   },
   "copyPrivateKey": {
     "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
@@ -448,17 +430,11 @@
   "from": {
     "message": "Von"
   },
-  "fromShapeShift": {
-    "message": "Von ShapeShift"
-  },
   "functionType": {
     "message": "Funktionstyp"
   },
   "gasLimit": {
     "message": "Gaslimit"
-  },
-  "gasLimitCalculation": {
-    "message": "Wir berechnen das empfohlene Gaslimit basierend auf der Erfolgsrate des Netzwerks."
   },
   "gasLimitInfoModalContent": {
     "message": "Die Gasgrenze ist die Höchstmenge an Gaseinheiten, die Sie auszugeben bereit sind."
@@ -480,9 +456,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspreis"
-  },
-  "gasPriceCalculation": {
-    "message": "Wir berechnen den empfohlenen Gaspreis basierend auf der Erfolgsrate des Netzwerks."
   },
   "general": {
     "message": "Allgemein"
@@ -530,9 +503,6 @@
   },
   "hide": {
     "message": "Ausblenden"
-  },
-  "hideToken": {
-    "message": "Token ausblenden"
   },
   "hideTokenPrompt": {
     "message": "Token ausblenden?"
@@ -636,10 +606,7 @@
   "loadMore": {
     "message": "Mehr laden"
   },
-  "login": {
-    "message": "Login"
-  },
-  "logout": {
+  "lock": {
     "message": "Ausloggen"
   },
   "mainnet": {
@@ -651,17 +618,11 @@
   "memo": {
     "message": " Memo"
   },
-  "menu": {
-    "message": "Menü"
-  },
   "message": {
     "message": "Nachricht"
   },
   "metamaskDescription": {
     "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask-Seed-Wörter"
   },
   "metamaskVersion": {
     "message": "MetaMask-Version"
@@ -758,9 +719,6 @@
   "noAddressForName": {
     "message": "Für den angegebene Namen wurde keine Adresse eingegeben."
   },
-  "noDeposits": {
-    "message": "Keine Einzahlung erhalten"
-  },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
@@ -830,9 +788,6 @@
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
-  },
-  "qrCode": {
-    "message": "QR Code anzeigen"
   },
   "queue": {
     "message": "Warteschlange"
@@ -908,9 +863,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
-  },
-  "revert": {
-    "message": "Rückgängig machen"
   },
   "remove": {
     "message": "Entfernen"
@@ -1123,7 +1075,7 @@
     "message": "Gehe zu unserem Support Center"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Das Symbol muss zwischen 0 und 12 Zeichen haben."
+    "message": "Das Symbol darf maximal 11 Zeichen lang sein."
   },
   "syncWithMobile": {
     "message": "Mit Mobilgerät synchronisieren"
@@ -1160,10 +1112,6 @@
   },
   "to": {
     "message": "An"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 an ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Der Token wurde bereits hinzugefügt."

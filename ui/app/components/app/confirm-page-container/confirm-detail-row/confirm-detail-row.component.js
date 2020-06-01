@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common'
 
-const ConfirmDetailRow = props => {
+const ConfirmDetailRow = (props) => {
   const {
     label,
     primaryText,

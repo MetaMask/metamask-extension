@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
-import React, {Component} from 'react'
-import {getNetworkDisplayName} from '../../../../../../app/scripts/controllers/network/util'
+import React, { Component } from 'react'
+import { getNetworkDisplayName } from '../../../../../../app/scripts/controllers/network/util'
 import Button from '../../../ui/button'
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func.isRequired,
   }
 
   static propTypes = {
@@ -79,7 +80,7 @@ export default class DepositEtherModal extends Component {
   render () {
     const { network, toWyre, toCoinSwitch, address, toFaucet } = this.props
 
-    const isTestNetwork = ['3', '4', '5', '42'].find(n => n === network)
+    const isTestNetwork = ['3', '4', '5', '42'].find((n) => n === network)
     const networkName = getNetworkDisplayName(network)
 
     return (
@@ -141,7 +142,16 @@ export default class DepositEtherModal extends Component {
               title: this.context.t('buyWithWyre'),
               text: this.context.t('buyWithWyreDescription'),
               buttonLabel: this.context.t('continueToWyre'),
-              onButtonClick: () => toWyre(address),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit Ether',
+                    name: 'Click buy Ether via Wyre',
+                  },
+                })
+                toWyre(address)
+              },
               hide: isTestNetwork,
             })}
             {this.renderRow({
@@ -157,7 +167,16 @@ export default class DepositEtherModal extends Component {
               title: this.context.t('buyCoinSwitch'),
               text: this.context.t('buyCoinSwitchExplainer'),
               buttonLabel: this.context.t('continueToCoinSwitch'),
-              onButtonClick: () => toCoinSwitch(address),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit Ether',
+                    name: 'Click buy Ether via CoinSwitch',
+                  },
+                })
+                toCoinSwitch(address)
+              },
               hide: isTestNetwork,
             })}
           </div>

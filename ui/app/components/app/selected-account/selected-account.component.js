@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import { addressSlicer, checksumAddress } from '../../../helpers/utils/util'
+import { shortenAddress, checksumAddress } from '../../../helpers/utils/util'
 
-const Tooltip = require('../../ui/tooltip-v2.js').default
+import Tooltip from '../../ui/tooltip-v2.js'
 
 class SelectedAccount extends Component {
   state = {
@@ -15,19 +15,18 @@ class SelectedAccount extends Component {
   }
 
   static propTypes = {
-    selectedAddress: PropTypes.string,
-    selectedIdentity: PropTypes.object,
-    network: PropTypes.string,
+    selectedIdentity: PropTypes.object.isRequired,
   }
 
   render () {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity, network } = this.props
-    const checksummedAddress = checksumAddress(selectedAddress, network)
+    const { selectedIdentity } = this.props
+    const checksummedAddress = checksumAddress(selectedIdentity.address)
 
     return (
       <div className="selected-account">
         <Tooltip
+          wrapperClassName="selected-account__tooltip-wrapper"
           position="bottom"
           title={this.state.copied ? t('copiedExclamation') : t('copyToClipboard')}
         >
@@ -43,7 +42,7 @@ class SelectedAccount extends Component {
               { selectedIdentity.name }
             </div>
             <div className="selected-account__address">
-              { addressSlicer(checksummedAddress) }
+              { shortenAddress(checksummedAddress) }
             </div>
           </div>
         </Tooltip>

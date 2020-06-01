@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
-import {Tooltip as ReactTippy} from 'react-tippy'
+import React, { PureComponent } from 'react'
+import { Tooltip as ReactTippy } from 'react-tippy'
 
 export default class Tooltip extends PureComponent {
   static defaultProps = {
@@ -8,12 +8,14 @@ export default class Tooltip extends PureComponent {
     children: null,
     containerClassName: '',
     html: null,
+    interactive: undefined,
     onHidden: null,
     position: 'left',
+    offset: 0,
     size: 'small',
     title: null,
     trigger: 'mouseenter',
-    wrapperClassName: '',
+    wrapperClassName: undefined,
   }
 
   static propTypes = {
@@ -22,6 +24,8 @@ export default class Tooltip extends PureComponent {
     containerClassName: PropTypes.string,
     disabled: PropTypes.bool,
     html: PropTypes.node,
+    interactive: PropTypes.bool,
+    offset: PropTypes.number,
     onHidden: PropTypes.func,
     position: PropTypes.oneOf([
       'top',
@@ -39,7 +43,22 @@ export default class Tooltip extends PureComponent {
   }
 
   render () {
-    const {arrow, children, containerClassName, disabled, position, html, size, title, trigger, onHidden, wrapperClassName, style } = this.props
+    const {
+      arrow,
+      children,
+      containerClassName,
+      disabled,
+      position,
+      html,
+      interactive,
+      size,
+      title,
+      trigger,
+      onHidden,
+      offset,
+      wrapperClassName,
+      style,
+    } = this.props
 
     if (!title && !html) {
       return (
@@ -52,17 +71,19 @@ export default class Tooltip extends PureComponent {
     return (
       <div className={wrapperClassName}>
         <ReactTippy
-          html={html}
+          arrow={arrow}
           className={containerClassName}
           disabled={disabled}
-          title={title}
-          position={position}
-          trigger={trigger}
           hideOnClick={false}
-          size={size}
-          arrow={arrow}
+          html={html}
+          interactive={interactive}
           onHidden={onHidden}
+          position={position}
+          size={size}
+          offset={offset}
           style={style}
+          title={title}
+          trigger={trigger}
         >
           {children}
         </ReactTippy>

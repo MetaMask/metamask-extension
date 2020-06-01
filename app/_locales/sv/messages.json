@@ -12,9 +12,6 @@
   "reject": {
     "message": "Avvisa"
   },
-  "likeToConnect": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
   "about": {
     "message": "Om"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Tillskrivningar"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldot kanske inte är uppdaterat"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Otillräckligt saldo för aktuell totalsumma för gas"
   },
   "basic": {
     "message": "Grunder"
@@ -196,9 +190,6 @@
   },
   "cancelled": {
     "message": "Avbruten"
-  },
-  "clickToAdd": {
-    "message": "Tryck på $1 för att lägga till dem på ditt konto."
   },
   "clickToRevealSeed": {
     "message": "Klicka här för att visa hemliga ord"
@@ -260,12 +251,6 @@
   "contractDeployment": {
     "message": "Kontraktplacering"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår"
-  },
-  "copiedButton": {
-    "message": "Kopierat"
-  },
   "copiedExclamation": {
     "message": "Kopierades!"
   },
@@ -280,9 +265,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
-  },
-  "copyButton": {
-    "message": "Kopiera"
   },
   "copyPrivateKey": {
     "message": "Det här är din privata nyckel (klicka för att kopiera)"
@@ -453,17 +435,11 @@
   "from": {
     "message": "Från"
   },
-  "fromShapeShift": {
-    "message": "från ShapeShift"
-  },
   "functionType": {
     "message": "Funktionstyp"
   },
   "gasLimit": {
     "message": "Gasgräns"
-  },
-  "gasLimitCalculation": {
-    "message": "Vi beräknar den föreslagna gasgränsen baserat på nätverket framgångsgrad."
   },
   "gasLimitInfoModalContent": {
     "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
@@ -485,9 +461,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaspris"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi beräknar de föreslagna gaspriserna baserat på nätverkets resultat."
   },
   "general": {
     "message": "Allmänt"
@@ -535,9 +508,6 @@
   },
   "hide": {
     "message": "Dölj"
-  },
-  "hideToken": {
-    "message": "Göm token"
   },
   "hideTokenPrompt": {
     "message": "Göm token?"
@@ -647,10 +617,7 @@
   "loadMore": {
     "message": "Ladda mer"
   },
-  "login": {
-    "message": "Logga in"
-  },
-  "logout": {
+  "lock": {
     "message": "Logga ut"
   },
   "mainnet": {
@@ -659,17 +626,11 @@
   "memorizePhrase": {
     "message": "Memorera denna fras."
   },
-  "menu": {
-    "message": "Meny"
-  },
   "message": {
     "message": "Meddelande"
   },
   "metamaskDescription": {
     "message": "Ansluter dig mot Ethereum och den decentraliserade webben."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask"
   },
   "metamaskVersion": {
     "message": "MetaMask-version"
@@ -772,9 +733,6 @@
   "noAddressForName": {
     "message": "Inga adresser har angetts för detta namn."
   },
-  "noDeposits": {
-    "message": "Ingen deposition mottagen"
-  },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
   },
@@ -848,9 +806,6 @@
   },
   "privateNetwork": {
     "message": "Privat nätverk"
-  },
-  "qrCode": {
-    "message": "Visa QR-kod"
   },
   "queue": {
     "message": "Utskriftskö"
@@ -926,9 +881,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
-  },
-  "revert": {
-    "message": "Återställ"
   },
   "remove": {
     "message": "Ta bort"
@@ -1141,7 +1093,7 @@
     "message": "Besök vårt supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolen måste vara mellan 0 och 12 tecken."
+    "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "syncWithMobile": {
     "message": "Synka med mobil"
@@ -1178,10 +1130,6 @@
   },
   "to": {
     "message": "Till"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 till ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token har redan lagts till."

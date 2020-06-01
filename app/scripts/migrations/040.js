@@ -1,15 +1,15 @@
 const version = 40
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
 /**
  * Site connections are now managed by the PermissionsController, and the
  * ProviderApprovalController is removed. This migration deletes all
  * ProviderApprovalController state.
  */
-module.exports = {
+export default {
   version,
   migrate: async function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     const state = versionedData.data
     versionedData.data = transformState(state)

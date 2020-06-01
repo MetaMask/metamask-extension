@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
 import { checkExistingAddresses } from './util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
+import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
 import TokenList from './token-list'
 import TokenSearch from './token-search'
@@ -24,24 +24,21 @@ class AddToken extends Component {
     clearPendingTokens: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
-      searchResults: [],
-      selectedTokens: {},
-      tokenSelectorError: null,
-      customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
-      autoFilled: false,
-      forceEditSymbol: false,
-    }
+  state = {
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
+    searchResults: [],
+    selectedTokens: {},
+    tokenSelectorError: null,
+    customAddressError: null,
+    customSymbolError: null,
+    customDecimalsError: null,
+    autoFilled: false,
+    forceEditSymbol: false,
   }
 
   componentDidMount () {
@@ -53,7 +50,7 @@ class AddToken extends Component {
       let selectedTokens = {}
       let customToken = {}
 
-      pendingTokenKeys.forEach(tokenAddress => {
+      pendingTokenKeys.forEach((tokenAddress) => {
         const token = pendingTokens[tokenAddress]
         const { isCustom } = token
 
@@ -232,7 +229,7 @@ class AddToken extends Component {
           label={this.context.t('tokenContractAddress')}
           type="text"
           value={customAddress}
-          onChange={e => this.handleCustomAddressChange(e.target.value)}
+          onChange={(e) => this.handleCustomAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
           margin="normal"
@@ -256,7 +253,7 @@ class AddToken extends Component {
           )}
           type="text"
           value={customSymbol}
-          onChange={e => this.handleCustomSymbolChange(e.target.value)}
+          onChange={(e) => this.handleCustomSymbolChange(e.target.value)}
           error={customSymbolError}
           fullWidth
           margin="normal"
@@ -267,7 +264,7 @@ class AddToken extends Component {
           label={this.context.t('decimal')}
           type="number"
           value={customDecimals}
-          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
+          onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
           error={customDecimalsError}
           fullWidth
           margin="normal"
@@ -290,7 +287,7 @@ class AddToken extends Component {
           <TokenList
             results={searchResults}
             selectedTokens={selectedTokens}
-            onToggleToken={token => this.handleToggleToken(token)}
+            onToggleToken={(token) => this.handleToggleToken(token)}
           />
         </div>
       </div>
@@ -311,7 +308,7 @@ class AddToken extends Component {
   }
 
   render () {
-    const { history, clearPendingTokens } = this.props
+    const { history, clearPendingTokens, mostRecentOverviewPage } = this.props
 
     return (
       <PageContainer
@@ -321,7 +318,7 @@ class AddToken extends Component {
         disabled={this.hasError() || !this.hasSelected()}
         onCancel={() => {
           clearPendingTokens()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         }}
       />
     )

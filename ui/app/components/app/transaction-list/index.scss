@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-top: 8px;
 
   &__completed-transactions {
     display: flex;
@@ -43,5 +42,9 @@
     display: flex;
     justify-content: center;
     color: $silver;
+  }
+  &__view-more {
+    margin: 16px auto;
+    max-width: 200px;
   }
 }

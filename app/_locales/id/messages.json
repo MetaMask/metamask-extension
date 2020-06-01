@@ -12,9 +12,6 @@
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
-    "message": "$1 ingin menghubungkan ke akun Anda"
-  },
   "about": {
     "message": "Tentang"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Jangka Waktu Keluar-Otomatis (menit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Atur waktu diam dalam menit sebelum MetaMask mengeluarkan Anda secara otomatis"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo mungkin kedaluwarsa"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo tidak cukup untuk total bensin saat ini"
   },
   "basic": {
     "message": "Dasar"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "ID Rantai"
   },
-  "clickToAdd": {
-    "message": "Klik $1 untuk menambahkannya ke akun Anda"
-  },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk mengungkapkan kata-kata rahasia"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Penerapan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Konversi sedang berlangsung"
-  },
-  "copiedButton": {
-    "message": "Tersalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini adalah kunci pribadi Anda (klik untuk menyalin)"
@@ -450,17 +432,11 @@
   "from": {
     "message": "Dari"
   },
-  "fromShapeShift": {
-    "message": "Dari ShapeShift"
-  },
   "functionType": {
     "message": "Jenis Fungsi"
   },
   "gasLimit": {
     "message": "Batas Gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Kami menghitung batas gas yang disarankan berdasarkan tingkat kesuksesan jaringan."
   },
   "gasLimitInfoModalContent": {
     "message": "Limit Bensin adalah jumlah maksimal satuan bensin yang Anda bersedia gunakan."
@@ -482,9 +458,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Harga Bensin"
-  },
-  "gasPriceCalculation": {
-    "message": "Kami menghitung harga bensin yang disarankan berdasarkan tingkat keberhasilan jaringan."
   },
   "general": {
     "message": "Umum"
@@ -532,9 +505,6 @@
   },
   "hide": {
     "message": "Sembunyikan"
-  },
-  "hideToken": {
-    "message": "Sembunyikan Token"
   },
   "hideTokenPrompt": {
     "message": "Sembunyikan Token?"
@@ -644,10 +614,7 @@
   "loadMore": {
     "message": "Muat Lainnya"
   },
-  "login": {
-    "message": "Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Keluar"
   },
   "mainnet": {
@@ -661,9 +628,6 @@
   },
   "metamaskDescription": {
     "message": "Menghubungkan Anda ke Ethereum dan Web Terdesentralisasi."
-  },
-  "metamaskSeedWords": {
-    "message": "Kata Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -766,9 +730,6 @@
   "noAddressForName": {
     "message": "Belum ada alamat yang dipasang untuk nama ini."
   },
-  "noDeposits": {
-    "message": "Belum ada setoran yang diterima"
-  },
   "noConversionRateAvailable": {
     "message": "Kurs Konversi Tidak Tersedia"
   },
@@ -842,9 +803,6 @@
   },
   "privateNetwork": {
     "message": "Jaringan Privat"
-  },
-  "qrCode": {
-    "message": "Tampilkan Kode QR"
   },
   "queue": {
     "message": "Antrean"
@@ -920,9 +878,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
-  },
-  "revert": {
-    "message": "Urungkan"
   },
   "remove": {
     "message": "Hapus"
@@ -1175,10 +1130,6 @@
   },
   "to": {
     "message": "Ke"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ke ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token sudah ditambahkan."

@@ -12,9 +12,6 @@
   "reject": {
     "message": "Odbaci"
   },
-  "likeToConnect": {
-    "message": "Korisnik $1 želi se povezati na vaš račun"
-  },
   "about": {
     "message": "O opcijama"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Svojstva"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Brojač za automatsko odjavljivanje (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Postavite stanje u mirovanju u minutama prije nego što se MetaMask automatski odjavi"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Stanje je možda zastarjelo"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljno stanje za trenutačni iznos goriva"
   },
   "basic": {
     "message": "Osnovne"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
   },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj račun"
-  },
   "clickToRevealSeed": {
     "message": "Ovdje kliknite za otkrivanje tajnih riječi"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Primjena ugovora"
   },
-  "conversionProgress": {
-    "message": "Konverzija u tijeku"
-  },
-  "copiedButton": {
-    "message": "Kopirano"
-  },
   "copiedExclamation": {
     "message": "Kopirano!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiraj u međuspremnik"
-  },
-  "copyButton": {
-    "message": "Kopiraj"
   },
   "copyPrivateKey": {
     "message": "Ovo je vaš privatni ključ (kliknite za kopiranje)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "Pošiljatelj"
   },
-  "fromShapeShift": {
-    "message": "Od usluge ShapeShift"
-  },
   "functionType": {
     "message": "Vrsta funkcije"
   },
   "gasLimit": {
     "message": "Ograničenje goriva"
-  },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženo ograničenje za gorivo na temelju postotka uspješnosti mreže."
   },
   "gasLimitInfoModalContent": {
     "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cijena goriva"
-  },
-  "gasPriceCalculation": {
-    "message": "Izračunavamo predloženu cijenu goriva na temelju postotka uspješnosti mreže."
   },
   "general": {
     "message": "Opće"
@@ -541,9 +514,6 @@
   },
   "hide": {
     "message": "Sakrij preglednik"
-  },
-  "hideToken": {
-    "message": "Sakrij token"
   },
   "hideTokenPrompt": {
     "message": "Sakriti token?"
@@ -653,10 +623,7 @@
   "loadMore": {
     "message": "Učitaj više"
   },
-  "login": {
-    "message": "Prijava"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjava"
   },
   "mainnet": {
@@ -668,17 +635,11 @@
   "memo": {
     "message": "podsjetnik"
   },
-  "menu": {
-    "message": "Izbornik"
-  },
   "message": {
     "message": "Poruka"
   },
   "metamaskDescription": {
     "message": "Povezujete se na Ethereum i decentralizirani internet."
-  },
-  "metamaskSeedWords": {
-    "message": "Početne riječi za MetaMask"
   },
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
@@ -781,9 +742,6 @@
   "noAddressForName": {
     "message": "Nijedna adresa nije postavljena za ovaj naziv."
   },
-  "noDeposits": {
-    "message": "Nijedan polog nije primljen"
-  },
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
   },
@@ -857,9 +815,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "qrCode": {
-    "message": "Prikaži QR kȏd"
   },
   "queue": {
     "message": "Red čekanja"
@@ -935,9 +890,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
-  },
-  "revert": {
-    "message": "Vrati u prethodni oblik"
   },
   "remove": {
     "message": "Ukloni"
@@ -1153,7 +1105,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora imati od 0 do 12 znakova."
+    "message": "Simbol mora biti 11 znakova ili manje."
   },
   "syncWithMobile": {
     "message": "Sinkroniziraj s mobilnim telefonom"
@@ -1190,10 +1142,6 @@
   },
   "to": {
     "message": "Primatelj"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 za ETH uslugom ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token je već dodan."

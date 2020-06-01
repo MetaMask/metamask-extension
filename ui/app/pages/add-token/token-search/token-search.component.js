@@ -7,7 +7,7 @@ import TextField from '../../../components/ui/text-field'
 
 const contractList = Object.entries(contractMap)
   .map(([ _, tokenData]) => tokenData)
-  .filter(tokenData => Boolean(tokenData.erc20))
+  .filter((tokenData) => Boolean(tokenData.erc20))
 
 const fuse = new Fuse(contractList, {
   shouldSort: true,
@@ -36,18 +36,14 @@ export default class TokenSearch extends Component {
     error: PropTypes.string,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      searchQuery: '',
-    }
+  state = {
+    searchQuery: '',
   }
 
   handleSearch (searchQuery) {
     this.setState({ searchQuery })
     const fuseSearchResult = fuse.search(searchQuery)
-    const addressSearchResult = contractList.filter(token => {
+    const addressSearchResult = contractList.filter((token) => {
       return token.address.toLowerCase() === searchQuery.toLowerCase()
     })
     const results = [...addressSearchResult, ...fuseSearchResult]
@@ -75,7 +71,7 @@ export default class TokenSearch extends Component {
         placeholder={this.context.t('searchTokens')}
         type="text"
         value={searchQuery}
-        onChange={e => this.handleSearch(e.target.value)}
+        onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
         fullWidth
         startAdornment={this.renderAdornment()}

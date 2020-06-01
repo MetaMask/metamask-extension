@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import { setSelectedToken, updateSend, showSendTokenPage } from '../../store/actions'
+import { updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors/confirm-transaction'
+import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)
 
   return {
@@ -15,19 +15,31 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: ({ txData, tokenData, tokenProps }) => {
-      const { txParams: { to: tokenAddress, gas: gasLimit, gasPrice } = {}, id } = txData
+
+      const {
+        id,
+        txParams: {
+          from,
+          to: tokenAddress,
+          gas: gasLimit,
+          gasPrice,
+        } = {},
+      } = txData
+
       const { params = [] } = tokenData
       const { value: to } = params[0] || {}
       const { value: tokenAmountInDec } = params[1] || {}
+
       const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
         fromNumericBase: 'dec',
         toNumericBase: 'hex',
       })
-      dispatch(setSelectedToken(tokenAddress))
+
       dispatch(updateSend({
+        from,
         gasLimit,
         gasPrice,
         gasTotal: null,

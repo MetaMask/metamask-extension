@@ -8,9 +8,6 @@
   "reject": {
     "message": "Одбиј"
   },
-  "likeToConnect": {
-    "message": "$1 bi hteo da se poveže sa vašim nalogom"
-  },
   "about": {
     "message": "Основни подаци"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atribucije"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo je možda zastario"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljan iznos za trenutni ukupni gas"
   },
   "basic": {
     "message": "Основна"
@@ -199,9 +193,6 @@
   },
   "cancelled": {
     "message": "Otkazano"
-  },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj nalog"
   },
   "clickToRevealSeed": {
     "message": "Kliknite ovde kako biste otkrili tajne reči"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Primena ugovora"
   },
-  "conversionProgress": {
-    "message": "U toku je konverzija"
-  },
-  "copiedButton": {
-    "message": "Kopirano"
-  },
   "copiedExclamation": {
     "message": "Kopirano!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Копирај у меморију"
-  },
-  "copyButton": {
-    "message": "Kopiraj"
   },
   "copyPrivateKey": {
     "message": "Ovo je vaš privatni ključ (kliknite kako biste ga kopirali)"
@@ -460,17 +442,11 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Od ShapeShift-a"
-  },
   "functionType": {
     "message": "Tip funkcije"
   },
   "gasLimit": {
     "message": "Limit gasa"
-  },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženi limit za gas na osnovu stope uspešnosti mreže."
   },
   "gasLimitInfoModalContent": {
     "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gas-a"
-  },
-  "gasPriceCalculation": {
-    "message": "Preračunavamo predložene cene za gas na osnovu stope uspešnosti mreže."
   },
   "general": {
     "message": "Opšte"
@@ -542,9 +515,6 @@
   },
   "hide": {
     "message": "Сакриј"
-  },
-  "hideToken": {
-    "message": "Sakrij token"
   },
   "hideTokenPrompt": {
     "message": "Da li želite da sakrijete token?"
@@ -654,10 +624,7 @@
   "loadMore": {
     "message": "Učitati više"
   },
-  "login": {
-    "message": "Ulogujte se"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjavi se"
   },
   "mainnet": {
@@ -666,17 +633,11 @@
   "memorizePhrase": {
     "message": "Zapamtite ovaj izraz."
   },
-  "menu": {
-    "message": "Meni"
-  },
   "message": {
     "message": "Poruka"
   },
   "metamaskDescription": {
     "message": "Povezivanje na Ethereum i decentralizovani veb."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask reči početne vrednosti"
   },
   "metamaskVersion": {
     "message": "MetaMask verzija"
@@ -779,9 +740,6 @@
   "noAddressForName": {
     "message": "Za ovo ime nije podešena adresa."
   },
-  "noDeposits": {
-    "message": "Nisu primljeni nikakvi depoziti"
-  },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
   },
@@ -855,9 +813,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "qrCode": {
-    "message": "Prikaži QR šifru"
   },
   "queue": {
     "message": "Ред"
@@ -933,9 +888,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
-  },
-  "revert": {
-    "message": "Vrati"
   },
   "remove": {
     "message": "Уклони"
@@ -1151,7 +1103,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora da bude između 0 i 12 karaktera."
+    "message": "Simbol mora biti 11 znakova ili manje."
   },
   "syncWithMobile": {
     "message": "Sinhronizacija sa mobilnim telefonom"
@@ -1185,10 +1137,6 @@
   },
   "to": {
     "message": "Za"
-  },
-  "toETHviaShapeShift": {
-    "message": " $1 ka ETH preko ShapeShift-a",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token je već dodat."

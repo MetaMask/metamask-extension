@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-const PropTypes = require('prop-types')
-const Spinner = require('../spinner')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Spinner from '../spinner'
 
 class LoadingScreen extends Component {
   static defaultProps = {
@@ -30,4 +30,4 @@ class LoadingScreen extends Component {
   }
 }
 
-module.exports = LoadingScreen
+export default LoadingScreen

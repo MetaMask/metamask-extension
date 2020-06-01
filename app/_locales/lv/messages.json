@@ -12,9 +12,6 @@
   "reject": {
     "message": "Noraidīt"
   },
-  "likeToConnect": {
-    "message": "$1 vēlas izveidot savienojumu ar jūsu kontu"
-  },
   "about": {
     "message": "Par"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atribūti"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Iestatiet bezdarbības laiku minūtēs, pēc kura MetaMask veiks automātisku izrakstīšanu"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Bilance var nebūt aktuāla"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nepietiekama bilance pašreizējam Gas daudzumam"
   },
   "basic": {
     "message": "Pamata"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Ķēdes ID"
   },
-  "clickToAdd": {
-    "message": "Noklikšķiniet uz $1, lai pievienotu tos savam kontam"
-  },
   "clickToRevealSeed": {
     "message": "Klikšķiniet šeit, lai skatītu slepenos vārdus"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Līgumu pielietošana"
   },
-  "conversionProgress": {
-    "message": "Notiek konvertācija"
-  },
-  "copiedButton": {
-    "message": "Nokopēts"
-  },
   "copiedExclamation": {
     "message": "Nokopēts!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopēt starpliktuvē"
-  },
-  "copyButton": {
-    "message": "Kopēt"
   },
   "copyPrivateKey": {
     "message": "Šī ir jūsu privātā atslēga (noklikšķiniet, lai nokopētu)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "No"
   },
-  "fromShapeShift": {
-    "message": "No ShapeShift"
-  },
   "functionType": {
     "message": "Funkcijas veids"
   },
   "gasLimit": {
     "message": "Gas robežvērtība"
-  },
-  "gasLimitCalculation": {
-    "message": "Mēs aprēķinām ieteikto Gas robežvērtību, pamatojoties uz tīkla panākumu rādītājiem."
   },
   "gasLimitInfoModalContent": {
     "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gas cena"
-  },
-  "gasPriceCalculation": {
-    "message": "Mēs aprēķinām ieteiktās Gas cenas, pamatojoties uz tīkla panākumu rādītājiem."
   },
   "general": {
     "message": "Vispārīgi"
@@ -541,9 +514,6 @@
   },
   "hide": {
     "message": "Slēpt"
-  },
-  "hideToken": {
-    "message": "Paslēpt marķieri"
   },
   "hideTokenPrompt": {
     "message": "Paslēpt žetonu?"
@@ -656,10 +626,7 @@
   "localhost": {
     "message": "Resursdators 8545"
   },
-  "login": {
-    "message": "Pierakstīties"
-  },
-  "logout": {
+  "lock": {
     "message": "Izrakstīties"
   },
   "mainnet": {
@@ -671,17 +638,11 @@
   "memo": {
     "message": "atgādinājums"
   },
-  "menu": {
-    "message": "Izvēlne"
-  },
   "message": {
     "message": "Ziņojums"
   },
   "metamaskDescription": {
     "message": "Veido savienojumu ar Ethereum un decentralizēto tīmekli."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask atkopšanas vārdi"
   },
   "metamaskVersion": {
     "message": "MetaMask versija"
@@ -784,9 +745,6 @@
   "noAddressForName": {
     "message": "Šim vārdam nav iestatīta adrese."
   },
-  "noDeposits": {
-    "message": "Nav saņemts neviens noguldījums"
-  },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
   },
@@ -860,9 +818,6 @@
   },
   "privateNetwork": {
     "message": "Privātais tīkls"
-  },
-  "qrCode": {
-    "message": "Rādīt QR kodu"
   },
   "queue": {
     "message": "Rinda"
@@ -938,9 +893,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
-  },
-  "revert": {
-    "message": "Atgriezt"
   },
   "remove": {
     "message": "Noņemt"
@@ -1156,7 +1108,7 @@
     "message": "Simbols"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolam jāietver no 0 līdz 12 rakstzīmēm."
+    "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
   },
   "syncWithMobile": {
     "message": "Sinhronizēt ar tālruni"
@@ -1193,10 +1145,6 @@
   },
   "to": {
     "message": "Adresāts"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 uz ETH, izmantojot ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Marķieris"

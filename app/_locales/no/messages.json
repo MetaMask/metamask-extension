@@ -8,9 +8,6 @@
   "reject": {
     "message": "Avslå"
   },
-  "likeToConnect": {
-    "message": "$1 ønsker å forbindes med kontoen din "
-  },
   "about": {
     "message": "Info"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Henvisninger"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldoen kan utløpe"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Utilstrekkelig dekning for nåværende datakrafttotal"
   },
   "basic": {
     "message": "Enkle"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "Blokkjede "
-  },
-  "clickToAdd": {
-    "message": "Klikk på $1 for a legge dem til kontoen din "
   },
   "clickToRevealSeed": {
     "message": "Klikk her for å vise hemmelige ord "
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Distribusjon av kontrakten"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår "
-  },
-  "copiedButton": {
-    "message": "Kopiert"
-  },
   "copiedExclamation": {
     "message": "Kopiert!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiér til utklippstavlen"
-  },
-  "copyButton": {
-    "message": "Kopier"
   },
   "copyPrivateKey": {
     "message": "Dette er din private nøkkel (klikk for å kopiere)"
@@ -456,17 +438,11 @@
   "from": {
     "message": "Fra "
   },
-  "fromShapeShift": {
-    "message": "Fra ShapeShift"
-  },
   "functionType": {
     "message": "Funksjonstype "
   },
   "gasLimit": {
     "message": "Datakraftsgrense "
-  },
-  "gasLimitCalculation": {
-    "message": "Vi kalkulerer den foreslåtte gassgrensen baser på nettverkets suksessrater."
   },
   "gasLimitInfoModalContent": {
     "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
@@ -488,9 +464,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Datakraft"
-  },
-  "gasPriceCalculation": {
-    "message": "Vi kalkulerer den foreslåtte datakraftprisen basert på sukssesspriser for nettverk. "
   },
   "general": {
     "message": "Generell"
@@ -535,9 +508,6 @@
   },
   "hide": {
     "message": "Skjul"
-  },
-  "hideToken": {
-    "message": "Skjul tokenet"
   },
   "hideTokenPrompt": {
     "message": "Skjul sjetonger?"
@@ -650,10 +620,7 @@
   "localhost": {
     "message": "Lokalvert 8545"
   },
-  "login": {
-    "message": "Logg inn"
-  },
-  "logout": {
+  "lock": {
     "message": "Logg ut "
   },
   "mainnet": {
@@ -665,17 +632,11 @@
   "memo": {
     "message": "beskjed"
   },
-  "menu": {
-    "message": "Meny "
-  },
   "message": {
     "message": "Melding "
   },
   "metamaskDescription": {
     "message": "Kobler deg til Ethereum og det desentraliserte nettet."
-  },
-  "metamaskSeedWords": {
-    "message": "Mnemoniske gjenopprettingsfraser for MetaMask "
   },
   "metamaskVersion": {
     "message": "MetaMask-versjon "
@@ -778,9 +739,6 @@
   "noAddressForName": {
     "message": "Ingen adresse har blitt angitt for dette navnet. "
   },
-  "noDeposits": {
-    "message": "Ingen mottatte innskudd"
-  },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
   },
@@ -854,9 +812,6 @@
   },
   "privateNetwork": {
     "message": "Privat nettverk "
-  },
-  "qrCode": {
-    "message": "Vis QR-kode"
   },
   "queue": {
     "message": "Kø"
@@ -932,9 +887,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
-  },
-  "revert": {
-    "message": "Tilbakestill "
   },
   "remove": {
     "message": "Fjern"
@@ -1135,7 +1087,7 @@
     "message": "Besøk brukerstøtte"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symboler må være på mellom 0 og 12 tegn. "
+    "message": "Symbolet må være 11 tegn eller færre."
   },
   "syncWithMobile": {
     "message": "Synkroniser med mobil "
@@ -1169,10 +1121,6 @@
   },
   "to": {
     "message": "Til "
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 til ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Token "

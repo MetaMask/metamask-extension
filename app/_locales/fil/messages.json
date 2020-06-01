@@ -8,9 +8,6 @@
   "reject": {
     "message": "Tanggihan"
   },
-  "likeToConnect": {
-    "message": "Gusto ng $1 na kumonekta sa iyong account"
-  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -100,10 +97,10 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout Timer (minuto)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "I-set ang idle time na minuto bago awtomatikong mag-log out ang MetaMask"
   },
   "back": {
@@ -126,9 +123,6 @@
   },
   "balanceOutdated": {
     "message": "Maaaring outdated na ang balanse"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Hindi sapat ang balanse para sa kasalukuyang total ng gas"
   },
   "basic": {
     "message": "Pangunahin"
@@ -178,9 +172,6 @@
   },
   "cancelled": {
     "message": "Nakansela"
-  },
-  "clickToAdd": {
-    "message": "Mag-click sa $1 para idagdag ang mga iyon sa iyong account"
   },
   "clickToRevealSeed": {
     "message": "Mag-click dito para ipakita ang iyong secret words"
@@ -242,12 +233,6 @@
   "contractDeployment": {
     "message": "Deployment ng Contract"
   },
-  "conversionProgress": {
-    "message": "Kasalukuyang ipinapapalit"
-  },
-  "copiedButton": {
-    "message": "Nakopya"
-  },
   "copiedExclamation": {
     "message": "Nakopya!"
   },
@@ -262,9 +247,6 @@
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
-  },
-  "copyButton": {
-    "message": "Kopyahin "
   },
   "copyPrivateKey": {
     "message": "Ito ang iyong pribadong private key (i-click para kopyahin)"
@@ -429,17 +411,11 @@
   "from": {
     "message": "Mula sa"
   },
-  "fromShapeShift": {
-    "message": "Mula sa ShapeShift"
-  },
   "functionType": {
     "message": "Uri ng Function"
   },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Nakalkula namin ang iminungkahing limitasyon sa gas batay sa mga success rate sa network."
   },
   "gasLimitInfoModalContent": {
     "message": "Ang limitasyon sa gas ay ang maximum na dami ng mga unit ng gas na handa kang gastusin."
@@ -461,9 +437,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Presyo ng Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Kinakalkula namin ang mga iminumungkahing preyso ng gas batay sa mga success rate sa network."
   },
   "general": {
     "message": "Pangkalahatan"
@@ -505,9 +478,6 @@
   },
   "hide": {
     "message": "Itago"
-  },
-  "hideToken": {
-    "message": "Itago ang Token"
   },
   "hideTokenPrompt": {
     "message": "Itago ang Token?"
@@ -604,10 +574,7 @@
   "loadMore": {
     "message": "Mag-load Pa"
   },
-  "login": {
-    "message": "Mag-log In"
-  },
-  "logout": {
+  "lock": {
     "message": "Mag-log out"
   },
   "memorizePhrase": {
@@ -618,9 +585,6 @@
   },
   "metamaskDescription": {
     "message": "Kinokonekta ka sa Ethereum at sa Decentralized Web."
-  },
-  "metamaskSeedWords": {
-    "message": "Seed Words ng MetaMask"
   },
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
@@ -719,9 +683,6 @@
   "noAddressForName": {
     "message": "Walang address na na-set para sa pangalang ito."
   },
-  "noDeposits": {
-    "message": "Walang mga depositong natanggap"
-  },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
   },
@@ -788,9 +749,6 @@
   },
   "privateNetwork": {
     "message": "Pribadong Network"
-  },
-  "qrCode": {
-    "message": "Ipakita ang QR Code"
   },
   "queue": {
     "message": "I-queue"
@@ -863,9 +821,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account."
-  },
-  "revert": {
-    "message": "I-revert"
   },
   "remove": {
     "message": "Alisin"
@@ -1063,7 +1018,7 @@
     "message": "Simbolo"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Ang simbolo ay dapat na nasa pagitan ng 0 at 12 character."
+    "message": "Ang simbolo ay dapat na 11 character o mas kaunti."
   },
   "syncWithMobile": {
     "message": "I-sync sa mobile"
@@ -1097,10 +1052,6 @@
   },
   "to": {
     "message": "Para sa"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."

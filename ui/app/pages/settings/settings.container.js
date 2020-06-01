@@ -1,17 +1,19 @@
 import Settings from './settings.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { getAddressBookEntryName } from '../../selectors/selectors'
+import { getAddressBookEntryName } from '../../selectors'
 import { isValidAddress } from '../../helpers/utils/util'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import {
   CONNECTIONS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
+  ALERTS_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -29,6 +31,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ADVANCED_ROUTE]: 'advanced',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [ABOUT_US_ROUTE]: 'about',
+  [ALERTS_ROUTE]: 'alerts',
   [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
@@ -47,7 +50,7 @@ const mapStateToProps = (state, ownProps) => {
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE))
   const isEditMyAccountsContactPage = Boolean(pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE))
 
-  const isPopupView = getEnvironmentType(location.href) === ENVIRONMENT_TYPE_POPUP
+  const isPopupView = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname]
 
   let backRoute
@@ -85,6 +88,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     breadCrumbTextKey,
     initialBreadCrumbKey,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 
-const PropTypes = require('prop-types')
-const classnames = require('classnames')
-const PubNub = require('pubnub')
-const qrCode = require('qrcode-generator')
-
-const { DEFAULT_ROUTE } = require('../../helpers/constants/routes')
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
+import PubNub from 'pubnub'
+import qrCode from 'qrcode-generator'
 
 import Button from '../../components/ui/button'
 import LoadingScreen from '../../components/ui/loading-screen'
@@ -13,6 +11,7 @@ import LoadingScreen from '../../components/ui/loading-screen'
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 const KEYS_GENERATION_TIME = 30000
+const IDLE_TIME = KEYS_GENERATION_TIME * 4
 
 export default class MobileSyncPage extends Component {
   static contextTypes = {
@@ -24,6 +23,7 @@ export default class MobileSyncPage extends Component {
     selectedAddress: PropTypes.string.isRequired,
     displayWarning: PropTypes.func.isRequired,
     fetchInfoToSync: PropTypes.func.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requestRevealSeedWords: PropTypes.func.isRequired,
   }
 
@@ -48,31 +48,49 @@ export default class MobileSyncPage extends Component {
     }
   }
 
+  startIdleTimeout () {
+    this.idleTimeout = setTimeout(() => {
+      this.clearTimeouts()
+      this.goBack()
+    }, IDLE_TIME)
+  }
+
   handleSubmit (event) {
     event.preventDefault()
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
-      .then(seedWords => {
+      .then((seedWords) => {
         this.startKeysGeneration()
+        this.startIdleTimeout()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
       })
-      .catch(error => this.setState({ error: error.message }))
+      .catch((error) => this.setState({ error: error.message }))
   }
 
   startKeysGeneration () {
-    this.handle && clearTimeout(this.handle)
+    this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
     this.disconnectWebsockets()
     this.generateCipherKeyAndChannelName()
     this.initWebsockets()
-    this.handle = setTimeout(() => {
+    this.keysGenerationTimeout = setTimeout(() => {
       this.startKeysGeneration()
     }, KEYS_GENERATION_TIME)
+  }
+
+  goBack () {
+    const { history, mostRecentOverviewPage } = this.props
+    history.push(mostRecentOverviewPage)
+  }
+
+  clearTimeouts () {
+    this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
+    this.idleTimeout && clearTimeout(this.idleTimeout)
   }
 
   generateCipherKeyAndChannelName () {
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
-    this.setState({cipherKey: this.cipherKey, channelName: this.channelName})
+    this.setState({ cipherKey: this.cipherKey, channelName: this.channelName })
   }
 
   initWithCipherKeyAndChannelName (cipherKey, channelName) {
@@ -93,7 +111,7 @@ export default class MobileSyncPage extends Component {
 
     this.pubnubListener = {
       message: (data) => {
-        const {channel, message} = data
+        const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
           return false
@@ -102,13 +120,13 @@ export default class MobileSyncPage extends Component {
         if (message.event === 'start-sync') {
           this.startSyncing()
         } else if (message.event === 'connection-info') {
-          this.handle && clearTimeout(this.handle)
+          this.keysGenerationTimeout && clearTimeout(this.keysGenerationTimeout)
           this.disconnectWebsockets()
           this.initWithCipherKeyAndChannelName(message.cipher, message.channel)
           this.initWebsockets()
         } else if (message.event === 'end-sync') {
           this.disconnectWebsockets()
-          this.setState({syncing: false, completed: true})
+          this.setState({ syncing: false, completed: true })
         }
       },
     }
@@ -171,7 +189,7 @@ export default class MobileSyncPage extends Component {
       return false
     }
     this.syncing = true
-    this.setState({syncing: true})
+    this.setState({ syncing: true })
 
     const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
 
@@ -194,7 +212,7 @@ export default class MobileSyncPage extends Component {
       }
     } catch (e) {
       this.props.displayWarning('Sync failed :(')
-      this.setState({syncing: false})
+      this.setState({ syncing: false })
       this.syncing = false
       this.notifyError(e.toString())
     }
@@ -227,6 +245,7 @@ export default class MobileSyncPage extends Component {
 
 
   componentWillUnmount () {
+    this.clearTimeouts()
     this.disconnectWebsockets()
   }
 
@@ -289,7 +308,7 @@ export default class MobileSyncPage extends Component {
     const { t } = this.context
 
     return (
-      <form onSubmit={event => this.handleSubmit(event)}>
+      <form onSubmit={(event) => this.handleSubmit(event)}>
         <label className="input-label" htmlFor="password-box">
           {t('enterPasswordContinue')}
         </label>
@@ -299,7 +318,7 @@ export default class MobileSyncPage extends Component {
             placeholder={t('password')}
             id="password-box"
             value={this.state.password}
-            onChange={event => this.setState({ password: event.target.value })}
+            onChange={(event) => this.setState({ password: event.target.value })}
             className={classnames('form-control', {
               'form-control--error': this.state.error,
             })}
@@ -353,7 +372,6 @@ export default class MobileSyncPage extends Component {
 
   renderPasswordPromptFooter () {
     const { t } = this.context
-    const { history } = this.props
     const { password } = this.state
 
     return (
@@ -362,7 +380,7 @@ export default class MobileSyncPage extends Component {
           type="default"
           large
           className="new-account-create-form__button"
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => this.goBack()}
         >
           {t('cancel')}
         </Button>
@@ -370,7 +388,7 @@ export default class MobileSyncPage extends Component {
           type="secondary"
           large
           className="new-account-create-form__button"
-          onClick={event => this.handleSubmit(event)}
+          onClick={(event) => this.handleSubmit(event)}
           disabled={password === ''}
         >
           {t('next')}
@@ -381,7 +399,6 @@ export default class MobileSyncPage extends Component {
 
   renderRevealSeedFooter () {
     const { t } = this.context
-    const { history } = this.props
 
     return (
       <div className="page-container__footer" style={{ padding: 30 }}>
@@ -389,7 +406,7 @@ export default class MobileSyncPage extends Component {
           type="default"
           large
           className="page-container__footer-button"
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => this.goBack()}
         >
           {t('close')}
         </Button>

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Atmesti"
   },
-  "likeToConnect": {
-    "message": "$1 norėtų prisijungti prie jūsų paskyros"
-  },
   "about": {
     "message": "Apie"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Požymiai"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automatinio atjungimo laikmatis (minutės)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Likutis gali būti pasenęs"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Nepakankamas dabartinio bendro dujų kiekio likutis"
   },
   "basic": {
     "message": "Bendrieji"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Grandinės ID"
   },
-  "clickToAdd": {
-    "message": "Spustelėkite $1, kad juos pridėtumėte prie paskyros"
-  },
   "clickToRevealSeed": {
     "message": "Spustelėkite čia, kad atidengtumėte slaptus žodžius"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Sutarties išdėstymas"
   },
-  "conversionProgress": {
-    "message": "Vyksta keitimas"
-  },
-  "copiedButton": {
-    "message": "Nukopijuota"
-  },
   "copiedExclamation": {
     "message": "Nukopijuota!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopijuoti į iškarpinę"
-  },
-  "copyButton": {
-    "message": "Kopijuoti"
   },
   "copyPrivateKey": {
     "message": "Tai yra jūsų asmeninis raktas (spustelėkite, kad nukopijuotumėte)"
@@ -463,17 +445,11 @@
   "from": {
     "message": "Nuo"
   },
-  "fromShapeShift": {
-    "message": "Iš „ShapeShift“"
-  },
   "functionType": {
     "message": "Funkcijos tipas"
   },
   "gasLimit": {
     "message": "Dujų apribojimas"
-  },
-  "gasLimitCalculation": {
-    "message": "Siūlomą dujų apribojimą apskaičiuojame remdamiesi tinklo sėkmės rezultatais."
   },
   "gasLimitInfoModalContent": {
     "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
@@ -495,9 +471,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Dujų kaina"
-  },
-  "gasPriceCalculation": {
-    "message": "Siūlomas dujų kainas apskaičiuojame remdamiesi tinklo sėkmės rezultatais."
   },
   "general": {
     "message": "Bendra"
@@ -545,9 +518,6 @@
   },
   "hide": {
     "message": "Slėpti"
-  },
-  "hideToken": {
-    "message": "Slėpti prieigos raktą"
   },
   "hideTokenPrompt": {
     "message": "Slėpti prieigos raktą?"
@@ -660,10 +630,7 @@
   "localhost": {
     "message": "Vietinis serveris 8545"
   },
-  "login": {
-    "message": "Prisijungti"
-  },
-  "logout": {
+  "lock": {
     "message": "Atsijungti"
   },
   "mainnet": {
@@ -675,17 +642,11 @@
   "memo": {
     "message": "pastaba"
   },
-  "menu": {
-    "message": "Meniu"
-  },
   "message": {
     "message": "Pranešimas"
   },
   "metamaskDescription": {
     "message": "Prijungiame jus prie „Ethereum“ ir decentralizuotojo žiniatinklio."
-  },
-  "metamaskSeedWords": {
-    "message": "„MetaMask“ atkūrimo žodžiai"
   },
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
@@ -788,9 +749,6 @@
   "noAddressForName": {
     "message": "Šiam pavadinimui nenurodytas adresas."
   },
-  "noDeposits": {
-    "message": "Negauta jokių indėlių"
-  },
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
   },
@@ -864,9 +822,6 @@
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
-  },
-  "qrCode": {
-    "message": "Rodyti QR kodą"
   },
   "queue": {
     "message": "Eilė"
@@ -942,9 +897,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
-  },
-  "revert": {
-    "message": "Grįžti"
   },
   "remove": {
     "message": "Pašalinti"
@@ -1160,7 +1112,7 @@
     "message": "Simbolis"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolis turi būti nuo 0 iki 12 ženklų."
+    "message": "Simbolis turi būti ne ilgesnis nei 11 simbolių."
   },
   "syncWithMobile": {
     "message": "Sinchronizuoti su mobiliuoju"
@@ -1197,10 +1149,6 @@
   },
   "to": {
     "message": "Iki"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 į ETH per „ShapeShift“",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Žetonas"

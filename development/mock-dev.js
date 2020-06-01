@@ -10,30 +10,30 @@
  * without having to re-open the plugin or even re-build it.
  */
 
+import log from 'loglevel'
 import React from 'react'
-const render = require('react-dom').render
-const Root = require('../ui/app/pages')
-const configureStore = require('../ui/app/store/store')
-const actions = require('../ui/app/store/actions')
-const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
+import { render } from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import * as qs from 'qs'
 import Selector from './selector'
-const MetamaskController = require('../app/scripts/metamask-controller')
-const firstTimeState = require('../app/scripts/first-time-state')
-const ExtensionPlatform = require('../app/scripts/platforms/extension')
+import * as actions from '../ui/app/store/actions'
+import Root from '../ui/app/pages'
+import rootReducer from '../ui/app/ducks'
+import MetamaskController from '../app/scripts/metamask-controller'
+import firstTimeState from '../app/scripts/first-time-state'
+import ExtensionPlatform from '../app/scripts/platforms/extension'
+
+const backGroundConnectionModifiers = require('./backGroundConnectionModifiers')
+
 const noop = function () {}
 
 // the states file is generated before this file is run, but after `lint` is run
 const states = require('./states') /* eslint-disable-line import/no-unresolved */
 
-const log = require('loglevel')
 window.log = log
 log.setLevel('debug')
 
-//
-// Query String
-//
-
-const qs = require('qs')
 const routerPath = window.location.href.split('#')[1]
 let queryString = {}
 let selectedView
@@ -42,7 +42,7 @@ if (routerPath) {
   queryString = qs.parse(routerPath.split('?')[1])
 }
 
-selectedView = queryString.view || 'send new ui'
+selectedView = queryString.view || 'confirm sig requests'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
@@ -62,6 +62,11 @@ function updateQueryParams (newView) {
 // MetaMask Controller
 //
 
+// some extension platform APIs must be mocked
+function mockPlatformApis () {
+  global.platform.getVersion = () => '0.0.0'
+}
+
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
@@ -72,13 +77,14 @@ const controller = new MetamaskController({
 })
 global.metamaskController = controller
 global.platform = new ExtensionPlatform()
+mockPlatformApis()
 
 //
 // User Interface
 //
 
 actions._setBackgroundConnection(controller.getApi())
-actions.update = function (stateName) {
+function updateState (stateName) {
   selectedView = stateName
   updateQueryParams(stateName)
   const newState = states[selectedView]
@@ -94,7 +100,14 @@ function modifyBackgroundConnection (backgroundConnectionModifier) {
 }
 
 // parse opts
-const store = configureStore(firstState)
+const store = createStore(
+  (state, action) =>
+    (action.type === 'GLOBAL_FORCE_UPDATE'
+      ? action.value
+      : rootReducer(state, action)),
+  firstState,
+  applyMiddleware(thunkMiddleware),
+)
 
 // start app
 startApp()
@@ -110,7 +123,7 @@ function startApp () {
       <button
         onClick={(ev) => {
           ev.preventDefault()
-          store.dispatch(actions.update('terms'))
+          store.dispatch(updateState('terms'))
         }}
         style={{
           margin: '19px 19px 0px 19px',
@@ -121,7 +134,7 @@ function startApp () {
       <Selector
         states={states}
         selectedKey={selectedView}
-        actions={actions}
+        updateState={updateState}
         store={store}
         modifyBackgroundConnection={modifyBackgroundConnection}
         backGroundConnectionModifiers={backGroundConnectionModifiers}

@@ -4,11 +4,11 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import PageContainerHeader from '../page-container-header.component'
 
-describe('Page Container Header', () => {
+describe('Page Container Header', function () {
   let wrapper, style, onBackButtonClick, onClose
 
-  beforeEach(() => {
-    style = {test: 'style'}
+  beforeEach(function () {
+    style = { test: 'style' }
     onBackButtonClick = sinon.spy()
     onClose = sinon.spy()
 
@@ -25,27 +25,27 @@ describe('Page Container Header', () => {
     ))
   })
 
-  describe('Render Header Row', () => {
+  describe('Render Header Row', function () {
 
-    it('renders back button', () => {
+    it('renders back button', function () {
       assert.equal(wrapper.find('.page-container__back-button').length, 1)
       assert.equal(wrapper.find('.page-container__back-button').text(), 'Back')
     })
 
-    it('ensures style prop', () => {
+    it('ensures style prop', function () {
       assert.equal(wrapper.find('.page-container__back-button').props().style, style)
     })
 
-    it('should call back button when click is simulated', () => {
+    it('should call back button when click is simulated', function () {
       wrapper.find('.page-container__back-button').prop('onClick')()
       assert.equal(onBackButtonClick.callCount, 1)
     })
   })
 
-  describe('Render', () => {
+  describe('Render', function () {
     let header, headerRow, pageTitle, pageSubtitle, pageClose, pageTab
 
-    beforeEach(() => {
+    beforeEach(function () {
       header = wrapper.find('.page-container__header--no-padding-bottom')
       headerRow = wrapper.find('.page-container__header-row')
       pageTitle = wrapper.find('.page-container__title')
@@ -54,7 +54,7 @@ describe('Page Container Header', () => {
       pageTab = wrapper.find('.page-container__tabs')
     })
 
-    it('renders page container', () => {
+    it('renders page container', function () {
       assert.equal(header.length, 1)
       assert.equal(headerRow.length, 1)
       assert.equal(pageTitle.length, 1)
@@ -63,19 +63,19 @@ describe('Page Container Header', () => {
       assert.equal(pageTab.length, 1)
     })
 
-    it('renders title', () => {
+    it('renders title', function () {
       assert.equal(pageTitle.text(), 'Test Title')
     })
 
-    it('renders subtitle', () => {
+    it('renders subtitle', function () {
       assert.equal(pageSubtitle.text(), 'Test Subtitle')
     })
 
-    it('renders tabs', () => {
+    it('renders tabs', function () {
       assert.equal(pageTab.text(), 'Test Tab')
     })
 
-    it('should call close when click is simulated', () => {
+    it('should call close when click is simulated', function () {
       pageClose.prop('onClick')()
       assert.equal(onClose.callCount, 1)
     })

@@ -1,52 +1,38 @@
-const {
-  addHexPrefix,
-  isValidAddress,
-} = require('ethereumjs-util')
+import { addHexPrefix, isValidAddress } from 'ethereumjs-util'
 
-/**
-@module
-*/
-module.exports = {
-  normalizeTxParams,
-  validateTxParams,
-  validateFrom,
-  validateRecipient,
-  getFinalStates,
-}
-
-
-// functions that handle normalizing of that key in txParams
 const normalizers = {
-  from: (from, LowerCase = true) => LowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from),
-  to: (to, LowerCase = true) => LowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
-  nonce: nonce => addHexPrefix(nonce),
-  value: value => addHexPrefix(value),
-  data: data => addHexPrefix(data),
-  gas: gas => addHexPrefix(gas),
-  gasPrice: gasPrice => addHexPrefix(gasPrice),
+  from: (from, lowerCase = true) => (lowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
+  to: (to, lowerCase = true) => (lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
+  nonce: (nonce) => addHexPrefix(nonce),
+  value: (value) => addHexPrefix(value),
+  data: (data) => addHexPrefix(data),
+  gas: (gas) => addHexPrefix(gas),
+  gasPrice: (gasPrice) => addHexPrefix(gasPrice),
 }
 
 /**
-  normalizes txParams
-  @param txParams {object}
-  @returns {object} normalized txParams
+ * Normalizes the given txParams
+ * @param {Object} txParams - the tx params
+ * @param {boolean} lowerCase - whether to return the addresses lower cased
+ * @returns {Object} the normalized tx params
  */
-function normalizeTxParams (txParams, LowerCase) {
+export function normalizeTxParams (txParams, lowerCase) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
   for (const key in normalizers) {
     if (txParams[key]) {
-      normalizedTxParams[key] = normalizers[key](txParams[key], LowerCase)
+      normalizedTxParams[key] = normalizers[key](txParams[key], lowerCase)
     }
   }
   return normalizedTxParams
 }
 
 /**
-  validates txParams
-  @param txParams {object}
+ * Validates the given tx parameters
+ * @param {Object} txParams - the tx params
+ * @throws {Error} if the tx params contains invalid fields
  */
-function validateTxParams (txParams) {
+export function validateTxParams (txParams) {
   validateFrom(txParams)
   validateRecipient(txParams)
   if ('value' in txParams) {
@@ -62,10 +48,11 @@ function validateTxParams (txParams) {
 }
 
 /**
-  validates the from field in  txParams
-  @param txParams {object}
+ * Validates the {@code from} field in the given tx params
+ * @param {Object} txParams
+ * @throws {Error} if the from address isn't valid
  */
-function validateFrom (txParams) {
+export function validateFrom (txParams) {
   if (!(typeof txParams.from === 'string')) {
     throw new Error(`Invalid from address ${txParams.from} not a string`)
   }
@@ -75,10 +62,12 @@ function validateFrom (txParams) {
 }
 
 /**
-  validates the to field in  txParams
-  @param txParams {object}
+ * Validates the {@code to} field in the given tx params
+ * @param {Object} txParams - the tx params
+ * @returns {Object} the tx params
+ * @throws {Error} if the recipient is invalid OR there isn't tx data
  */
-function validateRecipient (txParams) {
+export function validateRecipient (txParams) {
   if (txParams.to === '0x' || txParams.to === null) {
     if (txParams.data) {
       delete txParams.to
@@ -92,9 +81,10 @@ function validateRecipient (txParams) {
 }
 
 /**
-    @returns an {array} of states that can be considered final
-  */
-function getFinalStates () {
+ * Returns a list of final states
+ * @returns {string[]} the states that can be considered final states
+ */
+export function getFinalStates () {
   return [
     'rejected', // the user has responded no!
     'confirmed', // the tx has been included in a block.
@@ -102,4 +92,3 @@ function getFinalStates () {
     'dropped', // the tx nonce was already used
   ]
 }
-

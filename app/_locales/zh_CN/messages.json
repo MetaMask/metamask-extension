@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒绝"
   },
-  "likeToConnect": {
-    "message": "$1 希望关联您的账户"
-  },
   "about": {
     "message": "关于"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "来源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自动注销计时器（分钟）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "请设置 MetaMask 自动注销前的空闲时间（以分钟为单位）"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "余额可能已过期"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "当前余额不足以支付 Gas"
   },
   "basic": {
     "message": "基本"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "clickToAdd": {
-    "message": "点击 $1 将其加入您的个人账户"
-  },
   "clickToRevealSeed": {
     "message": "点击此处显示密语"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "合约部署"
   },
-  "conversionProgress": {
-    "message": "正在进行转换"
-  },
-  "copiedButton": {
-    "message": "已复制"
-  },
   "copiedExclamation": {
     "message": "已复制"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
-  },
-  "copyButton": {
-    "message": " 复制 "
   },
   "copyPrivateKey": {
     "message": "这是你的私钥（点击复制）"
@@ -463,14 +445,8 @@
   "from": {
     "message": "来自"
   },
-  "fromShapeShift": {
-    "message": "来自 ShapeShift"
-  },
   "functionType": {
     "message": "功能类型"
-  },
-  "gasLimitCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Limit。"
   },
   "gasLimitInfoModalContent": {
     "message": "天然气限制即您个人希望购买的最大单位数量。"
@@ -489,9 +465,6 @@
   },
   "gasPriceNoDenom": {
     "message": "天然气价格"
-  },
-  "gasPriceCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Price"
   },
   "general": {
     "message": "通用"
@@ -539,9 +512,6 @@
   },
   "hide": {
     "message": "隐藏"
-  },
-  "hideToken": {
-    "message": "隐藏代币"
   },
   "hideTokenPrompt": {
     "message": "隐藏代币？"
@@ -648,11 +618,8 @@
   "loadMore": {
     "message": "加载更多"
   },
-  "login": {
-    "message": "登录"
-  },
-  "logout": {
-    "message": "登出"
+  "lock": {
+    "message": "锁定"
   },
   "mainnet": {
     "message": "以太坊主网络"
@@ -663,17 +630,11 @@
   "memo": {
     "message": "备忘录"
   },
-  "menu": {
-    "message": "菜单"
-  },
   "message": {
     "message": "消息"
   },
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask 助记词"
   },
   "metamaskVersion": {
     "message": "MetaMask 版本"
@@ -770,9 +731,6 @@
   "noAddressForName": {
     "message": "此 ENS 名字还没有指定地址。"
   },
-  "noDeposits": {
-    "message": "没有已收的存款"
-  },
   "noConversionRateAvailable": {
     "message": "无可用兑换率"
   },
@@ -846,9 +804,6 @@
   },
   "privateNetwork": {
     "message": "私有网络"
-  },
-  "qrCode": {
-    "message": "显示二维码"
   },
   "queue": {
     "message": "队列"
@@ -924,9 +879,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "助记词可以用来窃取您的所有帐户."
-  },
-  "revert": {
-    "message": "还原"
   },
   "remove": {
     "message": "移除"
@@ -1142,7 +1094,7 @@
     "message": "符号"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "符号应该有0-12个字符."
+    "message": "符号不得超过11个字符。"
   },
   "syncWithMobile": {
     "message": "使用移动设备进行同步"
@@ -1179,10 +1131,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH 通过 ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "代币"

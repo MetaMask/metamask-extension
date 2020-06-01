@@ -13,8 +13,8 @@ import {
 
 export default class CreateAccountPage extends Component {
   renderTabs () {
-    const { history, location: { pathname }} = this.props
-    const getClassNames = path => classnames('new-account__tabs__tab', {
+    const { history, location: { pathname } } = this.props
+    const getClassNames = (path) => classnames('new-account__tabs__tab', {
       'new-account__tabs__selected': matchPath(pathname, {
         path,
         exact: true,
@@ -30,7 +30,7 @@ export default class CreateAccountPage extends Component {
           {this.context.t('import')}
         </div>
         <div className={getClassNames(CONNECT_HARDWARE_ROUTE)} onClick={() => history.push(CONNECT_HARDWARE_ROUTE)}>
-          {this.context.t('connect')}
+          {this.context.t('hardware')}
         </div>
       </div>
     )
@@ -71,7 +71,6 @@ export default class CreateAccountPage extends Component {
 CreateAccountPage.propTypes = {
   location: PropTypes.object,
   history: PropTypes.object,
-  t: PropTypes.func,
 }
 
 CreateAccountPage.contextTypes = {

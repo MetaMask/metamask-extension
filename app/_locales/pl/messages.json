@@ -8,9 +8,6 @@
   "reject": {
     "message": "Odrzuć"
   },
-  "likeToConnect": {
-    "message": "$1 chce połączyć się z Twoim kontem"
-  },
   "about": {
     "message": "Informacje"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atrybuty"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Czas automatycznego wylogowania (w minutach)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ustaw czas bezczynności w minutach, po którym MetaMask wyloguje Cię automatycznie"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo może być nieaktualne"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Niewystarczająca ilość środków na opłatę za gaz"
   },
   "basic": {
     "message": "Podstawy"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "Identyfikator łańcucha"
-  },
-  "clickToAdd": {
-    "message": "Przycisnij $1, aby dodać go do swojego konta"
   },
   "clickToRevealSeed": {
     "message": "Kliknij tutaj, aby odkryć tajne słowa"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Uruchomienie kontraktu"
   },
-  "conversionProgress": {
-    "message": "Przeliczanie w toku"
-  },
-  "copiedButton": {
-    "message": "Skopiowane"
-  },
   "copiedExclamation": {
     "message": "Skopiowane!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Skopiuj do schowka"
-  },
-  "copyButton": {
-    "message": " Skopiuj "
   },
   "copyPrivateKey": {
     "message": "To jest Twój prywatny klucz (kliknij żeby skopiować)"
@@ -460,17 +442,11 @@
   "from": {
     "message": "Z"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "functionType": {
     "message": "Typ funkcji"
   },
   "gasLimit": {
     "message": "Limit gazu"
-  },
-  "gasLimitCalculation": {
-    "message": "Obliczamy sugerowany limit gazu na podstawie danych z transakcji w sieci."
   },
   "gasLimitInfoModalContent": {
     "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Cena gazu"
-  },
-  "gasPriceCalculation": {
-    "message": "Obliczamy ceny gazu na podstawie danych z transakcji w sieci."
   },
   "general": {
     "message": "Ogólne"
@@ -542,9 +515,6 @@
   },
   "hide": {
     "message": "Schowaj"
-  },
-  "hideToken": {
-    "message": "Schowaj token"
   },
   "hideTokenPrompt": {
     "message": "Schować token?"
@@ -657,10 +627,7 @@
   "localhost": {
     "message": "Serwer lokalny 8545"
   },
-  "login": {
-    "message": "Zaloguj się"
-  },
-  "logout": {
+  "lock": {
     "message": "Wyloguj się"
   },
   "mainnet": {
@@ -674,9 +641,6 @@
   },
   "metamaskDescription": {
     "message": "MetaMask to bezpieczny portfel dla Ethereum."
-  },
-  "metamaskSeedWords": {
-    "message": "Słowa Seed MetaMask"
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
@@ -779,9 +743,6 @@
   "noAddressForName": {
     "message": "Nie wybrano żadnego adresu dla tej nazwy."
   },
-  "noDeposits": {
-    "message": "Brak otrzymanych depozytów"
-  },
   "noConversionRateAvailable": {
     "message": "Brak kursu waluty"
   },
@@ -855,9 +816,6 @@
   },
   "privateNetwork": {
     "message": "Sieć prywatna"
-  },
-  "qrCode": {
-    "message": "Pokaż kod QR"
   },
   "queue": {
     "message": "Kolejka"
@@ -933,9 +891,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
-  },
-  "revert": {
-    "message": "Wycofaj"
   },
   "remove": {
     "message": "usuń"
@@ -1148,7 +1103,7 @@
     "message": "Odwiedź nasze Centrum Pomocy"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć od 0 do 12 znaków."
+    "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
   "syncWithMobile": {
     "message": "Synchronizuj z telefonem"
@@ -1185,10 +1140,6 @@
   },
   "to": {
     "message": "Do"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH przez ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token jest już dodany."

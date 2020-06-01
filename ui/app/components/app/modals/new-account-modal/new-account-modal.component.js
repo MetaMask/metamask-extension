@@ -15,10 +15,10 @@ export default class NewAccountModal extends Component {
   }
 
   state = {
-    alias: '',
+    alias: this.context.t('newAccountNumberName', [this.props.newAccountNumber]),
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       alias: e.target.value,
     })
@@ -29,7 +29,7 @@ export default class NewAccountModal extends Component {
       .then(this.props.hideModal)
   }
 
-  onKeyPress = e => {
+  onKeyPress = (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSubmit()
     }
@@ -43,6 +43,11 @@ export default class NewAccountModal extends Component {
         <div className="new-account-modal__content">
           <div className="new-account-modal__content__header">
             {t('newAccount')}
+            <button
+              className="fas fa-times new-account-modal__content__header-close"
+              title={t('close')}
+              onClick={this.props.hideModal}
+            />
           </div>
           <div className="new-account-modal__input-label">
             {t('accountName')}
@@ -53,7 +58,6 @@ export default class NewAccountModal extends Component {
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
             value={this.state.alias}
-            placeholder={ t('account', [this.props.newAccountNumber]) }
             autoFocus
           />
         </div>

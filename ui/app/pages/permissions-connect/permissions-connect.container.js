@@ -1,35 +1,58 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import PermissionApproval from './permissions-connect.component'
 import {
-  getFirstPermissionRequest,
+  getPermissionsRequests,
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getPermissionsDomains,
-} from '../../selectors/selectors'
+  getTargetDomainMetadata,
+  getPermissionDomains,
+} from '../../selectors'
+
 import { formatDate } from '../../helpers/utils/util'
 import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
+import {
+  CONNECT_ROUTE,
+  CONNECT_CONFIRM_PERMISSIONS_ROUTE,
+} from '../../helpers/constants/routes'
 
-const mapStateToProps = state => {
-  const permissionsRequest = getFirstPermissionRequest(state)
+const mapStateToProps = (state, ownProps) => {
+  const {
+    match: { params: { id: permissionsRequestId } },
+    location: { pathname },
+  } = ownProps
+  const permissionsRequests = getPermissionsRequests(state)
+
+  const permissionsRequest = permissionsRequests
+    .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
+
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
 
   const accountsWithLabels = getAccountsWithLabels(state)
 
-  const { requestAccountTabs = {} } = state.appState
-
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
   const addressLastConnectedMap = lastConnectedInfo[origin] || {}
 
-  Object.keys(addressLastConnectedMap).forEach(key => {
-    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-M-d')
+  Object.keys(addressLastConnectedMap).forEach((key) => {
+    addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-MM-dd')
   })
 
-  const permissionsRequestId = (permissionsRequest && permissionsRequest.metadata) ? permissionsRequest.metadata.id : null
+  const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`
+  const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`
+
+  let page = ''
+  if (pathname === connectPath) {
+    page = '1'
+  } else if (pathname === confirmPermissionPath) {
+    page = '2'
+  } else {
+    throw new Error('Incorrect path for permissions-connect component')
+  }
+
+  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
 
   return {
     permissionsRequest,
@@ -38,16 +61,19 @@ const mapStateToProps = state => {
     originName: origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
-    requestAccountTabs,
     addressLastConnectedMap,
-    domains: getPermissionsDomains(state),
+    domains: getPermissionDomains(state),
+    connectPath,
+    confirmPermissionPath,
+    page,
+    targetDomainMetadata,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    approvePermissionsRequest: (requestId, accounts) => dispatch(approvePermissionsRequest(requestId, accounts)),
-    rejectPermissionsRequest: requestId => dispatch(rejectPermissionsRequest(requestId)),
+    approvePermissionsRequest: (request, accounts) => dispatch(approvePermissionsRequest(request, accounts)),
+    rejectPermissionsRequest: (requestId) => dispatch(rejectPermissionsRequest(requestId)),
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(showModal({
         name: 'NEW_ACCOUNT',
@@ -60,7 +86,15 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(PermissionApproval)
+const PermissionApprovalContainer = connect(mapStateToProps, mapDispatchToProps)(PermissionApproval)
+
+PermissionApprovalContainer.propTypes = {
+  history: PropTypes.object.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
+}
+
+export default PermissionApprovalContainer

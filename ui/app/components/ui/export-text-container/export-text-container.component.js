@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-const PropTypes = require('prop-types')
-const copyToClipboard = require('copy-to-clipboard')
-const { exportAsFile } = require('../../../helpers/utils/util')
+import PropTypes from 'prop-types'
+import copyToClipboard from 'copy-to-clipboard'
+import { exportAsFile } from '../../../helpers/utils/util'
 
 class ExportTextContainer extends Component {
   render () {
-    const { text = '', filename = '' } = this.props
+    const { text = '' } = this.props
     const { t } = this.context
 
     return (
@@ -27,7 +27,7 @@ class ExportTextContainer extends Component {
           </div>
           <div
             className="export-text-container__button"
-            onClick={() => exportAsFile(filename, text)}
+            onClick={() => exportAsFile('', text)}
           >
             <img src="images/download.svg" alt="" />
             <div className="export-text-container__button-text">
@@ -42,11 +42,10 @@ class ExportTextContainer extends Component {
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
-  filename: PropTypes.string,
 }
 
 ExportTextContainer.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = ExportTextContainer
+export default ExportTextContainer

@@ -1,6 +1,6 @@
-const log = require('loglevel')
-const util = require('./util')
-const BigNumber = require('bignumber.js')
+import log from 'loglevel'
+import * as util from './util'
+import BigNumber from 'bignumber.js'
 import contractMap from 'eth-contract-metadata'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -134,11 +134,11 @@ export function calcTokenValue (value, decimals) {
 }
 
 export function getTokenValue (tokenParams = []) {
-  const valueData = tokenParams.find(param => param.name === '_value')
+  const valueData = tokenParams.find((param) => param.name === '_value')
   return valueData && valueData.value
 }
 
 export function getTokenToAddress (tokenParams = []) {
-  const toAddressData = tokenParams.find(param => param.name === '_to')
+  const toAddressData = tokenParams.find((param) => param.name === '_to')
   return toAddressData ? toAddressData.value : tokenParams[0].value
 }

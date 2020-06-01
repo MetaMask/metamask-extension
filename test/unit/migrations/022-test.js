@@ -1,5 +1,6 @@
-const assert = require('assert')
-const migration22 = require('../../../app/scripts/migrations/022')
+import assert from 'assert'
+import migration22 from '../../../app/scripts/migrations/022'
+
 const properTime = (new Date()).getTime()
 const storage = {
   'meta': {},
@@ -8,14 +9,14 @@ const storage = {
       'transactions': [
         { 'status': 'submitted' },
         { 'status': 'submitted', 'submittedTime': properTime },
-        {'status': 'confirmed'},
+        { 'status': 'confirmed' },
       ],
     },
   },
 }
 
-describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
-  it('should add submittedTime key on the txMeta if appropriate', (done) => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', function () {
+  it('should add submittedTime key on the txMeta if appropriate', function (done) {
     migration22.migrate(storage)
       .then((migratedData) => {
         const [txMeta1, txMeta2, txMeta3] = migratedData.data.TransactionController.transactions

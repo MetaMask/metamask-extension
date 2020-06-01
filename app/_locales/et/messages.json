@@ -8,9 +8,6 @@
   "reject": {
     "message": "Lükka tagasi"
   },
-  "likeToConnect": {
-    "message": "$1 soovib teie kontoga ühenduse luua"
-  },
   "about": {
     "message": "Teave"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Omistamised"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaatse väljalogimise taimer (minutites)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Seadistage jõudeolek minutites, enne kui MetaMask automaatselt välja logib"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Saldo võib olla aegunud"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Ebapiisav kontojääk praeguse gaasi kogusumma jaoks"
   },
   "basic": {
     "message": "Põhiseaded"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "Ahela ID"
   },
-  "clickToAdd": {
-    "message": "Klõpsake valikul $1, et need oma kontole lisada"
-  },
   "clickToRevealSeed": {
     "message": "Klõpsake salasõnade kuvamiseks"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Lepingu juurutamine"
   },
-  "conversionProgress": {
-    "message": "Teisendamine on pooleli"
-  },
-  "copiedButton": {
-    "message": "Kopeeritud"
-  },
   "copiedExclamation": {
     "message": "Kopeeritud!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopeeri lõikelauale"
-  },
-  "copyButton": {
-    "message": "Kopeeri"
   },
   "copyPrivateKey": {
     "message": "See on teie privaatne võti (klõpsake kopeerimiseks)"
@@ -459,17 +441,11 @@
   "from": {
     "message": "Saatja"
   },
-  "fromShapeShift": {
-    "message": "ShapeShiftist"
-  },
   "functionType": {
     "message": "Funktsiooni tüüp"
   },
   "gasLimit": {
     "message": "Gaasi ülemmäär"
-  },
-  "gasLimitCalculation": {
-    "message": "Arvutame soovituslikku gaasi ülemmäära vastavalt võrgu efektiivsusele."
   },
   "gasLimitInfoModalContent": {
     "message": "Gaasi ülemmäär on maksimaalne gaasiühikute hulk, mida olete nõus kulutama."
@@ -491,9 +467,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Gaasi hind"
-  },
-  "gasPriceCalculation": {
-    "message": "Arvutame soovituslikke gaasihindu vastavalt võrgu efektiivsusele."
   },
   "general": {
     "message": "Üldine teave"
@@ -541,9 +514,6 @@
   },
   "hide": {
     "message": "Peida"
-  },
-  "hideToken": {
-    "message": "Peida luba"
   },
   "hideTokenPrompt": {
     "message": "Peida luba?"
@@ -650,10 +620,7 @@
   "loadMore": {
     "message": "Laadi rohkem"
   },
-  "login": {
-    "message": "Logi sisse"
-  },
-  "logout": {
+  "lock": {
     "message": "Logi välja"
   },
   "mainnet": {
@@ -665,17 +632,11 @@
   "memo": {
     "message": "teatis"
   },
-  "menu": {
-    "message": "Menüü"
-  },
   "message": {
     "message": "Sõnum"
   },
   "metamaskDescription": {
     "message": "Teid ühendatakse Ethereumi ja detsentraliseeritud võrguga."
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMaski seemnesõnad"
   },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
@@ -778,9 +739,6 @@
   "noAddressForName": {
     "message": "Sellele nimele pole registreeritud ühtegi aadressi."
   },
-  "noDeposits": {
-    "message": "Sissemakseid pole laekunud"
-  },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
   },
@@ -854,9 +812,6 @@
   },
   "privateNetwork": {
     "message": "Privaatvõrk"
-  },
-  "qrCode": {
-    "message": "Kuva QR-kood"
   },
   "queue": {
     "message": "Järjekord"
@@ -932,9 +887,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revert": {
-    "message": "Ennista"
   },
   "remove": {
     "message": "Eemalda"
@@ -1150,7 +1102,7 @@
     "message": "Sümbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Sümbol peab olema 0 kuni 12 tähemärki."
+    "message": "Sümbol peab olema 11 tähemärki või vähem."
   },
   "syncWithMobile": {
     "message": "Mobiiliga sünkroonimine"
@@ -1187,10 +1139,6 @@
   },
   "to": {
     "message": "Saaja"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH-le ShapeShifti kaudu",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Luba"

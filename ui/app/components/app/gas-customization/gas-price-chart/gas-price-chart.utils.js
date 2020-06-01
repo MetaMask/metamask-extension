@@ -190,7 +190,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     transition: {
       duration: 0,
     },
-    padding: {left: 20, right: 15, top: 6, bottom: 10},
+    padding: { left: 20, right: 15, top: 6, bottom: 10 },
     data: {
       x: 'x',
       columns: [
@@ -218,14 +218,14 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
             return val + ' GWEI'
           },
         },
-        padding: {left: gasPricesMax / 50, right: gasPricesMax / 50},
+        padding: { left: gasPricesMax / 50, right: gasPricesMax / 50 },
         label: {
           text: 'Gas Price ($)',
           position: 'outer-center',
         },
       },
       y: {
-        padding: {top: 7, bottom: 7},
+        padding: { top: 7, bottom: 7 },
         tick: {
           values: [Math.floor(estimatedTimesMax * 0.05), Math.ceil(estimatedTimesMax * 0.97)],
           outer: false,
@@ -261,7 +261,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
       contents: function (d) {
         const titleFormat = this.config.tooltip_format_title
         let text
-        d.forEach(el => {
+        d.forEach((el) => {
           if (el && (el.value || el.value === 0) && !text) {
             text = "<table class='" + 'custom-tooltip' + "'>" + "<tr><th colspan='2'>" + titleFormat(el.x) + '</th></tr>'
           }

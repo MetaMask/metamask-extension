@@ -8,9 +8,6 @@
   "reject": {
     "message": "拒否"
   },
-  "likeToConnect": {
-    "message": "$1 はあなたのアカウントにアクセスしようとしています。"
-  },
   "aboutSettingsDescription": {
     "message": "バージョンやサポート、問合せ先など"
   },
@@ -106,10 +103,10 @@
   "attributions": {
     "message": "属性"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自動ログアウト(分)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMaskが自動的にログアウトするまでのアイドル時間を分単位で設定します。"
   },
   "average": {
@@ -120,9 +117,6 @@
   },
   "balance": {
     "message": "残高:"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "現在のガス総量に対して残高が不足しています"
   },
   "blockiesIdenticon": {
     "message": "Blockies Identicon を使用"
@@ -148,20 +142,11 @@
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
   },
-  "conversionProgress": {
-    "message": "変換中"
-  },
-  "copiedButton": {
-    "message": "コピー完了"
-  },
   "copiedExclamation": {
     "message": "コピー完了!"
   },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
-  },
-  "copyButton": {
-    "message": " コピー "
   },
   "copyPrivateKey": {
     "message": "これはあなたの秘密鍵です(クリックでコピー)"
@@ -234,23 +219,14 @@
   "from": {
     "message": "送信元"
   },
-  "fromShapeShift": {
-    "message": "ShapeShiftから"
-  },
   "gasLimit": {
     "message": "ガスリミット"
-  },
-  "gasLimitCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスリミットを提案しています。"
   },
   "gasLimitTooLow": {
     "message": "ガスリミットは最低21000です。"
   },
   "gasPrice": {
     "message": "ガスプライス (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "ネットワークの成功率を基にして、ガスプライスを提案しています。"
   },
   "getEther": {
     "message": "Etherを取得する"
@@ -265,9 +241,6 @@
   },
   "hide": {
     "message": "隠す"
-  },
-  "hideToken": {
-    "message": "トークンを隠す"
   },
   "hideTokenPrompt": {
     "message": "トークンを隠しますか?"
@@ -323,17 +296,14 @@
   "loadingTokens": {
     "message": "トークンをロード中..."
   },
-  "login": {
+  "unlock": {
     "message": "ログイン"
   },
-  "logout": {
+  "lock": {
     "message": "ログアウト"
   },
   "mainnet": {
     "message": "Ethereumメインネットワーク"
-  },
-  "menu": {
-    "message": "メニュー"
   },
   "message": {
     "message": "メッセージ"
@@ -376,9 +346,6 @@
   "noAddressForName": {
     "message": "この名前にはアドレスが設定されていません。"
   },
-  "noDeposits": {
-    "message": "振込みがありません。"
-  },
   "noTransactions": {
     "message": "トランザクションがありません。"
   },
@@ -402,9 +369,6 @@
   "privateNetwork": {
     "message": "プライベート・ネットワーク"
   },
-  "qrCode": {
-    "message": "QRコードを表示"
-  },
   "readdToken": {
     "message": "アカウントのオプションメニューから「トークンを追加」すれば、将来このトークンを追加し直すことができます。"
   },
@@ -425,9 +389,6 @@
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
-  },
-  "revert": {
-    "message": "元に戻す"
   },
   "rinkeby": {
     "message": "Rinkebyテストネットワーク"
@@ -488,10 +449,6 @@
   },
   "to": {
     "message": "送信先"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShiftで $1をETHにする",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "トークン"

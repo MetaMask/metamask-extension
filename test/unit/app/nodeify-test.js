@@ -1,5 +1,5 @@
-const assert = require('assert')
-const nodeify = require('../../../app/scripts/lib/nodeify')
+import assert from 'assert'
+import nodeify from '../../../app/scripts/lib/nodeify'
 
 describe('nodeify', function () {
   const obj = {
@@ -12,7 +12,7 @@ describe('nodeify', function () {
 
   it('should retain original context', function (done) {
     const nodified = nodeify(obj.promiseFunc, obj)
-    nodified('baz', function (err, res) {
+    nodified('baz', (err, res) => {
       if (!err) {
         assert.equal(res, 'barbaz')
         done()
@@ -29,22 +29,6 @@ describe('nodeify', function () {
       done()
     } catch (err) {
       done(new Error('should not have thrown if the last argument is not a function'))
-    }
-  })
-
-  it('no callback - should asyncly throw an error if underlying function does', function (done) {
-    const nodified = nodeify(async () => {
-      throw new Error('boom!')
-    }, obj)
-    process.prependOnceListener('uncaughtException', function (err) {
-      assert.ok(err, 'got expected error')
-      assert.ok(err.message.includes('boom!'), 'got expected error message')
-      done()
-    })
-    try {
-      nodified('baz')
-    } catch (err) {
-      done(new Error('should not have thrown an error synchronously'))
     }
   })
 

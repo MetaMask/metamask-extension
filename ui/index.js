@@ -1,19 +1,28 @@
+import copyToClipboard from 'copy-to-clipboard'
+import log from 'loglevel'
+import { clone } from 'lodash'
 import React from 'react'
-const render = require('react-dom').render
-const Root = require('./app/pages')
-const actions = require('./app/store/actions')
-const configureStore = require('./app/store/store')
-const txHelper = require('./lib/tx-helper')
-const { fetchLocale } = require('./app/helpers/utils/i18n-helper')
+import { render } from 'react-dom'
+import Root from './app/pages'
+import * as actions from './app/store/actions'
+import configureStore from './app/store/store'
+import txHelper from './lib/tx-helper'
+import { getEnvironmentType } from '../app/scripts/lib/util'
+import { ALERT_TYPES } from '../app/scripts/controllers/alert'
+import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
+import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
-const log = require('loglevel')
-
-module.exports = launchMetamaskUi
+import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
+import { ALERT_STATE } from './app/ducks/alerts/switch-to-connected'
+import {
+  getSwitchToConnectedAlertEnabledness,
+  getSwitchToConnectedAlertShown,
+} from './app/ducks/metamask/metamask'
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
-function launchMetamaskUi (opts, cb) {
-  const {backgroundConnection} = opts
+export default function launchMetamaskUi (opts, cb) {
+  const { backgroundConnection } = opts
   actions._setBackgroundConnection(backgroundConnection)
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -22,6 +31,7 @@ function launchMetamaskUi (opts, cb) {
     }
     startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
+        setupDebuggingHelpers(store)
         cb(null, store)
       })
   })
@@ -42,7 +52,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     await switchDirection('rtl')
   }
 
-  const store = configureStore({
+  const draftInitialState = {
     activeTab: opts.activeTab,
 
     // metamaskState represents the cross-tab state
@@ -55,13 +65,39 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
+  }
 
-    // Which blockchain we are using:
-    networkVersion: opts.networkVersion,
-  })
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    const origin = draftInitialState.activeTab.origin
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
+    const selectedAddress = getSelectedAddress(draftInitialState)
+    const switchToConnectedAlertShown = getSwitchToConnectedAlertShown(draftInitialState)
+    const switchToConnectedAlertIsEnabled = getSwitchToConnectedAlertEnabledness(draftInitialState)
+
+    if (
+      origin &&
+      switchToConnectedAlertIsEnabled &&
+      !switchToConnectedAlertShown[origin] &&
+      permittedAccountsForCurrentTab.length > 0 &&
+      !permittedAccountsForCurrentTab.includes(selectedAddress)
+    ) {
+      draftInitialState[ALERT_TYPES.switchToConnected] = { state: ALERT_STATE.OPEN }
+      actions.setSwitchToConnectedAlertShown(origin)
+    }
+  }
+
+  const store = configureStore(draftInitialState)
 
   // if unconfirmed txs, start on txConf page
-  const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.unapprovedTypedMessages, metamaskState.network)
+  const unapprovedTxsAll = txHelper(
+    metamaskState.unapprovedTxs,
+    metamaskState.unapprovedMsgs,
+    metamaskState.unapprovedPersonalMsgs,
+    metamaskState.unapprovedDecryptMsgs,
+    metamaskState.unapprovedEncryptionPublicKeyMsgs,
+    metamaskState.unapprovedTypedMessages,
+    metamaskState.network
+  )
   const numberOfUnapprivedTx = unapprovedTxsAll.length
   if (numberOfUnapprivedTx > 0) {
     store.dispatch(actions.showConfTxPage({
@@ -70,14 +106,6 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   backgroundConnection.on('update', function (metamaskState) {
-    const currentState = store.getState()
-    const { currentLocale } = currentState.metamask
-    const { currentLocale: newLocale } = metamaskState
-
-    if (currentLocale && newLocale && currentLocale !== newLocale) {
-      store.dispatch(actions.updateCurrentLocale(newLocale))
-    }
-
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
@@ -103,4 +131,38 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   )
 
   return store
+}
+
+function setupDebuggingHelpers (store) {
+  window.getCleanAppState = function () {
+    const state = clone(store.getState())
+    state.version = global.platform.getVersion()
+    state.browser = window.navigator.userAgent
+    return state
+  }
+}
+
+window.logStateString = function (cb) {
+  const state = window.getCleanAppState()
+  global.platform.getPlatformInfo((err, platform) => {
+    if (err) {
+      return cb(err)
+    }
+    state.platform = platform
+    const stateString = JSON.stringify(state, null, 2)
+    cb(null, stateString)
+  })
+}
+
+window.logState = function (toClipboard) {
+  return window.logStateString((err, result) => {
+    if (err) {
+      console.error(err.message)
+    } else if (toClipboard) {
+      copyToClipboard(result)
+      console.log('State log copied')
+    } else {
+      console.log(result)
+    }
+  })
 }

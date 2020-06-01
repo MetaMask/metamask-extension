@@ -1,6 +1,5 @@
-const ObservableStore = require('obs-store')
-const extend = require('xtend')
-const log = require('loglevel')
+import ObservableStore from 'obs-store'
+import log from 'loglevel'
 
 /**
  * @typedef {Object} InitState
@@ -17,7 +16,7 @@ const log = require('loglevel')
  * Controller responsible for maintaining
  * state related to onboarding
  */
-class OnboardingController {
+export default class OnboardingController {
   /**
    * Creates a new controller instance
    *
@@ -27,7 +26,7 @@ class OnboardingController {
     const initialTransientState = {
       onboardingTabs: {},
     }
-    const initState = extend(
+    const initState = Object.assign(
       {
         seedPhraseBackedUp: true,
       },
@@ -54,17 +53,13 @@ class OnboardingController {
     })
   }
 
-  getSeedPhraseBackedUp () {
-    return this.store.getState().seedPhraseBackedUp
-  }
-
   /**
    * Registering a site as having initiated onboarding
    *
    * @param {string} location - The location of the site registering
    * @param {string} tabId - The id of the tab registering
    */
-  async registerOnboarding (location, tabId) {
+  registerOnboarding = async (location, tabId) => {
     if (this.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded')
       return
@@ -77,5 +72,3 @@ class OnboardingController {
     }
   }
 }
-
-module.exports = OnboardingController

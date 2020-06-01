@@ -1,32 +1,34 @@
 .menu-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-bottom: 16px;
-  padding: 0 22px;
+  display: grid;
+  grid-template-columns: 30% minmax(30%, 1fr) 30%;
+  column-gap: 5px;
+  padding: 0 8px;
   border-bottom: 1px solid $Grey-100;
 
-  &__sidebar-button {
-    width: 20px;
-    height: 20px;
-    background-image: url(/images/icons/hamburger.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    cursor: pointer;
+  .menu-bar__account-options {
+    background: none;
+    font-size: inherit;
+    padding: 0 8px 0 5px;
+    place-self: center end;
   }
 
-  &__open-in-browser {
-    width: 20px;
-    height: 20px;
-    background-image: url(/images/icons/3dots.svg);
-    background-repeat: no-repeat;
+  .selected-account {
+    grid-column: 2 / span 1;
+    place-self: center stretch;
+  }
+}
+
+.account-options-menu {
+  &__connected-sites:before {
+    content: "";
+    background-image: url(/images/icons/connected-sites-black.svg);
     background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
+    padding: 8px;
+  }
+  &__explorer-origin {
+    color: $Grey-500;
+    font-size: 12px;
   }
 }

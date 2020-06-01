@@ -1,6 +1,9 @@
 # Changelog
 
 ## Current Develop Branch
+- [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
+- [#8246](https://github.com/MetaMask/metamask-extension/pull/8246): Make seed phrase import case-insensitive
+- [#8502](https://github.com/MetaMask/metamask-extension/pull/8502): Add support for IPFS address resolution
 
 ## 7.7.9 Tue Apr 28 2020
 - [#8446](https://github.com/MetaMask/metamask-extension/pull/8446): Fix popup not opening

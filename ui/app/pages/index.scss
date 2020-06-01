@@ -2,9 +2,17 @@
 
 @import 'add-token/index';
 
+@import 'error/index';
+
+@import 'home/index';
+
 @import 'send/send';
 
 @import 'confirm-add-token/index';
+
+@import 'connected-sites/index';
+
+@import 'connected-accounts/index';
 
 @import 'settings/index';
 
@@ -16,4 +24,4 @@
 
 @import 'permissions-connect/index';
 
-@import 'connected-sites/index';
+@import 'asset/asset';

@@ -8,9 +8,6 @@
   "reject": {
     "message": "Tolak"
   },
-  "likeToConnect": {
-    "message": "$1 ingin menyambung kepada akaun anda"
-  },
   "about": {
     "message": "Mengenai"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Baki mungkin lapuk"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Baki tidak mencukupi untuk jumlah keseluruhan gas semasa"
   },
   "basic": {
     "message": "Asas"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "ID Rantaian"
-  },
-  "clickToAdd": {
-    "message": "Klik pada $1 untuk menambahnya ke dalam akaun anda"
   },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk mendedahkan perkataan rahsia"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Penyusunan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Penukaran sedang dilakukan"
-  },
-  "copiedButton": {
-    "message": "Disalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan keratan"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini kunci persendirian anda (klik untuk menyalin)"
@@ -447,17 +429,11 @@
   "from": {
     "message": "Daripada"
   },
-  "fromShapeShift": {
-    "message": "Daripada ShapeShift"
-  },
   "functionType": {
     "message": "Jenis Fungsi"
   },
   "gasLimit": {
     "message": "Had Gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Kami mengira had gas yang dicadangkan berdasarkan kadar kejayaan rangkaian."
   },
   "gasLimitInfoModalContent": {
     "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
@@ -479,9 +455,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Harga Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Kami mengira harga gas disyorkan berdasarkan kadar kejayaan rangkaian."
   },
   "general": {
     "message": "Am"
@@ -529,9 +502,6 @@
   },
   "hide": {
     "message": "Sembunyikan"
-  },
-  "hideToken": {
-    "message": "Sembunyikan Token"
   },
   "hideTokenPrompt": {
     "message": "Sembunyikan Token?"
@@ -637,10 +607,7 @@
   "loadMore": {
     "message": "Muat Lagi"
   },
-  "login": {
-    "message": "Log Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Log keluar"
   },
   "mainnet": {
@@ -654,9 +621,6 @@
   },
   "metamaskDescription": {
     "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
-  },
-  "metamaskSeedWords": {
-    "message": "Perkataan Benih MetaMask"
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -759,9 +723,6 @@
   "noAddressForName": {
     "message": "Tiada alamat yang ditetapkan untuk nama ini."
   },
-  "noDeposits": {
-    "message": "Tiada deposit diterima"
-  },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
   },
@@ -835,9 +796,6 @@
   },
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
-  },
-  "qrCode": {
-    "message": "Tunjuk Kod QR"
   },
   "queue": {
     "message": "Baris Gilir"
@@ -913,9 +871,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
-  },
-  "revert": {
-    "message": "Undur"
   },
   "remove": {
     "message": "Alih keluar"
@@ -1131,7 +1086,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mestilah antara 0 hingga 12 aksara."
+    "message": "Simbol mestilah 11 aksara atau kurang."
   },
   "syncWithMobile": {
     "message": "Segerakkan dengan telefon mudah alih"
@@ -1168,10 +1123,6 @@
   },
   "to": {
     "message": "Kepada"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 kepada ETH melalui ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token telah pun ditambah."

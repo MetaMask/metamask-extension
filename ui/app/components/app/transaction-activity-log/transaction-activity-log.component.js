@@ -26,14 +26,14 @@ export default class TransactionActivityLog extends PureComponent {
     isEarliestNonce: PropTypes.bool,
   }
 
-  handleActivityClick = hash => {
+  handleActivityClick = (hash) => {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 
     const prefix = prefixForNetwork(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
 
-    global.platform.openWindow({ url: etherscanUrl })
+    global.platform.openTab({ url: etherscanUrl })
   }
 
   renderInlineRetry (index, activity) {
@@ -117,6 +117,10 @@ export default class TransactionActivityLog extends PureComponent {
   render () {
     const { t } = this.context
     const { className, activities } = this.props
+
+    if (activities.length === 0) {
+      return null
+    }
 
     return (
       <div className={classnames('transaction-activity-log', className)}>

@@ -34,9 +34,6 @@
   "balance": {
     "message": "Balanse:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Kulang ang balanse para sa kasalukuyang gas total"
-  },
   "buyCoinSwitch": {
     "message": "Bumili sa CoinSwitch"
   },
@@ -58,20 +55,11 @@
   "contractDeployment": {
     "message": "Pag-deploy ng Contract"
   },
-  "conversionProgress": {
-    "message": "Isinasagawa ang conversion"
-  },
-  "copiedButton": {
-    "message": "Kinopya"
-  },
   "copiedExclamation": {
     "message": "Kinopya!"
   },
   "copyToClipboard": {
     "message": "Kinopya sa clipboard"
-  },
-  "copyButton": {
-    "message": " Kinopya "
   },
   "copyPrivateKey": {
     "message": "Ito ang iyong private key (i-click upang makopya)"
@@ -132,17 +120,8 @@
   "from": {
     "message": "Mula sa"
   },
-  "fromShapeShift": {
-    "message": "Mula sa ShapeShift"
-  },
-  "gasLimitCalculation": {
-    "message": "Kinalkula namin ang iminungkahing gas limit base sa network success rates."
-  },
   "gasLimitTooLow": {
     "message": "Ang gas limit ay hindi dabat bababa sa 21000"
-  },
-  "gasPriceCalculation": {
-    "message": "Kinalkula namin ang iminungkahing gas prices base sa network success rates."
   },
   "getEther": {
     "message": "Kumuha ng Ether"
@@ -157,9 +136,6 @@
   },
   "hide": {
     "message": "Itago"
-  },
-  "hideToken": {
-    "message": "Itago ang Token"
   },
   "hideTokenPrompt": {
     "message": "Itago ang Token?"
@@ -218,9 +194,6 @@
   "noAddressForName": {
     "message": "Walang naka-set na address para sa pangalang ito."
   },
-  "noDeposits": {
-    "message": "Walang natanggap na mga deposito"
-  },
   "noTransactions": {
     "message": "Walang mga Transaksyon"
   },
@@ -234,9 +207,6 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "qrCode": {
-    "message": "Ipakita ang QR Code"
-  },
   "readdToken": {
     "message": "Upang muling idagdag ang token na ito, pumunta sa “Magdagdag ng Token” sa options menu ng iyong account."
   },
@@ -248,9 +218,6 @@
   },
   "required": {
     "message": "Kailangan"
-  },
-  "revert": {
-    "message": "Ibalik"
   },
   "save": {
     "message": "I-save"
@@ -275,10 +242,6 @@
   },
   "sigRequest": {
     "message": "Hiling na Signature"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
-    "description": "Pupunan ng system ang deposit type sa simula ng mensahe"
   },
   "total": {
     "message": "Kabuuan"

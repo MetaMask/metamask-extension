@@ -10,7 +10,6 @@ import Identicon from '../../ui/identicon'
 import AccountListItem from '../../../pages/send/account-list-item/account-list-item.component'
 import { conversionUtil } from '../../../helpers/utils/conversion-util'
 import Button from '../../ui/button'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -19,23 +18,27 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   static propTypes = {
-    balance: PropTypes.string,
+    fromAccount: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      balance: PropTypes.string,
+      name: PropTypes.string,
+    }).isRequired,
     cancel: PropTypes.func.isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
-    selectedAccount: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
   }
 
   state = {
-    selectedAccount: this.props.selectedAccount,
+    fromAccount: this.props.fromAccount,
   }
 
   componentDidMount = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -59,7 +62,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -81,7 +84,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderAccount = () => {
-    const { selectedAccount } = this.state
+    const { fromAccount } = this.state
 
     return (
       <div className="request-signature__account">
@@ -91,7 +94,7 @@ export default class SignatureRequestOriginal extends Component {
 
         <div className="request-signature__account-item">
           <AccountListItem
-            account={selectedAccount}
+            account={fromAccount}
             displayBalance={false}
           />
         </div>
@@ -100,7 +103,8 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderBalance = () => {
-    const { balance, conversionRate } = this.props
+    const { conversionRate } = this.props
+    const { fromAccount: { balance } } = this.state
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
@@ -229,7 +233,7 @@ export default class SignatureRequestOriginal extends Component {
                 <span
                   className="request-signature__help-link"
                   onClick={() => {
-                    global.platform.openWindow({
+                    global.platform.openTab({
                       url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
                     })
                   }}
@@ -264,7 +268,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderFooter = () => {
-    const { cancel, sign } = this.props
+    const { cancel, clearConfirmTransaction, history, mostRecentOverviewPage, sign } = this.props
 
     return (
       <div className="request-signature__footer">
@@ -272,7 +276,7 @@ export default class SignatureRequestOriginal extends Component {
           type="default"
           large
           className="request-signature__footer__cancel-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await cancel(event)
             this.context.metricsEvent({
@@ -282,17 +286,17 @@ export default class SignatureRequestOriginal extends Component {
                 name: 'Cancel',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('cancel') }
-        </Button>,
+        </Button>
         <Button
           type="secondary"
           large
           className="request-signature__footer__sign-button"
-          onClick={async event => {
+          onClick={async (event) => {
             this._removeBeforeUnload()
             await sign(event)
             this.context.metricsEvent({
@@ -302,8 +306,8 @@ export default class SignatureRequestOriginal extends Component {
                 name: 'Confirm',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('sign') }

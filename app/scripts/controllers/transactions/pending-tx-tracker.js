@@ -1,6 +1,6 @@
-const EventEmitter = require('safe-event-emitter')
-const log = require('loglevel')
-const EthQuery = require('ethjs-query')
+import EventEmitter from 'safe-event-emitter'
+import log from 'loglevel'
+import EthQuery from 'ethjs-query'
 
 /**
 
@@ -9,7 +9,7 @@ const EthQuery = require('ethjs-query')
 <br>
   As well as continues broadcast while in the pending state
 <br>
-@param config {object} - non optional configuration object consists of:
+@param {Object} config - non optional configuration object consists of:
     @param {Object} config.provider - A network provider.
     @param {Object} config.nonceTracker see nonce tracker
     @param {function} config.getPendingTransactions a function for getting an array of transactions,
@@ -19,11 +19,27 @@ const EthQuery = require('ethjs-query')
 @class
 */
 
-class PendingTransactionTracker extends EventEmitter {
+export default class PendingTransactionTracker extends EventEmitter {
+  /**
+   * We wait this many blocks before emitting a 'tx:dropped' event
+   *
+   * This is because we could be talking to a node that is out of sync.
+   *
+   * @type {number}
+   */
+  DROPPED_BUFFER_COUNT = 3
+
+  /**
+   * A map of transaction hashes to the number of blocks we've seen
+   * since first considering it dropped
+   *
+   * @type {Map<String, number>}
+   */
+  droppedBlocksBufferByHash = new Map()
+
   constructor (config) {
     super()
-    this.droppedBuffer = {}
-    this.query = new EthQuery(config.provider)
+    this.query = config.query || (new EthQuery(config.provider))
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
@@ -49,57 +65,58 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    Will resubmit any transactions who have not been confirmed in a block
-    @param block {object} - a block object
-    @emits tx:warning
-  */
-  resubmitPendingTxs (blockNumber) {
+   * Resubmits each pending transaction
+   * @param {string} blockNumber - the latest block number in hex
+   * @emits tx:warning
+   * @returns {Promise<void>}
+   */
+  async resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
-    // only try resubmitting if their are transactions to resubmit
     if (!pending.length) {
       return
     }
-    pending.forEach((txMeta) => this._resubmitTx(txMeta, blockNumber).catch((err) => {
-      /*
-      Dont marked as failed if the error is a "known" transaction warning
-      "there is already a transaction with the same sender-nonce
-      but higher/same gas price"
-
-      Also don't mark as failed if it has ever been broadcast successfully.
-      A successful broadcast means it may still be mined.
-      */
-      const errorMessage = err.message.toLowerCase()
-      const isKnownTx = (
-        // geth
-        errorMessage.includes('replacement transaction underpriced') ||
-        errorMessage.includes('known transaction') ||
-        // parity
-        errorMessage.includes('gas price too low to replace') ||
-        errorMessage.includes('transaction with the same hash was already imported') ||
-        // other
-        errorMessage.includes('gateway timeout') ||
-        errorMessage.includes('nonce too low')
-      )
-      // ignore resubmit warnings, return early
-      if (isKnownTx) {
-        return
+    for (const txMeta of pending) {
+      try {
+        await this._resubmitTx(txMeta, blockNumber)
+      } catch (err) {
+        const errorMessage = err.message.toLowerCase()
+        const isKnownTx = (
+          // geth
+          errorMessage.includes('replacement transaction underpriced') ||
+          errorMessage.includes('known transaction') ||
+          // parity
+          errorMessage.includes('gas price too low to replace') ||
+          errorMessage.includes('transaction with the same hash was already imported') ||
+          // other
+          errorMessage.includes('gateway timeout') ||
+          errorMessage.includes('nonce too low')
+        )
+        // ignore resubmit warnings, return early
+        if (isKnownTx) {
+          return
+        }
+        // encountered real error - transition to error state
+        txMeta.warning = {
+          error: errorMessage,
+          message: 'There was an error when resubmitting this transaction.',
+        }
+        this.emit('tx:warning', txMeta, err)
       }
-      // encountered real error - transition to error state
-      txMeta.warning = {
-        error: errorMessage,
-        message: 'There was an error when resubmitting this transaction.',
-      }
-      this.emit('tx:warning', txMeta, err)
-    }))
+    }
   }
 
   /**
-    resubmits the individual txMeta used in resubmitPendingTxs
-    @param txMeta {Object} - txMeta object
-    @param latestBlockNumber {string} - hex string for the latest block number
-    @emits tx:retry
-    @returns txHash {string}
-  */
+   * Attempts to resubmit the given transaction with exponential backoff
+   *
+   * Will only attempt to retry the given tx every {@code 2**(txMeta.retryCount)} blocks.
+   *
+   * @param {Object} txMeta - the transaction metadata
+   * @param {string} latestBlockNumber - the latest block number in hex
+   * @returns {Promise<string|undefined>} the tx hash if retried
+   * @emits tx:block-update
+   * @emits tx:retry
+   * @private
+   */
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
@@ -129,12 +146,15 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    Ask the network for the transaction to see if it has been include in a block
-    @param txMeta {Object} - the txMeta object
-    @emits tx:failed
-    @emits tx:confirmed
-    @emits tx:warning
-  */
+   * Query the network to see if the given {@code txMeta} has been included in a block
+   * @param {Object} txMeta - the transaction metadata
+   * @returns {Promise<void>}
+   * @emits tx:confirmed
+   * @emits tx:dropped
+   * @emits tx:failed
+   * @emits tx:warning
+   * @private
+   */
   async _checkPendingTx (txMeta) {
     const txHash = txMeta.hash
     const txId = txMeta.id
@@ -154,39 +174,16 @@ class PendingTransactionTracker extends EventEmitter {
       return
     }
 
-    // If another tx with the same nonce is mined, set as dropped.
-    const taken = await this._checkIfNonceIsTaken(txMeta)
-    let dropped
-    try {
-      // check the network if the nonce is ahead the tx
-      // and the tx has not been mined into a block
-
-      dropped = await this._checkIftxWasDropped(txMeta)
-      // the dropped buffer is in case we ask a node for the tx
-      // that is behind the node we asked for tx count
-      // IS A SECURITY FOR HITTING NODES IN INFURA THAT COULD GO OUT
-      // OF SYNC.
-      // on the next block event it will return fire as dropped
-      if (dropped && !this.droppedBuffer[txHash]) {
-        this.droppedBuffer[txHash] = true
-        dropped = false
-      } else if (dropped && this.droppedBuffer[txHash]) {
-        // clean up
-        delete this.droppedBuffer[txHash]
-      }
-
-    } catch (e) {
-      log.error(e)
-    }
-    if (taken || dropped) {
-      return this.emit('tx:dropped', txId)
+    if (await this._checkIfNonceIsTaken(txMeta)) {
+      this.emit('tx:dropped', txId)
+      return
     }
 
-    // get latest transaction status
     try {
-      const { blockNumber } = await this.query.getTransactionReceipt(txHash) || {}
-      if (blockNumber) {
-        this.emit('tx:confirmed', txId)
+      const transactionReceipt = await this.query.getTransactionReceipt(txHash)
+      if (transactionReceipt?.blockNumber) {
+        this.emit('tx:confirmed', txId, transactionReceipt)
+        return
       }
     } catch (err) {
       txMeta.warning = {
@@ -194,40 +191,59 @@ class PendingTransactionTracker extends EventEmitter {
         message: 'There was a problem loading this transaction.',
       }
       this.emit('tx:warning', txMeta, err)
+      return
     }
-  }
-  /**
-    checks to see if if the tx's nonce has been used by another transaction
-    @param txMeta {Object} - txMeta object
-    @emits tx:dropped
-    @returns {boolean}
-  */
 
-  async _checkIftxWasDropped (txMeta) {
-    const { txParams: { nonce, from }, hash } = txMeta
-    const nextNonce = await this.query.getTransactionCount(from)
-    const { blockNumber } = await this.query.getTransactionReceipt(hash) || {}
-    if (!blockNumber && parseInt(nextNonce) > parseInt(nonce)) {
-      return true
+    if (await this._checkIfTxWasDropped(txMeta)) {
+      this.emit('tx:dropped', txId)
+      return
     }
-    return false
   }
 
   /**
-    checks to see if a confirmed txMeta has the same nonce
-    @param txMeta {Object} - txMeta object
-    @returns {boolean}
-  */
+   * Checks whether the nonce in the given {@code txMeta} is behind the network nonce
+   *
+   * @param {Object} txMeta - the transaction metadata
+   * @returns {Promise<boolean>}
+   * @private
+   */
+  async _checkIfTxWasDropped (txMeta) {
+    const { hash: txHash, txParams: { nonce, from } } = txMeta
+    const networkNonce = await this.query.getTransactionCount(from)
 
+    if (parseInt(nonce) > parseInt(networkNonce)) {
+      return false
+    }
 
+    if (!this.droppedBlocksBufferByHash.has(txHash)) {
+      this.droppedBlocksBufferByHash.set(txHash, 0)
+    }
+
+    const currentBlockBuffer = this.droppedBlocksBufferByHash.get(txHash)
+
+    if (currentBlockBuffer < this.DROPPED_BUFFER_COUNT) {
+      this.droppedBlocksBufferByHash.set(txHash, currentBlockBuffer + 1)
+      return false
+    }
+
+    this.droppedBlocksBufferByHash.delete(txHash)
+    return true
+  }
+
+  /**
+   * Checks whether the nonce in the given {@code txMeta} is correct against the local set of transactions
+   * @param {Object} txMeta - the transaction metadata
+   * @returns {Promise<boolean>}
+   * @private
+   */
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
-    const sameNonce = completed.filter((otherMeta) => {
-      return otherMeta.txParams.nonce === txMeta.txParams.nonce
-    })
-    return sameNonce.length > 0
+    return completed.some((other) =>
+      // This is called while the transaction is in-flight, so it is possible that the
+      // list of completed transactions now includes the transaction we were looking at
+      // and if that is the case, don't consider the transaction to have taken its own nonce
+      !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce
+    )
   }
 }
-
-module.exports = PendingTransactionTracker

@@ -4,9 +4,9 @@ import classnames from 'classnames'
 
 /**
  * Menu component
- * @return {Component|null}
+ * @returns {Component|null}
  */
-function Menu (props) {
+export function Menu (props) {
   const { className, children, isShowing } = props
   return isShowing
     ? <div className={classnames('menu', className)}>{children}</div>
@@ -25,7 +25,7 @@ Menu.propTypes = {
   isShowing: PropTypes.bool,
 }
 
-function Item (props) {
+export function Item (props) {
   const {
     icon,
     children,
@@ -70,16 +70,14 @@ Item.propTypes = {
   onClick: PropTypes.func,
 }
 
-function Divider () {
+export function Divider () {
   return <div className="menu__divider" />
 }
 
-function CloseArea ({ onClick }) {
+export function CloseArea ({ onClick }) {
   return <div className="menu__close-area" onClick={onClick} />
 }
 
 CloseArea.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
-
-module.exports = { Menu, Item, Divider, CloseArea }

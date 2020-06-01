@@ -18,12 +18,12 @@
   }
 
   &__identicon {
+    position: relative;
     width: 24px;
     height: 24px;
-    z-index: 1;
 
     &--default {
-      z-index: 1;
+      position: relative;
       color: black;
     }
   }

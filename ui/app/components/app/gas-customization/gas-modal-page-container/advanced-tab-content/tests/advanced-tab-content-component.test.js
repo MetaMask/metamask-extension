@@ -7,17 +7,16 @@ import AdvancedTabContent from '../advanced-tab-content.component.js'
 import GasPriceChart from '../../../gas-price-chart'
 import Loading from '../../../../../ui/loading-screen'
 
-const propsMethodSpies = {
-  updateCustomGasPrice: sinon.spy(),
-  updateCustomGasLimit: sinon.spy(),
-}
-
-sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
-
 describe('AdvancedTabContent Component', function () {
   let wrapper
 
-  beforeEach(() => {
+  beforeEach(function () {
+    const propsMethodSpies = {
+      updateCustomGasPrice: sinon.spy(),
+      updateCustomGasLimit: sinon.spy(),
+    }
+    sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
+
     wrapper = shallow((
       <AdvancedTabContent
         updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
@@ -34,18 +33,16 @@ describe('AdvancedTabContent Component', function () {
     ))
   })
 
-  afterEach(() => {
-    propsMethodSpies.updateCustomGasPrice.resetHistory()
-    propsMethodSpies.updateCustomGasLimit.resetHistory()
-    AdvancedTabContent.prototype.renderDataSummary.resetHistory()
+  afterEach(function () {
+    sinon.restore()
   })
 
-  describe('render()', () => {
-    it('should render the advanced-tab root node', () => {
+  describe('render()', function () {
+    it('should render the advanced-tab root node', function () {
       assert(wrapper.hasClass('advanced-tab'))
     })
 
-    it('should render the expected four children of the advanced-tab div', () => {
+    it('should render the expected four children of the advanced-tab div', function () {
       const advancedTabChildren = wrapper.children()
       assert.equal(advancedTabChildren.length, 2)
 
@@ -59,7 +56,7 @@ describe('AdvancedTabContent Component', function () {
       assert(feeChartDiv.childAt(1).childAt(2).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 
-    it('should render a loading component instead of the chart if gasEstimatesLoading is true', () => {
+    it('should render a loading component instead of the chart if gasEstimatesLoading is true', function () {
       wrapper.setProps({ gasEstimatesLoading: true })
       const advancedTabChildren = wrapper.children()
       assert.equal(advancedTabChildren.length, 2)
@@ -74,31 +71,31 @@ describe('AdvancedTabContent Component', function () {
       assert(feeChartDiv.childAt(1).childAt(2).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 
-    it('should call renderDataSummary with the expected params', () => {
+    it('should call renderDataSummary with the expected params', function () {
       const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(0).args
       assert.deepEqual(renderDataSummaryArgs, ['$0.25', 21500])
     })
   })
 
-  describe('renderDataSummary()', () => {
+  describe('renderDataSummary()', function () {
     let dataSummary
 
-    beforeEach(() => {
+    beforeEach(function () {
       dataSummary = shallow(wrapper.instance().renderDataSummary('mockTotalFee', 'mockMsRemaining'))
     })
 
-    it('should render the transaction-data-summary root node', () => {
+    it('should render the transaction-data-summary root node', function () {
       assert(dataSummary.hasClass('advanced-tab__transaction-data-summary'))
     })
 
-    it('should render titles of the data', () => {
+    it('should render titles of the data', function () {
       const titlesNode = dataSummary.children().at(0)
       assert(titlesNode.hasClass('advanced-tab__transaction-data-summary__titles'))
       assert.equal(titlesNode.children().at(0).text(), 'newTransactionFee')
       assert.equal(titlesNode.children().at(1).text(), '~transactionTime')
     })
 
-    it('should render the data', () => {
+    it('should render the data', function () {
       const dataNode = dataSummary.children().at(1)
       assert(dataNode.hasClass('advanced-tab__transaction-data-summary__container'))
       assert.equal(dataNode.children().at(0).text(), 'mockTotalFee')

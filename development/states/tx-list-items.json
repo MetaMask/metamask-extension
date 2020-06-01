@@ -3,7 +3,9 @@
     "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
-    "featureFlags": {"betaUI": true},
+    "featureFlags": {
+      "betaUI": true
+    },
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825": {
@@ -65,18 +67,25 @@
         "name": "Address Book Account 1"
       }
     ],
-    "tokens": [],
+    "tokens": [{
+      "name": "FakeTokenOne",
+      "address": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1ec",
+      "symbol": "FTO",
+      "decimals": 2
+    }, {
+      "name": "FakeTokenTwo",
+      "address": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1eb",
+      "symbol": "FTT",
+      "decimals": 2
+    }],
     "transactions": {},
     "incomingTransactions": {},
-    "selectedAddressTxList": [
+    "currentNetworkTxList": [
       {
         "err": {
           "message": "Error: intrinsic gas too low",
           "stack": "Error: some error"
         },
-        "estimatedGas": "0xcf08",
-        "gasLimitSpecified": true,
-        "gasPriceSpecified": true,
         "history": [
           {
             "id": 4068311466147836,
@@ -97,21 +106,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [
@@ -224,9 +218,10 @@
         "rawTx": "0xf8610384773594008094f45d68f31b3c9ac84ff0d07b86c59b753a60b1e3808029a052e5246c9a404f756a246b8cec545099741aeb4e6e0add935a5b7a366fa88f95a0538eaa2421e50377c534244dcdcd15ace00bf9c0adbd9eb162baae2b9e89a36f",
         "status": "failed",
         "time": 1522378334455,
+        "transactionCategory": "sentEther",
         "txParams": {
           "chainId": "0x3",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0x0",
           "gasPrice": "0x77359400",
           "nonce": "0x3",
@@ -240,8 +235,9 @@
         "status": "approved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0x0",
@@ -268,21 +264,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [
@@ -301,16 +282,10 @@
               "note": "txStateManager: setting status to approved"
             }
           ]
-        ],
-        "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        ]
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
-        "gasLimitSpecified": false,
-        "gasPriceSpecified": false,
         "hash": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd",
         "history": [
           {
@@ -345,21 +320,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "8d41"
             }
           ],
           [
@@ -503,10 +463,11 @@
         "status": "confirmed",
         "submittedTime": 1522346282571,
         "time": 1522348270251,
+        "transactionCategory": "transfer",
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0xd3e1",
           "gasPrice": "0x5f5e100",
           "nonce": "0x6",
@@ -515,10 +476,7 @@
         }
       },
       {
-        "estimatedGas": "8d41",
         "firstRetryBlockNumber": "0x2cbc70",
-        "gasLimitSpecified": false,
-        "gasPriceSpecified": false,
         "hash": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd",
         "history": [
           {
@@ -553,21 +511,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": false
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "8d41"
             }
           ],
           [
@@ -711,10 +654,11 @@
         "status": "confirmed",
         "submittedTime": 1522346282571,
         "time": 1522346270251,
+        "transactionCategory": "transfer",
         "txParams": {
           "chainId": "0x3",
           "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "gas": "0xd3e1",
           "gasPrice": "0x5f5e100",
           "nonce": "0x2",
@@ -728,8 +672,9 @@
         "status": "submitted",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0xcf08",
@@ -757,21 +702,6 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ],
           [],
@@ -871,9 +801,6 @@
             }
           ]
         ],
-        "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08",
         "nonceDetails": {
           "params": {
             "highestLocalNonce": 3,
@@ -907,8 +834,9 @@
         "status": "unapproved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
-          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "from": "0xd85a4b6a394794842887b8284293d69163007bbb",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
           "value": "0x0",
           "gas": "0xcf08",
@@ -934,27 +862,9 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ]
-        ],
-        "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        ]
       }
     ],
     "unapprovedTxs": {
@@ -964,6 +874,7 @@
         "status": "unapproved",
         "metamaskNetworkId": "1",
         "loadingDefaults": false,
+        "transactionCategory": "sentEther",
         "txParams": {
           "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
           "to": "0xf45d68f31b3c9ac84ff0d07b86c59b753a60b1e3",
@@ -991,27 +902,9 @@
               "op": "replace",
               "path": "/loadingDefaults",
               "value": false
-            },
-            {
-              "op": "add",
-              "path": "/gasPriceSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/gasLimitSpecified",
-              "value": true
-            },
-            {
-              "op": "add",
-              "path": "/estimatedGas",
-              "value": "0xcf08"
             }
           ]
-        ],
-        "gasPriceSpecified": true,
-        "gasLimitSpecified": true,
-        "estimatedGas": "0xcf08"
+        ]
       }
     },
     "unapprovedMsgs": {
@@ -1053,10 +946,6 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522347459106},
-      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq"},"time":1522345459106}
-    ],
     "send": {},
     "currentLocale": "en",
     "preferences": {
@@ -1079,7 +968,6 @@
       "previousModalState": {}
     },
     "sidebar": {},
-    "transForward": true,
     "isLoading": false,
     "warning": null,
     "scrollToBottom": false,
@@ -1087,7 +975,6 @@
   },
   "identities": {},
   "send": {
-    "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {},
     "warnings": {}
@@ -1407,5 +1294,11 @@
     "priceAndTimeEstimatesLastRetrieved": 1541527901281,
     "errors": {}
   },
-  "confirmTransaction": {}
+  "confirmTransaction": {},
+  "switchToConnected": {
+    "state": "CLOSED"
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  }
 }

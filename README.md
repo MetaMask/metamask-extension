@@ -1,4 +1,5 @@
 # MetaMask Browser Extension
+
 [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master)
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
@@ -29,10 +30,6 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 ## Contributing
 
-You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
-
-You can re-generate the docs locally by running `yarn doc`, and contributors can update the hosted docs by running `yarn publish-docs`.
-
 ### Running Tests
 
 Run tests with `yarn test`.
@@ -58,20 +55,12 @@ yarn start
 yarn dist
 ```
 
-#### Writing Browser Tests
-
-To write tests that will be run in the browser using QUnit, add your test files to `test/integration/lib`.
-
 ## Other Docs
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
-- [The MetaMask Team](./docs/team.md)
-- [How to live reload on local dependency changes](./docs/developing-on-deps.md)
-- [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
-- [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 

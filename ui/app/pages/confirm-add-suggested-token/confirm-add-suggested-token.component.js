@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/ui/token-balance'
@@ -12,18 +11,18 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   static propTypes = {
     history: PropTypes.object,
-    clearPendingTokens: PropTypes.func,
     addToken: PropTypes.func,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
     tokens: PropTypes.array,
   }
 
   componentDidMount () {
-    const { pendingTokens = {}, history } = this.props
+    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
 
     if (Object.keys(pendingTokens).length === 0) {
-      history.push(DEFAULT_ROUTE)
+      history.push(mostRecentOverviewPage)
     }
   }
 
@@ -34,7 +33,7 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
+    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history, mostRecentOverviewPage } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
     const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
@@ -107,14 +106,14 @@ export default class ConfirmAddSuggestedToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <header>
+          <footer>
             <Button
               type="default"
               large
               className="page-container__footer-button"
               onClick={() => {
                 removeSuggestedTokens()
-                  .then(() => history.push(DEFAULT_ROUTE))
+                  .then(() => history.push(mostRecentOverviewPage))
               }}
             >
               { this.context.t('cancel') }
@@ -126,12 +125,12 @@ export default class ConfirmAddSuggestedToken extends Component {
               onClick={() => {
                 addToken(pendingToken)
                   .then(() => removeSuggestedTokens())
-                  .then(() => history.push(DEFAULT_ROUTE))
+                  .then(() => history.push(mostRecentOverviewPage))
               }}
             >
               { this.context.t('addToken') }
             </Button>
-          </header>
+          </footer>
         </div>
       </div>
     )
@@ -139,7 +138,7 @@ export default class ConfirmAddSuggestedToken extends Component {
 
   checkTokenDuplicates (pendingTokens, tokens) {
     const pending = Object.keys(pendingTokens)
-    const existing = tokens.map(token => token.address)
+    const existing = tokens.map((token) => token.address)
     const dupes = pending.filter((proposed) => {
       return existing.includes(proposed)
     })
@@ -157,8 +156,8 @@ export default class ConfirmAddSuggestedToken extends Component {
     const duplicates = Object.keys(pendingTokens)
       .map((addr) => pendingTokens[addr])
       .filter((token) => {
-        const dupes = tokens.filter(old => old.symbol === token.symbol)
-          .filter(old => old.address !== token.address)
+        const dupes = tokens.filter((old) => old.symbol === token.symbol)
+          .filter((old) => old.address !== token.address)
         return dupes.length > 0
       })
     return duplicates.length > 0

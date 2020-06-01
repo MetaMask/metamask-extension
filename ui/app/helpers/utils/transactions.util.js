@@ -19,6 +19,8 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
+  DECRYPT_REQUEST_KEY,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
@@ -135,7 +137,13 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    return SIGNATURE_REQUEST_KEY
+    if (type === 'eth_decrypt') {
+      return DECRYPT_REQUEST_KEY
+    } else if (type === 'eth_getEncryptionPublicKey') {
+      return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
+    } else {
+      return SIGNATURE_REQUEST_KEY
+    }
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -228,7 +236,7 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
   }
   const prefix = prefixForNetwork(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`

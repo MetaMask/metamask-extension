@@ -37,9 +37,6 @@
   "balance": {
     "message": "Số dư:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Số dư không đủ để thanh toán tổng tiền gas hiện tại"
-  },
   "buyCoinSwitch": {
     "message": "Mua trên CoinSwitch"
   },
@@ -61,20 +58,11 @@
   "contractDeployment": {
     "message": "Triển khai hợp đồng"
   },
-  "conversionProgress": {
-    "message": "Đang chuyển đổi"
-  },
-  "copiedButton": {
-    "message": "Đã sao chép"
-  },
   "copiedExclamation": {
     "message": "Đã sao chép!"
   },
   "copyToClipboard": {
     "message": "Đã sao chép vào clipboard"
-  },
-  "copyButton": {
-    "message": "Sao chép"
   },
   "copyPrivateKey": {
     "message": "Đây là Khoá Bí Mật của bạn (nhấp vào để sao chép)"
@@ -138,23 +126,14 @@
   "from": {
     "message": "Từ"
   },
-  "fromShapeShift": {
-    "message": "Từ ShapeShift"
-  },
   "gasLimit": {
     "message": "Hạn mức ga"
-  },
-  "gasLimitCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một hạn mức ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
   "gasLimitTooLow": {
     "message": "Hạn mức ga phải đạt tối thiểu 21000"
   },
   "gasPrice": {
     "message": "Giá ga (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Chúng tôi tính toán và gợi ý một giá ga cụ thể dựa trên tỷ lệ thành công của hệ thống."
   },
   "getEther": {
     "message": "Lấy Ether"
@@ -169,9 +148,6 @@
   },
   "hide": {
     "message": "Ẩn"
-  },
-  "hideToken": {
-    "message": "Ẩn mã token"
   },
   "hideTokenPrompt": {
     "message": "Ẩn mã token?"
@@ -209,7 +185,7 @@
   "loadingTokens": {
     "message": "Đang tải mã token..."
   },
-  "logout": {
+  "lock": {
     "message": "Thoát"
   },
   "mainnet": {
@@ -250,9 +226,6 @@
   "noAddressForName": {
     "message": "Không có địa chỉ nào được ấn định cho tên này."
   },
-  "noDeposits": {
-    "message": "Không có tiền ký gửi nào được nhận"
-  },
   "noTransactions": {
     "message": "Không có giao dịch"
   },
@@ -270,9 +243,6 @@
   "privateNetwork": {
     "message": "Mạng lưới riêng"
   },
-  "qrCode": {
-    "message": "Hiển thị mã QR"
-  },
   "readdToken": {
     "message": "Bạn có thể thêm trở lại mã token này bằng cách nhấn \"Thêm mã token\" trong menu tùy chọn trong tài khoản của bạn."
   },
@@ -284,9 +254,6 @@
   },
   "required": {
     "message": "Yêu cầu"
-  },
-  "revert": {
-    "message": "Chuyển lại"
   },
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"
@@ -326,10 +293,6 @@
   },
   "to": {
     "message": "Đến"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 thành ETH qua ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "total": {
     "message": "Tổng cộng"

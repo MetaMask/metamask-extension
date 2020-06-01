@@ -8,9 +8,6 @@
   "reject": {
     "message": "Απόρριψη"
   },
-  "likeToConnect": {
-    "message": "Αίτημα σύνδεσης στον λογαριασμό σας από $1"
-  },
   "about": {
     "message": "Σχετικά με"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Το υπόλοιπο μπορεί να μην είναι ενημερωμένο"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Ανεπαρκές υπόλοιπο για το τρέχον σύνολο καυσίμου"
   },
   "basic": {
     "message": "Βασικά"
@@ -199,9 +193,6 @@
   },
   "chainId": {
     "message": "Αναγνωριστικό Αλυσίδας"
-  },
-  "clickToAdd": {
-    "message": "Κάντε κλικ στο $1 για να τα προσθέσετε στον λογαριασμό σας"
   },
   "clickToRevealSeed": {
     "message": "Κάντε κλικ εδώ για να αποκαλύψετε μυστικές λέξεις"
@@ -263,12 +254,6 @@
   "contractDeployment": {
     "message": "Ανάπτυξη Συμβολαίου"
   },
-  "conversionProgress": {
-    "message": "Μετατροπή σε εξέλιξη"
-  },
-  "copiedButton": {
-    "message": "Αντιγράφηκε"
-  },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
@@ -283,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
-  },
-  "copyButton": {
-    "message": "Αντιγραφή"
   },
   "copyPrivateKey": {
     "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
@@ -460,17 +442,11 @@
   "from": {
     "message": "Από "
   },
-  "fromShapeShift": {
-    "message": "Από το ShapeShift"
-  },
   "functionType": {
     "message": "Τύπος Λειτουργίας"
   },
   "gasLimit": {
     "message": "Όριο Καυσίμου"
-  },
-  "gasLimitCalculation": {
-    "message": "Υπολογίζουμε το προτεινόμενο όριο καυσίμου με βάση τα ποσοστά επιτυχίας του δικτύου."
   },
   "gasLimitInfoModalContent": {
     "message": "Το όριο αερίου είναι το μέγιστο ποσό μονάδων αερίου τι οποίες είστε διατεθειμένοι να δαπανήσετε."
@@ -492,9 +468,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Τιμή Gas"
-  },
-  "gasPriceCalculation": {
-    "message": "Υπολογίζουμε τις προτεινόμενες τιμές αερίου με βάση τα ποσοστά επιτυχίας του δικτύου."
   },
   "general": {
     "message": "Γενικά"
@@ -542,9 +515,6 @@
   },
   "hide": {
     "message": "Απόκρυψη"
-  },
-  "hideToken": {
-    "message": "Απόκρυψη Token"
   },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του Token;"
@@ -657,10 +627,7 @@
   "localhost": {
     "message": "Τοπικός Υπολογιστής  8545"
   },
-  "login": {
-    "message": "Σύνδεση"
-  },
-  "logout": {
+  "lock": {
     "message": "Αποσύνδεση"
   },
   "mainnet": {
@@ -672,17 +639,11 @@
   "memo": {
     "message": "σημείωμα"
   },
-  "menu": {
-    "message": "Μενού"
-  },
   "message": {
     "message": "Μήνυμα"
   },
   "metamaskDescription": {
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
-  },
-  "metamaskSeedWords": {
-    "message": "Λέξεις Φύτρου MetaMask"
   },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
@@ -785,9 +746,6 @@
   "noAddressForName": {
     "message": "Δεν έχει ορισθεί καμιά διεύθυνση γ' αυτό το όνομα."
   },
-  "noDeposits": {
-    "message": "Δεν λήφθηκε καμία κατάθεση"
-  },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
   },
@@ -861,9 +819,6 @@
   },
   "privateNetwork": {
     "message": "Ιδιωτικό Δίκτυο"
-  },
-  "qrCode": {
-    "message": "Εμφάνιση κωδικού QR"
   },
   "queue": {
     "message": "Ουρά"
@@ -939,9 +894,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
-  },
-  "revert": {
-    "message": "Αναστροφή"
   },
   "remove": {
     "message": "Κατάργηση"
@@ -1157,7 +1109,7 @@
     "message": "Σύμβολο"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Το σύμβολο θα πρέπει να είναι μεταξύ 0 και 12 χαρακτήρες."
+    "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 11 χαρακτήρες."
   },
   "syncWithMobile": {
     "message": "Συγχρονισμός με κινητό"
@@ -1191,10 +1143,6 @@
   },
   "to": {
     "message": "Προς"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 στο ETH μέσω ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Διακριτικό"

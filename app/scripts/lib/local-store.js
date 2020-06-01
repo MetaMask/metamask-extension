@@ -1,11 +1,11 @@
-const extension = require('extensionizer')
-const log = require('loglevel')
-const { checkForError } = require('./util')
+import extension from 'extensionizer'
+import log from 'loglevel'
+import { checkForError } from './util'
 
 /**
  * A wrapper around the extension's storage local API
  */
-module.exports = class ExtensionStore {
+export default class ExtensionStore {
   /**
    * @constructor
    */
@@ -18,7 +18,7 @@ module.exports = class ExtensionStore {
 
   /**
    * Returns all of the keys currently saved
-   * @return {Promise<*>}
+   * @returns {Promise<*>}
    */
   async get () {
     if (!this.isSupported) {
@@ -36,8 +36,8 @@ module.exports = class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {object} state - The state to set
-   * @return {Promise<void>}
+   * @param {Object} state - The state to set
+   * @returns {Promise<void>}
    */
   async set (state) {
     return this._set(state)
@@ -46,7 +46,7 @@ module.exports = class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    * @private
-   * @return {object} the key-value map from local storage
+   * @returns {Object} - the key-value map from local storage
    */
   _get () {
     const local = extension.storage.local
@@ -64,8 +64,8 @@ module.exports = class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {object} obj - The key to set
-   * @return {Promise<void>}
+   * @param {Object} obj - The key to set
+   * @returns {Promise<void>}
    * @private
    */
   _set (obj) {
@@ -85,7 +85,7 @@ module.exports = class ExtensionStore {
 
 /**
  * Returns whether or not the given object contains no keys
- * @param {object} obj - The object to check
+ * @param {Object} obj - The object to check
  * @returns {boolean}
  */
 function isEmpty (obj) {

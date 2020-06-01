@@ -1,5 +1,5 @@
-const assert = require('assert')
-const migration27 = require('../../../app/scripts/migrations/027')
+import assert from 'assert'
+import migration27 from '../../../app/scripts/migrations/027'
 
 const oldStorage = {
   'meta': {},
@@ -15,16 +15,16 @@ const transactions = []
 
 
 while (transactions.length < 9) {
-  transactions.push({status: 'rejected'})
-  transactions.push({status: 'unapproved'})
-  transactions.push({status: 'approved'})
+  transactions.push({ status: 'rejected' })
+  transactions.push({ status: 'unapproved' })
+  transactions.push({ status: 'approved' })
 }
 
 
 oldStorage.data.TransactionController.transactions = transactions
 
-describe('migration #27', () => {
-  it('should remove rejected transactions', (done) => {
+describe('migration #27', function () {
+  it('should remove rejected transactions', function (done) {
     migration27.migrate(oldStorage)
       .then((newStorage) => {
         const newTransactions = newStorage.data.TransactionController.transactions
@@ -39,7 +39,7 @@ describe('migration #27', () => {
       .catch(done)
   })
 
-  it('should successfully migrate first time state', (done) => {
+  it('should successfully migrate first time state', function (done) {
     migration27.migrate({
       meta: {},
       data: require('../../../app/scripts/first-time-state'),

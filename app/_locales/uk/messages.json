@@ -8,9 +8,6 @@
   "reject": {
     "message": "Відхилити"
   },
-  "likeToConnect": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
   "about": {
     "message": "Про Google Chrome"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "Авторство"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматичного виходу (хвилин)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Встановіть час відсутності активності у хвилинах після якого MetaMask буде здійснювати автоматичний вихід"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "Залишок можливо вже змінився"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатній баланс для поточної загальної кількості газу"
   },
   "basic": {
     "message": "Основні параметри"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "ID мережі"
   },
-  "clickToAdd": {
-    "message": "Клацніть на $1, щоб додати їх до вашого облікового запису"
-  },
   "clickToRevealSeed": {
     "message": "Клацніть тут, щоб відкрити секретні слова"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "Розгортання контракту"
   },
-  "conversionProgress": {
-    "message": "Конверсія триває"
-  },
-  "copiedButton": {
-    "message": "Скопійовано"
-  },
   "copiedExclamation": {
     "message": "Скопійовано!"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
-  },
-  "copyButton": {
-    "message": "Копіювати"
   },
   "copyPrivateKey": {
     "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
@@ -463,17 +445,11 @@
   "from": {
     "message": "Від"
   },
-  "fromShapeShift": {
-    "message": "Від Ethereum"
-  },
   "functionType": {
     "message": "Тип функції"
   },
   "gasLimit": {
     "message": "Ліміт газу"
-  },
-  "gasLimitCalculation": {
-    "message": "Ми підраховуємо пропонований ліміт пального на основі рейтингів успішності мережі."
   },
   "gasLimitInfoModalContent": {
     "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
@@ -495,9 +471,6 @@
   },
   "gasPriceNoDenom": {
     "message": "Ціна Газу"
-  },
-  "gasPriceCalculation": {
-    "message": "Ми розрахуємо рекомендовані ціни газу на основі відсотка успішних транзакцій у мережі."
   },
   "general": {
     "message": "Загальні"
@@ -545,9 +518,6 @@
   },
   "hide": {
     "message": "Сховати"
-  },
-  "hideToken": {
-    "message": "Приховати токен"
   },
   "hideTokenPrompt": {
     "message": "Приховати токен?"
@@ -660,10 +630,7 @@
   "localhost": {
     "message": "Локальний хост 8545"
   },
-  "login": {
-    "message": "Увійти"
-  },
-  "logout": {
+  "lock": {
     "message": "Вийти"
   },
   "mainnet": {
@@ -675,17 +642,11 @@
   "memo": {
     "message": "нотатка"
   },
-  "menu": {
-    "message": "Меню"
-  },
   "message": {
     "message": "Повідомлення"
   },
   "metamaskDescription": {
     "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
-  },
-  "metamaskSeedWords": {
-    "message": "Початкові слова MetaMask"
   },
   "metamaskVersion": {
     "message": "Версія MetaMask"
@@ -788,9 +749,6 @@
   "noAddressForName": {
     "message": "На це ім'я не встановлено адреси."
   },
-  "noDeposits": {
-    "message": "Немає отриманих внесків"
-  },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
   },
@@ -864,9 +822,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "qrCode": {
-    "message": "Показати QR код"
   },
   "queue": {
     "message": "Черга"
@@ -942,9 +897,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
-  },
-  "revert": {
-    "message": "Повернути"
   },
   "remove": {
     "message": "Видалити"
@@ -1160,7 +1112,7 @@
     "message": "Символ"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символ має містити від 0 до 12 знаків."
+    "message": "Символ повинен містити 11 символів або менше."
   },
   "syncWithMobile": {
     "message": "Синхронізувати з мобільним пристроєм"
@@ -1197,10 +1149,6 @@
   },
   "to": {
     "message": "Кому"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Токен"

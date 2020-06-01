@@ -1,13 +1,13 @@
+import pump from 'pump'
+import querystring from 'querystring'
+import LocalMessageDuplexStream from 'post-message-stream'
+import ObjectMultiplex from 'obj-multiplex'
+import extension from 'extensionizer'
+import PortStream from 'extension-port-stream'
+
+// These require calls need to use require to be statically recognized by browserify
 const fs = require('fs')
 const path = require('path')
-const pump = require('pump')
-const log = require('loglevel')
-const querystring = require('querystring')
-const { Writable } = require('readable-stream')
-const LocalMessageDuplexStream = require('post-message-stream')
-const ObjectMultiplex = require('obj-multiplex')
-const extension = require('extensionizer')
-const PortStream = require('extension-port-stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'), 'utf8')
 const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
@@ -34,7 +34,7 @@ function injectScript (content) {
   try {
     const container = document.head || document.documentElement
     const scriptTag = document.createElement('script')
-    scriptTag.setAttribute('async', false)
+    scriptTag.setAttribute('async', 'false')
     scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
@@ -86,44 +86,6 @@ async function setupStreams () {
     (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
   )
 
-  const onboardingStream = pageMux.createStream('onboarding')
-  const addCurrentTab = new Writable({
-    objectMode: true,
-    write: (chunk, _, callback) => {
-      if (!chunk) {
-        return callback(new Error('Malformed onboarding message'))
-      }
-
-      const handleSendMessageResponse = (error, success) => {
-        if (!error && !success) {
-          error = extension.runtime.lastError
-        }
-        if (error) {
-          log.error(`Failed to send ${chunk.type} message`, error)
-          return callback(error)
-        }
-        callback(null)
-      }
-
-      try {
-        if (chunk.type === 'registerOnboarding') {
-          extension.runtime.sendMessage({ type: 'metamask:registerOnboarding', location: window.location.href }, handleSendMessageResponse)
-        } else {
-          throw new Error(`Unrecognized onboarding message type: '${chunk.type}'`)
-        }
-      } catch (error) {
-        log.error(error)
-        return callback(error)
-      }
-    },
-  })
-
-  pump(
-    onboardingStream,
-    addCurrentTab,
-    error => console.error('MetaMask onboarding channel traffic failed', error),
-  )
-
   // forward communication across inpage-background for these channels only
   forwardTrafficBetweenMuxers('provider', pageMux, extensionMux)
   forwardTrafficBetweenMuxers('publicConfig', pageMux, extensionMux)
@@ -147,8 +109,8 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
 /**
  * Error handler for page to extension stream disconnections
  *
- * @param {string} remoteLabel Remote stream name
- * @param {Error} err Stream connection error
+ * @param {string} remoteLabel - Remote stream name
+ * @param {Error} err - Stream connection error
  */
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
@@ -161,7 +123,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 /**
  * Determines if the provider should be injected
  *
- * @returns {boolean} {@code true} if the provider should be injected
+ * @returns {boolean} {@code true} - if the provider should be injected
  */
 function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
@@ -171,7 +133,7 @@ function shouldInjectProvider () {
 /**
  * Checks the doctype of the current document if it exists
  *
- * @returns {boolean} {@code true} if the doctype is html or if none exists
+ * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
 function doctypeCheck () {
   const doctype = window.document.doctype
@@ -189,7 +151,7 @@ function doctypeCheck () {
  * that we should not inject the provider into. This check is indifferent of
  * query parameters in the location.
  *
- * @returns {boolean} whether or not the extension of the current document is prohibited
+ * @returns {boolean} - whether or not the extension of the current document is prohibited
  */
 function suffixCheck () {
   const prohibitedTypes = [
@@ -208,7 +170,7 @@ function suffixCheck () {
 /**
  * Checks the documentElement of the current document
  *
- * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
+ * @returns {boolean} {@code true} - if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
   const documentElement = document.documentElement.nodeName
@@ -221,7 +183,7 @@ function documentElementCheck () {
 /**
  * Checks if the current domain is blacklisted
  *
- * @returns {boolean} {@code true} if the current domain is blacklisted
+ * @returns {boolean} {@code true} - if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
   const blacklistedDomains = [
@@ -269,5 +231,5 @@ async function domIsReady () {
     return
   }
   // wait for load
-  return new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
+  return new Promise((resolve) => window.addEventListener('DOMContentLoaded', resolve, { once: true }))
 }

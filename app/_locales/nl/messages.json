@@ -40,9 +40,6 @@
   "balance": {
     "message": "Balans:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Onvoldoende saldo voor huidig ​​gastotaal"
-  },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -70,20 +67,11 @@
   "contractDeployment": {
     "message": "Contractimplementatie"
   },
-  "conversionProgress": {
-    "message": "Bezig met conversie"
-  },
-  "copiedButton": {
-    "message": "gekopieerde"
-  },
   "copiedExclamation": {
     "message": "Gekopieerde!"
   },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
-  },
-  "copyButton": {
-    "message": " Kopiëren "
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -156,23 +144,14 @@
   "from": {
     "message": "Van"
   },
-  "fromShapeShift": {
-    "message": "Van ShapeShift"
-  },
   "gasLimit": {
     "message": "Gaslimiet"
-  },
-  "gasLimitCalculation": {
-    "message": "We berekenen de voorgestelde gaslimiet op basis van succespercentages van het netwerk."
   },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -187,9 +166,6 @@
   },
   "hide": {
     "message": "Verbergen"
-  },
-  "hideToken": {
-    "message": "Token verbergen"
   },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
@@ -248,10 +224,10 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
-  "login": {
+  "unlock": {
     "message": "Log in"
   },
-  "logout": {
+  "lock": {
     "message": "Uitloggen"
   },
   "mainnet": {
@@ -297,9 +273,6 @@
   "noAddressForName": {
     "message": "Er is geen adres ingesteld voor deze naam."
   },
-  "noDeposits": {
-    "message": "Geen aanbetalingen ontvangen"
-  },
   "noTransactions": {
     "message": "Geen transacties"
   },
@@ -322,9 +295,6 @@
   },
   "privateNetwork": {
     "message": "Prive netwerk"
-  },
-  "qrCode": {
-    "message": "QR-code weergeven"
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
@@ -349,9 +319,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
-  "revert": {
-    "message": "terugkeren"
   },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"
@@ -414,7 +381,7 @@
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
+    "message": "Symbool moet 11 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"
@@ -424,10 +391,6 @@
   },
   "to": {
     "message": "Naar"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 tot ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token is al toegevoegd."

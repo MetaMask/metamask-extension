@@ -8,9 +8,6 @@
   "reject": {
     "message": "አይቀበሉ"
   },
-  "likeToConnect": {
-    "message": "$1ከመለያዎ ጋር ለመገናኘት ይፈልጋል"
-  },
   "about": {
     "message": "ስለ"
   },
@@ -109,10 +106,10 @@
   "attributions": {
     "message": "አይነታ"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "በራስ ሰር ዘግቶ መውጫ ሰዓት ቆጣሪ (ደቂቃ)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask በራስ ሰር መንገድ ዘግቶ ከመውጣቱ በፊት የቦዘነ ጊዜን በደቂቃዎች ሙላ"
   },
   "average": {
@@ -138,9 +135,6 @@
   },
   "balanceOutdated": {
     "message": "ቀሪ ሂሳብ ጊዜው ያለፈበት ሊሆን ይችላል"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "አሁን ላለው አጠቃላይ ነዳጅ የማይበቃ ቀሪ ሂሳብ"
   },
   "basic": {
     "message": "መሠረታዊ"
@@ -203,9 +197,6 @@
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
   },
-  "clickToAdd": {
-    "message": "ወደ መለያዎት ለማከል $1ላይ ጠቅ ያድርጉ"
-  },
   "clickToRevealSeed": {
     "message": "ሚስጥራዊ ቃላትን ለመግለጽ እዚህ ጠቅ ያድርጉ"
   },
@@ -266,12 +257,6 @@
   "contractDeployment": {
     "message": "የኮንትራት ስምሪት"
   },
-  "conversionProgress": {
-    "message": "ልወጣ በመካሄድ ላይ ነው"
-  },
-  "copiedButton": {
-    "message": "የተቀዳ"
-  },
   "copiedExclamation": {
     "message": "ተቀድቷል"
   },
@@ -286,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
-  },
-  "copyButton": {
-    "message": "ቅዳ"
   },
   "copyPrivateKey": {
     "message": "የግል ቁልፍዎ ይህ ነው (ለመቅዳት ጠቅ ያድርጉ)"
@@ -463,17 +445,11 @@
   "from": {
     "message": "ከ"
   },
-  "fromShapeShift": {
-    "message": "ከ ShapeShift "
-  },
   "functionType": {
     "message": "የተግባር ዓይነት"
   },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
-  },
-  "gasLimitCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ገደብ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
   },
   "gasLimitInfoModalContent": {
     "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
@@ -495,9 +471,6 @@
   },
   "gasPriceNoDenom": {
     "message": "የነዳጅ ዋጋ"
-  },
-  "gasPriceCalculation": {
-    "message": "የተጠቆመውን የነዳጅ ዋጋ በአውታረ መረብ የስኬት መጠን ላይ ተመስርተን እናሰላለን።"
   },
   "general": {
     "message": "አጠቃላይ"
@@ -545,9 +518,6 @@
   },
   "hide": {
     "message": "ደብቅ"
-  },
-  "hideToken": {
-    "message": "ተለዋጭ ስም ደብቅ"
   },
   "hideTokenPrompt": {
     "message": "ተለዋጭ ስም ይደበቅ?"
@@ -657,10 +627,7 @@
   "loadMore": {
     "message": "ተጨማሪ ጫን"
   },
-  "login": {
-    "message": "በመለያ ግባ"
-  },
-  "logout": {
+  "lock": {
     "message": "ዘግተህ ውጣ"
   },
   "mainnet": {
@@ -672,17 +639,11 @@
   "memo": {
     "message": "አጭር ማስታወሻ"
   },
-  "menu": {
-    "message": "ምናሌ"
-  },
   "message": {
     "message": "መልዕክት"
   },
   "metamaskDescription": {
     "message": "ከ Ethereum እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask የዘር ቃላት"
   },
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
@@ -785,9 +746,6 @@
   "noAddressForName": {
     "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
   },
-  "noDeposits": {
-    "message": "ገቢ የሆነ ተቀማጭ የለም"
-  },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
@@ -861,9 +819,6 @@
   },
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
-  },
-  "qrCode": {
-    "message": "QR ኮድ ያሳዩ"
   },
   "queue": {
     "message": "ወረፋ"
@@ -939,9 +894,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
-  },
-  "revert": {
-    "message": "አድህር"
   },
   "remove": {
     "message": "አስወግድ"
@@ -1157,7 +1109,7 @@
     "message": "ምልክት"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ ከ0 እስከ 12 ቁምፊዎች መያዝ አለበት።"
+    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "syncWithMobile": {
     "message": "ከሞባይል ጋር አሳምር"
@@ -1194,10 +1146,6 @@
   },
   "to": {
     "message": "ለ"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1ወደ ETH በ ShapeShift በኩል",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "ተለዋጭ ስም"
