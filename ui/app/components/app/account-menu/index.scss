@@ -57,7 +57,7 @@
     flex-direction: column;
     z-index: 200;
 
-    @media screen and (max-width: 575px) {
+    @media (max-height: 600px) {
       max-height: 236px;
     }
   }
