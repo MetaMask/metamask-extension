@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 8.0.0 Mon Jun 01 2020
 - [#7912](https://github.com/MetaMask/metamask-extension/pull/7912): Disable import button for empty string/file
 - [#8246](https://github.com/MetaMask/metamask-extension/pull/8246): Make seed phrase import case-insensitive
 - [#8502](https://github.com/MetaMask/metamask-extension/pull/8502): Add support for IPFS address resolution

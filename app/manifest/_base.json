@@ -1,7 +1,7 @@
 {
   "name": "__MSG_appName__",
   "short_name": "__MSG_appName__",
-  "version": "7.7.9",
+  "version": "8.0.0",
   "manifest_version": 2,
   "author": "https://metamask.io",
   "description": "__MSG_appDescription__",
