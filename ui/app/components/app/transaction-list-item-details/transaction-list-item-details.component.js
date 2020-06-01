@@ -246,6 +246,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
+                nonce={transactionGroup.initialTransaction.txParams.nonce}
                 transaction={transaction}
                 className="transaction-list-item-details__transaction-breakdown"
               />
