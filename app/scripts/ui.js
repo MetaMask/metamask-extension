@@ -95,7 +95,7 @@ async function queryCurrentActiveTab (windowType) {
     extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const [activeTab] = tabs
       const { title, url } = activeTab
-      const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
+      const { origin, protocol } = url ? urlUtil.parse(url) : {}
       resolve({
         title, origin, protocol, url,
       })

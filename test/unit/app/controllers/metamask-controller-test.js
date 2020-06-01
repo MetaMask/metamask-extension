@@ -794,7 +794,7 @@ describe('MetaMaskController', function () {
 
     it('adds a tabId and origin to requests', function (done) {
       const messageSender = {
-        url: 'http://mycrypto.com',
+        url: 'https://mycrypto.com',
         tab: { id: 456 },
       }
       const streamTest = createThoughStream((chunk, _, cb) => {
@@ -824,7 +824,7 @@ describe('MetaMaskController', function () {
               'mock tx params',
               {
                 ...message,
-                origin: 'mycrypto.com',
+                origin: 'https://mycrypto.com',
                 tabId: 456,
               },
             ]
@@ -836,7 +836,7 @@ describe('MetaMaskController', function () {
 
     it('should add only origin to request if tabId not provided', function (done) {
       const messageSender = {
-        url: 'http://mycrypto.com',
+        url: 'https://mycrypto.com',
       }
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.data && chunk.data.method) {
@@ -865,7 +865,7 @@ describe('MetaMaskController', function () {
               'mock tx params',
               {
                 ...message,
-                origin: 'mycrypto.com',
+                origin: 'https://mycrypto.com',
               },
             ]
           )
@@ -878,7 +878,7 @@ describe('MetaMaskController', function () {
   describe('#setupTrustedCommunication', function () {
     it('sets up controller dnode api for trusted communication', async function () {
       const messageSender = {
-        url: 'http://mycrypto.com',
+        url: 'https://mycrypto.com',
         tab: {},
       }
       const { promise, resolve } = deferredPromise()
