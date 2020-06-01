@@ -1,11 +1,6 @@
 .asset {
   &__container {
-    overflow-y: auto;
     background-color: white;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   &__overview {
