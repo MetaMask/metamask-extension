@@ -16,6 +16,7 @@ export default class TransactionBreakdown extends PureComponent {
     className: PropTypes.string,
     nativeCurrency: PropTypes.string,
     showFiat: PropTypes.bool,
+    nonce: PropTypes.string,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -29,13 +30,22 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { gas, gasPrice, value, className, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
-
+    const { gas, gasPrice, value, className, nonce, nativeCurrency, showFiat, totalInHex, gasUsed } = this.props
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">
           { t('transaction') }
         </div>
+        <TransactionBreakdownRow title="Nonce">
+          {typeof nonce !== 'undefined'
+            ? (
+              <HexToDecimal
+                className="transaction-breakdown__value"
+                value={nonce}
+              />
+            ) : null
+          }
+        </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('amount')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value"

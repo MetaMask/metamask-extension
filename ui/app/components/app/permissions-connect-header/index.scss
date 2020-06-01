@@ -38,6 +38,14 @@
     color: $Grey-500;
   }
 
+  &__text {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    /*rtl:ignore*/
+    direction: rtl;
+  }
+
   &__subtitle {
     margin-top: 4px;
   }

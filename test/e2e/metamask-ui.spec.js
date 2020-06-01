@@ -474,7 +474,7 @@ describe('MetaMask', function () {
       const popoverCloseButton = await driver.findClickableElement(By.css('.popover-header__button'))
       const txGasPrices = await driver.findElements(By.css('.transaction-breakdown__value'))
       const txGasPriceLabels = await driver.findElements(By.css('.transaction-breakdown-row__title'))
-      await driver.wait(until.elementTextMatches(txGasPrices[3], /^10$/), 10000)
+      await driver.wait(until.elementTextMatches(txGasPrices[4], /^10$/), 10000)
       assert(txGasPriceLabels[2])
       await popoverCloseButton.click()
     })
