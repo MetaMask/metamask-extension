@@ -12,9 +12,10 @@ import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
-import { EthOverview, TokenOverview } from '../../components/app/wallet-overview'
+import { EthOverview } from '../../components/app/wallet-overview'
 
 import {
+  ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -49,11 +50,6 @@ export default class Home extends PureComponent {
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
-    selectedToken: PropTypes.shape({
-      address: PropTypes.string.isRequired,
-      decimals: PropTypes.number,
-      symbol: PropTypes.string,
-    }),
     defaultHomeActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func.isRequired,
   }
@@ -215,7 +211,6 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      selectedToken,
     } = this.props
 
     if (forgottenPassword) {
@@ -226,10 +221,6 @@ export default class Home extends PureComponent {
       return null
     }
 
-    const homeOverview = selectedToken
-      ? <TokenOverview token={selectedToken} />
-      : <EthOverview />
-
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -239,7 +230,7 @@ export default class Home extends PureComponent {
           <div className="home__main-view">
             <MenuBar />
             <div className="home__balance-wrapper">
-              { homeOverview }
+              <EthOverview />
             </div>
             <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick}>
               <Tab
@@ -248,7 +239,9 @@ export default class Home extends PureComponent {
                 data-testid="home__asset-tab"
                 name="Assets"
               >
-                <AssetList />
+                <AssetList
+                  onClickAsset={(asset) => history.push(`${ASSET_ROUTE}/${asset}`)}
+                />
               </Tab>
               <Tab
                 activeClassName="home__tab--active"
@@ -256,7 +249,7 @@ export default class Home extends PureComponent {
                 data-testid="home__history-tab"
                 name="History"
               >
-                <TransactionList tokenAddress={selectedToken?.address} />
+                <TransactionList />
               </Tab>
             </Tabs>
           </div>

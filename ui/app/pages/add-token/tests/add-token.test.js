@@ -25,6 +25,7 @@ describe('Add Token', function () {
     clearPendingTokens: sinon.spy(),
     tokens: [],
     identities: {},
+    mostRecentOverviewPage: '/',
   }
 
   describe('Add Token', function () {

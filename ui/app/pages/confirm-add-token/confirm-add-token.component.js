@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
+import { ASSET_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/ui/token-balance'
@@ -14,14 +14,15 @@ export default class ConfirmAddToken extends Component {
     history: PropTypes.object,
     clearPendingTokens: PropTypes.func,
     addTokens: PropTypes.func,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     pendingTokens: PropTypes.object,
   }
 
   componentDidMount () {
-    const { pendingTokens = {}, history } = this.props
+    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
 
     if (Object.keys(pendingTokens).length === 0) {
-      history.push(DEFAULT_ROUTE)
+      history.push(mostRecentOverviewPage)
     }
   }
 
@@ -32,7 +33,7 @@ export default class ConfirmAddToken extends Component {
   }
 
   render () {
-    const { history, addTokens, clearPendingTokens, pendingTokens } = this.props
+    const { history, addTokens, clearPendingTokens, mostRecentOverviewPage, pendingTokens } = this.props
 
     return (
       <div className="page-container">
@@ -103,7 +104,12 @@ export default class ConfirmAddToken extends Component {
                 addTokens(pendingTokens)
                   .then(() => {
                     clearPendingTokens()
-                    history.push(DEFAULT_ROUTE)
+                    const firstTokenAddress = Object.values(pendingTokens)?.[0].address?.toLowerCase()
+                    if (firstTokenAddress) {
+                      history.push(`${ASSET_ROUTE}/${firstTokenAddress}`)
+                    } else {
+                      history.push(mostRecentOverviewPage)
+                    }
                   })
               }}
             >

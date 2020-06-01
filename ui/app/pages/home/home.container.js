@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
   unconfirmedTransactionsCountSelector,
-  getSelectedToken,
   getCurrentEthBalance,
   getFirstPermissionRequest,
   getTotalUnapprovedCount,
@@ -60,7 +59,6 @@ const mapStateToProps = (state) => {
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
-    selectedToken: getSelectedToken(state),
     threeBoxLastUpdated,
     firstPermissionsRequestId,
     totalUnapprovedCount,

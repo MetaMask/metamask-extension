@@ -506,9 +506,6 @@
   "hide": {
     "message": "Sembunyikan"
   },
-  "hideToken": {
-    "message": "Sembunyikan Token"
-  },
   "hideTokenPrompt": {
     "message": "Sembunyikan Token?"
   },

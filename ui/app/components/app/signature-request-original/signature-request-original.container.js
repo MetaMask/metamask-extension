@@ -10,12 +10,14 @@ import {
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import SignatureRequestOriginal from './signature-request-original.component'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 function mapStateToProps (state) {
   return {
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   }

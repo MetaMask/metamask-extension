@@ -194,9 +194,6 @@
   "hide": {
     "message": "மறை"
   },
-  "hideToken": {
-    "message": "டோக்கனை மறை"
-  },
   "hideTokenPrompt": {
     "message": "டோக்கனை மறை?"
   },

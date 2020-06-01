@@ -4,9 +4,9 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 class PrivateKeyImportView extends Component {
   static contextTypes = {
@@ -21,6 +21,7 @@ class PrivateKeyImportView extends Component {
     setSelectedAddress: PropTypes.func.isRequired,
     firstAddress: PropTypes.string.isRequired,
     error: PropTypes.node,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   inputRef = React.createRef()
@@ -29,7 +30,7 @@ class PrivateKeyImportView extends Component {
 
   createNewKeychain () {
     const privateKey = this.inputRef.current.value
-    const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+    const { importNewAccount, history, displayWarning, mostRecentOverviewPage, setSelectedAddress, firstAddress } = this.props
 
     importNewAccount('Private Key', [ privateKey ])
       .then(({ selectedAddress }) => {
@@ -41,7 +42,7 @@ class PrivateKeyImportView extends Component {
               name: 'Imported Account with Private Key',
             },
           })
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
           displayWarning(null)
         } else {
           displayWarning('Error importing account.')
@@ -98,8 +99,9 @@ class PrivateKeyImportView extends Component {
             large
             className="new-account-create-form__button"
             onClick={() => {
+              const { history, mostRecentOverviewPage } = this.props
               displayWarning(null)
-              this.props.history.push(DEFAULT_ROUTE)
+              history.push(mostRecentOverviewPage)
             }}
           >
             {this.context.t('cancel')}
@@ -134,6 +136,7 @@ function mapStateToProps (state) {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

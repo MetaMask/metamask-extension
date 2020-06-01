@@ -509,9 +509,6 @@
   "hide": {
     "message": "Ascunde"
   },
-  "hideToken": {
-    "message": "Ascunde tokenul"
-  },
   "hideTokenPrompt": {
     "message": "Ascunde simbol?"
   },

@@ -513,9 +513,6 @@
   "hide": {
     "message": "Ocultar"
   },
-  "hideToken": {
-    "message": "Ocultar Token"
-  },
   "hideTokenPrompt": {
     "message": "Esconder token?"
   },

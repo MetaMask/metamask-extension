@@ -167,9 +167,6 @@
   "hide": {
     "message": "Verbergen"
   },
-  "hideToken": {
-    "message": "Token verbergen"
-  },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
   },

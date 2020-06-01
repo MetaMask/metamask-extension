@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
 import SendFooter from '../send-footer.component.js'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
@@ -48,6 +48,7 @@ describe('SendFooter Component', function () {
         unapprovedTxs={{}}
         update={propsMethodSpies.update}
         sendErrors={{}}
+        mostRecentOverviewPage="mostRecentOverviewPage"
       />
     ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
   })
@@ -78,7 +79,7 @@ describe('SendFooter Component', function () {
       assert.equal(historySpies.push.callCount, 0)
       wrapper.instance().onCancel()
       assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], DEFAULT_ROUTE)
+      assert.equal(historySpies.push.getCall(0).args[0], 'mostRecentOverviewPage')
     })
   })
 

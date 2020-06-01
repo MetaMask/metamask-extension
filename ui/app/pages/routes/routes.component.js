@@ -30,9 +30,11 @@ import Alert from '../../components/ui/alert'
 import AppHeader from '../../components/app/app-header'
 import UnlockPage from '../unlock-page'
 import Alerts from '../../components/app/alerts'
+import Asset from '../asset'
 
 import {
   ADD_TOKEN_ROUTE,
+  ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -78,6 +80,7 @@ export default class Routes extends Component {
     providerId: PropTypes.string,
     hasPermissionsRequests: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
+    pageChanged: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -86,7 +89,7 @@ export default class Routes extends Component {
   }
 
   UNSAFE_componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+    const { currentCurrency, pageChanged, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -94,6 +97,7 @@ export default class Routes extends Component {
 
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
+        pageChanged(locationObj.pathname)
         const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
         this.context.metricsEvent({}, {
           currentPath: '',
@@ -126,6 +130,7 @@ export default class Routes extends Component {
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated path={`${CONNECT_ROUTE}/:id`} component={PermissionsConnect} />
+        <Authenticated path={`${ASSET_ROUTE}/:asset`} component={Asset} />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     )

@@ -515,9 +515,6 @@
   "hide": {
     "message": "Sakrij preglednik"
   },
-  "hideToken": {
-    "message": "Sakrij token"
-  },
   "hideTokenPrompt": {
     "message": "Sakriti token?"
   },

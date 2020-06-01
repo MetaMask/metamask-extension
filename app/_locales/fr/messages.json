@@ -504,9 +504,6 @@
   "hide": {
     "message": "Cacher"
   },
-  "hideToken": {
-    "message": "Masquer le jeton"
-  },
   "hideTokenPrompt": {
     "message": "Masquer le jeton?"
   },

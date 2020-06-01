@@ -11,9 +11,9 @@ import WalletOverview from './wallet-overview'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { getAssetImages } from '../../../selectors/selectors'
-import { updateSend } from '../../../store/actions'
+import { updateSendToken } from '../../../store/actions'
 
-const TokenOverview = ({ token }) => {
+const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
   const sendTokenEvent = useMetricEvent({
@@ -43,16 +43,17 @@ const TokenOverview = ({ token }) => {
           className="token-overview__button"
           onClick={() => {
             sendTokenEvent()
-            dispatch(updateSend({ token }))
+            dispatch(updateSendToken(token))
             history.push(SEND_ROUTE)
           }}
         >
           { t('send') }
         </Button>
       )}
+      className={className}
       icon={(
         <Identicon
-          diameter={50}
+          diameter={32}
           address={token.address}
           image={assetImages[token.address]}
         />
@@ -62,11 +63,16 @@ const TokenOverview = ({ token }) => {
 }
 
 TokenOverview.propTypes = {
+  className: PropTypes.string,
   token: PropTypes.shape({
     address: PropTypes.string.isRequired,
     decimals: PropTypes.number,
     symbol: PropTypes.string,
   }).isRequired,
+}
+
+TokenOverview.defaultProps = {
+  className: undefined,
 }
 
 export default TokenOverview

@@ -1,7 +1,7 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
-import { getTokenAddressFromTokenObject, checksumAddress } from '../helpers/utils/util'
+import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
 import ethUtil from 'ethereumjs-util'
 import { fetchLocale } from '../helpers/utils/i18n-helper'
@@ -729,6 +729,13 @@ export function updateSend (newSend) {
   }
 }
 
+export function updateSendToken (token) {
+  return {
+    type: actionConstants.UPDATE_SEND_TOKEN,
+    value: token,
+  }
+}
+
 export function clearSend () {
   return {
     type: actionConstants.CLEAR_SEND,
@@ -1153,13 +1160,6 @@ export function lockMetamask () {
   }
 }
 
-export function setSelectedToken (tokenAddress) {
-  return {
-    type: actionConstants.SET_SELECTED_TOKEN,
-    value: tokenAddress || null,
-  }
-}
-
 async function _setSelectedAddress (dispatch, address) {
   log.debug(`background.setSelectedAddress`)
   const tokens = await promisifiedBackground.setSelectedAddress(address)
@@ -1207,7 +1207,6 @@ export function showAccountDetail (address) {
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
     })
-    dispatch(setSelectedToken())
     if (unconnectedAccountAlertIsEnabled && switchingToUnconnectedAddress) {
       dispatch(switchedToUnconnectedAccount())
       await setSwitchToConnectedAlertShown(activeTabOrigin)
@@ -1293,12 +1292,10 @@ export function removeToken (address) {
 export function addTokens (tokens) {
   return (dispatch) => {
     if (Array.isArray(tokens)) {
-      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
     } else {
-      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
           .entries(tokens)
@@ -1435,7 +1432,6 @@ export function setProviderType (type) {
     }
     dispatch(setPreviousProvider(currentProviderType))
     dispatch(updateProviderType(type))
-    dispatch(setSelectedToken())
   }
 }
 
@@ -1483,8 +1479,6 @@ export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcP
       return
     }
 
-    dispatch(setSelectedToken())
-
     try {
       await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
     } catch (error) {
@@ -1511,7 +1505,6 @@ export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
       dispatch(displayWarning('Had a problem changing networks!'))
       return
     }
-    dispatch(setSelectedToken())
   }
 }
 
@@ -1525,7 +1518,6 @@ export function delRpcTarget (oldRpc) {
           dispatch(displayWarning('Had a problem removing network!'))
           return reject(err)
         }
-        dispatch(setSelectedToken())
         resolve()
       })
     })

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import PubNub from 'pubnub'
 import qrCode from 'qrcode-generator'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 import Button from '../../components/ui/button'
 import LoadingScreen from '../../components/ui/loading-screen'
@@ -24,6 +23,7 @@ export default class MobileSyncPage extends Component {
     selectedAddress: PropTypes.string.isRequired,
     displayWarning: PropTypes.func.isRequired,
     fetchInfoToSync: PropTypes.func.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requestRevealSeedWords: PropTypes.func.isRequired,
   }
 
@@ -78,8 +78,8 @@ export default class MobileSyncPage extends Component {
   }
 
   goBack () {
-    const { history } = this.props
-    history.push(DEFAULT_ROUTE)
+    const { history, mostRecentOverviewPage } = this.props
+    history.push(mostRecentOverviewPage)
   }
 
   clearTimeouts () {

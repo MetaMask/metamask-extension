@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 
 export default class NewAccountCreateForm extends Component {
@@ -17,7 +16,7 @@ export default class NewAccountCreateForm extends Component {
 
   render () {
     const { newAccountName, defaultAccountName } = this.state
-    const { history, createAccount } = this.props
+    const { history, createAccount, mostRecentOverviewPage } = this.props
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
@@ -28,7 +27,7 @@ export default class NewAccountCreateForm extends Component {
               name: 'Added New Account',
             },
           })
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         })
         .catch((e) => {
           this.context.metricsEvent({
@@ -61,7 +60,7 @@ export default class NewAccountCreateForm extends Component {
               type="default"
               large
               className="new-account-create-form__button"
-              onClick={() => history.push(DEFAULT_ROUTE)}
+              onClick={() => history.push(mostRecentOverviewPage)}
             >
               {this.context.t('cancel')}
             </Button>
@@ -84,6 +83,7 @@ NewAccountCreateForm.propTypes = {
   createAccount: PropTypes.func,
   newAccountNumber: PropTypes.number,
   history: PropTypes.object,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
 }
 
 NewAccountCreateForm.contextTypes = {

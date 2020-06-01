@@ -504,9 +504,6 @@
   "hide": {
     "message": "Ausblenden"
   },
-  "hideToken": {
-    "message": "Token ausblenden"
-  },
   "hideTokenPrompt": {
     "message": "Token ausblenden?"
   },

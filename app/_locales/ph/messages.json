@@ -137,9 +137,6 @@
   "hide": {
     "message": "Itago"
   },
-  "hideToken": {
-    "message": "Itago ang Token"
-  },
   "hideTokenPrompt": {
     "message": "Itago ang Token?"
   },

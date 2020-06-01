@@ -7,7 +7,6 @@ function mapStateToProps (state) {
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
-    selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: getSelectedAddress(state),
   }
 }

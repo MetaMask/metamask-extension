@@ -6,18 +6,6 @@ import {
   checksumAddress,
   getAccountByAddress,
 } from '../helpers/utils/util'
-import { getSendToken } from './send'
-import { getTokens } from '../ducks/metamask/metamask'
-
-export const getSelectedTokenAddress = (state) => state.metamask.selectedTokenAddress
-
-export const getSelectedToken = createSelector(
-  getTokens,
-  getSelectedTokenAddress,
-  (tokens, selectedTokenAddress) => {
-    return tokens.find(({ address }) => address === selectedTokenAddress)
-  }
-)
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -56,15 +44,6 @@ export function getAccountType (state) {
       return 'default'
   }
 }
-
-export const getSelectedAsset = createSelector(
-  getSelectedToken,
-  getSendToken,
-  (selectedToken, sendToken) => {
-    const token = selectedToken || sendToken
-    return token?.symbol || 'ETH'
-  }
-)
 
 export function getCurrentNetworkId (state) {
   return state.metamask.network
@@ -327,10 +306,9 @@ export function getTargetDomainMetadata (state, request, defaultOrigin) {
   return targetDomainMetadata
 }
 
-export const getMetaMetricState = (state) => {
+export const getBackgroundMetaMetricState = (state) => {
   return {
     network: getCurrentNetworkId(state),
-    activeCurrency: getSelectedAsset(state),
     accountType: getAccountType(state),
     metaMetricsId: state.metamask.metaMetricsId,
     numberOfTokens: getNumberOfTokens(state),

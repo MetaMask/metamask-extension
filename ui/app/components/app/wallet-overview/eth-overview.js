@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
@@ -15,7 +16,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
 import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
 
-const EthOverview = () => {
+const EthOverview = ({ className }) => {
   const dispatch = useDispatch()
   const t = useContext(I18nContext)
   const sendEvent = useMetricEvent({
@@ -99,13 +100,18 @@ const EthOverview = () => {
           </Button>
         </>
       )}
-      icon={<Identicon diameter={50} />}
+      className={className}
+      icon={<Identicon diameter={32} />}
     />
   )
 }
 
 EthOverview.propTypes = {
+  className: PropTypes.string,
+}
 
+EthOverview.defaultProps = {
+  className: undefined,
 }
 
 export default EthOverview

@@ -18,6 +18,7 @@ import {
 } from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -41,6 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     send,
     unapprovedTxs,
     id,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
     transaction,

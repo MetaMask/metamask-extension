@@ -14,7 +14,6 @@ import ConfirmDecryptMessage from '../confirm-decrypt-message'
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key'
 
 import {
-  DEFAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
@@ -39,6 +38,7 @@ export default class ConfirmTransaction extends Component {
     setTransactionToConfirm: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     transaction: PropTypes.object,
     getContractMethodData: PropTypes.func,
     transactionId: PropTypes.string,
@@ -52,6 +52,7 @@ export default class ConfirmTransaction extends Component {
       totalUnapprovedCount = 0,
       send = {},
       history,
+      mostRecentOverviewPage,
       transaction: { txParams: { data, to } = {} } = {},
       fetchBasicGasAndTimeEstimates,
       getContractMethodData,
@@ -62,7 +63,7 @@ export default class ConfirmTransaction extends Component {
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
-      history.replace(DEFAULT_ROUTE)
+      history.replace(mostRecentOverviewPage)
       return
     }
 
@@ -86,6 +87,7 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       transactionId,
       history,
+      mostRecentOverviewPage,
       totalUnapprovedCount,
     } = this.props
 
@@ -95,10 +97,10 @@ export default class ConfirmTransaction extends Component {
       setTransactionToConfirm(paramsTransactionId)
       return
     } else if (prevProps.transactionId && !transactionId && !totalUnapprovedCount) {
-      history.replace(DEFAULT_ROUTE)
+      history.replace(mostRecentOverviewPage)
       return
     } else if (prevProps.transactionId && transactionId && prevProps.transactionId !== transactionId) {
-      history.replace(DEFAULT_ROUTE)
+      history.replace(mostRecentOverviewPage)
       return
     }
   }

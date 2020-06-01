@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendFooter extends Component {
 
@@ -27,6 +27,7 @@ export default class SendFooter extends Component {
     sendErrors: PropTypes.object,
     gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
@@ -35,8 +36,9 @@ export default class SendFooter extends Component {
   }
 
   onCancel () {
-    this.props.clearSend()
-    this.props.history.push(DEFAULT_ROUTE)
+    const { clearSend, history, mostRecentOverviewPage } = this.props
+    clearSend()
+    history.push(mostRecentOverviewPage)
   }
 
   async onSubmit (event) {

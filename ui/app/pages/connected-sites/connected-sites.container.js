@@ -14,7 +14,8 @@ import {
   getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors'
-import { CONNECT_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import { CONNECT_ROUTE } from '../../helpers/constants/routes'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
@@ -39,6 +40,7 @@ const mapStateToProps = (state) => {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
     domains: getPermissionDomains(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permittedAccountsByOrigin,
     selectedAddress,
     tabToConnect,
@@ -65,6 +67,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     connectedDomains,
     domains,
+    mostRecentOverviewPage,
     selectedAddress,
     tabToConnect,
   } = stateProps
@@ -75,7 +78,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   } = dispatchProps
   const { history } = ownProps
 
-  const closePopover = () => history.push(DEFAULT_ROUTE)
+  const closePopover = () => history.push(mostRecentOverviewPage)
 
   return {
     ...ownProps,

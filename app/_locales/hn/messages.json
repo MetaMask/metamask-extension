@@ -173,9 +173,6 @@
   "hide": {
     "message": "छुपाएं"
   },
-  "hideToken": {
-    "message": "टोकन छिपाएं"
-  },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएंn?"
   },

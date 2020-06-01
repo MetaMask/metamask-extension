@@ -506,9 +506,6 @@
   "hide": {
     "message": "Amaga"
   },
-  "hideToken": {
-    "message": "Amagar Fitxa"
-  },
   "hideTokenPrompt": {
     "message": "Amagar fitxa?"
   },

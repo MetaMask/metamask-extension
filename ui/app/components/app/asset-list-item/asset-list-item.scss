@@ -3,9 +3,12 @@
     display: flex;
     padding: 24px 16px;
     align-items: center;
+    border-top: 1px solid $mercury;
+    border-bottom: 1px solid $mercury;
+    cursor: pointer;
 
-    &--active {
-      background: #D9D7DA;
+    &:hover {
+      background-color: $Grey-000;
     }
   }
 
@@ -15,5 +18,9 @@
     margin-left: 15px;
     flex: 1;
     min-width: 0;
+  }
+
+  &__chevron-right {
+    color: $Grey-500;
   }
 }

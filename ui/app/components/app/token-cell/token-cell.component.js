@@ -2,7 +2,6 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
-import TokenMenuDropdown from '../dropdowns/token-menu-dropdown.js'
 import Tooltip from '../../ui/tooltip-v2'
 import { I18nContext } from '../../../contexts/i18n'
 import AssetListItem from '../asset-list-item'
@@ -15,7 +14,6 @@ export default class TokenCell extends Component {
     outdatedBalance: PropTypes.bool,
     symbol: PropTypes.string,
     string: PropTypes.string,
-    selectedTokenAddress: PropTypes.string,
     contractExchangeRates: PropTypes.object,
     conversionRate: PropTypes.number,
     currentCurrency: PropTypes.string,
@@ -28,18 +26,12 @@ export default class TokenCell extends Component {
     outdatedBalance: false,
   }
 
-  state = {
-    tokenMenuOpen: false,
-  }
-
   render () {
     const t = this.context
-    const { tokenMenuOpen } = this.state
     const {
       address,
       symbol,
       string,
-      selectedTokenAddress,
       contractExchangeRates,
       conversionRate,
       onClick,
@@ -71,26 +63,6 @@ export default class TokenCell extends Component {
 
     const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
-    const menu = (
-      <>
-        <div>
-          <i
-            className="fa fa-ellipsis-h fa-lg token-cell__ellipsis cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation()
-              this.setState({ tokenMenuOpen: true })
-            }}
-          />
-        </div>
-        {tokenMenuOpen && (
-          <TokenMenuDropdown
-            onClose={() => this.setState({ tokenMenuOpen: false })}
-            token={{ symbol, address }}
-          />
-        )}
-      </>
-    )
-
     const warning = outdatedBalance
       ? (
         <Tooltip
@@ -117,10 +89,8 @@ export default class TokenCell extends Component {
 
     return (
       <AssetListItem
-        active={selectedTokenAddress === address}
         className={classnames('token-cell', { 'token-cell--outdated': outdatedBalance })}
         iconClassName="token-cell__icon"
-        menu={menu}
         onClick={onClick.bind(null, address)}
         tokenAddress={address}
         tokenImage={image}

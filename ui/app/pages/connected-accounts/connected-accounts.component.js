@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { DEFAULT_ROUTE, CONNECTED_ROUTE } from '../../helpers/constants/routes'
+import { CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import Popover from '../../components/ui/popover'
 import ConnectedAccountsList from '../../components/app/connected-accounts-list'
 
@@ -19,6 +19,7 @@ export default class ConnectedAccounts extends PureComponent {
     activeTabOrigin: PropTypes.string.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     connectedAccounts: PropTypes.array.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     permissions: PropTypes.array,
     isActiveTabExtension: PropTypes.bool.isRequired,
     selectedAddress: PropTypes.string.isRequired,
@@ -39,6 +40,7 @@ export default class ConnectedAccounts extends PureComponent {
       addPermittedAccount,
       connectedAccounts,
       history,
+      mostRecentOverviewPage,
       permissions,
       selectedAddress,
       removePermittedAccount,
@@ -54,7 +56,7 @@ export default class ConnectedAccounts extends PureComponent {
       <Popover
         title={isActiveTabExtension ? t('currentExtension') : activeTabOrigin}
         subtitle={connectedAccounts.length ? connectedAccountsDescription : t('connectedAccountsEmptyDescription')}
-        onClose={() => history.push(DEFAULT_ROUTE)}
+        onClose={() => history.push(mostRecentOverviewPage)}
         footerClassName="connected-accounts__footer"
       >
         <ConnectedAccountsList

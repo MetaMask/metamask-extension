@@ -903,7 +903,6 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.clickElement(By.css(`[data-testid="home__history-tab"]`))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
@@ -996,13 +995,6 @@ describe('MetaMask', function () {
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/), 10000)
 
-      await driver.clickElement(By.css('[data-testid="home__asset-tab"]'))
-
-      await driver.clickElement(By.css('[data-testid="wallet-balance"]'))
-
-      await driver.clickElement(By.css('.token-cell'))
-      await driver.delay(1000)
-
       const tokenBalanceAmount = await driver.findElements(By.css('.token-overview__primary-balance'))
       await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/), 10000)
     })
@@ -1024,8 +1016,6 @@ describe('MetaMask', function () {
 
       await driver.switchToWindow(extension)
       await driver.delay(regularDelayMs)
-
-      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(By.css('.transaction-list__pending-transactions .transaction-list-item'))
@@ -1227,12 +1217,9 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
-      await driver.clickElement(By.css('[data-testid="home__asset-tab"]'))
+      await driver.clickElement(By.css('[data-testid="token-options__button"]'))
 
-      await driver.clickElement(By.css('.token-cell__ellipsis'))
-
-      const byTokenMenuDropdownOption = By.css('.menu__item--clickable')
-      await driver.clickElement(byTokenMenuDropdownOption)
+      await driver.clickElement(By.css('[data-testid="token-options__hide"]'))
 
       const confirmHideModal = await driver.findElement(By.css('span .modal'))
 
@@ -1245,6 +1232,7 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', function () {
     it('clicks on the Add Token button', async function () {
+      await driver.clickElement(By.css('[data-testid="asset__back"]'))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })

@@ -509,9 +509,6 @@
   "hide": {
     "message": "Skjul"
   },
-  "hideToken": {
-    "message": "Skjul tokenet"
-  },
   "hideTokenPrompt": {
     "message": "Skjul sjetonger?"
   },

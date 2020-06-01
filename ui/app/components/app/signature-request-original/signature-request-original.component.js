@@ -10,7 +10,6 @@ import Identicon from '../../ui/identicon'
 import AccountListItem from '../../../pages/send/account-list-item/account-list-item.component'
 import { conversionUtil } from '../../../helpers/utils/conversion-util'
 import Button from '../../ui/button'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -28,6 +27,7 @@ export default class SignatureRequestOriginal extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
@@ -268,7 +268,7 @@ export default class SignatureRequestOriginal extends Component {
   }
 
   renderFooter = () => {
-    const { cancel, sign } = this.props
+    const { cancel, clearConfirmTransaction, history, mostRecentOverviewPage, sign } = this.props
 
     return (
       <div className="request-signature__footer">
@@ -286,8 +286,8 @@ export default class SignatureRequestOriginal extends Component {
                 name: 'Cancel',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('cancel') }
@@ -306,8 +306,8 @@ export default class SignatureRequestOriginal extends Component {
                 name: 'Confirm',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('sign') }

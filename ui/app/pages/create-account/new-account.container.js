@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import * as actions from '../../store/actions'
 import NewAccountCreateForm from './new-account.component'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state) => {
   const { metamask: { network, selectedAddress, identities = {} } } = state
@@ -11,6 +12,7 @@ const mapStateToProps = (state) => {
     network,
     address: selectedAddress,
     newAccountNumber,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

@@ -200,9 +200,6 @@
   "hide": {
     "message": "Gizle"
   },
-  "hideToken": {
-    "message": "Jetonu gizle"
-  },
   "hideTokenPrompt": {
     "message": "Jetonu gizle?"
   },

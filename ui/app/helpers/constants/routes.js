@@ -1,6 +1,7 @@
 const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
 const LOCK_ROUTE = '/lock'
+const ASSET_ROUTE = '/asset'
 const SETTINGS_ROUTE = '/settings'
 const GENERAL_ROUTE = '/settings/general'
 const CONNECTIONS_ROUTE = '/settings/connections'
@@ -57,6 +58,7 @@ const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 export {
   DEFAULT_ROUTE,
   ALERTS_ROUTE,
+  ASSET_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,
   SETTINGS_ROUTE,
