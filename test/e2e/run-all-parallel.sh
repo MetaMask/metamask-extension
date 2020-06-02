@@ -7,7 +7,7 @@ set -o pipefail
 export PATH="$PATH:./node_modules/.bin"
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '0' ]]; then
-  mocha --no-timeouts test/e2e/tests/*.spec.js
+  mocha --no-timeouts test/e2e/tests/*.spec.js || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '1' ]]; then
@@ -16,7 +16,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '1' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/metamask-ui.spec'
+               'mocha test/e2e/metamask-ui.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '2' ]]; then
@@ -25,7 +25,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '2' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/metamask-responsive-ui.spec'
+               'mocha test/e2e/metamask-responsive-ui.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '3' ]]; then
@@ -34,7 +34,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '3' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/signature-request.spec'
+               'mocha test/e2e/signature-request.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '4' ]]; then
@@ -42,7 +42,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '4' ]]; then
                --names 'e2e' \
                --prefix '[{time}][{name}]' \
                --success first \
-               'mocha test/e2e/from-import-ui.spec'
+               'mocha test/e2e/from-import-ui.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '5' ]]; then
@@ -50,7 +50,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '5' ]]; then
                --names 'e2e' \
                --prefix '[{time}][{name}]' \
                --success first \
-               'mocha test/e2e/send-edit.spec'
+               'mocha test/e2e/send-edit.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '6' ]]; then
@@ -59,7 +59,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '6' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/ethereum-on.spec'
+               'mocha test/e2e/ethereum-on.spec' || exit 8
 fi
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '7' ]]; then
@@ -68,15 +68,15 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '7' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/permissions.spec'
+               'mocha test/e2e/permissions.spec' || exit 8
+fi
 
   # concurrently --kill-others \
     #   --names 'sendwithprivatedapp,e2e' \
     #   --prefix '[{time}][{name}]' \
     #   --success first \
     #   'yarn sendwithprivatedapp' \
-    #   'mocha test/e2e/incremental-security.spec'
-fi
+    #   'mocha test/e2e/incremental-security.spec' || exit 8
 
 if [[ "$BUILDKITE_PARALLEL_JOB" = '8' ]]; then
   concurrently --kill-others \
@@ -84,7 +84,7 @@ if [[ "$BUILDKITE_PARALLEL_JOB" = '8' ]]; then
                --prefix '[{time}][{name}]' \
                --success first \
                'yarn dapp' \
-               'mocha test/e2e/address-book.spec'
+               'mocha test/e2e/address-book.spec' || exit 8
 fi
 
 # concurrently --kill-others \
