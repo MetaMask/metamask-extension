@@ -58,12 +58,32 @@ class ConnectScreen extends Component {
     )
   }
 
+  renderConnectToDcentButton () {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          'selected': this.state.selectedDevice === 'dcent',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'dcent' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/dcent-logo.svg"
+          alt=""
+        />
+      </button>
+    )
+  }
+
   renderButtons () {
     return (
       <div>
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+        </div>
+        <div>
+          {this.renderConnectToDcentButton()}
         </div>
         <Button
           type="primary"
@@ -111,10 +131,11 @@ class ConnectScreen extends Component {
     const links = {
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+      dcent: `<a class='hw-connect__get-hw__link' href='https://dcentwallet.com/shop?utm_source=metamask&utm_medium=affiliate&utm_campaign=202005-metamask-promotion' target='_blank'>D'CENT</a>`,
     }
 
     const text = this.context.t('orderOneHere')
-    const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+    const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger).replace(`D'CENT`, links.dcent)
 
     return (
       <div

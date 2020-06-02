@@ -237,6 +237,7 @@ export default class AccountMenu extends Component {
     switch (type) {
       case 'Trezor Hardware':
       case 'Ledger Hardware':
+      case 'DCENT Hardware':
         label = t('hardware')
         break
       case 'Simple Key Pair':

@@ -765,7 +765,7 @@
     "message": "~의"
   },
   "orderOneHere": {
-    "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
+    "message": "Trezor, Ledger 혹은 D'CENT를 구입하고 자금을 콜드 스토리지에 저장합니다"
   },
   "parameters": {
     "message": "매개변수"

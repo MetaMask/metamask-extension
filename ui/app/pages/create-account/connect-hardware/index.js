@@ -35,7 +35,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async (device) => {
+    ['trezor', 'ledger', 'dcent'].forEach(async (device) => {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({ unlocked: true })
