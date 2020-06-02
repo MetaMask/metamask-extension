@@ -315,7 +315,7 @@ class AddToken extends Component {
         title={this.context.t('addTokens')}
         tabsComponent={this.renderTabs()}
         onSubmit={() => this.handleNext()}
-        disabled={this.hasError() || !this.hasSelected()}
+        disabled={Boolean(this.hasError()) || !this.hasSelected()}
         onCancel={() => {
           clearPendingTokens()
           history.push(mostRecentOverviewPage)
