@@ -1,5 +1,7 @@
+# * code:
 steps:
-  # L1
+
+# ** L1
   - key: 'base'
     label: ':docker: build base image'
     retry:
@@ -9,7 +11,17 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  # L2
+  - key: 'shellcheck'
+    label: ':heavy_check_mark: shellcheck'
+    retry:
+      automatic:
+        limit: 2
+    commands:
+      - 'source .buildkite/scripts/pre'
+      - 'docker-build'
+
+
+# ** L2
   - key: 'audit-deps'
     label: ':nsp: yarn audit'
     env:
@@ -34,7 +46,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  # L3
+# ** L3
   - key: 'prep-deps-with-files'
     label: ':parcel: install deps with all files'
     env:
@@ -71,12 +83,11 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  # L4
   - key: 'prep-deps-browser'
     label: ':parcel: install deps with browsers'
     env:
-      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-files'
-    depends_on: 'prep-deps-with-files'
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps'
+    depends_on: 'prep-deps'
     retry:
       automatic:
         limit: 2
@@ -87,8 +98,8 @@ steps:
   - key: 'prep-test'
     label: ':parcel: unit prep'
     env:
-      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-prod-files'
-    depends_on: 'prep-deps-with-prod-files'
+      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps'
+    depends_on: 'prep-deps'
     retry:
       automatic:
         limit: 2
@@ -96,6 +107,7 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
+# ** L4
   - key: 'prep-build'
     label: ':parcel: yarn dist'
     env:
@@ -120,18 +132,6 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  - key: 'shellcheck'
-    label: ':heavy_check_mark: shellcheck'
-    env:
-      'DOCKER_PULL_DEPENDS_TARGET': 'prep-deps-with-files'
-    depends_on: 'prep-deps-with-files'
-    retry:
-      automatic:
-        limit: 2
-    commands:
-      - 'source .buildkite/scripts/pre'
-      - 'docker-build'
-
   - key: 'test-lint'
     label: ':eslint: lint'
     env:
@@ -144,7 +144,6 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  # L5
   - key: 'prep-build-test'
     label: ':parcel: build test'
     env:
@@ -182,10 +181,10 @@ steps:
       - 'docker-build'
       - 'cpout .nyc_output'
       - 'cpout coverage .nyc_output'
-
     # artifact_paths:
     #   - ".nyc_output/**/*"
     #   - "coverage/**/*"
+
   - key: 'test-unit-global'
     label: ':mocha: unit test global'
     env:
@@ -197,7 +196,7 @@ steps:
     commands:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
-
+# ** L5
   - key: 'test-mozilla-lint'
     label: ':firefox: mozilla lint'
     env:
@@ -210,7 +209,6 @@ steps:
       - 'source .buildkite/scripts/pre'
       - 'docker-build'
 
-  # L6
   - key: 'test-flat-chrome'
     label: ':chrome: chrome integration test'
     env:
