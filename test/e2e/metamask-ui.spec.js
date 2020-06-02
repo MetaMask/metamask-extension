@@ -1223,8 +1223,7 @@ describe('MetaMask', function () {
 
       const confirmHideModal = await driver.findElement(By.css('span .modal'))
 
-      const byHideTokenConfirmationButton = By.css('.hide-token-confirmation__button')
-      await driver.clickElement(byHideTokenConfirmationButton)
+      await driver.clickElement(By.css('[data-testid="hide-token-confirmation__hide"]'))
 
       await driver.wait(until.stalenessOf(confirmHideModal))
     })
@@ -1232,7 +1231,6 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', function () {
     it('clicks on the Add Token button', async function () {
-      await driver.clickElement(By.css('[data-testid="asset__back"]'))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })
