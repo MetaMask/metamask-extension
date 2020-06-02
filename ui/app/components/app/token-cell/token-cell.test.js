@@ -59,16 +59,12 @@ describe('Token Cell', function () {
     assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
   })
 
-  it('renders token balance', function () {
-    assert.equal(wrapper.find('.token-cell__token-balance').text(), '5.000')
-  })
-
-  it('renders token symbol', function () {
-    assert.equal(wrapper.find('.token-cell__token-symbol').text(), 'TEST')
+  it('renders token balance and symbol', function () {
+    assert.equal(wrapper.find('.list-item__heading').text(), '5.000 TEST ')
   })
 
   it('renders converted fiat amount', function () {
-    assert.equal(wrapper.find('.token-cell__fiat-amount').text(), '0.52 USD')
+    assert.equal(wrapper.find('.list-item__subheading').text(), '$0.52 USD')
   })
 
   it('calls onClick when clicked', function () {
