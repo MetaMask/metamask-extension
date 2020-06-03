@@ -256,11 +256,15 @@ export default class ImportWithSeedPhrase extends PureComponent {
               placeholder={t('seedPhrasePlaceholder')}
             />
           )}
-          <label>Hide seed phrase <input
-            type="checkbox"
-            onClick={this.toggleHideSeedPhrase}
-            checked={hideSeedPhrase}
-          /></label>
+          <label>
+            <input
+              name="hideSeedPhrase"
+              type="checkbox"
+              onClick={this.toggleHideSeedPhrase}
+              checked={hideSeedPhrase}
+            />
+          Hide seed phrase 
+          </label>
         </div>
         {
           seedPhraseError && (
