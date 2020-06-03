@@ -240,18 +240,22 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <div className="first-time-flow__textarea-wrapper">
           <label>{ t('walletSeed') }</label>
-          {hideSeedPhrase ? <TextField
-            className="first-time-flow__textarea"
-            type="password"
-            onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
-            value={this.state.seedPhrase}
-            placeholder={t('seedPhrasePlaceholder')}
-          /> : <textarea
-            className="first-time-flow__textarea"
-            onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
-            value={this.state.seedPhrase}
-            placeholder={t('seedPhrasePlaceholder')}
-          />}
+          {hideSeedPhrase ? (
+            <TextField
+              className="first-time-flow__textarea"
+              type="password"
+              onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+              value={this.state.seedPhrase}
+              placeholder={t('seedPhrasePlaceholder')}
+            />
+          ) : (
+            <textarea
+              className="first-time-flow__textarea"
+              onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+              value={this.state.seedPhrase}
+              placeholder={t('seedPhrasePlaceholder')}
+            />
+          )}
           <label>Hide seed phrase <input
             type="radio"
             onClick={this.toggleHideSeedPhrase}
