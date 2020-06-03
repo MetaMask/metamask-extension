@@ -72,7 +72,7 @@ export default function TokenCell ({ address, outdatedBalance, symbol, string, i
       tokenImage={image}
       warning={warning}
       primary={`${string || 0} ${symbol}`}
-      secondary={showFiat && formattedFiat}
+      secondary={showFiat ? formattedFiat : undefined}
     />
 
   )
