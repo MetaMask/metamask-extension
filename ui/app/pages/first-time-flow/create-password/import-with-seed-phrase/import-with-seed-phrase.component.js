@@ -23,6 +23,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
   state = {
     seedPhrase: '',
+    hideSeedPhrase: false,
     password: '',
     confirmPassword: '',
     seedPhraseError: '',
@@ -195,9 +196,14 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }))
   }
 
+  toggleHideSeedPhrase = () => {
+    const { hideSeedPhrase } = this.state
+    this.setState({ hideSeedPhrase: !hideSeedPhrase })
+  }
+
   render () {
     const { t } = this.context
-    const { seedPhraseError, passwordError, confirmPasswordError, termsChecked } = this.state
+    const { seedPhraseError, hideSeedPhrase, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <form
@@ -234,12 +240,23 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <div className="first-time-flow__textarea-wrapper">
           <label>{ t('walletSeed') }</label>
-          <textarea
+          {hideSeedPhrase ? <TextField
+            className="first-time-flow__textarea"
+            type="password"
+            onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+            value={this.state.seedPhrase}
+            placeholder={t('seedPhrasePlaceholder')}
+          /> : <textarea
             className="first-time-flow__textarea"
             onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
             value={this.state.seedPhrase}
             placeholder={t('seedPhrasePlaceholder')}
-          />
+          />}
+          <label>Hide seed phrase <input
+            type="radio"
+            onClick={this.toggleHideSeedPhrase}
+            checked={hideSeedPhrase}
+          /></label>
         </div>
         {
           seedPhraseError && (
