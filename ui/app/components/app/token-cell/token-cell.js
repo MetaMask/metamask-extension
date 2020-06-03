@@ -22,7 +22,13 @@ export default function TokenCell ({ address, outdatedBalance, symbol, string, i
   let formattedFiat = ''
 
 
-  if (contractExchangeRates[address]) {
+  // if the conversionRate is 0 eg: currently unknown
+  // or the contract exchange rate is currently unknown
+  // the effective currentTokenToFiatRate is 0 and erroneous.
+  // Skipping this entire block will result in fiat not being
+  // shown to the user, instead of a fiat value of 0 for a non-zero
+  // token amount.
+  if (conversionRate > 0 && contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
       contractExchangeRates[address],
       conversionRate
