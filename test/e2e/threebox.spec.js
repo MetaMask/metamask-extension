@@ -223,7 +223,7 @@ describe('MetaMask', function () {
 
       it('finds the blockies toggle turned on', async function () {
         await driver.delay(regularDelayMs)
-        const toggleLabel = await driver.findElement(By.css('.toggle-button__status-label'))
+        const toggleLabel = await driver.findElement(By.css('.toggle-button__status'))
         const toggleLabelText = await toggleLabel.getText()
         assert.equal(toggleLabelText, 'ON')
       })
