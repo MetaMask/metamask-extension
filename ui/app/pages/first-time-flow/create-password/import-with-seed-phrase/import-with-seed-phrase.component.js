@@ -31,23 +31,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     termsChecked: false,
   }
 
-  parseSeedPhrase = (seedPhrase) => {
-    if (!seedPhrase) {
-      return ''
-    }
-
-    const trimmed = seedPhrase.trim()
-    if (!trimmed) {
-      return ''
-    }
-
-    const words = trimmed.toLowerCase().match(/\w+/g)
-    if (!words) {
-      return ''
-    }
-
-    return words.join(' ')
-  }
+  parseSeedPhrase = (seedPhrase) => (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || ''
 
   UNSAFE_componentWillMount () {
     this._onBeforeUnload = () => this.context.metricsEvent({
@@ -73,7 +57,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     if (seedPhrase) {
       const parsedSeedPhrase = this.parseSeedPhrase(seedPhrase)
-      const wordCount = parsedSeedPhrase.split(new RegExp('\\s')).length
+      const wordCount = parsedSeedPhrase.split(/\s/u).length
       if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
       } else if (!validateMnemonic(parsedSeedPhrase)) {
