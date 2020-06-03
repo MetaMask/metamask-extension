@@ -1,26 +1,10 @@
 .asset-list-item {
-  &__container {
-    display: flex;
-    padding: 24px 16px;
-    align-items: center;
-    border-top: 1px solid $mercury;
-    border-bottom: 1px solid $mercury;
-    cursor: pointer;
-
-    &:hover {
-      background-color: $Grey-000;
-    }
-  }
-
-  &__balance {
-    display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-    flex: 1;
-    min-width: 0;
-  }
-
   &__chevron-right {
     color: $Grey-500;
+  }
+
+  .list-item__subheading {
+    margin-top: 6px;
+    font-size: 14px;
   }
 }

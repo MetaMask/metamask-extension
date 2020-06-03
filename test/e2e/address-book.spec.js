@@ -151,7 +151,7 @@ describe('MetaMask', function () {
     })
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
+      const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
       await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
       await driver.delay(regularDelayMs)
     })
