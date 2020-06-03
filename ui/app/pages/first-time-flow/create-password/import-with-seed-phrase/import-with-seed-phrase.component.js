@@ -257,7 +257,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             />
           )}
           <label>Hide seed phrase <input
-            type="radio"
+            type="checkbox"
             onClick={this.toggleHideSeedPhrase}
             checked={hideSeedPhrase}
           /></label>
