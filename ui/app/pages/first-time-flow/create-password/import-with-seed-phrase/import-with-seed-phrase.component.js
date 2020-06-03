@@ -263,7 +263,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               onClick={this.toggleHideSeedPhrase}
               checked={hideSeedPhrase}
             />
-          Hide seed phrase 
+          Hide seed phrase
           </label>
         </div>
         {
