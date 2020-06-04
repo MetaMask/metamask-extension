@@ -1163,7 +1163,7 @@ describe('permissions controller', function () {
     })
   })
 
-  describe('notifyDomain', function () {
+  describe('notifyAccountsChanged', function () {
 
     let notifications, permController
 
@@ -1173,11 +1173,11 @@ describe('permissions controller', function () {
       sinon.spy(permController.permissionsLog, 'updateAccountsHistory')
     })
 
-    it('notifyDomain handles accountsChanged', async function () {
+    it('notifyAccountsChanged records history and sends notification', async function () {
 
-      permController.notifyDomain(
+      permController.notifyAccountsChanged(
         ORIGINS.a,
-        NOTIFICATIONS.newAccounts(ACCOUNTS.a.permitted),
+        ACCOUNTS.a.permitted,
       )
 
       assert.ok(
@@ -1192,19 +1192,45 @@ describe('permissions controller', function () {
       )
     })
 
-    it('notifyDomain handles notifications other than accountsChanged', async function () {
+    it('notifyAccountsChanged throws on invalid origin', async function () {
 
-      permController.notifyDomain(ORIGINS.a, NOTIFICATIONS.test())
-
-      assert.ok(
-        permController.permissionsLog.updateAccountsHistory.notCalled,
-        'permissionsLog.updateAccountsHistory should not have been called'
+      assert.throws(
+        () => permController.notifyAccountsChanged(
+          4,
+          ACCOUNTS.a.permitted,
+        ),
+        ERRORS.notifyAccountsChanged.invalidOrigin(4),
+        'should throw expected error for non-string origin'
       )
 
-      assert.deepEqual(
-        notifications[ORIGINS.a],
-        [ NOTIFICATIONS.test() ],
-        'origin should have correct notification'
+      assert.throws(
+        () => permController.notifyAccountsChanged(
+          '',
+          ACCOUNTS.a.permitted,
+        ),
+        ERRORS.notifyAccountsChanged.invalidOrigin(''),
+        'should throw expected error for empty string origin'
+      )
+    })
+
+    it('notifyAccountsChanged throws on invalid accounts', async function () {
+
+      assert.throws(
+        () => permController.notifyAccountsChanged(
+          ORIGINS.a,
+          4,
+        ),
+        ERRORS.notifyAccountsChanged.invalidAccounts(),
+        'should throw expected error for truthy non-array accounts'
+      )
+
+      assert.throws(
+        () => permController.notifyAccountsChanged(
+          ORIGINS.a,
+          null,
+        ),
+        ERRORS.notifyAccountsChanged.invalidAccounts(),
+        'should throw expected error for falsy non-array accounts'
       )
     })
   })

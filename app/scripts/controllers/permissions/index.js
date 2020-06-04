@@ -591,6 +591,7 @@ export class PermissionsController {
    * @param {string} account - The newly selected account's address.
    */
   async _handleAccountSelected (account) {
+
     if (typeof account !== 'string') {
       throw new Error('Selected account should be a non-empty string.')
     }
