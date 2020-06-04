@@ -20,8 +20,8 @@ export function useTokenTracker () {
   const tokenTracker = useRef(null)
 
   const updateBalances = useCallback((tokensWithBalances) => {
-    setLoading(false)
     setTokensWithBalances(tokensWithBalances)
+    setLoading(false)
     setError(null)
   }, [])
 
