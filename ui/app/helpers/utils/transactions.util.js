@@ -6,6 +6,7 @@ import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
+import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import fetchWithCache from './fetch-with-cache'
 
@@ -137,9 +138,9 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    if (type === 'eth_decrypt') {
+    if (type === MESSAGE_TYPE.ETH_DECRYPT) {
       return DECRYPT_REQUEST_KEY
-    } else if (type === 'eth_getEncryptionPublicKey') {
+    } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
     } else {
       return SIGNATURE_REQUEST_KEY

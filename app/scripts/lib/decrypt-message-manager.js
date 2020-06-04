@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
+import { MESSAGE_TYPE } from './enums'
 
 const hexRe = /^[0-9A-Fa-f]+$/g
 import log from 'loglevel'
@@ -124,7 +125,7 @@ export default class DecryptMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_decrypt',
+      type: MESSAGE_TYPE.ETH_DECRYPT,
     }
     this.addMsg(msgData)
 

@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import log from 'loglevel'
+import { MESSAGE_TYPE } from './enums'
 
 /**
  * Represents, and contains data about, an 'eth_getEncryptionPublicKey' type request. These are created when
@@ -114,7 +115,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       msgParams: address,
       time: time,
       status: 'unapproved',
-      type: 'eth_getEncryptionPublicKey',
+      type: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
     }
 
     if (req) {
