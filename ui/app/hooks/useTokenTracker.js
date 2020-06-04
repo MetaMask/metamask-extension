@@ -42,18 +42,16 @@ export function useTokenTracker () {
   const buildTracker = useCallback((address, tokenList) => {
     // clear out previous tracker, if it exists.
     teardownTracker()
-    if (!tokenTracker.current) {
-      tokenTracker.current = new TokenTracker({
-        userAddress: address,
-        provider: global.ethereumProvider,
-        tokens: tokenList,
-        pollingInterval: 8000,
-      })
+    tokenTracker.current = new TokenTracker({
+      userAddress: address,
+      provider: global.ethereumProvider,
+      tokens: tokenList,
+      pollingInterval: 8000,
+    })
 
-      tokenTracker.current.on('update', updateBalances)
-      tokenTracker.current.on('error', showError)
-      tokenTracker.current.updateBalances()
-    }
+    tokenTracker.current.on('update', updateBalances)
+    tokenTracker.current.on('error', showError)
+    tokenTracker.current.updateBalances()
   }, [updateBalances, showError, teardownTracker])
 
   // Effect to remove the tracker when the component is removed from DOM
