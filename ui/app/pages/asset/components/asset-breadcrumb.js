@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (
-    <div className="asset-breadcrumb">
-      <button className="fas fa-chevron-left asset-breadcrumb__chevron" data-testid="asset__back" onClick={onBack} />
+    <button className="asset-breadcrumb" onClick={onBack} >
+      <i className="fas fa-chevron-left asset-breadcrumb__chevron" data-testid="asset__back" />
       <span>
         {accountName}
       </span>
@@ -12,7 +12,7 @@ const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
       <span className="asset-breadcrumb__asset">
         { assetName }
       </span>
-    </div>
+    </button>
   )
 }
 
