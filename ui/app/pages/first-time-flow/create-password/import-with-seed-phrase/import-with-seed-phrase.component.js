@@ -257,7 +257,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               placeholder={t('seedPhrasePlaceholder')}
             />
           )}
-          <label>
+          <label className="first-time-flow__label">
             <input
               type="checkbox"
               onClick={this.toggleHideSeedPhrase}
