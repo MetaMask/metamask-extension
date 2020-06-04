@@ -11,6 +11,7 @@ import SignatureRequest from '../../components/app/signature-request'
 import SignatureRequestOriginal from '../../components/app/signature-request-original'
 import Loading from '../../components/ui/loading-screen'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 
 function mapStateToProps (state) {
   const { metamask, appState } = state
@@ -111,7 +112,7 @@ class ConfirmTxScreen extends Component {
 
   signatureSelect (type, version) {
     // Temporarily direct only v3 and v4 requests to new code.
-    if (type === 'eth_signTypedData' && (version === 'V3' || version === 'V4')) {
+    if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA && (version === 'V3' || version === 'V4')) {
       return SignatureRequest
     }
 

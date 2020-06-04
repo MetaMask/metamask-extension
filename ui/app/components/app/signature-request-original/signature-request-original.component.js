@@ -4,7 +4,7 @@ import ethUtil from 'ethereumjs-util'
 import classnames from 'classnames'
 import { ObjectInspector } from 'react-inspector'
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION, MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
 import AccountListItem from '../../../pages/send/account-list-item/account-list-item.component'
@@ -208,11 +208,11 @@ export default class SignatureRequestOriginal extends Component {
     const { txData } = this.props
     const { type, msgParams: { data } } = txData
 
-    if (type === 'personal_sign') {
+    if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
       rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
-    } else if (type === 'eth_signTypedData') {
+    } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data
-    } else if (type === 'eth_sign') {
+    } else if (type === MESSAGE_TYPE.ETH_SIGN) {
       rows = [{ name: this.context.t('message'), value: data }]
       notice = this.context.t('signNotice')
     }
@@ -223,12 +223,12 @@ export default class SignatureRequestOriginal extends Component {
         { this.renderRequestInfo() }
         <div
           className={classnames('request-signature__notice', {
-            'request-signature__warning': type === 'eth_sign',
+            'request-signature__warning': type === MESSAGE_TYPE.ETH_SIGN,
           })}
         >
           { notice }
           {
-            type === 'eth_sign'
+            type === MESSAGE_TYPE.ETH_SIGN
               ? (
                 <span
                   className="request-signature__help-link"
