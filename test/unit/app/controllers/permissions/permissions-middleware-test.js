@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert'
-import { useFakeTimers } from 'sinon'
+import sinon from 'sinon'
 
 import {
   METADATA_STORE_KEY,
@@ -58,6 +58,7 @@ describe('permissions middleware', function () {
 
     beforeEach(function () {
       permController = initPermController()
+      permController.notifyAccountsChanged = sinon.fake()
     })
 
     it('grants permissions on user approval', async function () {
@@ -107,6 +108,13 @@ describe('permissions middleware', function () {
         aAccounts, [ACCOUNTS.a.primary],
         'origin should have correct accounts'
       )
+
+      assert.ok(
+        permController.notifyAccountsChanged.calledOnceWith(
+          ORIGINS.a, aAccounts,
+        ),
+        'expected notification call should have been made'
+      )
     })
 
     it('handles serial approved requests that overwrite existing permissions', async function () {
@@ -155,6 +163,13 @@ describe('permissions middleware', function () {
       assert.deepEqual(
         accounts1, [ACCOUNTS.a.primary],
         'origin should have correct accounts'
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.calledOnceWith(
+          ORIGINS.a, accounts1,
+        ),
+        'expected notification call should have been made'
       )
 
       // create second request
@@ -211,6 +226,18 @@ describe('permissions middleware', function () {
         accounts2, [ACCOUNTS.b.primary],
         'origin should have correct accounts'
       )
+
+      assert.equal(
+        permController.notifyAccountsChanged.callCount, 2,
+        'should have called notification method 2 times in total'
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.lastCall.calledWith(
+          ORIGINS.a, accounts2,
+        ),
+        'expected notification call should have been made'
+      )
     })
 
     it('rejects permissions on user rejection', async function () {
@@ -252,6 +279,11 @@ describe('permissions middleware', function () {
       assert.deepEqual(
         aAccounts, [], 'origin should have have correct accounts'
       )
+
+      assert.ok(
+        permController.notifyAccountsChanged.notCalled,
+        'should not have called notification method'
+      )
     })
 
     it('rejects requests with unknown permissions', async function () {
@@ -287,6 +319,11 @@ describe('permissions middleware', function () {
           res.error.message === expectedError.message
         ),
         'response should have expected error and no result'
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.notCalled,
+        'should not have called notification method'
       )
     })
 
@@ -695,7 +732,7 @@ describe('permissions middleware', function () {
 
     beforeEach(function () {
       permController = initPermController()
-      clock = useFakeTimers(1)
+      clock = sinon.useFakeTimers(1)
     })
 
     afterEach(function () {

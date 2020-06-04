@@ -47,7 +47,7 @@ export class PermissionsController {
     this.getKeyringAccounts = getKeyringAccounts
     this._getUnlockPromise = getUnlockPromise
     this._notifyDomain = notifyDomain
-    this.notifyAllDomains = notifyAllDomains
+    this._notifyAllDomains = notifyAllDomains
     this._showPermissionRequest = showPermissionRequest
 
     this._restrictedMethods = getRestrictedMethods({
@@ -95,6 +95,7 @@ export class PermissionsController {
       getAccounts: this.getAccounts.bind(this, origin),
       getUnlockPromise: () => this._getUnlockPromise(true),
       hasPermission: this.hasPermission.bind(this, origin),
+      notifyAccountsChanged: this.notifyAccountsChanged.bind(this, origin),
       requestAccountsPermission: this._requestPermissions.bind(
         this, { origin }, { eth_accounts: {} },
       ),
@@ -196,6 +197,7 @@ export class PermissionsController {
    * User approval callback. Resolves the Promise for the permissions request
    * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
    * The request will be rejected if finalizePermissionsRequest fails.
+   * Idempotent for a given request id.
    *
    * @param {Object} approved - The request object approved by the user
    * @param {Array} accounts - The accounts to expose, if any
@@ -206,7 +208,7 @@ export class PermissionsController {
     const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.error(`Permissions request with id '${id}' not found`)
+      log.debug(`Permissions request with id '${id}' not found`)
       return
     }
 
@@ -241,6 +243,7 @@ export class PermissionsController {
   /**
    * User rejection callback. Rejects the Promise for the permissions request
    * waited upon by rpc-cap, see requestUserApproval in _initializePermissions.
+   * Idempotent for a given id.
    *
    * @param {string} id - The id of the request rejected by the user
    */
@@ -248,7 +251,7 @@ export class PermissionsController {
     const approval = this.pendingApprovals.get(id)
 
     if (!approval) {
-      log.error(`Permissions request with id '${id}' not found`)
+      log.debug(`Permissions request with id '${id}' not found`)
       return
     }
 
@@ -289,10 +292,7 @@ export class PermissionsController {
 
     const permittedAccounts = await this.getAccounts(origin)
 
-    this.notifyDomain(origin, {
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: permittedAccounts,
-    })
+    this.notifyAccountsChanged(origin, permittedAccounts)
   }
 
   /**
@@ -338,10 +338,7 @@ export class PermissionsController {
       newPermittedAccounts = await this.getAccounts(origin)
     }
 
-    this.notifyDomain(origin, {
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: newPermittedAccounts,
-    })
+    this.notifyAccountsChanged(origin, newPermittedAccounts)
   }
 
   /**
@@ -410,21 +407,34 @@ export class PermissionsController {
     })
   }
 
-  notifyDomain (origin, payload) {
+  /**
+   * Notify a domain that its permitted accounts have changed.
+   * Also updates the accounts history log.
+   *
+   * @param {string} origin - The origin of the domain to notify.
+   * @param {Array<string>} newAccounts - The currently permitted accounts.
+   */
+  notifyAccountsChanged (origin, newAccounts) {
+
+    if (typeof origin !== 'string' || !origin) {
+      throw new Error(`Invalid origin: '${origin}'`)
+    }
+
+    if (!Array.isArray(newAccounts)) {
+      throw new Error('Invalid accounts', newAccounts)
+    }
+
+    this._notifyDomain(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      result: newAccounts,
+    })
 
     // if the accounts changed from the perspective of the dapp,
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
-    if (
-      payload.method === NOTIFICATION_NAMES.accountsChanged &&
-      Array.isArray(payload.result)
-    ) {
-      this.permissionsLog.updateAccountsHistory(
-        origin, payload.result
-      )
-    }
-
-    this._notifyDomain(origin, payload)
+    this.permissionsLog.updateAccountsHistory(
+      origin, newAccounts
+    )
 
     // NOTE:
     // we don't check for accounts changing in the notifyAllDomains case,
@@ -438,7 +448,8 @@ export class PermissionsController {
    * Should only be called after confirming that the permissions exist, to
    * avoid sending unnecessary notifications.
    *
-   * @param {Object} domains { origin: [permissions] }
+   * @param {Object} domains { origin: [permissions] } - The map of domain
+   * origins to permissions to remove.
    */
   removePermissionsFor (domains) {
 
@@ -449,10 +460,7 @@ export class PermissionsController {
         perms.map((methodName) => {
 
           if (methodName === 'eth_accounts') {
-            this.notifyDomain(
-              origin,
-              { method: NOTIFICATION_NAMES.accountsChanged, result: [] }
-            )
+            this.notifyAccountsChanged(origin, [])
           }
 
           return { parentCapability: methodName }
@@ -466,7 +474,7 @@ export class PermissionsController {
    */
   clearPermissions () {
     this.permissions.clearDomains()
-    this.notifyAllDomains({
+    this._notifyAllDomains({
       method: NOTIFICATION_NAMES.accountsChanged,
       result: [],
     })
@@ -583,6 +591,7 @@ export class PermissionsController {
    * @param {string} account - The newly selected account's address.
    */
   async _handleAccountSelected (account) {
+
     if (typeof account !== 'string') {
       throw new Error('Selected account should be a non-empty string.')
     }
@@ -618,10 +627,7 @@ export class PermissionsController {
   async _handleConnectedAccountSelected (origin) {
     const permittedAccounts = await this.getAccounts(origin)
 
-    this.notifyDomain(origin, {
-      method: NOTIFICATION_NAMES.accountsChanged,
-      result: permittedAccounts,
-    })
+    this.notifyAccountsChanged(origin, permittedAccounts)
   }
 
   /**
