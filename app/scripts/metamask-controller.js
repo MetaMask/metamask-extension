@@ -170,9 +170,11 @@ export default class MetamaskController extends EventEmitter {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
         this.incomingTransactionsController.start()
+        this.tokenRatesController.start()
       } else {
         this.accountTracker.stop()
         this.incomingTransactionsController.stop()
+        this.tokenRatesController.stop()
       }
     })
 
@@ -281,10 +283,6 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
-    // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
-      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
-    })
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -2032,18 +2030,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
-  }
-
-  /**
-   * A method for activating the retrieval of price data,
-   * which should only be fetched when the UI is visible.
-   * @private
-   * @param {boolean} active - True if price data should be getting fetched.
-   */
-  set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
   }
 
   /**
