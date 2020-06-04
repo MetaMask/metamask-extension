@@ -450,7 +450,7 @@ export const getters = deepFreeze({
     notifyAccountsChanged: {
       invalidOrigin: (origin) => {
         return {
-          message: `Invalid origin: '${origin}'`
+          message: `Invalid origin: '${origin}'`,
         }
       },
       invalidAccounts: () => {
