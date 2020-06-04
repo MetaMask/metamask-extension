@@ -197,8 +197,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   toggleHideSeedPhrase = () => {
-    const { hideSeedPhrase } = this.state
-    this.setState({ hideSeedPhrase: !hideSeedPhrase })
+    this.setState(({ hideSeedPhrase }) => ({ !hideSeedPhrase }))
   }
 
   render () {
