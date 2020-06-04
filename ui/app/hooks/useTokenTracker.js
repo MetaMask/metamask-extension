@@ -1,18 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import TokenTracker from '@metamask/eth-token-tracker'
-import { isEqual } from 'lodash'
 import { useSelector } from 'react-redux'
 import { getCurrentNetwork, getSelectedAddress } from '../selectors'
-import { getTokens } from '../ducks/metamask/metamask'
 
 
-export function useTokenTracker () {
+export function useTokenTracker (tokens) {
   const network = useSelector(getCurrentNetwork)
   const userAddress = useSelector(getSelectedAddress)
-  // use `isEqual` comparison function because the token array is serialized
-  // from the background so it has a new reference with each background update,
-  // even if the tokens haven't changed
-  const tokens = useSelector(getTokens, isEqual)
 
   const [loading, setLoading] = useState(() => tokens?.length >= 0)
   const [tokensWithBalances, setTokensWithBalances] = useState([])
@@ -55,9 +49,10 @@ export function useTokenTracker () {
   }, [updateBalances, showError, teardownTracker])
 
   // Effect to remove the tracker when the component is removed from DOM
-  // Do not overload this effect with additional dependencies, the fact
-  // that it has an empty dependency array is what confirms it will only
-  // run on mount/unmount
+  // Do not overload this effect with additional dependencies. teardownTracker
+  // is the only dependency here, which itself has no dependencies and will
+  // never update. The lack of dependencies that change is what confirms
+  // that this effect only runs on mount/unmount
   useEffect(() => {
     return teardownTracker
   }, [teardownTracker])
@@ -71,13 +66,13 @@ export function useTokenTracker () {
     // 3. token list is updated and not equal to previous list
     // in any of these scenarios, we should indicate to the user that their token
     // values are in the process of updating by setting loading state.
-    // Due to the nature of render reconciliation in cases where an immediate
-    // update to setLoading(true) would result in no UI loading screen rendered
     setLoading(true)
 
     if (!userAddress || network === 'loading' || !global.ethereumProvider) {
       // If we do not have enough information to build a TokenTracker, we exit early
-      // When the values above change, the effect will be restarted
+      // When the values above change, the effect will be restarted. We also teardown
+      // tracker because inevitably this effect will run again momentarily.
+      teardownTracker()
       return
     }
 
@@ -87,7 +82,7 @@ export function useTokenTracker () {
     }
 
     buildTracker(userAddress, tokens)
-  }, [userAddress, network, tokens, buildTracker])
+  }, [userAddress, network, tokens, updateBalances, buildTracker])
 
   return { loading, tokensWithBalances, error }
 }
