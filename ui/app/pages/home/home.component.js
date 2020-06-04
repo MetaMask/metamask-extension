@@ -232,7 +232,7 @@ export default class Home extends PureComponent {
             <div className="home__balance-wrapper">
               <EthOverview />
             </div>
-            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick}>
+            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick} tabsClassName="home__tabs">
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
