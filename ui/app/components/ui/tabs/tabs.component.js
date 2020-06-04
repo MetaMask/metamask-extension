@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class Tabs extends Component {
   static defaultProps = {
     defaultActiveTabName: null,
     onTabClick: null,
+    tabsClassName: undefined,
   }
 
   static propTypes = {
     defaultActiveTabName: PropTypes.string,
     onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
+    tabsClassName: PropTypes.string,
   }
 
   state = {
@@ -62,9 +65,10 @@ export default class Tabs extends Component {
   }
 
   render () {
+    const { tabsClassName } = this.props
     return (
       <div className="tabs">
-        <ul className="tabs__list">
+        <ul className={classnames('tabs__list', tabsClassName)}>
           { this.renderTabs() }
         </ul>
         <div className="tabs__content">
