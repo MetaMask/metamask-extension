@@ -1277,8 +1277,11 @@
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
   },
-  "hideSeedPhrase": {
-    "message": "Hide seed phrase"
+  "seedPhrasePlaceholderPaste": {
+    "message": "Paste seed phrase from clipboard"
+  },
+  "showSeedPhrase": {
+    "message": "Show seed phrase"
   },
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"

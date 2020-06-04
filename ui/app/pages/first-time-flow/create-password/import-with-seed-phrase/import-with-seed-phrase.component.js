@@ -23,7 +23,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
   state = {
     seedPhrase: '',
-    hideSeedPhrase: false,
+    showSeedPhrase: false,
     password: '',
     confirmPassword: '',
     seedPhraseError: '',
@@ -196,15 +196,15 @@ export default class ImportWithSeedPhrase extends PureComponent {
     }))
   }
 
-  toggleHideSeedPhrase = () => {
-    this.setState(({ hideSeedPhrase }) => ({
-      hideSeedPhrase: !hideSeedPhrase,
+  toggleShowSeedPhrase = () => {
+    this.setState(({ showSeedPhrase }) => ({
+      showSeedPhrase: !showSeedPhrase,
     }))
   }
 
   render () {
     const { t } = this.context
-    const { seedPhraseError, hideSeedPhrase, passwordError, confirmPasswordError, termsChecked } = this.state
+    const { seedPhraseError, showSeedPhrase, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <form
@@ -241,30 +241,37 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <div className="first-time-flow__textarea-wrapper">
           <label>{ t('walletSeed') }</label>
-          {hideSeedPhrase ? (
-            <TextField
-              className="first-time-flow__textarea"
-              type="password"
-              onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
-              value={this.state.seedPhrase}
-              placeholder={t('seedPhrasePlaceholder')}
-            />
-          ) : (
+          {showSeedPhrase ? (
             <textarea
               className="first-time-flow__textarea"
               onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholder')}
             />
-          )}
-          <label className="first-time-flow__label">
-            <input
-              type="checkbox"
-              onClick={this.toggleHideSeedPhrase}
-              checked={hideSeedPhrase}
+          ) : (
+            <TextField
+              className="first-time-flow__textarea first-time-flow__seedphrase"
+              type="password"
+              onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+              value={this.state.seedPhrase}
+              placeholder={t('seedPhrasePlaceholderPaste')}
             />
-            { t('hideSeedPhrase') }
-          </label>
+          )}
+          <div className="first-time-flow__checkbox-container" onClick={this.toggleShowSeedPhrase}>
+            <div
+              className="first-time-flow__checkbox"
+              tabIndex="0"
+              role="checkbox"
+              onKeyPress={this.toggleShowSeedPhrase}
+              aria-checked={showSeedPhrase}
+              aria-labelledby="ftf-chk1-label"
+            >
+              {showSeedPhrase ? <i className="fa fa-check fa-2x" /> : null}
+            </div>
+            <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
+              { t('showSeedPhrase') }
+            </span>
+          </div>
         </div>
         {
           seedPhraseError && (
