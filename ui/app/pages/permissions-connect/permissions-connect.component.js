@@ -6,7 +6,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
 import {
   DEFAULT_ROUTE,
@@ -32,7 +31,6 @@ export default class PermissionConnect extends Component {
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
-    redirecting: PropTypes.bool,
     targetDomainMetadata: PropTypes.object,
   }
 
@@ -43,7 +41,6 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: {},
     permissionsRequestId: '',
     domains: {},
-    redirecting: false,
   }
 
   static contextTypes = {
@@ -69,14 +66,18 @@ export default class PermissionConnect extends Component {
   }
 
   removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    const environmentType = getEnvironmentType()
+    if (
+      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.removeEventListener('beforeunload', this.beforeUnload)
     }
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequest, redirecting } = this.props
-    const { originName } = this.state
+    const { domains, permissionsRequest } = this.props
+    const { originName, redirecting } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const permissionDataForDomain = (domains && domains[originName]) || {}
@@ -107,16 +108,11 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-      setTimeout(async () => {
-        const currentTab = await global.platform.currentTab()
-        global.platform.closeTab(currentTab.id)
-      }, 2000)
-    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       setTimeout(async () => {
         global.platform.closeCurrentWindow()
       }, 2000)
-    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    } else {
       history.push(DEFAULT_ROUTE)
     }
   }
@@ -135,7 +131,11 @@ export default class PermissionConnect extends Component {
       return history.push(DEFAULT_ROUTE)
     }
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    const environmentType = getEnvironmentType()
+    if (
+      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.addEventListener('beforeunload', this.beforeUnload)
     }
   }
@@ -145,9 +145,9 @@ export default class PermissionConnect extends Component {
     if (requestId) {
       await rejectPermissionsRequest(requestId)
 
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
-      } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      } else {
         history.push(DEFAULT_ROUTE)
       }
     }

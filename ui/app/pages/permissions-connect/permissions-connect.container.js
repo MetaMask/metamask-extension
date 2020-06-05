@@ -11,7 +11,13 @@ import {
 } from '../../selectors'
 
 import { formatDate } from '../../helpers/utils/util'
-import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
+import {
+  approvePermissionsRequest,
+  rejectPermissionsRequest,
+  showModal,
+  getCurrentWindowTab,
+  getRequestAccountTabIds,
+} from '../../store/actions'
 import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
