@@ -118,7 +118,7 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
           ? (
             <MenuItem
               onClick={() => {
-                dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', selectedIdentity }))
+                dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity: selectedIdentity }))
                 onClose()
               }}
               iconClassName="fas fa-trash-alt"
