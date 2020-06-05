@@ -306,7 +306,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
         />
         <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
           <div
-            className="first-time-flow__checkbox"
+            className="first-time-flow__checkbox first-time-flow__terms"
             tabIndex="0"
             role="checkbox"
             onKeyPress={this.onTermsKeyPress}
