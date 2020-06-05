@@ -222,7 +222,7 @@ export function getOrderedConnectedAccountsForActiveTab (state) {
     .filter((account) => connectedAccounts.includes(account.address))
     .map((account) => ({
       ...account,
-      lastActive: permissionsHistoryByAccount[account.address],
+      lastActive: permissionsHistoryByAccount?.[account.address],
     }))
     .sort(({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
       if (lastSelectedA === lastSelectedB) {
