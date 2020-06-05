@@ -32,6 +32,9 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     targetDomainMetadata: PropTypes.object,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
   }
 
   static defaultProps = {
@@ -100,7 +103,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { history } = this.props
+    const { history, location, confirmPermissionPath } = this.props
 
     this.setState({
       redirecting: true,
@@ -111,7 +114,11 @@ export default class PermissionConnect extends Component {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       setTimeout(async () => {
         global.platform.closeCurrentWindow()
-      }, 2000)
+      }, 1500)
+    } else if (location.pathname === confirmPermissionPath) {
+      setTimeout(async () => {
+        history.push(DEFAULT_ROUTE)
+      }, 1500)
     } else {
       history.push(DEFAULT_ROUTE)
     }
@@ -140,11 +147,10 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  cancelPermissionsRequest = async (requestId) => {
+  cancelPermissionsRequest = (requestId) => {
     const { history, rejectPermissionsRequest } = this.props
     if (requestId) {
-      await rejectPermissionsRequest(requestId)
-
+      rejectPermissionsRequest(requestId)
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
       } else {
