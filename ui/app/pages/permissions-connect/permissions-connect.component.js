@@ -19,14 +19,14 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds: PropTypes.func.isRequired,
     getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
-    originName: PropTypes.string,
+    origin: PropTypes.string,
     showNewAccountModal: PropTypes.func.isRequired,
     newAccountNumber: PropTypes.number.isRequired,
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
-    addressLastConnectedMap: PropTypes.object,
+    addressLastConnectedMap: PropTypes.object.isRequired,
+    lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    domains: PropTypes.object,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
@@ -38,12 +38,10 @@ export default class PermissionConnect extends Component {
   }
 
   static defaultProps = {
-    originName: '',
+    origin: '',
     nativeCurrency: '',
     permissionsRequest: undefined,
-    addressLastConnectedMap: {},
     permissionsRequestId: '',
-    domains: {},
   }
 
   static contextTypes = {
@@ -56,7 +54,7 @@ export default class PermissionConnect extends Component {
       ? new Set([this.props.accounts[0].address])
       : new Set(),
     permissionAccepted: null,
-    originName: this.props.originName,
+    origin: this.props.origin,
   }
 
   beforeUnload = () => {
@@ -79,16 +77,15 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequest } = this.props
-    const { originName, redirecting } = this.state
+    const { permissionsRequest, lastConnectedInfo } = this.props
+    const { redirecting, origin } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
-      const permissionDataForDomain = (domains && domains[originName]) || {}
-      const permissionsForDomain = permissionDataForDomain.permissions || []
-      const prevPermissionDataForDomain = (prevProps.domains && prevProps.domains[originName]) || {}
-      const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
-      const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
-      if (addedAPermission) {
+
+      const accountsLastApprovedTime = lastConnectedInfo[origin]?.lastApproved || 0
+      const initialAccountsLastApprovedTime = prevProps.lastConnectedInfo[origin]?.lastApproved || 0
+
+      if (accountsLastApprovedTime > initialAccountsLastApprovedTime) {
         this.redirectFlow(true)
       } else {
         this.redirectFlow(false)
@@ -208,7 +205,7 @@ export default class PermissionConnect extends Component {
     const {
       selectedAccountAddresses,
       permissionAccepted,
-      originName,
+      origin,
       redirecting,
     } = this.state
 
@@ -222,7 +219,6 @@ export default class PermissionConnect extends Component {
             render={() => (
               <ChooseAccount
                 accounts={accounts}
-                originName={originName}
                 nativeCurrency={nativeCurrency}
                 selectAccounts={(addresses) => this.selectAccounts(addresses)}
                 selectNewAccountViaModal={(handleAccountClick) => {
@@ -256,7 +252,7 @@ export default class PermissionConnect extends Component {
                 selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
                 redirect={redirecting}
                 permissionRejected={ permissionAccepted === false }
-                cachedOrigin={originName}
+                cachedOrigin={origin}
               />
             )}
           />

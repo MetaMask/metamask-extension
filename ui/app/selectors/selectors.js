@@ -6,6 +6,7 @@ import {
   checksumAddress,
   getAccountByAddress,
 } from '../helpers/utils/util'
+import { getPermissionsRequestCount } from './permissions'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -282,15 +283,6 @@ export function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
 }
 
-export function getPermissionsRequests (state) {
-  return state.metamask.permissionsRequests || []
-}
-
-export function getPermissionsRequestCount (state) {
-  const permissionsRequests = getPermissionsRequests(state)
-  return permissionsRequests.length
-}
-
 export function getDomainMetadata (state) {
   return state.metamask.domainMetadata
 }
@@ -339,29 +331,8 @@ export function getFeatureFlags (state) {
   return state.metamask.featureFlags
 }
 
-export function getFirstPermissionRequest (state) {
-  const requests = getPermissionsRequests(state)
-  return requests && requests[0] ? requests[0] : null
-}
-
-export function hasPermissionRequests (state) {
-  return Boolean(getFirstPermissionRequest(state))
-}
-
 export function getOriginOfCurrentTab (state) {
   return state.activeTab?.origin
-}
-
-export function getLastConnectedInfo (state) {
-  const { permissionsHistory = {} } = state.metamask
-  const lastConnectedInfoData = Object.keys(permissionsHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
-    return {
-      ...acc,
-      [origin]: ethAccountsHistory.accounts,
-    }
-  }, {})
-  return lastConnectedInfoData
 }
 
 export function getIpfsGateway (state) {
