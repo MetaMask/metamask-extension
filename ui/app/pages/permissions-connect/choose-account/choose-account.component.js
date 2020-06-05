@@ -30,7 +30,6 @@ export default class ChooseAccount extends Component {
 
   state = {
     selectedAccounts: this.props.selectedAccountAddresses,
-    buttonsDisabled: false,
   }
 
   static defaultProps = {
@@ -186,7 +185,7 @@ export default class ChooseAccount extends Component {
       targetDomainMetadata,
       accounts,
     } = this.props
-    const { selectedAccounts, buttonsDisabled } = this.state
+    const { selectedAccounts } = this.state
     const { t } = this.context
     return (
       <div className="permissions-connect-choose-account">
@@ -205,26 +204,15 @@ export default class ChooseAccount extends Component {
           <PermissionsConnectFooter />
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
-              onClick={() => {
-                cancelPermissionsRequest(permissionsRequestId)
-                this.setState({
-                  buttonsDisabled: true,
-                })
-              }}
+              onClick={() => cancelPermissionsRequest(permissionsRequestId)}
               type="default"
-              disabled={buttonsDisabled}
             >
               {t('cancel')}
             </Button>
             <Button
-              onClick={() => {
-                selectAccounts(selectedAccounts)
-                this.setState({
-                  buttonsDisabled: true,
-                })
-              }}
+              onClick={() => selectAccounts(selectedAccounts)}
               type="primary"
-              disabled={selectedAccounts.size === 0 || buttonsDisabled}
+              disabled={selectedAccounts.size === 0}
             >
               {t('next')}
             </Button>
