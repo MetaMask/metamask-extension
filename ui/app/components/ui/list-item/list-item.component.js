@@ -11,6 +11,7 @@ export default function ListItem ({
   titleIcon,
   icon,
   rightContent,
+  midContent,
   className,
   'data-testid': dataTestId,
 }) {
@@ -18,28 +19,35 @@ export default function ListItem ({
 
   return (
     <div className={primaryClassName} onClick={onClick} data-testid={dataTestId}>
-      {icon && (
-        <div className="list-item__col list-item__icon">
-          {icon}
-        </div>
-      )}
       <div className="list-item__col list-item__col-main">
-        <h2 className="list-item__heading">
-          { title } {titleIcon && (
-            <span className="list-item__heading-wrap">
-              {titleIcon}
-            </span>
-          )}
-        </h2>
-        <h3 className="list-item__subheading">
-          {subtitleStatus}{subtitle}
-        </h3>
-        {children && (
-          <div className="list-item__more">
-            { children }
+        {icon && (
+          <div className="list-item__icon">
+            {icon}
           </div>
         )}
+        <div className="list-item__main-content">
+          <h2 className="list-item__heading">
+            { title } {titleIcon && (
+              <span className="list-item__heading-wrap">
+                {titleIcon}
+              </span>
+            )}
+          </h2>
+          <h3 className="list-item__subheading">
+            {subtitleStatus}{subtitle}
+          </h3>
+          {children && (
+            <div className="list-item__more">
+              { children }
+            </div>
+          )}
+        </div>
       </div>
+      {midContent && (
+        <div className="list-item__col list-item__mid-content">
+          {midContent}
+        </div>
+      )}
       {rightContent && (
         <div className="list-item__col list-item__right-content">
           {rightContent}
@@ -57,6 +65,7 @@ ListItem.propTypes = {
   children: PropTypes.node,
   icon: PropTypes.node,
   rightContent: PropTypes.node,
+  midContent: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
   'data-testid': PropTypes.string,
