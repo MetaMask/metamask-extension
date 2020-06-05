@@ -144,10 +144,13 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  cancelPermissionsRequest = (requestId) => {
+  cancelPermissionsRequest = async (requestId) => {
+
     const { history, rejectPermissionsRequest } = this.props
+
     if (requestId) {
-      rejectPermissionsRequest(requestId)
+      await rejectPermissionsRequest(requestId)
+
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
       } else {
