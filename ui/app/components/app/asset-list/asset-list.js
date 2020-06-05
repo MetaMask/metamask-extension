@@ -57,7 +57,7 @@ const AssetList = ({ onClickAsset }) => {
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
         primary={primaryCurrencyDisplay}
-        secondary={showFiat && secondaryCurrencyDisplay}
+        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
       />
       <TokenList
         onTokenClick={(tokenAddress) => {
