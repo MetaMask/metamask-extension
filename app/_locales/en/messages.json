@@ -76,9 +76,6 @@
   "cancelling": {
     "message": "Cancelling..."
   },
-  "cancelledConnectionWithMetaMask": {
-    "message": "Cancelled Connection With MetaMask"
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart only available on Ethereum networks."
   },
@@ -87,9 +84,6 @@
   },
   "connectWithMetaMask": {
     "message": "Connect With MetaMask"
-  },
-  "connectingWithMetaMask": {
-    "message": "Connecting With MetaMask..."
   },
   "connectTo": {
     "message": "Connect to $1",
