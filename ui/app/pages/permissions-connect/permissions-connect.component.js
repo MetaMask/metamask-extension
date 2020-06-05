@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import ChooseAccount from './choose-account'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -11,6 +10,11 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
+import ChooseAccount from './choose-account'
+import PermissionsRedirect from './redirect'
+
+const APPROVE_TIMEOUT = 1500
+const REJECT_TIMEOUT = 750
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -53,15 +57,16 @@ export default class PermissionConnect extends Component {
     selectedAccountAddresses: this.props.accounts.length === 1
       ? new Set([this.props.accounts[0].address])
       : new Set(),
-    permissionAccepted: null,
+    permissionsApproved: null,
     origin: this.props.origin,
+    targetDomainMetadata: this.props.targetDomainMetadata,
   }
 
   beforeUnload = () => {
     const { permissionsRequestId, rejectPermissionsRequest } = this.props
-    const { permissionAccepted } = this.state
+    const { permissionsApproved } = this.state
 
-    if (permissionAccepted === null && permissionsRequestId) {
+    if (permissionsApproved === null && permissionsRequestId) {
       rejectPermissionsRequest(permissionsRequestId)
     }
   }
@@ -73,51 +78,6 @@ export default class PermissionConnect extends Component {
       environmentType === ENVIRONMENT_TYPE_NOTIFICATION
     ) {
       window.removeEventListener('beforeunload', this.beforeUnload)
-    }
-  }
-
-  componentDidUpdate (prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props
-    const { redirecting, origin } = this.state
-
-    if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
-
-      const accountsLastApprovedTime = lastConnectedInfo[origin]?.lastApproved || 0
-      const initialAccountsLastApprovedTime = prevProps.lastConnectedInfo[origin]?.lastApproved || 0
-
-      if (accountsLastApprovedTime > initialAccountsLastApprovedTime) {
-        this.redirectFlow(true)
-      } else {
-        this.redirectFlow(false)
-      }
-    }
-  }
-
-  selectAccounts = (addresses) => {
-    this.setState({
-      selectedAccountAddresses: addresses,
-    }, () => this.props.history.push(this.props.confirmPermissionPath))
-  }
-
-  redirectFlow (accepted) {
-    const { history, location, confirmPermissionPath } = this.props
-
-    this.setState({
-      redirecting: true,
-      permissionAccepted: accepted,
-    })
-    this.removeBeforeUnload()
-
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      setTimeout(async () => {
-        global.platform.closeCurrentWindow()
-      }, 1500)
-    } else if (location.pathname === confirmPermissionPath) {
-      setTimeout(async () => {
-        history.push(DEFAULT_ROUTE)
-      }, 1500)
-    } else {
-      history.push(DEFAULT_ROUTE)
     }
   }
 
@@ -144,9 +104,54 @@ export default class PermissionConnect extends Component {
     }
   }
 
+  componentDidUpdate (prevProps) {
+    const { permissionsRequest, lastConnectedInfo } = this.props
+    const { redirecting, origin } = this.state
+
+    if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
+
+      const accountsLastApprovedTime = lastConnectedInfo[origin]?.lastApproved || 0
+      const initialAccountsLastApprovedTime = prevProps.lastConnectedInfo[origin]?.lastApproved || 0
+
+      if (accountsLastApprovedTime > initialAccountsLastApprovedTime) {
+        this.redirectFlow(true)
+      } else {
+        this.redirectFlow(false)
+      }
+    }
+  }
+
+  selectAccounts = (addresses) => {
+    this.setState({
+      selectedAccountAddresses: addresses,
+    }, () => this.props.history.push(this.props.confirmPermissionPath))
+  }
+
+  redirectFlow (approved) {
+    const { history } = this.props
+
+    this.setState({
+      redirecting: true,
+      permissionsApproved: approved,
+    })
+    this.removeBeforeUnload()
+
+    const timeout = approved ? APPROVE_TIMEOUT : REJECT_TIMEOUT
+
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      setTimeout(async () => {
+        global.platform.closeCurrentWindow()
+      }, timeout)
+    } else {
+      setTimeout(async () => {
+        history.push(DEFAULT_ROUTE)
+      }, timeout)
+    }
+  }
+
   cancelPermissionsRequest = async (requestId) => {
 
-    const { history, rejectPermissionsRequest } = this.props
+    const { rejectPermissionsRequest } = this.props
 
     if (requestId) {
       await rejectPermissionsRequest(requestId)
@@ -154,7 +159,7 @@ export default class PermissionConnect extends Component {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
       } else {
-        history.push(DEFAULT_ROUTE)
+        this.redirectFlow(false)
       }
     }
   }
@@ -193,7 +198,6 @@ export default class PermissionConnect extends Component {
   render () {
     const {
       approvePermissionsRequest,
-      rejectPermissionsRequest,
       accounts,
       showNewAccountModal,
       newAccountNumber,
@@ -203,63 +207,69 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
-      targetDomainMetadata,
     } = this.props
     const {
       selectedAccountAddresses,
-      permissionAccepted,
+      permissionsApproved,
       origin,
       redirecting,
+      targetDomainMetadata,
     } = this.state
 
     return (
       <div className="permissions-connect">
         { this.renderTopBar() }
-        <Switch>
-          <Route
-            path={connectPath}
-            exact
-            render={() => (
-              <ChooseAccount
-                accounts={accounts}
-                nativeCurrency={nativeCurrency}
-                selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                selectNewAccountViaModal={(handleAccountClick) => {
-                  showNewAccountModal({
-                    onCreateNewAccount: (address) => handleAccountClick(address),
-                    newAccountNumber,
-                  })
-                }}
-                addressLastConnectedMap={addressLastConnectedMap}
-                cancelPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
-                permissionsRequestId={permissionsRequestId}
-                selectedAccountAddresses={selectedAccountAddresses}
-                targetDomainMetadata={targetDomainMetadata}
+        {
+          redirecting
+            ? (
+              <PermissionsRedirect
+                domainMetadata={targetDomainMetadata}
+                permissionsRejected={ permissionsApproved === false }
               />
-            )}
-          />
-          <Route
-            path={confirmPermissionPath}
-            exact
-            render={() => (
-              <PermissionPageContainer
-                request={permissionsRequest || {}}
-                approvePermissionsRequest={(request, accounts) => {
-                  approvePermissionsRequest(request, accounts)
-                  this.redirectFlow(true)
-                }}
-                rejectPermissionsRequest={(requestId) => {
-                  rejectPermissionsRequest(requestId)
-                  this.redirectFlow(false)
-                }}
-                selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
-                redirect={redirecting}
-                permissionRejected={ permissionAccepted === false }
-                cachedOrigin={origin}
-              />
-            )}
-          />
-        </Switch>
+            )
+            : (
+              <Switch>
+                <Route
+                  path={connectPath}
+                  exact
+                  render={() => (
+                    <ChooseAccount
+                      accounts={accounts}
+                      nativeCurrency={nativeCurrency}
+                      selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                      selectNewAccountViaModal={(handleAccountClick) => {
+                        showNewAccountModal({
+                          onCreateNewAccount: (address) => handleAccountClick(address),
+                          newAccountNumber,
+                        })
+                      }}
+                      addressLastConnectedMap={addressLastConnectedMap}
+                      cancelPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
+                      permissionsRequestId={permissionsRequestId}
+                      selectedAccountAddresses={selectedAccountAddresses}
+                      targetDomainMetadata={targetDomainMetadata}
+                    />
+                  )}
+                />
+                <Route
+                  path={confirmPermissionPath}
+                  exact
+                  render={() => (
+                    <PermissionPageContainer
+                      request={permissionsRequest || {}}
+                      approvePermissionsRequest={(request, accounts) => {
+                        approvePermissionsRequest(request, accounts)
+                        this.redirectFlow(true)
+                      }}
+                      rejectPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
+                      selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
+                      cachedOrigin={origin}
+                    />
+                  )}
+                />
+              </Switch>
+            )
+        }
       </div>
     )
   }

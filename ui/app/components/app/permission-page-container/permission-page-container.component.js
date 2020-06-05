@@ -13,15 +13,11 @@ export default class PermissionPageContainer extends Component {
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
     request: PropTypes.object,
-    redirect: PropTypes.bool,
-    permissionRejected: PropTypes.bool,
     requestMetadata: PropTypes.object,
     targetDomainMetadata: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
-    redirect: null,
-    permissionRejected: null,
     request: {},
     requestMetadata: {},
     selectedIdentities: [],
@@ -116,8 +112,6 @@ export default class PermissionPageContainer extends Component {
       requestMetadata,
       targetDomainMetadata,
       selectedIdentities,
-      redirect,
-      permissionRejected,
       allIdentitiesSelected,
     } = this.props
 
@@ -129,27 +123,20 @@ export default class PermissionPageContainer extends Component {
           selectedPermissions={this.state.selectedPermissions}
           onPermissionToggle={this.onPermissionToggle}
           selectedIdentities={selectedIdentities}
-          redirect={redirect}
-          permissionRejected={permissionRejected}
           allIdentitiesSelected={allIdentitiesSelected}
         />
-        { !redirect
-          ? (
-            <div className="permission-approval-container__footers">
-              <PermissionsConnectFooter />
-              <PageContainerFooter
-                cancelButtonType="default"
-                onCancel={() => this.onCancel()}
-                cancelText={this.context.t('cancel')}
-                onSubmit={() => this.onSubmit()}
-                submitText={this.context.t('connect')}
-                submitButtonType="confirm"
-                buttonSizeLarge={false}
-              />
-            </div>
-          )
-          : null
-        }
+        <div className="permission-approval-container__footers">
+          <PermissionsConnectFooter />
+          <PageContainerFooter
+            cancelButtonType="default"
+            onCancel={() => this.onCancel()}
+            cancelText={this.context.t('cancel')}
+            onSubmit={() => this.onSubmit()}
+            submitText={this.context.t('connect')}
+            submitButtonType="confirm"
+            buttonSizeLarge={false}
+          />
+        </div>
       </div>
     )
   }
