@@ -8,32 +8,28 @@
   border-top: 1px solid $mercury;
   border-bottom: 1px solid $mercury;
   color: $Black-100;
-
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 0fr repeat(11, 1fr);
+  grid-template-areas:
+    'icon head     head     head     head     head     head     head     right right right right'
+    'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
+    '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
+  align-items: start;
 
   &__icon {
-    display: flex;
-    align-items: center;
+    grid-area: icon;
+    align-self: center;
     > * {
       margin: 0 16px 0 0;
     }
   }
 
-  &__col {
-    align-items: center;
-    &-main {
-      flex: 1;
-      display: flex;
-    }
-  }
-
-  &__main-content {
-    align-self: center;
+  &__actions {
+    grid-area: actions;
   }
 
   &__heading {
+    grid-area: head;
     font-size: 16px;
     line-height: 160%;
     position: relative;
@@ -48,6 +44,7 @@
   }
 
   &__subheading {
+    grid-area: sub;
     font-size: 12px;
     line-height: 14px;
     color: $Grey-500;
@@ -58,29 +55,27 @@
   }
 
   &__mid-content {
-    display: none;
+    grid-area: mid;
+    font-size: 12px;
+    color: $Grey-500;
   }
 
   &__right-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    grid-area: right;
     text-align: right;
     align-items: flex-end;
   }
 
-  @media (min-width: 576px) {
-    &__col-main {
-      flex: 1.5;
-    }
+  @media (max-width: 575px) {
     &__mid-content {
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      flex: 2;
+      display: none;
     }
-    &__right-content {
-      flex: 1;
-    }
+  }
+
+  @media (min-width: 576px) {
+    grid-template-areas:
+      'icon head     head     head     head     mid mid mid mid right right right'
+      'icon sub      sub      sub      sub      mid mid mid mid right right right'
+      '.    actions  actions  actions  actions  mid mid mid mid right right right';
   }
 }
