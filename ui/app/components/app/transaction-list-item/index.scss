@@ -10,6 +10,8 @@
   }
 
   &__secondary-currency {
+    font-size: 12px;
+    margin-top: 4px;
     color: $Grey-500;
   }
 
@@ -45,6 +47,9 @@
       width: 75px;
       white-space: nowrap;
       line-height: 1rem;
+    }
+    &:empty {
+      padding-top: 0;
     }
   }
 }

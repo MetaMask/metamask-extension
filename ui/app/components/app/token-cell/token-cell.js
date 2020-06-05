@@ -2,12 +2,10 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { conversionUtil, multiplyCurrencies } from '../../../helpers/utils/conversion-util'
-import Tooltip from '../../ui/tooltip-v2'
 import AssetListItem from '../asset-list-item'
 import { useSelector } from 'react-redux'
 import { getTokenExchangeRates, getConversionRate, getCurrentCurrency, getSelectedAddress } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
-import InfoIcon from '../../ui/icon/info-icon.component'
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util'
 
 export default function TokenCell ({ address, outdatedBalance, symbol, string, image, onClick }) {
@@ -47,25 +45,17 @@ export default function TokenCell ({ address, outdatedBalance, symbol, string, i
 
   const warning = outdatedBalance
     ? (
-      <Tooltip
-        interactive
-        position="bottom"
-        html={(
-          <div className="token-cell__outdated-tooltip">
-            { t('troubleTokenBalances') }
-            <a
-              href={`https://ethplorer.io/address/${userAddress}`}
-              rel="noopener noreferrer"
-              target="_blank"
-              style={{ color: '#F7861C' }}
-            >
-              { t('here') }
-            </a>
-          </div>
-        )}
-      >
-        <InfoIcon severity="warning" />
-      </Tooltip>
+      <span>
+        { t('troubleTokenBalances') }
+        <a
+          href={`https://ethplorer.io/address/${userAddress}`}
+          rel="noopener noreferrer"
+          target="_blank"
+          style={{ color: '#F7861C' }}
+        >
+          { t('here') }
+        </a>
+      </span>
     )
     : null
 

@@ -7,4 +7,24 @@
     margin-top: 6px;
     font-size: 14px;
   }
+
+  &__warning {
+    flex: 1;
+    margin-left: 8px;
+    color: $Grey-500;
+  }
+
+  .list-item__mid-content {
+    display: none;
+  }
+
+  @media (min-width: 576px) {
+    &__warning-tooltip {
+      display: none;
+    }
+
+    .list-item__mid-content {
+      display: flex;
+    }
+  }
 }
