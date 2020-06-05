@@ -36,9 +36,6 @@ export default class PermissionConnect extends Component {
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     targetDomainMetadata: PropTypes.object,
-    location: PropTypes.shape({
-      pathname: PropTypes.string,
-    }).isRequired,
   }
 
   static defaultProps = {
@@ -59,7 +56,7 @@ export default class PermissionConnect extends Component {
       : new Set(),
     permissionsApproved: null,
     origin: this.props.origin,
-    targetDomainMetadata: this.props.targetDomainMetadata,
+    targetDomainMetadata: this.props.targetDomainMetadata || {},
   }
 
   beforeUnload = () => {
@@ -105,8 +102,14 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props
-    const { redirecting, origin } = this.state
+    const { permissionsRequest, lastConnectedInfo, targetDomainMetadata } = this.props
+    const { redirecting, origin, targetDomainMetadata: savedMetadata } = this.state
+
+    if (savedMetadata.name !== targetDomainMetadata?.name) {
+      this.setState({
+        targetDomainMetadata,
+      })
+    }
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
 
