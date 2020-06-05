@@ -7,11 +7,16 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getTargetDomainMetadata,
-  getPermissionDomains,
 } from '../../selectors'
 
 import { formatDate } from '../../helpers/utils/util'
-import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
+import {
+  approvePermissionsRequest,
+  rejectPermissionsRequest,
+  showModal,
+  getCurrentWindowTab,
+  getRequestAccountTabIds,
+} from '../../store/actions'
 import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
@@ -34,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
   const accountsWithLabels = getAccountsWithLabels(state)
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
-  const addressLastConnectedMap = lastConnectedInfo[origin] || {}
+  const addressLastConnectedMap = lastConnectedInfo[origin]?.accounts || {}
 
   Object.keys(addressLastConnectedMap).forEach((key) => {
     addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-MM-dd')
@@ -58,11 +63,11 @@ const mapStateToProps = (state, ownProps) => {
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
-    originName: origin,
+    origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
     addressLastConnectedMap,
-    domains: getPermissionDomains(state),
+    lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
     page,
