@@ -19,37 +19,33 @@ export default function ListItem ({
 
   return (
     <div className={primaryClassName} onClick={onClick} data-testid={dataTestId}>
-      <div className="list-item__col list-item__col-main">
-        {icon && (
-          <div className="list-item__icon">
-            {icon}
-          </div>
-        )}
-        <div className="list-item__main-content">
-          <h2 className="list-item__heading">
-            { title } {titleIcon && (
-              <span className="list-item__heading-wrap">
-                {titleIcon}
-              </span>
-            )}
-          </h2>
-          <h3 className="list-item__subheading">
-            {subtitleStatus}{subtitle}
-          </h3>
-          {children && (
-            <div className="list-item__more">
-              { children }
-            </div>
-          )}
+      {icon && (
+        <div className="list-item__icon">
+          {icon}
         </div>
-      </div>
+      )}
+      <h2 className="list-item__heading">
+        { title } {titleIcon && (
+          <span className="list-item__heading-wrap">
+            {titleIcon}
+          </span>
+        )}
+      </h2>
+      <h3 className="list-item__subheading">
+        {subtitleStatus}{subtitle}
+      </h3>
+      {children && (
+        <div className="list-item__actions">
+          { children }
+        </div>
+      )}
       {midContent && (
-        <div className="list-item__col list-item__mid-content">
+        <div className="list-item__mid-content">
           {midContent}
         </div>
       )}
       {rightContent && (
-        <div className="list-item__col list-item__right-content">
+        <div className="list-item__right-content">
           {rightContent}
         </div>
       )}
