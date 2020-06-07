@@ -446,6 +446,19 @@ export const getters = deepFreeze({
         }
       },
     },
+
+    notifyAccountsChanged: {
+      invalidOrigin: (origin) => {
+        return {
+          message: `Invalid origin: '${origin}'`,
+        }
+      },
+      invalidAccounts: () => {
+        return {
+          message: 'Invalid accounts',
+        }
+      },
+    },
   },
 
   /**
@@ -475,18 +488,6 @@ export const getters = deepFreeze({
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
         result: accounts,
-      }
-    },
-
-    /**
-     * Gets a test notification that doesn't occur in practice.
-     *
-     * @returns {Object} A notification with the 'test_notification' method name
-     */
-    test: () => {
-      return {
-        method: 'test_notification',
-        result: true,
       }
     },
   },

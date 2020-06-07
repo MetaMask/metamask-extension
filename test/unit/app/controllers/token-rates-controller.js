@@ -13,8 +13,11 @@ describe('TokenRatesController', function () {
 
   it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval')
-    new TokenRatesController({ interval: 1337 }) // eslint-disable-line no-new
+    const rateController = new TokenRatesController() // eslint-disable-line no-new
+    rateController.start(1337)
+
     assert.strictEqual(stub.getCall(0).args[1], 1337)
     stub.restore()
+    rateController.stop()
   })
 })

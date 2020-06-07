@@ -31,9 +31,8 @@ const TokenOverview = ({ className, token }) => {
       balance={(
         <div className="token-overview__balance">
           <TokenBalance
-            token={token}
-            withSymbol
             className="token-overview__primary-balance"
+            token={token}
           />
         </div>
       )}

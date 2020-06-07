@@ -21,6 +21,7 @@ import {
   DEPLOY_CONTRACT_ACTION_KEY,
   SEND_ETHER_ACTION_KEY,
 } from '../../helpers/constants/transactions'
+import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
@@ -74,9 +75,9 @@ export default class ConfirmTransactionSwitch extends Component {
       return this.redirectToTransaction()
     } else if (txData.msgParams) {
       let pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${SIGNATURE_REQUEST_PATH}`
-      if (txData.type === 'eth_decrypt') {
+      if (txData.type === MESSAGE_TYPE.ETH_DECRYPT) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${DECRYPT_MESSAGE_REQUEST_PATH}`
-      } else if (txData.type === 'eth_getEncryptionPublicKey') {
+      } else if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`
       }
       return <Redirect to={{ pathname }} />

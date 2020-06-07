@@ -96,7 +96,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
+        const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver.delay(regularDelayMs)
       })
@@ -202,7 +202,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver2.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
+        const balance = await driver2.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
         await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver2.delay(regularDelayMs)
       })
@@ -223,7 +223,7 @@ describe('MetaMask', function () {
 
       it('finds the blockies toggle turned on', async function () {
         await driver.delay(regularDelayMs)
-        const toggleLabel = await driver.findElement(By.css('.toggle-button__status-label'))
+        const toggleLabel = await driver.findElement(By.css('.toggle-button__status'))
         const toggleLabelText = await toggleLabel.getText()
         assert.equal(toggleLabelText, 'ON')
       })

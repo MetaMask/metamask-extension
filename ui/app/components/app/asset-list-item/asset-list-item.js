@@ -2,9 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
+import ListItem from '../../ui/list-item'
+import Tooltip from '../../ui/tooltip-v2'
+import InfoIcon from '../../ui/icon/info-icon.component'
+
 
 const AssetListItem = ({
-  children,
   className,
   'data-testid': dataTestId,
   iconClassName,
@@ -12,32 +15,54 @@ const AssetListItem = ({
   tokenAddress,
   tokenImage,
   warning,
+  primary,
+  secondary,
 }) => {
-  return (
-    <div
-      className={classnames('asset-list-item__container', className)}
-      data-testid={dataTestId}
-      onClick={onClick}
-    >
-      <Identicon
-        className={iconClassName}
-        diameter={32}
-        address={tokenAddress}
-        image={tokenImage}
-      />
-      <div
-        className="asset-list-item__balance"
+  const titleIcon = warning
+    ? (
+      <Tooltip
+        wrapperClassName="asset-list-item__warning-tooltip"
+        interactive
+        position="bottom"
+        html={warning}
       >
-        { children }
-      </div>
-      { warning }
-      <i className="fas fa-chevron-right asset-list-item__chevron-right" />
-    </div>
+        <InfoIcon severity="warning" />
+      </Tooltip>
+    )
+    : null
+
+  const midContent = warning
+    ? (
+      <>
+        <InfoIcon severity="warning" />
+        <div className="asset-list-item__warning">{warning}</div>
+      </>
+    )
+    : null
+
+  return (
+    <ListItem
+      className={classnames('asset-list-item', className)}
+      data-testid={dataTestId}
+      title={primary}
+      titleIcon={titleIcon}
+      subtitle={secondary}
+      onClick={onClick}
+      icon={(
+        <Identicon
+          className={iconClassName}
+          diameter={32}
+          address={tokenAddress}
+          image={tokenImage}
+        />
+      )}
+      midContent={midContent}
+      rightContent={<i className="fas fa-chevron-right asset-list-item__chevron-right" />}
+    />
   )
 }
 
 AssetListItem.propTypes = {
-  children: PropTypes.node.isRequired,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   iconClassName: PropTypes.string,
@@ -45,6 +70,8 @@ AssetListItem.propTypes = {
   tokenAddress: PropTypes.string,
   tokenImage: PropTypes.string,
   warning: PropTypes.node,
+  primary: PropTypes.string,
+  secondary: PropTypes.string,
 }
 
 AssetListItem.defaultProps = {

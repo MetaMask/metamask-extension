@@ -146,7 +146,6 @@ export default class SendAssetRow extends Component {
             <span className="send-v2__asset-dropdown__name__label">{`${t('balance')}:`}</span>
             <TokenBalance
               token={token}
-              withSymbol
             />
           </div>
         </div>

@@ -21,6 +21,11 @@
   }
 
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
+  &__main-view &__tabs {
+    border: none;
+    box-shadow: 0px 3px 4px rgba(135, 134, 134, 0.16);
+  }
+
   &__main-view &__tab {
     flex-grow: 1;
     color: $Grey-500;

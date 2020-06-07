@@ -222,7 +222,7 @@ export function getOrderedConnectedAccountsForActiveTab (state) {
     .filter((account) => connectedAccounts.includes(account.address))
     .map((account) => ({
       ...account,
-      lastActive: permissionsHistoryByAccount[account.address],
+      lastActive: permissionsHistoryByAccount?.[account.address],
     }))
     .sort(({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
       if (lastSelectedA === lastSelectedB) {
@@ -248,4 +248,33 @@ export function getPermissionsForActiveTab (state) {
       key: parentCapability,
     }
   })
+}
+
+export function getLastConnectedInfo (state) {
+  const { permissionsHistory = {} } = state.metamask
+  return Object.keys(permissionsHistory).reduce((acc, origin) => {
+    const ethAccountsHistory = JSON.parse(JSON.stringify(permissionsHistory[origin]['eth_accounts']))
+    return {
+      ...acc,
+      [origin]: ethAccountsHistory,
+    }
+  }, {})
+}
+
+export function getPermissionsRequests (state) {
+  return state.metamask.permissionsRequests || []
+}
+
+export function getPermissionsRequestCount (state) {
+  const permissionsRequests = getPermissionsRequests(state)
+  return permissionsRequests.length
+}
+
+export function getFirstPermissionRequest (state) {
+  const requests = getPermissionsRequests(state)
+  return requests && requests[0] ? requests[0] : null
+}
+
+export function hasPermissionRequests (state) {
+  return Boolean(getFirstPermissionRequest(state))
 }

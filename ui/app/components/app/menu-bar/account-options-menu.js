@@ -117,8 +117,9 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
         isRemovable
           ? (
             <MenuItem
+              data-testid="account-options-menu__remove-account"
               onClick={() => {
-                dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', selectedIdentity }))
+                dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity: selectedIdentity }))
                 onClose()
               }}
               iconClassName="fas fa-trash-alt"

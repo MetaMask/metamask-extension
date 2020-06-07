@@ -1,1 +1,1 @@
-export { default } from './token-cell.container'
+export { default } from './token-cell'

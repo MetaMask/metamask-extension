@@ -6,11 +6,11 @@ import AddTokenButton from '../add-token-button'
 import TokenList from '../token-list'
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
 import AssetListItem from '../asset-list-item'
-import CurrencyDisplay from '../../ui/currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
 import { getCurrentAccountWithSendEtherInfo, getNativeCurrency, getShouldShowFiat } from '../../../selectors'
+import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 
 const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
@@ -41,29 +41,24 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 })
 
+  const [primaryCurrencyDisplay] = useCurrencyDisplay(
+    selectedAccountBalance,
+    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency }
+  )
+
+  const [secondaryCurrencyDisplay] = useCurrencyDisplay(
+    selectedAccountBalance,
+    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency }
+  )
+
   return (
     <>
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
-      >
-        <CurrencyDisplay
-          className="asset-list__primary-amount"
-          currency={primaryCurrency}
-          numberOfDecimals={primaryNumberOfDecimals}
-          value={selectedAccountBalance}
-        />
-        {
-          showFiat && (
-            <CurrencyDisplay
-              className="asset-list__secondary-amount"
-              currency={secondaryCurrency}
-              numberOfDecimals={secondaryNumberOfDecimals}
-              value={selectedAccountBalance}
-            />
-          )
-        }
-      </AssetListItem>
+        primary={primaryCurrencyDisplay}
+        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+      />
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress)

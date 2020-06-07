@@ -7,7 +7,6 @@ import {
   hideSidebar,
   lockMetamask,
   hideWarning,
-  showModal,
 } from '../../../store/actions'
 import {
   getAddressConnectedDomainMap,
@@ -53,9 +52,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(hideWarning())
       dispatch(hideSidebar())
       dispatch(toggleAccountMenu())
-    },
-    showRemoveAccountConfirmationModal: (identity) => {
-      return dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
     },
   }
 }

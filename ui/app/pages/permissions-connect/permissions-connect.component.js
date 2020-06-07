@@ -6,7 +6,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
 } from '../../../../app/scripts/lib/enums'
 import {
   DEFAULT_ROUTE,
@@ -20,30 +19,29 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds: PropTypes.func.isRequired,
     getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
-    originName: PropTypes.string,
+    origin: PropTypes.string,
     showNewAccountModal: PropTypes.func.isRequired,
     newAccountNumber: PropTypes.number.isRequired,
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
-    addressLastConnectedMap: PropTypes.object,
+    addressLastConnectedMap: PropTypes.object.isRequired,
+    lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    domains: PropTypes.object,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
-    redirecting: PropTypes.bool,
     targetDomainMetadata: PropTypes.object,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
   }
 
   static defaultProps = {
-    originName: '',
+    origin: '',
     nativeCurrency: '',
     permissionsRequest: undefined,
-    addressLastConnectedMap: {},
     permissionsRequestId: '',
-    domains: {},
-    redirecting: false,
   }
 
   static contextTypes = {
@@ -56,7 +54,7 @@ export default class PermissionConnect extends Component {
       ? new Set([this.props.accounts[0].address])
       : new Set(),
     permissionAccepted: null,
-    originName: this.props.originName,
+    origin: this.props.origin,
   }
 
   beforeUnload = () => {
@@ -69,22 +67,25 @@ export default class PermissionConnect extends Component {
   }
 
   removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    const environmentType = getEnvironmentType()
+    if (
+      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.removeEventListener('beforeunload', this.beforeUnload)
     }
   }
 
   componentDidUpdate (prevProps) {
-    const { domains, permissionsRequest, redirecting } = this.props
-    const { originName } = this.state
+    const { permissionsRequest, lastConnectedInfo } = this.props
+    const { redirecting, origin } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
-      const permissionDataForDomain = (domains && domains[originName]) || {}
-      const permissionsForDomain = permissionDataForDomain.permissions || []
-      const prevPermissionDataForDomain = (prevProps.domains && prevProps.domains[originName]) || {}
-      const prevPermissionsForDomain = prevPermissionDataForDomain.permissions || []
-      const addedAPermission = permissionsForDomain.length > prevPermissionsForDomain.length
-      if (addedAPermission) {
+
+      const accountsLastApprovedTime = lastConnectedInfo[origin]?.lastApproved || 0
+      const initialAccountsLastApprovedTime = prevProps.lastConnectedInfo[origin]?.lastApproved || 0
+
+      if (accountsLastApprovedTime > initialAccountsLastApprovedTime) {
         this.redirectFlow(true)
       } else {
         this.redirectFlow(false)
@@ -99,7 +100,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirectFlow (accepted) {
-    const { history } = this.props
+    const { history, location, confirmPermissionPath } = this.props
 
     this.setState({
       redirecting: true,
@@ -107,16 +108,15 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-      setTimeout(async () => {
-        const currentTab = await global.platform.currentTab()
-        global.platform.closeTab(currentTab.id)
-      }, 2000)
-    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       setTimeout(async () => {
         global.platform.closeCurrentWindow()
-      }, 2000)
-    } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      }, 1500)
+    } else if (location.pathname === confirmPermissionPath) {
+      setTimeout(async () => {
+        history.push(DEFAULT_ROUTE)
+      }, 1500)
+    } else {
       history.push(DEFAULT_ROUTE)
     }
   }
@@ -135,19 +135,25 @@ export default class PermissionConnect extends Component {
       return history.push(DEFAULT_ROUTE)
     }
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    const environmentType = getEnvironmentType()
+    if (
+      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
       window.addEventListener('beforeunload', this.beforeUnload)
     }
   }
 
   cancelPermissionsRequest = async (requestId) => {
+
     const { history, rejectPermissionsRequest } = this.props
+
     if (requestId) {
       await rejectPermissionsRequest(requestId)
 
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN || getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
-      } else if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      } else {
         history.push(DEFAULT_ROUTE)
       }
     }
@@ -202,7 +208,7 @@ export default class PermissionConnect extends Component {
     const {
       selectedAccountAddresses,
       permissionAccepted,
-      originName,
+      origin,
       redirecting,
     } = this.state
 
@@ -216,7 +222,6 @@ export default class PermissionConnect extends Component {
             render={() => (
               <ChooseAccount
                 accounts={accounts}
-                originName={originName}
                 nativeCurrency={nativeCurrency}
                 selectAccounts={(addresses) => this.selectAccounts(addresses)}
                 selectNewAccountViaModal={(handleAccountClick) => {
@@ -250,7 +255,7 @@ export default class PermissionConnect extends Component {
                 selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
                 redirect={redirecting}
                 permissionRejected={ permissionAccepted === false }
-                cachedOrigin={originName}
+                cachedOrigin={origin}
               />
             )}
           />

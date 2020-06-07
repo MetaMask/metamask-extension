@@ -17,11 +17,10 @@ export default class TokenRatesController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, currency, preferences } = {}) {
+  constructor ({ currency, preferences } = {}) {
     this.store = new ObservableStore()
     this.currency = currency
     this.preferences = preferences
-    this.interval = interval
   }
 
   /**
@@ -51,19 +50,6 @@ export default class TokenRatesController {
   }
 
   /**
-   * @type {Number}
-   */
-  set interval (interval) {
-    this._handle && clearInterval(this._handle)
-    if (!interval) {
-      return
-    }
-    this._handle = setInterval(() => {
-      this.updateExchangeRates()
-    }, interval)
-  }
-
-  /**
    * @type {Object}
    */
   set preferences (preferences) {
@@ -84,5 +70,20 @@ export default class TokenRatesController {
   set tokens (tokens) {
     this._tokens = tokens
     this.updateExchangeRates()
+  }
+
+  start (interval = DEFAULT_INTERVAL) {
+    this._handle && clearInterval(this._handle)
+    if (!interval) {
+      return
+    }
+    this._handle = setInterval(() => {
+      this.updateExchangeRates()
+    }, interval)
+    this.updateExchangeRates()
+  }
+
+  stop () {
+    this._handle && clearInterval(this._handle)
   }
 }
