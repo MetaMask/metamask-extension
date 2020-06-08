@@ -1,52 +1,24 @@
 .transaction-status {
-  height: 26px;
-  width: 84px;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  color: #5e6064;
-  font-size: .625rem;
-  text-transform: uppercase;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media screen and (max-width: $break-small) {
-    height: 16px;
-    min-width: 72px;
-    font-size: 10px;
-    padding: 0 12px;
+  display: inline;
+  &--unapproved {
+    color: $Orange-500;
   }
-
-  &--confirmed {
-    background-color: #eafad7;
-    color: #609a1c;
-
-    .transaction-status__transaction-count {
-      border: 1px solid #609a1c;
-    }
-  }
-
-  &--approved, &--submitted {
-    background-color: #FFF2DB;
-    color: #CA810A;
-
-    .transaction-status__transaction-count {
-      border: 1px solid #CA810A;
-    }
-  }
-
   &--failed {
-    background: lighten($monzo, 56%);
-    color: $monzo;
-
-    .transaction-status__transaction-count {
-      border: 1px solid $monzo;
-    }
+    color: $Red-500;
   }
-
-  &__pending-spinner {
-    height: 16px;
-    width: 16px;
-    margin-right: 6px;
+  &--cancelled {
+    color: $Red-500;
+  }
+  &--dropped {
+    color: $Red-500;
+  }
+  &--rejected {
+    color: $Red-500;
+  }
+  &--pending {
+    color: $Orange-500;
+  }
+  &--queued {
+    color: $Grey-500;
   }
 }

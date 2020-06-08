@@ -15,27 +15,12 @@
     color: $Grey-500;
   }
 
-  &--pending {
+  &--unconfirmed {
     color: $Grey-500;
   }
 
-  &--pending &__primary-currency {
+  &--unconfirmed &__primary-currency {
     color: $Grey-500;
-  }
-
-  &__status {
-    &--unapproved {
-      color: $flamingo;
-    }
-    &--failed {
-      color: $valencia;
-    }
-    &--cancelled {
-      color: $valencia;
-    }
-    &--queued {
-      color: $Grey-500;
-    }
   }
 
   &__pending-actions {

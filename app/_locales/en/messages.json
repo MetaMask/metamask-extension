@@ -1090,7 +1090,7 @@
     "description": "For importing an account from a private key"
   },
   "pending": {
-    "message": "pending"
+    "message": "Pending"
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
