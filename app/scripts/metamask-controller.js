@@ -457,6 +457,9 @@ export default class MetamaskController extends EventEmitter {
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       buyEth: this.buyEth.bind(this),
+      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
+      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
@@ -493,9 +496,6 @@ export default class MetamaskController extends EventEmitter {
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-
-      // BlacklistController
-      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
@@ -572,9 +572,6 @@ export default class MetamaskController extends EventEmitter {
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
       requestAccountsPermission: nodeify(permissionsController.requestAccountsPermission, permissionsController),
-
-      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
     }
   }
 
@@ -2043,10 +2040,10 @@ export default class MetamaskController extends EventEmitter {
   */
 
   /**
-   * Adds a domain to the PhishingController whitelist
-   * @param {string} hostname - the domain to whitelist
+   * Adds a domain to the PhishingController safelist
+   * @param {string} hostname - the domain to safelist
    */
-  whitelistPhishingDomain (hostname) {
+  safelistPhishingDomain (hostname) {
     return this.phishingController.bypass(hostname)
   }
 
