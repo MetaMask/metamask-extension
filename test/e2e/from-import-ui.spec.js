@@ -3,7 +3,6 @@ const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
 const {
-  tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
@@ -278,7 +277,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it('should open the remove account modal', async function () {
+    it('should see new account in account menu', async function () {
       const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), 'Account 5')
       await driver.delay(regularDelayMs)
@@ -289,8 +288,13 @@ describe('Using MetaMask with an existing account', function () {
       const accountListItems = await driver.findElements(By.css('.account-menu__account'))
       assert.equal(accountListItems.length, 5)
 
-      await driver.clickElement(By.css('.account-menu__account:last-of-type > .remove-account-icon'))
-      await driver.delay(tinyDelayMs)
+      await driver.clickPoint(By.css('.account-menu__icon'), 0, 0)
+    })
+
+    it('should open the remove account modal', async function () {
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+
+      await driver.clickElement(By.css('[data-testid="account-options-menu__remove-account"]'))
 
       await driver.findElement(By.css('.confirm-remove-account__account'))
     })
@@ -303,6 +307,8 @@ describe('Using MetaMask with an existing account', function () {
       const accountName = await driver.findElement(By.css('.selected-account__name'))
       assert.equal(await accountName.getText(), 'Account 1')
       await driver.delay(regularDelayMs)
+
+      await driver.clickElement(By.css('.account-menu__icon'))
 
       const accountListItems = await driver.findElements(By.css('.account-menu__account'))
       assert.equal(accountListItems.length, 4)

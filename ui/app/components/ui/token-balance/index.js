@@ -1,1 +1,1 @@
-export { default } from './token-balance.container'
+export { default } from './token-balance'
