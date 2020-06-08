@@ -66,6 +66,9 @@ export default function ConfirmApprove () {
         setCustomPermissionAmount(tokenAmount)
       }
     },
+    // `customPermissionAmount` is omitted intentionally
+    // This effect should only run if `tokenAmount` changes _after_ a custom
+    // permission amount has been set.
     [tokenAmount]
   )
 
