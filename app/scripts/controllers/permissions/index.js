@@ -513,6 +513,11 @@ export class PermissionsController {
       ...metadata,
       lastUpdated: Date.now(),
     }
+
+    if (!newMetadataState[origin].extensionId && !newMetadataState[origin].host) {
+      newMetadataState[origin].host = new URL(origin).host
+    }
+
     this._pendingSiteMetadata.add(origin)
     this._setDomainMetadata(newMetadataState)
   }

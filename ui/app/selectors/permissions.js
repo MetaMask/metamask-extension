@@ -104,13 +104,15 @@ export function getConnectedDomainsForSelectedAddress (state) {
       extensionId,
       name,
       icon,
+      host,
     } = domainMetadata[domainKey] || {}
 
     connectedDomains.push({
       extensionId,
-      key: domainKey,
+      origin: domainKey,
       name,
       icon,
+      host,
     })
   })
 
@@ -258,6 +260,21 @@ export function getLastConnectedInfo (state) {
       ...acc,
       [origin]: ethAccountsHistory,
     }
+  }, {})
+}
+
+export function getPermissionsMetadataHostCounts (state) {
+  const metadata = getPermissionDomainsMetadata(state)
+  return Object.values(metadata).reduce((acc, val) => {
+    const { host } = val
+    if (host) {
+      if (!acc[host]) {
+        acc[host] = 1
+      } else {
+        acc[host] += 1
+      }
+    }
+    return acc
   }, {})
 }
 

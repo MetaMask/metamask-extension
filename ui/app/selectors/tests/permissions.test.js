@@ -16,10 +16,12 @@ describe('selectors', function () {
             'peepeth.com': {
               'icon': 'https://peepeth.com/favicon-32x32.png',
               'name': 'Peepeth',
+              'host': 'peepeth.com',
             },
             'https://remix.ethereum.org': {
               'icon': 'https://remix.ethereum.org/icon.png',
               'name': 'Remix - Ethereum IDE',
+              'host': 'remix.ethereum.org',
             },
           },
           domains: {
@@ -74,13 +76,15 @@ describe('selectors', function () {
       assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [{
         extensionId,
         icon: 'https://peepeth.com/favicon-32x32.png',
-        key: 'peepeth.com',
+        origin: 'peepeth.com',
         name: 'Peepeth',
+        host: 'peepeth.com',
       }, {
         extensionId,
         name: 'Remix - Ethereum IDE',
         icon: 'https://remix.ethereum.org/icon.png',
-        key: 'https://remix.ethereum.org',
+        origin: 'https://remix.ethereum.org',
+        host: 'remix.ethereum.org',
       }])
     })
 
@@ -92,10 +96,12 @@ describe('selectors', function () {
             'peepeth.com': {
               'icon': 'https://peepeth.com/favicon-32x32.png',
               'name': 'Peepeth',
+              'host': 'peepeth.com',
             },
             'https://remix.ethereum.org': {
               'icon': 'https://remix.ethereum.org/icon.png',
               'name': 'Remix - Ethereum IDE',
+              'host': 'remix.ethereum.com',
             },
           },
           domains: {
@@ -152,7 +158,8 @@ describe('selectors', function () {
         extensionId,
         name: 'Remix - Ethereum IDE',
         icon: 'https://remix.ethereum.org/icon.png',
-        key: 'https://remix.ethereum.org',
+        origin: 'https://remix.ethereum.org',
+        host: 'remix.ethereum.com',
       }])
     })
   })
