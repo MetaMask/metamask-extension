@@ -5,7 +5,7 @@ import {
   replayHistory,
   generateHistoryEntry,
 } from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helpers'
-import testVault from '../../../../data/v17-long-history.json'
+import testData from '../../../../data/mock-tx-history.json'
 
 describe('Transaction state history helper', function () {
   describe('#snapshotFromTxMeta', function () {
@@ -33,7 +33,7 @@ describe('Transaction state history helper', function () {
 
   describe('#migrateFromSnapshotsToDiffs', function () {
     it('migrates history to diffs and can recover original values', function () {
-      testVault.data.TransactionController.transactions.forEach((tx) => {
+      testData.TransactionsController.transactions.forEach((tx) => {
         const newHistory = migrateFromSnapshotsToDiffs(tx.history)
         newHistory.forEach((newEntry, index) => {
           if (index === 0) {
