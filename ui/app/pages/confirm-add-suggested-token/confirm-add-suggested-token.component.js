@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/ui/token-balance'
@@ -13,16 +12,17 @@ export default class ConfirmAddSuggestedToken extends Component {
   static propTypes = {
     history: PropTypes.object,
     addToken: PropTypes.func,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
     tokens: PropTypes.array,
   }
 
   componentDidMount () {
-    const { pendingTokens = {}, history } = this.props
+    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
 
     if (Object.keys(pendingTokens).length === 0) {
-      history.push(DEFAULT_ROUTE)
+      history.push(mostRecentOverviewPage)
     }
   }
 
@@ -33,7 +33,7 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history } = this.props
+    const { addToken, pendingTokens, tokens, removeSuggestedTokens, history, mostRecentOverviewPage } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
     const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens)
@@ -113,7 +113,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               className="page-container__footer-button"
               onClick={() => {
                 removeSuggestedTokens()
-                  .then(() => history.push(DEFAULT_ROUTE))
+                  .then(() => history.push(mostRecentOverviewPage))
               }}
             >
               { this.context.t('cancel') }
@@ -125,7 +125,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               onClick={() => {
                 addToken(pendingToken)
                   .then(() => removeSuggestedTokens())
-                  .then(() => history.push(DEFAULT_ROUTE))
+                  .then(() => history.push(mostRecentOverviewPage))
               }}
             >
               { this.context.t('addToken') }

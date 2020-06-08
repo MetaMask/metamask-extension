@@ -197,12 +197,13 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
       assert.equal(txValues.length, 1)
       assert.ok(/-2.2\s*ETH/.test(await txValues[0].getText()))
     })

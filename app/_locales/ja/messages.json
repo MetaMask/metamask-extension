@@ -242,9 +242,6 @@
   "hide": {
     "message": "隠す"
   },
-  "hideToken": {
-    "message": "トークンを隠す"
-  },
   "hideTokenPrompt": {
     "message": "トークンを隠しますか?"
   },

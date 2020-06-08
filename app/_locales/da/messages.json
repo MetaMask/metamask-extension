@@ -512,9 +512,6 @@
   "hide": {
     "message": "Skjul"
   },
-  "hideToken": {
-    "message": "Skjul token"
-  },
   "hideTokenPrompt": {
     "message": "Skjul Token?"
   },

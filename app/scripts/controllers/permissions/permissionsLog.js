@@ -203,33 +203,6 @@ export default class PermissionsLogController {
   }
 
   /**
-   * Record account exposure and eth_accounts permissions history for the given
-   * origin.
-   *
-   * @param {string} origin - The origin accounts were exposed to.
-   * @param {Array<string>} accounts - The accounts that were exposed.
-   */
-  logAccountExposure (origin, accounts) {
-
-    if (
-      typeof origin !== 'string' || !origin.length ||
-      !Array.isArray(accounts) || accounts.length === 0
-    ) {
-      throw new Error(
-        'Must provide non-empty string origin and array of accounts.'
-      )
-    }
-
-    this.logPermissionsHistory(
-      ['eth_accounts'],
-      origin,
-      accounts,
-      Date.now(),
-      true
-    )
-  }
-
-  /**
    * Create new permissions history log entries, if any, and commit them.
    *
    * @param {Array<string>} requestedMethods - The method names corresponding to the requested permissions.

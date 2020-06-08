@@ -824,7 +824,7 @@ describe('MetaMaskController', function () {
               'mock tx params',
               {
                 ...message,
-                origin: 'mycrypto.com',
+                origin: 'http://mycrypto.com',
                 tabId: 456,
               },
             ]
@@ -865,7 +865,7 @@ describe('MetaMaskController', function () {
               'mock tx params',
               {
                 ...message,
-                origin: 'mycrypto.com',
+                origin: 'http://mycrypto.com',
               },
             ]
           )

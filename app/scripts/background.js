@@ -102,7 +102,6 @@ initialize().catch(log.error)
  * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {address} selectedTokenAddress - Used to indicate if a token is globally selected. Should be deprecated in favor of UI-centric token selection.
  * @property {Object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {Object} send - TODO: Document
@@ -385,7 +384,7 @@ function setupController (initState, initLangCode) {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id
         const url = new URL(remotePort.sender.url)
-        const origin = url.hostname
+        const { origin } = url
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

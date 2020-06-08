@@ -2,11 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-export default function ListItem ({ title, subtitle, onClick, subtitleStatus, children, titleIcon, icon, rightContent, className }) {
+export default function ListItem ({
+  title,
+  subtitle,
+  onClick,
+  subtitleStatus,
+  children,
+  titleIcon,
+  icon,
+  rightContent,
+  className,
+  'data-testid': dataTestId,
+}) {
   const primaryClassName = classnames('list-item', className)
 
   return (
-    <div className={primaryClassName} onClick={onClick}>
+    <div className={primaryClassName} onClick={onClick} data-testid={dataTestId}>
       {icon && (
         <div className="list-item__col list-item__icon">
           {icon}
@@ -30,7 +41,7 @@ export default function ListItem ({ title, subtitle, onClick, subtitleStatus, ch
         )}
       </div>
       {rightContent && (
-        <div className="list-item__col list-item__rightContent">
+        <div className="list-item__col list-item__right-content">
           {rightContent}
         </div>
       )}
@@ -48,4 +59,5 @@ ListItem.propTypes = {
   rightContent: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
+  'data-testid': PropTypes.string,
 }

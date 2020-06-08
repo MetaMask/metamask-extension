@@ -37,7 +37,7 @@ export default class ConnectedSitesList extends Component {
             <i
               className="fas fa-trash-alt connected-sites-list__trash"
               title={t('disconnect')}
-              onClick={() => onDisconnect(domain.key, domain.name)}
+              onClick={() => onDisconnect(domain.key)}
             />
           </div>
         )) }

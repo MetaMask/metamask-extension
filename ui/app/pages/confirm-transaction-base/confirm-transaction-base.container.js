@@ -34,9 +34,10 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
-  preferencesSelector,
+  getPreferences,
   transactionFeeSelector,
 } from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -54,7 +55,7 @@ const customNonceMerge = (txData) => (customNonceValue ? ({
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {
@@ -178,6 +179,7 @@ const mapStateToProps = (state, ownProps) => {
     metaMetricsSendCount,
     transactionCategory,
     nextNonce,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 

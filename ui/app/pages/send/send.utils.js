@@ -105,11 +105,11 @@ function getAmountErrorObject ({
   conversionRate,
   gasTotal,
   primaryCurrency,
-  selectedToken,
+  sendToken,
   tokenBalance,
 }) {
   let insufficientFunds = false
-  if (gasTotal && conversionRate && !selectedToken) {
+  if (gasTotal && conversionRate && !sendToken) {
     insufficientFunds = !isBalanceSufficient({
       amount,
       balance,
@@ -120,8 +120,8 @@ function getAmountErrorObject ({
   }
 
   let inSufficientTokens = false
-  if (selectedToken && tokenBalance !== null) {
-    const { decimals } = selectedToken
+  if (sendToken && tokenBalance !== null) {
+    const { decimals } = sendToken
     inSufficientTokens = !isTokenBalanceSufficient({
       tokenBalance,
       amount,
@@ -172,8 +172,8 @@ function getGasFeeErrorObject ({
   return { gasFee: gasFeeError }
 }
 
-function calcTokenBalance ({ selectedToken, usersToken }) {
-  const { decimals } = selectedToken || {}
+function calcTokenBalance ({ sendToken, usersToken }) {
+  const { decimals } = sendToken || {}
   return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
 }
 
@@ -183,12 +183,12 @@ function doesAmountErrorRequireUpdate ({
   prevBalance,
   prevGasTotal,
   prevTokenBalance,
-  selectedToken,
+  sendToken,
   tokenBalance,
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
-  const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
+  const tokenBalanceHasChanged = sendToken && tokenBalance !== prevTokenBalance
   const amountErrorRequiresUpdate = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
   return amountErrorRequiresUpdate
@@ -196,7 +196,7 @@ function doesAmountErrorRequireUpdate ({
 
 async function estimateGas ({
   selectedAddress,
-  selectedToken,
+  sendToken,
   blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
@@ -207,21 +207,21 @@ async function estimateGas ({
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
   // if recipient has no code, gas is 21k max:
-  if (!selectedToken && !data) {
+  if (!sendToken && !data) {
     const code = Boolean(to) && await global.eth.getCode(to)
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
     const codeIsEmpty = !code || code === '0x' || code === '0x0'
     if (codeIsEmpty) {
       return SIMPLE_GAS_COST
     }
-  } else if (selectedToken && !to) {
+  } else if (sendToken && !to) {
     return BASE_TOKEN_GAS_COST
   }
 
-  if (selectedToken) {
+  if (sendToken) {
     paramsForGasEstimate.value = '0x0'
-    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
-    paramsForGasEstimate.to = selectedToken.address
+    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, sendToken })
+    paramsForGasEstimate.to = sendToken.address
   } else {
     if (data) {
       paramsForGasEstimate.data = data
@@ -299,8 +299,8 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
   return upperGasLimit
 }
 
-function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
-  if (!selectedToken) {
+function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendToken }) {
+  if (!sendToken) {
     return
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(

@@ -519,9 +519,6 @@
   "hide": {
     "message": "Slėpti"
   },
-  "hideToken": {
-    "message": "Slėpti prieigos raktą"
-  },
   "hideTokenPrompt": {
     "message": "Slėpti prieigos raktą?"
   },

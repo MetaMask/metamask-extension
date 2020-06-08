@@ -8,7 +8,6 @@ import Identicon from '../../components/ui/identicon'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -30,6 +29,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     domainMetadata: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   state = {
@@ -183,7 +183,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderFooter = () => {
-    const { txData } = this.props
+    const {
+      cancelEncryptionPublicKey,
+      clearConfirmTransaction,
+      encryptionPublicKey,
+      history,
+      mostRecentOverviewPage,
+      txData,
+    } = this.props
 
     return (
       <div className="request-encryption-public-key__footer">
@@ -193,7 +200,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           className="request-encryption-public-key__footer__cancel-button"
           onClick={async (event) => {
             this._removeBeforeUnload()
-            await this.props.cancelEncryptionPublicKey(txData, event)
+            await cancelEncryptionPublicKey(txData, event)
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Messages',
@@ -201,8 +208,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
                 name: 'Cancel',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('cancel') }
@@ -213,7 +220,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           className="request-encryption-public-key__footer__sign-button"
           onClick={async (event) => {
             this._removeBeforeUnload()
-            await this.props.encryptionPublicKey(txData, event)
+            await encryptionPublicKey(txData, event)
             this.context.metricsEvent({
               eventOpts: {
                 category: 'Messages',
@@ -221,8 +228,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
                 name: 'Confirm',
               },
             })
-            this.props.clearConfirmTransaction()
-            this.props.history.push(DEFAULT_ROUTE)
+            clearConfirmTransaction()
+            history.push(mostRecentOverviewPage)
           }}
         >
           { this.context.t('provide') }

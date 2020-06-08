@@ -204,16 +204,19 @@ export default class NewAccount extends PureComponent {
               {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
             </div>
             <span id="ftf-chk1-label" className="first-time-flow__checkbox-label">
-              I have read and agree to the&nbsp;
-              <a
-                href="https://metamask.io/terms.html"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className="first-time-flow__link-text">
-                  { t('terms') }
-                </span>
-              </a>
+              {t('acceptTermsOfUse', [(
+                <a
+                  onClick={(e) => e.stopPropagation()}
+                  key="first-time-flow__link-text"
+                  href="https://metamask.io/terms.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="first-time-flow__link-text">
+                    { t('terms') }
+                  </span>
+                </a>
+              )])}
             </span>
           </div>
           <Button

@@ -6,9 +6,6 @@ import {
   checksumAddress,
   getAccountByAddress,
 } from '../helpers/utils/util'
-import {
-  getSelectedToken,
-} from '.'
 
 export function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
@@ -47,11 +44,6 @@ export function getAccountType (state) {
     default:
       return 'default'
   }
-}
-
-export function getSelectedAsset (state) {
-  const selectedToken = getSelectedToken(state)
-  return (selectedToken && selectedToken.symbol) || 'ETH'
 }
 
 export function getCurrentNetworkId (state) {
@@ -157,19 +149,7 @@ export function getTargetAccount (state, targetAddress) {
   return accounts[targetAddress]
 }
 
-export function getSelectedTokenExchangeRate (state) {
-  const contractExchangeRates = state.metamask.contractExchangeRates
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return contractExchangeRates[address] || 0
-}
-
-export function getSelectedTokenAssetImage (state) {
-  const assetImages = state.metamask.assetImages || {}
-  const selectedToken = getSelectedToken(state) || {}
-  const { address } = selectedToken
-  return assetImages[address]
-}
+export const getTokenExchangeRates = (state) => state.metamask.contractExchangeRates
 
 export function getAssetImages (state) {
   const assetImages = state.metamask.assetImages || {}
@@ -281,13 +261,13 @@ export function isEthereumNetwork (state) {
   return [ KOVAN, MAINNET, RINKEBY, ROPSTEN, GOERLI].includes(networkType)
 }
 
-export function preferencesSelector ({ metamask }) {
+export function getPreferences ({ metamask }) {
   return metamask.preferences
 }
 
 export function getShouldShowFiat (state) {
   const isMainNet = getIsMainnet(state)
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   return Boolean(isMainNet || showFiatInTestnets)
 }
 
@@ -301,10 +281,6 @@ export function getUseNonceField (state) {
 
 export function getCustomNonceValue (state) {
   return String(state.metamask.customNonceValue)
-}
-
-export function getPermissionsDescriptions (state) {
-  return state.metamask.permissionsDescriptions
 }
 
 export function getPermissionsRequests (state) {
@@ -331,10 +307,9 @@ export function getTargetDomainMetadata (state, request, defaultOrigin) {
   return targetDomainMetadata
 }
 
-export function getMetaMetricState (state) {
+export const getBackgroundMetaMetricState = (state) => {
   return {
     network: getCurrentNetworkId(state),
-    activeCurrency: getSelectedAsset(state),
     accountType: getAccountType(state),
     metaMetricsId: state.metamask.metaMetricsId,
     numberOfTokens: getNumberOfTokens(state),

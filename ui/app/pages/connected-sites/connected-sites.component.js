@@ -20,11 +20,11 @@ export default class ConnectedSites extends Component {
     disconnectAllAccounts: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
     getOpenMetamaskTabsIds: PropTypes.func.isRequired,
-    legacyExposeAccount: PropTypes.func.isRequired,
     permittedAccountsByOrigin: PropTypes.objectOf(
       PropTypes.arrayOf(PropTypes.string),
     ).isRequired,
     tabToConnect: PropTypes.object,
+    requestAccountsPermission: PropTypes.func.isRequired,
   }
 
   state = {
@@ -36,11 +36,10 @@ export default class ConnectedSites extends Component {
     getOpenMetamaskTabsIds()
   }
 
-  setPendingDisconnect = (domainKey, domainName) => {
+  setPendingDisconnect = (domainKey) => {
     this.setState({
       sitePendingDisconnect: {
         domainKey,
-        domainName,
       },
     })
   }
@@ -77,13 +76,12 @@ export default class ConnectedSites extends Component {
   }
 
   renderConnectedSitesPopover () {
-
     const {
       accountLabel,
       closePopover,
       connectedDomains,
-      legacyExposeAccount,
       tabToConnect,
+      requestAccountsPermission,
     } = this.props
     const { t } = this.context
 
@@ -101,7 +99,7 @@ export default class ConnectedSites extends Component {
             ? (
               <a
                 className="connected-sites__text-button"
-                onClick={legacyExposeAccount}
+                onClick={requestAccountsPermission}
               >
                 {t('connectManually')}
               </a>
@@ -119,14 +117,14 @@ export default class ConnectedSites extends Component {
 
     const { closePopover, permittedAccountsByOrigin } = this.props
     const { t } = this.context
-    const { sitePendingDisconnect: { domainKey, domainName } } = this.state
+    const { sitePendingDisconnect: { domainKey } } = this.state
 
     const numPermittedAccounts = permittedAccountsByOrigin[domainKey].length
 
     return (
       <Popover
         className="connected-sites"
-        title={t('disconnectPrompt', [domainName])}
+        title={t('disconnectPrompt', [domainKey])}
         subtitle={t('disconnectAllAccountsConfirmationDescription')}
         onClose={closePopover}
         footer={(

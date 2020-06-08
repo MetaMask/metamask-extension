@@ -1,5 +1,3 @@
-@import 'account-details/index';
-
 @import 'account-menu/index';
 
 @import 'add-token-button/index';
@@ -7,8 +5,6 @@
 @import 'alerts/alerts';
 
 @import 'app-header/index';
-
-@import 'asset-list/asset-list';
 
 @import 'asset-list-item/asset-list-item';
 
@@ -62,8 +58,6 @@
 
 @import 'transaction-breakdown/index';
 
-@import 'transaction-view-balance/index';
-
 @import 'transaction-list/index';
 
 @import 'transaction-list-item/index';
@@ -96,13 +90,13 @@
 
 @import '../ui/icon-with-fallback/index';
 
+@import '../ui/icon/index';
+
 @import '../ui/circle-icon/index';
 
 @import '../ui/alert-circle-icon/index';
 
 @import './connected-status-indicator/index';
-
-@import './dropdowns/account-details-dropdown/index';
 
 @import '../ui/check-box/index';
 
@@ -111,3 +105,7 @@
 @import 'permissions-connect-header/index';
 
 @import 'permissions-connect-footer/index';
+
+@import 'wallet-overview/index';
+
+@import '../ui/account-mismatch-warning/index';

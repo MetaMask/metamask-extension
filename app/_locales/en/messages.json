@@ -1,4 +1,12 @@
 {
+  "acceptTermsOfUse": {
+    "message": "I have read and agree to the $1",
+    "description": "$1 is the `terms` message"
+  },
+  "eth_accounts": {
+    "message": "View the addresses of your permitted accounts (required)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
@@ -226,7 +234,7 @@
     "description": "The name of the application"
   },
   "approve": {
-    "message": "Approve"
+    "message": "Approve spend limit"
   },
   "approved": {
     "message": "Approved"
@@ -448,6 +456,9 @@
   "currencyConversion": {
     "message": "Currency Conversion"
   },
+  "currentExtension": {
+    "message": "Current extension page"
+  },
   "currentLanguage": {
     "message": "Current Language"
   },
@@ -663,6 +674,10 @@
   "from": {
     "message": "From"
   },
+  "fromAddress": {
+    "message": "From: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
+  },
   "functionApprove": {
     "message": "Function: Approve"
   },
@@ -724,7 +739,7 @@
     "message": "We’re happy to see you."
   },
   "hardware": {
-    "message": "hardware"
+    "message": "Hardware"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -748,8 +763,9 @@
   "hide": {
     "message": "Hide"
   },
-  "hideToken": {
-    "message": "Hide Token"
+  "hideTokenSymbol": {
+    "message": "Hide $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
   "hideTokenPrompt": {
     "message": "Hide Token?"
@@ -1030,6 +1046,9 @@
   "noThanks": {
     "message": "No Thanks"
   },
+  "notCurrentAccount": {
+    "message": "Is this the correct account? It's different from the currently selected account in your wallet"
+  },
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
@@ -1114,11 +1133,17 @@
   "queue": {
     "message": "Queue"
   },
+  "queued": {
+    "message": "Queued"
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
   },
   "recents": {
     "message": "Recents"
+  },
+  "receive": {
+    "message": "Receive"
   },
   "recipientAddress": {
     "message": "Recipient Address"
@@ -1297,6 +1322,10 @@
   },
   "sentTokens": {
     "message": "sent tokens"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Send $1",
+    "description": "Symbol of the specified token"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -1504,6 +1533,10 @@
   "to": {
     "message": "To"
   },
+  "toAddress": {
+    "message": "To: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
   "toWithColon": {
     "message": "To:"
   },
@@ -1515,6 +1548,9 @@
   },
   "tokenContractAddress": {
     "message": "Token Contract Address"
+  },
+  "tokenOptions": {
+    "message": "Token options"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

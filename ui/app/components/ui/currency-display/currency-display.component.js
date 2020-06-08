@@ -7,6 +7,7 @@ import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 export default function CurrencyDisplay ({
   value,
   displayValue,
+  'data-testid': dataTestId,
   style,
   className,
   prefix,
@@ -30,6 +31,7 @@ export default function CurrencyDisplay ({
   return (
     <div
       className={classnames('currency-display-component', className)}
+      data-testid={dataTestId}
       style={style}
       title={(!hideTitle && title) || null}
     >
@@ -49,6 +51,7 @@ export default function CurrencyDisplay ({
 CurrencyDisplay.propTypes = {
   className: PropTypes.string,
   currency: PropTypes.string,
+  'data-testid': PropTypes.string,
   denomination: PropTypes.oneOf([GWEI]),
   displayValue: PropTypes.string,
   hideLabel: PropTypes.bool,

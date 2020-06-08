@@ -515,9 +515,6 @@
   "hide": {
     "message": "Peida"
   },
-  "hideToken": {
-    "message": "Peida luba"
-  },
   "hideTokenPrompt": {
     "message": "Peida luba?"
   },

@@ -118,6 +118,10 @@ export default class TransactionActivityLog extends PureComponent {
     const { t } = this.context
     const { className, activities } = this.props
 
+    if (activities.length === 0) {
+      return null
+    }
+
     return (
       <div className={classnames('transaction-activity-log', className)}>
         <div className="transaction-activity-log__title">

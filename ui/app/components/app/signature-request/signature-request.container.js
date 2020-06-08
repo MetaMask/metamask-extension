@@ -5,6 +5,7 @@ import {
   accountsWithSendEtherInfoSelector,
 } from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
+import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 
 function mapStateToProps (state) {
   return {
@@ -38,13 +39,13 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
   let cancel
   let sign
 
-  if (type === 'personal_sign') {
+  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  } else if (type === 'eth_sign') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage
     sign = signMessage
   }

@@ -10,7 +10,6 @@ export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     domainMetadata: PropTypes.object.isRequired,
     selectedPermissions: PropTypes.object.isRequired,
-    permissionsDescriptions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
@@ -64,31 +63,27 @@ export default class PermissionPageContainerContent extends PureComponent {
 
   renderRequestedPermissions () {
     const {
-      selectedPermissions, permissionsDescriptions, onPermissionToggle,
+      selectedPermissions, onPermissionToggle,
     } = this.props
     const { t } = this.context
 
-    const items = Object.keys(selectedPermissions).map((methodName) => {
+    const items = Object.keys(selectedPermissions).map((permissionName) => {
 
-      // the request will almost certainly be reject by rpc-cap if this happens
-      if (!permissionsDescriptions[methodName]) {
-        console.warn(`Unknown permission requested: ${methodName}`)
-      }
-      const description = permissionsDescriptions[methodName] || methodName
+      const description = t(permissionName)
       // don't allow deselecting eth_accounts
-      const isDisabled = methodName === 'eth_accounts'
+      const isDisabled = permissionName === 'eth_accounts'
 
       return (
         <div
           className="permission-approval-container__content__permission"
-          key={methodName}
+          key={permissionName}
           onClick={() => {
             if (!isDisabled) {
-              onPermissionToggle(methodName)
+              onPermissionToggle(permissionName)
             }
           }}
         >
-          { selectedPermissions[methodName]
+          { selectedPermissions[permissionName]
             ? <i title={t('permissionCheckedIconDescription')} className="fa fa-check-square" />
             : <i title={t('permissionUncheckedIconDescription')} className="fa fa-square" />
           }

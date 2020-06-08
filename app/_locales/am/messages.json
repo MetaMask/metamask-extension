@@ -519,9 +519,6 @@
   "hide": {
     "message": "ደብቅ"
   },
-  "hideToken": {
-    "message": "ተለዋጭ ስም ደብቅ"
-  },
   "hideTokenPrompt": {
     "message": "ተለዋጭ ስም ይደበቅ?"
   },

@@ -11,7 +11,7 @@ import { checkExistingAddresses } from '../../../add-token/util'
 import ethUtil from 'ethereumjs-util'
 import contractMap from 'eth-contract-metadata'
 
-export function getToErrorObject (to, hasHexData = false, _, __, network) {
+export function getToErrorObject (to, hasHexData = false, network) {
   let toError = null
   if (!to) {
     if (!hasHexData) {
@@ -24,9 +24,9 @@ export function getToErrorObject (to, hasHexData = false, _, __, network) {
   return { to: toError }
 }
 
-export function getToWarningObject (to, tokens = [], selectedToken = null) {
+export function getToWarningObject (to, tokens = [], sendToken = null) {
   let toWarning = null
-  if (selectedToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
+  if (sendToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR
   }
   return { to: toWarning }

@@ -515,9 +515,6 @@
   "hide": {
     "message": "Slēpt"
   },
-  "hideToken": {
-    "message": "Paslēpt marķieri"
-  },
   "hideTokenPrompt": {
     "message": "Paslēpt žetonu?"
   },

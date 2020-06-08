@@ -519,9 +519,6 @@
   "hide": {
     "message": "ಮರೆಮಾಡಿ"
   },
-  "hideToken": {
-    "message": "ಟೋಕನ್ ಮರೆಮಾಡಿ"
-  },
   "hideTokenPrompt": {
     "message": "ಟೋಕನ್ ಮರೆಮಾಡುವುದೇ?"
   },

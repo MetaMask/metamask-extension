@@ -513,9 +513,6 @@
   "hide": {
     "message": "숨기기"
   },
-  "hideToken": {
-    "message": "토큰 숨기기"
-  },
   "hideTokenPrompt": {
     "message": "토큰 숨기기?"
   },

@@ -71,6 +71,15 @@ class Driver {
     await element.click()
   }
 
+  async clickPoint (locator, x, y) {
+    const element = await this.findElement(locator)
+    await this.driver
+      .actions()
+      .move({ origin: element, x, y })
+      .click()
+      .perform()
+  }
+
   async scrollToElement (element) {
     await this.driver.executeScript('arguments[0].scrollIntoView(true)', element)
   }

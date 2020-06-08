@@ -107,7 +107,7 @@ describe('MetaMask', function () {
       const address = content[1]
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
-      assert.equal(await origin.getText(), '127.0.0.1')
+      assert.equal(await origin.getText(), 'http://127.0.0.1:8080')
       assert.equal(await address.getText(), publicAddress.slice(0, 8) + '...' + publicAddress.slice(publicAddress.length - 8))
     })
 
@@ -120,7 +120,8 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.delay(regularDelayMs)
 
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))

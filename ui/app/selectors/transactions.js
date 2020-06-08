@@ -1,19 +1,16 @@
 import { createSelector } from 'reselect'
 import {
-  UNAPPROVED_STATUS,
-  APPROVED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
+  PRIORITY_STATUS_HASH,
+  PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
-import { selectedTokenAddressSelector } from './tokens'
-import { getFastPriceEstimateInHexWEI } from './custom-gas'
 import {
-  getSelectedToken,
   getSelectedAddress,
 } from '.'
 import txHelper from '../../lib/tx-helper'
@@ -72,17 +69,6 @@ export const unapprovedMessagesSelector = createSelector(
   ) || []
 )
 
-const pendingStatusHash = {
-  [UNAPPROVED_STATUS]: true,
-  [APPROVED_STATUS]: true,
-  [SUBMITTED_STATUS]: true,
-}
-
-const priorityStatusHash = {
-  ...pendingStatusHash,
-  [CONFIRMED_STATUS]: true,
-}
-
 export const transactionSubSelector = createSelector(
   unapprovedMessagesSelector,
   incomingTxListSelector,
@@ -91,23 +77,14 @@ export const transactionSubSelector = createSelector(
   }
 )
 
-const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => {
-  return selectedTokenAddress
-    ? transactions
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : transactions
-      .sort((a, b) => b.time - a.time)
-}
-
 export const transactionsSelector = createSelector(
-  selectedTokenAddressSelector,
   transactionSubSelector,
   selectedAddressTxListSelector,
-  (selectedTokenAddress, subSelectorTxList = [], selectedAddressTxList = []) => {
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList)
 
-    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
+    return txsToRender
+      .sort((a, b) => b.time - a.time)
   }
 )
 
@@ -250,7 +227,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
-        if (status in priorityStatusHash) {
+        if (status in PRIORITY_STATUS_HASH) {
           const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
@@ -302,7 +279,7 @@ export const nonceSortedTransactionsSelector = createSelector(
 export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in pendingStatusHash)
+    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
   )
 )
 
@@ -316,7 +293,7 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
     transactions
-      .filter(({ primaryTransaction }) => !(primaryTransaction.status in pendingStatusHash))
+      .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
       .reverse()
   )
 )
@@ -327,15 +304,3 @@ export const submittedPendingTransactionsSelector = createSelector(
     transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
   )
 )
-
-export const getTxParams = (state, selectedTransaction = {}) => {
-  const { metamask: { send } } = state
-  const { txParams } = selectedTransaction
-  return txParams || {
-    from: send.from,
-    gas: send.gasLimit || '0x5208',
-    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-    to: send.to,
-    value: getSelectedToken(state) ? '0x0' : send.amount,
-  }
-}

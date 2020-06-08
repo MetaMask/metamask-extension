@@ -509,9 +509,6 @@
   "hide": {
     "message": "Dölj"
   },
-  "hideToken": {
-    "message": "Göm token"
-  },
   "hideTokenPrompt": {
     "message": "Göm token?"
   },

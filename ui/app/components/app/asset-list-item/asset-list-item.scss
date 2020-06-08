@@ -1,19 +1,10 @@
 .asset-list-item {
-  &__container {
-    display: flex;
-    padding: 24px 16px;
-    align-items: center;
-
-    &--active {
-      background: #D9D7DA;
-    }
+  &__chevron-right {
+    color: $Grey-500;
   }
 
-  &__balance {
-    display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-    flex: 1;
-    min-width: 0;
+  .list-item__subheading {
+    margin-top: 6px;
+    font-size: 14px;
   }
 }

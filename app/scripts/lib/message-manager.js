@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
+import { MESSAGE_TYPE } from './enums'
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
@@ -116,7 +117,7 @@ export default class MessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_sign',
+      type: MESSAGE_TYPE.ETH_SIGN,
     }
     this.addMsg(msgData)
 

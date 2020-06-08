@@ -287,9 +287,6 @@
   "hide": {
     "message": "Kache"
   },
-  "hideToken": {
-    "message": "Kache Token"
-  },
   "hideTokenPrompt": {
     "message": "Kache Token?"
   },

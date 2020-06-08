@@ -85,8 +85,8 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.account-details__details-button'))
-      await driver.delay(regularDelayMs)
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
     })
 
     it('gets the current accounts address', async function () {
@@ -132,7 +132,8 @@ describe('MetaMask', function () {
     })
 
     it('shows connected sites', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected sites')]`))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__connected-sites"]'))
 
       await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected sites')]`))
 

@@ -31,6 +31,7 @@ describe('TransactionListItemDetails Component', function () {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => {}}
@@ -40,12 +41,12 @@ describe('TransactionListItemDetails Component', function () {
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
-
-    assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 2)
-    assert.equal(wrapper.find(SenderToRecipient).length, 1)
-    assert.equal(wrapper.find(TransactionBreakdown).length, 1)
-    assert.equal(wrapper.find(TransactionActivityLog).length, 1)
+    const child = wrapper.childAt(0)
+    assert.ok(child.hasClass('transaction-list-item-details'))
+    assert.equal(child.find(Button).length, 2)
+    assert.equal(child.find(SenderToRecipient).length, 1)
+    assert.equal(child.find(TransactionBreakdown).length, 1)
+    assert.equal(child.find(TransactionActivityLog).length, 1)
   })
 
   it('should render a retry button', function () {
@@ -85,8 +86,10 @@ describe('TransactionListItemDetails Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
-    assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 3)
+    const child = wrapper.childAt(0)
+
+    assert.ok(child.hasClass('transaction-list-item-details'))
+    assert.equal(child.find(Button).length, 3)
   })
 
   it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', function () {
@@ -122,8 +125,10 @@ describe('TransactionListItemDetails Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
-    assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    const buttons = wrapper.find(Button)
+    const child = wrapper.childAt(0)
+
+    assert.ok(child.hasClass('transaction-list-item-details'))
+    const buttons = child.find(Button)
     assert.strictEqual(buttons.at(0).prop('disabled'), true)
     assert.strictEqual(buttons.at(1).prop('disabled'), true)
   })
@@ -162,8 +167,10 @@ describe('TransactionListItemDetails Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
     )
 
-    assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    const buttons = wrapper.find(Button)
+    const child = wrapper.childAt(0)
+
+    assert.ok(child.hasClass('transaction-list-item-details'))
+    const buttons = child.find(Button)
     assert.strictEqual(buttons.at(0).prop('disabled'), false)
     assert.strictEqual(buttons.at(1).prop('disabled'), false)
   })

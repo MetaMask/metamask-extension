@@ -2,62 +2,55 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
+import ListItem from '../../ui/list-item'
 
 const AssetListItem = ({
-  active,
-  children,
   className,
   'data-testid': dataTestId,
   iconClassName,
-  menu,
   onClick,
   tokenAddress,
   tokenImage,
   warning,
+  primary,
+  secondary,
 }) => {
   return (
-    <div
-      className={classnames('asset-list-item__container', className, {
-        'asset-list-item__container--active': active,
-      })}
+    <ListItem
+      className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
+      title={primary}
+      titleIcon={warning}
+      subtitle={secondary}
       onClick={onClick}
-    >
-      <Identicon
-        className={iconClassName}
-        diameter={32}
-        address={tokenAddress}
-        image={tokenImage}
-      />
-      <div
-        className="asset-list-item__balance"
-      >
-        { children }
-      </div>
-      { warning }
-      { menu }
-    </div>
+      icon={(
+        <Identicon
+          className={iconClassName}
+          diameter={32}
+          address={tokenAddress}
+          image={tokenImage}
+        />
+      )}
+      rightContent={<i className="fas fa-chevron-right asset-list-item__chevron-right" />}
+    />
   )
 }
 
 AssetListItem.propTypes = {
-  active: PropTypes.bool,
-  children: PropTypes.node.isRequired,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   iconClassName: PropTypes.string,
-  menu: PropTypes.node,
   onClick: PropTypes.func.isRequired,
   tokenAddress: PropTypes.string,
   tokenImage: PropTypes.string,
   warning: PropTypes.node,
+  primary: PropTypes.string,
+  secondary: PropTypes.string,
 }
 
 AssetListItem.defaultProps = {
-  active: undefined,
   className: undefined,
   'data-testid': undefined,
-  menu: undefined,
   iconClassName: undefined,
   tokenAddress: undefined,
   tokenImage: undefined,

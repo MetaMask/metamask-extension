@@ -510,9 +510,6 @@
   "hide": {
     "message": "Skrij"
   },
-  "hideToken": {
-    "message": "Skrij žeton"
-  },
   "hideTokenPrompt": {
     "message": "Skrijem žeton?"
   },

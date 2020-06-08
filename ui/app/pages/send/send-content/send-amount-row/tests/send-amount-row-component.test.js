@@ -23,12 +23,12 @@ describe('SendAmountRow Component', function () {
         conversionRate: 7,
         gasTotal: 'mockGasTotal',
         primaryCurrency: 'mockPrimaryCurrency',
-        selectedToken: { address: 'mockTokenAddress' },
+        sendToken: { address: 'mockTokenAddress' },
         tokenBalance: 'mockTokenBalance',
       }))
     })
 
-    it('should call updateGasFeeError if selectedToken is truthy', function () {
+    it('should call updateGasFeeError if sendToken is truthy', function () {
       const { instance, propsMethodSpies: { updateGasFeeError } } = shallowRenderSendAmountRow()
 
       assert.equal(updateGasFeeError.callCount, 0)
@@ -40,15 +40,15 @@ describe('SendAmountRow Component', function () {
         conversionRate: 7,
         gasTotal: 'mockGasTotal',
         primaryCurrency: 'mockPrimaryCurrency',
-        selectedToken: { address: 'mockTokenAddress' },
+        sendToken: { address: 'mockTokenAddress' },
         tokenBalance: 'mockTokenBalance',
       }))
     })
 
-    it('should call not updateGasFeeError if selectedToken is falsey', function () {
+    it('should call not updateGasFeeError if sendToken is falsey', function () {
       const { wrapper, instance, propsMethodSpies: { updateGasFeeError } } = shallowRenderSendAmountRow()
 
-      wrapper.setProps({ selectedToken: null })
+      wrapper.setProps({ sendToken: null })
 
       assert.equal(updateGasFeeError.callCount, 0)
 
@@ -152,7 +152,7 @@ function shallowRenderSendAmountRow () {
       gasTotal="mockGasTotal"
       inError={false}
       primaryCurrency="mockPrimaryCurrency"
-      selectedToken={ { address: 'mockTokenAddress' } }
+      sendToken={ { address: 'mockTokenAddress' } }
       setMaxModeTo={setMaxModeTo}
       tokenBalance="mockTokenBalance"
       updateGasFeeError={updateGasFeeError}

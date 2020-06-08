@@ -516,9 +516,6 @@
   "hide": {
     "message": "Сакриј"
   },
-  "hideToken": {
-    "message": "Sakrij token"
-  },
   "hideTokenPrompt": {
     "message": "Da li želite da sakrijete token?"
   },

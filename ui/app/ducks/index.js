@@ -6,6 +6,7 @@ import appStateReducer from './app/app'
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck'
 import gasReducer from './gas/gas.duck'
 import { switchToConnected, unconnectedAccount } from './alerts'
+import historyReducer from './history/history'
 import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 
 export default combineReducers({
@@ -14,6 +15,7 @@ export default combineReducers({
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
   appState: appStateReducer,
+  history: historyReducer,
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,
   gas: gasReducer,

@@ -135,11 +135,11 @@ class AccountList extends Component {
       }
 
       return (
-        <div className="new-account-connect-form__buttons">
+        <div className="new-external-account-form__buttons">
           <Button
             type="default"
             large
-            className="new-account-connect-form__button"
+            className="new-external-account-form__button"
             onClick={this.props.onCancel.bind(this)}
           >
             {this.context.t('cancel')}
@@ -147,7 +147,7 @@ class AccountList extends Component {
           <Button
             type="primary"
             large
-            className="new-account-connect-form__button unlock"
+            className="new-external-account-form__button unlock"
             disabled={disabled}
             onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
           >
@@ -169,7 +169,7 @@ class AccountList extends Component {
 
     render () {
       return (
-        <div className="new-account-connect-form account-list">
+        <div className="new-external-account-form account-list">
           {this.renderHeader()}
           {this.renderAccounts()}
           {this.renderPagination()}

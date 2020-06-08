@@ -107,7 +107,7 @@ export default class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // next, we will initialize the controllers
-    // controller initializaiton order matters
+    // controller initialization order matters
 
     this.networkController = new NetworkController(initState.NetworkController)
 
@@ -506,6 +506,7 @@ export default class MetamaskController extends EventEmitter {
 
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
+      setDefaultHomeActiveTabName: nodeify(this.appStateController.setDefaultHomeActiveTabName, this.appStateController),
       setConnectedStatusPopoverHasBeenShown: nodeify(this.appStateController.setConnectedStatusPopoverHasBeenShown, this.appStateController),
 
       // EnsController
@@ -573,7 +574,7 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
-      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
+      requestAccountsPermission: nodeify(permissionsController.requestAccountsPermission, permissionsController),
 
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
@@ -1491,7 +1492,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {string} hostname - The URL that triggered the suspicion.
+   * @param {string} hostname - The hostname that triggered the suspicion.
    */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
@@ -1542,7 +1543,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, sender, isInternal) {
     const origin = isInternal
       ? 'metamask'
-      : (new URL(sender.url)).hostname
+      : (new URL(sender.url)).origin
     let extensionId
     if (sender.id !== extension.runtime.id) {
       extensionId = sender.id
@@ -1552,7 +1553,7 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id
     }
 
-    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId, isInternal })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1581,12 +1582,13 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    * @param {Object} options - Provider engine options
-   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.origin - The origin of the sender
    * @param {string} options.location - The full URL of the sender
    * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {boolean} [options.isInternal] - True if called for a connection to an internal process
    **/
-  setupProviderEngine ({ origin, location, extensionId, tabId }) {
+  setupProviderEngine ({ origin, location, extensionId, tabId, isInternal = false }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1614,8 +1616,10 @@ export default class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
-    // permissions
-    engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    if (!isInternal) {
+      // permissions
+      engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    }
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider

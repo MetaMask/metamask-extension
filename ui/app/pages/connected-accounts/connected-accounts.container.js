@@ -7,6 +7,9 @@ import {
   getSelectedAddress,
 } from '../../selectors'
 import { addPermittedAccount, removePermittedAccount, setSelectedAddress } from '../../store/actions'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
+
+const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
 
 const mapStateToProps = (state) => {
   const { activeTab } = state
@@ -15,10 +18,13 @@ const mapStateToProps = (state) => {
   const permissions = getPermissionsForActiveTab(state)
   const selectedAddress = getSelectedAddress(state)
 
+  const isActiveTabExtension = EXT_PROTOCOLS.includes(activeTab.protocol)
   return {
     accountToConnect,
+    isActiveTabExtension,
     activeTabOrigin: activeTab.origin,
     connectedAccounts,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,
   }

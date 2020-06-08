@@ -4,6 +4,11 @@ import TokenInput from '../../ui/token-input'
 
 export default class UserPreferencedTokenInput extends PureComponent {
   static propTypes = {
+    token: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      decimals: PropTypes.number,
+      symbol: PropTypes.string,
+    }).isRequired,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   }
 

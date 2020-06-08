@@ -515,9 +515,6 @@
   "hide": {
     "message": "Скриване"
   },
-  "hideToken": {
-    "message": "Скриване на жетон"
-  },
   "hideTokenPrompt": {
     "message": "Скриване на жетон?"
   },

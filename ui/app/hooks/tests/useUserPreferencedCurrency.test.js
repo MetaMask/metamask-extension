@@ -2,7 +2,7 @@ import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency'
 import * as reactRedux from 'react-redux'
-import { preferencesSelector, getShouldShowFiat } from '../../selectors'
+import { getPreferences, getShouldShowFiat } from '../../selectors'
 import sinon from 'sinon'
 
 const tests = [
@@ -113,7 +113,7 @@ const tests = [
 
 function getFakeUseSelector (state) {
   return (selector) => {
-    if (selector === preferencesSelector) {
+    if (selector === getPreferences) {
       return state
     } else if (selector === getShouldShowFiat) {
       return state.showFiat

@@ -516,9 +516,6 @@
   "hide": {
     "message": "Απόκρυψη"
   },
-  "hideToken": {
-    "message": "Απόκρυψη Token"
-  },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του Token;"
   },

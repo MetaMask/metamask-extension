@@ -13,13 +13,20 @@
     display: flex;
     align-items: center;
 
-    .account-list-item__account-name {
-      font-size: 12px;
-      font-weight: 500;
-    }
+    .account-list-item {
+      &__top-row {
+        display: flex;
+        align-items: center;
+      }
 
-    .account-list-item__top-row {
-      margin: 0px;
+      &__account-name {
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      &__top-row {
+        margin: 0px;
+      }
     }
   }
 }

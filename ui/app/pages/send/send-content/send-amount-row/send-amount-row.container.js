@@ -3,7 +3,7 @@ import {
   getConversionRate,
   getGasTotal,
   getPrimaryCurrency,
-  getSelectedToken,
+  getSendToken,
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
@@ -30,7 +30,7 @@ function mapStateToProps (state) {
     gasTotal: getGasTotal(state),
     inError: sendAmountIsInError(state),
     primaryCurrency: getPrimaryCurrency(state),
-    selectedToken: getSelectedToken(state),
+    sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
     maxModeOn: getSendMaxModeState(state),
   }

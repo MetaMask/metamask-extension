@@ -506,9 +506,6 @@
   "hide": {
     "message": "Ficha"
   },
-  "hideToken": {
-    "message": "Ficha Kianzio"
-  },
   "hideTokenPrompt": {
     "message": "Ungependa Kianzio?"
   },

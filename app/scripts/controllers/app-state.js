@@ -23,6 +23,7 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
+      defaultHomeActiveTabName: null,
     }, initState))
     this.timer = null
 
@@ -88,6 +89,16 @@ export default class AppStateController extends EventEmitter {
       }
       this.emit('updateBadge')
     }
+  }
+
+  /**
+   * Sets the default home tab
+   * @param {string} [defaultHomeActiveTabName] - the tab name
+   */
+  setDefaultHomeActiveTabName (defaultHomeActiveTabName) {
+    this.store.updateState({
+      defaultHomeActiveTabName,
+    })
   }
 
   /**

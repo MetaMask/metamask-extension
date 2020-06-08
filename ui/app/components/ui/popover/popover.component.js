@@ -1,8 +1,8 @@
-import React, { PureComponent, useContext } from 'react'
+import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { I18nContext } from '../../../contexts/i18n'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 
 const Popover = ({
   title,
@@ -17,7 +17,7 @@ const Popover = ({
   showArrow,
   CustomBackground,
 }) => {
-  const t = useContext(I18nContext)
+  const t = useI18nContext()
   return (
     <div className="popover-container">
       { CustomBackground

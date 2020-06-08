@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
 import {
   getOpenMetamaskTabsIds,
-  legacyExposeAccounts,
+  requestAccountsPermission,
   removePermissionsFor,
   removePermittedAccount,
 } from '../../store/actions'
@@ -14,7 +14,8 @@ import {
   getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
+import { CONNECT_ROUTE } from '../../helpers/constants/routes'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
@@ -39,6 +40,7 @@ const mapStateToProps = (state) => {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
     domains: getPermissionDomains(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permittedAccountsByOrigin,
     selectedAddress,
     tabToConnect,
@@ -57,7 +59,7 @@ const mapDispatchToProps = (dispatch) => {
         [domainKey]: permissionMethodNames,
       }))
     },
-    legacyExposeAccounts: (origin, account) => dispatch(legacyExposeAccounts(origin, [account])),
+    requestAccountsPermission: (origin) => dispatch(requestAccountsPermission(origin)),
   }
 }
 
@@ -65,17 +67,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     connectedDomains,
     domains,
+    mostRecentOverviewPage,
     selectedAddress,
     tabToConnect,
   } = stateProps
   const {
     disconnectAccount,
     disconnectAllAccounts,
-    legacyExposeAccounts: dispatchLegacyExposeAccounts,
+    requestAccountsPermission: dispatchRequestAccountsPermission,
   } = dispatchProps
   const { history } = ownProps
 
-  const closePopover = () => history.push(DEFAULT_ROUTE)
+  const closePopover = () => history.push(mostRecentOverviewPage)
 
   return {
     ...ownProps,
@@ -94,7 +97,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         closePopover()
       }
     },
-    legacyExposeAccount: () => dispatchLegacyExposeAccounts(tabToConnect.origin, selectedAddress),
+    requestAccountsPermission: async () => {
+      const id = await dispatchRequestAccountsPermission(tabToConnect.origin)
+      history.push(`${CONNECT_ROUTE}/${id}`)
+    },
   }
 }
 

@@ -31,7 +31,7 @@ proxyquire('../send-footer.container.js', {
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendToken: (s) => `mockSendToken:${s}`,
     getSendAmount: (s) => `mockAmount:${s}`,
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFromObject:${s}`,
@@ -69,9 +69,9 @@ describe('send-footer container', function () {
     })
 
     describe('sign()', function () {
-      it('should dispatch a signTokenTx action if selectedToken is defined', function () {
+      it('should dispatch a signTokenTx action if sendToken is defined', function () {
         mapDispatchToPropsObject.sign({
-          selectedToken: {
+          sendToken: {
             address: '0xabc',
           },
           to: 'mockTo',
@@ -85,7 +85,7 @@ describe('send-footer container', function () {
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
             data: undefined,
-            selectedToken: {
+            sendToken: {
               address: '0xabc',
             },
             to: 'mockTo',
@@ -101,7 +101,7 @@ describe('send-footer container', function () {
         )
       })
 
-      it('should dispatch a sign action if selectedToken is not defined', function () {
+      it('should dispatch a sign action if sendToken is not defined', function () {
         utilsStubs.constructTxParams.resetHistory()
         mapDispatchToPropsObject.sign({
           to: 'mockTo',
@@ -115,7 +115,7 @@ describe('send-footer container', function () {
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
             data: undefined,
-            selectedToken: undefined,
+            sendToken: undefined,
             to: 'mockTo',
             amount: 'mockAmount',
             from: 'mockFrom',
@@ -139,7 +139,7 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
           editingTransactionId: 'mockEditingTransactionId',
-          selectedToken: 'mockSelectedToken',
+          sendToken: { address: 'mockAddress' },
           unapprovedTxs: 'mockUnapprovedTxs',
         })
         assert(dispatchSpy.calledOnce)
@@ -153,7 +153,7 @@ describe('send-footer container', function () {
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
             editingTransactionId: 'mockEditingTransactionId',
-            selectedToken: 'mockSelectedToken',
+            sendToken: { address: 'mockAddress' },
             unapprovedTxs: 'mockUnapprovedTxs',
           }
         )

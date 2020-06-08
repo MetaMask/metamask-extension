@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { formatCurrency, getValueFromWeiHex } from '../helpers/utils/confirm-tx.util'
+import { getCurrentCurrency, getConversionRate, getNativeCurrency } from '../selectors'
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -31,13 +32,9 @@ import { formatCurrency, getValueFromWeiHex } from '../helpers/utils/confirm-tx.
  * @return {[string, CurrencyDisplayParts]}
  */
 export function useCurrencyDisplay (inputValue, { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts }) {
-  const { currentCurrency, nativeCurrency, conversionRate } = useSelector(
-    ({ metamask: { currentCurrency, nativeCurrency, conversionRate } }) => ({
-      currentCurrency,
-      nativeCurrency,
-      conversionRate,
-    })
-  )
+  const currentCurrency = useSelector(getCurrentCurrency)
+  const nativeCurrency = useSelector(getNativeCurrency)
+  const conversionRate = useSelector(getConversionRate)
 
   const toCurrency = currency || currentCurrency
 

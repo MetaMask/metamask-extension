@@ -203,9 +203,6 @@
   "hide": {
     "message": "Скрыть"
   },
-  "hideToken": {
-    "message": "Скрыть токен"
-  },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
   },

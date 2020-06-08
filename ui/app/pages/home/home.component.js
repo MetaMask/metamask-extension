@@ -1,22 +1,21 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Media from 'react-media'
 import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
 import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
-import WalletView from '../../components/app/wallet-view'
 import TransactionList from '../../components/app/transaction-list'
-import TransactionViewBalance from '../../components/app/transaction-view-balance'
 import MenuBar from '../../components/app/menu-bar'
 import Popover from '../../components/ui/popover'
 import Button from '../../components/ui/button'
 import ConnectedSites from '../connected-sites'
 import ConnectedAccounts from '../connected-accounts'
 import { Tabs, Tab } from '../../components/ui/tabs'
+import { EthOverview } from '../../components/app/wallet-overview'
 
 import {
+  ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -51,6 +50,8 @@ export default class Home extends PureComponent {
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
+    defaultHomeActiveTabName: PropTypes.string,
+    onTabClick: PropTypes.func.isRequired,
   }
 
   UNSAFE_componentWillMount () {
@@ -204,6 +205,8 @@ export default class Home extends PureComponent {
 
   render () {
     const {
+      defaultHomeActiveTabName,
+      onTabClick,
       forgottenPassword,
       history,
       connectedStatusPopoverHasBeenShown,
@@ -224,52 +227,32 @@ export default class Home extends PureComponent {
         <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
         <div className="home__container">
           { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
-          <Media
-            query="(min-width: 576px)"
-          >
-            {
-              (isWideViewport) => (
-                isWideViewport
-                  ? (
-                    <>
-                      <WalletView />
-                      <div className="home__main-view">
-                        <div className="home__balance-wrapper">
-                          <TransactionViewBalance />
-                        </div>
-                        <TransactionList isWideViewport />
-                      </div>
-                    </>
-                  )
-                  : (
-                    <div className="home__main-view">
-                      <MenuBar />
-                      <div className="home__balance-wrapper">
-                        <TransactionViewBalance />
-                      </div>
-                      <Tabs>
-                        <Tab
-                          activeClassName="home__tab--active"
-                          className="home__tab"
-                          data-testid="home__asset-tab"
-                          name="Assets"
-                        >
-                          <AssetList />
-                        </Tab>
-                        <Tab
-                          activeClassName="home__tab--active"
-                          className="home__tab"
-                          data-testid="home__history-tab"
-                          name="History"
-                        >
-                          <TransactionList />
-                        </Tab>
-                      </Tabs>
-                    </div>
-                  )
-              )
-            }
-          </Media>
+          <div className="home__main-view">
+            <MenuBar />
+            <div className="home__balance-wrapper">
+              <EthOverview />
+            </div>
+            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick} tabsClassName="home__tabs">
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__asset-tab"
+                name="Assets"
+              >
+                <AssetList
+                  onClickAsset={(asset) => history.push(`${ASSET_ROUTE}/${asset}`)}
+                />
+              </Tab>
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__history-tab"
+                name="History"
+              >
+                <TransactionList />
+              </Tab>
+            </Tabs>
+          </div>
           { this.renderNotifications() }
         </div>
       </div>

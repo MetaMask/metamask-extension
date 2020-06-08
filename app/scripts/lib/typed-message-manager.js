@@ -6,7 +6,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
-
+import { MESSAGE_TYPE } from './enums'
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
@@ -118,7 +118,7 @@ export default class TypedMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_signTypedData',
+      type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     }
     this.addMsg(msgData)
 

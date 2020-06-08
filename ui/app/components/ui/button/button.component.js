@@ -8,6 +8,7 @@ const CLASSNAME_SECONDARY = 'btn-secondary'
 const CLASSNAME_CONFIRM = 'btn-primary'
 const CLASSNAME_RAISED = 'btn-raised'
 const CLASSNAME_LARGE = 'btn--large'
+const CLASSNAME_ROUNDED = 'btn--rounded'
 const CLASSNAME_FIRST_TIME = 'btn--first-time'
 
 const typeHash = {
@@ -24,13 +25,14 @@ const typeHash = {
   'first-time': CLASSNAME_FIRST_TIME,
 }
 
-const Button = ({ type, submit, large, children, className, ...buttonProps }) => (
+const Button = ({ type, submit, large, children, rounded, className, ...buttonProps }) => (
   <button
     type={submit ? 'submit' : undefined}
     className={classnames(
       'button',
       typeHash[type] || CLASSNAME_DEFAULT,
       large && CLASSNAME_LARGE,
+      rounded && CLASSNAME_ROUNDED,
       className
     )}
     { ...buttonProps }
@@ -43,6 +45,7 @@ Button.propTypes = {
   type: PropTypes.string,
   submit: PropTypes.bool,
   large: PropTypes.bool,
+  rounded: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node,
 }

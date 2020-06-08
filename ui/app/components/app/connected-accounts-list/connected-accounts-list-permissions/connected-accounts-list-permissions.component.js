@@ -14,7 +14,6 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
   static propTypes = {
     permissions: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
     })),
   }
 
@@ -56,9 +55,9 @@ export default class ConnectedAccountsListPermissions extends PureComponent {
         >
           <p>{t('authorizedPermissions')}:</p>
           <ul className="connected-accounts-permissions__list">
-            {permissions.map(({ key, description }) => (
-              <li key={key} className="connected-accounts-permissions__list-item">
-                <i className="fas fa-check-square" />&nbsp;{description}
+            {permissions.map(({ key: permissionName }) => (
+              <li key={permissionName} className="connected-accounts-permissions__list-item">
+                <i className="fas fa-check-square" />{t(permissionName)}
               </li>
             ))}
           </ul>

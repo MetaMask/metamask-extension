@@ -14,6 +14,16 @@ describe('Signature Request', function () {
       provider: {
         type: 'test',
       },
+      accounts: {
+        '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+          balance: '0x03',
+        },
+      },
+      cachedBalances: {
+
+      },
+      selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     },
   }
   const store = configureMockStore()(mockStore)

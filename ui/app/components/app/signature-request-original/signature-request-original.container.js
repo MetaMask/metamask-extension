@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 
+import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 import { goHome } from '../../../store/actions'
 import {
   accountsWithSendEtherInfoSelector,
@@ -10,12 +11,14 @@ import {
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import SignatureRequestOriginal from './signature-request-original.component'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 function mapStateToProps (state) {
   return {
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   }
@@ -48,13 +51,13 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
 
   let cancel
   let sign
-  if (type === 'personal_sign') {
+  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  } else if (type === 'eth_sign') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage
     sign = signMessage
   }

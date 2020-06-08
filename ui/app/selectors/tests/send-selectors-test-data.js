@@ -117,7 +117,6 @@ const state = {
         'time': 1400000000000,
       },
     ],
-    'selectedTokenAddress': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
     'unapprovedMsgs': {
       '0xabc': { id: 'unapprovedMessage1', 'time': 1650000000000 },
       '0xdef': { id: 'unapprovedMessage2', 'time': 1550000000000 },

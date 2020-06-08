@@ -5,7 +5,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
 import { isBalanceSufficient } from '../send/send.utils'
-import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
@@ -96,6 +96,7 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   state = {
@@ -110,6 +111,7 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
+      mostRecentOverviewPage,
       nextNonce,
       customNonceValue,
       toAddress,
@@ -136,7 +138,7 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         },
       })
     }
@@ -383,6 +385,7 @@ export default class ConfirmTransactionBase extends Component {
       cancelAllTransactions,
       clearConfirmTransaction,
       history,
+      mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       unapprovedTxCount,
     } = this.props
@@ -393,7 +396,7 @@ export default class ConfirmTransactionBase extends Component {
         this._removeBeforeUnload()
         await cancelAllTransactions()
         clearConfirmTransaction()
-        history.push(DEFAULT_ROUTE)
+        history.push(mostRecentOverviewPage)
       },
     })
   }
@@ -405,6 +408,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       cancelTransaction,
       history,
+      mostRecentOverviewPage,
       clearConfirmTransaction,
       actionKey,
       txData: { origin },
@@ -432,7 +436,7 @@ export default class ConfirmTransactionBase extends Component {
       cancelTransaction(txData)
         .then(() => {
           clearConfirmTransaction()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         })
     }
   }
@@ -447,6 +451,7 @@ export default class ConfirmTransactionBase extends Component {
       history,
       onSubmit,
       actionKey,
+      mostRecentOverviewPage,
       metaMetricsSendCount = 0,
       setMetaMetricsSendCount,
       methodData = {},
@@ -493,7 +498,7 @@ export default class ConfirmTransactionBase extends Component {
                 this.setState({
                   submitting: false,
                 }, () => {
-                  history.push(DEFAULT_ROUTE)
+                  history.push(mostRecentOverviewPage)
                   updateCustomNonce('')
                 })
               })

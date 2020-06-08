@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { displayWarning, requestRevealSeedWords, fetchInfoToSync } from '../../store/actions'
 import MobileSyncPage from './mobile-sync.component'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -18,6 +19,7 @@ const mapStateToProps = (state) => {
   } = state
 
   return {
+    mostRecentOverviewpage: getMostRecentOverviewPage(state),
     selectedAddress,
   }
 }

@@ -241,14 +241,11 @@ export function getPermissionsForActiveTab (state) {
   const { activeTab, metamask } = state
   const {
     domains = {},
-    permissionsDescriptions,
   } = metamask
 
   return domains[activeTab.origin]?.permissions?.map(({ parentCapability }) => {
-    const description = permissionsDescriptions[parentCapability]
     return {
       key: parentCapability,
-      description,
     }
   })
 }
