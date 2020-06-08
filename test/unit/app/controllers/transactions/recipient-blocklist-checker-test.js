@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert'
-import { throwIfAccountIsBlacklisted } from '../../../../../app/scripts/controllers/transactions/lib/recipient-blacklist-checker'
+import { throwIfAccountIsBlockListed } from '../../../../../app/scripts/controllers/transactions/lib/recipient-blocklist-checker'
 import { ROPSTEN_NETWORK_ID, RINKEBY_NETWORK_ID, KOVAN_NETWORK_ID, GOERLI_NETWORK_ID } from '../../../../../app/scripts/controllers/network/enums'
 
-describe('Recipient Blacklist Checker', function () {
-  describe('#throwIfAccountIsBlacklisted', function () {
+describe('Recipient Blocklist Checker', function () {
+  describe('#throwIfAccountIsBlockListed', function () {
     // Accounts from Ganache's original default seed phrase
     const publicAccounts = [
       '0x627306090abab3a6e1400e9345bc60c78a8bef57',
@@ -22,7 +22,7 @@ describe('Recipient Blacklist Checker', function () {
       const networks = [ROPSTEN_NETWORK_ID, RINKEBY_NETWORK_ID, KOVAN_NETWORK_ID, GOERLI_NETWORK_ID]
       for (const networkId of networks) {
         for (const account of publicAccounts) {
-          assert.doesNotThrow(() => throwIfAccountIsBlacklisted(networkId, account))
+          assert.doesNotThrow(() => throwIfAccountIsBlockListed(networkId, account))
         }
       }
     })
@@ -30,7 +30,7 @@ describe('Recipient Blacklist Checker', function () {
     it('fails on mainnet', function () {
       for (const account of publicAccounts) {
         assert.throws(
-          () => throwIfAccountIsBlacklisted(1, account),
+          () => throwIfAccountIsBlockListed(1, account),
           { message: 'Recipient is a public account' },
         )
       }
@@ -38,14 +38,14 @@ describe('Recipient Blacklist Checker', function () {
 
     it('fails for public account - uppercase', function () {
       assert.throws(
-        () => throwIfAccountIsBlacklisted(1, '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'),
+        () => throwIfAccountIsBlockListed(1, '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'),
         { message: 'Recipient is a public account' },
       )
     })
 
     it('fails for public account - lowercase', function () {
       assert.throws(
-        () => throwIfAccountIsBlacklisted(1, '0x0d1d4e623d10f9fba5db95830f7d3839406c6af2'),
+        () => throwIfAccountIsBlockListed(1, '0x0d1d4e623d10f9fba5db95830f7d3839406c6af2'),
         { message: 'Recipient is a public account' },
       )
     })

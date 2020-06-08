@@ -1446,7 +1446,7 @@ export default class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, sender) {
     const { usePhishDetect } = this.preferencesController.store.getState()
     const hostname = (new URL(sender.url)).hostname
-    // Check if new connection is blacklisted if phishing detection is on
+    // Check if new connection is blocked if phishing detection is on
     if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
       this.sendPhishingWarning(connectionStream, hostname)

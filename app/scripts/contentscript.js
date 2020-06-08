@@ -127,7 +127,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  */
 function shouldInjectProvider () {
   return doctypeCheck() && suffixCheck() &&
-    documentElementCheck() && !blacklistedDomainCheck()
+    documentElementCheck() && !blocklistedDomainCheck()
 }
 
 /**
@@ -181,12 +181,12 @@ function documentElementCheck () {
 }
 
 /**
- * Checks if the current domain is blacklisted
+ * Checks if the current domain is blocklisted
  *
- * @returns {boolean} {@code true} - if the current domain is blacklisted
+ * @returns {boolean} {@code true} - if the current domain is blocked
  */
-function blacklistedDomainCheck () {
-  const blacklistedDomains = [
+function blocklistedDomainCheck () {
+  const blocklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
@@ -200,9 +200,9 @@ function blacklistedDomainCheck () {
   ]
   const currentUrl = window.location.href
   let currentRegex
-  for (let i = 0; i < blacklistedDomains.length; i++) {
-    const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
-    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
+  for (let i = 0; i < blocklistedDomains.length; i++) {
+    const blocklistedDomain = blocklistedDomains[i].replace('.', '\\.')
+    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blocklistedDomain}).)*$`)
     if (!currentRegex.test(currentUrl)) {
       return true
     }
