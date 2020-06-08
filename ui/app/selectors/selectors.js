@@ -177,17 +177,17 @@ export function getAddressBookEntryName (state, address) {
 
 export function accountsWithSendEtherInfoSelector (state) {
   const accounts = getMetaMaskAccounts(state)
-  const { identities } = state.metamask
+  const identities = getMetaMaskIdentities(state)
 
   const accountsWithSendEtherInfo = Object.entries(identities).map(([key, identity]) => {
-    return Object.assign({}, accounts[key], identity)
+    return Object.assign({}, identity, accounts[key])
   })
 
   return accountsWithSendEtherInfo
 }
 
 export function getAccountsWithLabels (state) {
-  return accountsWithSendEtherInfoSelector(state).map(({ address, name, balance }) => ({
+  return getMetaMaskAccountsOrdered(state).map(({ address, name, balance }) => ({
     address,
     addressLabel: `${name} (...${address.slice(address.length - 4)})`,
     label: name,
