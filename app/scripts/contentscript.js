@@ -181,7 +181,7 @@ function documentElementCheck () {
 }
 
 /**
- * Checks if the current domain is blocklisted
+ * Checks if the current domain is blocked
  *
  * @returns {boolean} {@code true} - if the current domain is blocked
  */
