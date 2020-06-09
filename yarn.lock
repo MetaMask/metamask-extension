@@ -8077,6 +8077,13 @@ dateformat@^3.0.3:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
+dcent-web-connector@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/dcent-web-connector/-/dcent-web-connector-0.8.2.tgz#9bb02b4895e70adf3c99205973dc611676644a4b"
+  integrity sha512-R+7Z7NTBH5PJvbiyOYHbI6erO3tciBPSG5icl5goIYDXt1VpM5tXBveHfSw9qLXgpMqYR014udvCV22C52Sw9w==
+  dependencies:
+    events "^3.0.0"
+
 debounce-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/debounce-stream/-/debounce-stream-2.0.0.tgz#1e33400ccff015abd8ec330661a562b68410b08f"
@@ -10053,6 +10060,17 @@ eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.13.0.tgz#9819d0e556ea2187da91d6b49ce96abc5fce2a73"
   integrity sha512-9CjXHX8IdXysUEvOHdbCsjdAwM1E98jaeK2HeOqm/9S/vOZ8YryaBBt/YSiBq3MkpCwf+d1pEQ53p96rsdy52w==
+
+eth-dcent-keyring@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.1.0.tgz#154f11bb4e08442c40c7f0be9315c11df951e0d0"
+  integrity sha512-8sJ6TMIZ3Qw4MjOOu9pBqDZY5tF5IUCfuijmjlcSXPJRCHOGCCycnPy/gaXMaXc1gX5EdHmm5T0VQBfCm+Dcuw==
+  dependencies:
+    dcent-web-connector "^0.8.2"
+    eth-sig-util "^1.4.2"
+    ethereumjs-tx "^1.3.4"
+    ethereumjs-util "^5.1.5"
+    events "^2.0.0"
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
