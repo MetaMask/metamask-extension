@@ -376,7 +376,6 @@ describe('Gas Duck', function () {
   describe('fetchBasicGasEstimates', function () {
     it('should call fetch with the expected params', async function () {
       const mockDistpatch = sinon.spy()
-
       await fetchBasicGasEstimates()(mockDistpatch, () => ({
         metamask: {
           settings: {
@@ -406,7 +405,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 10,
+            average: 1,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -501,7 +500,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 10,
+            average: 1,
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
             fast: 3,
@@ -554,7 +553,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 10,
+            average: 1,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
@@ -667,7 +666,7 @@ describe('Gas Duck', function () {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 10,
+            average: 1,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',

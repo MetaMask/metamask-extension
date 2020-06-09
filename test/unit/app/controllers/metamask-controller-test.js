@@ -980,11 +980,13 @@ describe('MetaMaskController', function () {
     it('should do nothing if there are no keyrings in state', async function () {
       const addAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
+      const _updateAccounts = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         addAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
+        _updateAccounts,
       })
 
       const oldState = metamaskController.getState()
@@ -1000,6 +1002,7 @@ describe('MetaMaskController', function () {
       const getSelectedAddress = sinon.fake.returns('0x42')
       const setSelectedAddress = sinon.fake()
       const syncWithAddresses = sinon.fake()
+      const _updateAccounts = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         addAddresses,
         getSelectedAddress,
@@ -1007,6 +1010,7 @@ describe('MetaMaskController', function () {
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
+        _updateAccounts,
       })
 
       const oldState = metamaskController.getState()
@@ -1028,11 +1032,13 @@ describe('MetaMaskController', function () {
     it('should NOT update selected address if already unlocked', async function () {
       const addAddresses = sinon.fake()
       const syncWithAddresses = sinon.fake()
+      const _updateAccounts = sinon.fake()
       sandbox.replace(metamaskController, 'preferencesController', {
         addAddresses,
       })
       sandbox.replace(metamaskController, 'accountTracker', {
         syncWithAddresses,
+        _updateAccounts,
       })
 
       const oldState = metamaskController.getState()

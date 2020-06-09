@@ -1,5 +1,7 @@
 const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('../helpers')
+// use sleep to debug
+// const sleep = require('sleep-promise')
 
 describe('MetaMask Browser Extension', function () {
   it('can send a simple transaction from one account to another', async function () {
@@ -15,6 +17,8 @@ describe('MetaMask Browser Extension', function () {
     await withFixtures(
       { fixtures: 'imported-account', ganacheOptions },
       async ({ driver }) => {
+        // debugger
+        // await sleep(3600000)
         const passwordField = await driver.findElement(By.css('#password'))
         await passwordField.sendKeys('correct horse battery staple')
         await passwordField.sendKeys(Key.ENTER)

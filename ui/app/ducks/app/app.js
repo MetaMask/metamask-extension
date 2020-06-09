@@ -46,6 +46,7 @@ export default function reduceApp (state = {}, action) {
         trezor: `m/44'/60'/0'/0`,
         ledger: `m/44'/60'/0'/0/0`,
       },
+      networkInfo: [],
       lastSelectedProvider: null,
       networksTabSelectedRpcUrl: '',
       networksTabIsInAddMode: false,
@@ -407,6 +408,11 @@ export default function reduceApp (state = {}, action) {
         gasIsLoading: false,
       }
 
+    case actions.SET_NETWORK_INFO:
+      return {
+        ...appState,
+        networkInfo: action.value,
+      }
     case actions.SET_NETWORK_NONCE:
       return {
         ...appState,

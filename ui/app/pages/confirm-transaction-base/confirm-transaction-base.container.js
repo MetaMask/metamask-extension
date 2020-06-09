@@ -71,7 +71,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const { confirmTransaction, metamask } = state
   const {
-    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
@@ -116,7 +115,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const checksummedAddress = checksumAddress(toAddress)
   const addressBookObject = addressBook[checksummedAddress]
-  const toEns = ensResolutionsByAddress[checksummedAddress] || ''
   const toNickname = addressBookObject ? addressBookObject.name : ''
   const isTxReprice = Boolean(lastGasPrice)
   const transactionStatus = transaction ? transaction.status : ''
@@ -170,7 +168,6 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
     fromName,
     toAddress,
-    toEns,
     toName,
     toNickname,
     hexTransactionAmount,

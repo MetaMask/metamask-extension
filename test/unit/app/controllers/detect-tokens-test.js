@@ -49,7 +49,7 @@ describe('DetectTokensController', function () {
     clock = sandbox.useFakeTimers()
     const network = new NetworkController()
     network.initializeProvider(networkControllerProviderConfig)
-    network.setProviderType('mainnet')
+    await network.setProviderType('mainnet')
     const preferences = new PreferencesController({ network })
     const controller = new DetectTokensController({
       preferences: preferences,

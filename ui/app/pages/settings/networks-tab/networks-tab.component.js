@@ -29,10 +29,15 @@ export default class NetworksTab extends PureComponent {
     providerUrl: PropTypes.string,
     providerType: PropTypes.string,
     networkDefaultedToProvider: PropTypes.bool,
+    getNetworkInfo: PropTypes.func.isRequired,
   }
 
   UNSAFE_componentWillMount () {
     this.props.setSelectedSettingsRpcUrl(null)
+  }
+
+  componentDidMount () {
+    this.props.getNetworkInfo()
   }
 
   isCurrentPath (pathname) {

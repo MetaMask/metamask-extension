@@ -187,11 +187,15 @@ export default class NetworkForm extends PureComponent {
     textFieldId,
     onChange,
     value,
-    optionalTextFieldKey
+    optionalTextFieldKey,
+    customViewOnly = false
   ) {
     const { errors } = this.state
     const { viewOnly } = this.props
 
+    if (fieldKey === 'chainId' && !value) {
+      value = '0'
+    }
     return (
       <div className="networks-tab__network-form-row">
         <div className="networks-tab__network-form-label">
@@ -204,7 +208,7 @@ export default class NetworkForm extends PureComponent {
           fullWidth
           margin="dense"
           value={value}
-          disabled={viewOnly}
+          disabled={customViewOnly || viewOnly}
           error={errors[fieldKey]}
         />
       </div>
@@ -312,7 +316,8 @@ export default class NetworkForm extends PureComponent {
           'chainId',
           this.setStateWithValue('chainId', this.validateChainId),
           chainId,
-          'optionalChainId'
+          null,
+          true
         )}
         {this.renderFormTextField(
           'symbol',

@@ -13,6 +13,7 @@ const normalizers = {
   gasPrice: (gasPrice) => addHexPrefix(gasPrice),
   storageLimit: (storageLimit) => addHexPrefix(storageLimit),
   epochHeight: (epochHeight) => addHexPrefix(epochHeight.toString(16)),
+  chainId: (chainId) => addHexPrefix(chainId.toString(16)),
 }
 
 /**

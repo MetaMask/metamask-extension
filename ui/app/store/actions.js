@@ -73,6 +73,7 @@ export const actionConstants = {
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
+  SET_NETWORK_INFO: 'SET_NETWORK_INFO',
   SET_NETWORK_NONCE: 'SET_NETWORK_NONCE',
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
@@ -2157,8 +2158,9 @@ export function showSendTokenPage () {
 }
 
 export function buyEth (opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts)
+  return (dispatch, getState) => {
+    const { type } = getState().metamask.provider
+    const url = getBuyEthUrl({ ...opts, type })
     global.platform.openWindow({ url })
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -2628,6 +2630,13 @@ export function setSelectedSettingsRpcUrl (newRpcUrl) {
   }
 }
 
+export function setNetworkInfo (networkInfo) {
+  return {
+    type: actionConstants.SET_NETWORK_INFO,
+    value: networkInfo,
+  }
+}
+
 export function setNetworksTabAddMode (isInAddMode) {
   return {
     type: actionConstants.SET_NETWORKS_TAB_ADD_MODE,
@@ -2897,6 +2906,54 @@ export function getOpenMetamaskTabsIds () {
       background.getOpenMetamaskTabsIds
     ).call(background)
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
+  }
+}
+
+export function getNetworkInfo (networks = []) {
+  return async (dispatch) => {
+    const body = JSON.stringify({
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'cfx_getStatus',
+      params: [],
+    })
+
+    const status = await Promise.all(
+      networks.map((rpcUrl) =>
+        new Promise((resolve) => {
+          fetch(rpcUrl, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body,
+          })
+            .then((res) => {
+              if (res.ok) {
+                resolve(res.json())
+              }
+              throw new Error('request error, fallback to 0 chainId')
+            })
+            .catch(() => {
+              resolve({
+                chaindId: '0x0',
+              })
+            })
+        })
+      )
+    )
+
+    dispatch(
+      setNetworkInfo(
+        status.map((s) => {
+          if (!s.result) {
+            s.result = { chainId: '0x0' }
+          }
+          return s.result
+        })
+      )
+    )
   }
 }
 

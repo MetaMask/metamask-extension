@@ -9,6 +9,7 @@ import {
   setNetworksTabAddMode,
   editRpc,
   showModal,
+  getNetworkInfo,
 } from '../../../store/actions'
 import { defaultNetworksData } from './networks-tab.constants'
 
@@ -19,7 +20,7 @@ const defaultNetworks = defaultNetworksData.map((network) => ({
 
 const mapStateToProps = (state) => {
   const { frequentRpcListDetail, provider } = state.metamask
-  const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState
+  const { networkInfo, networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState
 
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
@@ -37,6 +38,13 @@ const mapStateToProps = (state) => {
     ...defaultNetworks,
     ...frequentRpcNetworkListDetails,
   ]
+  networksToRender.forEach((network, i) => {
+    if (networkInfo[i]) {
+      network.chainId = parseInt(networkInfo[i].chainId, 16).toString(10)
+    } else {
+      network.chainId = '0'
+    }
+  })
   let selectedNetwork =
     networksToRender.find(
       (network) => network.rpcUrl === networksTabSelectedRpcUrl
@@ -69,6 +77,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getNetworkInfo: (networksToRender) => () => dispatch(getNetworkInfo(networksToRender.map(({ rpcUrl }) => rpcUrl))),
     setSelectedSettingsRpcUrl: (newRpcUrl) =>
       dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
     setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
@@ -90,7 +99,19 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { networksToRender } = stateProps
+  const { getNetworkInfo } = dispatchProps
+
+  return {
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    getNetworkInfo: getNetworkInfo(networksToRender),
+  }
+}
+
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(NetworksTab)

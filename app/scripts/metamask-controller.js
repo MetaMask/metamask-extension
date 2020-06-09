@@ -24,7 +24,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 import providerAsMiddleware from '@yqrashawn/cfx-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils.js'
 import KeyringController from 'cfx-keyring-controller'
-import EnsController from './controllers/ens'
+// import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
 import AppStateController from './controllers/app-state'
@@ -69,6 +69,7 @@ import {
 } from 'gaba'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
+import { getStatus } from './controllers/network/util'
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -146,10 +147,10 @@ export default class MetamaskController extends EventEmitter {
     //   preferences: this.preferencesController.store,
     // })
 
-    this.ensController = new EnsController({
-      provider: this.provider,
-      networkStore: this.networkController.networkStore,
-    })
+    // this.ensController = new EnsController({
+    //   provider: this.provider,
+    //   networkStore: this.networkController.networkStore,
+    // })
 
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
@@ -362,7 +363,7 @@ export default class MetamaskController extends EventEmitter {
       // ThreeBoxController: this.threeBoxController.store,
       ABTestController: this.abTestController.store,
       // ENS Controller
-      EnsController: this.ensController.store,
+      // EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -592,11 +593,11 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController
       ),
 
-      // EnsController
-      tryReverseResolveAddress: nodeify(
-        this.ensController.reverseResolveAddress,
-        this.ensController
-      ),
+      // // EnsController
+      // tryReverseResolveAddress: nodeify(
+      //   this.ensController.reverseResolveAddress,
+      //   this.ensController
+      // ),
 
       // KeyringController
       setLocked: nodeify(this.setLocked, this),
@@ -2115,7 +2116,8 @@ export default class MetamaskController extends EventEmitter {
       amount = '5'
     }
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const { type } = this.networkController.getProviderConfig()
+    const url = getBuyEthUrl({ network, address, amount, type })
     if (url) {
       this.platform.openWindow({ url })
     }
@@ -2125,7 +2127,8 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider and updating it
    * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {number} chainId - The chainId of the selected network.
+   * @param {number} chainId - The decimal chainId of the selected network or
+   empty string.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
@@ -2138,6 +2141,8 @@ export default class MetamaskController extends EventEmitter {
     nickname,
     rpcPrefs
   ) {
+    const networkStatus = await getStatus(rpcUrl)
+    chainId = parseInt(networkStatus.chainId, 16).toString(10)
     await this.preferencesController.updateRpc({
       rpcUrl,
       chainId,

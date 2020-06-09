@@ -133,11 +133,11 @@ class TransactionController extends EventEmitter {
   /** @returns {number} - the chainId*/
   getChainId () {
     const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState)
+    const getChainId = parseInt(networkState, 10)
     if (Number.isNaN(getChainId)) {
-      return 0
+      return '0x0'
     } else {
-      return getChainId
+      return `0x${getChainId.toString(16)}`
     }
   }
 
@@ -498,6 +498,7 @@ class TransactionController extends EventEmitter {
       const txMeta = this.txStateManager.getTx(txId)
       txMeta.txParams.epochHeight = await this.blockTracker.getLatestBlock()
       const fromAddress = txMeta.txParams.from
+      txMeta.txParams.chainId = this.getChainId()
       // wait for a nonce
       let { customNonceValue = null } = txMeta
       customNonceValue = Number(customNonceValue)
@@ -547,10 +548,10 @@ class TransactionController extends EventEmitter {
   */
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    // add network/chain id
-    // eslint-disable-next-line no-unused-vars
-    const chainId = this.getChainId()
     const txParams = Object.assign({}, txMeta.txParams)
+    // add network/chain id
+    const chainId = this.getChainId()
+    txParams.chainId = chainId
     txParams.storageLimit = txParams.storageLimit || '0x0'
     // sign tx
     const fromAddress = txParams.from

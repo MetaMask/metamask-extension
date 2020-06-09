@@ -61,6 +61,8 @@ let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
 const requestAccountTabIds = {}
 
+// DEBUG
+// process.env.IN_TEST = true
 // state persistence
 const inTest = process.env.IN_TEST === 'true'
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore()
