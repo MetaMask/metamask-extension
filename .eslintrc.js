@@ -15,8 +15,6 @@ module.exports = {
       'templateStrings': true,
       'classes': true,
       'jsx': true,
-      'template-curly-spacing': 'off',
-      'indent': 'off',
     },
   },
 
