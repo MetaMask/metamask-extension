@@ -6,7 +6,7 @@ import blocklist from './recipient-blocklist'
  * @param {string} account
  * @throws {Error} if the account is blocked on mainnet
  */
-export function throwIfAccountIsBlockListed (networkId, account) {
+export function throwIfAccountIsBlocked (networkId, account) {
   const mainnetId = 1
   if (networkId !== mainnetId) {
     return
