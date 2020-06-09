@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import ConfirmTransactionBase from '../confirm-transaction-base'
@@ -60,16 +60,16 @@ export default function ConfirmApprove () {
 
   const [customPermissionAmount, setCustomPermissionAmount] = useState('')
 
+  const previousTokenAmount = useRef(tokenAmount)
+
   useEffect(
     () => {
-      if (customPermissionAmount) {
+      if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
         setCustomPermissionAmount(tokenAmount)
       }
+      previousTokenAmount.current = tokenAmount
     },
-    // `customPermissionAmount` is omitted intentionally
-    // This effect should only run if `tokenAmount` changes _after_ a custom
-    // permission amount has been set.
-    [tokenAmount]
+    [customPermissionAmount, tokenAmount]
   )
 
   const { origin } = transaction
