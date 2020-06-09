@@ -46,7 +46,7 @@ export default class ConnectedSitesList extends Component {
 
   getDomainDisplayName (domain) {
     if (domain.extensionId) {
-      return domain.extensionId
+      return this.context.t('externalExtension')
     }
 
     return this.props.domainHostCount[domain.host] > 1
