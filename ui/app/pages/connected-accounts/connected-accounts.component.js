@@ -54,7 +54,7 @@ export default class ConnectedAccounts extends PureComponent {
 
     return (
       <Popover
-        title={isActiveTabExtension ? t('currentExtension') : activeTabOrigin}
+        title={isActiveTabExtension ? t('currentExtension') : new URL(activeTabOrigin).host}
         subtitle={connectedAccounts.length ? connectedAccountsDescription : t('connectedAccountsEmptyDescription')}
         onClose={() => history.push(mostRecentOverviewPage)}
         footerClassName="connected-accounts__footer"

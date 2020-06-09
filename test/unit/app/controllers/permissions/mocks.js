@@ -151,10 +151,10 @@ export const getNotifyAllDomains = (notifications = {}) => (notification) => {
  * - e.g. permissions, caveats, and permission requests
  */
 
-const ORIGINS = {
-  a: 'foo.xyz',
-  b: 'bar.abc',
-  c: 'baz.def',
+const DOMAINS = {
+  a: { origin: 'https://foo.xyz', host: 'foo.xyz' },
+  b: { origin: 'https://bar.abc', host: 'bar.abc' },
+  c: { origin: 'https://baz.def', host: 'baz.def' },
 }
 
 const PERM_NAMES = {
@@ -630,7 +630,7 @@ export const constants = deepFreeze({
     c: '3',
   },
 
-  ORIGINS: { ...ORIGINS },
+  DOMAINS: { ...DOMAINS },
 
   ACCOUNTS: { ...ACCOUNTS },
 
@@ -648,7 +648,7 @@ export const constants = deepFreeze({
 
     case1: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
@@ -660,7 +660,7 @@ export const constants = deepFreeze({
         },
       },
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 2,
             accounts: {
@@ -675,7 +675,7 @@ export const constants = deepFreeze({
 
     case2: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {},
@@ -686,10 +686,10 @@ export const constants = deepFreeze({
 
     case3: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
         },
-        [ORIGINS.b]: {
+        [DOMAINS.b.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
@@ -697,7 +697,7 @@ export const constants = deepFreeze({
             },
           },
         },
-        [ORIGINS.c]: {
+        [DOMAINS.c.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
@@ -708,10 +708,10 @@ export const constants = deepFreeze({
         },
       },
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 2 },
         },
-        [ORIGINS.b]: {
+        [DOMAINS.b.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
@@ -719,7 +719,7 @@ export const constants = deepFreeze({
             },
           },
         },
-        [ORIGINS.c]: {
+        [DOMAINS.c.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 2,
@@ -734,7 +734,7 @@ export const constants = deepFreeze({
 
     case4: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: {
             lastApproved: 1,
           },
