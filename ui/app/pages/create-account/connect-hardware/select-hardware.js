@@ -57,7 +57,6 @@ export default class SelectHardware extends Component {
       </button>
     )
   }
-
   renderConnectToDcentButton () {
     return (
       <button
@@ -74,7 +73,6 @@ export default class SelectHardware extends Component {
       </button>
     )
   }
-
   renderButtons () {
     return (
       <>
