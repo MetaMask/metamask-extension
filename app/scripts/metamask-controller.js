@@ -29,7 +29,6 @@ import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
 import AppStateController from './controllers/app-state'
-import InfuraController from './controllers/infura'
 import CachedBalancesController from './controllers/cached-balances'
 import AlertController from './controllers/alert'
 import OnboardingController from './controllers/onboarding'
@@ -127,11 +126,6 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
-
-    this.infuraController = new InfuraController({
-      initState: initState.InfuraController,
-    })
-    this.infuraController.scheduleInfuraNetworkCheck()
 
     this.phishingController = new PhishingController()
 
@@ -292,7 +286,6 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
-      InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
@@ -318,7 +311,6 @@ export default class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
-      InfuraController: this.infuraController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
