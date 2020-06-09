@@ -319,7 +319,7 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
+  const metamaskBlockedPorts = [
     'trezor-connect',
   ]
 
@@ -343,7 +343,7 @@ function setupController (initState, initLangCode) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
-    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
       return false
     }
 
