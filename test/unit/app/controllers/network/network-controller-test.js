@@ -17,6 +17,11 @@ describe('NetworkController', function () {
         .post('/metamask')
         .reply(200)
 
+      nock('http://wallet-mainnet-jsonrpc.conflux-chain.org:12537')
+        .persist()
+        .post('/', (req) => req.method === 'cfx_getStatus')
+        .reply(200, { result: { chainId: '0x0' } })
+
       networkController = new NetworkController()
       networkController.initializeProvider(networkControllerProviderConfig)
     })
@@ -51,13 +56,13 @@ describe('NetworkController', function () {
     })
 
     describe('#setProviderType', function () {
-      it('should update provider.type', function () {
-        networkController.setProviderType('mainnet')
+      it('should update provider.type', async function () {
+        await networkController.setProviderType('mainnet')
         const type = networkController.getProviderConfig().type
         assert.equal(type, 'mainnet', 'provider type is updated')
       })
-      it('should set the network to loading', function () {
-        networkController.setProviderType('mainnet')
+      it('should set the network to loading', async function () {
+        await networkController.setProviderType('mainnet')
         const loading = networkController.isNetworkLoading()
         assert.ok(loading, 'network is loading')
       })

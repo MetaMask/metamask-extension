@@ -56,3 +56,33 @@ export function formatTxMetaForRpcResult (txMeta) {
     s: txMeta.s,
   }
 }
+
+export async function getStatus (rpcUrl) {
+  const body = JSON.stringify({
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'cfx_getStatus',
+    params: [],
+  })
+
+  let networkStatus = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body,
+  }).catch(() => {})
+
+  if (networkStatus) {
+    networkStatus = await networkStatus.json().catch(() => {})
+  }
+
+  if (!networkStatus) {
+    throw new Error('ConfluxPortal - cfx_getStatus - network error')
+  } else if (!networkStatus.result || !networkStatus.result.chainId) {
+    return { chainId: '0x0' }
+  } else {
+    return networkStatus.result
+  }
+}

@@ -36,7 +36,7 @@ describe('txUtils', function () {
 
       let normalizedTxParams = txUtils.normalizeTxParams(txParams)
 
-      assert(!normalizedTxParams.chainId, 'their should be no chainId')
+      assert(normalizedTxParams.chainId, 'their should be chainId')
       assert(!normalizedTxParams.to, 'their should be no to address if null')
       assert.equal(
         normalizedTxParams.from.slice(0, 2),

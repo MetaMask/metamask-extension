@@ -159,10 +159,10 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
     })
 
-    it.skip('has the ganache network id within the dapp', async function () {
+    it('has the ganache network id within the dapp', async function () {
       const networkDiv = await driver.findElement(By.css('#network'))
       await driver.delay(regularDelayMs)
-      assert.equal(await networkDiv.getText(), '5777')
+      assert.equal(await networkDiv.getText(), '2999')
     })
 
     it('changes the network', async function () {
@@ -177,16 +177,18 @@ describe('MetaMask', function () {
 
     it('sets the network div within the dapp', async function () {
       await driver.switchToWindow(dapp)
-      await driver.delay(largeDelayMs)
+      await driver.delay(largeDelayMs * 3)
       const networkDiv = await driver.findElement(By.css('#network'))
       await driver.wait(until.elementTextContains(networkDiv, '1'))
       assert.equal(await networkDiv.getText(), '1')
     })
 
-    it.skip('sets the chainId div within the dapp', async function () {
+    it('sets the chainId div within the dapp', async function () {
       await driver.switchToWindow(dapp)
-      const chainIdDiv = await driver.findElement(By.css('#chainId'))
-      assert.equal(await chainIdDiv.getText(), '0x1')
+      await driver.delay(largeDelayMs * 3)
+      const networkDiv = await driver.findElement(By.css('#chainId'))
+      await driver.wait(until.elementTextContains(networkDiv, '0x1'))
+      assert.equal(await networkDiv.getText(), '0x1')
     })
 
     it('sets the account div within the dapp', async function () {

@@ -15,10 +15,6 @@ export default class TransactionListItemDetails extends PureComponent {
     metricsEvent: PropTypes.func,
   }
 
-  static defaultProps = {
-    recipientEns: null,
-  }
-
   static propTypes = {
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
@@ -28,7 +24,6 @@ export default class TransactionListItemDetails extends PureComponent {
     isEarliestNonce: PropTypes.bool,
     cancelDisabled: PropTypes.bool,
     transactionGroup: PropTypes.object,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string, // skipped tx don't have recipient address
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
@@ -149,7 +144,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       onCancel,
       onRetry,
-      recipientEns,
       recipientAddress,
       rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
@@ -232,7 +226,6 @@ export default class TransactionListItemDetails extends PureComponent {
             <SenderToRecipient
               variant={FLAT_VARIANT}
               addressOnly
-              recipientEns={recipientEns}
               recipientAddress={recipientAddress}
               recipientNickname={recipientNickname}
               senderName={senderNickname}

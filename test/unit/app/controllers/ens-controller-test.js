@@ -7,7 +7,7 @@ import EnsController from '../../../../app/scripts/controllers/ens'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
 
-describe('EnsController', function () {
+describe.skip('EnsController', function () {
   describe('#constructor', function () {
     it('should construct the controller given a provider and a network', async function () {
       const provider = new HttpProvider('https://ropsten.infura.io')

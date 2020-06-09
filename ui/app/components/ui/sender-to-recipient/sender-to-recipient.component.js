@@ -22,7 +22,6 @@ export default class SenderToRecipient extends PureComponent {
     senderName: PropTypes.string,
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientNickname: PropTypes.string,
     variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
@@ -115,7 +114,6 @@ export default class SenderToRecipient extends PureComponent {
   renderRecipientWithAddress () {
     const { t } = this.context
     const {
-      recipientEns,
       recipientName,
       recipientAddress,
       recipientNickname,
@@ -140,7 +138,7 @@ export default class SenderToRecipient extends PureComponent {
           html={
             this.state.senderAddressCopied ? (
               <p>{t('copiedExclamation')}</p>
-            ) : addressOnly && !recipientNickname && !recipientEns ? (
+            ) : addressOnly && !recipientNickname ? (
               <p>{t('copyAddress')}</p>
             ) : (
               <p>
@@ -156,9 +154,8 @@ export default class SenderToRecipient extends PureComponent {
           <div className="sender-to-recipient__name">
             <span>{addressOnly ? `${t('to')}: ` : ''}</span>
             {addressOnly
-              ? recipientNickname || recipientEns || checksummedRecipientAddress
+              ? recipientNickname || checksummedRecipientAddress
               : recipientNickname ||
-                recipientEns ||
                 recipientName ||
                 this.context.t('newContract')}
           </div>

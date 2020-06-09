@@ -63,7 +63,6 @@ export default class ConfirmTransactionBase extends Component {
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
-    toEns: PropTypes.string,
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
@@ -768,7 +767,6 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
-      toEns,
       toNickname,
       methodData,
       valid: propsValid = true,
@@ -812,7 +810,6 @@ export default class ConfirmTransactionBase extends Component {
         showAccountInHeader={showAccountInHeader}
         toName={toName}
         toAddress={toAddress}
-        toEns={toEns}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
         // In the event that the key is falsy (and inherently invalid), use a fallback string
