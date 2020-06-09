@@ -265,16 +265,15 @@ export function getLastConnectedInfo (state) {
 
 export function getPermissionsMetadataHostCounts (state) {
   const metadata = getPermissionDomainsMetadata(state)
-  return Object.values(metadata).reduce((acc, val) => {
-    const { host } = val
+  return Object.values(metadata).reduce((counts, { host }) => {
     if (host) {
-      if (!acc[host]) {
-        acc[host] = 1
+      if (!counts[host]) {
+        counts[host] = 1
       } else {
-        acc[host] += 1
+        counts[host] += 1
       }
     }
-    return acc
+    return counts
   }, {})
 }
 
