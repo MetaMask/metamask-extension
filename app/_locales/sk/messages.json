@@ -620,9 +620,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Nevidíte svoje tokeny?"
-  },
   "mobileSyncText": {
     "message": "Zadajte svoje heslo a potvrďte, že ste to vy!"
   },

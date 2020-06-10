@@ -648,9 +648,6 @@
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
   },
-  "missingYourTokens": {
-    "message": "Δεν βλέπετε τα διακριτικά σας;"
-  },
   "mobileSyncText": {
     "message": "Παρακαλούμε δώστε τον κωδικό πρόσβασής σας για να επιβεβαιώσετε ότι είστε εσείς!"
   },

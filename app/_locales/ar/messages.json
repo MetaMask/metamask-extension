@@ -644,9 +644,6 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "missingYourTokens": {
-    "message": "لا تجد رموزك؟"
-  },
   "mobileSyncText": {
     "message": "يرجى إدخال كلمة مرورك لتأكيد هويتك!"
   },

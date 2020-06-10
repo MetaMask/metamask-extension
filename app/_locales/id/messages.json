@@ -632,9 +632,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Tidak melihat token Anda?"
-  },
   "mobileSyncText": {
     "message": "Harap masukkan sandi untuk mengonfirmasi ini memang Anda!"
   },

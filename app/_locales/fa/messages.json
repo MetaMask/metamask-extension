@@ -651,9 +651,6 @@
   "metamaskVersion": {
     "message": "نسخه MetaMask"
   },
-  "missingYourTokens": {
-    "message": "آیا رمزیاب های تان را نمیبیند؟"
-  },
   "mobileSyncText": {
     "message": "لطفًا رمز عبور را وارد نمایید تا تأیید شود که خود شما هستید!"
   },
