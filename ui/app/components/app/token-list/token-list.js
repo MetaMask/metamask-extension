@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import contracts from 'eth-contract-metadata'
 import { isEqual } from 'lodash'
 
 import TokenCell from '../token-cell'
@@ -9,15 +8,6 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useSelector } from 'react-redux'
 import { getAssetImages } from '../../../selectors'
 import { getTokens } from '../../../ducks/metamask/metamask'
-
-const defaultTokens = []
-for (const address in contracts) {
-  const contract = contracts[address]
-  if (contract.erc20) {
-    contract.address = address
-    defaultTokens.push(contract)
-  }
-}
 
 export default function TokenList ({ onTokenClick }) {
   const t = useI18nContext()
