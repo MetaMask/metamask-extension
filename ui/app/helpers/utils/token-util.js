@@ -153,7 +153,7 @@ export function getTokenToAddress (tokenParams = []) {
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
- * @returns {string|void} The formatted token amount in the user's chosen fiat currency
+ * @returns {string|undefined} The formatted token amount in the user's chosen fiat currency
  */
 export function getFormattedTokenFiatAmount (
   contractExchangeRate,
@@ -166,7 +166,7 @@ export function getFormattedTokenFiatAmount (
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
   if (conversionRate <= 0 || !contractExchangeRate || tokenAmount === undefined) {
-    return
+    return undefined
   }
 
   const currentTokenToFiatRate = multiplyCurrencies(
