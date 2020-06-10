@@ -2,7 +2,9 @@
 
 ## Current Master
 
+- [#384](https://github.com/poanetwork/nifty-wallet/pull/384) - (Fix) placement of HW Connect button title
 - [#383](https://github.com/poanetwork/nifty-wallet/pull/383) - (Chore) Replace POA-ETH Binance link to POA-BTC
+- [#382](https://github.com/poanetwork/nifty-wallet/pull/382) - (Fix) replace vulnerable npm dependencies with newer versions of packages, update chromedriver to match the latest Google Chrome release
 
 ## 5.1.0 Tue May 12 2020
 
