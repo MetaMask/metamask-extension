@@ -27,9 +27,6 @@ export default class TokenRatesController {
    * Updates exchange rates for all tokens
    */
   async updateExchangeRates () {
-    if (!this.isActive) {
-      return
-    }
     const contractExchangeRates = {}
     const nativeCurrency = this.currency ? this.currency.state.nativeCurrency.toLowerCase() : 'eth'
     const pairs = this._tokens.map((token) => token.address).join(',')
