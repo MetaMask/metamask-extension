@@ -3,27 +3,16 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import AssetListItem from '../asset-list-item'
 import { useSelector } from 'react-redux'
-import { getTokenExchangeRates, getConversionRate, getCurrentCurrency, getSelectedAddress } from '../../../selectors'
+import { getSelectedAddress } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
-import { getFormattedTokenFiatAmount } from '../../../helpers/utils/token-util'
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 
 
 export default function TokenCell ({ address, outdatedBalance, symbol, string, image, onClick }) {
-  const contractExchangeRates = useSelector(getTokenExchangeRates)
-  const conversionRate = useSelector(getConversionRate)
-  const currentCurrency = useSelector(getCurrentCurrency)
   const userAddress = useSelector(getSelectedAddress)
   const t = useI18nContext()
 
-  const formattedFiat = getFormattedTokenFiatAmount(
-    contractExchangeRates[address],
-    conversionRate,
-    currentCurrency,
-    string,
-    symbol
-  )
-
-  const showFiat = Boolean(formattedFiat) && currentCurrency.toUpperCase() !== symbol
+  const formattedFiat = useTokenFiatAmount(address, string, symbol)
 
   const warning = outdatedBalance
     ? (
@@ -50,7 +39,7 @@ export default function TokenCell ({ address, outdatedBalance, symbol, string, i
       tokenImage={image}
       warning={warning}
       primary={`${string || 0} ${symbol}`}
-      secondary={showFiat ? formattedFiat : undefined}
+      secondary={formattedFiat}
     />
 
   )
