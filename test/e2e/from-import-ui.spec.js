@@ -64,7 +64,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
       await driver.delay(largeDelayMs)
     })
 

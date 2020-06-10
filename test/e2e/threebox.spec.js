@@ -64,7 +64,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver.delay(largeDelayMs)
       })
 
@@ -170,7 +170,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver2.delay(largeDelayMs)
       })
 
