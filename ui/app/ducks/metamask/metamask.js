@@ -31,10 +31,8 @@ export default function reduceMetamask (state = {}, action) {
       ensResolution: null,
       ensResolutionError: '',
     },
-    coinOptions: {},
     useBlockie: false,
     featureFlags: {},
-    networkEndpointType: undefined,
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
