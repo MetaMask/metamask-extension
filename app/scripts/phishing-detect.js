@@ -27,7 +27,7 @@ function start () {
 
     const continueLink = document.getElementById('unsafe-continue')
     continueLink.addEventListener('click', () => {
-      metaMaskController.whitelistPhishingDomain(suspect.hostname)
+      metaMaskController.safelistPhishingDomain(suspect.hostname)
       window.location.href = suspect.href
     })
   })

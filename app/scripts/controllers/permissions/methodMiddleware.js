@@ -9,12 +9,15 @@ export default function createMethodMiddleware ({
   getAccounts,
   getUnlockPromise,
   hasPermission,
+  notifyAccountsChanged,
   requestAccountsPermission,
 }) {
 
   let isProcessingRequestAccounts = false
 
   return createAsyncMiddleware(async (req, res, next) => {
+
+    let responseHandler
 
     switch (req.method) {
 
@@ -81,10 +84,33 @@ export default function createMethodMiddleware ({
         res.result = true
         return
 
+      // register return handler to send accountsChanged notification
+      case 'wallet_requestPermissions':
+
+        if ('eth_accounts' in req.params?.[0]) {
+
+          responseHandler = async () => {
+
+            if (Array.isArray(res.result)) {
+              for (const permission of res.result) {
+                if (permission.parentCapability === 'eth_accounts') {
+                  notifyAccountsChanged(await getAccounts())
+                }
+              }
+            }
+          }
+        }
+        break
+
       default:
         break
     }
 
-    next()
+    // when this promise resolves, the response is on its way back
+    await next()
+
+    if (responseHandler) {
+      responseHandler()
+    }
   })
 }

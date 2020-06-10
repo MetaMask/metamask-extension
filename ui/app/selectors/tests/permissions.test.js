@@ -16,10 +16,12 @@ describe('selectors', function () {
             'peepeth.com': {
               'icon': 'https://peepeth.com/favicon-32x32.png',
               'name': 'Peepeth',
+              'host': 'peepeth.com',
             },
-            'remix.ethereum.org': {
+            'https://remix.ethereum.org': {
               'icon': 'https://remix.ethereum.org/icon.png',
               'name': 'Remix - Ethereum IDE',
+              'host': 'remix.ethereum.org',
             },
           },
           domains: {
@@ -45,7 +47,7 @@ describe('selectors', function () {
                 },
               ],
             },
-            'remix.ethereum.org': {
+            'https://remix.ethereum.org': {
               'permissions': [
                 {
                   '@context': [
@@ -62,7 +64,7 @@ describe('selectors', function () {
                   ],
                   'date': 1585685128948,
                   'id': '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
-                  'invoker': 'remix.ethereum.org',
+                  'invoker': 'https://remix.ethereum.org',
                   'parentCapability': 'eth_accounts',
                 },
               ],
@@ -74,13 +76,15 @@ describe('selectors', function () {
       assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [{
         extensionId,
         icon: 'https://peepeth.com/favicon-32x32.png',
-        key: 'peepeth.com',
+        origin: 'peepeth.com',
         name: 'Peepeth',
+        host: 'peepeth.com',
       }, {
         extensionId,
         name: 'Remix - Ethereum IDE',
         icon: 'https://remix.ethereum.org/icon.png',
-        key: 'remix.ethereum.org',
+        origin: 'https://remix.ethereum.org',
+        host: 'remix.ethereum.org',
       }])
     })
 
@@ -92,10 +96,12 @@ describe('selectors', function () {
             'peepeth.com': {
               'icon': 'https://peepeth.com/favicon-32x32.png',
               'name': 'Peepeth',
+              'host': 'peepeth.com',
             },
-            'remix.ethereum.org': {
+            'https://remix.ethereum.org': {
               'icon': 'https://remix.ethereum.org/icon.png',
               'name': 'Remix - Ethereum IDE',
+              'host': 'remix.ethereum.com',
             },
           },
           domains: {
@@ -121,7 +127,7 @@ describe('selectors', function () {
                 },
               ],
             },
-            'remix.ethereum.org': {
+            'https://remix.ethereum.org': {
               'permissions': [
                 {
                   '@context': [
@@ -139,7 +145,7 @@ describe('selectors', function () {
                   ],
                   'date': 1585685128948,
                   'id': '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
-                  'invoker': 'remix.ethereum.org',
+                  'invoker': 'https://remix.ethereum.org',
                   'parentCapability': 'eth_accounts',
                 },
               ],
@@ -152,7 +158,8 @@ describe('selectors', function () {
         extensionId,
         name: 'Remix - Ethereum IDE',
         icon: 'https://remix.ethereum.org/icon.png',
-        key: 'remix.ethereum.org',
+        origin: 'https://remix.ethereum.org',
+        host: 'remix.ethereum.com',
       }])
     })
   })
@@ -161,7 +168,7 @@ describe('selectors', function () {
     const mockState = {
       activeTab: {
         'title': 'Eth Sign Tests',
-        'origin': 'remix.ethereum.org',
+        'origin': 'https://remix.ethereum.org',
         'protocol': 'https:',
         'url': 'https://remix.ethereum.org/',
       },
@@ -185,7 +192,7 @@ describe('selectors', function () {
         },
         cachedBalances: {},
         domains: {
-          'remix.ethereum.org': {
+          'https://remix.ethereum.org': {
             'permissions': [
               {
                 '@context': [
@@ -206,7 +213,7 @@ describe('selectors', function () {
                 ],
                 'date': 1586359844177,
                 'id': '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
-                'invoker': 'remix.ethereum.org',
+                'invoker': 'https://remix.ethereum.org',
                 'parentCapability': 'eth_accounts',
               },
             ],
@@ -269,7 +276,7 @@ describe('selectors', function () {
           ],
         }],
         permissionsHistory: {
-          'remix.ethereum.org': {
+          'https://remix.ethereum.org': {
             'eth_accounts': {
               'accounts': {
                 '0x7250739de134d33ec7ab1ee592711e15098c9d2d': 1586359844192,
@@ -323,7 +330,7 @@ describe('selectors', function () {
     const mockState = {
       activeTab: {
         'title': 'Eth Sign Tests',
-        'origin': 'remix.ethereum.org',
+        'origin': 'https://remix.ethereum.org',
         'protocol': 'https:',
         'url': 'https://remix.ethereum.org/',
       },
@@ -343,7 +350,7 @@ describe('selectors', function () {
           },
         },
         domains: {
-          'remix.ethereum.org': {
+          'https://remix.ethereum.org': {
             'permissions': [
               {
                 '@context': [
@@ -361,7 +368,7 @@ describe('selectors', function () {
                 ],
                 'date': 1586359844177,
                 'id': '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
-                'invoker': 'remix.ethereum.org',
+                'invoker': 'https://remix.ethereum.org',
                 'parentCapability': 'eth_accounts',
               },
             ],
@@ -412,13 +419,13 @@ describe('selectors', function () {
           },
         },
         domainMetadata: {
-          'remix.ethereum.org': {
+          'https://remix.ethereum.org': {
             'icon': 'https://remix.ethereum.org/icon.png',
             'name': 'Remix - Ethereum IDE',
           },
         },
         permissionsHistory: {
-          'remix.ethereum.org': {
+          'https://remix.ethereum.org': {
             'eth_accounts': {
               'accounts': {
                 '0x7250739de134d33ec7ab1ee592711e15098c9d2d': 1586359844192,

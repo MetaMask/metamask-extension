@@ -207,7 +207,7 @@ describe('MetaMask', function () {
     })
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .asset-list__primary-amount'))
+      const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
       await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
       await driver.delay(regularDelayMs)
     })
@@ -472,10 +472,8 @@ describe('MetaMask', function () {
       const txValue = await driver.findClickableElement(By.css('.transaction-list-item__primary-currency'))
       await txValue.click()
       const popoverCloseButton = await driver.findClickableElement(By.css('.popover-header__button'))
-      const txGasPrices = await driver.findElements(By.css('.transaction-breakdown__value'))
-      const txGasPriceLabels = await driver.findElements(By.css('.transaction-breakdown-row__title'))
-      await driver.wait(until.elementTextMatches(txGasPrices[4], /^10$/), 10000)
-      assert(txGasPriceLabels[2])
+      const txGasPrice = await driver.findElement(By.css('[data-testid="transaction-breakdown__gas-price"]'))
+      await driver.wait(until.elementTextMatches(txGasPrice, /^10$/), 10000)
       await popoverCloseButton.click()
     })
   })
@@ -1223,8 +1221,7 @@ describe('MetaMask', function () {
 
       const confirmHideModal = await driver.findElement(By.css('span .modal'))
 
-      const byHideTokenConfirmationButton = By.css('.hide-token-confirmation__button')
-      await driver.clickElement(byHideTokenConfirmationButton)
+      await driver.clickElement(By.css('[data-testid="hide-token-confirmation__hide"]'))
 
       await driver.wait(until.stalenessOf(confirmHideModal))
     })
@@ -1232,7 +1229,6 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', function () {
     it('clicks on the Add Token button', async function () {
-      await driver.clickElement(By.css('[data-testid="asset__back"]'))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Add Token')]`))
       await driver.delay(regularDelayMs)
     })

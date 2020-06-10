@@ -85,6 +85,7 @@ export default class TransactionBreakdown extends PureComponent {
             ? (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__gas-price"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={gasPrice}

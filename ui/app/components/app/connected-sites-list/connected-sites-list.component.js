@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import IconWithFallBack from '../../ui/icon-with-fallback'
+import { stripHttpSchemes } from '../../../helpers/utils/util'
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -11,9 +12,11 @@ export default class ConnectedSitesList extends Component {
     connectedDomains: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string,
       icon: PropTypes.string,
-      key: PropTypes.string,
+      origin: PropTypes.string,
+      host: PropTypes.string,
     })).isRequired,
     onDisconnect: PropTypes.func.isRequired,
+    domainHostCount: PropTypes.objectOf(PropTypes.number).isRequired,
   }
 
   render () {
@@ -23,25 +26,31 @@ export default class ConnectedSitesList extends Component {
     return (
       <main className="connected-sites-list__content-rows">
         { connectedDomains.map((domain) => (
-          <div key={domain.key} className="connected-sites-list__content-row">
+          <div key={domain.origin} className="connected-sites-list__content-row">
             <div className="connected-sites-list__domain-info">
               <IconWithFallBack icon={domain.icon} name={domain.name} />
-              <span className="connected-sites-list__domain-name" title={domain.extensionId || domain.key}>
-                {
-                  domain.extensionId
-                    ? t('externalExtension')
-                    : domain.key
-                }
+              <span className="connected-sites-list__domain-name" title={domain.extensionId || domain.origin}>
+                {this.getDomainDisplayName(domain)}
               </span>
             </div>
             <i
               className="fas fa-trash-alt connected-sites-list__trash"
               title={t('disconnect')}
-              onClick={() => onDisconnect(domain.key)}
+              onClick={() => onDisconnect(domain.origin)}
             />
           </div>
         )) }
       </main>
     )
+  }
+
+  getDomainDisplayName (domain) {
+    if (domain.extensionId) {
+      return this.context.t('externalExtension')
+    }
+
+    return this.props.domainHostCount[domain.host] > 1
+      ? domain.origin
+      : stripHttpSchemes(domain.origin)
   }
 }

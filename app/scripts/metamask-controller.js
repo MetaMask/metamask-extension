@@ -29,7 +29,6 @@ import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
 import AppStateController from './controllers/app-state'
-import InfuraController from './controllers/infura'
 import CachedBalancesController from './controllers/cached-balances'
 import AlertController from './controllers/alert'
 import OnboardingController from './controllers/onboarding'
@@ -128,11 +127,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
 
-    this.infuraController = new InfuraController({
-      initState: initState.InfuraController,
-    })
-    this.infuraController.scheduleInfuraNetworkCheck()
-
     this.phishingController = new PhishingController()
 
     // now we can initialize the RPC provider, which other controllers require
@@ -170,9 +164,11 @@ export default class MetamaskController extends EventEmitter {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
         this.incomingTransactionsController.start()
+        this.tokenRatesController.start()
       } else {
         this.accountTracker.stop()
         this.incomingTransactionsController.stop()
+        this.tokenRatesController.stop()
       }
     })
 
@@ -281,10 +277,6 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
-    // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
-      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
-    })
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -294,7 +286,6 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
-      InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
@@ -320,7 +311,6 @@ export default class MetamaskController extends EventEmitter {
       PreferencesController: this.preferencesController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
-      InfuraController: this.infuraController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
@@ -459,6 +449,9 @@ export default class MetamaskController extends EventEmitter {
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       buyEth: this.buyEth.bind(this),
+      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
+      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
@@ -495,9 +488,6 @@ export default class MetamaskController extends EventEmitter {
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-
-      // BlacklistController
-      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
@@ -574,9 +564,6 @@ export default class MetamaskController extends EventEmitter {
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
       removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
       requestAccountsPermission: nodeify(permissionsController.requestAccountsPermission, permissionsController),
-
-      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
     }
   }
 
@@ -1448,7 +1435,7 @@ export default class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, sender) {
     const { usePhishDetect } = this.preferencesController.store.getState()
     const hostname = (new URL(sender.url)).hostname
-    // Check if new connection is blacklisted if phishing detection is on
+    // Check if new connection is blocked if phishing detection is on
     if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
       this.sendPhishingWarning(connectionStream, hostname)
@@ -1487,7 +1474,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {string} hostname - The URL that triggered the suspicion.
+   * @param {string} hostname - The hostname that triggered the suspicion.
    */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
@@ -1538,7 +1525,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, sender, isInternal) {
     const origin = isInternal
       ? 'metamask'
-      : (new URL(sender.url)).hostname
+      : (new URL(sender.url)).origin
     let extensionId
     if (sender.id !== extension.runtime.id) {
       extensionId = sender.id
@@ -1577,7 +1564,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    * @param {Object} options - Provider engine options
-   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.origin - The origin of the sender
    * @param {string} options.location - The full URL of the sender
    * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
@@ -2032,18 +2019,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
-  }
-
-  /**
-   * A method for activating the retrieval of price data,
-   * which should only be fetched when the UI is visible.
-   * @private
-   * @param {boolean} active - True if price data should be getting fetched.
-   */
-  set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
   }
 
   /**
@@ -2056,10 +2032,10 @@ export default class MetamaskController extends EventEmitter {
   */
 
   /**
-   * Adds a domain to the PhishingController whitelist
-   * @param {string} hostname - the domain to whitelist
+   * Adds a domain to the PhishingController safelist
+   * @param {string} hostname - the domain to safelist
    */
-  whitelistPhishingDomain (hostname) {
+  safelistPhishingDomain (hostname) {
     return this.phishingController.bypass(hostname)
   }
 

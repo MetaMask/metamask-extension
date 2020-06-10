@@ -19,11 +19,11 @@
 .asset-breadcrumb {
   font-size: 14px;
   color: $Black-100;
+  background-color: inherit;
 
   &__chevron {
     padding: 0 10px 0 2px;
     font-size: 16px;
-    background-color: inherit;
   }
 
   &__asset {

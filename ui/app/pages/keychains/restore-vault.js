@@ -33,16 +33,12 @@ class RestoreVaultPage extends Component {
     confirmPasswordError: null,
   }
 
-  parseSeedPhrase = (seedPhrase) => {
-    return seedPhrase
-      .match(/\w+/g)
-      .join(' ')
-  }
+  parseSeedPhrase = (seedPhrase) => (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || ''
 
   handleSeedPhraseChange (seedPhrase) {
     let seedPhraseError = null
 
-    const wordCount = this.parseSeedPhrase(seedPhrase).split(new RegExp('\\s')).length
+    const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length
     if (seedPhrase && (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)) {
       seedPhraseError = this.context.t('seedPhraseReq')
     }

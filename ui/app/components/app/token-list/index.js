@@ -1,1 +1,1 @@
-export { default } from './token-list.container'
+export { default } from './token-list'

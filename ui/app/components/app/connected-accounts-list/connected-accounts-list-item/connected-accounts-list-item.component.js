@@ -42,9 +42,15 @@ export default class ConnectedAccountsListItem extends PureComponent {
             <p>
               <strong className="connected-accounts-list__account-name">{name}</strong>
             </p>
-            <p className="connected-accounts-list__account-status">
-              {status}
-            </p>
+            {
+              status
+                ? (
+                  <p className="connected-accounts-list__account-status">
+                    {status}
+                  </p>
+                )
+                : null
+            }
           </div>
         </div>
         {options}

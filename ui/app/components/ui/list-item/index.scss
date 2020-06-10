@@ -8,23 +8,28 @@
   border-top: 1px solid $mercury;
   border-bottom: 1px solid $mercury;
   color: $Black-100;
+  display: grid;
+  grid-template-columns: 0fr repeat(11, 1fr);
+  grid-template-areas:
+    'icon head     head     head     head     head     head     head     right right right right'
+    'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
+    '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
+  align-items: start;
 
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-
-  &__icon > * {
-    margin: 8px 14px 0 0;
-  }
-
-  &__col {
-    align-self: flex-start;
-    &-main {
-      flex-grow: 1;
+  &__icon {
+    grid-area: icon;
+    align-self: center;
+    > * {
+      margin: 0 16px 0 0;
     }
   }
 
+  &__actions {
+    grid-area: actions;
+  }
+
   &__heading {
+    grid-area: head;
     font-size: 16px;
     line-height: 160%;
     position: relative;
@@ -32,7 +37,6 @@
     &-wrap {
       display: inline-block;
       position: absolute;
-      top: 2px;
       width: 16px;
       height: 16px;
       margin-left: 8px;
@@ -40,13 +44,38 @@
   }
 
   &__subheading {
+    grid-area: sub;
     font-size: 12px;
     line-height: 14px;
+    color: $Grey-500;
+    margin-top: 4px;
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__mid-content {
+    grid-area: mid;
+    font-size: 12px;
     color: $Grey-500;
   }
 
   &__right-content {
-    margin: 0 0 0 auto;
+    grid-area: right;
     text-align: right;
+    align-items: flex-end;
+  }
+
+  @media (max-width: 575px) {
+    &__mid-content {
+      display: none;
+    }
+  }
+
+  @media (min-width: 576px) {
+    grid-template-areas:
+      'icon head     head     head     head     mid mid mid mid right right right'
+      'icon sub      sub      sub      sub      mid mid mid mid right right right'
+      '.    actions  actions  actions  actions  mid mid mid mid right right right';
   }
 }

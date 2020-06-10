@@ -7,7 +7,6 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import Tooltip from '../../ui/tooltip'
 import Identicon from '../../ui/identicon'
 import IconWithFallBack from '../../ui/icon-with-fallback'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
@@ -38,7 +37,6 @@ export default class AccountMenu extends Component {
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
     showAccountDetail: PropTypes.func,
-    showRemoveAccountConfirmationModal: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
     addressConnectedDomainMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
@@ -176,6 +174,7 @@ export default class AccountMenu extends Component {
               type={PRIMARY}
             />
           </div>
+          { this.renderKeyringType(keyring) }
           { iconAndNameForOpenDomain
             ? (
               <div className="account-menu__icon-list">
@@ -184,43 +183,9 @@ export default class AccountMenu extends Component {
             )
             : null
           }
-          { this.renderKeyringType(keyring) }
-          { this.renderRemoveAccount(keyring, identity) }
         </div>
       )
     })
-  }
-
-  renderRemoveAccount (keyring, identity) {
-    const { t } = this.context
-
-    // Sometimes keyrings aren't loaded yet
-    if (!keyring) {
-      return null
-    }
-
-    // Any account that's not from the HD wallet Keyring can be removed
-    const { type } = keyring
-    const isRemovable = type !== 'HD Key Tree'
-
-    return isRemovable && (
-      <Tooltip
-        title={t('removeAccount')}
-        position="bottom"
-      >
-        <a
-          className="remove-account-icon"
-          onClick={(e) => this.removeAccount(e, identity)}
-        />
-      </Tooltip>
-    )
-  }
-
-  removeAccount (e, identity) {
-    e.preventDefault()
-    e.stopPropagation()
-    const { showRemoveAccountConfirmationModal } = this.props
-    showRemoveAccountConfirmationModal(identity)
   }
 
   renderKeyringType (keyring) {

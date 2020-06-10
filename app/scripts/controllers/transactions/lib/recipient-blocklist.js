@@ -1,4 +1,4 @@
-const blacklist = [
+const blocklist = [
   // IDEX phisher
   '0x9bcb0A9d99d815Bb87ee3191b1399b1Bcc46dc77',
   // Ganache default seed phrases
@@ -14,4 +14,4 @@ const blacklist = [
   '0x5aeda56215b167893e80b4fe645ba6d5bab767de',
 ]
 
-export default blacklist
+export default blocklist

@@ -99,19 +99,6 @@ describe('Account Menu', function () {
       const importedAccount = wrapper.find('.keyring-label.allcaps')
       assert.equal(importedAccount.text(), 'imported')
     })
-
-    it('remove account', function () {
-      const removeAccount = wrapper.find('.remove-account-icon')
-      removeAccount.simulate('click', {
-        preventDefault: () => {},
-        stopPropagation: () => {},
-      })
-
-      assert(props.showRemoveAccountConfirmationModal.calledOnce)
-      assert.deepEqual(props.showRemoveAccountConfirmationModal.getCall(0).args[0],
-        { address: '0xImportedAddress', balance: '0x0', name: 'Imported Account 1' }
-      )
-    })
   })
 
   describe('Log Out', function () {

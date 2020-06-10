@@ -11,6 +11,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getOriginOfCurrentTab,
   getPermissionDomains,
+  getPermissionsMetadataHostCounts,
   getPermittedAccountsByOrigin,
   getSelectedAddress,
 } from '../../selectors'
@@ -40,6 +41,7 @@ const mapStateToProps = (state) => {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
     domains: getPermissionDomains(state),
+    domainHostCount: getPermissionsMetadataHostCounts(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permittedAccountsByOrigin,
     selectedAddress,

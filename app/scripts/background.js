@@ -134,7 +134,6 @@ initialize().catch(log.error)
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
- * @property {Object} infuraNetworkStatus - An object of infura network status checks.
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -319,7 +318,7 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
+  const metamaskBlockedPorts = [
     'trezor-connect',
   ]
 
@@ -343,7 +342,7 @@ function setupController (initState, initLangCode) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
-    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
       return false
     }
 
@@ -384,7 +383,7 @@ function setupController (initState, initLangCode) {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id
         const url = new URL(remotePort.sender.url)
-        const origin = url.hostname
+        const { origin } = url
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
