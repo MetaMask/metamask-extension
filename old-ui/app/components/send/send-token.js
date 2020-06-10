@@ -63,7 +63,7 @@ class SendTransactionScreen extends PersistentForm {
           <EnsInput
             name="address"
             placeholder="Recipient Address"
-            onChange={() => this.recipientDidChange.bind(this)}
+            onChange={this.recipientDidChange.bind(this)}
             network={network}
             identities={identities}
             addressBook={addressBook}

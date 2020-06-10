@@ -630,10 +630,6 @@ input.large-input {
 
 /* accounts screen */
 
-.identity-section {
-
-}
-
 .identity-section .identity-panel {
   background: #E9E9E9;
   border-bottom: 1px solid #B1B1B1;
@@ -668,10 +664,6 @@ input.large-input {
 
 .grow-tenx {
   flex-grow: 10;
-}
-
-.name-label{
-
 }
 
 .unapproved-tx-icon {
@@ -735,12 +727,12 @@ input.large-input {
 
 /* Send Screen */
 
-.send-screen {
-
-}
-
 .send-screen section {
   margin: 10px 30px;
+}
+
+.send-screen section.amount-max-container {
+  margin-top: 0;
 }
 
 .send-screen input {
@@ -750,17 +742,34 @@ input.large-input {
   border-radius: 3px;
 }
 
+.send__amount-max {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.send__amount-max input {
+  width: 10px;
+  height: 10px;
+  margin-left: 0;
+}
+
+.secondary-description {
+  font-family: 'Nunito Regular';
+  font-size: 14px
+}
+
 /* Ether Balance Widget */
 
 .ether-balance-label {
   color: #ABA9AA;
 }
 
-.icon-size{
+.icon-size {
   width: 20px;
 }
 
-.info{
+.info {
   font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
@@ -827,10 +836,6 @@ input.large-input {
   padding: 0px 0px 20px 30px;
   justify-content: left;
   font-family: Nunito Semibold;
-}
-
-.buy-radio {
-
 }
 
 .eth-warning{

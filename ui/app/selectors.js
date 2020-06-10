@@ -1,10 +1,16 @@
-const abi = require('human-standard-token-abi')
+import abi from 'human-standard-token-abi'
+import { pipe } from 'ramda'
 import {
   transactionsSelector,
 } from './selectors/transactions'
-const {
+import { addHexPrefix } from 'ethereumjs-util'
+import {
+  conversionUtil,
   multiplyCurrencies,
-} = require('./conversion-util')
+} from './conversion-util'
+import {
+  calcGasTotal,
+} from './components/send/send.utils'
 
 const selectors = {
   getSelectedAddress,
@@ -33,6 +39,19 @@ const selectors = {
   preferencesSelector,
   getMetaMaskAccounts,
   getUsePhishDetect,
+  getGasLimit,
+  getGasPrice,
+  getGasTotal,
+  getGasPriceInHexWei,
+  priceEstimateToWei,
+  getCurrentEthBalance,
+  getSendToken,
+  getTokenBalance,
+  getSendFromBalance,
+  getSendFromObject,
+  getSendTo,
+  getSendHexData,
+  getTargetAccount,
 }
 
 module.exports = selectors
@@ -151,12 +170,20 @@ function getSendFrom (state) {
   return state.metamask.send.from
 }
 
+function getSendTo (state) {
+  return state.metamask.send.to
+}
+
 function getSendAmount (state) {
   return state.metamask.send.amount
 }
 
 function getSendMaxModeState (state) {
-  return state.metamask.send.maxModeOn
+  return state.metamask.send.maxModeOn || false
+}
+
+function getSendHexData (state) {
+  return state.metamask.send.data
 }
 
 function getCurrentCurrency (state) {
@@ -202,4 +229,63 @@ function getTotalUnapprovedCount ({ metamask }) {
 
 function preferencesSelector ({ metamask }) {
   return metamask.preferences
+}
+
+function getGasLimit (state) {
+  return state.metamask.send.gasLimit || '0'
+}
+
+function getGasPrice (state) {
+  return state.metamask.send.gasPrice
+}
+
+function getGasTotal (state) {
+  return calcGasTotal(getGasLimit(state), getGasPrice(state))
+}
+
+function priceEstimateToWei (priceEstimate) {
+  return conversionUtil(priceEstimate, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'hex',
+    fromDenomination: 'GWEI',
+    toDenomination: 'WEI',
+    numberOfDecimals: 9,
+  })
+}
+
+function getGasPriceInHexWei (price) {
+  return pipe(
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    priceEstimateToWei,
+    addHexPrefix,
+  )(price)
+}
+
+function getCurrentEthBalance (state) {
+  return getCurrentAccountWithSendEtherInfo(state).balance
+}
+
+function getSendToken (state) {
+  return state.metamask.send.token
+}
+
+function getTokenBalance (state) {
+  return state.metamask.send.tokenBalance
+}
+
+function getSendFromBalance (state) {
+  const fromAccount = getSendFromObject(state)
+  return fromAccount.balance
+}
+
+function getSendFromObject (state) {
+  const fromAddress = getSendFrom(state)
+  return fromAddress
+    ? getTargetAccount(state, fromAddress)
+    : getSelectedAccount(state)
+}
+
+function getTargetAccount (state, targetAddress) {
+  const accounts = getMetaMaskAccounts(state)
+  return accounts[targetAddress]
 }

@@ -316,7 +316,8 @@ export default class AddTokenScreen extends Component {
     ])
   }
 
-  componentWillMount () {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount () {
     if (typeof global.ethereumProvider === 'undefined') return
 
     this.eth = new Eth(global.ethereumProvider)
