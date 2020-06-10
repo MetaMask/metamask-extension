@@ -106,7 +106,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       return
     }
     setShowDetails((prev) => !prev)
-  }, [isUnapproved, id])
+  }, [isUnapproved, history, id])
 
   const cancelButton = useMemo(() => {
     const cancelButton = (
@@ -131,7 +131,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       </Tooltip>
     ) : cancelButton
 
-  }, [cancelEnabled, cancelTransaction, hasCancelled])
+  }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
 
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
@@ -147,7 +147,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         { t('speedUp') }
       </Button>
     )
-  }, [shouldShowSpeedUp, isPending, retryTransaction])
+  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
 
   return (
     <>

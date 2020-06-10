@@ -58,6 +58,8 @@ const initMiddleware = (permLog) => {
 }
 
 const initClock = () => {
+  // useFakeTimers, is in fact, not a react-hook
+  // eslint-disable-next-line
   clock = useFakeTimers(1)
 }
 
