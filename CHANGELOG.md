@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#383](https://github.com/poanetwork/nifty-wallet/pull/383) - (Chore) Replace POA-ETH Binance link to POA-BTC
+
 ## 5.1.0 Tue May 12 2020
 
 - [#356](https://github.com/poanetwork/nifty-wallet/pull/356) - (Backwards-compatibility feature) Custom derivation paths and access to funds in accounts derived from ETH dPath
