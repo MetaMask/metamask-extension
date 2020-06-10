@@ -40,6 +40,7 @@
   flex: 1;
   justify-content: center;
   text-transform: uppercase;
+  line-height: 54px;
 }
 .hw-connect__connect-btn.disabled {
   cursor: not-allowed;
