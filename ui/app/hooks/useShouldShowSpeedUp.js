@@ -40,7 +40,7 @@ export function useShouldShowSpeedUp (transactionGroup, isEarliestNonce) {
         clearTimeout(timeoutId)
       }
     }
-  }, [submittedTime, hasRetried, isEarliestNonce])
+  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce])
 
   return speedUpEnabled
 }
