@@ -260,7 +260,7 @@ export default class SendTransactionScreen extends Component {
       gasLimit,
       gasPrice,
       selectedAddress,
-      sendToken = {},
+      sendToken,
       to: currentToAddress,
       updateAndSetGasLimit,
     } = this.props
