@@ -444,6 +444,7 @@ module.exports = class MetamaskController extends EventEmitter {
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
+      getPendingNonce: nodeify(this.getPendingNonce, this),
 
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
