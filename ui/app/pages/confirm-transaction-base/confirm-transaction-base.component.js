@@ -81,7 +81,7 @@ export default class ConfirmTransactionBase extends Component {
       PropTypes.string,
       PropTypes.node,
     ]),
-    secondaryTotalTextOverride: PropTypes.string,
+    // secondaryTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
     hideDetails: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
@@ -101,7 +101,7 @@ export default class ConfirmTransactionBase extends Component {
     warning: PropTypes.string,
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
-    hideFiatConversion: PropTypes.bool,
+    // hideFiatConversion: PropTypes.bool,
     transactionCategory: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
@@ -237,7 +237,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       detailsComponent,
       primaryTotalTextOverride,
-      secondaryTotalTextOverride,
+      // secondaryTotalTextOverride,
       hexTransactionFee,
       hexTransactionTotal,
       hideDetails,
@@ -248,7 +248,7 @@ export default class ConfirmTransactionBase extends Component {
       customGasAndCollateral,
       insufficientBalance,
       updateGasAndCollateralAndCalculte,
-      hideFiatConversion,
+      // hideFiatConversion,
       nextNonce,
       getNextNonce,
       isSimpleTx,
@@ -274,11 +274,12 @@ export default class ConfirmTransactionBase extends Component {
               onHeaderClick={() =>
                 !advancedInlineGasShown && this.handleEditGas()
               }
-              secondaryText={
-                hideFiatConversion
-                  ? t('noConversionRateAvailable')
-                  : ''
-              }
+              /* secondaryText={ */
+              /*   hideFiatConversion */
+              /*     ? t('noConversionRateAvailable') */
+              /*     : '' */
+              /* } */
+              secondaryText=""
             />
             {advancedInlineGasShown ? (
               <AdvancedGasInputs
@@ -320,11 +321,12 @@ export default class ConfirmTransactionBase extends Component {
                 onHeaderClick={() =>
                   !advancedInlineGasShown && this.handleEditGas()
                 }
-                secondaryText={
-                  hideFiatConversion
-                    ? t('noConversionRateAvailable')
-                    : ''
-                }
+                /* secondaryText={ */
+                /*   hideFiatConversion */
+                /*     ? t('noConversionRateAvailable') */
+                /*     : '' */
+                /* } */
+                secondaryText=""
               />
             )}
             {advancedInlineGasShown ? (
@@ -368,11 +370,12 @@ export default class ConfirmTransactionBase extends Component {
               label={ t('total') }
               value={hexTransactionTotal}
               primaryText={primaryTotalTextOverride}
-              secondaryText={
-                hideFiatConversion
-                  ? t('noConversionRateAvailable')
-                  : secondaryTotalTextOverride
-              }
+              /* secondaryText={ */
+              /*   hideFiatConversion */
+              /*     ? t('noConversionRateAvailable') */
+              /*     : secondaryTotalTextOverride */
+              /* } */
+              secondaryText=""
               headerText={ t('amountPlusGasFee') }
               headerTextClassName="confirm-detail-row__header-text--total"
               primaryValueTextColor="#2f9ae0"
