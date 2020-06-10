@@ -783,7 +783,7 @@
     "message": "Import an account with seed phrase"
   },
   "importWallet": {
-    "message": "Import Wallet"
+    "message": "Import wallet"
   },
   "importYourExisting": {
     "message": "Import your existing wallet using a 12 word seed phrase"
@@ -982,7 +982,7 @@
     "message": "New Contract"
   },
   "newPassword": {
-    "message": "New Password (min 8 chars)"
+    "message": "New password (min 8 chars)"
   },
   "newNetwork": {
     "message": "New Network"
@@ -1704,7 +1704,7 @@
     "message": "Visit our web site"
   },
   "walletSeed": {
-    "message": "Wallet Seed"
+    "message": "Seed phrase"
   },
   "welcomeBack": {
     "message": "Welcome Back!"
