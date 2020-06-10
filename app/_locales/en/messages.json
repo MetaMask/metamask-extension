@@ -780,7 +780,7 @@
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
-    "message": "Import an Account with Seed Phrase"
+    "message": "Import an account with seed phrase"
   },
   "importWallet": {
     "message": "Import Wallet"
