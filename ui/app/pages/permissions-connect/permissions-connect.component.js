@@ -2,10 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-} from '../../../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 import ChooseAccount from './choose-account'
