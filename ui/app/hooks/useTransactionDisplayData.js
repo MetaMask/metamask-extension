@@ -3,6 +3,7 @@ import { getKnownMethodData } from '../selectors/selectors'
 import { getTransactionActionKey, getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { useI18nContext } from './useI18nContext'
+import { useTokenFiatAmount } from './useTokenFiatAmount'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenToAddress } from '../helpers/utils/token-util'
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
@@ -84,6 +85,7 @@ export function useTransactionDisplayData (transactionGroup) {
   const token = isTokenCategory && knownTokens.find((token) => token.address === recipientAddress)
   const tokenData = useTokenData(initialTransaction?.txParams?.data, isTokenCategory)
   const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
+  const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
 
   let category
   let title
@@ -127,14 +129,15 @@ export function useTransactionDisplayData (transactionGroup) {
 
   const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: isTokenCategory && tokenDisplayValue,
-    suffix: isTokenCategory && token?.symbol,
+    displayValue: isTokenCategory ? tokenDisplayValue : undefined,
+    suffix: isTokenCategory ? token?.symbol : undefined,
     ...primaryCurrencyPreferences,
   })
 
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
-    displayValue: isTokenCategory && tokenDisplayValue,
+    displayValue: isTokenCategory ? tokenFiatAmount : undefined,
+    hideLabel: isTokenCategory ? true : undefined,
     ...secondaryCurrencyPreferences,
   })
 
@@ -146,7 +149,7 @@ export function useTransactionDisplayData (transactionGroup) {
     primaryCurrency,
     senderAddress,
     recipientAddress,
-    secondaryCurrency: isTokenCategory ? undefined : secondaryCurrency,
+    secondaryCurrency: isTokenCategory && !tokenFiatAmount ? undefined : secondaryCurrency,
     status,
     isPending: status in PENDING_STATUS_HASH,
   }
