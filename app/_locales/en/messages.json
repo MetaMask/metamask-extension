@@ -148,6 +148,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activity": {
+    "message": "Activity"
+  },
   "activityLog": {
     "message": "activity log"
   },
