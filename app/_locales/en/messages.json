@@ -1021,6 +1021,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "onlyAddTrustedNetworks": {
+    "message": "Ethereum network providers can record your on-chain activity. Only add custom networks you trust."
+  },
   "optionalChainId": {
     "message": "ChainID (optional)"
   },
