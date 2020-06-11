@@ -242,6 +242,9 @@
   "asset": {
     "message": "Asset"
   },
+  "assets": {
+    "message": "Assets"
+  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },

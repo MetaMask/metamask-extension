@@ -204,6 +204,7 @@ export default class Home extends PureComponent {
   }
 
   render () {
+    const { t } = this.context
     const {
       defaultHomeActiveTabName,
       onTabClick,
@@ -237,7 +238,7 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name="Assets"
+                name={t('assets')}
               >
                 <AssetList
                   onClickAsset={(asset) => history.push(`${ASSET_ROUTE}/${asset}`)}
@@ -247,7 +248,7 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__history-tab"
-                name="History"
+                name={t('history')}
               >
                 <TransactionList />
               </Tab>
