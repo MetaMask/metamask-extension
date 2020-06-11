@@ -90,26 +90,22 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
-    const {
-      permissionsRequest,
-      lastConnectedInfo,
-      targetDomainMetadata,
-    } = this.props
-    const {
-      redirecting,
-      origin,
-      targetDomainMetadata: savedMetadata,
-    } = this.state
+  static getDerivedStateFromProps (props, state) {
+    const { permissionsRequest, targetDomainMetadata } = props
+    const { targetDomainMetadata: savedMetadata } = state
 
     if (
       permissionsRequest &&
       savedMetadata.name !== targetDomainMetadata?.name
     ) {
-      this.setState({
-        targetDomainMetadata,
-      })
+      return { targetDomainMetadata }
     }
+    return null
+  }
+
+  componentDidUpdate (prevProps) {
+    const { permissionsRequest, lastConnectedInfo } = this.props
+    const { redirecting, origin } = this.state
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
 
@@ -128,29 +124,29 @@ export default class PermissionConnect extends Component {
   }
 
   redirect (approved) {
-    const { history, hasPendingPermissionsRequests } = this.props
-
     this.setState({
       redirecting: true,
       permissionsApproved: approved,
     })
     this.removeBeforeUnload()
 
-    const doRedirect = () => {
-      if (
-        !hasPendingPermissionsRequests &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
-      ) {
-        global.platform.closeCurrentWindow()
-      } else {
-        history.push(DEFAULT_ROUTE)
-      }
-    }
-
     if (approved) {
-      setTimeout(doRedirect, APPROVE_TIMEOUT)
+      setTimeout(this._doRedirect.bind(this), APPROVE_TIMEOUT)
     } else {
-      doRedirect()
+      this._doRedirect()
+    }
+  }
+
+  _doRedirect () {
+    const { history, hasPendingPermissionsRequests } = this.props
+
+    if (
+      !hasPendingPermissionsRequests &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
+      global.platform.closeCurrentWindow()
+    } else {
+      history.push(DEFAULT_ROUTE)
     }
   }
 

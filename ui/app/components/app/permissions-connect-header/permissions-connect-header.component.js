@@ -12,7 +12,7 @@ export default class PermissionsConnectHeader extends Component {
 
   static defaultProps = {
     icon: null,
-    iconName: 'Unknown External Domain',
+    iconName: '',
     headerTitle: '',
     headerText: '',
   }
