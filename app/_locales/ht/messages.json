@@ -313,6 +313,9 @@
     "ensNameNotFound": {
         "message": "Nou pa jwenn non ENS ou a"
     },
+    "rnsNameNotFound": {
+        "message": "Nou pa jwenn non RNS ou a"
+    },
     "enterPassword": {
         "message": "Mete modpas"
     },
