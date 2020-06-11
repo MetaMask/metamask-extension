@@ -101,8 +101,16 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    const { permissionsRequest, lastConnectedInfo, targetDomainMetadata } = this.props
-    const { redirecting, origin, targetDomainMetadata: savedMetadata } = this.state
+    const {
+      permissionsRequest,
+      lastConnectedInfo,
+      targetDomainMetadata,
+    } = this.props
+    const {
+      redirecting,
+      origin,
+      targetDomainMetadata: savedMetadata,
+    } = this.state
 
     if (
       permissionsRequest &&
@@ -118,11 +126,8 @@ export default class PermissionConnect extends Component {
       const accountsLastApprovedTime = lastConnectedInfo[origin]?.lastApproved || 0
       const initialAccountsLastApprovedTime = prevProps.lastConnectedInfo[origin]?.lastApproved || 0
 
-      if (accountsLastApprovedTime > initialAccountsLastApprovedTime) {
-        this.redirectFlow(true)
-      } else {
-        this.redirectFlow(false)
-      }
+      const approved = accountsLastApprovedTime > initialAccountsLastApprovedTime
+      this.redirect(approved)
     }
   }
 
@@ -132,7 +137,7 @@ export default class PermissionConnect extends Component {
     }, () => this.props.history.push(this.props.confirmPermissionPath))
   }
 
-  redirectFlow (approved) {
+  redirect (approved) {
     const { history } = this.props
 
     this.setState({
@@ -257,7 +262,7 @@ export default class PermissionConnect extends Component {
                       request={permissionsRequest || {}}
                       approvePermissionsRequest={(request, accounts) => {
                         approvePermissionsRequest(request, accounts)
-                        this.redirectFlow(true)
+                        this.redirect(true)
                       }}
                       rejectPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
                       selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
