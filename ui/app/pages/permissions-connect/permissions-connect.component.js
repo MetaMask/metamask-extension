@@ -6,9 +6,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
 } from '../../../../app/scripts/lib/enums'
-import {
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes'
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import PermissionPageContainer from '../../components/app/permission-page-container'
 import ChooseAccount from './choose-account'
 import PermissionsRedirect from './redirect'
@@ -30,6 +28,7 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
+    hasPermissionsRequests: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
@@ -138,7 +137,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirect (approved) {
-    const { history } = this.props
+    const { history, hasPermissionsRequests } = this.props
 
     this.setState({
       redirecting: true,
@@ -146,16 +145,21 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    const redirectFunction = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
-      ? () => window.close()
-      : () => history.push(DEFAULT_ROUTE)
+    const doRedirect = () => {
+      if (
+        !hasPermissionsRequests &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
+      ) {
+        global.platform.closeCurrentWindow()
+      } else {
+        history.push(DEFAULT_ROUTE)
+      }
+    }
 
     if (approved) {
-      setTimeout(async () => {
-        redirectFunction()
-      }, APPROVE_TIMEOUT)
+      setTimeout(doRedirect, APPROVE_TIMEOUT)
     } else {
-      redirectFunction()
+      doRedirect()
     }
   }
 

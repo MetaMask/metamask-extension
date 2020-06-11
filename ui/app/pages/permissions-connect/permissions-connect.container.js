@@ -32,6 +32,8 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
 
+  const hasPermissionsRequests = permissionsRequests.length > 0
+
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
@@ -62,6 +64,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     permissionsRequest,
     permissionsRequestId,
+    hasPermissionsRequests,
     accounts: accountsWithLabels,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,
