@@ -160,9 +160,6 @@ export default class PermissionConnect extends Component {
 
     if (requestId) {
       await rejectPermissionsRequest(requestId)
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        window.close()
-      }
     }
   }
 
