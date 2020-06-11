@@ -64,7 +64,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver.delay(largeDelayMs)
       })
 
@@ -74,7 +74,7 @@ describe('MetaMask', function () {
       })
 
       it('imports a seed phrase', async function () {
-        const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
+        const [seedTextArea] = await driver.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver.delay(regularDelayMs)
 
@@ -83,7 +83,7 @@ describe('MetaMask', function () {
         const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
         confirmPassword.sendKeys('correct horse battery staple')
 
-        await driver.clickElement(By.css('.first-time-flow__checkbox'))
+        await driver.clickElement(By.css('.first-time-flow__terms'))
 
         await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
         await driver.delay(regularDelayMs)
@@ -170,7 +170,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver2.delay(largeDelayMs)
       })
 
@@ -180,7 +180,7 @@ describe('MetaMask', function () {
       })
 
       it('imports a seed phrase', async function () {
-        const [seedTextArea] = await driver2.findElements(By.css('textarea.first-time-flow__textarea'))
+        const [seedTextArea] = await driver2.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver2.delay(regularDelayMs)
 
@@ -189,7 +189,7 @@ describe('MetaMask', function () {
         const [confirmPassword] = await driver2.findElements(By.id('confirm-password'))
         confirmPassword.sendKeys('correct horse battery staple')
 
-        await driver2.clickElement(By.css('.first-time-flow__checkbox'))
+        await driver2.clickElement(By.css('.first-time-flow__terms'))
 
         await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
         await driver2.delay(regularDelayMs)

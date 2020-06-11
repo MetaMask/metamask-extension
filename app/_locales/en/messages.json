@@ -370,7 +370,7 @@
     "message": "Confirmed"
   },
   "confirmPassword": {
-    "message": "Confirm Password"
+    "message": "Confirm password"
   },
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Backup Phrase"
@@ -784,10 +784,10 @@
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
-    "message": "Import an Account with Seed Phrase"
+    "message": "Import an account with seed phrase"
   },
   "importWallet": {
-    "message": "Import Wallet"
+    "message": "Import wallet"
   },
   "importYourExisting": {
     "message": "Import your existing wallet using a 12 word seed phrase"
@@ -986,7 +986,7 @@
     "message": "New Contract"
   },
   "newPassword": {
-    "message": "New Password (min 8 chars)"
+    "message": "New password (min 8 chars)"
   },
   "newNetwork": {
     "message": "New Network"
@@ -1280,6 +1280,12 @@
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
+  },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Paste seed phrase from clipboard"
+  },
+  "showSeedPhrase": {
+    "message": "Show seed phrase"
   },
   "seedPhraseReq": {
     "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
@@ -1702,7 +1708,7 @@
     "message": "Visit our web site"
   },
   "walletSeed": {
-    "message": "Wallet Seed"
+    "message": "Seed phrase"
   },
   "welcomeBack": {
     "message": "Welcome Back!"

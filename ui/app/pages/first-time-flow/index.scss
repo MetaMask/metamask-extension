@@ -77,12 +77,15 @@
     direction: ltr;
     font-size: 1rem;
     font-family: Roboto;
-    height: 190px;
     border: 1px solid #CDCDCD;
     border-radius: 6px;
     background-color: #FFFFFF;
     padding: 16px;
     margin-top: 8px;
+  }
+
+  &__seedphrase {
+    margin-top: 9px !important;
   }
 
   &__breadcrumbs {

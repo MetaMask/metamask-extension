@@ -63,7 +63,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
@@ -73,7 +73,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('imports a seed phrase', async function () {
-      const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
+      const [seedTextArea] = await driver.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
 
@@ -82,7 +82,7 @@ describe('Using MetaMask with an existing account', function () {
       const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
       confirmPassword.sendKeys('correct horse battery staple')
 
-      await driver.clickElement(By.css('.first-time-flow__checkbox'))
+      await driver.clickElement(By.css('.first-time-flow__terms'))
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
       await driver.delay(regularDelayMs)
