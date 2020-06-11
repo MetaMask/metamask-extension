@@ -47,19 +47,6 @@
     position: absolute;
   }
 
-  &__reject {
-    position: absolute;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    i {
-      color: #D73A49;
-      transform: scale(3);
-    }
-  }
-
   &__identicon, .icon-with-fallback__identicon {
     width: 32px;
     height: 32px;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import IconWithFallBack from '../../../components/ui/icon-with-fallback'
 import { I18nContext } from '../../../contexts/i18n'
 
-export default function PermissionsRedirect ({ domainMetadata, permissionsRejected }) {
+export default function PermissionsRedirect ({ domainMetadata }) {
 
   const t = useContext(I18nContext)
 
@@ -11,14 +11,11 @@ export default function PermissionsRedirect ({ domainMetadata, permissionsReject
     <div className="page-container permissions-redirect-container">
       <div className="permissions-redirect-container__content">
         <div className="permission-result">
-          { permissionsRejected ? t('cancelling') : t('connecting') }
+          { t('connecting') }
           <div className="permission-result__icons">
             <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
             <div className="permission-result__center-icon">
-              { permissionsRejected
-                ? <span className="permission-result__reject" ><i className="fa fa-times-circle" /></span>
-                : <span className="permission-result__check" />
-              }
+              <span className="permission-result__check" />
               { renderBrokenLine() }
             </div>
             <div className="permission-result__identicon-container">
@@ -43,9 +40,4 @@ export default function PermissionsRedirect ({ domainMetadata, permissionsReject
 
 PermissionsRedirect.propTypes = {
   domainMetadata: PropTypes.object.isRequired,
-  permissionsRejected: PropTypes.bool,
-}
-
-PermissionsRedirect.defaultProps = {
-  permissionsRejected: null,
 }

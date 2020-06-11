@@ -14,7 +14,6 @@ import ChooseAccount from './choose-account'
 import PermissionsRedirect from './redirect'
 
 const APPROVE_TIMEOUT = 1500
-const REJECT_TIMEOUT = 750
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -105,7 +104,10 @@ export default class PermissionConnect extends Component {
     const { permissionsRequest, lastConnectedInfo, targetDomainMetadata } = this.props
     const { redirecting, origin, targetDomainMetadata: savedMetadata } = this.state
 
-    if (savedMetadata.name !== targetDomainMetadata?.name) {
+    if (
+      permissionsRequest &&
+      savedMetadata.name !== targetDomainMetadata?.name
+    ) {
       this.setState({
         targetDomainMetadata,
       })
@@ -139,16 +141,16 @@ export default class PermissionConnect extends Component {
     })
     this.removeBeforeUnload()
 
-    const timeout = approved ? APPROVE_TIMEOUT : REJECT_TIMEOUT
+    const redirectFunction = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
+      ? () => window.close()
+      : () => history.push(DEFAULT_ROUTE)
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (approved) {
       setTimeout(async () => {
-        global.platform.closeCurrentWindow()
-      }, timeout)
+        redirectFunction()
+      }, APPROVE_TIMEOUT)
     } else {
-      setTimeout(async () => {
-        history.push(DEFAULT_ROUTE)
-      }, timeout)
+      redirectFunction()
     }
   }
 
@@ -158,11 +160,8 @@ export default class PermissionConnect extends Component {
 
     if (requestId) {
       await rejectPermissionsRequest(requestId)
-
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         window.close()
-      } else {
-        this.redirectFlow(false)
       }
     }
   }
@@ -223,11 +222,10 @@ export default class PermissionConnect extends Component {
       <div className="permissions-connect">
         { this.renderTopBar() }
         {
-          redirecting
+          redirecting && permissionsApproved
             ? (
               <PermissionsRedirect
                 domainMetadata={targetDomainMetadata}
-                permissionsRejected={ permissionsApproved === false }
               />
             )
             : (
