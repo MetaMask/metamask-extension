@@ -68,10 +68,7 @@ export default class PermissionConnect extends Component {
 
   removeBeforeUnload = () => {
     const environmentType = getEnvironmentType()
-    if (
-      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
-      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
+    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this.beforeUnload)
     }
   }
@@ -91,10 +88,7 @@ export default class PermissionConnect extends Component {
     }
 
     const environmentType = getEnvironmentType()
-    if (
-      environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
-      environmentType === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
+    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this.beforeUnload)
     }
   }
