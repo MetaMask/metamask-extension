@@ -1,95 +1,83 @@
-.permissions-redirect-container {
+.permissions-redirect {
   display: flex;
-  border: none;
-  box-shadow: none;
-  width: 100%;
-  margin-top: 2px;
   height: 100%;
-  flex-direction: column;
-
-  &__content {
-    display: flex;
-    width: 100%;
-    height: 144px;
-    margin-top: 140px;
-    padding-top: 8px;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.permission-result {
-  @extend %header--24;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  text-align: center;
-  color: $Black-100;
+  justify-content: center;
 
-  &__icons {
-    display: flex;
-  }
+  &__result {
+    @extend %header--24;
 
-  &__center-icon {
     display: flex;
-    position: relative;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-  }
+    text-align: center;
+    color: $Black-100;
+    padding-bottom: 30%;
 
-  &__check {
-    width: 40px;
-    height: 40px;
-    background: white url("/images/permissions-check.svg") no-repeat;
-    position: absolute;
-  }
-
-  &__identicon, .icon-with-fallback__identicon {
-    width: 32px;
-    height: 32px;
-
-    &--default {
-      background-color: #777A87;
-      color: white;
-      width: 64px;
-      height: 64px;
-      border-radius: 32px;
+    &__icons {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
     }
-  }
 
-  &__identicon-container, .icon-with-fallback__identicon-container {
-    height: auto;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 64px;
-    width: 64px;
-  }
+    &__center-icon {
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+    }
 
-  &__identicon-border, .icon-with-fallback__identicon-border {
-    height: 64px;
-    width: 64px;
-    border-radius: 50%;
-    border: 1px solid white;
-    background: #FFFFFF;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-  }
+    &__check {
+      width: 40px;
+      height: 40px;
+      background: white url("/images/permissions-check.svg") no-repeat;
+      position: absolute;
+    }
 
-  &__identicon-border {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    &__identicon, .icon-with-fallback__identicon {
+      width: 32px;
+      height: 32px;
 
-  .icon-with-fallback__identicon-border {
-    position: absolute;
+      &--default {
+        background-color: #777A87;
+        color: white;
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+    }
+
+    &__identicon-container, .icon-with-fallback__identicon-container {
+      height: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 64px;
+      width: 64px;
+    }
+
+    &__identicon-border, .icon-with-fallback__identicon-border {
+      height: 64px;
+      width: 64px;
+      border-radius: 50%;
+      border: 1px solid white;
+      background: #FFFFFF;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    &__identicon-border {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-with-fallback__identicon-border {
+      position: absolute;
+    }
   }
 }
