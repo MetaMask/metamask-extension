@@ -349,6 +349,9 @@
   "ensNameNotFound": {
     "message": "ENS 이름을 찾을 수 없습니다"
   },
+  "rnsNameNotFound": {
+    "message": "RNS 이름을 찾을 수 없습니다"
+  },
   "enterPassword": {
     "message": "비밀번호를 입력해주세요"
   },

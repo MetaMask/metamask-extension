@@ -85,6 +85,7 @@
   "dependencies": {
     "@babel/runtime": "^7.5.5",
     "@material-ui/core": "^4.1.1",
+    "@rsksmart/rns-registry": "^1.0.4",
     "@rsksmart/rsk-contract-metadata": "github:rsksmart/rsk-contract-metadata#master",
     "@rsksmart/rsk-testnet-contract-metadata": "github:rsksmart/rsk-testnet-contract-metadata#master",
     "@zxing/library": "^0.8.0",
