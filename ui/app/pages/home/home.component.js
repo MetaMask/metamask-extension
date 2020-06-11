@@ -247,8 +247,8 @@ export default class Home extends PureComponent {
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
-                data-testid="home__history-tab"
-                name={t('history')}
+                data-testid="home__activity-tab"
+                name={t('activity')}
               >
                 <TransactionList />
               </Tab>
