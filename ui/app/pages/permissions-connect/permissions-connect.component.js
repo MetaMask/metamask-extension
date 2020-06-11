@@ -160,6 +160,7 @@ export default class PermissionConnect extends Component {
 
     if (requestId) {
       await rejectPermissionsRequest(requestId)
+      this.redirect(false)
     }
   }
 

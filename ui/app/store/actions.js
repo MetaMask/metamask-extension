@@ -2056,9 +2056,11 @@ export function rejectPermissionsRequest (requestId) {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          reject()
+          return reject(err)
         }
-        resolve()
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
   }
