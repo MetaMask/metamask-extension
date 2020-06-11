@@ -11,7 +11,7 @@ import PermissionPageContainer from '../../components/app/permission-page-contai
 import ChooseAccount from './choose-account'
 import PermissionsRedirect from './redirect'
 
-const APPROVE_TIMEOUT = 1500
+const APPROVE_TIMEOUT = 1200
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -28,7 +28,7 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    hasPermissionsRequests: PropTypes.bool.isRequired,
+    hasPendingPermissionsRequests: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
@@ -137,7 +137,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirect (approved) {
-    const { history, hasPermissionsRequests } = this.props
+    const { history, hasPendingPermissionsRequests } = this.props
 
     this.setState({
       redirecting: true,
@@ -147,7 +147,7 @@ export default class PermissionConnect extends Component {
 
     const doRedirect = () => {
       if (
-        !hasPermissionsRequests &&
+        !hasPendingPermissionsRequests &&
         getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
       ) {
         global.platform.closeCurrentWindow()

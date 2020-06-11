@@ -32,7 +32,9 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
 
-  const hasPermissionsRequests = permissionsRequests.length > 0
+  const hasPendingPermissionsRequests = permissionsRequest
+    ? permissionsRequests.length > 1
+    : permissionsRequests.length > 0
 
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
@@ -64,7 +66,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     permissionsRequest,
     permissionsRequestId,
-    hasPermissionsRequests,
+    hasPendingPermissionsRequests,
     accounts: accountsWithLabels,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,
