@@ -91,7 +91,7 @@ function getExchanges ({network, amount, address}) {
       return [
         {
           name: 'Binance',
-          link: 'https://www.binance.com/en/trade/POA_ETH',
+          link: 'https://www.binance.com/en/trade/POA_BTC',
         },
         {
           name: 'BiBox',

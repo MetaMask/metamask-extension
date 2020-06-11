@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- [#385](https://github.com/poanetwork/nifty-wallet/pull/385) - (Feature) Display value of current pending tx's nonce on send tx screen
+- [#384](https://github.com/poanetwork/nifty-wallet/pull/384) - (Fix) placement of HW Connect button title
+- [#383](https://github.com/poanetwork/nifty-wallet/pull/383) - (Chore) Replace POA-ETH Binance link to POA-BTC
+- [#382](https://github.com/poanetwork/nifty-wallet/pull/382) - (Fix) replace vulnerable npm dependencies with newer versions of packages, update chromedriver to match the latest Google Chrome release
 - [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Feature) Add RNS integration
 - [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Fix) ENS/RNS integration when sending tokens
 

@@ -29,6 +29,18 @@ const optionalDataValueStyle = {
 }
 
 class SendTransactionScreen extends PersistentForm {
+  constructor (props) {
+    super(props)
+    this.state = {
+      pendingNonce: null,
+    }
+  }
+
+  async getPendingNonce () {
+    const pendingNonce = await this.props.dispatch(actions.getPendingNonce(this.props.address))
+    this.setState({pendingNonce: pendingNonce})
+  }
+
   render () {
     this.persistentFormParentId = 'send-tx-form'
 
@@ -117,10 +129,15 @@ class SendTransactionScreen extends PersistentForm {
             dataset={{
               persistentFormid: 'tx-custom-nonce',
             }}
+            defaultValue={this.state.pendingNonce}
           />
         </section>
       </div>
     )
+  }
+
+  componentDidMount () {
+    this.getPendingNonce()
   }
 
   componentWillUnmount () {

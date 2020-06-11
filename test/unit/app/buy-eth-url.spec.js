@@ -71,7 +71,7 @@ describe('', function () {
     assert.deepEqual(exchanges, [
       {
         name: 'Binance',
-        link: 'https://www.binance.com/en/trade/POA_ETH',
+        link: 'https://www.binance.com/en/trade/POA_BTC',
       },
       {
         name: 'BiBox',

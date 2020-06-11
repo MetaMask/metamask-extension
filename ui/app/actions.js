@@ -188,6 +188,7 @@ const actions = {
   signTokenTx: signTokenTx,
   updateTransaction,
   updateAndApproveTx,
+  getPendingNonce,
   cancelTx,
   cancelTxs,
   completedTx: completedTx,
@@ -1301,6 +1302,24 @@ function updateAndApproveTx (txData) {
         dispatch(actions.hideLoadingIndication())
         return Promise.reject(err)
       })
+  }
+}
+
+function getPendingNonce (address) {
+  log.info('actions: getPendingNonce')
+  return (dispatch) => {
+    log.debug(`actions calling background.getPendingNonce`)
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.getPendingNonce(address, (err, nonce) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideLoadingIndication())
+        resolve(nonce)
+      })
+    })
   }
 }
 
