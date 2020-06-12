@@ -8,7 +8,7 @@ import PermissionPageContainer from '../../components/app/permission-page-contai
 import ChooseAccount from './choose-account'
 import PermissionsRedirect from './redirect'
 
-const APPROVE_TIMEOUT = 120000
+const APPROVE_TIMEOUT = 1200
 
 export default class PermissionConnect extends Component {
   static propTypes = {
