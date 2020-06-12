@@ -1,4 +1,4 @@
-import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags } from '../selectors'
+import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags, getIsMainnet } from '../selectors'
 import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
 import { useSelector } from 'react-redux'
 import { useRef, useEffect, useState, useMemo } from 'react'
@@ -44,6 +44,7 @@ export function useTransactionTimeRemaining (
   const gasPrices = useSelector(getEstimatedGasPrices, isEqual)
   const estimatedTimes = useSelector(getEstimatedGasTimes, isEqual)
   const locale = useSelector(getCurrentLocale)
+  const isMainNet = useSelector(getIsMainnet)
   const interval = useRef()
   const [timeRemaining, setTimeRemaining] = useState(null)
   const featureFlags = useSelector(getFeatureFlags)
@@ -62,6 +63,7 @@ export function useTransactionTimeRemaining (
 
   useEffect(() => {
     if (
+      isMainNet &&
       transactionTimeFeatureActive &&
       isPending &&
       isEarliestNonce &&
@@ -79,6 +81,7 @@ export function useTransactionTimeRemaining (
       return () => clearInterval(interval.current)
     }
   }, [
+    isMainNet,
     transactionTimeFeatureActive,
     isEarliestNonce,
     isPending,
@@ -86,7 +89,10 @@ export function useTransactionTimeRemaining (
     initialTimeEstimate,
   ])
 
-  // if the transaction is not pending, not the earliest nonce, or the feature is not active,
-  // timeRemaining will be null
+  // there are numerous checks to determine if time should be displayed.
+  // if any of the following are true, the timeRemaining will be null
+  // User is currently not on the mainnet
+  // User does not have the transactionTime feature flag enabled
+  // The transaction is not pending, or isn't the earliest nonce
   return timeRemaining ? rtf.format(timeRemaining, 'minute') : undefined
 }
