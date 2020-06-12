@@ -101,7 +101,7 @@ class EnsInput extends Component {
       this.ens = new ENS({ provider, network })
       this.checkName = debounce(this.lookupEnsName.bind(this, 'ENS'), 200)
     } else if (networkHasRnsSupport) {
-      const registryAddress = getRnsRegistryAddress(network);
+      const registryAddress = getRnsRegistryAddress(network)
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network, registryAddress })
       this.checkName = debounce(this.lookupEnsName.bind(this, 'RNS'), 200)
@@ -135,9 +135,9 @@ class EnsInput extends Component {
         toError: null,
       }
       if (
-        (isValidENSAddress(recipient) || isValidRNSAddress(recipient)) 
-        && reason.message === 'ENS name not defined.'
-      )
+        (isValidENSAddress(recipient) || isValidRNSAddress(recipient)) &&
+        reason.message === 'ENS name not defined.'
+      ) {
         setStateObj.hoverText = '${nameService} name not found'
         setStateObj.toError = `${nameService.toLowerCase()}NameNotFound`
         setStateObj.ensFailure = false
@@ -236,5 +236,5 @@ function getRnsRegistryAddress (network) {
 
   return
 }
-    
+
 module.exports = EnsInput
