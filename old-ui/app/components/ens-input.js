@@ -7,11 +7,11 @@ import log from 'loglevel'
 
 const h = require('react-hyperscript')
 const networkMap = require('ethjs-ens/lib/network-map.json')
-const RNSRegistryData = require('@rsksmart/rns-registry/RNSRegistryData.json');
+const RNSRegistryData = require('@rsksmart/rns-registry/RNSRegistryData.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const { isValidENSAddress, isValidRNSAddress } = require('../util')
-const { 
+const {
   RSK_CODE,
   RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
@@ -222,19 +222,19 @@ function getNetworkEnsSupport (network) {
 }
 
 function getNetworkRnsSupport (network) {
-  return (network == RSK_CODE || network == RSK_TESTNET_CODE);
+  return (network === RSK_CODE || network === RSK_TESTNET_CODE)
 }
 
 function getRnsRegistryAddress (network) {
-  if (network == RSK_CODE) {
-    return RNSRegistryData.address.rskMainnet;
+  if (network === RSK_CODE) {
+    return RNSRegistryData.address.rskMainnet
   }
-  
-  if (network == RSK_TESTNET_CODE) {
-    return RNSRegistryData.address.rskTestnet;
+
+  if (network === RSK_TESTNET_CODE) {
+    return RNSRegistryData.address.rskTestnet
   };
 
-  return;
+  return
 }
     
 module.exports = EnsInput
