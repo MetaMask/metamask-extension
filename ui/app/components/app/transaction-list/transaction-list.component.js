@@ -12,6 +12,7 @@ import * as actions from '../../../ducks/gas/gas.duck'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
 import Button from '../../ui/button'
+import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
 
 const PAGE_INCREMENT = 10
 
@@ -19,7 +20,23 @@ const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
   return ({ initialTransaction: { txParams } }) => txParams && txParams.to === recipientAddress
 }
 
-export default function TransactionList ({ tokenAddress }) {
+const tokenTransactionFilter = ({
+  initialTransaction: {
+    transactionCategory,
+  },
+}) => !TOKEN_CATEGORY_HASH[transactionCategory]
+
+
+const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, tokenAddress) => {
+  if (hideTokenTransactions) {
+    return transactionGroups.filter(tokenTransactionFilter)
+  } else if (tokenAddress) {
+    return transactionGroups.filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
+  }
+  return transactionGroups
+}
+
+export default function TransactionList ({ hideTokenTransactions, tokenAddress }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT)
   const t = useI18nContext()
 
@@ -29,22 +46,12 @@ export default function TransactionList ({ tokenAddress }) {
   const { transactionTime: transactionTimeFeatureActive } = useSelector(getFeatureFlags)
 
   const pendingTransactions = useMemo(
-    () => (
-      tokenAddress && tokenAddress.startsWith('0x')
-        ? unfilteredPendingTransactions
-          .filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
-        : unfilteredPendingTransactions
-    ),
-    [unfilteredPendingTransactions, tokenAddress]
+    () => getFilteredTransactionGroups(unfilteredPendingTransactions, hideTokenTransactions, tokenAddress),
+    [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions]
   )
   const completedTransactions = useMemo(
-    () => (
-      tokenAddress && tokenAddress.startsWith('0x')
-        ? unfilteredCompletedTransactions
-          .filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
-        : unfilteredCompletedTransactions
-    ),
-    [unfilteredCompletedTransactions, tokenAddress]
+    () => getFilteredTransactionGroups(unfilteredCompletedTransactions, hideTokenTransactions, tokenAddress),
+    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions]
   )
 
   const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(() => ({
@@ -122,9 +129,11 @@ export default function TransactionList ({ tokenAddress }) {
 }
 
 TransactionList.propTypes = {
+  hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
 }
 
 TransactionList.defaultProps = {
+  hideTokenTransactions: false,
   tokenAddress: undefined,
 }

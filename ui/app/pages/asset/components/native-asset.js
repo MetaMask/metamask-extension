@@ -22,7 +22,7 @@ export default function NativeAsset ({ nativeCurrency }) {
         onBack={() => history.push(DEFAULT_ROUTE)}
       />
       <EthOverview className="asset__overview" />
-      <TransactionList />
+      <TransactionList hideTokenTransactions />
     </>
   )
 }
