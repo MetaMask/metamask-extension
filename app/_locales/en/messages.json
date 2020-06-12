@@ -184,18 +184,6 @@
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
   },
-  "alertSettingsSwitchToConnected": {
-    "message": "Opening popup with an unconnected account selected"
-  },
-  "alertSettingsSwitchToConnectedDescription": {
-    "message": "This alert is shown when you open the popup with an unconnected account selected."
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Switching to an unconnected account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you switch from a connected account to an unconnected account."
-  },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
@@ -1475,13 +1463,6 @@
   "switchAccounts": {
     "message": "Switch accounts"
   },
-  "switchToConnectedAlertMultipleAccountsDescription": {
-    "message": "This account is not connected. Switch to a connected account?"
-  },
-  "switchToConnectedAlertSingleAccountDescription": {
-    "message": "This account is not connected. Switch to a connected account ($1)?",
-    "description": "$1 will be replaced by the name of the connected account"
-  },
   "symbol": {
     "message": "Symbol"
   },
@@ -1629,10 +1610,7 @@
   "unapproved": {
     "message": "Unapproved"
   },
-  "unconnectedAccountAlertDescription": {
-    "message": "$1 is not connected to $2."
-  },
-  "unconnectedAccountAlertDisableTooltip": {
+  "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
   "units": {

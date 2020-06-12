@@ -3,16 +3,21 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   ALERT_STATE,
-  connectAccount,
+  switchToAccount,
   dismissAlert,
   dismissAndDisableAlert,
   getAlertState,
 } from '../../../../ducks/alerts/unconnected-account'
+import {
+  // getSelectedIdentity,
+  // getOriginOfCurrentTab,
+  getPermittedIdentitiesForCurrentTab,
+} from '../../../../selectors'
 import Popover from '../../../ui/popover'
 import Button from '../../../ui/button'
+import Dropdown from '../../../ui/dropdown'
 import Checkbox from '../../../ui/check-box'
 import Tooltip from '../../../ui/tooltip-v2'
-import { getSelectedIdentity, getOriginOfCurrentTab } from '../../../../selectors'
 import { useI18nContext } from '../../../../hooks/useI18nContext'
 
 const {
@@ -20,12 +25,14 @@ const {
   LOADING,
 } = ALERT_STATE
 
-const SwitchToUnconnectedAccountAlert = () => {
+const SwitchConnectedAccountAlert = () => {
   const t = useI18nContext()
   const dispatch = useDispatch()
   const alertState = useSelector(getAlertState)
-  const origin = useSelector(getOriginOfCurrentTab)
-  const selectedIdentity = useSelector(getSelectedIdentity)
+  const connectedAccounts = useSelector(getPermittedIdentitiesForCurrentTab)
+  // const origin = useSelector(getOriginOfCurrentTab)
+  // const selectedIdentity = useSelector(getSelectedIdentity)
+  const [accountToSwitchTo, setAccountToSwitchTo] = useState(connectedAccounts[0].address)
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false)
 
   const onClose = async () => {
@@ -34,15 +41,15 @@ const SwitchToUnconnectedAccountAlert = () => {
       : dispatch(dismissAlert())
   }
 
-  const accountName = selectedIdentity?.name || t('thisAccount')
-  const siteName = origin || t('thisSite')
+  // const accountName = selectedIdentity?.name || t('thisAccount')
+  // const siteName = origin || t('thisSite')
+  const options = connectedAccounts.map((account) => {
+    return { name: account.name, value: account.address }
+  })
 
   return (
     <Popover
       contentClassName="unconnected-account-alert__content"
-      title={t('notConnected')}
-      subtitle={t('unconnectedAccountAlertDescription', [ accountName, siteName ])}
-      onClose={onClose}
       footer={(
         <>
           {
@@ -63,38 +70,59 @@ const SwitchToUnconnectedAccountAlert = () => {
               { t('dismiss') }
             </Button>
             <Button
-              disabled={alertState === LOADING || alertState === ERROR || dontShowThisAgain }
-              onClick={() => dispatch(connectAccount())}
+              disabled={alertState === LOADING || alertState === ERROR || dontShowThisAgain}
+              onClick={() => dispatch(switchToAccount(accountToSwitchTo))}
               type="primary"
             >
-              { t('connect') }
+              { t('switchAccounts') }
             </Button>
           </div>
         </>
       )}
       footerClassName="unconnected-account-alert__footer"
+      onClose={onClose}
+      subtitle={t(
+        'unconnectedAccountAlertSingleAccountDescription',
+        [connectedAccounts[0].name]
+      )}
+      title={t('notConnected')}
     >
-      <Checkbox
-        id="unconnectedAccount_dontShowThisAgain"
-        checked={dontShowThisAgain}
-        className="unconnected-account-alert__checkbox"
-        onClick={() => setDontShowThisAgain((checked) => !checked)}
-      />
-      <label
-        className="unconnected-account-alert__checkbox-label"
-        htmlFor="unconnectedAccount_dontShowThisAgain"
-      >
-        { t('dontShowThisAgain') }
-        <Tooltip
-          position="top"
-          title={t('unconnectedAccountAlertDisableTooltip')}
-          wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
+      {
+        connectedAccounts.length > 1
+          ? (
+            <Dropdown
+              className="unconnected-account-alert__dropdown"
+              title="Switch to account"
+              onChange={(address) => setAccountToSwitchTo(address)}
+              options={options}
+              selectedOption={accountToSwitchTo}
+            />
+          )
+          : null
+      }
+      <div className="unconnected-account-alert__checkbox-wrapper">
+        <Checkbox
+          id="unconnectedAccount_dontShowThisAgain"
+          checked={dontShowThisAgain}
+          className="unconnected-account-alert__checkbox"
+          onClick={() => setDontShowThisAgain((checked) => !checked)}
+        />
+        <label
+          className="unconnected-account-alert__checkbox-label"
+          htmlFor="unconnectedAccount_dontShowThisAgain"
         >
-          <i className="fa fa-info-circle" />
-        </Tooltip>
-      </label>
+          { t('dontShowThisAgain') }
+          <Tooltip
+            position="top"
+            title={t('alertDisableTooltip')}
+            wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
+          >
+            <i className="fa fa-info-circle" />
+          </Tooltip>
+        </label>
+      </div>
     </Popover>
   )
 }
 
-export default SwitchToUnconnectedAccountAlert
+export default SwitchConnectedAccountAlert

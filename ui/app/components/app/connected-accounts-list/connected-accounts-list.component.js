@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import ConnectedAccountsListPermissions from './connected-accounts-list-permissions'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
 import { MenuItem } from '../../ui/menu'
@@ -12,7 +11,6 @@ export default class ConnectedAccountsList extends PureComponent {
 
   static defaultProps = {
     accountToConnect: null,
-    permissions: undefined,
   }
 
   static propTypes = {
@@ -25,9 +23,6 @@ export default class ConnectedAccountsList extends PureComponent {
       name: PropTypes.string.isRequired,
       lastActive: PropTypes.number,
     })).isRequired,
-    permissions: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-    })),
     selectedAddress: PropTypes.string.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     removePermittedAccount: PropTypes.func.isRequired,
@@ -85,7 +80,7 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   render () {
-    const { connectedAccounts, permissions, selectedAddress } = this.props
+    const { connectedAccounts, selectedAddress } = this.props
     const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
@@ -130,7 +125,6 @@ export default class ConnectedAccountsList extends PureComponent {
             })
           }
         </main>
-        <ConnectedAccountsListPermissions permissions={permissions} />
       </>
     )
   }

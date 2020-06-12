@@ -2,7 +2,7 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 
-export default class ConnectedAccountsListPermissions extends PureComponent {
+export default class ConnectedAccountsPermissions extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
   }

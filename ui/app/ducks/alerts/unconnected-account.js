@@ -3,7 +3,11 @@ import { captureException } from '@sentry/browser'
 
 import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 import * as actionConstants from '../../store/actionConstants'
-import { addPermittedAccount, setAlertEnabledness } from '../../store/actions'
+import {
+  addPermittedAccount,
+  setAlertEnabledness,
+  setSelectedAddress,
+} from '../../store/actions'
 import {
   getOriginOfCurrentTab,
   getSelectedAddress,
@@ -39,9 +43,6 @@ const slice = createSlice({
     connectAccountSucceeded: (state) => {
       state.state = ALERT_STATE.CLOSED
     },
-    dismissAlert: (state) => {
-      state.state = ALERT_STATE.CLOSED
-    },
     disableAlertFailed: (state) => {
       state.state = ALERT_STATE.ERROR
     },
@@ -49,6 +50,18 @@ const slice = createSlice({
       state.state = ALERT_STATE.LOADING
     },
     disableAlertSucceeded: (state) => {
+      state.state = ALERT_STATE.CLOSED
+    },
+    dismissAlert: (state) => {
+      state.state = ALERT_STATE.CLOSED
+    },
+    switchAccountFailed: (state) => {
+      state.state = ALERT_STATE.ERROR
+    },
+    switchAccountRequested: (state) => {
+      state.state = ALERT_STATE.LOADING
+    },
+    switchAccountSucceeded: (state) => {
       state.state = ALERT_STATE.CLOSED
     },
     switchedToUnconnectedAccount: (state) => {
@@ -81,10 +94,13 @@ const {
   connectAccountFailed,
   connectAccountRequested,
   connectAccountSucceeded,
-  dismissAlert,
   disableAlertFailed,
   disableAlertRequested,
   disableAlertSucceeded,
+  dismissAlert,
+  switchAccountFailed,
+  switchAccountRequested,
+  switchAccountSucceeded,
   switchedToUnconnectedAccount,
 } = actions
 
@@ -100,6 +116,20 @@ export const dismissAndDisableAlert = () => {
       console.error(error)
       captureException(error)
       await dispatch(disableAlertFailed())
+    }
+  }
+}
+
+export const switchToAccount = (address) => {
+  return async (dispatch) => {
+    try {
+      await dispatch(switchAccountRequested())
+      await dispatch(setSelectedAddress(address))
+      await dispatch(switchAccountSucceeded())
+    } catch (error) {
+      console.error(error)
+      captureException(error)
+      await dispatch(switchAccountFailed())
     }
   }
 }

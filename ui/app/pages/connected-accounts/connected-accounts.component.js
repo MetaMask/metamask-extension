@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { CONNECTED_ROUTE } from '../../helpers/constants/routes'
 import Popover from '../../components/ui/popover'
 import ConnectedAccountsList from '../../components/app/connected-accounts-list'
+import ConnectedAccountsPermissions from '../../components/app/connected-accounts-list/connected-accounts-permissions'
 
 export default class ConnectedAccounts extends PureComponent {
   static contextTypes = {
@@ -26,10 +26,6 @@ export default class ConnectedAccounts extends PureComponent {
     removePermittedAccount: PropTypes.func.isRequired,
     setSelectedAddress: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-  }
-
-  viewConnectedSites = () => {
-    this.props.history.push(CONNECTED_ROUTE)
   }
 
   render () {
@@ -63,11 +59,11 @@ export default class ConnectedAccounts extends PureComponent {
           accountToConnect={accountToConnect}
           addPermittedAccount={addPermittedAccount}
           connectedAccounts={connectedAccounts}
-          permissions={permissions}
           selectedAddress={selectedAddress}
           removePermittedAccount={removePermittedAccount}
           setSelectedAddress={setSelectedAddress}
         />
+        <ConnectedAccountsPermissions permissions={permissions} />
       </Popover>
     )
   }

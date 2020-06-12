@@ -32,8 +32,20 @@
   }
 
   &__content {
-    flex-direction: row;
+    align-items: center;
     padding: 0 24px 24px 24px;
+  }
+
+  &__dropdown {
+    background-color: white;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
   }
 
   &__checkbox {

@@ -13,10 +13,10 @@ import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
 import { fetchLocale } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
 import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
-import { ALERT_STATE } from './app/ducks/alerts/switch-to-connected'
+import { ALERT_STATE } from './app/ducks/alerts/unconnected-account'
 import {
-  getSwitchToConnectedAlertEnabledness,
-  getSwitchToConnectedAlertShown,
+  getUnconnectedAccountAlertEnabledness,
+  getUnconnectedAccountAlertShown,
 } from './app/ducks/metamask/metamask'
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -71,18 +71,18 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     const origin = draftInitialState.activeTab.origin
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
     const selectedAddress = getSelectedAddress(draftInitialState)
-    const switchToConnectedAlertShown = getSwitchToConnectedAlertShown(draftInitialState)
-    const switchToConnectedAlertIsEnabled = getSwitchToConnectedAlertEnabledness(draftInitialState)
+    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(draftInitialState)
+    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(draftInitialState)
 
     if (
       origin &&
-      switchToConnectedAlertIsEnabled &&
-      !switchToConnectedAlertShown[origin] &&
+      unconnectedAccountAlertIsEnabled &&
+      !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[ALERT_TYPES.switchToConnected] = { state: ALERT_STATE.OPEN }
-      actions.setSwitchToConnectedAlertShown(origin)
+      draftInitialState[ALERT_TYPES.unconnectedAccount] = { state: ALERT_STATE.OPEN }
+      actions.setUnconnectedAccountAlertShown(origin)
     }
   }
 
