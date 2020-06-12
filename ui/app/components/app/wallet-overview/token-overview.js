@@ -14,6 +14,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { getAssetImages } from '../../../selectors/selectors'
 import { updateSendToken } from '../../../store/actions'
+import PaperAirplane from '../../ui/icon/paper-airplane-icon'
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch()
@@ -57,6 +58,8 @@ const TokenOverview = ({ className, token }) => {
         <Button
           type="secondary"
           className="token-overview__button"
+          rounded
+          icon={<PaperAirplane color="#037DD6" size={20} />}
           onClick={() => {
             sendTokenEvent()
             dispatch(updateSendToken(token))
