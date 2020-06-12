@@ -635,9 +635,6 @@
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
   },
-  "missingYourTokens": {
-    "message": "Kan du ikke se dine tokens?"
-  },
   "mobileSyncText": {
     "message": "Indtast din adgangskode for at bekræfte, at det er dig!"
   },

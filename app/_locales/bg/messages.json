@@ -647,9 +647,6 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Не виждате жетоните си?"
-  },
   "mobileSyncText": {
     "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
   },

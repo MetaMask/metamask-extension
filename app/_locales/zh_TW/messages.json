@@ -645,9 +645,6 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "missingYourTokens": {
-    "message": "看不到您的代幣？"
-  },
   "mobileSyncText": {
     "message": "請輸入密碼確認身份！"
   },

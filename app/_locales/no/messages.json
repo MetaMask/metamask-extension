@@ -641,9 +641,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versjon "
   },
-  "missingYourTokens": {
-    "message": "Ser du ikke sjetongene dine?"
-  },
   "mobileSyncText": {
     "message": "Vennligst skriv inn passordet ditt for å bekrefte at det er deg!"
   },

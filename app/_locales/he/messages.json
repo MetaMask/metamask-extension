@@ -648,9 +648,6 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "missingYourTokens": {
-    "message": "אין באפשרותך לראות את הטוקנים שלך?"
-  },
   "mobileSyncText": {
     "message": "נא להזין את הססמה שלך כדי לאשר שזה/זו אכן את/ה!"
   },
