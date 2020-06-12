@@ -4,6 +4,7 @@ import './lib/freezeGlobals'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+import '@formatjs/intl-relativetimeformat/polyfill'
 
 import PortStream from 'extension-port-stream'
 import { getEnvironmentType } from './lib/util'
