@@ -5,12 +5,12 @@ const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
-const RNSRegistryData = require('@rsksmart/rns-registry/RNSRegistryData.json');
+const RNSRegistryData = require('@rsksmart/rns-registry/RNSRegistryData.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const log = require('loglevel')
 const { isValidENSAddress, isValidRNSAddress } = require('../util')
-const { 
+const {
   RSK_CODE,
   RSK_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
@@ -95,7 +95,7 @@ EnsInput.prototype.componentDidMount = function () {
     this.ens = new ENS({ provider, network })
     this.checkName = debounce(this.lookupEnsName.bind(this, 'ENS'), 200)
   } else if (networkHasRnsSupport) {
-    const registryAddress = getRnsRegistryAddress(network);
+    const registryAddress = getRnsRegistryAddress(network)
     const provider = global.ethereumProvider
     this.ens = new ENS({ provider, network, registryAddress })
     this.checkName = debounce(this.lookupEnsName.bind(this, 'RNS'), 200)
@@ -129,8 +129,8 @@ EnsInput.prototype.lookupEnsName = function (nameService) {
       toError: null,
     }
     if (
-      (isValidENSAddress(recipient) || isValidRNSAddress(recipient)) 
-      && reason.message === 'ENS name not defined.'
+      (isValidENSAddress(recipient) || isValidRNSAddress(recipient)) &&
+      reason.message === 'ENS name not defined.'
     ) {
       setStateObj.hoverText = `${nameService} name not found`
       setStateObj.toError = `${nameService.toLowerCase()}NameNotFound`
@@ -215,17 +215,17 @@ function getNetworkEnsSupport (network) {
 }
 
 function getNetworkRnsSupport (network) {
-  return (network == RSK_CODE || network == RSK_TESTNET_CODE);
+  return (network === RSK_CODE || network === RSK_TESTNET_CODE)
 }
 
 function getRnsRegistryAddress (network) {
-  if (network == RSK_CODE) {
-    return RNSRegistryData.address.rskMainnet;
+  if (network === RSK_CODE) {
+    return RNSRegistryData.address.rskMainnet
   }
-  
-  if (network == RSK_TESTNET_CODE) {
-    return RNSRegistryData.address.rskTestnet;
+
+  if (network === RSK_TESTNET_CODE) {
+    return RNSRegistryData.address.rskTestnet
   };
 
-  return;
+  return
 }
