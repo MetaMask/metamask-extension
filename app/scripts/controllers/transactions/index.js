@@ -10,7 +10,7 @@ import abiDecoder from 'abi-decoder'
 abiDecoder.addABI(abi)
 
 import TransactionStateManager from './tx-state-manager'
-const TxGasUtil = require('./tx-gas-utils')
+import TxGasUtil from './tx-gas-utils'
 const PendingTransactionTracker = require('./pending-tx-tracker')
 import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'

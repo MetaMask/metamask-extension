@@ -34,7 +34,8 @@ class ConfirmSeedScreen extends Component {
     }
   }
 
-  componentWillMount () {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount () {
     const { seedWords, history } = this.props
 
     if (!seedWords) {

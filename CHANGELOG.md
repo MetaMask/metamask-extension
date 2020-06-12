@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#388](https://github.com/poanetwork/nifty-wallet/pull/388) - (Feature) "Send all" option for simple coin transfers
 - [#385](https://github.com/poanetwork/nifty-wallet/pull/385) - (Feature) Display value of current pending tx's nonce on send tx screen
 - [#384](https://github.com/poanetwork/nifty-wallet/pull/384) - (Fix) placement of HW Connect button title
 - [#383](https://github.com/poanetwork/nifty-wallet/pull/383) - (Chore) Replace POA-ETH Binance link to POA-BTC

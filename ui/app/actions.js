@@ -1061,7 +1061,6 @@ function setGasTotal (gasTotal) {
 
 function updateGasData ({
   blockGasLimit,
-  recentBlocks,
   selectedAddress,
   selectedToken,
   to,
@@ -1100,11 +1099,13 @@ function updateGasData ({
       dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
       dispatch(actions.gasLoadingFinished())
+      return Promise.resolve()
     })
     .catch(err => {
       log.error(err)
       dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
       dispatch(actions.gasLoadingFinished())
+      return Promise.reject()
     })
   }
 }

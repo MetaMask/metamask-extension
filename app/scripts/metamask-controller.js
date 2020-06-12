@@ -443,7 +443,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setDProvider: this.setDProvider.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      getGasPrice: (cb) => cb(null, this.getGasPrice()),
+      getGasPrice: nodeify(this.getGasPrice, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
 
       // shapeshift
@@ -1870,9 +1870,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   async getGasPrice () {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const { networkController } = this
-
 
       const networkIdStr = networkController.store.getState().network
       const networkId = parseInt(networkIdStr)
