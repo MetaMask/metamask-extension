@@ -122,7 +122,9 @@ export function getConnectedDomainsForSelectedAddress (state) {
 export function getPermittedIdentitiesForCurrentTab (state) {
   const permittedAccounts = getPermittedAccountsForCurrentTab(state)
   const identities = getMetaMaskIdentities(state)
-  return permittedAccounts.map((address) => identities[address])
+  return permittedAccounts
+    .map((address) => identities[address])
+    .filter((identity) => Boolean(identity))
 }
 
 /**
