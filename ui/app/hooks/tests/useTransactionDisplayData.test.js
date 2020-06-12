@@ -4,6 +4,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import sinon from 'sinon'
 import transactions from '../../../../test/data/transaction-data.json'
 import { useTransactionDisplayData } from '../useTransactionDisplayData'
+import * as useTokenFiatAmountHooks from '../useTokenFiatAmount'
 import { getPreferences, getShouldShowFiat, getNativeCurrency, getCurrentCurrency } from '../../selectors'
 import { getTokens } from '../../ducks/metamask/metamask'
 import * as i18nhooks from '../useI18nContext'
@@ -74,11 +75,15 @@ const expectedResults = [
     status: 'confirmed' },
 ]
 
-let useSelector, useI18nContext
+let useSelector, useI18nContext, useTokenFiatAmount
 
 describe('useTransactionDisplayData', function () {
   before(function () {
     useSelector = sinon.stub(reactRedux, 'useSelector')
+    useTokenFiatAmount = sinon.stub(useTokenFiatAmountHooks, 'useTokenFiatAmount')
+    useTokenFiatAmount.returns((tokenAddress) => {
+      return tokenAddress ? '1 TST' : undefined
+    })
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext')
     useI18nContext.returns((key, variables) => getMessage('en', messages, key, variables))
     useSelector.callsFake((selector) => {

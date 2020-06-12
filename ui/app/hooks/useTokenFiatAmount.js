@@ -6,7 +6,7 @@ import { getFormattedTokenFiatAmount } from '../helpers/utils/token-util'
 /**
  * Get the token balance converted to fiat and formatted for display
  *
- * @param {string} tokenAddress - The token address
+ * @param {string} [tokenAddress] - The token address
  * @param {string} [tokenAmount] - The token balance
  * @param {string} [tokenSymbol] - The token symbol
  * @return {string} - The formatted token amount in the user's chosen fiat currency
