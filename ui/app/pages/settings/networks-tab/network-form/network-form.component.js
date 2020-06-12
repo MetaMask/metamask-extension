@@ -237,6 +237,15 @@ export default class NetworkForm extends PureComponent {
     }
   }
 
+  renderWarning () {
+    const { t } = this.context
+    return (
+      <div className="networks-tab__network-form-row--warning">
+        {t('onlyAddTrustedNetworks')}
+      </div>
+    )
+  }
+
   render () {
     const { t } = this.context
     const {
@@ -258,6 +267,7 @@ export default class NetworkForm extends PureComponent {
 
     return (
       <div className="networks-tab__network-form">
+        {viewOnly ? null : this.renderWarning()}
         {this.renderFormTextField(
           'networkName',
           'network-name',
@@ -320,5 +330,4 @@ export default class NetworkForm extends PureComponent {
       </div>
     )
   }
-
 }

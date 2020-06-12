@@ -1009,6 +1009,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "onlyAddTrustedNetworks": {
+    "message": "A malicious Ethereum network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
+  },
   "optionalChainId": {
     "message": "ChainID (optional)"
   },
