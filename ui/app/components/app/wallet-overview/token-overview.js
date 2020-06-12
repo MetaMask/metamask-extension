@@ -5,11 +5,13 @@ import { useHistory } from 'react-router-dom'
 
 import Button from '../../ui/button'
 import Identicon from '../../ui/identicon'
-import TokenBalance from '../../ui/token-balance'
+import CurrencyDisplay from '../../ui/currency-display'
 import { I18nContext } from '../../../contexts/i18n'
 import WalletOverview from './wallet-overview'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { useTokenTracker } from '../../../hooks/useTokenTracker'
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 import { getAssetImages } from '../../../selectors/selectors'
 import { updateSendToken } from '../../../store/actions'
 
@@ -25,15 +27,30 @@ const TokenOverview = ({ className, token }) => {
   })
   const history = useHistory()
   const assetImages = useSelector(getAssetImages)
+  const { tokensWithBalances } = useTokenTracker([token])
+  const balance = tokensWithBalances[0]?.string
+  const formattedFiatBalance = useTokenFiatAmount(token.address, balance, token.symbol)
 
   return (
     <WalletOverview
       balance={(
         <div className="token-overview__balance">
-          <TokenBalance
+          <CurrencyDisplay
             className="token-overview__primary-balance"
-            token={token}
+            displayValue={balance}
+            suffix={token.symbol}
           />
+          {
+            formattedFiatBalance
+              ? (
+                <CurrencyDisplay
+                  className="token-overview__secondary-balance"
+                  displayValue={formattedFiatBalance}
+                  hideLabel
+                />
+              )
+              : null
+          }
         </div>
       )}
       buttons={(

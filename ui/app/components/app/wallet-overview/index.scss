@@ -102,6 +102,13 @@
     justify-content: center;
   }
 
+  &__secondary-balance {
+    font-size: 16px;
+    line-height: 23px;
+    font-weight: 400;
+    color: $Grey-400;
+  }
+
   &__button {
     min-width: initial;
     width: 100px;
