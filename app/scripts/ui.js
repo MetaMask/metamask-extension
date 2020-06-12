@@ -36,18 +36,7 @@ async function start () {
 
   // setup sentry error reporting
   const release = global.platform.getVersion()
-  setupSentry({ release, getState })
-  // provide app state to append to error logs
-  function getState () {
-    // get app state
-    const state = window.getCleanAppState
-      ? window.getCleanAppState()
-      : {}
-    // remove unnecessary data
-    delete state.localeMessages
-    // return state to be added to request
-    return state
-  }
+  setupSentry({ release })
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
