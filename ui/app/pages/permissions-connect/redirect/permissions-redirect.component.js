@@ -11,14 +11,14 @@ export default function PermissionsRedirect ({ domainMetadata }) {
     <div className="permissions-redirect">
       <div className="permissions-redirect__result">
         { t('connecting') }
-        <div className="permissions-redirect__result__icons">
+        <div className="permissions-redirect__icons">
           <IconWithFallBack icon={domainMetadata.icon} name={domainMetadata.name} />
-          <div className="permissions-redirect__result__center-icon">
-            <span className="permissions-redirect__result__check" />
+          <div className="permissions-redirect__center-icon">
+            <span className="permissions-redirect__check" />
             { renderBrokenLine() }
           </div>
-          <div className="permissions-redirect__result__identicon-container">
-            <div className="permissions-redirect__result__identicon-border">
+          <div className="permissions-redirect__identicon-container">
+            <div className="permissions-redirect__identicon-border">
               <img src="/images/logo/metamask-fox.svg" />
             </div>
           </div>
