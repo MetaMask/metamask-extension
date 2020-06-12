@@ -30,7 +30,6 @@ import NotificationManager from './lib/notification-manager.js'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
-import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -251,19 +250,6 @@ function setupController (initState, initLangCode) {
     getCurrentNetwork: controller.getCurrentNetwork,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(controller.preferencesController),
     provider: controller.provider,
-  })
-
-  // report failed transactions to Sentry
-  controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') {
-      return
-    }
-    const txMeta = controller.txController.txStateManager.getTx(txId)
-    try {
-      reportFailedTxToSentry({ sentry, txMeta })
-    } catch (e) {
-      console.error(e)
-    }
   })
 
   // setup state persistence
