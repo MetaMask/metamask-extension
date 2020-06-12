@@ -41,7 +41,8 @@ class ImportSeedPhraseScreen extends Component {
     let seedPhraseError = null
 
     if (seedPhrase) {
-      if (this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+      const wordsCount = this.parseSeedPhrase(seedPhrase).split(' ').length
+      if (wordsCount !== 12 && wordsCount !== 24) {
         seedPhraseError = this.context.t('seedPhraseReq')
       } else if (!validateMnemonic(seedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
