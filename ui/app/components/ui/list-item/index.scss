@@ -33,12 +33,11 @@
     font-size: 16px;
     line-height: 160%;
     position: relative;
+    display: flex;
+    align-items: center;
 
     &-wrap {
       display: inline-block;
-      position: absolute;
-      width: 16px;
-      height: 16px;
       margin-left: 8px;
     }
   }

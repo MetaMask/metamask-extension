@@ -1603,6 +1603,9 @@
   "transactionTime": {
     "message": "Transaction Time"
   },
+  "showTransactionTimeDescription": {
+    "message": "Select this to display pending transaction time estimates in the activity tab while on the Main Ethereum Network. Note: estimates are approximations based on network conditions."
+  },
   "transfer": {
     "message": "Transfer"
   },

@@ -71,6 +71,7 @@
     "3box": "^1.10.2",
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
+    "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@material-ui/core": "1.0.0",
     "@metamask/controllers": "^2.0.0",
