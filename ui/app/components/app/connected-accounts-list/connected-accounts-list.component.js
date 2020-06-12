@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import ConnectedAccountsListPermissions from './connected-accounts-list-permissions'
@@ -75,14 +74,11 @@ export default class ConnectedAccountsList extends PureComponent {
         className="connected-accounts-list__row--highlight"
         address={address}
         name={`${name} (…${address.substr(-4, 4)})`}
-        status={(
-          <>
-            {t('statusNotConnected')}
-            &nbsp;&middot;&nbsp;
-            <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount}>
-              {t('connect')}
-            </a>
-          </>
+        status={t('statusNotConnected')}
+        action={(
+          <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount}>
+            {t('connect')}
+          </a>
         )}
       />
     )
@@ -98,20 +94,13 @@ export default class ConnectedAccountsList extends PureComponent {
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
           {
-            connectedAccounts.map(({ address, name, lastActive }, index) => {
-              let status
-              if (index === 0) {
-                status = t('primary')
-              } else if (lastActive) {
-                status = `${t('lastActive')}: ${DateTime.fromMillis(lastActive).toISODate()}`
-              }
-
+            connectedAccounts.map(({ address, name }, index) => {
               return (
                 <ConnectedAccountsListItem
                   key={address}
                   address={address}
                   name={`${name} (…${address.substr(-4, 4)})`}
-                  status={status}
+                  status={index === 0 ? t('active') : null}
                   options={(
                     <ConnectedAccountsListOptions
                       onHideOptions={this.hideAccountOptions}

@@ -28,12 +28,6 @@
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected this site. To connect to a Web3 site, find the connect button on their site."
   },
-  "primary": {
-    "message": "Primary"
-  },
-  "lastActive": {
-    "message": "Last active"
-  },
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
@@ -138,6 +132,9 @@
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
+  },
+  "active": {
+    "message": "Active"
   },
   "activity": {
     "message": "Activity"

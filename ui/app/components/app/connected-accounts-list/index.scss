@@ -8,26 +8,33 @@
   }
 
   &__account-name {
+    display: inline;
     font-weight: bold;
     font-size: 14px;
     line-height: 20px;
   }
 
+  %account-status-typography {
+    font-size: 12px;
+    line-height: 17px;
+    padding-top: 4px;
+  }
+
   &__account-status {
+    @extend %account-status-typography;
+    display: inline;
     color: $Grey-500;
   }
 
   &__account-status-link {
+    @extend %account-status-typography;
+    display: block;
+    color: $Grey-500;
+
     &, &:hover {
       color: $curious-blue;
       cursor: pointer;
     }
-  }
-
-  &__account-status {
-    font-size: 12px;
-    line-height: 17px;
-    padding-top: 4px;
   }
 
   &__row {
