@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getTokenExchangeRates, getConversionRate, getCurrentCurrency } from '../selectors'
+import { getTokenExchangeRates, getConversionRate, getCurrentCurrency, getShouldShowFiat } from '../selectors'
 import { getFormattedTokenFiatAmount } from '../helpers/utils/token-util'
 
 /**
@@ -15,6 +15,7 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol) {
   const contractExchangeRates = useSelector(getTokenExchangeRates)
   const conversionRate = useSelector(getConversionRate)
   const currentCurrency = useSelector(getCurrentCurrency)
+  const showFiat = useSelector(getShouldShowFiat)
 
   const tokenExchangeRate = contractExchangeRates[tokenAddress]
 
@@ -29,7 +30,7 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol) {
     [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol]
   )
 
-  if (currentCurrency.toUpperCase() === tokenSymbol) {
+  if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {
     return undefined
   }
 

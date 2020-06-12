@@ -20,6 +20,12 @@ describe('Token Cell', function () {
         '0xAnotherToken': 0.015,
       },
       conversionRate: 7.00,
+      preferences: {},
+      provider: {
+        chainId: '1',
+        ticker: 'ETH',
+        type: 'mainnet',
+      },
     },
     appState: {
       sidebar: {
