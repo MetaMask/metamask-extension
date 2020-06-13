@@ -321,11 +321,11 @@ export function isExtensionUrl (urlLike) {
   const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
 
   if (typeof urlLike === 'string') {
-    EXT_PROTOCOLS.forEach((protocol) => {
+    for (const protocol of EXT_PROTOCOLS) {
       if (urlLike.startsWith(protocol)) {
         return true
       }
-    })
+    }
   }
 
   if (urlLike?.protocol) {
