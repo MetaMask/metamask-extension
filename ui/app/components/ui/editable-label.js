@@ -57,7 +57,7 @@ class EditableLabel extends Component {
       <div key={1} className="editable-label__value">{this.state.value}</div>
     ), (
       <div key={2} className="editable-label__icon-wrapper">
-        <i className="fa fa-pencil editable-label__icon" onClick={() => this.setState({ isEditing: true })} />
+        <i className="fas fa-pencil-alt editable-label__icon" onClick={() => this.setState({ isEditing: true })} />
       </div>
     )]
   }
