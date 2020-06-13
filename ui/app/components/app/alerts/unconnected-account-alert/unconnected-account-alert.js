@@ -3,17 +3,17 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   ALERT_STATE,
-  switchToAccount,
+  connectAccount,
   dismissAlert,
   dismissAndDisableAlert,
   getAlertState,
-  connectAccount,
+  switchToAccount,
 } from '../../../../ducks/alerts/unconnected-account'
 import {
-  getSelectedAddress,
-  getSelectedIdentity,
   getOriginOfCurrentTab,
   getPermittedIdentitiesForCurrentTab,
+  getSelectedAddress,
+  getSelectedIdentity,
 } from '../../../../selectors'
 import { isExtensionUrl } from '../../../../helpers/utils/util'
 import Popover from '../../../ui/popover'
