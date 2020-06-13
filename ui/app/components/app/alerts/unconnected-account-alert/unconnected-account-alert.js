@@ -100,7 +100,7 @@ const UnconnectedAccountAlert = () => {
     >
       <ConnectedAccountsList
         accountToConnect={selectedIdentity}
-        connectAccount={() => dispatch(connectAccount)}
+        connectAccount={() => dispatch(connectAccount(selectedAddress))}
         connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => dispatch(switchToAccount(address))}
