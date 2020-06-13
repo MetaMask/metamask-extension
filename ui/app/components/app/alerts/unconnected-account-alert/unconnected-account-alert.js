@@ -28,7 +28,7 @@ const {
   LOADING,
 } = ALERT_STATE
 
-const SwitchConnectedAccountAlert = () => {
+const UnconnectedAccountAlert = () => {
   const t = useI18nContext()
   const dispatch = useDispatch()
   const alertState = useSelector(getAlertState)
@@ -55,7 +55,7 @@ const SwitchConnectedAccountAlert = () => {
           )
           : null
       }
-      <div className="unconnected-account-alert__footer-content">
+      <div className="unconnected-account-alert__footer-row">
         <div className="unconnected-account-alert__checkbox-wrapper">
           <Checkbox
             id="unconnectedAccount_dontShowThisAgain"
@@ -110,4 +110,4 @@ const SwitchConnectedAccountAlert = () => {
   )
 }
 
-export default SwitchConnectedAccountAlert
+export default UnconnectedAccountAlert
