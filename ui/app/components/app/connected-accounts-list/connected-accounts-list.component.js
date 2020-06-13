@@ -23,18 +23,15 @@ export default class ConnectedAccountsList extends PureComponent {
       name: PropTypes.string.isRequired,
       lastActive: PropTypes.number,
     })).isRequired,
+    connectAccount: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
-    addPermittedAccount: PropTypes.func.isRequired,
-    removePermittedAccount: PropTypes.func.isRequired,
+    removePermittedAccount: PropTypes.func,
     setSelectedAddress: PropTypes.func.isRequired,
+    shouldRenderListOptions: PropTypes.bool.isRequired,
   }
 
   state = {
     accountWithOptionsShown: null,
-  }
-
-  connectAccount = () => {
-    this.props.addPermittedAccount(this.props.accountToConnect?.address)
   }
 
   disconnectAccount = () => {
@@ -42,9 +39,9 @@ export default class ConnectedAccountsList extends PureComponent {
     this.props.removePermittedAccount(this.state.accountWithOptionsShown)
   }
 
-  switchAccount = () => {
+  switchAccount = (address) => {
     this.hideAccountOptions()
-    this.props.setSelectedAddress(this.state.accountWithOptionsShown)
+    this.props.setSelectedAddress(address)
   }
 
   hideAccountOptions = () => {
@@ -56,7 +53,7 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   renderUnconnectedAccount () {
-    const { accountToConnect } = this.props
+    const { accountToConnect, connectAccount } = this.props
     const { t } = this.context
 
     if (!accountToConnect) {
@@ -71,7 +68,7 @@ export default class ConnectedAccountsList extends PureComponent {
         name={`${name} (…${address.substr(-4, 4)})`}
         status={t('statusNotConnected')}
         action={(
-          <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount}>
+          <a className="connected-accounts-list__account-status-link" onClick={connectAccount}>
             {t('connect')}
           </a>
         )}
@@ -79,9 +76,63 @@ export default class ConnectedAccountsList extends PureComponent {
     )
   }
 
-  render () {
-    const { connectedAccounts, selectedAddress } = this.props
+  renderListItemOptions (address) {
+    const { selectedAddress, shouldRenderListOptions } = this.props
     const { accountWithOptionsShown } = this.state
+    const { t } = this.context
+
+    return shouldRenderListOptions
+      ? (
+        <ConnectedAccountsListOptions
+          onHideOptions={this.hideAccountOptions}
+          onShowOptions={this.showAccountOptions.bind(null, address)}
+          show={accountWithOptionsShown === address}
+        >
+          {
+            address === selectedAddress ? null : (
+              <MenuItem
+                iconClassName="fas fa-random"
+                onClick={() => this.switchAccount(address)}
+              >
+                {t('switchToThisAccount')}
+              </MenuItem>
+            )
+          }
+          {
+            this.disconnectAccount
+              ? (
+                <MenuItem
+                  iconClassName="disconnect-icon"
+                  onClick={this.disconnectAccount}
+                >
+                  {t('disconnectThisAccount')}
+                </MenuItem>
+              )
+              : null
+          }
+        </ConnectedAccountsListOptions>
+      )
+      : null
+  }
+
+  renderListItemAction (address) {
+    const { shouldRenderListOptions } = this.props
+    const { t } = this.context
+
+    return shouldRenderListOptions
+      ? null
+      : (
+        <a
+          className="connected-accounts-list__account-status-link"
+          onClick={() => this.switchAccount(address)}
+        >
+          {t('switchToThisAccount')}
+        </a>
+      )
+  }
+
+  render () {
+    const { connectedAccounts } = this.props
     const { t } = this.context
 
     return (
@@ -96,30 +147,8 @@ export default class ConnectedAccountsList extends PureComponent {
                   address={address}
                   name={`${name} (…${address.substr(-4, 4)})`}
                   status={index === 0 ? t('active') : null}
-                  options={(
-                    <ConnectedAccountsListOptions
-                      onHideOptions={this.hideAccountOptions}
-                      onShowOptions={this.showAccountOptions.bind(null, address)}
-                      show={accountWithOptionsShown === address}
-                    >
-                      {
-                        address === selectedAddress ? null : (
-                          <MenuItem
-                            iconClassName="fas fa-random"
-                            onClick={this.switchAccount}
-                          >
-                            {t('switchToThisAccount')}
-                          </MenuItem>
-                        )
-                      }
-                      <MenuItem
-                        iconClassName="disconnect-icon"
-                        onClick={this.disconnectAccount}
-                      >
-                        {t('disconnectThisAccount')}
-                      </MenuItem>
-                    </ConnectedAccountsListOptions>
-                  )}
+                  options={this.renderListItemOptions(address)}
+                  action={this.renderListItemAction(address)}
                 />
               )
             })

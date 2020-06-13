@@ -6,10 +6,9 @@ import {
   getPermissionsForActiveTab,
   getSelectedAddress,
 } from '../../selectors'
+import { isExtensionUrl } from '../../helpers/utils/util'
 import { addPermittedAccount, removePermittedAccount, setSelectedAddress } from '../../store/actions'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
-
-const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
 
 const mapStateToProps = (state) => {
   const { activeTab } = state
@@ -18,7 +17,7 @@ const mapStateToProps = (state) => {
   const permissions = getPermissionsForActiveTab(state)
   const selectedAddress = getSelectedAddress(state)
 
-  const isActiveTabExtension = EXT_PROTOCOLS.includes(activeTab.protocol)
+  const isActiveTabExtension = isExtensionUrl(activeTab)
   return {
     accountToConnect,
     isActiveTabExtension,
@@ -39,13 +38,13 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { activeTabOrigin: origin } = stateProps
+  const { activeTabOrigin: origin, accountToConnect } = stateProps
 
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    addPermittedAccount: (address) => dispatchProps.addPermittedAccount(origin, address),
+    connectAccount: () => dispatchProps.addPermittedAccount(origin, accountToConnect?.address),
     removePermittedAccount: (address) => dispatchProps.removePermittedAccount(origin, address),
   }
 }

@@ -28,6 +28,9 @@
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected this site. To connect to a Web3 site, find the connect button on their site."
   },
+  "currentAccountNotConnected": {
+    "message": "Your current account is not connected"
+  },
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
@@ -183,6 +186,12 @@
   },
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
+  },
+  "alertSettingsUnconnectedAccount": {	
+    "message": "Browsing a website with an unconnected account selected"	
+  },	
+  "alertSettingsUnconnectedAccountDescription": {	
+    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."	
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -976,9 +985,6 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
-  "notConnected": {
-    "message": "Not connected"
-  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
@@ -1460,9 +1466,6 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
-  "switchAccounts": {
-    "message": "Switch accounts"
-  },
   "symbol": {
     "message": "Symbol"
   },
@@ -1748,11 +1751,5 @@
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is website or dapp name"
-  },
-  "thisSite": {
-    "message": "this site"
-  },
-  "thisAccount": {
-    "message": "This account"
   }
 }

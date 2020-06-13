@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Popover from '../../components/ui/popover'
 import ConnectedAccountsList from '../../components/app/connected-accounts-list'
-import ConnectedAccountsPermissions from '../../components/app/connected-accounts-list/connected-accounts-permissions'
+import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions'
 
 export default class ConnectedAccounts extends PureComponent {
   static contextTypes = {
@@ -17,7 +17,7 @@ export default class ConnectedAccounts extends PureComponent {
   static propTypes = {
     accountToConnect: PropTypes.object,
     activeTabOrigin: PropTypes.string.isRequired,
-    addPermittedAccount: PropTypes.func.isRequired,
+    connectAccount: PropTypes.func.isRequired,
     connectedAccounts: PropTypes.array.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     permissions: PropTypes.array,
@@ -33,7 +33,7 @@ export default class ConnectedAccounts extends PureComponent {
       accountToConnect,
       activeTabOrigin,
       isActiveTabExtension,
-      addPermittedAccount,
+      connectAccount,
       connectedAccounts,
       history,
       mostRecentOverviewPage,
@@ -54,16 +54,18 @@ export default class ConnectedAccounts extends PureComponent {
         subtitle={connectedAccounts.length ? connectedAccountsDescription : t('connectedAccountsEmptyDescription')}
         onClose={() => history.push(mostRecentOverviewPage)}
         footerClassName="connected-accounts__footer"
+        footer={<ConnectedAccountsPermissions permissions={permissions} />}
       >
         <ConnectedAccountsList
           accountToConnect={accountToConnect}
-          addPermittedAccount={addPermittedAccount}
+          connectAccount={connectAccount}
           connectedAccounts={connectedAccounts}
           selectedAddress={selectedAddress}
           removePermittedAccount={removePermittedAccount}
           setSelectedAddress={setSelectedAddress}
+          shouldRenderListOptions
         />
-        <ConnectedAccountsPermissions permissions={permissions} />
+        {/* <ConnectedAccountsPermissions permissions={permissions} /> */}
       </Popover>
     )
   }
