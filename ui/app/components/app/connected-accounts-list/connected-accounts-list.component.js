@@ -27,7 +27,20 @@ export default class ConnectedAccountsList extends PureComponent {
     selectedAddress: PropTypes.string.isRequired,
     removePermittedAccount: PropTypes.func,
     setSelectedAddress: PropTypes.func.isRequired,
-    shouldRenderListOptions: PropTypes.bool.isRequired,
+    shouldRenderListOptions: (props, propName, componentName) => {
+      if (props[propName]) {
+        if (typeof props[propName] !== 'boolean') {
+          return new Error(
+            `${componentName}: '${propName}' must be a boolean if provided.`
+          )
+        }
+        if (!props['removePermittedAccount']) {
+          return new Error(
+            `${componentName}: '${propName}' requires 'removePermittedAccount'.`
+          )
+        }
+      }
+    },
   }
 
   state = {
@@ -77,62 +90,51 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   renderListItemOptions (address) {
-    const { selectedAddress, shouldRenderListOptions } = this.props
+    const { selectedAddress } = this.props
     const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
-    return shouldRenderListOptions
-      ? (
-        <ConnectedAccountsListOptions
-          onHideOptions={this.hideAccountOptions}
-          onShowOptions={this.showAccountOptions.bind(null, address)}
-          show={accountWithOptionsShown === address}
+    return (
+      <ConnectedAccountsListOptions
+        onHideOptions={this.hideAccountOptions}
+        onShowOptions={this.showAccountOptions.bind(null, address)}
+        show={accountWithOptionsShown === address}
+      >
+        {
+          address === selectedAddress ? null : (
+            <MenuItem
+              iconClassName="fas fa-random"
+              onClick={() => this.switchAccount(address)}
+            >
+              {t('switchToThisAccount')}
+            </MenuItem>
+          )
+        }
+        <MenuItem
+          iconClassName="disconnect-icon"
+          onClick={this.disconnectAccount}
         >
-          {
-            address === selectedAddress ? null : (
-              <MenuItem
-                iconClassName="fas fa-random"
-                onClick={() => this.switchAccount(address)}
-              >
-                {t('switchToThisAccount')}
-              </MenuItem>
-            )
-          }
-          {
-            this.disconnectAccount
-              ? (
-                <MenuItem
-                  iconClassName="disconnect-icon"
-                  onClick={this.disconnectAccount}
-                >
-                  {t('disconnectThisAccount')}
-                </MenuItem>
-              )
-              : null
-          }
-        </ConnectedAccountsListOptions>
-      )
-      : null
+          {t('disconnectThisAccount')}
+        </MenuItem>
+      </ConnectedAccountsListOptions>
+    )
   }
 
   renderListItemAction (address) {
-    const { shouldRenderListOptions } = this.props
     const { t } = this.context
 
-    return shouldRenderListOptions
-      ? null
-      : (
-        <a
-          className="connected-accounts-list__account-status-link"
-          onClick={() => this.switchAccount(address)}
-        >
-          {t('switchToThisAccount')}
-        </a>
-      )
+    return (
+      <a
+        className="connected-accounts-list__account-status-link"
+        onClick={() => this.switchAccount(address)}
+      >
+        {t('switchToThisAccount')}
+      </a>
+    )
   }
 
   render () {
-    const { connectedAccounts } = this.props
+    const { connectedAccounts, shouldRenderListOptions } = this.props
     const { t } = this.context
 
     return (
@@ -147,8 +149,8 @@ export default class ConnectedAccountsList extends PureComponent {
                   address={address}
                   name={`${name} (…${address.substr(-4, 4)})`}
                   status={index === 0 ? t('active') : null}
-                  options={this.renderListItemOptions(address)}
-                  action={this.renderListItemAction(address)}
+                  options={shouldRenderListOptions ? this.renderListItemOptions(address) : null}
+                  action={shouldRenderListOptions ? null : this.renderListItemAction(address)}
                 />
               )
             })

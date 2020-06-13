@@ -28,7 +28,7 @@ const {
   LOADING,
 } = ALERT_STATE
 
-const UnconnectedAccountAlert = () => {
+const SwitchConnectedAccountAlert = () => {
   const t = useI18nContext()
   const dispatch = useDispatch()
   const alertState = useSelector(getAlertState)
@@ -55,35 +55,37 @@ const UnconnectedAccountAlert = () => {
           )
           : null
       }
-      <div className="unconnected-account-alert__checkbox-wrapper">
-        <Checkbox
-          id="unconnectedAccount_dontShowThisAgain"
-          checked={dontShowThisAgain}
-          className="unconnected-account-alert__checkbox"
-          onClick={() => setDontShowThisAgain((checked) => !checked)}
-        />
-        <label
-          className="unconnected-account-alert__checkbox-label"
-          htmlFor="unconnectedAccount_dontShowThisAgain"
-        >
-          { t('dontShowThisAgain') }
-          <Tooltip
-            position="top"
-            title={t('alertDisableTooltip')}
-            wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
+      <div className="unconnected-account-alert__footer-content">
+        <div className="unconnected-account-alert__checkbox-wrapper">
+          <Checkbox
+            id="unconnectedAccount_dontShowThisAgain"
+            checked={dontShowThisAgain}
+            className="unconnected-account-alert__checkbox"
+            onClick={() => setDontShowThisAgain((checked) => !checked)}
+          />
+          <label
+            className="unconnected-account-alert__checkbox-label"
+            htmlFor="unconnectedAccount_dontShowThisAgain"
           >
-            <i className="fa fa-info-circle" />
-          </Tooltip>
-        </label>
+            { t('dontShowThisAgain') }
+            <Tooltip
+              position="top"
+              title={t('alertDisableTooltip')}
+              wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
+            >
+              <i className="fa fa-info-circle" />
+            </Tooltip>
+          </label>
+        </div>
+        <Button
+          disabled={alertState === LOADING}
+          onClick={onClose}
+          type="secondary"
+          className="unconnected-account-alert__button--dismiss"
+        >
+          { t('dismiss') }
+        </Button>
       </div>
-      <Button
-        disabled={alertState === LOADING}
-        onClick={onClose}
-        type="secondary"
-        className="unconnected-account-alert__button--dismiss"
-      >
-        { t('dismiss') }
-      </Button>
     </>
   )
 
@@ -108,4 +110,4 @@ const UnconnectedAccountAlert = () => {
   )
 }
 
-export default UnconnectedAccountAlert
+export default SwitchConnectedAccountAlert

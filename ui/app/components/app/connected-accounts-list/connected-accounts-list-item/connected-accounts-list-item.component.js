@@ -20,6 +20,7 @@ export default class ConnectedAccountsListItem extends PureComponent {
   static defaultProps = {
     className: null,
     options: null,
+    action: null,
   }
 
   render () {
@@ -54,9 +55,7 @@ export default class ConnectedAccountsListItem extends PureComponent {
                 )
                 : null
             }
-            {
-              action || null
-            }
+            {action}
           </div>
         </div>
         {options}

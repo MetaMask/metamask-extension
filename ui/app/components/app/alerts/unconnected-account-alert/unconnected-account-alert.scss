@@ -4,9 +4,16 @@
   }
 
   &__footer {
+    flex-direction: column;
+
     :only-child {
       margin: 0;
     }
+  }
+
+  &__footer-content {
+    display: flex;
+    flex-direction: row;
   }
 
   &__button--dismiss {
