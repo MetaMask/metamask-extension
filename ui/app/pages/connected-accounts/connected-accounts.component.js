@@ -65,7 +65,6 @@ export default class ConnectedAccounts extends PureComponent {
           setSelectedAddress={setSelectedAddress}
           shouldRenderListOptions
         />
-        {/* <ConnectedAccountsPermissions permissions={permissions} /> */}
       </Popover>
     )
   }
