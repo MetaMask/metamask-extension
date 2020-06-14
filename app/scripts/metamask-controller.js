@@ -620,6 +620,10 @@ export default class MetamaskController extends EventEmitter {
 
       // clear known identities
       this.preferencesController.setAddresses([])
+
+      // clear permissions
+      this.permissionsController.clearPermissions()
+
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
