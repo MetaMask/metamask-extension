@@ -6,7 +6,7 @@
   &__footer {
     flex-direction: column;
 
-    :only-child {
+    > :only-child {
       margin: 0;
     }
   }
@@ -55,6 +55,6 @@
   }
 
   &__checkbox-label-tooltip {
-    margin-left: 8px !important;
+    margin-left: 8px;
   }
 }
