@@ -212,6 +212,7 @@ const actions = {
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
+  UPDATE_SEND_TOKEN: 'UPDATE_SEND_TOKEN',
   CLEAR_SEND: 'CLEAR_SEND',
   OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
@@ -230,6 +231,7 @@ const actions = {
   updateSendMemo,
   setMaxModeTo,
   updateSend,
+  updateSendToken,
   updateSendErrors,
   clearSend,
   setSelectedAddress,
@@ -1133,7 +1135,7 @@ function showChooseContractExecutorPage ({methodSelected, methodABI, inputValues
 }
 
 function updateSendTokenBalance ({
-  selectedToken,
+  sendToken,
   tokenContract,
   address,
 }) {
@@ -1144,7 +1146,7 @@ function updateSendTokenBalance ({
     return tokenBalancePromise
       .then(usersToken => {
         if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          const newTokenBalance = calcTokenBalance({ sendToken, usersToken })
           dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
         }
       })
@@ -1215,6 +1217,13 @@ function updateSend (newSend) {
   return {
     type: actions.UPDATE_SEND,
     value: newSend,
+  }
+}
+
+function updateSendToken (token) {
+  return {
+    type: actions.UPDATE_SEND_TOKEN,
+    value: token,
   }
 }
 

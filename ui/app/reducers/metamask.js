@@ -283,6 +283,35 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND_TOKEN:
+      const newSend = {
+        ...metamaskState.send,
+        token: action.value,
+      }
+      // erase token-related state when switching back to native currency
+      if (newSend.editingTransactionId && !newSend.token) {
+        const unapprovedTx = newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {}
+        const txParams = unapprovedTx.txParams || {}
+        Object.assign(newSend, {
+          tokenBalance: null,
+          balance: '0',
+          from: unapprovedTx.from || '',
+          unapprovedTxs: {
+            ...newSend.unapprovedTxs,
+            [newSend.editingTransactionId]: {
+              ...unapprovedTx,
+              txParams: {
+                ...txParams,
+                data: '',
+              },
+            },
+          },
+        })
+      }
+      return Object.assign(metamaskState, {
+        send: newSend,
+      })
+
     case actions.CLEAR_SEND:
       return extend(metamaskState, {
         send: {

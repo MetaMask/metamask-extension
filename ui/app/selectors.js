@@ -46,6 +46,8 @@ const selectors = {
   priceEstimateToWei,
   getCurrentEthBalance,
   getSendToken,
+  getSendTokenAddress,
+  getSendTokenContract,
   getTokenBalance,
   getSendFromBalance,
   getSendFromObject,
@@ -267,6 +269,17 @@ function getCurrentEthBalance (state) {
 
 function getSendToken (state) {
   return state.metamask.send.token
+}
+
+function getSendTokenAddress (state) {
+  return getSendToken(state)?.address
+}
+
+function getSendTokenContract (state) {
+  const sendTokenAddress = getSendTokenAddress(state)
+  return sendTokenAddress
+    ? global.eth.contract(abi).at(sendTokenAddress)
+    : null
 }
 
 function getTokenBalance (state) {
