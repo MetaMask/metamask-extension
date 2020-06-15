@@ -90,7 +90,6 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   renderListItemOptions (address) {
-    const { selectedAddress } = this.props
     const { accountWithOptionsShown } = this.state
     const { t } = this.context
 
@@ -100,16 +99,6 @@ export default class ConnectedAccountsList extends PureComponent {
         onShowOptions={this.showAccountOptions.bind(null, address)}
         show={accountWithOptionsShown === address}
       >
-        {
-          address === selectedAddress ? null : (
-            <MenuItem
-              iconClassName="fas fa-random"
-              onClick={() => this.switchAccount(address)}
-            >
-              {t('switchToThisAccount')}
-            </MenuItem>
-          )
-        }
         <MenuItem
           iconClassName="disconnect-icon"
           onClick={this.disconnectAccount}
@@ -134,7 +123,11 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   render () {
-    const { connectedAccounts, shouldRenderListOptions } = this.props
+    const {
+      connectedAccounts,
+      selectedAddress,
+      shouldRenderListOptions,
+    } = this.props
     const { t } = this.context
 
     return (
@@ -149,8 +142,16 @@ export default class ConnectedAccountsList extends PureComponent {
                   address={address}
                   name={`${name} (…${address.substr(-4, 4)})`}
                   status={index === 0 ? t('active') : null}
-                  options={shouldRenderListOptions ? this.renderListItemOptions(address) : null}
-                  action={shouldRenderListOptions ? null : this.renderListItemAction(address)}
+                  options={
+                    shouldRenderListOptions
+                      ? this.renderListItemOptions(address)
+                      : null
+                  }
+                  action={
+                    address !== selectedAddress
+                      ? this.renderListItemAction(address)
+                      : null
+                  }
                 />
               )
             })
