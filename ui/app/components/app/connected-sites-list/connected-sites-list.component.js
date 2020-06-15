@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import IconWithFallBack from '../../ui/icon-with-fallback'
+import SiteIcon from '../../ui/site-icon'
 import { stripHttpSchemes } from '../../../helpers/utils/util'
 
 export default class ConnectedSitesList extends Component {
@@ -28,7 +28,7 @@ export default class ConnectedSitesList extends Component {
         { connectedDomains.map((domain) => (
           <div key={domain.origin} className="connected-sites-list__content-row">
             <div className="connected-sites-list__domain-info">
-              <IconWithFallBack icon={domain.icon} name={domain.name} />
+              <SiteIcon icon={domain.icon} name={domain.name} size={32} />
               <span className="connected-sites-list__domain-name" title={domain.extensionId || domain.origin}>
                 {this.getDomainDisplayName(domain)}
               </span>

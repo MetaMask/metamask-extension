@@ -90,9 +90,9 @@
 
 @import 'connected-accounts-permissions/index';
 
-@import '../ui/icon-with-fallback/index';
-
 @import '../ui/icon/index';
+
+@import '../ui/icon-with-fallback/icon-with-fallback';
 
 @import '../ui/icon-with-label/index';
 
@@ -113,3 +113,5 @@
 @import 'wallet-overview/index';
 
 @import '../ui/account-mismatch-warning/index';
+
+@import '../ui/icon-border/icon-border';
