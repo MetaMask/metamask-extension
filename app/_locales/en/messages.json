@@ -84,7 +84,7 @@
   },
   "connectTo": {
     "message": "Connect to $1",
-    "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
   },
   "connectToAll": {
     "message": "Connect to all your $1",
@@ -100,7 +100,7 @@
   },
   "connectToMultipleNumberOfAccounts": {
     "message": "$1 accounts",
-    "description": "$1 is the number of accounts to which the site/dapp is asking to connect; this will substitute $1 in connectToMultiple"
+    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "contractInteraction": {
     "message": "Contract Interaction"
@@ -1755,7 +1755,7 @@
   },
   "decryptMessageNotice": {
     "message": "$1 would like to read this message to complete your action",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is web3 site or application name"
   },
   "decryptMetamask": {
     "message": "Decrypt message"
@@ -1775,7 +1775,7 @@
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
-    "description": "$1 is website or dapp name"
+    "description": "$1 is web3 site or application name"
   },
   "thisSite": {
     "message": "this site"
