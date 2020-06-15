@@ -289,14 +289,14 @@ function mapDispatchToProps (dispatch) {
   return {
     addToAddressBook: (recipient, nickname) => dispatch(actions.addToAddressBook(recipient, nickname)),
     showAccountsPage: () => dispatch(actions.showAccountsPage()),
-    displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
+    displayWarning: msg => dispatch(actions.displayWarning(msg)),
     hideWarning: () => dispatch(actions.hideWarning()),
-    getPendingNonce: (address) => dispatch(actions.getPendingNonce(address)),
-    signTx: (txParams) => dispatch(actions.signTx(txParams)),
-    updateSendAmount: (amount) => dispatch(actions.updateSendAmount(amount)),
-    setMaxModeTo: (maxMode) => dispatch(actions.setMaxModeTo(maxMode)),
+    getPendingNonce: address => dispatch(actions.getPendingNonce(address)),
+    signTx: txParams => dispatch(actions.signTx(txParams)),
+    updateSendAmount: amount => dispatch(actions.updateSendAmount(amount)),
+    setMaxModeTo: maxMode => dispatch(actions.setMaxModeTo(maxMode)),
     updateSendTo: (to, nickname) => dispatch(actions.updateSendTo(to, nickname)),
-    updateSendHexData: (txData) => dispatch(actions.updateSendHexData(txData)),
+    updateSendHexData: txData => dispatch(actions.updateSendHexData(txData)),
   }
 }
 

@@ -1,4 +1,4 @@
-import { multiplyCurrencies, subtractCurrencies, BIG_NUMBER_WEI_MULTIPLIER } from '../../../../../ui/app/conversion-util'
+import { subtractCurrencies, BIG_NUMBER_WEI_MULTIPLIER } from '../../../../../ui/app/conversion-util'
 import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 
@@ -6,17 +6,10 @@ export function calcMaxAmount ({ balance, gasTotal, sendToken, tokenBalance }) {
   const { decimals } = sendToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 
-
   let maxBalance
   if (sendToken) {
-    maxBalance = multiplyCurrencies(
-      tokenBalance,
-      multiplier,
-      {
-        toNumericBase: 'hex',
-        multiplicandBase: 16,
-      },
-    )
+    const tokenBalanceBN = new BigNumber(tokenBalance.toString())
+    maxBalance = tokenBalanceBN.div(multiplier).toString()
   } else {
     const maxBalanceInWei =
     subtractCurrencies(
