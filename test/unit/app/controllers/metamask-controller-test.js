@@ -599,6 +599,7 @@ describe('MetaMaskController', function () {
       sinon.stub(metamaskController.preferencesController, 'removeAddress')
       sinon.stub(metamaskController.accountTracker, 'removeAccount')
       sinon.stub(metamaskController.keyringController, 'removeAccount')
+      sinon.stub(metamaskController.permissionsController, 'removeAllAccountPermissions')
 
       ret = await metamaskController.removeAccount(addressToRemove)
 
@@ -608,6 +609,7 @@ describe('MetaMaskController', function () {
       metamaskController.keyringController.removeAccount.restore()
       metamaskController.accountTracker.removeAccount.restore()
       metamaskController.preferencesController.removeAddress.restore()
+      metamaskController.permissionsController.removeAllAccountPermissions.restore()
     })
 
     it('should call preferencesController.removeAddress', async function () {
@@ -618,6 +620,9 @@ describe('MetaMaskController', function () {
     })
     it('should call keyringController.removeAccount', async function () {
       assert(metamaskController.keyringController.removeAccount.calledWith(addressToRemove))
+    })
+    it('should call permissionsController.removeAllAccountPermissions', async function () {
+      assert(metamaskController.permissionsController.removeAllAccountPermissions.calledWith(addressToRemove))
     })
     it('should return address', async function () {
       assert.equal(ret, '0x1')

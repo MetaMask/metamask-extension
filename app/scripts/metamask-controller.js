@@ -997,6 +997,8 @@ export default class MetamaskController extends EventEmitter {
    *
    */
   async removeAccount (address) {
+    // Remove all associated permissions
+    await this.permissionsController.removeAllAccountPermissions(address)
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller

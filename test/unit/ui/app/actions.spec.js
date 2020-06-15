@@ -221,10 +221,10 @@ describe('Actions', function () {
   })
 
   describe('#removeAccount', function () {
-    let removeAccountSpy
+    let removeAccountStub
 
     afterEach(function () {
-      removeAccountSpy.restore()
+      removeAccountStub.restore()
     })
 
     it('calls removeAccount in background and expect actions to show account', async function () {
@@ -238,10 +238,11 @@ describe('Actions', function () {
         'SHOW_ACCOUNTS_PAGE',
       ]
 
-      removeAccountSpy = sinon.spy(background, 'removeAccount')
+      removeAccountStub = sinon.stub(background, 'removeAccount')
+      removeAccountStub.callsFake((_, callback) => callback())
 
       await store.dispatch(actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'))
-      assert(removeAccountSpy.calledOnce)
+      assert(removeAccountStub.calledOnce)
       const actionTypes = store
         .getActions()
         .map((action) => action.type)
@@ -257,8 +258,8 @@ describe('Actions', function () {
         'HIDE_LOADING_INDICATION',
       ]
 
-      removeAccountSpy = sinon.stub(background, 'removeAccount')
-      removeAccountSpy.callsFake((_, callback) => {
+      removeAccountStub = sinon.stub(background, 'removeAccount')
+      removeAccountStub.callsFake((_, callback) => {
         callback(new Error('error'))
       })
 
