@@ -1,10 +1,4 @@
 .transaction-list-item {
-  cursor: pointer;
-
-  &:hover {
-    background-color: $Grey-000;
-  }
-
   &__primary-currency {
     color: $Black-100;
   }
