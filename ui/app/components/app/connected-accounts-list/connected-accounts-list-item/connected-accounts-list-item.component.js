@@ -12,13 +12,15 @@ export default class ConnectedAccountsListItem extends PureComponent {
     address: PropTypes.string.isRequired,
     className: PropTypes.string,
     name: PropTypes.node.isRequired,
-    status: PropTypes.node.isRequired,
+    status: PropTypes.string,
+    action: PropTypes.node,
     options: PropTypes.node,
   }
 
   static defaultProps = {
     className: null,
     options: null,
+    action: null,
   }
 
   render () {
@@ -27,6 +29,7 @@ export default class ConnectedAccountsListItem extends PureComponent {
       className,
       name,
       status,
+      action,
       options,
     } = this.props
 
@@ -39,18 +42,20 @@ export default class ConnectedAccountsListItem extends PureComponent {
             diameter={32}
           />
           <div>
-            <p>
-              <strong className="connected-accounts-list__account-name">{name}</strong>
+            <p className="connected-accounts-list__account-name">
+              <strong>{name}</strong>
             </p>
             {
               status
                 ? (
                   <p className="connected-accounts-list__account-status">
+                    &nbsp;&nbsp;
                     {status}
                   </p>
                 )
                 : null
             }
+            {action}
           </div>
         </div>
         {options}

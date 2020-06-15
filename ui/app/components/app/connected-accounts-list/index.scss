@@ -8,26 +8,32 @@
   }
 
   &__account-name {
+    display: inline;
     font-weight: bold;
     font-size: 14px;
     line-height: 20px;
   }
 
+  %account-status-typography {
+    font-size: 12px;
+    line-height: 17px;
+    padding-top: 4px;
+  }
+
   &__account-status {
+    @extend %account-status-typography;
+    display: inline;
     color: $Grey-500;
   }
 
   &__account-status-link {
+    @extend %account-status-typography;
+    display: block;
+
     &, &:hover {
       color: $curious-blue;
       cursor: pointer;
     }
-  }
-
-  &__account-status {
-    font-size: 12px;
-    line-height: 17px;
-    padding-top: 4px;
   }
 
   &__row {
@@ -39,10 +45,6 @@
     padding: 16px 24px;
 
     border-top: 1px solid $geyser;
-
-    &:last-of-type {
-      border-bottom: 1px solid $geyser;
-    }
 
     &--highlight {
       background-color: $warning-light-yellow;
@@ -67,72 +69,6 @@
     background: inherit;
     color: $Grey-500;
     font-size: 22px;
-  }
-}
-
-.connected-accounts-permissions {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-
-  font-size: 12px;
-  line-height: 17px;
-  color: $Grey-500;
-
-  strong {
-    font-weight: bold;
-  }
-
-  p + p {
-    padding-top: 8px;
-  }
-
-  &__header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-
-    font-size: 14px;
-    line-height: 20px;
-    color: #24292E;
-
-    button {
-      font-size: 16px;
-      line-height: 24px;
-
-      background: none;
-      padding: 0;
-      margin-left: 8px;
-    }
-  }
-
-  &__list {
-    padding-top: 8px;
-  }
-
-  &__list-item {
-    display: flex;
-
-    i {
-      display: block;
-      padding-right: 8px;
-      font-size: 18px;
-      color: $Grey-800;
-    }
-  }
-
-  &__list-container {
-    max-height: 0px;
-    overflow: hidden;
-    height: auto;
-    transition: max-height 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-
-    &--expanded {
-      // arbitrarily set hard coded value for effect to work
-      max-height: 100px;
-    }
   }
 }
 

@@ -522,9 +522,6 @@
     "priceAndTimeEstimatesLastRetrieved": 1541527901281,
     "errors": {}
   },
-  "switchToConnected": {
-    "state": "CLOSED"
-  },
   "unconnectedAccount": {
     "state": "CLOSED"
   },
