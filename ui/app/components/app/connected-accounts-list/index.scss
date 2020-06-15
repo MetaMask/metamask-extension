@@ -29,7 +29,6 @@
   &__account-status-link {
     @extend %account-status-typography;
     display: block;
-    color: $Grey-500;
 
     &, &:hover {
       color: $curious-blue;
