@@ -28,17 +28,14 @@ export default class ConnectedAccountsList extends PureComponent {
     removePermittedAccount: PropTypes.func,
     setSelectedAddress: PropTypes.func.isRequired,
     shouldRenderListOptions: (props, propName, componentName) => {
-      if (props[propName]) {
-        if (typeof props[propName] !== 'boolean') {
-          return new Error(
-            `${componentName}: '${propName}' must be a boolean if provided.`
-          )
-        }
-        if (!props['removePermittedAccount']) {
-          return new Error(
-            `${componentName}: '${propName}' requires 'removePermittedAccount'.`
-          )
-        }
+      if (typeof props[propName] !== 'boolean') {
+        return new Error(
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`
+        )
+      } else if (props[propName] && !props['removePermittedAccount']) {
+        return new Error(
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`
+        )
       }
     },
   }
