@@ -46,9 +46,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
     this._removeBeforeUnload()
   }
 
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancelEncryptionPublicKey } = this.props
+  _beforeUnload = async (event) => {
+    const {
+      clearConfirmTransaction,
+      cancelEncryptionPublicKey,
+      txData,
+    } = this.props
     const { metricsEvent } = this.context
+    await cancelEncryptionPublicKey(txData, event)
     metricsEvent({
       eventOpts: {
         category: 'Messages',
@@ -57,7 +62,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
       },
     })
     clearConfirmTransaction()
-    cancelEncryptionPublicKey(event)
   }
 
   _removeBeforeUnload = () => {
@@ -84,11 +88,12 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   renderAccount = () => {
     const { fromAccount } = this.state
+    const { t } = this.context
 
     return (
       <div className="request-encryption-public-key__account">
         <div className="request-encryption-public-key__account-text">
-          { `${this.context.t('account')}:` }
+          { `${t('account')}:` }
         </div>
 
         <div className="request-encryption-public-key__account-item">
@@ -103,6 +108,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   renderBalance = () => {
     const { conversionRate } = this.props
+    const { t } = this.context
     const { fromAccount: { balance } } = this.state
 
     const balanceInEther = conversionUtil(balance, {
@@ -116,7 +122,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     return (
       <div className="request-encryption-public-key__balance">
         <div className="request-encryption-public-key__balance-text">
-          { `${this.context.t('balance')}:` }
+          { `${t('balance')}:` }
         </div>
         <div className="request-encryption-public-key__balance-value">
           { `${balanceInEther} ETH` }
@@ -149,10 +155,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
   }
 
   renderBody = () => {
-    const { txData } = this.props
+    const { domainMetadata, txData } = this.props
+    const { t } = this.context
 
-    const origin = this.props.domainMetadata[txData.origin]
-    const notice = this.context.t('encryptionPublicKeyNotice', [origin.name])
+    const origin = domainMetadata[txData.origin]
+    const notice = t('encryptionPublicKeyNotice', [origin.name])
 
     return (
       <div className="request-encryption-public-key__body">
@@ -191,6 +198,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props
+    const { t, metricsEvent } = this.context
 
     return (
       <div className="request-encryption-public-key__footer">
@@ -201,7 +209,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           onClick={async (event) => {
             this._removeBeforeUnload()
             await cancelEncryptionPublicKey(txData, event)
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Messages',
                 action: 'Encryption public key Request',
@@ -232,7 +240,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             history.push(mostRecentOverviewPage)
           }}
         >
-          { this.context.t('provide') }
+          { t('provide') }
         </Button>
       </div>
     )
