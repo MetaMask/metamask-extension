@@ -1755,7 +1755,7 @@
   },
   "decryptMessageNotice": {
     "message": "$1 would like to read this message to complete your action",
-    "description": "$1 is web3 site or application name"
+    "description": "$1 is the web3 site name"
   },
   "decryptMetamask": {
     "message": "Decrypt message"
