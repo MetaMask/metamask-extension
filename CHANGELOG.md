@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 5.1.1 Mon Jun 15 2020
+
 - [#393](https://github.com/poanetwork/nifty-wallet/pull/393) - (Feature) "Send all" option for tokens transfer
 - [#391](https://github.com/poanetwork/nifty-wallet/pull/391) - (Feature) Gas price oracles npm package integration
 - [#389](https://github.com/poanetwork/nifty-wallet/pull/389) - (Feature) Support 24 words mnemonic phrase
