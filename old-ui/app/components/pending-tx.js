@@ -25,10 +25,11 @@ const { tokenInfoGetter, calcTokenAmount } = require('../../../ui/app/token-util
 import BigNumber from 'bignumber.js'
 import ethNetProps from 'eth-net-props'
 import { getMetaMaskAccounts } from '../../../ui/app/selectors'
+import { MIN_GAS_LIMIT_DEC } from '../../../ui/app/components/send/send.constants'
 import * as Toast from './toast'
 
 const MIN_GAS_PRICE_BN = new BN('0')
-const MIN_GAS_LIMIT_BN = new BN('21000')
+const MIN_GAS_LIMIT_BN = new BN(MIN_GAS_LIMIT_DEC)
 const emptyAddress = '0x0000000000000000000000000000000000000000'
 
 class PendingTx extends Component {
@@ -472,12 +473,7 @@ class PendingTx extends Component {
                 },
               }, [
                 h('.cell.label'),
-                h('.cell.value', {
-                  style: {
-                    fontFamily: 'Nunito Regular',
-                    fontSize: '14px',
-                  },
-                }, `Data included: ${dataLength} bytes`),
+                h('.cell.value', `Data included: ${dataLength} bytes`),
               ]),
             ]), // End of Table
 
@@ -591,7 +587,8 @@ class PendingTx extends Component {
     }
   }
 
-  componentWillMount () {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount () {
     const txMeta = this.gatherTxMeta()
     const txParams = txMeta.txParams || {}
     if (this.props.isToken || this.state.isToken) {

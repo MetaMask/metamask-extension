@@ -248,4 +248,5 @@ module.exports = {
   conversionMax,
   toNegative,
   subtractCurrencies,
+  BIG_NUMBER_WEI_MULTIPLIER,
 }

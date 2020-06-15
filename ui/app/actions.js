@@ -188,6 +188,7 @@ const actions = {
   signTokenTx: signTokenTx,
   updateTransaction,
   updateAndApproveTx,
+  getPendingNonce,
   cancelTx,
   cancelTxs,
   completedTx: completedTx,
@@ -211,6 +212,7 @@ const actions = {
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
+  UPDATE_SEND_TOKEN: 'UPDATE_SEND_TOKEN',
   CLEAR_SEND: 'CLEAR_SEND',
   OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
@@ -229,6 +231,7 @@ const actions = {
   updateSendMemo,
   setMaxModeTo,
   updateSend,
+  updateSendToken,
   updateSendErrors,
   clearSend,
   setSelectedAddress,
@@ -1060,7 +1063,6 @@ function setGasTotal (gasTotal) {
 
 function updateGasData ({
   blockGasLimit,
-  recentBlocks,
   selectedAddress,
   selectedToken,
   to,
@@ -1099,11 +1101,13 @@ function updateGasData ({
       dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
       dispatch(actions.gasLoadingFinished())
+      return Promise.resolve()
     })
     .catch(err => {
       log.error(err)
       dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
       dispatch(actions.gasLoadingFinished())
+      return Promise.reject()
     })
   }
 }
@@ -1131,7 +1135,7 @@ function showChooseContractExecutorPage ({methodSelected, methodABI, inputValues
 }
 
 function updateSendTokenBalance ({
-  selectedToken,
+  sendToken,
   tokenContract,
   address,
 }) {
@@ -1142,7 +1146,7 @@ function updateSendTokenBalance ({
     return tokenBalancePromise
       .then(usersToken => {
         if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          const newTokenBalance = calcTokenBalance({ sendToken, usersToken })
           dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
         }
       })
@@ -1213,6 +1217,13 @@ function updateSend (newSend) {
   return {
     type: actions.UPDATE_SEND,
     value: newSend,
+  }
+}
+
+function updateSendToken (token) {
+  return {
+    type: actions.UPDATE_SEND_TOKEN,
+    value: token,
   }
 }
 
@@ -1301,6 +1312,24 @@ function updateAndApproveTx (txData) {
         dispatch(actions.hideLoadingIndication())
         return Promise.reject(err)
       })
+  }
+}
+
+function getPendingNonce (address) {
+  log.info('actions: getPendingNonce')
+  return (dispatch) => {
+    log.debug(`actions calling background.getPendingNonce`)
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.getPendingNonce(address, (err, nonce) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideLoadingIndication())
+        resolve(nonce)
+      })
+    })
   }
 }
 

@@ -14,14 +14,14 @@ import ethUtil from 'ethereumjs-util'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
-import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import { getMetaMaskAccounts, getGasTotal, getTokenBalance, getCurrentEthBalance, getSendToken, getSendTo } from '../../../../ui/app/selectors'
 import * as Toast from '../toast'
+import AmountMaxButton from './amount-max-button'
 
 const optionalDataLabelStyle = {
   background: '#ffffff',
   color: '#333333',
   marginTop: '16px',
-  marginBottom: '16px',
 }
 const optionalDataValueStyle = {
   width: '100%',
@@ -29,6 +29,19 @@ const optionalDataValueStyle = {
 }
 
 class SendTransactionScreen extends PersistentForm {
+  constructor (props) {
+    super(props)
+    this.state = {
+      pendingNonce: null,
+      recipient: null,
+    }
+  }
+
+  async fetchPendingNonce () {
+    const pendingNonce = await this.props.getPendingNonce(this.props.address)
+    this.setState({pendingNonce: pendingNonce})
+  }
+
   render () {
     this.persistentFormParentId = 'send-tx-form'
 
@@ -38,6 +51,7 @@ class SendTransactionScreen extends PersistentForm {
       identities,
       addressBook,
       error,
+      updateSendTo,
     } = props
 
     return (
@@ -61,6 +75,8 @@ class SendTransactionScreen extends PersistentForm {
             network={network}
             identities={identities}
             addressBook={addressBook}
+            value={this.state.recipient || ''}
+            updateSendTo={updateSendTo}
           />
         </section>
 
@@ -76,14 +92,21 @@ class SendTransactionScreen extends PersistentForm {
             dataset={{
               persistentFormid: 'tx-amount',
             }}
+            disabled={!!this.props.maxModeOn}
+            value={this.props.amount || ''}
+            onChange={(e) => {
+              const newAmount = e.target.value
+              this.props.updateSendAmount(newAmount)
+            }}
           />
 
           <button
             onClick={this.onSubmit.bind(this)}>
               Next
-            </button>
+          </button>
 
         </section>
+        <section className="flex-row flex-left amount-max-container"><AmountMaxButton /></section>
 
         <h3 className="flex-center"
           style={optionalDataLabelStyle}
@@ -98,6 +121,10 @@ class SendTransactionScreen extends PersistentForm {
             style={optionalDataValueStyle}
             dataset={{
               persistentFormid: 'tx-data',
+            }}
+            onChange={(e) => {
+              const newTxData = e.target.value
+              this.props.updateSendHexData(newTxData)
             }}
           />
         </section>
@@ -117,19 +144,31 @@ class SendTransactionScreen extends PersistentForm {
             dataset={{
               persistentFormid: 'tx-custom-nonce',
             }}
+            defaultValue={this.state.pendingNonce}
           />
         </section>
       </div>
     )
   }
 
+  componentDidMount () {
+    this._isMounted = true
+    if (this._isMounted) {
+      this.fetchPendingNonce()
+    }
+  }
+
   componentWillUnmount () {
-    this.props.dispatch(actions.displayWarning(''))
+    this.props.displayWarning('')
+    this.props.updateSendAmount(null)
+    this.props.setMaxModeTo(false)
+    this.props.updateSendTo('')
+    this._isMounted = false
   }
 
   navigateToAccounts (event) {
     event.stopPropagation()
-    this.props.dispatch(actions.showAccountsPage())
+    this.props.showAccountsPage()
   }
 
   recipientDidChange (recipient, nickname) {
@@ -137,6 +176,7 @@ class SendTransactionScreen extends PersistentForm {
       recipient: recipient,
       nickname: nickname,
     })
+    this.props.updateSendTo(recipient, nickname)
   }
 
   onSubmit () {
@@ -158,14 +198,14 @@ class SendTransactionScreen extends PersistentForm {
 
     if (isNaN(input) || input === '') {
       message = 'Invalid ether value.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
     if (parts[1]) {
       const decimal = parts[1]
       if (decimal.length > 18) {
         message = 'Ether amount is too precise.'
-        return this.props.dispatch(actions.displayWarning(message))
+        return this.props.displayWarning(message)
       }
     }
 
@@ -176,32 +216,32 @@ class SendTransactionScreen extends PersistentForm {
 
     if (value.gt(balance)) {
       message = 'Insufficient funds.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
     if (input < 0) {
       message = 'Can not send negative amounts of ETH.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
     if ((isInvalidChecksumAddress(recipient, this.props.network))) {
       message = 'Recipient address checksum is invalid.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
     if ((!isValidAddress(recipient, this.props.network) && !txData) || (!recipient && !txData)) {
       message = 'Recipient address is invalid.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
     if (!isHex(ethUtil.stripHexPrefix(txData)) && txData) {
       message = 'Transaction data must be hex string.'
-      return this.props.dispatch(actions.displayWarning(message))
+      return this.props.displayWarning(message)
     }
 
-    this.props.dispatch(actions.hideWarning())
+    this.props.hideWarning()
 
-    this.props.dispatch(actions.addToAddressBook(recipient, nickname))
+    this.props.addToAddressBook(recipient, nickname)
 
     const txParams = {
       from: this.props.address,
@@ -212,19 +252,30 @@ class SendTransactionScreen extends PersistentForm {
     if (txData) txParams.data = txData
     if (txCustomNonce) txParams.nonce = '0x' + parseInt(txCustomNonce, 10).toString(16)
 
-    this.props.dispatch(actions.signTx(txParams))
+    this.props.signTx(txParams)
   }
 }
 
 function mapStateToProps (state) {
   const accounts = getMetaMaskAccounts(state)
+  const balance = getCurrentEthBalance(state)
+  const gasTotal = getGasTotal(state)
   const result = {
+    send: state.metamask.send,
     address: state.metamask.selectedAddress,
     accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
+    balance,
+    gasTotal,
+    to: getSendTo(state),
+    sendToken: getSendToken(state),
+    tokenBalance: getTokenBalance(state),
+    amount: state.metamask.send.amount,
+    maxModeOn: state.metamask.send.maxModeOn,
+    blockGasLimit: state.metamask.currentBlockGasLimit,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -234,4 +285,19 @@ function mapStateToProps (state) {
   return result
 }
 
-module.exports = connect(mapStateToProps)(SendTransactionScreen)
+function mapDispatchToProps (dispatch) {
+  return {
+    addToAddressBook: (recipient, nickname) => dispatch(actions.addToAddressBook(recipient, nickname)),
+    showAccountsPage: () => dispatch(actions.showAccountsPage()),
+    displayWarning: msg => dispatch(actions.displayWarning(msg)),
+    hideWarning: () => dispatch(actions.hideWarning()),
+    getPendingNonce: address => dispatch(actions.getPendingNonce(address)),
+    signTx: txParams => dispatch(actions.signTx(txParams)),
+    updateSendAmount: amount => dispatch(actions.updateSendAmount(amount)),
+    setMaxModeTo: maxMode => dispatch(actions.setMaxModeTo(maxMode)),
+    updateSendTo: (to, nickname) => dispatch(actions.updateSendTo(to, nickname)),
+    updateSendHexData: txData => dispatch(actions.updateSendHexData(txData)),
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(SendTransactionScreen)

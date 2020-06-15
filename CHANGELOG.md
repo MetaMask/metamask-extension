@@ -2,6 +2,19 @@
 
 ## Current Master
 
+## 5.1.1 Mon Jun 15 2020
+
+- [#393](https://github.com/poanetwork/nifty-wallet/pull/393) - (Feature) "Send all" option for tokens transfer
+- [#391](https://github.com/poanetwork/nifty-wallet/pull/391) - (Feature) Gas price oracles npm package integration
+- [#389](https://github.com/poanetwork/nifty-wallet/pull/389) - (Feature) Support 24 words mnemonic phrase
+- [#388](https://github.com/poanetwork/nifty-wallet/pull/388) - (Feature) "Send all" option for simple coin transfers
+- [#385](https://github.com/poanetwork/nifty-wallet/pull/385) - (Feature) Display value of current pending tx's nonce on send tx screen
+- [#384](https://github.com/poanetwork/nifty-wallet/pull/384) - (Fix) placement of HW Connect button title
+- [#383](https://github.com/poanetwork/nifty-wallet/pull/383) - (Chore) Replace POA-ETH Binance link to POA-BTC
+- [#382](https://github.com/poanetwork/nifty-wallet/pull/382) - (Fix) replace vulnerable npm dependencies with newer versions of packages, update chromedriver to match the latest Google Chrome release
+- [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Feature) Add RNS integration
+- [#381](https://github.com/poanetwork/nifty-wallet/pull/381) - (Fix) ENS/RNS integration when sending tokens
+
 ## 5.1.0 Tue May 12 2020
 
 - [#356](https://github.com/poanetwork/nifty-wallet/pull/356) - (Backwards-compatibility feature) Custom derivation paths and access to funds in accounts derived from ETH dPath

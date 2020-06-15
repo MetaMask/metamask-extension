@@ -139,7 +139,8 @@ class SendTransactionScreen extends PersistentForm {
 		PersistentForm.call(this)
 	}
 
-	componentWillMount () {
+	// eslint-disable-next-line camelcase
+	UNSAFE_componentWillMount () {
 		this.getContractMethods()
 	}
 

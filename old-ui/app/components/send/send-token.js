@@ -18,7 +18,8 @@ import log from 'loglevel'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
-import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import { getMetaMaskAccounts, getSendToken, getSendTo, getTokenBalance, getSendTokenContract } from '../../../../ui/app/selectors'
+import AmountMaxButton from './amount-max-button'
 
 class SendTransactionScreen extends PersistentForm {
   constructor (props) {
@@ -30,13 +31,12 @@ class SendTransactionScreen extends PersistentForm {
         balance: 0,
         decimals: 0,
       },
-      amount: '',
       isLoading: true,
     }
     PersistentForm.call(this)
   }
   render () {
-    const { isLoading, token, amount } = this.state
+    const { isLoading, token } = this.state
     if (isLoading) {
       return (
         <Loading isLoading={isLoading} loadingMessage="Loading..." />
@@ -50,6 +50,7 @@ class SendTransactionScreen extends PersistentForm {
       identities,
       addressBook,
       error,
+      updateSendTo,
     } = props
     const nextDisabled = token.balance <= 0
 
@@ -63,22 +64,24 @@ class SendTransactionScreen extends PersistentForm {
           <EnsInput
             name="address"
             placeholder="Recipient Address"
-            onChange={() => this.recipientDidChange.bind(this)}
+            onChange={this.recipientDidChange.bind(this)}
             network={network}
             identities={identities}
             addressBook={addressBook}
+            updateSendTo={updateSendTo}
           />
         </section>
         <section className="flex-row flex-center">
           <input className="large-input"
             name="amount"
-            value={amount}
+            value={this.props.amount || ''}
             onChange={(e) => this.amountDidChange(e.target.value)}
             placeholder="Amount"
             type="number"
             style={{
               marginRight: '6px',
             }}
+            disabled={!!this.props.maxModeOn}
           />
           <button
             onClick={() => this.onSubmit()}
@@ -86,13 +89,22 @@ class SendTransactionScreen extends PersistentForm {
           >Next
           </button>
         </section>
+        <section className="flex-row flex-left amount-max-container"><AmountMaxButton /></section>
       </div>
     )
   }
 
   componentDidMount () {
     this.getTokensMetadata()
-    .then(() => {
+    .then((token) => {
+      this.props.updateSendToken(token)
+
+      const {
+        sendToken,
+        tokenContract,
+        address,
+      } = this.props
+      this.props.updateSendTokenBalance({sendToken, tokenContract, address})
       this.createFreshTokenTracker()
     })
   }
@@ -102,16 +114,17 @@ class SendTransactionScreen extends PersistentForm {
     this.tokenInfoGetter = tokenInfoGetter()
     const { tokenAddress, network } = this.props
     const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(tokenAddress)
+    const token = {
+      address: tokenAddress,
+      network,
+      symbol,
+      decimals,
+    }
     this.setState({
-      token: {
-        address: tokenAddress,
-        network,
-        symbol,
-        decimals,
-      },
+      token,
     })
 
-    return Promise.resolve()
+    return Promise.resolve(token)
   }
 
   componentWillUnmount () {
@@ -120,6 +133,9 @@ class SendTransactionScreen extends PersistentForm {
     this.tracker.stop()
     this.tracker.removeListener('update', this.balanceUpdater)
     this.tracker.removeListener('error', this.showError)
+    this.props.updateSendAmount(null)
+    this.props.setMaxModeTo(false)
+    this.props.updateSendTo('')
   }
 
   createFreshTokenTracker () {
@@ -176,14 +192,13 @@ class SendTransactionScreen extends PersistentForm {
   }
 
   amountDidChange (amount) {
-    this.setState({
-      amount,
-    })
+    this.props.updateSendAmount(amount)
   }
 
   async onSubmit () {
     const state = this.state || {}
-    const { token, amount } = state
+    const { token } = state
+    const { amount } = this.props
     let recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
     let nickname = state.nickname || ' '
     if (typeof recipient === 'object') {
@@ -284,6 +299,12 @@ const mapStateToProps = (state) => {
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
     tokenAddress: state.appState.currentView.tokenAddress,
+    to: getSendTo(state),
+    sendToken: getSendToken(state),
+    amount: state.metamask.send.amount,
+    maxModeOn: state.metamask.send.maxModeOn,
+    tokenBalance: getTokenBalance(state),
+    tokenContract: getSendTokenContract(state),
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -307,6 +328,11 @@ const mapDispatchToProps = dispatch => {
       txParams,
       confTxScreenParams,
     ) => dispatch(actions.signTokenTx(tokenAddress, toAddress, tokensValueWithDec, txParams, confTxScreenParams)),
+    updateSendTokenBalance: props => dispatch(actions.updateSendTokenBalance(props)),
+    setMaxModeTo: maxMode => dispatch(actions.setMaxModeTo(maxMode)),
+    updateSendAmount: amount => dispatch(actions.updateSendAmount(amount)),
+    updateSendTo: (to, nickname) => dispatch(actions.updateSendTo(to, nickname)),
+    updateSendToken: token => dispatch(actions.updateSendToken(token)),
   }
 }
 

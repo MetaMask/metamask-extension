@@ -355,6 +355,9 @@
   "ensNameNotFound": {
     "message": "ENS name not found"
   },
+  "rnsNameNotFound": {
+    "message": "RNS name not found"
+  },
   "enterPassword": {
     "message": "Enter password"
   },

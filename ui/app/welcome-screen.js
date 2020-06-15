@@ -25,7 +25,8 @@ class WelcomeScreen extends Component {
     this.animationEventEmitter = new EventEmitter()
   }
 
-  componentWillMount () {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount () {
     const { history, welcomeScreenSeen } = this.props
 
     if (welcomeScreenSeen) {

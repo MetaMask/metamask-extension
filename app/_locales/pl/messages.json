@@ -313,6 +313,9 @@
   "ensNameNotFound": {
     "message": "Nie znaleziono nazwy ENS"
   },
+  "rnsNameNotFound": {
+    "message": "Nie znaleziono nazwy RNS"
+  },
   "enterPassword": {
     "message": "Wpisz hasło"
   },

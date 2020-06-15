@@ -1,8 +1,41 @@
 const assert = require('assert')
 const { screens, menus, NETWORKS } = require('../elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
+const test24SeedPhrase = 'gravity trophy shrimp suspect sheriff avocado label trust dove tragic pitch title network myself spell task protect smooth sword diary brain blossom under bulb'
 
 const importGanacheSeedPhrase = async (f, account2, password) => {
+  it('logs out', async () => {
+    await f.setProvider(NETWORKS.LOCALHOST)
+    const menu = await f.waitUntilShowUp(menus.sandwich.menu)
+    await menu.click()
+    const logOut = await f.waitUntilShowUp(menus.sandwich.logOut)
+    assert.equal(await logOut.getText(), menus.sandwich.textLogOut)
+    await logOut.click()
+  })
+
+  it('restores from 24 seed phrase', async () => {
+    const restoreSeedLink = await f.waitUntilShowUp(screens.lock.linkRestore)
+    assert.equal(await restoreSeedLink.getText(), screens.lock.linkRestoreText)
+    await restoreSeedLink.click()
+  })
+
+  it('adds 24 words seed phrase', async () => {
+    const seedTextArea = await f.waitUntilShowUp(screens.restoreVault.textArea)
+    await seedTextArea.sendKeys(test24SeedPhrase)
+
+    let field = await f.driver.findElement(screens.restoreVault.fieldPassword)
+    await field.sendKeys(password)
+    field = await f.driver.findElement(screens.restoreVault.fieldPasswordConfirm)
+    await field.sendKeys(password)
+    field = await f.waitUntilShowUp(screens.restoreVault.buttos.ok)
+    await f.click(field)
+  })
+
+  it('balance renders', async () => {
+    const balance = await f.waitUntilShowUp(screens.main.balance)
+    assert.equal(await balance.getText(), '0', "balance isn't correct")
+  })
+
   it('logs out', async () => {
     await f.setProvider(NETWORKS.LOCALHOST)
     const menu = await f.waitUntilShowUp(menus.sandwich.menu)
