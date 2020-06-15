@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#391](https://github.com/poanetwork/nifty-wallet/pull/391) - (Feature) Gas price oracles npm package integration
 - [#389](https://github.com/poanetwork/nifty-wallet/pull/389) - (Feature) Support 24 words mnemonic phrase
 - [#388](https://github.com/poanetwork/nifty-wallet/pull/388) - (Feature) "Send all" option for simple coin transfers
 - [#385](https://github.com/poanetwork/nifty-wallet/pull/385) - (Feature) Display value of current pending tx's nonce on send tx screen
