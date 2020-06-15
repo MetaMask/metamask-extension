@@ -1295,9 +1295,6 @@
     "errors": {}
   },
   "confirmTransaction": {},
-  "switchToConnected": {
-    "state": "CLOSED"
-  },
   "unconnectedAccount": {
     "state": "CLOSED"
   }

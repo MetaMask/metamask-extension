@@ -12,7 +12,6 @@ import ObservableStore from 'obs-store'
  */
 
 export const ALERT_TYPES = {
-  switchToConnected: 'switchToConnected',
   unconnectedAccount: 'unconnectedAccount',
 }
 
@@ -25,7 +24,7 @@ const defaultState = {
       },
       {}
     ),
-  switchToConnectedAlertShown: {},
+  unconnectedAccountAlertShownOrigins: {},
 }
 
 /**
@@ -44,7 +43,7 @@ export default class AlertController {
       defaultState,
       initState,
       {
-        switchToConnectedAlertShown: {},
+        unconnectedAccountAlertShownOrigins: {},
       }
     )
     this.store = new ObservableStore(state)
@@ -54,9 +53,9 @@ export default class AlertController {
 
     preferencesStore.subscribe(({ selectedAddress }) => {
       const currentState = this.store.getState()
-      if (currentState.switchToConnectedAlertShown && this.selectedAddress !== selectedAddress) {
+      if (currentState.unconnectedAccountAlertShownOrigins && this.selectedAddress !== selectedAddress) {
         this.selectedAddress = selectedAddress
-        this.store.updateState({ switchToConnectedAlertShown: {} })
+        this.store.updateState({ unconnectedAccountAlertShownOrigins: {} })
       }
     })
   }
@@ -72,10 +71,10 @@ export default class AlertController {
    * Sets the "switch to connected" alert as shown for the given origin
    * @param {string} origin - The origin the alert has been shown for
    */
-  setSwitchToConnectedAlertShown (origin) {
-    let { switchToConnectedAlertShown } = this.store.getState()
-    switchToConnectedAlertShown = { ...switchToConnectedAlertShown }
-    switchToConnectedAlertShown[origin] = true
-    this.store.updateState({ switchToConnectedAlertShown })
+  setUnconnectedAccountAlertShown (origin) {
+    let { unconnectedAccountAlertShownOrigins } = this.store.getState()
+    unconnectedAccountAlertShownOrigins = { ...unconnectedAccountAlertShownOrigins }
+    unconnectedAccountAlertShownOrigins[origin] = true
+    this.store.updateState({ unconnectedAccountAlertShownOrigins })
   }
 }

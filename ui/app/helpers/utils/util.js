@@ -309,3 +309,27 @@ export function getAccountByAddress (accounts = [], targetAddress) {
 export function stripHttpSchemes (urlString) {
   return urlString.replace(/^https?:\/\//u, '')
 }
+
+/**
+ * Checks whether a URL-like value (object or string) is an extension URL.
+ *
+ * @param {string | URL | object} urlLike - The URL-like value to test.
+ * @returns {boolean} Whether the URL-like value is an extension URL.
+ */
+export function isExtensionUrl (urlLike) {
+
+  const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
+
+  if (typeof urlLike === 'string') {
+    for (const protocol of EXT_PROTOCOLS) {
+      if (urlLike.startsWith(protocol)) {
+        return true
+      }
+    }
+  }
+
+  if (urlLike?.protocol) {
+    return EXT_PROTOCOLS.includes(urlLike.protocol)
+  }
+  return false
+}

@@ -545,7 +545,7 @@ export default class MetamaskController extends EventEmitter {
 
       // alert controller
       setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
-      setSwitchToConnectedAlertShown: nodeify(this.alertController.setSwitchToConnectedAlertShown, this.alertController),
+      setUnconnectedAccountAlertShown: nodeify(this.alertController.setUnconnectedAccountAlertShown, this.alertController),
 
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),

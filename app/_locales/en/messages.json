@@ -28,11 +28,8 @@
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected this site. To connect to a Web3 site, find the connect button on their site."
   },
-  "primary": {
-    "message": "Primary"
-  },
-  "lastActive": {
-    "message": "Last active"
+  "currentAccountNotConnected": {
+    "message": "Your current account is not connected"
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
@@ -139,6 +136,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "active": {
+    "message": "Active"
+  },
   "activity": {
     "message": "Activity"
   },
@@ -187,17 +187,11 @@
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
   },
-  "alertSettingsSwitchToConnected": {
-    "message": "Opening popup with an unconnected account selected"
-  },
-  "alertSettingsSwitchToConnectedDescription": {
-    "message": "This alert is shown when you open the popup with an unconnected account selected."
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Switching to an unconnected account"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you switch from a connected account to an unconnected account."
+  "alertSettingsUnconnectedAccount": {	
+    "message": "Browsing a website with an unconnected account selected"	
+  },	
+  "alertSettingsUnconnectedAccountDescription": {	
+    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."	
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -991,9 +985,6 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a seed phrase"
   },
-  "notConnected": {
-    "message": "Not connected"
-  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
@@ -1478,16 +1469,6 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
-  "switchAccounts": {
-    "message": "Switch accounts"
-  },
-  "switchToConnectedAlertMultipleAccountsDescription": {
-    "message": "This account is not connected. Switch to a connected account?"
-  },
-  "switchToConnectedAlertSingleAccountDescription": {
-    "message": "This account is not connected. Switch to a connected account ($1)?",
-    "description": "$1 will be replaced by the name of the connected account"
-  },
   "symbol": {
     "message": "Symbol"
   },
@@ -1635,10 +1616,7 @@
   "unapproved": {
     "message": "Unapproved"
   },
-  "unconnectedAccountAlertDescription": {
-    "message": "$1 is not connected to $2."
-  },
-  "unconnectedAccountAlertDisableTooltip": {
+  "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
   "units": {
@@ -1776,11 +1754,5 @@
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is website or dapp name"
-  },
-  "thisSite": {
-    "message": "this site"
-  },
-  "thisAccount": {
-    "message": "This account"
   }
 }
