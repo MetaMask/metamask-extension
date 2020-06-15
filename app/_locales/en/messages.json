@@ -26,7 +26,7 @@
     "description": "$1 is the number of accounts"
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask is not connected this site. To connect to a Web3 site, find the connect button on their site."
+    "message": "MetaMask is not connected this site. To connect to a web3 site, find the connect button on their site."
   },
   "primary": {
     "message": "Primary"
