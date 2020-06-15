@@ -38,14 +38,14 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { activeTabOrigin: origin, accountToConnect } = stateProps
+  const { activeTabOrigin } = stateProps
 
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    connectAccount: () => dispatchProps.addPermittedAccount(origin, accountToConnect?.address),
-    removePermittedAccount: (address) => dispatchProps.removePermittedAccount(origin, address),
+    connectAccount: (address) => dispatchProps.addPermittedAccount(activeTabOrigin, address),
+    removePermittedAccount: (address) => dispatchProps.removePermittedAccount(activeTabOrigin, address),
   }
 }
 

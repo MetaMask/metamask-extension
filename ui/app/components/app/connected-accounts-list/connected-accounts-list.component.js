@@ -81,7 +81,10 @@ export default class ConnectedAccountsList extends PureComponent {
         name={`${name} (…${address.substr(-4, 4)})`}
         status={t('statusNotConnected')}
         action={(
-          <a className="connected-accounts-list__account-status-link" onClick={connectAccount}>
+          <a
+            className="connected-accounts-list__account-status-link"
+            onClick={() => connectAccount(accountToConnect.address)}
+          >
             {t('connect')}
           </a>
         )}
