@@ -15,6 +15,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
 import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
+import PaperAirplane from '../../ui/icon/paper-airplane-icon'
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch()
@@ -78,18 +79,21 @@ const EthOverview = ({ className }) => {
       buttons={(
         <>
           <Button
-            type="secondary"
+            type="primary"
             className="eth-overview__button"
+            rounded
             onClick={() => {
               depositEvent()
               dispatch(showModal({ name: 'DEPOSIT_ETHER' }))
             }}
           >
-            { t('deposit') }
+            { t('buy') }
           </Button>
           <Button
             type="secondary"
             className="eth-overview__button"
+            rounded
+            icon={<PaperAirplane color="#037DD6" size={20} />}
             onClick={() => {
               sendEvent()
               history.push(SEND_ROUTE)

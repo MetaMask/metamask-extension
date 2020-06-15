@@ -51,3 +51,7 @@ export const preloader = () => (
     size={number('size', 40)}
   />
 )
+
+export const PaperAirplane = () => (
+  <PaperAirplane color={color('color', '#2F80ED')} size={number('size', 40)} />
+)

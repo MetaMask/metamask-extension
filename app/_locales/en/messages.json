@@ -1308,6 +1308,9 @@
   "selectType": {
     "message": "Select Type"
   },
+  "buy": {
+    "message": "Buy"
+  },
   "send": {
     "message": "Send"
   },

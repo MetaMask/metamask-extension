@@ -66,6 +66,12 @@ $warning-light-orange: #F8B588;
 
 .button {
   @extend %button;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
 }
 
 .btn-secondary {
