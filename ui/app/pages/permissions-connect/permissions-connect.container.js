@@ -7,6 +7,7 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getTargetDomainMetadata,
+  getSelectedAddress,
 } from '../../selectors'
 
 import { formatDate } from '../../helpers/utils/util'
@@ -28,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     location: { pathname },
   } = ownProps
   const permissionsRequests = getPermissionsRequests(state)
+  const currentAddress = getSelectedAddress(state)
 
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
@@ -68,6 +70,7 @@ const mapStateToProps = (state, ownProps) => {
     permissionsRequestId,
     hasPendingPermissionsRequests,
     accounts: accountsWithLabels,
+    currentAddress,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
