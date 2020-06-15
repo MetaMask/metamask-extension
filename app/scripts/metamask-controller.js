@@ -61,6 +61,7 @@ import nanoid from 'nanoid'
 const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
 const { ifPOA, ifRSK, getNetworkID, getDPath, setDPath } = require('../../old-ui/app/util')
+const { GasPriceOracle } = require('gas-price-oracle')
 
 import {
   PhishingController,
@@ -1967,23 +1968,30 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   getGasPriceFromOracles (networkId) {
     return new Promise(async (resolve, reject) => {
-      const gasPriceOracleETC = 'https://gasprice-etc.poa.network'
-      const gasPriceOracleETH = 'https://gasprice.poa.network'
-      const gasPriceOracle = networkId === CLASSIC_CODE ?
-        gasPriceOracleETC : networkId === MAINNET_CODE ? gasPriceOracleETH : null
-
-      try {
-        if (gasPriceOracle) {
-          const response = await fetch(gasPriceOracle)
+      if (networkId === MAINNET_CODE) {
+        const oracle = new GasPriceOracle()
+        // optional fallbackGasPrices
+        const fallbackGasPrices = {
+            instant: 70, fast: 31, standard: 20, low: 7,
+        }
+        oracle.gasPrices(fallbackGasPrices).then((gasPrices) => {
+          gasPrices && (gasPrices.standard || gasPrices.fast) ? resolve(gasPrices.standard || gasPrices.fast) : reject()
+        })
+      } else if (networkId === CLASSIC_CODE) {
+        const gasPriceOracleETC = 'https://gasprice-etc.poa.network'
+        try {
+          const response = await fetch(gasPriceOracleETC)
           const parsedResponse = await response.json()
           if (parsedResponse && (parsedResponse.standard || parsedResponse.fast)) {
             resolve(parsedResponse.standard || parsedResponse.fast)
           } else {
-            reject()
+            reject('Empty response from gas price oracle')
           }
+        } catch (error) {
+          reject(error)
         }
-      } catch (error) {
-        reject(error)
+      } else {
+        reject(`No gas price oracles for ${networkId}`)
       }
     })
    }
