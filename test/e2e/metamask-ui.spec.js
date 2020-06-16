@@ -415,8 +415,6 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
-
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
 
