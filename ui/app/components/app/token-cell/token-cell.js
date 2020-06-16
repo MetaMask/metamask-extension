@@ -8,7 +8,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
 
 
-export default function TokenCell ({ address, outdatedBalance, symbol, string, image, onClick }) {
+export default function TokenCell ({
+  address,
+  decimals,
+  outdatedBalance,
+  symbol,
+  string,
+  image,
+  onClick,
+}) {
   const userAddress = useSelector(getSelectedAddress)
   const t = useI18nContext()
 
@@ -37,6 +45,8 @@ export default function TokenCell ({ address, outdatedBalance, symbol, string, i
       onClick={onClick.bind(null, address)}
       tokenAddress={address}
       tokenImage={image}
+      tokenSymbol={symbol}
+      tokenDecimals={decimals}
       warning={warning}
       primary={`${string || 0} ${symbol}`}
       secondary={formattedFiat}
@@ -49,6 +59,7 @@ TokenCell.propTypes = {
   address: PropTypes.string,
   outdatedBalance: PropTypes.bool,
   symbol: PropTypes.string,
+  decimals: PropTypes.number,
   string: PropTypes.string,
   image: PropTypes.string,
   onClick: PropTypes.func.isRequired,
