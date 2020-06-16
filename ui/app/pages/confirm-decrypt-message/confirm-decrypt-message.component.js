@@ -52,9 +52,14 @@ export default class ConfirmDecryptMessage extends Component {
     this._removeBeforeUnload()
   }
 
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancelDecryptMessage } = this.props
+  _beforeUnload = async (event) => {
+    const {
+      clearConfirmTransaction,
+      cancelDecryptMessage,
+      txData,
+    } = this.props
     const { metricsEvent } = this.context
+    await cancelDecryptMessage(txData, event)
     metricsEvent({
       eventOpts: {
         category: 'Messages',
@@ -63,7 +68,6 @@ export default class ConfirmDecryptMessage extends Component {
       },
     })
     clearConfirmTransaction()
-    cancelDecryptMessage(event)
   }
 
   _removeBeforeUnload = () => {
@@ -103,11 +107,12 @@ export default class ConfirmDecryptMessage extends Component {
 
   renderAccount = () => {
     const { fromAccount } = this.state
+    const { t } = this.context
 
     return (
       <div className="request-decrypt-message__account">
         <div className="request-decrypt-message__account-text">
-          { `${this.context.t('account')}:` }
+          { `${t('account')}:` }
         </div>
 
         <div className="request-decrypt-message__account-item">
@@ -123,6 +128,7 @@ export default class ConfirmDecryptMessage extends Component {
   renderBalance = () => {
     const { conversionRate } = this.props
     const { fromAccount: { balance } } = this.state
+    const { t } = this.context
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
@@ -135,7 +141,7 @@ export default class ConfirmDecryptMessage extends Component {
     return (
       <div className="request-decrypt-message__balance">
         <div className="request-decrypt-message__balance-text">
-          { `${this.context.t('balance')}:` }
+          { `${t('balance')}:` }
         </div>
         <div className="request-decrypt-message__balance-value">
           { `${balanceInEther} ETH` }
@@ -168,10 +174,11 @@ export default class ConfirmDecryptMessage extends Component {
   }
 
   renderBody = () => {
-    const { txData } = this.props
+    const { decryptMessageInline, domainMetadata, txData } = this.props
+    const { t } = this.context
 
-    const origin = this.props.domainMetadata[txData.msgParams.origin]
-    const notice = this.context.t('decryptMessageNotice', [origin.name])
+    const origin = domainMetadata[txData.msgParams.origin]
+    const notice = t('decryptMessageNotice', [origin.name])
 
     const {
       hasCopied,
@@ -228,7 +235,7 @@ export default class ConfirmDecryptMessage extends Component {
               'request-decrypt-message__message-lock--pressed': hasDecrypted || hasError,
             })}
             onClick={(event) => {
-              this.props.decryptMessageInline(txData, event).then((result) => {
+              decryptMessageInline(txData, event).then((result) => {
                 if (!result.error) {
                   this.setState({ hasDecrypted: true, rawMessage: result.rawData })
                 } else {
@@ -241,7 +248,7 @@ export default class ConfirmDecryptMessage extends Component {
             <div
               className="request-decrypt-message__message-lock-text"
             >
-              {this.context.t('decryptMetamask')}
+              {t('decryptMetamask')}
             </div>
           </div>
         </div>
@@ -258,13 +265,13 @@ export default class ConfirmDecryptMessage extends Component {
             >
               <Tooltip
                 position="bottom"
-                title={hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard')}
+                title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
                 wrapperClassName="request-decrypt-message__message-copy-tooltip"
               >
                 <div
                   className="request-decrypt-message__message-copy-text"
                 >
-                  {this.context.t('decryptCopy')}
+                  {t('decryptCopy')}
                 </div>
                 <img src="images/copy-to-clipboard.svg" />
               </Tooltip>
@@ -286,6 +293,7 @@ export default class ConfirmDecryptMessage extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props
+    const { metricsEvent, t } = this.context
 
     return (
       <div className="request-decrypt-message__footer">
@@ -296,7 +304,7 @@ export default class ConfirmDecryptMessage extends Component {
           onClick={async (event) => {
             this._removeBeforeUnload()
             await cancelDecryptMessage(txData, event)
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Messages',
                 action: 'Decrypt Message Request',
@@ -307,7 +315,7 @@ export default class ConfirmDecryptMessage extends Component {
             history.push(mostRecentOverviewPage)
           }}
         >
-          { this.context.t('cancel') }
+          { t('cancel') }
         </Button>
         <Button
           type="secondary"
@@ -316,7 +324,7 @@ export default class ConfirmDecryptMessage extends Component {
           onClick={async (event) => {
             this._removeBeforeUnload()
             await decryptMessage(txData, event)
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Messages',
                 action: 'Decrypt Message Request',
@@ -327,7 +335,7 @@ export default class ConfirmDecryptMessage extends Component {
             history.push(mostRecentOverviewPage)
           }}
         >
-          { this.context.t('decrypt') }
+          { t('decrypt') }
         </Button>
       </div>
     )
