@@ -206,7 +206,6 @@ export default class PermissionConnect extends Component {
     const {
       selectedAccountAddresses,
       permissionsApproved,
-      origin,
       redirecting,
       targetDomainMetadata,
     } = this.state
@@ -257,7 +256,7 @@ export default class PermissionConnect extends Component {
                       }}
                       rejectPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}
                       selectedIdentities={accounts.filter((account) => selectedAccountAddresses.has(account.address))}
-                      cachedOrigin={origin}
+                      targetDomainMetadata={targetDomainMetadata}
                     />
                   )}
                 />
