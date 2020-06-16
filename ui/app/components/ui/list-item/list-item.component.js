@@ -24,16 +24,17 @@ export default function ListItem ({
           {icon}
         </div>
       )}
-      <h2 className="list-item__heading">
-        { title } {titleIcon && (
+      <div className="list-item__heading">
+        <h2>{ title }</h2>
+        {titleIcon && (
           <div className="list-item__heading-wrap">
             {titleIcon}
           </div>
         )}
-      </h2>
-      <h3 className="list-item__subheading">
-        {subtitleStatus}{subtitle}
-      </h3>
+      </div>
+      <div className="list-item__subheading">
+        <h3>{subtitleStatus}{subtitle}</h3>
+      </div>
       {children && (
         <div className="list-item__actions">
           { children }
