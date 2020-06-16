@@ -79,7 +79,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       try {
         await this._resubmitTx(txMeta, blockNumber)
       } catch (err) {
-        const errorMessage = err.message.toLowerCase()
+        const errorMessage = err.value?.message?.toLowerCase() || err.message.toLowerCase()
         const isKnownTx = (
           // geth
           errorMessage.includes('replacement transaction underpriced') ||
