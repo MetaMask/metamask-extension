@@ -173,17 +173,15 @@ export default class Routes extends Component {
       return true
     }
 
-    if (windowType === ENVIRONMENT_TYPE_POPUP) {
-      return this.onConfirmPage() || hasPermissionsRequests
+    if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
+      return true
     }
 
     const isHandlingPermissionsRequest = Boolean(matchPath(location.pathname, {
       path: CONNECT_ROUTE, exact: false,
-    }))
+    })) || hasPermissionsRequests
 
-    if (hasPermissionsRequests || isHandlingPermissionsRequest) {
-      return true
-    }
+    return isHandlingPermissionsRequest
   }
 
   render () {

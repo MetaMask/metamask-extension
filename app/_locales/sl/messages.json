@@ -636,9 +636,6 @@
   "metamaskVersion": {
     "message": "Različica"
   },
-  "missingYourTokens": {
-    "message": "Ne vidite vaših žetonov?"
-  },
   "mobileSyncText": {
     "message": "Vnesite geslo in potrdite, da ste to vi."
   },

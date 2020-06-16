@@ -6,7 +6,7 @@ export default {
   title: 'Menu',
 }
 
-export const basic = () => {
+export const Basic = () => {
   return (
     <Menu
       onHide={action('Hide')}
@@ -18,7 +18,7 @@ export const basic = () => {
   )
 }
 
-export const anchored = () => {
+export const Anchored = () => {
   const [anchorElement, setAnchorElement] = useState(null)
   return (
     <>

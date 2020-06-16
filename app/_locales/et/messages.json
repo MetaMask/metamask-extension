@@ -641,9 +641,6 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "missingYourTokens": {
-    "message": "Te ei näe oma lube?"
-  },
   "mobileSyncText": {
     "message": "Sisestage parool, et saaksime teid tuvastada!"
   },

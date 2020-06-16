@@ -645,9 +645,6 @@
   "metamaskVersion": {
     "message": "메타마스크 버전"
   },
-  "missingYourTokens": {
-    "message": "당신의 토큰이 보이지 않나요?"
-  },
   "mobileSyncText": {
     "message": "본인 여부를 확인하기 위해 비밀번호를 입력해 주세요!"
   },

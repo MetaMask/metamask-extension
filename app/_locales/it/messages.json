@@ -5,17 +5,11 @@
   "showIncomingTransactionsDescription": {
     "message": "Usa Etherscan per visualizzare le transazioni in ingresso nella lista delle transazioni"
   },
-  "cancelledConnectionWithMetaMask": {
-    "message": "Transazioni Annullate con MetaMask"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
   },
   "connectedSites": {
     "message": "Siti connessi"
-  },
-  "connectingWithMetaMask": {
-    "message": "Connettendo con MetaMask..."
   },
   "connectTo": {
     "message": "Collegati a $1",
@@ -788,9 +782,6 @@
   },
   "metamaskVersion": {
     "message": "versione di MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Non vedi i tuoi token?"
   },
   "mobileSyncText": {
     "message": "Per favore inserisci la password per confermare che sei te!"

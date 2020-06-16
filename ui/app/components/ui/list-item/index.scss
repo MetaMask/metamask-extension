@@ -15,6 +15,11 @@
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
     '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
   align-items: start;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $Grey-000;
+  }
 
   &__icon {
     grid-area: icon;
@@ -33,12 +38,11 @@
     font-size: 16px;
     line-height: 160%;
     position: relative;
+    display: flex;
+    align-items: center;
 
     &-wrap {
       display: inline-block;
-      position: absolute;
-      width: 16px;
-      height: 16px;
       margin-left: 8px;
     }
   }

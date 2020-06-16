@@ -342,6 +342,24 @@ export class PermissionsController {
   }
 
   /**
+   * Remove all permissions associated with a particular account. Any eth_accounts
+   * permissions left with no permitted accounts will be removed as well.
+   *
+   * Throws error if the account is invalid, or if the update fails.
+   *
+   * @param {string} account - The account to remove.
+   */
+  async removeAllAccountPermissions (account) {
+    this.validatePermittedAccounts([account])
+
+    const domains = this.permissions.getDomains()
+    const connectedOrigins = Object.keys(domains)
+      .filter((origin) => this._getPermittedAccounts(origin).includes(account))
+
+    await Promise.all(connectedOrigins.map((origin) => this.removePermittedAccount(origin, account)))
+  }
+
+  /**
    * Finalizes a permissions request. Throws if request validation fails.
    * Clones the passed-in parameters to prevent inadvertent modification.
    * Sets (adds or replaces) caveats for the following permissions:

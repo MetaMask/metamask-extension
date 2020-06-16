@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import ListItem from '../../ui/list-item'
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData'
-import Approve from '../../ui/icon/approve-icon.component'
-import Interaction from '../../ui/icon/interaction-icon.component'
-import Receive from '../../ui/icon/receive-icon.component'
 import Preloader from '../../ui/icon/preloader'
-import Send from '../../ui/icon/send-icon.component'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useCancelTransaction } from '../../../hooks/useCancelTransaction'
 import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
@@ -17,17 +13,17 @@ import TransactionListItemDetails from '../transaction-list-item-details'
 import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import {
-  TRANSACTION_CATEGORY_APPROVAL,
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
-  TRANSACTION_CATEGORY_INTERACTION,
-  TRANSACTION_CATEGORY_SEND,
-  TRANSACTION_CATEGORY_RECEIVE,
   UNAPPROVED_STATUS,
   FAILED_STATUS,
-  CANCELLED_STATUS,
+  DROPPED_STATUS,
+  REJECTED_STATUS,
 } from '../../../helpers/constants/transactions'
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
-import Sign from '../../ui/icon/sign-icon.component'
+import TransactionStatus from '../transaction-status/transaction-status.component'
+import TransactionIcon from '../transaction-icon'
+import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
+import IconWithLabel from '../../ui/icon-with-label'
 
 
 export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
@@ -36,8 +32,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const { hasCancelled } = transactionGroup
   const [showDetails, setShowDetails] = useState(false)
 
-  const { initialTransaction: { id } } = transactionGroup
-
+  const { initialTransaction: { id }, primaryTransaction: { err, submittedTime, gasPrice } } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
   const retryTransaction = useRetryTransaction(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
@@ -55,50 +50,15 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     senderAddress,
   } = useTransactionDisplayData(transactionGroup)
 
-  const isApprove = category === TRANSACTION_CATEGORY_APPROVAL
+  const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
+
+
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
-  const isInteraction = category === TRANSACTION_CATEGORY_INTERACTION
-  const isSend = category === TRANSACTION_CATEGORY_SEND
-  const isReceive = category === TRANSACTION_CATEGORY_RECEIVE
   const isUnapproved = status === UNAPPROVED_STATUS
-  const isFailed = status === FAILED_STATUS
-  const isCancelled = status === CANCELLED_STATUS
 
-  const color = isFailed ? '#D73A49' : '#2F80ED'
-
-  let Icon
-  if (isApprove) {
-    Icon = Approve
-  } else if (isSend) {
-    Icon = Send
-  } else if (isReceive) {
-    Icon = Receive
-  } else if (isInteraction) {
-    Icon = Interaction
-  } else if (isSignatureReq) {
-    Icon = Sign
-  }
-
-  let subtitleStatus = <span><span className="transaction-list-item__date">{date}</span> · </span>
-  if (isUnapproved) {
-    subtitleStatus = (
-      <span><span className="transaction-list-item__status--unapproved">{t('unapproved')}</span> · </span>
-    )
-  } else if (isFailed) {
-    subtitleStatus = (
-      <span><span className="transaction-list-item__status--failed">{t('failed')}</span> · </span>
-    )
-  } else if (isCancelled) {
-    subtitleStatus = (
-      <span><span className="transaction-list-item__status--cancelled">{t('cancelled')}</span> · </span>
-    )
-  } else if (isPending && !isEarliestNonce) {
-    subtitleStatus = (
-      <span><span className="transaction-list-item__status--queued">{t('queued')}</span> · </span>
-    )
-  }
-
-  const className = classnames('transaction-list-item', { 'transaction-list-item--pending': isPending })
+  const className = classnames('transaction-list-item', {
+    'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(status),
+  })
 
   const toggleShowDetails = useCallback(() => {
     if (isUnapproved) {
@@ -106,7 +66,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       return
     }
     setShowDetails((prev) => !prev)
-  }, [isUnapproved, id])
+  }, [isUnapproved, history, id])
 
   const cancelButton = useMemo(() => {
     const cancelButton = (
@@ -131,7 +91,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       </Tooltip>
     ) : cancelButton
 
-  }, [cancelEnabled, cancelTransaction, hasCancelled])
+  }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
 
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
@@ -147,7 +107,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         { t('speedUp') }
       </Button>
     )
-  }, [shouldShowSpeedUp, isPending, retryTransaction])
+  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
 
   return (
     <>
@@ -156,14 +116,22 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         className={className}
         title={title}
         titleIcon={!isUnapproved && isPending && isEarliestNonce && (
-          <Preloader
-            size={16}
-            color="#D73A49"
+          <IconWithLabel
+            icon={<Preloader size={16} color="#D73A49" />}
+            label={timeRemaining}
           />
         )}
-        icon={<Icon color={color} size={28} />}
+        icon={<TransactionIcon category={category} status={status} />}
         subtitle={subtitle}
-        subtitleStatus={subtitleStatus}
+        subtitleStatus={(
+          <TransactionStatus
+            isPending={isPending}
+            isEarliestNonce={isEarliestNonce}
+            error={err}
+            date={date}
+            status={status}
+          />
+        )}
         rightContent={!isSignatureReq && (
           <>
             <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
@@ -184,7 +152,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={isFailed}
+          showRetry={status === FAILED_STATUS}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}

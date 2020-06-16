@@ -37,7 +37,7 @@ export default class TxGasUtil {
     let estimatedGasHex = bnToHex(saferGasLimitBN)
     let simulationFails
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
+      estimatedGasHex = await this.estimateTxGas(txMeta)
     } catch (error) {
       log.warn(error)
       simulationFails = {

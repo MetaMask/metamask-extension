@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import IconWithFallBack from '../../ui/icon-with-fallback'
+import SiteIcon from '../../ui/site-icon'
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
     icon: PropTypes.string,
-    iconName: PropTypes.string.isRequired,
+    iconName: PropTypes.string,
     headerTitle: PropTypes.node,
     headerText: PropTypes.string,
   }
 
   static defaultProps = {
     icon: null,
+    iconName: '',
     headerTitle: '',
     headerText: '',
   }
@@ -21,7 +22,7 @@ export default class PermissionsConnectHeader extends Component {
 
     return (
       <div className="permissions-connect-header__icon">
-        <IconWithFallBack icon={ icon } name={ iconName } />
+        <SiteIcon icon={ icon } name={ iconName } size={64} />
         <div className="permissions-connect-header__text">{iconName}</div>
       </div>
     )

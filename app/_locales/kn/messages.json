@@ -651,9 +651,6 @@
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },
-  "missingYourTokens": {
-    "message": "ನಿಮ್ಮ ಟೋಕನ್‌ಗಳು ಕಾಣಿಸುತ್ತಿಲ್ಲವೇ?"
-  },
   "mobileSyncText": {
     "message": "ಇದು ನೀವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ!"
   },

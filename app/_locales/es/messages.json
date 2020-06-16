@@ -527,9 +527,6 @@
   "metamaskVersion": {
     "message": "Versión de MetaMask"
   },
-  "missingYourTokens": {
-    "message": "¿No ves tus tokens?"
-  },
   "myAccounts": {
     "message": "Mis cuentas"
   },

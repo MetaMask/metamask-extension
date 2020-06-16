@@ -1,7 +1,5 @@
-import { DateTime } from 'luxon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import ConnectedAccountsListPermissions from './connected-accounts-list-permissions'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
 import { MenuItem } from '../../ui/menu'
@@ -13,7 +11,6 @@ export default class ConnectedAccountsList extends PureComponent {
 
   static defaultProps = {
     accountToConnect: null,
-    permissions: undefined,
   }
 
   static propTypes = {
@@ -26,21 +23,25 @@ export default class ConnectedAccountsList extends PureComponent {
       name: PropTypes.string.isRequired,
       lastActive: PropTypes.number,
     })).isRequired,
-    permissions: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-    })),
+    connectAccount: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
-    addPermittedAccount: PropTypes.func.isRequired,
-    removePermittedAccount: PropTypes.func.isRequired,
+    removePermittedAccount: PropTypes.func,
     setSelectedAddress: PropTypes.func.isRequired,
+    shouldRenderListOptions: (props, propName, componentName) => {
+      if (typeof props[propName] !== 'boolean') {
+        return new Error(
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`
+        )
+      } else if (props[propName] && !props['removePermittedAccount']) {
+        return new Error(
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`
+        )
+      }
+    },
   }
 
   state = {
     accountWithOptionsShown: null,
-  }
-
-  connectAccount = () => {
-    this.props.addPermittedAccount(this.props.accountToConnect?.address)
   }
 
   disconnectAccount = () => {
@@ -48,9 +49,9 @@ export default class ConnectedAccountsList extends PureComponent {
     this.props.removePermittedAccount(this.state.accountWithOptionsShown)
   }
 
-  switchAccount = () => {
+  switchAccount = (address) => {
     this.hideAccountOptions()
-    this.props.setSelectedAddress(this.state.accountWithOptionsShown)
+    this.props.setSelectedAddress(address)
   }
 
   hideAccountOptions = () => {
@@ -62,7 +63,7 @@ export default class ConnectedAccountsList extends PureComponent {
   }
 
   renderUnconnectedAccount () {
-    const { accountToConnect } = this.props
+    const { accountToConnect, connectAccount } = this.props
     const { t } = this.context
 
     if (!accountToConnect) {
@@ -75,22 +76,58 @@ export default class ConnectedAccountsList extends PureComponent {
         className="connected-accounts-list__row--highlight"
         address={address}
         name={`${name} (…${address.substr(-4, 4)})`}
-        status={(
-          <>
-            {t('statusNotConnected')}
-            &nbsp;&middot;&nbsp;
-            <a className="connected-accounts-list__account-status-link" onClick={this.connectAccount}>
-              {t('connect')}
-            </a>
-          </>
+        status={t('statusNotConnected')}
+        action={(
+          <a
+            className="connected-accounts-list__account-status-link"
+            onClick={() => connectAccount(accountToConnect.address)}
+          >
+            {t('connect')}
+          </a>
         )}
       />
     )
   }
 
-  render () {
-    const { connectedAccounts, permissions, selectedAddress } = this.props
+  renderListItemOptions (address) {
     const { accountWithOptionsShown } = this.state
+    const { t } = this.context
+
+    return (
+      <ConnectedAccountsListOptions
+        onHideOptions={this.hideAccountOptions}
+        onShowOptions={this.showAccountOptions.bind(null, address)}
+        show={accountWithOptionsShown === address}
+      >
+        <MenuItem
+          iconClassName="disconnect-icon"
+          onClick={this.disconnectAccount}
+        >
+          {t('disconnectThisAccount')}
+        </MenuItem>
+      </ConnectedAccountsListOptions>
+    )
+  }
+
+  renderListItemAction (address) {
+    const { t } = this.context
+
+    return (
+      <a
+        className="connected-accounts-list__account-status-link"
+        onClick={() => this.switchAccount(address)}
+      >
+        {t('switchToThisAccount')}
+      </a>
+    )
+  }
+
+  render () {
+    const {
+      connectedAccounts,
+      selectedAddress,
+      shouldRenderListOptions,
+    } = this.props
     const { t } = this.context
 
     return (
@@ -98,50 +135,28 @@ export default class ConnectedAccountsList extends PureComponent {
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
           {
-            connectedAccounts.map(({ address, name, lastActive }, index) => {
-              let status
-              if (index === 0) {
-                status = t('primary')
-              } else if (lastActive) {
-                status = `${t('lastActive')}: ${DateTime.fromMillis(lastActive).toISODate()}`
-              }
-
+            connectedAccounts.map(({ address, name }, index) => {
               return (
                 <ConnectedAccountsListItem
                   key={address}
                   address={address}
                   name={`${name} (…${address.substr(-4, 4)})`}
-                  status={status}
-                  options={(
-                    <ConnectedAccountsListOptions
-                      onHideOptions={this.hideAccountOptions}
-                      onShowOptions={this.showAccountOptions.bind(null, address)}
-                      show={accountWithOptionsShown === address}
-                    >
-                      {
-                        address === selectedAddress ? null : (
-                          <MenuItem
-                            iconClassName="fas fa-random"
-                            onClick={this.switchAccount}
-                          >
-                            {t('switchToThisAccount')}
-                          </MenuItem>
-                        )
-                      }
-                      <MenuItem
-                        iconClassName="disconnect-icon"
-                        onClick={this.disconnectAccount}
-                      >
-                        {t('disconnectThisAccount')}
-                      </MenuItem>
-                    </ConnectedAccountsListOptions>
-                  )}
+                  status={index === 0 ? t('active') : null}
+                  options={
+                    shouldRenderListOptions
+                      ? this.renderListItemOptions(address)
+                      : null
+                  }
+                  action={
+                    address !== selectedAddress
+                      ? this.renderListItemAction(address)
+                      : null
+                  }
                 />
               )
             })
           }
         </main>
-        <ConnectedAccountsListPermissions permissions={permissions} />
       </>
     )
   }

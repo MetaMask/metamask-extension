@@ -638,9 +638,6 @@
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Nu vă vedeți token-urile?"
-  },
   "mobileSyncText": {
     "message": "Vă rugăm introduceți parola pentru a vă confirma identitatea!"
   },

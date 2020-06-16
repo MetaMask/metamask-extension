@@ -1187,7 +1187,7 @@ export function showAccountDetail (address) {
     log.debug(`background.setSelectedAddress`)
 
     const state = getState()
-    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(state)
+    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(state)
     const activeTabOrigin = state.activeTab.origin
     const selectedAddress = getSelectedAddress(state)
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(state)
@@ -1207,9 +1207,9 @@ export function showAccountDetail (address) {
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
     })
-    if (unconnectedAccountAlertIsEnabled && switchingToUnconnectedAddress) {
+    if (unconnectedAccountAccountAlertIsEnabled && switchingToUnconnectedAddress) {
       dispatch(switchedToUnconnectedAccount())
-      await setSwitchToConnectedAlertShown(activeTabOrigin)
+      await setUnconnectedAccountAlertShown(activeTabOrigin)
     }
   }
 }
@@ -2056,9 +2056,11 @@ export function rejectPermissionsRequest (requestId) {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          reject()
+          return reject(err)
         }
-        resolve()
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
   }
@@ -2137,8 +2139,8 @@ export function setAlertEnabledness (alertId, enabledness) {
   }
 }
 
-export async function setSwitchToConnectedAlertShown (origin) {
-  await promisifiedBackground.setSwitchToConnectedAlertShown(origin)
+export async function setUnconnectedAccountAlertShown (origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
 }
 
 export function loadingMethodDataStarted () {

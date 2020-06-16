@@ -545,7 +545,7 @@ export default class MetamaskController extends EventEmitter {
 
       // alert controller
       setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
-      setSwitchToConnectedAlertShown: nodeify(this.alertController.setSwitchToConnectedAlertShown, this.alertController),
+      setUnconnectedAccountAlertShown: nodeify(this.alertController.setUnconnectedAccountAlertShown, this.alertController),
 
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
@@ -620,6 +620,10 @@ export default class MetamaskController extends EventEmitter {
 
       // clear known identities
       this.preferencesController.setAddresses([])
+
+      // clear permissions
+      this.permissionsController.clearPermissions()
+
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
@@ -993,6 +997,8 @@ export default class MetamaskController extends EventEmitter {
    *
    */
   async removeAccount (address) {
+    // Remove all associated permissions
+    await this.permissionsController.removeAllAccountPermissions(address)
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller

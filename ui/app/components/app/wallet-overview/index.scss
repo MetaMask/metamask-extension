@@ -27,6 +27,17 @@
   }
 }
 
+%asset-buttons {
+  min-width: initial;
+  width: 100px;
+
+  &:not(:last-child) {
+    margin-right: 12px;
+  }
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 .eth-overview {
   &__balance {
     display: flex;
@@ -73,12 +84,7 @@
   }
 
   &__button {
-    min-width: initial;
-    width: 100px;
-
-    &:not(:last-child) {
-      margin-right: 12px;
-    }
+    @extend %asset-buttons;
   }
 }
 
@@ -102,12 +108,14 @@
     justify-content: center;
   }
 
-  &__button {
-    min-width: initial;
-    width: 100px;
+  &__secondary-balance {
+    font-size: 16px;
+    line-height: 23px;
+    font-weight: 400;
+    color: $Grey-400;
+  }
 
-    &:not(:last-child) {
-      margin-right: 12px;
-    }
+  &__button {
+    @extend %asset-buttons;
   }
 }

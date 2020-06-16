@@ -647,9 +647,6 @@
   "metamaskVersion": {
     "message": "MetaMask versija"
   },
-  "missingYourTokens": {
-    "message": "Neredzat savus marķierus?"
-  },
   "mobileSyncText": {
     "message": "Lūdzu, ievadiet paroli, lai apstiprinātu, ka tas esat jūs."
   },

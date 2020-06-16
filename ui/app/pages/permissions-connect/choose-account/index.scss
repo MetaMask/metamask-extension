@@ -41,8 +41,9 @@
   }
 
   &__accounts-list {
-    flex: 1 1 0;
+    flex: 2 1 0;
     width: 92%;
+    max-height: max-content;
     border: 1px solid #D0D5DA;
     box-sizing: border-box;
     border-radius: 8px;
@@ -147,7 +148,7 @@
 
   &__footer-container {
     width: 100%;
-    flex: 0;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

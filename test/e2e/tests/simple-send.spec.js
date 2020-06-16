@@ -22,7 +22,7 @@ describe('MetaMask Browser Extension', function () {
       await amountField.sendKeys('1')
       await driver.clickElement(By.css('[data-testid="page-container-footer-next"]'))
       await driver.clickElement(By.css('[data-testid="page-container-footer-next"]'))
-      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
+      await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
       await driver.findElement(By.css('.transaction-list-item'))
     })
   })

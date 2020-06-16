@@ -8,7 +8,7 @@ import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
-import IconWithFallBack from '../../ui/icon-with-fallback'
+import SiteIcon from '../../ui/site-icon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../../helpers/constants/common'
 import {
@@ -178,7 +178,7 @@ export default class AccountMenu extends Component {
           { iconAndNameForOpenDomain
             ? (
               <div className="account-menu__icon-list">
-                <IconWithFallBack icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} />
+                <SiteIcon icon={iconAndNameForOpenDomain.icon} name={iconAndNameForOpenDomain.name} size={32} />
               </div>
             )
             : null

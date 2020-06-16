@@ -107,7 +107,7 @@
     border-top: 1px solid #D2D8DD;
     padding: 16px 24px 24px;
 
-    & :only-child {
+    > :only-child {
       margin: 0 auto;
     }
   }

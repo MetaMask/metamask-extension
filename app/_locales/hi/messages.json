@@ -648,9 +648,6 @@
   "metamaskVersion": {
     "message": "MetaMask का संस्करण"
   },
-  "missingYourTokens": {
-    "message": "अपने टोकन को देख नहीं पा रहें हैं?"
-  },
   "mobileSyncText": {
     "message": "यह आप ही हैं इसकी पुष्टि करने के लिए कृपया अपना पासवर्ड दर्ज करें!"
   },

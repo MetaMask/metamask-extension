@@ -191,30 +191,30 @@ export default class ChooseAccount extends Component {
       <div className="permissions-connect-choose-account">
         <PermissionsConnectHeader
           icon={targetDomainMetadata.icon}
-          iconName={targetDomainMetadata.origin}
+          iconName={targetDomainMetadata.name}
           headerTitle={t('connectWithMetaMask')}
           headerText={accounts.length > 0
             ? t('selectAccounts')
             : t('connectAccountOrCreate')
           }
         />
-        { this.renderAccountsListHeader() }
-        { this.renderAccountsList() }
+        {this.renderAccountsListHeader()}
+        {this.renderAccountsList()}
         <div className="permissions-connect-choose-account__footer-container">
           <PermissionsConnectFooter />
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
-              onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
+              onClick={() => cancelPermissionsRequest(permissionsRequestId)}
               type="default"
             >
-              { t('cancel') }
+              {t('cancel')}
             </Button>
             <Button
-              onClick={ () => selectAccounts(selectedAccounts) }
+              onClick={() => selectAccounts(selectedAccounts)}
               type="primary"
-              disabled={ selectedAccounts.size === 0 }
+              disabled={selectedAccounts.size === 0}
             >
-              { t('next') }
+              {t('next')}
             </Button>
           </div>
         </div>

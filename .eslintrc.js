@@ -23,6 +23,7 @@ module.exports = {
     '@metamask/eslint-config/config/nodejs',
     '@metamask/eslint-config/config/mocha',
     'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
   ],
 
   plugins: [

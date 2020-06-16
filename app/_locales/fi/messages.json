@@ -648,9 +648,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "missingYourTokens": {
-    "message": "Etkö näe tietueitasi?"
-  },
   "mobileSyncText": {
     "message": "Vahvista henkilöllisyytesi antamalla salasanasi!"
   },

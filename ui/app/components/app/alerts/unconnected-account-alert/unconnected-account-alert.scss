@@ -1,25 +1,28 @@
 .unconnected-account-alert {
+  &__content {
+    border-radius: 0;
+  }
+
   &__footer {
     flex-direction: column;
 
-    :only-child {
+    > :only-child {
       margin: 0;
     }
   }
 
-  &__footer-buttons {
+  &__footer-row {
     display: flex;
     flex-direction: row;
+  }
 
-    button:first-child {
-      margin-right: 24px;
-    }
-
-    button {
-      font-size: 14px;
-      line-height: 20px;
-      padding: 8px;
-    }
+  &__dismiss-button {
+    background: #037DD6;
+    color: white;
+    height: 40px;
+    width: 100px;
+    border: 0;
+    border-radius: 100px;
   }
 
   &__error {
@@ -31,21 +34,24 @@
     border-radius: 3px;
   }
 
-  &__content {
+  &__checkbox-wrapper {
+    width: 100%;
+    display: flex;
     flex-direction: row;
-    padding: 0 24px 24px 24px;
+    align-items: center;
   }
 
   &__checkbox {
     margin-right: 8px;
+    padding-top: 1px; // better alignment with rest of content
   }
 
   &__checkbox-label {
-    font-size: 14px;
+    display: flex;
+    font-size: 12px;
     margin-top: auto;
     margin-bottom: auto;
     color: $Grey-500;
-    display: flex;
   }
 
   &__checkbox-label-tooltip {
