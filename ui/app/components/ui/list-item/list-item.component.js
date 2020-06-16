@@ -6,7 +6,6 @@ export default function ListItem ({
   title,
   subtitle,
   onClick,
-  subtitleStatus,
   children,
   titleIcon,
   icon,
@@ -32,9 +31,11 @@ export default function ListItem ({
           </div>
         )}
       </div>
-      <div className="list-item__subheading">
-        <h3>{subtitleStatus}{subtitle}</h3>
-      </div>
+      {subtitle && (
+        <div className="list-item__subheading">
+          {subtitle}
+        </div>
+      )}
       {children && (
         <div className="list-item__actions">
           { children }
@@ -57,8 +58,7 @@ export default function ListItem ({
 ListItem.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.node,
-  subtitle: PropTypes.string,
-  subtitleStatus: PropTypes.node,
+  subtitle: PropTypes.node,
   children: PropTypes.node,
   icon: PropTypes.node,
   rightContent: PropTypes.node,

@@ -58,7 +58,9 @@
     line-height: 14px;
     color: $Grey-500;
     margin-top: 4px;
-    > h3 {
+    // all direct descendants should be truncated with ellipses
+    // allows flexibility in consuming components to use h3/other tag
+    > * {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
