@@ -6,7 +6,7 @@ import {
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getTargetDomainMetadata,
+  getDomainMetadata,
   getSelectedAddress,
 } from '../../selectors'
 
@@ -42,6 +42,15 @@ const mapStateToProps = (state, ownProps) => {
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
 
+  const domainMetadata = getDomainMetadata(state)
+  const targetDomainMetadata = origin
+    ? domainMetadata[origin] || {
+      origin,
+      name: (new URL(origin)).hostname,
+      icon: null,
+    }
+    : null
+
   const accountsWithLabels = getAccountsWithLabels(state)
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
@@ -62,8 +71,6 @@ const mapStateToProps = (state, ownProps) => {
   } else {
     throw new Error('Incorrect path for permissions-connect component')
   }
-
-  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
 
   return {
     permissionsRequest,
