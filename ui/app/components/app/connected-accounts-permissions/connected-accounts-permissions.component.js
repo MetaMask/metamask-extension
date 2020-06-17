@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import CheckBox from '../../ui/check-box'
 
 export default class ConnectedAccountsPermissions extends PureComponent {
   static contextTypes = {
@@ -57,7 +58,8 @@ export default class ConnectedAccountsPermissions extends PureComponent {
           <ul className="connected-accounts-permissions__list">
             {permissions.map(({ key: permissionName }) => (
               <li key={permissionName} className="connected-accounts-permissions__list-item">
-                <i className="fas fa-check-square" />{t(permissionName)}
+                <CheckBox checked disabled id={permissionName} className="connected-accounts-permissions__checkbox" />
+                <label htmlFor={permissionName}>{t(permissionName)}</label>
               </li>
             ))}
           </ul>

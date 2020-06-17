@@ -62,17 +62,17 @@
       display: flex;
       align-items: center;
 
-      i {
-        font-size: 1.4rem;
-        color: $Grey-200;
-      }
-
       label {
         font-size: 14px;
         margin-left: 16px;
         color: $Black-100;
       }
     }
+  }
+
+  & &__checkbox {
+    font-size: 1.4rem;
+    margin: 0;
   }
 
   &__content-container {
