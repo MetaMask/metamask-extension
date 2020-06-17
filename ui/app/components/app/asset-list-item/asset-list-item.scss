@@ -17,6 +17,13 @@
     margin-left: 8px;
   }
 
+  &__send-token-button {
+    display: none;
+    text-transform: uppercase;
+    width: fit-content;
+    font-size: 14px;
+  }
+
   @media (min-width: 576px) {
     &__warning-tooltip {
       display: none;
@@ -24,6 +31,14 @@
 
     .list-item__mid-content {
       display: flex;
+    }
+
+    &__send-token-button {
+      display: inline-block;
+    }
+
+    &__chevron-right {
+      display: none;
     }
   }
 }

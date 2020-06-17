@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
+import { MemoryRouter } from 'react-router-dom'
 
 import TokenCell from '.'
 import Identicon from '../../ui/identicon'
@@ -44,14 +45,16 @@ describe('Token Cell', function () {
     onClick = sinon.stub()
     wrapper = mount(
       <Provider store={store}>
-        <TokenCell
-          address="0xAnotherToken"
-          symbol="TEST"
-          string="5.000"
-          currentCurrency="usd"
-          image="./test-image"
-          onClick={onClick}
-        />
+        <MemoryRouter>
+          <TokenCell
+            address="0xAnotherToken"
+            symbol="TEST"
+            string="5.000"
+            currentCurrency="usd"
+            image="./test-image"
+            onClick={onClick}
+          />
+        </MemoryRouter>
       </Provider>
     )
   })

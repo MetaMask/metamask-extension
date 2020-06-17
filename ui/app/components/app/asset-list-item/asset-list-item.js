@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../ui/identicon'
 import ListItem from '../../ui/list-item'
 import Tooltip from '../../ui/tooltip-v2'
 import InfoIcon from '../../ui/icon/info-icon.component'
+import Button from '../../ui/button'
+import { useI18nContext } from '../../../hooks/useI18nContext'
+import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { useDispatch } from 'react-redux'
+import { updateSendToken } from '../../../store/actions'
+import { useHistory } from 'react-router-dom'
+import { SEND_ROUTE } from '../../../helpers/constants/routes'
 
 
 const AssetListItem = ({
@@ -13,11 +20,23 @@ const AssetListItem = ({
   iconClassName,
   onClick,
   tokenAddress,
+  tokenSymbol,
+  tokenDecimals,
   tokenImage,
   warning,
   primary,
   secondary,
 }) => {
+  const t = useI18nContext()
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const sendTokenEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Home',
+      name: 'Clicked Send: Token',
+    },
+  })
   const titleIcon = warning
     ? (
       <Tooltip
@@ -40,6 +59,38 @@ const AssetListItem = ({
     )
     : null
 
+  const sendTokenButton = useMemo(() => {
+    if (tokenAddress == null) {
+      return null
+    }
+    return (
+      <Button
+        type="link"
+        className="asset-list-item__send-token-button"
+        onClick={(e) => {
+          e.stopPropagation()
+          sendTokenEvent()
+          dispatch(updateSendToken({
+            address: tokenAddress,
+            decimals: tokenDecimals,
+            symbol: tokenSymbol,
+          }))
+          history.push(SEND_ROUTE)
+        }}
+      >
+        {t('sendSpecifiedTokens', [tokenSymbol])}
+      </Button>
+    )
+  }, [
+    tokenSymbol,
+    sendTokenEvent,
+    tokenAddress,
+    tokenDecimals,
+    history,
+    t,
+    dispatch,
+  ])
+
   return (
     <ListItem
       className={classnames('asset-list-item', className)}
@@ -57,7 +108,12 @@ const AssetListItem = ({
         />
       )}
       midContent={midContent}
-      rightContent={<i className="fas fa-chevron-right asset-list-item__chevron-right" />}
+      rightContent={(
+        <>
+          <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+          {sendTokenButton}
+        </>
+      )}
     />
   )
 }
@@ -68,6 +124,8 @@ AssetListItem.propTypes = {
   iconClassName: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   tokenAddress: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  tokenDecimals: PropTypes.number,
   tokenImage: PropTypes.string,
   warning: PropTypes.node,
   primary: PropTypes.string,

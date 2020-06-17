@@ -6,7 +6,8 @@ import {
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getTargetDomainMetadata,
+  getDomainMetadata,
+  getSelectedAddress,
 } from '../../selectors'
 
 import { formatDate } from '../../helpers/utils/util'
@@ -28,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     location: { pathname },
   } = ownProps
   const permissionsRequests = getPermissionsRequests(state)
+  const currentAddress = getSelectedAddress(state)
 
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
@@ -39,6 +41,15 @@ const mapStateToProps = (state, ownProps) => {
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
+
+  const domainMetadata = getDomainMetadata(state)
+  const targetDomainMetadata = origin
+    ? domainMetadata[origin] || {
+      origin,
+      name: (new URL(origin)).hostname,
+      icon: null,
+    }
+    : null
 
   const accountsWithLabels = getAccountsWithLabels(state)
 
@@ -61,13 +72,12 @@ const mapStateToProps = (state, ownProps) => {
     throw new Error('Incorrect path for permissions-connect component')
   }
 
-  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
-
   return {
     permissionsRequest,
     permissionsRequestId,
     hasPendingPermissionsRequests,
     accounts: accountsWithLabels,
+    currentAddress,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,

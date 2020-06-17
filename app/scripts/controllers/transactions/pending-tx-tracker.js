@@ -79,7 +79,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       try {
         await this._resubmitTx(txMeta, blockNumber)
       } catch (err) {
-        const errorMessage = err.message.toLowerCase()
+        const errorMessage = err.value?.message?.toLowerCase() || err.message.toLowerCase()
         const isKnownTx = (
           // geth
           errorMessage.includes('replacement transaction underpriced') ||
@@ -209,9 +209,9 @@ export default class PendingTransactionTracker extends EventEmitter {
    */
   async _checkIfTxWasDropped (txMeta) {
     const { hash: txHash, txParams: { nonce, from } } = txMeta
-    const networkNonce = await this.query.getTransactionCount(from)
+    const networkNextNonce = await this.query.getTransactionCount(from)
 
-    if (parseInt(nonce) > parseInt(networkNonce)) {
+    if (parseInt(nonce, 16) >= parseInt(networkNextNonce, 16)) {
       return false
     }
 

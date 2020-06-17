@@ -79,7 +79,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   addUnapprovedMessageAsync (address, req) {
     return new Promise((resolve, reject) => {
       if (!address) {
-        reject(new Error('MetaMask Message for EncryptionPublicKey: address field is required.'))
+        reject(new Error('MetaMask Message: address field is required.'))
       }
       const msgId = this.addUnapprovedMessage(address, req)
       this.once(`${msgId}:finished`, (data) => {
@@ -87,9 +87,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
           case 'received':
             return resolve(data.rawData)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message for EncryptionPublicKey: User denied message EncryptionPublicKey.'))
+            return reject(ethErrors.provider.userRejectedRequest('MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.'))
           default:
-            return reject(new Error(`MetaMask Message for EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
+            return reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
         }
       })
     })
