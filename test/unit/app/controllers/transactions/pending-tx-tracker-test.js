@@ -20,7 +20,7 @@ describe('PendingTransactionTracker', function () {
         getCompletedTransactions: sinon.stub().returns([]),
         approveTransaction: sinon.spy(),
         publishTransaction: sinon.spy(),
-      confirmTransaction: sinon.spy(),
+        confirmTransaction: sinon.spy(),
       })
       const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects()
       const warningListener = sinon.spy()
