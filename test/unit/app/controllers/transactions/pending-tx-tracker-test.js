@@ -345,10 +345,11 @@ describe('PendingTransactionTracker', function () {
     })
 
     it('should return false when the given nonce is the network nonce', async function () {
+      const nonceBN = new BN(1)
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub(),
-          getTransactionCount: sinon.stub().resolves('0x01'),
+          getTransactionCount: sinon.stub().resolves(nonceBN),
         },
         nonceTracker: {
           getGlobalLock: sinon.stub().resolves({
@@ -489,10 +490,11 @@ describe('PendingTransactionTracker', function () {
         history: [{}],
         rawTx: '0xf86c808504a817c80082471d',
       }
+      const nonceBN = new BN(2)
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub().rejects(),
-          getTransactionCount: sinon.stub().resolves('0x02'),
+          getTransactionCount: sinon.stub().resolves(nonceBN),
         },
         nonceTracker: {
           getGlobalLock: sinon.stub().resolves({
