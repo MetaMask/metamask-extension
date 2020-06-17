@@ -1,5 +1,6 @@
 import sinon from 'sinon'
 import { strict as assert } from 'assert'
+import BN from 'bn.js'
 import PendingTransactionTracker from '../../../../../app/scripts/controllers/transactions/pending-tx-tracker'
 
 describe('PendingTransactionTracker', function () {
@@ -19,7 +20,7 @@ describe('PendingTransactionTracker', function () {
         getCompletedTransactions: sinon.stub().returns([]),
         approveTransaction: sinon.spy(),
         publishTransaction: sinon.spy(),
-        confirmTransaction: sinon.spy(),
+      confirmTransaction: sinon.spy(),
       })
       const resubmitTx = sinon.stub(pendingTxTracker, '_resubmitTx').rejects()
       const warningListener = sinon.spy()
@@ -311,10 +312,11 @@ describe('PendingTransactionTracker', function () {
 
   describe('#_checkIfTxWasDropped', function () {
     it('should return true when the given nonce is lower than the network nonce', async function () {
+      const nonceBN = new BN(2)
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub(),
-          getTransactionCount: sinon.stub().resolves('0x02'),
+          getTransactionCount: sinon.stub().resolves(nonceBN),
         },
         nonceTracker: {
           getGlobalLock: sinon.stub().resolves({
@@ -647,6 +649,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     it("should emit 'tx:dropped' with the txMetas id only after the fourth call", async function () {
+      const nonceBN = new BN(2)
       const txMeta = {
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
@@ -662,7 +665,7 @@ describe('PendingTransactionTracker', function () {
       const pendingTxTracker = new PendingTransactionTracker({
         query: {
           getTransactionReceipt: sinon.stub().resolves(null),
-          getTransactionCount: sinon.stub().resolves('0x02'),
+          getTransactionCount: sinon.stub().resolves(nonceBN),
         },
         nonceTracker: {
           getGlobalLock: sinon.stub().resolves({
