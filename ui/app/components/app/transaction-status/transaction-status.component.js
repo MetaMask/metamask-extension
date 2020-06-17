@@ -56,16 +56,13 @@ export default function TransactionStatus ({ status, date, error, isEarliestNonc
   const statusText = statusKey === CONFIRMED_STATUS ? date : t(statusKey)
 
   return (
-    <span>
-      <Tooltip
-        position="top"
-        title={tooltipText}
-        wrapperClassName={classnames('transaction-status', className, statusToClassNameHash[statusKey])}
-      >
-        { statusText }
-      </Tooltip>
-      {' · '}
-    </span>
+    <Tooltip
+      position="top"
+      title={tooltipText}
+      wrapperClassName={classnames('transaction-status', className, statusToClassNameHash[statusKey])}
+    >
+      { statusText }
+    </Tooltip>
   )
 }
 

@@ -31,4 +31,27 @@
       padding-top: 0;
     }
   }
+
+  .list-item__subheading > h3 {
+    overflow: visible;
+    display: flex;
+    white-space: nowrap;
+    text-overflow: initial;
+  }
+
+  .transaction-status:after {
+    content: "·";
+    margin: 0 4px;
+  }
+
+  &__origin, &__address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__origin {
+    /*rtl:ignore*/
+    direction: rtl;
+  }
 }

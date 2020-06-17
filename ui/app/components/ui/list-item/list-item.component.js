@@ -6,7 +6,6 @@ export default function ListItem ({
   title,
   subtitle,
   onClick,
-  subtitleStatus,
   children,
   titleIcon,
   icon,
@@ -24,16 +23,19 @@ export default function ListItem ({
           {icon}
         </div>
       )}
-      <h2 className="list-item__heading">
-        { title } {titleIcon && (
+      <div className="list-item__heading">
+        <h2>{ title }</h2>
+        {titleIcon && (
           <div className="list-item__heading-wrap">
             {titleIcon}
           </div>
         )}
-      </h2>
-      <h3 className="list-item__subheading">
-        {subtitleStatus}{subtitle}
-      </h3>
+      </div>
+      {subtitle && (
+        <div className="list-item__subheading">
+          {subtitle}
+        </div>
+      )}
       {children && (
         <div className="list-item__actions">
           { children }
@@ -56,8 +58,7 @@ export default function ListItem ({
 ListItem.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.node,
-  subtitle: PropTypes.string,
-  subtitleStatus: PropTypes.node,
+  subtitle: PropTypes.node,
   children: PropTypes.node,
   icon: PropTypes.node,
   rightContent: PropTypes.node,
