@@ -4,9 +4,11 @@ import createId from './random-id'
 import assert from 'assert'
 import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
+import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
 import { MESSAGE_TYPE } from './enums'
+
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
@@ -108,11 +110,6 @@ export default class TypedMessageManager extends EventEmitter {
     if (req) {
       msgParams.origin = req.origin
     }
-    if (msgParams.from) {
-      // this is how MetaMask identifies the signing account, and is not part
-      // of the signed data
-      msgParams.from = msgParams.from.toLowerCase()
-    }
     this.validateParams(msgParams)
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
@@ -146,8 +143,8 @@ export default class TypedMessageManager extends EventEmitter {
     assert.ok('data' in params, 'Params must include a "data" field.')
     assert.ok('from' in params, 'Params must include a "from" field.')
     assert.ok(
-      typeof params.from === 'string' && params.from.match(/^0x[A-Fa-f0-9]{40}/u),
-      '"from" field must be a valid, hexadecimal Ethereum address string.'
+      typeof params.from === 'string' && isValidAddress(params.from),
+      '"from" field must be a valid, lowercase, hexadecimal Ethereum address string.'
     )
 
     switch (params.version) {
