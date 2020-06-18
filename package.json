@@ -74,7 +74,7 @@
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@material-ui/core": "1.0.0",
-    "@metamask/controllers": "^2.0.0",
+    "@metamask/controllers": "^2.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@metamask/eth-token-tracker": "^2.0.0",
     "@metamask/etherscan-link": "^1.1.0",
