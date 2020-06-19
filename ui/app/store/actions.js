@@ -2160,7 +2160,7 @@ export function getContractMethodData (data = '') {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
     const { knownMethodData } = getState().metamask
-    if (knownMethodData && knownMethodData[fourBytePrefix]) {
+    if (knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
