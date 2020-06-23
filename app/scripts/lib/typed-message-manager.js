@@ -4,9 +4,11 @@ import createId from './random-id'
 import assert from 'assert'
 import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
+import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
 import { MESSAGE_TYPE } from './enums'
+
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
@@ -102,14 +104,15 @@ export default class TypedMessageManager extends EventEmitter {
    *
    */
   addUnapprovedMessage (msgParams, req, version) {
+
     msgParams.version = version
-    this.validateParams(msgParams)
-    // add origin from request
     if (req) {
       msgParams.origin = req.origin
     }
+    this.validateParams(msgParams)
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+
     // create txData obj with parameters and meta data
     const time = (new Date()).getTime()
     const msgId = createId()
@@ -134,37 +137,38 @@ export default class TypedMessageManager extends EventEmitter {
    *
    */
   validateParams (params) {
+
+    assert.ok(params && typeof params === 'object', 'Params must be an object.')
+    assert.ok('data' in params, 'Params must include a "data" field.')
+    assert.ok('from' in params, 'Params must include a "from" field.')
+    assert.ok(
+      typeof params.from === 'string' && isValidAddress(params.from),
+      '"from" field must be a valid, lowercase, hexadecimal Ethereum address string.'
+    )
+
     switch (params.version) {
       case 'V1':
-        assert.equal(typeof params, 'object', 'Params should ben an object.')
-        assert.ok('data' in params, 'Params must include a data field.')
-        assert.ok('from' in params, 'Params must include a from field.')
-        assert.ok(Array.isArray(params.data), 'Data should be an array.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
+        assert.ok(Array.isArray(params.data), '"params.data" must be an array.')
         assert.doesNotThrow(() => {
           sigUtil.typedSignatureHash(params.data)
-        }, 'Expected EIP712 typed data')
+        }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
       case 'V4':
+        assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
         let data
-        assert.equal(typeof params, 'object', 'Params should be an object.')
-        assert.ok('data' in params, 'Params must include a data field.')
-        assert.ok('from' in params, 'Params must include a from field.')
-        assert.equal(typeof params.from, 'string', 'From field must be a string.')
-        assert.equal(typeof params.data, 'string', 'Data must be passed as a valid JSON string.')
         assert.doesNotThrow(() => {
           data = JSON.parse(params.data)
-        }, 'Data must be passed as a valid JSON string.')
+        }, '"data" must be a valid JSON string.')
         const validation = jsonschema.validate(data, sigUtil.TYPED_MESSAGE_SCHEMA)
         assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
-        assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
+        assert.equal(validation.errors.length, 0, 'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.')
         const chainId = data.domain.chainId
         const activeChainId = parseInt(this.networkController.getNetworkState())
-        chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
+        chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
         break
       default:
-        assert.fail(`Unknown params.version ${params.version}`)
+        assert.fail(`Unknown typed data version "${params.version}"`)
     }
   }
 
