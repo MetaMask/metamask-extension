@@ -1,8 +1,8 @@
 import { addHexPrefix, isValidAddress } from 'ethereumjs-util'
 
 const normalizers = {
-  from: (from, lowerCase = true) => (lowerCase ? addHexPrefix(from).toLowerCase() : addHexPrefix(from)),
-  to: (to, lowerCase = true) => (lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
+  from: (from) => addHexPrefix(from),
+  to: (to, lowerCase) => (lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to)),
   nonce: (nonce) => addHexPrefix(nonce),
   value: (value) => addHexPrefix(value),
   data: (data) => addHexPrefix(data),
@@ -12,11 +12,12 @@ const normalizers = {
 
 /**
  * Normalizes the given txParams
- * @param {Object} txParams - the tx params
- * @param {boolean} lowerCase - whether to return the addresses lower cased
+ * @param {Object} txParams - The transaction params
+ * @param {boolean} [lowerCase] - Whether to lowercase the 'to' address.
+ * Default: true
  * @returns {Object} the normalized tx params
  */
-export function normalizeTxParams (txParams, lowerCase) {
+export function normalizeTxParams (txParams, lowerCase = true) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
   for (const key in normalizers) {
