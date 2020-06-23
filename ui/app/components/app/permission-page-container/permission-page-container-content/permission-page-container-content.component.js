@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import PermissionsConnectHeader from '../../permissions-connect-header'
 import Tooltip from '../../../ui/tooltip-v2'
+import CheckBox from '../../../ui/check-box'
 
 export default class PermissionPageContainerContent extends PureComponent {
 
@@ -33,6 +34,8 @@ export default class PermissionPageContainerContent extends PureComponent {
       const description = t(permissionName)
       // don't allow deselecting eth_accounts
       const isDisabled = permissionName === 'eth_accounts'
+      const isChecked = Boolean(selectedPermissions[permissionName])
+      const title = isChecked ? t('permissionCheckedIconDescription') : t('permissionUncheckedIconDescription')
 
       return (
         <div
@@ -44,11 +47,14 @@ export default class PermissionPageContainerContent extends PureComponent {
             }
           }}
         >
-          { selectedPermissions[permissionName]
-            ? <i title={t('permissionCheckedIconDescription')} className="fa fa-check-square" />
-            : <i title={t('permissionUncheckedIconDescription')} className="fa fa-square" />
-          }
-          <label>{description}</label>
+          <CheckBox
+            disabled={isDisabled}
+            id={permissionName}
+            className="permission-approval-container__checkbox"
+            checked={isChecked}
+            title={title}
+          />
+          <label htmlFor={permissionName}>{description}</label>
         </div>
       )
     })
