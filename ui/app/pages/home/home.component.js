@@ -25,6 +25,8 @@ import {
   CONNECTED_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes'
 
+const LEARN_MORE_URL = 'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
+
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -187,17 +189,27 @@ export default class Home extends PureComponent {
           )
         }}
         footer={(
-          <Button
-            type="primary"
-            onClick={setConnectedStatusPopoverHasBeenShown}
-          >
-            { t('dismiss') }
-          </Button>
+          <>
+            <a
+              href={LEARN_MORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              { t('learnMore') }
+            </a>
+            <Button
+              type="primary"
+              onClick={setConnectedStatusPopoverHasBeenShown}
+            >
+              { t('dismiss') }
+            </Button>
+          </>
         )}
       >
         <main className="home__connect-status-text">
           <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
           <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
+          <div>{ t('metaMaskConnectStatusParagraphThree') }</div>
         </main>
       </Popover>
     )

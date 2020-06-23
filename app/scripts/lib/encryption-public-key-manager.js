@@ -283,5 +283,4 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
     this.memStore.updateState({ unapprovedEncryptionPublicKeyMsgs, unapprovedEncryptionPublicKeyMsgCount })
     this.emit('updateBadge')
   }
-
 }

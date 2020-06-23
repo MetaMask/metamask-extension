@@ -69,7 +69,7 @@ describe('Token Cell', function () {
   })
 
   it('renders token balance and symbol', function () {
-    assert.equal(wrapper.find('.list-item__heading').text(), '5.000 TEST ')
+    assert.equal(wrapper.find('.list-item__heading').text(), '5.000 TEST')
   })
 
   it('renders converted fiat amount', function () {

@@ -35,9 +35,33 @@ const ExtensionizerMock = {
   },
 }
 
+let loggerMiddlewareMock
+const initializeMockMiddlewareLog = () => {
+  loggerMiddlewareMock = {
+    requests: [],
+    responses: [],
+  }
+}
+const tearDownMockMiddlewareLog = () => {
+  loggerMiddlewareMock = undefined
+}
+
+const createLoggerMiddlewareMock = () => (req, res, next) => {
+  if (loggerMiddlewareMock) {
+    loggerMiddlewareMock.requests.push(req)
+    next((cb) => {
+      loggerMiddlewareMock.responses.push(res)
+      cb()
+    })
+  } else {
+    next()
+  }
+}
+
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
   './controllers/threebox': { default: ThreeBoxControllerMock },
   'extensionizer': ExtensionizerMock,
+  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default
 
 const currentNetworkId = 42
@@ -96,7 +120,6 @@ describe('MetaMaskController', function () {
     // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
-    sandbox.spy(metamaskController.txController, 'newUnapprovedTransaction')
   })
 
   afterEach(function () {
@@ -776,6 +799,17 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setupUntrustedCommunication', function () {
+
+    const mockTxParams = { from: TEST_ADDRESS }
+
+    beforeEach(function () {
+      initializeMockMiddlewareLog()
+    })
+
+    after(function () {
+      tearDownMockMiddlewareLog()
+    })
+
     it('sets up phishing stream for untrusted communication', async function () {
       const phishingMessageSender = {
         url: 'http://myethereumwalletntw.com',
@@ -815,7 +849,7 @@ describe('MetaMaskController', function () {
       const message = {
         id: 1999133338649204,
         jsonrpc: '2.0',
-        params: ['mock tx params'],
+        params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       }
       streamTest.write({
@@ -824,15 +858,12 @@ describe('MetaMaskController', function () {
       }, null, () => {
         setTimeout(() => {
           assert.deepStrictEqual(
-            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
-            [
-              'mock tx params',
-              {
-                ...message,
-                origin: 'http://mycrypto.com',
-                tabId: 456,
-              },
-            ]
+            loggerMiddlewareMock.requests[0],
+            {
+              ...message,
+              origin: 'http://mycrypto.com',
+              tabId: 456,
+            },
           )
           done()
         })
@@ -856,7 +887,7 @@ describe('MetaMaskController', function () {
       const message = {
         id: 1999133338649204,
         jsonrpc: '2.0',
-        params: ['mock tx params'],
+        params: [{ ...mockTxParams }],
         method: 'eth_sendTransaction',
       }
       streamTest.write({
@@ -865,14 +896,11 @@ describe('MetaMaskController', function () {
       }, null, () => {
         setTimeout(() => {
           assert.deepStrictEqual(
-            metamaskController.txController.newUnapprovedTransaction.getCall(0).args,
-            [
-              'mock tx params',
-              {
-                ...message,
-                origin: 'http://mycrypto.com',
-              },
-            ]
+            loggerMiddlewareMock.requests[0],
+            {
+              ...message,
+              origin: 'http://mycrypto.com',
+            },
           )
           done()
         })

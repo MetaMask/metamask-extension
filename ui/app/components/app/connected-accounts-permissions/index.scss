@@ -41,13 +41,11 @@
 
   &__list-item {
     display: flex;
+  }
 
-    i {
-      display: block;
-      padding-right: 8px;
-      font-size: 18px;
-      color: $Grey-800;
-    }
+  & &__checkbox {
+    margin: 0 8px 0 0;
+    font-size: 18px;
   }
 
   &__list-container {

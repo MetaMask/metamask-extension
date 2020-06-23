@@ -7,7 +7,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenToAddress } from '../helpers/utils/token-util'
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
-import { formatDateWithYearContext, shortenAddress } from '../helpers/utils/util'
+import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
 import {
   CONTRACT_INTERACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
@@ -31,14 +31,15 @@ import { getTokens } from '../ducks/metamask/metamask'
 
 /**
  * @typedef {Object} TransactionDisplayData
- * @property {string} title               - primary description of the transaction
- * @property {string} subtitle            - supporting text describing the transaction
- * @property {string} category            - the transaction category
- * @property {string} primaryCurrency     - the currency string to display in the primary position
- * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
- * @property {string} status              - the status of the transaction
- * @property {string} senderAddress       - the Ethereum address of the sender
- * @property {string} recipientAddress    - the Ethereum address of the recipient
+ * @property {string} title                  - primary description of the transaction
+ * @property {string} subtitle               - supporting text describing the transaction
+ * @property {bool}   subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} category               - the transaction category
+ * @property {string} primaryCurrency        - the currency string to display in the primary position
+ * @property {string} [secondaryCurrency]    - the currency string to display in the secondary position
+ * @property {string} status                 - the status of the transaction
+ * @property {string} senderAddress          - the Ethereum address of the sender
+ * @property {string} recipientAddress       - the Ethereum address of the recipient
  */
 
 /**
@@ -70,6 +71,7 @@ export function useTransactionDisplayData (transactionGroup) {
   let prefix = '-'
   const date = formatDateWithYearContext(initialTransaction.time || 0)
   let subtitle
+  let subtitleContainsOrigin = false
   let recipientAddress = to
 
   // This value is used to determine whether we should look inside txParams.data
@@ -87,27 +89,31 @@ export function useTransactionDisplayData (transactionGroup) {
   const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
   const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
 
+  const origin = stripHttpSchemes(initialTransaction.origin || initialTransaction.msgParams?.origin || '')
+
   let category
   let title
   // There are four types of transaction entries that are currently differentiated in the design
-  // 1. (PENDING DESIGN) signature request
+  // 1. signature request
   // 2. Send (sendEth sendTokens)
   // 3. Deposit
   // 4. Site interaction
   // 5. Approval
   if (transactionCategory == null) {
-    const origin = initialTransaction.msgParams?.origin || initialTransaction.origin
     category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
-    subtitle = origin || ''
+    subtitle = origin
+    subtitleContainsOrigin = true
   } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('approve')
-    subtitle = initialTransaction.origin
+    subtitle = origin
+    subtitleContainsOrigin = true
   } else if (transactionCategory === DEPLOY_CONTRACT_ACTION_KEY || transactionCategory === CONTRACT_INTERACTION_KEY) {
     category = TRANSACTION_CATEGORY_INTERACTION
     title = (methodData?.name && camelCaseToCapitalize(methodData.name)) || (actionKey && t(actionKey)) || ''
-    subtitle = initialTransaction.origin
+    subtitle = origin
+    subtitleContainsOrigin = true
   } else if (transactionCategory === INCOMING_TRANSACTION) {
     category = TRANSACTION_CATEGORY_RECEIVE
     title = t('receive')
@@ -146,6 +152,7 @@ export function useTransactionDisplayData (transactionGroup) {
     category,
     date,
     subtitle,
+    subtitleContainsOrigin,
     primaryCurrency,
     senderAddress,
     recipientAddress,

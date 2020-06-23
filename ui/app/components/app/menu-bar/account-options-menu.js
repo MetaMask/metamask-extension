@@ -10,6 +10,8 @@ import genAccountLink from '../../../../lib/account-link'
 import { getCurrentKeyring, getCurrentNetwork, getRpcPrefsForCurrentProvider, getSelectedIdentity } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../app/scripts/lib/enums'
 
 export default function AccountOptionsMenu ({ anchorElement, onClose }) {
   const t = useI18nContext()
@@ -58,16 +60,22 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
       className="account-options-menu"
       onHide={onClose}
     >
-      <MenuItem
-        onClick={() => {
-          openFullscreenEvent()
-          global.platform.openExtensionInBrowser()
-          onClose()
-        }}
-        iconClassName="fas fa-expand-alt"
-      >
-        { t('expandView') }
-      </MenuItem>
+      {
+        getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
+          ? null
+          : (
+            <MenuItem
+              onClick={() => {
+                openFullscreenEvent()
+                global.platform.openExtensionInBrowser()
+                onClose()
+              }}
+              iconClassName="fas fa-expand-alt"
+            >
+              { t('expandView') }
+            </MenuItem>
+          )
+      }
       <MenuItem
         data-testid="account-options-menu__account-details"
         onClick={() => {

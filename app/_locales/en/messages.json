@@ -909,10 +909,13 @@
     "message": "Message"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "This is the new MetaMask Connect status indicator. From here you can easily see and manage sites you’ve connected to with your MetaMask wallet."
+    "message": "You now have more control over your account connections in MetaMask."
   },
   "metaMaskConnectStatusParagraphTwo": {
-    "message": "Click the Connect status to see your connected sites and their permissions."
+    "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
+  },
+  "metaMaskConnectStatusParagraphThree": {
+    "message": "Click it to manage your connected accounts."
   },
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."

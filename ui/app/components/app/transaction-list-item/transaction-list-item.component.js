@@ -40,6 +40,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const {
     title,
     subtitle,
+    subtitleContainsOrigin,
     date,
     category,
     primaryCurrency,
@@ -122,15 +123,19 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           />
         )}
         icon={<TransactionIcon category={category} status={status} />}
-        subtitle={subtitle}
-        subtitleStatus={(
-          <TransactionStatus
-            isPending={isPending}
-            isEarliestNonce={isEarliestNonce}
-            error={err}
-            date={date}
-            status={status}
-          />
+        subtitle={(
+          <h3>
+            <TransactionStatus
+              isPending={isPending}
+              isEarliestNonce={isEarliestNonce}
+              error={err}
+              date={date}
+              status={status}
+            />
+            <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'}>
+              {subtitle}
+            </span>
+          </h3>
         )}
         rightContent={!isSignatureReq && (
           <>

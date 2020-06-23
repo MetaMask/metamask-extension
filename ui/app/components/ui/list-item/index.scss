@@ -41,6 +41,11 @@
     display: flex;
     align-items: center;
 
+    > h2 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     &-wrap {
       display: inline-block;
       margin-left: 8px;
@@ -53,6 +58,13 @@
     line-height: 14px;
     color: $Grey-500;
     margin-top: 4px;
+    // all direct descendants should be truncated with ellipses
+    // allows flexibility in consuming components to use h3/other tag
+    > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     &:empty {
       display: none;
     }
