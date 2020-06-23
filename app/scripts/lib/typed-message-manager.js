@@ -148,13 +148,14 @@ export default class TypedMessageManager extends EventEmitter {
 
     switch (params.version) {
       case 'V1':
-        assert.ok(Array.isArray(params.data), '"data" field must be an array.')
+        assert.ok(Array.isArray(params.data), '"params.data" must be an array.')
         assert.doesNotThrow(() => {
           sigUtil.typedSignatureHash(params.data)
         }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
       case 'V4':
+        assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
         let data
         assert.doesNotThrow(() => {
           data = JSON.parse(params.data)
