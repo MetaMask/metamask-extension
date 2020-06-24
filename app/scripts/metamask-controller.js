@@ -725,9 +725,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    const simpleKeyPairKeyring = this.keyringController.getKeyringsByType('Simple Key Pair')[0]
+    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType('Simple Key Pair')
     const hdAccounts = await hdKeyring.getAccounts()
-    const simpleKeyPairAccounts = await simpleKeyPairKeyring.getAccounts()
+    const simpleKeyPairKeyringAccounts = await Promise.all(
+      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts())
+    )
+    const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce((acc, accounts) => [...acc, ...accounts], [])
     const accounts = {
       hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map((address) => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: simpleKeyPairAccounts.filter((item, pos) => (simpleKeyPairAccounts.indexOf(item) === pos)).map((address) => ethUtil.toChecksumAddress(address)),
