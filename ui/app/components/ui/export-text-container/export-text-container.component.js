@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
+import Copy from '../icon/copy-icon.component'
 import { exportAsFile } from '../../../helpers/utils/util'
 
 class ExportTextContainer extends Component {
@@ -20,7 +21,7 @@ class ExportTextContainer extends Component {
             className="export-text-container__button export-text-container__button--copy"
             onClick={() => copyToClipboard(text)}
           >
-            <img src="images/copy-to-clipboard.svg" alt="" />
+            <Copy size={20} color="#3098DC" />
             <div className="export-text-container__button-text">
               {t('copyToClipboard')}
             </div>
