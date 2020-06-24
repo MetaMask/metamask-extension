@@ -268,6 +268,7 @@ export default class ConfirmDecryptMessage extends Component {
                 position="bottom"
                 title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
                 wrapperClassName="request-decrypt-message__message-copy-tooltip"
+                style={{ display: 'flex', alignItems: 'center' }}
               >
                 <div
                   className="request-decrypt-message__message-copy-text"
