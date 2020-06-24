@@ -25,7 +25,7 @@ types:
 
 # Allow use of Merge commits (eg on github: "Merge branch 'master' into feature/ride-unicorns")
 # this is only relevant when using commitsOnly: true (or titleAndCommits: true)
-allowMergeCommits: false
+allowMergeCommits: true
 
 # Allow use of Revert commits (eg on github: "Revert "feat: ride unicorns"")
 # this is only relevant when using commitsOnly: true (or titleAndCommits: true)

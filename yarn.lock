@@ -6330,6 +6330,18 @@ cfx-sig-util@^0.0.1-a:
     tweetnacl "^1.0.0"
     tweetnacl-util "^0.15.0"
 
+cfx-sig-util@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfx-sig-util/-/cfx-sig-util-0.0.2.tgz#fad1443f7036a020fb3f3fc0a7dc6b7d7ae17015"
+  integrity sha512-fUrBk7BUG4eaqfTSwJpxDdEou5SyBr5dbUjUPawAxJRf7ixxrAaRqRoOc+mwVsH5AUNZaXiJ+yqlA4oJqNYQzQ==
+  dependencies:
+    buffer "^5.2.1"
+    cfx-util "^0.0.1-b"
+    elliptic "^6.4.0"
+    ethereumjs-abi "0.6.5"
+    tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
+
 cfx-simple-keyring@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/cfx-simple-keyring/-/cfx-simple-keyring-0.0.2.tgz#a5c4950a4b5356056510cbaf1b0d3ddc42dcea49"
@@ -6376,6 +6388,20 @@ cfx-wallet@^0.0.1-c:
     aes-js "^3.1.1"
     bs58check "^2.1.2"
     cfx-util "^0.0.1-c"
+    hdkey "^1.1.1"
+    randombytes "^2.0.6"
+    scrypt.js "^0.3.0"
+    utf8 "^3.0.0"
+    uuid "^3.3.2"
+
+cfx-wallet@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cfx-wallet/-/cfx-wallet-0.0.2.tgz#888a7b3d9b591f6528437f19c64166ce9d863b99"
+  integrity sha512-Tn3DFzKghLDcrhl1mGuvnBQk7HVeNQSZyXPACII9HSOj6gKsebApoU5xkiLfWBsmCZLYbwxGCoGgohFCu72n4A==
+  dependencies:
+    aes-js "^3.1.1"
+    bs58check "^2.1.2"
+    cfx-util "^0.0.2"
     hdkey "^1.1.1"
     randombytes "^2.0.6"
     scrypt.js "^0.3.0"
@@ -23466,7 +23492,21 @@ serve-favicon@^2.5.0:
     parseurl "~1.3.2"
     safe-buffer "5.1.1"
 
-serve-handler@6.1.2, serve-handler@^6.1.2:
+serve-handler@6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/serve-handler/-/serve-handler-6.1.3.tgz#1bf8c5ae138712af55c758477533b9117f6435e8"
+  integrity sha512-FosMqFBNrLyeiIDvP1zgO6YoTzFYHxLDEIavhlmQ+knB2Z7l1t+kGLHkZIDN7UVWqQAmKI3D20A6F6jo3nDd4w==
+  dependencies:
+    bytes "3.0.0"
+    content-disposition "0.5.2"
+    fast-url-parser "1.1.3"
+    mime-types "2.1.18"
+    minimatch "3.0.4"
+    path-is-inside "1.0.2"
+    path-to-regexp "2.2.1"
+    range-parser "1.2.0"
+
+serve-handler@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/serve-handler/-/serve-handler-6.1.2.tgz#f05b0421a313fff2d257838cba00cbcc512cd2b6"
   integrity sha512-RFh49wX7zJmmOVDcIjiDSJnMH+ItQEvyuYLYuDBVoA/xmQSCuj+uRmk1cmBB5QQlI3qOiWKp6p4DUGY+Z5AB2A==
@@ -23490,10 +23530,10 @@ serve-static@1.14.1:
     parseurl "~1.3.3"
     send "0.17.1"
 
-serve@^11.3.0:
-  version "11.3.0"
-  resolved "https://registry.yarnpkg.com/serve/-/serve-11.3.0.tgz#1d342e13e310501ecf17b6602f1f35da640d6448"
-  integrity sha512-AU0g50Q1y5EVFX56bl0YX5OtVjUX1N737/Htj93dQGKuHiuLvVB45PD8Muar70W6Kpdlz8aNJfoUqTyAq9EE/A==
+serve@^11.3.2:
+  version "11.3.2"
+  resolved "https://registry.yarnpkg.com/serve/-/serve-11.3.2.tgz#b905e980616feecd170e51c8f979a7b2374098f5"
+  integrity sha512-yKWQfI3xbj/f7X1lTBg91fXBP0FqjJ4TEi+ilES5yzH0iKJpN5LjNb1YzIfQg9Rqn4ECUS2SOf2+Kmepogoa5w==
   dependencies:
     "@zeit/schemas" "2.6.0"
     ajv "6.5.3"
@@ -23502,7 +23542,7 @@ serve@^11.3.0:
     chalk "2.4.1"
     clipboardy "1.2.3"
     compression "1.7.3"
-    serve-handler "6.1.2"
+    serve-handler "6.1.3"
     update-check "1.5.2"
 
 servify@^0.1.12:
