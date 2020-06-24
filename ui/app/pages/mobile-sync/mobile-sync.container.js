@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
   } = state
 
   return {
-    mostRecentOverviewpage: getMostRecentOverviewPage(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     selectedAddress,
   }
 }
