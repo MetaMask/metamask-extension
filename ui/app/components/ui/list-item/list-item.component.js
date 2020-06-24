@@ -23,7 +23,7 @@ export default function ListItem ({
           {icon}
         </div>
       )}
-      <div className="list-item__heading">
+      <div className="list-item__heading" title={title}>
         <h2>{ title }</h2>
         {titleIcon && (
           <div className="list-item__heading-wrap">

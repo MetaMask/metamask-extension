@@ -132,7 +132,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
               date={date}
               status={status}
             />
-            <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'}>
+            <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'} title={subtitle}>
               {subtitle}
             </span>
           </h3>
