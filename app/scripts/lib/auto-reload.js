@@ -14,7 +14,7 @@ export default function setupDappAutoReload (web3, observable) {
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn(`MetaMask: We will soon stop injecting web3. For more information, see: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
+        console.warn(`MetaMask: We will stop injecting web3 in Q4 2020.\nPlease see this article for more information: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
         hasBeenWarned = true
       }
       // return value normally
