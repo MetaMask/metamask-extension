@@ -37,7 +37,7 @@
 FROM circleci/node:10.16.3 AS base
 RUN sudo apt update && sudo apt install lsof -y && sudo rm -rf /var/lib/apt/lists/*
 WORKDIR /home/circleci/portal
-COPY --chown=circleci:circleci yarn.lock package.json .
+COPY --chown=circleci:circleci yarn.lock package.json ./
 
 FROM buildpack-deps:stretch AS shellcheck
 RUN apt update && apt install jq shellcheck -y && rm -rf /var/lib/apt/lists/*
@@ -81,7 +81,7 @@ ENTRYPOINT ["/docker-entrypoint-prep-deps.sh"]
 
 # **** prep-deps-with-prod-file
 FROM prep-deps AS prep-deps-with-prod-files
-COPY --chown=circleci:circleci gulpfile.js babel.config.js .
+COPY --chown=circleci:circleci gulpfile.js babel.config.js ./
 COPY --chown=circleci:circleci ui ./ui
 COPY --chown=circleci:circleci app ./app
 
@@ -161,7 +161,7 @@ RUN yarn test:unit:global
 
 # **** prep-build-test
 FROM prep-deps-browser AS prep-build-test
-COPY --chown=circleci:circleci gulpfile.js babel.config.js .
+COPY --chown=circleci:circleci gulpfile.js babel.config.js ./
 COPY --chown=circleci:circleci ./app ./app
 COPY --chown=circleci:circleci ./ui ./ui
 RUN yarn build:test
@@ -181,7 +181,7 @@ COPY --chown=circleci:circleci ./test/data ./test/data
 COPY --chown=circleci:circleci ./test/integration ./test/integration
 COPY --chown=circleci:circleci ./test/flat.conf.js ./test/flat.conf.js
 COPY --chown=circleci:circleci ./test/base.conf.js ./test/base.conf.js
-COPY --chown=circleci:circleci gulpfile.js babel.config.js .
+COPY --chown=circleci:circleci gulpfile.js babel.config.js ./
 COPY --chown=circleci:circleci ./app ./app
 COPY --chown=circleci:circleci ./ui ./ui
 RUN find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum

@@ -14,7 +14,9 @@ async function withFixtures (options, callback) {
 
   let webDriver
   try {
-    await ganacheServer.start({ ...ganacheOptions, killPortProcess: true })
+    if (ganacheOptions) {
+      await ganacheServer.start({ ...ganacheOptions, killPortProcess: true })
+    }
     await fixtureServer.start()
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures))
     const { driver } = await buildWebDriver(driverOptions)

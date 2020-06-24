@@ -7,7 +7,7 @@ const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
-const ganacheServer = new Ganache({ genBlockInterval: 250 })
+const ganacheServer = new Ganache({ genBlockInterval: 30 })
 
 describe('MetaMask', function () {
   let driver

@@ -15664,24 +15664,24 @@ js-beautify@^1.10.2:
     mkdirp "~0.5.1"
     nopt "~4.0.1"
 
+js-conflux-sdk@^0.10.0-alpha:
+  version "0.10.0-alpha"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.10.0-alpha.tgz#c917795c2e52ee6b82cbdbbc9da8a881a9b66cf6"
+  integrity sha512-425GZ7L53y8DgVwYcewDF+/YnpEwoSlUfn4O6UKV3k12vsRQXz9xsoDXQBEU8EfHB73Lipfb5/M4ZbT+5PqeMQ==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    big.js "^5.2.2"
+    jsbi "^3.1.1"
+    keccak "^2.0.0"
+    lodash "^4.17.15"
+    scrypt-js "^3.0.1"
+    secp256k1 "^3.7.1"
+    superagent "^5.1.0"
+
 js-conflux-sdk@^0.9.0-alpha:
   version "0.9.0-alpha"
   resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.9.0-alpha.tgz#fb0b2c7558746533cfc42cbb9f1135a9d55c5b34"
   integrity sha512-L4T8AAenfJs0YF5fAMO6V5UfX4BuTTscib7cY/4toTus+dXEtrfLGfUrxUJzZpO3cUg+hOr+AeQnlYliL8o1Rg==
-  dependencies:
-    "@babel/runtime" "^7.8.4"
-    big.js "^5.2.2"
-    esm "^3.2.25"
-    jsbi "^3.1.1"
-    keccak "^2.0.0"
-    lodash "^4.17.15"
-    secp256k1 "^3.7.1"
-    superagent "^5.1.0"
-
-js-conflux-sdk@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.9.1.tgz#2b5f15a71d444447520893c5c401b45d2d6dd5b7"
-  integrity sha512-D87/WhbnXXTtBRBFW2xAS8LAWYaqQfQpHlZkax7K/wjXtWpQh/ik5g7l3lBfzFbaMncvQQos1i4fIzuy7/GFzg==
   dependencies:
     "@babel/runtime" "^7.8.4"
     big.js "^5.2.2"
@@ -23234,6 +23234,11 @@ scrypt-js@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
   integrity sha1-uwBAvgMEPamgEqLOqfyfhSz8h9Q=
+
+scrypt-js@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
+  integrity sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
 
 scrypt.js@^0.2.0:
   version "0.2.1"

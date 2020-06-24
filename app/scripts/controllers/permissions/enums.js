@@ -117,4 +117,6 @@ export const SAFE_METHODS = [
   'cfx_uninstallFilter',
   'cfx_getEncryptionPublicKey',
   'cfx_decrypt',
+  'cfx_getStatus',
+  'cfx_getConfirmationRiskByHash',
 ]

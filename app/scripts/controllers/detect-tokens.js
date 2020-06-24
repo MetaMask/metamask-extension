@@ -68,7 +68,7 @@ class DetectTokensController {
       endpoint + CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API
     ).catch(() => {})
 
-    if (!res.ok) {
+    if (!res || !res.ok) {
       console.warn(`Failed to fetch token whitelist from confluxscan`)
       return {}
     }
