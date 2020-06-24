@@ -173,12 +173,12 @@
     padding: 5px;
     border-radius: 5px;
     position: relative;
-	
+
 	&-text {
 		font-size: 0.7em;
 		height: 115px;
 	}
-	
+
 	&-cover {
 		background-color: white;
 		opacity: 0.75;
@@ -187,7 +187,7 @@
 		width: 100%;
 		top: 0px;
 	}
-	
+
 	&-lock {
 		position: absolute;
 		height: 100%;
@@ -202,12 +202,12 @@
 			top: calc(50% - 34px);
 			border-radius: 3px;
 		}
-		
+
 		&--pressed {
 			display: none;
 		}
 	}
-	
+
 	&-lock-text {
 		width: 200px;
 		font-size: 0.75em;
@@ -219,7 +219,7 @@
 		line-height: 1em;
 		border-radius: 3px;
 	}
-	
+
 	&-copy {
 		justify-content: space-evenly;
 		font-size: 0.75em;
@@ -228,12 +228,12 @@
 		display: flex;
 		cursor: pointer;
 	}
-	
+
 	&-copy-text {
 	    margin-right: 10px;
 		display: inline;
 	}
-	
+
 	&-copy-tooltip {
 		float: right;
 	}
@@ -258,7 +258,7 @@
       margin-right: 1.2rem;
     }
   }
-  
+
   &__visual {
       display: flex;
       flex-direction: row;
