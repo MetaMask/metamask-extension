@@ -1696,10 +1696,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-5.0.0.tgz#f3961ceb02821255785fe20b1b676bfd944532d7"
-  integrity sha512-DjQy/hJPKwEhk+L/XPHfR6bSTWsGGXjHCQ3Q/LgieQX/Kv91yyMu+QUu+tWuVi0qX0dSRmaTnFNCF9FWNV1XgA==
+"@metamask/inpage-provider@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-5.2.0.tgz#a288d473e7374b1b227ea70d888e258854378c28"
+  integrity sha512-KyMfHcu3LqgxqS2hsxUxfIDjBQRJwOwhK6wOxOtAIRQLz4+Rns0Xt5R/Nk//U/JEskrHnNadTBgWOFCp3YzgJQ==
   dependencies:
     eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
@@ -1711,19 +1711,10 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@metamask/onboarding@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@metamask/onboarding/-/onboarding-0.2.1.tgz#76e864634d6436a486fcfa743f09a25b1934a11e"
-  integrity sha512-wSwgkIfVHM6IWja0xfNbK+wMFweOazNe1Z1RVqS0ZKG5v8vCPT93N5IQF2mKCDD+RnBpremE1VYslPPQxQz25g==
-  dependencies:
-    bowser "^2.5.4"
-
-"@metamask/test-dapp@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-1.0.1.tgz#67961a53640faca827422fd7bc467d5b2ceb0292"
-  integrity sha512-RANP75a5UpCXYydaxZQ6p+4A9UjEg6YC5XS6dGatohtIKbGvN3TAU0wPot3GKcxfn9BbnGKMzQ8DIxmkrEaqSg==
-  dependencies:
-    "@metamask/onboarding" "^0.2.1"
+"@metamask/test-dapp@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.1.1.tgz#c3b79f93c8a698b0904171c5143d0bca1307653a"
+  integrity sha512-ed0Ma9TLc+wkQYJK5TWslphp58JSi4Rer84LK2RxW1p4aS2LsGKS30pKMFUegj+g9g//7tyh+uFE87pXu4vPkA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -5450,11 +5441,6 @@ borc@^2.1.0:
     ieee754 "^1.1.8"
     iso-url "~0.4.4"
     json-text-sequence "~0.1.0"
-
-bowser@^2.5.4:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.7.0.tgz#96eab1fa07fab08c1ec4c75977a7c8ddf8e0fe1f"
-  integrity sha512-aIlMvstvu8x+34KEiOHD3AsBgdrzg6sxALYiukOWhFvGMbQI6TRP/iY0LMhUrHs56aD6P1G0Z7h45PUJaa5m9w==
 
 boxen@^1.2.1:
   version "1.3.0"

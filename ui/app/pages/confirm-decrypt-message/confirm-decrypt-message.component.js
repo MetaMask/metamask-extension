@@ -7,6 +7,7 @@ import AccountListItem from '../send/account-list-item/account-list-item.compone
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import Tooltip from '../../components/ui/tooltip-v2'
+import Copy from '../../components/ui/icon/copy-icon.component'
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
@@ -267,13 +268,14 @@ export default class ConfirmDecryptMessage extends Component {
                 position="bottom"
                 title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
                 wrapperClassName="request-decrypt-message__message-copy-tooltip"
+                style={{ display: 'flex', alignItems: 'center' }}
               >
                 <div
                   className="request-decrypt-message__message-copy-text"
                 >
                   {t('decryptCopy')}
                 </div>
-                <img src="images/copy-to-clipboard.svg" />
+                <Copy size={17} color="#3098DC" />
               </Tooltip>
             </div>
           )

@@ -97,7 +97,7 @@ const AssetListItem = ({
       data-testid={dataTestId}
       title={primary}
       titleIcon={titleIcon}
-      subtitle={<h3>{secondary}</h3>}
+      subtitle={<h3 title={secondary}>{secondary}</h3>}
       onClick={onClick}
       icon={(
         <Identicon
