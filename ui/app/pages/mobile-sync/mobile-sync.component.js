@@ -25,7 +25,7 @@ export default class MobileSyncPage extends Component {
     fetchInfoToSync: PropTypes.func.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requestRevealSeedWords: PropTypes.func.isRequired,
-    exportAccount: PropTypes.func.isRequired,
+    exportAccounts: PropTypes.func.isRequired,
     keyrings: PropTypes.array,
   }
 
@@ -74,14 +74,13 @@ export default class MobileSyncPage extends Component {
   }
 
   async exportAccounts () {
-    const importedAccountPromises = []
+    const addresses = []
     this.props.keyrings.forEach((keyring) => {
       if (keyring.type === 'Simple Key Pair') {
-        const privateKeyPromise = this.props.exportAccount(this.state.password, keyring.accounts[0])
-        importedAccountPromises.push(privateKeyPromise)
+        addresses.push(keyring.accounts[0])
       }
     })
-    const importedAccounts = await Promise.all(importedAccountPromises)
+    const importedAccounts = await this.props.exportAccounts(this.state.password, addresses)
     return importedAccounts
   }
 

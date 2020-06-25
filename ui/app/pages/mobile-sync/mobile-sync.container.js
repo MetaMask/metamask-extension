@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { displayWarning, requestRevealSeedWords, fetchInfoToSync, exportAccount } from '../../store/actions'
+import { displayWarning, requestRevealSeedWords, fetchInfoToSync, exportAccounts } from '../../store/actions'
 import MobileSyncPage from './mobile-sync.component'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import { getMetaMaskKeyrings } from '../../selectors'
@@ -9,7 +9,7 @@ const mapDispatchToProps = (dispatch) => {
     requestRevealSeedWords: (password) => dispatch(requestRevealSeedWords(password)),
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
     displayWarning: (message) => dispatch(displayWarning(message || null)),
-    exportAccount: (password, address) => dispatch(exportAccount(password, address)),
+    exportAccounts: (password, addresses) => dispatch(exportAccounts(password, addresses)),
   }
 }
 
