@@ -91,6 +91,7 @@
 - [#8836](https://github.com/MetaMask/metamask-extension/pull/8836): Update method data when cached method data is empty
 - [#8833](https://github.com/MetaMask/metamask-extension/pull/8833): Improve error handling when signature requested without a keyholder address
 - [#8850](https://github.com/MetaMask/metamask-extension/pull/8850): Stop upper-casing exported private key
+- [#8631](https://github.com/MetaMask/metamask-extension/pull/8631): Include imported accounts in mobile sync
 
 ## 7.7.9 Tue Apr 28 2020
 - [#8446](https://github.com/MetaMask/metamask-extension/pull/8446): Fix popup not opening
