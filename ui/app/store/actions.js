@@ -1708,6 +1708,34 @@ export function exportAccount (password, address) {
   }
 }
 
+export function exportAccounts (password, addresses) {
+  return function (dispatch) {
+    log.debug(`background.submitPassword`)
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, function (err) {
+        if (err) {
+          log.error('Error in submitting password.')
+          return reject(err)
+        }
+        log.debug(`background.exportAccounts`)
+        const accountPromises = addresses.map((address) =>
+          new Promise(
+            (resolve, reject) => background.exportAccount(address, function (err, result) {
+              if (err) {
+                log.error(err)
+                dispatch(displayWarning('Had a problem exporting the account.'))
+                return reject(err)
+              }
+              return resolve(result)
+            })
+          )
+        )
+        return resolve(Promise.all(accountPromises))
+      })
+    })
+  }
+}
+
 export function showPrivateKey (key) {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
