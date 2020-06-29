@@ -333,3 +333,23 @@ export function isExtensionUrl (urlLike) {
   }
   return false
 }
+
+/**
+ * Checks whether an address is in a passed list of objects with address properties. The check is performed on the
+ * lowercased version of the addresses.
+ *
+ * @param {string} address - The hex address to check
+ * @param {array} list - The array of objects to check
+ * @returns {boolean} Whether or not the address is in the list
+ */
+export function checkExistingAddresses (address, list = []) {
+  if (!address) {
+    return false
+  }
+
+  const matchesAddress = (obj) => {
+    return obj.address.toLowerCase() === address.toLowerCase()
+  }
+
+  return list.some(matchesAddress)
+}
