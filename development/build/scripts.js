@@ -338,6 +338,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       IN_TEST: opts.testing ? 'true' : false,
       PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
       PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+      ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
     }), {
       global: true,
