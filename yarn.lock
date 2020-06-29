@@ -10059,10 +10059,15 @@ eth-block-tracker@^4.4.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.13.0:
+eth-contract-metadata@^1.11.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.13.0.tgz#9819d0e556ea2187da91d6b49ce96abc5fce2a73"
   integrity sha512-9CjXHX8IdXysUEvOHdbCsjdAwM1E98jaeK2HeOqm/9S/vOZ8YryaBBt/YSiBq3MkpCwf+d1pEQ53p96rsdy52w==
+
+eth-contract-metadata@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.14.0.tgz#04f0ad1e6f6c49747808b4ed11012d665ca9953a"
+  integrity sha512-qDPzhBKGPW7ZeNqBVlo00v92b+pN3mGTuL72jgBtjjooGQWcyW0aWTuNGThOegEdZVJsAgJij+xP9t7pqO7kJQ==
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
