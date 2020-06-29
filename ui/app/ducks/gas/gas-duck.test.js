@@ -290,19 +290,9 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.deepEqual(
-        window.fetch.getCall(0).args,
-        [
-          'https://ethgasstation.info/json/ethgasAPI.json',
-          {
-            'headers': {},
-            'referrer': 'http://ethgasstation.info/json/',
-            'referrerPolicy': 'no-referrer-when-downgrade',
-            'body': null,
-            'method': 'GET',
-            'mode': 'cors',
-          },
-        ]
+      assert.ok(
+        window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
+        'should fetch ETH Gas Station',
       )
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
@@ -389,19 +379,9 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.deepEqual(
-        window.fetch.getCall(0).args,
-        [
-          'https://ethgasstation.info/json/ethgasAPI.json',
-          {
-            'headers': {},
-            'referrer': 'http://ethgasstation.info/json/',
-            'referrerPolicy': 'no-referrer-when-downgrade',
-            'body': null,
-            'method': 'GET',
-            'mode': 'cors',
-          },
-        ]
+      assert.ok(
+        window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
+        'should fetch ETH Gas Station',
       )
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
@@ -443,19 +423,9 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.deepEqual(
-        window.fetch.getCall(0).args,
-        [
-          'https://ethgasstation.info/json/ethgasAPI.json',
-          {
-            'headers': {},
-            'referrer': 'http://ethgasstation.info/json/',
-            'referrerPolicy': 'no-referrer-when-downgrade',
-            'body': null,
-            'method': 'GET',
-            'mode': 'cors',
-          },
-        ]
+      assert.ok(
+        window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
+        'should fetch ETH Gas Station',
       )
 
       assert.deepEqual(
@@ -564,19 +534,9 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.deepEqual(
-        window.fetch.getCall(0).args,
-        [
-          'https://ethgasstation.info/json/ethgasAPI.json',
-          {
-            'headers': {},
-            'referrer': 'http://ethgasstation.info/json/',
-            'referrerPolicy': 'no-referrer-when-downgrade',
-            'body': null,
-            'method': 'GET',
-            'mode': 'cors',
-          },
-        ]
+      assert.ok(
+        window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/ethgasAPI.json'),
+        'should fetch ETH Gas Station',
       )
 
       assert.deepEqual(
@@ -625,19 +585,9 @@ describe('Gas Duck', function () {
         mockDistpatch.getCall(0).args,
         [{ type: GAS_ESTIMATE_LOADING_STARTED } ]
       )
-      assert.deepEqual(
-        window.fetch.getCall(0).args,
-        [
-          'https://ethgasstation.info/json/predictTable.json',
-          {
-            'headers': {},
-            'referrer': 'http://ethgasstation.info/json/',
-            'referrerPolicy': 'no-referrer-when-downgrade',
-            'body': null,
-            'method': 'GET',
-            'mode': 'cors',
-          },
-        ]
+      assert.ok(
+        window.fetch.getCall(0).args[0].startsWith('https://ethgasstation.info/json/predictTable.json'),
+        'should fetch ETH Gas Station',
       )
 
       assert.deepEqual(

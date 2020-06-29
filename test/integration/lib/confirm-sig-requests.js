@@ -24,9 +24,9 @@ async function runConfirmSigRequestsTest (assert) {
 
   const realFetch = window.fetch.bind(window)
   window.fetch = (...args) => {
-    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+    if (args[0].match(/^http(s)?:\/\/ethgasstation\.info\/json\/ethgasAPI.*/u)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
-    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+    } else if (args[0].match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
     } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
