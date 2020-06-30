@@ -18,19 +18,19 @@
   &__search-token {
     padding: 16px;
 
-    .token-list {
+    .searchable-item-list {
       margin-top: 16px;
 
       &__title {
         font-size: 0.75rem;
       }
 
-      &__tokens-container {
+      &__list-container {
         display: flex;
         flex-direction: column;
       }
 
-      &__token {
+      &__item {
         transition: 200ms ease-in-out;
         display: flex;
         flex-flow: row nowrap;
@@ -57,7 +57,7 @@
         }
       }
 
-      &__token-icon {
+      &__item-icon {
         width: 48px;
         height: 48px;
         background-repeat: no-repeat;
@@ -70,14 +70,14 @@
         flex: 0 0 auto;
       }
 
-      &__token-data {
+      &__primary-label {
         display: flex;
         flex-direction: row;
         align-items: center;
         min-width: 0;
       }
 
-      &__token-name {
+      &__item-name {
         /*rtl:ignore*/
         direction: ltr;
         overflow: hidden;
