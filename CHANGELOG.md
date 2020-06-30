@@ -1,6 +1,20 @@
 # Changelog
 
 ## Current Develop Branch
+- Fix: dockerfile, less build level (#147)
+- Add: format comments in dockerfile (#148)
+- Fix: reorder task (#149)
+- Fix: buildkite can't get the right exit code from e2e bash script (#150)
+- Docs: update documents (#151)
+- Add: new chainId logic (#156)
+- Fix: hide conversion rate text (#157)
+- chore: semantic.yml for semantic pr ci check (#161)
+- chore: use new js-conflux-sdk (#162)
+- chore: update cfx packages (#165)
+- fix: update packages, use new personal_sign (#168)
+- fix: fork metamask's phishing detection functionality (#170)
+- fix: Ethereum -> Conflux in i18n files (#169)
+- fix: remove ens error (#171)
 
 ## 0.2.2 Thu May 28 2020
 - Add: buildkite to speed up ci (#136)
