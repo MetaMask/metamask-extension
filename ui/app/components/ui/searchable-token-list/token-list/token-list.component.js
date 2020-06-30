@@ -1,26 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { checkExistingAddresses } from '../../../helpers/utils/util'
-import TokenListPlaceholder from './token-list-placeholder'
+import { checkExistingAddresses } from '../../../../helpers/utils/util'
 
-export default class InfoBox extends Component {
+export default class TokenList extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
 
   static propTypes = {
-    tokens: PropTypes.array,
+    matchedTokens: PropTypes.array,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
+    Placeholder: PropTypes.element,
   }
 
   render () {
-    const { results = [], selectedTokens = {}, onToggleToken, tokens = [] } = this.props
+    const { results = [], selectedTokens = {}, onToggleToken = null, matchedTokens = [], Placeholder = null } = this.props
 
     return results.length === 0
-      ? <TokenListPlaceholder />
+      ? <Placeholder />
       : (
         <div className="token-list">
           <div className="token-list__title">
@@ -30,8 +30,8 @@ export default class InfoBox extends Component {
             {
               Array(6).fill(undefined)
                 .map((_, i) => {
-                  const { logo, symbol, name, address } = results[i] || {}
-                  const tokenAlreadyAdded = checkExistingAddresses(address, tokens)
+                  const { logo, symbol, name, address, logoUrl } = results[i] || {}
+                  const tokenAlreadyAdded = checkExistingAddresses(address, matchedTokens)
 
                   return Boolean(logo || symbol || name) && (
                     <div
@@ -39,12 +39,12 @@ export default class InfoBox extends Component {
                         'token-list__token--selected': selectedTokens[address],
                         'token-list__token--disabled': tokenAlreadyAdded,
                       })}
-                      onClick={() => !tokenAlreadyAdded && onToggleToken(results[i])}
+                      onClick={() => onToggleToken && !tokenAlreadyAdded && onToggleToken(results[i])}
                       key={i}
                     >
                       <div
                         className="token-list__token-icon"
-                        style={{ backgroundImage: logo && `url(images/contract/${logo})` }}
+                        style={{ backgroundImage: !logoUrl ? logo && `url(images/contract/${logo})` : logoUrl }}
                       >
                       </div>
                       <div className="token-list__token-data">
