@@ -3,17 +3,14 @@ import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
 import contractMap from 'eth-contract-metadata'
 import { checkExistingAddresses } from '../../helpers/utils/util'
+import { initializeTokenListForSearchability, transformTokensForSearchList } from './add-token.util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
-import SearchableTokenList from '../../components/ui/searchable-token-list'
+import SearchableItemList from '../../components/ui/searchable-item-list'
 import TokenListPlaceholder from './token-list-placeholder'
 import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
-
-const contractList = Object.entries(contractMap)
-  .map(([address, tokenData]) => Object.assign({}, tokenData, { address }))
-  .filter((tokenData) => Boolean(tokenData.erc20))
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -36,32 +33,29 @@ class AddToken extends Component {
     customAddress: '',
     customSymbol: '',
     customDecimals: 0,
-    selectedTokens: {},
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
     autoFilled: false,
     forceEditSymbol: false,
+    tokensToSearch: initializeTokenListForSearchability(contractMap, this.props.tokens, this.props.pendingTokens),
   }
 
   componentDidMount () {
     this.tokenInfoGetter = tokenInfoGetter()
+    const { tokensToSearch } = this.state
     const { pendingTokens = {} } = this.props
-    const pendingTokenKeys = Object.keys(pendingTokens)
-
-    if (pendingTokenKeys.length > 0) {
-      let selectedTokens = {}
+    const pendingTokensCopy = { ...pendingTokens }
+    if (Object.keys(pendingTokensCopy).length > 0) {
+      const newTokensToSearch = [ ...tokensToSearch ]
       let customToken = {}
-
-      pendingTokenKeys.forEach((tokenAddress) => {
-        const token = pendingTokens[tokenAddress]
+      Object.entries(pendingTokensCopy).forEach(([tokenAddress, token]) => {
         const { isCustom } = token
-
         if (isCustom) {
           customToken = { ...token }
-        } else {
-          selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } }
+        } else if (!checkExistingAddresses(tokenAddress, newTokensToSearch)) {
+          newTokensToSearch.push({ ...token, selected: true })
         }
       })
 
@@ -71,23 +65,17 @@ class AddToken extends Component {
         decimals: customDecimals = 0,
       } = customToken
 
-      this.setState({ selectedTokens, customAddress, customSymbol, customDecimals })
+      this.setState({ tokensToSearch: newTokensToSearch, customAddress, customSymbol, customDecimals })
     }
   }
 
   handleToggleToken (token) {
-    const { address } = token
-    const { selectedTokens = {} } = this.state
-    const selectedTokensCopy = { ...selectedTokens }
-
-    if (address in selectedTokensCopy) {
-      delete selectedTokensCopy[address]
-    } else {
-      selectedTokensCopy[address] = token
-    }
-
+    const { tokensToSearch = {} } = this.state
+    const tokensToSearchCopy = [ ...tokensToSearch ]
+    const toggleIndex = tokensToSearchCopy.findIndex((searchToken) => searchToken.address === token.address)
+    tokensToSearchCopy[toggleIndex].selected = !tokensToSearchCopy[toggleIndex].selected
     this.setState({
-      selectedTokens: selectedTokensCopy,
+      tokensToSearch: tokensToSearchCopy,
       tokenSelectorError: null,
     })
   }
@@ -104,8 +92,8 @@ class AddToken extends Component {
   }
 
   hasSelected () {
-    const { customAddress = '', selectedTokens = {} } = this.state
-    return customAddress || Object.keys(selectedTokens).length > 0
+    const { customAddress = '', tokensToSearch } = this.state
+    return customAddress || tokensToSearch.find((tokenToSearch) => tokenToSearch.selected)
   }
 
   handleNext () {
@@ -123,8 +111,15 @@ class AddToken extends Component {
       customAddress: address,
       customSymbol: symbol,
       customDecimals: decimals,
-      selectedTokens,
+      tokensToSearch,
     } = this.state
+
+    const selectedTokens = tokensToSearch
+      .reduce((_selectedTokens, tokenToSearch) => {
+        return tokenToSearch.selected
+          ? { ..._selectedTokens, [tokenToSearch.address]: tokenToSearch }
+          : _selectedTokens
+      }, {})
 
     const customToken = {
       address,
@@ -278,20 +273,23 @@ class AddToken extends Component {
     )
   }
 
+  transformTokensForSearchList
+
   renderTabs () {
-    const { tokens } = this.props
-    const { tokenSelectorError, selectedTokens } = this.state
+    const { tokenSelectorError, tokensToSearch } = this.state
+
     return (
       <Tabs>
         <Tab name={this.context.t('search')}>
-          <SearchableTokenList
-            matchedTokens={tokens}
-            tokensToSearch={contractList}
-            selectedTokens={selectedTokens}
-            tokenSelectorError={tokenSelectorError}
-            onToggleToken={(token) => this.handleToggleToken(token)}
+          <SearchableItemList
+            itemsToSearch={transformTokensForSearchList(tokensToSearch)}
+            itemSelectorError={tokenSelectorError}
+            onToggleItem={(token) => this.handleToggleToken(token)}
             Placeholder={TokenListPlaceholder}
             className="add-token__search-token"
+            searchPlaceholderText={this.context.t('searchTokens')}
+            fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
+            listTitle={this.context.t('searchResults')}
           />
         </Tab>
         <Tab name={this.context.t('customToken')}>
