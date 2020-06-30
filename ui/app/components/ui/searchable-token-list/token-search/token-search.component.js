@@ -1,40 +1,42 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import contractMap from 'eth-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import TextField from '../../../components/ui/text-field'
+import TextField from '../../text-field'
 
-const contractList = Object.entries(contractMap)
-  .map(([address, tokenData]) => Object.assign({}, tokenData, { address }))
-  .filter((tokenData) => Boolean(tokenData.erc20))
-
-const fuse = new Fuse(contractList, {
-  shouldSort: true,
-  threshold: 0.45,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    { name: 'name', weight: 0.5 },
-    { name: 'symbol', weight: 0.5 },
-  ],
-})
+const generateFuseKeys = (keys) => {
+  const weight = 1 / keys.length
+  return keys.map((key) => ({ name: key, weight }))
+}
 
 export default class TokenSearch extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
 
-  static defaultProps = {
-    error: null,
-  }
-
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
+    listToSearch: PropTypes.array.required,
+    searchByKeys: PropTypes.arrayOf(PropTypes.string),
+    fuseSearchKeys: PropTypes.arrayOf(PropTypes.object),
   }
+
+  static defaultProps = {
+    error: null,
+    searchByKeys: [{}],
+    fuseSearchKeys: null,
+  }
+
+  fuse = new Fuse(this.props.listToSearch, {
+    shouldSort: true,
+    threshold: 0.1,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: this.props.fuseSearchKeys || generateFuseKeys(this.props.searchByKeys),
+  })
 
   state = {
     searchQuery: '',
@@ -42,12 +44,8 @@ export default class TokenSearch extends Component {
 
   handleSearch (searchQuery) {
     this.setState({ searchQuery })
-    const fuseSearchResult = fuse.search(searchQuery)
-    const addressSearchResult = contractList.filter((token) => {
-      return token.address.toLowerCase() === searchQuery.toLowerCase()
-    })
-    const results = [...addressSearchResult, ...fuseSearchResult]
-    this.props.onSearch({ searchQuery, results })
+    const fuseSearchResult = this.fuse.search(searchQuery)
+    this.props.onSearch({ searchQuery, results: fuseSearchResult })
   }
 
   renderAdornment () {
