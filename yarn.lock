@@ -6318,6 +6318,13 @@ cfx-keyring-controller@>=5.6.9:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
+cfx-phishing-detect@>=0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/cfx-phishing-detect/-/cfx-phishing-detect-0.0.1.tgz#436bda952c4f02333a76f2f2a0fbb48fe854dc62"
+  integrity sha512-3Vl0eZXKCukb3o2RJuDGjKLOyKy0ihccQQ+GSTy/RomwrqynFCOqgcwPAxhvw8htoNd+DTyZniQCzm0BdGfGfw==
+  dependencies:
+    fast-levenshtein "^2.0.6"
+
 cfx-sig-util@>=0.0.3, cfx-sig-util@>=0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/cfx-sig-util/-/cfx-sig-util-0.0.4.tgz#ccbae7ba1803c90b06651081d57dae1da15395a1"
