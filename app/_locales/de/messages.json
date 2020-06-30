@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
+    "message": "Die Grafik ist nur in Conflux-Netzwerken verfügbar."
   },
   "contractInteraction": {
     "message": "Vertragsinteraktion"
@@ -78,7 +78,7 @@
     "message": "Betrag"
   },
   "appDescription": {
-    "message": "Ethereum Browsererweiterung",
+    "message": "Conflux Browsererweiterung",
     "description": "The description of the application"
   },
   "appName": {
@@ -228,7 +228,7 @@
     "message": " Verbinde zum Kovan Testnetzwerk"
   },
   "connectingToMainnet": {
-    "message": "Verbinde zum Ethereum Main Net"
+    "message": "Verbinde zum Conflux Main Net"
   },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
@@ -408,7 +408,7 @@
     "message": "Zum Fortfahren Passwort eingeben"
   },
   "ethereumPublicAddress": {
-    "message": "Öffentliche Ethereum-Adresse"
+    "message": "Öffentliche Conflux-Adresse"
   },
   "etherscanView": {
     "message": "Account auf ConfluxScan anschauen"
@@ -631,7 +631,7 @@
     "message": "Ausloggen"
   },
   "mainnet": {
-    "message": "Ethereum Main Net"
+    "message": "Conflux Main Net"
   },
   "memorizePhrase": {
     "message": "Prägen Sie sich diese Phrase ein."
@@ -646,7 +646,7 @@
     "message": "Nachricht"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal ist ein sicherer Identitätssafe für Ethereum."
+    "message": "ConfluxPortal ist ein sicherer Identitätssafe für Conflux."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal-Version"
@@ -1093,7 +1093,7 @@
     "message": "3. Erste Schritte mit dApps und mehr!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Verwenden Sie Ihr Hardware-Konto so wie jedes Ethereum-Konto. Loggen Sie sich bei dApps ein, senden Sie Eth, kaufen und speichern Sie ERC20-Token und Nicht-Fungible-Token wie CryptoKitties."
+    "message": "Verwenden Sie Ihr Hardware-Konto so wie jedes Conflux-Konto. Loggen Sie sich bei dApps ein, senden Sie Eth, kaufen und speichern Sie ERC20-Token und Nicht-Fungible-Token wie CryptoKitties."
   },
   "storePhrase": {
     "message": "Speichern Sie diesen Schlüssel in einem Passwortmanager wie 1Password."

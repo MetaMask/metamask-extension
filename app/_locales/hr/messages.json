@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Grafikon je dostupan samo na mrežama Ethereum."
+    "message": "Grafikon je dostupan samo na mrežama Conflux."
   },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
@@ -85,7 +85,7 @@
     "message": "Iznos"
   },
   "appDescription": {
-    "message": "Novčanik Ethereum u vašem pregledniku",
+    "message": "Novčanik Conflux u vašem pregledniku",
     "description": "The description of the application"
   },
   "approve": {
@@ -240,7 +240,7 @@
     "message": "Povezivanje na testnu mrežu Kovan"
   },
   "connectingToMainnet": {
-    "message": "Povezivanje na glavnu mrežu Ethereum"
+    "message": "Povezivanje na glavnu mrežu Conflux"
   },
   "connectingToRopsten": {
     "message": "Povezivanje na testnu mrežu Ropsten"
@@ -411,7 +411,7 @@
     "message": "Greška u registraciji naziva ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Naziv ENS nije pronađen na trenutačnoj mreži. Pokušajte prebaciti na glavnu mrežu Ethereum."
+    "message": "Naziv ENS nije pronađen na trenutačnoj mreži. Pokušajte prebaciti na glavnu mrežu Conflux."
   },
   "enterAnAlias": {
     "message": "Upiši pseudonim"
@@ -423,7 +423,7 @@
     "message": "Upišite lozinku za nastavak"
   },
   "ethereumPublicAddress": {
-    "message": "Javna adresa Ethereum"
+    "message": "Javna adresa Conflux"
   },
   "etherscanView": {
     "message": "Prikaži račun na ConfluxScanu"
@@ -648,7 +648,7 @@
     "message": "Odjava"
   },
   "mainnet": {
-    "message": "Glavna mreža Ethereum"
+    "message": "Glavna mreža Conflux"
   },
   "memorizePhrase": {
     "message": "Zapamtite ovu rečenicu."
@@ -663,7 +663,7 @@
     "message": "Poruka"
   },
   "metamaskDescription": {
-    "message": "Povezujete se na Ethereum i decentralizirani internet."
+    "message": "Povezujete se na Conflux i decentralizirani internet."
   },
   "metamaskVersion": {
     "message": "Inačica usluge ConfluxPortal"
@@ -1120,7 +1120,7 @@
     "message": "3. Započnite upotrebljavati dApps i više!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Upotrebljavajte svoj hardverski račun kako biste upotrebljavali bilo koji drugi račun Ethereum. Prijavite se u dApps, šaljite Eth, kupujte i pohranjujte ERC20 tokene i nezamjenske tokene kao CryptoKitties."
+    "message": "Upotrebljavajte svoj hardverski račun kako biste upotrebljavali bilo koji drugi račun Conflux. Prijavite se u dApps, šaljite Eth, kupujte i pohranjujte ERC20 tokene i nezamjenske tokene kao CryptoKitties."
   },
   "storePhrase": {
     "message": "Spremite ovu rečenicu u upravitelj lozinkama poput aplikacije 1Password."

@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
+    "message": "ቻርት የሚገኘው በ Conflux አውታረ መረቦች ላይ ብቻ ነው።"
   },
   "contractInteraction": {
     "message": "የግንኙነት ተግባቦት"
@@ -81,7 +81,7 @@
     "message": "ሰርዝ "
   },
   "appDescription": {
-    "message": "በማሰሺያዎ ውስጥ የ Ethereum ቋት",
+    "message": "በማሰሺያዎ ውስጥ የ Conflux ቋት",
     "description": "The description of the application"
   },
   "appName": {
@@ -240,7 +240,7 @@
     "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
   },
   "connectingToMainnet": {
-    "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
+    "message": "ከዋናው የ Conflux አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToRopsten": {
     "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
@@ -411,7 +411,7 @@
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Ethereum አውታረ መረብ ለመቀየር ይሞክሩ።"
+    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Conflux አውታረ መረብ ለመቀየር ይሞክሩ።"
   },
   "enterAnAlias": {
     "message": "ተለዋጭ ስም ያስገቡ"
@@ -423,7 +423,7 @@
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum ሕዝባዊ አድራሻ"
+    "message": "Conflux ሕዝባዊ አድራሻ"
   },
   "etherscanView": {
     "message": "መለያውን በ ConfluxScan ላይ ይመልከቱ"
@@ -652,7 +652,7 @@
     "message": "ዘግተህ ውጣ"
   },
   "mainnet": {
-    "message": "ዋነኛ የ Ethereum አውታረ መረብ "
+    "message": "ዋነኛ የ Conflux አውታረ መረብ "
   },
   "memorizePhrase": {
     "message": "ይህን ሐረግ ያስታውሱ።"
@@ -667,7 +667,7 @@
     "message": "መልዕክት"
   },
   "metamaskDescription": {
-    "message": "ከ Ethereum እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
+    "message": "ከ Conflux እና ያልተማከለ መረብ ጋር እርስዎን ማገናኘት።"
   },
   "metamaskVersion": {
     "message": "የ ConfluxPortal ስሪት"
@@ -1124,7 +1124,7 @@
     "message": "3. dApps እና ሌሎችን መጠቀም ይጀምሩ!"
   },
   "step3HardwareWalletMsg": {
-    "message": "የሐርድዌር መለያዎን ከየትኛውም የ Ethereum መለያ ጋር በሚጠቀሙት መንገድ ይጠቀሙ። ወደ dApps በመለያ ይግቡ፣ Eth ይላኩ፣ የ ERC20 ተለዋጭ ስሞችና እንደ CryptoKitties ያሉ የማይለወጡ ተለዋጭ ስሞችን ይግዙና ያከማቹ።"
+    "message": "የሐርድዌር መለያዎን ከየትኛውም የ Conflux መለያ ጋር በሚጠቀሙት መንገድ ይጠቀሙ። ወደ dApps በመለያ ይግቡ፣ Eth ይላኩ፣ የ ERC20 ተለዋጭ ስሞችና እንደ CryptoKitties ያሉ የማይለወጡ ተለዋጭ ስሞችን ይግዙና ያከማቹ።"
   },
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"

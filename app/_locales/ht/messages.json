@@ -36,7 +36,7 @@
     "message": "Kantite lajan"
   },
   "appDescription": {
-    "message": "Ekstansyon Navigatè Ethereum",
+    "message": "Ekstansyon Navigatè Conflux",
     "description": "The description of the application"
   },
   "appName": {
@@ -122,7 +122,7 @@
     "message": "Konekte nan Kovan Tès Rezo a"
   },
   "connectingToMainnet": {
-    "message": "Konekte ak Prensipal Ethereum Rezo a"
+    "message": "Konekte ak Prensipal Conflux Rezo a"
   },
   "connectingToRopsten": {
     "message": "Konekte ak Ropsten Tès Rezo a"
@@ -390,7 +390,7 @@
     "message": "Dekonekte"
   },
   "mainnet": {
-    "message": "Prensipal Ethereum Rezo a"
+    "message": "Prensipal Conflux Rezo a"
   },
   "menu": {
     "message": "Opsyon"
@@ -399,7 +399,7 @@
     "message": "Mesaje"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal sekirize idantite pou Ethereum."
+    "message": "ConfluxPortal sekirize idantite pou Conflux."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal Vèsyon"

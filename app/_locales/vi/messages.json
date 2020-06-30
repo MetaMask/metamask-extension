@@ -18,7 +18,7 @@
     "message": "Số lượng"
   },
   "appDescription": {
-    "message": "Tính năng Ethereum cho trình duyệt",
+    "message": "Tính năng Conflux cho trình duyệt",
     "description": "The description of the application"
   },
   "appName": {
@@ -204,7 +204,7 @@
     "message": "Thoát"
   },
   "mainnet": {
-    "message": "Mạng Ethereum MainNet (tiền ETH thật)"
+    "message": "Mạng Conflux MainNet (tiền ETH thật)"
   },
   "message": {
     "message": "Tin nhắn"

@@ -21,7 +21,7 @@
     "message": "Valor"
   },
   "appDescription": {
-    "message": "Extensão para o browser de Ethereum",
+    "message": "Extensão para o browser de Conflux",
     "description": "The description of the application"
   },
   "appName": {
@@ -252,13 +252,13 @@
     "message": "Sair"
   },
   "mainnet": {
-    "message": "Rede Principal de Ethereum"
+    "message": "Rede Principal de Conflux"
   },
   "message": {
     "message": "Mensagem"
   },
   "metamaskDescription": {
-    "message": "O ConfluxPortal é um lugar seguro para guardar a sua identidade em em Ethereum."
+    "message": "O ConfluxPortal é um lugar seguro para guardar a sua identidade em em Conflux."
   },
   "myAccounts": {
     "message": "As minhas contas"

@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
+    "message": "Zogoa inapatikana kwenye mitandao ya Conflux pekee."
   },
   "contractInteraction": {
     "message": "Mwingiliono wa Mkataba"
@@ -85,7 +85,7 @@
     "message": "Kiasi"
   },
   "appDescription": {
-    "message": "Waleti ya Ethereum kwenye Kivinjari chako",
+    "message": "Waleti ya Conflux kwenye Kivinjari chako",
     "description": "The description of the application"
   },
   "approve": {
@@ -234,7 +234,7 @@
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
   },
   "connectingToMainnet": {
-    "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
+    "message": "Inaunganisha kwenye Mtandao Mkuu wa Conflux"
   },
   "connectingToRopsten": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
@@ -405,7 +405,7 @@
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Ethereum."
+    "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Conflux."
   },
   "enterAnAlias": {
     "message": "Ingiza majina mengine"
@@ -417,7 +417,7 @@
     "message": "Ingiza nenosiri ili uendelee"
   },
   "ethereumPublicAddress": {
-    "message": "Anwani ya Umma ya Ethereum"
+    "message": "Anwani ya Umma ya Conflux"
   },
   "etherscanView": {
     "message": "Tazama akaunti kwenye ConfluxScan"
@@ -636,7 +636,7 @@
     "message": "Toka kwenye akaunti"
   },
   "mainnet": {
-    "message": "Mtandao Mkuu wa Ethereum"
+    "message": "Mtandao Mkuu wa Conflux"
   },
   "memorizePhrase": {
     "message": "Kariri kirai hiki"
@@ -648,7 +648,7 @@
     "message": "Ujumbe"
   },
   "metamaskDescription": {
-    "message": "Kukuunganisha kwenye Ethereum na Wavutiu Uliotawanywa."
+    "message": "Kukuunganisha kwenye Conflux na Wavutiu Uliotawanywa."
   },
   "metamaskVersion": {
     "message": "Toleo la ConfluxPortal"
@@ -1105,7 +1105,7 @@
     "message": "3. Anza kutumia dApps na zaidi!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Tumia akaunti yako ya programu maunzi kama ambavyo ungetumia kwa akaunti ya Ethereum. Ingia kwenye dApps, tuma Eth, nunua na hifadhi vianzio vya ERC20 na Vianzio visivyobadilishika kama vile CryptoKitties."
+    "message": "Tumia akaunti yako ya programu maunzi kama ambavyo ungetumia kwa akaunti ya Conflux. Ingia kwenye dApps, tuma Eth, nunua na hifadhi vianzio vya ERC20 na Vianzio visivyobadilishika kama vile CryptoKitties."
   },
   "storePhrase": {
     "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."

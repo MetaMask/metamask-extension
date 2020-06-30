@@ -81,7 +81,7 @@
     "message": "राशि "
   },
   "appDescription": {
-    "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
+    "message": "आपके ब्राउज़र में एक Conflux वॉलेट",
     "description": "The description of the application"
   },
   "appName": {
@@ -240,7 +240,7 @@
     "message": "कोवन टेस्ट नेटवर्क से जोड़ रहा है\n"
   },
   "connectingToMainnet": {
-    "message": "मुख्य Ethereum नेटवर्क से कनेक्ट हो रहा है"
+    "message": "मुख्य Conflux नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToRopsten": {
     "message": "रोपस्टेन टेस्ट नेटवर्क से कनेक्ट करना"
@@ -411,7 +411,7 @@
     "message": "ईएनएस नाम पंजीकरण में त्रुटि"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "वर्तमान नेटवर्क पर ENS नाम नहीं मिला। मुख्य Ethereum नेटवर्क पर स्विच करने का प्रयास करें।"
+    "message": "वर्तमान नेटवर्क पर ENS नाम नहीं मिला। मुख्य Conflux नेटवर्क पर स्विच करने का प्रयास करें।"
   },
   "enterAnAlias": {
     "message": "एक उपनाम दर्ज करें"
@@ -652,7 +652,7 @@
     "message": "लॉग आउट"
   },
   "mainnet": {
-    "message": "मुख्य Ethereum नेटवर्क"
+    "message": "मुख्य Conflux नेटवर्क"
   },
   "memorizePhrase": {
     "message": "इस फ़्रेज़ को याद कर लें।"
@@ -667,7 +667,7 @@
     "message": "संदेश"
   },
   "metamaskDescription": {
-    "message": "आपको Ethereum और विकेंद्रीकृत वेब से कनेक्ट कर रहे हैं।"
+    "message": "आपको Conflux और विकेंद्रीकृत वेब से कनेक्ट कर रहे हैं।"
   },
   "metamaskVersion": {
     "message": "ConfluxPortal का संस्करण"

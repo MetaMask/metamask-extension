@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "A diagram csak Ethereum hálózatokon érhető el"
+    "message": "A diagram csak Conflux hálózatokon érhető el"
   },
   "contractInteraction": {
     "message": "Szerződéses interakció"
@@ -85,7 +85,7 @@
     "message": "Összeg"
   },
   "appDescription": {
-    "message": "Ethereum tárca a böngészőjében",
+    "message": "Conflux tárca a böngészőjében",
     "description": "The description of the application"
   },
   "approve": {
@@ -240,7 +240,7 @@
     "message": "Csatlakozás a Kovan teszthálózathoz"
   },
   "connectingToMainnet": {
-    "message": "Csatlakozás a fő Ethereum hálózathoz"
+    "message": "Csatlakozás a fő Conflux hálózathoz"
   },
   "connectingToRopsten": {
     "message": "Csatlakozás a Ropsten teszthálózathoz"
@@ -411,7 +411,7 @@
     "message": "Hiba történt az ENS név regisztrációjakor"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS név nem található a jelenlegi hálózaton. Próbálj váltani Ethereum főhálózatra."
+    "message": "ENS név nem található a jelenlegi hálózaton. Próbálj váltani Conflux főhálózatra."
   },
   "enterAnAlias": {
     "message": "Adjon meg álnevet"
@@ -423,7 +423,7 @@
     "message": "A folytatáshoz adja meg a jelszót"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum nyilvános címe"
+    "message": "Conflux nyilvános címe"
   },
   "etherscanView": {
     "message": "Fiók megtekintése ConfluxScanen"
@@ -648,7 +648,7 @@
     "message": "Kilépés"
   },
   "mainnet": {
-    "message": "Fő Ethereum hálózat"
+    "message": "Fő Conflux hálózat"
   },
   "memorizePhrase": {
     "message": "Jegyezze meg ezt a szakaszt."
@@ -663,7 +663,7 @@
     "message": "Üzenet"
   },
   "metamaskDescription": {
-    "message": "Csatlakozás az Ethereumhoz és a decentralizált hálózathoz."
+    "message": "Csatlakozás az Confluxhoz és a decentralizált hálózathoz."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal verzió"
@@ -1120,7 +1120,7 @@
     "message": "3. Kezdje el használni a dApps-t és másokat!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Használja hardveres fiókját úgy, mint bármilyen Ethereum fiókot. Jelentkezzen be a dAppsba, küldjön Ethet, vásároljon és tároljon ERC20 tokeneket és nem helyettesíthető tokeneket, például CryptoKitties-t."
+    "message": "Használja hardveres fiókját úgy, mint bármilyen Conflux fiókot. Jelentkezzen be a dAppsba, küldjön Ethet, vásároljon és tároljon ERC20 tokeneket és nem helyettesíthető tokeneket, például CryptoKitties-t."
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."

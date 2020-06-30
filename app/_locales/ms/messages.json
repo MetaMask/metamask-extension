@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Carta hanya tersedia di rangkaian Ethereum."
+    "message": "Carta hanya tersedia di rangkaian Conflux."
   },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
@@ -81,7 +81,7 @@
     "message": "Jumlah"
   },
   "appDescription": {
-    "message": "Dompat Ethereum di Pelayar anda",
+    "message": "Dompat Conflux di Pelayar anda",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
   },
   "connectingToMainnet": {
-    "message": "Menyambung kepada Rangkaian Ethereum Utama"
+    "message": "Menyambung kepada Rangkaian Conflux Utama"
   },
   "connectingToRopsten": {
     "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
@@ -399,7 +399,7 @@
     "message": "Ralat dalam pendaftaran nama ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Ethereum Utama."
+    "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Conflux Utama."
   },
   "enterAnAlias": {
     "message": "Masukkan alias"
@@ -411,7 +411,7 @@
     "message": "Masukkan kata laluan untuk teruskan"
   },
   "ethereumPublicAddress": {
-    "message": "Alamat Awam Ethereum"
+    "message": "Alamat Awam Conflux"
   },
   "etherscanView": {
     "message": "Lihat akaun di ConfluxScan"
@@ -632,7 +632,7 @@
     "message": "Log keluar"
   },
   "mainnet": {
-    "message": "Rangkaian Ethereum Utama"
+    "message": "Rangkaian Conflux Utama"
   },
   "memorizePhrase": {
     "message": "Hafal ungkapan ini."
@@ -641,7 +641,7 @@
     "message": "Mesej"
   },
   "metamaskDescription": {
-    "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
+    "message": "Menyambungkan anda kepada Conflux dan Web Ternyahpusat."
   },
   "metamaskVersion": {
     "message": "Versi ConfluxPortal"
@@ -1098,7 +1098,7 @@
     "message": "3. Mula menggunakan dApps dan banyak lagi!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Gunakan akaun perkakasan anda sepertimana anda menggunakan akaun Ethereum. Log masuk ke dalam dApps, hantar Eth, beli dan simpan token ERC20 serta token Tidak Mudah Tukar seperti CryptoKitties."
+    "message": "Gunakan akaun perkakasan anda sepertimana anda menggunakan akaun Conflux. Log masuk ke dalam dApps, hantar Eth, beli dan simpan token ERC20 serta token Tidak Mudah Tukar seperti CryptoKitties."
   },
   "storePhrase": {
     "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."

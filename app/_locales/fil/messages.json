@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Available lang ang chart sa mga Ethereum network."
+    "message": "Available lang ang chart sa mga Conflux network."
   },
   "contractInteraction": {
     "message": "Paggamit sa Contract"
@@ -75,7 +75,7 @@
     "message": "Halaga"
   },
   "appDescription": {
-    "message": "Isang Ethereum Wallet sa iyong Browser",
+    "message": "Isang Conflux Wallet sa iyong Browser",
     "description": "The description of the application"
   },
   "appName": {
@@ -605,7 +605,7 @@
     "message": "Mensahe"
   },
   "metamaskDescription": {
-    "message": "Kinokonekta ka sa Ethereum at sa Decentralized Web."
+    "message": "Kinokonekta ka sa Conflux at sa Decentralized Web."
   },
   "metamaskVersion": {
     "message": "Bersyon ng ConfluxPortal"
@@ -1030,7 +1030,7 @@
     "message": "3. Magsimula gamit ang dApps at higit pa!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Gamitin ang iyong hardware account tulad ng anumang Ethereum account. Mag-log in sa dApps, magpadala ng Eth, bumili at mag-store ng mga ERC20 token at mga Non-Fungible token tulad ng CryptoKitties."
+    "message": "Gamitin ang iyong hardware account tulad ng anumang Conflux account. Mag-log in sa dApps, magpadala ng Eth, bumili at mag-store ng mga ERC20 token at mga Non-Fungible token tulad ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."

@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Tabel on saadaval vaid Ethereumi võrkudes."
+    "message": "Tabel on saadaval vaid Confluxi võrkudes."
   },
   "contractInteraction": {
     "message": "Lepingu suhtlus"
@@ -81,7 +81,7 @@
     "message": "Summa"
   },
   "appDescription": {
-    "message": "Ethereumi rahakott teie lehitsejas",
+    "message": "Confluxi rahakott teie lehitsejas",
     "description": "The description of the application"
   },
   "appName": {
@@ -411,7 +411,7 @@
     "message": "Tõrge ENS-i nime registreerimisel"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Ethereumi võrgule."
+    "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Confluxi võrgule."
   },
   "enterAnAlias": {
     "message": "Sisestage alias"
@@ -423,7 +423,7 @@
     "message": "Jätkamiseks sisestage parool"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereumi avalik aadress"
+    "message": "Confluxi avalik aadress"
   },
   "etherscanView": {
     "message": "Vaadake kontot ConfluxScanil"
@@ -645,7 +645,7 @@
     "message": "Logi välja"
   },
   "mainnet": {
-    "message": "Ethereumi põhivõrk"
+    "message": "Confluxi põhivõrk"
   },
   "memorizePhrase": {
     "message": "Jätke fraas meelde."
@@ -660,7 +660,7 @@
     "message": "Sõnum"
   },
   "metamaskDescription": {
-    "message": "Teid ühendatakse Ethereumi ja detsentraliseeritud võrguga."
+    "message": "Teid ühendatakse Confluxi ja detsentraliseeritud võrguga."
   },
   "metamaskVersion": {
     "message": "ConfluxPortali versioon"
@@ -1117,7 +1117,7 @@
     "message": "3. Hakake kasutama dAppse ja muud!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Kasutage oma riistvarakontot nagu mis tahes teist Ethereumi kontot. Logige dAppsi, saatke Eth-d, ostke ja hoiustage ERC20 lube ning asendamatuid lube nagu CryptoKitties."
+    "message": "Kasutage oma riistvarakontot nagu mis tahes teist Confluxi kontot. Logige dAppsi, saatke Eth-d, ostke ja hoiustage ERC20 lube ning asendamatuid lube nagu CryptoKitties."
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."

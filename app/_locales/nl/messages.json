@@ -18,7 +18,7 @@
     "message": "Bedrag"
   },
   "appDescription": {
-    "message": "Ethereum Browser-extensie",
+    "message": "Conflux Browser-extensie",
     "description": "The description of the application"
   },
   "appName": {
@@ -252,7 +252,7 @@
     "message": "Bericht"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal is een veilige identiteitskluis voor Ethereum."
+    "message": "ConfluxPortal is een veilige identiteitskluis voor Conflux."
   },
   "myAccounts": {
     "message": "Mijn accounts"

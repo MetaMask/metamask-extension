@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Tabela disponível apenas em redes de Ethereum."
+    "message": "Tabela disponível apenas em redes de Conflux."
   },
   "contractInteraction": {
     "message": "Interação do Contrato"
@@ -85,7 +85,7 @@
     "message": "Valor"
   },
   "appDescription": {
-    "message": "Uma Carteira Ethereum no seu Navegador",
+    "message": "Uma Carteira Conflux no seu Navegador",
     "description": "The description of the application"
   },
   "approve": {
@@ -405,7 +405,7 @@
     "message": "Erro ao registrar nome de ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome de ENS não encontrado na rede atual. Experimente alternar para a Rede Principal de Ethereum."
+    "message": "Nome de ENS não encontrado na rede atual. Experimente alternar para a Rede Principal de Conflux."
   },
   "enterAnAlias": {
     "message": "Digite um pseudônimo"
@@ -417,7 +417,7 @@
     "message": "Insira a senha para continuar"
   },
   "ethereumPublicAddress": {
-    "message": "Endereço Público do Ethereum"
+    "message": "Endereço Público do Conflux"
   },
   "etherscanView": {
     "message": "Ver conta no ConfluxScan"
@@ -643,7 +643,7 @@
     "message": "Sair"
   },
   "mainnet": {
-    "message": "Rede Ethereum Principal"
+    "message": "Rede Conflux Principal"
   },
   "memorizePhrase": {
     "message": "Memorize esta frase."
@@ -655,7 +655,7 @@
     "message": "Mensagem"
   },
   "metamaskDescription": {
-    "message": "Conectando você ao Ethereum e à Web Descentralizada."
+    "message": "Conectando você ao Conflux e à Web Descentralizada."
   },
   "metamaskVersion": {
     "message": "Versão do ConfluxPortal"
@@ -1112,7 +1112,7 @@
     "message": "3. Comece a usar dApps e muito mais!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use sua conta física como faria com qualquer conta de Ethereum. Faça login em dApps, envie Eth, compre e guarde tokens ERC20 e Tokens Não Fungíveis, como CryptoKitties."
+    "message": "Use sua conta física como faria com qualquer conta de Conflux. Faça login em dApps, envie Eth, compre e guarde tokens ERC20 e Tokens Não Fungíveis, como CryptoKitties."
   },
   "storePhrase": {
     "message": "Guarde esta frase em um gerenciador de senhas como o 1Password."

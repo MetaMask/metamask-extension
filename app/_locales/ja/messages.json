@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "チャートはEthereumネットワークでのみ利用可能です。"
+    "message": "チャートはConfluxネットワークでのみ利用可能です。"
   },
   "contractInteraction": {
     "message": "コントラクトへのアクセス"
@@ -78,7 +78,7 @@
     "message": "金額"
   },
   "appDescription": {
-    "message": "Ethereumのブラウザ・エクステンション",
+    "message": "Confluxのブラウザ・エクステンション",
     "description": "The description of the application"
   },
   "appName": {
@@ -321,7 +321,7 @@
     "message": "ログアウト"
   },
   "mainnet": {
-    "message": "Ethereumメインネットワーク"
+    "message": "Confluxメインネットワーク"
   },
   "menu": {
     "message": "メニュー"

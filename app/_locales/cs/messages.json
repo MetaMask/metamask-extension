@@ -21,7 +21,7 @@
     "message": "Částka"
   },
   "appDescription": {
-    "message": "Ethereum rozšíření prohlížeče",
+    "message": "Conflux rozšíření prohlížeče",
     "description": "The description of the application"
   },
   "appName": {
@@ -278,7 +278,7 @@
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal je bezpečný osobní trezor pro Ethereum."
+    "message": "ConfluxPortal je bezpečný osobní trezor pro Conflux."
   },
   "myAccounts": {
     "message": "Moje účty"

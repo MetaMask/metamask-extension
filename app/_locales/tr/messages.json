@@ -21,7 +21,7 @@
     "message": "Tutar"
   },
   "appDescription": {
-    "message": "Ethereum Tarayıcı Uzantısı",
+    "message": "Conflux Tarayıcı Uzantısı",
     "description": "The description of the application"
   },
   "appName": {
@@ -77,7 +77,7 @@
     "message": "Kovan Test Ağına bağlanıyor"
   },
   "connectingToMainnet": {
-    "message": "Main Ethereum Ağına bağlanıyor"
+    "message": "Main Conflux Ağına bağlanıyor"
   },
   "connectingToRopsten": {
     "message": "Ropsten Test Ağına bağlanıyor"
@@ -288,13 +288,13 @@
     "message": "Çıkış"
   },
   "mainnet": {
-    "message": "Main Ethereum Ağı"
+    "message": "Main Conflux Ağı"
   },
   "message": {
     "message": "Mesaj"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal Ethereum için güvenli bir kimlik kasasıdır."
+    "message": "ConfluxPortal Conflux için güvenli bir kimlik kasasıdır."
   },
   "myAccounts": {
     "message": "Hesaplarım"

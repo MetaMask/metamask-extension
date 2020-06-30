@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Mostra només els disponibles a les xarxes Ethereum."
+    "message": "Mostra només els disponibles a les xarxes Conflux."
   },
   "contractInteraction": {
     "message": "Contractar Interacció"
@@ -81,7 +81,7 @@
     "message": "Quantitat"
   },
   "appDescription": {
-    "message": "Un Moneder Ethereum al teu Navegador",
+    "message": "Un Moneder Conflux al teu Navegador",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Conectant a la xarxa de Kovan Test"
   },
   "connectingToMainnet": {
-    "message": "Connectant a Xarxa Principal Ethereum"
+    "message": "Connectant a Xarxa Principal Conflux"
   },
   "connectingToRopsten": {
     "message": "Connectant a la xarxa de test Ropsten"
@@ -408,7 +408,7 @@
     "message": "Error al registre de nom ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
+    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Conflux."
   },
   "enterAnAlias": {
     "message": "Introdueix Àlies"
@@ -420,7 +420,7 @@
     "message": "Introdueix la contrasenya per continuar"
   },
   "ethereumPublicAddress": {
-    "message": "Adreça Pública d'Ethereum"
+    "message": "Adreça Pública d'Conflux"
   },
   "etherscanView": {
     "message": "Veure compte a ConfluxScan"
@@ -639,7 +639,7 @@
     "message": "Tanca la sessió"
   },
   "mainnet": {
-    "message": "Xarxa Ethereum principal"
+    "message": "Xarxa Conflux principal"
   },
   "memorizePhrase": {
     "message": "Memoritza aquesta frase"
@@ -654,7 +654,7 @@
     "message": "Missatge"
   },
   "metamaskDescription": {
-    "message": "Conectant-te a Ethereum i la web descentralitzada."
+    "message": "Conectant-te a Conflux i la web descentralitzada."
   },
   "metamaskVersion": {
     "message": "Versió ConfluxPortal"
@@ -1105,7 +1105,7 @@
     "message": "3. Comença a utilitzar dApps i altres!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Fes servir el teu compte de hardware com ho faries amb qualsevol compte Ethereum. Inicia sessió a DApps, envia Eth, compra i emmagatzema fitxes ERC20 i fitxes No Fungibles com CryptoKitties."
+    "message": "Fes servir el teu compte de hardware com ho faries amb qualsevol compte Conflux. Inicia sessió a DApps, envia Eth, compra i emmagatzema fitxes ERC20 i fitxes No Fungibles com CryptoKitties."
   },
   "storePhrase": {
     "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"

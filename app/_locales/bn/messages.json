@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
+    "message": "শুধুমাত্র Conflux নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
   },
   "contractInteraction": {
     "message": "কন্ট্র্যাক্ট বাক্যালাপ"
@@ -81,7 +81,7 @@
     "message": "পরিমান"
   },
   "appDescription": {
-    "message": "আপনার ব্রাউজারে একটি Ethereum ওয়ালেট",
+    "message": "আপনার ব্রাউজারে একটি Conflux ওয়ালেট",
     "description": "The description of the application"
   },
   "appName": {
@@ -240,7 +240,7 @@
     "message": "কোভান টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
   },
   "connectingToMainnet": {
-    "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
+    "message": "মুখ্য Conflux নেটওয়ার্কের সাথে সংযোগ করছে"
   },
   "connectingToRopsten": {
     "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
@@ -411,7 +411,7 @@
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS নাম বর্তমান নেটওয়ার্কে খুঁজে পাওয়া যায় নি। মূল Ethereum নেটওয়ার্কে বদলানোর চেষ্টা করুন।"
+    "message": "ENS নাম বর্তমান নেটওয়ার্কে খুঁজে পাওয়া যায় নি। মূল Conflux নেটওয়ার্কে বদলানোর চেষ্টা করুন।"
   },
   "enterAnAlias": {
     "message": "একটি উপনাম লিখুন"
@@ -423,7 +423,7 @@
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum পাবলিক অ্যাড্রেস"
+    "message": "Conflux পাবলিক অ্যাড্রেস"
   },
   "etherscanView": {
     "message": "ConfluxScan এ অ্যাকাউন্ট দেখুন"
@@ -655,7 +655,7 @@
     "message": "লগ আউট করুন"
   },
   "mainnet": {
-    "message": "মূল Ethereum নেটওয়ার্ক"
+    "message": "মূল Conflux নেটওয়ার্ক"
   },
   "memorizePhrase": {
     "message": "এই ফ্রেজটি মুখস্থ করুন।"
@@ -670,7 +670,7 @@
     "message": "বার্তা"
   },
   "metamaskDescription": {
-    "message": "আপনার Ethereum এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
+    "message": "আপনার Conflux এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
   },
   "metamaskVersion": {
     "message": "ConfluxPortal সংস্করণ"
@@ -1127,7 +1127,7 @@
     "message": "3. dApps এবং আরও ব্যবহার করে শুরু করুন!"
   },
   "step3HardwareWalletMsg": {
-    "message": "আপনি কোনো Ethereum অ্যাকাউন্ট যেমন ব্যবহার করেন সেইভাবে আপনার হার্ডওয়্যার অ্যাকাউন্ট ব্যবহার করুন। dApps এ লগইন করুন, Eth পাঠান, ERC20 টোকেন এবং CryptoKitties এর মতো পরস্পর বিনিময়যোগ্য নয় এমন টোকেনগুলি ক্রয় ও সংরক্ষণ করুন।  "
+    "message": "আপনি কোনো Conflux অ্যাকাউন্ট যেমন ব্যবহার করেন সেইভাবে আপনার হার্ডওয়্যার অ্যাকাউন্ট ব্যবহার করুন। dApps এ লগইন করুন, Eth পাঠান, ERC20 টোকেন এবং CryptoKitties এর মতো পরস্পর বিনিময়যোগ্য নয় এমন টোকেনগুলি ক্রয় ও সংরক্ষণ করুন।  "
   },
   "storePhrase": {
     "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "

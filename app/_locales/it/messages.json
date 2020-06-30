@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Grafico disponibile solo per le reti Ethereum."
+    "message": "Grafico disponibile solo per le reti Conflux."
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
@@ -78,7 +78,7 @@
     "message": "Importo"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Conflux Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -219,7 +219,7 @@
     "message": "Connessione alla Rete di test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connessione alla Rete Ethereum Principale"
+    "message": "Connessione alla Rete Conflux Principale"
   },
   "connectingToRopsten": {
     "message": "Connessione alla Rete di test Ropsten"
@@ -306,7 +306,7 @@
     "message": "Precisione Decimali"
   },
   "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
+    "message": "La rete predefinita per transazioni in Ether è la Rete Conflux Principale."
   },
   "delete": {
     "message": "Elimina"
@@ -390,7 +390,7 @@
     "message": "Errore nella registrazione del nome ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Ethereum."
+    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Conflux."
   },
   "enterAnAlias": {
     "message": "Inserisci un alias"
@@ -402,7 +402,7 @@
     "message": "Inserisci la tua password per continuare"
   },
   "ethereumPublicAddress": {
-    "message": "Indirizzo pubblico Ethereum "
+    "message": "Indirizzo pubblico Conflux "
   },
   "etherscanView": {
     "message": "Vedi account su ConfluxScan"
@@ -628,7 +628,7 @@
     "message": "Disconnetti"
   },
   "mainnet": {
-    "message": "Rete Ethereum Principale"
+    "message": "Rete Conflux Principale"
   },
   "memorizePhrase": {
     "message": "Memorizza questa frase."
@@ -640,7 +640,7 @@
     "message": "Messaggio"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal è una cassaforte sicura per identità su Ethereum."
+    "message": "ConfluxPortal è una cassaforte sicura per identità su Conflux."
   },
   "metamaskVersion": {
     "message": "versione di ConfluxPortal"
@@ -1090,7 +1090,7 @@
     "message": "3. Inizia a usare dApps e molto altro ancora!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ethereum. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
+    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Conflux. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
   },
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."

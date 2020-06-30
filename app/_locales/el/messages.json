@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
+    "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Conflux."
   },
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
@@ -81,7 +81,7 @@
     "message": "Ποσό"
   },
   "appDescription": {
-    "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
+    "message": "Ένα Πορτοφόλι Conflux στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
   },
   "connectingToMainnet": {
-    "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
+    "message": "Σύνδεση στο Κύριο Δίκτυο Conflux"
   },
   "connectingToRopsten": {
     "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
@@ -408,7 +408,7 @@
     "message": "Σφάλμα στην καταχώριση ονόματος ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Κύριο Δίκτυο Ethereum."
+    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Κύριο Δίκτυο Conflux."
   },
   "enterAnAlias": {
     "message": "Δώστε ένα ψευδώνυμο"
@@ -420,7 +420,7 @@
     "message": "Πληκτρολογήστε τον κωδικό πρόσβασης για να συνεχίσετε"
   },
   "ethereumPublicAddress": {
-    "message": "Δημόσια Διεύθυνση Ethereum"
+    "message": "Δημόσια Διεύθυνση Conflux"
   },
   "etherscanView": {
     "message": "Προβολή λογαριασμού στο ConfluxScan"
@@ -652,7 +652,7 @@
     "message": "Αποσύνδεση"
   },
   "mainnet": {
-    "message": "Κύριο Δίκτυο Ethereum"
+    "message": "Κύριο Δίκτυο Conflux"
   },
   "memorizePhrase": {
     "message": "Απομνημονεύστε αυτή τη φράση."
@@ -667,7 +667,7 @@
     "message": "Μήνυμα"
   },
   "metamaskDescription": {
-    "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
+    "message": "Σύνδεση με το Conflux και τον Αποκεντρωμένο Ιστό."
   },
   "metamaskVersion": {
     "message": "Έκδοση ConfluxPortal "
@@ -1124,7 +1124,7 @@
     "message": "3. Ξεκινήστε να χρησιμοποιείτε το dApps και άλλα!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Χρησιμοποιήστε τον λογαριασμό εξοπλισμού σας όπως θα κάνατε με οποιονδήποτε λογαριασμό του Ethereum. Συνδεθείτε στο dApps, στείλτε το Eth, αγοράστε και αποθηκεύστε ERC20 tokens και Non-Fungible tokens όπως το CryptoKitties."
+    "message": "Χρησιμοποιήστε τον λογαριασμό εξοπλισμού σας όπως θα κάνατε με οποιονδήποτε λογαριασμό του Conflux. Συνδεθείτε στο dApps, στείλτε το Eth, αγοράστε και αποθηκεύστε ERC20 tokens και Non-Fungible tokens όπως το CryptoKitties."
   },
   "storePhrase": {
     "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."

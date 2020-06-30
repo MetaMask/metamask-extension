@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Tabla solo disponible en redes Ethereum."
+    "message": "Tabla solo disponible en redes Conflux."
   },
   "contractInteraction": {
     "message": "Interacción con contrato"
@@ -78,7 +78,7 @@
     "message": "Cantidad"
   },
   "appDescription": {
-    "message": "Extensión del navegador para Ethereum",
+    "message": "Extensión del navegador para Conflux",
     "description": "The description of the application"
   },
   "appName": {
@@ -197,7 +197,7 @@
     "message": "Conectando a la red de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Conectando a la red principal de Ethereum (Main Net)"
+    "message": "Conectando a la red principal de Conflux (Main Net)"
   },
   "connectingToRopsten": {
     "message": "Conectando a la red de test Ropsten"
@@ -537,7 +537,7 @@
     "message": "Cerrar sesión"
   },
   "mainnet": {
-    "message": "Red principal de Ethereum (Main Net)"
+    "message": "Red principal de Conflux (Main Net)"
   },
   "menu": {
     "message": "Menú"
@@ -546,7 +546,7 @@
     "message": "Mensaje"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal es una identidad segura en Ethereum"
+    "message": "ConfluxPortal es una identidad segura en Conflux"
   },
   "metamaskVersion": {
     "message": "Versión de ConfluxPortal"
@@ -910,7 +910,7 @@
     "message": "3. Empezar a usar dApps y más!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
+    "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Conflux. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
   },
   "submitted": {
     "message": "Enviado"

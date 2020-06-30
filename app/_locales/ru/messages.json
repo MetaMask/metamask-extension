@@ -21,7 +21,7 @@
     "message": "Сумма"
   },
   "appDescription": {
-    "message": "Расширение браузера для Ethereum",
+    "message": "Расширение браузера для Conflux",
     "description": "The description of the application"
   },
   "appName": {
@@ -77,7 +77,7 @@
     "message": "Соединение с тестовой сетью Kovan"
   },
   "connectingToMainnet": {
-    "message": "Соединение с основной сетью Ethereum"
+    "message": "Соединение с основной сетью Conflux"
   },
   "connectingToRopsten": {
     "message": "Соединение с тестовой сетью Ropsten"
@@ -134,7 +134,7 @@
     "message": "Количество десятичных разрядов"
   },
   "defaultNetwork": {
-    "message": "Основная сеть Ethereum – это сеть по умолчанию для Ether транзакций."
+    "message": "Основная сеть Conflux – это сеть по умолчанию для Ether транзакций."
   },
   "deposit": {
     "message": "Пополнить"
@@ -288,13 +288,13 @@
     "message": "Выход"
   },
   "mainnet": {
-    "message": "Основная сеть Ethereum"
+    "message": "Основная сеть Conflux"
   },
   "message": {
     "message": "Сообщение"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal – безопасный кошелек для Ethereum."
+    "message": "ConfluxPortal – безопасный кошелек для Conflux."
   },
   "myAccounts": {
     "message": "Мои счета"
@@ -525,7 +525,7 @@
     "message": "Вы подписываете"
   },
   "chartOnlyAvailableEth": {
-    "message": "Диаграмма доступна только в сетях Ethereum."
+    "message": "Диаграмма доступна только в сетях Conflux."
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
@@ -771,7 +771,7 @@
     "message": "Ошибка в регистрации имени ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на основную сеть Ethereum"
+    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на основную сеть Conflux"
   },
   "enterAnAlias": {
     "message": "Введите алиас"
@@ -780,7 +780,7 @@
     "message": "Введите пароль для продолжения"
   },
   "ethereumPublicAddress": {
-    "message": "Публичный адрес Ethereum"
+    "message": "Публичный адрес Conflux"
   },
   "estimatedProcessingTimes": {
     "message": "Ожидаемое время обработки"
@@ -1204,7 +1204,7 @@
     "message": "3. Начните использовать dApps и многое другое!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Используйте свою учетную запись аппаратного обеспечения, как и любую учетную запись Ethereum. Войдите в dApps, отправьте Eth, купите и сохраните токены ERC20 и уникальные токены, такие как CryptoKitties."
+    "message": "Используйте свою учетную запись аппаратного обеспечения, как и любую учетную запись Conflux. Войдите в dApps, отправьте Eth, купите и сохраните токены ERC20 и уникальные токены, такие как CryptoKitties."
   },
   "storePhrase": {
     "message": "Сохраните эту фразу в менеджере паролей, например 1Password."

@@ -92,7 +92,7 @@
     "message": "เชื่อมต่อกับ $1"
   },
   "connectingToMainnet": {
-    "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
+    "message": "เชื่อมต่อกับเครือข่าย Conflux หลัก"
   },
   "connectingToRopsten": {
     "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
@@ -538,7 +538,7 @@
     "message": "2. เลือกบัญชี"
   },
   "step3HardwareWalletMsg": {
-    "message": "ใช้บัญชีฮาร์ดแวร์ของคุณเช่นเดียวกับการใช้กับบัญชี Ethereum ล็อกอินเข้าสู่ dApp ส่ง Eth ซื้อและเก็บโทเคน ERC20 และโทเคนแบบ Non-Fungible เช่น CryptoKitties"
+    "message": "ใช้บัญชีฮาร์ดแวร์ของคุณเช่นเดียวกับการใช้กับบัญชี Conflux ล็อกอินเข้าสู่ dApp ส่ง Eth ซื้อและเก็บโทเคน ERC20 และโทเคนแบบ Non-Fungible เช่น CryptoKitties"
   },
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"

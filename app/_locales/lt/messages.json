@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Diagramos yra tik „Ethereum“ tinkluose."
+    "message": "Diagramos yra tik „Conflux“ tinkluose."
   },
   "contractInteraction": {
     "message": "Sutartinė sąveika"
@@ -81,7 +81,7 @@
     "message": "Suma"
   },
   "appDescription": {
-    "message": "„Ethereum“ piniginė jūsų naršyklėje",
+    "message": "„Conflux“ piniginė jūsų naršyklėje",
     "description": "The description of the application"
   },
   "appName": {
@@ -240,7 +240,7 @@
     "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
   },
   "connectingToMainnet": {
-    "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
+    "message": "Jungiamasi prie pagrindinio „Conflux“ tinklo"
   },
   "connectingToRopsten": {
     "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
@@ -411,7 +411,7 @@
     "message": "ENS pavadinimo registracijos klaida"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS pavadinimas dabartiniame tinkle nerastas. Mėginkite perjungti į pagrindinį „Ethereum“ tinklą."
+    "message": "ENS pavadinimas dabartiniame tinkle nerastas. Mėginkite perjungti į pagrindinį „Conflux“ tinklą."
   },
   "enterAnAlias": {
     "message": "Įveskite alternatyvųjį vardą"
@@ -423,7 +423,7 @@
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
   "ethereumPublicAddress": {
-    "message": "„Ethereum“ viešasis adresas"
+    "message": "„Conflux“ viešasis adresas"
   },
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „ConfluxScan“ programoje"
@@ -655,7 +655,7 @@
     "message": "Atsijungti"
   },
   "mainnet": {
-    "message": "Pagrindinis „Ethereum“ tinklas"
+    "message": "Pagrindinis „Conflux“ tinklas"
   },
   "memorizePhrase": {
     "message": "Įsiminti šią frazę."
@@ -670,7 +670,7 @@
     "message": "Pranešimas"
   },
   "metamaskDescription": {
-    "message": "Prijungiame jus prie „Ethereum“ ir decentralizuotojo žiniatinklio."
+    "message": "Prijungiame jus prie „Conflux“ ir decentralizuotojo žiniatinklio."
   },
   "metamaskVersion": {
     "message": "„ConfluxPortal“ versija"
@@ -1127,7 +1127,7 @@
     "message": "3. Pradėkite naudoti decentralizuotas programas ir daugiau!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Naudokitės savo aparatinės įrangos paskyra kaip „Ethereum“ paskyra. Junkitės prie decentralizuotų programų, siųskite eterius, pirkite ir laikykite ERC20 žetonus ir nekeičiamus žetonus, tokius kaip „CryptoKitties“."
+    "message": "Naudokitės savo aparatinės įrangos paskyra kaip „Conflux“ paskyra. Junkitės prie decentralizuotų programų, siųskite eterius, pirkite ir laikykite ERC20 žetonus ir nekeičiamus žetonus, tokius kaip „CryptoKitties“."
   },
   "storePhrase": {
     "message": "Laikykite šią frazę slaptažodžių tvarkyklėje kaip 1 slaptažodį."

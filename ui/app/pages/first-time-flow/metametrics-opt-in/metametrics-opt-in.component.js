@@ -41,7 +41,7 @@ export default class MetaMetricsOptIn extends Component {
               ConfluxPortal would like to gather usage data to better understand
               how our users interact with the extension. This data will be used
               to continually improve the usability and user experience of our
-              product and the Ethereum ecosystem.
+              product and the Conflux ecosystem.
             </div>
             <div className="metametrics-opt-in__description">
               ConfluxPortal will..

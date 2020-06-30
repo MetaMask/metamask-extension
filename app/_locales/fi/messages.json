@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Kaavio saatavilla vain Ethereum-verkoissa."
+    "message": "Kaavio saatavilla vain Conflux-verkoissa."
   },
   "contractInteraction": {
     "message": "Sopimustoiminta"
@@ -81,7 +81,7 @@
     "message": "Summa"
   },
   "appDescription": {
-    "message": "Ethereum-kukkaro selaimessasi",
+    "message": "Conflux-kukkaro selaimessasi",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Yhdistetään Kovanin koeverkkoon"
   },
   "connectingToMainnet": {
-    "message": "Yhdistetään Ethereumin pääverkkoon"
+    "message": "Yhdistetään Confluxin pääverkkoon"
   },
   "connectingToRopsten": {
     "message": "Yhdistetään Ropstenin koeverkkoon"
@@ -408,7 +408,7 @@
     "message": "Virhe ENS-nimen rekisteröinnissä"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-nimeä ei löytynyt nykyisestä verkosta. Koeta vaihtaa Ethereumin pääverkkoon."
+    "message": "ENS-nimeä ei löytynyt nykyisestä verkosta. Koeta vaihtaa Confluxin pääverkkoon."
   },
   "enterAnAlias": {
     "message": "Anna peitenimi"
@@ -420,7 +420,7 @@
     "message": "Syötä salasana voidaksesi jatkaa"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereumin julkinen osoite"
+    "message": "Confluxin julkinen osoite"
   },
   "etherscanView": {
     "message": "Tarkastele tiliä ConfluxScanissa"
@@ -652,7 +652,7 @@
     "message": "Kirjaudu ulos"
   },
   "mainnet": {
-    "message": "Ethereumin pääverkko"
+    "message": "Confluxin pääverkko"
   },
   "memorizePhrase": {
     "message": "Opettele tämä teksti ulkoa."
@@ -667,7 +667,7 @@
     "message": "Viesti"
   },
   "metamaskDescription": {
-    "message": "Sinua yhdistetään Ethereumiin ja hajautettuun verkkoon."
+    "message": "Sinua yhdistetään Confluxiin ja hajautettuun verkkoon."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal-versio"
@@ -1124,7 +1124,7 @@
     "message": "3. Ota käyttöön dApps ja paljon muuta!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Käytä laitteistosi tiliä minkä tahansa Ethereum-tilin tavoin. Kirjaudu dAppsiin, lähettää ethereumeja, ostaa ja tallentaa ERC20-tunnuksia sekä CryptoKittiesin kaltaisia ei-korvattavia tunnuksia."
+    "message": "Käytä laitteistosi tiliä minkä tahansa Conflux-tilin tavoin. Kirjaudu dAppsiin, lähettää ethereumeja, ostaa ja tallentaa ERC20-tunnuksia sekä CryptoKittiesin kaltaisia ei-korvattavia tunnuksia."
   },
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."

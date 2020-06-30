@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
+    "message": "Diagram kun tilgjengelig på Conflux-nettverk."
   },
   "contractInteraction": {
     "message": "Kontraktssamhandling"
@@ -81,7 +81,7 @@
     "message": "Sum"
   },
   "appDescription": {
-    "message": "En Ethereum-lommebok i nettleseren din",
+    "message": "En Conflux-lommebok i nettleseren din",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Kobler til Kovan testnettverk"
   },
   "connectingToMainnet": {
-    "message": "Forbinder med hoved-Ethereumnettverk "
+    "message": "Forbinder med hoved-Confluxnettverk "
   },
   "connectingToRopsten": {
     "message": "Kobler til Ropsten testnettverk"
@@ -408,7 +408,7 @@
     "message": "Feil i ENS-navneregistrering"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-navn ikke funnet i det gjeldende nettverket. Prøv å bytte til hovednettverket for Ethereum."
+    "message": "ENS-navn ikke funnet i det gjeldende nettverket. Prøv å bytte til hovednettverket for Conflux."
   },
   "enterAnAlias": {
     "message": "Oppgi et alias"
@@ -420,7 +420,7 @@
     "message": "Skriv inn passord for å fortsette"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adresse"
+    "message": "Conflux offentlig adresse"
   },
   "etherscanView": {
     "message": "Vis konto på ConfluxScan "
@@ -645,7 +645,7 @@
     "message": "Logg ut "
   },
   "mainnet": {
-    "message": "Ethereum hovednettverk"
+    "message": "Conflux hovednettverk"
   },
   "memorizePhrase": {
     "message": "Memorer denne frasen. "
@@ -660,7 +660,7 @@
     "message": "Melding "
   },
   "metamaskDescription": {
-    "message": "Kobler deg til Ethereum og det desentraliserte nettet."
+    "message": "Kobler deg til Conflux og det desentraliserte nettet."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal-versjon "
@@ -1105,7 +1105,7 @@
     "message": "3. Begynn å bruke dApps mer! "
   },
   "step3HardwareWalletMsg": {
-    "message": "Bruk hardware-kontoen din slik du ville gjort med enhver Ethereumkonto. Logg på dApps, send Eth, kjøp og lagre ERC20-tokener og ikke-fungible tokener som CryptoKitties."
+    "message": "Bruk hardware-kontoen din slik du ville gjort med enhver Confluxkonto. Logg på dApps, send Eth, kjøp og lagre ERC20-tokener og ikke-fungible tokener som CryptoKitties."
   },
   "storePhrase": {
     "message": "Lagre denne frasen i en passordbehandler slik som 1Password."

@@ -81,7 +81,7 @@
     "message": "Znesek"
   },
   "appDescription": {
-    "message": "Denarnica za Ethereum v brskalniku",
+    "message": "Denarnica za Conflux v brskalniku",
     "description": "The description of the application"
   },
   "appName": {
@@ -411,7 +411,7 @@
     "message": "Napaka pri registraciji imena ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Imena ENS v trenutnem omrežju ni mogoče najti. Poskusite preklopiti na glavno omrežje Ethereum."
+    "message": "Imena ENS v trenutnem omrežju ni mogoče najti. Poskusite preklopiti na glavno omrežje Conflux."
   },
   "enterAnAlias": {
     "message": "Vnesite vzdevek"
@@ -423,7 +423,7 @@
     "message": "Za nadaljevanje vnesite geslo"
   },
   "ethereumPublicAddress": {
-    "message": "Javni naslov Ethereum"
+    "message": "Javni naslov Conflux"
   },
   "etherscanView": {
     "message": "Poglej račun na ConfluxScan"
@@ -655,7 +655,7 @@
     "message": "Sporočilo"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal je varen identitetni sklad za Ethereum."
+    "message": "ConfluxPortal je varen identitetni sklad za Conflux."
   },
   "metamaskVersion": {
     "message": "Različica"
@@ -1109,7 +1109,7 @@
     "message": "3. Začnite uporabljati dApps in več!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Uporabite strojno denarnico kot katerikoli drug Ethereum račun. Prijavite se v dApps, pošljite Ether in ERC20 žetone in žetone kot CryptoKitties."
+    "message": "Uporabite strojno denarnico kot katerikoli drug Conflux račun. Prijavite se v dApps, pošljite Ether in ERC20 žetone in žetone kot CryptoKitties."
   },
   "storePhrase": {
     "message": "To geslo shranite v upravitelja gesel, kot je 1Password."

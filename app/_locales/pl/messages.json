@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Wykres dostępny tylko w sieciach Ethereum"
+    "message": "Wykres dostępny tylko w sieciach Conflux"
   },
   "contractInteraction": {
     "message": "Interakcja z kontraktem"
@@ -81,7 +81,7 @@
     "message": "Ilość"
   },
   "appDescription": {
-    "message": "Wtyczka przeglądarki do Ethereum",
+    "message": "Wtyczka przeglądarki do Conflux",
     "description": "The description of the application"
   },
   "appName": {
@@ -237,7 +237,7 @@
     "message": "Łączenie z siecią testową Kovan"
   },
   "connectingToMainnet": {
-    "message": "Łączenie z główną siecią Ethereum"
+    "message": "Łączenie z główną siecią Conflux"
   },
   "connectingToRopsten": {
     "message": "Łączenie z siecią testową Ropsten"
@@ -408,7 +408,7 @@
     "message": "Błąd w rejestracji nazwy ENS"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Nazwa ENS nie została znaleziona w bieżącej sieci. Spróbuj przełączyć się na Główną sieć Ethereum."
+    "message": "Nazwa ENS nie została znaleziona w bieżącej sieci. Spróbuj przełączyć się na Główną sieć Conflux."
   },
   "enterAnAlias": {
     "message": "Wpisz alias"
@@ -420,7 +420,7 @@
     "message": "Podaj hasło żeby kontynuować"
   },
   "ethereumPublicAddress": {
-    "message": "Adres publiczny Ethereum"
+    "message": "Adres publiczny Conflux"
   },
   "etherscanView": {
     "message": "Zobacz konto na ConfluxScan"
@@ -652,7 +652,7 @@
     "message": "Wyloguj się"
   },
   "mainnet": {
-    "message": "Główna sieć Ethereum"
+    "message": "Główna sieć Conflux"
   },
   "memorizePhrase": {
     "message": "Zapamiętaj tę frazę."
@@ -661,7 +661,7 @@
     "message": "Wiadomość"
   },
   "metamaskDescription": {
-    "message": "ConfluxPortal to bezpieczny portfel dla Ethereum."
+    "message": "ConfluxPortal to bezpieczny portfel dla Conflux."
   },
   "metamaskVersion": {
     "message": "Wersja ConfluxPortal"
@@ -1118,7 +1118,7 @@
     "message": "3. Zacznij używać dystrybuowanych aplikacji (dApps) i wiele więcej!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Używaj swojego konta sprzętowego tak, jak używasz jakiegokolwiek konta z Ethereum. Loguj się do dystrybuowanych aplikacji (dApps), wysyłaj Eth, kupuj i przechowaj tokeny ERC20 i niewymienne tokeny, jak np. CryptoKitties."
+    "message": "Używaj swojego konta sprzętowego tak, jak używasz jakiegokolwiek konta z Conflux. Loguj się do dystrybuowanych aplikacji (dApps), wysyłaj Eth, kupuj i przechowaj tokeny ERC20 i niewymienne tokeny, jak np. CryptoKitties."
   },
   "storePhrase": {
     "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."

@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Таблиця доступна тільки в мережах Ethereum."
+    "message": "Таблиця доступна тільки в мережах Conflux."
   },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
@@ -81,7 +81,7 @@
     "message": "Кількість"
   },
   "appDescription": {
-    "message": "Гаманець Ethereum у вашому браузері",
+    "message": "Гаманець Conflux у вашому браузері",
     "description": "The description of the application"
   },
   "appName": {
@@ -240,7 +240,7 @@
     "message": "Підключення до тестової мережі Kovan"
   },
   "connectingToMainnet": {
-    "message": "З'єднуємось з Головною мережею Ethereum"
+    "message": "З'єднуємось з Головною мережею Conflux"
   },
   "connectingToRopsten": {
     "message": "Під'єднуємось до Тестової мережі Ropsten"
@@ -423,7 +423,7 @@
     "message": "Введіть пароль, щоб продовжити"
   },
   "ethereumPublicAddress": {
-    "message": "Публічна адреса Ethereum"
+    "message": "Публічна адреса Conflux"
   },
   "etherscanView": {
     "message": "Переглянути обліковий запис на ConfluxScan"
@@ -461,7 +461,7 @@
     "message": "Від"
   },
   "fromShapeShift": {
-    "message": "Від Ethereum"
+    "message": "Від Conflux"
   },
   "functionType": {
     "message": "Тип функції"
@@ -655,7 +655,7 @@
     "message": "Вийти"
   },
   "mainnet": {
-    "message": "Головна Мережа Ethereum"
+    "message": "Головна Мережа Conflux"
   },
   "memorizePhrase": {
     "message": "Запам'ятайте цю фразу."
@@ -670,7 +670,7 @@
     "message": "Повідомлення"
   },
   "metamaskDescription": {
-    "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
+    "message": "Під'єднуємо вас до Conflux та децентралізованої мережі."
   },
   "metamaskVersion": {
     "message": "Версія ConfluxPortal"
@@ -1127,7 +1127,7 @@
     "message": "3. Почніть користуватись dApps та більше!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Використовуйте ваш апаратний обліковий запис, як би ви використовували будь-який обліковий запис Ethereum. Увійдіть в dApps, надсилайте Eth, купуйте та зберігайте токени ERC20 та токени, які не є взаємозамінними, такі як CryptoKitties."
+    "message": "Використовуйте ваш апаратний обліковий запис, як би ви використовували будь-який обліковий запис Conflux. Увійдіть в dApps, надсилайте Eth, купуйте та зберігайте токени ERC20 та токени, які не є взаємозамінними, такі як CryptoKitties."
   },
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."

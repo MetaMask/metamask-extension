@@ -1,6 +1,6 @@
 {
   "chartOnlyAvailableEth": {
-    "message": "Grafiks pieejams vienīgi Ethereum tīklos."
+    "message": "Grafiks pieejams vienīgi Conflux tīklos."
   },
   "contractInteraction": {
     "message": "Līguma mijiedarbības"
@@ -85,7 +85,7 @@
     "message": "Apjoms"
   },
   "appDescription": {
-    "message": "Ethereum maks pārlūkā",
+    "message": "Conflux maks pārlūkā",
     "description": "The description of the application"
   },
   "approve": {
@@ -240,7 +240,7 @@
     "message": "Savienojas ar Kovan testa tīklu"
   },
   "connectingToMainnet": {
-    "message": "Savienojas ar galveno Ethereum tīklu"
+    "message": "Savienojas ar galveno Conflux tīklu"
   },
   "connectingToRopsten": {
     "message": "Pieslēdzas Ropsten testa tīklam"
@@ -411,7 +411,7 @@
     "message": "Kļūda ENS vārda reģistrācijā"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Ethereum tīklu."
+    "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Conflux tīklu."
   },
   "enterAnAlias": {
     "message": "Ievadiet segvārdu"
@@ -423,7 +423,7 @@
     "message": "Ievadiet paroli, lai turpinātu"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum publiskā adrese"
+    "message": "Conflux publiskā adrese"
   },
   "etherscanView": {
     "message": "Skatīt kontu ar ConfluxScan"
@@ -651,7 +651,7 @@
     "message": "Izrakstīties"
   },
   "mainnet": {
-    "message": "Galvenais Ethereum tīkls"
+    "message": "Galvenais Conflux tīkls"
   },
   "memorizePhrase": {
     "message": "Iegaumējiet šo frāzi."
@@ -666,7 +666,7 @@
     "message": "Ziņojums"
   },
   "metamaskDescription": {
-    "message": "Veido savienojumu ar Ethereum un decentralizēto tīmekli."
+    "message": "Veido savienojumu ar Conflux un decentralizēto tīmekli."
   },
   "metamaskVersion": {
     "message": "ConfluxPortal versija"
@@ -1123,7 +1123,7 @@
     "message": "3. Sāciet izmantot dApps un citas funkcijas!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Lietojiet aparatūras kontu līdzīgi citiem Ethereum kontiem. Pierakstieties dApps, sūtiet Eth, pērciet un glabājiet ERC20 žetonus un neatvietojamos žetonus, piemēram, CryptoKitties."
+    "message": "Lietojiet aparatūras kontu līdzīgi citiem Conflux kontiem. Pierakstieties dApps, sūtiet Eth, pērciet un glabājiet ERC20 žetonus un neatvietojamos žetonus, piemēram, CryptoKitties."
   },
   "storePhrase": {
     "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."
