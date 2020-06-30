@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+
+## 0.2.3 Tue Jun 30 2020
 - Fix: dockerfile, less build level (#147)
 - Add: format comments in dockerfile (#148)
 - Fix: reorder task (#149)
