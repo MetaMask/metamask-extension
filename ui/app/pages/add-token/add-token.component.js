@@ -1,14 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
+import contractMap from 'eth-contract-metadata'
 import { checkExistingAddresses } from '../../helpers/utils/util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
-import TokenList from './token-list'
-import TokenSearch from './token-search'
+import SearchableTokenList from '../../components/ui/searchable-token-list'
+import TokenListPlaceholder from './token-list-placeholder'
 import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
+
+const contractList = Object.entries(contractMap)
+  .map(([address, tokenData]) => Object.assign({}, tokenData, { address }))
+  .filter((tokenData) => Boolean(tokenData.erc20))
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -31,7 +36,6 @@ class AddToken extends Component {
     customAddress: '',
     customSymbol: '',
     customDecimals: 0,
-    searchResults: [],
     selectedTokens: {},
     tokenSelectorError: null,
     customAddressError: null,
@@ -274,31 +278,21 @@ class AddToken extends Component {
     )
   }
 
-  renderSearchToken () {
-    const { tokenSelectorError, selectedTokens, searchResults } = this.state
-
-    return (
-      <div className="add-token__search-token">
-        <TokenSearch
-          onSearch={({ results = [] }) => this.setState({ searchResults: results })}
-          error={tokenSelectorError}
-        />
-        <div className="add-token__token-list">
-          <TokenList
-            results={searchResults}
-            selectedTokens={selectedTokens}
-            onToggleToken={(token) => this.handleToggleToken(token)}
-          />
-        </div>
-      </div>
-    )
-  }
-
   renderTabs () {
+    const { tokens } = this.props
+    const { tokenSelectorError, selectedTokens } = this.state
     return (
       <Tabs>
         <Tab name={this.context.t('search')}>
-          { this.renderSearchToken() }
+          <SearchableTokenList
+            matchedTokens={tokens}
+            tokensToSearch={contractList}
+            selectedTokens={selectedTokens}
+            tokenSelectorError={tokenSelectorError}
+            onToggleToken={(token) => this.handleToggleToken(token)}
+            Placeholder={TokenListPlaceholder}
+            className="add-token__search-token"
+          />
         </Tab>
         <Tab name={this.context.t('customToken')}>
           { this.renderCustomTokenForm() }
