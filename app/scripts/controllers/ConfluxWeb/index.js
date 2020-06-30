@@ -1,4 +1,4 @@
-import { Conflux } from 'js-conflux-sdk/dist/js-conflux-sdk.umd.min.js'
+import { Conflux } from 'js-conflux-sdk/src/index.js'
 
 class FakeContract {
   constructor (cfx, abi) {
