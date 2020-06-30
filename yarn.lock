@@ -1711,6 +1711,10 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
+"@metamask/test-dapp@./metamask-test-dapp-2.1.1.tgz":
+  version "2.1.1"
+  resolved "./metamask-test-dapp-2.1.1.tgz#d21d69dd2da3adfffc668aefdc96d29b10f18971"
+
 "@metamask/test-dapp@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.1.1.tgz#c3b79f93c8a698b0904171c5143d0bca1307653a"
