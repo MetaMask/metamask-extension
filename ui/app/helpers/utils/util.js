@@ -29,11 +29,9 @@ for (const currency in valueTable) {
 export function isEthNetwork (netId) {
   if (
     !netId ||
+    netId === '0' ||
     netId === '1' ||
-    netId === '3' ||
-    netId === '4' ||
-    netId === '42' ||
-    netId === '5777'
+    netId === '2999'
   ) {
     return true
   }

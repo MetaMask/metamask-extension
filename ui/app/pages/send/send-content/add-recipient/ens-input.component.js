@@ -11,7 +11,7 @@ import { ellipsify } from '../../send.utils'
 import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
-import networkMap from 'ethereum-ens-network-map'
+// import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
 
 // Local Constants
@@ -137,8 +137,8 @@ export default class EnsInput extends Component {
 
     if (
       !networkHasEnsSupport &&
-      !isValidAddress(input) &&
-      !isValidAddressHead(input)
+        !isValidAddress(input) &&
+        !isValidAddressHead(input)
     ) {
       updateEnsResolution('')
       updateEnsResolutionError(
@@ -299,6 +299,7 @@ export default class EnsInput extends Component {
   }
 }
 
-function getNetworkEnsSupport (network) {
-  return Boolean(networkMap[network])
+function getNetworkEnsSupport (/* network */) {
+  return false
+  // return Boolean(networkMap[network])
 }

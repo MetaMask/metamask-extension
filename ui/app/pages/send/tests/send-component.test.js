@@ -485,6 +485,7 @@ describe('Send Component', function () {
     })
 
     it('should validate when input changes and has error', function () {
+      wrapper.setProps({ network: '2999' })
       const instance = wrapper.instance()
       instance.onRecipientInputChange(
         '0x80F061544cC398520615B5d3e7a3BedD70cd4510'

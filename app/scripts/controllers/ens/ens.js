@@ -1,9 +1,10 @@
 import EthJsEns from 'ethjs-ens'
-import ensNetworkMap from 'ethereum-ens-network-map'
+// import ensNetworkMap from 'ethereum-ens-network-map'
 
 class Ens {
-  static getNetworkEnsSupport (network) {
-    return Boolean(ensNetworkMap[network])
+  static getNetworkEnsSupport (/* network */) {
+    return false
+    // return Boolean(ensNetworkMap[network])
   }
 
   constructor ({ network, provider } = {}) {
