@@ -61,7 +61,7 @@ export const TokenSearchSelect = () => {
     <div style={{ height: '82vh', width: '357px' }}>
       <SearchableTokenList
         itemsToSearch={altTokens}
-        Placeholder={TokenListPlaceholder}
+        Placeholder={({ searchQuery }) => <div className="token__placeholder">{`No tokens available that match “${searchQuery}”.`}</div>}
         className="token__search-token"
         searchPlaceholderText="Search for a token"
         fuseSearchKeys={[{ name: 'name', weight: 0.5 }, { name: 'symbol', weight: 0.5 }]}

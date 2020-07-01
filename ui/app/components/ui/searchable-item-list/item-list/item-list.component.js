@@ -8,9 +8,10 @@ export default function SearchableItemList ({
   Placeholder = null,
   listTitle = '',
   maxListItems = 6,
+  searchQuery = '',
 }) {
   return results.length === 0
-    ? <Placeholder />
+    ? <Placeholder searchQuery={searchQuery} />
     : (
       <div className="searchable-item-list">
         {listTitle && (
@@ -72,4 +73,5 @@ SearchableItemList.propTypes = {
   Placeholder: PropTypes.element,
   listTitle: PropTypes.string,
   maxListItems: PropTypes.number,
+  searchQuery: PropTypes.string,
 }

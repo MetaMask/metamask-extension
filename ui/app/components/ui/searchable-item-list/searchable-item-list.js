@@ -16,18 +16,23 @@ export default function SearchableItemList ({
   maxListItems = undefined,
 }) {
   const [results, setResults] = useState(defaultToAll ? itemsToSearch : [])
+  const [searchQuery, setSearchQuery] = useState('')
 
   return (
     <div className={className}>
       <ListItemSearch
         listToSearch={itemsToSearch}
         fuseSearchKeys={fuseSearchKeys}
-        onSearch={({ results = [] }) => setResults(results)}
+        onSearch={({ searchQuery: newSearchQuery = '', results = [] }) => {
+          setSearchQuery(newSearchQuery)
+          setResults(results)
+        }}
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll
       />
       <ItemList
+        searchQuery={searchQuery}
         results={results}
         onToggleItem={onToggleItem}
         Placeholder={Placeholder}
