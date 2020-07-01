@@ -1,0 +1,22 @@
+.dropdown-search-list {
+  flex-flow: column;
+  border: none;
+
+  .token__search-token {
+    margin: 0;
+    z-index: 1001;
+    min-height: auto;
+  }
+
+  &__selector {
+    display: flex;
+    width: 100%;
+    position: relative;
+    align-items: center;
+
+    .simple-dropdown__caret {
+      position: absolute;
+      right: 5px;
+    }
+  }
+}
