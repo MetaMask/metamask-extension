@@ -65,6 +65,7 @@ export const TokenSearchSelect = () => {
         className="token__search-token"
         searchPlaceholderText="Search for a token"
         fuseSearchKeys={[{ name: 'name', weight: 0.5 }, { name: 'symbol', weight: 0.5 }]}
+        maxListItems={altTokens.length}
         defaultToAll
       />
     </div>
