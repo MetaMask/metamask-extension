@@ -177,6 +177,8 @@ $Orange-600: #c65507;
 $Orange-500: #F66A0A;
 
 $Black-100: #24292E;
+$Black-500: #6A737D;
+$Black-900: #F2F3F4;
 
 // Font Sizes
 %h3 {
@@ -249,7 +251,7 @@ $xxlarge-spacing: 64px;
 // Font mixin
 
 %font {
-  font-family: Roboto;
+  font-family: Roboto, Arial;
   font-style: normal;
   font-weight: normal;
   color: $Grey-800;

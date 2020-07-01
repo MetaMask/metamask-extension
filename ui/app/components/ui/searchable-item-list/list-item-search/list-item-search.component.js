@@ -26,13 +26,17 @@ export default function ListItemSearch ({
   searchByKeys = [],
   fuseSearchKeys = null,
   searchPlaceholderText = '',
+  defaultToAll = false,
 }) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleSearch = (newSearchQuery) => {
     setSearchQuery(newSearchQuery)
     const fuseSearchResult = fuse.search(newSearchQuery)
-    onSearch({ searchQuery: newSearchQuery, results: fuseSearchResult })
+    onSearch({
+      searchQuery: newSearchQuery,
+      results: defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult,
+    })
   }
 
   const didMountRef = useRef(false)
@@ -73,6 +77,7 @@ export default function ListItemSearch ({
   return (
     <TextField
       id="search-list-items"
+      className="searchable-item-list__search"
       placeholder={searchPlaceholderText}
       type="text"
       value={searchQuery}
@@ -91,4 +96,5 @@ ListItemSearch.propTypes = {
   searchByKeys: PropTypes.arrayOf(PropTypes.string),
   fuseSearchKeys: PropTypes.arrayOf(PropTypes.object),
   searchPlaceholderText: PropTypes.string,
+  defaultToAll: PropTypes.bool,
 }
