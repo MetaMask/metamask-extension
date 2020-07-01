@@ -12,8 +12,10 @@ export default function SearchableItemList ({
   searchPlaceholderText,
   fuseSearchKeys = [],
   listTitle = '',
+  defaultToAll = false,
+  maxListItems = undefined,
 }) {
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState(defaultToAll ? itemsToSearch : [])
 
   return (
     <div className={className}>
@@ -23,12 +25,14 @@ export default function SearchableItemList ({
         onSearch={({ results = [] }) => setResults(results)}
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
+        defaultToAll
       />
       <ItemList
         results={results}
         onToggleItem={onToggleItem}
         Placeholder={Placeholder}
         listTitle={listTitle}
+        maxListItems={maxListItems}
       />
     </div>
   )
@@ -46,4 +50,6 @@ SearchableItemList.propTypes = {
     weight: PropTypes.number,
   })),
   listTitle: PropTypes.string,
+  defaultToAll: PropTypes.bool,
+  maxListItems: PropTypes.number,
 }

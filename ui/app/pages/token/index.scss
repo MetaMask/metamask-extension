@@ -1,0 +1,126 @@
+.token {
+
+  &__search-token {
+    margin: 24px;
+    border: 1px solid #FFFFFF;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.18);
+    border-radius: 6px;
+
+    .searchable-item-list {
+      &__search {
+        div {
+          border: none;
+          border-bottom: 1px solid #D2D8DD;
+
+          input {
+            @extend %font--bold;
+            font-size: 14px;
+            color: $black;
+          }
+        }
+      }
+
+      &__list-container {
+        display: flex;
+        flex-direction: column;
+        max-height: 330px;
+        overflow-y: scroll;
+      }
+
+      &__item {
+        transition: 200ms ease-in-out;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        padding: 16px 12px;;
+        box-sizing: border-box;
+        cursor: pointer;
+        border-top: 1px solid #D2D8DD;
+        position: relative;
+
+        &:first-of-type {
+          border-top: none;
+        }
+
+        &:hover {
+          background: $Black-900;
+        }
+
+        &--selected {
+          border: 2px solid $malibu-blue !important;
+        }
+
+        &--disabled {
+          opacity: .4;
+          pointer-events: none;
+        }
+      }
+
+      &__item-icon {
+        width: 24px;
+        height: 24px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        border-radius: 50%;
+        background-color: $white;
+        box-shadow: 0 2px 4px 0 rgba($black, .24);
+        margin-right: 16px;
+        flex: 0 0 auto;
+      }
+
+      &__primary-label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-width: 0;
+      }
+
+      &__item-name {
+        /*rtl:ignore*/
+        direction: ltr;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &__labels {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      &__item-labels {
+        display: flex;
+        flex-direction: column;
+      }
+
+      &__right-labels {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+      }
+
+      &__primary-label {
+        @extend %font--bold;
+        font-size: 14px;
+      }
+
+      &__secondary-label,
+      &__right-primary-label {
+        @extend %font;
+        font-size: 12px;
+        color: $Black-500;
+      }
+
+      &__right-secondary-label {
+        @extend %font;
+        font-size: 12px;
+        color: $Black-500;
+        opacity: 0.5;
+      }
+    }
+  }
+}
