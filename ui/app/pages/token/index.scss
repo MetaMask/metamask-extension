@@ -7,12 +7,15 @@
     box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.18);
     border-radius: 6px;
     min-height: 297px;
+    width: 100%;
 
     .searchable-item-list {
       &__search {
         div {
           border: none;
           border-bottom: 1px solid #D2D8DD;
+          border-radius: 0;
+          height: 61px;
 
           input {
             @extend %font--bold;
@@ -139,5 +142,6 @@
     font-size: 14px;
     padding: 16px;
     color: $Black-500;
+    min-height: 300px;
   }
 }
