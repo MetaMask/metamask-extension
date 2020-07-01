@@ -34,7 +34,7 @@ export const AddTokenSearch = () => {
   const [tokensToSearch, setTokens] = useState(tokens)
 
   return (
-    <div style={{ height: '82vh', width: '357px', border: '1px solid lightgrey' }}>
+    <div style={{ height: '82vh', width: '357px', border: '1px solid lightgrey', overflowY: 'auto' }}>
       <SearchableTokenList
         itemsToSearch={tokensToSearch}
         onToggleItem={(token) => handleToggleToken(token, tokensToSearch, setTokens)}
@@ -43,6 +43,29 @@ export const AddTokenSearch = () => {
         searchPlaceholderText="Search Tokens"
         fuseSearchKeys={[{ name: 'name', weight: 0.499 }, { name: 'symbol', weight: 0.499 }, { name: 'address', weight: 0.002 }]}
         listTitle="Search Results"
+      />
+    </div>
+  )
+}
+
+const altTokens = tokens.map((token) => ({
+  ...token,
+  primaryLabel: token.symbol,
+  secondaryLabel: token.name,
+  rightPrimaryLabel: `${(Math.random() * 100).toFixed(Math.floor(Math.random() * 6))} ${token.symbol}`,
+  rightSecondaryLabel: '$' + (Math.random() * 1000).toFixed(2),
+}))
+
+export const TokenSearchSelect = () => {
+  return (
+    <div style={{ height: '82vh', width: '357px' }}>
+      <SearchableTokenList
+        itemsToSearch={altTokens}
+        Placeholder={TokenListPlaceholder}
+        className="token__search-token"
+        searchPlaceholderText="Search for a token"
+        fuseSearchKeys={[{ name: 'name', weight: 0.5 }, { name: 'symbol', weight: 0.5 }]}
+        defaultToAll
       />
     </div>
   )
