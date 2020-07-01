@@ -6,6 +6,7 @@
     box-sizing: border-box;
     box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.18);
     border-radius: 6px;
+    min-height: 297px;
 
     .searchable-item-list {
       &__search {
@@ -122,5 +123,12 @@
         opacity: 0.5;
       }
     }
+  }
+
+  &__placeholder {
+    @extend %font;
+    font-size: 14px;
+    padding: 16px;
+    color: $Black-500;
   }
 }
