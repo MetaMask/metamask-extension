@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SearchableTokenList from '.'
+import SearchableItemList from '.'
 import TokenListPlaceholder from '../../../pages/add-token/token-list-placeholder'
 
 const tokens = [
@@ -35,9 +35,9 @@ export const AddTokenSearch = () => {
 
   return (
     <div style={{ height: '82vh', width: '357px', border: '1px solid lightgrey', overflowY: 'auto' }}>
-      <SearchableTokenList
+      <SearchableItemList
         itemsToSearch={tokensToSearch}
-        onToggleItem={(token) => handleToggleToken(token, tokensToSearch, setTokens)}
+        onClickItem={(token) => handleToggleToken(token, tokensToSearch, setTokens)}
         Placeholder={TokenListPlaceholder}
         className="add-token__search-token"
         searchPlaceholderText="Search Tokens"
@@ -59,7 +59,7 @@ const altTokens = tokens.map((token) => ({
 export const TokenSearchSelect = () => {
   return (
     <div style={{ height: '82vh', width: '357px' }}>
-      <SearchableTokenList
+      <SearchableItemList
         itemsToSearch={altTokens}
         Placeholder={({ searchQuery }) => <div className="token__placeholder">{`No tokens available that match “${searchQuery}”.`}</div>}
         className="token__search-token"

@@ -282,7 +282,7 @@ class AddToken extends Component {
           <SearchableItemList
             itemsToSearch={transformTokensForSearchList(tokensToSearch)}
             itemSelectorError={tokenSelectorError}
-            onToggleItem={(token) => this.handleToggleToken(token)}
+            onClickItem={(token) => this.handleToggleToken(token)}
             Placeholder={TokenListPlaceholder}
             className="add-token__search-token"
             searchPlaceholderText={this.context.t('searchTokens')}
