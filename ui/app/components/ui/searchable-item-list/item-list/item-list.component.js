@@ -4,7 +4,7 @@ import classnames from 'classnames'
 
 export default function SearchableItemList ({
   results = [],
-  onToggleItem = null,
+  onClickItem = null,
   Placeholder = null,
   listTitle = '',
   maxListItems = 6,
@@ -39,7 +39,7 @@ export default function SearchableItemList ({
                       'searchable-item-list__item--selected': selected,
                       'searchable-item-list__item--disabled': disabled,
                     })}
-                    onClick={() => onToggleItem && onToggleItem(result)}
+                    onClick={() => onClickItem && onClickItem(result)}
                     key={`searchable-item-list-item-${i}`}
                   >
                     <div
@@ -69,7 +69,7 @@ export default function SearchableItemList ({
 
 SearchableItemList.propTypes = {
   results: PropTypes.array,
-  onToggleItem: PropTypes.func,
+  onClickItem: PropTypes.func,
   Placeholder: PropTypes.element,
   listTitle: PropTypes.string,
   maxListItems: PropTypes.number,

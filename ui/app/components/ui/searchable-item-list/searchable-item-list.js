@@ -5,7 +5,7 @@ import ListItemSearch from './list-item-search'
 
 export default function SearchableItemList ({
   itemSelectorError = '',
-  onToggleItem = null,
+  onClickItem = null,
   Placeholder = null,
   className = '',
   itemsToSearch = [],
@@ -34,7 +34,7 @@ export default function SearchableItemList ({
       <ItemList
         searchQuery={searchQuery}
         results={results}
-        onToggleItem={onToggleItem}
+        onClickItem={onClickItem}
         Placeholder={Placeholder}
         listTitle={listTitle}
         maxListItems={maxListItems}
@@ -46,7 +46,7 @@ export default function SearchableItemList ({
 SearchableItemList.propTypes = {
   itemSelectorError: PropTypes.string,
   itemsToSearch: PropTypes.array,
-  onToggleItem: PropTypes.func,
+  onClickItem: PropTypes.func,
   Placeholder: PropTypes.element,
   className: PropTypes.string,
   searchPlaceholderText: PropTypes.string,
