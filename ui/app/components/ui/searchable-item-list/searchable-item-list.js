@@ -23,13 +23,13 @@ export default function SearchableItemList ({
       <ListItemSearch
         listToSearch={itemsToSearch}
         fuseSearchKeys={fuseSearchKeys}
-        onSearch={({ searchQuery: newSearchQuery = '', results = [] }) => {
+        onSearch={({ searchQuery: newSearchQuery = '', results: newResults = [] }) => {
           setSearchQuery(newSearchQuery)
-          setResults(results)
+          setResults(newResults)
         }}
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
-        defaultToAll
+        defaultToAll={defaultToAll}
       />
       <ItemList
         searchQuery={searchQuery}
