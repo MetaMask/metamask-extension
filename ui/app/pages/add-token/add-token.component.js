@@ -273,8 +273,6 @@ class AddToken extends Component {
     )
   }
 
-  transformTokensForSearchList
-
   renderTabs () {
     const { tokenSelectorError, tokensToSearch } = this.state
 
