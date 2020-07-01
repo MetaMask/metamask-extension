@@ -5,9 +5,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   NewUI Container Elements
  */
 
-// Component Colors
-$wallet-view-bg: $alabaster;
-
 .app {
   display: flex;
   flex-direction: column;
@@ -19,12 +16,8 @@ $wallet-view-bg: $alabaster;
 
 // Main container
 .main-container {
-  // position: absolute;
   z-index: $main-container-z-index;
   font-family: Roboto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
 }
 
 .main-container::-webkit-scrollbar {
@@ -39,84 +32,6 @@ $wallet-view-bg: $alabaster;
   width: 100%;
 }
 
-//Account and transaction details
-.account-and-transaction-details {
-  display: flex;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-// wallet view and sidebar
-
-.wallet-view {
-  display: flex;
-  flex-direction: column;
-  flex: 32 1 32%;
-  width: 0;
-  background: $wallet-view-bg;
-  z-index: 200;
-  position: relative;
-
-  [dir='rtl'] & i.fa.fa-clipboard {
-    /*rtl:ignore*/
-    margin-left: 0 !important;
-    /*rtl:ignore*/
-    margin-right: 8px !important;
-  }
-
-  @media screen and (min-width: 576px) {
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
-
-  @media #{$sub-mid-size-breakpoint-range} {
-    min-width: 160px;
-  }
-}
-
-@media screen and (min-width: 576px) {
-  .wallet-view::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.wallet-view-title-wrapper {
-  flex: 0 0 25px;
-}
-
-.wallet-view-title {
-  margin-left: 15px;
-  font-size: 16px;
-
-  // No title on mobile
-  @media screen and (max-width: 575px) {
-    display: none;
-  }
-}
-
-.wallet-view.sidebar-right {
-  flex: 1 0 230px;
-  background: rgb(250, 250, 250);
-  z-index: $sidebar-z-index;
-  position: fixed;
-  top: 66px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 1;
-  visibility: visible;
-  will-change: transform;
-  overflow-y: auto;
-  box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
-  width: 85%;
-  height: calc(100% - 56px);
-
-  [dir='rtl'] & {
-    /* rtl:ignore */
-    left: 15%;
-  }
-}
-
 // main-container media queries
 
 @media screen and (min-width: 576px) {
@@ -129,27 +44,25 @@ $wallet-view-bg: $alabaster;
   }
 
   .main-container {
-    // margin-top: 6.9vh;
     width: 85vw;
-    height: 90vh;
+    margin-bottom: 10vh;
+    min-height: 90vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
 
 @media screen and (min-width: 769px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 80vw;
-    height: 82vh;
+    min-height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
 
 @media screen and (min-width: 1281px) {
   .main-container {
-    // margin-top: 6.9vh;
     width: 62vw;
-    height: 82vh;
+    min-height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
@@ -172,13 +85,6 @@ $wallet-view-bg: $alabaster;
   .main-container-wrapper {
     flex: 1;
   }
-}
-
-// account options dropdown
-.account-options-menu {
-  align-items: center;
-  justify-content: flex-start;
-  margin: 5% 7% 0%;
 }
 
 .fiat-amount {

@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Режим конфіденційності тепер увімкнено за замовчуванням"
-  },
   "chartOnlyAvailableEth": {
     "message": "Таблиця доступна тільки в мережах Ethereum."
-  },
-  "confirmClear": {
-    "message": "Ви впевнені, що хочете очистити затверджені веб-сайти?"
   },
   "contractInteraction": {
     "message": "Контрактна взаємодія"
   },
-  "clearApprovalData": {
-    "message": "Очистити приватні дані"
-  },
   "reject": {
     "message": "Відхилити"
-  },
-  "providerRequest": {
-    "message": "$1 бажає підключитися до вашого облікового запису"
-  },
-  "providerRequestInfo": {
-    "message": "Цей сайт запитує доступ на перегляд вашої поточної адреси облікового запису. Завжди взаємодійте лише з веб-сайтами, яким довіряєте."
   },
   "about": {
     "message": "Про Google Chrome"
   },
   "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація."
+    "message": "Версія, центр підтримки та контактна інформація"
   },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
@@ -63,7 +48,7 @@
     "message": "Розширені"
   },
   "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC."
+    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
   },
   "advancedOptions": {
     "message": "Додаткові параметри"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Авторство"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматичного виходу (хвилин)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Встановіть час відсутності активності у хвилинах після якого MetaMask буде здійснювати автоматичний вихід"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Залишок можливо вже змінився"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатній баланс для поточної загальної кількості газу"
-  },
   "basic": {
     "message": "Основні параметри"
-  },
-  "betweenMinAndMax": {
-    "message": "має бути більшим або дорівнювати $1 і меншим або дорівнювати $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Блокувати Explorer"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "ID мережі"
   },
-  "clickToAdd": {
-    "message": "Клацніть на $1, щоб додати їх до вашого облікового запису"
-  },
   "clickToRevealSeed": {
     "message": "Клацніть тут, щоб відкрити секретні слова"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "Під’єднатися"
-  },
-  "connectRequest": {
-    "message": "Запит на з'єднання"
   },
   "connectingTo": {
     "message": "Під'єднуємось до $1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "Розгортання контракту"
   },
-  "conversionProgress": {
-    "message": "Конверсія триває"
-  },
-  "copiedButton": {
-    "message": "Скопійовано"
-  },
   "copiedExclamation": {
     "message": "Скопійовано!"
-  },
-  "copy": {
-    "message": "Копіювати"
   },
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
-  },
-  "copyButton": {
-    "message": "Копіювати"
   },
   "copyPrivateKey": {
     "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
-  "dismiss": {
-    "message": "Відхилити"
   },
   "done": {
     "message": "Готово"
@@ -488,17 +445,11 @@
   "from": {
     "message": "Від"
   },
-  "fromShapeShift": {
-    "message": "Від Ethereum"
-  },
   "functionType": {
     "message": "Тип функції"
   },
   "gasLimit": {
     "message": "Ліміт газу"
-  },
-  "gasLimitCalculation": {
-    "message": "Ми підраховуємо пропонований ліміт пального на основі рейтингів успішності мережі."
   },
   "gasLimitInfoModalContent": {
     "message": "Ліміт газу – максимальна кількість одиниць газу, яку ви бажаєте витратити."
@@ -521,9 +472,6 @@
   "gasPriceNoDenom": {
     "message": "Ціна Газу"
   },
-  "gasPriceCalculation": {
-    "message": "Ми розрахуємо рекомендовані ціни газу на основі відсотка успішних транзакцій у мережі."
-  },
   "general": {
     "message": "Загальні"
   },
@@ -542,10 +490,6 @@
   },
   "getStarted": {
     "message": "Почати"
-  },
-  "greaterThanMin": {
-    "message": "має бути більшим або рівним $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Раді вас бачити."
@@ -574,9 +518,6 @@
   },
   "hide": {
     "message": "Сховати"
-  },
-  "hideToken": {
-    "message": "Приховати токен"
   },
   "hideTokenPrompt": {
     "message": "Приховати токен?"
@@ -665,10 +606,6 @@
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
   },
-  "lessThanMax": {
-    "message": "має бути більшим або дорівнювати $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
@@ -693,10 +630,7 @@
   "localhost": {
     "message": "Локальний хост 8545"
   },
-  "login": {
-    "message": "Увійти"
-  },
-  "logout": {
+  "lock": {
     "message": "Вийти"
   },
   "mainnet": {
@@ -708,23 +642,14 @@
   "memo": {
     "message": "нотатка"
   },
-  "menu": {
-    "message": "Меню"
-  },
   "message": {
     "message": "Повідомлення"
   },
   "metamaskDescription": {
     "message": "Під'єднуємо вас до Ethereum та децентралізованої мережі."
   },
-  "metamaskSeedWords": {
-    "message": "Початкові слова MetaMask"
-  },
   "metamaskVersion": {
     "message": "Версія MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Не бачите ваших токенів?"
   },
   "mobileSyncText": {
     "message": "Введіть пароль, щоб підтвердити свою особу!"
@@ -821,9 +746,6 @@
   "noAddressForName": {
     "message": "На це ім'я не встановлено адреси."
   },
-  "noDeposits": {
-    "message": "Немає отриманих внесків"
-  },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
   },
@@ -870,9 +792,6 @@
     "message": "Вставте ваш рядок з особистим ключем сюди:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Вставте сюди свою мнемонічну фразу!"
-  },
   "pending": {
     "message": "очікує"
   },
@@ -900,9 +819,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "qrCode": {
-    "message": "Показати QR код"
   },
   "queue": {
     "message": "Черга"
@@ -978,9 +894,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
-  },
-  "revert": {
-    "message": "Повернути"
   },
   "remove": {
     "message": "Видалити"
@@ -1186,9 +1099,6 @@
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."
   },
-  "submit": {
-    "message": "Надіслати"
-  },
   "submitted": {
     "message": "Надіслано"
   },
@@ -1199,7 +1109,7 @@
     "message": "Символ"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символ має містити від 0 до 12 знаків."
+    "message": "Символ повинен містити 11 символів або менше."
   },
   "syncWithMobile": {
     "message": "Синхронізувати з мобільним пристроєм"
@@ -1236,10 +1146,6 @@
   },
   "to": {
     "message": "Кому"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Токен"
@@ -1355,9 +1261,6 @@
   },
   "userName": {
     "message": "Ім’я користувача"
-  },
-  "validFileImport": {
-    "message": "Потрібно вибрати дійсний файл для імпорту."
   },
   "viewAccount": {
     "message": "Переглянути обліковий запис"

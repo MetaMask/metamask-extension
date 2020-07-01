@@ -24,14 +24,15 @@ export default class GasPriceChart extends Component {
     updateCustomGasPrice: PropTypes.func,
   }
 
-  renderChart ({
-    currentPrice,
-    gasPrices,
-    estimatedTimes,
-    gasPricesMax,
-    estimatedTimesMax,
-    updateCustomGasPrice,
-  }) {
+  renderChart () {
+    const {
+      currentPrice,
+      gasPrices,
+      estimatedTimes,
+      gasPricesMax,
+      estimatedTimesMax,
+      updateCustomGasPrice,
+    } = this.props
     const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax, this.context.t)
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
@@ -43,9 +44,9 @@ export default class GasPriceChart extends Component {
       const { x: yAxisX } = getCoordinateData('.c3-axis-y-label')
       const { x: tickX } = getCoordinateData('.c3-axis-x .tick')
 
-      d3.select('.c3-axis-x .tick').attr('transform', 'translate(' + (domainX - tickX) / 2 + ', 0)')
+      d3.select('.c3-axis-x .tick').attr('transform', `translate(${(domainX - tickX) / 2}, 0)`)
       d3.select('.c3-axis-x-label').attr('transform', 'translate(0,-15)')
-      d3.select('.c3-axis-y-label').attr('transform', 'translate(' + (domainX - yAxisX - 12) + ', 2) rotate(-90)')
+      d3.select('.c3-axis-y-label').attr('transform', `translate(${domainX - yAxisX - 12}, 2) rotate(-90)`)
       d3.select('.c3-xgrid-focus line').attr('y2', 98)
 
       d3.select('.c3-chart').on('mouseout', () => {
@@ -95,7 +96,7 @@ export default class GasPriceChart extends Component {
   }
 
   componentDidMount () {
-    this.renderChart(this.props)
+    this.renderChart()
   }
 
   render () {

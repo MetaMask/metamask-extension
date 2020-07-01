@@ -1,27 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "Modo Privado está activado ahora por defecto"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabla solo disponible en redes Ethereum."
-  },
-  "confirmClear": {
-    "message": "¿Seguro que quieres borrar los sitios web aprobados?"
   },
   "contractInteraction": {
     "message": "Interacción con contrato"
   },
-  "clearApprovalData": {
-    "message": "Borrar datos de aprobación"
-  },
   "reject": {
     "message": "Rechazar"
-  },
-  "providerRequest": {
-    "message": "$1 quisiera conectar con tu cuenta"
-  },
-  "providerRequestInfo": {
-    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la blockchain de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
   },
   "about": {
     "message": "Acerca"
@@ -118,10 +103,10 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador Auto-Cierre (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Establece el tiempo de inactividad en minutos antes de que MetaMask cierre la sesión automáticamente."
   },
   "average": {
@@ -139,15 +124,8 @@
   "balance": {
     "message": "Saldo"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo de gas insuficiente"
-  },
   "basic": {
     "message": "Básico"
-  },
-  "betweenMinAndMax": {
-    "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon (Iconos)"
@@ -179,9 +157,6 @@
   "chainId": {
     "message": "ID Cadena"
   },
-  "clickToAdd": {
-    "message": "Hazle clic en $1 para agregarles a su cuenta"
-  },
   "clickToRevealSeed": {
     "message": "Haga clic aquí para revelar palabras secretas"
   },
@@ -208,9 +183,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectRequest": {
-    "message": "Petición para conectar"
   },
   "connectingTo": {
     "message": "Conectánodse a $1"
@@ -242,17 +214,8 @@
   "contractDeployment": {
     "message": "Desplegar (Deploy) contrato"
   },
-  "conversionProgress": {
-    "message": "Conversión en progreso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "¡Copiado!"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar la dirección al portapapeles"
@@ -265,9 +228,6 @@
   },
   "copyToClipboard": {
     "message": "Copiar al portapapeles"
-  },
-  "copyButton": {
-    "message": " Copiar "
   },
   "copyPrivateKey": {
     "message": "Ésta es tu clave privada (haz click para copiar)"
@@ -331,9 +291,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si posees Ether, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
-  },
-  "dismiss": {
-    "message": "Descartar"
   },
   "done": {
     "message": "Completo"
@@ -406,17 +363,11 @@
   "from": {
     "message": "De:"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipo de función"
   },
   "gasLimit": {
     "message": "Límite de gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido en función de las tasas de éxito de la red"
   },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser de al menos 21000"
@@ -433,9 +384,6 @@
   "gasPriceNoDenom": {
     "message": "Precio de Gas"
   },
-  "gasPriceCalculation": {
-    "message": "Calculamos los precios sugeridos del gas en función de las tasas de éxito de la red"
-  },
   "generalSettingsDescription": {
     "message": "Conversión de divisas, divisa principal, idioma, blockies identicon"
   },
@@ -448,10 +396,6 @@
   },
   "getHelp": {
     "message": "Pedir ayuda."
-  },
-  "greaterThanMin": {
-    "message": "Debe ser mayor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
   },
   "hardwareWalletConnected": {
     "message": "Se ha conectado el monedero físico"
@@ -474,9 +418,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
@@ -553,10 +494,6 @@
   "ledgerAccountRestriction": {
     "message": "Hay que hacer uso de tu última cuenta antes de agregarle una nueva."
   },
-  "lessThanMax": {
-    "message": "Debe ser menor o igual a $1",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "¿Te gustaría agregar estos tokens?"
   },
@@ -575,17 +512,11 @@
   "loadMore": {
     "message": "Cargar Más"
   },
-  "login": {
-    "message": "Ingresar"
-  },
-  "logout": {
+  "lock": {
     "message": "Cerrar sesión"
   },
   "mainnet": {
     "message": "Red principal de Ethereum (Main Net)"
-  },
-  "menu": {
-    "message": "Menú"
   },
   "message": {
     "message": "Mensaje"
@@ -593,14 +524,8 @@
   "metamaskDescription": {
     "message": "MetaMask es una identidad segura en Ethereum"
   },
-  "metamaskSeedWords": {
-    "message": "Palabras semilla de MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "¿No ves tus tokens?"
   },
   "myAccounts": {
     "message": "Mis cuentas"
@@ -661,9 +586,6 @@
   "noAddressForName": {
     "message": "No se ha establecido ninguna dirección para este nombre"
   },
-  "noDeposits": {
-    "message": "No hay depósitos recibidos"
-  },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión"
   },
@@ -701,9 +623,6 @@
     "message": "Pega tu clave privada aqui",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "¡Pega tu frase semilla aquí!"
-  },
   "pending": {
     "message": "pendiente"
   },
@@ -728,9 +647,6 @@
   },
   "privateNetwork": {
     "message": "Red privada"
-  },
-  "qrCode": {
-    "message": "Mostrar codigo QR"
   },
   "queue": {
     "message": "Cola"
@@ -794,9 +710,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "¡No recuperes tu semilla en un lugar pública! Esas palabras pueden ser usadas para robarte todas tus cuentas"
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "borrar"
@@ -966,9 +879,6 @@
   "step3HardwareWalletMsg": {
     "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
   },
-  "submit": {
-    "message": "Enviar"
-  },
   "submitted": {
     "message": "Enviado"
   },
@@ -976,7 +886,7 @@
     "message": "Visita nuestro centro de atención"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Símbolo debe ser entre 0 y 12 caracteres"
+    "message": "El símbolo debe tener 11 caracteres o menos."
   },
   "syncWithMobile": {
     "message": "Sincronizar con el móvil"
@@ -992,10 +902,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token está actualmente agregado"
@@ -1096,9 +1002,6 @@
   },
   "usedByClients": {
     "message": "Utilizado por una variedad de clientes diferentes"
-  },
-  "validFileImport": {
-    "message": "Debes selecionar un archivo valido para importar"
   },
   "viewAccount": {
     "message": "Mirar cuenta"

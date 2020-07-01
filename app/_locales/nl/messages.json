@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Weet je zeker dat je goedgekeurde websites wilt wissen?"
-  },
-  "clearApprovalData": {
-    "message": "Gegevens over goedkeuring wissen"
-  },
   "reject": {
     "message": "Afwijzen"
-  },
-  "providerRequestInfo": {
-    "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."
   },
   "accountDetails": {
     "message": "Accountgegevens"
@@ -49,13 +40,6 @@
   "balance": {
     "message": "Balans:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Onvoldoende saldo voor huidig ​​gastotaal"
-  },
-  "betweenMinAndMax": {
-    "message": "moet groter zijn dan of gelijk zijn aan $1 en kleiner dan of gelijk aan $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
@@ -83,23 +67,11 @@
   "contractDeployment": {
     "message": "Contractimplementatie"
   },
-  "conversionProgress": {
-    "message": "Bezig met conversie"
-  },
-  "copiedButton": {
-    "message": "gekopieerde"
-  },
   "copiedExclamation": {
     "message": "Gekopieerde!"
   },
-  "copy": {
-    "message": "Kopiëren"
-  },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
-  },
-  "copyButton": {
-    "message": " Kopiëren "
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -172,23 +144,14 @@
   "from": {
     "message": "Van"
   },
-  "fromShapeShift": {
-    "message": "Van ShapeShift"
-  },
   "gasLimit": {
     "message": "Gaslimiet"
-  },
-  "gasLimitCalculation": {
-    "message": "We berekenen de voorgestelde gaslimiet op basis van succespercentages van het netwerk."
   },
   "gasLimitTooLow": {
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -197,19 +160,12 @@
     "message": "Haal Ether uit een kraan voor de $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "moet groter zijn dan of gelijk zijn aan $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "Verbergen"
-  },
-  "hideToken": {
-    "message": "Token verbergen"
   },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
@@ -259,10 +215,6 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "lessThanMax": {
-    "message": "moet kleiner zijn dan of gelijk zijn aan $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
@@ -272,10 +224,10 @@
   "loadingTokens": {
     "message": "Tokens laden ..."
   },
-  "login": {
+  "unlock": {
     "message": "Log in"
   },
-  "logout": {
+  "lock": {
     "message": "Uitloggen"
   },
   "mainnet": {
@@ -321,18 +273,12 @@
   "noAddressForName": {
     "message": "Er is geen adres ingesteld voor deze naam."
   },
-  "noDeposits": {
-    "message": "Geen aanbetalingen ontvangen"
-  },
   "noTransactions": {
     "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Plak je back-up woorden hier!"
   },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
@@ -349,9 +295,6 @@
   },
   "privateNetwork": {
     "message": "Prive netwerk"
-  },
-  "qrCode": {
-    "message": "QR-code weergeven"
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
@@ -376,9 +319,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
-  "revert": {
-    "message": "terugkeren"
   },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"
@@ -437,14 +377,11 @@
   "stateLogsDescription": {
     "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
   },
-  "submit": {
-    "message": "voorleggen"
-  },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
+    "message": "Symbool moet 11 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"
@@ -454,10 +391,6 @@
   },
   "to": {
     "message": "Naar"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 tot ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token is al toegevoegd."
@@ -483,9 +416,6 @@
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
-  },
-  "validFileImport": {
-    "message": "U moet een geldig bestand selecteren om te importeren."
   },
   "viewAccount": {
     "message": "Bekijk account"

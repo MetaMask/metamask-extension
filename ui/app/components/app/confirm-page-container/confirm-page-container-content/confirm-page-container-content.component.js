@@ -39,10 +39,10 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       <Tabs>
-        <Tab name="Details">
+        <Tab className="confirm-page-container-content__tab" name="Details">
           { detailsComponent }
         </Tab>
-        <Tab name="Data">
+        <Tab className="confirm-page-container-content__tab" name="Data">
           { dataComponent }
         </Tab>
       </Tabs>

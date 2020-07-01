@@ -1,6 +1,8 @@
-const assert = require('assert')
-const TxStateManager = require('../../../../../app/scripts/controllers/transactions/tx-state-manager')
-const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
+import { strict as assert } from 'assert'
+import sinon from 'sinon'
+import TxStateManager from '../../../../../app/scripts/controllers/transactions/tx-state-manager'
+import { snapshotFromTxMeta } from '../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helpers'
+
 const noop = () => true
 
 describe('TransactionStateManager', function () {
@@ -29,16 +31,18 @@ describe('TransactionStateManager', function () {
       assert.equal(result[0].status, 'signed')
     })
 
-    it('should emit a signed event to signal the exciton of callback', (done) => {
+    it('should emit a signed event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      const noop = function () {
-        assert(true, 'event listener has been triggered and noop executed')
-        done()
-      }
+      const clock = sinon.useFakeTimers()
+      const noop = sinon.spy()
+
       txStateManager.addTx(tx)
       txStateManager.on('1:signed', noop)
       txStateManager.setTxStatusSigned(1)
+      clock.runAll()
+      clock.restore()
 
+      assert.ok(noop.calledOnce)
     })
   })
 
@@ -52,18 +56,18 @@ describe('TransactionStateManager', function () {
       assert.equal(result.length, 0)
     })
 
-    it('should emit a rejected event to signal the exciton of callback', (done) => {
+    it('should emit a rejected event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const clock = sinon.useFakeTimers()
+      const noop = sinon.spy()
+
       txStateManager.addTx(tx)
-      const noop = function (err) {
-        if (err) {
-          console.log('Error: ', err)
-        }
-        assert(true, 'event listener has been triggered and noop executed')
-        done()
-      }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)
+      clock.runAll()
+      clock.restore()
+
+      assert.ok(noop.calledOnce)
     })
   })
 
@@ -233,7 +237,7 @@ describe('TransactionStateManager', function () {
       // verify tx was initialized correctly
       assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
       assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
-      assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      assert.deepEqual(updatedTx.history[0], snapshotFromTxMeta(updatedTx), 'first history item is initial state')
       // modify value and updateTx
       updatedTx.txParams.gasPrice = desiredGasPrice
       const before = new Date().getTime()
@@ -322,7 +326,6 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { status: (status) => status !== 'confirmed' }
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-
     })
   })
 
@@ -365,19 +368,18 @@ describe('TransactionStateManager', function () {
 
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0)
       assert.equal(txFromOtherNetworks.length, 2)
-
     })
   })
 
   describe('#_removeTx', function () {
-    it('should remove the transaction from the storage', () => {
-      txStateManager._saveTxList([ {id: 1} ])
+    it('should remove the transaction from the storage', function () {
+      txStateManager._saveTxList([ { id: 1 } ])
       txStateManager._removeTx(1)
-      assert(!txStateManager.getFullTxList().length, 'txList should be empty')
+      assert.ok(!txStateManager.getFullTxList().length, 'txList should be empty')
     })
 
-    it('should only remove the transaction with ID 1 from the storage', () => {
-      txStateManager._saveTxList([ {id: 1}, {id: 2} ])
+    it('should only remove the transaction with ID 1 from the storage', function () {
+      txStateManager._saveTxList([ { id: 1 }, { id: 2 } ])
       txStateManager._removeTx(1)
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })

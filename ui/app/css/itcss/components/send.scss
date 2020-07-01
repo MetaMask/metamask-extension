@@ -19,7 +19,6 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
   padding: 46px 40.5px 26px;
   position: relative;
-  // top: -26px;
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
@@ -326,7 +325,6 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
     padding: 46px 40.5px 26px;
     position: relative;
-    // top: -26px;
     align-items: center;
     display: flex;
     flex-flow: column nowrap;
@@ -401,7 +399,6 @@
 
 .send-v2 {
   &__container {
-    // height: 701px;
     width: 380px;
     border-radius: 8px;
     background-color: $white;
@@ -676,6 +673,7 @@
       display: flex;
       flex-flow: column nowrap;
       margin-left: 8px;
+      flex-grow: 1;
     }
 
     &__symbol {
@@ -749,66 +747,6 @@
       font-family: Roboto;
       font-size: 16px;
       line-height: 21px;
-    }
-  }
-
-  &__to-autocomplete {
-    position: relative;
-
-    &__qr-code {
-      z-index: 1026;
-      top: 13px;
-      right: 33px;
-      cursor: pointer;
-      padding: 8px 5px 5px;
-      border-radius: 4px;
-    }
-
-    &__qr-code:hover {
-      background: #f1f1f1;
-    }
-  }
-
-  &__to-autocomplete {
-    display: flex;
-    flex-direction: row;
-    z-index: 1025;
-    position: relative;
-    height: 54px;
-    width: 100%;
-    border: 1px solid $Grey-100;
-    border-radius: 8px;
-    background-color: $white;
-    color: $tundora;
-    padding: 0 10px;
-    font-family: Roboto;
-    line-height: 21px;
-    align-items: center;
-
-    &__input {
-      font-size: 16px;
-      height: 100%;
-      border: none;
-      flex: 1 1 auto;
-      width: 0;
-
-      &::placeholder {
-        color: #A1A5B3;
-      }
-    }
-
-    &__resolved {
-      font-size: 12px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      height: 30px;
-      cursor: pointer;
-
-      + .send-v2__to-autocomplete__qr-code {
-        top: 2px;
-        right: 0;
-      }
     }
   }
 

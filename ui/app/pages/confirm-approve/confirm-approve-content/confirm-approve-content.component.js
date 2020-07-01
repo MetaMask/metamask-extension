@@ -13,14 +13,11 @@ export default class ConfirmApproveContent extends Component {
   }
 
   static propTypes = {
-    amount: PropTypes.string,
-    txFeeTotal: PropTypes.string,
     decimals: PropTypes.number,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
-    tokenAddress: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
     showEditApprovalPermissionModal: PropTypes.func,
     origin: PropTypes.string,
@@ -47,17 +44,23 @@ export default class ConfirmApproveContent extends Component {
     noBorder,
   }) {
     return (
-      <div className={classnames({
-        'confirm-approve-content__card': !noBorder,
-        'confirm-approve-content__card--no-border': noBorder,
-      })}>
+      <div
+        className={classnames({
+          'confirm-approve-content__card': !noBorder,
+          'confirm-approve-content__card--no-border': noBorder,
+        })}
+      >
         <div className="confirm-approve-content__card-header">
           <div className="confirm-approve-content__card-header__symbol">{ symbol }</div>
           <div className="confirm-approve-content__card-header__title">{ title }</div>
-          { showEdit && <div
-            className="confirm-approve-content__small-blue-text cursor-pointer"
-            onClick={() => onEditClick()}
-          >Edit</div> }
+          {showEdit && (
+            <div
+              className="confirm-approve-content__small-blue-text cursor-pointer"
+              onClick={() => onEditClick()}
+            >
+              Edit
+            </div>
+          )}
         </div>
         <div className="confirm-approve-content__card-content">
           { content }
@@ -139,9 +142,11 @@ export default class ConfirmApproveContent extends Component {
     const { showFullTxDetails } = this.state
 
     return (
-      <div className={classnames('confirm-approve-content', {
-        'confirm-approve-content--full': showFullTxDetails,
-      })}>
+      <div
+        className={classnames('confirm-approve-content', {
+          'confirm-approve-content--full': showFullTxDetails,
+        })}
+      >
         <div className="confirm-approve-content__identicon-wrapper">
           <Identicon
             className="confirm-approve-content__identicon"
@@ -182,20 +187,24 @@ export default class ConfirmApproveContent extends Component {
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: !showFullTxDetails,
-            footer: <div
-              className="confirm-approve-content__view-full-tx-button-wrapper"
-              onClick={() => this.setState({ showFullTxDetails: !this.state.showFullTxDetails })}
-            >
-              <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
-                <div className="confirm-approve-content__small-blue-text">
-                  View full transaction details
+            footer: (
+              <div
+                className="confirm-approve-content__view-full-tx-button-wrapper"
+                onClick={() => this.setState({ showFullTxDetails: !this.state.showFullTxDetails })}
+              >
+                <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
+                  <div className="confirm-approve-content__small-blue-text">
+                    View full transaction details
+                  </div>
+                  <i
+                    className={classnames({
+                      'fa fa-caret-up': showFullTxDetails,
+                      'fa fa-caret-down': !showFullTxDetails,
+                    })}
+                  />
                 </div>
-                <i className={classnames({
-                  'fa fa-caret-up': showFullTxDetails,
-                  'fa fa-caret-down': !showFullTxDetails,
-                })} />
               </div>
-            </div>,
+            ),
           })}
         </div>
 

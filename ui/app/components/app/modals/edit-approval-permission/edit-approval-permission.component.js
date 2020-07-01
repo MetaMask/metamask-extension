@@ -82,18 +82,22 @@ export default class EditApprovalPermission extends PureComponent {
               className="edit-approval-permission__edit-section__radio-button"
               onClick={() => this.setState({ selectedOptionIsUnlimited: true })}
             >
-              <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
-              })} />
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
+                })}
+              />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
               { selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
-              <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
-              })}>
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
+                })}
+              >
                 {
                   (new BigNumber(tokenAmount)).lessThan(new BigNumber(tokenBalance))
                     ? t('proposedApprovalLimit')
@@ -113,18 +117,22 @@ export default class EditApprovalPermission extends PureComponent {
               className="edit-approval-permission__edit-section__radio-button"
               onClick={() => this.setState({ selectedOptionIsUnlimited: false })}
             >
-              <div className={classnames({
-                'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
-              })} />
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
+                })}
+              />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
               { !selectedOptionIsUnlimited && <div className="edit-approval-permission__edit-section__radio-button-dot" />}
             </div>
             <div className="edit-approval-permission__edit-section__option-text">
-              <div className={classnames({
-                'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
-                'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
-              })}>
+              <div
+                className={classnames({
+                  'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
+                })}
+              >
                 { t('customSpendLimit') }
               </div>
               <div className="edit-approval-permission__edit-section__option-description" >

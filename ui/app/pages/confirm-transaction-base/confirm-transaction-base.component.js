@@ -5,7 +5,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
 import { isBalanceSufficient } from '../send/send.utils'
-import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
@@ -21,29 +21,18 @@ import TextField from '../../components/ui/text-field'
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    tOrKey: PropTypes.func.isRequired,
     metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
     // react-router props
-    match: PropTypes.object,
     history: PropTypes.object,
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
     cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
-    clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
-    editTransaction: PropTypes.func,
-    ethTransactionAmount: PropTypes.string,
-    ethTransactionFee: PropTypes.string,
-    ethTransactionTotal: PropTypes.string,
-    fiatTransactionAmount: PropTypes.string,
-    fiatTransactionFee: PropTypes.string,
-    fiatTransactionTotal: PropTypes.string,
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
@@ -107,6 +96,7 @@ export default class ConfirmTransactionBase extends Component {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   state = {
@@ -121,14 +111,22 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
+      mostRecentOverviewPage,
       nextNonce,
       customNonceValue,
+      toAddress,
+      tryReverseResolveAddress,
     } = this.props
-    const { transactionStatus: prevTxStatus } = prevProps
+    const {
+      customNonceValue: prevCustomNonceValue,
+      nextNonce: prevNextNonce,
+      toAddress: prevToAddress,
+      transactionStatus: prevTxStatus,
+    } = prevProps
     const statusUpdated = transactionStatus !== prevTxStatus
     const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
 
-    if (nextNonce !== prevProps.nextNonce || customNonceValue !== prevProps.customNonceValue) {
+    if (nextNonce !== prevNextNonce || customNonceValue !== prevCustomNonceValue) {
       if (customNonceValue > nextNonce) {
         this.setState({ submitWarning: this.context.t('nextNonceWarning', [nextNonce]) })
       } else {
@@ -140,11 +138,13 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         },
       })
+    }
 
-      return
+    if (toAddress && toAddress !== prevToAddress) {
+      tryReverseResolveAddress(toAddress)
     }
   }
 
@@ -255,15 +255,17 @@ export default class ConfirmTransactionBase extends Component {
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
             {advancedInlineGasShown
-              ? <AdvancedGasInputs
-                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
-                customGasPrice={customGas.gasPrice}
-                customGasLimit={customGas.gasLimit}
-                insufficientBalance={insufficientBalance}
-                customPriceIsSafe
-                isSpeedUp={false}
-              />
+              ? (
+                <AdvancedGasInputs
+                  updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                  updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                  customGasPrice={customGas.gasPrice}
+                  customGasLimit={customGas.gasLimit}
+                  insufficientBalance={insufficientBalance}
+                  customPriceIsSafe
+                  isSpeedUp={false}
+                />
+              )
               : null
             }
           </div>
@@ -278,37 +280,39 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
-          {useNonceField ? <div>
-            <div className="confirm-detail-row">
-              <div className="confirm-detail-row__label">
-                { this.context.t('nonceFieldHeading') }
-              </div>
-              <div className="custom-nonce-input">
-                <TextField
-                  type="number"
-                  min="0"
-                  placeholder={ nextNonce ? nextNonce.toString() : null }
-                  onChange={({ target: { value } }) => {
-                    if (!value.length || Number(value) < 0) {
-                      updateCustomNonce('')
-                    } else {
-                      updateCustomNonce(String(Math.floor(value)))
-                    }
-                    getNextNonce()
-                  }}
-                  fullWidth
-                  margin="dense"
-                  value={ customNonceValue || '' }
-                />
+          {useNonceField ? (
+            <div>
+              <div className="confirm-detail-row">
+                <div className="confirm-detail-row__label">
+                  { this.context.t('nonceFieldHeading') }
+                </div>
+                <div className="custom-nonce-input">
+                  <TextField
+                    type="number"
+                    min="0"
+                    placeholder={ typeof nextNonce === 'number' ? nextNonce.toString() : null }
+                    onChange={({ target: { value } }) => {
+                      if (!value.length || Number(value) < 0) {
+                        updateCustomNonce('')
+                      } else {
+                        updateCustomNonce(String(Math.floor(value)))
+                      }
+                      getNextNonce()
+                    }}
+                    fullWidth
+                    margin="dense"
+                    value={ customNonceValue || '' }
+                  />
+                </div>
               </div>
             </div>
-          </div> : null}
+          ) : null}
         </div>
       )
     )
   }
 
-  renderData () {
+  renderData (functionType) {
     const { t } = this.context
     const {
       txData: {
@@ -317,12 +321,10 @@ export default class ConfirmTransactionBase extends Component {
         } = {},
       } = {},
       methodData: {
-        name,
         params,
       } = {},
       hideData,
       dataComponent,
-      transactionCategory,
     } = this.props
 
     if (hideData) {
@@ -334,7 +336,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__data-box-label">
           {`${t('functionType')}:`}
           <span className="confirm-page-container-content__function-type">
-            { getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction') }
+            { functionType }
           </span>
         </div>
         {
@@ -383,6 +385,7 @@ export default class ConfirmTransactionBase extends Component {
       cancelAllTransactions,
       clearConfirmTransaction,
       history,
+      mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       unapprovedTxCount,
     } = this.props
@@ -393,7 +396,7 @@ export default class ConfirmTransactionBase extends Component {
         this._removeBeforeUnload()
         await cancelAllTransactions()
         clearConfirmTransaction()
-        history.push(DEFAULT_ROUTE)
+        history.push(mostRecentOverviewPage)
       },
     })
   }
@@ -405,6 +408,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       cancelTransaction,
       history,
+      mostRecentOverviewPage,
       clearConfirmTransaction,
       actionKey,
       txData: { origin },
@@ -432,7 +436,7 @@ export default class ConfirmTransactionBase extends Component {
       cancelTransaction(txData)
         .then(() => {
           clearConfirmTransaction()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         })
     }
   }
@@ -447,6 +451,7 @@ export default class ConfirmTransactionBase extends Component {
       history,
       onSubmit,
       actionKey,
+      mostRecentOverviewPage,
       metaMetricsSendCount = 0,
       setMetaMetricsSendCount,
       methodData = {},
@@ -493,11 +498,11 @@ export default class ConfirmTransactionBase extends Component {
                 this.setState({
                   submitting: false,
                 }, () => {
-                  history.push(DEFAULT_ROUTE)
+                  history.push(mostRecentOverviewPage)
                   updateCustomNonce('')
                 })
               })
-              .catch(error => {
+              .catch((error) => {
                 this.setState({
                   submitting: false,
                   submitError: error.message,
@@ -590,7 +595,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload)
     }
   }
@@ -609,12 +614,14 @@ export default class ConfirmTransactionBase extends Component {
       },
     })
 
-    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.addEventListener('beforeunload', this._beforeUnload)
     }
 
     getNextNonce()
-    tryReverseResolveAddress(toAddress)
+    if (toAddress) {
+      tryReverseResolveAddress(toAddress)
+    }
   }
 
   componentWillUnmount () {
@@ -622,6 +629,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   render () {
+    const { t } = this.context
     const {
       isTxReprice,
       fromName,
@@ -655,6 +663,16 @@ export default class ConfirmTransactionBase extends Component {
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
     const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
+
+    let functionType = getMethodName(name)
+    if (!functionType) {
+      if (transactionCategory) {
+        functionType = t(transactionCategory) || transactionCategory
+      } else {
+        functionType = t('contractInteraction')
+      }
+    }
+
     return (
       <ConfirmPageContainer
         fromName={fromName}
@@ -665,8 +683,7 @@ export default class ConfirmTransactionBase extends Component {
         toEns={toEns}
         toNickname={toNickname}
         showEdit={onEdit && !isTxReprice}
-        // In the event that the key is falsy (and inherently invalid), use a fallback string
-        action={getMethodName(name) || this.context.tOrKey(transactionCategory) || this.context.t('contractInteraction')}
+        action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
@@ -674,7 +691,7 @@ export default class ConfirmTransactionBase extends Component {
         hideSubtitle={hideSubtitle}
         summaryComponent={summaryComponent}
         detailsComponent={this.renderDetails()}
-        dataComponent={this.renderData()}
+        dataComponent={this.renderData(functionType)}
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}

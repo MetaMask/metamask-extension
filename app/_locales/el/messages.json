@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Η Λειτουργία Απορρήτου είναι πλέον ενεργοποιημένη από προεπιλογή"
-  },
   "chartOnlyAvailableEth": {
     "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
-  },
-  "confirmClear": {
-    "message": "Είστε βέβαιοι ότι θέλετε να διαγράψετε τους εγκεκριμένους ιστότοπους;"
   },
   "contractInteraction": {
     "message": "Αλληλεπίδραση Σύμβασης"
   },
-  "clearApprovalData": {
-    "message": "Εκκαθάριση Δεδομένων Απορρήτου"
-  },
   "reject": {
     "message": "Απόρριψη"
-  },
-  "providerRequest": {
-    "message": "Αίτημα σύνδεσης στον λογαριασμό σας από $1"
-  },
-  "providerRequestInfo": {
-    "message": "Ο ιστότοπος ζητά πρόσβαση για προβολή της τρέχουσας διεύθυνσης του λογαριασμού σας. Να σιγουρεύεστε πάντα ότι εμπιστεύεστε τους ιστότοπους με τους οποίους αλληλεπιδράτε."
   },
   "about": {
     "message": "Σχετικά με"
   },
   "aboutSettingsDescription": {
-    "message": "Έκδοση, κέντρο υποστήριξης και πληροφορίες επικοινωνίας."
+    "message": "Έκδοση, κέντρο υποστήριξης και πληροφορίες επικοινωνίας"
   },
   "acceleratingATransaction": {
     "message": "* Η επιτάχυνση μιας συναλλαγής με τη χρήση υψηλότερης τιμής καυσίμου αυξάνει τις πιθανότητές της για ταχύτερη επεξεργασία από το δίκτυο, αλλά δεν είναι πάντοτε εγγυημένη."
@@ -63,7 +48,7 @@
     "message": "Σύνθετες"
   },
   "advancedSettingsDescription": {
-    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC."
+    "message": "Αποκτήστε πρόσβαση στις λειτουργίες του προγραμματιστή, κατεβάστε Αρχεία Καταγραφών Καταστάσεων, Επαναφέρετε τον Λογαριασμό, εγκαταστήστε δοκιμαστικά δίκτυα και προσαρμοσμένα RPC"
   },
   "advancedOptions": {
     "message": "Σύνθετες Επιλογές"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Το υπόλοιπο μπορεί να μην είναι ενημερωμένο"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Ανεπαρκές υπόλοιπο για το τρέχον σύνολο καυσίμου"
-  },
   "basic": {
     "message": "Βασικά"
-  },
-  "betweenMinAndMax": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1 και μικρότερο ή ίσο με $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Εξερευνητής Μπλοκ"
@@ -216,9 +194,6 @@
   "chainId": {
     "message": "Αναγνωριστικό Αλυσίδας"
   },
-  "clickToAdd": {
-    "message": "Κάντε κλικ στο $1 για να τα προσθέσετε στον λογαριασμό σας"
-  },
   "clickToRevealSeed": {
     "message": "Κάντε κλικ εδώ για να αποκαλύψετε μυστικές λέξεις"
   },
@@ -248,9 +223,6 @@
   },
   "connect": {
     "message": "Σύνδεση"
-  },
-  "connectRequest": {
-    "message": "Αίτημα Σύνδεσης"
   },
   "connectingTo": {
     "message": "Σύνδεση με $1"
@@ -282,17 +254,8 @@
   "contractDeployment": {
     "message": "Ανάπτυξη Συμβολαίου"
   },
-  "conversionProgress": {
-    "message": "Μετατροπή σε εξέλιξη"
-  },
-  "copiedButton": {
-    "message": "Αντιγράφηκε"
-  },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
-  },
-  "copy": {
-    "message": "Αντιγραφή"
   },
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
@@ -305,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
-  },
-  "copyButton": {
-    "message": "Αντιγραφή"
   },
   "copyPrivateKey": {
     "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
@@ -371,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Αν έχετε ήδη κάποια Ether, ο πιο γρήγορος τρόπος για να πάρετε τα Ether στο νέο σας πορτοφόλι με άμεση κατάθεση."
-  },
-  "dismiss": {
-    "message": "Παράβλεψη"
   },
   "done": {
     "message": "Τέλος"
@@ -485,17 +442,11 @@
   "from": {
     "message": "Από "
   },
-  "fromShapeShift": {
-    "message": "Από το ShapeShift"
-  },
   "functionType": {
     "message": "Τύπος Λειτουργίας"
   },
   "gasLimit": {
     "message": "Όριο Καυσίμου"
-  },
-  "gasLimitCalculation": {
-    "message": "Υπολογίζουμε το προτεινόμενο όριο καυσίμου με βάση τα ποσοστά επιτυχίας του δικτύου."
   },
   "gasLimitInfoModalContent": {
     "message": "Το όριο αερίου είναι το μέγιστο ποσό μονάδων αερίου τι οποίες είστε διατεθειμένοι να δαπανήσετε."
@@ -518,9 +469,6 @@
   "gasPriceNoDenom": {
     "message": "Τιμή Gas"
   },
-  "gasPriceCalculation": {
-    "message": "Υπολογίζουμε τις προτεινόμενες τιμές αερίου με βάση τα ποσοστά επιτυχίας του δικτύου."
-  },
   "general": {
     "message": "Γενικά"
   },
@@ -539,10 +487,6 @@
   },
   "getStarted": {
     "message": "Έναρξη"
-  },
-  "greaterThanMin": {
-    "message": "πρέπει να είναι μεγαλύτερο ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Χαιρόμαστε που σας βλέπουμε."
@@ -571,9 +515,6 @@
   },
   "hide": {
     "message": "Απόκρυψη"
-  },
-  "hideToken": {
-    "message": "Απόκρυψη Token"
   },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του Token;"
@@ -662,10 +603,6 @@
   "ledgerAccountRestriction": {
     "message": "Πρέπει να χρησιμοποιήσετε τον τελευταίο σας λογαριασμό πριν προσθέσετε έναν νέο."
   },
-  "lessThanMax": {
-    "message": "πρέπει να είναι μικρότερο από ή ίσο με $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
@@ -690,10 +627,7 @@
   "localhost": {
     "message": "Τοπικός Υπολογιστής  8545"
   },
-  "login": {
-    "message": "Σύνδεση"
-  },
-  "logout": {
+  "lock": {
     "message": "Αποσύνδεση"
   },
   "mainnet": {
@@ -705,23 +639,14 @@
   "memo": {
     "message": "σημείωμα"
   },
-  "menu": {
-    "message": "Μενού"
-  },
   "message": {
     "message": "Μήνυμα"
   },
   "metamaskDescription": {
     "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
   },
-  "metamaskSeedWords": {
-    "message": "Λέξεις Φύτρου MetaMask"
-  },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
-  },
-  "missingYourTokens": {
-    "message": "Δεν βλέπετε τα διακριτικά σας;"
   },
   "mobileSyncText": {
     "message": "Παρακαλούμε δώστε τον κωδικό πρόσβασής σας για να επιβεβαιώσετε ότι είστε εσείς!"
@@ -818,9 +743,6 @@
   "noAddressForName": {
     "message": "Δεν έχει ορισθεί καμιά διεύθυνση γ' αυτό το όνομα."
   },
-  "noDeposits": {
-    "message": "Δεν λήφθηκε καμία κατάθεση"
-  },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
   },
@@ -867,9 +789,6 @@
     "message": "Επικολλήστε τη συμβολοσειρά ιδιωτικού κλειδιού εδώ:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Επικολλήστε τη φράση επαναφοράς σας εδώ!"
-  },
   "pending": {
     "message": "σε εκκρεμότητα"
   },
@@ -897,9 +816,6 @@
   },
   "privateNetwork": {
     "message": "Ιδιωτικό Δίκτυο"
-  },
-  "qrCode": {
-    "message": "Εμφάνιση κωδικού QR"
   },
   "queue": {
     "message": "Ουρά"
@@ -975,9 +891,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
-  },
-  "revert": {
-    "message": "Αναστροφή"
   },
   "remove": {
     "message": "Κατάργηση"
@@ -1183,9 +1096,6 @@
   "storePhrase": {
     "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."
   },
-  "submit": {
-    "message": "Υποβολή"
-  },
   "submitted": {
     "message": "Υποβλήθηκε"
   },
@@ -1196,7 +1106,7 @@
     "message": "Σύμβολο"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Το σύμβολο θα πρέπει να είναι μεταξύ 0 και 12 χαρακτήρες."
+    "message": "Το σύμβολο πρέπει να είναι τουλάχιστον 11 χαρακτήρες."
   },
   "syncWithMobile": {
     "message": "Συγχρονισμός με κινητό"
@@ -1230,10 +1140,6 @@
   },
   "to": {
     "message": "Προς"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 στο ETH μέσω ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Διακριτικό"
@@ -1349,9 +1255,6 @@
   },
   "userName": {
     "message": "Όνομα χρήστη"
-  },
-  "validFileImport": {
-    "message": "Πρέπει να επιλέξετε έναν έγκυρο φάκελο για εισαγωγή."
   },
   "viewAccount": {
     "message": "Προβολή λογαριασμού"

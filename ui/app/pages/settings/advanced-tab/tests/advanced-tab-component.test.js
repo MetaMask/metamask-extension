@@ -5,40 +5,54 @@ import { shallow } from 'enzyme'
 import AdvancedTab from '../advanced-tab.component'
 import TextField from '../../../../components/ui/text-field'
 
-describe('AdvancedTab Component', () => {
-  it('should render correctly when threeBoxFeatureFlag', () => {
-    const root = shallow(
-      <AdvancedTab />,
-      {
-        context: {
-          t: s => `_${s}`,
-        },
-      }
-    )
-
-    assert.equal(root.find('.settings-page__content-row').length, 9)
-  })
-
-  it('should update autoLogoutTimeLimit', () => {
-    const setAutoLogoutTimeLimitSpy = sinon.spy()
+describe('AdvancedTab Component', function () {
+  it('should render correctly when threeBoxFeatureFlag', function () {
     const root = shallow(
       <AdvancedTab
-        setAutoLogoutTimeLimit={setAutoLogoutTimeLimitSpy}
+        ipfsGateway=""
+        setAutoLockTimeLimit={() => {}}
+        setIpfsGateway={() => {}}
+        setShowFiatConversionOnTestnetsPreference={() => {}}
+        setThreeBoxSyncingPermission={() => {}}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
       />,
       {
         context: {
-          t: s => `_${s}`,
+          t: (s) => `_${s}`,
         },
       }
     )
 
-    const autoTimeout = root.find('.settings-page__content-row').at(7)
+    assert.equal(root.find('.settings-page__content-row').length, 11)
+  })
+
+  it('should update autoLockTimeLimit', function () {
+    const setAutoLockTimeLimitSpy = sinon.spy()
+    const root = shallow(
+      <AdvancedTab
+        ipfsGateway=""
+        setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
+        setIpfsGateway={() => {}}
+        setShowFiatConversionOnTestnetsPreference={() => {}}
+        setThreeBoxSyncingPermission={() => {}}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
+      />,
+      {
+        context: {
+          t: (s) => `_${s}`,
+        },
+      }
+    )
+
+    const autoTimeout = root.find('.settings-page__content-row').at(8)
     const textField = autoTimeout.find(TextField)
 
     textField.props().onChange({ target: { value: 1440 } })
-    assert.equal(root.state().autoLogoutTimeLimit, 1440)
+    assert.equal(root.state().autoLockTimeLimit, 1440)
 
     autoTimeout.find('.settings-tab__rpc-save-button').simulate('click')
-    assert.equal(setAutoLogoutTimeLimitSpy.args[0][0], 1440)
+    assert.equal(setAutoLockTimeLimitSpy.args[0][0], 1440)
   })
 })

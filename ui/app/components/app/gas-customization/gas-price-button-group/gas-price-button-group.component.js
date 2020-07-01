@@ -49,13 +49,15 @@ export default class GasPriceButtonGroup extends Component {
     className,
     showCheck,
   }) {
-    return (<div>
-      { gasEstimateType && <div className={`${className}__label`}>{ this.gasEstimateTypeLabel(gasEstimateType) }</div> }
-      { timeEstimate && <div className={`${className}__time-estimate`}>{ timeEstimate }</div> }
-      { feeInPrimaryCurrency && <div className={`${className}__primary-currency`}>{ feeInPrimaryCurrency }</div> }
-      { feeInSecondaryCurrency && <div className={`${className}__secondary-currency`}>{ feeInSecondaryCurrency }</div> }
-      { showCheck && <div className="button-check-wrapper"><i className="fa fa-check fa-sm" /></div> }
-    </div>)
+    return (
+      <div>
+        { gasEstimateType && <div className={`${className}__label`}>{ this.gasEstimateTypeLabel(gasEstimateType) }</div> }
+        { timeEstimate && <div className={`${className}__time-estimate`}>{ timeEstimate }</div> }
+        { feeInPrimaryCurrency && <div className={`${className}__primary-currency`}>{ feeInPrimaryCurrency }</div> }
+        { feeInSecondaryCurrency && <div className={`${className}__secondary-currency`}>{ feeInSecondaryCurrency }</div> }
+        { showCheck && <div className="button-check-wrapper"><i className="fa fa-check fa-sm" /></div> }
+      </div>
+    )
   }
 
   renderButton ({
@@ -88,14 +90,16 @@ export default class GasPriceButtonGroup extends Component {
 
     return (
       !buttonDataLoading
-        ? <ButtonGroup
-          className={buttonPropsAndFlags.className}
-          defaultActiveButtonIndex={defaultActiveButtonIndex}
-          newActiveButtonIndex={newActiveButtonIndex}
-          noButtonActiveByDefault={noButtonActiveByDefault}
-        >
-          { gasButtonInfo.map((obj, index) => this.renderButton(obj, buttonPropsAndFlags, index)) }
-        </ButtonGroup>
+        ? (
+          <ButtonGroup
+            className={buttonPropsAndFlags.className}
+            defaultActiveButtonIndex={defaultActiveButtonIndex}
+            newActiveButtonIndex={newActiveButtonIndex}
+            noButtonActiveByDefault={noButtonActiveByDefault}
+          >
+            { gasButtonInfo.map((obj, index) => this.renderButton(obj, buttonPropsAndFlags, index)) }
+          </ButtonGroup>
+        )
         : <div className={`${buttonPropsAndFlags.className}__loading-container`}>{ this.context.t('loading') }</div>
     )
   }

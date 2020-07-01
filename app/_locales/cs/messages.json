@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
-  },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "account": {
     "message": "Účet"
@@ -55,13 +46,6 @@
   "balance": {
     "message": "Zůstatek:"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
-  "betweenMinAndMax": {
-    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
   },
@@ -104,23 +88,11 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copy": {
-    "message": "Kopírovat"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -202,23 +174,14 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
   },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -227,19 +190,12 @@
     "message": "Získejte Ether z faucetu za $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "musí být větší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "Skrýt"
-  },
-  "hideToken": {
-    "message": "Skrýt token"
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
@@ -285,10 +241,6 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "lessThanMax": {
-    "message": "musí být menší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
@@ -301,10 +253,10 @@
   "loadingTokens": {
     "message": "Načítám tokeny..."
   },
-  "login": {
+  "unlock": {
     "message": "Přihlásit"
   },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "message": {
@@ -351,9 +303,6 @@
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
-  "noDeposits": {
-    "message": "Žádný vklad"
-  },
   "noTransactions": {
     "message": "Žádné transakce"
   },
@@ -366,9 +315,6 @@
   "pastePrivateKey": {
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
   },
   "personalAddressDetected": {
     "message": "Detekována osobní adresa. Zadejte adresu kontraktu tokenu."
@@ -385,9 +331,6 @@
   },
   "privateNetwork": {
     "message": "Soukromá síť"
-  },
-  "qrCode": {
-    "message": "Ukázat QR kód"
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
@@ -412,9 +355,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "save": {
     "message": "Uložit"
@@ -476,9 +416,6 @@
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."
   },
-  "submit": {
-    "message": "Odeslat"
-  },
   "submitted": {
     "message": "Odesláno"
   },
@@ -486,7 +423,7 @@
     "message": "Navštivte naše centrum podpory"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+    "message": "Symbol musí mít 11 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"
@@ -496,10 +433,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."
@@ -534,9 +467,6 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
-  },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
   },
   "viewAccount": {
     "message": "Zobrazit účet"

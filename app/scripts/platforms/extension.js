@@ -1,10 +1,9 @@
-const extension = require('extensionizer')
-const {createExplorerLink: explorerLink} = require('etherscan-link')
+import extension from 'extensionizer'
+import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
+import { getEnvironmentType, checkForError } from '../lib/util'
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 
-const {getEnvironmentType} = require('../lib/util')
-const {ENVIRONMENT_TYPE_BACKGROUND} = require('../lib/enums')
-
-class ExtensionPlatform {
+export default class ExtensionPlatform {
 
   //
   // Public
@@ -13,8 +12,64 @@ class ExtensionPlatform {
     extension.runtime.reload()
   }
 
-  openWindow ({ url }) {
-    extension.tabs.create({ url })
+  openTab (options) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.create(options, (newTab) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newTab)
+      })
+    })
+  }
+
+  openWindow (options) {
+    return new Promise((resolve, reject) => {
+      extension.windows.create(options, (newWindow) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(newWindow)
+      })
+    })
+  }
+
+  focusWindow (windowId) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { focused: true }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  updateWindowPosition (windowId, left, top) {
+    return new Promise((resolve, reject) => {
+      extension.windows.update(windowId, { left, top }, () => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve()
+      })
+    })
+  }
+
+  getLastFocusedWindow () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getLastFocused((windowObject) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windowObject)
+      })
+    })
   }
 
   closeCurrentWindow () {
@@ -37,7 +92,7 @@ class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`
     }
-    this.openWindow({ url: extensionURL })
+    this.openTab({ url: extensionURL })
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
       window.close()
     }
@@ -64,6 +119,69 @@ class ExtensionPlatform {
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
     }
+  }
+
+  getAllWindows () {
+    return new Promise((resolve, reject) => {
+      extension.windows.getAll((windows) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(windows)
+      })
+    })
+  }
+
+  getActiveTabs () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.query({ active: true }, (tabs) => {
+        const error = checkForError()
+        if (error) {
+          return reject(error)
+        }
+        return resolve(tabs)
+      })
+    })
+  }
+
+  currentTab () {
+    return new Promise((resolve, reject) => {
+      extension.tabs.getCurrent((tab) => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  switchToTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve(tab)
+        }
+      })
+    })
+  }
+
+  closeTab (tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.remove(tabId, () => {
+        const err = checkForError()
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
   }
 
   _showConfirmedTransaction (txMeta) {
@@ -109,5 +227,3 @@ class ExtensionPlatform {
     }
   }
 }
-
-module.exports = ExtensionPlatform

@@ -1,27 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ConfirmPageContainerNavigation = props => {
+const ConfirmPageContainerNavigation = (props) => {
   const { onNextTx, totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = props
 
   return (
-    <div className="confirm-page-container-navigation"
+    <div
+      className="confirm-page-container-navigation"
       style={{
         display: showNavigation ? 'flex' : 'none',
       }}
     >
-      <div className="confirm-page-container-navigation__container"
+      <div
+        className="confirm-page-container-navigation__container"
         style={{
           visibility: prevTxId ? 'initial' : 'hidden',
-        }}>
+        }}
+      >
         <div
           className="confirm-page-container-navigation__arrow"
-          onClick={() => onNextTx(firstTx)}>
+          data-testid="first-page"
+          onClick={() => onNextTx(firstTx)}
+        >
           <img src="/images/double-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
-          onClick={() => onNextTx(prevTxId)}>
+          data-testid="previous-page"
+          onClick={() => onNextTx(prevTxId)}
+        >
           <img src="/images/single-arrow.svg" />
         </div>
       </div>
@@ -37,15 +44,20 @@ const ConfirmPageContainerNavigation = props => {
         className="confirm-page-container-navigation__container"
         style={{
           visibility: nextTxId ? 'initial' : 'hidden',
-        }}>
+        }}
+      >
         <div
           className="confirm-page-container-navigation__arrow"
-          onClick={() => onNextTx(nextTxId)}>
+          data-testid="next-page"
+          onClick={() => onNextTx(nextTxId)}
+        >
           <img className="confirm-page-container-navigation__imageflip" src="/images/single-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
-          onClick={() => onNextTx(lastTx)}>
+          data-testid="last-page"
+          onClick={() => onNextTx(lastTx)}
+        >
           <img className="confirm-page-container-navigation__imageflip" src="/images/double-arrow.svg" />
         </div>
       </div>

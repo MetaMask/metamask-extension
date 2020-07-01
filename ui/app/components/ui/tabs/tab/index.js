@@ -1,2 +1,3 @@
 import Tab from './tab.component'
-module.exports = Tab
+
+export default Tab

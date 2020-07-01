@@ -68,7 +68,7 @@
     "tokens": [],
     "transactions": {},
     "incomingTransactions": {},
-    "selectedAddressTxList": [],
+    "currentNetworkTxList": [],
     "unapprovedMsgs": {},
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
@@ -98,7 +98,6 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [],
     "send": {
       "gasLimit": null,
       "gasPrice": null,
@@ -135,7 +134,6 @@
       "modalState": {},
       "previousModalState": {}
     },
-    "transForward": true,
     "isLoading": false,
     "warning": null,
     "scrollToBottom": false,
@@ -474,5 +472,11 @@
     ],
     "priceAndTimeEstimatesLastRetrieved": 1541527901281,
     "errors": {}
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  },
+  "history": {
+    "mostRecentOverviewPage": "/"
   }
 }

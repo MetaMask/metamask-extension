@@ -1,8 +1,9 @@
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ethUtil = require('ethereumjs-util')
-const { errors: rpcErrors } = require('eth-json-rpc-errors')
-const createId = require('./random-id')
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ethUtil from 'ethereumjs-util'
+import { ethErrors } from 'eth-json-rpc-errors'
+import createId from './random-id'
+import { MESSAGE_TYPE } from './enums'
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
@@ -22,7 +23,7 @@ const createId = require('./random-id')
  *
  */
 
-module.exports = class MessageManager extends EventEmitter {
+export default class MessageManager extends EventEmitter {
 
   /**
    * Controller in charge of managing - storing, adding, removing, updating - Messages.
@@ -47,7 +48,7 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * A getter for the number of 'unapproved' Messages in this.messages
    *
-   * @returns {number} The number of 'unapproved' Messages in this.messages
+   * @returns {number} - The number of 'unapproved' Messages in this.messages
    *
    */
   get unapprovedMsgCount () {
@@ -57,21 +58,23 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' Messages in this.messages
    *
-   * @returns {Object} An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
+   * @returns {Object} - An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
    *
    */
   getUnapprovedMsgs () {
-    return this.messages.filter(msg => msg.status === 'unapproved')
-      .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+    return this.messages.filter((msg) => msg.status === 'unapproved')
+      .reduce((result, msg) => {
+        result[msg.id] = msg; return result
+      }, {})
   }
 
   /**
    * Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object possibly containing the origin
-   * @returns {promise} after signature has been
+   * @returns {promise} - after signature has been
    *
    */
   addUnapprovedMessageAsync (msgParams, req) {
@@ -83,7 +86,7 @@ module.exports = class MessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(rpcErrors.eth.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
           default:
             return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
@@ -95,24 +98,26 @@ module.exports = class MessageManager extends EventEmitter {
    * Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
-   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
    * @param {Object} req (optional) The original request object where the origin may be specificied
-   * @returns {number} The id of the newly created message.
+   * @returns {number} - The id of the newly created message.
    *
    */
   addUnapprovedMessage (msgParams, req) {
     // add origin from request
-    if (req) msgParams.origin = req.origin
+    if (req) {
+      msgParams.origin = req.origin
+    }
     msgParams.data = normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
+    const time = (new Date()).getTime()
+    const msgId = createId()
+    const msgData = {
       id: msgId,
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_sign',
+      type: MESSAGE_TYPE.ETH_SIGN,
     }
     this.addMsg(msgData)
 
@@ -125,7 +130,7 @@ module.exports = class MessageManager extends EventEmitter {
    * Adds a passed Message to this.messages, and calls this._saveMsgList() to save the unapproved Messages from that
    * list to this.memStore.
    *
-   * @param {Message} msg The Message to add to this.messages
+   * @param {Message} msg - The Message to add to this.messages
    *
    */
   addMsg (msg) {
@@ -136,21 +141,21 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * Returns a specified Message.
    *
-   * @param {number} msgId The id of the Message to get
-   * @returns {Message|undefined} The Message with the id that matches the passed msgId, or undefined if no Message has that id.
+   * @param {number} msgId - The id of the Message to get
+   * @returns {Message|undefined} - The Message with the id that matches the passed msgId, or undefined if no Message has that id.
    *
    */
   getMsg (msgId) {
-    return this.messages.find(msg => msg.id === msgId)
+    return this.messages.find((msg) => msg.id === msgId)
   }
 
   /**
    * Approves a Message. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise with
    * any the message params modified for proper signing.
    *
-   * @param {Object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
    * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
-   * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
+   * @returns {Promise<object>} - Promises the msgParams object with metamaskId removed.
    *
    */
   approveMessage (msgParams) {
@@ -161,7 +166,7 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * Sets a Message status to 'approved' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the Message to approve.
+   * @param {number} msgId - The id of the Message to approve.
    *
    */
   setMsgStatusApproved (msgId) {
@@ -172,8 +177,8 @@ module.exports = class MessageManager extends EventEmitter {
    * Sets a Message status to 'signed' via a call to this._setMsgStatus and updates that Message in this.messages by
    * adding the raw signature data of the signature request to the Message
    *
-   * @param {number} msgId The id of the Message to sign.
-   * @param {buffer} rawSig The raw data of the signature request
+   * @param {number} msgId - The id of the Message to sign.
+   * @param {buffer} rawSig - The raw data of the signature request
    *
    */
   setMsgStatusSigned (msgId, rawSig) {
@@ -186,8 +191,8 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams The msgParams to modify
-   * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
+   * @param {Object} msgParams - The msgParams to modify
+   * @returns {Promise<object>} - Promises the msgParams with the metamaskId property removed
    *
    */
   prepMsgForSigning (msgParams) {
@@ -198,7 +203,7 @@ module.exports = class MessageManager extends EventEmitter {
   /**
    * Sets a Message status to 'rejected' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the Message to reject.
+   * @param {number} msgId - The id of the Message to reject.
    *
    */
   rejectMsg (msgId) {
@@ -209,8 +214,8 @@ module.exports = class MessageManager extends EventEmitter {
    * Updates the status of a Message in this.messages via a call to this._updateMsg
    *
    * @private
-   * @param {number} msgId The id of the Message to update.
-   * @param {string} status The new status of the Message.
+   * @param {number} msgId - The id of the Message to update.
+   * @param {string} status - The new status of the Message.
    * @throws A 'MessageManager - Message not found for id: "${msgId}".' if there is no Message in this.messages with an
    * id equal to the passed msgId
    * @fires An event with a name equal to `${msgId}:${status}`. The Message is also fired.
@@ -219,7 +224,9 @@ module.exports = class MessageManager extends EventEmitter {
    */
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    if (!msg) {
+      throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    }
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
@@ -233,7 +240,7 @@ module.exports = class MessageManager extends EventEmitter {
    * storage via this._saveMsgList
    *
    * @private
-   * @param {msg} Message A Message that will replace an existing Message (with the same id) in this.messages
+   * @param {msg} Message - A Message that will replace an existing Message (with the same id) in this.messages
    *
    */
   _updateMsg (msg) {
@@ -263,8 +270,8 @@ module.exports = class MessageManager extends EventEmitter {
 /**
  * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
  *
- * @param {any} data The buffer data to convert to a hex
- * @returns {string} A hex string conversion of the buffer data
+ * @param {any} data - The buffer data to convert to a hex
+ * @returns {string} - A hex string conversion of the buffer data
  *
  */
 function normalizeMsgData (data) {

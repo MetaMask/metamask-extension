@@ -26,11 +26,11 @@ temp
 .DS_Store
 app/.DS_Store
 
+.out/
 coverage/
 dist
 builds/
 builds.zip
-docs/jsdocs
 
 development/bundle.js
 development/states.js
@@ -49,3 +49,5 @@ notes.txt
 
 .coveralls.yml
 .nyc_output
+
+.metamaskrc

@@ -1,59 +1,70 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const metamaskLogo = require('metamask-logo')
-const debounce = require('debounce')
+import PropTypes from 'prop-types'
+import React, { createRef, Component } from 'react'
+import metamaskLogo from 'metamask-logo'
+import { debounce } from 'lodash'
 
-module.exports = Mascot
+export default class Mascot extends Component {
+  static propTypes = {
+    animationEventEmitter: PropTypes.object.isRequired,
+    width: PropTypes.string,
+    height: PropTypes.string,
+  }
 
-inherits(Mascot, Component)
-function Mascot ({width = '200', height = '200'}) {
-  Component.call(this)
-  this.logo = metamaskLogo({
-    followMouse: true,
-    pxNotRatio: true,
-    width,
-    height,
-  })
+  constructor (props) {
+    super(props)
 
-  this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
-  this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
-}
+    const { width = '200', height = '200' } = props
 
-Mascot.prototype.render = function () {
-  // this is a bit hacky
-  // the event emitter is on `this.props`
-  // and we dont get that until render
-  this.handleAnimationEvents()
+    this.logo = metamaskLogo({
+      followMouse: true,
+      pxNotRatio: true,
+      width,
+      height,
+    })
 
-  return h('#metamask-mascot-container', {
-    style: { zIndex: 0 },
-  })
-}
+    this.mascotContainer = createRef()
 
-Mascot.prototype.componentDidMount = function () {
-  var targetDivId = 'metamask-mascot-container'
-  var container = document.getElementById(targetDivId)
-  container.appendChild(this.logo.container)
-}
+    this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
+    this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
+  }
 
-Mascot.prototype.componentWillUnmount = function () {
-  this.animations = this.props.animationEventEmitter
-  this.animations.removeAllListeners()
-  this.logo.container.remove()
-  this.logo.stopAnimation()
-}
+  handleAnimationEvents () {
+    // only setup listeners once
+    if (this.animations) {
+      return
+    }
+    this.animations = this.props.animationEventEmitter
+    this.animations.on('point', this.lookAt.bind(this))
+    this.animations.on('setFollowMouse', this.logo.setFollowMouse.bind(this.logo))
+  }
 
-Mascot.prototype.handleAnimationEvents = function () {
-  // only setup listeners once
-  if (this.animations) return
-  this.animations = this.props.animationEventEmitter
-  this.animations.on('point', this.lookAt.bind(this))
-  this.animations.on('setFollowMouse', this.logo.setFollowMouse.bind(this.logo))
-}
+  lookAt (target) {
+    this.unfollowMouse()
+    this.logo.lookAt(target)
+    this.refollowMouse()
+  }
 
-Mascot.prototype.lookAt = function (target) {
-  this.unfollowMouse()
-  this.logo.lookAt(target)
-  this.refollowMouse()
+  componentDidMount () {
+    this.mascotContainer.current.appendChild(this.logo.container)
+  }
+
+  componentWillUnmount () {
+    this.animations = this.props.animationEventEmitter
+    this.animations.removeAllListeners()
+    this.logo.container.remove()
+    this.logo.stopAnimation()
+  }
+
+  render () {
+    // this is a bit hacky
+    // the event emitter is on `this.props`
+    // and we dont get that until render
+    this.handleAnimationEvents()
+    return (
+      <div
+        ref={this.mascotContainer}
+        style={{ zIndex: 0 }}
+      />
+    )
+  }
 }

@@ -1,7 +1,9 @@
-const log = require('loglevel')
-const util = require('./util')
-const BigNumber = require('bignumber.js')
+import log from 'loglevel'
+import * as util from './util'
+import BigNumber from 'bignumber.js'
 import contractMap from 'eth-contract-metadata'
+import { conversionUtil, multiplyCurrencies } from './conversion-util'
+import { formatCurrency } from './confirm-tx.util'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -134,11 +136,49 @@ export function calcTokenValue (value, decimals) {
 }
 
 export function getTokenValue (tokenParams = []) {
-  const valueData = tokenParams.find(param => param.name === '_value')
+  const valueData = tokenParams.find((param) => param.name === '_value')
   return valueData && valueData.value
 }
 
 export function getTokenToAddress (tokenParams = []) {
-  const toAddressData = tokenParams.find(param => param.name === '_to')
+  const toAddressData = tokenParams.find((param) => param.name === '_to')
   return toAddressData ? toAddressData.value : tokenParams[0].value
+}
+
+/**
+ * Get the token balance converted to fiat and formatted for display
+ *
+ * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
+ * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
+ * @param {string} [tokenAmount] - The current token balance
+ * @param {string} [tokenSymbol] - The token symbol
+ * @returns {string|undefined} The formatted token amount in the user's chosen fiat currency
+ */
+export function getFormattedTokenFiatAmount (
+  contractExchangeRate,
+  conversionRate,
+  currentCurrency,
+  tokenAmount,
+  tokenSymbol
+) {
+  // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
+  // is currently unknown, the fiat amount cannot be calculated so it is not
+  // shown to the user
+  if (conversionRate <= 0 || !contractExchangeRate || tokenAmount === undefined) {
+    return undefined
+  }
+
+  const currentTokenToFiatRate = multiplyCurrencies(
+    contractExchangeRate,
+    conversionRate
+  )
+  const currentTokenInFiat = conversionUtil(tokenAmount, {
+    fromNumericBase: 'dec',
+    fromCurrency: tokenSymbol,
+    toCurrency: currentCurrency.toUpperCase(),
+    numberOfDecimals: 2,
+    conversionRate: currentTokenToFiatRate,
+  })
+  return `${formatCurrency(currentTokenInFiat, currentCurrency)} ${currentCurrency.toUpperCase()}`
 }

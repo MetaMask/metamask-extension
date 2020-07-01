@@ -1,2 +1,3 @@
 import UnlockPage from './unlock-page.container'
-module.exports = UnlockPage
+
+export default UnlockPage

@@ -1,29 +1,26 @@
-const assert = require('assert')
-const path = require('path')
+import assert from 'assert'
+import wallet1 from '../../lib/migrations/001.json'
+import vault4 from '../../lib/migrations/004.json'
+import migration2 from '../../../app/scripts/migrations/002'
+import migration3 from '../../../app/scripts/migrations/003'
+import migration4 from '../../../app/scripts/migrations/004'
+import migration5 from '../../../app/scripts/migrations/005'
+import migration6 from '../../../app/scripts/migrations/006'
+import migration7 from '../../../app/scripts/migrations/007'
+import migration8 from '../../../app/scripts/migrations/008'
+import migration9 from '../../../app/scripts/migrations/009'
+import migration10 from '../../../app/scripts/migrations/010'
+import migration11 from '../../../app/scripts/migrations/011'
+import migration12 from '../../../app/scripts/migrations/012'
+import migration13 from '../../../app/scripts/migrations/013'
 
-const wallet1 = require(path.join('..', '..', 'lib', 'migrations', '001.json'))
-const vault4 = require(path.join('..', '..', 'lib', 'migrations', '004.json'))
 let vault5, vault6, vault7, vault8, vault9 // vault10, vault11
-
-const migration2 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '002'))
-const migration3 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '003'))
-const migration4 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '004'))
-const migration5 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '005'))
-const migration6 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '006'))
-const migration7 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '007'))
-const migration8 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '008'))
-const migration9 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '009'))
-const migration10 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '010'))
-const migration11 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '011'))
-const migration12 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '012'))
-const migration13 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '013'))
-
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
 const newTestRpc = 'https://testrpc.metamask.io/'
 
-describe('wallet1 is migrated successfully', () => {
-  it('should convert providers', () => {
+describe('wallet1 is migrated successfully', function () {
+  it('should convert providers', function () {
     wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
 
     return migration2.migrate(wallet1)

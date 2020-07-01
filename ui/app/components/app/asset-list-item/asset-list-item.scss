@@ -1,0 +1,44 @@
+.asset-list-item {
+  &__chevron-right {
+    color: $Grey-500;
+  }
+
+  .list-item__right-content {
+    align-self: center;
+  }
+
+  .list-item__subheading {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  &__warning {
+    flex: 1;
+    margin-left: 8px;
+  }
+
+  &__send-token-button {
+    display: none;
+    text-transform: uppercase;
+    width: fit-content;
+    font-size: 14px;
+  }
+
+  @media (min-width: 576px) {
+    &__warning-tooltip {
+      display: none;
+    }
+
+    .list-item__mid-content {
+      display: flex;
+    }
+
+    &__send-token-button {
+      display: inline-block;
+    }
+
+    &__chevron-right {
+      display: none;
+    }
+  }
+}

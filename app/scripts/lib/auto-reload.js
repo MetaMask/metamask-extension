@@ -1,19 +1,20 @@
-module.exports = setupDappAutoReload
 
-function setupDappAutoReload (web3, observable) {
+// TODO:deprecate:2020
+
+export default function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
   let lastSeenNetwork
   let hasBeenWarned = false
 
-  global.web3 = new Proxy(web3, {
+  const web3Proxy = new Proxy(web3, {
     get: (_web3, key) => {
       // get the time of use
       lastTimeUsed = Date.now()
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider\nhttps://medium.com/metamask/4a899ad6e59e')
+        console.warn(`MetaMask: We will stop injecting web3 in Q4 2020.\nPlease see this article for more information: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
         hasBeenWarned = true
       }
       // return value normally
@@ -25,13 +26,24 @@ function setupDappAutoReload (web3, observable) {
     },
   })
 
+  Object.defineProperty(global, 'web3', {
+    enumerable: false,
+    writable: true,
+    configurable: true,
+    value: web3Proxy,
+  })
+
   observable.subscribe(function (state) {
     // if the auto refresh on network change is false do not
     // do anything
-    if (!window.ethereum.autoRefreshOnNetworkChange) return
+    if (!window.ethereum.autoRefreshOnNetworkChange) {
+      return
+    }
 
     // if reload in progress, no need to check reload logic
-    if (reloadInProgress) return
+    if (reloadInProgress) {
+      return
+    }
 
     const currentNetwork = state.networkVersion
 
@@ -42,10 +54,14 @@ function setupDappAutoReload (web3, observable) {
     }
 
     // skip reload logic if web3 not used
-    if (!lastTimeUsed) return
+    if (!lastTimeUsed) {
+      return
+    }
 
     // if network did not change, exit
-    if (currentNetwork === lastSeenNetwork) return
+    if (currentNetwork === lastSeenNetwork) {
+      return
+    }
 
     // initiate page reload
     reloadInProgress = true

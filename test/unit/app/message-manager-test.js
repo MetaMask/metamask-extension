@@ -1,5 +1,5 @@
-const assert = require('assert')
-const MessageManager = require('../../../app/scripts/lib/message-manager')
+import assert from 'assert'
+import MessageManager from '../../../app/scripts/lib/message-manager'
 
 describe('Message Manager', function () {
   let messageManager
@@ -10,7 +10,7 @@ describe('Message Manager', function () {
 
   describe('#getMsgList', function () {
     it('when new should return empty array', function () {
-      var result = messageManager.messages
+      const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
@@ -21,9 +21,9 @@ describe('Message Manager', function () {
 
   describe('#addMsg', function () {
     it('adds a Msg returned in getMsgList', function () {
-      var Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
+      const Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
-      var result = messageManager.messages
+      const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].id, 1)
@@ -32,10 +32,10 @@ describe('Message Manager', function () {
 
   describe('#setMsgStatusApproved', function () {
     it('sets the Msg status to approved', function () {
-      var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.setMsgStatusApproved(1)
-      var result = messageManager.messages
+      const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'approved')
@@ -44,10 +44,10 @@ describe('Message Manager', function () {
 
   describe('#rejectMsg', function () {
     it('sets the Msg status to rejected', function () {
-      var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      const Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.rejectMsg(1)
-      var result = messageManager.messages
+      const result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'rejected')
@@ -59,7 +59,7 @@ describe('Message Manager', function () {
       messageManager.addMsg({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' })
       messageManager.addMsg({ id: '2', status: 'approved', metamaskNetworkId: 'unit test' })
       messageManager._updateMsg({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: 'unit test' })
-      var result = messageManager.getMsg('1')
+      const result = messageManager.getMsg('1')
       assert.equal(result.hash, 'foo')
     })
   })

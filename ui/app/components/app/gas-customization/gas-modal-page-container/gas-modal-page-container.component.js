@@ -12,13 +12,10 @@ export default class GasModalPageContainer extends Component {
   }
 
   static propTypes = {
-    hideModal: PropTypes.func,
     hideBasic: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
     currentTimeEstimate: PropTypes.string,
-    customGasPrice: PropTypes.number,
-    customGasLimit: PropTypes.number,
     insufficientBalance: PropTypes.bool,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
@@ -30,12 +27,13 @@ export default class GasModalPageContainer extends Component {
       originalTotalEth: PropTypes.string,
       newTotalFiat: PropTypes.string,
       newTotalEth: PropTypes.string,
+      sendAmount: PropTypes.string,
+      transactionFee: PropTypes.string,
     }),
     onSubmit: PropTypes.func,
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
-    transactionFee: PropTypes.string,
     blockTime: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
@@ -53,10 +51,10 @@ export default class GasModalPageContainer extends Component {
     const promise = this.props.hideBasic
       ? Promise.resolve(this.props.blockTime)
       : this.props.fetchBasicGasAndTimeEstimates()
-        .then(basicEstimates => basicEstimates.blockTime)
+        .then((basicEstimates) => basicEstimates.blockTime)
 
     promise
-      .then(blockTime => {
+      .then((blockTime) => {
         this.props.fetchGasEstimates(blockTime)
       })
   }
@@ -160,13 +158,14 @@ export default class GasModalPageContainer extends Component {
 
     return (
       <Tabs>
-        {tabsToRender.map(({ name, content }, i) => <Tab name={name} key={`gas-modal-tab-${i}`}>
-          <div className="gas-modal-content">
-            { content }
-            { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
-          </div>
-        </Tab>
-        )}
+        {tabsToRender.map(({ name, content }, i) => (
+          <Tab name={name} key={`gas-modal-tab-${i}`}>
+            <div className="gas-modal-content">
+              { content }
+              { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
+            </div>
+          </Tab>
+        ))}
       </Tabs>
     )
   }

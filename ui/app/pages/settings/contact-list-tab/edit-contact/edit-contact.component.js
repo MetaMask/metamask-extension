@@ -45,12 +45,12 @@ export default class EditContact extends PureComponent {
     return (
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
-          <Identicon address={address} diameter={60}/>
+          <Identicon address={address} diameter={60} />
           <Button
             type="link"
             className="settings-page__address-book-button"
-            onClick={() => {
-              removeFromAddressBook(chainId, address)
+            onClick={async () => {
+              await removeFromAddressBook(chainId, address)
               history.push(listRoute)
             }}
           >
@@ -67,7 +67,7 @@ export default class EditContact extends PureComponent {
               id="nickname"
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={e => this.setState({ newName: e.target.value })}
+              onChange={(e) => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -82,7 +82,7 @@ export default class EditContact extends PureComponent {
               id="address"
               value={this.state.newAddress}
               error={this.state.error}
-              onChange={e => this.setState({ newAddress: e.target.value })}
+              onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
               margin="dense"
             />
@@ -97,7 +97,7 @@ export default class EditContact extends PureComponent {
               id="memo"
               placeholder={memo}
               value={this.state.newMemo}
-              onChange={e => this.setState({ newMemo: e.target.value })}
+              onChange={(e) => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"
               multiline
@@ -111,12 +111,12 @@ export default class EditContact extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          onSubmit={() => {
+          onSubmit={async () => {
             if (this.state.newAddress !== '' && this.state.newAddress !== address) {
               // if the user makes a valid change to the address field, remove the original address
               if (isValidAddress(this.state.newAddress)) {
-                removeFromAddressBook(chainId, address)
-                addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
+                await removeFromAddressBook(chainId, address)
+                await addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
                 setAccountLabel(this.state.newAddress, this.state.newName || name)
                 history.push(listRoute)
               } else {
@@ -124,7 +124,7 @@ export default class EditContact extends PureComponent {
               }
             } else {
               // update name
-              addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
+              await addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
               setAccountLabel(address, this.state.newName || name)
               history.push(listRoute)
             }

@@ -10,7 +10,7 @@ import {
   conversionGreaterThan,
 } from './conversion-util'
 
-import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+import { unconfirmedTransactionsCountSelector } from '../../selectors'
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
@@ -94,7 +94,7 @@ export function getTransactionFee ({
 export function formatCurrency (value, currencyCode) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase()
 
-  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+  return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode, style: 'currency' })
     : value
 }

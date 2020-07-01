@@ -1,27 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "وضعیت محرمیت حالا بصورت خودکار فعال است"
-  },
   "chartOnlyAvailableEth": {
     "message": "تنها قابل دسترس را در شبکه های ایتریوم جدول بندی نمایید"
-  },
-  "confirmClear": {
-    "message": "آیا مطمئن هستید تا وب سایت های تصدیق شده را حذف کنید؟"
   },
   "contractInteraction": {
     "message": "تعامل قرارداد"
   },
-  "clearApprovalData": {
-    "message": "حذف اطلاعات حریم خصوصی"
-  },
   "reject": {
     "message": "عدم پذیرش"
-  },
-  "providerRequest": {
-    "message": "1$1 میخواهید تا با حساب تان وصل شوید"
-  },
-  "providerRequestInfo": {
-    "message": "این سایت در حال درخواست دسترسی است تا آدرس فعلی حساب تان را مشاهده نماید. همیشه متوجه باشید که بالای سایتی که با آن معامله میکنید، اعتماد دارید یا خیر."
   },
   "about": {
     "message": "درباره"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "مواصفات"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "صورت حساب ممکن انقضاء شده باشد"
   },
-  "balanceIsInsufficientGas": {
-    "message": "بیلانس ناکافی برای مجموع گاز فعلی"
-  },
   "basic": {
     "message": "پایه"
-  },
-  "betweenMinAndMax": {
-    "message": "باید بزرگتر از یا مساوی به 1$1 و کوچکتر یا مساوی به 2$2 باشد.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "بلاک کردن براوزر"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "آی دی زنجیره"
   },
-  "clickToAdd": {
-    "message": "بالای 1$1 کلیک نموده و آنرا به حساب تان اضافه نمایید"
-  },
   "clickToRevealSeed": {
     "message": "برای آشکار سازی کلمات مخفی اینجا کلیک نمایید"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "اتصال"
-  },
-  "connectRequest": {
-    "message": "درخواست اتصال"
   },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "تطبیق قرارداد"
   },
-  "conversionProgress": {
-    "message": "تبادل در حال اجراء"
-  },
-  "copiedButton": {
-    "message": "کاپی شد"
-  },
   "copiedExclamation": {
     "message": "کپی شد!"
-  },
-  "copy": {
-    "message": "کپی"
   },
   "copyAddress": {
     "message": "کاپی آدرس به کلیپ بورد"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "کپی در بریده‌دان"
-  },
-  "copyButton": {
-    "message": "کاپی"
   },
   "copyPrivateKey": {
     "message": "این کلید خصوصی شما است (برای کاپی نمودن کلیک کنید)"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
-  },
-  "dismiss": {
-    "message": "لغو کردن"
   },
   "done": {
     "message": "تمام"
@@ -488,17 +445,11 @@
   "from": {
     "message": "از"
   },
-  "fromShapeShift": {
-    "message": "از ShapeShift"
-  },
   "functionType": {
     "message": "نوعیت عملکرد"
   },
   "gasLimit": {
     "message": "محدوده گاز"
-  },
-  "gasLimitCalculation": {
-    "message": "ما محدوده پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
   },
   "gasLimitInfoModalContent": {
     "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
@@ -521,9 +472,6 @@
   "gasPriceNoDenom": {
     "message": "قیمت گاز"
   },
-  "gasPriceCalculation": {
-    "message": "ما قیمت های پیشنهادی گاز را مبتنی بر نرخ های موفقیت شبکه محاسبه مینماییم."
-  },
   "general": {
     "message": "عمومی"
   },
@@ -542,10 +490,6 @@
   },
   "getStarted": {
     "message": "شروع به کار"
-  },
-  "greaterThanMin": {
-    "message": "باید بزرگتر از یا مساوی به 1$1 باشد.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "از دیدن شما خوشحال هستیم."
@@ -574,9 +518,6 @@
   },
   "hide": {
     "message": "عدم نمایش"
-  },
-  "hideToken": {
-    "message": "مخفی سازی رمزیاب"
   },
   "hideTokenPrompt": {
     "message": "آیا رمزیاب مخفی شود؟"
@@ -665,10 +606,6 @@
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
   },
-  "lessThanMax": {
-    "message": "باید کوچکتر از 1$1 یا مساوی با آن باشد.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
   },
@@ -693,10 +630,7 @@
   "localhost": {
     "message": "Localhost 8545 "
   },
-  "login": {
-    "message": "ورود"
-  },
-  "logout": {
+  "lock": {
     "message": "خروج"
   },
   "mainnet": {
@@ -708,23 +642,14 @@
   "memo": {
     "message": "یادداشت"
   },
-  "menu": {
-    "message": "مینو"
-  },
   "message": {
     "message": "پیام"
   },
   "metamaskDescription": {
     "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
   },
-  "metamaskSeedWords": {
-    "message": "کلمات بازیاب MetaMask"
-  },
   "metamaskVersion": {
     "message": "نسخه MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "آیا رمزیاب های تان را نمیبیند؟"
   },
   "mobileSyncText": {
     "message": "لطفًا رمز عبور را وارد نمایید تا تأیید شود که خود شما هستید!"
@@ -821,9 +746,6 @@
   "noAddressForName": {
     "message": "هیچ آدرسی برای این نام تنظیم نشده است."
   },
-  "noDeposits": {
-    "message": "هیچ پرداختی دریافت نشده است"
-  },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
   },
@@ -870,9 +792,6 @@
     "message": "زنجیره کلید شخصی را در اینجا کاپی کنید:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "عبارت بازیاب تان را اینجا بگذارید!"
-  },
   "pending": {
     "message": "در حال تعلیق"
   },
@@ -900,9 +819,6 @@
   },
   "privateNetwork": {
     "message": "شبکه شخصی"
-  },
-  "qrCode": {
-    "message": "نمایش کد QR"
   },
   "queue": {
     "message": "صف"
@@ -978,9 +894,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
-  },
-  "revert": {
-    "message": "برگشت"
   },
   "remove": {
     "message": "پاک کردن"
@@ -1186,9 +1099,6 @@
   "storePhrase": {
     "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."
   },
-  "submit": {
-    "message": "ارائه"
-  },
   "submitted": {
     "message": "ارائه شد"
   },
@@ -1199,7 +1109,7 @@
     "message": "سمبول"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "سمبول باید بین 0 و 12 حرف باشد"
+    "message": "نماد باید 11 کاراکتر یا کمتر باشد."
   },
   "syncWithMobile": {
     "message": "همگام سازی با موبایل"
@@ -1236,10 +1146,6 @@
   },
   "to": {
     "message": "به"
-  },
-  "toETHviaShapeShift": {
-    "message": "1$1 به ETH توسط ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "رمزیاب"
@@ -1355,9 +1261,6 @@
   },
   "userName": {
     "message": "نام کاربری"
-  },
-  "validFileImport": {
-    "message": "شما باید یک فایل معتبر را جهت وارد سازی انتخاب کنید."
   },
   "viewAccount": {
     "message": "مشاهده حساب"

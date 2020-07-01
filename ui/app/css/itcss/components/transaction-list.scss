@@ -18,10 +18,6 @@
   .tx-list-header-wrapper {
     margin-top: .2em;
     margin-bottom: .6em;
-    // TODO: Resolve Layout Conflicst in Wallet View
-    //  - This fixes txlist "transactions" title dispay
-    // margin-top: 0.2em;
-    // margin-bottom: 0.6em;
     justify-content: center;
     flex: 0 0 auto;
   }
@@ -74,14 +70,6 @@
 
   @media screen and (min-width: $break-large) {
     padding-bottom: 8px;
-  }
-}
-
-.tx-list-clickable {
-  cursor: pointer;
-
-  &:hover {
-    background: rgba($alto, .2);
   }
 }
 
@@ -247,10 +235,6 @@
   flex: 0 0 auto;
   display: flex;
   flex-flow: row nowrap;
-
-  @media screen and (max-width: $break-small) {
-    // margin: 0 1.3em .95em; !important
-  }
 
   @media screen and (min-width: $break-large) {
     padding: 0 2.37em;

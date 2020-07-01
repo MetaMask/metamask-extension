@@ -1,149 +1,57 @@
 .transaction-list-item {
-  box-sizing: border-box;
-  min-height: 74px;
-  border-bottom: 1px solid $Grey-100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background: $white;
+  &__primary-currency {
+    color: $Black-100;
+  }
 
-  &__grid {
-    cursor: pointer;
-    width: 100%;
-    padding: 16px 20px;
-    display: grid;
-    grid-template-columns: 45px 1fr 1fr 1fr 1fr;
-    grid-template-areas:
-      "identicon action status estimated-time primary-amount"
-      "identicon nonce status estimated-time secondary-amount";
-    grid-template-rows: 24px;
+  &__secondary-currency {
+    font-size: 12px;
+    margin-top: 4px;
+    color: $Grey-500;
+  }
 
-    @media screen and (max-width: $break-small) {
-      padding: .5rem 1rem;
-      grid-template-columns: 45px 5fr 3fr;
-      grid-template-areas:
-        "nonce nonce nonce nonce"
-        "identicon action estimated-time primary-amount"
-        "identicon status estimated-time secondary-amount";
-      grid-template-rows: auto 24px;
+  &--unconfirmed {
+    color: $Grey-500;
+  }
+
+  &--unconfirmed &__primary-currency {
+    color: $Grey-500;
+  }
+
+  &__pending-actions {
+    padding-top: 12px;
+    display: flex;
+    .button {
+      font-size: 0.625rem;
+      padding: 8px;
+      width: 75px;
+      white-space: nowrap;
+      line-height: 1rem;
     }
-
-    &:hover {
-      background: rgba($alto, .2);
+    &:empty {
+      padding-top: 0;
     }
   }
 
-  &__identicon {
-    grid-area: identicon;
-    grid-row: 1 / span 2;
-    align-self: center;
-
-    @media screen and (max-width: $break-small) {
-      grid-row: 2 / span 2;
-    }
-  }
-
-  &__action {
-    text-transform: capitalize;
-    padding: 0 0 4px 0;
+  .list-item__subheading > h3 {
+    overflow: visible;
+    display: flex;
     white-space: nowrap;
+    text-overflow: initial;
+  }
+
+  .transaction-status:after {
+    content: "·";
+    margin: 0 4px;
+  }
+
+  &__origin, &__address {
     overflow: hidden;
     text-overflow: ellipsis;
-    grid-area: action;
-    color: $Grey-800;
-    line-height: 20px;
-  }
-
-  &__status {
-    grid-area: status;
-    grid-row: 1 / span 2;
-    align-self: center;
-
-    @media screen and (max-width: $break-small) {
-      grid-row: 3;
-    }
-  }
-
-  &__estimated-time {
-    grid-area: estimated-time;
-    grid-row: 1 / span 2;
-    align-self: center;
-
-    @media screen and (max-width: $break-small) {
-      grid-row: 3;
-      grid-column: 4;
-      font-size: small;
-    }
-  }
-
-  &__nonce {
-    font-size: .75rem;
-    color: #5e6064;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    grid-area: nonce;
-    align-self: start;
-
-    @media screen and (max-width: $break-small) {
-      padding-bottom: 8px;
-      line-height: 12px;
-    }
   }
 
-  &__amount {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-    max-width: 100%;
-
-    &--primary {
-      text-align: end;
-      grid-area: primary-amount;
-      align-self: end;
-      justify-self: end;
-      line-height: 20px;
-
-      @media screen and (max-width: $break-small) {
-        padding-bottom: 4px;
-        height: 100%;
-        color: $Grey-800;
-      }
-    }
-
-    &--secondary {
-      text-align: end;
-      font-size: .75rem;
-      grid-area: secondary-amount;
-      align-self: start;
-      justify-self: end;
-      color: $Grey-500;
-    }
-  }
-
-  &__retry {
-    background: #d1edff;
-    border-radius: 12px;
-    font-size: .75rem;
-    padding: 4px 12px;
-    cursor: pointer;
-    margin-top: 8px;
-
-    @media screen and (max-width: $break-small) {
-      font-size: .5rem;
-    }
-  }
-
-  &__expander {
-    max-height: 0px;
-    width: 100%;
-    overflow: hidden;
-
-    &--show {
-      max-height: 1000px;
-      transition: max-height 700ms ease-out;
-    }
+  &__origin {
+    /*rtl:ignore*/
+    direction: rtl;
   }
 }

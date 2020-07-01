@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "이제 프라이버시 모드가 기본 설정으로 활성화됐습니다"
-  },
   "chartOnlyAvailableEth": {
     "message": "이더리움 네트워크에서만 사용 가능한 차트."
-  },
-  "confirmClear": {
-    "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
   },
   "contractInteraction": {
     "message": "계약 상호 작용"
   },
-  "clearApprovalData": {
-    "message": "승인 데이터 삭제"
-  },
   "reject": {
     "message": "거부"
-  },
-  "providerRequest": {
-    "message": "$1이 당신의 계정에 연결하길 원합니다."
-  },
-  "providerRequestInfo": {
-    "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
   },
   "about": {
     "message": "정보"
   },
   "aboutSettingsDescription": {
-    "message": "버전, 지원 센터, 그리고 연락처 정보."
+    "message": "버전, 지원 센터, 그리고 연락처 정보"
   },
   "acceleratingATransaction": {
     "message": "* 더 높은 가스 요금을 사용하여 트랜잭션을 가속화하면 네트워크에 의해 더 빨리 처리될 가능성이 증가하지만 항상 빠른 처리가 보장되는 것은 아닙니다."
@@ -63,7 +48,7 @@
     "message": "고급"
   },
   "advancedSettingsDescription": {
-    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정."
+    "message": "개발자 기능 사용, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 사용자 정의 RPC 설정"
   },
   "advancedOptions": {
     "message": "고급 옵션"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "속성"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "자동 로그아웃 타이머 (분)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "MetaMask가 자동으로 로그아웃되기 전 유휴 시간을 분 단위로 설정하세요"
   },
   "average": {
@@ -150,13 +135,6 @@
   },
   "balanceOutdated": {
     "message": "잔액이 오래된 정보일 수 있습니다"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "현재 가스 총합에 대해 잔액이 부족합니다"
-  },
-  "betweenMinAndMax": {
-    "message": "$1 이상 $2 이하여야 합니다.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "익스플로러 차단"
@@ -216,9 +194,6 @@
   "chainId": {
     "message": "체인 ID"
   },
-  "clickToAdd": {
-    "message": "계정에 토큰을 추가하기 위해 $1를 클릭하세요."
-  },
   "clickToRevealSeed": {
     "message": "비밀 단어를 보기 위해 여기를 클릭하세요."
   },
@@ -248,9 +223,6 @@
   },
   "connect": {
     "message": "연결"
-  },
-  "connectRequest": {
-    "message": "연결 요청"
   },
   "connectingTo": {
     "message": "$1에 연결"
@@ -282,17 +254,8 @@
   "contractDeployment": {
     "message": "컨트랙트 배포"
   },
-  "conversionProgress": {
-    "message": "변환 진행 중"
-  },
-  "copiedButton": {
-    "message": "복사됨"
-  },
   "copiedExclamation": {
     "message": "복사됨!"
-  },
-  "copy": {
-    "message": "복사"
   },
   "copyAddress": {
     "message": "클립보드로 주소 복사"
@@ -305,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
-  },
-  "copyButton": {
-    "message": " 복사 "
   },
   "copyPrivateKey": {
     "message": "비밀 키입니다 (클릭하여 복사)"
@@ -371,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "약간의 이더를 이미 보유하고 있다면, 새로 만든 지갑에 직접 입금하여 이더를 보유할 수 있습니다."
-  },
-  "dismiss": {
-    "message": "숨기기"
   },
   "done": {
     "message": "완료"
@@ -485,17 +442,11 @@
   "from": {
     "message": "보내는 이"
   },
-  "fromShapeShift": {
-    "message": "ShapeShift로부터"
-  },
   "functionType": {
     "message": "함수 유형"
   },
   "gasLimit": {
     "message": "가스 한도"
-  },
-  "gasLimitCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 한도를 계산합니다."
   },
   "gasLimitInfoModalContent": {
     "message": "가스 한도는 당신이 기꺼이 소비할 수 있는 가스의 최대 수량입니다."
@@ -518,9 +469,6 @@
   "gasPriceNoDenom": {
     "message": "가스 가격"
   },
-  "gasPriceCalculation": {
-    "message": "네트워크 성공률을 기반으로 적합한 가스 가격을 계산합니다."
-  },
   "general": {
     "message": "일반"
   },
@@ -539,10 +487,6 @@
   },
   "getStarted": {
     "message": "시작하기"
-  },
-  "greaterThanMin": {
-    "message": "$1 이상이어야 합니다.",
-    "description": "helper for inputting hex as decimal input"
   },
   "hardware": {
     "message": "하드웨어"
@@ -568,9 +512,6 @@
   },
   "hide": {
     "message": "숨기기"
-  },
-  "hideToken": {
-    "message": "토큰 숨기기"
   },
   "hideTokenPrompt": {
     "message": "토큰 숨기기?"
@@ -659,10 +600,6 @@
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
   },
-  "lessThanMax": {
-    "message": "$1 이하여야합니다.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "네, 설정해볼게요!"
   },
@@ -687,10 +624,7 @@
   "localhost": {
     "message": "로컬호스트 8545"
   },
-  "login": {
-    "message": "로그인"
-  },
-  "logout": {
+  "lock": {
     "message": "로그아웃"
   },
   "mainnet": {
@@ -702,23 +636,14 @@
   "memo": {
     "message": "메모"
   },
-  "menu": {
-    "message": "메뉴"
-  },
   "message": {
     "message": "메시지"
   },
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 저장소입니다."
   },
-  "metamaskSeedWords": {
-    "message": "메타마스크 시드 단어"
-  },
   "metamaskVersion": {
     "message": "메타마스크 버전"
-  },
-  "missingYourTokens": {
-    "message": "당신의 토큰이 보이지 않나요?"
   },
   "mobileSyncText": {
     "message": "본인 여부를 확인하기 위해 비밀번호를 입력해 주세요!"
@@ -815,9 +740,6 @@
   "noAddressForName": {
     "message": "이 이름에 대해 주소가 설정되어 있지 않습니다."
   },
-  "noDeposits": {
-    "message": "입금 내역이 없습니다."
-  },
   "noConversionRateAvailable": {
     "message": "변환 비율을 찾을 수 없습니다"
   },
@@ -861,9 +783,6 @@
     "message": "개인키를 입력해주세요:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "시드 구문을 이곳에 붙여넣어 주세요!"
-  },
   "pending": {
     "message": "펜딩 중"
   },
@@ -891,9 +810,6 @@
   },
   "privateNetwork": {
     "message": "프라이빗 네트워크"
-  },
-  "qrCode": {
-    "message": "QR 코드 보기"
   },
   "queue": {
     "message": "큐"
@@ -969,9 +885,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "이 단어 모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
-  },
-  "revert": {
-    "message": "되돌림"
   },
   "remove": {
     "message": "제거"
@@ -1177,9 +1090,6 @@
   "storePhrase": {
     "message": "이 구문을 1Password같은 암호 관리자에 저장하세요."
   },
-  "submit": {
-    "message": "제출"
-  },
   "submitted": {
     "message": "제출됨"
   },
@@ -1227,10 +1137,6 @@
   },
   "to": {
     "message": "받는이"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "토큰"
@@ -1346,9 +1252,6 @@
   },
   "userName": {
     "message": "사용자이름"
-  },
-  "validFileImport": {
-    "message": "가져오기 위해 유효한 파일을 선택해야 합니다."
   },
   "viewAccount": {
     "message": "계정 보기"

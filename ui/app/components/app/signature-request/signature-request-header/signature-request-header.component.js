@@ -5,20 +5,21 @@ import NetworkDisplay from '../../network-display'
 
 export default class SignatureRequestHeader extends PureComponent {
   static propTypes = {
-    selectedAccount: PropTypes.object.isRequired,
+    fromAccount: PropTypes.object,
   }
 
   render () {
-    const { selectedAccount } = this.props
+    const { fromAccount } = this.props
 
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {selectedAccount && <AccountListItem
-            displayBalance={false}
-            account={selectedAccount}
-          />}
-          {name}
+          {fromAccount && (
+            <AccountListItem
+              displayBalance={false}
+              account={fromAccount}
+            />
+          )}
         </div>
         <div className="signature-request-header--network">
           <NetworkDisplay colored={false} />

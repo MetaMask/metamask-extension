@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer'
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendFooter extends Component {
 
@@ -10,16 +10,14 @@ export default class SendFooter extends Component {
     amount: PropTypes.string,
     data: PropTypes.string,
     clearSend: PropTypes.func,
-    disabled: PropTypes.bool,
     editingTransactionId: PropTypes.string,
-    errors: PropTypes.object,
     from: PropTypes.object,
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     history: PropTypes.object,
     inError: PropTypes.bool,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
@@ -29,29 +27,31 @@ export default class SendFooter extends Component {
     sendErrors: PropTypes.object,
     gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
-
-  onCancel () {
-    this.props.clearSend()
-    this.props.history.push(DEFAULT_ROUTE)
   }
 
-  onSubmit (event) {
+  onCancel () {
+    const { clearSend, history, mostRecentOverviewPage } = this.props
+    clearSend()
+    history.push(mostRecentOverviewPage)
+  }
+
+  async onSubmit (event) {
     event.preventDefault()
     const {
       addToAddressBookIfNew,
       amount,
       data,
       editingTransactionId,
-      from: {address: from},
+      from: { address: from },
       gasLimit: gas,
       gasPrice,
-      selectedToken,
+      sendToken,
       sign,
       to,
       unapprovedTxs,
@@ -71,7 +71,7 @@ export default class SendFooter extends Component {
     // }
 
     // TODO: add nickname functionality
-    addToAddressBookIfNew(to, toAccounts)
+    await addToAddressBookIfNew(to, toAccounts)
     const promise = editingTransactionId
       ? update({
         amount,
@@ -80,11 +80,11 @@ export default class SendFooter extends Component {
         from,
         gas,
         gasPrice,
-        selectedToken,
+        sendToken,
         to,
         unapprovedTxs,
       })
-      : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
+      : sign({ data, sendToken, to, amount, from, gas, gasPrice })
 
     Promise.resolve(promise)
       .then(() => {
@@ -103,8 +103,8 @@ export default class SendFooter extends Component {
   }
 
   formShouldBeDisabled () {
-    const { data, inError, selectedToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
-    const missingTokenBalance = selectedToken && !tokenBalance
+    const { data, inError, sendToken, tokenBalance, gasTotal, to, gasLimit, gasIsLoading } = this.props
+    const missingTokenBalance = sendToken && !tokenBalance
     const gasLimitTooLow = gasLimit < 5208 // 5208 is hex value of 21000, minimum gas limit
     const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to) || gasLimitTooLow || gasIsLoading
     return shouldBeDisabled
@@ -114,7 +114,7 @@ export default class SendFooter extends Component {
     const { inError, sendErrors } = this.props
     const { metricsEvent } = this.context
     if (!prevProps.inError && inError) {
-      const errorField = Object.keys(sendErrors).find(key => sendErrors[key])
+      const errorField = Object.keys(sendErrors).find((key) => sendErrors[key])
       const errorMessage = sendErrors[errorField]
 
       metricsEvent({
@@ -135,7 +135,7 @@ export default class SendFooter extends Component {
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
-        onSubmit={e => this.onSubmit(e)}
+        onSubmit={(e) => this.onSubmit(e)}
         disabled={this.formShouldBeDisabled()}
       />
     )

@@ -8,13 +8,13 @@ whos nonce is too high
 
 */
 
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -35,7 +35,9 @@ function transformState (state) {
     const transactions = newState.TransactionController.transactions
 
     newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
-      if (txMeta.status !== 'submitted') return txMeta
+      if (txMeta.status !== 'submitted') {
+        return txMeta
+      }
 
       const confirmedTxs = txList.filter((tx) => tx.status === 'confirmed')
         .filter((tx) => tx.txParams.from === txMeta.txParams.from)

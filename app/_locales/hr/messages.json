@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Način se Privatnost sada zadano omogućava"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafikon je dostupan samo na mrežama Ethereum."
   },
-  "confirmClear": {
-    "message": "Sigurno želite očistiti odobrena mrežna mjesta?"
-  },
   "contractInteraction": {
     "message": "Ugovorna interakcija"
-  },
-  "clearApprovalData": {
-    "message": "Očisti podatke o privatnosti"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,11 @@
   "reject": {
     "message": "Odbaci"
   },
-  "providerRequest": {
-    "message": "Korisnik $1 želi se povezati na vaš račun"
-  },
-  "providerRequestInfo": {
-    "message": "Na ovom se mjestu zahtijeva pristup za pregledavanje vaše trenutačne adrese računa. Uvijek pazite da vjerujete mrežnim mjestima s kojima rukujete."
-  },
   "about": {
     "message": "O opcijama"
   },
   "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt."
+    "message": "Inačica, centar za podršku i informacije za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
@@ -67,7 +52,7 @@
     "message": "Napredno"
   },
   "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC."
+    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Svojstva"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Brojač za automatsko odjavljivanje (minute)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Postavite stanje u mirovanju u minutama prije nego što se MetaMask automatski odjavi"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Stanje je možda zastarjelo"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedovoljno stanje za trenutačni iznos goriva"
-  },
   "basic": {
     "message": "Osnovne"
-  },
-  "betweenMinAndMax": {
-    "message": "mora biti veće od $1 ili jednako te manje od $2 ili jednako.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokiraj Explorer"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
   },
-  "clickToAdd": {
-    "message": "Kliknite na $1 kako biste ih dodali na svoj račun"
-  },
   "clickToRevealSeed": {
     "message": "Ovdje kliknite za otkrivanje tajnih riječi"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "Povežite se"
-  },
-  "connectRequest": {
-    "message": "Zahtjev za povezivanjem"
   },
   "connectingTo": {
     "message": "Povezivanje na $1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "Primjena ugovora"
   },
-  "conversionProgress": {
-    "message": "Konverzija u tijeku"
-  },
-  "copiedButton": {
-    "message": "Kopirano"
-  },
   "copiedExclamation": {
     "message": "Kopirano!"
-  },
-  "copy": {
-    "message": "Kopiraj"
   },
   "copyAddress": {
     "message": "Kopiraj adresu u međuspremnik"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiraj u međuspremnik"
-  },
-  "copyButton": {
-    "message": "Kopiraj"
   },
   "copyPrivateKey": {
     "message": "Ovo je vaš privatni ključ (kliknite za kopiranje)"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
-  },
-  "dismiss": {
-    "message": "Odbaci"
   },
   "done": {
     "message": "Gotovo"
@@ -484,17 +441,11 @@
   "from": {
     "message": "Pošiljatelj"
   },
-  "fromShapeShift": {
-    "message": "Od usluge ShapeShift"
-  },
   "functionType": {
     "message": "Vrsta funkcije"
   },
   "gasLimit": {
     "message": "Ograničenje goriva"
-  },
-  "gasLimitCalculation": {
-    "message": "Izračunavamo predloženo ograničenje za gorivo na temelju postotka uspješnosti mreže."
   },
   "gasLimitInfoModalContent": {
     "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
@@ -517,9 +468,6 @@
   "gasPriceNoDenom": {
     "message": "Cijena goriva"
   },
-  "gasPriceCalculation": {
-    "message": "Izračunavamo predloženu cijenu goriva na temelju postotka uspješnosti mreže."
-  },
   "general": {
     "message": "Opće"
   },
@@ -538,10 +486,6 @@
   },
   "getStarted": {
     "message": "Početak upotrebe"
-  },
-  "greaterThanMin": {
-    "message": "mora biti veće od $1 ili jednako.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Sretni smo što ste tu."
@@ -570,9 +514,6 @@
   },
   "hide": {
     "message": "Sakrij preglednik"
-  },
-  "hideToken": {
-    "message": "Sakrij token"
   },
   "hideTokenPrompt": {
     "message": "Sakriti token?"
@@ -661,10 +602,6 @@
   "ledgerAccountRestriction": {
     "message": "Treba se koristiti zadnjim računom kako biste dodali novi račun."
   },
-  "lessThanMax": {
-    "message": "mora biti manje od $1 ili jednako.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
   },
@@ -686,10 +623,7 @@
   "loadMore": {
     "message": "Učitaj više"
   },
-  "login": {
-    "message": "Prijava"
-  },
-  "logout": {
+  "lock": {
     "message": "Odjava"
   },
   "mainnet": {
@@ -701,23 +635,14 @@
   "memo": {
     "message": "podsjetnik"
   },
-  "menu": {
-    "message": "Izbornik"
-  },
   "message": {
     "message": "Poruka"
   },
   "metamaskDescription": {
     "message": "Povezujete se na Ethereum i decentralizirani internet."
   },
-  "metamaskSeedWords": {
-    "message": "Početne riječi za MetaMask"
-  },
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Ne vidite svoje tokene?"
   },
   "mobileSyncText": {
     "message": "Upišite svoju lozinku kako biste potvrdili da ste to vi!"
@@ -814,9 +739,6 @@
   "noAddressForName": {
     "message": "Nijedna adresa nije postavljena za ovaj naziv."
   },
-  "noDeposits": {
-    "message": "Nijedan polog nije primljen"
-  },
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
   },
@@ -863,9 +785,6 @@
     "message": "Ovdje zalijepite svoj privatni niz ključa:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Ovdje zalijepite svoju početnu rečenicu!"
-  },
   "pending": {
     "message": "na čekanju"
   },
@@ -893,9 +812,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "qrCode": {
-    "message": "Prikaži QR kȏd"
   },
   "queue": {
     "message": "Red čekanja"
@@ -971,9 +887,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
-  },
-  "revert": {
-    "message": "Vrati u prethodni oblik"
   },
   "remove": {
     "message": "Ukloni"
@@ -1179,9 +1092,6 @@
   "storePhrase": {
     "message": "Spremite ovu rečenicu u upravitelj lozinkama poput aplikacije 1Password."
   },
-  "submit": {
-    "message": "Pošalji"
-  },
   "submitted": {
     "message": "Poslano"
   },
@@ -1192,7 +1102,7 @@
     "message": "Simbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora imati od 0 do 12 znakova."
+    "message": "Simbol mora biti 11 znakova ili manje."
   },
   "syncWithMobile": {
     "message": "Sinkroniziraj s mobilnim telefonom"
@@ -1229,10 +1139,6 @@
   },
   "to": {
     "message": "Primatelj"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 za ETH uslugom ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token je već dodan."
@@ -1345,9 +1251,6 @@
   },
   "userName": {
     "message": "Korisničko ime"
-  },
-  "validFileImport": {
-    "message": "Morate odabrati valjanu datoteku za uvoz."
   },
   "viewAccount": {
     "message": "Prikaz računa"

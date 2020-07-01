@@ -1,20 +1,25 @@
-const assert = require('assert')
-const sinon = require('sinon')
-const TokenRatesController = require('../../../../app/scripts/controllers/token-rates')
-const ObservableStore = require('obs-store')
+import assert from 'assert'
+import sinon from 'sinon'
+import TokenRatesController from '../../../../app/scripts/controllers/token-rates'
+import ObservableStore from 'obs-store'
 
-describe('TokenRatesController', () => {
-  it('should listen for preferences store updates', () => {
+describe('TokenRatesController', function () {
+  it('should listen for preferences store updates', function () {
     const preferences = new ObservableStore({ tokens: [] })
-    const controller = new TokenRatesController({ preferences })
     preferences.putState({ tokens: ['foo'] })
+    const controller = new TokenRatesController({ preferences })
     assert.deepEqual(controller._tokens, ['foo'])
   })
 
-  it('should poll on correct interval', async () => {
+  it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval')
-    new TokenRatesController({ interval: 1337 }) // eslint-disable-line no-new
+    const preferences = new ObservableStore({ tokens: [] })
+    preferences.putState({ tokens: ['foo'] })
+    const controller = new TokenRatesController({ preferences })
+    controller.start(1337)
+
     assert.strictEqual(stub.getCall(0).args[1], 1337)
     stub.restore()
+    controller.stop()
   })
 })

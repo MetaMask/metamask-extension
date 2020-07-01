@@ -1,28 +1,35 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Media from 'react-media'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Route } from 'react-router-dom'
 import { formatDate } from '../../helpers/utils/util'
+import AssetList from '../../components/app/asset-list'
 import HomeNotification from '../../components/app/home-notification'
 import MultipleNotifications from '../../components/app/multiple-notifications'
-import WalletView from '../../components/app/wallet-view'
-import TransactionView from '../../components/app/transaction-view'
-import ProviderApproval from '../provider-approval'
+import TransactionList from '../../components/app/transaction-list'
+import MenuBar from '../../components/app/menu-bar'
+import Popover from '../../components/ui/popover'
+import Button from '../../components/ui/button'
+import ConnectedSites from '../connected-sites'
+import ConnectedAccounts from '../connected-accounts'
+import { Tabs, Tab } from '../../components/ui/tabs'
+import { EthOverview } from '../../components/app/wallet-overview'
 
 import {
+  ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes'
+
+const LEARN_MORE_URL = 'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension'
 
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-  }
-
-  static defaultProps = {
-    unsetMigratedPrivacyMode: null,
   }
 
   static propTypes = {
@@ -30,11 +37,9 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    providerRequests: PropTypes.array,
-    showPrivacyModeNotification: PropTypes.bool.isRequired,
-    unsetMigratedPrivacyMode: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isNotification: PropTypes.bool.isRequired,
     threeBoxSynced: PropTypes.bool,
     setupThreeBox: PropTypes.func,
     turnThreeBoxSyncingOn: PropTypes.func,
@@ -43,13 +48,24 @@ export default class Home extends PureComponent {
     restoreFromThreeBox: PropTypes.func,
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
+    firstPermissionsRequestId: PropTypes.string,
+    totalUnapprovedCount: PropTypes.number.isRequired,
+    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
+    connectedStatusPopoverHasBeenShown: PropTypes.bool,
+    defaultHomeActiveTabName: PropTypes.string,
+    onTabClick: PropTypes.func.isRequired,
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     const {
       history,
       unconfirmedTransactionsCount = 0,
+      firstPermissionsRequestId,
     } = this.props
+
+    if (firstPermissionsRequestId) {
+      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
+    }
 
     if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
@@ -59,8 +75,14 @@ export default class Home extends PureComponent {
   componentDidMount () {
     const {
       history,
+      isNotification,
       suggestedTokens = {},
+      totalUnapprovedCount,
     } = this.props
+
+    if (isNotification && totalUnapprovedCount === 0) {
+      global.platform.closeCurrentWindow()
+    }
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
@@ -70,24 +92,27 @@ export default class Home extends PureComponent {
 
   componentDidUpdate () {
     const {
-      threeBoxSynced,
+      isNotification,
       setupThreeBox,
       showRestorePrompt,
       threeBoxLastUpdated,
+      threeBoxSynced,
+      totalUnapprovedCount,
     } = this.props
+
+    if (isNotification && totalUnapprovedCount === 0) {
+      global.platform.closeCurrentWindow()
+    }
+
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox()
     }
   }
 
-  render () {
+  renderNotifications () {
     const { t } = this.context
     const {
-      forgottenPassword,
-      providerRequests,
       history,
-      showPrivacyModeNotification,
-      unsetMigratedPrivacyMode,
       shouldShowSeedPhraseReminder,
       isPopup,
       selectedAddress,
@@ -98,84 +123,150 @@ export default class Home extends PureComponent {
       threeBoxLastUpdated,
     } = this.props
 
+    return (
+      <MultipleNotifications>
+        {
+          shouldShowSeedPhraseReminder
+            ? (
+              <HomeNotification
+                descriptionText={t('backupApprovalNotice')}
+                acceptText={t('backupNow')}
+                onAccept={() => {
+                  if (isPopup) {
+                    global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                  } else {
+                    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
+                  }
+                }}
+                infoText={t('backupApprovalInfo')}
+                key="home-backupApprovalNotice"
+              />
+            )
+            : null
+        }
+        {
+          threeBoxLastUpdated && showRestorePrompt
+            ? (
+              <HomeNotification
+                descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
+                acceptText={t('restore')}
+                ignoreText={t('noThanks')}
+                infoText={t('dataBackupFoundInfo')}
+                onAccept={() => {
+                  restoreFromThreeBox(selectedAddress)
+                    .then(() => {
+                      turnThreeBoxSyncingOn()
+                    })
+                }}
+                onIgnore={() => {
+                  setShowRestorePromptToFalse()
+                }}
+                key="home-privacyModeDefault"
+              />
+            )
+            : null
+        }
+      </MultipleNotifications>
+    )
+  }
+  renderPopover = () => {
+    const { setConnectedStatusPopoverHasBeenShown } = this.props
+    const { t } = this.context
+    return (
+      <Popover
+        title={ t('whatsThis') }
+        onClose={setConnectedStatusPopoverHasBeenShown}
+        className="home__connected-status-popover"
+        showArrow
+        CustomBackground={({ onClose }) => {
+          return (
+            <div
+              className="home__connected-status-popover-bg-container"
+              onClick={onClose}
+            >
+              <div className="home__connected-status-popover-bg" />
+            </div>
+          )
+        }}
+        footer={(
+          <>
+            <a
+              href={LEARN_MORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              { t('learnMore') }
+            </a>
+            <Button
+              type="primary"
+              onClick={setConnectedStatusPopoverHasBeenShown}
+            >
+              { t('dismiss') }
+            </Button>
+          </>
+        )}
+      >
+        <main className="home__connect-status-text">
+          <div>{ t('metaMaskConnectStatusParagraphOne') }</div>
+          <div>{ t('metaMaskConnectStatusParagraphTwo') }</div>
+          <div>{ t('metaMaskConnectStatusParagraphThree') }</div>
+        </main>
+      </Popover>
+    )
+  }
+
+  render () {
+    const { t } = this.context
+    const {
+      defaultHomeActiveTabName,
+      onTabClick,
+      forgottenPassword,
+      history,
+      connectedStatusPopoverHasBeenShown,
+      isPopup,
+    } = this.props
+
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+    } else if (history.location.pathname.match(/^\/confirm-transaction/)) {
+      // This should only happen if this renders during the redirect to the confirm page
+      // Display nothing while the confirm page loads, to avoid side-effects of rendering normal home view
+      return null
     }
 
-    if (providerRequests && providerRequests.length > 0) {
-      return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
-      )
-    }
     return (
       <div className="main-container">
-        <div className="account-and-transaction-details">
-          <Media
-            query="(min-width: 576px)"
-            render={() => <WalletView />}
-          />
-          { !history.location.pathname.match(/^\/confirm-transaction/)
-            ? (
-              <TransactionView>
-                <MultipleNotifications>
-                  {
-                    showPrivacyModeNotification
-                      ? <HomeNotification
-                        descriptionText={t('privacyModeDefault')}
-                        acceptText={t('learnMore')}
-                        onAccept={() => {
-                          unsetMigratedPrivacyMode()
-                          window.open('https://medium.com/metamask/42549d4870fa', '_blank', 'noopener')
-                        }}
-                        ignoreText={t('dismiss')}
-                        onIgnore={() => {
-                          unsetMigratedPrivacyMode()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
-                  {
-                    shouldShowSeedPhraseReminder
-                      ? <HomeNotification
-                        descriptionText={t('backupApprovalNotice')}
-                        acceptText={t('backupNow')}
-                        onAccept={() => {
-                          if (isPopup) {
-                            global.platform.openExtensionInBrowser(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                          } else {
-                            history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE)
-                          }
-                        }}
-                        infoText={t('backupApprovalInfo')}
-                        key="home-backupApprovalNotice"
-                      />
-                      : null
-                  }
-                  {
-                    threeBoxLastUpdated && showRestorePrompt
-                      ? <HomeNotification
-                        descriptionText={t('restoreWalletPreferences', [ formatDate(threeBoxLastUpdated, 'M/d/y') ])}
-                        acceptText={t('restore')}
-                        ignoreText={t('noThanks')}
-                        infoText={t('dataBackupFoundInfo')}
-                        onAccept={() => {
-                          restoreFromThreeBox(selectedAddress)
-                            .then(() => {
-                              turnThreeBoxSyncingOn()
-                            })
-                        }}
-                        onIgnore={() => {
-                          setShowRestorePromptToFalse()
-                        }}
-                        key="home-privacyModeDefault"
-                      />
-                      : null
-                  }
-                </MultipleNotifications>
-              </TransactionView>
-            )
-            : null }
+        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
+        <Route path={CONNECTED_ACCOUNTS_ROUTE} component={ConnectedAccounts} exact />
+        <div className="home__container">
+          { isPopup && !connectedStatusPopoverHasBeenShown ? this.renderPopover() : null }
+          <div className="home__main-view">
+            <MenuBar />
+            <div className="home__balance-wrapper">
+              <EthOverview />
+            </div>
+            <Tabs defaultActiveTabName={defaultHomeActiveTabName} onTabClick={onTabClick} tabsClassName="home__tabs">
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__asset-tab"
+                name={t('assets')}
+              >
+                <AssetList
+                  onClickAsset={(asset) => history.push(`${ASSET_ROUTE}/${asset}`)}
+                />
+              </Tab>
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__activity-tab"
+                name={t('activity')}
+              >
+                <TransactionList />
+              </Tab>
+            </Tabs>
+          </div>
+          { this.renderNotifications() }
         </div>
       </div>
     )

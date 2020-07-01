@@ -1,57 +1,24 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import CurrencyDisplay from '../currency-display'
-import { getTokenData } from '../../../helpers/utils/transactions.util'
-import { getTokenValue, calcTokenAmount } from '../../../helpers/utils/token-util'
+import { useTokenDisplayValue } from '../../../hooks/useTokenDisplayValue'
 
-export default class TokenCurrencyDisplay extends PureComponent {
-  static propTypes = {
-    transactionData: PropTypes.string,
-    token: PropTypes.object,
-  }
+export default function TokenCurrencyDisplay ({ className, transactionData, token, prefix }) {
+  const displayValue = useTokenDisplayValue(transactionData, token)
 
-  state = {
-    displayValue: '',
-    suffix: '',
-  }
+  return (
+    <CurrencyDisplay
+      className={className}
+      prefix={prefix}
+      displayValue={displayValue}
+      suffix={token.symbol}
+    />
+  )
+}
 
-  componentDidMount () {
-    this.setDisplayValue()
-  }
-
-  componentDidUpdate (prevProps) {
-    const { transactionData } = this.props
-    const { transactionData: prevTransactionData } = prevProps
-
-    if (transactionData !== prevTransactionData) {
-      this.setDisplayValue()
-    }
-  }
-
-  setDisplayValue () {
-    const { transactionData: data, token } = this.props
-    const { decimals = '', symbol: suffix = '' } = token
-    const tokenData = getTokenData(data)
-
-    let displayValue
-
-    if (tokenData && tokenData.params && tokenData.params.length) {
-      const tokenValue = getTokenValue(tokenData.params)
-      displayValue = calcTokenAmount(tokenValue, decimals).toString()
-    }
-
-    this.setState({ displayValue, suffix })
-  }
-
-  render () {
-    const { displayValue, suffix } = this.state
-
-    return (
-      <CurrencyDisplay
-        {...this.props}
-        displayValue={displayValue}
-        suffix={suffix}
-      />
-    )
-  }
+TokenCurrencyDisplay.propTypes = {
+  className: PropTypes.string,
+  transactionData: PropTypes.string,
+  token: PropTypes.object,
+  prefix: PropTypes.string,
 }

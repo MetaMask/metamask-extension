@@ -60,7 +60,7 @@
         width: 93%;
       }
 
-      header {
+      footer {
         padding: 10px 0px;
       }
     }
@@ -81,6 +81,17 @@
       display: flex;
       flex-direction: column;
       width: 93%;
+    }
+
+    &--warning {
+      background-color: #FEFAE8;
+      border: 1px solid #FFD33D;
+      width: 93%;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 12px;
     }
   }
 

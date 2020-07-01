@@ -1,34 +1,35 @@
-import PropTypes from 'prop-types'
-import React, {PureComponent} from 'react'
+import React from 'react'
+import { useMetricEvent } from '../../../hooks/useMetricEvent'
+import { useI18nContext } from '../../../hooks/useI18nContext'
+import { useHistory } from 'react-router-dom'
+import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
+import Button from '../../ui/button'
 
-export default class AddTokenButton extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func.isRequired,
-  }
 
-  static defaultProps = {
-    onClick: () => {},
-  }
+export default function AddTokenButton () {
+  const addTokenEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Token Menu',
+      name: 'Clicked "Add Token"',
+    },
+  })
+  const t = useI18nContext()
+  const history = useHistory()
 
-  static propTypes = {
-    onClick: PropTypes.func,
-  }
-
-  render () {
-    const { t } = this.context
-    const { onClick } = this.props
-
-    return (
-      <div className="add-token-button">
-        <h1 className="add-token-button__help-header">{t('missingYourTokens')}</h1>
-        <p className="add-token-button__help-desc">{t('clickToAdd', [t('addToken')])}</p>
-        <div
-          className="add-token-button__button"
-          onClick={onClick}
-        >
-          {t('addToken')}
-        </div>
-      </div>
-    )
-  }
+  return (
+    <div className="add-token-button">
+      <Button
+        className="add-token-button__button"
+        type="secondary"
+        rounded
+        onClick={() => {
+          history.push(ADD_TOKEN_ROUTE)
+          addTokenEvent()
+        }}
+      >
+        {t('addToken')}
+      </Button>
+    </div>
+  )
 }

@@ -45,7 +45,6 @@ textarea.twelve-word-phrase {
 
 /* unlock */
 .error {
-  // color: #e20202;
   color: #f7861c;
   margin-bottom: 9px;
 }
@@ -250,16 +249,6 @@ textarea.twelve-word-phrase {
   background: #faf6f0;
 }
 
-/* Ether Balance Widget */
-
-.ether-balance-amount {
-  color: #f7861c;
-}
-
-.ether-balance-label {
-  color: #aba9aa;
-}
-
 /* Info screen */
 .info-gray {
   font-family: Roboto;
@@ -392,11 +381,11 @@ textarea.twelve-word-phrase {
   overflow: scroll;
 }
 
-.icon-control .fa-refresh {
+.icon-control .fa-sync {
   visibility: hidden;
 }
 
-.icon-control:hover .fa-refresh {
+.icon-control:hover .fa-sync {
   visibility: visible;
 }
 
@@ -418,6 +407,7 @@ textarea.twelve-word-phrase {
   direction: ltr;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
 .qr-header {

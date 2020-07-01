@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import {
   setTransactionToConfirm,
@@ -17,17 +17,15 @@ import {
   getTokenParams,
 } from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
-import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
+import { unconfirmedTransactionsListSelector } from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state, ownProps) => {
   const {
     metamask: {
       send,
       unapprovedTxs,
-      abTests: { fullScreenVsPopup },
-      conversionRate,
     },
-    confirmTransaction,
   } = state
   const { match: { params = {} } } = ownProps
   const { id } = params
@@ -39,28 +37,22 @@ const mapStateToProps = (state, ownProps) => {
     : {}
   const { id: transactionId, transactionCategory } = transaction
 
-  const trackABTest = false
-
   return {
     totalUnapprovedCount: totalUnconfirmed,
     send,
-    confirmTransaction,
     unapprovedTxs,
     id,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
-    unconfirmedTransactions,
     transaction,
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
-    trackABTest,
-    fullScreenVsPopupTestGroup: fullScreenVsPopup,
-    conversionRate,
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setTransactionToConfirm: transactionId => {
+    setTransactionToConfirm: (transactionId) => {
       dispatch(setTransactionToConfirm(transactionId))
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),

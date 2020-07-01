@@ -5,18 +5,16 @@
   https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
  */
 
-@import './itcss/settings/index.scss';
+@import './itcss/settings/index';
 
-@import './itcss/tools/index.scss';
+@import './itcss/tools/index';
 
-@import './itcss/generic/index.scss';
+@import './itcss/generic/index';
 
-@import './itcss/objects/index.scss';
+@import './itcss/objects/index';
 
-@import './itcss/components/index.scss';
+@import './itcss/components/index';
 
-@import './itcss/trumps/index.scss';
-
-@import '../../../node_modules/react-tooltip-component/dist/react-tooltip-component';
+@import './itcss/trumps/index';
 
 @import '../../../node_modules/react-select/dist/react-select';

@@ -6,14 +6,13 @@ This migration moves KeyringController.selectedAddress to PreferencesController.
 
 */
 
-const extend = require('xtend')
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -30,11 +29,12 @@ function migrateState (state) {
   const keyringSubstate = state.KeyringController
 
   // add new state
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     PreferencesController: {
       selectedAddress: keyringSubstate.selectedAccount,
     },
-  })
+  }
 
   // rm old state
   delete newState.KeyringController.selectedAccount

@@ -1,1 +1,1 @@
-export { default } from './confirm-approve.container'
+export { default } from './confirm-approve'

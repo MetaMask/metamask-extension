@@ -1,91 +1,86 @@
-import React, { PureComponent } from 'react'
+import React, { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  nonceSortedCompletedTransactionsSelector,
+  nonceSortedPendingTransactionsSelector,
+} from '../../../selectors/transactions'
+import {
+  getFeatureFlags,
+} from '../../../selectors/selectors'
+import * as actions from '../../../ducks/gas/gas.duck'
+import { useI18nContext } from '../../../hooks/useI18nContext'
 import TransactionListItem from '../transaction-list-item'
-import ShapeShiftTransactionListItem from '../shift-list-item'
-import { TRANSACTION_TYPE_SHAPESHIFT } from '../../../helpers/constants/transactions'
+import Button from '../../ui/button'
+import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions'
 
-export default class TransactionList extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
+const PAGE_INCREMENT = 10
+
+const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
+  return ({ initialTransaction: { txParams } }) => txParams && txParams.to === recipientAddress
+}
+
+const tokenTransactionFilter = ({
+  initialTransaction: {
+    transactionCategory,
+  },
+}) => !TOKEN_CATEGORY_HASH[transactionCategory]
+
+
+const getFilteredTransactionGroups = (transactionGroups, hideTokenTransactions, tokenAddress) => {
+  if (hideTokenTransactions) {
+    return transactionGroups.filter(tokenTransactionFilter)
+  } else if (tokenAddress) {
+    return transactionGroups.filter(getTransactionGroupRecipientAddressFilter(tokenAddress))
   }
+  return transactionGroups
+}
 
-  static defaultProps = {
-    children: null,
-    pendingTransactions: [],
-    completedTransactions: [],
-  }
+export default function TransactionList ({ hideTokenTransactions, tokenAddress }) {
+  const [limit, setLimit] = useState(PAGE_INCREMENT)
+  const t = useI18nContext()
 
-  static propTypes = {
-    children: PropTypes.node,
-    pendingTransactions: PropTypes.array,
-    completedTransactions: PropTypes.array,
-    selectedToken: PropTypes.object,
-    updateNetworkNonce: PropTypes.func,
-    assetImages: PropTypes.object,
-    fetchBasicGasAndTimeEstimates: PropTypes.func,
-    fetchGasEstimates: PropTypes.func,
-    transactionTimeFeatureActive: PropTypes.bool,
-    firstPendingTransactionId: PropTypes.number,
-  }
+  const dispatch = useDispatch()
+  const unfilteredPendingTransactions = useSelector(nonceSortedPendingTransactionsSelector)
+  const unfilteredCompletedTransactions = useSelector(nonceSortedCompletedTransactionsSelector)
+  const { transactionTime: transactionTimeFeatureActive } = useSelector(getFeatureFlags)
 
-  componentDidMount () {
-    const {
-      pendingTransactions,
-      updateNetworkNonce,
-      fetchBasicGasAndTimeEstimates,
-      fetchGasEstimates,
-      transactionTimeFeatureActive,
-    } = this.props
+  const pendingTransactions = useMemo(
+    () => getFilteredTransactionGroups(unfilteredPendingTransactions, hideTokenTransactions, tokenAddress),
+    [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions]
+  )
+  const completedTransactions = useMemo(
+    () => getFilteredTransactionGroups(unfilteredCompletedTransactions, hideTokenTransactions, tokenAddress),
+    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions]
+  )
 
-    updateNetworkNonce()
+  const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(() => ({
+    fetchGasEstimates: (blockTime) => dispatch(actions.fetchGasEstimates(blockTime)),
+    fetchBasicGasAndTimeEstimates: () => dispatch(actions.fetchBasicGasAndTimeEstimates()),
+  }), [dispatch])
 
-    if (transactionTimeFeatureActive && pendingTransactions.length) {
+  // keep track of previous values from state.
+  // loaded is used here to determine if our effect has ran at least once.
+  const prevState = useRef({ loaded: false, pendingTransactions, transactionTimeFeatureActive })
+
+  useEffect(() => {
+    const { loaded } = prevState.current
+    const pendingTransactionAdded = pendingTransactions.length > 0 && prevState.current.pendingTransactions.length === 0
+    const transactionTimeFeatureWasActivated = !prevState.current.transactionTimeFeatureActive && transactionTimeFeatureActive
+    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && (loaded === false || transactionTimeFeatureWasActivated || pendingTransactionAdded)) {
       fetchBasicGasAndTimeEstimates()
         .then(({ blockTime }) => fetchGasEstimates(blockTime))
     }
-  }
+    prevState.current = { loaded: true, pendingTransactions, transactionTimeFeatureActive }
+  }, [fetchGasEstimates, fetchBasicGasAndTimeEstimates, transactionTimeFeatureActive, pendingTransactions ])
 
-  componentDidUpdate (prevProps) {
-    const { pendingTransactions: prevPendingTransactions = [] } = prevProps
-    const {
-      pendingTransactions = [],
-      updateNetworkNonce,
-      fetchBasicGasAndTimeEstimates,
-      fetchGasEstimates,
-      transactionTimeFeatureActive,
-    } = this.props
+  const viewMore = useCallback(() => setLimit((prev) => prev + PAGE_INCREMENT), [])
 
-    if (pendingTransactions.length > prevPendingTransactions.length) {
-      updateNetworkNonce()
-    }
 
-    const transactionTimeFeatureWasActivated = !prevProps.transactionTimeFeatureActive && transactionTimeFeatureActive
-    const pendingTransactionAdded = pendingTransactions.length > 0 && prevPendingTransactions.length === 0
+  const pendingLength = pendingTransactions.length
 
-    if (transactionTimeFeatureActive && pendingTransactions.length > 0 && (transactionTimeFeatureWasActivated || pendingTransactionAdded)) {
-      fetchBasicGasAndTimeEstimates()
-        .then(({ blockTime }) => fetchGasEstimates(blockTime))
-    }
-  }
-
-  shouldShowSpeedUp = (transactionGroup, isEarliestNonce) => {
-    const { transactions = [], hasRetried } = transactionGroup
-    const [earliestTransaction = {}] = transactions
-    const { submittedTime } = earliestTransaction
-    return Date.now() - submittedTime > 5000 && isEarliestNonce && !hasRetried
-  }
-
-  shouldShowCancel (transactionGroup) {
-    const { hasCancelled } = transactionGroup
-    return !hasCancelled
-  }
-
-  renderTransactions () {
-    const { t } = this.context
-    const { pendingTransactions = [], completedTransactions = [] } = this.props
-    const pendingLength = pendingTransactions.length
-
-    return (
+  return (
+    <div className="transaction-list">
       <div className="transaction-list__transactions">
         {
           pendingLength > 0 && (
@@ -95,68 +90,50 @@ export default class TransactionList extends PureComponent {
               </div>
               {
                 pendingTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index, true)
+                  <TransactionListItem isEarliestNonce={index === 0} transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${index}`} />
                 ))
               }
             </div>
           )
         }
         <div className="transaction-list__completed-transactions">
-          <div className="transaction-list__header">
-            { t('history') }
-          </div>
+          {
+            pendingLength > 0
+              ? (
+                <div className="transaction-list__header">
+                  { t('history') }
+                </div>
+              )
+              : null
+          }
           {
             completedTransactions.length > 0
-              ? completedTransactions.map((transactionGroup, index) => (
-                this.renderTransaction(transactionGroup, index)
+              ? completedTransactions.slice(0, limit).map((transactionGroup, index) => (
+                <TransactionListItem transactionGroup={transactionGroup} key={`${transactionGroup.nonce}:${limit + index - 10}`} />
               ))
-              : this.renderEmpty()
+              : (
+                <div className="transaction-list__empty">
+                  <div className="transaction-list__empty-text">
+                    { t('noTransactions') }
+                  </div>
+                </div>
+              )
           }
+          {completedTransactions.length > limit && (
+            <Button className="transaction-list__view-more" type="secondary" rounded onClick={viewMore}>View More</Button>
+          )}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  renderTransaction (transactionGroup, index, isPendingTx = false) {
-    const { selectedToken, assetImages, firstPendingTransactionId } = this.props
-    const { transactions = [] } = transactionGroup
+TransactionList.propTypes = {
+  hideTokenTransactions: PropTypes.bool,
+  tokenAddress: PropTypes.string,
+}
 
-    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
-      ? (
-        <ShapeShiftTransactionListItem
-          { ...transactions[0] }
-          key={`shapeshift${index}`}
-        />
-      ) : (
-        <TransactionListItem
-          transactionGroup={transactionGroup}
-          key={`${transactionGroup.nonce}:${index}`}
-          showSpeedUp={isPendingTx && this.shouldShowSpeedUp(transactionGroup, index === 0)}
-          showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
-          isEarliestNonce={isPendingTx && index === 0}
-          token={selectedToken}
-          assetImages={assetImages}
-          firstPendingTransactionId={firstPendingTransactionId}
-        />
-      )
-  }
-
-  renderEmpty () {
-    return (
-      <div className="transaction-list__empty">
-        <div className="transaction-list__empty-text">
-          { this.context.t('noTransactions') }
-        </div>
-      </div>
-    )
-  }
-
-  render () {
-    return (
-      <div className="transaction-list">
-        { this.renderTransactions() }
-        { this.props.children }
-      </div>
-    )
-  }
+TransactionList.defaultProps = {
+  hideTokenTransactions: false,
+  tokenAddress: undefined,
 }
