@@ -1191,8 +1191,8 @@ export function showAccountDetail (address) {
     const activeTabOrigin = state.activeTab.origin
     const selectedAddress = getSelectedAddress(state)
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(state)
-    const currentTabIsConnectedToPreviousAddress = permittedAccountsForCurrentTab.includes(selectedAddress)
-    const currentTabIsConnectedToNextAddress = permittedAccountsForCurrentTab.includes(address)
+    const currentTabIsConnectedToPreviousAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(selectedAddress)
+    const currentTabIsConnectedToNextAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(address)
     const switchingToUnconnectedAddress = currentTabIsConnectedToPreviousAddress && !currentTabIsConnectedToNextAddress
 
     try {
