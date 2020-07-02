@@ -443,7 +443,7 @@ export default class TransactionController extends EventEmitter {
       const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
-      let { customNonceValue = null } = txMeta
+      let { customNonceValue } = txMeta
       customNonceValue = Number(customNonceValue)
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
