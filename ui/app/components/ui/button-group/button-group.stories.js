@@ -50,3 +50,27 @@ export const withDisabledButton = () => (
     </Button>
   </ButtonGroup>
 )
+
+export const smallIsolatedButtons = () => (
+  <ButtonGroup
+    className="small-iso-buttons"
+    disabled={boolean('Disabled', false)}
+    defaultActiveButtonIndex={1}
+  >
+    <Button
+      onClick={action('cheap')}
+    >
+      {text('Button1', 'Cheap')}
+    </Button>
+    <Button
+      onClick={action('average')}
+    >
+      {text('Button2', 'Average')}
+    </Button>
+    <Button
+      onClick={action('fast')}
+    >
+      {text('Button3', 'Fast')}
+    </Button>
+  </ButtonGroup>
+)
