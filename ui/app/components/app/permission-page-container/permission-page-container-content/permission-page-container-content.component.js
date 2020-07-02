@@ -7,7 +7,13 @@ import CheckBox from '../../../ui/check-box'
 export default class PermissionPageContainerContent extends PureComponent {
 
   static propTypes = {
-    domainMetadata: PropTypes.object.isRequired,
+    domainMetadata: PropTypes.shape({
+      extensionId: PropTypes.string,
+      icon: PropTypes.string,
+      host: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }),
     selectedPermissions: PropTypes.object.isRequired,
     onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
@@ -145,6 +151,7 @@ export default class PermissionPageContainerContent extends PureComponent {
               ? t('allowExternalExtensionTo', [domainMetadata.extensionId])
               : t('allowThisSiteTo')
             }
+            siteOrigin={domainMetadata.origin}
           />
           <section className="permission-approval-container__permissions-container">
             { this.renderRequestedPermissions() }

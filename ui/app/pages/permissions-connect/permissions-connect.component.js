@@ -31,7 +31,13 @@ export default class PermissionConnect extends Component {
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
-    targetDomainMetadata: PropTypes.object,
+    targetDomainMetadata: PropTypes.shape({
+      extensionId: PropTypes.string,
+      icon: PropTypes.string,
+      host: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }),
   }
 
   static defaultProps = {
@@ -95,7 +101,7 @@ export default class PermissionConnect extends Component {
 
     if (
       permissionsRequest &&
-      savedMetadata.name !== targetDomainMetadata?.name
+      savedMetadata.origin !== targetDomainMetadata?.origin
     ) {
       return { targetDomainMetadata }
     }
