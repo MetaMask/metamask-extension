@@ -86,6 +86,11 @@ async function queryCurrentActiveTab (windowType) {
       const { title, url } = activeTab
       const { origin, protocol } = url ? new URL(url) : {}
 
+      if (!origin || origin === 'null') {
+        resolve({})
+        return
+      }
+
       resolve({ title, origin, protocol, url })
     })
   })
