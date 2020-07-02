@@ -1,0 +1,19 @@
+.caret-toggle-dropdown {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  &__text {
+    @extend %font;
+    font-size: 12px;
+    margin-right: 6px;
+    color: $Blue-500;
+    font-weight: 900;
+  }
+
+  &__text-caret-wrap {
+    display: flex;
+    align-items: center;
+    color: $Blue-500;
+  }
+}
