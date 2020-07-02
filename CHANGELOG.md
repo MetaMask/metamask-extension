@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.1 Thu Jul 02 2020
+
 ## 8.0.0 Mon Jun 23 2020
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Add permission system
 - [#7261](https://github.com/MetaMask/metamask-extension/pull/7261): Search accounts by name
