@@ -767,10 +767,10 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe.skip('#newUnsignedMessage', function () {
+  describe('#newUnsignedMessage', function () {
     let msgParams, metamaskMsgs, messages, msgId
 
-    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+    const address = '0x1aac926ed958373188fddcaf959d492a8bddfb5d'
     const data = '0x43727970746f6b697474696573'
 
     beforeEach(async function () {

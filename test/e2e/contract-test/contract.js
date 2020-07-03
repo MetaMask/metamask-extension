@@ -577,48 +577,12 @@ const initialize = () => {
     }
 
     personalSignData.addEventListener('click', () => {
-      const personalSignData = {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          Person: [
-            { name: 'name', type: 'string' },
-            { name: 'wallet', type: 'address' },
-          ],
-          Mail: [
-            { name: 'from', type: 'Person' },
-            { name: 'to', type: 'Person' },
-            { name: 'contents', type: 'string' },
-          ],
-        },
-        primaryType: 'Mail',
-        domain: {
-          name: 'Ether Mail',
-          version: '1',
-          chainId: 3,
-          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        },
-        message: {
-          sender: {
-            name: 'Cow',
-            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-          },
-          recipient: {
-            name: 'Bob',
-            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-          },
-          contents: 'Hello, Bob!',
-        },
-      }
+      const personalSignData = 'personal sign data'
 
       confluxJS.provider.sendAsync(
         {
           method: 'personal_sign',
-          params: [JSON.stringify(personalSignData), conflux.selectedAddress],
+          params: [personalSignData, conflux.selectedAddress],
           from: conflux.selectedAddress,
         },
         (err, result) => {
@@ -635,50 +599,14 @@ const initialize = () => {
     })
 
     cfxSignData.addEventListener('click', () => {
-      const typedData = {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          Person: [
-            { name: 'name', type: 'string' },
-            { name: 'wallet', type: 'address' },
-          ],
-          Mail: [
-            { name: 'from', type: 'Person' },
-            { name: 'to', type: 'Person' },
-            { name: 'contents', type: 'string' },
-          ],
-        },
-        primaryType: 'Mail',
-        domain: {
-          name: 'Ether Mail',
-          version: '1',
-          chainId: 3,
-          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        },
-        message: {
-          sender: {
-            name: 'Cow',
-            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-          },
-          recipient: {
-            name: 'Bob',
-            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-          },
-          contents: 'Hello, Bob!',
-        },
-      }
+      const sampleData = 'sample cfx_sign data'
 
       confluxJS.provider.sendAsync(
         {
           method: 'cfx_sign',
           params: [
             conflux.selectedAddress,
-            keccak256.digest(JSON.stringify(typedData)),
+            keccak256.digest(sampleData),
           ],
           from: conflux.selectedAddress,
         },
@@ -725,11 +653,11 @@ const initialize = () => {
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
         message: {
-          sender: {
+          from: {
             name: 'Cow',
             wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
           },
-          recipient: {
+          to: {
             name: 'Bob',
             wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
           },
@@ -739,7 +667,7 @@ const initialize = () => {
 
       confluxJS.provider.sendAsync(
         {
-          method: 'cfx_signTypedData_v3',
+          method: 'cfx_signTypedData_v4',
           params: [conflux.selectedAddress, JSON.stringify(typedData)],
           from: conflux.selectedAddress,
         },

@@ -644,12 +644,12 @@ describe('Actions', function () {
       signMessageSpy.restore()
     })
 
-    it('calls signPerMsg in background', function () {
+    it('calls signMsg in background', function () {
       const store = mockStore({
         metamask: {},
       })
 
-      signMessageSpy = sinon.spy(background, 'signPersonalMessage')
+      signMessageSpy = sinon.spy(background, 'signMessage')
       store.dispatch(actions.signMsg(msgParams))
       assert(signMessageSpy.calledOnce)
     })
@@ -665,7 +665,7 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ]
 
-      signMessageSpy = sinon.stub(background, 'signPersonalMessage')
+      signMessageSpy = sinon.stub(background, 'signMessage')
       signMessageSpy.callsFake((_, callback) => {
         callback(new Error('error'))
       })
@@ -759,7 +759,7 @@ describe('Actions', function () {
         },
         primaryType: 'Mail',
         domain: {
-          name: 'Ether Mainl',
+          name: 'Ether Mail',
           version: '1',
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
