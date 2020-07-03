@@ -1711,10 +1711,10 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@metamask/test-dapp@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.2.0.tgz#e48ea589db7ab028ea222ae47ee814c4687e02c6"
-  integrity sha512-KX8ZhR/yLBO6yzx/9/BDxHdrTV6nNoOb8LvpUGm8GiLu6jOXETKZj0qfgvL5quWnQ/LRJMEXeuOZWjtXgcVofg==
+"@metamask/test-dapp@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-3.0.0.tgz#4e9678c872e0f379b4178032a6c4bfac6131a360"
+  integrity sha512-aXiN68DDjrMpHYIx3uE47HUzLIO327zsqMPFlv/SVEmYiuZgt7Ypndb25llPBJsLQ5cWPwiln6MoTb9DbxaSeA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
