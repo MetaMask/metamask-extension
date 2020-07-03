@@ -43,7 +43,7 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
 
   const hasSubstitutions = Boolean(substitutions && substitutions.length)
   const hasReactSubstitutions = hasSubstitutions &&
-    substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
+    substitutions.some((element) => element !== null && (typeof element === 'function' || typeof element === 'object'))
 
   // perform substitutions
   if (hasSubstitutions) {
@@ -55,10 +55,12 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         return part
       }
       const substituteIndex = Number(subMatch[1]) - 1
-      if (substitutions[substituteIndex]) {
-        return substitutions[substituteIndex]
+      if (substitutions[substituteIndex] == null) {
+        const error = new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+        log.error(error)
+        Sentry.captureException(error)
       }
-      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+      return substitutions[substituteIndex]
     })
 
     phrase = hasReactSubstitutions

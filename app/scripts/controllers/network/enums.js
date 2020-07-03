@@ -15,7 +15,7 @@ export const MAINNET_CHAIN_ID = '0x1'
 export const ROPSTEN_CHAIN_ID = '0x3'
 export const RINKEBY_CHAIN_ID = '0x4'
 export const GOERLI_CHAIN_ID = '0x5'
-export const KOVAN_CHAIN_ID = '0x42'
+export const KOVAN_CHAIN_ID = '0x2a'
 
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby'
