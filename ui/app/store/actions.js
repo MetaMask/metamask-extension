@@ -4,7 +4,7 @@ import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
 import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
 import ethUtil from 'ethereumjs-util'
-import { fetchLocale } from '../helpers/utils/i18n-helper'
+import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
@@ -2012,8 +2012,9 @@ export function setIpfsGateway (val) {
 }
 
 export function updateCurrentLocale (key) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
+    await loadRelativeTimeFormatLocaleData(key)
     return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)

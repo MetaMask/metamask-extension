@@ -79,3 +79,21 @@ export async function fetchLocale (localeCode) {
   }
 }
 
+const relativeTimeFormatLocaleData = new Set()
+
+export async function loadRelativeTimeFormatLocaleData (localeCode) {
+  const languageTag = localeCode.split('_')[0]
+  if (
+    Intl.RelativeTimeFormat &&
+    typeof Intl.RelativeTimeFormat.__addLocaleData === 'function' &&
+    !relativeTimeFormatLocaleData.has(languageTag)
+  ) {
+    const localeData = await fetchRelativeTimeFormatData(languageTag)
+    Intl.RelativeTimeFormat.__addLocaleData(localeData)
+  }
+}
+
+async function fetchRelativeTimeFormatData (languageTag) {
+  const response = await window.fetch(`./intl/${languageTag}/relative-time-format-data.json`)
+  return await response.json()
+}
