@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import TokenBalance from '../../components/ui/token-balance'
+import { getEnvironmentType } from '../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 
 export default class ConfirmAddSuggestedToken extends Component {
   static contextTypes = {
@@ -19,9 +21,23 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   componentDidMount () {
+    this._checkPendingTokens()
+  }
+
+  componentDidUpdate () {
+    this._checkPendingTokens()
+  }
+
+  _checkPendingTokens () {
     const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props
 
-    if (Object.keys(pendingTokens).length === 0) {
+    if (Object.keys(pendingTokens).length > 0) {
+      return
+    }
+
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      global.platform.closeCurrentWindow()
+    } else {
       history.push(mostRecentOverviewPage)
     }
   }
