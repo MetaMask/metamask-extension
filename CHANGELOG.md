@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.2 Fri Jul 03 2020
+
 ## 8.0.1 Thu Jul 02 2020
 - [#8874](https://github.com/MetaMask/metamask-extension/pull/8874): Fx overflow behaviour of add token list
 - [#8885](https://github.com/MetaMask/metamask-extension/pull/8885): Show `origin` in connect flow rather than site name
