@@ -122,6 +122,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               type="secondary"
               large
               className="page-container__footer-button"
+              disabled={pendingTokens.length === 0}
               onClick={() => {
                 addToken(pendingToken)
                   .then(() => removeSuggestedTokens())
