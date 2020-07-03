@@ -82,7 +82,7 @@ describe('NetworkController', function () {
           input: '0x4',
           expected: 'Rinkeby',
         }, {
-          input: '0x42',
+          input: '0x2a',
           expected: 'Kovan',
         }, {
           input: 'ropsten',
