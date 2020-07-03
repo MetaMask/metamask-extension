@@ -132,14 +132,14 @@ describe('i18n helper', function () {
       assert.equal(result, `${TEST_SUBSTITUTION_1} - ${TEST_SUBSTITUTION_2} - ${TEST_SUBSTITUTION_3} - ${TEST_SUBSTITUTION_4} - ${TEST_SUBSTITUTION_5}`)
     })
 
-    it('should throw an error when not passed as many substitutions as a message requires', function () {
-      assert.throws(
-        () => {
-          t(TEST_KEY_5, [ TEST_SUBSTITUTION_1, TEST_SUBSTITUTION_2 ])
-        },
-        Error,
-        `Insufficient number of substitutions for message: '$1 - $2 - $3'`
-      )
+    it('should correctly render falsey substitutions', function () {
+      const result = t(TEST_KEY_4, [ 0, -0, '', false, NaN ])
+      assert.equal(result, '0 - 0 -  - false - NaN')
+    })
+
+    it('should render nothing for "null" and "undefined" substitutions', function () {
+      const result = t(TEST_KEY_5, [ null, TEST_SUBSTITUTION_2 ])
+      assert.equal(result, ` - ${TEST_SUBSTITUTION_2} - `)
     })
 
     it('should return the correct message when a single react substitution is made', function () {
