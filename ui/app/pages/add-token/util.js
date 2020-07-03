@@ -5,7 +5,7 @@ export function checkExistingAddresses (address, tokenList = []) {
     return false
   }
 
-  const matchesAddress = existingToken => {
+  const matchesAddress = (existingToken) => {
     return existingToken.address.toLowerCase() === address.toLowerCase()
   }
 

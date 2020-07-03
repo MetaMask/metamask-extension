@@ -4,21 +4,21 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
-describe('TransactionAction Component', () => {
-  const t = key => key
+describe('TransactionAction Component', function () {
+  const t = (key) => key
 
 
-  describe('Outgoing transaction', () => {
-    beforeEach(() => {
+  describe('Outgoing transaction', function () {
+    beforeEach(function () {
       global.eth = {
-        getCode: sinon.stub().callsFake(address => {
+        getCode: sinon.stub().callsFake((address) => {
           const code = address === 'approveAddress' ? 'contract' : '0x'
           return Promise.resolve(code)
         }),
       }
     })
 
-    it('should render Sent Ether', () => {
+    it('should render Sent Ether', function () {
       const methodData = { data: {}, done: true, error: null }
       const transaction = {
         id: 1,
@@ -35,18 +35,21 @@ describe('TransactionAction Component', () => {
         },
       }
 
-      const wrapper = shallow(<TransactionAction
-        methodData={methodData}
-        transaction={transaction}
-        className="transaction-action"
-      />, { context: { t }})
+      const wrapper = shallow((
+        <TransactionAction
+          methodData={methodData}
+          transaction={transaction}
+          className="transaction-action"
+        />
+      ), { context: { t } })
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
       wrapper.setState({ transactionAction: 'sentEther' })
       assert.equal(wrapper.text(), 'sentEther')
+      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'sentEther')
     })
 
-    it('should render Approved', async () => {
+    it('should render Approved', async function () {
       const methodData = {
         name: 'Approve',
       }
@@ -79,9 +82,10 @@ describe('TransactionAction Component', () => {
       assert.ok(wrapper)
       assert.equal(wrapper.find('.transaction-action').length, 1)
       assert.equal(wrapper.find('.transaction-action').text().trim(), 'Approve')
+      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'Approve')
     })
 
-    it('should render contractInteraction', async () => {
+    it('should render contractInteraction', async function () {
       const methodData = {}
       const transaction = {
         id: 1,
@@ -106,12 +110,13 @@ describe('TransactionAction Component', () => {
           transaction={transaction}
           className="test-class"
         />,
-        { context: { t }}
+        { context: { t } }
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find('.transaction-action').length, 1)
       assert.equal(wrapper.find('.transaction-action').text().trim(), 'contractInteraction')
+      assert.equal(wrapper.find('.transaction-action').props().title.trim(), 'contractInteraction')
     })
   })
 })

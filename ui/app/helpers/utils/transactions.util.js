@@ -6,6 +6,7 @@ import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
+import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import fetchWithCache from './fetch-with-cache'
 
@@ -19,6 +20,8 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
+  DECRYPT_REQUEST_KEY,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
   DEPOSIT_TRANSACTION_KEY,
@@ -135,7 +138,13 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    return SIGNATURE_REQUEST_KEY
+    if (type === MESSAGE_TYPE.ETH_DECRYPT) {
+      return DECRYPT_REQUEST_KEY
+    } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
+      return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
+    } else {
+      return SIGNATURE_REQUEST_KEY
+    }
   }
 
   if (isConfirmDeployContract(transaction)) {
@@ -228,7 +237,7 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
   }
   const prefix = prefixForNetwork(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`

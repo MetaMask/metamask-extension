@@ -1,3 +1,30 @@
+.modal {
+  z-index: 1050;
+  position: fixed;
+  width: 500px;
+  transform: translate3d(-50%, -50%, 0);
+  top: 50%;
+  left: 50%;
+
+  .content {
+    margin: 0;
+    background-color: white;
+    animation-fill-mode: forwards;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #373A47;
+  animation-fill-mode: forwards;
+  animation-duration: 0.3s;
+}
+
 .modal > div:focus {
   outline: none !important;
 }
@@ -34,14 +61,17 @@
   }
 }
 
-.account-modal-close::after {
-  content: '\00D7';
+.account-modal-close {
   font-size: 40px;
+  background-color: transparent;
   color: $dusty-gray;
   position: absolute;
   top: 10px;
   right: 12px;
-  cursor: pointer;
+}
+
+.account-modal-close::after {
+  content: '\00D7';
 }
 
 .account-modal-container .identicon {
@@ -186,7 +216,6 @@
   overflow: hidden;
   resize: none;
   padding: 9px 13px 8px;
-  text-transform: uppercase;
 }
 
 .modal-close-x::after {
@@ -369,26 +398,6 @@
     @media screen and (max-width: 575px) {
       height: 0;
     }
-
-    .shapeshift-form-wrapper {
-      display: flex;
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      flex: 1 0 auto;
-
-      .shapeshift-form, .modal-shapeshift-form {
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, .05);
-        padding: 17px 15px;
-        margin-bottom: 10px;
-
-        &__caret {
-          width: auto;
-          flex: 1;
-        }
-      }
-    }
   }
 
   &__logo {
@@ -423,23 +432,6 @@
       left: 0px;
     }
 
-    &__shapeshift-buy {
-      padding-top: 25px;
-      position: relative;
-      @media screen and (max-width: 575px) {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex: 1;
-        padding-bottom: 25px;
-        flex-flow: column;
-        justify-content: center;
-        padding-top: 20px;
-        min-height: 240px;
-        border: none;
-      }
-    }
-
     &__logo-container {
       display: flex;
       justify-content: center;
@@ -455,14 +447,6 @@
         max-height: 6rem;
         padding-bottom: 20px;
       }
-    }
-
-    &__coinbase-logo {
-      height: 40px;
-    }
-
-    &__shapeshift-logo {
-      height: 60px;
     }
 
     &__right {
@@ -504,32 +488,8 @@
     border-bottom: 0px;
   }
 
-  &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
+  &__deposit-button {
     width: 257px;
-  }
-
-  .shapeshift-form-wrapper {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 28px;
-    flex: 1 0 auto;
-
-    .shapeshift-form, .modal-shapeshift-form {
-      border-radius: 8px;
-      background-color: rgba(0, 0, 0, .05);
-      padding: 17px 15px;
-
-      &__caret {
-        width: auto;
-        flex: 1;
-      }
-    }
-  }
-
-  .shapeshift-form__shapeshift-buy-btn {
-    margin-top: 10px;
   }
 
   .simple-dropdown {

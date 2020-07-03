@@ -36,7 +36,7 @@
     align-items: center;
   }
 
-  &__logout-button {
+  &__lock-button {
     border: 1px solid $dusty-gray;
     background-color: transparent;
     color: $white;
@@ -51,13 +51,21 @@
     height: 16px;
   }
 
-  &__accounts {
+  &__accounts-container {
     display: flex;
-    flex-flow: column nowrap;
-    overflow-y: auto;
-    max-height: 256px;
     position: relative;
+    flex-direction: column;
     z-index: 200;
+
+    @media (max-height: 600px) {
+      max-height: 236px;
+    }
+  }
+
+  &__accounts {
+    overflow-y: auto;
+    position: relative;
+    max-height: 256px;
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
@@ -70,11 +78,17 @@
 
     .keyring-label {
       margin-top: 5px;
+      margin-right: 10px;
       background-color: $dusty-gray;
       color: $black;
       font-weight: normal;
       letter-spacing: .5px;
     }
+  }
+
+  &__no-accounts {
+    font-size: 0.8em;
+    padding: 16px 14px;
   }
 
   &__account {
@@ -152,10 +166,6 @@
     cursor: pointer;
   }
 
-  &__accounts-container {
-    position: relative;
-  }
-
   &__scroll-button {
     position: absolute;
     bottom: 12px;
@@ -174,5 +184,9 @@
     &:hover {
       opacity: 1;
     }
+  }
+
+  &__icon-list {
+    display: flex;
   }
 }

@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "El modo de privacidad está habilitado de manera predeterminada"
-  },
   "chartOnlyAvailableEth": {
     "message": "Chart está disponible únicamente en las redes de Ethereum."
-  },
-  "confirmClear": {
-    "message": "¿Estás seguro de que deseas borrar los sitios web aprobados?"
   },
   "contractInteraction": {
     "message": "Interacción contractual"
   },
-  "clearApprovalData": {
-    "message": "Borrar datos de privacidad"
-  },
   "reject": {
     "message": "Rechazar"
-  },
-  "providerRequest": {
-    "message": "$1 desea conectarse a tu cuenta"
-  },
-  "providerRequestInfo": {
-    "message": "Este sitio está solicitando acceso para ver la dirección de tu cuenta corriente. Asegúrate siempre de que confías en los sitios con los que interactúas."
   },
   "about": {
     "message": "Acerca de"
   },
   "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto."
+    "message": "Versión, centro de soporte técnico e información de contacto"
   },
   "acceleratingATransaction": {
     "message": "* Aumentar una transacción utilizando un precio de gas más alto aumenta sus posibilidades de ser procesada más rápido por la red, pero esto no siempre está garantizado."
@@ -63,7 +48,7 @@
     "message": "Avanzada"
   },
   "advancedSettingsDescription": {
-    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado."
+    "message": "Accede a las funciones de desarrollador, descarga los registros de estado, restablece la cuenta, y configura las redes Testnet y el RPC personalizado"
   },
   "advancedOptions": {
     "message": "Opciones avanzadas"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporizador de cierre de sesión automático (minutos)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Configura tu tiempo de inactividad en minutos para controlar cuándo MetaMask cerrará tu sesión de forma automática"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "El saldo puede estar anticuado"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficiente para el total actual de gas"
-  },
   "basic": {
     "message": "Básicas"
-  },
-  "betweenMinAndMax": {
-    "message": "debe ser superior o igual a $1 e inferior o igual a $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Bloquear Explorer"
@@ -216,9 +194,6 @@
   "chainId": {
     "message": "ID de cadena"
   },
-  "clickToAdd": {
-    "message": "Haz clic en $1 para agregarlos a tu cuenta"
-  },
   "clickToRevealSeed": {
     "message": "Haz clic aquí para mostrar las palabras secretas"
   },
@@ -248,9 +223,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectRequest": {
-    "message": "Solicitud de conexión"
   },
   "connectingTo": {
     "message": "Conexión con $1"
@@ -282,17 +254,8 @@
   "contractDeployment": {
     "message": "Despliegue de contratos"
   },
-  "conversionProgress": {
-    "message": "Conversión en curso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "Copiado"
-  },
-  "copy": {
-    "message": "Copiar"
   },
   "copyAddress": {
     "message": "Copiar la dirección al portapapeles"
@@ -305,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copiar al portapapeles"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Esta es tu clave privada (haz clic para copiar)"
@@ -371,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ya tienes algunos Ethers, la forma más rápida de ingresarlos en tu nueva billetera es a través de un depósito directo."
-  },
-  "dismiss": {
-    "message": "Rechazar"
   },
   "done": {
     "message": "Listo"
@@ -485,17 +442,11 @@
   "from": {
     "message": "De"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipo de función"
   },
   "gasLimit": {
     "message": "Limite de gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido según las tasas de éxito en la red."
   },
   "gasLimitInfoModalContent": {
     "message": "El límite de gas es la cantidad máxima de unidades de gas que estás dispuesto a gastar."
@@ -518,9 +469,6 @@
   "gasPriceNoDenom": {
     "message": "Precio del gas"
   },
-  "gasPriceCalculation": {
-    "message": "Calculamos los precios de gas sugeridos según las tasas de ganancia en la red."
-  },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, blockies identicon"
   },
@@ -536,10 +484,6 @@
   },
   "getStarted": {
     "message": "Comenzar"
-  },
-  "greaterThanMin": {
-    "message": "debe ser superior o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Estamos encantados de verte."
@@ -565,9 +509,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
@@ -656,10 +597,6 @@
   "ledgerAccountRestriction": {
     "message": "Necesitas utilizar tu cuenta anterior para agregar una nueva."
   },
-  "lessThanMax": {
-    "message": "debe ser menor o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "¡Eso, pongámonos en marcha!"
   },
@@ -681,10 +618,7 @@
   "loadMore": {
     "message": "Cargar más"
   },
-  "login": {
-    "message": "Iniciar sesión"
-  },
-  "logout": {
+  "lock": {
     "message": "Cerrar sesión"
   },
   "mainnet": {
@@ -693,23 +627,14 @@
   "memorizePhrase": {
     "message": "Memoriza esta frase."
   },
-  "menu": {
-    "message": "Menú"
-  },
   "message": {
     "message": "Mensaje"
   },
   "metamaskDescription": {
     "message": "Te estamos conectando a Ethereum y a la web descentralizada."
   },
-  "metamaskSeedWords": {
-    "message": "Palabras de inicialización de MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "¿No puedes ver tus tokens?"
   },
   "mobileSyncText": {
     "message": "Ingresa tu contraseña para confirmar que eres tú."
@@ -806,9 +731,6 @@
   "noAddressForName": {
     "message": "No se ha establecido ninguna dirección para este nombre."
   },
-  "noDeposits": {
-    "message": "No se han recibido depósitos"
-  },
   "noConversionRateAvailable": {
     "message": "No hay ninguna tasa de conversión disponible"
   },
@@ -855,9 +777,6 @@
     "message": "Copia y pega tu cadena de claves privada aquí:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "¡Copia y pega tu frase de inicialización aquí!"
-  },
   "pending": {
     "message": "pendiente"
   },
@@ -885,9 +804,6 @@
   },
   "privateNetwork": {
     "message": "Red privada"
-  },
-  "qrCode": {
-    "message": "Mostrar el código QR"
   },
   "queue": {
     "message": "Cola"
@@ -963,9 +879,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Alguien podría utilizar estas palabras para robar todas tus cuentas."
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "Quitar"
@@ -1171,9 +1084,6 @@
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
   },
-  "submit": {
-    "message": "Enviar"
-  },
   "submitted": {
     "message": "Enviado"
   },
@@ -1184,7 +1094,7 @@
     "message": "Símbolo"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "El símbolo debe tener entre 0 y 12 caracteres."
+    "message": "El símbolo debe tener 11 caracteres o menos."
   },
   "syncWithMobile": {
     "message": "Sincronizar con un dispositivo móvil"
@@ -1217,14 +1127,10 @@
     "message": "Esto creará una billetera y una frase de inicialización nuevas"
   },
   "tips": {
-    "message": "Propinas"
+    "message": "Consejos"
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH a través de ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ya se ha agregado."
@@ -1334,9 +1240,6 @@
   },
   "userName": {
     "message": "Nombre de usuario"
-  },
-  "validFileImport": {
-    "message": "Selecciona un archivo válido para importar."
   },
   "viewAccount": {
     "message": "Ver cuenta"

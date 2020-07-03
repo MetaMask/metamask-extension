@@ -46,6 +46,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   &__footer {
@@ -55,7 +56,7 @@
     border-top: 1px solid $geyser;
     flex: 0 0 auto;
 
-    header {
+    footer {
       display: flex;
       flex-flow: row;
       justify-content: center;
@@ -63,7 +64,7 @@
       flex: 0 0 auto;
     }
 
-    footer {
+    &-secondary {
       display: flex;
       flex-flow: row;
       justify-content: space-around;
@@ -117,22 +118,13 @@
 
   &__tab {
     min-width: 5rem;
-    padding: 8px;
     color: $dusty-gray;
-    font-family: Roboto;
     font-size: 1rem;
-    text-align: center;
-    cursor: pointer;
     border-bottom: none;
     margin-right: 16px;
 
     &:last-of-type {
       margin-right: 0;
-    }
-
-    &--selected {
-      color: $curious-blue;
-      border-bottom: 2px solid $curious-blue;
     }
   }
 

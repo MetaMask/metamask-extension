@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Režim súkromia je povolený. Je prednastavený automaticky"
-  },
   "chartOnlyAvailableEth": {
     "message": "Graf je k dispozícii iba v sieťach Ethereum."
-  },
-  "confirmClear": {
-    "message": "Naozaj chcete vymazať schválené webové stránky?"
   },
   "contractInteraction": {
     "message": "Zmluvná interakcia"
   },
-  "clearApprovalData": {
-    "message": "Jasné údaje o schválení"
-  },
   "reject": {
     "message": "Odmítnout"
-  },
-  "providerRequest": {
-    "message": "$1 sa chce pripojiť k vášmu účtu"
-  },
-  "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
   },
   "about": {
     "message": "Informácie"
   },
   "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie."
+    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -63,7 +48,7 @@
     "message": "Rozšírené"
   },
   "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC."
+    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
@@ -118,10 +103,10 @@
   "attributions": {
     "message": "Zásluhy"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Nastavte čas nečinnosti v minútach skôr, než sa MetaMask automaticky odhlási"
   },
   "average": {
@@ -148,15 +133,8 @@
   "balanceOutdated": {
     "message": "Zostatok môže byť neaktuálny"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Nedostatek prostředků pro aktuální množství paliva"
-  },
   "basic": {
     "message": "Základné"
-  },
-  "betweenMinAndMax": {
-    "message": "musí být větší nebo roven $1 a menší nebo roven $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerView": {
     "message": "Zobraziť účet na $1",
@@ -210,9 +188,6 @@
   "chainId": {
     "message": "ID reťazca"
   },
-  "clickToAdd": {
-    "message": "Kliknutím na $1 ich pridáte do svojho účtu"
-  },
   "clickToRevealSeed": {
     "message": "Kliknutím sem odkryjete tajné slová"
   },
@@ -242,9 +217,6 @@
   },
   "connect": {
     "message": "Pripojenie"
-  },
-  "connectRequest": {
-    "message": "Požiadavka na pripojenie"
   },
   "connectingTo": {
     "message": "Pripája sa k $1"
@@ -276,17 +248,8 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
-  },
-  "copy": {
-    "message": "Kopírovat"
   },
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
@@ -299,9 +262,6 @@
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -365,9 +325,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
-  },
-  "dismiss": {
-    "message": "Zatvoriť"
   },
   "done": {
     "message": "Hotovo"
@@ -479,17 +436,11 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "functionType": {
     "message": "Typ funkcie"
   },
   "gasLimit": {
     "message": "Limit paliva"
-  },
-  "gasLimitCalculation": {
-    "message": "Počítáme doporučený limit paliva na základě úspěšnosti v síti."
   },
   "gasLimitInfoModalContent": {
     "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
@@ -512,9 +463,6 @@
   "gasPriceNoDenom": {
     "message": "Cena GAS"
   },
-  "gasPriceCalculation": {
-    "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
-  },
   "general": {
     "message": "Všeobecne"
   },
@@ -533,10 +481,6 @@
   },
   "getStarted": {
     "message": "Začať"
-  },
-  "greaterThanMin": {
-    "message": "musí být větší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Sme radi, že vás vidíme."
@@ -562,9 +506,6 @@
   },
   "hide": {
     "message": "Skrýt"
-  },
-  "hideToken": {
-    "message": "Skrýt token"
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
@@ -643,10 +584,6 @@
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
   },
-  "lessThanMax": {
-    "message": "musí být menší nebo roven $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
   },
@@ -668,10 +605,7 @@
   "loadMore": {
     "message": "Načítať viac"
   },
-  "login": {
-    "message": "Přihlásit"
-  },
-  "logout": {
+  "lock": {
     "message": "Odhlásit"
   },
   "memorizePhrase": {
@@ -683,14 +617,8 @@
   "metamaskDescription": {
     "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "Seed slová MetaMask"
-  },
   "metamaskVersion": {
     "message": "Verzia MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Nevidíte svoje tokeny?"
   },
   "mobileSyncText": {
     "message": "Zadajte svoje heslo a potvrďte, že ste to vy!"
@@ -787,9 +715,6 @@
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
   },
-  "noDeposits": {
-    "message": "Žádný vklad"
-  },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
   },
@@ -836,9 +761,6 @@
     "message": "Vložte zde svůj privátní klíč:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Svou klíčovou frázi vložte zde!"
-  },
   "pending": {
     "message": "prebieha"
   },
@@ -866,9 +788,6 @@
   },
   "privateNetwork": {
     "message": "Soukromá síť"
-  },
-  "qrCode": {
-    "message": "Ukázat QR kód"
   },
   "queue": {
     "message": "Poradie"
@@ -944,9 +863,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
-  "revert": {
-    "message": "Zvrátit"
   },
   "remove": {
     "message": "Odstrániť"
@@ -1146,9 +1062,6 @@
   "storePhrase": {
     "message": "Túto frázu uložte do správcu hesiel ako 1Password."
   },
-  "submit": {
-    "message": "Odeslat"
-  },
   "submitted": {
     "message": "Odesláno"
   },
@@ -1193,10 +1106,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."
@@ -1309,9 +1218,6 @@
   },
   "userName": {
     "message": "Meno používateľa"
-  },
-  "validFileImport": {
-    "message": "Musíte vybrat validní soubor k importu."
   },
   "viewAccount": {
     "message": "Zobrazit účet"

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../components/ui/identicon'
+import Copy from '../../../../components/ui/icon/copy-icon.component'
 
 import Button from '../../../../components/ui/button/button.component'
 import copyToClipboard from 'copy-to-clipboard'
@@ -16,7 +17,6 @@ export default class ViewContact extends PureComponent {
   }
 
   static propTypes = {
-    removeFromAddressBook: PropTypes.func,
     name: PropTypes.string,
     address: PropTypes.string,
     history: PropTypes.object,
@@ -56,11 +56,12 @@ export default class ViewContact extends PureComponent {
               >
                 { quadSplit(checkSummedAddress) }
               </div>
-              <img
+              <button
                 className="address-book__view-contact__group__static-address--copy-icon"
                 onClick={() => copyToClipboard(checkSummedAddress)}
-                src="/images/copy-to-clipboard.svg"
-              />
+              >
+                <Copy size={20} color="#3098DC" />
+              </button>
             </div>
           </div>
           <div className="address-book__view-contact__group">

@@ -1,36 +1,36 @@
 'use strict'
 
-import DetectRTC from 'detectrtc'
-const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
-const { getEnvironmentType, getPlatform } = require('../../app/scripts/lib/util')
-const { PLATFORM_BRAVE, PLATFORM_FIREFOX } = require('../../app/scripts/lib/enums')
+import { ENVIRONMENT_TYPE_POPUP, PLATFORM_BRAVE, PLATFORM_FIREFOX } from '../../app/scripts/lib/enums'
+import { getEnvironmentType, getPlatform } from '../../app/scripts/lib/util'
 
 class WebcamUtils {
 
-  static checkStatus () {
-    return new Promise((resolve, reject) => {
-      const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
-      const isFirefoxOrBrave = getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE)
-      try {
-        DetectRTC.load(_ => {
-          if (DetectRTC.hasWebcam) {
-            let environmentReady = true
-            if ((isFirefoxOrBrave && isPopup) || (isPopup && !DetectRTC.isWebsiteHasWebcamPermissions)) {
-              environmentReady = false
-            }
-            resolve({
-              permissions: DetectRTC.isWebsiteHasWebcamPermissions,
-              environmentReady,
-            })
-          } else {
-            reject({type: 'NO_WEBCAM_FOUND'})
-          }
-        })
-      } catch (e) {
-        reject({type: 'UNKNOWN_ERROR'})
+  static async checkStatus () {
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    const isFirefoxOrBrave = getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE)
+
+    const devices = await window.navigator.mediaDevices.enumerateDevices()
+    const webcams = devices.filter((device) => device.kind === 'videoinput')
+    const hasWebcam = webcams.length > 0
+    // A non-empty-string label implies that the webcam has been granted permission, as
+    // otherwise the label is kept blank to prevent fingerprinting
+    const hasWebcamPermissions = webcams.some((webcam) => webcam.label && webcam.label.length > 0)
+
+    if (hasWebcam) {
+      let environmentReady = true
+      if ((isFirefoxOrBrave && isPopup) || (isPopup && !hasWebcamPermissions)) {
+        environmentReady = false
       }
-    })
+      return {
+        permissions: hasWebcamPermissions,
+        environmentReady,
+      }
+    } else {
+      const error = new Error('No webcam found')
+      error.type = 'NO_WEBCAM_FOUND'
+      throw error
+    }
   }
 }
 
-module.exports = WebcamUtils
+export default WebcamUtils

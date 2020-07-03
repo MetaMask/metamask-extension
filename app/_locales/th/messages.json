@@ -1,18 +1,6 @@
 {
-  "confirmClear": {
-    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
-  },
-  "clearApprovalData": {
-    "message": "ล้างข้อมูลการอนุมัติ"
-  },
   "reject": {
     "message": "ปฏิเสธ"
-  },
-  "providerRequest": {
-    "message": "$1 ต้องการเชื่อมต่อกับบัญชีของคุณ"
-  },
-  "providerRequestInfo": {
-    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ethereum เพื่อให้สามารถโต้ตอบกับบล็อค Ethereum ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ethereum เสมอ"
   },
   "about": {
     "message": "เกี่ยวกับ"
@@ -60,13 +48,6 @@
   },
   "balance": {
     "message": "ยอดคงเหลือ:"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "ยอดคงเหลือไม่พอสำหรับจ่ายค่าแก๊สทั้งหมด"
-  },
-  "betweenMinAndMax": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1 และน้อยกว่าหรือเท่ากับ $2",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "ใช้งาน Blockies Identicon"
@@ -122,23 +103,11 @@
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
   },
-  "conversionProgress": {
-    "message": "กำลังดำเนินการแปลงหน่วย"
-  },
-  "copiedButton": {
-    "message": "คัดลอกแล้ว"
-  },
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
-  "copy": {
-    "message": "คัดลอก"
-  },
   "copyToClipboard": {
     "message": "คัดลอกไปคลิปบอร์ด"
-  },
-  "copyButton": {
-    "message": " คัดลอก "
   },
   "copyPrivateKey": {
     "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
@@ -190,9 +159,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
-  },
-  "dismiss": {
-    "message": "ปิด"
   },
   "done": {
     "message": "เสร็จสิ้น"
@@ -256,23 +222,14 @@
   "from": {
     "message": "จาก"
   },
-  "fromShapeShift": {
-    "message": "จาก ShapeShift"
-  },
   "gasLimit": {
     "message": "วงเงินแก็ส"
-  },
-  "gasLimitCalculation": {
-    "message": "เราแนะนำวงเงินแก็สตามความสำเร็จบนเครือข่าย"
   },
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
   "gasPrice": {
     "message": "ราคาแก๊ส (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "เราแนะนำราคาแก็สตามความสำเร็จบนเครือข่าย"
   },
   "general": {
     "message": "ทั่วไป"
@@ -284,19 +241,12 @@
     "message": "รับอีเธอร์ที่ปล่อยจาก $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "ต้องมากกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "ที่นี่",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "ซ่อน"
-  },
-  "hideToken": {
-    "message": "ซ่อนโทเค็น"
   },
   "hideTokenPrompt": {
     "message": "ซ่อนโทเค็นหรือไม่?"
@@ -352,10 +302,6 @@
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
   },
-  "lessThanMax": {
-    "message": "ต้องน้อยกว่าหรือเท่ากับ $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
   },
@@ -365,10 +311,7 @@
   "loadingTokens": {
     "message": "กำลังโหลดโทเค็น..."
   },
-  "login": {
-    "message": "เข้าสู่ระบบ"
-  },
-  "logout": {
+  "lock": {
     "message": "ออกจากระบบ"
   },
   "mainnet": {
@@ -430,9 +373,6 @@
   "noAddressForName": {
     "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
   },
-  "noDeposits": {
-    "message": "ไม่มีเงินฝากเข้ามา"
-  },
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
   },
@@ -442,9 +382,6 @@
   "pastePrivateKey": {
     "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "วางคำชีดของคุณที่นี่!"
   },
   "personalAddressDetected": {
     "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
@@ -461,9 +398,6 @@
   },
   "privateNetwork": {
     "message": "เครือข่ายส่วนตัว"
-  },
-  "qrCode": {
-    "message": "แสดง QR Code"
   },
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
@@ -494,9 +428,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
-  },
-  "revert": {
-    "message": "ย้อนกลับ"
   },
   "rinkeby": {
     "message": "เครือข่ายทดสอบ Rinkeby"
@@ -588,9 +519,6 @@
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
   },
-  "submit": {
-    "message": "ตกลง"
-  },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
   },
@@ -598,7 +526,7 @@
     "message": "เครื่องหมาย"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 12 อักขระ"
+    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
   },
   "syncWithMobileComplete": {
     "message": "ซิงค์ข้อมูลของคุณเรียบร้อยแล้ว ใช้แอพ MetaMask ให้สนุกนะ!"
@@ -614,10 +542,6 @@
   },
   "to": {
     "message": "ถึง"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 เป็นอีเธอร์โดย ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "โทเคนได้ถูกเพิ่มไปแล้ว"
@@ -661,9 +585,6 @@
   },
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
-  },
-  "validFileImport": {
-    "message": "คุณต้องเลือกไฟล์ที่ถูกต้องเพื่อนำเข้า"
   },
   "viewAccount": {
     "message": "ดูบัญชี"

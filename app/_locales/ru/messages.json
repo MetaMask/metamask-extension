@@ -1,15 +1,6 @@
 {
-  "confirmClear": {
-    "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
-  },
-  "clearApprovalData": {
-    "message": "Четкие данные об утверждении"
-  },
   "reject": {
     "message": "Отклонить"
-  },
-  "providerRequestInfo": {
-    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
   },
   "account": {
     "message": "Счет"
@@ -54,13 +45,6 @@
   },
   "balance": {
     "message": "Баланс:"
-  },
-  "balanceIsInsufficientGas": {
-    "message": "Недостаточный баланс для текущего объема газа"
-  },
-  "betweenMinAndMax": {
-    "message": "должно быть больше или равно $1 и меньше или равно $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
     "message": "Использовать Blockies Identicon"
@@ -107,23 +91,11 @@
   "contractDeployment": {
     "message": "Развертывание контракта"
   },
-  "conversionProgress": {
-    "message": "Выполняется конвертация"
-  },
-  "copiedButton": {
-    "message": "Скопировано"
-  },
   "copiedExclamation": {
     "message": "Скопировано!"
   },
-  "copy": {
-    "message": "Скопировать"
-  },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
-  },
-  "copyButton": {
-    "message": " Скопировать "
   },
   "copyPrivateKey": {
     "message": "Это ваш закрытый ключ (нажмите, чтобы скопировать)"
@@ -142,6 +114,9 @@
   },
   "customRPC": {
     "message": "Пользовательский RPC"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Некоторые данные вашей учетной записи были экспортированы во время предыдущей установки MetaMask. Это может включать ваши настройки, контакты и токены. Вы хотите импортировать эти данные сейчас?"
   },
   "decimalsMustZerotoTen": {
     "message": "Количество десятичных разрядов должно быть минимум 0 и максимум 36."
@@ -205,23 +180,14 @@
   "from": {
     "message": "Отправитель"
   },
-  "fromShapeShift": {
-    "message": "Из ShapeShift"
-  },
   "gasLimit": {
     "message": "Лимит газа"
-  },
-  "gasLimitCalculation": {
-    "message": "Мы расчитываем предлагаемый лимит газа на основании успешных ставок в сети."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть как минимум 21000"
   },
   "gasPrice": {
     "message": "Цена за газ (GWEI)"
-  },
-  "gasPriceCalculation": {
-    "message": "Мы расчитываем предлагаемые цены за газ на основании успешных ставок в сети."
   },
   "getEther": {
     "message": "Получить Ether"
@@ -230,19 +196,12 @@
     "message": "Получить Ether из крана для $1",
     "description": "Displays network name for Ether faucet"
   },
-  "greaterThanMin": {
-    "message": "должно быть больше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "here": {
     "message": "тут",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "Скрыть"
-  },
-  "hideToken": {
-    "message": "Скрыть токен"
   },
   "hideTokenPrompt": {
     "message": "Скрыть токен?"
@@ -298,10 +257,6 @@
   "learnMore": {
     "message": "Узнать больше."
   },
-  "lessThanMax": {
-    "message": "должно быть меньше или равно $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "likeToAddTokens": {
     "message": "Вы хотите добавить эти токены?"
   },
@@ -314,10 +269,7 @@
   "loadingTokens": {
     "message": "Загрузка токенов..."
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Выход"
   },
   "mainnet": {
@@ -367,18 +319,12 @@
   "noAddressForName": {
     "message": "Дла этого названия не установлен адрес."
   },
-  "noDeposits": {
-    "message": "Пополнения не получены"
-  },
   "noTransactions": {
     "message": "Нет транзакций"
   },
   "pastePrivateKey": {
     "message": "Вставьте ваш закрытый ключ тут:",
     "description": "For importing an account from a private key"
-  },
-  "pasteSeed": {
-    "message": "Вставьте вашу ключевую фразу!"
   },
   "personalAddressDetected": {
     "message": "Обнаружен персональный адрес. Введите адрес контракта токена."
@@ -395,9 +341,6 @@
   },
   "privateNetwork": {
     "message": "Частная сеть"
-  },
-  "qrCode": {
-    "message": "Показать QR-код"
   },
   "readdToken": {
     "message": "Вы можете в будущем добавить обратно этот токен, выбрав пункт меню “Добавить токен”."
@@ -422,9 +365,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Не восстанавливайте ключевую фразу в общественном месте! Она может быть использована для кражи всех ваших счетов."
-  },
-  "revert": {
-    "message": "Восстановить"
   },
   "rinkeby": {
     "message": "Тестовая сеть Rinkeby"
@@ -492,9 +432,6 @@
   "stateLogError": {
     "message": "Ошибка при получении журнала состояния."
   },
-  "submit": {
-    "message": "Отправить"
-  },
   "submitted": {
     "message": "Отправлена"
   },
@@ -502,7 +439,7 @@
     "message": "Перейти в наш Центр поддержки"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символ должен быть от 0 до 12 символов."
+    "message": "Символ должен быть не более 11 символов."
   },
   "terms": {
     "message": "Условия пользования"
@@ -512,10 +449,6 @@
   },
   "to": {
     "message": "Получатель"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже был добавлен."
@@ -548,9 +481,6 @@
   "usedByClients": {
     "message": "Используется различными клиентами"
   },
-  "validFileImport": {
-    "message": "Вам нужно выбрать правильный файл для импорта."
-  },
   "viewAccount": {
     "message": "Посмотреть счет"
   },
@@ -569,17 +499,11 @@
   "youSign": {
     "message": "Вы подписываете"
   },
-  "privacyModeDefault": {
-    "message": "Режим конфиденциальности теперь включен по умолчанию"
-  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмма доступна только в сетях Ethereum."
   },
   "contractInteraction": {
     "message": "Взаимодействие с контрактом"
-  },
-  "providerRequest": {
-    "message": "$1 запрашивает доступ к вашему аккаунту"
   },
   "about": {
     "message": "О нас"
@@ -641,10 +565,10 @@
   "attemptToCancelDescription": {
     "message": "Отправка этой попытки не гарантирует отмену вашей первоначальной транзакции. Если попытка отмены окажется успешной комиссия за исходную транзакцию будет возвращена."
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер автоматического выхода из кошелька (минуты)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Установите время простоя в минутах, прежде чем MetaMask автоматически заблокирует кошелек"
   },
   "average": {
@@ -707,9 +631,6 @@
   "chainId": {
     "message": "ID сети"
   },
-  "clickToAdd": {
-    "message": "Нажмите на $1, для добавления в свой аккаунт"
-  },
   "clickToRevealSeed": {
     "message": "Нажмите здесь, чтобы показать секретную фразу (сид)"
   },
@@ -730,9 +651,6 @@
   },
   "connect": {
     "message": "Подключиться"
-  },
-  "connectRequest": {
-    "message": "Запрос на подключение"
   },
   "connectingTo": {
     "message": "Подключение к $1"
@@ -775,9 +693,6 @@
   },
   "deleteAccount": {
     "message": "Удалить аккаунт"
-  },
-  "dismiss": {
-    "message": "Отклюнить"
   },
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"
@@ -950,17 +865,8 @@
   "memo": {
     "message": "Мнемотик"
   },
-  "menu": {
-    "message": "Меню"
-  },
-  "metamaskSeedWords": {
-    "message": "MetaMask ключевая фраза (сид)"
-  },
   "metamaskVersion": {
     "message": "Версия MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Не видите свои токены?"
   },
   "mobileSyncText": {
     "message": "Пожалуйста, введите ваш пароль, чтобы подтвердить, что это вы!"
@@ -1022,8 +928,11 @@
   "noConversionRateAvailable": {
     "message": "Курсы валют недоступны"
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "notEnoughGas": {
-    "message": "Нехватает газа"
+    "message": "Не хватает газа"
   },
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
@@ -1105,6 +1014,10 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой аккаунт с помощью секретной фразы"
+  },
+  "restoreWalletPreferences": {
+    "message": "Были найдены данные экспортированные от $1. Вы желаете восстановить настройки вашего кошелька?",
+    "description": "$1 is the date at which the data was backed up"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
@@ -1399,5 +1312,35 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша сид-фраза"
+  },
+  "decryptRequest": {
+    "message": "Запрос расшифровки"
+  },
+  "decrypt": {
+    "message": "Расшифровать"
+  },
+  "decryptMessageNotice": {
+    "message": "Для $1 необходимо прочитать это сообщение, чтобы завершить Ваше действие",
+    "description": "$1 is website or dapp name"
+  },
+  "decryptMetamask": {
+    "message": "Расшифровать сообщение"
+  },
+  "decryptCopy": {
+    "message": "Скопировать расшифрованное сообщение"
+  },
+  "decryptInlineError": {
+    "message": "Это сообщение не может быть дешифровано из-за ошибки: $1",
+    "description": "$1 is error message"
+  },
+  "provide": {
+    "message": "Предоставить"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Запрос публичного ключа шифрования"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 запрашивает ваш открытый ключ шифрования. По согласованию, этот сайт сможет создавать для Вас зашифрованные сообщения.",
+    "description": "$1 is website or dapp name"
   }
 }

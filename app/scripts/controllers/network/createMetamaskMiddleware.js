@@ -1,10 +1,9 @@
-const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
-const createWalletSubprovider = require('eth-json-rpc-middleware/wallet')
-const { createPendingNonceMiddleware, createPendingTxMiddleware } = require('./middleware/pending')
-module.exports = createMetamaskMiddleware
+import mergeMiddleware from 'json-rpc-engine/src/mergeMiddleware'
+import createScaffoldMiddleware from 'json-rpc-engine/src/createScaffoldMiddleware'
+import createWalletSubprovider from 'eth-json-rpc-middleware/wallet'
+import { createPendingNonceMiddleware, createPendingTxMiddleware } from './middleware/pending'
 
-function createMetamaskMiddleware ({
+export default function createMetamaskMiddleware ({
   version,
   getAccounts,
   processTransaction,
@@ -13,6 +12,8 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processTypedMessageV4,
   processPersonalMessage,
+  processDecryptMessage,
+  processEncryptionPublicKey,
   getPendingNonce,
   getPendingTransactionByHash,
 }) {
@@ -30,6 +31,8 @@ function createMetamaskMiddleware ({
       processTypedMessageV3,
       processTypedMessageV4,
       processPersonalMessage,
+      processDecryptMessage,
+      processEncryptionPublicKey,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),

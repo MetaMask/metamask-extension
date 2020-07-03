@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Der Datenschutzmodus ist jetzt standardmäßig aktiviert"
-  },
   "chartOnlyAvailableEth": {
     "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
-  },
-  "confirmClear": {
-    "message": "Möchten Sie die genehmigten Websites wirklich löschen?"
   },
   "contractInteraction": {
     "message": "Vertragsinteraktion"
   },
-  "clearApprovalData": {
-    "message": "Genehmigungsdaten löschen"
-  },
   "reject": {
     "message": "Ablehnen"
-  },
-  "providerRequest": {
-    "message": "$1 möchte sich mit deinem Account verbinden"
-  },
-  "providerRequestInfo": {
-    "message": "Diese Website fordert Zugriff auf Ihre aktuelle Kontoadresse. Stellen Sie immer sicher, dass Sie den Websites vertrauen, mit denen Sie interagieren."
   },
   "about": {
     "message": "Über"
   },
   "aboutSettingsDescription": {
-    "message": "Version, Supportcenter und Kontaktinformationen."
+    "message": "Version, Supportcenter und Kontaktinformationen"
   },
   "acceleratingATransaction": {
     "message": "* Die Beschleunigung einer Transaktion durch die Verwendung eines höheren Gaspreises erhöht die Chancen einer schnelleren Verarbeitung durch das Netz, wofür es allerdings keine Garantie gibt."
@@ -60,7 +45,7 @@
     "message": "Erweitert"
   },
   "advancedSettingsDescription": {
-    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs."
+    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs"
   },
   "advancedOptions": {
     "message": "Erweiterte Optionen"
@@ -118,10 +103,10 @@
   "attributions": {
     "message": "Was wir verwenden"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Auto-Logout-Timer (Minuten)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Stellen Sie die Ruhezeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll"
   },
   "average": {
@@ -148,15 +133,8 @@
   "balanceOutdated": {
     "message": "Kontostand könnte überholt sein"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Guthaben unzureichend für den aktuellen gesamten Gasbetrag"
-  },
   "basic": {
     "message": "Grundlegend"
-  },
-  "betweenMinAndMax": {
-    "message": "Muss größer oder gleich $1 und kleiner oder gleich $2 sein.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Block-Explorer"
@@ -207,9 +185,6 @@
   "cancelled": {
     "message": "Abgebrochen"
   },
-  "clickToAdd": {
-    "message": "Klicken Sie auf $1, um sie zu Ihrem Konto hinzuzufügen"
-  },
   "clickToRevealSeed": {
     "message": "Hier klicken, um Geheimwörter zu enthüllen"
   },
@@ -239,9 +214,6 @@
   },
   "connect": {
     "message": "Verbinden"
-  },
-  "connectRequest": {
-    "message": "Verbindungsanfrage"
   },
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"
@@ -273,17 +245,8 @@
   "contractDeployment": {
     "message": "Smart Contract Ausführung"
   },
-  "conversionProgress": {
-    "message": "Umtausch in Arbeit"
-  },
-  "copiedButton": {
-    "message": "Kopiert"
-  },
   "copiedExclamation": {
     "message": "Kopiert!"
-  },
-  "copy": {
-    "message": "Kopieren"
   },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
@@ -296,9 +259,6 @@
   },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
-  },
-  "copyButton": {
-    "message": " Kopieren "
   },
   "copyPrivateKey": {
     "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
@@ -359,9 +319,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
-  },
-  "dismiss": {
-    "message": "Schließen"
   },
   "done": {
     "message": "Fertig"
@@ -473,17 +430,11 @@
   "from": {
     "message": "Von"
   },
-  "fromShapeShift": {
-    "message": "Von ShapeShift"
-  },
   "functionType": {
     "message": "Funktionstyp"
   },
   "gasLimit": {
     "message": "Gaslimit"
-  },
-  "gasLimitCalculation": {
-    "message": "Wir berechnen das empfohlene Gaslimit basierend auf der Erfolgsrate des Netzwerks."
   },
   "gasLimitInfoModalContent": {
     "message": "Die Gasgrenze ist die Höchstmenge an Gaseinheiten, die Sie auszugeben bereit sind."
@@ -506,9 +457,6 @@
   "gasPriceNoDenom": {
     "message": "Gaspreis"
   },
-  "gasPriceCalculation": {
-    "message": "Wir berechnen den empfohlenen Gaspreis basierend auf der Erfolgsrate des Netzwerks."
-  },
   "general": {
     "message": "Allgemein"
   },
@@ -527,10 +475,6 @@
   },
   "getStarted": {
     "message": "Erste Schritte"
-  },
-  "greaterThanMin": {
-    "message": "Muss größer oder gleich $1 sein.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Wir freuen uns, Sie zu sehen."
@@ -559,9 +503,6 @@
   },
   "hide": {
     "message": "Ausblenden"
-  },
-  "hideToken": {
-    "message": "Token ausblenden"
   },
   "hideTokenPrompt": {
     "message": "Token ausblenden?"
@@ -647,10 +588,6 @@
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
   },
-  "lessThanMax": {
-    "message": "Muss kleiner oder gleich $1 sein.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Ja, legen wir los!"
   },
@@ -669,10 +606,7 @@
   "loadMore": {
     "message": "Mehr laden"
   },
-  "login": {
-    "message": "Login"
-  },
-  "logout": {
+  "lock": {
     "message": "Ausloggen"
   },
   "mainnet": {
@@ -684,23 +618,14 @@
   "memo": {
     "message": " Memo"
   },
-  "menu": {
-    "message": "Menü"
-  },
   "message": {
     "message": "Nachricht"
   },
   "metamaskDescription": {
     "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask-Seed-Wörter"
-  },
   "metamaskVersion": {
     "message": "MetaMask-Version"
-  },
-  "missingYourTokens": {
-    "message": "Sie können Ihre Token nicht sehen?"
   },
   "mobileSyncText": {
     "message": "Bitte geben Sie Ihr Passwort ein, um Ihre Identität zu verifizieren!"
@@ -791,9 +716,6 @@
   "noAddressForName": {
     "message": "Für den angegebene Namen wurde keine Adresse eingegeben."
   },
-  "noDeposits": {
-    "message": "Keine Einzahlung erhalten"
-  },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
@@ -840,9 +762,6 @@
     "message": "Füge deine Private Key Zeichenfolge hier ein:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Füge deine Seed-Wörterfolge hier ein!"
-  },
   "pending": {
     "message": "ausstehend"
   },
@@ -866,9 +785,6 @@
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
-  },
-  "qrCode": {
-    "message": "QR Code anzeigen"
   },
   "queue": {
     "message": "Warteschlange"
@@ -944,9 +860,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
-  },
-  "revert": {
-    "message": "Rückgängig machen"
   },
   "remove": {
     "message": "Entfernen"
@@ -1152,9 +1065,6 @@
   "storePhrase": {
     "message": "Speichern Sie diesen Schlüssel in einem Passwortmanager wie 1Password."
   },
-  "submit": {
-    "message": "Einreichen"
-  },
   "submitted": {
     "message": "Abgeschickt"
   },
@@ -1162,7 +1072,7 @@
     "message": "Gehe zu unserem Support Center"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Das Symbol muss zwischen 0 und 12 Zeichen haben."
+    "message": "Das Symbol darf maximal 11 Zeichen lang sein."
   },
   "syncWithMobile": {
     "message": "Mit Mobilgerät synchronisieren"
@@ -1199,10 +1109,6 @@
   },
   "to": {
     "message": "An"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 an ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Der Token wurde bereits hinzugefügt."
@@ -1312,9 +1218,6 @@
   },
   "userName": {
     "message": "Nutzername"
-  },
-  "validFileImport": {
-    "message": "Du musst eine gültige Datei für den Import auswählen."
   },
   "viewAccount": {
     "message": " Account einsehen"

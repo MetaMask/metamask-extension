@@ -1,8 +1,7 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { hideModal } from '../../../store/actions'
 
 class NotificationModal extends Component {
   static contextProps = {
@@ -23,41 +22,44 @@ class NotificationModal extends Component {
 
     const showButtons = showCancelButton || showConfirmButton
 
-    return h('div', [
-      h('div.notification-modal__wrapper', {
-      }, [
-
-        h('div.notification-modal__header', {}, [
-          this.context.t(header),
-        ]),
-
-        h('div.notification-modal__message-wrapper', {}, [
-          h('div.notification-modal__message', {}, [
-            this.context.t(message),
-          ]),
-        ]),
-
-        h('div.modal-close-x', {
-          onClick: hideModal,
-        }),
-
-        showButtons && h('div.notification-modal__buttons', [
-
-          showCancelButton && h('div.btn-default.notification-modal__buttons__btn', {
-            onClick: hideModal,
-          }, t('cancel')),
-
-          showConfirmButton && h('div.button.btn-secondary.notification-modal__buttons__btn', {
-            onClick: () => {
-              onConfirm()
-              hideModal()
-            },
-          }, t('confirm')),
-
-        ]),
-
-      ]),
-    ])
+    return (
+      <div>
+        <div className="notification-modal__wrapper">
+          <div className="notification-modal__header">
+            {this.context.t(header)}
+          </div>
+          <div className="notification-modal__message-wrapper">
+            <div className="notification-modal__message">
+              {this.context.t(message)}
+            </div>
+          </div>
+          <div className="modal-close-x" onClick={hideModal} />
+          {showButtons && (
+            <div className="notification-modal__buttons">
+              {showCancelButton && (
+                <div
+                  className="btn-default notification-modal__buttons__btn"
+                  onClick={hideModal}
+                >
+                  {t('cancel')}
+                </div>
+              )}
+              {showConfirmButton && (
+                <div
+                  className="button btn-secondary notification-modal__buttons__btn"
+                  onClick={() => {
+                    onConfirm()
+                    hideModal()
+                  }}
+                >
+                  {t('confirm')}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    )
   }
 }
 
@@ -68,13 +70,12 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
-  t: PropTypes.func,
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideModal: () => {
-      dispatch(actions.hideModal())
+      dispatch(hideModal())
     },
   }
 }
@@ -83,5 +84,5 @@ NotificationModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(null, mapDispatchToProps)(NotificationModal)
+export default connect(null, mapDispatchToProps)(NotificationModal)
 

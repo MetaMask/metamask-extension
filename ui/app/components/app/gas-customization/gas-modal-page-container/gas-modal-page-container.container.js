@@ -5,8 +5,8 @@ import {
   hideModal,
   setGasLimit,
   setGasPrice,
-  createSpeedUpTransaction,
   createRetryTransaction,
+  createSpeedUpTransaction,
   hideSidebar,
   updateSendAmount,
   setGasTotal,
@@ -16,7 +16,6 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
-  setCustomTimeEstimate,
   fetchGasEstimates,
   fetchBasicGasAndTimeEstimates,
 } from '../../../../ducks/gas/gas.duck'
@@ -29,11 +28,9 @@ import {
   getCurrentCurrency,
   getCurrentEthBalance,
   getIsMainnet,
-  getSelectedToken,
+  getSendToken,
   isEthereumNetwork,
-  preferencesSelector,
-} from '../../../../selectors/selectors.js'
-import {
+  getPreferences,
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
   getCustomGasLimit,
@@ -44,13 +41,11 @@ import {
   getRenderableBasicEstimateData,
   getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
-} from '../../../../selectors/custom-gas'
-import {
-  getTxParams,
-} from '../../../../selectors/transactions'
-import {
   getTokenBalance,
-} from '../../../../pages/send/send.selectors'
+  getSendMaxModeState,
+  getFastPriceEstimateInHexWEI,
+} from '../../../../selectors'
+
 import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'
@@ -69,20 +64,29 @@ import {
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
-import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
-  const { selectedAddressTxList } = state.metamask
+  const { currentNetworkTxList, send } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
   const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
-  const selectedTransaction = selectedAddressTxList.find(({ id }) => id === (transaction.id || txData.id))
+  const selectedTransaction = currentNetworkTxList.find(({ id }) => id === (transaction.id || txData.id))
 
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
+  const sendToken = getSendToken(state)
 
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, selectedTransaction)
+  // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
+  const txParams = selectedTransaction?.txParams
+    ? selectedTransaction.txParams
+    : {
+      gas: send.gasLimit || '0x5208',
+      gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+      value: sendToken ? '0x0' : send.amount,
+    }
+
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = txParams
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit || '0x5208'
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
@@ -98,21 +102,21 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
-  const maxModeOn = getMaxModeOn(state)
+  const maxModeOn = getSendMaxModeState(state)
 
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const isTokenSelected = Boolean(getSelectedToken(state))
+  const isSendTokenSet = Boolean(sendToken)
 
-  const newTotalEth = maxModeOn && !isTokenSelected ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+  const newTotalEth = maxModeOn && !isSendTokenSet ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 
-  const sendAmount = maxModeOn && !isTokenSelected ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+  const sendAmount = maxModeOn && !isSendTokenSet ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
@@ -163,14 +167,14 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimatesLoading,
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
-    selectedToken: getSelectedToken(state),
+    sendToken,
     balance,
     tokenBalance: getTokenBalance(state),
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  const updateCustomGasPrice = newPrice => dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
+const mapDispatchToProps = (dispatch) => {
+  const updateCustomGasPrice = (newPrice) => dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
 
   return {
     cancelAndClose: () => {
@@ -179,7 +183,7 @@ const mapDispatchToProps = dispatch => {
     },
     hideModal: () => dispatch(hideModal()),
     updateCustomGasPrice,
-    updateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
+    updateCustomGasLimit: (newLimit) => dispatch(setCustomGasLimit(addHexPrefix(newLimit))),
     setGasData: (newLimit, newPrice) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setGasPrice(newPrice))
@@ -196,7 +200,6 @@ const mapDispatchToProps = dispatch => {
       return dispatch(createSpeedUpTransaction(txId, gasPrice, gasLimit))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
-    setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
     hideSidebar: () => dispatch(hideSidebar()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
@@ -220,7 +223,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     customGasPrice,
     customGasTotal,
     balance,
-    selectedToken,
+    sendToken,
     tokenBalance,
     customGasLimit,
     transaction,
@@ -271,7 +274,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchSetAmountToMax({
           balance,
           gasTotal: customGasTotal,
-          selectedToken,
+          sendToken,
           tokenBalance,
         })
       }

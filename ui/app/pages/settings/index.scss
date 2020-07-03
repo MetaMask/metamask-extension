@@ -1,10 +1,10 @@
 @import 'info-tab/index';
 
+@import 'alerts-tab/alerts-tab';
+
 @import 'networks-tab/index';
 
 @import 'settings-tab/index';
-
-@import 'connections-tab/index';
 
 @import 'contact-list-tab/index';
 
@@ -63,6 +63,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 16px 0;
 
     @media screen and (max-width: 575px) {
       height: 69px;
@@ -205,10 +206,6 @@
     }
   }
 
-  &__copyable-address {
-    display: flex;
-  }
-
   &__copy-icon {
     padding-left: 4px;
   }
@@ -219,13 +216,6 @@
   }
 
   &__address-book-button {
-      //align-self: flex-end;
-      //padding: 5px;
-      //text-transform: uppercase;
-      //cursor: pointer;
-      //width: 25%;
-      //min-width: 80px;
-      //height: 33px;
     font-size: 1rem;
     line-height: 1.1875rem;
     padding: 0;

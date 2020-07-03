@@ -1,7 +1,10 @@
-const ethUtil = require('ethereumjs-util')
-const assert = require('assert')
-const BN = require('bn.js')
-const {
+import extension from 'extensionizer'
+import ethUtil from 'ethereumjs-util'
+import assert from 'assert'
+import BN from 'bn.js'
+import { memoize } from 'lodash'
+
+import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -11,30 +14,12 @@ const {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
-} = require('./enums')
+} from './enums'
 
 /**
- * Generates an example stack trace
- *
- * @returns {string} A stack trace
- *
+ * @see {@link getEnvironmentType}
  */
-function getStack () {
-  const stack = new Error('Stack trace generator - not an error').stack
-  return stack
-}
-
-/**
- * Used to determine the window type through which the app is being viewed.
- *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
- *  - 'responsive' refers to the main browser window
- *  - 'notification' refers to the popup that appears in its own window when taking action outside of metamask
- *  - 'background' refers to the background page
- *
- * @returns {string} A single word label that represents the type of window through which the app is being viewed
- *
- */
-const getEnvironmentType = (url = window.location.href) => {
+const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url)
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP
@@ -45,16 +30,31 @@ const getEnvironmentType = (url = window.location.href) => {
   } else {
     return ENVIRONMENT_TYPE_BACKGROUND
   }
-}
+})
+
+/**
+ * Returns the window type for the application
+ *
+ *  - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
+ *  - `fullscreen` refers to the main browser window
+ *  - `notification` refers to the popup that appears in its own window when taking action outside of metamask
+ *  - `background` refers to the background page
+ *
+ * NOTE: This should only be called on internal URLs.
+ *
+ * @param {string} [url] - the URL of the window
+ * @returns {string} the environment ENUM
+ */
+const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMemo(url)
 
 /**
  * Returns the platform (browser) where the extension is running.
  *
- * @returns {string} the platform ENUM
+ * @returns {string} - the platform ENUM
  *
  */
-const getPlatform = _ => {
-  const ua = navigator.userAgent
+const getPlatform = (_) => {
+  const ua = window.navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
   } else {
@@ -73,12 +73,12 @@ const getPlatform = _ => {
 /**
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
- * @param {object} txParams Contains data about a transaction
+ * @param {Object} txParams - Contains data about a transaction
  * @param {string} txParams.gas The gas for a transaction
  * @param {string} txParams.gasPrice The price per gas for the transaction
  * @param {string} txParams.value The value of ETH to send
- * @param {string} hexBalance A balance of ETH represented as a hex string
- * @returns {boolean} Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
+ * @param {string} hexBalance - A balance of ETH represented as a hex string
+ * @returns {boolean} - Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
  *
  */
 function sufficientBalance (txParams, hexBalance) {
@@ -98,8 +98,8 @@ function sufficientBalance (txParams, hexBalance) {
 /**
  * Converts a BN object to a hex string with a '0x' prefix
  *
- * @param {BN} inputBn The BN to convert to a hex string
- * @returns {string} A '0x' prefixed hex string
+ * @param {BN} inputBn - The BN to convert to a hex string
+ * @returns {string} - A '0x' prefixed hex string
  *
  */
 function bnToHex (inputBn) {
@@ -109,8 +109,8 @@ function bnToHex (inputBn) {
 /**
  * Converts a hex string to a BN object
  *
- * @param {string} inputHex A number represented as a hex string
- * @returns {Object} A BN object
+ * @param {string} inputHex - A number represented as a hex string
+ * @returns {Object} - A BN object
  *
  */
 function hexToBn (inputHex) {
@@ -120,10 +120,10 @@ function hexToBn (inputHex) {
 /**
  * Used to multiply a BN by a fraction
  *
- * @param {BN} targetBN The number to multiply by a fraction
- * @param {number|string} numerator The numerator of the fraction multiplier
- * @param {number|string} denominator The denominator of the fraction multiplier
- * @returns {BN} The product of the multiplication
+ * @param {BN} targetBN - The number to multiply by a fraction
+ * @param {number|string} numerator - The numerator of the fraction multiplier
+ * @param {number|string} denominator - The denominator of the fraction multiplier
+ * @returns {BN} - The product of the multiplication
  *
  */
 function BnMultiplyByFraction (targetBN, numerator, denominator) {
@@ -132,31 +132,30 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function applyListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
-    emitter.on(key, listeners[key])
-  })
+/**
+ * Returns an Error if extension.runtime.lastError is present
+ * this is a workaround for the non-standard error object thats used
+ * @returns {Error}
+ */
+function checkForError () {
+  const lastError = extension.runtime.lastError
+  if (!lastError) {
+    return
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message)
 }
 
-function removeListeners (listeners, emitter) {
-  Object.keys(listeners).forEach((key) => {
-    emitter.removeListener(key, listeners[key])
-  })
-}
-
-function getRandomArrayItem (array) {
-  return array[Math.floor((Math.random() * array.length))]
-}
-
-module.exports = {
-  removeListeners,
-  applyListeners,
+export {
   getPlatform,
-  getStack,
   getEnvironmentType,
   sufficientBalance,
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
-  getRandomArrayItem,
+  checkForError,
 }

@@ -1,0 +1,60 @@
+.unconnected-account-alert {
+  &__content {
+    border-radius: 0;
+  }
+
+  &__footer {
+    flex-direction: column;
+
+    > :only-child {
+      margin: 0;
+    }
+  }
+
+  &__footer-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__dismiss-button {
+    background: #037DD6;
+    color: white;
+    height: 40px;
+    width: 100px;
+    border: 0;
+    border-radius: 100px;
+  }
+
+  &__error {
+    margin-bottom: 16px;
+    padding: 16px;
+    font-size: 14px;
+    border: 1px solid #D73A49;
+    background: #F8EAE8;
+    border-radius: 3px;
+  }
+
+  &__checkbox-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__checkbox {
+    margin-right: 8px;
+    padding-top: 1px; // better alignment with rest of content
+  }
+
+  &__checkbox-label {
+    display: flex;
+    font-size: 12px;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: $Grey-500;
+  }
+
+  &__checkbox-label-tooltip {
+    margin-left: 8px;
+  }
+}

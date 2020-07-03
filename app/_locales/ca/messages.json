@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "El mode de privacitat ara està activat per defecte"
-  },
   "chartOnlyAvailableEth": {
     "message": "Mostra només els disponibles a les xarxes Ethereum."
-  },
-  "confirmClear": {
-    "message": "Estàs segur que vols eliminar totes les pàgines web aprovades?"
   },
   "contractInteraction": {
     "message": "Contractar Interacció"
   },
-  "clearApprovalData": {
-    "message": "Elimina les dades de privacitat"
-  },
   "reject": {
     "message": "Rebutja"
-  },
-  "providerRequest": {
-    "message": "a $1 li agradaria connectar-se al teu compte"
-  },
-  "providerRequestInfo": {
-    "message": "Aquesta pàgina està demanant accès a la teva adreça"
   },
   "about": {
     "message": "Informació"
   },
   "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte."
+    "message": "Versió, centre de suport, i informació de contacte"
   },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
@@ -63,7 +48,7 @@
     "message": "Configuració avançada"
   },
   "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC."
+    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Atribucions"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "El balanç pot ser obsolet"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo insuficient per al total de gas actual"
-  },
   "basic": {
     "message": "Opcions bàsiques"
-  },
-  "betweenMinAndMax": {
-    "message": "ha de ser igual o superior a $1 i menor o igual a $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Bloqueja l'explorador"
@@ -216,9 +194,6 @@
   "chainId": {
     "message": "Cadena ID"
   },
-  "clickToAdd": {
-    "message": "Fes clic a $1 per afegir-los al teu compte"
-  },
   "clickToRevealSeed": {
     "message": "Fes clic aquí per a revelar les paraules secretes"
   },
@@ -248,9 +223,6 @@
   },
   "connect": {
     "message": "Connecta"
-  },
-  "connectRequest": {
-    "message": "Sol·licitud de connexió"
   },
   "connectingTo": {
     "message": "Connectant a $1 "
@@ -282,17 +254,8 @@
   "contractDeployment": {
     "message": "Desplegament de Contracte"
   },
-  "conversionProgress": {
-    "message": "Conversió en curs"
-  },
-  "copiedButton": {
-    "message": "Copiat"
-  },
   "copiedExclamation": {
     "message": "S'ha copiat!"
-  },
-  "copy": {
-    "message": "Copia"
   },
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
@@ -305,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
@@ -371,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
-  "dismiss": {
-    "message": "Omet"
   },
   "done": {
     "message": "Fet"
@@ -481,17 +438,11 @@
   "from": {
     "message": "Des de"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipus de Funció"
   },
   "gasLimit": {
     "message": "Límit de gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Calculem el límit suggerit del gas  basant-nos en les taxes d'èxit de la xarxa."
   },
   "gasLimitInfoModalContent": {
     "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
@@ -514,9 +465,6 @@
   "gasPriceNoDenom": {
     "message": "Preu del Gas"
   },
-  "gasPriceCalculation": {
-    "message": "Calculem els preus suggerits del gas  basant-nos en les taxes d'èxit de la xarxa."
-  },
   "generalSettingsDescription": {
     "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
   },
@@ -532,10 +480,6 @@
   },
   "getStarted": {
     "message": "Comença"
-  },
-  "greaterThanMin": {
-    "message": "ha de ser major o igual a $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Ens alegrem de veure't."
@@ -561,9 +505,6 @@
   },
   "hide": {
     "message": "Amaga"
-  },
-  "hideToken": {
-    "message": "Amagar Fitxa"
   },
   "hideTokenPrompt": {
     "message": "Amagar fitxa?"
@@ -649,10 +590,6 @@
   "ledgerAccountRestriction": {
     "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
   },
-  "lessThanMax": {
-    "message": "ha de ser igual o menor a $1 .",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Sí, posem-nos en marxa!"
   },
@@ -677,10 +614,7 @@
   "localhost": {
     "message": "Host local 8545"
   },
-  "login": {
-    "message": "Inicia sessió"
-  },
-  "logout": {
+  "lock": {
     "message": "Tanca la sessió"
   },
   "mainnet": {
@@ -692,23 +626,14 @@
   "memo": {
     "message": "notes"
   },
-  "menu": {
-    "message": "Menú"
-  },
   "message": {
     "message": "Missatge"
   },
   "metamaskDescription": {
     "message": "Conectant-te a Ethereum i la web descentralitzada."
   },
-  "metamaskSeedWords": {
-    "message": "Frase de recuperació de Metamask"
-  },
   "metamaskVersion": {
     "message": "Versió MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "No veus els teus tokens?"
   },
   "mobileSyncText": {
     "message": "Si us plau, introdueix la teva contrasenya per confirmar que ets tu!"
@@ -805,9 +730,6 @@
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
   },
-  "noDeposits": {
-    "message": "Cap dipòsit rebut"
-  },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
   },
@@ -854,9 +776,6 @@
     "message": "Enganxa la teva cadena clau privada aquí:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Enganxa la teva frase de seeds aquí!"
-  },
   "pending": {
     "message": "pendent"
   },
@@ -881,9 +800,6 @@
   },
   "privateNetwork": {
     "message": "Xarxa privada"
-  },
-  "qrCode": {
-    "message": "Mostra el codi QR"
   },
   "queue": {
     "message": "Cua"
@@ -956,9 +872,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
-  },
-  "revert": {
-    "message": "Revertir"
   },
   "remove": {
     "message": "Suprimeix"
@@ -1164,9 +1077,6 @@
   "storePhrase": {
     "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"
   },
-  "submit": {
-    "message": "Envia"
-  },
   "submitted": {
     "message": "Enviat"
   },
@@ -1177,7 +1087,7 @@
     "message": "Símbol"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "El símbol ha de tenir entre 0 i 12 caràcters."
+    "message": "El símbol ha de tenir com a mínim 11 caràcters."
   },
   "syncWithMobile": {
     "message": "Sincronitza amb el mòbil"
@@ -1211,10 +1121,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ja s'ha afegit."
@@ -1324,9 +1230,6 @@
   },
   "userName": {
     "message": "Nom d'usuari"
-  },
-  "validFileImport": {
-    "message": "Has de seleccionar un arxiu vàlid per a importar."
   },
   "viewAccount": {
     "message": "Mostra el compte"

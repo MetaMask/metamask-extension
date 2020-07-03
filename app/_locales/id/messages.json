@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Modus Privasi kini aktif secara default"
-  },
   "chartOnlyAvailableEth": {
     "message": "Grafik hanya tersedia pada jaringan Ethereum."
   },
-  "confirmClear": {
-    "message": "Yakin ingin mengosongkan website yang disetujui?"
-  },
   "contractInteraction": {
     "message": "Interaksi Kontrak"
-  },
-  "clearApprovalData": {
-    "message": "Bersihkan Data Privasi"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,11 @@
   "reject": {
     "message": "Tolak"
   },
-  "providerRequest": {
-    "message": "$1 ingin menghubungkan ke akun Anda"
-  },
-  "providerRequestInfo": {
-    "message": "Situs ini meminta akses untuk melihat alamat akun Anda saat ini. Selalu pastikan bahwa Anda bisa mempercayai situs yang berinteraksi dengan Anda."
-  },
   "about": {
     "message": "Tentang"
   },
   "aboutSettingsDescription": {
-    "message": "Versi, pusat dukungan, dan informasi kontak."
+    "message": "Versi, pusat dukungan, dan informasi kontak"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepat transaksi dengan menggunakan harga gas yang lebih tinggi meningkatkan peluangnya untuk lebih cepat diproses oleh jaringan, tetapi tak selalu terjamin pasti cepat."
@@ -67,7 +52,7 @@
     "message": "Lanjutan"
   },
   "advancedSettingsDescription": {
-    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom."
+    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, tata testnets dan RPC kustom"
   },
   "advancedOptions": {
     "message": "Opsi Lanjutan"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Jangka Waktu Keluar-Otomatis (menit)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Atur waktu diam dalam menit sebelum MetaMask mengeluarkan Anda secara otomatis"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Saldo mungkin kedaluwarsa"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo tidak cukup untuk total bensin saat ini"
-  },
   "basic": {
     "message": "Dasar"
-  },
-  "betweenMinAndMax": {
-    "message": "harus lebih dari atau sama dengan $1 dan kurang dari atau sama dengan $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blokir Penjelajah"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "ID Rantai"
   },
-  "clickToAdd": {
-    "message": "Klik $1 untuk menambahkannya ke akun Anda"
-  },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk mengungkapkan kata-kata rahasia"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "Sambungkan"
-  },
-  "connectRequest": {
-    "message": "Permintaan Sambungan"
   },
   "connectingTo": {
     "message": "Menghubungkan ke $1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "Penerapan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Konversi sedang berlangsung"
-  },
-  "copiedButton": {
-    "message": "Tersalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
-  },
-  "copy": {
-    "message": "Salin"
   },
   "copyAddress": {
     "message": "Salin alamat ke clipboard"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini adalah kunci pribadi Anda (klik untuk menyalin)"
@@ -368,9 +328,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jika Anda sudah memiliki Ether, cara tercepat mendapatkan Ether di dompet baru lewat deposit langsung."
-  },
-  "dismiss": {
-    "message": "Tutup"
   },
   "done": {
     "message": "Selesai"
@@ -475,17 +432,11 @@
   "from": {
     "message": "Dari"
   },
-  "fromShapeShift": {
-    "message": "Dari ShapeShift"
-  },
   "functionType": {
     "message": "Jenis Fungsi"
   },
   "gasLimit": {
     "message": "Batas Gas"
-  },
-  "gasLimitCalculation": {
-    "message": "Kami menghitung batas gas yang disarankan berdasarkan tingkat kesuksesan jaringan."
   },
   "gasLimitInfoModalContent": {
     "message": "Limit Bensin adalah jumlah maksimal satuan bensin yang Anda bersedia gunakan."
@@ -508,9 +459,6 @@
   "gasPriceNoDenom": {
     "message": "Harga Bensin"
   },
-  "gasPriceCalculation": {
-    "message": "Kami menghitung harga bensin yang disarankan berdasarkan tingkat keberhasilan jaringan."
-  },
   "general": {
     "message": "Umum"
   },
@@ -529,10 +477,6 @@
   },
   "getStarted": {
     "message": "Mulai"
-  },
-  "greaterThanMin": {
-    "message": "harus lebih besar atau sama dengan $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Kami senang bertemu dengan Anda."
@@ -561,9 +505,6 @@
   },
   "hide": {
     "message": "Sembunyikan"
-  },
-  "hideToken": {
-    "message": "Sembunyikan Token"
   },
   "hideTokenPrompt": {
     "message": "Sembunyikan Token?"
@@ -652,10 +593,6 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akun terakhir sebelum dapat menambahkan akun baru."
   },
-  "lessThanMax": {
-    "message": "harus kurang dari atau setara $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Ya, ayo tata!"
   },
@@ -677,10 +614,7 @@
   "loadMore": {
     "message": "Muat Lainnya"
   },
-  "login": {
-    "message": "Masuk"
-  },
-  "logout": {
+  "lock": {
     "message": "Keluar"
   },
   "mainnet": {
@@ -695,14 +629,8 @@
   "metamaskDescription": {
     "message": "Menghubungkan Anda ke Ethereum dan Web Terdesentralisasi."
   },
-  "metamaskSeedWords": {
-    "message": "Kata Benih MetaMask"
-  },
   "metamaskVersion": {
     "message": "Versi MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Tidak melihat token Anda?"
   },
   "mobileSyncText": {
     "message": "Harap masukkan sandi untuk mengonfirmasi ini memang Anda!"
@@ -799,9 +727,6 @@
   "noAddressForName": {
     "message": "Belum ada alamat yang dipasang untuk nama ini."
   },
-  "noDeposits": {
-    "message": "Belum ada setoran yang diterima"
-  },
   "noConversionRateAvailable": {
     "message": "Kurs Konversi Tidak Tersedia"
   },
@@ -848,9 +773,6 @@
     "message": "Tempelkan string kunci privat di sini:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Tempel frasa benih Anda di sini!"
-  },
   "pending": {
     "message": "tertunda"
   },
@@ -878,9 +800,6 @@
   },
   "privateNetwork": {
     "message": "Jaringan Privat"
-  },
-  "qrCode": {
-    "message": "Tampilkan Kode QR"
   },
   "queue": {
     "message": "Antrean"
@@ -956,9 +875,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
-  },
-  "revert": {
-    "message": "Urungkan"
   },
   "remove": {
     "message": "Hapus"
@@ -1164,9 +1080,6 @@
   "storePhrase": {
     "message": "Simpan frasa ini dalam manajer sandi seperti 1Password."
   },
-  "submit": {
-    "message": "Kirim"
-  },
   "submitted": {
     "message": "Terkirim"
   },
@@ -1214,10 +1127,6 @@
   },
   "to": {
     "message": "Ke"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ke ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token sudah ditambahkan."
@@ -1324,9 +1233,6 @@
   },
   "userName": {
     "message": "Nama Pengguna"
-  },
-  "validFileImport": {
-    "message": "Anda harus memilih berkas yang sah untuk diimpor."
   },
   "viewAccount": {
     "message": "Lihat Akun"

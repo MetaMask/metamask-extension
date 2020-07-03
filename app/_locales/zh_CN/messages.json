@@ -1,27 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "现已默认启用隐私模式"
-  },
   "chartOnlyAvailableEth": {
     "message": "聊天功能仅对以太坊网络开放。"
-  },
-  "confirmClear": {
-    "message": "您确定要清除已批准的网站吗？"
   },
   "contractInteraction": {
     "message": "合约交互"
   },
-  "clearApprovalData": {
-    "message": "清除批准数据"
-  },
   "reject": {
     "message": "拒绝"
-  },
-  "providerRequest": {
-    "message": "$1 希望关联您的账户"
-  },
-  "providerRequestInfo": {
-    "message": "下面列出的域正在尝试请求访问Ethereum API，以便它可以与以太坊区块链进行交互。在批准Ethereum访问之前，请务必仔细检查您是否在正确的站点上。"
   },
   "about": {
     "message": "关于"
@@ -87,7 +72,7 @@
     "message": "添加推荐代币"
   },
   "addAcquiredTokens": {
-    "message": "在Metamask上添加已用的代币"
+    "message": "在MetaMask上添加已用的代币"
   },
   "amount": {
     "message": "数量"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "来源"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "自动注销计时器（分钟）"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "请设置 MetaMask 自动注销前的空闲时间（以分钟为单位）"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "余额可能已过期"
   },
-  "balanceIsInsufficientGas": {
-    "message": "当前余额不足以支付 Gas"
-  },
   "basic": {
     "message": "基本"
-  },
-  "betweenMinAndMax": {
-    "message": "必须大于等于 $1 并且小于等于 $2 。",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "屏蔽管理器"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "链 ID"
   },
-  "clickToAdd": {
-    "message": "点击 $1 将其加入您的个人账户"
-  },
   "clickToRevealSeed": {
     "message": "点击此处显示密语"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "连接"
-  },
-  "connectRequest": {
-    "message": "关联请求"
   },
   "connectingTo": {
     "message": "正在连接 $1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "合约部署"
   },
-  "conversionProgress": {
-    "message": "正在进行转换"
-  },
-  "copiedButton": {
-    "message": "已复制"
-  },
   "copiedExclamation": {
     "message": "已复制"
-  },
-  "copy": {
-    "message": "复制"
   },
   "copyAddress": {
     "message": "将地址复制到剪贴板"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
-  },
-  "copyButton": {
-    "message": " 复制 "
   },
   "copyPrivateKey": {
     "message": "这是你的私钥（点击复制）"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 Ether 的最快捷方式。"
-  },
-  "dismiss": {
-    "message": "关闭"
   },
   "done": {
     "message": "完成"
@@ -488,14 +445,8 @@
   "from": {
     "message": "来自"
   },
-  "fromShapeShift": {
-    "message": "来自 ShapeShift"
-  },
   "functionType": {
     "message": "功能类型"
-  },
-  "gasLimitCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Limit。"
   },
   "gasLimitInfoModalContent": {
     "message": "天然气限制即您个人希望购买的最大单位数量。"
@@ -515,9 +466,6 @@
   "gasPriceNoDenom": {
     "message": "天然气价格"
   },
-  "gasPriceCalculation": {
-    "message": "我们根据网络成功率计算建议的 Gas Price"
-  },
   "general": {
     "message": "通用"
   },
@@ -536,10 +484,6 @@
   },
   "getStarted": {
     "message": "开始使用"
-  },
-  "greaterThanMin": {
-    "message": "必须要大于等于 $1。",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "我们很高兴与您见面。"
@@ -568,9 +512,6 @@
   },
   "hide": {
     "message": "隐藏"
-  },
-  "hideToken": {
-    "message": "隐藏代币"
   },
   "hideTokenPrompt": {
     "message": "隐藏代币？"
@@ -656,10 +597,6 @@
   "ledgerAccountRestriction": {
     "message": "请在新增账户前，确认添加上一个账户。"
   },
-  "lessThanMax": {
-    "message": "必须小于或等于 $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "是的。立即开始设置！"
   },
@@ -681,11 +618,8 @@
   "loadMore": {
     "message": "加载更多"
   },
-  "login": {
-    "message": "登录"
-  },
-  "logout": {
-    "message": "登出"
+  "lock": {
+    "message": "锁定"
   },
   "mainnet": {
     "message": "以太坊主网络"
@@ -696,23 +630,14 @@
   "memo": {
     "message": "备忘录"
   },
-  "menu": {
-    "message": "菜单"
-  },
   "message": {
     "message": "消息"
   },
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask 助记词"
-  },
   "metamaskVersion": {
     "message": "MetaMask 版本"
-  },
-  "missingYourTokens": {
-    "message": "无法看到您的代币？"
   },
   "mobileSyncText": {
     "message": "请输入密码确认个人身份！"
@@ -803,9 +728,6 @@
   "noAddressForName": {
     "message": "此 ENS 名字还没有指定地址。"
   },
-  "noDeposits": {
-    "message": "没有已收的存款"
-  },
   "noConversionRateAvailable": {
     "message": "无可用兑换率"
   },
@@ -852,9 +774,6 @@
     "message": "请粘贴你的私钥:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "请粘贴你的助记词！"
-  },
   "pending": {
     "message": "待处理"
   },
@@ -882,9 +801,6 @@
   },
   "privateNetwork": {
     "message": "私有网络"
-  },
-  "qrCode": {
-    "message": "显示二维码"
   },
   "queue": {
     "message": "队列"
@@ -960,9 +876,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "助记词可以用来窃取您的所有帐户."
-  },
-  "revert": {
-    "message": "还原"
   },
   "remove": {
     "message": "移除"
@@ -1168,9 +1081,6 @@
   "storePhrase": {
     "message": "通过如 1Password 等密码管家保存该密语。"
   },
-  "submit": {
-    "message": "提交"
-  },
   "submitted": {
     "message": "已提交"
   },
@@ -1181,7 +1091,7 @@
     "message": "符号"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "符号应该有0-12个字符."
+    "message": "符号不得超过11个字符。"
   },
   "syncWithMobile": {
     "message": "使用移动设备进行同步"
@@ -1218,10 +1128,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH 通过 ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "代币"
@@ -1334,9 +1240,6 @@
   },
   "userName": {
     "message": "用户名"
-  },
-  "validFileImport": {
-    "message": "您必须选择一个有效的文件进行导入."
   },
   "viewAccount": {
     "message": "查看账户"

@@ -1,10 +1,12 @@
-@import 'account-details/index';
-
 @import 'account-menu/index';
 
 @import 'add-token-button/index';
 
+@import 'alerts/alerts';
+
 @import 'app-header/index';
+
+@import 'asset-list-item/asset-list-item';
 
 @import '../ui/breadcrumbs/index';
 
@@ -24,6 +26,8 @@
 
 @import '../ui/identicon/index';
 
+@import '../ui/menu/menu';
+
 @import 'info-box/index';
 
 @import 'menu-bar/index';
@@ -38,7 +42,7 @@
 
 @import '../../pages/index';
 
-@import 'provider-page-container/index';
+@import 'permission-page-container/index';
 
 @import 'selected-account/index';
 
@@ -48,13 +52,11 @@
 
 @import '../ui/token-balance/index';
 
+@import 'token-cell/token-cell';
+
 @import 'transaction-activity-log/index';
 
 @import 'transaction-breakdown/index';
-
-@import 'transaction-view/index';
-
-@import 'transaction-view-balance/index';
 
 @import 'transaction-list/index';
 
@@ -64,15 +66,9 @@
 
 @import 'transaction-status/index';
 
-@import 'app-header/index';
-
 @import 'sidebars/index';
 
 @import '../ui/unit-input/index';
-
-@import 'gas-customization/gas-modal-page-container/index';
-
-@import 'gas-customization/gas-modal-page-container/index';
 
 @import 'gas-customization/gas-modal-page-container/index';
 
@@ -87,3 +83,35 @@
 @import 'multiple-notifications/index';
 
 @import 'signature-request/index';
+
+@import 'connected-sites-list/index';
+
+@import 'connected-accounts-list/index';
+
+@import 'connected-accounts-permissions/index';
+
+@import '../ui/icon/index';
+
+@import '../ui/icon-with-fallback/icon-with-fallback';
+
+@import '../ui/icon-with-label/index';
+
+@import '../ui/circle-icon/index';
+
+@import '../ui/alert-circle-icon/index';
+
+@import './connected-status-indicator/index';
+
+@import '../ui/check-box/index';
+
+@import '../ui/dropdown/dropdown';
+
+@import 'permissions-connect-header/index';
+
+@import 'permissions-connect-footer/index';
+
+@import 'wallet-overview/index';
+
+@import '../ui/account-mismatch-warning/index';
+
+@import '../ui/icon-border/icon-border';

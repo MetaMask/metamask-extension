@@ -1,0 +1,136 @@
+.permission-approval-container {
+  display: flex;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+  margin-top: 2px;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media screen and (min-width: 576px) {
+    width: 426px;
+    flex: 1;
+
+    &__footers {
+      display: flex;
+      flex-direction: column-reverse;
+      flex: 1;
+      padding-bottom: 20px;
+      justify-content: space-between;
+    }
+  }
+
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-bottom: 1px solid $geyser;
+    padding: 9px;
+  }
+
+  &__title {
+    @extend %header--18;
+    line-height: 25px;
+    text-align: center;
+    margin-top: 32px;
+    width: 100%;
+  }
+
+  &__content {
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    color: #7C808E;
+    padding-left: 24px;
+    padding-right: 24px;
+
+    a, a:hover {
+      color: $dodger-blue;
+    }
+
+    &__requested {
+      text-align: left;
+    }
+
+    &__revoke-note {
+      margin-top: 60px;
+    }
+
+    &__permission {
+      display: flex;
+      align-items: center;
+
+      label {
+        font-size: 14px;
+        margin-left: 16px;
+        color: $Black-100;
+      }
+    }
+  }
+
+  & &__checkbox {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+
+  &__content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__permissions-header {
+    @extend %content-text;
+    line-height: 20px;
+    color: #6A737D;
+  }
+
+  &__permissions-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 38px;
+  }
+
+  .page-container__footer {
+    align-items: center;
+    margin-top: 12px;
+
+    @media screen and (min-width: 576px) {
+      border-top: none;
+    }
+
+    footer {
+      width: 100%;
+      justify-content: space-between;
+
+      button {
+        width: 124px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 575px) {
+    &__title {
+      position: initial;
+    }
+
+    &__content-approval-visual {
+      margin-top: 16px;
+    }
+
+    .page-container__footer header {
+      padding: 0;
+    }
+  }
+
+  &__tooltip-body {
+    display: 'flex';
+    flex-direction: 'column';
+  }
+
+  &__bold-title-elements {
+    font-weight: bold;
+  }
+}

@@ -3,15 +3,15 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import ErrorMessage from '../error-message.component'
 
-describe('ErrorMessage Component', () => {
-  const t = key => `translate ${key}`
+describe('ErrorMessage Component', function () {
+  const t = (key) => `translate ${key}`
 
-  it('should render a message from props.errorMessage', () => {
+  it('should render a message from props.errorMessage', function () {
     const wrapper = shallow(
       <ErrorMessage
         errorMessage="This is an error."
       />,
-      { context: { t }}
+      { context: { t } }
     )
 
     assert.ok(wrapper)
@@ -20,12 +20,12 @@ describe('ErrorMessage Component', () => {
     assert.equal(wrapper.find('.error-message__text').text(), 'ALERT: This is an error.')
   })
 
-  it('should render a message translated from props.errorKey', () => {
+  it('should render a message translated from props.errorKey', function () {
     const wrapper = shallow(
       <ErrorMessage
         errorKey="testKey"
       />,
-      { context: { t }}
+      { context: { t } }
     )
 
     assert.ok(wrapper)

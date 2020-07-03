@@ -9,21 +9,11 @@ import TokenInput from '../token-input.component'
 import UnitInput from '../../unit-input'
 import CurrencyDisplay from '../../currency-display'
 
-describe('TokenInput Component', () => {
-  const t = key => `translate ${key}`
+describe('TokenInput Component', function () {
+  const t = (key) => `translate ${key}`
 
-  describe('rendering', () => {
-    it('should render properly without a token', () => {
-      const wrapper = shallow(
-        <TokenInput />,
-        { context: { t } }
-      )
-
-      assert.ok(wrapper)
-      assert.equal(wrapper.find(UnitInput).length, 1)
-    })
-
-    it('should render properly with a token', () => {
+  describe('rendering', function () {
+    it('should render properly', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -35,12 +25,11 @@ describe('TokenInput Component', () => {
       const wrapper = mount(
         <Provider store={store}>
           <TokenInput
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
           />
         </Provider>,
         { context: { t },
@@ -57,7 +46,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
     })
 
-    it('should render properly with a token and selectedTokenExchangeRate', () => {
+    it('should render properly with tokenExchangeRates', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -69,13 +58,12 @@ describe('TokenInput Component', () => {
       const wrapper = mount(
         <Provider store={store}>
           <TokenInput
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
         { context: { t },
@@ -91,7 +79,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find(CurrencyDisplay).length, 1)
     })
 
-    it('should render properly with a token value for ETH', () => {
+    it('should render properly with a token value for ETH', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -104,13 +92,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>
       )
@@ -125,7 +112,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '2ETH')
     })
 
-    it('should render properly with a token value for fiat', () => {
+    it('should render properly with a token value for fiat', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -138,13 +125,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
         </Provider>
@@ -160,7 +146,7 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
     })
 
-    it('should render properly with a token value for fiat, but hideConversion is true', () => {
+    it('should render properly with a token value for fiat, but hideConversion is true', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -173,13 +159,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             hideConversion
           />
@@ -203,16 +188,16 @@ describe('TokenInput Component', () => {
     })
   })
 
-  describe('handling actions', () => {
+  describe('handling actions', function () {
     const handleChangeSpy = sinon.spy()
     const handleBlurSpy = sinon.spy()
 
-    afterEach(() => {
+    afterEach(function () {
       handleChangeSpy.resetHistory()
       handleBlurSpy.resetHistory()
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for ETH', () => {
+    it('should call onChange on input changes with the hex value for ETH', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -224,14 +209,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>
       )
@@ -253,14 +236,9 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '2ETH')
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
-
-      assert.equal(handleBlurSpy.callCount, 0)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith('2710'))
     })
 
-    it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
+    it('should call onChange on input changes with the hex value for fiat', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -272,14 +250,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
         </Provider>
@@ -302,14 +278,9 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
       assert.equal(tokenInputInstance.state.decimalValue, 1)
       assert.equal(tokenInputInstance.state.hexValue, '2710')
-
-      assert.equal(handleBlurSpy.callCount, 0)
-      input.simulate('blur')
-      assert.equal(handleBlurSpy.callCount, 1)
-      assert.ok(handleBlurSpy.calledWith('2710'))
     })
 
-    it('should change the state and pass in a new decimalValue when props.value changes', () => {
+    it('should change the state and pass in a new decimalValue when props.value changes', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -321,14 +292,12 @@ describe('TokenInput Component', () => {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            onBlur={handleBlurSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
         </Provider>

@@ -3,7 +3,7 @@ const {
   timeout,
   queryAsync,
 } = require('../../lib/util')
-const fetchMockResponses = require('../../e2e/fetch-mocks.json')
+const fetchMockResponses = require('../../data/fetch-mocks.json')
 
 QUnit.module('confirm sig requests')
 
@@ -23,13 +23,11 @@ async function runConfirmSigRequestsTest (assert) {
   reactTriggerChange(selectState[0])
 
   const realFetch = window.fetch.bind(window)
-  global.fetch = (...args) => {
-    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+  window.fetch = (...args) => {
+    if (args[0].match(/^http(s)?:\/\/ethgasstation\.info\/json\/ethgasAPI.*/u)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
-    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+    } else if (args[0].match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
-    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
-      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
     } else if (args[0].match(/chromeextensionmm/)) {
       return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
     }

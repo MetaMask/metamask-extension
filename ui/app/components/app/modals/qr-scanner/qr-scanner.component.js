@@ -1,100 +1,139 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import log from 'loglevel'
 import { BrowserQRCodeReader } from '@zxing/library'
-import 'webrtc-adapter'
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../app/scripts/lib/enums'
 import Spinner from '../../../ui/spinner'
 import WebcamUtils from '../../../../../lib/webcam-utils'
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component'
 
+const READY_STATE = {
+  ACCESSING_CAMERA: 'ACCESSING_CAMERA',
+  NEED_TO_ALLOW_ACCESS: 'NEED_TO_ALLOW_ACCESS',
+  READY: 'READY',
+}
+
 export default class QrScanner extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    qrCodeDetected: PropTypes.func,
-    scanQrCode: PropTypes.func,
-    error: PropTypes.bool,
-    errorType: PropTypes.string,
+    qrCodeDetected: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
     t: PropTypes.func,
   }
 
-  constructor (props, context) {
+  constructor (props) {
     super(props)
 
-    this.state = {
-      ready: false,
-      msg: context.t('accessingYourCamera'),
-    }
+    this.state = this.getInitialState()
     this.codeReader = null
     this.permissionChecker = null
-    this.needsToReinit = false
+    this.mounted = false
 
     // Clear pre-existing qr code data before scanning
     this.props.qrCodeDetected(null)
   }
 
   componentDidMount () {
+    this.mounted = true
+    this.checkEnvironment()
+  }
+
+  componentDidUpdate (_, prevState) {
+    const { ready } = this.state
+
+    if (prevState.ready !== ready) {
+      if (ready === READY_STATE.READY) {
+        this.initCamera()
+      } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
+        this.checkPermissions()
+      }
+    }
+  }
+
+  getInitialState () {
+    return {
+      ready: READY_STATE.ACCESSING_CAMERA,
+      error: null,
+    }
+  }
+
+  checkEnvironment = async () => {
+    try {
+      const { environmentReady } = await WebcamUtils.checkStatus()
+      if (!environmentReady && getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN) {
+        const currentUrl = new URL(window.location.href)
+        const currentHash = currentUrl.hash
+        const currentRoute = currentHash
+          ? currentHash.substring(1)
+          : null
+        global.platform.openExtensionInBrowser(currentRoute)
+      }
+    } catch (error) {
+      if (this.mounted) {
+        this.setState({ error })
+      }
+    }
+    // initial attempt is required to trigger permission prompt
     this.initCamera()
   }
 
-  async checkPermisisions () {
-    const { permissions } = await WebcamUtils.checkStatus()
-    if (permissions) {
-      clearTimeout(this.permissionChecker)
-      // Let the video stream load first...
-      setTimeout(_ => {
-        this.setState({
-          ready: true,
-          msg: this.context.t('scanInstructions'),
-        })
-        if (this.needsToReinit) {
-          this.initCamera()
-          this.needsToReinit = false
+  checkPermissions = async () => {
+    try {
+      const { permissions } = await WebcamUtils.checkStatus()
+      if (permissions) {
+        // Let the video stream load first...
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        if (!this.mounted) {
+          return
         }
-      }, 2000)
-    } else {
-      // Keep checking for permissions
-      this.permissionChecker = setTimeout(_ => {
-        this.checkPermisisions()
-      }, 1000)
+        this.setState({ ready: READY_STATE.READY })
+      } else if (this.mounted) {
+        // Keep checking for permissions
+        this.permissionChecker = setTimeout(this.checkPermissions, 1000)
+      }
+    } catch (error) {
+      if (this.mounted) {
+        this.setState({ error })
+      }
     }
   }
 
   componentWillUnmount () {
+    this.mounted = false
     clearTimeout(this.permissionChecker)
     if (this.codeReader) {
       this.codeReader.reset()
     }
   }
 
-  initCamera () {
+  initCamera = async () => {
     this.codeReader = new BrowserQRCodeReader()
-    this.codeReader.getVideoInputDevices()
-      .then(() => {
-        clearTimeout(this.permissionChecker)
-        this.checkPermisisions()
-        this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
-          .then(content => {
-            const result = this.parseContent(content.text)
-            if (result.type !== 'unknown') {
-              this.props.qrCodeDetected(result)
-              this.stopAndClose()
-            } else {
-              this.setState({msg: this.context.t('unknownQrCode')})
-            }
-          })
-          .catch(err => {
-            if (err && err.name === 'NotAllowedError') {
-              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
-              clearTimeout(this.permissionChecker)
-              this.needsToReinit = true
-              this.checkPermisisions()
-            }
-          })
-      }).catch(err => {
-        console.error('[QR-SCANNER]: getVideoInputDevices threw an exception: ', err)
-      })
+    try {
+      await this.codeReader.getVideoInputDevices()
+      const content = await this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
+      const result = this.parseContent(content.text)
+      if (!this.mounted) {
+        return
+      } else if (result.type !== 'unknown') {
+        this.props.qrCodeDetected(result)
+        this.stopAndClose()
+      } else {
+        this.setState({ error: new Error(this.context.t('unknownQrCode')) })
+      }
+    } catch (error) {
+      if (!this.mounted) {
+        return
+      }
+      if (error.name === 'NotAllowedError') {
+        log.info(`Permission denied: '${error}'`)
+        this.setState({ ready: READY_STATE.NEED_TO_ALLOW_ACCESS })
+      } else {
+        this.setState({ error })
+      }
+    }
   }
 
   parseContent (content) {
@@ -110,16 +149,16 @@ export default class QrScanner extends Component {
     if (content.split('ethereum:').length > 1) {
 
       type = 'address'
-      values = {'address': content.split('ethereum:')[1] }
+      values = { 'address': content.split('ethereum:')[1] }
 
     // Regular ethereum addresses - fox ex. 0x.....1111
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
 
       type = 'address'
-      values = {'address': content }
+      values = { 'address': content }
 
     }
-    return {type, values}
+    return { type, values }
   }
 
 
@@ -127,89 +166,108 @@ export default class QrScanner extends Component {
     if (this.codeReader) {
       this.codeReader.reset()
     }
-    this.setState({ ready: false })
     this.props.hideModal()
   }
 
   tryAgain = () => {
-    // close the modal
-    this.stopAndClose()
-    // wait for the animation and try again
-    setTimeout(_ => {
-      this.props.scanQrCode()
-    }, 1000)
+    clearTimeout(this.permissionChecker)
+    if (this.codeReader) {
+      this.codeReader.reset()
+    }
+    this.setState(this.getInitialState(), () => {
+      this.checkEnvironment()
+    })
   }
 
-  renderVideo () {
-    return (
-      <div className="qr-scanner__content__video-wrapper">
-        <video
-          id="video"
-          style={{
-            display: this.state.ready ? 'block' : 'none',
-          }}
-        />
-        { !this.state.ready ? <Spinner color="#F7C06C" /> : null}
-      </div>
-    )
-  }
+  renderError () {
+    const { t } = this.context
+    const { error } = this.state
 
-  renderErrorModal () {
     let title, msg
-
-    if (this.props.error) {
-      if (this.props.errorType === 'NO_WEBCAM_FOUND') {
-        title = this.context.t('noWebcamFoundTitle')
-        msg = this.context.t('noWebcamFound')
-      } else {
-        title = this.context.t('unknownCameraErrorTitle')
-        msg = this.context.t('unknownCameraError')
-      }
+    if (error.type === 'NO_WEBCAM_FOUND') {
+      title = t('noWebcamFoundTitle')
+      msg = t('noWebcamFound')
+    } else if (error.message === t('unknownQrCode')) {
+      msg = t('unknownQrCode')
+    } else {
+      title = t('unknownCameraErrorTitle')
+      msg = t('unknownCameraError')
     }
 
     return (
-      <div className="qr-scanner">
-        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
-
+      <>
         <div className="qr-scanner__image">
           <img src="images/webcam.svg" width={70} height={70} />
         </div>
-        <div className="qr-scanner__title">
-          { title }
-        </div>
+        {
+          title
+            ? (
+              <div className="qr-scanner__title">
+                { title }
+              </div>
+            )
+            : null
+        }
         <div className="qr-scanner__error">
           {msg}
         </div>
         <PageContainerFooter
           onCancel={this.stopAndClose}
           onSubmit={this.tryAgain}
-          cancelText={this.context.t('cancel')}
-          submitText={this.context.t('tryAgain')}
+          cancelText={t('cancel')}
+          submitText={t('tryAgain')}
           submitButtonType="confirm"
         />
-      </div>
+      </>
     )
   }
 
-  render () {
+  renderVideo () {
     const { t } = this.context
+    const { ready } = this.state
 
-    if (this.props.error) {
-      return this.renderErrorModal()
+    let message
+    if (ready === READY_STATE.ACCESSING_CAMERA) {
+      message = t('accessingYourCamera')
+    } else if (ready === READY_STATE.READY) {
+      message = t('scanInstructions')
+    } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
+      message = t('youNeedToAllowCameraAccess')
     }
 
     return (
-      <div className="qr-scanner">
-        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+      <>
         <div className="qr-scanner__title">
           { `${t('scanQrCode')}` }
         </div>
         <div className="qr-scanner__content">
-          { this.renderVideo() }
+          <div className="qr-scanner__content__video-wrapper">
+            <video
+              id="video"
+              style={{
+                display: ready === READY_STATE.READY ? 'block' : 'none',
+              }}
+            />
+            { ready !== READY_STATE.READY ? <Spinner color="#F7C06C" /> : null}
+          </div>
         </div>
         <div className="qr-scanner__status">
-          {this.state.msg}
+          {message}
         </div>
+      </>
+    )
+  }
+
+  render () {
+    const { error } = this.state
+    return (
+      <div className="qr-scanner">
+        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+        {
+          error
+            ? this.renderError()
+            : this.renderVideo()
+        }
       </div>
     )
   }

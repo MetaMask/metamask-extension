@@ -1,8 +1,8 @@
-const assert = require('assert')
-const migration34 = require('../../../app/scripts/migrations/034')
+import assert from 'assert'
+import migration34 from '../../../app/scripts/migrations/034'
 
-describe('migration #34', () => {
-  it('should update the version metadata', (done) => {
+describe('migration #34', function () {
+  it('should update the version metadata', function (done) {
     const oldStorage = {
       'meta': {
         'version': 33,
@@ -20,7 +20,7 @@ describe('migration #34', () => {
       .catch(done)
   })
 
-  it('should set migratedPrivacyMode & privacyMode if featureFlags.privacyMode was false', (done) => {
+  it('should set migratedPrivacyMode & privacyMode if featureFlags.privacyMode was false', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -45,7 +45,7 @@ describe('migration #34', () => {
       .catch(done)
   })
 
-  it('should NOT change any state if migratedPrivacyMode is already set to true', (done) => {
+  it('should NOT change any state if migratedPrivacyMode is already set to true', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -66,7 +66,7 @@ describe('migration #34', () => {
       .catch(done)
   })
 
-  it('should NOT change any state if migratedPrivacyMode is already set to false', (done) => {
+  it('should NOT change any state if migratedPrivacyMode is already set to false', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {
@@ -87,7 +87,7 @@ describe('migration #34', () => {
       .catch(done)
   })
 
-  it('should NOT change any state if PreferencesController is missing', (done) => {
+  it('should NOT change any state if PreferencesController is missing', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {},
@@ -101,7 +101,7 @@ describe('migration #34', () => {
       .catch(done)
   })
 
-  it('should NOT change any state if featureFlags.privacyMode is already true', (done) => {
+  it('should NOT change any state if featureFlags.privacyMode is already true', function (done) {
     const oldStorage = {
       'meta': {},
       'data': {

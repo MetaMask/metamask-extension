@@ -1,8 +1,8 @@
 import ContactListTab from './contact-list-tab.component'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { getAddressBook } from '../../../selectors/selectors'
+import { getAddressBook } from '../../../selectors'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 

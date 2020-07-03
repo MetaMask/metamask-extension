@@ -1,5 +1,5 @@
-const ethUtil = require('ethereumjs-util')
-const { conversionUtil, multiplyCurrencies } = require('../../helpers/utils/conversion-util')
+import ethUtil from 'ethereumjs-util'
+import { conversionUtil, multiplyCurrencies } from '../../helpers/utils/conversion-util'
 
 const MIN_GAS_PRICE_DEC = '0'
 const MIN_GAS_PRICE_HEX = (parseInt(MIN_GAS_PRICE_DEC)).toString(16)
@@ -30,17 +30,10 @@ const INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR = 'invalidAddressRecipient
 const REQUIRED_ERROR = 'required'
 const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient'
 
-const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(conversionUtil('0x1', {
-  fromDenomination: 'GWEI',
-  toDenomination: 'WEI',
-  fromNumericBase: 'hex',
-  toNumericBase: 'hex',
-}))
-
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const BASE_TOKEN_GAS_COST = '0x186a0' // Hex for 100000, a base estimate for token transfers.
 
-module.exports = {
+export {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
@@ -53,7 +46,6 @@ module.exports = {
   MIN_GAS_PRICE_HEX,
   MIN_GAS_TOTAL,
   NEGATIVE_ETH_ERROR,
-  ONE_GWEI_IN_WEI_HEX,
   REQUIRED_ERROR,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,

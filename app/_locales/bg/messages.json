@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Режимът на поверителност вече е активиран по подразбиране"
-  },
   "chartOnlyAvailableEth": {
     "message": "Диаграмата е достъпна само в мрежи на Ethereum."
-  },
-  "confirmClear": {
-    "message": "Сигурни ли сте, че искате да изчистите одобрените уебсайтове?"
   },
   "contractInteraction": {
     "message": "Взаимодействие с договор"
   },
-  "clearApprovalData": {
-    "message": "Изчистване на данните за поверителност"
-  },
   "reject": {
     "message": "Отхвърляне"
-  },
-  "providerRequest": {
-    "message": "$1 би искал да се свърже с вашия акаунт"
-  },
-  "providerRequestInfo": {
-    "message": "Този сайт иска достъп за преглед на адреса на текущия ви акаунт. Винаги се уверявайте, че се доверявате на сайтовете, с които взаимодействате."
   },
   "about": {
     "message": "Информация"
   },
   "aboutSettingsDescription": {
-    "message": "Версия, център за поддръжка и информация за контакт."
+    "message": "Версия, център за поддръжка и информация за контакт"
   },
   "acceleratingATransaction": {
     "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
@@ -63,7 +48,7 @@
     "message": "Разширени"
   },
   "advancedSettingsDescription": {
-    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC."
+    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC"
   },
   "advancedOptions": {
     "message": "Разширени опции"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Функции"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Балансът може да е остарял"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Недостатъчен баланс за текущия общ газ"
-  },
   "basic": {
     "message": "Основни"
-  },
-  "betweenMinAndMax": {
-    "message": "трябва да бъде по-голям или равен на $1 и по-малък или равен на $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Блокиране на Explorer"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "Идентификатор на веригата"
   },
-  "clickToAdd": {
-    "message": "Кликнете върху $1, за да ги добавите към вашия акаунт"
-  },
   "clickToRevealSeed": {
     "message": "Кликнете тук, за да разкриете тайните думи"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "Свързване"
-  },
-  "connectRequest": {
-    "message": "Свържете заявка"
   },
   "connectingTo": {
     "message": "Свързване с $1"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "Разгръщане на договор"
   },
-  "conversionProgress": {
-    "message": "Извършва се конвертиране"
-  },
-  "copiedButton": {
-    "message": "Копирано"
-  },
   "copiedExclamation": {
     "message": "Копирано!"
-  },
-  "copy": {
-    "message": "Копиране"
   },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
-  },
-  "copyButton": {
-    "message": "Копиране"
   },
   "copyPrivateKey": {
     "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Ако вече имате някакъв етер, най-бързият начин да получите етер в новия си портфейл е чрез директен депозит."
-  },
-  "dismiss": {
-    "message": "Отхвърляне"
   },
   "done": {
     "message": "Готово"
@@ -484,17 +441,11 @@
   "from": {
     "message": "От"
   },
-  "fromShapeShift": {
-    "message": "От ShapeShift"
-  },
   "functionType": {
     "message": "Тип функция"
   },
   "gasLimit": {
     "message": "Ограничение на газ"
-  },
-  "gasLimitCalculation": {
-    "message": "Изчисляваме препоръчителния лимит за газ въз основа на степента на успех на мрежата."
   },
   "gasLimitInfoModalContent": {
     "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
@@ -517,9 +468,6 @@
   "gasPriceNoDenom": {
     "message": "Цена на газа"
   },
-  "gasPriceCalculation": {
-    "message": "Изчисляваме предложените цени на газ въз основа на успеваемостта на мрежата."
-  },
   "general": {
     "message": "Общ"
   },
@@ -538,10 +486,6 @@
   },
   "getStarted": {
     "message": "Първи стъпки"
-  },
-  "greaterThanMin": {
-    "message": "трябва да бъде по-голяма или равна на $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Радваме се да Ви видим."
@@ -570,9 +514,6 @@
   },
   "hide": {
     "message": "Скриване"
-  },
-  "hideToken": {
-    "message": "Скриване на жетон"
   },
   "hideTokenPrompt": {
     "message": "Скриване на жетон?"
@@ -661,10 +602,6 @@
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
   },
-  "lessThanMax": {
-    "message": "трябва да бъде по-малко или равно на $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
   },
@@ -689,10 +626,7 @@
   "localhost": {
     "message": "Локален хост 8545"
   },
-  "login": {
-    "message": "Вход"
-  },
-  "logout": {
+  "lock": {
     "message": "Излизане"
   },
   "mainnet": {
@@ -704,23 +638,14 @@
   "memo": {
     "message": "бележка"
   },
-  "menu": {
-    "message": "Меню"
-  },
   "message": {
     "message": "Съобщение"
   },
   "metamaskDescription": {
     "message": "Свързва ви с Ethereum и децентрализираната мрежа."
   },
-  "metamaskSeedWords": {
-    "message": "Думи зародиш на MetaMask"
-  },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
-  },
-  "missingYourTokens": {
-    "message": "Не виждате жетоните си?"
   },
   "mobileSyncText": {
     "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
@@ -817,9 +742,6 @@
   "noAddressForName": {
     "message": "За това име не е зададен адрес."
   },
-  "noDeposits": {
-    "message": "Не са получени депозити"
-  },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
   },
@@ -866,9 +788,6 @@
     "message": "Поставете низ от личния си ключ тук:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Поставете тук ключовата си фраза!"
-  },
   "pending": {
     "message": "в изчакване"
   },
@@ -896,9 +815,6 @@
   },
   "privateNetwork": {
     "message": "Частна мрежа"
-  },
-  "qrCode": {
-    "message": "Показване на QR кода"
   },
   "queue": {
     "message": "Опашка"
@@ -974,9 +890,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
-  },
-  "revert": {
-    "message": "Обръщане"
   },
   "remove": {
     "message": "Премахване"
@@ -1182,9 +1095,6 @@
   "storePhrase": {
     "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."
   },
-  "submit": {
-    "message": "Изпращане"
-  },
   "submitted": {
     "message": "Изпратен"
   },
@@ -1195,7 +1105,7 @@
     "message": "Символ"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Символът трябва да е между 0 и 12 знака."
+    "message": "Символът трябва да е 11 символа или по-малко."
   },
   "syncWithMobile": {
     "message": "Синхронизиране с мобилни устройства"
@@ -1232,10 +1142,6 @@
   },
   "to": {
     "message": "На"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 до ETH чрез ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Жетон"
@@ -1351,9 +1257,6 @@
   },
   "userName": {
     "message": "Потребителско име"
-  },
-  "validFileImport": {
-    "message": "Трябва да изберете валиден файл, който да импортирате."
   },
   "viewAccount": {
     "message": "Преглед на профила"

@@ -3,8 +3,8 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import Breadcrumbs from '../breadcrumbs.component'
 
-describe('Breadcrumbs Component', () => {
-  it('should render with the correct colors', () => {
+describe('Breadcrumbs Component', function () {
+  it('should render with the correct colors', function () {
     const wrapper = shallow(
       <Breadcrumbs
         currentIndex={1}

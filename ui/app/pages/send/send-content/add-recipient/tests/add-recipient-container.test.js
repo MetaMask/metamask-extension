@@ -17,23 +17,19 @@ proxyquire('../add-recipient.container.js', {
       return () => ({})
     },
   },
-  '../../send.selectors.js': {
+  '../../../../selectors': {
     getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
-  },
-  '../../../../selectors/selectors': {
     getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
     getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
+    accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
   },
   '../../../../store/actions': actionSpies,
 })
 
-describe('add-recipient container', () => {
-
-  describe('mapStateToProps()', () => {
-
-    it('should map the correct properties to props', () => {
+describe('add-recipient container', function () {
+  describe('mapStateToProps()', function () {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps('mockState'), {
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
@@ -44,20 +40,14 @@ describe('add-recipient container', () => {
         nonContacts: [],
       })
     })
-
   })
 
-  describe('mapDispatchToProps()', () => {
-    let dispatchSpy
-    let mapDispatchToPropsObject
+  describe('mapDispatchToProps()', function () {
+    describe('updateSendTo()', function () {
+      const dispatchSpy = sinon.spy()
+      const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
 
-    beforeEach(() => {
-      dispatchSpy = sinon.spy()
-      mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
-    })
-
-    describe('updateSendTo()', () => {
-      it('should dispatch an action', () => {
+      it('should dispatch an action', function () {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname')
         assert(dispatchSpy.calledOnce)
         assert(actionSpies.updateSendTo.calledOnce)
@@ -68,5 +58,4 @@ describe('add-recipient container', () => {
       })
     })
   })
-
 })

@@ -1,18 +1,9 @@
 {
-  "privacyModeDefault": {
-    "message": "Integritetsläge är nu aktiverat som standard"
-  },
   "chartOnlyAvailableEth": {
     "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
   },
-  "confirmClear": {
-    "message": "Är du säker på att du vill rensa godkända webbplatser?"
-  },
   "contractInteraction": {
     "message": "Kontraktinteraktion"
-  },
-  "clearApprovalData": {
-    "message": "Rensa personlig data"
   },
   "appName": {
     "message": "MetaMask",
@@ -21,17 +12,11 @@
   "reject": {
     "message": "Avvisa"
   },
-  "providerRequest": {
-    "message": "$1 vill ansluta till ditt konto"
-  },
-  "providerRequestInfo": {
-    "message": "Den här sidan begär åtkomst till din aktuella kontoadress. Se till att du kan lita på de sidor du använder dig av."
-  },
   "about": {
     "message": "Om"
   },
   "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation."
+    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -67,7 +52,7 @@
     "message": "Avancerat"
   },
   "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC."
+    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Tillskrivningar"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Saldot kanske inte är uppdaterat"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Otillräckligt saldo för aktuell totalsumma för gas"
-  },
   "basic": {
     "message": "Grunder"
-  },
-  "betweenMinAndMax": {
-    "message": "måste vara större än/lika med $1, eller mindre än/lika med $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Blockera Utforskaren"
@@ -213,9 +191,6 @@
   "cancelled": {
     "message": "Avbruten"
   },
-  "clickToAdd": {
-    "message": "Tryck på $1 för att lägga till dem på ditt konto."
-  },
   "clickToRevealSeed": {
     "message": "Klicka här för att visa hemliga ord"
   },
@@ -245,9 +220,6 @@
   },
   "connect": {
     "message": "Ansluta"
-  },
-  "connectRequest": {
-    "message": "Anslutningsförfrågan"
   },
   "connectingTo": {
     "message": "Ansluter till $1"
@@ -279,17 +251,8 @@
   "contractDeployment": {
     "message": "Kontraktplacering"
   },
-  "conversionProgress": {
-    "message": "Konvertering pågår"
-  },
-  "copiedButton": {
-    "message": "Kopierat"
-  },
   "copiedExclamation": {
     "message": "Kopierades!"
-  },
-  "copy": {
-    "message": "Kopiera"
   },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
@@ -302,9 +265,6 @@
   },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
-  },
-  "copyButton": {
-    "message": "Kopiera"
   },
   "copyPrivateKey": {
     "message": "Det här är din privata nyckel (klicka för att kopiera)"
@@ -368,9 +328,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
-  "dismiss": {
-    "message": "Ta bort permanent"
   },
   "done": {
     "message": "Klart"
@@ -478,17 +435,11 @@
   "from": {
     "message": "Från"
   },
-  "fromShapeShift": {
-    "message": "från ShapeShift"
-  },
   "functionType": {
     "message": "Funktionstyp"
   },
   "gasLimit": {
     "message": "Gasgräns"
-  },
-  "gasLimitCalculation": {
-    "message": "Vi beräknar den föreslagna gasgränsen baserat på nätverket framgångsgrad."
   },
   "gasLimitInfoModalContent": {
     "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
@@ -511,9 +462,6 @@
   "gasPriceNoDenom": {
     "message": "Gaspris"
   },
-  "gasPriceCalculation": {
-    "message": "Vi beräknar de föreslagna gaspriserna baserat på nätverkets resultat."
-  },
   "general": {
     "message": "Allmänt"
   },
@@ -532,10 +480,6 @@
   },
   "getStarted": {
     "message": "Komma igång"
-  },
-  "greaterThanMin": {
-    "message": "måste vara större än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Vi är glada att se dig."
@@ -564,9 +508,6 @@
   },
   "hide": {
     "message": "Dölj"
-  },
-  "hideToken": {
-    "message": "Göm token"
   },
   "hideTokenPrompt": {
     "message": "Göm token?"
@@ -655,10 +596,6 @@
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
   },
-  "lessThanMax": {
-    "message": "måste vara mindre än eller lika med $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Ja, kör igång!"
   },
@@ -680,10 +617,7 @@
   "loadMore": {
     "message": "Ladda mer"
   },
-  "login": {
-    "message": "Logga in"
-  },
-  "logout": {
+  "lock": {
     "message": "Logga ut"
   },
   "mainnet": {
@@ -692,23 +626,14 @@
   "memorizePhrase": {
     "message": "Memorera denna fras."
   },
-  "menu": {
-    "message": "Meny"
-  },
   "message": {
     "message": "Meddelande"
   },
   "metamaskDescription": {
     "message": "Ansluter dig mot Ethereum och den decentraliserade webben."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMask"
-  },
   "metamaskVersion": {
     "message": "MetaMask-version"
-  },
-  "missingYourTokens": {
-    "message": "Ser du inte dina tokens?"
   },
   "mobileSyncText": {
     "message": "Var vänlig ange ditt lösenord för att bekräfta att det är du!"
@@ -805,9 +730,6 @@
   "noAddressForName": {
     "message": "Inga adresser har angetts för detta namn."
   },
-  "noDeposits": {
-    "message": "Ingen deposition mottagen"
-  },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
   },
@@ -854,9 +776,6 @@
     "message": "Klistra in din privata nyckel här:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Klistra in din nyckelfras här!"
-  },
   "pending": {
     "message": "väntar"
   },
@@ -884,9 +803,6 @@
   },
   "privateNetwork": {
     "message": "Privat nätverk"
-  },
-  "qrCode": {
-    "message": "Visa QR-kod"
   },
   "queue": {
     "message": "Utskriftskö"
@@ -962,9 +878,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
-  },
-  "revert": {
-    "message": "Återställ"
   },
   "remove": {
     "message": "Ta bort"
@@ -1170,9 +1083,6 @@
   "storePhrase": {
     "message": "Lagra denna fras i en lösenordshanterare såsom 1Password."
   },
-  "submit": {
-    "message": "Skicka"
-  },
   "submitted": {
     "message": "Inskickat"
   },
@@ -1180,7 +1090,7 @@
     "message": "Besök vårt supportcenter"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolen måste vara mellan 0 och 12 tecken."
+    "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "syncWithMobile": {
     "message": "Synka med mobil"
@@ -1217,10 +1127,6 @@
   },
   "to": {
     "message": "Till"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 till ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token har redan lagts till."
@@ -1330,9 +1236,6 @@
   },
   "userName": {
     "message": "Användarnamn"
-  },
-  "validFileImport": {
-    "message": "Du måste välja en giltig fil för att importera."
   },
   "viewAccount": {
     "message": "Visa konto"

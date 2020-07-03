@@ -1,0 +1,21 @@
+.permissions-connect-footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+
+  &__text {
+    @extend %content-text;
+    font-size: 12px;
+    line-height: 17px;
+    color: #6A737D;
+    display: flex;
+    margin-top: 10px;
+
+    &--link {
+      color: #037DD6;
+      margin-left: 4px;
+      cursor: pointer;
+    }
+  }
+}

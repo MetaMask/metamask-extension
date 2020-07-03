@@ -1,35 +1,27 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 import SignatureRequest from './signature-request.component'
-import { goHome } from '../../../store/actions'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
 import {
-  getSelectedAccount,
-  getCurrentAccountWithSendEtherInfo,
-  getSelectedAddress,
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
-} from '../../../selectors/selectors.js'
+} from '../../../selectors'
+import { getAccountByAddress } from '../../../helpers/utils/util'
+import { MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 
 function mapStateToProps (state) {
   return {
-    balance: getSelectedAccount(state).balance,
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
-    selectedAddress: getSelectedAddress(state),
-    accounts: accountsWithSendEtherInfoSelector(state),
-    conversionRate: conversionRateSelector(state),
+    // not forwarded to component
+    allAccounts: accountsWithSendEtherInfoSelector(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { allAccounts } = stateProps
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -40,33 +32,32 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps
 
-  const { type } = txData
+  const { type, msgParams: { from } } = txData
+
+  const fromAccount = getAccountByAddress(allAccounts, from)
 
   let cancel
   let sign
 
-  if (type === 'personal_sign') {
+  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  } else if (type === 'eth_signTypedData') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  } else if (type === 'eth_sign') {
+  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
     cancel = cancelMessage
     sign = signMessage
   }
 
   return {
-    ...stateProps,
-    ...dispatchProps,
     ...ownProps,
+    ...dispatchProps,
+    fromAccount,
     txData,
     cancel,
     sign,
   }
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
-)(SignatureRequest)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SignatureRequest)

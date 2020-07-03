@@ -1,83 +1,84 @@
-const Component = require('react').Component
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const { withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const connect = require('react-redux').connect
-const actions = require('../../../store/actions')
-const FileInput = require('react-simple-file-input').default
-const { DEFAULT_ROUTE } = require('../../../helpers/constants/routes')
-const { getMetaMaskAccounts } = require('../../../selectors/selectors')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import * as actions from '../../../store/actions'
+import FileInput from 'react-simple-file-input'
+import { getMetaMaskAccounts } from '../../../selectors'
 import Button from '../../../components/ui/button'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 const HELP_LINK = 'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account'
 
 class JsonImportSubview extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      file: null,
-      fileContents: '',
-    }
+  state = {
+    fileContents: '',
+    isEmpty: true,
   }
 
+  inputRef = React.createRef()
+
   render () {
-    const { error } = this.props
+    const { error, history, mostRecentOverviewPage } = this.props
+    const enabled = !this.state.isEmpty && this.state.fileContents !== ''
 
     return (
-      h('div.new-account-import-form__json', [
-
-        h('p', this.context.t('usedByClients')),
-        h('a.warning', {
-          href: HELP_LINK,
-          target: '_blank',
-        }, this.context.t('fileImportFail')),
-
-        h(FileInput, {
-          readAs: 'text',
-          onLoad: this.onLoad.bind(this),
-          style: {
+      <div className="new-account-import-form__json">
+        <p>{this.context.t('usedByClients')}</p>
+        <a className="warning" href={HELP_LINK} target="_blank" rel="noopener noreferrer">{this.context.t('fileImportFail')}</a>
+        <FileInput
+          readAs="text"
+          onLoad={this.onLoad.bind(this)}
+          style={{
             padding: '20px 0px 12px 15%',
             fontSize: '15px',
             display: 'flex',
             justifyContent: 'center',
             width: '100%',
-          },
-        }),
-
-        h('input.new-account-import-form__input-password', {
-          type: 'password',
-          placeholder: this.context.t('enterPassword'),
-          id: 'json-password-box',
-          onKeyPress: this.createKeyringOnEnter.bind(this),
-        }),
-
-        h('div.new-account-create-form__buttons', {}, [
-
-          h(Button, {
-            type: 'default',
-            large: true,
-            className: 'new-account-create-form__button',
-            onClick: () => this.props.history.push(DEFAULT_ROUTE),
-          }, [this.context.t('cancel')]),
-
-          h(Button, {
-            type: 'secondary',
-            large: true,
-            className: 'new-account-create-form__button',
-            onClick: () => this.createNewKeychain(),
-          }, [this.context.t('import')]),
-
-        ]),
-
-        error ? h('span.error', error) : null,
-      ])
+          }}
+        />
+        <input
+          className="new-account-import-form__input-password"
+          type="password"
+          placeholder={this.context.t('enterPassword')}
+          id="json-password-box"
+          onKeyPress={this.createKeyringOnEnter.bind(this)}
+          onChange={() => this.checkInputEmpty()}
+          ref={this.inputRef}
+        />
+        <div className="new-account-create-form__buttons">
+          <Button
+            type="default"
+            large
+            className="new-account-create-form__button"
+            onClick={() => history.push(mostRecentOverviewPage)}
+          >
+            {this.context.t('cancel')}
+          </Button>
+          <Button
+            type="secondary"
+            large
+            className="new-account-create-form__button"
+            onClick={() => this.createNewKeychain()}
+            disabled={!enabled}
+          >
+            {this.context.t('import')}
+          </Button>
+        </div>
+        {
+          error
+            ? <span className="error">{error}</span>
+            : null
+        }
+      </div>
     )
   }
 
-  onLoad (event, file) {
-    this.setState({file: file, fileContents: event.target.result})
+  onLoad (event) {
+    this.setState({
+      fileContents: event.target.result,
+    })
   }
 
   createKeyringOnEnter (event) {
@@ -88,28 +89,27 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
-    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
-    const state = this.state
-
-    if (!state) {
-      const message = this.context.t('validFileImport')
-      return displayWarning(message)
-    }
-
-    const { fileContents } = state
+    const {
+      firstAddress,
+      displayWarning,
+      history,
+      importNewJsonAccount,
+      mostRecentOverviewPage,
+      setSelectedAddress,
+    } = this.props
+    const { fileContents } = this.state
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')
       return displayWarning(message)
     }
 
-    const passwordInput = document.getElementById('json-password-box')
-    const password = passwordInput.value
+    const password = this.inputRef.current.value
 
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',
@@ -130,33 +130,41 @@ class JsonImportSubview extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => err && displayWarning(err.message || err))
+      .catch((err) => err && displayWarning(err.message || err))
+  }
+
+  checkInputEmpty () {
+    const password = this.inputRef.current.value
+    let isEmpty = true
+    if (password !== '') {
+      isEmpty = false
+    }
+    this.setState({ isEmpty })
   }
 }
 
 JsonImportSubview.propTypes = {
   error: PropTypes.string,
-  goHome: PropTypes.func,
   displayWarning: PropTypes.func,
   firstAddress: PropTypes.string,
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
   setSelectedAddress: PropTypes.func,
-  t: PropTypes.func,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     error: state.appState.warning,
     firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    goHome: () => dispatch(actions.goHome()),
-    displayWarning: warning => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
+    displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
+    importNewJsonAccount: (options) => dispatch(actions.importNewAccount('JSON File', options)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
 }
@@ -166,7 +174,7 @@ JsonImportSubview.contextTypes = {
   metricsEvent: PropTypes.func,
 }
 
-module.exports = compose(
+export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(JsonImportSubview)

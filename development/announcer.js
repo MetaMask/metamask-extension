@@ -1,12 +1,10 @@
-var manifest = require('../app/manifest.json')
-var version = manifest.version
+const fs = require('fs')
+const path = require('path')
+const { version } = require('../app/manifest/_base.json')
 
-var fs = require('fs')
-var path = require('path')
-var changelog = fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md')).toString()
+const changelog = fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md'), 'utf8')
 
-var log = changelog.split(version)[1].split('##')[0].trim()
-
+const log = changelog.split(version)[1].split('##')[0].trim()
 const msg = `*MetaMask ${version}* now published! It should auto-update soon!\n${log}`
 
 console.log(msg)

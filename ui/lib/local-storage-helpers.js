@@ -1,6 +1,6 @@
 export function loadLocalStorageData (itemKey) {
   try {
-    const serializedData = localStorage.getItem(itemKey)
+    const serializedData = window.localStorage.getItem(itemKey)
     if (serializedData === null) {
       return undefined
     }
@@ -13,7 +13,7 @@ export function loadLocalStorageData (itemKey) {
 export function saveLocalStorageData (data, itemKey) {
   try {
     const serializedData = JSON.stringify(data)
-    localStorage.setItem(itemKey, serializedData)
+    window.localStorage.setItem(itemKey, serializedData)
   } catch (err) {
     console.warn(err)
   }

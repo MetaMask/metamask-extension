@@ -10,58 +10,48 @@ proxyquire('../account-list-item.container.js', {
       return () => ({})
     },
   },
-  '../send.selectors.js': {
+  '../../../selectors': {
     getConversionRate: () => `mockConversionRate`,
     getCurrentCurrency: () => `mockCurrentCurrency`,
     getNativeCurrency: () => `mockNativeCurrency`,
-  },
-  '../../../selectors/selectors': {
     isBalanceCached: () => `mockBalanceIsCached`,
-    preferencesSelector: ({ showFiatInTestnets }) => ({
+    getPreferences: ({ showFiatInTestnets }) => ({
       showFiatInTestnets,
     }),
     getIsMainnet: ({ isMainnet }) => isMainnet,
   },
 })
 
-describe('account-list-item container', () => {
+describe('account-list-item container', function () {
 
-  describe('mapStateToProps()', () => {
+  describe('mapStateToProps()', function () {
 
-    it('should map the correct properties to props', () => {
+    it('should map the correct properties to props', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: true, showFiatInTestnets: false }), {
-        conversionRate: 'mockConversionRate',
-        currentCurrency: 'mockCurrentCurrency',
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
         showFiat: true,
       })
     })
 
-    it('should map the correct properties to props when in mainnet and showFiatInTestnet is true', () => {
+    it('should map the correct properties to props when in mainnet and showFiatInTestnet is true', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: true, showFiatInTestnets: true }), {
-        conversionRate: 'mockConversionRate',
-        currentCurrency: 'mockCurrentCurrency',
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
         showFiat: true,
       })
     })
 
-    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is true', () => {
+    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is true', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: false, showFiatInTestnets: true }), {
-        conversionRate: 'mockConversionRate',
-        currentCurrency: 'mockCurrentCurrency',
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
         showFiat: true,
       })
     })
 
-    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is false', () => {
+    it('should map the correct properties to props when not in mainnet and showFiatInTestnet is false', function () {
       assert.deepEqual(mapStateToProps({ isMainnet: false, showFiatInTestnets: false }), {
-        conversionRate: 'mockConversionRate',
-        currentCurrency: 'mockCurrentCurrency',
         nativeCurrency: 'mockNativeCurrency',
         balanceIsCached: 'mockBalanceIsCached',
         showFiat: false,

@@ -1,33 +1,18 @@
 {
-  "privacyModeDefault": {
-    "message": "Yksityisyystila on nyt oletusarvoisesti käytössä"
-  },
   "chartOnlyAvailableEth": {
     "message": "Kaavio saatavilla vain Ethereum-verkoissa."
-  },
-  "confirmClear": {
-    "message": "Haluatko varmasti tyhjentää hyväksytyt verkkosivustot?"
   },
   "contractInteraction": {
     "message": "Sopimustoiminta"
   },
-  "clearApprovalData": {
-    "message": "Tyhjennä yksityisyystiedot"
-  },
   "reject": {
     "message": "Hylkää"
-  },
-  "providerRequest": {
-    "message": "$1 haluaisi yhdistää tiliisi"
-  },
-  "providerRequestInfo": {
-    "message": "Tämä sivusto pyytää oikeuksia nähdä nykyisen tiliosoitteesi. Varmista aina, että luotat sivustoihin, joiden kanssa toimit."
   },
   "about": {
     "message": "Tietoja asetuksista"
   },
   "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot."
+    "message": "Versio, tukikeskus ja yhteystiedot"
   },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
@@ -63,7 +48,7 @@
     "message": "Lisäasetukset"
   },
   "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä."
+    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "Attribuutiot"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "Määritä, montako minuuttia MetaMask on ollut joutilaana ennen kuin sinut kirjataan automaattisesti ulos"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "Saldo saattaa olla vanhentunut"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Saldo ei kata nykyistä polttoaineen kokonaismäärää"
-  },
   "basic": {
     "message": "Perusvaihtoehdot"
-  },
-  "betweenMinAndMax": {
-    "message": "tulee olla vähintään $1 ja korkeintaan $2.",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "Lohkonhallinta"
@@ -216,9 +194,6 @@
   "chainId": {
     "message": "Ketjun tunnus"
   },
-  "clickToAdd": {
-    "message": "Napsauta kohdetta $1 lisätäksesi ne tiliisi"
-  },
   "clickToRevealSeed": {
     "message": "Paljasta salaiset sanat napsauttamalla tästä"
   },
@@ -248,9 +223,6 @@
   },
   "connect": {
     "message": "Muodosta yhteys"
-  },
-  "connectRequest": {
-    "message": "Yhdistämispyyntö"
   },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
@@ -282,17 +254,8 @@
   "contractDeployment": {
     "message": "Sopimuksen käyttö"
   },
-  "conversionProgress": {
-    "message": "Muuntaminen käynnissä"
-  },
-  "copiedButton": {
-    "message": "Kopioitu"
-  },
   "copiedExclamation": {
     "message": "Kopioitu"
-  },
-  "copy": {
-    "message": "Kopioi"
   },
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
@@ -305,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Kopioi leikepöydälle"
-  },
-  "copyButton": {
-    "message": "Kopioi"
   },
   "copyPrivateKey": {
     "message": "Tämä on yksityinen avaimesi (kopioi napsauttamalla)"
@@ -371,9 +331,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
-  "dismiss": {
-    "message": "Piilota"
   },
   "done": {
     "message": "Valmis"
@@ -485,17 +442,11 @@
   "from": {
     "message": "Alkaen"
   },
-  "fromShapeShift": {
-    "message": "ShapeShiftistä"
-  },
   "functionType": {
     "message": "Funktion tyyppi"
   },
   "gasLimit": {
     "message": "Gas-raja"
-  },
-  "gasLimitCalculation": {
-    "message": "Laskemme ehdotetun gas-arvon verkon onnistumistason perusteella."
   },
   "gasLimitInfoModalContent": {
     "message": "Polttoaineraja tarkoittaa suurinta mahdollista polttoainemäärää, jonka olet valmis kuluttamaan."
@@ -518,9 +469,6 @@
   "gasPriceNoDenom": {
     "message": "Bensan hinta"
   },
-  "gasPriceCalculation": {
-    "message": "Laskemme ehdotetut polttoaineiden hinnat verkoston menestyksen perusteella."
-  },
   "general": {
     "message": "Yleistä"
   },
@@ -539,10 +487,6 @@
   },
   "getStarted": {
     "message": "Aloitusopas"
-  },
-  "greaterThanMin": {
-    "message": "on oltava vähintään $1.",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "Meistä on mukava nähdä sinut."
@@ -571,9 +515,6 @@
   },
   "hide": {
     "message": "Piilota"
-  },
-  "hideToken": {
-    "message": "Piilota tietue"
   },
   "hideTokenPrompt": {
     "message": "Piilotetaanko tietue?"
@@ -662,10 +603,6 @@
   "ledgerAccountRestriction": {
     "message": "Sinun tarvitsee käyttää edellistä tiliäsi ennen kuin voit lisätä uuden."
   },
-  "lessThanMax": {
-    "message": "tulee olla korkeintaan $1.",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
@@ -690,10 +627,7 @@
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },
-  "login": {
-    "message": "Kirjaudu sisään"
-  },
-  "logout": {
+  "lock": {
     "message": "Kirjaudu ulos"
   },
   "mainnet": {
@@ -705,23 +639,14 @@
   "memo": {
     "message": "muistio"
   },
-  "menu": {
-    "message": "Valikko"
-  },
   "message": {
     "message": "Viesti"
   },
   "metamaskDescription": {
     "message": "Sinua yhdistetään Ethereumiin ja hajautettuun verkkoon."
   },
-  "metamaskSeedWords": {
-    "message": "MetaMaskin siemensanat"
-  },
   "metamaskVersion": {
     "message": "MetaMask-versio"
-  },
-  "missingYourTokens": {
-    "message": "Etkö näe tietueitasi?"
   },
   "mobileSyncText": {
     "message": "Vahvista henkilöllisyytesi antamalla salasanasi!"
@@ -818,9 +743,6 @@
   "noAddressForName": {
     "message": "Tälle nimelle ei ole määritetty osoitetta."
   },
-  "noDeposits": {
-    "message": "Ei vastaanotettuja talletuksia"
-  },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
   },
@@ -867,9 +789,6 @@
     "message": "Liitä yksityisen avaimesi merkkijono tähän:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "Liitä salaustekstisi tähän!"
-  },
   "pending": {
     "message": "odottaa"
   },
@@ -897,9 +816,6 @@
   },
   "privateNetwork": {
     "message": "Yksityinen verkko"
-  },
-  "qrCode": {
-    "message": "Näytä QR-koodi"
   },
   "queue": {
     "message": "Jono"
@@ -975,9 +891,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
-  },
-  "revert": {
-    "message": "Palauta"
   },
   "remove": {
     "message": "Poista"
@@ -1183,9 +1096,6 @@
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."
   },
-  "submit": {
-    "message": "Lähetä"
-  },
   "submitted": {
     "message": "Lähetetty"
   },
@@ -1196,7 +1106,7 @@
     "message": "Symboli"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbolin on oltava 0-12 merkkiä pitkä."
+    "message": "Symbolin on oltava 11 merkkiä tai vähemmän."
   },
   "syncWithMobile": {
     "message": "Synkronoi mobiililaitteelle"
@@ -1233,10 +1143,6 @@
   },
   "to": {
     "message": "Kohde"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH:hon ShapeShiftin kautta",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Poletti"
@@ -1352,9 +1258,6 @@
   },
   "userName": {
     "message": "Käyttäjätunnus"
-  },
-  "validFileImport": {
-    "message": "Valittava tuotavaksi kelpaava tiedosto."
   },
   "viewAccount": {
     "message": "Näytä tili"

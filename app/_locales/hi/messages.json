@@ -1,27 +1,12 @@
 {
-  "privacyModeDefault": {
-    "message": "गोपनीय मोड अब डिफ़ॉल्ट रूप से सक्षम है"
-  },
   "chartOnlyAvailableEth": {
     "message": "केवल ईथरअम नेटवर्क पर उपलब्ध चार्ट।"
-  },
-  "confirmClear": {
-    "message": "क्या आप वाकई स्वीकृत वेबसाइटों को क्लियर करना चाहते हैं?"
   },
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट की बातचीत"
   },
-  "clearApprovalData": {
-    "message": "गोपनीयता डेटा रिक्त करें"
-  },
   "reject": {
     "message": "अस्‍वीकार करें"
-  },
-  "providerRequest": {
-    "message": "$1 आपके खाते से कनेक्ट होता चाहता हैं"
-  },
-  "providerRequestInfo": {
-    "message": "यह साइट आपके वर्तमान खाते का पता देखने के लिए एक्सेस का अनुरोध कर रही है। हमेशा सुनिश्चित करें कि आप जिन साइटों पर जाते हैं वे विश्वसनीय हैं।"
   },
   "about": {
     "message": "इसके बारे में"
@@ -121,10 +106,10 @@
   "attributions": {
     "message": "विशेषताएं"
   },
-  "autoLogoutTimeLimit": {
+  "autoLockTimeLimit": {
     "message": "ऑटो-लॉगआउट टाइमर (मिनट)"
   },
-  "autoLogoutTimeLimitDescription": {
+  "autoLockTimeLimitDescription": {
     "message": "मेटामास्क से स्वचालित रूप से लॉग आउट होने से पहले निष्क्रिय समय को मिनटों में सेट करें"
   },
   "average": {
@@ -151,15 +136,8 @@
   "balanceOutdated": {
     "message": "शेष पुराना हो सकता है"
   },
-  "balanceIsInsufficientGas": {
-    "message": "र्तमान गैस की कुल योग के लिए अपर्याप्त बैलेंस"
-  },
   "basic": {
     "message": "मूलभूत"
-  },
-  "betweenMinAndMax": {
-    "message": "$1 से अधिक या बराबर होना चाहिए और $2 के बराबर या उससे कम होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
   },
   "blockExplorerUrl": {
     "message": "एक्सप्लोरर को ब्लॉक करें"
@@ -219,9 +197,6 @@
   "chainId": {
     "message": "चेन आई.डी."
   },
-  "clickToAdd": {
-    "message": "उन्हें अपने खाते में जोड़ने के लिए $1 पर क्लिक करें"
-  },
   "clickToRevealSeed": {
     "message": "सीक्रेट शब्दों को जानने के लिए यहाँ क्लिक करें"
   },
@@ -251,9 +226,6 @@
   },
   "connect": {
     "message": "कनेक्ट करें"
-  },
-  "connectRequest": {
-    "message": "संपर्क अनुरोध"
   },
   "connectingTo": {
     "message": "$1 से कनेक्ट हो रहा है"
@@ -285,17 +257,8 @@
   "contractDeployment": {
     "message": "कॉन्ट्रैक्ट का परिनियोजन"
   },
-  "conversionProgress": {
-    "message": "रुपांतरण प्रगति पर है"
-  },
-  "copiedButton": {
-    "message": "कॉपी किया गया"
-  },
   "copiedExclamation": {
     "message": "कॉपी की गई!"
-  },
-  "copy": {
-    "message": "कॉपी बनाएं"
   },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
@@ -308,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड में कॉपी करें"
-  },
-  "copyButton": {
-    "message": "कॉपी"
   },
   "copyPrivateKey": {
     "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)"
@@ -374,9 +334,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "यदि आपके पास पहले से ही कुछ Ether हैं, तो अपने नए वॉलेट में Ether पाने का सबसे तेज़ तरीका सीधे जमा करना है।"
-  },
-  "dismiss": {
-    "message": "खारिज करें"
   },
   "done": {
     "message": "पूर्ण"
@@ -488,17 +445,11 @@
   "from": {
     "message": "से\n"
   },
-  "fromShapeShift": {
-    "message": "शेपशिफ्ट से"
-  },
   "functionType": {
     "message": "कार्यप्रणाली प्रकार"
   },
   "gasLimit": {
     "message": "गैस की सीमा"
-  },
-  "gasLimitCalculation": {
-    "message": "हम नेटवर्क की सफलता दर के आधार पर सुझाई गई गैस सीमा की गणना करते हैं।"
   },
   "gasLimitInfoModalContent": {
     "message": "गैस की सीमा गैस के यूनिट की अधिकतम राशि है जिसे आप खर्च करना चाहते हैं।"
@@ -521,9 +472,6 @@
   "gasPriceNoDenom": {
     "message": "गैस का मूल्य"
   },
-  "gasPriceCalculation": {
-    "message": "हम नेटवर्क की सफलता के दर के आधार पर सुझाए गए गैस की कीमतों की गणना करते हैं।"
-  },
   "general": {
     "message": "सामान्य"
   },
@@ -542,10 +490,6 @@
   },
   "getStarted": {
     "message": "आरंभ करें"
-  },
-  "greaterThanMin": {
-    "message": "$1 से बड़ा या उसके बराबर होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
   },
   "happyToSeeYou": {
     "message": "आपको देखकर हमें बहुत ख़ुशी हुई।"
@@ -574,9 +518,6 @@
   },
   "hide": {
     "message": "छुपाएं"
-  },
-  "hideToken": {
-    "message": "टोकन छिपाएँ?"
   },
   "hideTokenPrompt": {
     "message": "टोकन छिपाएँ?"
@@ -665,10 +606,6 @@
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने पिछले खाते का उपयोग करना होगा।"
   },
-  "lessThanMax": {
-    "message": "$1 से कम या उसके बराबर होना चाहिए।",
-    "description": "helper for inputting hex as decimal input"
-  },
   "letsGoSetUp": {
     "message": "जी हां, सेट होने दें!"
   },
@@ -690,10 +627,7 @@
   "localhost": {
     "message": "लोकलहोस्ट 8545"
   },
-  "login": {
-    "message": "लॉग इन करें"
-  },
-  "logout": {
+  "lock": {
     "message": "लॉग आउट"
   },
   "mainnet": {
@@ -705,23 +639,14 @@
   "memo": {
     "message": "ज्ञापन"
   },
-  "menu": {
-    "message": "मेनू"
-  },
   "message": {
     "message": "संदेश"
   },
   "metamaskDescription": {
     "message": "आपको Ethereum और विकेंद्रीकृत वेब से कनेक्ट कर रहे हैं।"
   },
-  "metamaskSeedWords": {
-    "message": "मेटामास्क बीज शब्द"
-  },
   "metamaskVersion": {
     "message": "MetaMask का संस्करण"
-  },
-  "missingYourTokens": {
-    "message": "अपने टोकन को देख नहीं पा रहें हैं?"
   },
   "mobileSyncText": {
     "message": "यह आप ही हैं इसकी पुष्टि करने के लिए कृपया अपना पासवर्ड दर्ज करें!"
@@ -818,9 +743,6 @@
   "noAddressForName": {
     "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है"
   },
-  "noDeposits": {
-    "message": "कोई धनराशि प्राप्त नहीं हुई है"
-  },
   "noConversionRateAvailable": {
     "message": "कोई रूपांतरण दर उपलब्ध नहीं है"
   },
@@ -867,9 +789,6 @@
     "message": "अपनी निजी कुंजी स्ट्रिंग यहां पेस्ट करें:",
     "description": "For importing an account from a private key"
   },
-  "pasteSeed": {
-    "message": "अपना बीज वाक्यांश यहाँ पेस्ट करें!"
-  },
   "pending": {
     "message": "विलंबित"
   },
@@ -897,9 +816,6 @@
   },
   "privateNetwork": {
     "message": "निजी नेटवर्क"
-  },
-  "qrCode": {
-    "message": "QR Code दिखाएं "
   },
   "queue": {
     "message": "सूची"
@@ -975,9 +891,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सम्पूर्ण खातों को चुराने के लिए किया जा सकता है।"
-  },
-  "revert": {
-    "message": "वापस जाएँ"
   },
   "remove": {
     "message": "निकालें"
@@ -1180,9 +1093,6 @@
   "storePhrase": {
     "message": "इस वाक्यांश को 1पासवर्ड जैसे पासवर्ड मैनेजर में संग्रहीत करें।"
   },
-  "submit": {
-    "message": "सबमिट करें"
-  },
   "submitted": {
     "message": "प्रस्तुत किया गया"
   },
@@ -1193,7 +1103,7 @@
     "message": "सिम्बल"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "सिंबल को 0 से 12 अक्षरों के मध्य का होना चाहिए।"
+    "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
   "syncWithMobile": {
     "message": "मोबाइल से सिंक करें"
@@ -1230,10 +1140,6 @@
   },
   "to": {
     "message": "सेवा में"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift द्वारा ETH को $1",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "टोकन"
@@ -1349,9 +1255,6 @@
   },
   "userName": {
     "message": "उपयोगकर्ता नाम"
-  },
-  "validFileImport": {
-    "message": "आयात करने के लिए आपको एक मान्य फ़ाइल को चुनना होगा।"
   },
   "viewAccount": {
     "message": "खाता देखें"

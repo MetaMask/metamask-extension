@@ -18,28 +18,30 @@ describe('AddRecipient Component', function () {
   let wrapper
   let instance
 
-  beforeEach(() => {
-    wrapper = shallow(<AddRecipient
-      closeToDropdown={propsMethodSpies.closeToDropdown}
-      inError={false}
-      inWarning={false}
-      network="mockNetwork"
-      openToDropdown={propsMethodSpies.openToDropdown}
-      to="mockTo"
-      toAccounts={['mockAccount']}
-      toDropdownOpen={false}
-      updateGas={propsMethodSpies.updateGas}
-      updateSendTo={propsMethodSpies.updateSendTo}
-      updateSendToError={propsMethodSpies.updateSendToError}
-      updateSendToWarning={propsMethodSpies.updateSendToWarning}
-      addressBook={[{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 5' }]}
-      nonContacts={[{ address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 7' }]}
-      contacts={[{ address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 6' }]}
-    />, { context: { t: str => str + '_t' } })
+  beforeEach(function () {
+    wrapper = shallow((
+      <AddRecipient
+        closeToDropdown={propsMethodSpies.closeToDropdown}
+        inError={false}
+        inWarning={false}
+        network="mockNetwork"
+        openToDropdown={propsMethodSpies.openToDropdown}
+        to="mockTo"
+        toAccounts={['mockAccount']}
+        toDropdownOpen={false}
+        updateGas={propsMethodSpies.updateGas}
+        updateSendTo={propsMethodSpies.updateSendTo}
+        updateSendToError={propsMethodSpies.updateSendToError}
+        updateSendToWarning={propsMethodSpies.updateSendToWarning}
+        addressBook={[{ address: '0x80F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 5' }]}
+        nonContacts={[{ address: '0x70F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 7' }]}
+        contacts={[{ address: '0x60F061544cC398520615B5d3e7A3BedD70cd4510', name: 'Fav 6' }]}
+      />
+    ), { context: { t: (str) => str + '_t' } })
     instance = wrapper.instance()
   })
 
-  afterEach(() => {
+  afterEach(function () {
     propsMethodSpies.closeToDropdown.resetHistory()
     propsMethodSpies.openToDropdown.resetHistory()
     propsMethodSpies.updateSendTo.resetHistory()
@@ -48,9 +50,9 @@ describe('AddRecipient Component', function () {
     propsMethodSpies.updateGas.resetHistory()
   })
 
-  describe('selectRecipient', () => {
+  describe('selectRecipient', function () {
 
-    it('should call updateSendTo', () => {
+    it('should call updateSendTo', function () {
       assert.equal(propsMethodSpies.updateSendTo.callCount, 0)
       instance.selectRecipient('mockTo2', 'mockNickname')
       assert.equal(propsMethodSpies.updateSendTo.callCount, 1)
@@ -60,19 +62,19 @@ describe('AddRecipient Component', function () {
       )
     })
 
-    it('should call updateGas if there is no to error', () => {
+    it('should call updateGas if there is no to error', function () {
       assert.equal(propsMethodSpies.updateGas.callCount, 0)
       instance.selectRecipient(false)
       assert.equal(propsMethodSpies.updateGas.callCount, 1)
     })
   })
 
-  describe('render', () => {
-    it('should render a component', () => {
+  describe('render', function () {
+    it('should render a component', function () {
       assert.equal(wrapper.find('.send__select-recipient-wrapper').length, 1)
     })
 
-    it('should render no content if there are no recents, transfers, and contacts', () => {
+    it('should render no content if there are no recents, transfers, and contacts', function () {
       wrapper.setProps({
         ownedAccounts: [],
         addressBook: [],
@@ -82,7 +84,7 @@ describe('AddRecipient Component', function () {
       assert.equal(wrapper.find('.send__select-recipient-wrapper__group').length, 0)
     })
 
-    it('should render transfer', () => {
+    it('should render transfer', function () {
       wrapper.setProps({
         ownedAccounts: [{ address: '0x123', name: '123' }, { address: '0x124', name: '124' }],
         addressBook: [{ address: '0x456', name: 'test-name' }],
@@ -97,7 +99,7 @@ describe('AddRecipient Component', function () {
       assert.equal(groups.shallow().find('.send__select-recipient-wrapper__group').length, 1)
     })
 
-    it('should render ContactList', () => {
+    it('should render ContactList', function () {
       wrapper.setProps({
         ownedAccounts: [{ address: '0x123', name: '123' }, { address: '0x124', name: '124' }],
         addressBook: [{ address: '0x125' }],
@@ -108,7 +110,7 @@ describe('AddRecipient Component', function () {
       assert.equal(contactList.length, 1)
     })
 
-    it('should render contacts', () => {
+    it('should render contacts', function () {
       wrapper.setProps({
         addressBook: [
           { address: '0x125', name: 'alice' },
@@ -127,7 +129,7 @@ describe('AddRecipient Component', function () {
       assert.equal(groups.find('.send__select-recipient-wrapper__group-item').length, 0)
     })
 
-    it('should render error when query has no results', () => {
+    it('should render error when query has no results', function () {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -142,7 +144,7 @@ describe('AddRecipient Component', function () {
       assert.equal(dialog.length, 1)
     })
 
-    it('should render error when query has ens does not resolve', () => {
+    it('should render error when query has ens does not resolve', function () {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -158,7 +160,7 @@ describe('AddRecipient Component', function () {
       assert.equal(dialog.length, 1)
     })
 
-    it('should render warning', () => {
+    it('should render warning', function () {
       wrapper.setProps({
         addressBook: [],
         query: 'yo',
@@ -172,7 +174,7 @@ describe('AddRecipient Component', function () {
       assert.equal(dialog.length, 1)
     })
 
-    it('should not render error when ens resolved', () => {
+    it('should not render error when ens resolved', function () {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -184,7 +186,7 @@ describe('AddRecipient Component', function () {
       assert.equal(dialog.length, 0)
     })
 
-    it('should not render error when query has results', () => {
+    it('should not render error when query has results', function () {
       wrapper.setProps({
         addressBook: [
           { address: '0x125', name: 'alice' },

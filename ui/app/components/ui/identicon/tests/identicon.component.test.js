@@ -5,7 +5,7 @@ import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
 import Identicon from '../identicon.component'
 
-describe('Identicon', () => {
+describe('Identicon', function () {
   const state = {
     metamask: {
       useBlockie: false,
@@ -16,15 +16,15 @@ describe('Identicon', () => {
   const mockStore = configureMockStore(middlewares)
   const store = mockStore(state)
 
-  it('renders default eth_logo identicon with no props', () => {
+  it('renders default eth_logo identicon with no props', function () {
     const wrapper = mount(
-      <Identicon store={store}/>
+      <Identicon store={store} />
     )
 
-    assert.equal(wrapper.find('img.balance-icon').prop('src'), './images/eth_logo.svg')
+    assert.equal(wrapper.find('img.identicon__eth-logo').prop('src'), './images/eth_logo.svg')
   })
 
-  it('renders custom image and add className props', () => {
+  it('renders custom image and add className props', function () {
     const wrapper = mount(
       <Identicon
         store={store}
@@ -37,7 +37,7 @@ describe('Identicon', () => {
     assert.equal(wrapper.find('img.test-image').prop('src'), 'test-image')
   })
 
-  it('renders div with address prop', () => {
+  it('renders div with address prop', function () {
     const wrapper = mount(
       <Identicon
         store={store}

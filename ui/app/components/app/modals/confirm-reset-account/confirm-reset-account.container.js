@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose } from 'redux'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
 import ConfirmResetAccount from './confirm-reset-account.component'
 import { resetAccount } from '../../../../store/actions'
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     resetAccount: () => dispatch(resetAccount()),
   }

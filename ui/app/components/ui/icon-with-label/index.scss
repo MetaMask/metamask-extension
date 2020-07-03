@@ -1,0 +1,10 @@
+.icon-with-label {
+  display: flex;
+  align-items: center;
+
+  &__label {
+    font-size: 10px;
+    margin-left: 4px;
+    color: $Grey-500;
+  }
+}

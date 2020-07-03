@@ -1,28 +1,25 @@
-const assert = require('assert')
-const EventEmitter = require('events')
-const ObservableStore = require('obs-store')
-const ComposedStore = require('obs-store/lib/composed')
-const EthQuery = require('eth-query')
-const JsonRpcEngine = require('json-rpc-engine')
-const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
-const log = require('loglevel')
-const createMetamaskMiddleware = require('./createMetamaskMiddleware')
-const createInfuraClient = require('./createInfuraClient')
-const createJsonRpcClient = require('./createJsonRpcClient')
-const createLocalhostClient = require('./createLocalhostClient')
-const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
-const extend = require('extend')
+import assert from 'assert'
+import EventEmitter from 'events'
+import ObservableStore from 'obs-store'
+import ComposedStore from 'obs-store/lib/composed'
+import EthQuery from 'eth-query'
+import JsonRpcEngine from 'json-rpc-engine'
+import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
+import log from 'loglevel'
+import createMetamaskMiddleware from './createMetamaskMiddleware'
+import createInfuraClient from './createInfuraClient'
+import createJsonRpcClient from './createJsonRpcClient'
+import createLocalhostClient from './createLocalhostClient'
+import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-proxy'
+
 const networks = { networkList: {} }
 
-const {
-  ROPSTEN,
+import {
   RINKEBY,
-  KOVAN,
   MAINNET,
   LOCALHOST,
-  GOERLI,
-} = require('./enums')
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+  INFURA_PROVIDER_TYPES,
+} from './enums'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -44,7 +41,7 @@ const defaultNetworkConfig = {
   ticker: 'ETH',
 }
 
-module.exports = class NetworkController extends EventEmitter {
+export default class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
     super()
@@ -81,7 +78,9 @@ module.exports = class NetworkController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) this.lookupNetwork()
+    if (this.isNetworkLoading()) {
+      this.lookupNetwork()
+    }
   }
 
   getNetworkState () {
@@ -192,11 +191,10 @@ module.exports = class NetworkController extends EventEmitter {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({
       network: type,
-      onRequest: (req) => this.emit('rpc-req', { network: type, req }),
     })
     this._setNetworkClient(networkClient)
     // setup networkConfig
-    var settings = {
+    const settings = {
       ticker: 'ETH',
     }
     this.networkConfig.putState(settings)
@@ -219,10 +217,10 @@ module.exports = class NetworkController extends EventEmitter {
       nickname,
     }
     // setup networkConfig
-    var settings = {
+    let settings = {
       network: chainId,
     }
-    settings = extend(settings, networks.networkList['rpc'])
+    settings = Object.assign(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
@@ -251,10 +249,5 @@ module.exports = class NetworkController extends EventEmitter {
     // set new provider and blockTracker
     this._provider = provider
     this._blockTracker = blockTracker
-  }
-
-  _logBlock (block) {
-    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    this.verifyNetwork()
   }
 }

@@ -1,54 +1,55 @@
 @import '../../../components/ui/button/buttons';
 @import '../../../components/ui/dialog/dialog';
+@import '../../../components/ui/snackbar/index';
+@import '../../../components/ui/list-item/index';
+@import '../../../components/ui/popover/index';
+@import '../../../components/ui/icon/preloader/index';
 
-@import './footer.scss';
+@import './footer';
 
-@import './network.scss';
+@import './network';
 
-@import './modal.scss';
+@import './modal';
 
-@import './alert.scss';
+@import './alert';
 
-@import './newui-sections.scss';
+@import './newui-sections';
 
-@import './account-dropdown.scss';
+@import './account-dropdown';
 
-@import './send.scss';
+@import './send';
 
-@import './confirm.scss';
+@import './confirm';
 
-@import './loading-overlay.scss';
-
-// Balances
-@import './wallet-balance.scss';
+@import './loading-overlay';
 
 // Tx List and Sections
-@import './transaction-list.scss';
+@import './transaction-list';
 
-@import './sections.scss';
+@import './sections';
 
-@import './token-list.scss';
+@import './currency-display';
 
-@import './currency-display.scss';
+@import './menu';
 
-@import './menu.scss';
+@import './gas-slider';
 
-@import './gas-slider.scss';
+@import './tab-bar';
 
-@import './tab-bar.scss';
+@import './simple-dropdown';
 
-@import './simple-dropdown.scss';
+@import './request-signature';
 
-@import './request-signature.scss';
+@import './request-encryption-public-key';
 
-@import './account-details-dropdown.scss';
+@import './request-decrypt-message';
 
-@import './editable-label.scss';
+@import './editable-label';
 
-@import './pages/index.scss';
+@import './pages/index';
 
-@import './new-account.scss';
+@import './new-account';
 
-@import './tooltip.scss';
+@import './tooltip';
 
 @import '../../../components/app/index';

@@ -5,8 +5,8 @@ import {
   conversionGreaterThan,
 } from '../helpers/utils/conversion-util'
 import {
-  getCurrentCurrency, getIsMainnet, preferencesSelector,
-} from './selectors'
+  getCurrentCurrency, getIsMainnet, getPreferences,
+} from '.'
 import {
   formatCurrency,
 } from '../helpers/utils/confirm-tx.util'
@@ -23,85 +23,61 @@ import { addHexPrefix } from 'ethereumjs-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
 
-const selectors = {
-  formatTimeEstimate,
-  getAveragePriceEstimateInHexWEI,
-  getFastPriceEstimateInHexWEI,
-  getBasicGasEstimateLoadingStatus,
-  getBasicGasEstimateBlockTime,
-  getCustomGasErrors,
-  getCustomGasLimit,
-  getCustomGasPrice,
-  getCustomGasTotal,
-  getDefaultActiveButtonIndex,
-  getEstimatedGasPrices,
-  getEstimatedGasTimes,
-  getGasEstimatesLoadingStatus,
-  getPriceAndTimeEstimates,
-  getRenderableBasicEstimateData,
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  priceEstimateToWei,
-  getSafeLowEstimate,
-  isCustomPriceSafe,
-}
-
-module.exports = selectors
-
 const NUMBER_OF_DECIMALS_SM_BTNS = 5
 
-function getCustomGasErrors (state) {
+export function getCustomGasErrors (state) {
   return state.gas.errors
 }
 
-function getCustomGasLimit (state) {
+export function getCustomGasLimit (state) {
   return state.gas.customData.limit
 }
 
-function getCustomGasPrice (state) {
+export function getCustomGasPrice (state) {
   return state.gas.customData.price
 }
 
-function getCustomGasTotal (state) {
+export function getCustomGasTotal (state) {
   return state.gas.customData.total
 }
 
-function getBasicGasEstimateLoadingStatus (state) {
+export function getBasicGasEstimateLoadingStatus (state) {
   return state.gas.basicEstimateIsLoading
 }
 
-function getGasEstimatesLoadingStatus (state) {
+export function getGasEstimatesLoadingStatus (state) {
   return state.gas.gasEstimatesLoading
 }
 
-function getPriceAndTimeEstimates (state) {
+export function getPriceAndTimeEstimates (state) {
   return state.gas.priceAndTimeEstimates
 }
 
-function getEstimatedGasPrices (state) {
+export function getEstimatedGasPrices (state) {
   return getPriceAndTimeEstimates(state).map(({ gasprice }) => gasprice)
 }
 
-function getEstimatedGasTimes (state) {
+export function getEstimatedGasTimes (state) {
   return getPriceAndTimeEstimates(state).map(({ expectedTime }) => expectedTime)
 }
 
-function getAveragePriceEstimateInHexWEI (state) {
+export function getAveragePriceEstimateInHexWEI (state) {
   const averagePriceEstimate = state.gas.basicEstimates.average
   return getGasPriceInHexWei(averagePriceEstimate || '0x0')
 }
 
-function getFastPriceEstimateInHexWEI (state) {
+export function getFastPriceEstimateInHexWEI (state) {
   const fastPriceEstimate = state.gas.basicEstimates.fast
   return getGasPriceInHexWei(fastPriceEstimate || '0x0')
 }
 
-function getDefaultActiveButtonIndex (gasButtonInfo, customGasPriceInHex, gasPrice) {
+export function getDefaultActiveButtonIndex (gasButtonInfo, customGasPriceInHex, gasPrice) {
   return gasButtonInfo.findIndex(({ priceInHexWei }) => {
     return priceInHexWei === addHexPrefix(customGasPriceInHex || gasPrice)
   })
 }
 
-function getSafeLowEstimate (state) {
+export function getSafeLowEstimate (state) {
   const {
     gas: {
       basicEstimates: {
@@ -113,7 +89,7 @@ function getSafeLowEstimate (state) {
   return safeLow
 }
 
-function isCustomPriceSafe (state) {
+export function isCustomPriceSafe (state) {
   const safeLow = getSafeLowEstimate(state)
   const customGasPrice = getCustomGasPrice(state)
 
@@ -138,11 +114,11 @@ function isCustomPriceSafe (state) {
   return customPriceSafe
 }
 
-function getBasicGasEstimateBlockTime (state) {
+export function getBasicGasEstimateBlockTime (state) {
   return state.gas.basicEstimates.blockTime
 }
 
-function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecimals = 9) {
+export function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecimals = 9) {
   return conversionUtil(calcGasTotal(gasLimit, estimate), {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
@@ -151,25 +127,25 @@ function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecimals = 9)
   })
 }
 
-function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
+export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
     formatETHFee
   )(estimate, gasLimit)
 }
 
 
-function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
+export function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency])
   )(estimate, gasLimit, convertedCurrency, conversionRate)
 }
 
-function getTimeEstimateInSeconds (blockWaitEstimate) {
+export function getTimeEstimateInSeconds (blockWaitEstimate) {
   return multiplyCurrencies(blockWaitEstimate, 60, {
     toNumericBase: 'dec',
     multiplicandBase: 10,
@@ -178,7 +154,7 @@ function getTimeEstimateInSeconds (blockWaitEstimate) {
   })
 }
 
-function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
+export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = Math.floor(totalSeconds % 60)
 
@@ -197,19 +173,19 @@ function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
   const formattedSec = `${seconds ? seconds + ' sec' : ''}`
   const formattedCombined = formattedMin && formattedSec
     ? `${symbol}${formattedMin} ${formattedSec}`
-    : symbol + [formattedMin, formattedSec].find(t => t)
+    : symbol + [formattedMin, formattedSec].find((t) => t)
 
   return formattedCombined
 }
 
-function getRenderableTimeEstimate (blockWaitEstimate) {
+export function getRenderableTimeEstimate (blockWaitEstimate) {
   return pipe(
     getTimeEstimateInSeconds,
     formatTimeEstimate
   )(blockWaitEstimate)
 }
 
-function priceEstimateToWei (priceEstimate) {
+export function priceEstimateToWei (priceEstimate) {
   return conversionUtil(priceEstimate, {
     fromNumericBase: 'hex',
     toNumericBase: 'hex',
@@ -219,20 +195,20 @@ function priceEstimateToWei (priceEstimate) {
   })
 }
 
-function getGasPriceInHexWei (price) {
+export function getGasPriceInHexWei (price) {
   return pipe(
-    x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
+    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
     priceEstimateToWei,
     addHexPrefix
   )(price)
 }
 
-function getRenderableBasicEstimateData (state, gasLimit) {
+export function getRenderableBasicEstimateData (state, gasLimit) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
   const conversionRate = state.metamask.conversionRate
@@ -281,12 +257,12 @@ function getRenderableBasicEstimateData (state, gasLimit) {
   ]
 }
 
-function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
+export function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = (isMainnet || !!showFiatInTestnets)
   const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
