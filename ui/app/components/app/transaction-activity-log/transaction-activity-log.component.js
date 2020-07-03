@@ -5,7 +5,7 @@ import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers
 import { formatDate } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
+import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
@@ -30,7 +30,7 @@ export default class TransactionActivityLog extends PureComponent {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 
-    const prefix = prefixForNetwork(metamaskNetworkId)
+    const prefix = getEtherscanNetworkPrefix(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
 
     global.platform.openTab({ url: etherscanUrl })
