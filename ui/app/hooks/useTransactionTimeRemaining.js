@@ -50,7 +50,7 @@ export function useTransactionTimeRemaining (
   const featureFlags = useSelector(getFeatureFlags)
   const transactionTimeFeatureActive = featureFlags?.transactionTime
 
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'narrow' })
+  const rtf = new Intl.RelativeTimeFormat(locale.replace('_', '-'), { numeric: 'auto', style: 'narrow' })
 
   // Memoize this value so it can be used as a dependency in the effect below
   const initialTimeEstimate = useMemo(() => {

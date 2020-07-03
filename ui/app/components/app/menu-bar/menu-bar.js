@@ -26,7 +26,7 @@ export default function MenuBar () {
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false)
   const origin = useSelector(getOriginOfCurrentTab)
 
-  const showStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP && origin !== extension.runtime.id
+  const showStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP && origin && origin !== extension.runtime.id
 
   return (
     <div className="menu-bar">

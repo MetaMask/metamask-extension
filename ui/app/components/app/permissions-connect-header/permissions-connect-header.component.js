@@ -5,25 +5,25 @@ import SiteIcon from '../../ui/site-icon'
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
     icon: PropTypes.string,
-    iconName: PropTypes.string,
+    iconName: PropTypes.string.isRequired,
+    siteOrigin: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
     headerText: PropTypes.string,
   }
 
   static defaultProps = {
     icon: null,
-    iconName: '',
     headerTitle: '',
     headerText: '',
   }
 
   renderHeaderIcon () {
-    const { icon, iconName } = this.props
+    const { icon, iconName, siteOrigin } = this.props
 
     return (
       <div className="permissions-connect-header__icon">
         <SiteIcon icon={ icon } name={ iconName } size={64} />
-        <div className="permissions-connect-header__text">{iconName}</div>
+        <div className="permissions-connect-header__text">{siteOrigin}</div>
       </div>
     )
   }

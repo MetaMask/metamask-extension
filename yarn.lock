@@ -1711,10 +1711,10 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@metamask/test-dapp@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.1.1.tgz#c3b79f93c8a698b0904171c5143d0bca1307653a"
-  integrity sha512-ed0Ma9TLc+wkQYJK5TWslphp58JSi4Rer84LK2RxW1p4aS2LsGKS30pKMFUegj+g9g//7tyh+uFE87pXu4vPkA==
+"@metamask/test-dapp@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.2.0.tgz#e48ea589db7ab028ea222ae47ee814c4687e02c6"
+  integrity sha512-KX8ZhR/yLBO6yzx/9/BDxHdrTV6nNoOb8LvpUGm8GiLu6jOXETKZj0qfgvL5quWnQ/LRJMEXeuOZWjtXgcVofg==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -10215,10 +10215,10 @@ eth-keyring-controller@^5.3.0, eth-keyring-controller@^5.6.1:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-keyring-controller@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.0.0.tgz#4629c7b9f08e9c2f24ecfa0a296fc40ea0fa98af"
-  integrity sha512-+tdXXwTklX0KX50YwlSriTU/6Xc0Ury0jmcp1mMcJfKSBFSKyWCmPmrhdkMxE9LRd4lbt4qx9LS5wZ3Ia05cLg==
+eth-keyring-controller@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.0.1.tgz#6a4cdd5802b0587320c711be6c1752b2a88221aa"
+  integrity sha512-60j71F1HgLcvwzg7U5R45bA/kgQSUlmiZrsUIIhW4qS7QOYqJn0OQ64enf0ZaxMMPVVcKSfCDersYJiqm/yrlw==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"

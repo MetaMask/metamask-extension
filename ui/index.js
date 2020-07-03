@@ -10,7 +10,7 @@ import txHelper from './lib/tx-helper'
 import { getEnvironmentType } from '../app/scripts/lib/util'
 import { ALERT_TYPES } from '../app/scripts/controllers/alert'
 import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
-import { fetchLocale } from './app/helpers/utils/i18n-helper'
+import { fetchLocale, loadRelativeTimeFormatLocaleData } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
 import { getPermittedAccountsForCurrentTab, getSelectedAddress } from './app/selectors'
 import { ALERT_STATE } from './app/ducks/alerts/unconnected-account'
@@ -47,6 +47,11 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     ? await fetchLocale(metamaskState.currentLocale)
     : {}
   const enLocaleMessages = await fetchLocale('en')
+
+  await loadRelativeTimeFormatLocaleData('en')
+  if (metamaskState.currentLocale) {
+    await loadRelativeTimeFormatLocaleData(metamaskState.currentLocale)
+  }
 
   if (metamaskState.textDirection === 'rtl') {
     await switchDirection('rtl')

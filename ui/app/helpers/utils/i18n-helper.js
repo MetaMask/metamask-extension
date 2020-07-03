@@ -48,15 +48,17 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
   // perform substitutions
   if (hasSubstitutions) {
     const parts = phrase.split(/(\$\d)/g)
-    const partsToReplace = phrase.match(/(\$\d)/g)
-
-    if (partsToReplace.length > substitutions.length) {
-      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
-    }
 
     const substitutedParts = parts.map((part) => {
       const subMatch = part.match(/\$(\d)/)
-      return subMatch ? substitutions[Number(subMatch[1]) - 1] : part
+      if (!subMatch) {
+        return part
+      }
+      const substituteIndex = Number(subMatch[1]) - 1
+      if (substitutions[substituteIndex]) {
+        return substitutions[substituteIndex]
+      }
+      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
     })
 
     phrase = hasReactSubstitutions
@@ -77,3 +79,21 @@ export async function fetchLocale (localeCode) {
   }
 }
 
+const relativeTimeFormatLocaleData = new Set()
+
+export async function loadRelativeTimeFormatLocaleData (localeCode) {
+  const languageTag = localeCode.split('_')[0]
+  if (
+    Intl.RelativeTimeFormat &&
+    typeof Intl.RelativeTimeFormat.__addLocaleData === 'function' &&
+    !relativeTimeFormatLocaleData.has(languageTag)
+  ) {
+    const localeData = await fetchRelativeTimeFormatData(languageTag)
+    Intl.RelativeTimeFormat.__addLocaleData(localeData)
+  }
+}
+
+async function fetchRelativeTimeFormatData (languageTag) {
+  const response = await window.fetch(`./intl/${languageTag}/relative-time-format-data.json`)
+  return await response.json()
+}
