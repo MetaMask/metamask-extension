@@ -3,6 +3,16 @@
 ## Current Develop Branch
 
 ## 8.0.1 Thu Jul 02 2020
+- [#8874](https://github.com/MetaMask/metamask-extension/pull/8874): Fx overflow behaviour of add token list
+- [#8885](https://github.com/MetaMask/metamask-extension/pull/8885): Show `origin` in connect flow rather than site name
+- [#8883](https://github.com/MetaMask/metamask-extension/pull/8883): Allow setting a custom nonce of zero
+- [#8889](https://github.com/MetaMask/metamask-extension/pull/8889): Fix language code format mismatch
+- [#8891](https://github.com/MetaMask/metamask-extension/pull/8891): Prevent showing connected accounts without origin
+- [#8893](https://github.com/MetaMask/metamask-extension/pull/8893): Prevent manually connecting to extension UI
+- [#8895](https://github.com/MetaMask/metamask-extension/pull/8895): Allow localized messages to not use substitutions
+- [#8897](https://github.com/MetaMask/metamask-extension/pull/8897): Update eth-keyring-controller to fix erasure of imported/hardware account names
+- [#8896](https://github.com/MetaMask/metamask-extension/pull/8896): Include relative time polyfill locale data
+- [#8898](https://github.com/MetaMask/metamask-extension/pull/8898): Replace percentage opacity value
 
 ## 8.0.0 Mon Jun 23 2020
 - [#7004](https://github.com/MetaMask/metamask-extension/pull/7004): Add permission system
