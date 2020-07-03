@@ -15685,10 +15685,10 @@ js-conflux-sdk@0.10.1:
     secp256k1 "^3.7.1"
     superagent "^5.1.0"
 
-js-conflux-sdk@^0.10.3:
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.10.3.tgz#99684665a4f1797b7c37458b3e6246fbd5d7ad72"
-  integrity sha512-oqrp778vXkumjKbBPAZQcA8uoPEBUw5XPs1j+1XwIdB9OzVMHYe726BgNEFfJ69sDWH0mAf3Aj8d8K61kxsK1g==
+js-conflux-sdk@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/js-conflux-sdk/-/js-conflux-sdk-0.11.0.tgz#8f96d2838d14fbdc67766801a8a07be92d987625"
+  integrity sha512-00EpiuWToUWzAWLMJtk90n4KTjYpRXPLVutpem+tw2uN2dKWw8COVgeAbfrsXtCBztSgmjGVwioIPyvlzSYKpw==
   dependencies:
     "@babel/runtime" "^7.8.4"
     big.js "^5.2.2"
