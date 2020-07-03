@@ -33,11 +33,5 @@ export default function PermissionsRedirect ({ domainMetadata }) {
 }
 
 PermissionsRedirect.propTypes = {
-  domainMetadata: PropTypes.shape({
-    extensionId: PropTypes.string,
-    icon: PropTypes.string,
-    host: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    origin: PropTypes.string.isRequired,
-  }),
+  domainMetadata: PropTypes.object.isRequired,
 }

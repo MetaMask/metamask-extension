@@ -14,13 +14,7 @@ export default class PermissionPageContainer extends Component {
     allIdentitiesSelected: PropTypes.bool,
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
-    targetDomainMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      origin: PropTypes.string.isRequired,
-    }),
+    targetDomainMetadata: PropTypes.object.isRequired,
   }
 
   static defaultProps = {

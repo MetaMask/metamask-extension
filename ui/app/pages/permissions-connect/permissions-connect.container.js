@@ -43,20 +43,13 @@ const mapStateToProps = (state, ownProps) => {
   const nativeCurrency = getNativeCurrency(state)
 
   const domainMetadata = getDomainMetadata(state)
-
-  let targetDomainMetadata = null
-  if (origin) {
-    if (domainMetadata[origin]) {
-      targetDomainMetadata = { ...domainMetadata[origin], origin }
-    } else {
-      const targetUrl = new URL(origin)
-      targetDomainMetadata = {
-        host: targetUrl.host,
-        name: targetUrl.hostname,
-        origin,
-      }
+  const targetDomainMetadata = origin
+    ? domainMetadata[origin] || {
+      origin,
+      name: (new URL(origin)).hostname,
+      icon: null,
     }
-  }
+    : null
 
   const accountsWithLabels = getAccountsWithLabels(state)
 

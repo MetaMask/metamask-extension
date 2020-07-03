@@ -25,13 +25,7 @@ export default class ChooseAccount extends Component {
     cancelPermissionsRequest: PropTypes.func.isRequired,
     permissionsRequestId: PropTypes.string.isRequired,
     selectedAccountAddresses: PropTypes.object.isRequired,
-    targetDomainMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      origin: PropTypes.string.isRequired,
-    }),
+    targetDomainMetadata: PropTypes.object,
   }
 
   state = {
@@ -203,7 +197,6 @@ export default class ChooseAccount extends Component {
             ? t('selectAccounts')
             : t('connectAccountOrCreate')
           }
-          siteOrigin={targetDomainMetadata.origin}
         />
         {this.renderAccountsListHeader()}
         {this.renderAccountsList()}
