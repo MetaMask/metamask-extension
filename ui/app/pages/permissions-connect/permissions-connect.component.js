@@ -142,14 +142,15 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  _doRedirect () {
-    const { history, hasPendingPermissionsRequests } = this.props
+  _doRedirect = async () => {
+    const { history, hasPendingPermissionsRequests, rejectPermissionsRequest, permissionsRequestId } = this.props
 
     if (
       !hasPendingPermissionsRequests &&
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
     ) {
       global.platform.closeCurrentWindow()
+      await rejectPermissionsRequest(permissionsRequestId)
     } else {
       history.push(DEFAULT_ROUTE)
     }
