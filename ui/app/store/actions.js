@@ -2056,9 +2056,9 @@ export function setPendingTokens (pendingTokens) {
 
 // Permissions
 
-export function requestAccountsPermission (origin) {
+export function requestAccountsPermissionWithId (origin) {
   return async (dispatch) => {
-    const id = await promisifiedBackground.requestAccountsPermission(origin)
+    const id = await promisifiedBackground.requestAccountsPermissionWithId(origin)
     await forceUpdateMetamaskState(dispatch)
     return id
   }
