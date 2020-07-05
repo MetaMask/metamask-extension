@@ -110,12 +110,12 @@ export class PermissionsController {
 
   /**
    * Request {@code eth_accounts} permissions
-   * @param {string} origin - The origin
-   * @returns {Promise<string>} the request ID
+   * @param {string} origin - The requesting origin
+   * @returns {Promise<string>} The permissions request ID
    */
-  async requestAccountsPermission (origin) {
+  async requestAccountsPermissionWithId (origin) {
     const id = nanoid()
-    this._requestPermissions({ origin, id }, { eth_accounts: {} })
+    this._requestPermissions({ origin }, { eth_accounts: {} }, id)
     return id
   }
 
@@ -168,18 +168,26 @@ export class PermissionsController {
   /**
    * Submits a permissions request to rpc-cap. Internal, background use only.
    *
-   * @param {IOriginMetadata} metadata - The origin metadata.
+   * @param {IOriginMetadata} domain - The external domain metadata.
    * @param {IRequestedPermissions} permissions - The requested permissions.
+   * @param {string} [id] - The desired id of the permissions request, if any.
+   * @returns {Promise<IOcapLdCapability[]>} A Promise that resolves with the
+   * approved permissions, or rejects with an error.
    */
-  _requestPermissions (metadata, permissions) {
+  _requestPermissions (domain, permissions, id) {
     return new Promise((resolve, reject) => {
 
       // rpc-cap assigns an id to the request if there is none, as expected by
       // requestUserApproval below
-      const req = { method: 'wallet_requestPermissions', params: [permissions] }
+      const req = {
+        id,
+        method: 'wallet_requestPermissions',
+        params: [permissions],
+      }
       const res = {}
+
       this.permissions.providerMiddlewareFunction(
-        metadata, req, res, () => {}, _end
+        domain, req, res, () => {}, _end
       )
 
       function _end (_err) {
@@ -716,7 +724,7 @@ export class PermissionsController {
        * @param {string} req - The internal rpc-cap user request object.
        */
       requestUserApproval: async (req) => {
-        const { origin, metadata: { id } } = req
+        const { metadata: { id, origin } } = req
 
         if (this.pendingApprovalOrigins.has(origin)) {
           throw ethErrors.rpc.resourceUnavailable(

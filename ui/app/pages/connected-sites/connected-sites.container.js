@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
 import {
   getOpenMetamaskTabsIds,
-  requestAccountsPermission,
+  requestAccountsPermissionWithId,
   removePermissionsFor,
   removePermittedAccount,
 } from '../../store/actions'
@@ -61,7 +61,7 @@ const mapDispatchToProps = (dispatch) => {
         [domainKey]: permissionMethodNames,
       }))
     },
-    requestAccountsPermission: (origin) => dispatch(requestAccountsPermission(origin)),
+    requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
   }
 }
 
@@ -76,7 +76,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     disconnectAccount,
     disconnectAllAccounts,
-    requestAccountsPermission: dispatchRequestAccountsPermission,
+    requestAccountsPermissionWithId,
   } = dispatchProps
   const { history } = ownProps
 
@@ -100,7 +100,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       }
     },
     requestAccountsPermission: async () => {
-      const id = await dispatchRequestAccountsPermission(tabToConnect.origin)
+      const id = await requestAccountsPermissionWithId(tabToConnect.origin)
       history.push(`${CONNECT_ROUTE}/${id}`)
     },
   }

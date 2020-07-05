@@ -1526,12 +1526,13 @@ describe('permissions controller', function () {
       permController = initPermController()
     })
 
-    it('requestAccountsPermission calls _requestAccountsPermission with an explicit request ID', async function () {
+    it('requestAccountsPermissionWithId calls _requestAccountsPermission with an explicit request ID', async function () {
       const _requestPermissions = sinon.stub(permController, '_requestPermissions').resolves()
-      await permController.requestAccountsPermission('example.com')
+      await permController.requestAccountsPermissionWithId('example.com')
       assert.ok(_requestPermissions.calledOnceWithExactly(
-        sinon.match.object.and(sinon.match.has('origin')).and(sinon.match.has('id')),
+        sinon.match.object.and(sinon.match.has('origin')),
         { eth_accounts: {} },
+        sinon.match.string.and(sinon.match.truthy),
       ))
       _requestPermissions.restore()
     })
