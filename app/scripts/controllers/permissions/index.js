@@ -110,8 +110,8 @@ export class PermissionsController {
 
   /**
    * Request {@code eth_accounts} permissions
-   * @param {string} origin - The origin
-   * @returns {Promise<string>} the request ID
+   * @param {string} origin - The requesting origin
+   * @returns {Promise<string>} The permissions request ID
    */
   async requestAccountsPermissionWithId (origin) {
     const id = nanoid()
