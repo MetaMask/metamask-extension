@@ -10180,10 +10180,10 @@ eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.1.tgz#0fdebb873337f01dc839ff3d8a5858ecc2c87e6f"
-  integrity sha512-8vIhggej+B331jZG96Qql0GAJBy0HVSHnSCvnzlX7lhVoWcoBfOjt5vnJp07gVoz2QQlpedG+aiGPZwL1PbihA==
+eth-json-rpc-middleware@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.2.tgz#f8c2c3478e1b28bf85ed48209e543d6335420de2"
+  integrity sha512-Ezx+wphVQJbrkRSx3Z2EPQZa4JgzA0o0ZCPOdoGtYTTT0SpdzC4BnvafxMS7H2o+QsRcvOvOJmzu7hbf2eVR7w==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
