@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.3 Mon Jul 06 2020
+
 ## 8.0.2 Fri Jul 03 2020
 - [#8907](https://github.com/MetaMask/metamask-extension/pull/8907): Tolerate missing or falsey substitutions
 - [#8908](https://github.com/MetaMask/metamask-extension/pull/8908): Fix activity log inline buttons
