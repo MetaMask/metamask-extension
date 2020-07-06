@@ -1,4 +1,4 @@
-import { clone, uniqBy, flatten } from 'ramda'
+import { uniqBy, cloneDeep, flatten } from 'lodash'
 import BigNumber from 'bignumber.js'
 import {
   loadLocalStorageData,
@@ -138,10 +138,10 @@ export default function reducer (state = initState, action) {
     case RESET_CUSTOM_DATA:
       return {
         ...state,
-        customData: clone(initState.customData),
+        customData: cloneDeep(initState.customData),
       }
     case RESET_CUSTOM_GAS_STATE:
-      return clone(initState)
+      return cloneDeep(initState)
     default:
       return state
   }
@@ -393,7 +393,7 @@ export function fetchGasEstimates (blockTime) {
         .then((r) => r.json())
         .then((r) => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
-          const estimatedTimeWithUniquePrices = uniqBy(({ expectedTime }) => expectedTime, estimatedPricesAndTimes)
+          const estimatedTimeWithUniquePrices = uniqBy(estimatedPricesAndTimes, ({ expectedTime }) => expectedTime)
 
           const withSupplementalTimeEstimates = flatten(estimatedTimeWithUniquePrices.map(({ expectedWait, gasprice }, i, arr) => {
             const next = arr[i + 1]

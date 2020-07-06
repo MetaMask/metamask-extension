@@ -17,9 +17,8 @@
 * @returns {(number | string | BN)}
 *
 * The utility passes value along with the options as a single object to the `converter` function.
-* `converter` uses Ramda.js to apply a composition of conditional setters to the `value` property, depending
-* on the accompanying options. Some of these conditional setters are selected via key-value maps, where
-* the keys are specified in the options parameters and the values are setter functions.
+* `converter` conditional modifies the supplied `value` property, depending
+* on the accompanying options.
 */
 
 import BigNumber from 'bignumber.js'
@@ -27,11 +26,6 @@ import BigNumber from 'bignumber.js'
 import ethUtil, { stripHexPrefix } from 'ethereumjs-util'
 
 const BN = ethUtil.BN
-import R from 'ramda'
-
-BigNumber.config({
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
-})
 
 // Big Number Constants
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
@@ -60,60 +54,78 @@ const baseChange = {
   BN: (n) => new BN(n.toString(16)),
 }
 
-// Individual Setters
-const convert = R.invoker(1, 'times')
-const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
-const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
-const invertConversionRate = (conversionRate) => () => new BigNumber(1.0).div(conversionRate)
-const decToBigNumberViaString = () => R.pipe(String, toBigNumber['dec'])
+/**
+ * Defines the base type of numeric value
+ * @typedef {('hex' | 'dec' | 'BN')} NumericBase
+ */
 
-// Predicates
-const fromAndToCurrencyPropsNotEqual = R.compose(
-  R.not,
-  R.eqBy(R.__, 'fromCurrency', 'toCurrency'),
-  R.flip(R.prop)
-)
+/**
+ * Defines which type of denomination a value is in
+ * @typedef {('WEI' | 'GWEI' | 'ETH')} EthDenomination
+ */
 
-// Lens
-const valuePropertyLens = R.over(R.lensProp('value'))
-const conversionRateLens = R.over(R.lensProp('conversionRate'))
+/**
+ * Utility method to convert a value between denominations, formats and currencies.
+ * @param {Object} input
+ * @param {string | BigNumber} input.value
+ * @param {NumericBase} input.fromNumericBase
+ * @param {EthDenomination} [input.fromDenomination]
+ * @param {string} [input.fromCurrency]
+ * @param {NumericBase} input.toNumericBase
+ * @param {EthDenomination} [input.toDenomination]
+ * @param {string} [input.toCurrency]
+ * @param {number} [input.numberOfDecimals]
+ * @param {number} [input.conversionRate]
+ * @param {boolean} [input.invertConversionRate]
+ * @param {string} [input.roundDown]
+ */
+const converter = ({
+  value,
+  fromNumericBase,
+  fromDenomination,
+  fromCurrency,
+  toNumericBase,
+  toDenomination,
+  toCurrency,
+  numberOfDecimals,
+  conversionRate,
+  invertConversionRate,
+  roundDown,
+}) => {
+  let convertedValue = fromNumericBase ? toBigNumber[fromNumericBase](value) : value
 
-// conditional conversionRate setting wrapper
-const whenPredSetCRWithPropAndSetter = (pred, prop, setter) => R.when(
-  pred,
-  R.converge(
-    conversionRateLens,
-    [R.pipe(R.prop(prop), setter), R.identity]
-  )
-)
+  if (fromDenomination) {
+    convertedValue = toNormalizedDenomination[fromDenomination](convertedValue)
+  }
 
-// conditional 'value' setting wrappers
-const whenPredSetWithPropAndSetter = (pred, prop, setter) => R.when(
-  pred,
-  R.converge(
-    valuePropertyLens,
-    [R.pipe(R.prop(prop), setter), R.identity]
-  )
-)
-const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter(
-  R.prop(prop),
-  prop,
-  R.prop(R.__, setterMap)
-)
+  if (fromCurrency !== toCurrency) {
+    if (conversionRate == null) {
+      throw new Error(`Converting from ${fromCurrency} to ${toCurrency} requires a conversionRate, but one was not provided`)
+    }
+    let rate = toBigNumber.dec(conversionRate)
+    if (invertConversionRate) {
+      rate = new BigNumber(1.0).div(conversionRate)
+    }
+    convertedValue = convertedValue.times(rate)
+  }
 
-// Conversion utility function
-const converter = R.pipe(
-  whenPredSetCRWithPropAndSetter(R.prop('conversionRate'), 'conversionRate', decToBigNumberViaString),
-  whenPredSetCRWithPropAndSetter(R.prop('invertConversionRate'), 'conversionRate', invertConversionRate),
-  whenPropApplySetterMap('fromNumericBase', toBigNumber),
-  whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
-  whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
-  whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
-  whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
-  whenPredSetWithPropAndSetter(R.prop('roundDown'), 'roundDown', roundDown),
-  whenPropApplySetterMap('toNumericBase', baseChange),
-  R.view(R.lensProp('value'))
-)
+  if (toDenomination) {
+    convertedValue = toSpecifiedDenomination[toDenomination](convertedValue)
+  }
+
+  if (numberOfDecimals) {
+    convertedValue = convertedValue.round(numberOfDecimals, BigNumber.ROUND_HALF_DOWN)
+  }
+
+  if (roundDown) {
+    convertedValue = convertedValue.round(roundDown, BigNumber.ROUND_DOWN)
+  }
+
+  if (toNumericBase) {
+    convertedValue = baseChange[toNumericBase](convertedValue)
+  }
+  return convertedValue
+}
 
 const conversionUtil = (value, {
   fromCurrency = null,
