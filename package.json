@@ -168,7 +168,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "rpc-cap": "^3.0.0",
+    "rpc-cap": "^3.0.1",
     "safe-event-emitter": "^1.0.1",
     "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
