@@ -26,7 +26,7 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    hasPendingPermissionsRequests: PropTypes.bool.isRequired,
+    hasAdditionalPermissionsRequests: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
@@ -143,10 +143,10 @@ export default class PermissionConnect extends Component {
   }
 
   _doRedirect () {
-    const { history, hasPendingPermissionsRequests } = this.props
+    const { history, hasAdditionalPermissionsRequests } = this.props
 
     if (
-      !hasPendingPermissionsRequests &&
+      !hasAdditionalPermissionsRequests &&
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
     ) {
       global.platform.closeCurrentWindow()
