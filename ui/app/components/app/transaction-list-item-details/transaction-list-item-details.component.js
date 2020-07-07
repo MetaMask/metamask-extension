@@ -145,8 +145,6 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup,
       showSpeedUp,
       showRetry,
-      onCancel,
-      onRetry,
       recipientEns,
       recipientAddress,
       rpcPrefs: { blockExplorerUrl } = {},
@@ -253,8 +251,8 @@ export default class TransactionListItemDetails extends PureComponent {
               <TransactionActivityLog
                 transactionGroup={transactionGroup}
                 className="transaction-list-item-details__transaction-activity-log"
-                onCancel={onCancel}
-                onRetry={onRetry}
+                onCancel={this.handleCancel}
+                onRetry={this.handleRetry}
                 isEarliestNonce={isEarliestNonce}
               />
             </div>

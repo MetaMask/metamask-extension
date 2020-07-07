@@ -34,7 +34,8 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
 
-  const hasPendingPermissionsRequests = permissionsRequest
+  // used to determine whether to redirect or show the next permissions request
+  const hasAdditionalPermissionsRequests = permissionsRequest
     ? permissionsRequests.length > 1
     : permissionsRequests.length > 0
 
@@ -82,7 +83,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     permissionsRequest,
     permissionsRequestId,
-    hasPendingPermissionsRequests,
+    hasAdditionalPermissionsRequests,
     accounts: accountsWithLabels,
     currentAddress,
     origin,

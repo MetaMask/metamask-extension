@@ -1696,10 +1696,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-5.2.1.tgz#526352fae3541da0952dbf7caa97763558e2d20c"
-  integrity sha512-GP0XuPCxtkAJ+mtOj5CEaSTncXDsMS79pyTiIbIC5RcZ2AMKGCyKcEovQlFm5fkbO6fE5uFnco4fpgMmY7XsTQ==
+"@metamask/inpage-provider@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.0.0.tgz#84a95d30cad77ac1d70507915f6bea04a72e6c4f"
+  integrity sha512-487gjVIdIKEgqNXu5Q7dtVvv48nwZCLSBxDVoL8NUeQOIw1HARzG5kPusWnOhcOfKdpUCZLl+Mp/c+XhEtZM6Q==
   dependencies:
     eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
@@ -1711,10 +1711,10 @@
     pump "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-"@metamask/test-dapp@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-2.2.0.tgz#e48ea589db7ab028ea222ae47ee814c4687e02c6"
-  integrity sha512-KX8ZhR/yLBO6yzx/9/BDxHdrTV6nNoOb8LvpUGm8GiLu6jOXETKZj0qfgvL5quWnQ/LRJMEXeuOZWjtXgcVofg==
+"@metamask/test-dapp@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-3.0.0.tgz#4e9678c872e0f379b4178032a6c4bfac6131a360"
+  integrity sha512-aXiN68DDjrMpHYIx3uE47HUzLIO327zsqMPFlv/SVEmYiuZgt7Ypndb25llPBJsLQ5cWPwiln6MoTb9DbxaSeA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -10180,10 +10180,10 @@ eth-json-rpc-middleware@^4.1.4, eth-json-rpc-middleware@^4.1.5:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.1.tgz#0fdebb873337f01dc839ff3d8a5858ecc2c87e6f"
-  integrity sha512-8vIhggej+B331jZG96Qql0GAJBy0HVSHnSCvnzlX7lhVoWcoBfOjt5vnJp07gVoz2QQlpedG+aiGPZwL1PbihA==
+eth-json-rpc-middleware@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-5.0.2.tgz#f8c2c3478e1b28bf85ed48209e543d6335420de2"
+  integrity sha512-Ezx+wphVQJbrkRSx3Z2EPQZa4JgzA0o0ZCPOdoGtYTTT0SpdzC4BnvafxMS7H2o+QsRcvOvOJmzu7hbf2eVR7w==
   dependencies:
     btoa "^1.2.1"
     clone "^2.1.1"
@@ -23895,10 +23895,10 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
-rpc-cap@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-2.1.0.tgz#c53e9bd925cb23c86b1591d621a68692c58070c0"
-  integrity sha512-k4GLWk3IT6r5zETyhiH9tjHqX2sEJ8MdGWv5C4v7wL32hCsx+AnEykbkeVG+EfMox+Vf32C9ieTQPNLKzKwS7A==
+rpc-cap@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-3.0.1.tgz#127fdc37563736f3e15c4550af31f6866490dd85"
+  integrity sha512-egeRnp+QVennA3obsOhVi/XhNSR4qQk8LHu0YFBiEpUHcm+68FqBkjvx0U/3CSXBmrRc8WRLo6kE3T64gWW02w==
   dependencies:
     clone "^2.1.2"
     eth-json-rpc-errors "^2.0.2"

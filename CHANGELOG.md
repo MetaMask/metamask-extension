@@ -2,6 +2,19 @@
 
 ## Current Develop Branch
 
+## 8.0.3 Mon Jul 06 2020
+- [#8921](https://github.com/MetaMask/metamask-extension/pull/8921): Restore missing 'data' provider event, and fix 'notification' event
+- [#8923](https://github.com/MetaMask/metamask-extension/pull/8923): Normalize the 'from' parameter for `eth_sendTransaction`
+- [#8924](https://github.com/MetaMask/metamask-extension/pull/8924): Fix handling of multiple `eth_requestAccount` messages from the same domain
+- [#8917](https://github.com/MetaMask/metamask-extension/pull/8917): Update Italian translations
+
+## 8.0.2 Fri Jul 03 2020
+- [#8907](https://github.com/MetaMask/metamask-extension/pull/8907): Tolerate missing or falsey substitutions
+- [#8908](https://github.com/MetaMask/metamask-extension/pull/8908): Fix activity log inline buttons
+- [#8909](https://github.com/MetaMask/metamask-extension/pull/8909): Prevent confirming blank suggested token
+- [#8910](https://github.com/MetaMask/metamask-extension/pull/8910): Handle suggested token resolved elsewhere
+- [#8913](https://github.com/MetaMask/metamask-extension/pull/8913): Fix Kovan chain ID constant
+
 ## 8.0.1 Thu Jul 02 2020
 - [#8874](https://github.com/MetaMask/metamask-extension/pull/8874): Fx overflow behaviour of add token list
 - [#8885](https://github.com/MetaMask/metamask-extension/pull/8885): Show `origin` in connect flow rather than site name

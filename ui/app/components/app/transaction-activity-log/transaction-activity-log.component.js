@@ -36,34 +36,32 @@ export default class TransactionActivityLog extends PureComponent {
     global.platform.openTab({ url: etherscanUrl })
   }
 
-  renderInlineRetry (index, activity) {
+  renderInlineRetry (index) {
     const { t } = this.context
     const { inlineRetryIndex, primaryTransaction = {}, onRetry, isEarliestNonce } = this.props
     const { status } = primaryTransaction
-    const { id } = activity
 
     return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineRetryIndex
       ? (
         <div
           className="transaction-activity-log__action-link"
-          onClick={() => onRetry(id)}
+          onClick={onRetry}
         >
           { t('speedUpTransaction') }
         </div>
       ) : null
   }
 
-  renderInlineCancel (index, activity) {
+  renderInlineCancel (index) {
     const { t } = this.context
     const { inlineCancelIndex, primaryTransaction = {}, onCancel, isEarliestNonce } = this.props
     const { status } = primaryTransaction
-    const { id } = activity
 
     return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineCancelIndex
       ? (
         <div
           className="transaction-activity-log__action-link"
-          onClick={() => onCancel(id)}
+          onClick={onCancel}
         >
           { t('speedUpCancellation') }
         </div>
@@ -107,8 +105,8 @@ export default class TransactionActivityLog extends PureComponent {
           >
             { activityText }
           </div>
-          { this.renderInlineRetry(index, activity) }
-          { this.renderInlineCancel(index, activity) }
+          { this.renderInlineRetry(index) }
+          { this.renderInlineCancel(index) }
         </div>
       </div>
     )

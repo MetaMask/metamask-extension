@@ -8,6 +8,7 @@ import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block
 import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware'
 import createInfuraMiddleware from 'eth-json-rpc-infura'
 import BlockTracker from 'eth-block-tracker'
+import * as networkEnums from './enums'
 
 export default function createInfuraClient ({ network }) {
   const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
@@ -32,23 +33,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
 
   switch (network) {
     case 'mainnet':
-      netId = '1'
+      netId = networkEnums.MAINNET_NETWORK_ID.toString()
       chainId = '0x01'
       break
     case 'ropsten':
-      netId = '3'
+      netId = networkEnums.ROPSTEN_NETWORK_ID.toString()
       chainId = '0x03'
       break
     case 'rinkeby':
-      netId = '4'
+      netId = networkEnums.RINKEBY_NETWORK_ID.toString()
       chainId = '0x04'
       break
     case 'kovan':
-      netId = '42'
-      chainId = '0x2a'
+      netId = networkEnums.KOVAN_NETWORK_ID.toString()
+      chainId = networkEnums.KOVAN_CHAIN_ID
       break
     case 'goerli':
-      netId = '5'
+      netId = networkEnums.GOERLI_NETWORK_ID.toString()
       chainId = '0x05'
       break
     default:

@@ -1,4 +1,69 @@
 {
+  "acceptTermsOfUse": {
+    "message": "Ho letto e accetto i $1",
+    "description": "$1 is the `terms` message"
+  },
+  "eth_accounts": {
+    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
+    "description": "The description for the `eth_accounts` permission"
+  },
+  "connectedSites": {
+    "message": "Siti connessi"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 è connesso a questi siti che hanno accesso all'indirizzo del tuo account.",
+    "description": "$1 is the account name"
+  },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 non è connesso ad alcun sito.",
+    "description": "$1 is the account name"
+  },
+  "connectedAccountsDescriptionSingular": {
+    "message": "Hai un account connesso a questo sito."
+  },
+  "connectedAccountsDescriptionPlural": {
+    "message": "Hai $1 account connessi a questo sito.",
+    "description": "$1 is the number of accounts"
+  },
+  "connectedAccountsEmptyDescription": {
+    "message": "MetaMask non è connesso a questo sito. Per connetterti ad un sito web3, trova il pulsante di connessione."
+  },
+  "currentAccountNotConnected": {
+    "message": "Il tuo account corrente non è connesso"
+  },
+  "switchToThisAccount": {
+    "message": " Passa a questo account"
+  },
+  "disconnectThisAccount": {
+    "message": "Disconnetti questo account"
+  },
+  "permissions": {
+    "message": "Permessi"
+  },
+  "showPermissions": {
+    "message": "Mostra permessi"
+  },
+  "authorizedPermissions": {
+    "message": "Hai autorizzato i seguenti permessi"
+  },
+  "connectManually": {
+    "message": "Connettiti al sito manualmente"
+  },
+  "disconnect": {
+    "message": "Disconnetti"
+  },
+  "disconnectAllAccounts": {
+    "message": "Disconnetti tutti gli account"
+  },
+  "disconnectPrompt": {
+    "message": "Disconnetti $1"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
+    "message": "Sicuro di volerti disconnettere? Il sito potrebbe non funzionare correttamente."
+  },
+  "dismiss": {
+    "message": "Ignora"
+  },
   "showIncomingTransactions": {
     "message": "Mostra Transazioni in Ingresso"
   },
@@ -8,12 +73,31 @@
   "chartOnlyAvailableEth": {
     "message": "Grafico disponibile solo per le reti Ethereum."
   },
-  "connectedSites": {
-    "message": "Siti connessi"
+  "connecting": {
+    "message": "Connessione..."
+  },
+  "connectWithMetaMask": {
+    "message": "Connetti con MetaMask"
   },
   "connectTo": {
-    "message": "Collegati a $1",
+    "message": "Connettiti a $1",
     "description": "$1 is the name/origin of a site/dapp that the user can connect to metamask"
+  },
+  "connectToAll": {
+    "message": "Connettiti a tutti i tuoi $1",
+    "description": "$1 will be replaced by the translation of connectToAllAccounts"
+  },
+  "connectToAllAccounts": {
+    "message": "account",
+    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
+  },
+  "connectToMultiple": {
+    "message": "Connettiti a $1",
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
+  },
+  "connectToMultipleNumberOfAccounts": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "contractInteraction": {
     "message": "Interazione Contratto"
@@ -51,6 +135,12 @@
   },
   "accountSelectionRequired": {
     "message": "Devi selezionare un account!"
+  },
+  "active": {
+    "message": "Attivo"
+  },
+  "activity": {
+    "message": "Attività"
   },
   "activityLog": {
     "message": "log attività"
@@ -91,9 +181,27 @@
   "addAcquiredTokens": {
     "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
+  "alerts": {
+    "message": "Avvisi"
+  },
+  "alertsSettingsDescription": {
+    "message": "Attiva o disattiva ogni avviso"
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "Navigazione su un sito con un account non connesso"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "Questo avviso è mostrato nel popup quando stai visitando un sito Web3, ma l'account selezionato non è connesso al sito."
+  },
   "allowOriginSpendToken": {
     "message": "Vuoi consentire a $1 di spendere $2?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  },
+  "allowThisSiteTo": {
+    "message": "Permetti a questo sito di:"
+  },
+  "allowExternalExtensionTo": {
+    "message": "Permetti a questa estensione di:"
   },
   "allowWithdrawAndSpend": {
     "message": "Consenti a $1 di ritirare e spendere fino a questo importo:",
@@ -121,6 +229,9 @@
   },
   "asset": {
     "message": "Asset"
+  },
+  "assets": {
+    "message": "Patrimonio"
   },
   "attemptingConnect": {
     "message": "Tentativo di connessione alla blockchain."
@@ -258,6 +369,9 @@
   "congratulations": {
     "message": "Congratulazioni"
   },
+  "connectAccountOrCreate": {
+    "message": "Connetti un account o creane uno nuovo"
+  },
   "connectHardwareWallet": {
     "message": "Connetti Portafoglio Hardware"
   },
@@ -333,6 +447,9 @@
   "currencyConversion": {
     "message": "Conversione Moneta"
   },
+  "currentExtension": {
+    "message": "Pagina estensione corrente"
+  },
   "currentLanguage": {
     "message": "Lingua Corrente"
   },
@@ -386,6 +503,9 @@
   },
   "done": {
     "message": "Finito"
+  },
+  "dontShowThisAgain": {
+    "message": "Non mostrare di nuovo"
   },
   "downloadGoogleChrome": {
     "message": "Scarica Google Chrome"
@@ -519,6 +639,9 @@
   "failed": {
     "message": "Fallita"
   },
+  "failureMessage": {
+    "message": "Qualcosa è andato storto e non è possibile completare l'azione"
+  },
   "fast": {
     "message": "Veloce"
   },
@@ -541,6 +664,10 @@
   },
   "from": {
     "message": "Da"
+  },
+  "fromAddress": {
+    "message": "Da: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "functionApprove": {
     "message": "Funzione: Approve"
@@ -626,6 +753,10 @@
   },
   "hide": {
     "message": "Nascondi"
+  },
+  "hideTokenSymbol": {
+    "message": "Nascondi $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
   "hideTokenPrompt": {
     "message": "Nascondi Token?"
@@ -777,6 +908,15 @@
   "message": {
     "message": "Messaggio"
   },
+  "metaMaskConnectStatusParagraphOne": {
+    "message": "Ora hai piu controllo sulle connessioni del tuo account in MetaMask."
+  },
+  "metaMaskConnectStatusParagraphTwo": {
+    "message": "Il bottone di stato della connessione mostra se il sito che stai visitando è connesso all'account corrente"
+  },
+  "metaMaskConnectStatusParagraphThree": {
+    "message": "Clicca per gestire i tuo account connessi."
+  },
   "metamaskDescription": {
     "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
   },
@@ -863,6 +1003,9 @@
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi."
   },
+  "onlyAddTrustedNetworks": {
+    "message": "Una rete Ethereum malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
+  },
   "optionalChainId": {
     "message": "ChainID (opzionale)"
   },
@@ -893,6 +1036,9 @@
   },
   "noThanks": {
     "message": "No Grazie"
+  },
+  "notCurrentAccount": {
+    "message": "È questo l'account corretto? È diverso dall'account selezionato nel tuo portafoglio"
   },
   "notEnoughGas": {
     "message": "Gas Non Sufficiente"
@@ -937,8 +1083,18 @@
   "pending": {
     "message": "in corso"
   },
+  "permissionCheckedIconDescription": {
+    "message": "Hai approvato questo permesso"
+  },
+  "permissionUncheckedIconDescription": {
+    "message": "Non hai approvato questo permesso"
+  },
   "personalAddressDetected": {
     "message": "Rilevato indirizzo personale. Inserisci l'indirizzo del contratto del token."
+  },
+  "plusXMore": {
+    "message": "+ $1 elementi",
+    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "prev": {
     "message": "Precedente"
@@ -968,11 +1124,17 @@
   "queue": {
     "message": "Coda"
   },
+  "queued": {
+    "message": "In coda"
+  },
   "readdToken": {
     "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."
   },
   "recents": {
     "message": "Recenti"
+  },
+  "receive": {
+    "message": "Ricevi"
   },
   "recipientAddress": {
     "message": "Indirizzo Destinatario"
@@ -1110,8 +1272,23 @@
   "seedPhrasePlaceholder": {
     "message": "Separa ogni parola con un singolo spazio"
   },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Incolla frase seed dagli appunti"
+  },
+  "showSeedPhrase": {
+    "message": "Mostra frase seed"
+  },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
+  },
+  "selectingAllWillAllow": {
+    "message": "Selezionare tutto consentirà al sito di avere accesso a tutti i tuoi account. Assicurati di fidarti del sito."
+  },
+  "selectAccounts": {
+    "message": "Seleziona account"
+  },
+  "selectAll": {
+    "message": "Seleziona tutti"
   },
   "selectCurrency": {
     "message": "Seleziona Moneta"
@@ -1124,6 +1301,9 @@
   },
   "selectType": {
     "message": "Seleziona Tipo"
+  },
+  "buy": {
+    "message": "Compra"
   },
   "send": {
     "message": "Invia"
@@ -1142,6 +1322,10 @@
   },
   "sentTokens": {
     "message": "tokens inviati"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Invia $1",
+    "description": "Symbol of the specified token"
   },
   "separateEachWord": {
     "message": "Separa ogni parola con un solo spazio"
@@ -1252,6 +1436,12 @@
   "stateLogError": {
     "message": "Errore nel recupero dei log di stato."
   },
+  "statusConnected": {
+    "message": "Connesso"
+  },
+  "statusNotConnected": {
+    "message": "Non connesso"
+  },
   "step1HardwareWallet": {
     "message": "1. Connetti Portafoglio Hardware"
   },
@@ -1333,6 +1523,10 @@
   "to": {
     "message": "A"
   },
+  "toAddress": {
+    "message": "A: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
   "toWithColon": {
     "message": "To:"
   },
@@ -1344,6 +1538,9 @@
   },
   "tokenContractAddress": {
     "message": "Indirizzo Contratto Token"
+  },
+  "tokenOptions": {
+    "message": "Opzioni token"
   },
   "tokenSymbol": {
     "message": "Simbolo Token"
@@ -1393,6 +1590,9 @@
   "transactionTime": {
     "message": "Tempo Conferma Transazione"
   },
+  "showTransactionTimeDescription": {
+    "message": "Seleziona per mostrare nella scheda attività una stima dei tempi di transazione per le transazioni in corso sulla rete Ethereum principale. Nota: la stima è approssimativa basata sulle condizioni della rete."
+  },
   "transfer": {
     "message": "Trasferisci"
   },
@@ -1418,6 +1618,9 @@
   },
   "unapproved": {
     "message": "Non approvata"
+  },
+  "alertDisableTooltip": {
+    "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
   "units": {
     "message": "unità"
@@ -1497,8 +1700,15 @@
   "welcome": {
     "message": "Benvenuto nella Beta di MetaMask"
   },
+  "whatsThis": {
+    "message": "Cos'è?"
+  },
   "writePhrase": {
     "message": "Scrivi questa frase su un foglio di carta e conservala in un posto sicuro. Se vuoi ancora più sicurezza, scrivila su più fogli e conserva ognuno in 2 o 3 posti diversi. "
+  },
+  "xOfY": {
+    "message": "$1 di $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "Si, proviamo"
