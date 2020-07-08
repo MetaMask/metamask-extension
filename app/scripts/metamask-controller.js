@@ -267,7 +267,14 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
+      this.setCurrentCurrency(
+        this.currencyRateController.state.currentCurrency,
+        (error) => {
+          if (error) {
+            throw error
+          }
+        }
+      )
     })
 
     this.networkController.lookupNetwork()
