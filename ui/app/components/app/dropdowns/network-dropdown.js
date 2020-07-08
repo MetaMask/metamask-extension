@@ -6,7 +6,6 @@ import { compose } from 'redux'
 import * as actions from '../../../store/actions'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
-import R from 'ramda'
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
 
 // classes from nodes of the toggle element.
@@ -219,7 +218,7 @@ class NetworkDropdown extends Component {
         onClickOutside={(event) => {
           const { classList } = event.target
           const isInClassList = (className) => classList.contains(className)
-          const notToggleElementIndex = R.findIndex(isInClassList)(notToggleElementClassnames)
+          const notToggleElementIndex = notToggleElementClassnames.findIndex(isInClassList)
 
           if (notToggleElementIndex === -1) {
             this.props.hideNetworkDropdown()
