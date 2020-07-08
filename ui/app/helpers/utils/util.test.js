@@ -319,4 +319,33 @@ describe('util', function () {
       })
     })
   })
+
+  describe('checkExistingAddresses', function () {
+    const tokenList = [
+      { address: 'A' },
+      { address: 'n' },
+      { address: 'Q' },
+      { address: 'z' },
+    ]
+
+    it('should return true when a lowercase address matches an uppercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('q', tokenList) === true)
+    })
+
+    it('should return true when an uppercase address matches a lowercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('N', tokenList) === true)
+    })
+
+    it('should return true when a lowercase address matches a lowercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('z', tokenList) === true)
+    })
+
+    it('should return true when an uppercase address matches an uppercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('Q', tokenList) === true)
+    })
+
+    it('should return false when the passed address is not in the passed list', function () {
+      assert(util.checkExistingAddresses('b', tokenList) === false)
+    })
+  })
 })
