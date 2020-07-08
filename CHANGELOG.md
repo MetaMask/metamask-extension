@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 8.0.4 Tue Jul 07 2020
+- [#8934](https://github.com/MetaMask/metamask-extension/pull/8934): Fix transaction activity on custom networks
+- [#8936](https://github.com/MetaMask/metamask-extension/pull/8936): Fix account tracker optimization
+
 ## 8.0.3 Mon Jul 06 2020
 - [#8921](https://github.com/MetaMask/metamask-extension/pull/8921): Restore missing 'data' provider event, and fix 'notification' event
 - [#8923](https://github.com/MetaMask/metamask-extension/pull/8923): Normalize the 'from' parameter for `eth_sendTransaction`
