@@ -1450,12 +1450,11 @@ export function setPreviousProvider (type) {
 }
 
 export function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-  const stringChainId = chainId?.toString()
   return async (dispatch) => {
-    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${stringChainId} ${ticker} ${nickname}`)
+    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(newRpc, stringChainId, ticker, nickname || newRpc, rpcPrefs)
+      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
@@ -1470,7 +1469,6 @@ export function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname
 }
 
 export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-  const stringChainId = chainId?.toString()
   return async (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
     try {
@@ -1482,7 +1480,7 @@ export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcP
     }
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(newRpc, stringChainId, ticker, nickname || newRpc, rpcPrefs)
+      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
@@ -1497,12 +1495,11 @@ export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcP
 }
 
 export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
-  const stringChainId = chainId?.toString()
   return async (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc} ${stringChainId} ${ticker} ${nickname}`)
+    log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
 
     try {
-      await promisifiedBackground.setCustomRpc(newRpc, stringChainId, ticker, nickname || newRpc)
+      await promisifiedBackground.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc)
     } catch (error) {
       log.error(error)
       dispatch(displayWarning('Had a problem changing networks!'))
@@ -1553,11 +1550,10 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
  * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook (chainId, addressToRemove) {
-  const stringChainId = chainId?.toString()
   log.debug(`background.removeFromAddressBook`)
 
   return async () => {
-    await promisifiedBackground.removeFromAddressBook(stringChainId, checksumAddress(addressToRemove))
+    await promisifiedBackground.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 
