@@ -125,14 +125,19 @@ export default class TransactionController extends EventEmitter {
     this._updatePendingTxsAfterFirstBlock()
   }
 
-  /** @returns {number} - the chainId*/
+  /**
+   * Gets the current chainId in the network store as a number, returning 0 if
+   * the chainId parses to NaN.
+   *
+   * @returns {number} The numerical chainId.
+   */
   getChainId () {
     const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState)
-    if (Number.isNaN(getChainId)) {
+    const integerChainId = parseInt(networkState)
+    if (Number.isNaN(integerChainId)) {
       return 0
     } else {
-      return getChainId
+      return integerChainId
     }
   }
 

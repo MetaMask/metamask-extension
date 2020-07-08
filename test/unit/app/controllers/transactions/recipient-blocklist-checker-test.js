@@ -30,7 +30,7 @@ describe('Recipient Blocklist Checker', function () {
     it('fails on mainnet', function () {
       for (const account of publicAccounts) {
         assert.throws(
-          () => throwIfAccountIsBlocked(1, account),
+          () => throwIfAccountIsBlocked('1', account),
           { message: 'Recipient is a public account' },
         )
       }
@@ -38,14 +38,14 @@ describe('Recipient Blocklist Checker', function () {
 
     it('fails for public account - uppercase', function () {
       assert.throws(
-        () => throwIfAccountIsBlocked(1, '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'),
+        () => throwIfAccountIsBlocked('1', '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'),
         { message: 'Recipient is a public account' },
       )
     })
 
     it('fails for public account - lowercase', function () {
       assert.throws(
-        () => throwIfAccountIsBlocked(1, '0x0d1d4e623d10f9fba5db95830f7d3839406c6af2'),
+        () => throwIfAccountIsBlocked('1', '0x0d1d4e623d10f9fba5db95830f7d3839406c6af2'),
         { message: 'Recipient is a public account' },
       )
     })

@@ -1,4 +1,5 @@
 import blocklist from './recipient-blocklist'
+import { MAINNET_NETWORK_ID } from '../../network/enums'
 
 /**
  * Checks if a specified account on a specified network is blocked
@@ -7,8 +8,7 @@ import blocklist from './recipient-blocklist'
  * @throws {Error} if the account is blocked on mainnet
  */
 export function throwIfAccountIsBlocked (networkId, account) {
-  const mainnetId = 1
-  if (networkId !== mainnetId) {
+  if (networkId !== MAINNET_NETWORK_ID) {
     return
   }
 

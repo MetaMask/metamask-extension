@@ -60,19 +60,19 @@ describe('Transactions utils', function () {
       const tests = [
         {
           expected: 'https://etherscan.io/tx/0xabcd',
-          networkId: 1,
+          networkId: '1',
           hash: '0xabcd',
         },
         {
           expected: 'https://ropsten.etherscan.io/tx/0xdef0',
-          networkId: 3,
+          networkId: '3',
           hash: '0xdef0',
           rpcPrefs: {},
         },
         {
           // test handling of `blockExplorerUrl` for a custom RPC
           expected: 'https://block.explorer/tx/0xabcd',
-          networkId: 31,
+          networkId: '31',
           hash: '0xabcd',
           rpcPrefs: {
             blockExplorerUrl: 'https://block.explorer',
@@ -81,7 +81,7 @@ describe('Transactions utils', function () {
         {
           // test handling of trailing `/` in `blockExplorerUrl` for a custom RPC
           expected: 'https://another.block.explorer/tx/0xdef0',
-          networkId: 33,
+          networkId: '33',
           hash: '0xdef0',
           rpcPrefs: {
             blockExplorerUrl: 'https://another.block.explorer/',

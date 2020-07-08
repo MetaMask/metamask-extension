@@ -240,7 +240,7 @@ export default class IncomingTransactionsController {
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
-      metamaskNetworkId: currentNetworkID.toString(),
+      metamaskNetworkId: currentNetworkID,
       status,
       time,
       txParams: {

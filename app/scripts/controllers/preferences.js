@@ -482,7 +482,7 @@ export default class PreferencesController {
    * updates custom RPC details
    *
    * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {number} chainId - Optional chainId of the selected network.
+   * @param {string} chainId - Optional chainId of the selected network.
    * @param {string} ticker   - Optional ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
@@ -510,7 +510,7 @@ export default class PreferencesController {
    * Adds custom RPC url to state.
    *
    * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {number} chainId - Optional chainId of the selected network.
+   * @param {string} chainId - Optional chainId of the selected network.
    * @param {string} ticker   - Optional ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
