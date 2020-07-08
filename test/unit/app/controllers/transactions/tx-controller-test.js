@@ -198,25 +198,8 @@ describe('Transaction Controller', function () {
         .catch(done)
     })
 
-    it('should fail if recipient is public', async function () {
-      txController.networkStore = new ObservableStore('1')
-      await assert.rejects(
-        () => txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' }),
-        { message: 'Recipient is a public account' },
-      )
-    })
-
     it("should fail if the from address isn't the selected address", async function () {
       await assert.rejects(() => txController.addUnapprovedTransaction({ from: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' }))
-    })
-
-    it('should not fail if recipient is public but not on mainnet', function (done) {
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        assert.ok(txMetaFromEmit, 'txMeta is falsy')
-        done()
-      })
-      txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
-        .catch(done)
     })
 
     it('should fail if netId is loading', async function () {
