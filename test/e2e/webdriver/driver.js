@@ -172,8 +172,8 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure (test) {
-    const artifactDir = `./test-artifacts/${this.browser}/${test.title}`
+  async verboseReportOnFailure (title) {
+    const artifactDir = `./test-artifacts/${this.browser}/${title}`
     const filepathBase = `${artifactDir}/test-failure`
     await fs.mkdir(artifactDir, { recursive: true })
     const screenshot = await this.driver.takeScreenshot()
