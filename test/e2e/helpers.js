@@ -8,7 +8,7 @@ const regularDelayMs = tinyDelayMs * 2
 const largeDelayMs = regularDelayMs * 2
 
 async function withFixtures (options, callback) {
-  const { fixtures, ganacheOptions, driverOptions } = options
+  const { fixtures, ganacheOptions, driverOptions, title } = options
   const fixtureServer = new FixtureServer()
   const ganacheServer = new Ganache()
 
@@ -32,6 +32,9 @@ async function withFixtures (options, callback) {
         throw new Error(errorMessage)
       }
     }
+  } catch (error) {
+    await webDriver.verboseReportOnFailure(title)
+    throw error
   } finally {
     await fixtureServer.stop()
     await ganacheServer.quit()
