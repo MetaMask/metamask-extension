@@ -74,14 +74,14 @@ export default class TransactionActivityLog extends PureComponent {
     const ethValue = index === 0
       ? `${getValueFromWeiHex({
         value,
-        fromCurrency: nativeCurrency,
-        toCurrency: nativeCurrency,
+        fromCurrency: 'ETH',
+        toCurrency: 'ETH',
         conversionRate,
         numberOfDecimals: 6,
       })} ${nativeCurrency}`
       : getEthConversionFromWeiHex({
         value,
-        fromCurrency: nativeCurrency,
+        fromCurrency: 'ETH',
         conversionRate,
         numberOfDecimals: 3,
       })

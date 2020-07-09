@@ -191,19 +191,19 @@ export default class AccountTracker {
     const currentNetwork = this.network.getNetworkState()
 
     switch (currentNetwork) {
-      case MAINNET_NETWORK_ID:
+      case MAINNET_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
         break
 
-      case RINKEBY_NETWORK_ID:
+      case RINKEBY_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
         break
 
-      case ROPSTEN_NETWORK_ID:
+      case ROPSTEN_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
         break
 
-      case KOVAN_NETWORK_ID:
+      case KOVAN_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
         break
 
