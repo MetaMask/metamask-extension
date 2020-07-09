@@ -90,7 +90,7 @@ const getMaterialThemeInputProps = ({
   startAdornment,
 }) => ({
   InputLabelProps: {
-    FormLabelClasses: {
+    classes: {
       root: materialLabel,
       focused: materialFocused,
       error: materialError,
@@ -135,7 +135,7 @@ const getBorderedThemeInputProps = ({
   InputLabelProps: {
     shrink: true,
     className: largeLabel ? largeInputLabel : inputLabel,
-    FormLabelClasses: {
+    classes: {
       root: formLabel,
       focused: formLabelFocused,
       error: materialError,
