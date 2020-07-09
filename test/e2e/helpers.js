@@ -23,6 +23,15 @@ async function withFixtures (options, callback) {
     await callback({
       driver,
     })
+
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      const errors = await driver.checkBrowserForConsoleErrors(driver)
+      if (errors.length) {
+        const errorReports = errors.map((err) => err.message)
+        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        throw new Error(errorMessage)
+      }
+    }
   } finally {
     await fixtureServer.stop()
     await ganacheServer.quit()
