@@ -1,7 +1,7 @@
 const { By, Key } = require('selenium-webdriver')
 const { withFixtures } = require('../helpers')
 
-describe('MetaMask Browser Extension', function () {
+describe('Simple send', function () {
   it('can send a simple transaction from one account to another', async function () {
     const ganacheOptions = {
       accounts: [
