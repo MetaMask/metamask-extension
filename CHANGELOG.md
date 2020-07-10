@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Chore) New RSK testnet default tokens
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Fix) Etherscan link for Ethereum Mainnet
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Chrore) Update NPM deps to fix known vulnerabilities
+
 ## 5.1.1 Mon Jun 15 2020
 
 - [#393](https://github.com/poanetwork/nifty-wallet/pull/393) - (Feature) "Send all" option for tokens transfer
