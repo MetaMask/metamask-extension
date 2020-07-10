@@ -51,6 +51,7 @@ import selectChainId from './lib/select-chain-id'
 const version = require('../manifest.json').version
 import ethUtil, { BN } from 'ethereumjs-util'
 const GWEI_BN = new BN('1000000000')
+const GWEI_10_BN = new BN('10000000000')
 import percentile from 'percentile'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
@@ -60,7 +61,7 @@ import EthQuery from 'eth-query'
 import nanoid from 'nanoid'
 const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
-const { ifPOA, ifRSK, getNetworkID, getDPath, setDPath } = require('../../old-ui/app/util')
+const { ifPOA, ifXDai, ifRSK, getNetworkID, getDPath, setDPath } = require('../../old-ui/app/util')
 const { GasPriceOracle } = require('gas-price-oracle')
 
 import {
@@ -1914,9 +1915,15 @@ module.exports = class MetamaskController extends EventEmitter {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
     const isPOA = ifPOA(networkId)
+    const isXDai = ifXDai(networkId)
 
-    // Return 1 gwei if using a POA network or if there are no blocks have been observed:
-    if (isPOA || recentBlocks.length === 0) {
+    // Return 10 gwei if using a POA, Sokol
+    if (isPOA) {
+      return '0x' + GWEI_10_BN.toString(16)
+    }
+
+    // Return 1 gwei if xDai or there are no blocks have been observed:
+    if (isXDai || recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
     }
 
