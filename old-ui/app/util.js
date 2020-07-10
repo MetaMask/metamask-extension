@@ -92,6 +92,7 @@ module.exports = {
   ifETC,
   ifRSKByProviderType,
   ifPOA,
+  ifXDai,
   toChecksumAddress,
   isValidChecksumAddress,
   isInfuraProvider,
@@ -452,7 +453,13 @@ function ifRSKByProviderType (type) {
 function ifPOA (network) {
   if (!network) return false
   const numericNet = isNaN(network) ? network : parseInt(network)
-  return numericNet === POA_SOKOL_CODE || numericNet === POA_CODE || numericNet === DAI_CODE
+  return numericNet === POA_SOKOL_CODE || numericNet === POA_CODE
+}
+
+function ifXDai (network) {
+  if (!network) return false
+  const numericNet = isNaN(network) ? network : parseInt(network)
+  return numericNet === DAI_CODE
 }
 
 function toChecksumAddressRSK (address, chainId = null) {
