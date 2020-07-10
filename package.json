@@ -189,7 +189,7 @@
     "@babel/register": "^7.5.5",
     "@metamask/eslint-config": "^1.1.0",
     "@metamask/forwarder": "^1.1.0",
-    "@metamask/test-dapp": "3.0.0",
+    "@metamask/test-dapp": "^3.1.0",
     "@sentry/cli": "^1.49.0",
     "@storybook/addon-actions": "^5.3.14",
     "@storybook/addon-backgrounds": "^5.3.14",
