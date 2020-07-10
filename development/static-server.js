@@ -1,10 +1,10 @@
 const fs = require('fs')
-const http = require('http')
 const path = require('path')
 
 const chalk = require('chalk')
 const pify = require('pify')
-const serveHandler = require('serve-handler')
+
+const createStaticServer = require('./create-static-server')
 
 const fsStat = pify(fs.stat)
 const DEFAULT_PORT = 9080
@@ -24,19 +24,7 @@ const onRequest = (request, response) => {
 }
 
 const startServer = ({ port, rootDirectory }) => {
-  const server = http.createServer((request, response) => {
-    if (request.url.startsWith('/node_modules/')) {
-      request.url = request.url.substr(14)
-      return serveHandler(request, response, {
-        directoryListing: false,
-        public: path.resolve('./node_modules'),
-      })
-    }
-    return serveHandler(request, response, {
-      directoryListing: false,
-      public: rootDirectory,
-    })
-  })
+  const server = createStaticServer(rootDirectory)
 
   server.on('request', onRequest)
 
