@@ -92,7 +92,7 @@ describe('MetaMask', function () {
     })
 
     it('creates a sign typed data signature request', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      await driver.clickElement(By.id('signTypedData'), 10000)
       await driver.delay(largeDelayMs)
 
       await driver.delay(regularDelayMs)
