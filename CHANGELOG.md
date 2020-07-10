@@ -2,6 +2,13 @@
 
 ## Current Master
 
+- [#400](https://github.com/poanetwork/nifty-wallet/pull/400) - (Fix) Fix RNS resolving
+- [#399](https://github.com/poanetwork/nifty-wallet/pull/399) - (Chore) Set 10 Gwei gas price for POA and Sokol chains
+- [#399](https://github.com/poanetwork/nifty-wallet/pull/399) - (Fix) Fix 0 gas price when on POA, Sokol, xDai chains when confirmation popup is called from dApp
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Chore) New RSK testnet default tokens
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Fix) Etherscan link for Ethereum Mainnet
+- [#398](https://github.com/poanetwork/nifty-wallet/pull/398) - (Chrore) Update NPM deps to fix known vulnerabilities
+
 ## 5.1.1 Mon Jun 15 2020
 
 - [#393](https://github.com/poanetwork/nifty-wallet/pull/393) - (Feature) "Send all" option for tokens transfer
