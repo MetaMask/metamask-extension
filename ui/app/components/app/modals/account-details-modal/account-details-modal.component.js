@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
 import genAccountLink from '../../../../../lib/account-link.js'
+import getExtraExplorerAccounts from '../../../../../lib/explorer-accounts'
 import QrView from '../../../ui/qr-code'
 import EditableLabel from '../../../ui/editable-label'
 import Button from '../../../ui/button'
@@ -30,6 +31,7 @@ export default class AccountDetailsModal extends Component {
       rpcPrefs,
     } = this.props
     const { name, address } = selectedIdentity
+    const explorerAccounts = getExtraExplorerAccounts(network)
 
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address)
@@ -70,6 +72,19 @@ export default class AccountDetailsModal extends Component {
             : this.context.t('viewOnEtherscan')
           }
         </Button>
+
+        {explorerAccounts.map(item => (
+          <Button
+            key={item.name}
+            type="secondary"
+            className="account-modal__button"
+            onClick={() => {
+              global.platform.openTab({ url: item.addressExplorerLink(address) })
+            }}
+          >
+            {this.context.t(item.title)}
+          </Button>
+        ))}
 
         {exportPrivateKeyFeatureEnabled
           ? (

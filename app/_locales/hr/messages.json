@@ -1267,6 +1267,9 @@
   "viewOnEtherscan": {
     "message": "Prikaži na Etherscanu"
   },
+  "viewOnEthplorer": {
+    "message": "Prikaži na Ethplorer"
+  },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"
   },

@@ -1256,6 +1256,9 @@
   "viewOnEtherscan": {
     "message": "在 Etherscan 上查看"
   },
+  "viewOnEthplorer": {
+    "message": "在 Ethplorer 上查看"
+  },
   "visitWebSite": {
     "message": "访问我们的网站"
   },

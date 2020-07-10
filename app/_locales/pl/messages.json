@@ -1265,6 +1265,9 @@
   "viewOnEtherscan": {
     "message": "Zobacz na Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Zobacz na Ethplorer"
+  },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
   },

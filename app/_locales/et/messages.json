@@ -1267,6 +1267,9 @@
   "viewOnEtherscan": {
     "message": "Kuva Etherscanil"
   },
+  "viewOnEthplorer": {
+    "message": "Kuva Ethplorer"
+  },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"
   },

@@ -7,6 +7,7 @@ import { showModal } from '../../../store/actions'
 import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 import { Menu, MenuItem } from '../../ui/menu'
 import genAccountLink from '../../../../lib/account-link'
+import getExtraExplorerAccounts from '../../../../lib/explorer-accounts'
 import { getCurrentKeyring, getCurrentNetwork, getRpcPrefsForCurrentProvider, getSelectedIdentity } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
@@ -53,6 +54,19 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
 
   const address = selectedIdentity.address
   const isRemovable = keyring.type !== 'HD Key Tree'
+  const explorerAccounts = getExtraExplorerAccounts(network)
+  const explorerViewEvents = explorerAccounts.reduce((out, item) => {
+    if (item.eventName) {
+      out[item.name] = useMetricEvent({
+        eventOpts: {
+          category: 'Navigation',
+          action: 'Account Options',
+          name: item.eventName
+        },
+      })
+    }
+    return out
+  }, {})
 
   return (
     <Menu
@@ -110,6 +124,21 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
             : t('viewOnEtherscan')
         }
       </MenuItem>
+      {explorerAccounts.map(item => (
+        <MenuItem
+          key={item.name}
+          onClick={() => {
+            if (explorerViewEvents[item.name]) {
+              explorerViewEvents[item.name]()
+            }
+            global.platform.openTab({ url: item.addressExplorerLink(address) })
+            onClose()
+          }}
+          iconClassName="fas fa-external-link-alt"
+        >
+          {t(item.title)}
+        </MenuItem>
+      ))}
       <MenuItem
         data-testid="account-options-menu__connected-sites"
         onClick={() => {

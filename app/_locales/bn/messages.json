@@ -1277,6 +1277,9 @@
   "viewOnEtherscan": {
     "message": "Etherscan দেখুন"
   },
+  "viewOnEthplorer": {
+    "message": "Ethplorer দেখুন"
+  },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
   },

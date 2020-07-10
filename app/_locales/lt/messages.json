@@ -1277,6 +1277,9 @@
   "viewOnEtherscan": {
     "message": "Peržiūrėti „Etherscan“"
   },
+  "viewOnEthplorer": {
+    "message": "Peržiūrėti „Ethplorer“"
+  },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
   },

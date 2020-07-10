@@ -1277,6 +1277,9 @@
   "viewOnEtherscan": {
     "message": "مشاهده در ایترسکن"
   },
+  "viewOnEthplorer": {
+    "message": "Ethplorer مشاهده در"
+  },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
   },

@@ -1271,6 +1271,9 @@
   "viewOnEtherscan": {
     "message": "הצג ב-Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "הצג ב-Ethplorer"
+  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
   },

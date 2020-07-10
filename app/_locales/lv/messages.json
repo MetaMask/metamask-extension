@@ -1273,6 +1273,9 @@
   "viewOnEtherscan": {
     "message": "Skatīt Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Skatīt Ethplorer"
+  },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
   },

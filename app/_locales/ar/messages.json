@@ -1270,6 +1270,9 @@
   "viewOnEtherscan": {
     "message": "عرضه على Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "عرضه على Ethplorer"
+  },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
   },

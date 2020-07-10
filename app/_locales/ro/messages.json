@@ -1258,6 +1258,9 @@
   "viewOnEtherscan": {
     "message": "Vizualizați pe Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Vizualizați pe Ethplorer"
+  },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"
   },

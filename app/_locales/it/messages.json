@@ -1685,6 +1685,9 @@
   "viewOnEtherscan": {
     "message": "Vedi su Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Vedi su Ethplorer"
+  },
   "retryTransaction": {
     "message": "Retry Transaction"
   },

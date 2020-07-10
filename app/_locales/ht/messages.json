@@ -781,6 +781,9 @@
   "viewOnEtherscan": {
     "message": "Wè sou Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Wè sou Ethplorer"
+  },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"
   },

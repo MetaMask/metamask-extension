@@ -1273,6 +1273,9 @@
   "viewOnEtherscan": {
     "message": "Преглед на Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Преглед на Ethplorer"
+  },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
   },

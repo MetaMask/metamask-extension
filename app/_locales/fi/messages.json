@@ -1274,6 +1274,9 @@
   "viewOnEtherscan": {
     "message": "Näytä Etherscanissa"
   },
+  "viewOnEthplorer": {
+    "message": "Näytä Ethplorerissa"
+  },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
   },

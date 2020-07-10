@@ -1248,6 +1248,9 @@
   "viewOnEtherscan": {
     "message": "Lihat di Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Lihat di Ethplorer"
+  },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
   },

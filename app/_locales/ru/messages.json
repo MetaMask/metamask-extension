@@ -1298,6 +1298,9 @@
   "viewOnEtherscan": {
     "message": "Посмотреть на Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Посмотреть на Ethplorer"
+  },
   "welcomeBack": {
     "message": "Рад видеть вас снова!"
   },

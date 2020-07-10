@@ -1255,6 +1255,9 @@
   "viewOnEtherscan": {
     "message": "Tazama kwenye Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Tazama kwenye Ethplorer"
+  },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
   },

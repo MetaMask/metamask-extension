@@ -78,4 +78,26 @@ describe('Account Details Modal', function () {
 
     assert.equal(blockExplorerLink.html(), '<button class="button btn-secondary account-modal__button">blockExplorerView</button>')
   })
+
+  it('should contains Ethplorer menu item for main net', function () {
+    wrapper.setProps({ network: '1' })
+    wrapper.update()
+
+    const ethplorerButton = wrapper
+      .find('.account-modal__button')
+      .findWhere(item => item.key() === 'ethplorer')
+
+    assert.equal(ethplorerButton.length, 1)
+  })
+
+  it('should not contains Ethplorer menu item for not main net', function () {
+    wrapper.setProps({ network: '2' })
+    wrapper.update()
+
+    const ethplorerButton = wrapper
+      .find('.account-modal__button')
+      .findWhere(item => item.key() === 'ethplorer')
+
+    assert.equal(ethplorerButton.length, 0)
+  })
 })

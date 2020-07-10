@@ -1271,6 +1271,9 @@
   "viewOnEtherscan": {
     "message": "इथरस्कैन पर देखें"
   },
+  "viewOnEthplorer": {
+    "message": "जातीयता पर देखें"
+  },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएँ"
   },

@@ -1171,6 +1171,9 @@
   "viewOnEtherscan": {
     "message": "Tingnan sa Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Tingnan sa Ethplorer"
+  },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"
   },

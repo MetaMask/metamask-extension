@@ -1267,6 +1267,9 @@
   "viewOnEtherscan": {
     "message": "Nézze meg Etherscanen"
   },
+  "viewOnEthplorer": {
+    "message": "Nézze meg Ethplorerben"
+  },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
   },

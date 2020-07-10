@@ -1249,6 +1249,9 @@
   "viewOnEtherscan": {
     "message": "Vis på Etherscan "
   },
+  "viewOnEthplorer": {
+    "message": "Vis på Ethplorer "
+  },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
   },

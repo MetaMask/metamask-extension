@@ -1234,6 +1234,9 @@
   "viewOnEtherscan": {
     "message": "Zobraziť na Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Zobraziť na Ethplorer"
+  },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
   },

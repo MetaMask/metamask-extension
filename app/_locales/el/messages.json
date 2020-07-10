@@ -1271,6 +1271,9 @@
   "viewOnEtherscan": {
     "message": "Προβολή στο Etherscan"
   },
+  "viewOnEthplorer": {
+    "message": "Προβολή στο Ethplorer"
+  },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"
   },

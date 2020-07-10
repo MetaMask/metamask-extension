@@ -1268,6 +1268,9 @@
   "viewOnEtherscan": {
     "message": "이더스캔에서 보기"
   },
+  "viewOnEthplorer": {
+    "message": "Ethplorer에서보기"
+  },
   "visitWebSite": {
     "message": "웹사이트 방문"
   },

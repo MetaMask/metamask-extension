@@ -1274,6 +1274,9 @@
   "viewOnEtherscan": {
     "message": "በ Etherscan ላይ ይመልከቱ"
   },
+  "viewOnEthplorer": {
+    "message": "በ Ethplorer ላይ ይመልከቱ"
+  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
   },

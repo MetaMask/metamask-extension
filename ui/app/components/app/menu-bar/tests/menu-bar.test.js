@@ -59,4 +59,46 @@ describe('MenuBar', function () {
     wrapper.update()
     assert.ok(!wrapper.exists('AccountOptionsMenu'))
   })
+
+  it('should contains Ethplorer menu item for main net', function () {
+    const store = mockStore(initState)
+    const wrapper = mountWithRouter(
+      <Provider store={store}>
+        <MenuBar />
+      </Provider>
+    )
+    const accountOptions = wrapper.find('.menu-bar__account-options')
+    accountOptions.simulate('click')
+    wrapper.update()
+
+    const ethplorerMenuItem = wrapper
+      .find('MenuItem')
+      .findWhere(item => item.key() === 'ethplorer')
+
+    assert.equal(ethplorerMenuItem.length, 1)
+  })
+
+  it('should not contains Ethplorer menu item for not main net', function () {
+    const store = mockStore({
+      ...initState,
+      metamask: {
+        ...initState.metamask,
+        network: '2'
+      }
+    })
+    const wrapper = mountWithRouter(
+      <Provider store={store}>
+        <MenuBar />
+      </Provider>
+    )
+    const accountOptions = wrapper.find('.menu-bar__account-options')
+    accountOptions.simulate('click')
+    wrapper.update()
+
+    const ethplorerMenuItem = wrapper
+      .find('MenuItem')
+      .findWhere(item => item.key() === 'ethplorer')
+
+    assert.equal(ethplorerMenuItem.length, 0)
+  })
 })

@@ -481,6 +481,9 @@
   "viewOnEtherscan": {
     "message": "Etherscan で見る"
   },
+  "viewOnEthplorer": {
+    "message": "Ethplorer で見る"
+  },
   "walletSeed": {
     "message": "ウォレットのパスフレーズ"
   },
