@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 5.1.2 Fri Jul 10 2020
+
 - [#400](https://github.com/poanetwork/nifty-wallet/pull/400) - (Fix) Fix RNS resolving
 - [#399](https://github.com/poanetwork/nifty-wallet/pull/399) - (Chore) Set 10 Gwei gas price for POA and Sokol chains
 - [#399](https://github.com/poanetwork/nifty-wallet/pull/399) - (Fix) Fix 0 gas price when on POA, Sokol, xDai chains when confirmation popup is called from dApp
