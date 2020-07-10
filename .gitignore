@@ -32,13 +32,6 @@ dist
 builds/
 builds.zip
 
-development/bundle.js
-development/states.js
-test/integration/bundle.js
-test/background.js
-test/bundle.js
-test/test-bundle.js
-
 test-artifacts
 test-builds
 

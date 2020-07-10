@@ -7,17 +7,10 @@ test-builds/**
 docs/**
 coverage/
 
-development/bundle.js
-development/states.js
-
 app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
 app/vendor/**
 
 ui/lib/blockies.js
-
-test/integration/bundle.js
-test/integration/jquery-3.1.0.min.js
-test/integration/helpers.js
 
 package-lock.json
