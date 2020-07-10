@@ -16,6 +16,7 @@ const {
   ifRSK,
   ifRSKByProviderType,
   ifPOA,
+  ifXDai,
   toChecksumAddress,
   isValidChecksumAddress,
   isInfuraProvider,
@@ -359,9 +360,16 @@ describe('normalizing values', function () {
     it('checks if this is POA chain', function () {
       assert(ifPOA(77))
       assert(ifPOA(99))
-      assert(ifPOA(100))
       assert(!ifPOA(1))
       assert(!ifPOA())
+    })
+  })
+
+  describe('#ifXDai', function () {
+    it('checks if this is xDai chain', function () {
+      assert(ifXDai(100))
+      assert(!ifXDai(1))
+      assert(!ifXDai())
     })
   })
 
