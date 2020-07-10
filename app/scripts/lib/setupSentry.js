@@ -10,8 +10,6 @@ const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/27349
 
 export default function setupSentry ({ release }) {
   let sentryTarget
-  // detect brave
-  const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG || process.env.IN_TEST) {
     console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
@@ -31,10 +29,6 @@ export default function setupSentry ({ release }) {
     ],
     release,
     beforeSend: (report) => rewriteReport(report),
-  })
-
-  Sentry.configureScope((scope) => {
-    scope.setExtra('isBrave', isBrave)
   })
 
   function rewriteReport (report) {
