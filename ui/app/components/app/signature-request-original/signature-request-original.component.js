@@ -293,6 +293,7 @@ export default class SignatureRequestOriginal extends Component {
           { this.context.t('cancel') }
         </Button>
         <Button
+          data-testid="request-signature__sign"
           type="secondary"
           large
           className="request-signature__footer__sign-button"
