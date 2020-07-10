@@ -222,10 +222,12 @@ function getNetworkEnsSupport (network) {
 }
 
 function getNetworkRnsSupport (network) {
+  network = parseInt(network, 10)
   return (network === RSK_CODE || network === RSK_TESTNET_CODE)
 }
 
 function getRnsRegistryAddress (network) {
+  network = parseInt(network, 10)
   if (network === RSK_CODE) {
     return RNSRegistryData.address.rskMainnet
   }
