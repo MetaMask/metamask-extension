@@ -52,7 +52,6 @@
   },
   "resolutions": {
     "**/knex/minimist": "^1.2.5",
-    "**/mkdirp/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
