@@ -56,8 +56,8 @@
     "**/mkdirp/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.17",
-    "ganache-core/lodash": "^4.17.17"
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
+    "ganache-core/lodash": "^4.17.19"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -123,7 +123,7 @@
     "json-rpc-engine": "^5.1.8",
     "json-rpc-middleware-stream": "^2.1.1",
     "jsonschema": "^1.2.4",
-    "lodash": "^4.17.17",
+    "lodash": "^4.17.19",
     "loglevel": "^1.4.1",
     "luxon": "^1.23.0",
     "metamask-logo": "^2.1.4",
