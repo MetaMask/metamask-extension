@@ -78,11 +78,13 @@
         [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
+
           /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+
             /*rtl:ignore*/
             direction: rtl;
           }
@@ -123,11 +125,13 @@
         [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
+
           /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+
             /*rtl:ignore*/
             direction: rtl;
           }
@@ -175,11 +179,13 @@
         [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
+
           /*rtl:ignore*/
           text-align: right;
 
           span {
             display: block;
+
             /*rtl:ignore*/
             direction: rtl;
           }

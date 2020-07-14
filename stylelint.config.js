@@ -20,13 +20,13 @@ module.exports = {
     'block-opening-brace-space-before': 'always',
     'color-hex-case': 'lower',
     'color-hex-length': 'short',
-    // 'comment-empty-line-before': [
-    //   'always',
-    //   {
-    //     except: ['first-nested'],
-    //     ignore: ['stylelint-commands'],
-    //   },
-    // ],
+    'comment-empty-line-before': [
+      'always',
+      {
+        except: ['first-nested'],
+        ignore: ['stylelint-commands'],
+      },
+    ],
     // 'comment-whitespace-inside': 'always',
     'custom-property-empty-line-before': [
       'always',
