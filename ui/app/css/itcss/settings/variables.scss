@@ -117,7 +117,7 @@ $sidebar-overlay-z-index: 25;
 %modal {
   background-color: $white;
   border-radius: 10px;
-  box-shadow: 0px 5px 16px rgba($black, 0.25);;
+  box-shadow: 0 5px 16px rgba($black, 0.25);;
 }
 
 /*
@@ -213,7 +213,7 @@ $Black-100: #24292e;
 /*
   Spacing Variables
 */
-$no-spacing: 0px;
+$no-spacing: 0;
 $xxs-spacing: 4px;
 $xs-spacing: 8px;
 $s-spacing: 16px;

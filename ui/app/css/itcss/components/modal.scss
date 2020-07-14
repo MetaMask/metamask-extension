@@ -335,7 +335,7 @@
     justify-content: space-evenly;
     width: 100%;
     margin-bottom: 24px;
-    padding: 0px 42px;
+    padding: 0 42px;
 
     &__btn {
       cursor: pointer;
@@ -431,7 +431,7 @@
     &__back {
       position: absolute;
       top: 10px;
-      left: 0px;
+      left: 0;
     }
 
     &__logo-container {
@@ -487,7 +487,7 @@
   }
 
   &__buy-row:last-of-type {
-    border-bottom: 0px;
+    border-bottom: 0;
   }
 
   &__deposit-button {

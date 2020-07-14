@@ -61,7 +61,7 @@ module.exports = {
     'function-parentheses-space-inside': 'never-single-line',
     'function-whitespace-after': 'always',
     indentation: 2,
-    // 'length-zero-no-unit': true,
+    'length-zero-no-unit': true,
     // 'max-empty-lines': 1,
     'media-feature-colon-space-after': 'always',
     'media-feature-colon-space-before': 'never',

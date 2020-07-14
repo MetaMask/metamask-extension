@@ -146,7 +146,7 @@
     color: $scorpion;
     font-family: Roboto;
     font-size: 16px;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 
   &__json {
@@ -271,7 +271,7 @@
       display: block;
       text-align: center;
       height: 30px;
-      margin: 0px auto 10px;
+      margin: 0 auto 10px;
     }
   }
 
@@ -343,7 +343,7 @@
   }
 
   &__step-asset {
-    margin: 0px auto 20px;
+    margin: 0 auto 20px;
     display: flex;
   }
 }
@@ -457,9 +457,9 @@
     line-height: 19px;
     border: none;
     min-width: 46px;
-    margin-right: 0px;
+    margin-right: 0;
     margin-left: 16px;
-    padding: 0px;
+    padding: 0;
     text-transform: uppercase;
     font-family: Roboto;
   }
@@ -537,7 +537,7 @@
     font-size: 16px;
     line-height: 21px;
     margin-top: 15px;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 
   &__buttons {

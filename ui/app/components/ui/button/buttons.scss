@@ -218,7 +218,7 @@ $warning-light-orange: #f8b588;
 .btn-raised {
   color: $curious-blue;
   background-color: $white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 6px;
   height: initial;
   min-height: initial;
@@ -259,7 +259,7 @@ button.primary {
   will-change: box-shadow;
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
   &:hover {
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
 
   &.btn-secondary {

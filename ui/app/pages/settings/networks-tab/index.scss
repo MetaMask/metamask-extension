@@ -7,7 +7,7 @@
     justify-content: space-between;
 
     @media screen and (max-width: 575px) {
-      margin-top: 0px;
+      margin-top: 0;
     }
   }
 
@@ -61,7 +61,7 @@
       }
 
       footer {
-        padding: 10px 0px;
+        padding: 10px 0;
       }
     }
 
@@ -154,7 +154,7 @@
 
   &__networks-list-item {
     display: flex;
-    padding: 13px 0px 13px 17px;
+    padding: 13px 0 13px 17px;
     position: relative;
 
     .menu-icon-circle {

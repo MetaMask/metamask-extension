@@ -147,7 +147,7 @@
   cursor: pointer;
 
   @media screen and (min-width: 576px) and (max-width: 679px) {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   @media screen and (min-width: 380px) and (max-width: 575px) {
@@ -155,7 +155,7 @@
   }
 
   @media screen and (max-width: 379px) {
-    margin-left: 0px;
+    margin-left: 0;
     text-align: center;
   }
 }
