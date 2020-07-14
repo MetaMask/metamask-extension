@@ -5,6 +5,10 @@ import { exportAsFile } from '../../../helpers/utils/util'
 import Copy from '../icon/copy-icon.component'
 
 class ExportTextContainer extends Component {
+  state = {
+    copied: false,
+  }
+
   render () {
     const { text = '' } = this.props
     const { t } = this.context
@@ -12,18 +16,22 @@ class ExportTextContainer extends Component {
     return (
       <div className="export-text-container">
         <div className="export-text-container__text-container">
-          <div className="export-text-container__text notranslate">
-            {text}
-          </div>
+          <div className="export-text-container__text notranslate">{text}</div>
         </div>
         <div className="export-text-container__buttons-container">
           <div
             className="export-text-container__button export-text-container__button--copy"
-            onClick={() => copyToClipboard(text)}
+            onClick={() => {
+              this.setState({ copied: true })
+              setTimeout(() => this.setState({ copied: false }), 3000)
+              copyToClipboard(text)
+            }}
           >
             <Copy size={17} color="#3098DC" />
             <div className="export-text-container__button-text">
-              {t('copyToClipboard')}
+              {this.state.copied
+                ? t('copiedExclamation')
+                : t('copyToClipboard')}
             </div>
           </div>
           <div
