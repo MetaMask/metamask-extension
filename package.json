@@ -51,7 +51,6 @@
     "generate:migration": "./development/generate-migration.sh"
   },
   "resolutions": {
-    "**/gonzales-pe/minimist": "^1.2.5",
     "**/knex/minimist": "^1.2.5",
     "**/mkdirp/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
