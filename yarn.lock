@@ -10247,7 +10247,7 @@ ethereumjs-account@^2.0.4:
     rlp "^2.0.0"
     safe-buffer "^5.1.1"
 
-ethereumjs-block@2.2.2, ethereumjs-block@^2.2.2, ethereumjs-block@~2.2.2:
+ethereumjs-block@^2.1.0, ethereumjs-block@~2.2.0, ethereumjs-block@2.2.2, ethereumjs-block@^2.2.2, ethereumjs-block@~2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/ethereumjs-block/-/ethereumjs-block-2.2.2.tgz#c7654be7e22df489fda206139ecd63e2e9c04965"
   integrity sha512-2p49ifhek3h2zeg/+da6XpdFR3GlqY3BIEiqxGF8j9aSRIgkb7M1Ky+yULBKJOu8PAZxfhsYA+HxUk2aCQp3vg==
@@ -10258,35 +10258,13 @@ ethereumjs-block@2.2.2, ethereumjs-block@^2.2.2, ethereumjs-block@~2.2.2:
     ethereumjs-util "^5.0.0"
     merkle-patricia-tree "^2.1.2"
 
-ethereumjs-block@^1.2.2, ethereumjs-block@^1.6.0:
+ethereumjs-block@^1.2.2, ethereumjs-block@^1.4.1, ethereumjs-block@^1.6.0:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/ethereumjs-block/-/ethereumjs-block-1.7.1.tgz#78b88e6cc56de29a6b4884ee75379b6860333c3f"
   integrity sha512-B+sSdtqm78fmKkBq78/QLKJbu/4Ts4P2KFISdgcuZUPDm9x+N7qgBPIIFUGbaakQh8bzuquiRVbdmvPKqbILRg==
   dependencies:
     async "^2.0.1"
     ethereum-common "0.2.0"
-    ethereumjs-tx "^1.2.2"
-    ethereumjs-util "^5.0.0"
-    merkle-patricia-tree "^2.1.2"
-
-ethereumjs-block@^1.4.1:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-block/-/ethereumjs-block-1.7.0.tgz#23d6a765b069500a9f35d1c093ab6b216cbbeb06"
-  integrity sha512-4s4Hh7mWa1xr+Bggh3T3jsq9lmje5aYpJRFky00bo/xNgNe+RC8V2ulWYSR4YTEKqLbnLEsLNytjDe5hpblkZQ==
-  dependencies:
-    async "^2.0.1"
-    ethereum-common "0.2.0"
-    ethereumjs-tx "^1.2.2"
-    ethereumjs-util "^5.0.0"
-    merkle-patricia-tree "^2.1.2"
-
-ethereumjs-block@^2.1.0, ethereumjs-block@~2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-block/-/ethereumjs-block-2.2.0.tgz#8c6c3ab4a5eff0a16d9785fbeedbe643f4dbcbef"
-  integrity sha512-Ye+uG/L2wrp364Zihdlr/GfC3ft+zG8PdHcRtsBFNNH1CkOhxOwdB8friBU85n89uRZ9eIMAywCq0F4CwT1wAw==
-  dependencies:
-    async "^2.0.1"
-    ethereumjs-common "^1.1.0"
     ethereumjs-tx "^1.2.2"
     ethereumjs-util "^5.0.0"
     merkle-patricia-tree "^2.1.2"
