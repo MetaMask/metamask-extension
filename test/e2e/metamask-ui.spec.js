@@ -1232,7 +1232,7 @@ describe('MetaMask', function () {
     })
 
     it('can pick a token from the existing options', async function () {
-      const tokenSearch = await driver.findElement(By.css('#search-tokens'))
+      const tokenSearch = await driver.findElement(By.css('.searchable-item-list__search'))
       await tokenSearch.sendKeys('BAT')
       await driver.delay(regularDelayMs)
 
