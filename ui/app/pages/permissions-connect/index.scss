@@ -25,6 +25,7 @@
 
   &__back {
     @extend %content-text;
+
     color: $Grey-600;
     cursor: pointer;
 
@@ -35,6 +36,7 @@
 
   &__page-count {
     @extend %content-text;
+
     font-size: 12px;
     color: #6a737d;
     grid-column: 2;

@@ -1,7 +1,6 @@
 .connected-accounts-permissions {
   display: flex;
   flex-direction: column;
-
   font-size: 12px;
   line-height: 17px;
   color: $Grey-500;
@@ -20,7 +19,6 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-
     font-size: 14px;
     line-height: 20px;
     color: #24292e;
@@ -28,7 +26,6 @@
     button {
       font-size: 16px;
       line-height: 24px;
-
       background: none;
       padding: 0;
       margin-left: 8px;

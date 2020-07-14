@@ -5,9 +5,7 @@
   flex: 1;
   height: 209px;
   min-width: 0;
-
   padding-top: 10px;
-
   flex-direction: column;
   width: 100%;
 
@@ -34,6 +32,7 @@
   &:not(:last-child) {
     margin-right: 12px;
   }
+
   text-transform: uppercase;
   font-weight: bold;
 }

@@ -45,13 +45,13 @@ module.exports = {
     'declaration-colon-newline-after': 'always-multi-line',
     'declaration-colon-space-after': 'always-single-line',
     'declaration-colon-space-before': 'never',
-    // 'declaration-empty-line-before': [
-    //   'always',
-    //   {
-    //     except: ['after-declaration', 'first-nested'],
-    //     ignore: ['after-comment', 'inside-single-line-block'],
-    //   },
-    // ],
+    'declaration-empty-line-before': [
+      'always',
+      {
+        except: ['after-declaration', 'first-nested'],
+        ignore: ['after-comment', 'inside-single-line-block'],
+      },
+    ],
     'function-comma-newline-after': 'always-multi-line',
     // 'function-comma-space-after': 'always-single-line',
     // 'function-comma-space-before': 'never',

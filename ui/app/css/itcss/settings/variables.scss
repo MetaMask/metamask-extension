@@ -257,20 +257,24 @@ $xxlarge-spacing: 64px;
 
 %font--bold {
   @extend %font;
+
   font-weight: bold;
 }
 
 %header--18 {
   @extend %font;
+
   font-size: 18px;
 }
 
 %header--24 {
   @extend %font;
+
   font-size: 24px;
 }
 
 %content-text {
   @extend %font;
+
   font-size: 14px;
 }
