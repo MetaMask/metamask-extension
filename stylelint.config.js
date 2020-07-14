@@ -1,6 +1,7 @@
 module.exports = {
   rules: {
     // stylelint-config-standard
+
     'at-rule-empty-line-before': [
       'always',
       {
@@ -106,6 +107,7 @@ module.exports = {
     'value-list-max-empty-lines': 0,
 
     // custom rules
+
     // 'color-named': 'never',
     // 'font-family-name-quotes': 'always-where-recommended',
     // 'font-weight-notation': 'numeric',
