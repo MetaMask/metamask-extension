@@ -76,7 +76,7 @@
     "@sentry/integrations": "^5.11.1",
     "@zxing/library": "^0.8.0",
     "abi-decoder": "^1.2.0",
-    "abortcontroller-polyfill": "^1.3.0",
+    "abortcontroller-polyfill": "^1.4.0",
     "await-semaphore": "^0.1.1",
     "bignumber.js": "^4.1.0",
     "bip39": "^2.2.0",
