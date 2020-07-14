@@ -222,7 +222,7 @@ const conversionMax = (
 ) => {
   const firstIsGreater = conversionGreaterThan(
     { ...firstProps },
-    { ...secondProps }
+    { ...secondProps },
   )
 
   return firstIsGreater ? firstProps.value : secondProps.value

@@ -14,7 +14,7 @@ describe('CancelTransaction Component', function () {
       <CancelTransaction
         newGasFee="0x1319718a5000"
       />,
-      { context: { t } }
+      { context: { t } },
     )
 
     assert.ok(wrapper)
@@ -36,7 +36,7 @@ describe('CancelTransaction Component', function () {
         hideModal={hideModalSpy}
         showTransactionConfirmedModal={() => {}}
       />,
-      { context: { t } }
+      { context: { t } },
     )
 
     assert.equal(wrapper.find(Modal).length, 1)

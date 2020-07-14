@@ -53,9 +53,9 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
       loggerMiddlewareMock.responses.push(res)
       cb()
     })
-  } else {
-    next()
+    return
   }
+  next()
 }
 
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
@@ -244,7 +244,7 @@ describe('MetaMaskController', function () {
           firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
           firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime
         ),
-        `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+        `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
       )
       delete firstVaultIdentities[TEST_ADDRESS].lastSelected
       assert.deepEqual(firstVaultIdentities, {
@@ -269,7 +269,7 @@ describe('MetaMaskController', function () {
           secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
           secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime
         ),
-        `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`
+        `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
       )
       delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected
       assert.deepEqual(secondVaultIdentities, {
@@ -404,7 +404,7 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
       await metamaskController.connectHardware('trezor', 0).catch(() => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
       assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Trezor Hardware')
       assert.equal(keyrings.length, 1)
@@ -414,7 +414,7 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring')
       await metamaskController.connectHardware('ledger', 0).catch(() => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Ledger Hardware'
+        'Ledger Hardware',
       )
       assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Ledger Hardware')
       assert.equal(keyrings.length, 1)
@@ -451,7 +451,7 @@ describe('MetaMaskController', function () {
       await metamaskController.connectHardware('trezor', 0).catch(() => null)
       await metamaskController.forgetDevice('trezor')
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
 
       assert.deepEqual(keyrings[0].accounts, [])
@@ -498,7 +498,7 @@ describe('MetaMaskController', function () {
 
     it('should set unlockedAccount in the keyring', async function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware'
+        'Trezor Hardware',
       )
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
     })
@@ -839,9 +839,9 @@ describe('MetaMaskController', function () {
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.data && chunk.data.method) {
           cb(null, chunk)
-        } else {
-          cb()
+          return
         }
+        cb()
       })
 
       metamaskController.setupUntrustedCommunication(streamTest, messageSender)
@@ -877,9 +877,9 @@ describe('MetaMaskController', function () {
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.data && chunk.data.method) {
           cb(null, chunk)
-        } else {
-          cb()
+          return
         }
+        cb()
       })
 
       metamaskController.setupUntrustedCommunication(streamTest, messageSender)

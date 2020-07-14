@@ -83,7 +83,7 @@ describe('send selectors', function () {
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
             name: 'Send Account 4',
           },
-        ]
+        ],
       )
     })
   })
@@ -92,7 +92,7 @@ describe('send selectors', function () {
     it('should return the current block gas limit', function () {
       assert.deepEqual(
         getBlockGasLimit(mockState),
-        '0x4c1878'
+        '0x4c1878',
       )
     })
   })
@@ -101,7 +101,7 @@ describe('send selectors', function () {
     it('should return the eth conversion rate', function () {
       assert.deepEqual(
         getConversionRate(mockState),
-        1200.88200327
+        1200.88200327,
       )
     })
   })
@@ -116,7 +116,7 @@ describe('send selectors', function () {
           nonce: '0x0',
           address: '0xd85a4b6a394794842887b8284293d69163007bbb',
           name: 'Send Account 4',
-        }
+        },
       )
     })
   })
@@ -125,7 +125,7 @@ describe('send selectors', function () {
     it('should return the ticker symbol of the selected network', function () {
       assert.equal(
         getNativeCurrency(mockState),
-        'ETH'
+        'ETH',
       )
     })
   })
@@ -134,7 +134,7 @@ describe('send selectors', function () {
     it('should return the id of the currently selected network', function () {
       assert.equal(
         getCurrentNetwork(mockState),
-        '3'
+        '3',
       )
     })
   })
@@ -143,7 +143,7 @@ describe('send selectors', function () {
     it('should return the send.gasLimit', function () {
       assert.equal(
         getGasLimit(mockState),
-        '0xFFFF'
+        '0xFFFF',
       )
     })
   })
@@ -152,7 +152,7 @@ describe('send selectors', function () {
     it('should return the send.gasPrice', function () {
       assert.equal(
         getGasPrice(mockState),
-        '0xaa'
+        '0xaa',
       )
     })
   })
@@ -161,7 +161,7 @@ describe('send selectors', function () {
     it('should return the send.gasTotal', function () {
       assert.equal(
         getGasTotal(mockState),
-        'a9ff56'
+        'a9ff56',
       )
     })
   })
@@ -170,7 +170,7 @@ describe('send selectors', function () {
     it('should return the symbol of the send token', function () {
       assert.equal(
         getPrimaryCurrency({ metamask: { send: { token: { symbol: 'DEF' } } } }),
-        'DEF'
+        'DEF',
       )
     })
   })
@@ -193,7 +193,7 @@ describe('send selectors', function () {
           address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
           decimals: 4,
           symbol: 'DEF',
-        }
+        },
       )
     })
   })
@@ -212,7 +212,7 @@ describe('send selectors', function () {
             },
           },
         }),
-        'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3'
+        'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3',
       )
     })
 
@@ -220,7 +220,7 @@ describe('send selectors', function () {
       const modifiedMetamaskState = Object.assign({}, mockState.metamask, { send: {} })
       assert.equal(
         getSendTokenContract(Object.assign({}, mockState, { metamask: modifiedMetamaskState })),
-        null
+        null,
       )
     })
   })
@@ -229,7 +229,7 @@ describe('send selectors', function () {
     it('should return the send.amount', function () {
       assert.equal(
         getSendAmount(mockState),
-        '0x080'
+        '0x080',
       )
     })
   })
@@ -238,7 +238,7 @@ describe('send selectors', function () {
     it('should return the send.editingTransactionId', function () {
       assert.equal(
         getSendEditingTransactionId(mockState),
-        97531
+        97531,
       )
     })
   })
@@ -247,7 +247,7 @@ describe('send selectors', function () {
     it('should return the send.errors', function () {
       assert.deepEqual(
         getSendErrors(mockState),
-        { someError: null }
+        { someError: null },
       )
     })
   })
@@ -256,7 +256,7 @@ describe('send selectors', function () {
     it('should return the sendHexData feature flag state', function () {
       assert.deepEqual(
         getSendHexDataFeatureFlagState(mockState),
-        true
+        true,
       )
     })
   })
@@ -274,7 +274,7 @@ describe('send selectors', function () {
     it('should get the send.from balance if it exists', function () {
       assert.equal(
         getSendFromBalance(mockState),
-        '0x37452b1315889f80'
+        '0x37452b1315889f80',
       )
     })
 
@@ -288,7 +288,7 @@ describe('send selectors', function () {
       }
       assert.equal(
         getSendFromBalance(editedMockState),
-        '0x0'
+        '0x0',
       )
     })
   })
@@ -302,7 +302,7 @@ describe('send selectors', function () {
           balance: '0x37452b1315889f80',
           code: '0x',
           nonce: '0xa',
-        }
+        },
       )
     })
 
@@ -321,7 +321,7 @@ describe('send selectors', function () {
           balance: '0x0',
           nonce: '0x0',
           address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-        }
+        },
       )
     })
   })
@@ -330,7 +330,7 @@ describe('send selectors', function () {
     it('should return send.maxModeOn', function () {
       assert.equal(
         getSendMaxModeState(mockState),
-        false
+        false,
       )
     })
   })
@@ -339,7 +339,7 @@ describe('send selectors', function () {
     it('should return send.to', function () {
       assert.equal(
         getSendTo(mockState),
-        '0x987fedabc'
+        '0x987fedabc',
       )
     })
   })
@@ -382,7 +382,7 @@ describe('send selectors', function () {
             name: 'Address Book Account 1',
             chainId: '3',
           },
-        ]
+        ],
       )
     })
   })
@@ -391,7 +391,7 @@ describe('send selectors', function () {
     it('should', function () {
       assert.equal(
         getTokenBalance(mockState),
-        3434
+        3434,
       )
     })
   })
@@ -420,7 +420,7 @@ describe('send selectors', function () {
             maxCost: 'de234b52e4a0800',
             gasPrice: '4a817c800',
           },
-        }
+        },
       )
     })
   })
@@ -531,7 +531,7 @@ describe('send selectors', function () {
               to: true,
               editingTransactionId: true,
               token: {},
-            })
+            }),
           ), 'edit')
       })
 
@@ -542,7 +542,7 @@ describe('send selectors', function () {
               to: true,
               editingTransactionId: false,
               token: {},
-            })
+            }),
           ), 'sendTokens')
       })
 
@@ -553,7 +553,7 @@ describe('send selectors', function () {
               to: true,
               editingTransactionId: false,
               token: null,
-            })
+            }),
           ), 'sendETH')
       })
     })
@@ -572,7 +572,7 @@ describe('send selectors', function () {
         assert.equal(isSendFormInError(
           getSendMockState({
             errors: [ true ],
-          })
+          }),
         ), true)
       })
 
@@ -580,12 +580,12 @@ describe('send selectors', function () {
         assert.equal(isSendFormInError(
           getSendMockState({
             errors: [],
-          })
+          }),
         ), false)
         assert.equal(isSendFormInError(
           getSendMockState({
             errors: [ false ],
-          })
+          }),
         ), false)
       })
     })

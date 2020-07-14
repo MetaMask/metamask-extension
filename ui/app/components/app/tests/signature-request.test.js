@@ -56,7 +56,7 @@ describe('Signature Request', function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <SignatureRequest.WrappedComponent {...props} />
-      </Provider>, store
+      </Provider>, store,
     )
   })
 

@@ -37,6 +37,7 @@ import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -433,7 +434,7 @@ export default class TransactionController extends EventEmitter {
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
-    // that is already being incrmented & signed.
+    // that is already being incremented & signed.
     if (this.inProcessOfSigning.has(txId)) {
       return
     }
@@ -789,9 +790,8 @@ export default class TransactionController extends EventEmitter {
   */
   _updateMemstore () {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const currentNetworkTxList = this.txStateManager.getFilteredTxList({
-      metamaskNetworkId: this.getNetwork(),
-    })
+    const currentNetworkTxList = this.txStateManager.getTxList(MAX_MEMSTORE_TX_LIST_SIZE)
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
+
 }

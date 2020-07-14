@@ -22,6 +22,7 @@ _int () {
 trap _term SIGTERM
 trap _int SIGINT
 
+# shellcheck disable=SC2086
 $ganache_cli --noVMErrorsOnRPCResponse --networkId 5777 --mnemonic "$seed_phrase" ${GANACHE_ARGS:-} &
 
 child=$!

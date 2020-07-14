@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
+
 import Identicon from '../../../../components/ui/identicon'
 import Copy from '../../../../components/ui/icon/copy-icon.component'
-
 import Button from '../../../../components/ui/button/button.component'
 
 import Tooltip from '../../../../components/ui/tooltip-v2'

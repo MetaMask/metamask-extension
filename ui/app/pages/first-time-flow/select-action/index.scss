@@ -34,8 +34,7 @@
     justify-content: space-evenly;
     width: 388px;
     height: 278px;
-
-    border: 1px solid #D8D8D8;
+    border: 1px solid #d8d8d8;
     box-sizing: border-box;
     border-radius: 10px;
     margin-left: 22px;
@@ -47,7 +46,7 @@
   }
 
   &__button-symbol {
-    color: #C4C4C4;
+    color: #c4c4c4;
     margin-top: 41px;
   }
 
@@ -55,7 +54,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-        align-items: center;
+    align-items: center;
     height: 144px;
   }
 
@@ -65,7 +64,7 @@
     font-weight: normal;
     line-height: 28px;
     font-size: 20px;
-    color: #000000;
+    color: #000;
     margin-top: 12px;
     text-align: center;
   }
@@ -76,7 +75,7 @@
     font-weight: normal;
     line-height: 20px;
     font-size: 14px;
-    color: #7A7A7B;
+    color: #7a7a7b;
     margin-top: 10px;
     text-align: center;
   }

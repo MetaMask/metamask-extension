@@ -10,9 +10,10 @@
   border-radius: 2px;
   display: flex;
 
-  &__checked, &__indeterminate {
-    color: $curious-blue;
-    border-color: $curious-blue;
+  &__checked,
+  &__indeterminate {
+    color: $primary-blue;
+    border-color: $primary-blue;
   }
 
   &:disabled {

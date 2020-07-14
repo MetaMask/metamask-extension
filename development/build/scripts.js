@@ -94,13 +94,13 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
     const standardSubtasks = standardBundles.map((filename) => {
       return createTask(`${taskPrefix}:${filename}`,
-        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing })
+        createBundleTaskForBuildJsExtensionNormal({ filename, devMode, testing }),
       )
     })
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(`${taskPrefix}:contentscript`,
-      createTaskForBuildJsExtensionContentscript({ devMode, testing })
+      createTaskForBuildJsExtensionContentscript({ devMode, testing }),
     )
 
     // task for initiating livereload
@@ -156,7 +156,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         externalDependencies: devMode ? undefined : externalDependenciesMap[contentscript],
         devMode,
         testing,
-      })
+      }),
     )
   }
 

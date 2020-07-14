@@ -69,7 +69,7 @@ describe('send utils', function () {
           toNumericBase: 'hex',
           multiplicandBase: 16,
           multiplierBase: 16,
-        } ]
+        } ],
       )
     })
   })
@@ -103,7 +103,7 @@ describe('send utils', function () {
         expectedResult: false,
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.equal(doesAmountErrorRequireUpdate(obj), obj.expectedResult)
       })
@@ -121,14 +121,14 @@ describe('send utils', function () {
       generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', sendToken: { address: '0x0' } })
       assert.deepEqual(
         stubs.rawEncode.getCall(0).args,
-        [['address', 'uint256'], ['mockAddress', '0xab']]
+        [['address', 'uint256'], ['mockAddress', '0xab']],
       )
     })
 
     it('should return encoded token transfer data', function () {
       assert.equal(
         generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', sendToken: { address: '0x0' } }),
-        '0xa9059cbb104c'
+        '0xa9059cbb104c',
       )
     })
   })
@@ -166,7 +166,7 @@ describe('send utils', function () {
         expectedResult: { amount: INSUFFICIENT_TOKENS_ERROR },
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
@@ -190,7 +190,7 @@ describe('send utils', function () {
         expectedResult: { gasFee: null },
       },
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         assert.deepEqual(getGasFeeErrorObject(obj), obj.expectedResult)
       })
@@ -198,7 +198,7 @@ describe('send utils', function () {
   })
 
   describe('calcTokenBalance()', function () {
-    it('should return the calculated token blance', function () {
+    it('should return the calculated token balance', function () {
       assert.equal(calcTokenBalance({
         sendToken: {
           address: '0x0',
@@ -229,7 +229,7 @@ describe('send utils', function () {
             bBase: 16,
             toNumericBase: 'hex',
           },
-        ]
+        ],
       )
       assert.deepEqual(
         stubs.conversionGTE.getCall(0).args,
@@ -246,7 +246,7 @@ describe('send utils', function () {
             conversionRate: 3,
             fromCurrency: 'ABC',
           },
-        ]
+        ],
       )
 
       assert.equal(result, true)
@@ -268,7 +268,7 @@ describe('send utils', function () {
           '0x10', {
             fromNumericBase: 'hex',
           },
-        ]
+        ],
       )
       assert.deepEqual(
         stubs.conversionGTE.getCall(0).args,
@@ -280,7 +280,7 @@ describe('send utils', function () {
           {
             value: 'calc:1610',
           },
-        ]
+        ],
       )
 
       assert.equal(result, false)
@@ -298,7 +298,7 @@ describe('send utils', function () {
             throw new Error(to.match(/:(.+)$/)[1])
           }
           return { toString: (n) => `0xabc${n}` }
-        }
+        },
       ),
     }
     const baseExpectedCall = {
@@ -311,7 +311,7 @@ describe('send utils', function () {
     beforeEach(function () {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x')
+          (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x'),
         ),
       }
     })
@@ -326,7 +326,7 @@ describe('send utils', function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall)
+        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall),
       )
       assert.equal(result, '0xabc16')
     })
@@ -336,7 +336,7 @@ describe('send utils', function () {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall, { gas: '0xbcdx0.95' })
+        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall, { gas: '0xbcdx0.95' }),
       )
       assert.equal(result, '0xabc16x1.5')
     })
@@ -351,7 +351,7 @@ describe('send utils', function () {
           value: '0x0',
           data: '0xa9059cbb104c',
           to: 'mockAddress',
-        })
+        }),
       )
       assert.equal(result, '0xabc16')
     })

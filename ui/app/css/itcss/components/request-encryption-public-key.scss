@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -62,12 +62,12 @@
   }
 
   &__header__text {
-    color: #5B5D67;
+    color: #5b5d67;
     font-family: Roboto;
     font-size: 22px;
     line-height: 29px;
     z-index: 3;
-	text-align: center;
+    text-align: center;
   }
 
   &__header__tip-container {
@@ -163,9 +163,9 @@
     margin-top: 41px;
     margin-bottom: 11px;
     width: 100%;
-	padding-left: 20px;
+    padding-left: 20px;
     padding-right: 20px;
-	color: $dusty-gray;
+    color: $dusty-gray;
   }
 
   &__footer {
@@ -187,7 +187,7 @@
       margin-right: 1.2rem;
     }
   }
-  
+
   &__visual {
     display: flex;
     flex-direction: row;
@@ -207,7 +207,7 @@
       height: 48px;
 
       &--default {
-        background-color: #777A87;
+        background-color: #777a87;
         color: white;
         width: 48px;
         height: 48px;

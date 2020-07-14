@@ -51,7 +51,7 @@ export function useCurrencyDisplay (inputValue, { displayValue, prefix, numberOf
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
       }),
-      toCurrency
+      toCurrency,
     )
   }, [inputValue, nativeCurrency, conversionRate, displayValue, numberOfDecimals, denomination, toCurrency])
 

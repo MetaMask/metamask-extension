@@ -29,9 +29,9 @@ function transformState (state) {
       const identities = newState.PreferencesController.identities
       const tokens = newState.PreferencesController.tokens
       newState.PreferencesController.accountTokens = {}
-      for (const identity in identities) {
+      Object.keys(identities).forEach((identity) => {
         newState.PreferencesController.accountTokens[identity] = { 'mainnet': tokens }
-      }
+      })
       newState.PreferencesController.tokens = []
     }
   }

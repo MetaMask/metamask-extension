@@ -30,9 +30,9 @@ export default class DecryptMessageManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *
    * @typedef {Object} DecryptMessageManager
-   * @property {Object} memStore The observable store where DecryptMessage are saved with persistance.
+   * @property {Object} memStore The observable store where DecryptMessage are saved.
    * @property {Object} memStore.unapprovedDecryptMsgs A collection of all DecryptMessages in the 'unapproved' state
-   * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprobedMsgs
+   * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprovedDecryptMsgs
    * @property {array} messages Holds all messages that have been created by this DecryptMessageManager
    *
    */

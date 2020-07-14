@@ -61,7 +61,7 @@ class Driver {
           this.driver.wait(until.elementIsEnabled(element), this.timeout),
         )
         return acc
-      }, [])
+      }, []),
     )
     return elements
   }

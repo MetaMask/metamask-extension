@@ -16,5 +16,5 @@ export default connect(
       selectedName: getSendToNickname(state),
       contact: getAddressBookEntry(state, selectedAddress),
     }
-  }
+  },
 )(EnsInput)

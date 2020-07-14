@@ -27,7 +27,7 @@ describe('Unlock Page', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
 
   })

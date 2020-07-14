@@ -1,4 +1,5 @@
 import assert from 'assert'
+import firstTimeState from '../../../app/scripts/first-time-state'
 import migration26 from '../../../app/scripts/migrations/026'
 
 const oldStorage = {
@@ -32,7 +33,7 @@ describe('migration #26', function () {
   it('should successfully migrate first time state', function (done) {
     migration26.migrate({
       meta: {},
-      data: require('../../../app/scripts/first-time-state'),
+      data: firstTimeState,
     })
       .then((migratedData) => {
         assert.equal(migratedData.meta.version, migration26.version)

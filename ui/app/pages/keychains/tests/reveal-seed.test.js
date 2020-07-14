@@ -17,7 +17,7 @@ describe('Reveal Seed Page', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
 
     wrapper.find('form').simulate('submit')

@@ -46,7 +46,7 @@ Dropdown.propTypes = {
     PropTypes.exact({
       name: PropTypes.string,
       value: PropTypes.string.isRequired,
-    })
+    }),
   ).isRequired,
   selectedOption: PropTypes.string,
   style: PropTypes.object,

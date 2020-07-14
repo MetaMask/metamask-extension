@@ -37,8 +37,8 @@ export function getPermissionDomainsMetadata (state) {
 export function getPermittedAccounts (state, origin) {
   return getAccountsFromPermission(
     getAccountsPermissionFromDomain(
-      domainSelector(state, origin)
-    )
+      domainSelector(state, origin),
+    ),
   )
 }
 
@@ -52,7 +52,7 @@ export function getPermittedAccounts (state, origin) {
 export function getPermittedAccountsForCurrentTab (state) {
   return getPermittedAccounts(
     state,
-    getOriginOfCurrentTab(state)
+    getOriginOfCurrentTab(state),
   )
 }
 
@@ -66,7 +66,7 @@ export function getPermittedAccountsByOrigin (state) {
   const domains = getPermissionDomains(state)
   return Object.keys(domains).reduce((acc, domainKey) => {
     const accounts = getAccountsFromPermission(
-      getAccountsPermissionFromDomain(domains[domainKey])
+      getAccountsPermissionFromDomain(domains[domainKey]),
     )
     if (accounts.length > 0) {
       acc[domainKey] = accounts
@@ -155,7 +155,7 @@ export function getAddressConnectedDomainMap (state) {
 
 function getAccountsFromDomain (domain) {
   return getAccountsFromPermission(
-    getAccountsPermissionFromDomain(domain)
+    getAccountsPermissionFromDomain(domain),
   )
 }
 
@@ -163,7 +163,7 @@ function getAccountsPermissionFromDomain (domain = {}) {
   return (
     Array.isArray(domain.permissions)
       ? domain.permissions.find(
-        (perm) => perm.parentCapability === 'eth_accounts'
+        (perm) => perm.parentCapability === 'eth_accounts',
       )
       : {}
   )
@@ -182,7 +182,7 @@ function getAccountsCaveatFromPermission (accountsPermission = {}) {
   return (
     Array.isArray(accountsPermission.caveats) &&
     accountsPermission.caveats.find(
-      (c) => c.name === CAVEAT_NAMES.exposedAccounts
+      (c) => c.name === CAVEAT_NAMES.exposedAccounts,
     )
   )
 }

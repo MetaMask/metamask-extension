@@ -13,7 +13,7 @@ describe('CurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly without a suffix', function () {
       const wrapper = shallow(
-        <CurrencyInput />
+        <CurrencyInput />,
       )
 
       assert.ok(wrapper)
@@ -37,7 +37,7 @@ describe('CurrencyInput Component', function () {
             fiatSuffix="USD"
             nativeCurrency="ETH"
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -66,7 +66,7 @@ describe('CurrencyInput Component', function () {
             currentCurrency="usd"
             conversionRate={231.06}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -100,7 +100,7 @@ describe('CurrencyInput Component', function () {
             currentCurrency="usd"
             conversionRate={231.06}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -139,7 +139,7 @@ describe('CurrencyInput Component', function () {
         {
           context: { t: (str) => str + '_t' },
           childContextTypes: { t: PropTypes.func },
-        }
+        },
       )
 
       assert.ok(wrapper)
@@ -180,7 +180,7 @@ describe('CurrencyInput Component', function () {
             currentCurrency="usd"
             conversionRate={231.06}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -221,7 +221,7 @@ describe('CurrencyInput Component', function () {
             conversionRate={231.06}
             useFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -262,7 +262,7 @@ describe('CurrencyInput Component', function () {
             conversionRate={231.06}
             useFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -297,7 +297,7 @@ describe('CurrencyInput Component', function () {
             currentCurrency="usd"
             conversionRate={231.06}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)

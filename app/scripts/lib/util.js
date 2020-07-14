@@ -134,7 +134,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 
 /**
  * Returns an Error if extension.runtime.lastError is present
- * this is a workaround for the non-standard error object thats used
+ * this is a workaround for the non-standard error object that's used
  * @returns {Error}
  */
 function checkForError () {

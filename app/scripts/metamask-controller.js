@@ -273,7 +273,7 @@ export default class MetamaskController extends EventEmitter {
           if (error) {
             throw error
           }
-        }
+        },
       )
     })
 
@@ -631,6 +631,15 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionsController.clearPermissions()
 
+      // clear accounts in accountTracker
+      this.accountTracker.clearAccounts()
+
+      // clear cachedBalances
+      this.cachedBalancesController.clearCachedBalances()
+
+      // clear unapproved transactions
+      this.txController.txStateManager.clearUnapprovedTxs()
+
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
@@ -717,7 +726,7 @@ export default class MetamaskController extends EventEmitter {
             const tokenAddress = ethUtil.toChecksumAddress(address)
             return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
           })
-        )
+        ),
       )
     })
 
@@ -735,7 +744,7 @@ export default class MetamaskController extends EventEmitter {
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType('Simple Key Pair')
     const hdAccounts = await hdKeyring.getAccounts()
     const simpleKeyPairKeyringAccounts = await Promise.all(
-      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts())
+      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
     )
     const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce((acc, accounts) => [...acc, ...accounts], [])
     const accounts = {
@@ -1110,6 +1119,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1168,6 +1178,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1188,7 +1199,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-  * Only decypt message and don't touch transaction state
+  * Only decrypt message and don't touch transaction state
   *
   * @param {Object} msgParams - The params of the message to decrypt.
   * @returns {Promise<Object>} - A full state update.
@@ -1252,6 +1263,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1309,6 +1321,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1368,6 +1381,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1523,7 +1537,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
     dnode.on('remote', (remote) => {
       // push updates to popup
@@ -1575,7 +1589,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1650,7 +1664,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1834,8 +1848,10 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.update(currencyState)
       this.currencyRateController.configure(currencyState)
       cb(null, this.currencyRateController.state)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1916,8 +1932,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUseBlockie(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1930,8 +1948,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUseNonceField(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1944,8 +1964,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUsePhishDetect(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1958,8 +1980,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setIpfsGateway(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1972,8 +1996,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
       cb(null, metaMetricsId)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1981,8 +2007,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setMetaMetricsSendCount(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1995,8 +2023,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setFirstTimeFlowType(type)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2010,8 +2040,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       const direction = this.preferencesController.setCurrentLocale(key)
       cb(null, direction)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 

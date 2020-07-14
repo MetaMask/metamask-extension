@@ -33,7 +33,7 @@ export default function createMethodMiddleware ({
 
         if (isProcessingRequestAccounts) {
           res.error = ethErrors.rpc.resourceUnavailable(
-            'Already processing eth_requestAccounts. Please wait.'
+            'Already processing eth_requestAccounts. Please wait.',
           )
           return
         }
@@ -68,7 +68,7 @@ export default function createMethodMiddleware ({
           // this should never happen, because it should be caught in the
           // above catch clause
           res.error = ethErrors.rpc.internal(
-            'Accounts unexpectedly unavailable. Please report this bug.'
+            'Accounts unexpectedly unavailable. Please report this bug.',
           )
         }
 
@@ -107,6 +107,7 @@ export default function createMethodMiddleware ({
     }
 
     // when this promise resolves, the response is on its way back
+    // eslint-disable-next-line callback-return
     await next()
 
     if (responseHandler) {

@@ -19,12 +19,13 @@
   &__top-bar {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 16px 16px 0px 16px;
+    padding: 16px 16px 0 16px;
     align-items: center;
   }
 
   &__back {
     @extend %content-text;
+
     color: $Grey-600;
     cursor: pointer;
 
@@ -35,8 +36,9 @@
 
   &__page-count {
     @extend %content-text;
+
     font-size: 12px;
-    color: #6A737D;
+    color: #6a737d;
     grid-column: 2;
     justify-self: end;
     font-weight: bold;

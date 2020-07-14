@@ -341,7 +341,7 @@ describe('custom-gas selectors', function () {
       tests.forEach((test) => {
         assert.deepEqual(
           getRenderableBasicEstimateData(test.mockState, '0x5208'),
-          test.expectedResult
+          test.expectedResult,
         )
       })
     })
@@ -605,7 +605,7 @@ describe('custom-gas selectors', function () {
       tests.forEach((test) => {
         assert.deepEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
-          test.expectedResult
+          test.expectedResult,
         )
       })
     })

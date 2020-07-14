@@ -27,7 +27,7 @@
 }
 
 @media only screen and (max-width: 575px) {
-  .import-account{
+  .import-account {
     margin: 24px;
     display: flex;
     flex-flow: column nowrap;
@@ -62,7 +62,7 @@
 }
 
 .import-account__title {
-  color: #1B344D;
+  color: #1b344d;
   font-size: 40px;
   line-height: 51px;
   margin-bottom: 10px;
@@ -80,15 +80,15 @@
 .import-account__secret-phrase {
   height: 190px;
   width: 495px;
-  border: 1px solid #CDCDCD;
+  border: 1px solid #cdcdcd;
   border-radius: 6px;
-  background-color: #FFFFFF;
+  background-color: #fff;
   padding: 17px;
   font-size: 16px;
 }
 
 .import-account__secret-phrase::placeholder {
-  color: #9B9B9B;
+  color: #9b9b9b;
   font-weight: 200;
 }
 
@@ -99,17 +99,17 @@
 }
 
 .import-account__selector-label {
-  color: #1B344D;
+  color: #1b344d;
   font-size: 16px;
 }
 
 .import-account__dropdown {
   width: 325px;
-  border: 1px solid #CDCDCD;
+  border: 1px solid #cdcdcd;
   border-radius: 4px;
-  background-color: #FFFFFF;
+  background-color: #fff;
   margin-top: 14px;
-  color: #5B5D67;
+  color: #5b5d67;
   font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
@@ -137,14 +137,14 @@
 .import-account__input-error-message {
   margin-top: 10px;
   width: 422px;
-  color: #FF001F;
+  color: #ff001f;
   font-size: 16px;
   line-height: 21px;
 }
 
 .import-account__input-label {
   margin-bottom: 9px;
-  color: #1B344D;
+  color: #1b344d;
   font-size: 18px;
   line-height: 23px;
 }
@@ -170,9 +170,9 @@
 .import-account__file-input-label {
   height: 53px;
   width: 148px;
-  border: 1px solid #1B344D;
+  border: 1px solid #1b344d;
   border-radius: 4px;
-  color: #1B344D;
+  color: #1b344d;
   font-family: Roboto;
   font-size: 18px;
   display: flex;
@@ -189,7 +189,7 @@
 }
 
 .import-account__file-name {
-  color: #000000;
+  color: #000;
   font-family: Roboto;
   font-size: 18px;
   line-height: 23px;

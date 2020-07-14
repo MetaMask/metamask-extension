@@ -21,7 +21,7 @@ describe('useCancelTransaction', function () {
     dispatch.resetHistory()
   })
 
-  describe('when account has insufficent balance to cover gas', function () {
+  describe('when account has insufficient balance to cover gas', function () {
     before(function () {
       useSelector = sinon.stub(reactRedux, 'useSelector')
       useSelector.callsFake((selector) => {
@@ -52,9 +52,9 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               originalGasPrice,
-            })
+            }),
           ),
-          true
+          true,
         )
       })
     })
@@ -95,9 +95,9 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               originalGasPrice,
-            })
+            }),
           ),
-          true
+          true,
         )
       })
     })

@@ -475,6 +475,7 @@ export function signPersonalMsg (msgData) {
       dispatch(displayWarning(error.message))
       throw error
     }
+    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -1301,7 +1302,7 @@ export function addTokens (tokens) {
           .entries(tokens)
           .map(([_, { address, symbol, decimals }]) => (
             dispatch(addToken(address, symbol, decimals))
-          ))
+          )),
       )
     }
   }
@@ -1727,8 +1728,8 @@ export function exportAccounts (password, addresses) {
                 return reject(err)
               }
               return resolve(result)
-            })
-          )
+            }),
+          ),
         )
         return resolve(Promise.all(accountPromises))
       })
@@ -2189,7 +2190,8 @@ export function getContractMethodData (data = '') {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
     const { knownMethodData } = getState().metamask
-    if (knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) {
+
+    if ((knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) || fourBytePrefix === '0x') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 

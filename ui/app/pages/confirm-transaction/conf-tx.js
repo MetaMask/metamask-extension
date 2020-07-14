@@ -99,7 +99,7 @@ class ConfirmTxScreen extends Component {
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
-      network
+      network,
     )
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
@@ -256,5 +256,5 @@ class ConfirmTxScreen extends Component {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(ConfirmTxScreen)

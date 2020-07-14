@@ -21,7 +21,7 @@ describe('AdvancedTab Component', function () {
         context: {
           t: (s) => `_${s}`,
         },
-      }
+      },
     )
 
     assert.equal(root.find('.settings-page__content-row').length, 11)
@@ -43,7 +43,7 @@ describe('AdvancedTab Component', function () {
         context: {
           t: (s) => `_${s}`,
         },
-      }
+      },
     )
 
     const autoTimeout = root.find('.settings-page__content-row').at(8)

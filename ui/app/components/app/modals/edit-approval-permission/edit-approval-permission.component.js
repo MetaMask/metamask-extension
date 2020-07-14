@@ -196,7 +196,7 @@ export default class EditApprovalPermission extends PureComponent {
     const error = this.validateSpendLimit()
     const disabled = Boolean(
       (customSpendLimit === customTokenAmount && !selectedOptionIsUnlimited) ||
-      error
+      error,
     )
 
     return (

@@ -55,7 +55,7 @@
 
   &__activity-text {
     color: $dusty-gray;
-    font-size: .75rem;
+    font-size: 0.75rem;
     cursor: pointer;
 
     &:hover {
@@ -73,9 +73,9 @@
   }
 
   &__action-link {
-    font-size: .75rem;
+    font-size: 0.75rem;
     cursor: pointer;
-    color: $curious-blue;
+    color: $primary-blue;
   }
 
   b {

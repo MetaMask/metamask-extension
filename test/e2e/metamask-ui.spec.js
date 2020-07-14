@@ -830,9 +830,9 @@ describe('MetaMask', function () {
 
     it('renders the balance for the new token', async function () {
       const balance = await driver.findElement(By.css('.wallet-overview .token-overview__primary-balance'))
-      await driver.wait(until.elementTextMatches(balance, /^10.000\s*TST\s*$/))
+      await driver.wait(until.elementTextMatches(balance, /^10\s*TST\s*$/))
       const tokenAmount = await balance.getText()
-      assert.ok(/^10.000\s*TST\s*$/.test(tokenAmount))
+      assert.ok(/^10\s*TST\s*$/.test(tokenAmount))
       await driver.delay(regularDelayMs)
     })
   })
@@ -992,7 +992,7 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/), 10000)
 
       const tokenBalanceAmount = await driver.findElements(By.css('.token-overview__primary-balance'))
-      await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/), 10000)
+      await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.5\s*TST/), 10000)
     })
   })
 
@@ -1018,8 +1018,8 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1
       }, 10000)
 
-      const [txListValue] = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
+      const [txtListHeading] = await driver.findElements(By.css('.transaction-list-item .list-item__heading'))
+      await driver.wait(until.elementTextMatches(txtListHeading, /Approve TST spend limit/))
       await driver.clickElement(By.css('.transaction-list-item'))
       await driver.delay(regularDelayMs)
     })
@@ -1104,14 +1104,12 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 3
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-5\s*TST/))
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve TST spend limit/))
     })
   })
 
-  describe('Tranfers a custom token from dapp when no gas value is specified', function () {
+  describe('Transfers a custom token from dapp when no gas value is specified', function () {
     it('transfers an already created token, without specifying gas', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
@@ -1177,8 +1175,8 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1
       }, 10000)
 
-      const [txListValue] = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
+      const [txtListHeading] = await driver.findElements(By.css('.transaction-list-item .list-item__heading'))
+      await driver.wait(until.elementTextMatches(txtListHeading, /Approve TST spend limit/))
       await driver.clickElement(By.css('.transaction-list-item'))
       await driver.delay(regularDelayMs)
     })
@@ -1204,10 +1202,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 5
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve TST spend limit/))
     })
   })
 

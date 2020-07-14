@@ -160,7 +160,7 @@ export function getFormattedTokenFiatAmount (
   conversionRate,
   currentCurrency,
   tokenAmount,
-  tokenSymbol
+  tokenSymbol,
 ) {
   // If the conversionRate is 0 (i.e. unknown) or the contract exchange rate
   // is currently unknown, the fiat amount cannot be calculated so it is not
@@ -171,7 +171,7 @@ export function getFormattedTokenFiatAmount (
 
   const currentTokenToFiatRate = multiplyCurrencies(
     contractExchangeRate,
-    conversionRate
+    conversionRate,
   )
   const currentTokenInFiat = conversionUtil(tokenAmount, {
     fromNumericBase: 'dec',

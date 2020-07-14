@@ -18,7 +18,7 @@ describe('Identicon', function () {
 
   it('renders default eth_logo identicon with no props', function () {
     const wrapper = mount(
-      <Identicon store={store} />
+      <Identicon store={store} />,
     )
 
     assert.equal(wrapper.find('img.identicon__eth-logo').prop('src'), './images/eth_logo.svg')
@@ -30,7 +30,7 @@ describe('Identicon', function () {
         store={store}
         className="test-image"
         image="test-image"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('img.test-image').prop('className'), 'identicon test-image')
@@ -43,7 +43,7 @@ describe('Identicon', function () {
         store={store}
         className="test-address"
         address="0xTest"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('div.test-address').prop('className'), 'identicon test-address')

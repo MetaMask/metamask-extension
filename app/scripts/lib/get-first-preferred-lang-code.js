@@ -4,7 +4,7 @@ import allLocales from '../../_locales/index.json'
 
 const getPreferredLocales = extension.i18n ? promisify(
   extension.i18n.getAcceptLanguages,
-  { errorFirst: false }
+  { errorFirst: false },
 ) : async () => []
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)

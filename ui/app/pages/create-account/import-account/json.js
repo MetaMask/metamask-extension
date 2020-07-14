@@ -176,5 +176,5 @@ JsonImportSubview.contextTypes = {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(JsonImportSubview)

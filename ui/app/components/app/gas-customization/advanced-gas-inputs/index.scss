@@ -11,7 +11,7 @@
     width: 47.5%;
 
     &__label {
-      color: #313B5E;
+      color: #313b5e;
       font-size: 12px;
       display: flex;
       justify-content: space-between;
@@ -60,18 +60,19 @@
     }
 
     &__input--error {
-       border: 1px solid $red;
+      border: 1px solid $red;
     }
 
     &__input--warning {
-       border: 1px solid $orange;
+      border: 1px solid $orange;
     }
 
     &__input-arrows {
       position: absolute;
       top: 7px;
+
       /*rtl:ignore*/
-      right: 0px;
+      right: 0;
       width: 17px;
       height: 24px;
       border: 1px solid #dadada;
@@ -79,7 +80,7 @@
       display: flex;
       flex-direction: column;
       color: #9b9b9b;
-      font-size: .8em;
+      font-size: 0.8em;
       border-bottom-right-radius: 4px;
       cursor: pointer;
 
@@ -92,12 +93,12 @@
       }
 
       &__i-wrap:hover {
-        background: #4EADE7;
+        background: #4eade7;
         color: $white;
       }
 
       i:hover {
-        background: #4EADE7;
+        background: #4eade7;
       }
 
       i {

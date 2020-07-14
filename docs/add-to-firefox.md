@@ -10,5 +10,5 @@ You can optionally enable debugging, and click `Debug`, for a console window tha
 
 If you have problems debugging, try connecting to the IRC channel `#webextensions` on `irc.mozilla.org`.
 
-For longer questions, use the StackOverfow tag `firefox-addons`.
+For longer questions, use the StackOverflow tag `firefox-addons`.
 

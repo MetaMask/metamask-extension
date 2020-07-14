@@ -143,7 +143,7 @@ describe('Send Component', function () {
           prevTokenBalance: undefined,
           sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
           tokenBalance: 'mockTokenBalance',
-        }
+        },
       )
     })
 
@@ -175,7 +175,7 @@ describe('Send Component', function () {
           primaryCurrency: 'mockPrimaryCurrency',
           sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
           tokenBalance: 'mockTokenBalance',
-        }
+        },
       )
     })
 
@@ -195,7 +195,7 @@ describe('Send Component', function () {
           gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' },
-        }
+        },
       )
     })
 
@@ -229,7 +229,7 @@ describe('Send Component', function () {
       assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendErrors.getCall(0).args[0],
-        { amount: 'mockAmountError', gasFee: null }
+        { amount: 'mockAmountError', gasFee: null },
       )
     })
 
@@ -244,7 +244,7 @@ describe('Send Component', function () {
       assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendErrors.getCall(0).args[0],
-        { amount: 'mockAmountError', gasFee: 'mockGasFeeError' }
+        { amount: 'mockAmountError', gasFee: 'mockGasFeeError' },
       )
     })
 
@@ -294,12 +294,12 @@ describe('Send Component', function () {
           sendToken: { address: 'mockTokenAddress', decimals: 18, symbol: 'TST' }, // Make sure not to hit updateGas when changing asset
           tokenContract: { method: 'mockTokenMethod' },
           address: 'mockAddress',
-        }
+        },
       )
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
       assert.deepEqual(
         SendTransactionScreen.prototype.updateGas.getCall(0).args,
-        []
+        [],
       )
     })
 
@@ -335,7 +335,7 @@ describe('Send Component', function () {
           to: '',
           value: 'mockAmount',
           data: undefined,
-        }
+        },
       )
     })
 
@@ -377,7 +377,7 @@ describe('Send Component', function () {
         wrapper.find(SendFooter).props(),
         {
           history: { mockProp: 'history-abc' },
-        }
+        },
       )
     })
 

@@ -51,34 +51,34 @@ $fa-font-path: 'fonts/fontawesome';
   font-size: $size;
 }
 
-@mixin h1($weight: 400, $size: 2.5rem){
+@mixin h1($weight: 400, $size: 2.5rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h2($weight: 400, $size: 2rem){
+@mixin h2($weight: 400, $size: 2rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h3($weight: 400, $size: 1.5rem){
+@mixin h3($weight: 400, $size: 1.5rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h4($weight: 400, $size: 1.125rem){
+@mixin h4($weight: 400, $size: 1.125rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h5($weight: 400, $size: 1rem){
+@mixin h5($weight: 400, $size: 1rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h6($weight: 400, $size: .875rem){
+@mixin h6($weight: 400, $size: 0.875rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h7($weight: 400, $size: .75rem){
+@mixin h7($weight: 400, $size: 0.75rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin paragraph($weight: 400, $size: 1rem){
+@mixin paragraph($weight: 400, $size: 1rem) {
   @include fontScale($weight, $size);
 }

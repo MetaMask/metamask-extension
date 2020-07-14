@@ -15,6 +15,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import {
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
   UNAPPROVED_STATUS,
+  TRANSACTION_CATEGORY_APPROVAL,
   FAILED_STATUS,
   DROPPED_STATUS,
   REJECTED_STATUS,
@@ -55,6 +56,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
 
 
   const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
+  const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
   const isUnapproved = status === UNAPPROVED_STATUS
 
   const className = classnames('transaction-list-item', {
@@ -137,7 +139,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
             </span>
           </h3>
         )}
-        rightContent={!isSignatureReq && (
+        rightContent={!isSignatureReq && !isApproval && (
           <>
             <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
             <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>

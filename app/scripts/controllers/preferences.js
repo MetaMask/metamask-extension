@@ -206,13 +206,15 @@ export default class PreferencesController {
             res.result = result
             end()
           }
-          break
+          return
         default:
           end(new Error(`Asset of type ${type} not supported`))
+          return
       }
-    } else {
-      next()
     }
+
+    next()
+    return
   }
 
   /**
@@ -335,9 +337,9 @@ export default class PreferencesController {
       }
 
       // store lost accounts
-      for (const key in newlyLost) {
+      Object.keys(newlyLost).forEach((key) => {
         lostIdentities[key] = newlyLost[key]
-      }
+      })
     }
 
     this.store.updateState({ identities, lostIdentities })

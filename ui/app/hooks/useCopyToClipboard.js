@@ -21,7 +21,7 @@ export function useCopyToClipboard (delay = DEFAULT_DELAY) {
       trigger()
       copyToClipboard(text)
     },
-    [trigger]
+    [trigger],
   )
 
   return [copied, handleCopy]

@@ -56,7 +56,7 @@ describe('SendHeader Component', function () {
   })
 
   describe('render', function () {
-    it('should render a PageContainerHeader compenent', function () {
+    it('should render a PageContainerHeader component', function () {
       assert.equal(wrapper.find(PageContainerHeader).length, 1)
     })
 

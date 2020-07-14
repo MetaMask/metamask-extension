@@ -76,7 +76,7 @@ export default class UnlockPage extends Component {
           eventOpts: {
             category: 'Navigation',
             action: 'Unlock',
-            name: 'Incorrect Passowrd',
+            name: 'Incorrect Password',
           },
           customVariables: {
             numberOfTokens: newState.tokens.length,

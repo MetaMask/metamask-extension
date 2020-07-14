@@ -33,6 +33,7 @@ async function withFixtures (options, callback) {
     const { driver } = await buildWebDriver(driverOptions)
     webDriver = driver
 
+    // eslint-disable-next-line callback-return
     await callback({
       driver,
     })
@@ -46,7 +47,9 @@ async function withFixtures (options, callback) {
       }
     }
   } catch (error) {
-    await webDriver.verboseReportOnFailure(title)
+    if (webDriver) {
+      await webDriver.verboseReportOnFailure(title)
+    }
     throw error
   } finally {
     await fixtureServer.stop()

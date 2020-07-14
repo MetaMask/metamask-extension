@@ -21,7 +21,7 @@
     border-bottom: 1px solid #dedede;
 
     &:hover {
-      border: 1px solid #037dd6;
+      border: 1px solid $primary-blue;
       cursor: pointer;
     }
   }
@@ -48,13 +48,14 @@
 
     .button {
       justify-content: flex-end;
-      color: #d73a49;
+      color: $accent-red;
       font-size: 14px;
     }
   }
 
   &__input {
     @extend %input-2;
+
     margin-top: 0.25rem;
 
     &--address {
@@ -112,6 +113,7 @@
 
       &__static-address {
         font-size: 0.875rem;
+
         &--copy-icon {
           cursor: pointer;
 
@@ -182,7 +184,7 @@
       font-weight: normal;
       font-size: 18px;
       line-height: 25px;
-      color: #000000;
+      color: #000;
     }
 
     &__content {
@@ -226,10 +228,10 @@
     align-items: center;
     border-radius: 50%;
     border-width: 2px;
-    background: #037dd6;
+    background: $primary-blue;
     margin-right: 5px;
     cursor: pointer;
-    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
   }
 }
 
