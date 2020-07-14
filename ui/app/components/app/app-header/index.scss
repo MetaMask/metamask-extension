@@ -32,6 +32,7 @@
   &__metafox-logo {
     &--icon {
       height: 32px;
+
       @media screen and (min-width: $break-large) {
         display: none;
       }

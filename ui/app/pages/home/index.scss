@@ -42,6 +42,7 @@
   &__connect-status-text {
     display: flex;
     flex-direction: column;
+
     @extend %content-text;
     padding-left: 24px;
     padding-right: 24px;

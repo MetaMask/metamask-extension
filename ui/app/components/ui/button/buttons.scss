@@ -61,6 +61,7 @@ $warning-light-orange: #F8B588;
 
 %small-link {
   @extend %link;
+
   @include h6;
 }
 
