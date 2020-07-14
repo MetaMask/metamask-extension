@@ -269,7 +269,6 @@
     "string.prototype.matchall": "^4.0.2",
     "style-loader": "^0.21.0",
     "stylelint": "^9.10.1",
-    "stylelint-config-standard": "^18.2.0",
     "through2": "^2.0.3",
     "ttest": "^2.1.1",
     "vinyl-buffer": "^1.0.1",
