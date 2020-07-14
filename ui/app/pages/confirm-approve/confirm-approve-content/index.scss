@@ -98,7 +98,8 @@
       width: 100%;
     }
 
-    &__title, &__title-value {
+    &__title,
+    &__title-value {
       font-weight: bold;
       font-size: 14px;
       line-height: 20px;
@@ -251,7 +252,9 @@
     margin-right: 4px;
   }
 
-  &__small-text, &__small-blue-text, &__info-row {
+  &__small-text,
+  &__small-blue-text,
+  &__info-row {
     font-weight: normal;
     font-size: 12px;
     line-height: 17px;

@@ -22,7 +22,8 @@
     height: 130px;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     height: 130px;
     max-width: 108px;
     font-size: 12px;
@@ -109,7 +110,8 @@
     height: 54px;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     background: white;
     color: $scorpion;
     padding: 0 4px;
@@ -181,7 +183,8 @@
     color: $black;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     height: 78px;
     background: white;
     color: #2a4055;

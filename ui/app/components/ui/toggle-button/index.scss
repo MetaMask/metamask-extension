@@ -14,7 +14,8 @@
     display: grid;
   }
 
-  &__label-off, &__label-on {
+  &__label-off,
+  &__label-on {
     grid-area: 1 / 1 / 1 / 1;
   }
 

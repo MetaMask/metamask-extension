@@ -751,7 +751,8 @@
     }
   }
 
-  &__memo-text-area, &__hex-data {
+  &__memo-text-area,
+  &__hex-data {
     &__input {
       z-index: 1025;
       position: relative;
@@ -943,7 +944,10 @@
       margin-right: 21.25px;
     }
 
-    &__revert, &__cancel, &__save, &__save__error {
+    &__revert,
+    &__cancel,
+    &__save,
+    &__save__error {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -957,7 +961,9 @@
       margin-left: 21.25px;
     }
 
-    &__cancel, &__save, &__save__error {
+    &__cancel,
+    &__save,
+    &__save__error {
       width: 85.74px;
       min-width: initial;
     }

@@ -14,7 +14,9 @@
     }
   }
 
-  .tick text, .c3-axis-x-label, .c3-axis-y-label {
+  .tick text,
+  .c3-axis-x-label,
+  .c3-axis-y-label {
     font-family: Roboto;
     font-style: normal;
     font-weight: bold;
@@ -65,7 +67,8 @@
     visibility: hidden;
   }
 
-  .c3-selected-circle, .c3-circle._expanded_ {
+  .c3-selected-circle,
+  .c3-circle._expanded_ {
     fill: #fff !important;
     stroke-width: 2.4px !important;
     stroke: #2d9fd9 !important;
@@ -78,7 +81,8 @@
     stroke: #313a5e !important;
   }
 
-  .c3-axis-x-label, .c3-axis-y-label {
+  .c3-axis-x-label,
+  .c3-axis-y-label {
     font-weight: normal;
   }
 

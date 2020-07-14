@@ -5,7 +5,8 @@
   justify-content: space-between;
   font-size: 0.75rem;
 
-  &--account, &--network {
+  &--account,
+  &--network {
     flex: 1;
   }
 

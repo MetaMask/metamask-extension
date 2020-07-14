@@ -104,7 +104,8 @@
       }
     }
 
-    &__group-item, &__group-item--selected {
+    &__group-item,
+    &__group-item--selected {
       @extend %row-nowrap;
 
       padding: 0.75rem 1rem;

@@ -85,7 +85,8 @@
   }
 
 
-  &__info-row, &__info-row--fade {
+  &__info-row,
+  &__info-row--fade {
     width: 100%;
     background: $polar;
     padding: 15px 21px;
@@ -98,7 +99,10 @@
       padding: 4px 21px;
     }
 
-    &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
+    &__send-info,
+    &__transaction-info,
+    &__total-info,
+    &__fiat-total-info {
       display: flex;
       flex-flow: row;
       justify-content: space-between;
@@ -127,7 +131,8 @@
       }
     }
 
-    &__transaction-info, &__send-info {
+    &__transaction-info,
+    &__send-info {
       &__label {
         font-size: 12px;
       }

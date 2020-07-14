@@ -33,7 +33,8 @@
     margin-top: 14px;
   }
 
-  &__text, &__subtitle {
+  &__text,
+  &__subtitle {
     @extend %content-text;
 
     text-align: center;

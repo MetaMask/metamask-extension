@@ -32,7 +32,8 @@
 
     display: block;
 
-    &, &:hover {
+    &,
+    &:hover {
       color: $curious-blue;
       cursor: pointer;
     }

@@ -27,7 +27,9 @@
     @extend %header--18;
   }
 
-  &__text, &__text-blue, &__text-grey {
+  &__text,
+  &__text-blue,
+  &__text-grey {
     @extend %content-text;
   }
 
