@@ -21,7 +21,7 @@
     line-height: normal;
     font-size: 8px;
     text-align: center;
-    fill: #9A9CA6 !important;
+    fill: #9a9ca6 !important;
   }
 
   .c3-tooltip-container {
@@ -58,7 +58,7 @@
     font-size: 10px;
     text-align: center;
     padding: 3px;
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
   .c3-circle {
@@ -66,15 +66,15 @@
   }
 
   .c3-selected-circle, .c3-circle._expanded_ {
-    fill: #FFFFFF !important;
+    fill: #ffffff !important;
     stroke-width: 2.4px !important;
     stroke: #2d9fd9 !important;
     /* visibility: visible; */
   }
 
   #set-circle {
-    fill: #313A5E !important;
-    stroke: #313A5E !important;
+    fill: #313a5e !important;
+    stroke: #313a5e !important;
   }
 
   .c3-axis-x-label, .c3-axis-y-label {
@@ -105,7 +105,7 @@
   }
 
   .c3-xgrid-line line {
-    stroke: #B8B8B8 !important;
+    stroke: #b8b8b8 !important;
   }
 
   .c3-xgrid-focus {
@@ -119,7 +119,7 @@
 
   .c3-axis-y .domain {
     fill: none;
-    stroke: #C8CCD6;
+    stroke: #c8ccd6;
   }
 
   .c3-event-rect {
@@ -128,5 +128,5 @@
 }
 
 #chart {
-  background: #F8F9FB
+  background: #f8f9fb
 }

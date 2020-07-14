@@ -42,7 +42,7 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    color: #7C808E;
+    color: #7c808e;
     padding-left: 24px;
     padding-right: 24px;
 
@@ -84,7 +84,7 @@
   &__permissions-header {
     @extend %content-text;
     line-height: 20px;
-    color: #6A737D;
+    color: #6a737d;
   }
 
   &__permissions-container {

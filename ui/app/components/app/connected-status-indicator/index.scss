@@ -9,11 +9,11 @@
   border-radius: 100px;
 
   &:hover {
-    background-color: #F2F3F4;
+    background-color: #f2f3f4;
   }
 
   &:active {
-    background-color: #EDEDED;
+    background-color: #ededed;
   }
 
   &__inner-circle {
@@ -34,15 +34,15 @@
   }
 
   &__green-circle {
-    border-color: #4CD964;
+    border-color: #4cd964;
   }
 
   &__green-circle &__inner-circle {
-    background-color: #4CD964;
+    background-color: #4cd964;
   }
 
   &__yellow-circle {
-    border-color: #FFD33D;
+    border-color: #ffd33d;
   }
 
   &__grey-circle {

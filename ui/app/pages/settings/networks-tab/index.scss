@@ -84,8 +84,8 @@
     }
 
     &--warning {
-      background-color: #FEFAE8;
-      border: 1px solid #FFD33D;
+      background-color: #fefae8;
+      border: 1px solid #ffd33d;
       width: 93%;
       border-radius: 5px;
       box-sizing: border-box;
@@ -124,7 +124,7 @@
       padding-bottom: 23px;
       justify-content: center;
       align-items: center;
-      border-top: 1px solid #D8D8D8;
+      border-top: 1px solid #d8d8d8;
 
       .button {
         width: 178px;
@@ -165,7 +165,7 @@
 
     @media screen and (max-width: 575px) {
       padding: 20px 23px 21px 17px;
-      border-bottom: 1px solid #D8D8D8;
+      border-bottom: 1px solid #d8d8d8;
     }
   }
 
@@ -182,7 +182,7 @@
     font-weight: normal;
     font-size: 16px;
     line-height: 23px;
-    color: #6A737D;
+    color: #6a737d;
 
     &:hover {
       cursor: pointer;
