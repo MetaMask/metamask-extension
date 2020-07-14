@@ -19,7 +19,7 @@ module.exports = {
     'block-opening-brace-space-after': 'always-single-line',
     'block-opening-brace-space-before': 'always',
     'color-hex-case': 'lower',
-    // 'color-hex-length': 'short',
+    'color-hex-length': 'short',
     // 'comment-empty-line-before': [
     //   'always',
     //   {
