@@ -45,7 +45,7 @@
   }
 
   .disconnect-icon {
-    &:before {
+    &::before {
       content: "";
       background-image: url(/images/icons/disconnect.svg);
       background-size: contain;

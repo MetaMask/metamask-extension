@@ -96,7 +96,7 @@ module.exports = {
     'selector-pseudo-class-case': 'lower',
     'selector-pseudo-class-parentheses-space-inside': 'never',
     'selector-pseudo-element-case': 'lower',
-    // 'selector-pseudo-element-colon-notation': 'double',
+    'selector-pseudo-element-colon-notation': 'double',
     'selector-type-case': 'lower',
     'unit-case': 'lower',
     // 'value-keyword-case': 'lower',

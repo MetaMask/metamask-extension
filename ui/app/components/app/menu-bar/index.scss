@@ -19,7 +19,7 @@
 }
 
 .account-options-menu {
-  &__connected-sites:before {
+  &__connected-sites::before {
     content: "";
     background-image: url(/images/icons/connected-sites.svg);
     background-size: contain;

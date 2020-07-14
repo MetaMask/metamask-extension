@@ -41,7 +41,7 @@
     text-overflow: initial;
   }
 
-  .transaction-status:after {
+  .transaction-status::after {
     content: "·";
     margin: 0 4px;
   }
