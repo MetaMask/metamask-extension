@@ -16,7 +16,7 @@
 
 .send-screen-card {
   background-color: #fff;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -49,7 +49,7 @@
   width: 70px;
   height: 70px;
   border: 1px solid $alto;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
   position: absolute;
   top: -35px;
   z-index: 25;
@@ -271,7 +271,7 @@
   display: flex;
   flex-direction: column;
   color: #9b9b9b;
-  font-size: .8em;
+  font-size: 0.8em;
   padding: 1px 4px;
   cursor: pointer;
 }
@@ -307,7 +307,7 @@
   }
 
   &__send-button__disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: auto;
   }
 }
@@ -322,7 +322,7 @@
     width: 498px;
     height: 605px;
     background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -402,7 +402,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -625,7 +625,7 @@
       border: 1px solid $geyser;
       border-radius: 4px;
       background-color: $white;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .11);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -687,7 +687,7 @@
       font-size: 12px;
 
       &__label {
-        margin-right: .25rem;
+        margin-right: 0.25rem;
       }
     }
 
@@ -703,7 +703,7 @@
       border: 1px solid $geyser;
       border-radius: 4px;
       background-color: $white;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .11);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       top: 65px;
       left: 0;
       box-sizing: content-box;

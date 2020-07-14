@@ -13,16 +13,16 @@
   box-sizing: border-box;
   font-size: 16px;
   padding: 16px 24px;
-  opacity: .5;
+  opacity: 0.5;
   transition: opacity 200ms ease-in-out;
 
   @media screen and (min-width: 576px) {
     &:hover {
-      opacity: .4;
+      opacity: 0.4;
     }
 
     &:active {
-      opacity: .6;
+      opacity: 0.6;
     }
   }
 
@@ -58,7 +58,7 @@
       background-image: url('/images/caret-right.svg');
       width: 36px;
       height: 36px;
-      opacity: .5;
+      opacity: 0.5;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;

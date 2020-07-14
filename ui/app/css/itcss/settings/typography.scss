@@ -71,11 +71,11 @@ $fa-font-path: 'fonts/fontawesome';
   @include fontScale($weight, $size);
 }
 
-@mixin h6($weight: 400, $size: .875rem) {
+@mixin h6($weight: 400, $size: 0.875rem) {
   @include fontScale($weight, $size);
 }
 
-@mixin h7($weight: 400, $size: .75rem) {
+@mixin h7($weight: 400, $size: 0.75rem) {
   @include fontScale($weight, $size);
 }
 

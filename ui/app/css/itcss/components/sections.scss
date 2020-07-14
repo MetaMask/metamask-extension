@@ -166,7 +166,7 @@ textarea.twelve-word-phrase {
 }
 
 .identity-copy.flex-column {
-  flex: .25 0 auto;
+  flex: 0.25 0 auto;
   justify-content: center;
 }
 
@@ -318,7 +318,7 @@ textarea.twelve-word-phrase {
   box-sizing: border-box;
   border: solid;
   border-color: transparent;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
@@ -326,14 +326,14 @@ textarea.twelve-word-phrase {
   box-sizing: inherit;
   border: solid;
   border-color: #f7861c;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus {
   border: solid;
   border-color: #f7861c;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 

@@ -198,13 +198,13 @@ $Black-100: #24292e;
 }
 
 %h6 {
-  font-size: .875rem;
+  font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 400;
 }
 
 %h8 {
-  font-size: .75rem;
+  font-size: 0.75rem;
   line-height: 1.0625rem;
   font-weight: 400;
 }
@@ -229,7 +229,7 @@ $xxlarge-spacing: 64px;
   border: 1px solid $Grey-100;
   box-sizing: border-box;
   border-radius: 8px;
-  padding: .625rem .75rem;
+  padding: 0.625rem 0.75rem;
   font-size: 1.25rem;
 }
 // Input mixin

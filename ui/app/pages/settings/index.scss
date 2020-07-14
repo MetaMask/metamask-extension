@@ -88,7 +88,7 @@
       background-image: url('/images/caret-left-black.svg');
       width: 18px;
       height: 18px;
-      opacity: .5;
+      opacity: 0.5;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -177,7 +177,7 @@
 
     &--disabled {
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 

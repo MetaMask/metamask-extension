@@ -13,11 +13,11 @@
 }
 
 .global-alert.hidden {
-  animation: alertHidden .5s ease forwards;
+  animation: alertHidden 0.5s ease forwards;
 }
 
 .global-alert.visible {
-  animation: alert .5s ease forwards;
+  animation: alert 0.5s ease forwards;
 }
 
 /* Animation */

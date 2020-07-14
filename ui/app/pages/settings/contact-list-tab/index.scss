@@ -55,7 +55,7 @@
   &__input {
     @extend %input-2;
 
-    margin-top: .25rem;
+    margin-top: 0.25rem;
 
     &--address {
       font-size: 0.875rem;
@@ -77,9 +77,9 @@
       padding: 1.5rem 1.5rem 0 1.5rem;
 
       &__label, &__label--capitalized {
-        font-size: .75rem;
+        font-size: 0.75rem;
         color: $Grey-500;
-        margin-bottom: .25rem;
+        margin-bottom: 0.25rem;
       }
 
       &__label--capitalized {
@@ -200,7 +200,7 @@
       display: block;
       background-image: url(/images/caret-right.svg);
       width: 30px;
-      opacity: .5;
+      opacity: 0.5;
       background-repeat: no-repeat;
 
       [dir='rtl'] & {

@@ -99,7 +99,7 @@
     height: 200px;
     overflow-y: auto;
     color: #757575;
-    font-size: .75rem;
+    font-size: 0.75rem;
     line-height: 15px;
     text-align: justify;
     margin: 0;
@@ -113,7 +113,7 @@
 
     @media screen and (max-width: $break-small) {
       margin-bottom: 16px;
-      font-size: .875rem;
+      font-size: 0.875rem;
     }
   }
 

@@ -99,11 +99,11 @@
 
   &__dropdown {
     &:hover {
-      background: rgba($alto, .2);
+      background: rgba($alto, 0.2);
       cursor: pointer;
 
       input {
-        background: rgba($alto, .1);
+        background: rgba($alto, 0.1);
       }
     }
   }
