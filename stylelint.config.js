@@ -53,7 +53,7 @@ module.exports = {
       },
     ],
     'function-comma-newline-after': 'always-multi-line',
-    // 'function-comma-space-after': 'always-single-line',
+    'function-comma-space-after': 'always-single-line',
     // 'function-comma-space-before': 'never',
     'function-max-empty-lines': 0,
     'function-name-case': 'lower',
