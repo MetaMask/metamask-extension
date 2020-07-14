@@ -38,7 +38,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(this.currentTest.title)
+      await driver.verboseReportOnFailure(this.currentTest)
     }
   })
 
@@ -750,7 +750,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the correct ETH balance', async function () {
-      const balance = await driver.findElement(By.css('[data-testid="eth-overview__primary-currency"]'))
+      const balance = await driver.findElement(By.css('.eth-overview__primary-balance'))
       await driver.delay(regularDelayMs)
       await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/u), 10000)
       const tokenAmount = await balance.getText()
@@ -1228,7 +1228,7 @@ describe('MetaMask', function () {
     })
 
     it('can pick a token from the existing options', async function () {
-      const tokenSearch = await driver.findElement(By.css('#search-tokens'))
+      const tokenSearch = await driver.findElement(By.css('#search-list-items'))
       await tokenSearch.sendKeys('BAT')
       await driver.delay(regularDelayMs)
 
