@@ -26,6 +26,7 @@
   &__icon {
     grid-area: icon;
     align-self: center;
+
     > * {
       margin: 0 16px 0 0;
     }
@@ -48,6 +49,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     &-wrap {
       display: inline-block;
       margin-left: 8px;
@@ -67,6 +69,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     &:empty {
       display: none;
     }

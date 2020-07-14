@@ -77,13 +77,13 @@ module.exports = {
     'number-leading-zero': 'always',
     'number-no-trailing-zeros': true,
     'property-case': 'lower',
-    // 'rule-empty-line-before': [
-    //   'always-multi-line',
-    //   {
-    //     except: ['first-nested'],
-    //     ignore: ['after-comment'],
-    //   },
-    // ],
+    'rule-empty-line-before': [
+      'always-multi-line',
+      {
+        except: ['first-nested'],
+        ignore: ['after-comment'],
+      },
+    ],
     'selector-attribute-brackets-space-inside': 'never',
     'selector-attribute-operator-space-after': 'never',
     'selector-attribute-operator-space-before': 'never',

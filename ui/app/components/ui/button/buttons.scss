@@ -258,12 +258,14 @@ button.primary {
   border-radius: 100px;
   will-change: box-shadow;
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
+
   &:hover {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
 
   &.btn-secondary {
     border: 1px solid $Blue-500;
+
     &--disabled,
     &[disabled] {
       border-color: $hover-secondary;
@@ -277,6 +279,7 @@ button.primary {
 
   &.btn-default {
     border: 1px solid $Grey-500;
+
     &--disabled,
     &[disabled] {
       border-color: $Grey-100;
@@ -290,6 +293,7 @@ button.primary {
 
   &.btn-danger {
     border: 1px solid $Red-500;
+
     &--disabled,
     &[disabled] {
       border-color: $Red-100;
@@ -303,6 +307,7 @@ button.primary {
 
   &.btn-warning {
     border: 1px solid $Orange-500;
+
     &--disabled,
     &[disabled] {
       border-color: $warning-light-orange;
@@ -316,6 +321,7 @@ button.primary {
 
   &.btn-primary {
     background-color: $Blue-500;
+
     &--disabled,
     &[disabled] {
       background-color: $hover-secondary;
@@ -328,6 +334,7 @@ button.primary {
 
   &.btn-danger-primary {
     background-color: $Red-500;
+
     &--disabled,
     &[disabled] {
       background-color: $danger-light-red;
