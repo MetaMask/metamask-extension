@@ -16,7 +16,7 @@ describe('TransactionStatus Component', function () {
       <TransactionStatus
         status="confirmed"
         date="June 1"
-      />
+      />,
     )
 
     assert.ok(wrapper)
@@ -29,7 +29,7 @@ describe('TransactionStatus Component', function () {
         status="approved"
         isEarliestNonce
         error={{ message: 'test-title' }}
-      />
+      />,
     )
 
     assert.ok(wrapper)
@@ -43,7 +43,7 @@ describe('TransactionStatus Component', function () {
         date="June 1"
         status="submitted"
         isEarliestNonce
-      />
+      />,
     )
 
     assert.ok(wrapper)
@@ -54,7 +54,7 @@ describe('TransactionStatus Component', function () {
     const wrapper = mount(
       <TransactionStatus
         status="queued"
-      />
+      />,
     )
 
     assert.ok(wrapper)
@@ -66,7 +66,7 @@ describe('TransactionStatus Component', function () {
     const wrapper = mount(
       <TransactionStatus
         status="unapproved"
-      />
+      />,
     )
 
     assert.ok(wrapper)

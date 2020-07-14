@@ -36,7 +36,7 @@ export function useTransactionTimeRemaining (
   isPending,
   isEarliestNonce,
   submittedTime,
-  currentGasPrice
+  currentGasPrice,
 ) {
   // the following two selectors return the result of mapping over an array, as such they
   // will always be new objects and trigger effects. To avoid this, we use isEqual as the
@@ -71,11 +71,11 @@ export function useTransactionTimeRemaining (
     ) {
       clearInterval(interval.current)
       setTimeRemaining(
-        calcTransactionTimeRemaining(initialTimeEstimate, submittedTime)
+        calcTransactionTimeRemaining(initialTimeEstimate, submittedTime),
       )
       interval.current = setInterval(() => {
         setTimeRemaining(
-          calcTransactionTimeRemaining(initialTimeEstimate, submittedTime)
+          calcTransactionTimeRemaining(initialTimeEstimate, submittedTime),
         )
       }, 10000)
       return () => clearInterval(interval.current)

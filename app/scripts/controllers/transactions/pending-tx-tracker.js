@@ -243,7 +243,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       // This is called while the transaction is in-flight, so it is possible that the
       // list of completed transactions now includes the transaction we were looking at
       // and if that is the case, don't consider the transaction to have taken its own nonce
-      !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce
+      !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce,
     )
   }
 }

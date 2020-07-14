@@ -273,7 +273,7 @@ export default class MetamaskController extends EventEmitter {
           if (error) {
             throw error
           }
-        }
+        },
       )
     })
 
@@ -717,7 +717,7 @@ export default class MetamaskController extends EventEmitter {
             const tokenAddress = ethUtil.toChecksumAddress(address)
             return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
           })
-        )
+        ),
       )
     })
 
@@ -735,7 +735,7 @@ export default class MetamaskController extends EventEmitter {
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType('Simple Key Pair')
     const hdAccounts = await hdKeyring.getAccounts()
     const simpleKeyPairKeyringAccounts = await Promise.all(
-      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts())
+      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
     )
     const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce((acc, accounts) => [...acc, ...accounts], [])
     const accounts = {
@@ -1523,7 +1523,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
     dnode.on('remote', (remote) => {
       // push updates to popup
@@ -1575,7 +1575,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1650,7 +1650,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 

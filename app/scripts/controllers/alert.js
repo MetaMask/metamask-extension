@@ -22,7 +22,7 @@ const defaultState = {
         alertEnabledness[alertType] = true
         return alertEnabledness
       },
-      {}
+      {},
     ),
   unconnectedAccountAlertShownOrigins: {},
 }
@@ -44,7 +44,7 @@ export default class AlertController {
       initState,
       {
         unconnectedAccountAlertShownOrigins: {},
-      }
+      },
     )
     this.store = new ObservableStore(state)
 

@@ -25,9 +25,9 @@ export function useTokenFiatAmount (tokenAddress, tokenAmount, tokenSymbol) {
       conversionRate,
       currentCurrency,
       tokenAmount,
-      tokenSymbol
+      tokenSymbol,
     ),
-    [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol]
+    [tokenExchangeRate, conversionRate, currentCurrency, tokenAmount, tokenSymbol],
   )
 
   if (!showFiat || currentCurrency.toUpperCase() === tokenSymbol) {

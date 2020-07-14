@@ -11,7 +11,7 @@ describe('Card Component', function () {
         className="card-test-class"
       >
         <div className="child-test-class">Child</div>
-      </Card>
+      </Card>,
     )
 
     assert.ok(wrapper.hasClass('card-test-class'))

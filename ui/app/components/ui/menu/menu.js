@@ -22,7 +22,7 @@ const Menu = ({ anchorElement, children, className, onHide, popperOptions }) => 
         { children }
       </div>
     </>,
-    popoverContainerElement.current
+    popoverContainerElement.current,
   )
 }
 

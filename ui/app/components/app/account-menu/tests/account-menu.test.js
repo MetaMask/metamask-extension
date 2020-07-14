@@ -67,7 +67,7 @@ describe('Account Menu', function () {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <AccountMenu.WrappedComponent {...props} />
-      </Provider>, store
+      </Provider>, store,
     )
   })
 

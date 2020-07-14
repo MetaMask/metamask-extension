@@ -23,7 +23,7 @@ import {
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
-    Error(`MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`)
+    Error(`MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`),
   )
 })
 

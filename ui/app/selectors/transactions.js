@@ -41,7 +41,7 @@ export const selectedAddressTxListSelector = createSelector(
   currentNetworkTxListSelector,
   (selectedAddress, transactions = []) => {
     return transactions.filter(({ txParams }) => txParams.from === selectedAddress)
-  }
+  },
 )
 
 export const unapprovedMessagesSelector = createSelector(
@@ -57,7 +57,7 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network
+    network,
   ) => txHelper(
     {},
     unapprovedMsgs,
@@ -65,8 +65,8 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs,
     unapprovedEncryptionPublicKeyMsgs,
     unapprovedTypedMessages,
-    network
-  ) || []
+    network,
+  ) || [],
 )
 
 export const transactionSubSelector = createSelector(
@@ -74,7 +74,7 @@ export const transactionSubSelector = createSelector(
   incomingTxListSelector,
   (unapprovedMessages = [], incomingTxList = []) => {
     return unapprovedMessages.concat(incomingTxList)
-  }
+  },
 )
 
 export const transactionsSelector = createSelector(
@@ -85,7 +85,7 @@ export const transactionsSelector = createSelector(
 
     return txsToRender
       .sort((a, b) => b.time - a.time)
-  }
+  },
 )
 
 /**
@@ -267,7 +267,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
     mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
-  }
+  },
 )
 
 /**
@@ -280,7 +280,7 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
     transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
-  )
+  ),
 )
 
 /**
@@ -295,12 +295,12 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
     transactions
       .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
       .reverse()
-  )
+  ),
 )
 
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
     transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
-  )
+  ),
 )

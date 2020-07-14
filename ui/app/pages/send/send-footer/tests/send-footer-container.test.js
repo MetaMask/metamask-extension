@@ -93,11 +93,11 @@ describe('send-footer container', function () {
             from: 'mockFrom',
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
-          }
+          },
         )
         assert.deepEqual(
           actionSpies.signTokenTx.getCall(0).args,
-          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ]
+          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ],
         )
       })
 
@@ -121,11 +121,11 @@ describe('send-footer container', function () {
             from: 'mockFrom',
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
-          }
+          },
         )
         assert.deepEqual(
           actionSpies.signTx.getCall(0).args,
-          [ { value: 'mockAmount' } ]
+          [ { value: 'mockAmount' } ],
         )
       })
     })
@@ -155,7 +155,7 @@ describe('send-footer container', function () {
             editingTransactionId: 'mockEditingTransactionId',
             sendToken: { address: 'mockAddress' },
             unapprovedTxs: 'mockUnapprovedTxs',
-          }
+          },
         )
         assert.equal(actionSpies.updateTransaction.getCall(0).args[0], 'mockConstructedUpdatedTxParams')
       })
@@ -168,7 +168,7 @@ describe('send-footer container', function () {
         assert.equal(utilsStubs.addressIsNew.getCall(0).args[0], 'mockToAccounts')
         assert.deepEqual(
           actionSpies.addToAddressBook.getCall(0).args,
-          [ '0xmockNewAddress', 'mockNickname' ]
+          [ '0xmockNewAddress', 'mockNickname' ],
         )
       })
     })

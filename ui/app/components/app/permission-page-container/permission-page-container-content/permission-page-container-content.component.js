@@ -115,21 +115,21 @@ export default class PermissionPageContainerContent extends PureComponent {
     } else if (allIdentitiesSelected) {
       return t(
         'connectToAll',
-        [ this.renderAccountTooltip(t('connectToAllAccounts')) ]
+        [ this.renderAccountTooltip(t('connectToAllAccounts')) ],
       )
     } else if (selectedIdentities.length > 1) {
       return t(
         'connectToMultiple',
         [
           this.renderAccountTooltip(t('connectToMultipleNumberOfAccounts', [ selectedIdentities.length ])),
-        ]
+        ],
       )
     } else {
       return t(
         'connectTo',
         [
           this.getAccountDescriptor(selectedIdentities[0]),
-        ]
+        ],
       )
     }
   }

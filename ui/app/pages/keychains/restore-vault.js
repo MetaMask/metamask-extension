@@ -195,5 +195,5 @@ export default connect(
     },
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
     initializeThreeBox: () => dispatch(initializeThreeBox()),
-  })
+  }),
 )(RestoreVaultPage)

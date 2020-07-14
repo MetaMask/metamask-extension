@@ -8,7 +8,7 @@ describe('UnitInput Component', function () {
   describe('rendering', function () {
     it('should render properly without a suffix', function () {
       const wrapper = shallow(
-        <UnitInput />
+        <UnitInput />,
       )
 
       assert.ok(wrapper)
@@ -19,7 +19,7 @@ describe('UnitInput Component', function () {
       const wrapper = shallow(
         <UnitInput
           suffix="ETH"
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -33,7 +33,7 @@ describe('UnitInput Component', function () {
           <div className="testing">
             TESTCOMPONENT
           </div>
-        </UnitInput>
+        </UnitInput>,
       )
 
       assert.ok(wrapper)
@@ -45,7 +45,7 @@ describe('UnitInput Component', function () {
       const wrapper = shallow(
         <UnitInput
           error
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -64,7 +64,7 @@ describe('UnitInput Component', function () {
 
     it('should focus the input on component click', function () {
       const wrapper = mount(
-        <UnitInput />
+        <UnitInput />,
       )
 
       assert.ok(wrapper)
@@ -80,7 +80,7 @@ describe('UnitInput Component', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -96,7 +96,7 @@ describe('UnitInput Component', function () {
       const wrapper = mount(
         <UnitInput
           value={123}
-        />
+        />,
       )
 
       assert.ok(wrapper)
@@ -107,7 +107,7 @@ describe('UnitInput Component', function () {
       const wrapper = mount(
         <UnitInput
           onChange={handleChangeSpy}
-        />
+        />,
       )
 
       assert.ok(wrapper)

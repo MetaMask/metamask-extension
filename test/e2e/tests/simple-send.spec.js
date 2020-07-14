@@ -26,7 +26,7 @@ describe('Simple send', function () {
         await driver.clickElement(By.css('[data-testid="page-container-footer-next"]'))
         await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
         await driver.findElement(By.css('.transaction-list-item'))
-      }
+      },
     )
   })
 })

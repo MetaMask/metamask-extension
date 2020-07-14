@@ -18,7 +18,7 @@ describe('Confirm Reset Account', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
   })
 

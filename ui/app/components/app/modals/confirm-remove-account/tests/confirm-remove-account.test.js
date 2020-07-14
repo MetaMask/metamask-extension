@@ -44,7 +44,7 @@ describe('Confirm Remove Account', function () {
           t: PropTypes.func,
           store: PropTypes.object,
         },
-      }
+      },
     )
   })
 

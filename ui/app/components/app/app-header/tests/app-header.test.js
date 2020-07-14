@@ -32,7 +32,7 @@ describe('App Header', function () {
           t: (str) => str,
           metricsEvent: () => {},
         },
-      }
+      },
     )
   })
 

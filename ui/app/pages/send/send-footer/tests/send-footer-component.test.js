@@ -142,7 +142,7 @@ describe('SendFooter Component', function () {
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
       assert.deepEqual(
         propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
-        ['mockTo', ['mockAccount']]
+        ['mockTo', ['mockAccount']],
       )
     })
 
@@ -161,7 +161,7 @@ describe('SendFooter Component', function () {
           sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
           unapprovedTxs: {},
-        }
+        },
       )
     })
 
@@ -183,7 +183,7 @@ describe('SendFooter Component', function () {
           gasPrice: 'mockGasPrice',
           sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
-        }
+        },
       )
     })
 

@@ -16,7 +16,7 @@ describe('UserPreferencedCurrencyDisplay Component', function () {
     })
     it('should render properly', function () {
       const wrapper = shallow(
-        <UserPreferencedCurrencyDisplay />
+        <UserPreferencedCurrencyDisplay />,
       )
 
       assert.ok(wrapper)
@@ -29,7 +29,7 @@ describe('UserPreferencedCurrencyDisplay Component', function () {
           prop1
           prop2="test"
           prop3={1}
-        />
+        />,
       )
 
       assert.ok(wrapper)

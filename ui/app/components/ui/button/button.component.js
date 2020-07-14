@@ -33,7 +33,7 @@ const Button = ({ type, submit, large, children, icon, rounded, className, ...bu
       typeHash[type] || CLASSNAME_DEFAULT,
       large && CLASSNAME_LARGE,
       rounded && CLASSNAME_ROUNDED,
-      className
+      className,
     )}
     { ...buttonProps }
   >

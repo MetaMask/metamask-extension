@@ -35,7 +35,7 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
     assert.ok(!wrapper.exists('AccountOptionsMenu'))
     const accountOptions = wrapper.find('.menu-bar__account-options')
@@ -49,7 +49,7 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
     const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')

@@ -34,7 +34,7 @@ describe('Personal sign', function () {
         await driver.clickElement(By.css('[data-testid="request-signature__sign"]'))
 
         await driver.waitUntilXWindowHandles(2)
-      }
+      },
     )
   })
 })

@@ -25,7 +25,7 @@ describe('Reveal Seed Phrase', function () {
           t: (str) => str,
           metricsEvent: () => {},
         },
-      }
+      },
     )
   })
 

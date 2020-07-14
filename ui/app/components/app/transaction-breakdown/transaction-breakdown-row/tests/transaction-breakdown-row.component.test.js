@@ -13,7 +13,7 @@ describe('TransactionBreakdownRow Component', function () {
       >
         Test
       </TransactionBreakdownRow>,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 
     assert.ok(wrapper.hasClass('transaction-breakdown-row'))
@@ -29,7 +29,7 @@ describe('TransactionBreakdownRow Component', function () {
       >
         <Button onClick={() => {}} >Button</Button>
       </TransactionBreakdownRow>,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 
     assert.ok(wrapper.hasClass('transaction-breakdown-row'))

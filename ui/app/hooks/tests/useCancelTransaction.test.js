@@ -52,9 +52,9 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               originalGasPrice,
-            })
+            }),
           ),
-          true
+          true,
         )
       })
     })
@@ -95,9 +95,9 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               originalGasPrice,
-            })
+            }),
           ),
-          true
+          true,
         )
       })
     })

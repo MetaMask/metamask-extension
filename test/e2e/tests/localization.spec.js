@@ -23,7 +23,7 @@ describe('Localization', function () {
         const [fiatAmount, fiatUnit] = secondaryBalanceText.trim().split(/\s+/)
         assert.ok(fiatAmount.startsWith('₱'))
         assert.equal(fiatUnit, 'PHP')
-      }
+      },
     )
   })
 })

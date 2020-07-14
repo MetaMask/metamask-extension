@@ -128,7 +128,7 @@ class PrivateKeyImportView extends Component {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(PrivateKeyImportView)
 
 

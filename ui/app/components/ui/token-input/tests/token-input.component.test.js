@@ -99,7 +99,7 @@ describe('TokenInput Component', function () {
             }}
             tokenExchangeRates={{ '0x1': 2 }}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -133,7 +133,7 @@ describe('TokenInput Component', function () {
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -216,7 +216,7 @@ describe('TokenInput Component', function () {
             }}
             tokenExchangeRates={{ '0x1': 2 }}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -258,7 +258,7 @@ describe('TokenInput Component', function () {
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -300,7 +300,7 @@ describe('TokenInput Component', function () {
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)

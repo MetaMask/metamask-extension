@@ -84,7 +84,7 @@ describe('GasPriceButtonGroup Component', function () {
           Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[i]),
           mockButtonPropsAndFlags,
           i,
-        ]
+        ],
       )
     }
 
@@ -110,7 +110,7 @@ describe('GasPriceButtonGroup Component', function () {
       GasPriceButtonGroup.prototype.renderButtonContent.resetHistory()
       const renderButtonResult = GasPriceButtonGroup.prototype.renderButton(
         Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[0]),
-        mockButtonPropsAndFlags
+        mockButtonPropsAndFlags,
       )
       wrappedRenderButtonResult = shallow(renderButtonResult)
     })
@@ -125,7 +125,7 @@ describe('GasPriceButtonGroup Component', function () {
       assert.equal(mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount, 1)
       assert.deepEqual(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.getCall(0).args,
-        [mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei]
+        [mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei],
       )
     })
 
@@ -152,7 +152,7 @@ describe('GasPriceButtonGroup Component', function () {
             showCheck,
             className,
           },
-        ]
+        ],
       )
     })
   })

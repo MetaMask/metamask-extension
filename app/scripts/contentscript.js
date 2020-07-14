@@ -77,13 +77,13 @@ async function setupStreams () {
     pageMux,
     pageStream,
     pageMux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err)
+    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   )
   pump(
     extensionMux,
     extensionStream,
     extensionMux,
-    (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err)
+    (err) => logStreamDisconnectWarning('MetaMask Background Multiplex', err),
   )
 
   // forward communication across inpage-background for these channels only
@@ -102,7 +102,7 @@ function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
     channelA,
     channelB,
     channelA,
-    (err) => logStreamDisconnectWarning(`MetaMask muxed traffic for channel "${channelName}" failed.`, err)
+    (err) => logStreamDisconnectWarning(`MetaMask muxed traffic for channel "${channelName}" failed.`, err),
   )
 }
 
