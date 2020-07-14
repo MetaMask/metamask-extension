@@ -17,7 +17,7 @@ describe('End of Flow Screen', function () {
 
   beforeEach(function () {
     wrapper = mountWithRouter(
-      <EndOfFlowScreen.WrappedComponent {...props} />
+      <EndOfFlowScreen.WrappedComponent {...props} />,
     )
   })
 

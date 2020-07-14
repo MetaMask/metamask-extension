@@ -107,7 +107,7 @@ export function isCustomPriceSafe (state) {
       fromDenomination: 'WEI',
       toDenomination: 'GWEI',
     },
-    { value: safeLow, fromNumericBase: 'dec' }
+    { value: safeLow, fromNumericBase: 'dec' },
   )
 
   return customPriceSafe

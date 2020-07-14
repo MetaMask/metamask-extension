@@ -77,7 +77,7 @@ const mapStateToProps = (state, ownProps) => {
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
   const transaction = Object.values(unapprovedTxs).find(
-    ({ id }) => id === (transactionId || Number(paramsTransactionId))
+    ({ id }) => id === (transactionId || Number(paramsTransactionId)),
   ) || {}
   const {
     from: fromAddress,
@@ -294,5 +294,5 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(ConfirmTransactionBase)

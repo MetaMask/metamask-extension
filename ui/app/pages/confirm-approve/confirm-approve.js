@@ -69,7 +69,7 @@ export default function ConfirmApprove () {
       }
       previousTokenAmount.current = tokenAmount
     },
-    [customPermissionAmount, tokenAmount]
+    [customPermissionAmount, tokenAmount],
   )
 
   const { origin } = transaction
@@ -124,7 +124,7 @@ export default function ConfirmApprove () {
                 tokenAmount,
                 tokenBalance,
                 tokenSymbol,
-              })
+              }),
             )
           }
           data={customData || data}

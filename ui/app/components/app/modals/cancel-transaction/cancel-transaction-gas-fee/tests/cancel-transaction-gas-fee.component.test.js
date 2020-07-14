@@ -9,7 +9,7 @@ describe('CancelTransactionGasFee Component', function () {
     const wrapper = shallow(
       <CancelTransactionGasFee
         value="0x3b9aca00"
-      />
+      />,
     )
 
     assert.ok(wrapper)

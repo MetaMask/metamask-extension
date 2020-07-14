@@ -9,7 +9,7 @@ describe('Breadcrumbs Component', function () {
       <Breadcrumbs
         currentIndex={1}
         total={3}
-      />
+      />,
     )
 
     assert.ok(wrapper)

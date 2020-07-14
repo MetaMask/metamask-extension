@@ -27,7 +27,7 @@ describe('withModalProps', function () {
     const WrappedComponent = withModalProps(TestComponent)
     const store = configureMockStore()(mockState)
     const wrapper = mount(
-      <WrappedComponent store={store} />
+      <WrappedComponent store={store} />,
     )
 
     assert.ok(wrapper)

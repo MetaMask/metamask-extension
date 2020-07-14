@@ -20,7 +20,7 @@ describe('Confirm Delete Network', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
   })
 

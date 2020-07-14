@@ -1301,7 +1301,7 @@ export function addTokens (tokens) {
           .entries(tokens)
           .map(([_, { address, symbol, decimals }]) => (
             dispatch(addToken(address, symbol, decimals))
-          ))
+          )),
       )
     }
   }
@@ -1727,8 +1727,8 @@ export function exportAccounts (password, addresses) {
                 return reject(err)
               }
               return resolve(result)
-            })
-          )
+            }),
+          ),
         )
         return resolve(Promise.all(accountPromises))
       })

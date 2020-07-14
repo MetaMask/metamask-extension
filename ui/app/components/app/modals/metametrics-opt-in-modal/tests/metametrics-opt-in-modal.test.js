@@ -19,7 +19,7 @@ describe('MetaMetrics Opt In', function () {
         context: {
           metricsEvent: () => {},
         },
-      }
+      },
     )
   })
 

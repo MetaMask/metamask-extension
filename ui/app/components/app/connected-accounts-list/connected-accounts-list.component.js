@@ -30,11 +30,11 @@ export default class ConnectedAccountsList extends PureComponent {
     shouldRenderListOptions: (props, propName, componentName) => {
       if (typeof props[propName] !== 'boolean') {
         return new Error(
-          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' must be a boolean. Received: ${typeof props[propName]}`,
         )
       } else if (props[propName] && !props['removePermittedAccount']) {
         return new Error(
-          `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`
+          `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
         )
       }
     },

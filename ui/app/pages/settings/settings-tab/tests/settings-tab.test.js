@@ -27,7 +27,7 @@ describe('Settings Tab', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
   })
 

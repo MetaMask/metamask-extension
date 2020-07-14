@@ -14,7 +14,7 @@ describe('AccountMismatchWarning', function () {
         return { address: 'mockedAddress' }
       }
       throw new Error(
-        `${selector.name} is not cared for in the AccountMismatchWarning test useSelector stub`
+        `${selector.name} is not cared for in the AccountMismatchWarning test useSelector stub`,
       )
     })
   })

@@ -318,7 +318,7 @@ function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conver
   const ethTotal = ethTotalToConvertedCurrency(
     addHexWEIsToDec(aHexWEI, bHexWEI),
     convertedCurrency,
-    conversionRate
+    conversionRate,
   )
   return formatCurrency(ethTotal, convertedCurrency)
 }

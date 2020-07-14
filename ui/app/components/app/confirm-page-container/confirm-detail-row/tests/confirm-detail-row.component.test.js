@@ -24,7 +24,7 @@ describe('Confirm Detail Row Component', function () {
           onHeaderClick={propsMethodSpies.onHeaderClick}
           headerText="mockHeaderText"
           headerTextClassName="mockHeaderClass"
-        />
+        />,
       )
     })
 

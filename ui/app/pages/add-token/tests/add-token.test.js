@@ -33,7 +33,7 @@ describe('Add Token', function () {
       wrapper = mountWithRouter(
         <Provider store={store}>
           <AddToken.WrappedComponent {...props} />
-        </Provider>, store
+        </Provider>, store,
       )
 
       wrapper.find({ name: 'customToken' }).simulate('click')

@@ -62,7 +62,7 @@ describe('AmountMaxButton Component', function () {
           gasTotal: 'mockGasTotal',
           sendToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
-        }]
+        }],
       )
     })
 
@@ -85,7 +85,7 @@ describe('AmountMaxButton Component', function () {
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.setMaxModeTo.getCall(0).args,
-        [true]
+        [true],
       )
     })
 

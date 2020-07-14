@@ -37,7 +37,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network
+    network,
   ) => txHelper(
     unapprovedTxs,
     unapprovedMsgs,
@@ -45,8 +45,8 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedDecryptMsgs,
     unapprovedEncryptionPublicKeyMsgs,
     unapprovedTypedMessages,
-    network
-  ) || []
+    network,
+  ) || [],
 )
 
 export const unconfirmedTransactionsHashSelector = createSelector(
@@ -64,7 +64,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network
+    network,
   ) => {
     const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce((acc, address) => {
       const { metamaskNetworkId } = unapprovedTxs[address]
@@ -85,7 +85,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       ...unapprovedEncryptionPublicKeyMsgs,
       ...unapprovedTypedMessages,
     }
-  }
+  },
 )
 
 const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount
@@ -109,7 +109,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
-    network
+    network,
   ) => {
     const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) => {
       const { metamaskNetworkId } = unapprovedTxs[txId]
@@ -118,7 +118,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
 
     return filteredUnapprovedTxIds.length + unapprovedTypedMessagesCount + unapprovedMsgCount +
       unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount
-  }
+  },
 )
 
 
@@ -133,22 +133,22 @@ const contractExchangeRatesSelector = (state) => state.metamask.contractExchange
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.tokenDecimals
+  (tokenProps) => tokenProps && tokenProps.tokenDecimals,
 )
 
 const tokenDataParamsSelector = createSelector(
   tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.params) || []
+  (tokenData) => (tokenData && tokenData.params) || [],
 )
 
 const txParamsSelector = createSelector(
   txDataSelector,
-  (txData) => (txData && txData.txParams) || {}
+  (txData) => (txData && txData.txParams) || {},
 )
 
 export const tokenAddressSelector = createSelector(
   txParamsSelector,
-  (txParams) => txParams && txParams.to
+  (txParams) => txParams && txParams.to,
 )
 
 const TOKEN_PARAM_SPENDER = '_spender'
@@ -179,7 +179,7 @@ export const tokenAmountAndToAddressSelector = createSelector(
       toAddress,
       tokenAmount,
     }
-  }
+  },
 )
 
 export const approveTokenAmountAndToAddressSelector = createSelector(
@@ -204,7 +204,7 @@ export const approveTokenAmountAndToAddressSelector = createSelector(
       toAddress,
       tokenAmount,
     }
-  }
+  },
 )
 
 export const sendTokenTokenAmountAndToAddressSelector = createSelector(
@@ -229,13 +229,13 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
       toAddress,
       tokenAmount,
     }
-  }
+  },
 )
 
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,
   tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress]
+  (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress],
 )
 
 export const transactionFeeSelector = function (state, txData) {

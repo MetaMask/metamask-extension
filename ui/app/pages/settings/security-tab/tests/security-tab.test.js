@@ -30,7 +30,7 @@ describe('Security Tab', function () {
           t: (str) => str,
           metricsEvent: () => {},
         },
-      }
+      },
     )
   })
 

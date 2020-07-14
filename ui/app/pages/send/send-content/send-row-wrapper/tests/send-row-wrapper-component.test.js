@@ -46,7 +46,7 @@ describe('SendContent Component', function () {
       assert(expectedSendRowErrorMessage.is(SendRowErrorMessage))
       assert.deepEqual(
         expectedSendRowErrorMessage.props(),
-        { errorType: 'mockErrorType' }
+        { errorType: 'mockErrorType' },
       )
     })
 

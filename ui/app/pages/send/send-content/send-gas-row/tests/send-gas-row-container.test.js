@@ -65,7 +65,7 @@ describe('send-gas-row container', function () {
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.showModal.getCall(0).args[0],
-          { name: 'CUSTOMIZE_GAS', hideBasic: true }
+          { name: 'CUSTOMIZE_GAS', hideBasic: true },
         )
       })
     })
