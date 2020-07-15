@@ -36,6 +36,7 @@ export const LOG_LIMIT = 100
 
 export const SAFE_METHODS = [
   'web3_sha3',
+  'web3_clientVersion',
   'net_listening',
   'net_peerCount',
   'net_version',
