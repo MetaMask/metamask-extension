@@ -11,7 +11,7 @@
   border-bottom: 1px solid $mercury;
   color: $Black-100;
   display: grid;
-  grid-template-columns: 0 repeat(11, 1fr);
+  grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
     'icon head     head     head     head     head     head     head     right right right right'
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
