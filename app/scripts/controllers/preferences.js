@@ -206,13 +206,15 @@ export default class PreferencesController {
             res.result = result
             end()
           }
-          break
+          return
         default:
           end(new Error(`Asset of type ${type} not supported`))
+          return
       }
-    } else {
-      next()
     }
+
+    next()
+    return
   }
 
   /**

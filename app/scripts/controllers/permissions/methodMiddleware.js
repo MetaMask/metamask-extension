@@ -107,6 +107,7 @@ export default function createMethodMiddleware ({
     }
 
     // when this promise resolves, the response is on its way back
+    // eslint-disable-next-line callback-return
     await next()
 
     if (responseHandler) {
