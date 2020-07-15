@@ -169,9 +169,9 @@ class PendingTransactionTracker extends EventEmitter {
 
     // status depends on data form cfx_getTransactionReceipt
     // getTransactionByHash has blockHash - mined
-    // getTransactionReceipt has outcomeStatus === 0 - executed
+    // getTransactionReceipt has outcomeStatus === '0x0' - executed
     // risk getRiskCoefficient(receipt.epochNumber) has < threshold - confirmed
-    // when outcomeStatus === 1 failed but lost gas
+    // when outcomeStatus === '0x1' failed but lost gas
 
     // If another tx with the same nonce is mined, set as dropped.
     const taken = await this._checkIfNonceIsTaken(txMeta)
@@ -214,7 +214,7 @@ class PendingTransactionTracker extends EventEmitter {
       }
       const { outcomeStatus, epochNumber } = transactionReceipt
 
-      if (outcomeStatus !== 0) {
+      if (parseInt(outcomeStatus) !== 0) {
         const outcomeStatusErr = new Error(
           'Out of gas or contract execution error'
         )
