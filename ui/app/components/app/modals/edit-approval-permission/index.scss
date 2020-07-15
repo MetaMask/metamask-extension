@@ -17,8 +17,8 @@
       position: absolute;
       right: 24px;
       background-image: url("/images/close-gray.svg");
-      width: .75rem;
-      height: .75rem;
+      width: 0.75rem;
+      height: 0.75rem;
       cursor: pointer;
     }
   }
@@ -37,7 +37,7 @@
     &__balance {
       font-weight: normal;
       font-size: 14px;
-      color: #24292E;
+      color: #24292e;
     }
 
     &__account {
@@ -51,7 +51,7 @@
     }
 
     &__balance {
-      color: #6A737D;
+      color: #6a737d;
     }
   }
 
@@ -62,14 +62,14 @@
       font-weight: bold;
       font-size: 14px;
       line-height: 20px;
-      color: #24292E;
+      color: #24292e;
     }
 
     &__description {
       font-weight: normal;
       font-size: 12px;
       line-height: 17px;
-      color: #6A737D;
+      color: #6a737d;
       margin-top: 8px;
     }
 
@@ -89,22 +89,22 @@
     }
 
     &__option-label,
-    &__option-label--selected  {
+    &__option-label--selected {
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;
-      color: #474B4D;
+      color: #474b4d;
     }
 
     &__option-label--selected {
-      color: #037DD6;
+      color: #037dd6;
     }
 
     &__option-description {
       font-weight: normal;
       font-size: 12px;
       line-height: 17px;
-      color: #6A737D;
+      color: #6a737d;
       margin-top: 8px;
       margin-bottom: 6px;
     }
@@ -113,7 +113,7 @@
       font-weight: normal;
       font-size: 18px;
       line-height: 25px;
-      color: #24292E;
+      color: #24292e;
     }
 
     &__radio-button {
@@ -130,13 +130,13 @@
     &__radio-button-outline--selected {
       width: 18px;
       height: 18px;
-      background: #DADCDD;
+      background: #dadcdd;
       border-radius: 9px;
       position: absolute;
     }
 
     &__radio-button-outline--selected {
-      background: #037DD6;
+      background: #037dd6;
     }
 
     &__radio-button-fill {
@@ -150,7 +150,7 @@
     &__radio-button-dot {
       width: 8px;
       height: 8px;
-      background: #037DD6;
+      background: #037dd6;
       border-radius: 4px;
       position: absolute;
     }
@@ -158,7 +158,7 @@
 }
 
 .edit-approval-permission-modal-content {
-  padding: 0px;
+  padding: 0;
 }
 
 .edit-approval-permission-modal-container {

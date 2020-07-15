@@ -6,14 +6,15 @@
 
   &__text {
     @extend %content-text;
+
     font-size: 12px;
     line-height: 17px;
-    color: #6A737D;
+    color: #6a737d;
     display: flex;
     margin-top: 10px;
 
     &--link {
-      color: #037DD6;
+      color: #037dd6;
       margin-left: 4px;
       cursor: pointer;
     }

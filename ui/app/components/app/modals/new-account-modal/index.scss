@@ -4,11 +4,13 @@
 
   &__content {
     @extend %col-nowrap;
+
     padding: 1.5rem;
     border-bottom: 1px solid $Grey-100;
 
     &__header {
       @extend %header--18;
+
       font-weight: bold;
       display: flex;
       justify-content: space-between;
@@ -16,7 +18,7 @@
     }
 
     &__header-close {
-      color: #24292E;
+      color: #24292e;
       background: none;
       font-size: 1.1rem;
     }
@@ -29,6 +31,7 @@
 
   &__input {
     @extend %input;
+
     margin-top: 0.75rem;
 
     &::placeholder {
@@ -38,6 +41,7 @@
 
   &__footer {
     @extend %row-nowrap;
+
     padding: 1rem;
 
     button + button {

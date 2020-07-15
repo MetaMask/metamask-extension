@@ -20,6 +20,7 @@
   &__pending-actions {
     padding-top: 12px;
     display: flex;
+
     .button {
       font-size: 0.625rem;
       padding: 8px;
@@ -27,6 +28,7 @@
       white-space: nowrap;
       line-height: 1rem;
     }
+
     &:empty {
       padding-top: 0;
     }
@@ -39,12 +41,13 @@
     text-overflow: initial;
   }
 
-  .transaction-status:after {
+  .transaction-status::after {
     content: "·";
     margin: 0 4px;
   }
 
-  &__origin, &__address {
+  &__origin,
+  &__address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

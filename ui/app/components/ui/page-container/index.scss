@@ -1,7 +1,7 @@
 .page-container {
   width: 408px;
   background-color: $white;
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
   display: flex;
   flex-flow: column;
@@ -71,7 +71,8 @@
       padding: 0 16px 16px;
       flex: 0 0 auto;
 
-      a, a:hover {
+      a,
+      a:hover {
         text-decoration: none;
         cursor: pointer;
         font-size: 0.75rem;
@@ -105,9 +106,9 @@
   }
 
   &__subtitle {
-    padding-top: .5rem;
+    padding-top: 0.5rem;
     line-height: initial;
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: $gray;
   }
 

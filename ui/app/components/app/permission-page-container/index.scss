@@ -32,6 +32,7 @@
 
   &__title {
     @extend %header--18;
+
     line-height: 25px;
     text-align: center;
     margin-top: 32px;
@@ -42,11 +43,12 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    color: #7C808E;
+    color: #7c808e;
     padding-left: 24px;
     padding-right: 24px;
 
-    a, a:hover {
+    a,
+    a:hover {
       color: $dodger-blue;
     }
 
@@ -83,8 +85,9 @@
 
   &__permissions-header {
     @extend %content-text;
+
     line-height: 20px;
-    color: #6A737D;
+    color: #6a737d;
   }
 
   &__permissions-container {

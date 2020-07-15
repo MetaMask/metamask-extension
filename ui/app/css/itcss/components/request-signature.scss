@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -62,7 +62,7 @@
   }
 
   &__header__text {
-    color: #5B5D67;
+    color: #5b5d67;
     font-family: Roboto;
     font-size: 22px;
     line-height: 29px;

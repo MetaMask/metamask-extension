@@ -1,7 +1,6 @@
 .connected-accounts-permissions {
   display: flex;
   flex-direction: column;
-
   font-size: 12px;
   line-height: 17px;
   color: $Grey-500;
@@ -20,15 +19,13 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-
     font-size: 14px;
     line-height: 20px;
-    color: #24292E;
+    color: #24292e;
 
     button {
       font-size: 16px;
       line-height: 24px;
-
       background: none;
       padding: 0;
       margin-left: 8px;
@@ -49,10 +46,10 @@
   }
 
   &__list-container {
-    max-height: 0px;
+    max-height: 0;
     overflow: hidden;
     height: auto;
-    transition: max-height 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 
     &--expanded {
       // arbitrarily set hard coded value for effect to work

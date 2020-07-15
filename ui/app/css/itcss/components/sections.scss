@@ -91,7 +91,7 @@ textarea.twelve-word-phrase {
 }
 
 .section-title .fa-arrow-left {
-  margin: -2px 8px 0px -8px;
+  margin: -2px 8px 0 -8px;
 }
 
 .sizing-input {
@@ -107,7 +107,7 @@ textarea.twelve-word-phrase {
 /* accounts */
 
 .accounts-section {
-  margin: 0 0px;
+  margin: 0 0;
 }
 
 .accounts-section .horizontal-line {
@@ -128,7 +128,7 @@ textarea.twelve-word-phrase {
 }
 
 .unconftx-link .fa-arrow-right {
-  margin: 0 -8px 0px 8px;
+  margin: 0 -8px 0 8px;
 }
 
 /* identity panel */
@@ -166,7 +166,7 @@ textarea.twelve-word-phrase {
 }
 
 .identity-copy.flex-column {
-  flex: .25 0 auto;
+  flex: 0.25 0 auto;
   justify-content: center;
 }
 
@@ -237,6 +237,7 @@ textarea.twelve-word-phrase {
 .name-label:hover .edit-text {
   visibility: visible;
 }
+
 /* tx confirm */
 
 .unconftx-section input[type=password] {
@@ -317,7 +318,7 @@ textarea.twelve-word-phrase {
   box-sizing: border-box;
   border: solid;
   border-color: transparent;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
@@ -325,21 +326,21 @@ textarea.twelve-word-phrase {
   box-sizing: inherit;
   border: solid;
   border-color: #f7861c;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus {
   border: solid;
   border-color: #f7861c;
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: 2px;
 }
 
 .activeForm {
   background: #f7f7f7;
   border: none;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 8px 8px 0 0;
   width: 50%;
   text-align: center;
   padding-bottom: 4px;
@@ -347,7 +348,7 @@ textarea.twelve-word-phrase {
 
 .inactiveForm {
   border: none;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 8px 8px 0 0;
   width: 50%;
   text-align: center;
   padding-bottom: 4px;
@@ -402,7 +403,8 @@ textarea.twelve-word-phrase {
   color: $white;
 }
 
-.qr-ellip-address, .ellip-address {
+.qr-ellip-address,
+.ellip-address {
   /*rtl:ignore*/
   direction: ltr;
   overflow: hidden;

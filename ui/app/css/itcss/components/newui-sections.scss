@@ -47,7 +47,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
     width: 85vw;
     margin-bottom: 10vh;
     min-height: 90vh;
-    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -55,7 +55,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   .main-container {
     width: 80vw;
     min-height: 82vh;
-    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -63,7 +63,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   .main-container {
     width: 62vw;
     min-height: 82vh;
-    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   }
 }
 

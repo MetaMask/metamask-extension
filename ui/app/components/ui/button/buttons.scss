@@ -2,14 +2,14 @@
   Buttons
  */
 
-$hover-secondary: #B0D7F2;
-$hover-default: #B3B3B3;
-$hover-confirm: #0372C3;
-$hover-red: #FEB6BF;
-$hover-red-primary: #C72837;
-$hover-orange: #FFD3B5;
-$danger-light-red: #EA7E77;
-$warning-light-orange: #F8B588;
+$hover-secondary: #b0d7f2;
+$hover-default: #b3b3b3;
+$hover-confirm: #0372c3;
+$hover-red: #feb6bf;
+$hover-red-primary: #c72837;
+$hover-orange: #ffd3b5;
+$danger-light-red: #ea7e77;
+$warning-light-orange: #f8b588;
 
 %button {
   @include h6;
@@ -17,19 +17,19 @@ $warning-light-orange: #F8B588;
   font-weight: 500;
   font-family: Roboto, Arial;
   line-height: 1.25rem;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
   border-radius: 6px;
   width: 100%;
-  transition: border-color .3s ease, background-color .3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 
   &--disabled,
   &[disabled] {
     cursor: auto;
-    opacity: .5;
+    opacity: 0.5;
     pointer-events: none;
   }
 }
@@ -61,6 +61,7 @@ $warning-light-orange: #F8B588;
 
 %small-link {
   @extend %link;
+
   @include h6;
 }
 
@@ -169,7 +170,7 @@ $warning-light-orange: #F8B588;
   }
 
   &:active {
-    background: #FBFBFC;
+    background: #fbfbfc;
     border-color: $Grey-500;
   }
 
@@ -217,7 +218,7 @@ $warning-light-orange: #F8B588;
 .btn-raised {
   color: $curious-blue;
   background-color: $white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 6px;
   height: initial;
   min-height: initial;
@@ -228,25 +229,25 @@ $warning-light-orange: #F8B588;
 .btn--first-time {
   height: 54px;
   width: 198px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .14);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   color: $white;
   font-size: 1.25rem;
   font-weight: 500;
   transition: 200ms ease-in-out;
-  background-color: rgba(247, 134, 28, .9);
+  background-color: rgba(247, 134, 28, 0.9);
   border-radius: 0;
 }
 
 button[disabled],
 input[type="submit"][disabled] {
   cursor: not-allowed;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 button.primary {
   padding: 8px 12px;
   background: #f7861c;
-  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  box-shadow: 0 3px 6px rgba(247, 134, 28, 0.36);
   color: $white;
   font-size: 1.1em;
   font-family: Roboto;
@@ -257,12 +258,14 @@ button.primary {
   border-radius: 100px;
   will-change: box-shadow;
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
+
   &:hover {
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
 
   &.btn-secondary {
     border: 1px solid $Blue-500;
+
     &--disabled,
     &[disabled] {
       border-color: $hover-secondary;
@@ -276,6 +279,7 @@ button.primary {
 
   &.btn-default {
     border: 1px solid $Grey-500;
+
     &--disabled,
     &[disabled] {
       border-color: $Grey-100;
@@ -289,6 +293,7 @@ button.primary {
 
   &.btn-danger {
     border: 1px solid $Red-500;
+
     &--disabled,
     &[disabled] {
       border-color: $Red-100;
@@ -302,6 +307,7 @@ button.primary {
 
   &.btn-warning {
     border: 1px solid $Orange-500;
+
     &--disabled,
     &[disabled] {
       border-color: $warning-light-orange;
@@ -315,6 +321,7 @@ button.primary {
 
   &.btn-primary {
     background-color: $Blue-500;
+
     &--disabled,
     &[disabled] {
       background-color: $hover-secondary;
@@ -327,6 +334,7 @@ button.primary {
 
   &.btn-danger-primary {
     background-color: $Red-500;
+
     &--disabled,
     &[disabled] {
       background-color: $danger-light-red;
