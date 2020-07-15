@@ -149,7 +149,7 @@
 
 .currency-toggle {
   &__item {
-    color: $curious-blue;
+    color: $primary-blue;
     cursor: pointer;
 
     &--selected {
@@ -160,7 +160,7 @@
 }
 
 .send-screen-gas-input-customize {
-  color: $curious-blue;
+  color: $primary-blue;
   font-size: 12px;
   cursor: pointer;
 }
@@ -801,8 +801,8 @@
     }
 
     input:checked + &__button {
-      background-color: #037dd6;
-      border: 2px solid #037dd6;
+      background-color: $primary-blue;
+      border: 2px solid $primary-blue;
       color: #fff;
     }
   }
@@ -830,7 +830,7 @@
     justify-content: center;
     height: 24px;
     width: 24px;
-    border: 1px solid $curious-blue;
+    border: 1px solid $primary-blue;
     border-radius: 4px;
     background-color: $white;
     position: absolute;
@@ -841,7 +841,7 @@
   }
 
   &__sliders-icon {
-    color: $curious-blue;
+    color: $primary-blue;
   }
 
   &__memo-text-area {
@@ -1077,7 +1077,7 @@
   justify-content: center;
   height: 24px;
   width: 24px;
-  border: 1px solid $curious-blue;
+  border: 1px solid $primary-blue;
   border-radius: 4px;
   background-color: $white;
   position: absolute;
@@ -1105,5 +1105,5 @@
 }
 
 .sliders-icon {
-  color: $curious-blue;
+  color: $primary-blue;
 }
