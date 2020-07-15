@@ -47,7 +47,7 @@ function displayChart (data) {
   console.log(`\nbuild completed. task timeline:`)
 
   // build bars for bounds
-  data.map((entry, index) => {
+  data.forEach((entry, index) => {
     const [label, start, end] = entry
     const [start2, end2] = [start, end].map((value) => adjust(value, first, last, 40))
     const barString = barBuilder(start2, end2)
