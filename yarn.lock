@@ -10061,10 +10061,10 @@ eth-contract-metadata@^1.11.0, eth-contract-metadata@^1.13.0:
   resolved "https://registry.yarnpkg.com/eth-contract-metadata/-/eth-contract-metadata-1.13.0.tgz#9819d0e556ea2187da91d6b49ce96abc5fce2a73"
   integrity sha512-9CjXHX8IdXysUEvOHdbCsjdAwM1E98jaeK2HeOqm/9S/vOZ8YryaBBt/YSiBq3MkpCwf+d1pEQ53p96rsdy52w==
 
-eth-dcent-keyring@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.1.0.tgz#154f11bb4e08442c40c7f0be9315c11df951e0d0"
-  integrity sha512-8sJ6TMIZ3Qw4MjOOu9pBqDZY5tF5IUCfuijmjlcSXPJRCHOGCCycnPy/gaXMaXc1gX5EdHmm5T0VQBfCm+Dcuw==
+eth-dcent-keyring@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.1.1.tgz#7f4229c3336127267befa0bf7682174994dac389"
+  integrity sha512-HtDXwNaxUlfAIV5PanvUT6J4VcnKd6p4yaMqA4gsKUhQBjl1GDC/bJJUIlYHIw1g2QBH34cC+TIaAuC5SIvjxA==
   dependencies:
     dcent-web-connector "^0.8.2"
     eth-sig-util "^1.4.2"
