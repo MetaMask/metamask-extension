@@ -21,7 +21,7 @@
     border-bottom: 1px solid #dedede;
 
     &:hover {
-      border: 1px solid #037dd6;
+      border: 1px solid $primary-blue;
       cursor: pointer;
     }
   }
@@ -227,7 +227,7 @@
     align-items: center;
     border-radius: 50%;
     border-width: 2px;
-    background: #037dd6;
+    background: $primary-blue;
     margin-right: 5px;
     cursor: pointer;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
