@@ -73,7 +73,6 @@ export default class ViewContact extends PureComponent {
                 {quadSplit(checkSummedAddress)}
               </div>
               <Tooltip
-                wrapperClassName="address-book__tooltip-wrapper"
                 position="bottom"
                 title={
                   this.state.copied
@@ -84,7 +83,6 @@ export default class ViewContact extends PureComponent {
                 <button
                   className="address-book__view-contact__group__static-address--copy-icon"
                   onClick={() => {
-                    const { checkSummedAddress } = this.props
                     this.setState({ copied: true })
                     setTimeout(() => this.setState({ copied: false }), 3000)
                     copyToClipboard(checkSummedAddress)
