@@ -92,4 +92,4 @@ function ViewContact ({
   )
 }
 
-export default ViewContact
+export default React.memo(ViewContact)
