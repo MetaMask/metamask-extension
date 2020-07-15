@@ -33,19 +33,26 @@ Enzyme.configure({ adapter: new Adapter() })
 
 const server = new CGanache({ genBlockInterval: 300, killPortProcess: true })
 
-// eslint-disable-next-line mocha/no-hooks-for-single-case, mocha/no-top-level-hooks
-before(function (done) {
-  server
-    .start()
-    .then(() => {
-      nock.disableNetConnect()
-      nock.enableNetConnect('localhost')
-      done()
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-})
+// unit test global don't need lite
+if (
+  !process.argv.some(
+    (arg) => typeof arg === 'string' && arg.includes('unit-global')
+  )
+) {
+  // eslint-disable-next-line mocha/no-hooks-for-single-case, mocha/no-top-level-hooks
+  before(function (done) {
+    server
+      .start()
+      .then(() => {
+        nock.disableNetConnect()
+        nock.enableNetConnect('localhost')
+        done()
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  })
+}
 
 // ganache server
 // const server = Ganache.server()

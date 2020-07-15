@@ -21,13 +21,13 @@ async function start () {
     // create sentry release
     console.log(`creating Sentry release for "${VERSION}"...`)
     await exec(
-      `sentry-cli releases --org 'conflux' --project 'portal' new ${VERSION}`
+      `sentry-cli releases --org 'conflux-chain' --project 'portal' new ${VERSION}`
     )
     console.log(
       `removing any existing files from Sentry release "${VERSION}"...`
     )
     await exec(
-      `sentry-cli releases --org 'conflux' --project 'portal' files ${VERSION} delete --all`
+      `sentry-cli releases --org 'conflux-chain' --project 'portal' files ${VERSION} delete --all`
     )
   }
 
@@ -46,7 +46,7 @@ async function start () {
 
 async function checkIfAuthWorks () {
   const itWorked = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'conflux' --project 'portal' list`)
+    await exec(`sentry-cli releases --org 'conflux-chain' --project 'portal' list`)
   })
   return itWorked
 }
@@ -54,7 +54,7 @@ async function checkIfAuthWorks () {
 async function checkIfVersionExists () {
   const versionAlreadyExists = await doesNotFail(async () => {
     await exec(
-      `sentry-cli releases --org 'conflux' --project 'portal' info ${VERSION}`
+      `sentry-cli releases --org 'conflux-chain' --project 'portal' info ${VERSION}`
     )
   })
   return versionAlreadyExists

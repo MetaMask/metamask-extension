@@ -23,8 +23,8 @@ function alterRpcMethodAndParams ({ method = '', params = {} } = {}) {
     MethodsWithDefaultEpochParameter[method] !== undefined &&
     (!Array.isArray(params) ||
       params[MethodsWithDefaultEpochParameter[method]] === undefined ||
-     params[MethodsWithDefaultEpochParameter[method]] === 'latest_mined' ||
-     params[MethodsWithDefaultEpochParameter[method]] === 'latest')
+      params[MethodsWithDefaultEpochParameter[method]] === 'latest_mined' ||
+      params[MethodsWithDefaultEpochParameter[method]] === 'latest')
   ) {
     if (!Array.isArray(params)) {
       params = []
