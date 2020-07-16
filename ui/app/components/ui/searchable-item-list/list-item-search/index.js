@@ -1,3 +1,1 @@
-import TokenSearch from './list-item-search.component'
-
-export default TokenSearch
+export { default } from './list-item-search.component'
