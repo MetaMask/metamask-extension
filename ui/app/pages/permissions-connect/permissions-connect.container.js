@@ -34,11 +34,6 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
 
-  // used to determine whether to redirect or show the next permissions request
-  const hasAdditionalPermissionsRequests = permissionsRequest
-    ? permissionsRequests.length > 1
-    : permissionsRequests.length > 0
-
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
@@ -83,7 +78,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     permissionsRequest,
     permissionsRequestId,
-    hasAdditionalPermissionsRequests,
     accounts: accountsWithLabels,
     currentAddress,
     origin,
