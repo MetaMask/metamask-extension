@@ -5,7 +5,7 @@
   background: #fff;
   padding: 24px 16px;
 
-  @extend %font;
+  @extend %Paragraph;
 
   border-top: 1px solid $mercury;
   border-bottom: 1px solid $mercury;

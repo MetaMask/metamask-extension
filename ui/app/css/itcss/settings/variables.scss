@@ -105,42 +105,6 @@ $break-small: 575px;
 $break-midpoint: 780px;
 $break-large: 576px;
 
-
-$primary-font-type: Roboto;
-
-
-// Font Sizes
-%h3 {
-  font-size: 1.5rem;
-  line-height: 2.125rem;
-  font-weight: 400;
-}
-
-%h4 {
-  font-size: 1.125rem;
-  line-height: 1.3125rem;
-  font-weight: 400;
-}
-
-%h5 {
-  font-size: 1rem;
-  line-height: 1.25rem;
-  font-weight: 400;
-}
-
-%h6 {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 400;
-}
-
-%h8 {
-  font-size: 0.75rem;
-  line-height: 1.0625rem;
-  font-weight: 400;
-}
-
-
 /*
   Spacing Variables
 */
@@ -175,37 +139,4 @@ $xxlarge-spacing: 64px;
   &:focus-within {
     border-color: $Blue-500;
   }
-}
-
-// Font mixin
-
-%font {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  color: $Grey-800;
-}
-
-%font--bold {
-  @extend %font;
-
-  font-weight: bold;
-}
-
-%header--18 {
-  @extend %font;
-
-  font-size: 18px;
-}
-
-%header--24 {
-  @extend %font;
-
-  font-size: 24px;
-}
-
-%content-text {
-  @extend %font;
-
-  font-size: 14px;
 }
