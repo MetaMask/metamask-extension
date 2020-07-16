@@ -3,10 +3,6 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getMessage } from '../utils/i18n-helper'
 
-const DATE_TO_LAUNCH_OCEANUS = new Date(
-  'Tue Jul 18 2020 00:00:00 GMT+0800 (China Standard Time)'
-)
-
 class I18nProvider extends Component {
   tOrDefault = (key, defaultValue, ...args) => {
     if (!key) {
@@ -31,20 +27,11 @@ class I18nProvider extends Component {
        * @returns {string|undefined|null} - The localized message if available
        */
       t (key, ...args) {
-        let trans =
+        return (
           getMessage(currentLocale, current, key, ...args) ||
           getMessage(currentLocale, en, key, ...args) ||
           `[${key}]`
-
-        if (
-          new Date().getTime() >= DATE_TO_LAUNCH_OCEANUS &&
-          typeof trans === 'string' &&
-          /pontus/i.test(trans)
-        ) {
-          trans = trans.replace('Pontus', 'Oceanus')
-          trans = trans.replace('pontus', 'oceanus')
-        }
-        return trans
+        )
       },
       tOrDefault: this.tOrDefault,
       tOrKey: (key, ...args) => {
