@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import GasModalPageContainer from './gas-modal-page-container.component'
+import { captureException } from '@sentry/browser'
 import {
   hideModal,
   setGasLimit,
@@ -124,6 +125,12 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
+  let currentTimeEstimate = ''
+  try {
+    currentTimeEstimate = getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes)
+  } catch (error) {
+    captureException(error)
+  }
 
   return {
     hideBasic,
@@ -134,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
+    currentTimeEstimate,
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
     maxModeOn,
