@@ -475,6 +475,7 @@ export function signPersonalMsg (msgData) {
       dispatch(displayWarning(error.message))
       throw error
     }
+    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
