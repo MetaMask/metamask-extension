@@ -508,4 +508,8 @@ export default class TransactionStateManager extends EventEmitter {
     const transactionList = this.getFullTxList()
     this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
   }
+
+  clearTxs () {
+    this.store.updateState({ transactions: [] })
+  }
 }
