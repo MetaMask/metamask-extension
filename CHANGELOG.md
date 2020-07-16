@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.5 Thu Jul 16 2020
+
 ## 8.0.4 Tue Jul 07 2020
 - [#8934](https://github.com/MetaMask/metamask-extension/pull/8934): Fix transaction activity on custom networks
 - [#8936](https://github.com/MetaMask/metamask-extension/pull/8936): Fix account tracker optimization
