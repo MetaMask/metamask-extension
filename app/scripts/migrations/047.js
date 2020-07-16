@@ -2,9 +2,7 @@ const version = 47
 import { cloneDeep } from 'lodash'
 
 /**
- * Stringify numbers:
- *  - PreferencesController.frequentRpcListDetail item chainId
- *  - TransactionsController.transactions item metamaskNetworkId
+ * Stringify the `metamaskNetworkId` property of all transactions
  */
 export default {
   version,
@@ -18,7 +16,7 @@ export default {
 }
 
 function transformState (state) {
-  const transactions = state?.TransactionsController?.transactions
+  const transactions = state?.TransactionController?.transactions
   if (Array.isArray(transactions)) {
     transactions.forEach((transaction) => {
       if (typeof transaction.metamaskNetworkId === 'number') {

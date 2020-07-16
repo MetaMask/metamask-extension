@@ -20,7 +20,7 @@ describe('migration #47', function () {
     const oldStorage = {
       meta: {},
       data: {
-        TransactionsController: {
+        TransactionController: {
           transactions: [
             { foo: 'bar', metamaskNetworkId: 2 },
             { foo: 'bar' },
@@ -34,7 +34,7 @@ describe('migration #47', function () {
 
     const newStorage = await migration47.migrate(oldStorage)
     assert.deepEqual(newStorage.data, {
-      TransactionsController: {
+      TransactionController: {
         transactions: [
           { foo: 'bar', metamaskNetworkId: '2' },
           { foo: 'bar' },
@@ -50,7 +50,7 @@ describe('migration #47', function () {
     const oldStorage = {
       meta: {},
       data: {
-        TransactionsController: {
+        TransactionController: {
           transactions: [
             { foo: 'bar', metamaskNetworkId: '2' },
             { foo: 'bar' },
@@ -70,7 +70,7 @@ describe('migration #47', function () {
     const oldStorage = {
       meta: {},
       data: {
-        TransactionsController: {
+        TransactionController: {
           bar: 'baz',
         },
         foo: 'bar',
@@ -85,7 +85,7 @@ describe('migration #47', function () {
     const oldStorage = {
       meta: {},
       data: {
-        TransactionsController: {
+        TransactionController: {
           transactions: [],
           bar: 'baz',
         },
