@@ -101,7 +101,7 @@
     "end-of-stream": "^1.4.4",
     "eth-block-tracker": "^4.4.2",
     "eth-contract-metadata": "^1.13.0",
-    "eth-dcent-keyring": "^0.1.1",
+    "eth-dcent-keyring": "^0.1.2",
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-errors": "^2.0.2",
     "eth-json-rpc-filters": "^4.1.1",
