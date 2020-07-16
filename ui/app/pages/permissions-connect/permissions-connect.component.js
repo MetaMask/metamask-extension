@@ -26,7 +26,6 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    hasAdditionalPermissionsRequests: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
@@ -129,6 +128,7 @@ export default class PermissionConnect extends Component {
   }
 
   redirect (approved) {
+    const { history } = this.props
     this.setState({
       redirecting: true,
       permissionsApproved: approved,
@@ -136,20 +136,7 @@ export default class PermissionConnect extends Component {
     this.removeBeforeUnload()
 
     if (approved) {
-      setTimeout(this._doRedirect.bind(this), APPROVE_TIMEOUT)
-    } else {
-      this._doRedirect()
-    }
-  }
-
-  _doRedirect () {
-    const { history, hasAdditionalPermissionsRequests } = this.props
-
-    if (
-      !hasAdditionalPermissionsRequests &&
-      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      global.platform.closeCurrentWindow()
+      setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT)
     } else {
       history.push(DEFAULT_ROUTE)
     }
