@@ -1,5 +1,5 @@
 // import Ganache from 'ganache-core'
-import CGanache from '@yqrashawn/conflux-local-network-lite'
+import Node from '@cfxjs/fullnode'
 import nock from 'nock'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
@@ -31,7 +31,7 @@ process.on('exit', () => {
 
 Enzyme.configure({ adapter: new Adapter() })
 
-const server = new CGanache({ genBlockInterval: 300, killPortProcess: true })
+const server = new Node({ genBlockInterval: 300, killPortProcess: true })
 
 // unit test global don't need lite
 if (

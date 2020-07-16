@@ -1,6 +1,6 @@
-const CGanache = require('@yqrashawn/conflux-local-network-lite')
+const Node = require('@cfxjs/fullnode')
 
-const server = new CGanache()
+const server = new Node()
 server
   .start()
   .then(async () => {
