@@ -85,6 +85,220 @@ describe('TransactionStateManager', function () {
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
+
+    it('should return a full list of transactions', function () {
+      const submittedTx = {
+        id: 0,
+        metamaskNetworkId: currentNetworkId,
+        time: 0,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
+        },
+        status: 'submitted',
+      }
+
+      const confirmedTx = {
+        id: 3,
+        metamaskNetworkId: currentNetworkId,
+        time: 3,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x3',
+        },
+        status: 'confirmed',
+      }
+
+      const txm = new TxStateManager({
+        initState: {
+          transactions: [
+            submittedTx,
+            confirmedTx,
+          ],
+        },
+        getNetwork: () => currentNetworkId,
+      })
+
+      assert.deepEqual(txm.getTxList(), [
+        submittedTx,
+        confirmedTx,
+      ])
+    })
+
+    it('should return a list of transactions, limited by N unique nonces when there are NO duplicates', function () {
+      const submittedTx0 = {
+        id: 0,
+        metamaskNetworkId: currentNetworkId,
+        time: 0,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
+        },
+        status: 'submitted',
+      }
+
+      const unapprovedTx1 = {
+        id: 1,
+        metamaskNetworkId: currentNetworkId,
+        time: 1,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x1',
+        },
+        status: 'unapproved',
+      }
+
+      const approvedTx2 = {
+        id: 2,
+        metamaskNetworkId: currentNetworkId,
+        time: 2,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x2',
+        },
+        status: 'approved',
+      }
+
+      const confirmedTx3 = {
+        id: 3,
+        metamaskNetworkId: currentNetworkId,
+        time: 3,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x3',
+        },
+        status: 'confirmed',
+      }
+
+      const txm = new TxStateManager({
+        initState: {
+          transactions: [
+            submittedTx0,
+            unapprovedTx1,
+            approvedTx2,
+            confirmedTx3,
+          ],
+        },
+        getNetwork: () => currentNetworkId,
+      })
+
+      assert.deepEqual(txm.getTxList(2), [
+        approvedTx2,
+        confirmedTx3,
+      ])
+    })
+
+    it('should return a list of transactions, limited by N unique nonces when there ARE duplicates', function () {
+      const submittedTx0s = [
+        {
+          id: 0,
+          metamaskNetworkId: currentNetworkId,
+          time: 0,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x0',
+          },
+          status: 'submitted',
+        },
+        {
+          id: 0,
+          metamaskNetworkId: currentNetworkId,
+          time: 0,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x0',
+          },
+          status: 'submitted',
+        },
+      ]
+
+      const unapprovedTx1 = {
+        id: 1,
+        metamaskNetworkId: currentNetworkId,
+        time: 1,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x1',
+        },
+        status: 'unapproved',
+      }
+
+      const approvedTx2s = [
+        {
+          id: 2,
+          metamaskNetworkId: currentNetworkId,
+          time: 2,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x2',
+          },
+          status: 'approved',
+        },
+        {
+          id: 2,
+          metamaskNetworkId: currentNetworkId,
+          time: 2,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x2',
+          },
+          status: 'approved',
+        },
+      ]
+
+      const failedTx3s = [
+        {
+          id: 3,
+          metamaskNetworkId: currentNetworkId,
+          time: 3,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x3',
+          },
+          status: 'failed',
+        },
+        {
+          id: 3,
+          metamaskNetworkId: currentNetworkId,
+          time: 3,
+          txParams: {
+            from: '0xAddress',
+            to: '0xRecipient',
+            nonce: '0x3',
+          },
+          status: 'failed',
+        },
+      ]
+
+      const txm = new TxStateManager({
+        initState: {
+          transactions: [
+            ...submittedTx0s,
+            unapprovedTx1,
+            ...approvedTx2s,
+            ...failedTx3s,
+          ],
+        },
+        getNetwork: () => currentNetworkId,
+      })
+
+      assert.deepEqual(txm.getTxList(2), [
+        ...approvedTx2s,
+        ...failedTx3s,
+      ])
+    })
   })
 
   describe('#addTx', function () {
