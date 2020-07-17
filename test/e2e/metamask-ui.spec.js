@@ -1018,8 +1018,8 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1
       }, 10000)
 
-      const [txListValue] = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
+      const [txtListHeading] = await driver.findElements(By.css('.transaction-list-item .list-item__heading'))
+      await driver.wait(until.elementTextMatches(txtListHeading, /Approve TST spend limit/))
       await driver.clickElement(By.css('.transaction-list-item'))
       await driver.delay(regularDelayMs)
     })
@@ -1104,10 +1104,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 3
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-5\s*TST/))
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve TST spend limit/))
     })
   })
 
@@ -1177,8 +1175,8 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1
       }, 10000)
 
-      const [txListValue] = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txListValue, /-7\s*TST/))
+      const [txtListHeading] = await driver.findElements(By.css('.transaction-list-item .list-item__heading'))
+      await driver.wait(until.elementTextMatches(txtListHeading, /Approve TST spend limit/))
       await driver.clickElement(By.css('.transaction-list-item'))
       await driver.delay(regularDelayMs)
     })
@@ -1204,10 +1202,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 5
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Approve TST spend limit/))
     })
   })
 
