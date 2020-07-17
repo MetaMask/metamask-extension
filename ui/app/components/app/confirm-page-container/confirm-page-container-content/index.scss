@@ -1,5 +1,4 @@
 @import 'confirm-page-container-warning/index';
-
 @import 'confirm-page-container-summary/index';
 
 .confirm-page-container-content {
@@ -17,14 +16,14 @@
   }
 
   &__data {
-   padding: 16px;
-   color: $oslo-gray;
+    padding: 16px;
+    color: $oslo-gray;
   }
 
   &__data-box {
     background-color: #f9fafa;
     padding: 12px;
-    font-size: .75rem;
+    font-size: 0.75rem;
     margin-bottom: 16px;
     word-wrap: break-word;
     max-height: 200px;
@@ -60,7 +59,7 @@
   }
 
   &__function-type {
-    font-size: .875rem;
+    font-size: 0.875rem;
     font-weight: 500;
     text-transform: capitalize;
     color: $black;
@@ -68,8 +67,8 @@
   }
 
   &__tab {
-    font-size: .75rem;
-    color: #8C8E94;
+    font-size: 0.75rem;
+    color: #8c8e94;
     text-transform: uppercase;
     margin: 0 8px;
   }

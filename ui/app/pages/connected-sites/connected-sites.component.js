@@ -142,20 +142,20 @@ export default class ConnectedSites extends Component {
                 { t('disconnect') }
               </Button>
             </div>
-              {
-                numPermittedAccounts > 1
-                  ? (
-                    <div className="connected-sites__footer-row">
-                      <a
-                        className="connected-sites__text-button"
-                        onClick={this.disconnectAllAccounts}
-                      >
-                        {t('disconnectAllAccounts')}
-                      </a>
-                    </div>
-                  )
-                  : null
-              }
+            {
+              numPermittedAccounts > 1
+                ? (
+                  <div className="connected-sites__footer-row">
+                    <a
+                      className="connected-sites__text-button"
+                      onClick={this.disconnectAllAccounts}
+                    >
+                      {t('disconnectAllAccounts')}
+                    </a>
+                  </div>
+                )
+                : null
+            }
           </>
         )}
         footerClassName="connected-sites__confirmation"

@@ -33,23 +33,23 @@ function createNetworkAndChainIdMiddleware ({ network }) {
 
   switch (network) {
     case 'mainnet':
-      netId = networkEnums.MAINNET_NETWORK_ID.toString()
+      netId = networkEnums.MAINNET_NETWORK_ID
       chainId = '0x01'
       break
     case 'ropsten':
-      netId = networkEnums.ROPSTEN_NETWORK_ID.toString()
+      netId = networkEnums.ROPSTEN_NETWORK_ID
       chainId = '0x03'
       break
     case 'rinkeby':
-      netId = networkEnums.RINKEBY_NETWORK_ID.toString()
+      netId = networkEnums.RINKEBY_NETWORK_ID
       chainId = '0x04'
       break
     case 'kovan':
-      netId = networkEnums.KOVAN_NETWORK_ID.toString()
+      netId = networkEnums.KOVAN_NETWORK_ID
       chainId = networkEnums.KOVAN_CHAIN_ID
       break
     case 'goerli':
-      netId = networkEnums.GOERLI_NETWORK_ID.toString()
+      netId = networkEnums.GOERLI_NETWORK_ID
       chainId = '0x05'
       break
     default:

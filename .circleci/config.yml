@@ -19,9 +19,6 @@ workflows:
       - prep-build-storybook:
           requires:
             - prep-deps
-      - prep-scss:
-          requires:
-            - prep-deps
       - test-lint:
           requires:
             - prep-deps
@@ -45,14 +42,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps
-            - prep-scss
       - all-tests-pass:
           requires:
             - test-lint
@@ -63,8 +52,6 @@ workflows:
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
       - benchmark:
           requires:
             - prep-build-test
@@ -175,25 +162,6 @@ jobs:
           root: .
           paths:
             - .out
-
-  prep-scss:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - run:
-          name: Build for integration tests
-          command: yarn test:integration:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ui/app/css/output
 
   test-lint:
     docker:
@@ -400,33 +368,6 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
-
-  test-integration-flat-firefox:
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - run:
-          name: test:integration:flat
-          command: yarn test:flat
-
-  test-integration-flat-chrome:
-    environment:
-      browsers: '["Chrome"]'
-    docker:
-      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:integration:flat
-          command: yarn test:flat
 
   all-tests-pass:
     docker:

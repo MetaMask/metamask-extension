@@ -1,7 +1,7 @@
 .global-alert {
   position: relative;
   width: 100%;
-  background-color: #33A4E7;
+  background-color: #33a4e7;
 
   .msg {
     width: 100%;
@@ -13,11 +13,11 @@
 }
 
 .global-alert.hidden {
-  animation: alertHidden .5s ease forwards;
+  animation: alertHidden 0.5s ease forwards;
 }
 
 .global-alert.visible {
-  animation: alert .5s ease forwards;
+  animation: alert 0.5s ease forwards;
 }
 
 /* Animation */
@@ -25,7 +25,7 @@
   0% {
     opacity: 0;
     top: -50px;
-    padding: 0px;
+    padding: 0;
     line-height: 12px;
   }
 
@@ -51,7 +51,7 @@
   100% {
     opacity: 0;
     top: -50px;
-    padding: 0px;
-    line-height: 0px;
+    padding: 0;
+    line-height: 0;
   }
 }

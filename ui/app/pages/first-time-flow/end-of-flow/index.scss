@@ -12,7 +12,8 @@
     }
   }
 
-  &__text-1, &__text-3 {
+  &__text-1,
+  &__text-3 {
     font-weight: normal;
     font-size: 16px;
     margin-top: 18px;
@@ -24,13 +25,13 @@
     margin-top: 26px;
   }
 
-  &__text-3  {
+  &__text-3 {
     margin-top: 2px;
     margin-bottom: 2px;
 
     @media screen and (max-width: $break-small) {
       margin-bottom: 16px;
-      font-size: .875rem;
+      font-size: 0.875rem;
     }
   }
 

@@ -6,6 +6,7 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import MenuBar from '../index'
 
 const initState = {
+  activeTab: {},
   metamask: {
     network: '1',
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -34,7 +35,7 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
     assert.ok(!wrapper.exists('AccountOptionsMenu'))
     const accountOptions = wrapper.find('.menu-bar__account-options')
@@ -48,7 +49,7 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
     const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')

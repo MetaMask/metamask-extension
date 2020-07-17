@@ -13,7 +13,7 @@ export default class SendAssetRow extends Component {
         address: PropTypes.string,
         decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         symbol: PropTypes.string,
-      })
+      }),
     ).isRequired,
     accounts: PropTypes.object.isRequired,
     selectedAddress: PropTypes.string.isRequired,

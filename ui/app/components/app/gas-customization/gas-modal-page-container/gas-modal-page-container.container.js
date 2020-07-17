@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import { pipe, partialRight } from 'ramda'
 import GasModalPageContainer from './gas-modal-page-container.component'
+import { captureException } from '@sentry/browser'
 import {
   hideModal,
   setGasLimit,
@@ -125,6 +125,12 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
+  let currentTimeEstimate = ''
+  try {
+    currentTimeEstimate = getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes)
+  } catch (error) {
+    captureException(error)
+  }
 
   return {
     hideBasic,
@@ -135,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
+    currentTimeEstimate,
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
     maxModeOn,
@@ -308,23 +314,18 @@ function calcCustomGasLimit (customGasLimitInHex) {
 }
 
 function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {
-  return pipe(
-    addHexWEIsToDec,
-    formatETHFee
-  )(aHexWEI, bHexWEI)
+  return formatETHFee(addHexWEIsToDec(aHexWEI, bHexWEI))
 }
 
-function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWei) {
-  return pipe(
-    subtractHexWEIsToDec,
-    formatETHFee
-  )(aHexWEI, bHexWei)
+function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWEI) {
+  return formatETHFee(subtractHexWEIsToDec(aHexWEI, bHexWEI))
 }
 
 function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conversionRate) {
-  return pipe(
-    addHexWEIsToDec,
-    partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
-    partialRight(formatCurrency, [convertedCurrency]),
-  )(aHexWEI, bHexWEI)
+  const ethTotal = ethTotalToConvertedCurrency(
+    addHexWEIsToDec(aHexWEI, bHexWEI),
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(ethTotal, convertedCurrency)
 }

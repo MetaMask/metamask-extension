@@ -1,24 +1,22 @@
-export default function etherscanNetworkPrefix (network) {
-  const net = parseInt(network)
-  let prefix
-  switch (net) {
-    case 1: // main net
-      prefix = ''
-      break
-    case 3: // ropsten test net
-      prefix = 'ropsten.'
-      break
-    case 4: // rinkeby test net
-      prefix = 'rinkeby.'
-      break
-    case 42: // kovan test net
-      prefix = 'kovan.'
-      break
-    case 5: // goerli test net
-      prefix = 'goerli.'
-      break
-    default:
-      prefix = ''
+import * as networkEnums from '../../app/scripts/controllers/network/enums'
+
+/**
+ * Gets the etherscan.io URL prefix for a given network ID.
+ *
+ * @param {string} networkId - The network ID to get the prefix for.
+ * @returns {string} The etherscan.io URL prefix for the given network ID.
+ */
+export function getEtherscanNetworkPrefix (networkId) {
+  switch (networkId) {
+    case networkEnums.ROPSTEN_NETWORK_ID:
+      return 'ropsten.'
+    case networkEnums.RINKEBY_NETWORK_ID:
+      return 'rinkeby.'
+    case networkEnums.KOVAN_NETWORK_ID:
+      return 'kovan.'
+    case networkEnums.GOERLI_NETWORK_ID:
+      return 'goerli.'
+    default: // also covers mainnet
+      return ''
   }
-  return prefix
 }

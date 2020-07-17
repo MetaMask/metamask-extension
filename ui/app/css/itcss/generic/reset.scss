@@ -122,10 +122,10 @@ q {
   quotes: none;
 }
 
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
   content: '';
   content: none;
 }
@@ -138,6 +138,7 @@ table {
 button {
   border-style: none;
   cursor: pointer;
+
   &::-moz-focus-inner {
     border: none;
   }

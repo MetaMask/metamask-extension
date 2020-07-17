@@ -34,7 +34,7 @@ export function useTokenDisplayValue (transactionData, token, isTokenTransaction
     // and a token object has been provided
     token &&
     // and we are able to parse the token details from the raw data
-    tokenData?.params?.length
+    tokenData?.params?.length,
   )
 
   const displayValue = useMemo(() => {

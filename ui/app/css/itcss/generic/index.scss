@@ -41,8 +41,7 @@ html {
   .unit-input__input,
   .account-list-item__account-primary-balance,
   .account-list-item__input,
-  .currency-display__input
-   {
+  .currency-display__input {
     outline: none;
   }
 }
@@ -130,11 +129,11 @@ input.form-control {
 
 .pinned-to-bottom {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
 }
 
 .pinned-to-bottom-right {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   right: 0;
 }

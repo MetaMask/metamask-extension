@@ -5,11 +5,11 @@ export const MAINNET = 'mainnet'
 export const GOERLI = 'goerli'
 export const LOCALHOST = 'localhost'
 
-export const MAINNET_NETWORK_ID = 1
-export const ROPSTEN_NETWORK_ID = 3
-export const RINKEBY_NETWORK_ID = 4
-export const GOERLI_NETWORK_ID = 5
-export const KOVAN_NETWORK_ID = 42
+export const MAINNET_NETWORK_ID = '1'
+export const ROPSTEN_NETWORK_ID = '3'
+export const RINKEBY_NETWORK_ID = '4'
+export const GOERLI_NETWORK_ID = '5'
+export const KOVAN_NETWORK_ID = '42'
 
 export const MAINNET_CHAIN_ID = '0x1'
 export const ROPSTEN_CHAIN_ID = '0x3'

@@ -27,7 +27,7 @@ export default function getRestrictedMethods ({ getIdentities, getKeyringAccount
             (err) => {
               res.error = err
               end(err)
-            }
+            },
           )
       },
     },

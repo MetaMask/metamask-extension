@@ -16,7 +16,7 @@
 
 .send-screen-card {
   background-color: #fff;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -49,7 +49,7 @@
   width: 70px;
   height: 70px;
   border: 1px solid $alto;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
   position: absolute;
   top: -35px;
   z-index: 25;
@@ -186,7 +186,7 @@
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
-  font-family: "Lato";
+  font-family: Roboto;
   font-weight: 500;
 }
 
@@ -271,7 +271,7 @@
   display: flex;
   flex-direction: column;
   color: #9b9b9b;
-  font-size: .8em;
+  font-size: 0.8em;
   padding: 1px 4px;
   cursor: pointer;
 }
@@ -307,7 +307,7 @@
   }
 
   &__send-button__disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: auto;
   }
 }
@@ -322,7 +322,7 @@
     width: 498px;
     height: 605px;
     background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -402,7 +402,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -548,7 +548,7 @@
   }
 
   &__form-row {
-    margin: 1rem 1rem 0px;
+    margin: 1rem 1rem 0;
     position: relative;
     display: flex;
     flex-flow: row;
@@ -625,7 +625,7 @@
       border: 1px solid $geyser;
       border-radius: 4px;
       background-color: $white;
-      box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -642,13 +642,13 @@
 
     &__single-asset {
       display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-        padding: 8px 8px;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding: 8px 8px;
 
-        &:hover {
-          background-color: rgba($alto, 0.2);
-        }
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
     }
 
     &__asset {
@@ -687,7 +687,7 @@
       font-size: 12px;
 
       &__label {
-        margin-right: .25rem;
+        margin-right: 0.25rem;
       }
     }
 
@@ -703,7 +703,7 @@
       border: 1px solid $geyser;
       border-radius: 4px;
       background-color: $white;
-      box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -728,6 +728,7 @@
 
       .send-v2__asset-dropdown__asset {
         height: 100%;
+
         &:hover {
           background-color: $white;
         }
@@ -750,7 +751,8 @@
     }
   }
 
-  &__memo-text-area, &__hex-data {
+  &__memo-text-area,
+  &__hex-data {
     &__input {
       z-index: 1025;
       position: relative;
@@ -780,7 +782,7 @@
       width: 56px;
       height: 20px;
       position: absolute;
-      border: 2px solid #B0D7F2;
+      border: 2px solid #b0d7f2;
       border-radius: 6px;
       cursor: pointer;
       top: 0;
@@ -793,14 +795,14 @@
       color: #2f9ae0;
 
       &__disabled {
-        color: #B0D7F2;
+        color: #b0d7f2;
         cursor: auto;
       }
     }
 
     input:checked + &__button {
-      background-color: #037DD6;
-      border: 2px solid #037DD6;
+      background-color: #037dd6;
+      border: 2px solid #037dd6;
       color: #fff;
     }
   }
@@ -820,7 +822,6 @@
       display: flex;
       align-items: center;
     }
-
   }
 
   &__sliders-icon-container {
@@ -868,10 +869,10 @@
   }
 
   &__customize-gas {
-    border: 1px solid #D8D8D8;
+    border: 1px solid #d8d8d8;
     border-radius: 4px;
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.14);
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
     font-family: Roboto;
     display: flex;
     flex-flow: column;
@@ -943,7 +944,10 @@
       margin-right: 21.25px;
     }
 
-    &__revert, &__cancel, &__save, &__save__error {
+    &__revert,
+    &__cancel,
+    &__save,
+    &__save__error {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -957,7 +961,9 @@
       margin-left: 21.25px;
     }
 
-    &__cancel, &__save, &__save__error {
+    &__cancel,
+    &__save,
+    &__save__error {
       width: 85.74px;
       min-width: initial;
     }
@@ -1028,7 +1034,7 @@
       border-left: 1px solid #dadada;
       font-size: 18px;
       color: $tundora;
-      right: 0px;
+      right: 0;
       padding: 0;
       display: flex;
       justify-content: space-around;
@@ -1054,7 +1060,6 @@
       display: none;
     }
   }
-
 }
 
 .advanced-gas-options-btn {

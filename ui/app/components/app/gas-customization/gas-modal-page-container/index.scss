@@ -15,7 +15,7 @@
     }
 
     &__header {
-      padding: 0px;
+      padding: 0;
       padding-top: 16px;
 
       &--no-padding-bottom {
@@ -32,7 +32,7 @@
 
     &__header-close-text {
       font-size: 14px;
-      color: #4EADE7;
+      color: #4eade7;
       position: absolute;
       top: 16px;
       right: 16px;
@@ -56,7 +56,7 @@
     }
 
     &__tabs {
-      margin-top: 0px;
+      margin-top: 0;
     }
 
     &__tab {
@@ -85,7 +85,8 @@
   }
 
 
-  &__info-row, &__info-row--fade {
+  &__info-row,
+  &__info-row--fade {
     width: 100%;
     background: $polar;
     padding: 15px 21px;
@@ -98,7 +99,10 @@
       padding: 4px 21px;
     }
 
-    &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
+    &__send-info,
+    &__transaction-info,
+    &__total-info,
+    &__fiat-total-info {
       display: flex;
       flex-flow: row;
       justify-content: space-between;
@@ -127,7 +131,8 @@
       }
     }
 
-    &__transaction-info, &__send-info {
+    &__transaction-info,
+    &__send-info {
       &__label {
         font-size: 12px;
       }

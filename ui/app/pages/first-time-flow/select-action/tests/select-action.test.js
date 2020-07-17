@@ -17,7 +17,7 @@ describe('Selection Action', function () {
 
   beforeEach(function () {
     wrapper = mountWithRouter(
-      <SelectAction.WrappedComponent {...props} />
+      <SelectAction.WrappedComponent {...props} />,
     )
   })
 

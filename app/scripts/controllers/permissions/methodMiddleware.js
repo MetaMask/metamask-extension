@@ -33,7 +33,7 @@ export default function createMethodMiddleware ({
 
         if (isProcessingRequestAccounts) {
           res.error = ethErrors.rpc.resourceUnavailable(
-            'Already processing eth_requestAccounts. Please wait.'
+            'Already processing eth_requestAccounts. Please wait.',
           )
           return
         }
@@ -68,7 +68,7 @@ export default function createMethodMiddleware ({
           // this should never happen, because it should be caught in the
           // above catch clause
           res.error = ethErrors.rpc.internal(
-            'Accounts unexpectedly unavailable. Please report this bug.'
+            'Accounts unexpectedly unavailable. Please report this bug.',
           )
         }
 

@@ -94,5 +94,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(Settings)

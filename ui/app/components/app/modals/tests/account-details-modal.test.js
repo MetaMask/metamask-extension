@@ -41,7 +41,7 @@ describe('Account Details Modal', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
   })
 

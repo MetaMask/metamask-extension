@@ -47,11 +47,11 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
 
   const pendingTransactions = useMemo(
     () => getFilteredTransactionGroups(unfilteredPendingTransactions, hideTokenTransactions, tokenAddress),
-    [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions]
+    [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions],
   )
   const completedTransactions = useMemo(
     () => getFilteredTransactionGroups(unfilteredCompletedTransactions, hideTokenTransactions, tokenAddress),
-    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions]
+    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   )
 
   const { fetchGasEstimates, fetchBasicGasAndTimeEstimates } = useMemo(() => ({

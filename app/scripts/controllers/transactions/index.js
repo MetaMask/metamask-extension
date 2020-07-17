@@ -25,7 +25,6 @@ import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import log from 'loglevel'
-import { throwIfAccountIsBlocked } from './lib/recipient-blocklist-checker'
 
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -38,6 +37,7 @@ import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -125,14 +125,19 @@ export default class TransactionController extends EventEmitter {
     this._updatePendingTxsAfterFirstBlock()
   }
 
-  /** @returns {number} - the chainId*/
+  /**
+   * Gets the current chainId in the network store as a number, returning 0 if
+   * the chainId parses to NaN.
+   *
+   * @returns {number} The numerical chainId.
+   */
   getChainId () {
     const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState)
-    if (Number.isNaN(getChainId)) {
+    const integerChainId = parseInt(networkState)
+    if (Number.isNaN(integerChainId)) {
       return 0
     } else {
-      return getChainId
+      return integerChainId
     }
   }
 
@@ -241,7 +246,6 @@ export default class TransactionController extends EventEmitter {
     this.emit('newUnapprovedTx', txMeta)
 
     try {
-      throwIfAccountIsBlocked(txMeta.metamaskNetworkId, normalizedTxParams.to)
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
@@ -786,9 +790,8 @@ export default class TransactionController extends EventEmitter {
   */
   _updateMemstore () {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const currentNetworkTxList = this.txStateManager.getFilteredTxList({
-      metamaskNetworkId: this.getNetwork(),
-    })
+    const currentNetworkTxList = this.txStateManager.getTxList(MAX_MEMSTORE_TX_LIST_SIZE)
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
+
 }

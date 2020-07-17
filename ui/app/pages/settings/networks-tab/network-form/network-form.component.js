@@ -208,7 +208,7 @@ export default class NetworkForm extends PureComponent {
   validateChainId = (chainId) => {
     this.setErrorTo('chainId', !!chainId && Number.isNaN(parseInt(chainId))
       ? `${this.context.t('invalidInput')} chainId`
-      : ''
+      : '',
     )
   }
 

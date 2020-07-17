@@ -22,7 +22,8 @@
     height: 130px;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     height: 130px;
     max-width: 108px;
     font-size: 12px;
@@ -56,7 +57,7 @@
       &:last-child {
         display: flex;
         color: $curious-blue;
-        margin-top: 8px
+        margin-top: 8px;
       }
     }
   }
@@ -109,7 +110,8 @@
     height: 54px;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     background: white;
     color: $scorpion;
     padding: 0 4px;
@@ -136,7 +138,7 @@
       &:last-child {
         display: flex;
         color: $curious-blue;
-        margin-top: 10px
+        margin-top: 10px;
       }
     }
   }
@@ -181,19 +183,20 @@
     color: $black;
   }
 
-  .button-group__button, .button-group__button--active {
+  .button-group__button,
+  .button-group__button--active {
     height: 78px;
     background: white;
-    color: #2A4055;
+    color: #2a4055;
     width: 108px;
     height: 97px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.151579);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
     border-radius: 6px;
     border: none;
 
     div {
       display: flex;
-      flex-flow: column;;
+      flex-flow: column;
       align-items: flex-start;
       justify-content: flex-start;
       position: relative;
@@ -213,8 +216,8 @@
   }
 
   .button-group__button--active {
-    background: #F7FCFF;
-    border: 2px solid #2C8BDC;
+    background: #f7fcff;
+    border: 2px solid #2c8bdc;
 
     .button-check-wrapper {
       height: 16px;
@@ -223,7 +226,7 @@
       position: absolute;
       top: -11px;
       right: -10px;
-      background: #D5ECFA;
+      background: #d5ecfa;
       display: flex;
       flex-flow: row;
       justify-content: center;

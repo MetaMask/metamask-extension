@@ -1,67 +1,68 @@
 .signature-request-message {
-    flex: 1 60%;
+  flex: 1 60%;
+  display: flex;
+  flex-direction: column;
+
+  &__title {
+    font-weight: 500;
+    font-size: 14px;
+    color: #636778;
+    margin-left: 12px;
+  }
+
+  h2 {
+    flex: 1 1 0;
+    text-align: left;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #d2d8dd;
+    padding: 0.5rem;
+    margin: 0;
+    color: #ccc;
+  }
+
+  &--root {
+    flex: 1 100%;
+    background-color: #f8f9fb;
+    padding-bottom: 0.5rem;
+    overflow: auto;
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 360px;
+    font-family: monospace;
+
+    @media screen and (min-width: 576px) {
+      width: auto;
+    }
+  }
+
+  &__type-title {
+    font-family: monospace;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    margin-left: 12px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+  }
+
+  &--node,
+  &--node-leaf {
+    padding-left: 0.8rem;
+
+    &-label {
+      color: #5b5d67;
+    }
+
+    &-value {
+      color: black;
+      margin-left: 0.5rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  &--node-leaf {
     display: flex;
-    flex-direction: column;
-
-    &__title {
-        font-weight: 500;
-        font-size: 14px;
-        color: #636778;
-        margin-left: 12px;
-    }
-
-    h2 {
-        flex: 1 1 0;
-        text-align: left;
-        font-size: 0.8rem;
-        border-bottom: 1px solid #d2d8dd;
-        padding: 0.5rem;
-        margin: 0;
-        color: #ccc;
-    }
-
-    &--root {
-        flex: 1 100%;
-        background-color: #f8f9fb;
-        padding-bottom: 0.5rem;
-        overflow: auto;
-        padding-left: 12px;
-        padding-right: 12px;
-        width: 360px;
-        font-family: monospace;
-
-        @media screen and (min-width: 576px) {
-            width: auto;
-        }
-    }
-    
-    &__type-title {
-        font-family: monospace;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        margin-left: 12px;
-        margin-top: 6px;
-        margin-bottom: 10px;
-    }
-
-    &--node, &--node-leaf {
-        padding-left: 0.8rem;
-
-        &-label {
-            color: #5B5D67;
-        }
-
-        &-value {
-            color: black;
-            margin-left: 0.5rem;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-    }
-
-    &--node-leaf {
-        display: flex;
-    }
+  }
 }

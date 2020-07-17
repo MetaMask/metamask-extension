@@ -1,19 +1,18 @@
 .connected-status-indicator {
-  display:flex;
+  display: flex;
   align-items: center;
   place-self: center start;
-
   background: none;
   font-size: inherit;
   padding: 8px;
   border-radius: 100px;
 
   &:hover {
-    background-color: #F2F3F4;
+    background-color: #f2f3f4;
   }
 
   &:active {
-    background-color: #EDEDED;
+    background-color: #ededed;
   }
 
   &__inner-circle {
@@ -23,7 +22,9 @@
     background-color: transparent;
   }
 
-  &__green-circle, &__yellow-circle, &__grey-circle {
+  &__green-circle,
+  &__yellow-circle,
+  &__grey-circle {
     border-radius: 4px;
     height: 8px;
     width: 8px;
@@ -34,15 +35,15 @@
   }
 
   &__green-circle {
-    border-color: #4CD964;
+    border-color: #4cd964;
   }
 
   &__green-circle &__inner-circle {
-    background-color: #4CD964;
+    background-color: #4cd964;
   }
 
   &__yellow-circle {
-    border-color: #FFD33D;
+    border-color: #ffd33d;
   }
 
   &__grey-circle {

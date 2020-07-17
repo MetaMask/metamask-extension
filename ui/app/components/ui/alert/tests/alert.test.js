@@ -9,7 +9,7 @@ describe('Alert', function () {
 
   beforeEach(function () {
     wrapper = shallow(
-      <Alert />
+      <Alert />,
     )
   })
 

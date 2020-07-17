@@ -20,7 +20,7 @@
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #373A47;
+  background-color: #373a47;
   animation-fill-mode: forwards;
   animation-duration: 0.3s;
 }
@@ -87,7 +87,6 @@
 // Account Details Modal
 
 .account-modal-container {
-
   .qr-header {
     margin-top: 9px;
     font-size: 20px;
@@ -144,7 +143,8 @@
   flex-direction: column;
 }
 
-.private-key-password-label, .private-key-password-error {
+.private-key-password-label,
+.private-key-password-error {
   color: $scorpion;
   font-size: 14px;
   line-height: 18px;
@@ -171,7 +171,7 @@
 
 .private-key-password-warning {
   border-radius: 8px;
-  background-color: #FFF6F6;
+  background-color: #fff6f6;
   font-size: 12px;
   font-weight: 500;
   line-height: 15px;
@@ -235,7 +235,7 @@
   min-height: 250.72px;
   border-radius: 4px;
   background-color: $white;
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, .5);
+  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
 
   &__container {
     padding: 24px 27px 21px;
@@ -288,7 +288,9 @@
 
   &__button {
     @include paragraph;
+
     @extend %button;
+
     width: 141px;
     margin: 0 5px;
   }
@@ -297,7 +299,6 @@
 //Notification Modal
 
 .notification-modal {
-
   &__wrapper {
     display: flex;
     flex-direction: column;
@@ -333,7 +334,7 @@
     justify-content: space-evenly;
     width: 100%;
     margin-bottom: 24px;
-    padding: 0px 42px;
+    padding: 0 42px;
 
     &__btn {
       cursor: pointer;
@@ -429,7 +430,7 @@
     &__back {
       position: absolute;
       top: 10px;
-      left: 0px;
+      left: 0;
     }
 
     &__logo-container {
@@ -485,7 +486,7 @@
   }
 
   &__buy-row:last-of-type {
-    border-bottom: 0px;
+    border-bottom: 0;
   }
 
   &__deposit-button {
@@ -493,16 +494,17 @@
   }
 
   .simple-dropdown {
-    color: #5B5D67;
+    color: #5b5d67;
     font-size: 16px;
     line-height: 21px;
-    border: 1px solid #D8D8D8;
-    background-color: #FFFFFF;
+    border: 1px solid #d8d8d8;
+    background-color: #fff;
     text-align: center;
     width: 100%;
     height: 45px;
     line-height: 44px;
-    font-family: Montserrat Light;
+    font-family: Roboto;
+    font-weight: 300;
   }
 
   .simple-dropdown__selected {

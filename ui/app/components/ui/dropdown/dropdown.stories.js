@@ -31,7 +31,7 @@ export const simple = () => (
       select(
         'Selected Option',
         namedOptions.map((option) => option.value),
-        namedOptions[0].value
+        namedOptions[0].value,
       )
     }
   />
@@ -48,7 +48,7 @@ export const optionsWithoutNames = () => (
       select(
         'Selected Option',
         unnamedOptions.map((option) => option.value),
-        unnamedOptions[0].value
+        unnamedOptions[0].value,
       )
     }
   />
@@ -65,7 +65,7 @@ export const optionsWithLongNames = () => (
       select(
         'Selected Option',
         namedOptionsWithVeryLongNames.map((option) => option.value),
-        namedOptionsWithVeryLongNames[0].value
+        namedOptionsWithVeryLongNames[0].value,
       )
     }
   />
@@ -82,7 +82,7 @@ export const optionsWithLongNamesAndShortWidth = () => (
       select(
         'Selected Option',
         namedOptionsWithVeryLongNames.map((option) => option.value),
-        namedOptionsWithVeryLongNames[0].value
+        namedOptionsWithVeryLongNames[0].value,
       )
     }
     style={{ width: '200px' }}

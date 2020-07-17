@@ -117,7 +117,7 @@ describe('DetectTokensController', function () {
       [
         { address: existingTokenAddress.toLowerCase(), decimals: existingToken.decimals, symbol: existingToken.symbol },
         { address: tokenAddressToAdd.toLowerCase(), decimals: tokenToAdd.decimals, symbol: tokenToAdd.symbol },
-      ]
+      ],
     )
   })
 

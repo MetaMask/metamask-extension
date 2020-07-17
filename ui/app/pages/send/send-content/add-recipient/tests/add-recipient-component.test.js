@@ -58,7 +58,7 @@ describe('AddRecipient Component', function () {
       assert.equal(propsMethodSpies.updateSendTo.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendTo.getCall(0).args,
-        ['mockTo2', 'mockNickname']
+        ['mockTo2', 'mockNickname'],
       )
     })
 

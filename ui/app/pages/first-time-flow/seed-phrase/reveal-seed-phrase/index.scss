@@ -11,7 +11,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    border: 1px solid #CDCDCD;
+    border: 1px solid #cdcdcd;
     border-radius: 6px;
     background-color: $white;
     padding: 18px;
@@ -35,7 +35,7 @@
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -46,7 +46,7 @@
 
   &__reveal-button {
     color: $white;
-    font-size: .75rem;
+    font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;
@@ -60,7 +60,7 @@
   }
 
   button {
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   &__buttons {

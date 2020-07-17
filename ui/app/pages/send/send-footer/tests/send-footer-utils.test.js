@@ -35,7 +35,7 @@ describe('send-footer utils', function () {
           prop1: '0x123',
           prop2: '0x456',
           prop3: '0xx',
-        }
+        },
       )
     })
   })
@@ -48,7 +48,7 @@ describe('send-footer utils', function () {
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xdef'),
-        false
+        false,
       )
     })
 
@@ -59,7 +59,7 @@ describe('send-footer utils', function () {
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xxyz'),
-        true
+        true,
       )
     })
   })
@@ -83,7 +83,7 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
@@ -104,7 +104,7 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
@@ -124,7 +124,7 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
   })

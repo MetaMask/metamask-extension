@@ -32,7 +32,7 @@ describe('Page Footer', function () {
       <PageFooter>
         <div>Works</div>
       </PageFooter>,
-      { context: { t: sinon.spy((k) => `[${k}]`) } }
+      { context: { t: sinon.spy((k) => `[${k}]`) } },
     )
 
     assert.equal(wrapper.find('.page-container__footer-secondary').length, 1)

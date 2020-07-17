@@ -16,7 +16,7 @@ describe('Lock', function () {
     }
 
     mountWithRouter(
-      <Lock.WrappedComponent {...props} />
+      <Lock.WrappedComponent {...props} />,
     )
 
     assert.equal(props.history.replace.getCall(0).args[0], '/')
@@ -36,7 +36,7 @@ describe('Lock', function () {
     props.lockMetamask.resolves()
 
     mountWithRouter(
-      <Lock.WrappedComponent {...props} />
+      <Lock.WrappedComponent {...props} />,
     )
 
     assert(props.lockMetamask.calledOnce)

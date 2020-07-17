@@ -17,8 +17,8 @@ $white-linen: #faf6f0; // formerly 'faint orange (textfield shades)'
 $rajah: #f5c26d; // formerly 'light orange (button shades)'
 $buttercup: #f5a623; // formerly 'dark orange (text)'
 $tundora: #4a4a4a; // formerly 'borders/font/any gray'
-$flamingo: #F56821;
-$valencia: #D73A49;
+$flamingo: #f56821;
+$valencia: #d73a49;
 $gallery: #efefef;
 $alabaster: #f7f7f7;
 $shark: #22232c;
@@ -28,7 +28,7 @@ $dusty-gray: #9b9b9b;
 $alto: #dedede;
 $alabaster: #fafafa;
 $silver-chalice: #aeaeae;
-$curious-blue: #037DD6;
+$curious-blue: #037dd6;
 $concrete: #f3f3f3;
 $tundora: #4d4d4d;
 $nile-blue: #1b344d;
@@ -57,25 +57,25 @@ $dodger-blue: #3099f2;
 $zumthor: #edf7ff;
 $ecstasy: #f7861c;
 $linen: #fdf4f4;
-$oslo-gray: #8C8E94;
+$oslo-gray: #8c8e94;
 $polar: #fafcfe;
 $blizzard-blue: #bfdef3;
 $mischka: #dddee9;
 $web-orange: #f2a202;
-$mercury: #E5E5E5;
-$lochmara: #037DD6;
+$mercury: #e5e5e5;
+$lochmara: #037dd6;
 
 /*
   notification and error message colors
   */
-$success-green: #28A745;
-$success-light-green: #E8F9F1;
-$danger-red: #D73A49;
-$danger-light-red: #F8EAE8;
-$info-blue: #037DD6;
-$info-light-blue: #E8F4FD;
-$warning-yellow: #FFD33D;
-$warning-light-yellow: #FEFAE8;
+$success-green: #28a745;
+$success-light-green: #e8f9f1;
+$danger-red: #d73a49;
+$danger-light-red: #f8eae8;
+$info-blue: #037dd6;
+$info-light-blue: #e8f4fd;
+$warning-yellow: #ffd33d;
+$warning-light-yellow: #fefae8;
 
 /*
   Z-Indicies
@@ -117,7 +117,7 @@ $sidebar-overlay-z-index: 25;
 %modal {
   background-color: $white;
   border-radius: 10px;
-  box-shadow: 0px 5px 16px rgba($black, 0.25);;
+  box-shadow: 0 5px 16px rgba($black, 0.25);;
 }
 
 /*
@@ -144,19 +144,19 @@ $Blue-100: #a7d9fe;
 $Blue-200: #75c4fd;
 $Blue-300: #43aefc;
 $Blue-400: #1098fc;
-$Blue-500: #037DD6;
+$Blue-500: #037dd6;
 $Blue-600: #0260a4;
 $Blue-700: #024272;
 $Blue-800: #01253f;
 $Blue-900: #00080d;
 
 $Grey-000: #f2f3f4;
-$Grey-100: #D6D9DC;
+$Grey-100: #d6d9dc;
 $Grey-200: #bbc0c5;
 $Grey-300: #9fa6ae;
 $Grey-400: #848c96;
 $Grey-200: #bbc0c5;
-$Grey-500: #6A737D;
+$Grey-500: #6a737d;
 $Grey-600: #535a61;
 $Grey-800: #24272a;
 
@@ -165,7 +165,7 @@ $Red-100: #f7d5d8;
 $Red-200: #f1b9be;
 $Red-300: #e88f97;
 $Red-400: #e06470;
-$Red-500: #D73A49;
+$Red-500: #d73a49;
 $Red-600: #b92534;
 $Red-700: #8e1d28;
 $Red-800: #64141c;
@@ -174,9 +174,9 @@ $Red-900: #3a0c10;
 $Orange-000: #fef5ef;
 $Orange-300: #faa66c;
 $Orange-600: #c65507;
-$Orange-500: #F66A0A;
+$Orange-500: #f66a0a;
 
-$Black-100: #24292E;
+$Black-100: #24292e;
 
 // Font Sizes
 %h3 {
@@ -198,13 +198,13 @@ $Black-100: #24292E;
 }
 
 %h6 {
-  font-size: .875rem;
+  font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 400;
 }
 
 %h8 {
-  font-size: .75rem;
+  font-size: 0.75rem;
   line-height: 1.0625rem;
   font-weight: 400;
 }
@@ -213,7 +213,7 @@ $Black-100: #24292E;
 /*
   Spacing Variables
 */
-$no-spacing: 0px;
+$no-spacing: 0;
 $xxs-spacing: 4px;
 $xs-spacing: 8px;
 $s-spacing: 16px;
@@ -229,7 +229,7 @@ $xxlarge-spacing: 64px;
   border: 1px solid $Grey-100;
   box-sizing: border-box;
   border-radius: 8px;
-  padding: .625rem .75rem;
+  padding: 0.625rem 0.75rem;
   font-size: 1.25rem;
 }
 // Input mixin
@@ -257,20 +257,24 @@ $xxlarge-spacing: 64px;
 
 %font--bold {
   @extend %font;
+
   font-weight: bold;
 }
 
 %header--18 {
   @extend %font;
+
   font-size: 18px;
 }
 
 %header--24 {
   @extend %font;
+
   font-size: 24px;
 }
 
 %content-text {
   @extend %font;
+
   font-size: 14px;
 }

@@ -43,12 +43,12 @@ const AssetList = ({ onClickAsset }) => {
 
   const [primaryCurrencyDisplay] = useCurrencyDisplay(
     selectedAccountBalance,
-    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency }
+    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency },
   )
 
   const [secondaryCurrencyDisplay] = useCurrencyDisplay(
     selectedAccountBalance,
-    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency }
+    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency },
   )
 
   return (

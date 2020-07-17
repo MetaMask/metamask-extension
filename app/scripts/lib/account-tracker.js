@@ -152,6 +152,14 @@ export default class AccountTracker {
   }
 
   /**
+   * Removes all addresses and associated balances
+   */
+
+  clearAccounts () {
+    this.store.updateState({ accounts: {} })
+  }
+
+  /**
    * Given a block, updates this AccountTracker's currentBlockGasLimit, and then updates each local account's balance
    * via EthQuery
    *
