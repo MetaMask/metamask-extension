@@ -128,7 +128,7 @@ describe('SendFooter Component', function () {
       },
 
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         wrapper.setProps(obj)
         assert.equal(wrapper.instance().formShouldBeDisabled(), obj.expectedResult)
