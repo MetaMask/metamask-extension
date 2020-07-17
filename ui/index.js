@@ -9,6 +9,7 @@ import configureStore from './app/store/store'
 import txHelper from './lib/tx-helper'
 import { getEnvironmentType } from '../app/scripts/lib/util'
 import { ALERT_TYPES } from '../app/scripts/controllers/alert'
+import { SENTRY_STATE } from '../app/scripts/lib/setupSentry'
 import { ENVIRONMENT_TYPE_POPUP } from '../app/scripts/lib/enums'
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from './app/helpers/utils/i18n-helper'
 import switchDirection from './app/helpers/utils/switch-direction'
@@ -138,12 +139,48 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   return store
 }
 
+/**
+ * Return a "masked" copy of the given object.
+ *
+ * The returned object includes only the properties present in the mask. The
+ * mask is an object that mirrors the structure of the given object, except
+ * the only values are `true` or a sub-mask. `true` implies the property
+ * should be included, and a sub-mask implies the property should be further
+ * masked according to that sub-mask.
+ *
+ * @param {Object} object - The object to mask
+ * @param {Object<Object|boolean>} mask - The mask to apply to the object
+ */
+function maskObject (object, mask) {
+  return Object.keys(object)
+    .reduce(
+      (state, key) => {
+        if (mask[key] === true) {
+          state[key] = object[key]
+        } else if (mask[key]) {
+          state[key] = maskObject(object[key], mask[key])
+        }
+        return state
+      },
+      {},
+    )
+}
+
 function setupDebuggingHelpers (store) {
   window.getCleanAppState = function () {
     const state = clone(store.getState())
     state.version = global.platform.getVersion()
     state.browser = window.navigator.userAgent
     return state
+  }
+  window.getSentryState = function () {
+    const fullState = store.getState()
+    const debugState = maskObject(fullState, SENTRY_STATE)
+    return {
+      browser: window.navigator.userAgent,
+      store: debugState,
+      version: global.platform.getVersion(),
+    }
   }
 }
 
