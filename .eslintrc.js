@@ -43,6 +43,7 @@ module.exports = {
   rules: {
     /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
     'array-callback-return': 'error',
+    'callback-return': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',
