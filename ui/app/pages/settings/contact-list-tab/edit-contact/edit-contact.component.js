@@ -23,6 +23,7 @@ export default class EditContact extends PureComponent {
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
     setAccountLabel: PropTypes.func,
+    showingMyAccounts: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -40,22 +41,40 @@ export default class EditContact extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { history, name, addToAddressBook, removeFromAddressBook, address, chainId, memo, viewRoute, listRoute, setAccountLabel } = this.props
+    const {
+      address,
+      addToAddressBook,
+      chainId,
+      history,
+      listRoute,
+      memo,
+      name,
+      removeFromAddressBook,
+      setAccountLabel,
+      showingMyAccounts,
+      viewRoute,
+    } = this.props
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
           <Identicon address={address} diameter={60} />
-          <Button
-            type="link"
-            className="settings-page__address-book-button"
-            onClick={async () => {
-              await removeFromAddressBook(chainId, address)
-              history.push(listRoute)
-            }}
-          >
-            {t('deleteAccount')}
-          </Button>
+          {
+            showingMyAccounts
+              ? null
+              : (
+                <Button
+                  type="link"
+                  className="settings-page__address-book-button"
+                  onClick={async () => {
+                    await removeFromAddressBook(chainId, address)
+                    history.push(listRoute)
+                  }}
+                >
+                  {t('deleteAccount')}
+                </Button>
+              )
+          }
         </div>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
