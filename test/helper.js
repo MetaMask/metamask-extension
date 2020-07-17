@@ -3,6 +3,8 @@ import nock from 'nock'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import log from 'loglevel'
+import { JSDOM } from 'jsdom'
+
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
@@ -45,8 +47,6 @@ global.log = log
 //
 
 // dom
-const { JSDOM } = require('jsdom')
-
 const jsdom = new JSDOM()
 global.window = jsdom.window
 
@@ -87,5 +87,6 @@ if (!window.crypto) {
   window.crypto = {}
 }
 if (!window.crypto.getRandomValues) {
+  // eslint-disable-next-line global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 }

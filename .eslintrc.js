@@ -44,6 +44,7 @@ module.exports = {
     /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
     'array-callback-return': 'error',
     'callback-return': 'error',
+    'global-require': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',
@@ -104,6 +105,13 @@ module.exports = {
     ],
     rules: {
       'import/no-anonymous-default-export': ['error', { 'allowObject': true }],
+    },
+  }, {
+    files: [
+      'app/scripts/migrations/*.js',
+    ],
+    rules: {
+      'global-require': 'off',
     },
   }],
 
