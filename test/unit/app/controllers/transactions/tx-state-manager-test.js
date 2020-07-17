@@ -598,4 +598,23 @@ describe('TransactionStateManager', function () {
       assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })
   })
+
+  describe('#clearUnapprovedTxs', function () {
+    it('removes unapproved transactions', function () {
+      const txMetas = [
+        { id: 0, status: 'unapproved', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
+        { id: 1, status: 'unapproved', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
+        { id: 2, status: 'confirmed', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: otherNetworkId },
+        { id: 3, status: 'confirmed', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: otherNetworkId },
+      ]
+
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
+
+      txStateManager.clearUnapprovedTxs()
+
+      const unapprovedTxList = txStateManager.getFullTxList().filter((tx) => tx.status === 'unapproved')
+
+      assert.equal(unapprovedTxList.length, 0)
+    })
+  })
 })

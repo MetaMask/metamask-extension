@@ -632,7 +632,7 @@ export default class MetamaskController extends EventEmitter {
       this.permissionsController.clearPermissions()
 
       // clear unapproved transactions
-      this.txController.clearUnapprovedTxs()
+      this.txController.txStateManager.clearUnapprovedTxs()
 
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
