@@ -631,6 +631,12 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionsController.clearPermissions()
 
+      // clear accounts in accountTracker
+      this.accountTracker.clearAccounts()
+
+      // clear cachedBalances
+      this.cachedBalancesController.clearCachedBalances()
+
       // clear unapproved transactions
       this.txController.txStateManager.clearUnapprovedTxs()
 
