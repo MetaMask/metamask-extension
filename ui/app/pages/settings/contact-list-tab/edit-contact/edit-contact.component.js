@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 import Identicon from '../../../../components/ui/identicon'
 import Button from '../../../../components/ui/button/button.component'
 import TextField from '../../../../components/ui/text-field'
@@ -28,7 +29,6 @@ export default class EditContact extends PureComponent {
 
   static defaultProps = {
     name: '',
-    address: '',
     memo: '',
   }
 
@@ -55,6 +55,10 @@ export default class EditContact extends PureComponent {
       viewRoute,
     } = this.props
 
+    if (!address) {
+      return <Redirect to={{ pathname: listRoute }} />
+    }
+
     return (
       <div className="settings-page__content-row address-book__edit-contact">
         <div className="settings-page__header address-book__header--edit">
@@ -68,7 +72,6 @@ export default class EditContact extends PureComponent {
                   className="settings-page__address-book-button"
                   onClick={async () => {
                     await removeFromAddressBook(chainId, address)
-                    history.push(listRoute)
                   }}
                 >
                   {t('deleteAccount')}
@@ -136,7 +139,9 @@ export default class EditContact extends PureComponent {
               if (isValidAddress(this.state.newAddress)) {
                 await removeFromAddressBook(chainId, address)
                 await addToAddressBook(this.state.newAddress, this.state.newName || name, this.state.newMemo || memo)
-                setAccountLabel(this.state.newAddress, this.state.newName || name)
+                if (showingMyAccounts) {
+                  setAccountLabel(this.state.newAddress, this.state.newName || name)
+                }
                 history.push(listRoute)
               } else {
                 this.setState({ error: this.context.t('invalidAddress') })
@@ -144,7 +149,9 @@ export default class EditContact extends PureComponent {
             } else {
               // update name
               await addToAddressBook(address, this.state.newName || name, this.state.newMemo || memo)
-              setAccountLabel(address, this.state.newName || name)
+              if (showingMyAccounts) {
+                setAccountLabel(address, this.state.newName || name)
+              }
               history.push(listRoute)
             }
           }}
