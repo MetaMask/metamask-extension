@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+## 0.3.1 Sat Jul 18 2020
+- chore(deps): use new conflux local network lite @cfxjs/fullnode (#189)
+- docs(trans): Pontus -> Oceanus don't depends on time (#190)
+- chore: test with fullnode 0.6.0-rc3 (#191)
+- fix(contract-manager-api): add pagination query params (#192)
+
 ## 0.3.0 Wed Jul 15 2020
 - fix: sentry sourcemap upload (#181)
 - feat: update for new version of fullnode (#182)
