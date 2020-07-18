@@ -65,7 +65,7 @@ class DetectTokensController {
     }
 
     const res = await fetch(
-      endpoint + CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API
+      endpoint + CONFLUX_SCAN_CONTRACT_MANAGER_LIST_API + '?page=1&pageSize=500'
     ).catch(() => {})
 
     if (!res || !res.ok) {

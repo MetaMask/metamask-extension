@@ -1,6 +1,6 @@
-const Ganache = require('@yqrashawn/conflux-local-network-lite')
+const Node = require('@cfxjs/fullnode')
 
-const ganacheserver = new Ganache({
+const server = new Node({
   verbose: true,
   genBlockInterval: 300,
   killPortProcess: true,
@@ -10,7 +10,7 @@ const ganacheserver = new Ganache({
   // const PASSWORD = "11111111"
 
 ;(async function () {
-  await ganacheserver
+  await server
     .start({
       accounts: [
         {

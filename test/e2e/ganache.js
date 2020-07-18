@@ -1,5 +1,5 @@
 // const ganache = require('ganache-core')
-const Ganache = require('@yqrashawn/conflux-local-network-lite')
+const Ganache = require('@cfxjs/fullnode')
 // const { promisify } = require('util')
 
 // const defaultOptions = {
