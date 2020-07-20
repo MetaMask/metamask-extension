@@ -51,7 +51,7 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('successfuly signs typed data', function () {
+  describe('successfully signs typed data', function () {
     let extension
     let popup
     let dapp

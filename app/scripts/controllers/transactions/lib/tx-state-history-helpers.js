@@ -23,7 +23,7 @@ export function migrateFromSnapshotsToDiffs (longHistory) {
   Generates an array of history objects sense the previous state.
   The object has the keys
     op (the operation performed),
-    path (the key and if a nested object then each key will be seperated with a `/`)
+    path (the key and if a nested object then each key will be separated with a `/`)
     value
   with the first entry having the note and a timestamp when the change took place
   @param {Object} previousState - the previous state of the object

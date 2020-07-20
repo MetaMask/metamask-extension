@@ -171,7 +171,7 @@ export function getActivities (transaction, isFirstTransaction = false) {
     return acc
   }, [])
 
-  // If txReceipt.status is '0x0', that means that an on-chain error occured for the transaction,
+  // If txReceipt.status is '0x0', that means that an on-chain error occurred for the transaction,
   // so we add an error entry to the Activity Log.
   return status === '0x0'
     ? historyActivities.concat({ id, hash, eventKey: TRANSACTION_ERRORED_EVENT })

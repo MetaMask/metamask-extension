@@ -198,7 +198,7 @@ describe('send utils', function () {
   })
 
   describe('calcTokenBalance()', function () {
-    it('should return the calculated token blance', function () {
+    it('should return the calculated token balance', function () {
       assert.equal(calcTokenBalance({
         sendToken: {
           address: '0x0',

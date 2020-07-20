@@ -9,7 +9,7 @@ class AsyncWritableStream extends WritableStream {
     this._asyncWriteFn = asyncWriteFn
   }
 
-  // write from incomming stream to state
+  // write from incoming stream to state
   _write (chunk, encoding, callback) {
     promiseToCallback(this._asyncWriteFn(chunk, encoding))(callback)
   }

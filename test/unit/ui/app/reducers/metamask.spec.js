@@ -12,7 +12,6 @@ describe('MetaMask Reducers', function () {
   it('locks MetaMask', function () {
     const unlockMetaMaskState = {
       isUnlocked: true,
-      isInitialzed: false,
       selectedAddress: 'test address',
     }
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {

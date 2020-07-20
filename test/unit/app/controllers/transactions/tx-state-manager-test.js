@@ -361,7 +361,7 @@ describe('TransactionStateManager', function () {
       }
       const result = txStateManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 1, 'early txs truncted')
+      assert.equal(result[0].id, 1, 'early txs truncated')
     })
 
     it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function () {
@@ -372,7 +372,7 @@ describe('TransactionStateManager', function () {
       }
       const result = txStateManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 1, 'early txs truncted')
+      assert.equal(result[0].id, 1, 'early txs truncated')
     })
 
     it('cuts off early txs beyond a limit but does not cut unapproved txs', function () {
@@ -387,7 +387,7 @@ describe('TransactionStateManager', function () {
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
       assert.equal(result[0].id, 0, 'first tx should still be there')
       assert.equal(result[0].status, 'unapproved', 'first tx should be unapproved')
-      assert.equal(result[1].id, 2, 'early txs truncted')
+      assert.equal(result[1].id, 2, 'early txs truncated')
     })
   })
 

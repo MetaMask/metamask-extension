@@ -7,7 +7,7 @@ import log from 'loglevel'
  * debug information for a failed analysis.
  * @typedef {Object} GasAnalysisResult
  * @property {string} blockGasLimit - The gas limit of the block used for the analysis
- * @property {string} estimatedGasHex - The estimated gas, in hexidecimal
+ * @property {string} estimatedGasHex - The estimated gas, in hexadecimal
  * @property {Object} simulationFails - Debug information about why an analysis failed
  */
 

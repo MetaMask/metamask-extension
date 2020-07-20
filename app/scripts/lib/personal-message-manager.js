@@ -33,7 +33,7 @@ export default class PersonalMessageManager extends EventEmitter {
    *
    * @typedef {Object} PersonalMessageManager
    * @param {Object} opts @deprecated
-   * @property {Object} memStore The observable store where PersonalMessage are saved with persistance.
+   * @property {Object} memStore The observable store where PersonalMessage are saved.
    * @property {Object} memStore.unapprovedPersonalMsgs A collection of all PersonalMessages in the 'unapproved' state
    * @property {number} memStore.unapprovedPersonalMsgCount The count of all PersonalMessages in this.memStore.unapprobedMsgs
    * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
