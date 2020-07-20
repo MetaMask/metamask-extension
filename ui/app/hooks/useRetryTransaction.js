@@ -36,7 +36,7 @@ export function useRetryTransaction (transactionGroup) {
     trackMetricsEvent()
     const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates)
     await dispatch(fetchGasEstimates(basicEstimates.blockTime))
-    const transaction = initialTransaction
+    const transaction = primaryTransaction || initialTransaction
     const increasedGasPrice = increaseLastGasPrice(gasPrice)
     dispatch(setCustomGasPriceForRetry(increasedGasPrice || transaction.txParams.gasPrice))
     dispatch(setCustomGasLimit(transaction.txParams.gas))
@@ -45,7 +45,7 @@ export function useRetryTransaction (transactionGroup) {
       type: 'customize-gas',
       props: { transaction },
     }))
-  }, [dispatch, trackMetricsEvent, initialTransaction, gasPrice])
+  }, [trackMetricsEvent, dispatch, primaryTransaction, initialTransaction, gasPrice])
 
   return retryTransaction
 }
