@@ -43,7 +43,7 @@ const standardDeviationResult = calculateResult((array) => {
   const squareDiffs = array.map((value) => Math.pow(value - average, 2))
   return Math.sqrt(calculateAverage(squareDiffs))
 })
-// 95% margin of error calculated using Student's t-distrbution
+// 95% margin of error calculated using Student's t-distribution
 const calculateMarginOfError = (array) => ttest(array).confidence()[1] - calculateAverage(array)
 const marginOfErrorResult = calculateResult((array) => calculateMarginOfError(array))
 

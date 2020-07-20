@@ -68,7 +68,7 @@ export default class NotificationManager {
    * type 'popup')
    *
    * @private
-   * @param {Function} cb - A node style callback that to whcih the found notification window will be passed.
+   * @param {Function} cb - A node style callback that to which the found notification window will be passed.
    *
    */
   async _getPopup () {

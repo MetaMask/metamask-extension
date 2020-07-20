@@ -1111,7 +1111,7 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Tranfers a custom token from dapp when no gas value is specified', function () {
+  describe('Transfers a custom token from dapp when no gas value is specified', function () {
     it('transfers an already created token, without specifying gas', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]

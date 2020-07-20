@@ -32,7 +32,7 @@ export default class MessageManager extends EventEmitter {
    * @param {Object} opts @deprecated
    * @property {Object} memStore The observable store where Messages are saved.
    * @property {Object} memStore.unapprovedMsgs A collection of all Messages in the 'unapproved' state
-   * @property {number} memStore.unapprovedMsgCount The count of all Messages in this.memStore.unapprobedMsgs
+   * @property {number} memStore.unapprovedMsgCount The count of all Messages in this.memStore.unapprovedMsgs
    * @property {array} messages Holds all messages that have been created by this MessageManager
    *
    */
@@ -99,7 +99,7 @@ export default class MessageManager extends EventEmitter {
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
    * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} req (optional) The original request object where the origin may be specificied
+   * @param {Object} req (optional) The original request object where the origin may be specified
    * @returns {number} - The id of the newly created message.
    *
    */

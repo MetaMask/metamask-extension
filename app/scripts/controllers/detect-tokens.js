@@ -25,8 +25,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * For each token in eth-contract-metada, find check selectedAddress balance.
-   *
+   * For each token in eth-contract-metadata, find check selectedAddress balance.
    */
   async detectNewTokens () {
     if (!this.isActive) {

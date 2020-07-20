@@ -1199,7 +1199,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-  * Only decypt message and don't touch transaction state
+  * Only decrypt message and don't touch transaction state
   *
   * @param {Object} msgParams - The params of the message to decrypt.
   * @returns {Promise<Object>} - A full state update.

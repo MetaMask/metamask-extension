@@ -27,7 +27,7 @@ describe('UnitInput Component', function () {
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
     })
 
-    it('should render properly with a child omponent', function () {
+    it('should render properly with a child component', function () {
       const wrapper = shallow(
         <UnitInput>
           <div className="testing">

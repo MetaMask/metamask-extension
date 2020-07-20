@@ -15,7 +15,7 @@ const SYMBOLS = {
   Quarter: '▎',
   Eighth: '▏',
   RightHalf: '▐',
-  RightEigth: '▕',
+  RightEighth: '▕',
 }
 
 function setupTaskDisplay (taskEvents) {
@@ -141,7 +141,7 @@ function getSymbolNormalRight (value) {
   } else if (rounded === 1 / 2) {
     return SYMBOLS.RightHalf
   } else if (rounded === 7 / 8) {
-    return SYMBOLS.RightEigth
+    return SYMBOLS.RightEighth
   } else if (rounded === 1) {
     return SYMBOLS.Space
   } else {
