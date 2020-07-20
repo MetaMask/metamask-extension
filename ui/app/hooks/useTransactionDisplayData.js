@@ -56,20 +56,21 @@ export function useTransactionDisplayData (transactionGroup) {
   const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
   const { initialTransaction, primaryTransaction } = transactionGroup
-  // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const transactionCategory = primaryTransaction?.transactionCategory || initialTransaction?.transactionCategory
+  const transaction = primaryTransaction || initialTransaction
 
-  const { from: senderAddress, to } = primaryTransaction.txParams || initialTransaction.txParams || {}
+  const transactionCategory = transaction?.transactionCategory
+
+  const { from: senderAddress, to } = transaction.txParams || {}
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
-  const methodData = useSelector((state) => getKnownMethodData(state, primaryTransaction?.txParams?.data || initialTransaction?.txParams?.data)) || {}
+  const methodData = useSelector((state) => getKnownMethodData(state, transaction?.txParams?.data)) || {}
 
-  const actionKey = getTransactionActionKey(primaryTransaction) || getTransactionActionKey(initialTransaction)
-  const status = getStatusKey(primaryTransaction)
+  const actionKey = getTransactionActionKey(transaction)
+  const status = getStatusKey(transaction)
 
-  const primaryValue = primaryTransaction.txParams?.value
+  const primaryValue = transaction.txParams?.value
   let prefix = '-'
-  const date = formatDateWithYearContext(primaryTransaction.time || initialTransaction.time || 0)
+  const date = formatDateWithYearContext(transaction.time || 0)
   let subtitle
   let subtitleContainsOrigin = false
   let recipientAddress = to
@@ -85,11 +86,11 @@ export function useTransactionDisplayData (transactionGroup) {
   // false for non-token transactions. This additional argument forces the
   // hook to return null
   const token = isTokenCategory && knownTokens.find((token) => token.address === recipientAddress)
-  const tokenData = useTokenData(primaryTransaction?.txParams?.data || initialTransaction?.txParams?.data, isTokenCategory)
-  const tokenDisplayValue = useTokenDisplayValue(primaryTransaction?.txParams?.data || initialTransaction?.txParams?.data, token, isTokenCategory)
+  const tokenData = useTokenData(transaction?.txParams?.data, isTokenCategory)
+  const tokenDisplayValue = useTokenDisplayValue(transaction?.txParams?.data, token, isTokenCategory)
   const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
 
-  const origin = stripHttpSchemes(initialTransaction.origin || initialTransaction.msgParams?.origin || '')
+  const origin = stripHttpSchemes(transaction.origin || transaction.msgParams?.origin || '')
 
   let category
   let title
