@@ -35,8 +35,7 @@ export default class Migrator extends EventEmitter {
     const pendingMigrations = this.migrations.filter(migrationIsPending)
 
     // perform each migration
-    for (const index in pendingMigrations) {
-      const migration = pendingMigrations[index]
+    for (const migration of pendingMigrations) {
       try {
         // attempt migration and validate
         const migratedData = await migration.migrate(versionedData)

@@ -45,6 +45,7 @@ module.exports = {
     'array-callback-return': 'error',
     'callback-return': 'error',
     'global-require': 'error',
+    'guard-for-in': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',

@@ -337,9 +337,9 @@ export default class PreferencesController {
       }
 
       // store lost accounts
-      for (const key in newlyLost) {
+      Object.keys(newlyLost).forEach((key) => {
         lostIdentities[key] = newlyLost[key]
-      }
+      })
     }
 
     this.store.updateState({ identities, lostIdentities })
