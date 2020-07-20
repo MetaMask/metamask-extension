@@ -66,6 +66,14 @@ export default class CachedBalancesController {
   }
 
   /**
+   * Removes cachedBalances
+   */
+
+  clearCachedBalances () {
+    this.store.updateState({ cachedBalances: {} })
+  }
+
+  /**
    * Sets up listeners and subscriptions which should trigger an update of cached balances. These updates will
    * happen when the current account changes. Which happens on block updates, as well as on network and account
    * selections.

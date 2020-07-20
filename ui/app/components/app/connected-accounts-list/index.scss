@@ -22,15 +22,18 @@
 
   &__account-status {
     @extend %account-status-typography;
+
     display: inline;
     color: $Grey-500;
   }
 
   &__account-status-link {
     @extend %account-status-typography;
+
     display: block;
 
-    &, &:hover {
+    &,
+    &:hover {
       color: $curious-blue;
       cursor: pointer;
     }
@@ -43,17 +46,15 @@
     align-items: center;
     width: 100%;
     padding: 16px 24px;
-
     border-top: 1px solid $geyser;
 
     &--highlight {
       background-color: $warning-light-yellow;
       border: 1px solid $warning-yellow;
-
       box-sizing: border-box;
       padding: 16px;
       margin-bottom: 16px;
-      width: calc(100% - 16px)
+      width: calc(100% - 16px);
     }
   }
 

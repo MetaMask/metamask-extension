@@ -3,9 +3,9 @@ import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
 import { useSelector } from 'react-redux'
 import { useRef, useEffect, useState, useMemo } from 'react'
 import { isEqual } from 'lodash'
+import { captureException } from '@sentry/browser'
 import { getRawTimeEstimateData } from '../helpers/utils/gas-time-estimates.util'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
-
 
 /**
  * Calculate the number of minutes remaining until the transaction completes.
@@ -36,7 +36,7 @@ export function useTransactionTimeRemaining (
   isPending,
   isEarliestNonce,
   submittedTime,
-  currentGasPrice
+  currentGasPrice,
 ) {
   // the following two selectors return the result of mapping over an array, as such they
   // will always be new objects and trigger effects. To avoid this, we use isEqual as the
@@ -55,10 +55,15 @@ export function useTransactionTimeRemaining (
   // Memoize this value so it can be used as a dependency in the effect below
   const initialTimeEstimate = useMemo(() => {
     const customGasPrice = Number(hexWEIToDecGWEI(currentGasPrice))
-    const {
-      newTimeEstimate,
-    } = getRawTimeEstimateData(customGasPrice, gasPrices, estimatedTimes)
-    return newTimeEstimate
+    try {
+      const {
+        newTimeEstimate,
+      } = getRawTimeEstimateData(customGasPrice, gasPrices, estimatedTimes)
+      return newTimeEstimate
+    } catch (error) {
+      captureException(error)
+      return NaN
+    }
   }, [ currentGasPrice, gasPrices, estimatedTimes ])
 
   useEffect(() => {
@@ -71,11 +76,11 @@ export function useTransactionTimeRemaining (
     ) {
       clearInterval(interval.current)
       setTimeRemaining(
-        calcTransactionTimeRemaining(initialTimeEstimate, submittedTime)
+        calcTransactionTimeRemaining(initialTimeEstimate, submittedTime),
       )
       interval.current = setInterval(() => {
         setTimeRemaining(
-          calcTransactionTimeRemaining(initialTimeEstimate, submittedTime)
+          calcTransactionTimeRemaining(initialTimeEstimate, submittedTime),
         )
       }, 10000)
       return () => clearInterval(interval.current)

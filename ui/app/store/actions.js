@@ -475,6 +475,7 @@ export function signPersonalMsg (msgData) {
       dispatch(displayWarning(error.message))
       throw error
     }
+    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
     dispatch(completedTx(msgData.metamaskId))
     dispatch(closeCurrentNotificationWindow())
@@ -1301,7 +1302,7 @@ export function addTokens (tokens) {
           .entries(tokens)
           .map(([_, { address, symbol, decimals }]) => (
             dispatch(addToken(address, symbol, decimals))
-          ))
+          )),
       )
     }
   }
@@ -1727,8 +1728,8 @@ export function exportAccounts (password, addresses) {
                 return reject(err)
               }
               return resolve(result)
-            })
-          )
+            }),
+          ),
         )
         return resolve(Promise.all(accountPromises))
       })

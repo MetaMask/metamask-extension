@@ -4,7 +4,16 @@ import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common'
 import CurrencyDisplay from '../../ui/currency-display'
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
 
-export default function UserPreferencedCurrencyDisplay ({ type, showEthLogo, ethLogoHeight = 12, ethNumberOfDecimals, fiatNumberOfDecimals, numberOfDecimals: propsNumberOfDecimals, ...restProps }) {
+export default function UserPreferencedCurrencyDisplay ({
+  'data-testid': dataTestId,
+  ethLogoHeight = 12,
+  ethNumberOfDecimals,
+  fiatNumberOfDecimals,
+  numberOfDecimals: propsNumberOfDecimals,
+  showEthLogo,
+  type,
+  ...restProps
+}) {
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, { ethNumberOfDecimals, fiatNumberOfDecimals, numberOfDecimals: propsNumberOfDecimals })
 
   const prefixComponent = useMemo(() => {
@@ -20,6 +29,7 @@ export default function UserPreferencedCurrencyDisplay ({ type, showEthLogo, eth
     <CurrencyDisplay
       {...restProps}
       currency={currency}
+      data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
     />
@@ -28,6 +38,7 @@ export default function UserPreferencedCurrencyDisplay ({ type, showEthLogo, eth
 
 UserPreferencedCurrencyDisplay.propTypes = {
   className: PropTypes.string,
+  'data-testid': PropTypes.string,
   prefix: PropTypes.string,
   value: PropTypes.string,
   numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

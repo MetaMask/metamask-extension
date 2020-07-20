@@ -1,4 +1,3 @@
-import { pipe, partialRight } from 'ramda'
 import {
   conversionUtil,
   multiplyCurrencies,
@@ -108,7 +107,7 @@ export function isCustomPriceSafe (state) {
       fromDenomination: 'WEI',
       toDenomination: 'GWEI',
     },
-    { value: safeLow, fromNumericBase: 'dec' }
+    { value: safeLow, fromNumericBase: 'dec' },
   )
 
   return customPriceSafe
@@ -128,21 +127,17 @@ export function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecima
 }
 
 export function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
-  return pipe(
-    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
-    formatETHFee
-  )(estimate, gasLimit)
+  const value = conversionUtil(estimate, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+  const fee = basicPriceEstimateToETHTotal(value, gasLimit, numberOfDecimals)
+  return formatETHFee(fee)
 }
 
 
 export function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
-  return pipe(
-    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
-    partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
-    partialRight(formatCurrency, [convertedCurrency])
-  )(estimate, gasLimit, convertedCurrency, conversionRate)
+  const value = conversionUtil(estimate, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+  const fee = basicPriceEstimateToETHTotal(value, gasLimit)
+  const feeInCurrency = ethTotalToConvertedCurrency(fee, convertedCurrency, conversionRate)
+  return formatCurrency(feeInCurrency, convertedCurrency)
 }
 
 export function getTimeEstimateInSeconds (blockWaitEstimate) {
@@ -179,10 +174,7 @@ export function formatTimeEstimate (totalSeconds, greaterThanMax, lessThanMin) {
 }
 
 export function getRenderableTimeEstimate (blockWaitEstimate) {
-  return pipe(
-    getTimeEstimateInSeconds,
-    formatTimeEstimate
-  )(blockWaitEstimate)
+  return formatTimeEstimate(getTimeEstimateInSeconds(blockWaitEstimate))
 }
 
 export function priceEstimateToWei (priceEstimate) {
@@ -196,11 +188,8 @@ export function priceEstimateToWei (priceEstimate) {
 }
 
 export function getGasPriceInHexWei (price) {
-  return pipe(
-    (x) => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' }),
-    priceEstimateToWei,
-    addHexPrefix
-  )(price)
+  const value = conversionUtil(price, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+  return addHexPrefix(priceEstimateToWei(value))
 }
 
 export function getRenderableBasicEstimateData (state, gasLimit) {

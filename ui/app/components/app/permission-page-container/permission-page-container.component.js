@@ -37,7 +37,7 @@ export default class PermissionPageContainer extends Component {
 
   state = {
     selectedPermissions: this.getRequestedMethodState(
-      this.getRequestedMethodNames(this.props)
+      this.getRequestedMethodNames(this.props),
     ),
   }
 
@@ -58,7 +58,7 @@ export default class PermissionPageContainer extends Component {
         acc[methodName] = true
         return acc
       },
-      {}
+      {},
     )
   }
 

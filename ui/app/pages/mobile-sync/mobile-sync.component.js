@@ -166,7 +166,7 @@ export default class MobileSyncPage extends Component {
   // Calculating a PubNub Message Payload Size.
   calculatePayloadSize (channel, message) {
     return encodeURIComponent(
-      channel + JSON.stringify(message)
+      channel + JSON.stringify(message),
     ).length + 100
   }
 
@@ -256,7 +256,7 @@ export default class MobileSyncPage extends Component {
           } else {
             reject(response)
           }
-        }
+        },
       )
     })
   }

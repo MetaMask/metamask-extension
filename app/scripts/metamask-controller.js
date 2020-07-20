@@ -267,7 +267,14 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
+      this.setCurrentCurrency(
+        this.currencyRateController.state.currentCurrency,
+        (error) => {
+          if (error) {
+            throw error
+          }
+        },
+      )
     })
 
     this.networkController.lookupNetwork()
@@ -624,6 +631,15 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionsController.clearPermissions()
 
+      // clear accounts in accountTracker
+      this.accountTracker.clearAccounts()
+
+      // clear cachedBalances
+      this.cachedBalancesController.clearCachedBalances()
+
+      // clear unapproved transactions
+      this.txController.txStateManager.clearUnapprovedTxs()
+
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
@@ -710,7 +726,7 @@ export default class MetamaskController extends EventEmitter {
             const tokenAddress = ethUtil.toChecksumAddress(address)
             return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
           })
-        )
+        ),
       )
     })
 
@@ -728,7 +744,7 @@ export default class MetamaskController extends EventEmitter {
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType('Simple Key Pair')
     const hdAccounts = await hdKeyring.getAccounts()
     const simpleKeyPairKeyringAccounts = await Promise.all(
-      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts())
+      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
     )
     const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce((acc, accounts) => [...acc, ...accounts], [])
     const accounts = {
@@ -1516,7 +1532,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
     dnode.on('remote', (remote) => {
       // push updates to popup
@@ -1568,7 +1584,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1643,7 +1659,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1854,7 +1870,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider and updating it
    * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
@@ -1870,7 +1886,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
-   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.

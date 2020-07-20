@@ -6,7 +6,6 @@ import { compose } from 'redux'
 import * as actions from '../../store/actions'
 import txHelper from '../../../lib/tx-helper'
 import log from 'loglevel'
-import R from 'ramda'
 import SignatureRequest from '../../components/app/signature-request'
 import SignatureRequestOriginal from '../../components/app/signature-request-original'
 import Loading from '../../components/ui/loading-screen'
@@ -100,13 +99,13 @@ class ConfirmTxScreen extends Component {
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
-      network
+      network,
     )
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
 
     return transactionId
-      ? R.find(({ id }) => id + '' === transactionId)(unconfTxList)
+      ? unconfTxList.find(({ id }) => id + '' === transactionId)
       : unconfTxList[index]
   }
 
@@ -196,7 +195,7 @@ class ConfirmTxScreen extends Component {
     let prevTx
 
     if (transactionId) {
-      prevTx = R.find(({ id }) => id + '' === transactionId)(currentNetworkTxList)
+      prevTx = currentNetworkTxList.find(({ id }) => id + '' === transactionId)
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
       const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
@@ -257,5 +256,5 @@ class ConfirmTxScreen extends Component {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(ConfirmTxScreen)

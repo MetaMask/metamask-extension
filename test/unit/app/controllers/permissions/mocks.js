@@ -41,7 +41,7 @@ const getIdentities = () => {
       identities[address] = { address, name: `Account ${index}` }
       return identities
     },
-    {}
+    {},
   )
 }
 

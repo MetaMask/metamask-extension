@@ -53,9 +53,9 @@ describe('useRetryTransaction', function () {
             transitionName: 'sidebar-left',
             type: 'customize-gas',
             props: { transaction: retryEnabledTransaction.initialTransaction },
-          })
+          }),
         ),
-        true
+        true,
       )
     })
 

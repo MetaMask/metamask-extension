@@ -14,5 +14,5 @@ const mapStateToProps = (state) => {
 
 export default compose(
   withModalProps,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(EditApprovalPermission)

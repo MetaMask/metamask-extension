@@ -3,94 +3,94 @@
 @import 'signature-request-message/index';
 
 .signature-request {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    min-width: 0;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
 
-    @media screen and (min-width: 576px) {
-        flex: initial;
-    }
+  @media screen and (min-width: 576px) {
+    flex: initial;
+  }
 }
 
 .signature-request-header {
-    flex: 1;
+  flex: 1;
 
-    .network-display__container {
-        padding: 0;
-        justify-content: flex-end;   
-    }
+  .network-display__container {
+    padding: 0;
+    justify-content: flex-end;
+  }
 
-    .network-display__name {
-        font-size: 12px;
-        white-space: nowrap;
-        font-weight: 500;
-    }
+  .network-display__name {
+    font-size: 12px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
 }
 
 .signature-request-content {
-    flex: 1 40%;
-    margin-top: 1rem;
+  flex: 1 40%;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 25px;
+  min-height: min-content;
+
+  &__title {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  &__identicon-container {
+    padding: 1rem;
+    flex: 1;
+    position: relative;
+    width: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
-    flex-direction: column;
-    margin-bottom: 25px;
-    min-height: min-content;
+  }
 
-    &__title {
-        font-family: Roboto;
-        font-style: normal;
-        font-weight: 500;
-        font-size: 18px;
-    }
+  &__identicon-border {
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    border: 1px solid white;
+    position: absolute;
+    box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
+  }
 
-    &__identicon-container {
-        padding: 1rem;
-        flex: 1;
-        position: relative;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+  &__identicon-initial {
+    position: absolute;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 60px;
+    color: white;
+    z-index: 1;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
+  }
 
-    &__identicon-border {
-        height: 75px;
-        width: 75px;
-        border-radius: 50%;
-        border: 1px solid white;
-        position: absolute;
-        box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
-    }
+  &__info {
+    font-size: 12px;
+  }
 
-    &__identicon-initial {
-        position: absolute;
-        font-family: Roboto;
-        font-style: normal;
-        font-weight: 500;
-        font-size: 60px;
-        color: white;
-        z-index: 1;
-        text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.422);
-    }
+  &__info--bolded {
+    font-size: 16px;
+    font-weight: 500;
+  }
 
-    &__info {
-        font-size: 12px;
-    }
+  p {
+    color: #999;
+    font-size: 0.8rem;
+  }
 
-    &__info--bolded {
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    p {
-        color: #999999;
-        font-size: 0.8rem;
-    }
-
-    .identicon {}
+  .identicon {}
 }
 
 .signature-request-footer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }

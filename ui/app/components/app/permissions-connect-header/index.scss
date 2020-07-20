@@ -27,13 +27,16 @@
 
   &__title {
     @extend %header--24;
+
     text-align: center;
     color: $Black-100;
     margin-top: 14px;
   }
 
-  &__text, &__subtitle {
+  &__text,
+  &__subtitle {
     @extend %content-text;
+
     text-align: center;
     color: $Grey-500;
   }
@@ -42,6 +45,7 @@
     width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+
     /*rtl:ignore*/
     direction: rtl;
   }

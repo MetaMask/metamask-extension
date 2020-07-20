@@ -28,7 +28,7 @@ describe('Network Dropdown', function () {
 
     beforeEach(function () {
       wrapper = mountWithRouter(
-        <NetworkDropdown store={store} />
+        <NetworkDropdown store={store} />,
       )
     })
 

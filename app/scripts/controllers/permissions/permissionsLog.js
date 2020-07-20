@@ -213,7 +213,7 @@ export default class PermissionsLogController {
    */
   logPermissionsHistory (
     requestedMethods, origin, result,
-    time, isEthRequestAccounts
+    time, isEthRequestAccounts,
   ) {
 
     let accounts, newEntries
@@ -378,6 +378,6 @@ export default class PermissionsLogController {
  */
 function getAccountToTimeMap (accounts, time) {
   return accounts.reduce(
-    (acc, account) => ({ ...acc, [account]: time }), {}
+    (acc, account) => ({ ...acc, [account]: time }), {},
   )
 }

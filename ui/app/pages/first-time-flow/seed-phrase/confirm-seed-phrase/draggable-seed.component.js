@@ -61,7 +61,7 @@ class DraggableSeed extends Component {
         data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
       >
         { word }
-      </div>
+      </div>,
     ))
   }
 }

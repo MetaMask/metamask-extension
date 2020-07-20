@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
       toNumericBase: 'hex',
       multiplicandBase: 16,
       multiplierBase: 10,
-    })
+    }),
   )
 
   const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })

@@ -36,7 +36,10 @@ async function start () {
 
   // setup sentry error reporting
   const release = global.platform.getVersion()
-  setupSentry({ release })
+  setupSentry({
+    release,
+    getState: () => window.getSentryState?.() || {},
+  })
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()

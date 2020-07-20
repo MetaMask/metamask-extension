@@ -16,7 +16,7 @@ describe('Dropdown', function () {
         style={{ test: 'style' }}
         closeMenu={closeMenuSpy}
       >
-      </DropdownMenuItem>
+      </DropdownMenuItem>,
     )
   })
 

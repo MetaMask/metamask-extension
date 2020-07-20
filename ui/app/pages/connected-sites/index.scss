@@ -6,6 +6,7 @@
 
   &__confirmation {
     flex-direction: column;
+
     button:first-child {
       margin-right: 24px;
     }
@@ -18,15 +19,16 @@
     justify-content: space-between;
     align-items: center;
   }
-  
+
   &__footer-row + &__footer-row {
     margin-top: 15px;
   }
 
-  a, a:hover {
+  a,
+  a:hover {
     font-size: 14px;
     line-height: 20px;
-    color: #037DD6;
+    color: #037dd6;
     cursor: pointer;
   }
 }

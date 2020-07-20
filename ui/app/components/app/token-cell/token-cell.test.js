@@ -55,7 +55,7 @@ describe('Token Cell', function () {
             onClick={onClick}
           />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     )
   })
 

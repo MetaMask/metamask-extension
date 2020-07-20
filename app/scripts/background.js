@@ -260,7 +260,7 @@ function setupController (initState, initLangCode) {
     createStreamSink(persistData),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error)
-    }
+    },
   )
 
   /**
@@ -454,7 +454,7 @@ async function openPopup () {
           resolve()
         }
       }, 1000)
-    }
+    },
   )
 }
 

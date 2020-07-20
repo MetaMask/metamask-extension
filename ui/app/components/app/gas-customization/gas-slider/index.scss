@@ -17,7 +17,7 @@
     height: 34px;
     width: 34px;
     background-color: $curious-blue;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 50%;
     position: relative;
     z-index: 10;
@@ -38,7 +38,7 @@
   &__colored {
     height: 6px;
     border-radius: 4px;
-    margin-left: 102px; 
+    margin-left: 102px;
     width: 322px;
     z-index: 1;
     background-color: $blizzard-blue;

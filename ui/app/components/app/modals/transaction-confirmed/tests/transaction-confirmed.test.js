@@ -15,7 +15,7 @@ describe('Transaction Confirmed', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
     const submit = wrapper.find('.btn-secondary.modal-container__footer-button')
     submit.simulate('click')

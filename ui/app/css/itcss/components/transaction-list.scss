@@ -16,8 +16,8 @@
 
 @media screen and (max-width: $break-small) {
   .tx-list-header-wrapper {
-    margin-top: .2em;
-    margin-bottom: .6em;
+    margin-top: 0.2em;
+    margin-bottom: 0.6em;
     justify-content: center;
     flex: 0 0 auto;
   }
@@ -34,7 +34,7 @@
 @media screen and (min-width: $break-large) {
   .tx-list-header {
     font-size: 16px;
-    margin: 1.1em 2.37em .8em;
+    margin: 1.1em 2.37em 0.8em;
   }
 
   .tx-list-container::-webkit-scrollbar {
@@ -48,11 +48,11 @@
   flex: 0 0 1px;
 
   @media screen and (max-width: $break-small) {
-    margin: .1em 0;
+    margin: 0.1em 0;
   }
 
   @media screen and (min-width: $break-large) {
-    margin: .1em 2.37em;
+    margin: 0.1em 2.37em;
   }
 }
 
@@ -65,7 +65,7 @@
   flex-flow: column nowrap;
 
   @media screen and (max-width: $break-small) {
-    padding: 0 1.3em .8em;
+    padding: 0 1.3em 0.8em;
   }
 
   @media screen and (min-width: $break-large) {
@@ -75,7 +75,7 @@
 
 .tx-list-pending-item-container {
   cursor: pointer;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .tx-list-date-wrapper {
@@ -118,7 +118,7 @@
   background: #d1edff;
   width: 100%;
   border-radius: 12px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   display: flex;
   justify-content: center;
   margin-left: 44px;
@@ -147,7 +147,7 @@
   cursor: pointer;
 
   @media screen and (min-width: 576px) and (max-width: 679px) {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   @media screen and (min-width: 380px) and (max-width: 575px) {
@@ -155,7 +155,7 @@
   }
 
   @media screen and (max-width: 379px) {
-    margin-left: 0px;
+    margin-left: 0;
     text-align: center;
   }
 }

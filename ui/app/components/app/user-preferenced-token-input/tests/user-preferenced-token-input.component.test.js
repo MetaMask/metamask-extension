@@ -8,7 +8,7 @@ describe('UserPreferencedCurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly', function () {
       const wrapper = shallow(
-        <UserPreferencedTokenInput token={{ address: '0x0' }} />
+        <UserPreferencedTokenInput token={{ address: '0x0' }} />,
       )
 
       assert.ok(wrapper)
@@ -20,7 +20,7 @@ describe('UserPreferencedCurrencyInput Component', function () {
         <UserPreferencedTokenInput
           token={{ address: '0x0' }}
           useNativeCurrencyAsPrimaryCurrency
-        />
+        />,
       )
 
       assert.ok(wrapper)

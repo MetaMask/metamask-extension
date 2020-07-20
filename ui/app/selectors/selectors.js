@@ -69,7 +69,7 @@ export const getMetaMaskAccounts = createSelector(
         [accountID]: account,
       }
     }
-  }, {})
+  }, {}),
 )
 
 export function getSelectedAddress (state) {
@@ -120,7 +120,7 @@ export const getMetaMaskAccountsOrdered = createSelector(
   (keyrings, identities, accounts) => keyrings
     .reduce((list, keyring) => list.concat(keyring.accounts), [])
     .filter((address) => !!identities[address])
-    .map((address) => ({ ...identities[address], ...accounts[address] }))
+    .map((address) => ({ ...identities[address], ...accounts[address] })),
 )
 
 export function isBalanceCached (state) {
@@ -321,7 +321,7 @@ export function getFeatureFlags (state) {
 }
 
 export function getOriginOfCurrentTab (state) {
-  return state.activeTab?.origin
+  return state.activeTab.origin
 }
 
 export function getIpfsGateway (state) {

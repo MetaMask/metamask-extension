@@ -52,7 +52,7 @@
     }
 
     div:last-of-type {
-      color: rgba(220, 153, 18, 0.6901960784313725)
+      color: rgba(220, 153, 18, 0.6901960784313725);
     }
   }
 
@@ -99,11 +99,11 @@
 
   &__dropdown {
     &:hover {
-      background: rgba($alto, .2);
+      background: rgba($alto, 0.2);
       cursor: pointer;
 
       input {
-        background: rgba($alto, .1);
+        background: rgba($alto, 0.1);
       }
     }
   }

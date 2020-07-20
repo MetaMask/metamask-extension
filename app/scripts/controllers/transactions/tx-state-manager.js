@@ -57,12 +57,39 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} - of txMetas that have been filtered for only the current network
-  */
-  getTxList () {
+   * Returns the full tx list for the current network
+   *
+   * The list is iterated backwards as new transactions are pushed onto it.
+   *
+   * @param {number} [limit] a limit for the number of transactions to return
+   * @returns {Object[]} The {@code txMeta}s, filtered to the current network
+   */
+  getTxList (limit) {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
-    return fullTxList.filter((txMeta) => txMeta.metamaskNetworkId === network)
+
+    const nonces = new Set()
+    const txs = []
+    for (let i = fullTxList.length - 1; i > -1; i--) {
+      const txMeta = fullTxList[i]
+      if (txMeta.metamaskNetworkId !== network) {
+        continue
+      }
+
+      if (limit !== undefined) {
+        const { nonce } = txMeta.txParams
+        if (!nonces.has(nonce)) {
+          if (nonces.size < limit) {
+            nonces.add(nonce)
+          } else {
+            continue
+          }
+        }
+      }
+
+      txs.unshift(txMeta)
+    }
+    return txs
   }
 
   /**
@@ -480,5 +507,15 @@ export default class TransactionStateManager extends EventEmitter {
   _removeTx (txId) {
     const transactionList = this.getFullTxList()
     this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
+  }
+
+  /**
+   * Filters out the unapproved transactions
+   */
+
+  clearUnapprovedTxs () {
+    const transactions = this.getFullTxList()
+    const nonUnapprovedTxs = transactions.filter((tx) => tx.status !== 'unapproved')
+    this._saveTxList(nonUnapprovedTxs)
   }
 }

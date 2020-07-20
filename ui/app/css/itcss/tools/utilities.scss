@@ -135,7 +135,7 @@
 }
 
 .cursor-pointer:active {
-  transform: scale(.97);
+  transform: scale(0.97);
 }
 
 .cursor-disabled {
@@ -278,7 +278,7 @@ hr.horizontal-line {
 
 // TODO: move into component-level contextual 'active' state
 .letter-spacey {
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
 }
 
 .active {

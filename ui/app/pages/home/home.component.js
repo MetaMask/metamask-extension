@@ -56,51 +56,61 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
   }
 
-  UNSAFE_componentWillMount () {
-    const {
-      history,
-      unconfirmedTransactionsCount = 0,
-      firstPermissionsRequestId,
-    } = this.props
-
-    if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
-    }
-
-    if (unconfirmedTransactionsCount > 0) {
-      history.push(CONFIRM_TRANSACTION_ROUTE)
-    }
+  state = {
+    mounted: false,
   }
 
   componentDidMount () {
     const {
+      firstPermissionsRequestId,
       history,
       isNotification,
       suggestedTokens = {},
       totalUnapprovedCount,
+      unconfirmedTransactionsCount,
     } = this.props
 
+    this.setState({ mounted: true })
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow()
-    }
-
-    // suggested new tokens
-    if (Object.keys(suggestedTokens).length > 0) {
+    } else if (firstPermissionsRequestId) {
+      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`)
+    } else if (unconfirmedTransactionsCount > 0) {
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    } else if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
     }
   }
 
-  componentDidUpdate () {
-    const {
+  static getDerivedStateFromProps (
+    {
+      firstPermissionsRequestId,
       isNotification,
+      suggestedTokens,
+      totalUnapprovedCount,
+      unconfirmedTransactionsCount,
+    },
+    { mounted },
+  ) {
+    if (!mounted) {
+      if (isNotification && totalUnapprovedCount === 0) {
+        return { closing: true }
+      } else if (firstPermissionsRequestId || unconfirmedTransactionsCount > 0 || Object.keys(suggestedTokens).length > 0) {
+        return { redirecting: true }
+      }
+    }
+    return null
+  }
+
+  componentDidUpdate (_, prevState) {
+    const {
       setupThreeBox,
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
-      totalUnapprovedCount,
     } = this.props
 
-    if (isNotification && totalUnapprovedCount === 0) {
+    if (!prevState.closing && this.state.closing) {
       global.platform.closeCurrentWindow()
     }
 
@@ -228,9 +238,7 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
-    } else if (history.location.pathname.match(/^\/confirm-transaction/)) {
-      // This should only happen if this renders during the redirect to the confirm page
-      // Display nothing while the confirm page loads, to avoid side-effects of rendering normal home view
+    } else if (this.state.closing || this.state.redirecting) {
       return null
     }
 

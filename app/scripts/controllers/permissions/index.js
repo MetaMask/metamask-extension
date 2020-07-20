@@ -102,7 +102,7 @@ export class PermissionsController {
     }))
 
     engine.push(this.permissions.providerMiddlewareFunction.bind(
-      this.permissions, { origin }
+      this.permissions, { origin },
     ))
 
     return asMiddleware(engine)
@@ -132,7 +132,7 @@ export class PermissionsController {
       const req = { method: 'eth_accounts' }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end
+        { origin }, req, res, () => {}, _end,
       )
 
       function _end () {
@@ -187,7 +187,7 @@ export class PermissionsController {
       const res = {}
 
       this.permissions.providerMiddlewareFunction(
-        domain, req, res, () => {}, _end
+        domain, req, res, () => {}, _end,
       )
 
       function _end (_err) {
@@ -233,7 +233,7 @@ export class PermissionsController {
         // attempt to finalize the request and resolve it,
         // settings caveats as necessary
         approved.permissions = await this.finalizePermissionsRequest(
-          approved.permissions, accounts
+          approved.permissions, accounts,
         )
         approval.resolve(approved.permissions)
       }
@@ -295,7 +295,7 @@ export class PermissionsController {
     this.permissions.updateCaveatFor(
       origin, 'eth_accounts',
       CAVEAT_NAMES.exposedAccounts,
-      [...oldPermittedAccounts, account]
+      [...oldPermittedAccounts, account],
     )
 
     const permittedAccounts = await this.getAccounts(origin)
@@ -459,7 +459,7 @@ export class PermissionsController {
     // update "last seen" time for the origin and account(s)
     // exception: no accounts -> no times to update
     this.permissionsLog.updateAccountsHistory(
-      origin, newAccounts
+      origin, newAccounts,
     )
 
     // NOTE:
@@ -490,7 +490,7 @@ export class PermissionsController {
           }
 
           return { parentCapability: methodName }
-        })
+        }),
       )
     })
   }
@@ -642,8 +642,8 @@ export class PermissionsController {
     await Promise.all(
       connectedDomains
         .map(
-          (origin) => this._handleConnectedAccountSelected(origin)
-        )
+          (origin) => this._handleConnectedAccountSelected(origin),
+        ),
     )
   }
 
@@ -675,7 +675,7 @@ export class PermissionsController {
       this.pendingApprovals.has(id)
     ) {
       throw new Error(
-        `Pending approval with id '${id}' or origin '${origin}' already exists.`
+        `Pending approval with id '${id}' or origin '${origin}' already exists.`,
       )
     }
 
@@ -728,7 +728,7 @@ export class PermissionsController {
 
         if (this.pendingApprovalOrigins.has(origin)) {
           throw ethErrors.rpc.resourceUnavailable(
-            'Permissions request already pending; please wait.'
+            'Permissions request already pending; please wait.',
           )
         }
 

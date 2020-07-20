@@ -31,7 +31,7 @@ describe('ListItem', function () {
         onClick={clickHandler}
       >
         {CHILDREN}
-      </ListItem>
+      </ListItem>,
     )
   })
   it('includes the data-testid', function () {

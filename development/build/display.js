@@ -34,7 +34,7 @@ function setupTaskDisplay (taskEvents) {
 
 function displayChart (data) {
   // sort tasks by start time
-  data.sort((a, b,) => a[1] - b[1])
+  data.sort((a, b) => a[1] - b[1])
 
   // get bounds
   const first = Math.min(...data.map((entry) => entry[1]))

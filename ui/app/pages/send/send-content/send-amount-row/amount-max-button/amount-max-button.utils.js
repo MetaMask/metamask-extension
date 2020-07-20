@@ -12,11 +12,11 @@ export function calcMaxAmount ({ balance, gasTotal, sendToken, tokenBalance }) {
       {
         toNumericBase: 'hex',
         multiplicandBase: 16,
-      }
+      },
     )
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
       ethUtil.addHexPrefix(gasTotal),
-      { toNumericBase: 'hex' }
+      { toNumericBase: 'hex' },
     )
 }

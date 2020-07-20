@@ -14,7 +14,7 @@ import { noop } from './mocks'
  */
 export function grantPermissions (permController, origin, permissions) {
   permController.permissions.grantNewPermissions(
-    origin, permissions, {}, noop
+    origin, permissions, {}, noop,
   )
 }
 
@@ -53,20 +53,20 @@ export function getUserApprovalPromise (permController) {
  * @param {boolean} success - Whether the request succeeded or not.
  */
 export function validateActivityEntry (
-  entry, req, res, methodType, success
+  entry, req, res, methodType, success,
 ) {
   assert.doesNotThrow(
     () => {
       _validateActivityEntry(
-        entry, req, res, methodType, success
+        entry, req, res, methodType, success,
       )
     },
-    'should have expected activity entry'
+    'should have expected activity entry',
   )
 }
 
 function _validateActivityEntry (
-  entry, req, res, methodType, success
+  entry, req, res, methodType, success,
 ) {
 
   assert.ok(entry, 'entry should exist')
@@ -77,7 +77,7 @@ function _validateActivityEntry (
   assert.equal(entry.methodType, methodType)
   assert.deepEqual(
     entry.request, req,
-    'entry.request should equal the request'
+    'entry.request should equal the request',
   )
 
   if (res) {
@@ -87,23 +87,23 @@ function _validateActivityEntry (
         Number.isInteger(entry.requestTime) &&
         Number.isInteger(entry.responseTime)
       ),
-      'request and response times should be numbers'
+      'request and response times should be numbers',
     )
     assert.ok(
       (entry.requestTime <= entry.responseTime),
-      'request time should be less than response time'
+      'request time should be less than response time',
     )
 
     assert.equal(entry.success, success)
     assert.deepEqual(
       entry.response, res,
-      'entry.response should equal the response'
+      'entry.response should equal the response',
     )
   } else {
 
     assert.ok(
       Number.isInteger(entry.requestTime) && entry.requestTime > 0,
-      'entry should have non-zero request time'
+      'entry should have non-zero request time',
     )
     assert.ok(
       (
@@ -111,7 +111,7 @@ function _validateActivityEntry (
         entry.responseTime === null &&
         entry.response === null
       ),
-      'entry response values should be null'
+      'entry response values should be null',
     )
   }
 }

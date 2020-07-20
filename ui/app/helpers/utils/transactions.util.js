@@ -7,7 +7,7 @@ import {
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
 import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
-import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
+import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import fetchWithCache from './fetch-with-cache'
 
 import {
@@ -239,6 +239,6 @@ export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
   }
-  const prefix = prefixForNetwork(networkId)
+  const prefix = getEtherscanNetworkPrefix(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`
 }

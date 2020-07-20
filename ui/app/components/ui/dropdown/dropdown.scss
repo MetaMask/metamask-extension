@@ -4,11 +4,10 @@
   // TODO: remove these after getting autoprefixer working in Storybook
   -moz-appearance: none;
   -webkit-appearance: none;
-
   border: 1px solid $Grey-500;
   border-radius: 6px;
-	background-image: url('/images/icons/caret-down.svg');
-	background-repeat: no-repeat, repeat;
+  background-image: url('/images/icons/caret-down.svg');
+  background-repeat: no-repeat, repeat;
   background-position: right 18px top 50%;
   background-color: white;
   padding: 8px 32px 8px 16px;

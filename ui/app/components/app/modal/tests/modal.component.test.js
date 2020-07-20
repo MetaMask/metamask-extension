@@ -24,7 +24,7 @@ describe('Modal Component', function () {
         cancelText="Cancel"
         onSubmit={handleSubmit}
         submitText="Submit"
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)
@@ -54,7 +54,7 @@ describe('Modal Component', function () {
         onSubmit={() => {}}
         submitText="Submit"
         submitType="confirm"
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)
@@ -72,7 +72,7 @@ describe('Modal Component', function () {
         submitText="Submit"
       >
         <div className="test-child" />
-      </Modal>
+      </Modal>,
     )
 
     assert.ok(wrapper.find('.test-class'))
@@ -89,7 +89,7 @@ describe('Modal Component', function () {
         submitText="Submit"
         headerText="My Header"
         onClose={handleCancel}
-      />
+      />,
     )
 
     assert.ok(wrapper.find('.modal-container__header'))
@@ -113,7 +113,7 @@ describe('Modal Component', function () {
         submitDisabled
         headerText="My Header"
         onClose={handleCancel}
-      />
+      />,
     )
 
     const buttons = wrapper.find(Button)

@@ -223,7 +223,7 @@ describe('GasModalPageContainer Component', function () {
 
       assert.deepEqual(
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,
-        mockGasPriceButtonGroupProps
+        mockGasPriceButtonGroupProps,
       )
     })
   })
@@ -235,7 +235,7 @@ describe('GasModalPageContainer Component', function () {
         'mockNewTotalFiat',
         ' mockNewTotalEth',
         ' mockSendAmount',
-        ' mockTransactionFee'
+        ' mockTransactionFee',
       ))
 
       assert(renderedInfoRowsContainer.childAt(0).hasClass(baseClassName))

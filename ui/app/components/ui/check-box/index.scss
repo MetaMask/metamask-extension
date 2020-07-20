@@ -10,7 +10,8 @@
   border-radius: 2px;
   display: flex;
 
-  &__checked, &__indeterminate {
+  &__checked,
+  &__indeterminate {
     color: $curious-blue;
     border-color: $curious-blue;
   }

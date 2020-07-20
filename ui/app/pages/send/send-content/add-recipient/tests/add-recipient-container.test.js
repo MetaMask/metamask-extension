@@ -53,7 +53,7 @@ describe('add-recipient container', function () {
         assert(actionSpies.updateSendTo.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTo.getCall(0).args,
-          ['mockTo', 'mockNickname']
+          ['mockTo', 'mockNickname'],
         )
       })
     })

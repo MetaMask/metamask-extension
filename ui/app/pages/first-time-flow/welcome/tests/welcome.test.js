@@ -25,7 +25,7 @@ describe('Welcome', function () {
     }
 
     const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />, store
+      <Welcome.WrappedComponent {...props} />, store,
     )
 
     const getStartedButton = wrapper.find('.btn-primary.first-time-flow__button')
@@ -45,7 +45,7 @@ describe('Welcome', function () {
     }
 
     const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />, store
+      <Welcome.WrappedComponent {...props} />, store,
     )
 
     const getStartedButton = wrapper.find('.btn-primary.first-time-flow__button')

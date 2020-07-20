@@ -50,6 +50,7 @@ const EthOverview = ({ className }) => {
                 className={classnames('eth-overview__primary-balance', {
                   'eth-overview__cached-balance': balanceIsCached,
                 })}
+                data-testid="eth-overview__primary-currency"
                 value={balance}
                 type={PRIMARY}
                 ethNumberOfDecimals={4}
@@ -66,6 +67,7 @@ const EthOverview = ({ className }) => {
                     'eth-overview__cached-secondary-balance': balanceIsCached,
                     'eth-overview__secondary-balance': !balanceIsCached,
                   })}
+                  data-testid="eth-overview__secondary-currency"
                   value={balance}
                   type={SECONDARY}
                   ethNumberOfDecimals={4}

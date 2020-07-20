@@ -8,7 +8,7 @@ describe('UserPreferencedCurrencyInput Component', function () {
   describe('rendering', function () {
     it('should render properly', function () {
       const wrapper = shallow(
-        <UserPreferencedCurrencyInput />
+        <UserPreferencedCurrencyInput />,
       )
 
       assert.ok(wrapper)
@@ -19,7 +19,7 @@ describe('UserPreferencedCurrencyInput Component', function () {
       const wrapper = shallow(
         <UserPreferencedCurrencyInput
           useNativeCurrencyAsPrimaryCurrency
-        />
+        />,
       )
 
       assert.ok(wrapper)
