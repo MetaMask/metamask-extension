@@ -362,6 +362,9 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPE_CANCEL,
     })
 
+    const { transactionCategory } = await this._determineTransactionCategory(txParams)
+    newTxMeta.transactionCategory = transactionCategory
+
     this.addTx(newTxMeta)
     await this.approveTransaction(newTxMeta.id)
     return newTxMeta
@@ -394,6 +397,9 @@ export default class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUS_APPROVED,
       type: TRANSACTION_TYPE_RETRY,
     })
+
+    const { transactionCategory } = await this._determineTransactionCategory(txParams)
+    newTxMeta.transactionCategory = transactionCategory
 
     if (customGasLimit) {
       newTxMeta.txParams.gas = customGasLimit
