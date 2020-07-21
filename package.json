@@ -7,8 +7,8 @@
     "dist": "yarn build prod",
     "build": "node development/build/index.js",
     "start:test": "yarn build testDev",
-    "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
-    "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
+    "benchmark:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-benchmarks.sh",
+    "benchmark:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-benchmarks.sh",
     "build:test": "yarn build test",
     "test": "yarn test:unit && yarn lint",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
@@ -198,7 +198,7 @@
     "browserify-transform-tools": "^1.7.0",
     "chai": "^4.1.0",
     "chalk": "^3.0.0",
-    "chromedriver": "^79.0.0",
+    "chromedriver": "^84.0.0",
     "concurrently": "^5.2.0",
     "copy-webpack-plugin": "^5.1.1",
     "coveralls": "^3.0.0",
@@ -260,7 +260,7 @@
     "remotedev-server": "^0.3.1",
     "resolve-url-loader": "^2.3.0",
     "sass-loader": "^7.0.1",
-    "selenium-webdriver": "^4.0.0-alpha.5",
+    "selenium-webdriver": "^4.0.0-alpha.7",
     "serve-handler": "^6.1.2",
     "sesify": "^4.2.1",
     "sesify-viz": "^3.0.5",
@@ -278,7 +278,7 @@
     "webpack": "^4.41.6"
   },
   "engines": {
-    "node": "^10.16.0",
+    "node": "^10.21.0",
     "yarn": "^1.16.0"
   }
 }
