@@ -122,6 +122,17 @@ export function isTokenMethodAction (transactionCategory) {
 }
 
 /**
+ * Given a transactions, returns a boolean which indictes wheather the transaction has a cancel attempt
+ * @param {Object} transaction - The transaction that is being evaluated
+ * @returns {boolean} - wheather the transaction has a cancel type property
+ */
+
+export function isCancelledTransaction (transaction) {
+  const { type } = transaction
+  return type === 'cancel'
+}
+
+/**
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
  * @returns {string|undefined}

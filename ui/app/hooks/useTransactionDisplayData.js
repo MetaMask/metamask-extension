@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
-import { getTransactionActionKey, getStatusKey } from '../helpers/utils/transactions.util'
+import { getTransactionActionKey, getStatusKey, isCancelledTransaction } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { useI18nContext } from './useI18nContext'
 import { useTokenFiatAmount } from './useTokenFiatAmount'
@@ -56,7 +56,7 @@ export function useTransactionDisplayData (transactionGroup) {
   const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
   const { initialTransaction, primaryTransaction } = transactionGroup
-  const transaction = primaryTransaction || initialTransaction
+  const transaction = isCancelledTransaction(primaryTransaction) ? initialTransaction : primaryTransaction || initialTransaction
 
   const transactionCategory = transaction?.transactionCategory
 
@@ -66,7 +66,7 @@ export function useTransactionDisplayData (transactionGroup) {
   const methodData = useSelector((state) => getKnownMethodData(state, transaction?.txParams?.data)) || {}
 
   const actionKey = getTransactionActionKey(transaction)
-  const status = getStatusKey(transaction)
+  const status = isCancelledTransaction(primaryTransaction) ? getStatusKey(primaryTransaction) : getStatusKey(transaction)
 
   const primaryValue = transaction.txParams?.value
   let prefix = '-'
