@@ -27,9 +27,9 @@ function transformState (state) {
     const newAddressBook = {}
 
     // add all of the chainIds to a set
-    for (const item in ab) {
-      chainIds.add(ab[item].chainId)
-    }
+    Object.values(ab).forEach((v) => {
+      chainIds.add(v.chainId)
+    })
 
     // fill the chainId object with the entries with the matching chainId
     for (const id of chainIds.values()) {

@@ -323,7 +323,7 @@ describe('TransactionStateManager', function () {
       }
       const invalidValues = [1, true, {}, Symbol('1')]
 
-      for (const key in validTxParams) {
+      Object.keys(validTxParams).forEach((key) => {
         for (const value of invalidValues) {
           const tx = {
             id: 1,
@@ -339,7 +339,7 @@ describe('TransactionStateManager', function () {
           assert.ok(Array.isArray(result), 'txList should be an array')
           assert.equal(result.length, 0, 'txList should be empty')
         }
-      }
+      })
     })
 
     it('does not override txs from other networks', function () {
@@ -416,7 +416,7 @@ describe('TransactionStateManager', function () {
 
       txStateManager.addTx({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: validTxParams })
 
-      for (const key in validTxParams) {
+      Object.keys(validTxParams).forEach((key) => {
         for (const value of invalidValues) {
           const originalTx = txStateManager.getTx(1)
           const newTx = {
@@ -430,7 +430,7 @@ describe('TransactionStateManager', function () {
           const result = txStateManager.getTx(1)
           assert.deepEqual(result, originalTx, 'tx should not be updated')
         }
-      }
+      })
     })
 
     it('updates gas price and adds history items', function () {

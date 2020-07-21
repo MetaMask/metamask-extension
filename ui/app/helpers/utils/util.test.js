@@ -230,11 +230,11 @@ describe('util', function () {
         }
         const oneEthBn = new ethUtil.BN(ethInWei, 10)
 
-        for (const currency in valueTable) {
+        Object.keys(valueTable).forEach((currency) => {
           const value = new ethUtil.BN(valueTable[currency], 10)
           const output = util.normalizeToWei(value, currency)
           assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
-        }
+        })
       })
     })
 
