@@ -187,11 +187,11 @@
   "alertsSettingsDescription": {
     "message": "Enable or disable each alert"
   },
-  "alertSettingsUnconnectedAccount": {	
-    "message": "Browsing a website with an unconnected account selected"	
-  },	
-  "alertSettingsUnconnectedAccountDescription": {	
-    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."	
+  "alertSettingsUnconnectedAccount": {
+    "message": "Browsing a website with an unconnected account selected"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."
   },
   "allowOriginSpendToken": {
     "message": "Allow $1 to spend your $2?",
@@ -223,6 +223,10 @@
   },
   "approve": {
     "message": "Approve spend limit"
+  },
+  "approveSpendLimit": {
+    "message": "Approve $1 spend limit",
+    "description": "The token symbol that is being approved"
   },
   "approved": {
     "message": "Approved"
