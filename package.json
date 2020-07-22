@@ -83,7 +83,7 @@
     "bn.js": "^4.11.7",
     "c3": "^0.7.10",
     "classnames": "^2.2.6",
-    "content-hash": "^2.5.0",
+    "content-hash": "^2.5.2",
     "copy-to-clipboard": "^3.0.8",
     "currency-formatter": "^1.4.2",
     "d3": "^5.15.0",
