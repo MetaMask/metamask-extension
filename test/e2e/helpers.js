@@ -47,7 +47,9 @@ async function withFixtures (options, callback) {
       }
     }
   } catch (error) {
-    await webDriver.verboseReportOnFailure(title)
+    if (webDriver) {
+      await webDriver.verboseReportOnFailure(title)
+    }
     throw error
   } finally {
     await fixtureServer.stop()
