@@ -7130,10 +7130,10 @@ content-disposition@0.5.3, content-disposition@^0.5.2, content-disposition@~0.5.
   dependencies:
     safe-buffer "5.1.2"
 
-content-hash@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.5.0.tgz#6f8a98feec0360f09213e951c69e57c727093e3a"
-  integrity sha512-Opn9YSjQQc3Wst/VPwGTdKcNONuQr4yc0dtvEbV82UGDIsc7dE2bdTz3FpLRxfnuOkHx8y9/94sZ3aytmUQ1HA==
+content-hash@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.5.2.tgz#bbc2655e7c21f14fd3bfc7b7d4bfe6e454c9e211"
+  integrity sha512-FvIQKy0S1JaWV10sMsA7TRx8bpU+pqPkhbsfvOJAdjRXvYxEckAwQWGwtRjiaJfh+E0DvcWUGqcdjwMGFjsSdw==
   dependencies:
     cids "^0.7.1"
     multicodec "^0.5.5"
