@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.6 Wed Jul 22 2020
+
 ## 8.0.5 Thu Jul 16 2020
 - [#8942](https://github.com/MetaMask/metamask-extension/pull/8942): Fix display of incoming transactions (#8942)
 - [#8998](https://github.com/MetaMask/metamask-extension/pull/8998): Fix `web3_clientVersion` method (#8998)
