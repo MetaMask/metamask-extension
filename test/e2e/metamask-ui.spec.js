@@ -830,9 +830,9 @@ describe('MetaMask', function () {
 
     it('renders the balance for the new token', async function () {
       const balance = await driver.findElement(By.css('.wallet-overview .token-overview__primary-balance'))
-      await driver.wait(until.elementTextMatches(balance, /^10.000\s*TST\s*$/))
+      await driver.wait(until.elementTextMatches(balance, /^10\s*TST\s*$/))
       const tokenAmount = await balance.getText()
-      assert.ok(/^10.000\s*TST\s*$/.test(tokenAmount))
+      assert.ok(/^10\s*TST\s*$/.test(tokenAmount))
       await driver.delay(regularDelayMs)
     })
   })
@@ -992,7 +992,7 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/), 10000)
 
       const tokenBalanceAmount = await driver.findElements(By.css('.token-overview__primary-balance'))
-      await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/), 10000)
+      await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /7.5\s*TST/), 10000)
     })
   })
 
