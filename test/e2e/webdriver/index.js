@@ -9,7 +9,7 @@ async function buildWebDriver ({ responsive, port } = {}) {
   const extensionPath = `dist/${browser}`
 
   const { driver: seleniumDriver, extensionId, extensionUrl } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
-  setupFetchMocking(seleniumDriver)
+  await setupFetchMocking(seleniumDriver)
   const driver = new Driver(seleniumDriver, browser, extensionUrl)
   await driver.navigate()
 
