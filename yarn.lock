@@ -1730,10 +1730,10 @@
     events "^2.0.0"
     hdkey "0.8.0"
 
-"@metamask/eth-token-tracker@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-2.0.0.tgz#a94a99bd3160ee85ec5feace29fbb02f80f5c826"
-  integrity sha512-PTiUbx7JulDREswWmebRyIj2wNUV8eLTZWGEA2Duca8IGVP1r8q+kb163tXT4FNNAGR+6JoVvkJ8SpIN+XoiNQ==
+"@metamask/eth-token-tracker@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.0.tgz#16ad4820abd6603d745c8cdaf7c5a9ae60e6db02"
+  integrity sha512-UxYkmEMrUYb8wzsqEY8x6QeiW2955guR/aaalqfElI2rlDyvKJ1lIaAiT7y642vcqoyIGhqYG2aejeHDpifMbA==
   dependencies:
     deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
