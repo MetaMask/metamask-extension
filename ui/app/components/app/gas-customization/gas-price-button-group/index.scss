@@ -50,13 +50,13 @@
   }
 
   .button-group__button--active {
-    border: 2px solid $curious-blue;
+    border: 2px solid $primary-blue;
     color: $scorpion;
 
     i {
       &:last-child {
         display: flex;
-        color: $curious-blue;
+        color: $primary-blue;
         margin-top: 8px;
       }
     }
@@ -137,7 +137,7 @@
     i {
       &:last-child {
         display: flex;
-        color: $curious-blue;
+        color: $primary-blue;
         margin-top: 10px;
       }
     }
@@ -235,7 +235,7 @@
 
     i {
       display: flex;
-      color: $curious-blue;
+      color: $primary-blue;
       font-size: 12px;
     }
   }

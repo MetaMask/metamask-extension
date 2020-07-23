@@ -53,9 +53,9 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
       loggerMiddlewareMock.responses.push(res)
       cb()
     })
-  } else {
-    next()
+    return
   }
+  next()
 }
 
 const MetaMaskController = proxyquire('../../../../app/scripts/metamask-controller', {
@@ -839,9 +839,9 @@ describe('MetaMaskController', function () {
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.data && chunk.data.method) {
           cb(null, chunk)
-        } else {
-          cb()
+          return
         }
+        cb()
       })
 
       metamaskController.setupUntrustedCommunication(streamTest, messageSender)
@@ -877,9 +877,9 @@ describe('MetaMaskController', function () {
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.data && chunk.data.method) {
           cb(null, chunk)
-        } else {
-          cb()
+          return
         }
+        cb()
       })
 
       metamaskController.setupUntrustedCommunication(streamTest, messageSender)

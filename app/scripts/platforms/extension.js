@@ -105,6 +105,7 @@ export default class ExtensionPlatform {
       })
     } catch (e) {
       cb(e)
+      return
     }
   }
 

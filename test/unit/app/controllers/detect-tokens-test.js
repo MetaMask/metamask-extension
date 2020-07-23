@@ -89,8 +89,8 @@ describe('DetectTokensController', function () {
     controller.isOpen = true
     controller.isUnlocked = true
 
-    const contractAddressses = Object.keys(contracts)
-    const erc20ContractAddresses = contractAddressses
+    const contractAddresses = Object.keys(contracts)
+    const erc20ContractAddresses = contractAddresses
       .filter((contractAddress) => contracts[contractAddress].erc20 === true)
 
     const existingTokenAddress = erc20ContractAddresses[0]
@@ -100,7 +100,7 @@ describe('DetectTokensController', function () {
     const tokenAddressToAdd = erc20ContractAddresses[1]
     const tokenToAdd = contracts[tokenAddressToAdd]
 
-    const contractAddresssesToDetect = contractAddressses
+    const contractAddresssesToDetect = contractAddresses
       .filter((address) => address !== existingTokenAddress)
     const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(tokenAddressToAdd)
 

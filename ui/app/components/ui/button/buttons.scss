@@ -8,7 +8,6 @@ $hover-confirm: #0372c3;
 $hover-red: #feb6bf;
 $hover-red-primary: #c72837;
 $hover-orange: #ffd3b5;
-$danger-light-red: #ea7e77;
 $warning-light-orange: #f8b588;
 
 %button {
@@ -216,7 +215,7 @@ $warning-light-orange: #f8b588;
  */
 
 .btn-raised {
-  color: $curious-blue;
+  color: $primary-blue;
   background-color: $white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 6px;
@@ -297,7 +296,7 @@ button.primary {
     &--disabled,
     &[disabled] {
       border-color: $Red-100;
-      color: $danger-light-red;
+      color: $Red-300;
     }
 
     &:active {
@@ -337,7 +336,7 @@ button.primary {
 
     &--disabled,
     &[disabled] {
-      background-color: $danger-light-red;
+      background-color: $Red-300;
     }
 
     &:active {

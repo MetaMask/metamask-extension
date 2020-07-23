@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
+
 import Identicon from '../../../../components/ui/identicon'
 import Copy from '../../../../components/ui/icon/copy-icon.component'
-
 import Button from '../../../../components/ui/button/button.component'
 import copyToClipboard from 'copy-to-clipboard'
 
@@ -23,11 +24,16 @@ export default class ViewContact extends PureComponent {
     checkSummedAddress: PropTypes.string,
     memo: PropTypes.string,
     editRoute: PropTypes.string,
+    listRoute: PropTypes.string.isRequired,
   }
 
   render () {
     const { t } = this.context
-    const { history, name, address, checkSummedAddress, memo, editRoute } = this.props
+    const { history, name, address, checkSummedAddress, memo, editRoute, listRoute } = this.props
+
+    if (!address) {
+      return <Redirect to={{ pathname: listRoute }} />
+    }
 
     return (
       <div className="settings-page__content-row">

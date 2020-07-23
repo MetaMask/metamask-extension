@@ -3,7 +3,7 @@ import { combineTransactionHistories, getActivities } from '../transaction-activ
 
 describe('TransactionActivityLog utils', function () {
   describe('combineTransactionHistories', function () {
-    it('should return no activites for an empty list of transactions', function () {
+    it('should return no activities for an empty list of transactions', function () {
       assert.deepEqual(combineTransactionHistories([]), [])
     })
 

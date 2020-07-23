@@ -101,6 +101,9 @@ export default function setupSentry ({ release, getState }) {
       // append app state
       if (getState) {
         const appState = getState()
+        if (!report.extra) {
+          report.extra = {}
+        }
         report.extra.appState = appState
       }
     } catch (err) {

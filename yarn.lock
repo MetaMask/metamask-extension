@@ -1730,10 +1730,10 @@
     events "^2.0.0"
     hdkey "0.8.0"
 
-"@metamask/eth-token-tracker@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-2.0.0.tgz#a94a99bd3160ee85ec5feace29fbb02f80f5c826"
-  integrity sha512-PTiUbx7JulDREswWmebRyIj2wNUV8eLTZWGEA2Duca8IGVP1r8q+kb163tXT4FNNAGR+6JoVvkJ8SpIN+XoiNQ==
+"@metamask/eth-token-tracker@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-3.0.0.tgz#16ad4820abd6603d745c8cdaf7c5a9ae60e6db02"
+  integrity sha512-UxYkmEMrUYb8wzsqEY8x6QeiW2955guR/aaalqfElI2rlDyvKJ1lIaAiT7y642vcqoyIGhqYG2aejeHDpifMbA==
   dependencies:
     deep-equal "^1.1.0"
     eth-block-tracker "^4.4.2"
@@ -1753,10 +1753,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/inpage-provider@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.0.1.tgz#09bf3a3157d604fb511133c5a6e8eb1178d776bc"
-  integrity sha512-kcc2Tmq6bgjMyYxCgDJczdCAUBmAR4FPo+zmN0np02y/KNgDlzuKLdsrv3Y9B/S5XTxjuW95xYtMaxXZ5drEkQ==
+"@metamask/inpage-provider@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/inpage-provider/-/inpage-provider-6.1.0.tgz#6a4ec9437169b6d6f2b439dd7a2e604ebcfc2fca"
+  integrity sha512-Sgl+kHyJCTkyWzNKIX18/O+CJUMWlc5jWB27p3NBfA/r1ldr87n7wdJhK9VnHrKZ2GMJtwBmtuE9Do+mLIKHXA==
   dependencies:
     eth-json-rpc-errors "^2.0.2"
     fast-deep-equal "^2.0.1"
@@ -7130,10 +7130,10 @@ content-disposition@0.5.3, content-disposition@^0.5.2, content-disposition@~0.5.
   dependencies:
     safe-buffer "5.1.2"
 
-content-hash@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.5.0.tgz#6f8a98feec0360f09213e951c69e57c727093e3a"
-  integrity sha512-Opn9YSjQQc3Wst/VPwGTdKcNONuQr4yc0dtvEbV82UGDIsc7dE2bdTz3FpLRxfnuOkHx8y9/94sZ3aytmUQ1HA==
+content-hash@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/content-hash/-/content-hash-2.5.2.tgz#bbc2655e7c21f14fd3bfc7b7d4bfe6e454c9e211"
+  integrity sha512-FvIQKy0S1JaWV10sMsA7TRx8bpU+pqPkhbsfvOJAdjRXvYxEckAwQWGwtRjiaJfh+E0DvcWUGqcdjwMGFjsSdw==
   dependencies:
     cids "^0.7.1"
     multicodec "^0.5.5"

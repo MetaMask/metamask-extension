@@ -28,9 +28,9 @@ const valueTable = {
   tether: '0.000000000001',
 }
 const bnTable = {}
-for (const currency in valueTable) {
+Object.keys(valueTable).forEach((currency) => {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
-}
+})
 
 export function isEthNetwork (netId) {
   if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
