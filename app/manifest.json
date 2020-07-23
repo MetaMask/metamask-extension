@@ -1,7 +1,7 @@
 {
   "name": "ConfluxPortal",
   "short_name": "ConfluxPortal",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "manifest_version": 2,
   "author": "https://conflux-chain.org",
   "description": "__MSG_appDescription__",
@@ -78,12 +78,9 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
     "http://localhost:12539/",
-    "https://*.infura.io/",
     "activeTab",
     "webRequest",
-    "*://*.eth/",
     "notifications"
   ],
   "web_accessible_resources": [
@@ -92,7 +89,6 @@
   ],
   "externally_connectable": {
     "matches": [
-      "https://metamask.io/*",
       "https://confluxscan.io/*",
       "https://testnet.confluxscan.io/*",
       "https://conflux-chain.org/*"
