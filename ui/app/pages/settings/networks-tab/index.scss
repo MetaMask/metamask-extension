@@ -1,0 +1,239 @@
+.networks-tab {
+  &__content {
+    margin-top: 24px;
+    display: flex;
+    height: 100%;
+    max-width: 739px;
+    justify-content: space-between;
+
+    @media screen and (max-width: 575px) {
+      margin-top: 0;
+    }
+  }
+
+  &__body {
+    padding-right: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 575px) {
+      padding: 0;
+    }
+  }
+
+  &__back-button {
+    display: none;
+
+    @media screen and (max-width: 575px) {
+      display: block;
+      background-image: url('/images/caret-left-black.svg');
+      width: 18px;
+      height: 18px;
+      opacity: 0.5;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-right: 16px;
+      cursor: pointer;
+      position: absolute;
+      margin-left: 10px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__network-form {
+    flex: 0.5 0 auto;
+    max-width: 343px;
+    max-height: 465px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .page-container__footer {
+      border-top: none;
+
+      @media screen and (max-width: 575px) {
+        width: 93%;
+      }
+
+      footer {
+        padding: 10px 0;
+      }
+    }
+
+    @media screen and (max-width: 575px) {
+      display: flex;
+      flex: auto;
+      max-width: 100%;
+      max-height: 100%;
+      align-items: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+
+  &__network-form-row {
+    @media screen and (max-width: 575px) {
+      display: flex;
+      flex-direction: column;
+      width: 93%;
+    }
+
+    &--warning {
+      background-color: #fefae8;
+      border: 1px solid #ffd33d;
+      width: 93%;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+  }
+
+  &__network-form-label {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #000;
+  }
+
+  &__networks-list {
+    flex: 0.5 0 auto;
+    max-width: 343px;
+
+    @media screen and (max-width: 575px) {
+      max-width: 100vw;
+      width: 100vw;
+      overflow-y: scroll;
+    }
+  }
+
+  &__add-network-button-wrapper {
+    display: none;
+
+    @media screen and (max-width: 575px) {
+      display: flex;
+      padding-top: 19px;
+      padding-bottom: 23px;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid #d8d8d8;
+
+      .button {
+        width: 178px;
+      }
+    }
+  }
+
+  &__add-network-header-button-wrapper {
+    justify-content: center;
+
+    .button {
+      width: 138px;
+      padding: 10px;
+      line-height: 20px;
+    }
+
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
+  }
+
+  &__networks-list--selection {
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
+  }
+
+  &__networks-list-item {
+    display: flex;
+    padding: 13px 0 13px 17px;
+    position: relative;
+
+    .menu-icon-circle {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    @media screen and (max-width: 575px) {
+      padding: 20px 23px 21px 17px;
+      border-bottom: 1px solid #d8d8d8;
+    }
+  }
+
+  &__networks-list-item:last-of-type {
+    @media screen and (max-width: 575px) {
+      border-bottom: none;
+    }
+  }
+
+  &__networks-list-name {
+    margin-left: 11px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+    color: #6a737d;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__networks-list-arrow {
+    display: none;
+
+    @media screen and (max-width: 575px) {
+      display: block;
+      background-image: url('/images/caret-right.svg');
+      width: 24px;
+      height: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      right: 10px;
+      cursor: pointer;
+      position: absolute;
+      width: 24px;
+      height: 24px;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__networks-list-name--selected {
+    font-weight: bold;
+    color: #000;
+  }
+}
+
+.network-form {
+  &__footer {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0.75rem 0;
+
+    .btn-default {
+      margin-right: 0.375rem;
+    }
+
+    .btn-secondary {
+      margin-left: 0.375rem;
+    }
+
+    .btn-danger {
+      margin-right: 3.75rem;
+    }
+  }
+}

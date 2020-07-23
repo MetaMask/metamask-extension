@@ -1,0 +1,58 @@
+.confirm-remove-account {
+  &__description {
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  &__account {
+    border: 1px solid #b7b7b7;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    &__identicon {
+      margin-right: 10px;
+    }
+
+    &__name,
+    &__address {
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    &__name {
+      width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__label {
+      font-size: 11px;
+      display: block;
+      color: #9b9b9b;
+    }
+
+    &__link {
+      margin-top: 14px;
+
+      img {
+        width: 15px;
+        height: 15px;
+      }
+    }
+
+    @media screen and (max-width: 575px) {
+      &__name {
+        width: 90px;
+      }
+    }
+  }
+
+  &__link {
+    color: #2f9ae0;
+  }
+}

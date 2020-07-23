@@ -1,0 +1,19 @@
+.signature-request-footer {
+  display: flex;
+  border-top: 1px solid #d2d8dd;
+
+  button {
+    text-transform: uppercase;
+    flex: 1;
+    margin: 1rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  button:first-child {
+    margin-left: 1rem;
+  }
+
+  button:last-child {
+    margin-right: 1rem;
+  }
+}

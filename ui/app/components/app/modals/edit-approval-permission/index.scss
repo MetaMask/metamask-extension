@@ -1,0 +1,167 @@
+.edit-approval-permission {
+  width: 100%;
+
+  &__header,
+  &__account-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid #d2d8dd;
+  }
+
+  &__header {
+    padding: 24px;
+
+    &__close {
+      position: absolute;
+      right: 24px;
+      background-image: url("/images/close-gray.svg");
+      width: 0.75rem;
+      height: 0.75rem;
+      cursor: pointer;
+    }
+  }
+
+  &__title {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  &__account-info {
+    justify-content: space-between;
+    padding: 8px 24px;
+
+    &__account,
+    &__balance {
+      font-weight: normal;
+      font-size: 14px;
+      color: #24292e;
+    }
+
+    &__account {
+      display: flex;
+      align-items: center;
+    }
+
+    &__name {
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+
+    &__balance {
+      color: #6a737d;
+    }
+  }
+
+  &__edit-section {
+    padding: 24px;
+
+    &__title {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+      color: #24292e;
+    }
+
+    &__description {
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 17px;
+      color: #6a737d;
+      margin-top: 8px;
+    }
+
+    &__option {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
+    &__radio-button {
+      width: 18px;
+    }
+
+    &__option-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__option-label,
+    &__option-label--selected {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      color: #474b4d;
+    }
+
+    &__option-label--selected {
+      color: $primary-blue;
+    }
+
+    &__option-description {
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 17px;
+      color: #6a737d;
+      margin-top: 8px;
+      margin-bottom: 6px;
+    }
+
+    &__option-value {
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 25px;
+      color: #24292e;
+    }
+
+    &__radio-button {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    &__radio-button-outline,
+    &__radio-button-outline--selected {
+      width: 18px;
+      height: 18px;
+      background: #dadcdd;
+      border-radius: 9px;
+      position: absolute;
+    }
+
+    &__radio-button-outline--selected {
+      background: $primary-blue;
+    }
+
+    &__radio-button-fill {
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 7px;
+      position: absolute;
+    }
+
+    &__radio-button-dot {
+      width: 8px;
+      height: 8px;
+      background: $primary-blue;
+      border-radius: 4px;
+      position: absolute;
+    }
+  }
+}
+
+.edit-approval-permission-modal-content {
+  padding: 0;
+}
+
+.edit-approval-permission-modal-container {
+  max-height: 550px;
+  width: 100%;
+}

@@ -1,0 +1,17 @@
+.cancel-transaction-gas-fee {
+  background: #f1f4f9;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+
+  &__eth {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  &__fiat {
+    font-size: 0.75rem;
+  }
+}

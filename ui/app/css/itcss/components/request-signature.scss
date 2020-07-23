@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -62,7 +62,7 @@
   }
 
   &__header__text {
-    color: #5B5D67;
+    color: #5b5d67;
     font-family: Roboto;
     font-size: 22px;
     line-height: 29px;
@@ -99,6 +99,30 @@
 
   &__account-text {
     font-size: 14px;
+  }
+
+  &__account-item {
+    height: 22px;
+    background-color: $white;
+    font-family: Roboto;
+    line-height: 16px;
+    font-size: 12px;
+    width: 124px;
+
+    .account-list-item {
+      margin-top: 6px;
+    }
+
+    .account-list-item__account-name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .account-list-item__top-row {
+      margin: 0;
+    }
   }
 
   &__balance {
@@ -206,7 +230,7 @@
   &__help-link {
     cursor: pointer;
     text-decoration: underline;
-    color: $curious-blue;
+    color: $primary-blue;
   }
 
   &__footer {

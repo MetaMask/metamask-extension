@@ -1,0 +1,21 @@
+.error-message {
+  min-height: 32px;
+  border: 1px solid $monzo;
+  color: $monzo;
+  background: lighten($monzo, 56%);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 16px;
+
+  &__icon {
+    margin-right: 8px;
+    flex: 0 0 auto;
+  }
+
+  &__text {
+    overflow: auto;
+  }
+}

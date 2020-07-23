@@ -1,0 +1,57 @@
+.confirm-detail-row {
+  padding: 14px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $scorpion;
+    text-transform: uppercase;
+  }
+
+  &__details {
+    flex: 1;
+    text-align: end;
+    min-width: 0;
+  }
+
+  &__primary {
+    font-size: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  &__secondary {
+    color: $oslo-gray;
+    justify-content: flex-end;
+  }
+
+  &__header-text {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: $scorpion;
+
+    &--edit {
+      color: $primary-blue;
+      cursor: pointer;
+    }
+
+    &--total {
+      font-size: 0.625rem;
+    }
+  }
+
+  .advanced-gas-inputs__gas-edit-rows {
+    margin-bottom: 16px;
+  }
+
+  .custom-nonce-input {
+    input {
+      width: 90px;
+      font-size: 1rem;
+    }
+  }
+}

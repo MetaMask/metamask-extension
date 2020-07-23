@@ -1,7 +1,6 @@
-require('babel-register')({
-  ignore: name => name.includes('node_modules') && !name.includes('obs-store'),
-})
+require('@babel/register')
 
 require('./helper')
 
 window.SVGPathElement = window.SVGPathElement || { prototype: {} }
+global.indexedDB = {}

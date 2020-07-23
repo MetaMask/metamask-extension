@@ -1,0 +1,31 @@
+.transaction-status {
+  display: inline;
+
+  &--unapproved {
+    color: $Orange-500;
+  }
+
+  &--failed {
+    color: $Red-500;
+  }
+
+  &--cancelled {
+    color: $Red-500;
+  }
+
+  &--dropped {
+    color: $Red-500;
+  }
+
+  &--rejected {
+    color: $Red-500;
+  }
+
+  &--pending {
+    color: $Orange-500;
+  }
+
+  &--queued {
+    color: $Grey-500;
+  }
+}

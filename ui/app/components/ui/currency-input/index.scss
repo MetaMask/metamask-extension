@@ -1,0 +1,26 @@
+.currency-input {
+  &__conversion-component {
+    font-size: 12px;
+    line-height: 12px;
+    padding-left: 1px;
+  }
+
+  &__swap-component {
+    flex: 0 0 auto;
+    height: 24px;
+    width: 24px;
+    background-image: url("images/icons/swap.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    opacity: 0.4;
+
+    &:hover {
+      opacity: 0.3;
+    }
+
+    &:active {
+      opacity: 0.5;
+    }
+  }
+}

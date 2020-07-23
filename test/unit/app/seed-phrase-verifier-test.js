@@ -1,9 +1,9 @@
-const assert = require('assert')
-const clone = require('clone')
-const KeyringController = require('eth-keyring-controller')
-const firstTimeState = require('../../../app/scripts/first-time-state')
-const seedPhraseVerifier = require('../../../app/scripts/lib/seed-phrase-verifier')
-const mockEncryptor = require('../../lib/mock-encryptor')
+import assert from 'assert'
+import { cloneDeep } from 'lodash'
+import KeyringController from 'eth-keyring-controller'
+import firstTimeState from '../../../app/scripts/first-time-state'
+import seedPhraseVerifier from '../../../app/scripts/lib/seed-phrase-verifier'
+import mockEncryptor from '../../lib/mock-encryptor'
 
 describe('SeedPhraseVerifier', function () {
 
@@ -17,7 +17,7 @@ describe('SeedPhraseVerifier', function () {
 
     beforeEach(async function () {
       keyringController = new KeyringController({
-        initState: clone(firstTimeState),
+        initState: cloneDeep(firstTimeState),
         encryptor: mockEncryptor,
       })
 

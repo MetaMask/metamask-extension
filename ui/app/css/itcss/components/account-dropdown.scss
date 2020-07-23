@@ -24,6 +24,10 @@
     position: relative;
   }
 
+  &__tooltip-wrapper {
+    left: -10px;
+  }
+
   &__account-balances {
     height: auto;
     border: none;
@@ -32,6 +36,24 @@
     margin-left: 34px;
     margin-top: 4px;
     position: relative;
+  }
+
+  &__primary-cached-container {
+    display: flex;
+  }
+
+  &__cached-star {
+    margin-left: 4px;
+  }
+
+  &__cached-balances {
+    div:first-of-type {
+      color: $web-orange;
+    }
+
+    div:last-of-type {
+      color: rgba(220, 153, 18, 0.6901960784313725);
+    }
   }
 
   &__account-name {
@@ -52,10 +74,16 @@
     font-size: 12px;
   }
 
+  &__balance-flag {
+    position: absolute;
+    top: 3px;
+    left: -8px;
+    color: $primary-blue;
+  }
+
   &__account-primary-balance {
     color: $scorpion;
     border: none;
-    outline: 0 !important;
   }
 
   &__account-secondary-balance {
@@ -71,11 +99,11 @@
 
   &__dropdown {
     &:hover {
-      background: rgba($alto, .2);
+      background: rgba($alto, 0.2);
       cursor: pointer;
 
       input {
-        background: rgba($alto, .1);
+        background: rgba($alto, 0.1);
       }
     }
   }

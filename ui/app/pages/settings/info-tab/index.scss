@@ -1,0 +1,56 @@
+.info-tab {
+  &__logo-wrapper {
+    height: 80px;
+    margin-bottom: 20px;
+  }
+
+  &__logo {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  &__item {
+    padding: 10px 0;
+  }
+
+  &__link-header {
+    padding-bottom: 15px;
+
+    @media screen and (max-width: 575px) {
+      padding-bottom: 5px;
+    }
+  }
+
+  &__link-item {
+    padding: 15px 0;
+
+    @media screen and (max-width: 575px) {
+      padding: 5px 0;
+    }
+  }
+
+  &__link-text {
+    @extend %link;
+  }
+
+  &__version-number {
+    padding-top: 5px;
+    font-size: 13px;
+    color: $dusty-gray;
+  }
+
+  &__separator {
+    margin: 15px 0;
+    width: 80px;
+    border-color: $alto;
+    border: none;
+    height: 1px;
+    background-color: $alto;
+    color: $alto;
+  }
+
+  &__about {
+    color: $dusty-gray;
+    margin-bottom: 15px;
+  }
+}

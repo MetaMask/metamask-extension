@@ -1,0 +1,44 @@
+@import 'token-list/index';
+
+.add-token {
+  &__custom-token-form {
+    padding: 8px 16px 16px;
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+  }
+
+  &__search-token {
+    padding: 16px;
+  }
+
+  &__token-list {
+    margin-top: 16px;
+  }
+
+  &__custom-symbol {
+    &__label-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+    }
+
+    &__label {
+      flex: 0 0 auto;
+    }
+
+    &__edit {
+      flex: 1 1 auto;
+      text-align: right;
+      color: $primary-blue;
+      padding-right: 4px;
+      cursor: pointer;
+    }
+  }
+}

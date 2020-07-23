@@ -1,0 +1,112 @@
+.sidebar-left {
+  display: flex;
+
+  .gas-modal-page-container {
+    display: flex;
+
+    .page-container {
+      flex: 1;
+      max-width: 100%;
+
+      &__content {
+        display: flex;
+        overflow-y: initial;
+      }
+
+      @media screen and (max-width: $break-small) {
+        max-width: 344px;
+        min-height: auto;
+      }
+
+      @media screen and (min-width: $break-small) {
+        max-height: none;
+      }
+    }
+
+    .gas-price-chart {
+      margin-left: 10px;
+
+      &__root {
+        max-height: 160px !important;
+      }
+    }
+
+    .page-container__bottom {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .page-container__content {
+      overflow-y: inherit;
+    }
+
+    .basic-tab-content {
+      height: auto;
+      margin-bottom: 0;
+      border-bottom: 1px solid #d2d8dd;
+      flex: 1 1 70%;
+
+      @media screen and (max-width: $break-small) {
+        padding-left: 14px;
+        padding-bottom: 21px;
+      }
+
+      .gas-price-button-group--alt {
+        @media screen and (max-width: $break-small) {
+          max-width: 318px;
+
+          &__time-estimate {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .advanced-tab {
+      @media screen and (min-width: $break-small) {
+        flex: 1 1 70%;
+      }
+
+      &__fee-chart {
+        height: 320px;
+
+        @media screen and (max-width: $break-small) {
+          height: initial;
+        }
+      }
+
+      &__fee-chart__speed-buttons {
+        bottom: 77px;
+
+        @media screen and (max-width: $break-small) {
+          display: none;
+        }
+      }
+    }
+
+    .gas-modal-content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      &__info-row-wrapper {
+        display: flex;
+
+        @media screen and (min-width: $break-small) {
+          flex: 1 1 30%;
+        }
+      }
+
+      &__info-row {
+        height: 170px;
+
+        @media screen and (max-width: $break-small) {
+          height: initial;
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}

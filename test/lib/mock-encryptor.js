@@ -1,15 +1,15 @@
-var mockHex = '0xabcdef0123456789'
-var mockKey = Buffer.alloc(32)
+const mockHex = '0xabcdef0123456789'
+const mockKey = Buffer.alloc(32)
 let cacheVal
 
-module.exports = {
+const mockEncryptor = {
 
-  encrypt (password, dataObj) {
+  encrypt (_, dataObj) {
     cacheVal = dataObj
     return Promise.resolve(mockHex)
   },
 
-  decrypt (password, text) {
+  decrypt () {
     return Promise.resolve(cacheVal || {})
   },
 
@@ -21,7 +21,7 @@ module.exports = {
     return this.decrypt(key, text)
   },
 
-  keyFromPassword (password) {
+  keyFromPassword () {
     return Promise.resolve(mockKey)
   },
 
@@ -34,3 +34,5 @@ module.exports = {
   },
 
 }
+
+export default mockEncryptor

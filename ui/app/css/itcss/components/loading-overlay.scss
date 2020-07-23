@@ -1,7 +1,7 @@
 .loading-overlay {
   left: 0;
   z-index: 51;
-  position: absolute;
+  position: fixed;
   flex-direction: column;
   display: flex;
   justify-content: center;
@@ -9,7 +9,7 @@
   flex: 1 1 auto;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, .8);
+  background: rgba(255, 255, 255, 0.8);
 
   &__screen-content {
     display: flex;

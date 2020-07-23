@@ -2,7 +2,7 @@
   Generic
  */
 
-@import './reset.scss';
+@import './reset';
 
 * {
   box-sizing: border-box;
@@ -13,15 +13,12 @@ body {
   font-family: Roboto, Arial;
   color: #4d4d4d;
   font-weight: 400;
-  background: #f7f7f7;
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-
-  @media screen and (max-width: $break-small) {
-    overflow-y: overlay;
-  }
+  font-size: 16px;
+  overflow: auto;
 }
 
 html {
@@ -37,9 +34,16 @@ html {
   display: flex;
 }
 
-input:focus,
-textarea:focus {
-  outline: none;
+.mouse-user-styles {
+  button:focus,
+  input:focus,
+  textarea:focus,
+  .unit-input__input,
+  .account-list-item__account-primary-balance,
+  .account-list-item__input,
+  .currency-display__input {
+    outline: none;
+  }
 }
 
 /* stylelint-disable */
@@ -48,6 +52,7 @@ textarea:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: #f7f7f7;
 
   @media screen and (max-width: $break-small) {
     background-color: $white;
@@ -120,4 +125,15 @@ input.form-control {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.pinned-to-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
+.pinned-to-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

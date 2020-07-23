@@ -1,0 +1,27 @@
+.identicon {
+  /*rtl:ignore*/
+  direction: ltr;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &__address-wrapper {
+    height: 40px;
+    width: 40px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-radius: 50%;
+    border-width: 2px;
+    border-color: $primary-blue;
+  }
+
+  &__eth-logo {
+    border: 1px solid $alto;
+    background: $white;
+  }
+}

@@ -1,9 +1,9 @@
-const assert = require('assert')
-const txHelper = require('../../../../../ui/lib/tx-helper')
+import { strict as assert } from 'assert'
+import txHelper from '../../../../../ui/lib/tx-helper'
 
 describe('txHelper', function () {
   it('always shows the oldest tx first', function () {
-    const metamaskNetworkId = 1
+    const metamaskNetworkId = '1'
     const txs = {
       a: { metamaskNetworkId, time: 3 },
       b: { metamaskNetworkId, time: 1 },

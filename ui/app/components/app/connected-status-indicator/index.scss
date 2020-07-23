@@ -1,0 +1,59 @@
+.connected-status-indicator {
+  display: flex;
+  align-items: center;
+  place-self: center start;
+  background: none;
+  font-size: inherit;
+  padding: 8px;
+  border-radius: 100px;
+
+  &:hover {
+    background-color: #f2f3f4;
+  }
+
+  &:active {
+    background-color: #ededed;
+  }
+
+  &__inner-circle {
+    border-radius: 4px;
+    height: 4px;
+    width: 4px;
+    background-color: transparent;
+  }
+
+  &__green-circle,
+  &__yellow-circle,
+  &__grey-circle {
+    border-radius: 4px;
+    height: 8px;
+    width: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__green-circle {
+    border-color: #4cd964;
+  }
+
+  &__green-circle &__inner-circle {
+    background-color: #4cd964;
+  }
+
+  &__yellow-circle {
+    border-color: #ffd33d;
+  }
+
+  &__grey-circle {
+    border-color: $Grey-500;
+  }
+
+  &__text {
+    font-size: 10px;
+    color: $Grey-500;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+}

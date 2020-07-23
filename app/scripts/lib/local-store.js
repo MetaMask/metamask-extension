@@ -1,10 +1,11 @@
-const extension = require('extensionizer')
-const log = require('loglevel')
+import extension from 'extensionizer'
+import log from 'loglevel'
+import { checkForError } from './util'
 
 /**
  * A wrapper around the extension's storage local API
  */
-module.exports = class ExtensionStore {
+export default class ExtensionStore {
   /**
    * @constructor
    */
@@ -17,10 +18,12 @@ module.exports = class ExtensionStore {
 
   /**
    * Returns all of the keys currently saved
-   * @return {Promise<*>}
+   * @returns {Promise<*>}
    */
   async get () {
-    if (!this.isSupported) return undefined
+    if (!this.isSupported) {
+      return undefined
+    }
     const result = await this._get()
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -33,8 +36,8 @@ module.exports = class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {object} state - The state to set
-   * @return {Promise<void>}
+   * @param {Object} state - The state to set
+   * @returns {Promise<void>}
    */
   async set (state) {
     return this._set(state)
@@ -43,13 +46,13 @@ module.exports = class ExtensionStore {
   /**
    * Returns all of the keys currently saved
    * @private
-   * @return {object} the key-value map from local storage
+   * @returns {Object} - the key-value map from local storage
    */
   _get () {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.get(null, (/** @type {any} */ result) => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {
@@ -61,15 +64,15 @@ module.exports = class ExtensionStore {
 
   /**
    * Sets the key in local state
-   * @param {object} obj - The key to set
-   * @return {Promise<void>}
+   * @param {Object} obj - The key to set
+   * @returns {Promise<void>}
    * @private
    */
   _set (obj) {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
-        const err = extension.runtime.lastError
+        const err = checkForError()
         if (err) {
           reject(err)
         } else {
@@ -82,7 +85,7 @@ module.exports = class ExtensionStore {
 
 /**
  * Returns whether or not the given object contains no keys
- * @param {object} obj - The object to check
+ * @param {Object} obj - The object to check
  * @returns {boolean}
  */
 function isEmpty (obj) {

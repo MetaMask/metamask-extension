@@ -1,0 +1,43 @@
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 442px;
+  padding: 0 18px;
+  color: black;
+
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    margin-top: 110px;
+  }
+
+  &__header {
+    font-size: 28px;
+    margin-bottom: 22px;
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  &__description {
+    text-align: center;
+
+    div {
+      font-size: 16px;
+    }
+
+    @media screen and (max-width: 575px) {
+      font-size: 0.9rem;
+    }
+  }
+
+  .first-time-flow__button {
+    width: 184px;
+    font-weight: 500;
+    margin-top: 44px;
+  }
+}

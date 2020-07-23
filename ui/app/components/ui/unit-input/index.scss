@@ -1,0 +1,69 @@
+.unit-input {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  min-height: 54px;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #4d4d4d;
+  font-size: 16px;
+  padding: 8px 10px;
+  position: relative;
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: none;
+  }
+
+  input[type="number"]:hover::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: none;
+  }
+
+  &__inputs {
+    flex: 1 0 auto;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  &__input {
+    color: #4d4d4d;
+    font-size: 1rem;
+    font-family: Roboto;
+    border: none;
+    max-width: 22ch;
+    height: 16px;
+    line-height: 18px;
+
+    &__disabled {
+      background-color: rgb(222, 222, 222);
+    }
+  }
+
+  &__input-container {
+    display: flex;
+    align-items: flex-start;
+    padding-bottom: 4px;
+  }
+
+  &__suffix {
+    margin-left: 3px;
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+
+  &--error {
+    border-color: $red;
+  }
+
+  &__disabled {
+    background-color: #f2f3f4;
+  }
+}

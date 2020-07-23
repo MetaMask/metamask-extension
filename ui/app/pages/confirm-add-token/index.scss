@@ -1,0 +1,69 @@
+.confirm-add-token {
+  padding: 16px;
+
+  &__header {
+    font-size: 0.75rem;
+    display: flex;
+  }
+
+  &__token {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__balance {
+    flex: 0 0 30%;
+    min-width: 0;
+  }
+
+  &__token-list {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .token-balance {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+
+      &__amount {
+        color: $scorpion;
+        font-size: 43px;
+        line-height: 43px;
+        margin-right: 8px;
+      }
+
+      &__symbol {
+        color: $scorpion;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+      }
+    }
+  }
+
+  &__token-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-top: 8px;
+    box-sizing: border-box;
+  }
+
+  &__data {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+  }
+
+  &__name {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__token-icon {
+    margin-right: 12px;
+    flex: 0 0 auto;
+  }
+}

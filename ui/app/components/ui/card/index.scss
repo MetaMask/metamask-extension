@@ -1,0 +1,11 @@
+.card {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+
+  &__title {
+    border-bottom: 1px solid #d8d8d8;
+    padding-bottom: 4px;
+    text-transform: capitalize;
+  }
+}

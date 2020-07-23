@@ -1,0 +1,19 @@
+.info-icon {
+  margin: 0 4px;
+
+  &--success {
+    fill: $accent-green;
+  }
+
+  &--info {
+    fill: $primary-blue;
+  }
+
+  &--warning {
+    fill: $accent-yellow;
+  }
+
+  &--danger {
+    fill: $accent-red;
+  }
+}

@@ -1,0 +1,84 @@
+.transaction-activity-log {
+  &__title {
+    border-bottom: 1px solid #d8d8d8;
+    padding-bottom: 4px;
+    text-transform: capitalize;
+  }
+
+  &__activities-container {
+    padding-top: 8px;
+  }
+
+  &__activity {
+    padding: 4px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 7px;
+      border-right: 1px solid #909090;
+    }
+
+    &:first-child::after {
+      height: 50%;
+      top: 50%;
+    }
+
+    &:last-child::after {
+      height: 50%;
+    }
+
+    &:first-child:last-child::after {
+      display: none;
+    }
+  }
+
+  &__activity-icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #909090;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+  &__activity-text {
+    color: $dusty-gray;
+    font-size: 0.75rem;
+    cursor: pointer;
+
+    &:hover {
+      color: $black;
+    }
+  }
+
+  &__value {
+    display: inline;
+    font-weight: 500;
+  }
+
+  &__entry-container {
+    min-width: 0;
+  }
+
+  &__action-link {
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: $primary-blue;
+  }
+
+  b {
+    font-weight: 500;
+  }
+}

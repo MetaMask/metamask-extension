@@ -2,16 +2,6 @@
   Utility Classes
  */
 
-/* color */
-
-.color-orange {
-  color: #f7861c; // TODO: move to settings/variables
-}
-
-.color-forest {
-  color: #0a5448; // TODO: move to settings/variables
-}
-
 /* lib */
 
 .full-size {
@@ -141,11 +131,11 @@
 }
 
 .cursor-pointer:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .cursor-pointer:active {
-  transform: scale(.95);
+  transform: scale(0.97);
 }
 
 .cursor-disabled {
@@ -241,11 +231,6 @@ hr.horizontal-line {
   height: 15px;
 }
 
-.ether-balance {
-  display: flex;
-  align-items: center;
-}
-
 .tabSection {
   min-width: 350px;
 }
@@ -293,7 +278,7 @@ hr.horizontal-line {
 
 // TODO: move into component-level contextual 'active' state
 .letter-spacey {
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
 }
 
 .active {

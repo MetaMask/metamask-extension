@@ -1,0 +1,136 @@
+.advanced-gas-inputs {
+  &__gas-edit-rows {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
+  &__gas-edit-row {
+    display: flex;
+    flex-flow: column;
+    width: 47.5%;
+
+    &__label {
+      color: #313b5e;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @media screen and (max-width: 576px) {
+        font-size: 10px;
+      }
+
+      .fa-info-circle {
+        color: $silver;
+        cursor: pointer;
+      }
+
+      .fa-info-circle:hover {
+        color: $mid-gray;
+      }
+    }
+
+    &__error-text {
+      font-size: 12px;
+      color: red;
+    }
+
+    &__warning-text {
+      font-size: 12px;
+      color: orange;
+    }
+
+    &__input-wrapper {
+      position: relative;
+    }
+
+    &__input {
+      /*rtl:ignore*/
+      direction: ltr;
+      border: 1px solid $dusty-gray;
+      border-radius: 4px;
+      color: $mid-gray;
+      font-size: 16px;
+      height: 24px;
+      width: 100%;
+      padding-left: 8px;
+      padding-top: 2px;
+      margin-top: 7px;
+    }
+
+    &__input--error {
+      border: 1px solid $red;
+    }
+
+    &__input--warning {
+      border: 1px solid $orange;
+    }
+
+    &__input-arrows {
+      position: absolute;
+      top: 7px;
+
+      /*rtl:ignore*/
+      right: 0;
+      width: 17px;
+      height: 24px;
+      border: 1px solid #dadada;
+      border-top-right-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      color: #9b9b9b;
+      font-size: 0.8em;
+      border-bottom-right-radius: 4px;
+      cursor: pointer;
+
+      &__i-wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      &__i-wrap:hover {
+        background: #4eade7;
+        color: $white;
+      }
+
+      i:hover {
+        background: #4eade7;
+      }
+
+      i {
+        font-size: 10px;
+      }
+    }
+
+    &__input-arrows--error {
+      border: 1px solid $red;
+    }
+
+    &__input-arrows--warning {
+      border: 1px solid $orange;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    &__gwei-symbol {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      color: $dusty-gray;
+    }
+  }
+}

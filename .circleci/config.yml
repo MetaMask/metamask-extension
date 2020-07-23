@@ -1,116 +1,126 @@
-version: 2
+version: 2.1
 
 workflows:
-  version: 2
-  full_test:
+  test_and_release:
     jobs:
-      - prep-deps-npm
+      - create_release_pull_request:
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - prep-deps
+      - test-deps
       - prep-build:
           requires:
-            - prep-deps-npm
-      - prep-docs:
+            - prep-deps
+      - prep-build-test:
           requires:
-            - prep-deps-npm
-      - prep-scss:
+            - prep-deps
+      - prep-build-storybook:
           requires:
-            - prep-deps-npm
+            - prep-deps
       - test-lint:
           requires:
-            - prep-deps-npm
-      - test-deps:
+            - prep-deps
+      - test-lint-shellcheck
+      - test-lint-lockfile:
           requires:
-            - prep-deps-npm
-      - test-e2e-beta-chrome:
+            - prep-deps
+      - test-e2e-chrome:
           requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-beta-firefox:
+            - prep-build-test
+      - test-e2e-firefox:
           requires:
-            - prep-deps-npm
-            - prep-build
-      # - test-e2e-beta-drizzle:
-      #     requires:
-      #       - prep-deps-npm
-      #       - prep-build
+            - prep-build-test
       - test-unit:
           requires:
-            - prep-deps-npm
+            - prep-deps
+      - test-unit-global:
+          requires:
+            - prep-deps
       - test-mozilla-lint:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-scss
       - all-tests-pass:
           requires:
             - test-lint
+            - test-lint-shellcheck
+            - test-lint-lockfile
             - test-unit
+            - test-unit-global
             - test-mozilla-lint
-            - test-e2e-beta-chrome
-            - test-e2e-beta-firefox
-            # - test-e2e-beta-drizzle
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
-      - job-screens:
+            - test-e2e-chrome
+            - test-e2e-firefox
+      - benchmark:
           requires:
-            - prep-deps-npm
-            - prep-build
-            - all-tests-pass
+            - prep-build-test
       - job-publish-prerelease:
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
-            - job-screens
+            - benchmark
             - all-tests-pass
       - job-publish-release:
           filters:
             branches:
               only: master
           requires:
-            - prep-deps-npm
+            - prep-deps
             - prep-build
-            - prep-docs
-            - job-screens
             - all-tests-pass
+      - job-publish-storybook:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-storybook
+      - coveralls-upload:
+          requires:
+            - test-unit
 
 jobs:
-  prep-deps-npm:
+  create_release_pull_request:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1.0-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Install npm 6 + deps via npm
+          name: Create GitHub Pull Request for version
           command: |
-           sudo npm install -g npm@6 && npm install --no-save --no-audit
+            .circleci/scripts/release-bump-changelog-version
+            .circleci/scripts/release-bump-manifest-version
+            .circleci/scripts/release-create-release-pr
+
+  prep-deps:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - run:
+          name: Install deps
+          command: |
+            .circleci/scripts/deps-install.sh
+      - run:
+          name: Collect yarn install HAR logs
+          command: |
+            .circleci/scripts/collect-har-artifact.sh
       - persist_to_workspace:
           root: .
           paths:
           - node_modules
-      - save_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
+          - build-artifacts
 
   prep-build:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: build:dist
-          command: npm run dist
+          command: yarn dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -120,92 +130,106 @@ jobs:
             - dist
             - builds
 
-  prep-docs:
+  prep-build-test:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: build:dist
-          command: npm run doc
+          name: Build extension for testing
+          command: yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test
       - persist_to_workspace:
           root: .
           paths:
-            - docs/jsdocs
+            - dist-test
 
-  prep-scss:
+  prep-build-storybook:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - run:
-          name: Build for integration tests
-          command: npm run test:integration:build
+          name: Build Storybook
+          command: yarn storybook:build
       - persist_to_workspace:
           root: .
           paths:
-            - ui/app/css/output
+            - .out
 
   test-lint:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Test
-          command: npm run lint
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Verify locales
+          command: yarn verify-locales --quiet
+
+  test-lint-shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine@sha256:169a51b086af0ab181e32801c15deb78944bb433d4f2c0a21cc30d4e60547065
+    steps:
+      - checkout
+      - run: apk add --no-cache bash jq yarn
+      - run:
+          name: Shellcheck Lint
+          command: yarn lint:shellcheck
+
+  test-lint-lockfile:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: lockfile-lint
+          command: yarn lint:lockfile
 
   test-deps:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Test
-          command: sudo npm install -g npm@6 && npm audit
+          name: yarn audit
+          command: .circleci/scripts/yarn-audit
 
-  # test-e2e-beta-drizzle:
-  #   docker:
-  #     - image: circleci/node:8.11.3-browsers
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: test:e2e:drizzle:beta
-  #         command: npm run test:e2e:drizzle:beta
-  #     - store_artifacts:
-  #         path: test-artifacts
-  #         destination: test-artifacts
-  test-e2e-beta-chrome:
+  test-e2e-chrome:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: test:e2e:chrome:beta
-          command: npm run test:e2e:chrome:beta
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: test:e2e:chrome
+          command: yarn test:e2e:chrome
+          no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
 
-  test-e2e-beta-firefox:
+  test-e2e-firefox:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - run:
@@ -214,22 +238,32 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:e2e:firefox:beta
-          command: npm run test:e2e:firefox:beta
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: test:e2e:firefox
+          command: yarn test:e2e:firefox
+          no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
 
-  job-screens:
+  benchmark:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Test
-          command: npm run test:screens
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Run page load benchmark
+          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
       - persist_to_workspace:
           root: .
           paths:
@@ -237,11 +271,14 @@ jobs:
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: build:source-map-explorer
+          command: ./development/source-map-explorer.sh
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
@@ -251,106 +288,102 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      # important: generate sesify viz AFTER uploading builds as artifacts
+      - run:
+          name: build:sesify-viz
+          command: ./.circleci/scripts/create-sesify-viz
+      - store_artifacts:
+          path: build-artifacts
+          destination: build-artifacts
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: sentry sourcemaps upload
-          command: npm run sentry:publish
+          command: yarn sentry:publish
       - run:
-          name: github gh-pages docs publish
-          command: >
-            git config --global user.name "metamaskbot" &&
-            git config --global user.email "admin@metamask.io" &&
-            npm run publish-docs
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release
+      - run:
+          name: Create GitHub Pull Request to sync master with develop
+          command: .circleci/scripts/release-create-master-pr
+
+  job-publish-storybook:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5e:a3:2d:35:b6:25:b5:87:b1:41:11:0d:77:50:96:73"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: storybook:deploy
+          command: |
+            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
+            yarn storybook:deploy
 
   test-unit:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: test:coverage
-          command: npm run test:coverage
+          command: yarn test:coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .nyc_output
+            - coverage
+  test-unit-global:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:unit:global
+          command: yarn test:unit:global
   test-mozilla-lint:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: test:mozilla-lint
-          command: npm run mozilla-lint
-
-  test-integration-flat-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
-
-  test-integration-flat-chrome:
-    environment:
-      browsers: '["Chrome"]'
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
-
-  test-integration-mascara-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
-
-  test-integration-mascara-chrome:
-    environment:
-      browsers: '["Chrome"]'
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   all-tests-pass:
     docker:
-      - image: circleci/node:8.11.3-browsers
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
     steps:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
+
+  coveralls-upload:
+    docker:
+      - image: circleci/node@sha256:e16740707de2ebed45c05d507f33ef204902349c7356d720610b5ec6a35d3d88
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Coveralls upload
+          command: yarn test:coveralls-upload

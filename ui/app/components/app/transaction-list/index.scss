@@ -1,0 +1,51 @@
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__completed-transactions {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__header {
+    flex: 0 0 auto;
+    font-size: 14px;
+    line-height: 20px;
+    color: $Grey-400;
+    border-bottom: 1px solid $Grey-100;
+    padding: 8px 0 8px 20px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 8px 0 8px 16px;
+    }
+  }
+
+  &__transactions {
+    flex: 1;
+  }
+
+  &__pending-transactions {
+    margin-bottom: 16px;
+  }
+
+  &__empty {
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto;
+    padding-top: 24px;
+  }
+
+  &__empty-text {
+    grid-row-start: 2;
+    display: flex;
+    justify-content: center;
+    color: $silver;
+  }
+
+  &__view-more {
+    margin: 16px auto;
+    max-width: 200px;
+  }
+}

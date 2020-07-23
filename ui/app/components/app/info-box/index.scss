@@ -1,0 +1,24 @@
+.info-box {
+  border-radius: 4px;
+  background-color: $alabaster;
+  position: relative;
+  padding: 16px;
+  display: flex;
+  flex-flow: column;
+  color: $mid-gray;
+
+  &__close::after {
+    content: '\00D7';
+    font-size: 29px;
+    font-weight: 200;
+    color: $dusty-gray;
+    position: absolute;
+    right: 12px;
+    top: 0;
+    cursor: pointer;
+  }
+
+  &__description {
+    font-size: 0.75rem;
+  }
+}

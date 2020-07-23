@@ -1,2 +1,1 @@
-const NetworkController = require('./network')
-module.exports = NetworkController
+export { default } from './network'

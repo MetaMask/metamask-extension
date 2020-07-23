@@ -1,0 +1,10 @@
+@import 'confirm-page-container-content/index';
+@import 'confirm-page-container-header/index';
+@import 'confirm-detail-row/index';
+@import 'confirm-page-container-navigation/index';
+
+.page-container {
+  &__content-component-wrapper {
+    height: 100%;
+  }
+}

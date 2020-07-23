@@ -1,9 +1,19 @@
 .new-account {
   width: 375px;
-  background-color: #FFFFFF;
-  box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+  background-color: #fff;
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
-  height: 100%;
+  height: unset;
+  overflow: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media screen and (min-width: 576px) {
+    position: absolute;
+  }
 
   &__header {
     display: flex;
@@ -43,16 +53,17 @@
     }
 
     &__selected {
-      color: $curious-blue;
-      border-bottom: 3px solid $curious-blue;
+      color: $primary-blue;
+      border-bottom: 3px solid $primary-blue;
       cursor: initial;
+      pointer-events: none;
     }
   }
 }
 
 .new-account-import-disclaimer {
   width: 120%;
-  background-color: #F4F9FC;
+  background-color: #f4f9fc;
   display: inline-block;
   align-items: center;
   padding: 20px 30px 20px;
@@ -84,9 +95,9 @@
   &__select {
     height: 54px;
     width: 210px;
-    border: 1px solid #D2D8DD;
+    border: 1px solid #d2d8dd;
     border-radius: 4px;
-    background-color: #FFFFFF;
+    background-color: #fff;
     display: flex;
     align-items: center;
 
@@ -135,7 +146,7 @@
     color: $scorpion;
     font-family: Roboto;
     font-size: 16px;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 
   &__json {
@@ -143,6 +154,7 @@
     flex-flow: column;
     align-items: center;
     margin-top: 29px;
+    width: 100%;
   }
 
   &__buttons {
@@ -155,8 +167,8 @@
 
 .hw-tutorial {
   width: 375px;
-  border-top: 1px solid #D2D8DD;
-  border-bottom: 1px solid #D2D8DD;
+  border-top: 1px solid #d2d8dd;
+  border-bottom: 1px solid #d2d8dd;
   overflow: visible;
   display: block;
   padding: 15px 30px;
@@ -193,12 +205,12 @@
 
   &__connect-btn.disabled {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   &__btn {
     background: #fbfbfb;
-    border: 1px solid #e5e5e5;
+    border: 2px solid #e5e5e5;
     height: 100px;
     width: 150px;
     flex: 1;
@@ -206,6 +218,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 5px;
+    padding: 0;
 
     &__img {
       width: 95px;
@@ -248,7 +261,7 @@
   &__learn-more {
     margin-top: 15px;
     font-size: 14px;
-    color: #5B5D67;
+    color: #5b5d67;
     line-height: 19px;
     text-align: center;
     cursor: pointer;
@@ -258,7 +271,7 @@
       display: block;
       text-align: center;
       height: 30px;
-      margin: 0px auto 10px;
+      margin: 0 auto 10px;
     }
   }
 
@@ -330,7 +343,7 @@
   }
 
   &__step-asset {
-    margin: 0px auto 20px;
+    margin: 0 auto 20px;
     display: flex;
   }
 }
@@ -444,24 +457,28 @@
     line-height: 19px;
     border: none;
     min-width: 46px;
-    margin-right: 0px;
+    margin-right: 0;
     margin-left: 16px;
-    padding: 0px;
+    padding: 0;
     text-transform: uppercase;
     font-family: Roboto;
   }
 }
 
-.new-account-connect-form {
+.new-external-account-form {
   display: flex;
   flex-flow: column;
   align-items: center;
   padding: 15px 30px 0;
-  height: 710px;
-  overflow: auto;
 
   &.unsupported-browser {
     height: 210px;
+    overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &.account-list {
@@ -520,7 +537,7 @@
     font-size: 16px;
     line-height: 21px;
     margin-top: 15px;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 
   &__buttons {

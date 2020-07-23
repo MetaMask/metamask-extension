@@ -6,14 +6,13 @@ This migration breaks out the TransactionManager substate
 
 */
 
-const extend = require('xtend')
-const clone = require('clone')
+import { cloneDeep } from 'lodash'
 
-module.exports = {
+export default {
   version,
 
   migrate: function (originalVersionedData) {
-    const versionedData = clone(originalVersionedData)
+    const versionedData = cloneDeep(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
@@ -27,12 +26,13 @@ module.exports = {
 }
 
 function transformState (state) {
-  const newState = extend(state, {
+  const newState = {
+    ...state,
     TransactionManager: {
       transactions: state.transactions || [],
       gasMultiplier: state.gasMultiplier || 1,
     },
-  })
+  }
   delete newState.transactions
   delete newState.gasMultiplier
 

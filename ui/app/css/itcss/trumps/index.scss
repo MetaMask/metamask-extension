@@ -59,14 +59,3 @@
 i.fa.fa-question-circle.fa-lg.menu-icon {
   font-size: 18px;
 }
-
-// This text is contained inside a div.
-// ID needed to override user agent stylesheet.
-// See components/modal.scss
-
-/* stylelint-disable */
-#buy-modal-content-footer-text {
-  font-family: 'DIN OT';
-  font-size: 16px;
-}
-/* stylelint-enable */

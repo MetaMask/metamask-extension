@@ -1,0 +1,107 @@
+.app-header {
+  align-items: center;
+  background: $Grey-000;
+  position: relative;
+  z-index: $header-z-index;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  flex: 0 0 auto;
+
+  @media screen and (max-width: 575px) {
+    padding: 1rem;
+    z-index: $mobile-header-z-index;
+  }
+
+  @media screen and (min-width: 576px) {
+    height: 75px;
+    justify-content: center;
+
+    &--back-drop {
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 32px;
+        background: $Grey-000;
+        bottom: -32px;
+      }
+    }
+  }
+
+  &__metafox-logo {
+    &--icon {
+      height: 32px;
+
+      @media screen and (min-width: $break-large) {
+        display: none;
+      }
+    }
+
+    &--horizontal {
+      @media screen and (max-width: $break-small) {
+        display: none;
+      }
+    }
+  }
+
+  &__contents {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+
+    @media screen and (max-width: 575px) {
+      height: 100%;
+    }
+
+    @media screen and (min-width: 576px) {
+      width: 85vw;
+    }
+
+    @media screen and (min-width: 769px) {
+      width: 80vw;
+    }
+
+    @media screen and (min-width: 1281px) {
+      width: 62vw;
+    }
+  }
+
+  &__logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 0 0 auto;
+
+    &--clickable {
+      cursor: pointer;
+    }
+  }
+
+  &__account-menu-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    flex: 1 1 auto;
+    width: 0;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+  }
+
+  &__network-component-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1 0 auto;
+    width: 0;
+    justify-content: flex-end;
+
+    .network-component.pointer {
+      max-width: 200px;
+    }
+
+    .network-indicator {
+      width: 100%;
+    }
+  }
+}
