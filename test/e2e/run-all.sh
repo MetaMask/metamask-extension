@@ -23,7 +23,10 @@ retry () {
 
 export PATH="$PATH:./node_modules/.bin"
 
-retry mocha --no-timeouts test/e2e/tests/*.spec.js
+for spec in test/e2e/tests/*.spec.js
+do
+  retry mocha --no-timeouts "${spec}"
+done
 
 retry concurrently --kill-others \
   --names 'dapp,e2e' \
