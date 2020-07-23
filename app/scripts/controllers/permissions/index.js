@@ -724,17 +724,17 @@ export class PermissionsController {
        * @param {string} req - The internal rpc-cap user request object.
        */
       requestUserApproval: (req) => {
-        const { metadata: { id, origin } } = req
-
-        if (this.pendingApprovalOrigins.has(origin)) {
-          throw ethErrors.rpc.resourceUnavailable(
-            'Permissions request already pending; please wait.',
-          )
-        }
-
-        this._showPermissionRequest()
-
         return new Promise((resolve, reject) => {
+          const { metadata: { id, origin } } = req
+
+          if (this.pendingApprovalOrigins.has(origin)) {
+            throw ethErrors.rpc.resourceUnavailable(
+              'Permissions request already pending; please wait.',
+            )
+          }
+
+          this._showPermissionRequest()
+
           this._addPendingApproval(id, origin, resolve, reject)
         })
       },

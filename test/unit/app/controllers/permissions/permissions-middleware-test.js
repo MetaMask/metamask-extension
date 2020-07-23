@@ -397,11 +397,16 @@ describe('permissions middleware', function () {
       )
       const resA2 = {}
 
-      await assert.rejects(
+      userApprovalPromise = getUserApprovalPromise(permController)
+
+      const requestApprovalFail = assert.rejects(
         aMiddleware(reqA2, resA2),
         expectedError,
         'request should be rejected with correct error',
       )
+
+      await userApprovalPromise
+      await requestApprovalFail
 
       assert.ok(
         (
