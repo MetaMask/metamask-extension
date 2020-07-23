@@ -9,7 +9,7 @@
 - [#9046](https://github.com/MetaMask/metamask-extension/pull/9046): Update @metamask/inpage-provider@6.1.0
 - [#9048](https://github.com/MetaMask/metamask-extension/pull/9048): Skip attempts to resolve 0x contract prefix
 - [#9051](https://github.com/MetaMask/metamask-extension/pull/9051): Use content-hash@2.5.2
-- [#9056](https://github.com/MetaMask/metamask-extension/pull/9056): Display three significant digits for token balances
+- [#9056](https://github.com/MetaMask/metamask-extension/pull/9056): Display at least one significant digit of small non-zero token balances
 
 ## 8.0.5 Thu Jul 16 2020
 - [#8942](https://github.com/MetaMask/metamask-extension/pull/8942): Fix display of incoming transactions (#8942)
