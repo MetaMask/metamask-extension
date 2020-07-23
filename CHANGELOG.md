@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 0.3.2 Thu Jul 23 2020
+- fix(permission): remove unused permissions (#195)
+
 ## 0.3.1 Sat Jul 18 2020
 - chore(deps): use new conflux local network lite @cfxjs/fullnode (#189)
 - docs(trans): Pontus -> Oceanus don't depends on time (#190)
