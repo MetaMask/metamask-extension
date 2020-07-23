@@ -434,7 +434,7 @@ export default class TransactionController extends EventEmitter {
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
-    // that is already being incrmented & signed.
+    // that is already being incremented & signed.
     if (this.inProcessOfSigning.has(txId)) {
       return
     }
