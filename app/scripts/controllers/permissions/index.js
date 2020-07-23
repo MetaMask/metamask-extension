@@ -723,7 +723,7 @@ export class PermissionsController {
        *
        * @param {string} req - The internal rpc-cap user request object.
        */
-      requestUserApproval: async (req) => {
+      requestUserApproval: (req) => {
         const { metadata: { id, origin } } = req
 
         if (this.pendingApprovalOrigins.has(origin)) {
