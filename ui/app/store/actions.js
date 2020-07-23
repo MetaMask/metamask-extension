@@ -168,7 +168,7 @@ export function createNewVault (password) {
 
 export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, (error) => {
+    background.verifyPassword(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -193,7 +193,7 @@ export function verifySeedPhrase () {
 export function requestRevealSeedWords (password) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
-    log.debug(`background.submitPassword`)
+    log.debug(`background.verifyPassword`)
 
     try {
       await verifyPassword(password)
