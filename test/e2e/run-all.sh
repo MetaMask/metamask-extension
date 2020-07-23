@@ -7,7 +7,7 @@ set -o pipefail
 
 retry () {
   retry=0
-  limit="${METAMASK_E2E_RETRY_LIMIT:-5}"
+  limit="${METAMASK_E2E_RETRY_LIMIT:-3}"
   while [[ $retry -lt $limit ]]
   do
     "$@" && break
