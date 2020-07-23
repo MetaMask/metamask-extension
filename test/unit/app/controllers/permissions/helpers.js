@@ -39,12 +39,11 @@ export function getRequestUserApprovalHelper (permController) {
 }
 
 /**
- * Sets the underlying rpc-cap requestUserApproval function, and returns
- * a promise that's resolved once it has been set. The resolution of the
- * promise restores the original requestUserApproval function.
+ * Returns a Promise that resolves once a pending user approval has been set.
+ * Calls the underlying requestUserApproval function as normal, and restores it
+ * once the Promise is resolved.
  *
- * This function must be called on the given permissions controller for
- * each request, in order to get a Promise.
+ * This function must be called on the permissions controller for each request.
  *
  * @param {PermissionsController} - A permissions controller.
  * @returns {Promise<void>} A Promise that resolves once a pending approval
@@ -52,15 +51,12 @@ export function getRequestUserApprovalHelper (permController) {
  */
 export function getUserApprovalPromise (permController) {
   const originalFunction = permController.permissions.requestUserApproval
-  return new Promise((resolveForCaller) => {
-    permController.permissions.requestUserApproval = async (req) => {
-      const { metadata: { id, origin } } = req
-
-      return new Promise((resolve, reject) => {
-        permController._addPendingApproval(id, origin, resolve, reject)
-        permController.permissions.requestUserApproval = originalFunction
-        resolveForCaller()
-      })
+  return new Promise((resolveHelperPromise) => {
+    permController.permissions.requestUserApproval = (req) => {
+      const userApprovalPromise = originalFunction(req)
+      permController.permissions.requestUserApproval = originalFunction
+      resolveHelperPromise()
+      return userApprovalPromise
     }
   })
 }
