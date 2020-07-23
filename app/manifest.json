@@ -78,12 +78,9 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
     "http://localhost:12539/",
-    "https://*.infura.io/",
     "activeTab",
     "webRequest",
-    "*://*.eth/",
     "notifications"
   ],
   "web_accessible_resources": [
@@ -92,7 +89,6 @@
   ],
   "externally_connectable": {
     "matches": [
-      "https://metamask.io/*",
       "https://confluxscan.io/*",
       "https://testnet.confluxscan.io/*",
       "https://conflux-chain.org/*"
