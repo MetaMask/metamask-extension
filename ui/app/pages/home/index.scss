@@ -43,10 +43,11 @@
     display: flex;
     flex-direction: column;
 
-    @extend %content-text;
+    @extend %H6;
 
     padding-left: 24px;
     padding-right: 24px;
+    color: $Grey-800;
 
     div {
       margin-bottom: 20px;

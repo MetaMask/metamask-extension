@@ -24,13 +24,13 @@
 
 
   &__title {
-    @extend %header--18;
+    @extend %H4;
   }
 
   &__text,
   &__text-blue,
   &__text-grey {
-    @extend %content-text;
+    @extend %H6;
   }
 
   &__text-blue {
@@ -120,7 +120,7 @@
     }
 
     &__label {
-      @extend %content-text;
+      @extend %H6;
 
       color: $Black-100;
       text-overflow: ellipsis;
@@ -129,17 +129,14 @@
     }
 
     &__balance {
-      @extend %content-text;
+      @extend %H7;
 
-      font-size: 12px;
       color: $Grey-500;
     }
 
     &__last-connected {
-      @extend %content-text;
+      @extend %H8;
 
-      font-size: 10px;
-      line-height: 140.62%;
       display: flex;
       flex-direction: column;
       align-items: flex-end;

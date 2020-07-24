@@ -5,9 +5,8 @@
   align-items: center;
 
   &__text {
-    @extend %content-text;
+    @extend %H7;
 
-    font-size: 12px;
     line-height: 17px;
     color: #6a737d;
     display: flex;

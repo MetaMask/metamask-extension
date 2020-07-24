@@ -9,7 +9,7 @@
     border-bottom: 1px solid $Grey-100;
 
     &__header {
-      @extend %header--18;
+      @extend %H4;
 
       font-weight: bold;
       display: flex;
