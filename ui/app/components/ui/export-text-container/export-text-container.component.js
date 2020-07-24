@@ -5,10 +5,6 @@ import Copy from '../icon/copy-icon.component'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard'
 
-ExportTextContainer.propTypes = {
-  text: PropTypes.string,
-}
-
 function ExportTextContainer ({ text = '' }) {
   const t = useI18nContext()
   const [copied, handleCopy] = useCopyToClipboard()
@@ -42,6 +38,10 @@ function ExportTextContainer ({ text = '' }) {
       </div>
     </div>
   )
+}
+
+ExportTextContainer.propTypes = {
+  text: PropTypes.string,
 }
 
 export default React.memo(ExportTextContainer)

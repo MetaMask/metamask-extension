@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
 
 import Identicon from '../../../../components/ui/identicon'
 import Copy from '../../../../components/ui/icon/copy-icon.component'
@@ -18,15 +17,6 @@ function quadSplit (address) {
       .match(/.{1,4}/g)
       .join(' ')
   )
-}
-
-ViewContact.propTypes = {
-  name: PropTypes.string,
-  address: PropTypes.string,
-  history: PropTypes.object,
-  checkSummedAddress: PropTypes.string,
-  memo: PropTypes.string,
-  editRoute: PropTypes.string,
 }
 
 function ViewContact ({
@@ -91,6 +81,15 @@ function ViewContact ({
       </div>
     </div>
   )
+}
+
+ViewContact.propTypes = {
+  name: PropTypes.string,
+  address: PropTypes.string,
+  history: PropTypes.object,
+  checkSummedAddress: PropTypes.string,
+  memo: PropTypes.string,
+  editRoute: PropTypes.string,
 }
 
 export default React.memo(ViewContact)

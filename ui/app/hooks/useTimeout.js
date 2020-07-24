@@ -5,36 +5,42 @@ import { useState, useEffect, useRef, useCallback } from 'react'
  *
  * @param {Function}  cb   - callback function inside setTimeout
  * @param {number}  delay   - delay in ms
- * @param {boolean}  immediate   - delay in ms
+ * @param {boolean}  [immediate]   - determines whether the timeout is invoked immediately
  *
  * @return {Function}
  */
 export function useTimeout (cb, delay, immediate = true) {
   const saveCb = useRef()
-  const [triggered, setTriggered] = useState(immediate)
+  const [timeoutId, setTimeoutId] = useState(null)
 
   useEffect(() => {
     saveCb.current = cb
   }, [cb])
 
   useEffect(() => {
-    if (!triggered) {
+    if (timeoutId !== 'start') {
       return
     }
 
     const id = setTimeout(() => {
-      setTriggered(false)
       saveCb.current()
     }, delay)
 
+    setTimeoutId(id)
+
     return () => {
-      clearTimeout(id)
+      clearTimeout(timeoutId)
     }
-  }, [delay, triggered])
+  }, [delay, timeoutId])
 
-  const trigger = useCallback(() => {
-    setTriggered(true)
-  }, [])
+  const startTimeout = useCallback(() => {
+    clearTimeout(timeoutId)
+    setTimeoutId('start')
+  }, [timeoutId])
 
-  return trigger
+  if (immediate) {
+    startTimeout()
+  }
+
+  return startTimeout
 }

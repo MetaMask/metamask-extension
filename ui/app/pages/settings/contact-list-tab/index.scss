@@ -208,7 +208,7 @@
       opacity: 0.5;
       background-repeat: no-repeat;
 
-      [dir="rtl"] & {
+      [dir='rtl'] & {
         transform: rotate(180deg);
       }
     }
