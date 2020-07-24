@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+- fix(add-recipient): remove ens error (#199)
+- fix(i18n): use only zh_CN zh_TW en (#200)
 
 ## 0.3.2 Thu Jul 23 2020
 - fix(permission): remove unused permissions (#195)
