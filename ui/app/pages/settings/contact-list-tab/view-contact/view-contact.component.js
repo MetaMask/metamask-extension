@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 
 import Identicon from '../../../../components/ui/identicon'
 import Copy from '../../../../components/ui/icon/copy-icon.component'
@@ -26,9 +27,14 @@ function ViewContact ({
   checkSummedAddress,
   memo,
   editRoute,
+  listRoute,
 }) {
   const t = useI18nContext()
-  const [copied, handleCopy] = useCopyToClipboard()
+  const [copied, handleCopy] = useCopyToClipboard()   
+
+  if (!address) {
+    return <Redirect to={{ pathname: listRoute }} />
+  }
 
   return (
     <div className="settings-page__content-row">
@@ -90,6 +96,7 @@ ViewContact.propTypes = {
   checkSummedAddress: PropTypes.string,
   memo: PropTypes.string,
   editRoute: PropTypes.string,
+  listRoute: PropTypes.string.isRequired,
 }
 
 export default React.memo(ViewContact)
