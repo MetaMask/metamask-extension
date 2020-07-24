@@ -39,8 +39,9 @@
 }
 
 .send-screen input {
+  @include H7;
+
   width: 100%;
-  font-size: 12px;
 }
 
 .send-eth-icon {
@@ -70,11 +71,11 @@
   }
 
   .large-input {
+    @include Paragraph;
+
     border: 1px solid $dusty-gray;
     border-radius: 4px;
     margin: 4px 0 20px;
-    font-size: 16px;
-    line-height: 22.4px;
   }
 
   .send-screen-gas-input {
@@ -92,22 +93,22 @@
     }
 
     .send-screen-input-wrapper__error-message {
+      @include H7;
+
       display: block;
       position: absolute;
       bottom: 4px;
-      font-size: 12px;
-      line-height: 12px;
       left: 8px;
       color: $red;
     }
   }
 
   .send-screen-input-wrapper__error-message {
+    @include H7;
+
     display: block;
     position: absolute;
     bottom: 4px;
-    font-size: 12px;
-    line-height: 12px;
     left: 8px;
     color: $red;
   }
@@ -118,6 +119,8 @@
 }
 
 .send-screen-gas-input {
+  @include Paragraph;
+
   width: 100%;
   height: 41px;
   border-radius: 3px;
@@ -129,7 +132,6 @@
   align-items: center;
   padding-left: 10px;
   padding-right: 12px;
-  font-size: 16px;
   color: $scorpion;
 }
 
@@ -158,8 +160,9 @@
 }
 
 .send-screen-gas-input-customize {
+  @include H7;
+
   color: $primary-blue;
-  font-size: 12px;
   cursor: pointer;
 }
 
@@ -173,6 +176,8 @@
 }
 
 .customize-gas-tooltip-container {
+  @include Paragraph;
+
   position: absolute;
   bottom: 50px;
   width: 237px;
@@ -182,7 +187,6 @@
   box-shadow: $alto 0 0 5px;
   z-index: 1050;
   padding: 13px 19px;
-  font-size: 16px;
   border-radius: 4px;
   font-weight: 500;
 }
@@ -219,7 +223,8 @@
 }
 
 .gas-tooltip-label {
-  font-size: 16px;
+  @include Paragraph;
+
   color: $tundora;
 }
 
@@ -237,10 +242,11 @@
 }
 
 .customize-gas-input {
+  @include Paragraph;
+
   width: 178px;
   height: 28px;
   border: 1px solid $alto;
-  font-size: 16px;
   color: $nile-blue;
   padding-left: 8px;
 }
@@ -250,14 +256,17 @@
 }
 
 .gas-tooltip-input-detail {
+  @include H7;
+
   position: absolute;
   top: 4px;
   right: 26px;
-  font-size: 12px;
   color: $silver-chalice;
 }
 
 .gas-tooltip-input-arrows {
+  @include H6;
+
   position: absolute;
   top: 0;
   right: 4px;
@@ -268,7 +277,6 @@
   display: flex;
   flex-direction: column;
   color: #9b9b9b;
-  font-size: 0.8em;
   padding: 1px 4px;
   cursor: pointer;
 }
@@ -286,15 +294,15 @@
 
 .send-screen {
   &__title {
+    @include H4;
+
     color: $scorpion;
-    font-size: 18px;
-    line-height: 29px;
   }
 
   &__subtitle {
+    @include H6;
+
     margin: 10px 0 20px;
-    font-size: 14px;
-    line-height: 24px;
   }
 
   &__send-button,
@@ -347,23 +355,23 @@
   }
 
   &__title {
+    @include H4;
+
     color: $scorpion;
-    font-size: 18px;
-    line-height: 29px;
   }
 
   &__description,
   &__balance-text,
   &__token-symbol {
+    @include H6;
+
     margin-top: 10px;
-    font-size: 14px;
-    line-height: 24px;
     text-align: center;
   }
 
   &__token-balance {
-    font-size: 40px;
-    line-height: 40px;
+    @include H1;
+
     margin-top: 13px;
 
     .token-balance__amount {
@@ -433,12 +441,13 @@
   }
 
   &__send-arrow-icon {
+    @include H4;
+
     color: #f28930;
     transform: rotate(-45deg);
     position: absolute;
     top: -2px;
     left: 0;
-    font-size: 1.12em;
   }
 
   &__arrow-background {
@@ -489,25 +498,25 @@
   }
 
   &__title {
+    @include H3;
+
     color: $scorpion;
-    font-size: 22px;
-    line-height: 29px;
     text-align: center;
     margin-top: 25px;
   }
 
   &__copy {
+    @include H6;
+
     color: $gray;
-    font-size: 14px;
-    line-height: 19px;
     text-align: center;
     margin-top: 10px;
     width: 287px;
   }
 
   &__error {
-    font-size: 12px;
-    line-height: 12px;
+    @include H7;
+
     left: 8px;
     color: $red;
   }
@@ -517,8 +526,8 @@
   }
 
   &__warning {
-    font-size: 12px;
-    line-height: 12px;
+    @include H7;
+
     left: 8px;
     color: $orange;
   }
@@ -549,6 +558,7 @@
     flex-flow: row;
     flex: 1 0 auto;
     justify-content: space-between;
+    align-items: center;
   }
 
   &__form-field-container {
@@ -582,22 +592,21 @@
   }
 
   &__form-label {
+    @include Paragraph;
+
     color: $scorpion;
-    font-size: 16px;
-    line-height: 22px;
     width: 95px;
-    font-weight: 400;
     flex: 0 0 auto;
   }
 
   &__from-dropdown,
   &__asset-dropdown {
+    @include H7;
+
     width: 100%;
     border: 1px solid $alto;
     border-radius: 4px;
     background-color: $white;
-    line-height: 16px;
-    font-size: 12px;
     color: $tundora;
     position: relative;
 
@@ -670,14 +679,16 @@
     }
 
     &__symbol {
-      font-size: 16px;
+      @include Paragraph;
+
       margin-bottom: 2px;
     }
 
     &__name {
+      @include H7;
+
       display: flex;
       flex-flow: row nowrap;
-      font-size: 12px;
 
       &__label {
         margin-right: 0.25rem;
@@ -729,6 +740,8 @@
     }
 
     &__input {
+      @include Paragraph;
+
       z-index: 1025;
       position: relative;
       height: 54px;
@@ -738,14 +751,14 @@
       background-color: $white;
       color: $tundora;
       padding: 10px;
-      font-size: 16px;
-      line-height: 21px;
     }
   }
 
   &__memo-text-area,
   &__hex-data {
     &__input {
+      @include Paragraph;
+
       z-index: 1025;
       position: relative;
       height: 54px;
@@ -755,13 +768,12 @@
       background-color: $white;
       color: $tundora;
       padding: 10px;
-      font-size: 16px;
-      line-height: 21px;
     }
   }
 
   &__amount-max {
-    font-size: 12px;
+    @include H7;
+
     position: relative;
     display: inline-block;
     width: 56px;
@@ -815,6 +827,8 @@
   }
 
   &__sliders-icon-container {
+    @include Paragraph;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -827,7 +841,6 @@
     right: 15px;
     top: 14px;
     cursor: pointer;
-    font-size: 1em;
   }
 
   &__sliders-icon {
@@ -872,12 +885,13 @@
     }
 
     &__header {
+      @include H3;
+
       height: 52px;
       border-bottom: 1px solid $alto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 22px;
 
       @media screen and (max-width: $break-small) {
         flex: 0 0 auto;
@@ -913,12 +927,13 @@
     }
 
     &__footer {
+      @include H3;
+
       height: 75px;
       border-top: 1px solid $alto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 22px;
       position: relative;
 
       @media screen and (max-width: $break-small) {
@@ -944,8 +959,9 @@
     }
 
     &__revert {
+      @include Paragraph;
+
       color: $silver-chalice;
-      font-size: 16px;
       margin-left: 21.25px;
     }
 
@@ -962,12 +978,12 @@
     }
 
     &__error-message {
+      @include H7;
+
       display: block;
       position: absolute;
       top: -18px;
       right: 0;
-      font-size: 12px;
-      line-height: 12px;
       color: $red;
       width: 100%;
       text-align: center;
@@ -986,19 +1002,19 @@
     padding-left: 20px;
 
     &__title {
+      @include H4;
+
       height: 26px;
       color: $tundora;
-      font-size: 20px;
-      line-height: 26px;
       margin-top: 17px;
     }
 
     &__copy {
+      @include Paragraph;
+
       height: 38px;
       width: 314px;
       color: $tundora;
-      font-size: 14px;
-      line-height: 19px;
       margin-top: 17px;
     }
 
@@ -1015,10 +1031,11 @@
     }
 
     .gas-tooltip-input-arrows {
+      @include H4;
+
       width: 32px;
       height: 54px;
       border-left: 1px solid #dadada;
-      font-size: 18px;
       color: $tundora;
       right: 0;
       padding: 0;
@@ -1049,15 +1066,18 @@
 }
 
 .advanced-gas-options-btn {
+  @include H6;
+
   display: flex;
   justify-content: flex-end;
-  font-size: 14px;
   color: #2f9ae0;
   cursor: pointer;
   margin-top: 5px;
 }
 
 .sliders-icon-container {
+  @include Paragraph;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1070,10 +1090,11 @@
   right: 15px;
   top: 14px;
   cursor: pointer;
-  font-size: 1em;
 }
 
 .gas-fee-reset {
+  @include H6;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1084,8 +1105,6 @@
   right: 12px;
   top: 14px;
   cursor: pointer;
-  font-size: 1em;
-  font-size: 14px;
   color: #2f9ae0;
 }
 

@@ -10,10 +10,10 @@
   }
 
   &__name {
+    @include H5;
+
     width: 100%;
-    font-size: 1rem;
     font-weight: 500;
-    line-height: 19px;
     color: $black;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -23,8 +23,8 @@
   }
 
   &__address {
-    font-size: 0.75rem;
-    line-height: 0.75rem;
+    @include H7;
+
     color: #989a9b;
   }
 

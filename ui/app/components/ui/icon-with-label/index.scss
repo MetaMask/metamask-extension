@@ -3,7 +3,8 @@
   align-items: center;
 
   &__label {
-    font-size: 10px;
+    @include H8;
+
     margin-left: 4px;
     color: $Grey-500;
   }

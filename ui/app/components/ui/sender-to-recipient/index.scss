@@ -69,11 +69,12 @@
       }
 
       &__name {
+        @include H6;
+
         padding-left: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 0.875rem;
 
         [dir='rtl'] & {
           /*rtl:ignore*/
@@ -117,10 +118,11 @@
       }
 
       &__name {
+        @include H9;
+
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 0.5rem;
 
         [dir='rtl'] & {
           /*rtl:ignore*/
@@ -171,10 +173,11 @@
       }
 
       &__name {
+        @include H8;
+
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 0.6875rem;
 
         [dir='rtl'] & {
           /*rtl:ignore*/

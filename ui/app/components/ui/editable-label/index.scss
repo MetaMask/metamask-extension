@@ -12,8 +12,9 @@
   }
 
   &__input {
+    @include H6;
+
     width: 250px;
-    font-size: 14px;
     text-align: center;
     border: 1px solid $alto;
 

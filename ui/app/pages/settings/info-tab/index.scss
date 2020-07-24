@@ -35,8 +35,9 @@
   }
 
   &__version-number {
+    @include H6;
+
     padding-top: 5px;
-    font-size: 13px;
     color: $dusty-gray;
   }
 

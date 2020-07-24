@@ -36,7 +36,6 @@
       @include H4;
 
       font-weight: bold;
-      line-height: 25px;
       padding-bottom: 8px;
 
       h2 {
@@ -52,8 +51,6 @@
 
     &__subtitle {
       @include H6;
-
-      line-height: 20px;
     }
 
     &__button {

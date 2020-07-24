@@ -30,9 +30,8 @@
   }
 
   &__title {
-    font-weight: normal;
-    font-size: 24px;
-    line-height: 34px;
+    @include H3;
+
     width: 100%;
     display: flex;
     justify-content: center;
@@ -43,9 +42,8 @@
   }
 
   &__description {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
+    @include H6;
+
     margin-top: 16px;
     margin-bottom: 16px;
     color: #6a737d;
@@ -64,15 +62,14 @@
     padding-right: 24px;
 
     &__bold-text {
+      @include H6;
+
       font-weight: bold;
-      font-size: 14px;
-      line-height: 20px;
     }
 
     &__thin-text {
-      font-weight: normal;
-      font-size: 12px;
-      line-height: 17px;
+      @include H7;
+
       color: #6a737d;
     }
   }
@@ -98,9 +95,9 @@
 
     &__title,
     &__title-value {
+      @include H6;
+
       font-weight: bold;
-      font-size: 14px;
-      line-height: 20px;
     }
 
     &__title {
@@ -179,16 +176,16 @@
     }
 
     &__primary-fee {
+      @include H4;
+
       font-weight: bold;
-      font-size: 18px;
-      line-height: 25px;
       color: #000;
     }
 
     &__secondary-fee {
+      @include H6;
+
       font-weight: normal;
-      font-size: 14px;
-      line-height: 20px;
       color: #8c8e94;
     }
   }
@@ -225,23 +222,22 @@
   }
 
   &__large-text {
-    font-size: 18px;
-    line-height: 25px;
+    @include H4;
+
     color: #24292e;
   }
 
   &__medium-link-text {
-    font-size: 14px;
-    line-height: 20px;
+    @include H6;
+
     font-weight: 500;
     color: $primary-blue;
   }
 
   &__medium-text,
   &__label {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
+    @include H6;
+
     color: #24292e;
   }
 
@@ -253,9 +249,8 @@
   &__small-text,
   &__small-blue-text,
   &__info-row {
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 17px;
+    @include H7;
+
     color: #6a737d;
   }
 

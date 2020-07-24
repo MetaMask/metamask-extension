@@ -18,15 +18,17 @@
     flex: 0 0 auto;
 
     &__title {
+      @include H3;
+
       flex: 1 0 auto;
-      font-size: 24px;
     }
   }
 
   &__subheader,
   &__subheader--link {
+    @include H4;
+
     padding: 16px 4px;
-    font-size: 20px;
     border-bottom: 1px solid $alto;
     margin-right: 24px;
     height: 72px;
@@ -70,12 +72,11 @@
   }
 
   &__sub-header-text {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 20px;
+    @include H4;
 
     @media screen and (max-width: 575px) {
-      font-size: 16px;
+      @include H5;
+
       width: 100%;
     }
   }
@@ -186,7 +187,8 @@
   }
 
   &__content-description {
-    font-size: 14px;
+    @include H6;
+
     color: $dusty-gray;
     padding-top: 5px;
   }
@@ -212,8 +214,8 @@
   }
 
   &__address-book-button {
-    font-size: 1rem;
-    line-height: 1.1875rem;
+    @include H5;
+
     padding: 0;
   }
 

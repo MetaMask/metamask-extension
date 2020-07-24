@@ -1,11 +1,11 @@
 .new-account-import-disclaimer {
+  @include H7;
+
   width: 120%;
   background-color: #f4f9fc;
   display: inline-block;
   align-items: center;
   padding: 20px 30px 20px;
-  font-size: 12px;
-  line-height: 1.5;
 }
 
 .new-account-import-form {
@@ -23,9 +23,9 @@
   }
 
   &__select-label {
+    @include Paragraph;
+
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
   }
 
   &__select {
@@ -58,9 +58,9 @@
   }
 
   &__instruction {
+    @include Paragraph;
+
     color: $scorpion;
-    font-size: 16px;
-    line-height: 21px;
     align-self: flex-start;
   }
 
@@ -72,6 +72,8 @@
   }
 
   &__input-password {
+    @include Paragraph;
+
     height: 54px;
     width: 315px;
     border: 1px solid $geyser;
@@ -79,7 +81,6 @@
     background-color: $white;
     margin-top: 16px;
     color: $scorpion;
-    font-size: 16px;
     padding: 0 20px;
   }
 

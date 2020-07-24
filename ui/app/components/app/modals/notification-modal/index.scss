@@ -10,21 +10,23 @@
   }
 
   &__header {
+    @include H4;
+
     background: $wild-sand;
     width: 100%;
     display: flex;
     justify-content: center;
     padding: 30px;
-    font-size: 22px;
     color: $nile-blue;
   }
 
   &__message {
+    @include Paragraph;
+
     padding: 20px;
     width: 100%;
     display: flex;
     justify-content: center;
-    font-size: 17px;
     color: $nile-blue;
   }
 

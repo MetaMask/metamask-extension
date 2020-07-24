@@ -14,7 +14,6 @@ $warning-light-orange: #f8b588;
   @include H6;
 
   font-weight: 500;
-  line-height: 1.25rem;
   padding: 0.75rem 1rem;
   display: flex;
   justify-content: center;
@@ -170,7 +169,6 @@ $warning-light-orange: #f8b588;
   @include H4;
 
   color: $Blue-500;
-  line-height: 1.25rem;
   cursor: pointer;
   background-color: transparent;
 
@@ -211,11 +209,12 @@ $warning-light-orange: #f8b588;
 }
 
 .btn--first-time {
+  @include H4;
+
   height: 54px;
   width: 198px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   color: $white;
-  font-size: 1.25rem;
   font-weight: 500;
   transition: 200ms ease-in-out;
   background-color: rgba(247, 134, 28, 0.9);
@@ -226,15 +225,6 @@ button[disabled],
 input[type="submit"][disabled] {
   cursor: not-allowed;
   opacity: 0.5;
-}
-
-button.primary {
-  padding: 8px 12px;
-  background: #f7861c;
-  box-shadow: 0 3px 6px rgba(247, 134, 28, 0.36);
-  color: $white;
-  font-size: 1.1em;
-  text-transform: uppercase;
 }
 
 .btn--rounded {
