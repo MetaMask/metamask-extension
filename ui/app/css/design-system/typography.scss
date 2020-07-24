@@ -70,7 +70,7 @@ $fa-font-path: 'fonts/fontawesome';
 $font-family: Roboto, Helvetica, Arial, sans-serif;
 
 // Typography
-%H1 {
+@mixin H1 {
   font-style: normal;
   font-weight: normal;
   font-size: 2.5rem;
@@ -78,7 +78,8 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H2 {
+
+@mixin H2 {
   font-style: normal;
   font-weight: normal;
   font-size: 2rem;
@@ -86,7 +87,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H3 {
+@mixin H3 {
   font-style: normal;
   font-weight: normal;
   font-size: 1.5rem;
@@ -94,7 +95,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H4 {
+@mixin H4 {
   font-style: normal;
   font-weight: normal;
   font-size: 1.125rem;
@@ -102,7 +103,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H5 {
+@mixin H5 {
   font-style: normal;
   font-weight: normal;
   font-size: 1rem;
@@ -110,14 +111,14 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H6 {
+@mixin H6 {
   font-style: normal;
   font-weight: normal;
-  font-size: 0.875rem;
-  font-family: $font-family;
+  font-size: 0.875rem; // 14px @default
+  line-height: 140%;
 }
 
-%Paragraph {
+@mixin Paragraph {
   font-style: normal;
   font-weight: normal;
   font-size: 1rem;
@@ -125,7 +126,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H7 {
+@mixin H7 {
   font-style: normal;
   font-weight: normal;
   font-size: 0.75rem;
@@ -133,7 +134,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H8 {
+@mixin H8 {
   font-style: normal;
   font-weight: normal;
   font-size: 0.625rem;
@@ -141,7 +142,7 @@ $font-family: Roboto, Helvetica, Arial, sans-serif;
   line-height: 140%;
 }
 
-%H9 {
+@mixin H9 {
   font-style: normal;
   font-weight: normal;
   font-size: 0.5rem;

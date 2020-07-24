@@ -287,7 +287,8 @@
   }
 
   &__button {
-    @extend %Paragraph;
+    @include Paragraph;
+
     @extend %button;
 
     width: 141px;

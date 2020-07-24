@@ -5,7 +5,7 @@
   align-items: center;
 
   &__text {
-    @extend %H7;
+    @include H7;
 
     line-height: 17px;
     color: #6a737d;

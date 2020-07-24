@@ -6,7 +6,7 @@
     padding: 14px 0 3px 0;
 
     .page-container__title {
-      @extend %H4;
+      @include H4;
 
       text-align: center;
     }
@@ -91,7 +91,7 @@
     }
 
     &__group-label {
-      @extend %H8;
+      @include H8;
 
       background-color: $Grey-000;
       color: $Grey-600;
@@ -136,7 +136,7 @@
       }
 
       &__subtitle {
-        @extend %H8;
+        @include H8;
 
         color: $Grey-500;
       }
@@ -186,7 +186,7 @@
     }
 
     &__input {
-      @extend %H6;
+      @include H6;
 
       flex: 1 1 auto;
       width: 0;
