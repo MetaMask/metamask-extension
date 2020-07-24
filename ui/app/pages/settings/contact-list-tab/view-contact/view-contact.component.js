@@ -31,7 +31,7 @@ function ViewContact ({
 }) {
   const t = useI18nContext()
   const [copied, handleCopy] = useCopyToClipboard()
-  
+
   if (!address) {
     return <Redirect to={{ pathname: listRoute }} />
   }
