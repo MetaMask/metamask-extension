@@ -478,6 +478,7 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
+      verifyPassword: nodeify(this.verifyPassword, this),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -806,6 +807,15 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return this.keyringController.fullUpdate()
+  }
+
+  /**
+   * Submits a user's password to check its validity.
+   *
+   * @param {string} password The user's password
+   */
+  async verifyPassword (password) {
+    await this.keyringController.verifyPassword(password)
   }
 
   /**
