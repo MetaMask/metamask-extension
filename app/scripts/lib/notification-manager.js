@@ -56,7 +56,8 @@ export default class NotificationManager {
       })
 
       // Firefox currently ignores left/top for create, but it works for update
-      if (popupWindow.left !== left) {
+      if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
+      // if (popupWindow.left !== left) {
         await this.platform.updateWindowPosition(popupWindow.id, left, top)
       }
       this._popupId = popupWindow.id
