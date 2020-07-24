@@ -10131,10 +10131,10 @@ eth-keyring-controller@^5.3.0, eth-keyring-controller@^5.6.1:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-keyring-controller@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.0.1.tgz#6a4cdd5802b0587320c711be6c1752b2a88221aa"
-  integrity sha512-60j71F1HgLcvwzg7U5R45bA/kgQSUlmiZrsUIIhW4qS7QOYqJn0OQ64enf0ZaxMMPVVcKSfCDersYJiqm/yrlw==
+eth-keyring-controller@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.1.0.tgz#dc9313d0b793e085dc1badf84dd4f5e3004e127e"
+  integrity sha512-wPxH++98VDBcDv9YkPzxhZC0gF1ixuRbyKR2u/NOT/roBpNQDe4reqyllBRC7jhPehiKnRxzf7r6HEyirRnPxQ==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
