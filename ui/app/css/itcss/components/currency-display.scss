@@ -4,7 +4,6 @@
   border-radius: 4px;
   background-color: $white;
   color: $scorpion;
-  font-family: Roboto;
   font-size: 16px;
   padding: 8px 10px;
   position: relative;
@@ -15,7 +14,6 @@
 
   &__input {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
     border: none;
@@ -25,7 +23,6 @@
   &__primary-currency {
     color: $scorpion;
     font-weight: 400;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
   }
@@ -37,7 +34,6 @@
   &__converted-value,
   &__converted-currency {
     color: $dusty-gray;
-    font-family: Roboto;
     font-size: 12px;
     line-height: 12px;
   }

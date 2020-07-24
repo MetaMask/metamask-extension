@@ -28,7 +28,6 @@
     padding-left: 12px;
     padding-right: 12px;
     width: 360px;
-    font-family: monospace;
 
     @media screen and (min-width: 576px) {
       width: auto;
@@ -36,7 +35,6 @@
   }
 
   &__type-title {
-    font-family: monospace;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;

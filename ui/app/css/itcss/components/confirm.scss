@@ -1,7 +1,6 @@
 .confirm-screen-container {
   position: relative;
   align-items: center;
-  font-family: Roboto;
   flex: 1 0 auto;
   flex-flow: column nowrap;
   box-shadow: 0 2px 4px 0 rgba($black, 0.08);
@@ -30,7 +29,6 @@
   flex-flow: column nowrap;
   z-index: 25;
   align-items: center;
-  font-family: Roboto;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -99,7 +97,6 @@
 
 .confirm-screen-back-button {
   color: $primary-blue;
-  font-family: Roboto;
   font-size: 1rem;
   position: absolute;
   top: 38px;
@@ -162,7 +159,6 @@
   text-align: center;
   font-size: 16px;
   margin-top: 30px;
-  font-family: Roboto;
   font-weight: 300;
 }
 
@@ -324,7 +320,6 @@ section .confirm-screen-account-number,
   font-size: 16px;
   color: $white;
   text-align: center;
-  font-family: Roboto;
   padding-top: 15px;
   padding-bottom: 15px;
   border-width: 0;
@@ -338,7 +333,6 @@ section .confirm-screen-account-number,
   background: none;
   border: none;
   opacity: 1;
-  font-family: Roboto;
   border-width: 0;
   padding-top: 15px;
   padding-bottom: 15px;

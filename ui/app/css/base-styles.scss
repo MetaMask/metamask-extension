@@ -6,7 +6,6 @@
 
 html,
 body {
-  font-family: Roboto, Arial;
   color: #4d4d4d;
   width: 100%;
   height: 100%;
@@ -105,5 +104,10 @@ input.form-control {
   &--error {
     border: 1px solid $monzo;
   }
+}
+
+/** Default Typography on base elements **/
+* {
+  font-family: $font-family;
 }
 

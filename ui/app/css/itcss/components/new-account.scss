@@ -23,7 +23,6 @@
 
   &__title {
     color: $tundora;
-    font-family: Roboto;
     font-size: 32px;
     font-weight: 500;
     line-height: 43px;
@@ -40,7 +39,6 @@
       height: 54px;
       padding: 15px 10px;
       color: $dusty-gray;
-      font-family: Roboto;
       font-size: 18px;
       line-height: 24px;
       text-align: center;
@@ -87,7 +85,6 @@
 
   &__select-label {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
   }
@@ -123,7 +120,6 @@
 
   &__instruction {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     align-self: flex-start;
@@ -144,7 +140,6 @@
     background-color: $white;
     margin-top: 16px;
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     padding: 0 20px;
   }
@@ -364,7 +359,6 @@
     margin-bottom: 23px;
     align-self: flex-start;
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     font-weight: bold;
@@ -376,7 +370,6 @@
     margin-bottom: 23px;
     align-self: flex-end;
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     font-weight: normal;
@@ -461,7 +454,6 @@
     margin-left: 16px;
     padding: 0;
     text-transform: uppercase;
-    font-family: Roboto;
   }
 }
 
@@ -520,7 +512,6 @@
 
   &__input-label {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     align-self: flex-start;
@@ -533,7 +524,6 @@
     border-radius: 4px;
     background-color: $white;
     color: $scorpion;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     margin-top: 15px;
