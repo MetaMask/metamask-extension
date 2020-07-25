@@ -34,8 +34,10 @@ describe('NetworkController', function () {
         assert.equal(providerProxy.test, true)
       })
     })
+
     describe('#getNetworkState', function () {
       it('should return loading when new', function () {
+        networkController = new NetworkController()
         const networkState = networkController.getNetworkState()
         assert.equal(networkState, 'loading', 'network is loading')
       })
