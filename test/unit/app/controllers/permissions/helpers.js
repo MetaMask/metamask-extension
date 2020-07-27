@@ -19,25 +19,44 @@ export function grantPermissions (permController, origin, permissions) {
 }
 
 /**
- * Sets the underlying rpc-cap requestUserApproval function, and returns
- * a promise that's resolved once it has been set.
+ * Returns a wrapper for the given permissions controller's requestUserApproval
+ * function, so we don't have to worry about its internals.
  *
- * This function must be called on the given permissions controller every
- * time you want such a Promise. As of writing, it's only called once per test.
+ * @param {PermissionsController} permController - The permissions controller.
+ * @return {Function} A convenient wrapper for the requestUserApproval function.
+ */
+export function getRequestUserApprovalHelper (permController) {
+  /**
+   * Returns a request object that can be passed to requestUserApproval.
+   *
+   * @param {string} id - The internal permissions request ID (not the RPC request ID).
+   * @param {string} [origin] - The origin of the request, if necessary.
+   * @returns {Object} The corresponding request object.
+   */
+  return (id, origin = 'defaultOrigin') => {
+    return permController.permissions.requestUserApproval({ metadata: { id, origin } })
+  }
+}
+
+/**
+ * Returns a Promise that resolves once a pending user approval has been set.
+ * Calls the underlying requestUserApproval function as normal, and restores it
+ * once the Promise is resolved.
+ *
+ * This function must be called on the permissions controller for each request.
  *
  * @param {PermissionsController} - A permissions controller.
  * @returns {Promise<void>} A Promise that resolves once a pending approval
  * has been set.
  */
 export function getUserApprovalPromise (permController) {
-  return new Promise((resolveForCaller) => {
-    permController.permissions.requestUserApproval = async (req) => {
-      const { origin, metadata: { id } } = req
-
-      return new Promise((resolve, reject) => {
-        permController.pendingApprovals.set(id, { origin, resolve, reject })
-        resolveForCaller()
-      })
+  const originalFunction = permController.permissions.requestUserApproval
+  return new Promise((resolveHelperPromise) => {
+    permController.permissions.requestUserApproval = (req) => {
+      const userApprovalPromise = originalFunction(req)
+      permController.permissions.requestUserApproval = originalFunction
+      resolveHelperPromise()
+      return userApprovalPromise
     }
   })
 }
