@@ -35,7 +35,7 @@ describe('NetworkController', function () {
     })
 
     describe('#getNetworkState', function () {
-      it('should return loading when new', function () {
+      it('should return "loading" when new', function () {
         const networkState = networkController.getNetworkState()
         assert.equal(networkState, 'loading', 'network is loading')
       })
