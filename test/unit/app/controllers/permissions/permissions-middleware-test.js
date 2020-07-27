@@ -70,10 +70,14 @@ describe('permissions middleware', function () {
       )
       const res = {}
 
+      const userApprovalPromise = getUserApprovalPromise(permController)
+
       const pendingApproval = assert.doesNotReject(
         aMiddleware(req, res),
         'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -131,10 +135,14 @@ describe('permissions middleware', function () {
       // send, approve, and validate first request
       // note use of ACCOUNTS.a.permitted
 
+      let userApprovalPromise = getUserApprovalPromise(permController)
+
       const pendingApproval1 = assert.doesNotReject(
         aMiddleware(req1, res1),
         'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       const id1 = permController.pendingApprovals.keys().next().value
       const approvedReq1 = PERMS.approvedRequest(id1, PERMS.requests.eth_accounts())
@@ -187,10 +195,14 @@ describe('permissions middleware', function () {
       // send, approve, and validate second request
       // note use of ACCOUNTS.b.permitted
 
+      userApprovalPromise = getUserApprovalPromise(permController)
+
       const pendingApproval2 = assert.doesNotReject(
         aMiddleware(req2, res2),
         'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       const id2 = permController.pendingApprovals.keys().next().value
       const approvedReq2 = PERMS.approvedRequest(id2, { ...requestedPerms2 })
@@ -251,11 +263,15 @@ describe('permissions middleware', function () {
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
 
+      const userApprovalPromise = getUserApprovalPromise(permController)
+
       const requestRejection = assert.rejects(
         aMiddleware(req, res),
         expectedError,
         'request should be rejected with correct error',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -343,10 +359,14 @@ describe('permissions middleware', function () {
       )
       const resA1 = {}
 
+      let userApprovalPromise = getUserApprovalPromise(permController)
+
       const requestApproval1 = assert.doesNotReject(
         aMiddleware(reqA1, resA1),
         'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       // create and start processing first request for second origin
 
@@ -355,10 +375,14 @@ describe('permissions middleware', function () {
       )
       const resB1 = {}
 
+      userApprovalPromise = getUserApprovalPromise(permController)
+
       const requestApproval2 = assert.doesNotReject(
         bMiddleware(reqB1, resB1),
         'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 2,
@@ -373,11 +397,16 @@ describe('permissions middleware', function () {
       )
       const resA2 = {}
 
-      await assert.rejects(
+      userApprovalPromise = getUserApprovalPromise(permController)
+
+      const requestApprovalFail = assert.rejects(
         aMiddleware(reqA2, resA2),
         expectedError,
         'request should be rejected with correct error',
       )
+
+      await userApprovalPromise
+      await requestApprovalFail
 
       assert.ok(
         (
