@@ -213,7 +213,6 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.disconnect-all-modal .btn-danger'))
 
-      await driver.delay(regularDelayMs / 2)
       await driver.wait(until.stalenessOf(disconnectModal))
       await driver.delay(regularDelayMs)
     })
