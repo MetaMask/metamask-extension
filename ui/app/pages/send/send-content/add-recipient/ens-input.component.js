@@ -2,21 +2,21 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import c from 'classnames'
 import {
-  isValidDomainName,
+  // isValidDomainName,
   isValidAddress,
-  isValidAddressHead,
+  // isValidAddressHead,
 } from '../../../../helpers/utils/util'
 import { ellipsify } from '../../send.utils'
 
-import { debounce } from 'lodash'
-import copyToClipboard from 'copy-to-clipboard/index'
-import ENS from 'ethjs-ens'
+// import { debounce } from 'lodash'
+// import copyToClipboard from 'copy-to-clipboard/index'
+// import ENS from 'ethjs-ens'
 // import networkMap from 'ethereum-ens-network-map'
-import log from 'loglevel'
+// import log from 'loglevel'
 
 // Local Constants
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const ZERO_X_ERROR_ADDRESS = '0x'
+// const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+// const ZERO_X_ERROR_ADDRESS = '0x'
 
 export default class EnsInput extends Component {
   static contextTypes = {
@@ -40,21 +40,21 @@ export default class EnsInput extends Component {
 
   state = {
     input: '',
-    toError: null,
-    ensResolution: undefined,
+    // toError: null,
+    // ensResolution: undefined,
   }
 
-  componentDidMount () {
-    const network = this.props.network
-    const networkHasEnsSupport = getNetworkEnsSupport(network)
-    this.setState({ ensResolution: ZERO_ADDRESS })
+  // componentDidMount () {
+  //   const network = this.props.network
+  //   const networkHasEnsSupport = getNetworkEnsSupport(network)
+  //   this.setState({ ensResolution: ZERO_ADDRESS })
 
-    if (networkHasEnsSupport) {
-      const provider = global.ethereumProvider
-      this.ens = new ENS({ provider, network })
-      this.checkName = debounce(this.lookupEnsName, 200)
-    }
-  }
+  //   if (networkHasEnsSupport) {
+  //     const provider = global.ethereumProvider
+  //     this.ens = new ENS({ provider, network })
+  //     this.checkName = debounce(this.lookupEnsName, 200)
+  //   }
+  // }
 
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
@@ -63,8 +63,8 @@ export default class EnsInput extends Component {
     const { network } = this.props
 
     if (prevProps.network !== network) {
-      const provider = global.ethereumProvider
-      this.ens = new ENS({ provider, network })
+      // const provider = global.ethereumProvider
+      // this.ens = new ENS({ provider, network })
       this.onChange({ target: { value: input } })
     }
   }
@@ -81,35 +81,35 @@ export default class EnsInput extends Component {
     updateEnsResolutionError('')
   }
 
-  lookupEnsName = (recipient) => {
-    recipient = recipient.trim()
+  // lookupEnsName = recipient => {
+  //   recipient = recipient.trim()
 
-    log.info(`ENS attempting to resolve name: ${recipient}`)
-    this.ens
-      .lookup(recipient)
-      .then((address) => {
-        if (address === ZERO_ADDRESS) {
-          throw new Error(this.context.t('noAddressForName'))
-        }
-        if (address === ZERO_X_ERROR_ADDRESS) {
-          throw new Error(this.context.t('ensRegistrationError'))
-        }
-        this.props.updateEnsResolution(address)
-      })
-      .catch((reason) => {
-        if (
-          isValidDomainName(recipient) &&
-          reason.message === 'ENS name not defined.'
-        ) {
-          this.props.updateEnsResolutionError(
-            this.context.t('ensNotFoundOnCurrentNetwork')
-          )
-        } else {
-          log.error(reason)
-          this.props.updateEnsResolutionError(reason.message)
-        }
-      })
-  }
+  //   log.info(`ENS attempting to resolve name: ${recipient}`)
+  //   this.ens
+  //     .lookup(recipient)
+  //     .then(address => {
+  //       if (address === ZERO_ADDRESS) {
+  //         throw new Error(this.context.t('noAddressForName'))
+  //       }
+  //       if (address === ZERO_X_ERROR_ADDRESS) {
+  //         throw new Error(this.context.t('ensRegistrationError'))
+  //       }
+  //       this.props.updateEnsResolution(address)
+  //     })
+  //     .catch(reason => {
+  //       if (
+  //         isValidDomainName(recipient) &&
+  //         reason.message === 'ENS name not defined.'
+  //       ) {
+  //         this.props.updateEnsResolutionError(
+  //           this.context.t('ensNotFoundOnCurrentNetwork')
+  //         )
+  //       } else {
+  //         log.error(reason)
+  //         this.props.updateEnsResolutionError(reason.message)
+  //       }
+  //     })
+  // }
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
@@ -121,35 +121,36 @@ export default class EnsInput extends Component {
 
   onChange = (e) => {
     const {
-      network,
+      // network,
       onChange,
       updateEnsResolution,
       updateEnsResolutionError,
       onValidAddressTyped,
     } = this.props
     const input = e.target.value
-    const networkHasEnsSupport = getNetworkEnsSupport(network)
+    // const networkHasEnsSupport = getNetworkEnsSupport(network)
 
     this.setState({ input }, () => onChange(input))
 
     // Empty ENS state if input is empty
     // maybe scan ENS
 
-    if (
-      !networkHasEnsSupport &&
-        !isValidAddress(input) &&
-        !isValidAddressHead(input)
-    ) {
-      updateEnsResolution('')
-      updateEnsResolutionError(
-        !networkHasEnsSupport ? 'Network does not support ENS' : ''
-      )
-      return
-    }
+    // if (
+    //   !networkHasEnsSupport &&
+    //     !isValidAddress(input) &&
+    //     !isValidAddressHead(input)
+    // ) {
+    //   updateEnsResolution('')
+    //   updateEnsResolutionError(
+    //     !networkHasEnsSupport ? 'Network does not support ENS' : ''
+    //   )
+    //   return
+    // }
 
-    if (isValidDomainName(input)) {
-      this.lookupEnsName(input)
-    } else if (onValidAddressTyped && isValidAddress(input)) {
+    // if (isValidDomainName(input)) {
+    //   // this.lookupEnsName(input)
+    // } else
+    if (onValidAddressTyped && isValidAddress(input)) {
       onValidAddressTyped(input)
     } else {
       updateEnsResolution('')
@@ -241,65 +242,65 @@ export default class EnsInput extends Component {
     )
   }
 
-  ensIcon (recipient) {
-    const { hoverText } = this.state
+  // ensIcon(recipient) {
+  //   const { hoverText } = this.state
 
-    return (
-      <span
-        className="#ensIcon"
-        title={hoverText}
-        style={{
-          position: 'absolute',
-          top: '16px',
-          left: '-25px',
-        }}
-      >
-        {this.ensIconContents(recipient)}
-      </span>
-    )
-  }
+  //   return (
+  //     <span
+  //       className="#ensIcon"
+  //       title={hoverText}
+  //       style={{
+  //         position: 'absolute',
+  //         top: '16px',
+  //         left: '-25px',
+  //       }}
+  //     >
+  //       {this.ensIconContents(recipient)}
+  //     </span>
+  //   )
+  // }
 
-  ensIconContents () {
-    const { loadingEns, ensFailure, ensResolution, toError } = this.state
+  // ensIconContents() {
+  //   const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
-    if (toError) {
-      return
-    }
+  //   if (toError) {
+  //     return
+  //   }
 
-    if (loadingEns) {
-      return (
-        <img
-          src="images/loading.svg"
-          style={{
-            width: '30px',
-            height: '30px',
-            transform: 'translateY(-6px)',
-          }}
-        />
-      )
-    }
+  //   if (loadingEns) {
+  //     return (
+  //       <img
+  //         src="images/loading.svg"
+  //         style={{
+  //           width: '30px',
+  //           height: '30px',
+  //           transform: 'translateY(-6px)',
+  //         }}
+  //       />
+  //     )
+  //   }
 
-    if (ensFailure) {
-      return <i className="fa fa-warning fa-lg warning'" />
-    }
+  //   if (ensFailure) {
+  //     return <i className="fa fa-warning fa-lg warning'" />
+  //   }
 
-    if (ensResolution && ensResolution !== ZERO_ADDRESS) {
-      return (
-        <i
-          className="fa fa-check-circle fa-lg cursor-pointer"
-          style={{ color: 'green' }}
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            copyToClipboard(ensResolution)
-          }}
-        />
-      )
-    }
-  }
+  //   if (ensResolution && ensResolution !== ZERO_ADDRESS) {
+  //     return (
+  //       <i
+  //         className="fa fa-check-circle fa-lg cursor-pointer"
+  //         style={{ color: 'green' }}
+  //         onClick={event => {
+  //           event.preventDefault()
+  //           event.stopPropagation()
+  //           copyToClipboard(ensResolution)
+  //         }}
+  //       />
+  //     )
+  //   }
+  // }
 }
 
-function getNetworkEnsSupport (/* network */) {
-  return false
-  // return Boolean(networkMap[network])
-}
+// function getNetworkEnsSupport(/* network */) {
+//   return false
+//   // return Boolean(networkMap[network])
+// }

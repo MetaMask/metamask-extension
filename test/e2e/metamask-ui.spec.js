@@ -278,7 +278,9 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
+        By.css(
+          'input[placeholder="Enter the address updated after April 9, 2020"]'
+        )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -364,7 +366,9 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
+        By.css(
+          'input[placeholder="Enter the address updated after April 9, 2020"]'
+        )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -416,7 +420,9 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
+        By.css(
+          'input[placeholder="Enter the address updated after April 9, 2020"]'
+        )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 
@@ -816,8 +822,8 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
 
+      await driver.delay(regularDelayMs)
       const navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -1121,10 +1127,9 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
 
       await driver.switchToWindow(dapp)
-      await driver.delay(tinyDelayMs)
+      await driver.delay(regularDelayMs)
 
       const tokenContractAddress = await driver.findElement(
         By.css('#tokenAddress')
@@ -1187,7 +1192,9 @@ describe('MetaMask', function () {
       await driver.delay(1000)
 
       const inputAddress = await driver.findElement(
-        By.css('input[placeholder="Enter the address updated after April 9, 2020"]')
+        By.css(
+          'input[placeholder="Enter the address updated after April 9, 2020"]'
+        )
       )
       await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
 

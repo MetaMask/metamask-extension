@@ -8,8 +8,9 @@ const getPreferredLocales = extension.i18n
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 const existingLocaleCodes = {}
+const enabledLocals = ['en', 'zh_CN', 'zh_TW']
 allLocales.forEach((locale) => {
-  if (locale && locale.code) {
+  if (locale && locale.code && enabledLocals.includes(locale.code)) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
       locale.code
   }
