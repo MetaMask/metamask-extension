@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/browser'
 
 const warned = {}
 const missingMessageErrors = {}
+const missingSubstitutionErrors = {}
 
 /**
  * Returns a localized message for the given key
@@ -55,7 +56,11 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         return part
       }
       const substituteIndex = Number(subMatch[1]) - 1
-      if (substitutions[substituteIndex] == null) {
+      if (substitutions[substituteIndex] == null && !missingSubstitutionErrors[localeCode]?.[key]) {
+        if (!missingSubstitutionErrors[localeCode]) {
+          missingSubstitutionErrors[localeCode] = {}
+        }
+        missingSubstitutionErrors[localeCode][key] = true
         const error = new Error(`Insufficient number of substitutions for message: '${phrase}'`)
         log.error(error)
         Sentry.captureException(error)
