@@ -2,7 +2,7 @@
 
 import ethUtil from 'ethereumjs-util'
 
-const inDevelopment = process.env.NODE_ENV === 'development'
+const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
 const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.php'
 const METAMETRICS_REQUIRED_PARAMS = `?idsite=${inDevelopment ? 1 : 2}&rec=1&apiv=1`
