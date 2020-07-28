@@ -4,7 +4,9 @@
   They are included first because they will be used to replace bad variable names in itcss
   prior to it being fully removed from the system.
 */
-@import './variables/index';
+@import './reset.scss';
+@import './design-system/index';
+@import './base-styles.scss';
 
 /*
   ITCSS
@@ -17,7 +19,6 @@
  */
 @import './itcss/settings/index';
 @import './itcss/tools/index';
-@import './itcss/generic/index';
 @import './itcss/objects/index';
 @import './itcss/components/index';
 @import './itcss/trumps/index';

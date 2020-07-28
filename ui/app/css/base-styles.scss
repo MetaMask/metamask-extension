@@ -1,8 +1,4 @@
-/*
-  Generic
- */
 
-@import './reset';
 
 * {
   box-sizing: border-box;
@@ -12,7 +8,6 @@ html,
 body {
   font-family: Roboto, Arial;
   color: #4d4d4d;
-  font-weight: 400;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -23,15 +18,6 @@ body {
 
 html {
   min-height: 500px;
-}
-
-.app-root {
-  overflow: hidden;
-  position: relative;
-}
-
-.app-primary {
-  display: flex;
 }
 
 .mouse-user-styles {
@@ -121,19 +107,3 @@ input.form-control {
   }
 }
 
-.hide-text-overflow {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pinned-to-bottom {
-  position: absolute;
-  bottom: 0;
-}
-
-.pinned-to-bottom-right {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
