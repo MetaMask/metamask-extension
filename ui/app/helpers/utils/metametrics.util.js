@@ -4,8 +4,13 @@ import ethUtil from 'ethereumjs-util'
 
 const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
 
+let projectId = process.env.METAMETRICS_PROJECT_ID
+if (!projectId) {
+  projectId = inDevelopment ? 1 : 2
+}
+
 const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.php'
-const METAMETRICS_REQUIRED_PARAMS = `?idsite=${inDevelopment ? 1 : 2}&rec=1&apiv=1`
+const METAMETRICS_REQUIRED_PARAMS = `?idsite=${projectId}&rec=1&apiv=1`
 const METAMETRICS_BASE_FULL = METAMETRICS_BASE_URL + METAMETRICS_REQUIRED_PARAMS
 
 const METAMETRICS_TRACKING_URL = inDevelopment
