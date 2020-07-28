@@ -822,8 +822,8 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs * 2)
 
+      await driver.delay(regularDelayMs)
       const navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
@@ -1127,10 +1127,9 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs * 2)
 
       await driver.switchToWindow(dapp)
-      await driver.delay(tinyDelayMs)
+      await driver.delay(regularDelayMs)
 
       const tokenContractAddress = await driver.findElement(
         By.css('#tokenAddress')
