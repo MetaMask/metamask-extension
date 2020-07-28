@@ -21,10 +21,10 @@
           height: 61px;
 
           input {
-            @extend %font--bold;
+            @extend %H4;
 
-            font-size: 14px;
-            color: $black;
+            font-weight: bold;
+            color: $Black-100;
           }
         }
       }
@@ -121,23 +121,21 @@
       }
 
       &__primary-label {
-        @extend %font--bold;
+        @extend %H4;
 
-        font-size: 14px;
+        font-weight: bold;
       }
 
       &__secondary-label,
       &__right-primary-label {
-        @extend %font;
+        @extend %H5;
 
-        font-size: 12px;
         color: $Black-500;
       }
 
       &__right-secondary-label {
-        @extend %font;
+        @extend %H5;
 
-        font-size: 12px;
         color: $Black-500;
         opacity: 0.5;
       }
@@ -145,9 +143,8 @@
   }
 
   &__placeholder {
-    @extend %font;
+    @extend %H4;
 
-    font-size: 14px;
     padding: 16px;
     color: $Black-500;
     min-height: 300px;
