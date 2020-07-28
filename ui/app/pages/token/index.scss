@@ -3,12 +3,11 @@
 @import 'actionable-message/index';
 
 .token {
-
   &__search-token {
     margin: 24px;
-    border: 1px solid #FFFFFF;
+    border: 1px solid #fff;
     box-sizing: border-box;
-    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
     border-radius: 6px;
     min-height: 297px;
     width: 100%;
@@ -17,12 +16,13 @@
       &__search {
         div {
           border: none;
-          border-bottom: 1px solid #D2D8DD;
+          border-bottom: 1px solid #d2d8dd;
           border-radius: 0;
           height: 61px;
 
           input {
             @extend %font--bold;
+
             font-size: 14px;
             color: $black;
           }
@@ -46,10 +46,10 @@
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
-        padding: 16px 12px;;
+        padding: 16px 12px;
         box-sizing: border-box;
         cursor: pointer;
-        border-top: 1px solid #D2D8DD;
+        border-top: 1px solid #d2d8dd;
         position: relative;
 
         &:first-of-type {
@@ -57,7 +57,7 @@
         }
 
         &:last-of-type {
-          border-bottom: 1px solid #D2D8DD;
+          border-bottom: 1px solid #d2d8dd;
         }
 
         &:hover {
@@ -69,7 +69,7 @@
         }
 
         &--disabled {
-          opacity: .4;
+          opacity: 0.4;
           pointer-events: none;
         }
       }
@@ -82,7 +82,7 @@
         background-position: center;
         border-radius: 50%;
         background-color: $white;
-        box-shadow: 0 2px 4px 0 rgba($black, .24);
+        box-shadow: 0 2px 4px 0 rgba($black, 0.24);
         margin-right: 16px;
         flex: 0 0 auto;
       }
@@ -122,18 +122,21 @@
 
       &__primary-label {
         @extend %font--bold;
+
         font-size: 14px;
       }
 
       &__secondary-label,
       &__right-primary-label {
         @extend %font;
+
         font-size: 12px;
         color: $Black-500;
       }
 
       &__right-secondary-label {
         @extend %font;
+
         font-size: 12px;
         color: $Black-500;
         opacity: 0.5;
@@ -143,6 +146,7 @@
 
   &__placeholder {
     @extend %font;
+
     font-size: 14px;
     padding: 16px;
     color: $Black-500;
