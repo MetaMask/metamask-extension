@@ -72,7 +72,9 @@ export const SENTRY_STATE = {
 export default function setupSentry ({ release, getState }) {
   let sentryTarget
 
-  if (METAMASK_DEBUG || process.env.IN_TEST) {
+  if (METAMASK_DEBUG) {
+    return
+  } else if (process.env.IN_TEST) {
     console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
     sentryTarget = SENTRY_DSN_DEV
   } else {
