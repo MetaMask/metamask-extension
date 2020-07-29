@@ -356,9 +356,6 @@
   "editContact": {
     "message": "연락처 수정"
   },
-  "emailUs": {
-    "message": "저자에게 메일 보내기!"
-  },
   "endOfFlowMessage1": {
     "message": "인증을 통과했습니다 - 시드 구문을 안전하게 보관하세요. 그것은 당신의 의무입니다."
   },
