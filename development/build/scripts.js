@@ -206,6 +206,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
             mangle: {
               reserved: [ 'MetamaskInpageProvider' ],
             },
+            sourceMap: {
+              content: true,
+            },
           }))
       }
 

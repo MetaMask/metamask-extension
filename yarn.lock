@@ -12979,14 +12979,14 @@ gulp-stylelint@^13.0.0:
     strip-ansi "^6.0.0"
     through2 "^3.0.1"
 
-gulp-terser-js@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/gulp-terser-js/-/gulp-terser-js-5.0.0.tgz#b570bb14e9c836aab78d633411073af0df8ca514"
-  integrity sha512-X5bduLqvRdX1RwUJmdm1J+HZu85gfIKkmDK95J6AAfXd4W/oYANt82gmIMZfhUGEmLm6e6xtKGsfTW6c0BRWnQ==
+gulp-terser-js@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/gulp-terser-js/-/gulp-terser-js-5.2.2.tgz#3d93db9b2b83f35dfcc5b209af6b1762756eb6a3"
+  integrity sha512-4ull0HzTWeWjRPiGmAFmdhRcEDOG+r7aXivNHOBQzElLzMaeVKQwmCPDi2juBzUUkjAkPkKb1jHVoJN/PKTvcA==
   dependencies:
-    object-assign "^4.1.1"
     plugin-error "^1.0.1"
-    terser "^4.1.4"
+    source-map "^0.7.3"
+    terser "^4.6.12"
     through2 "^3.0.1"
     vinyl-sourcemaps-apply "^0.2.1"
 
@@ -25703,10 +25703,10 @@ terser@^4.1.2, terser@^4.4.3:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
-terser@^4.1.4:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-4.3.1.tgz#09820bcb3398299c4b48d9a86aefc65127d0ed65"
-  integrity sha512-pnzH6dnFEsR2aa2SJaKb1uSCl3QmIsJ8dEkj0Fky+2AwMMcC9doMqLOQIH6wVTEKaVfKVvLSk5qxPBEZT9mywg==
+terser@^4.6.12:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
+  integrity sha512-EAPipTNeWsb/3wLPeup1tVPaXfIaU68xMnVdPafIL1TV05OhASArYyIfFvnvJCNrR2NIOvDVNNTFRa+Re2MWyw==
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"
