@@ -33,7 +33,7 @@
       align-items: center;
       justify-content: space-between;
 
-      @extend %H4;
+      @include H4;
 
       font-weight: bold;
       line-height: 25px;
@@ -51,7 +51,7 @@
     }
 
     &__subtitle {
-      @extend %H6;
+      @include H6;
 
       line-height: 20px;
     }

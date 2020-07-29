@@ -24,13 +24,13 @@
 
 
   &__title {
-    @extend %H4;
+    @include H4;
   }
 
   &__text,
   &__text-blue,
   &__text-grey {
-    @extend %H6;
+    @include H6;
   }
 
   &__text-blue {
@@ -120,7 +120,7 @@
     }
 
     &__label {
-      @extend %H6;
+      @include H6;
 
       color: $Black-100;
       text-overflow: ellipsis;
@@ -129,13 +129,13 @@
     }
 
     &__balance {
-      @extend %H7;
+      @include H7;
 
       color: $Grey-500;
     }
 
     &__last-connected {
-      @extend %H8;
+      @include H8;
 
       display: flex;
       flex-direction: column;

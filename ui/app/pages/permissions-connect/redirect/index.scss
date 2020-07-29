@@ -4,7 +4,7 @@
   justify-content: center;
 
   &__result {
-    @extend %H3;
+    @include H3;
 
     position: absolute;
     top: 30%;

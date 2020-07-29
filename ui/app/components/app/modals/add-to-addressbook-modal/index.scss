@@ -9,7 +9,7 @@
     border-bottom: 1px solid $Grey-100;
 
     &__header {
-      @extend %H3;
+      @include H3;
     }
   }
 

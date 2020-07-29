@@ -11,7 +11,7 @@ $hover-orange: #ffd3b5;
 $warning-light-orange: #f8b588;
 
 %button {
-  @extend %H6;
+  @include H6;
 
   font-weight: 500;
   font-family: Roboto, Arial;
@@ -34,7 +34,7 @@ $warning-light-orange: #f8b588;
 }
 
 %link {
-  @extend %H4;
+  @include H4;
 
   color: $Blue-500;
   line-height: 1.25rem;
@@ -60,7 +60,8 @@ $warning-light-orange: #f8b588;
 
 %small-link {
   @extend %link;
-  @extend %H6;
+
+  @include H6;
 }
 
 .button {
