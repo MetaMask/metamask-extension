@@ -88,7 +88,11 @@ video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  font: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  font-variant: inherit;
+  font-size: inherit;
+  line-height: inherit;
   vertical-align: baseline;
 }
 

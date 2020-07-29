@@ -39,7 +39,6 @@
   padding: 5px 0 31px 0;
   border: 1px solid $silver;
   border-radius: 4px;
-  font-family: Roboto;
 
   button {
     cursor: pointer;
@@ -55,7 +54,6 @@
 
   &__text {
     margin-top: 2px;
-    font-family: Roboto;
     font-size: 14px;
     line-height: 18px;
   }
@@ -101,7 +99,6 @@
     justify-content: center;
     border: 1px solid $alto;
     padding: 5px 10px;
-    font-family: Roboto;
     margin-top: 7px;
     width: 286px;
   }
@@ -166,7 +163,6 @@
 
 .private-key-password::-webkit-input-placeholder {
   color: $dusty-gray;
-  font-family: Roboto;
 }
 
 .private-key-password-warning {
@@ -179,7 +175,6 @@
   width: 292px;
   padding: 9px 15px;
   margin-top: 18px;
-  font-family: Roboto;
 }
 
 .export-private-key-buttons {
@@ -207,7 +202,6 @@
 
 .private-key-password-display-textarea {
   color: $crimson;
-  font-family: Roboto;
   font-size: 16px;
   line-height: 21px;
   border: none;
@@ -225,7 +219,6 @@
   position: absolute;
   top: 25px;
   right: 17.5px;
-  font-family: sans-serif;
   cursor: pointer;
 }
 
@@ -250,7 +243,6 @@
 
   &__symbol {
     color: $tundora;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 24px;
     text-align: center;
@@ -261,7 +253,6 @@
     height: 30px;
     width: 271.28px;
     color: $tundora;
-    font-family: Roboto;
     font-size: 22px;
     line-height: 30px;
     text-align: center;
@@ -272,7 +263,6 @@
     height: 41px;
     width: 318px;
     color: $scorpion;
-    font-family: Roboto;
     font-size: 14px;
     line-height: 18px;
     text-align: center;
@@ -307,7 +297,6 @@
     position: relative;
     border: 1px solid $alto;
     box-shadow: 0 0 2px 2px $alto;
-    font-family: Roboto;
   }
 
   &__header {
@@ -349,7 +338,6 @@
 // Deposit Ether Modal
 .deposit-ether-modal {
   border-radius: 8px;
-  font-family: Roboto;
   display: flex;
   flex-flow: column;
   height: 100%;
@@ -503,7 +491,6 @@
     width: 100%;
     height: 45px;
     line-height: 44px;
-    font-family: Roboto;
     font-weight: 300;
   }
 
@@ -522,7 +509,6 @@
   position: relative;
   border: 1px solid $alto;
   box-shadow: 0 0 2px 2px $alto;
-  font-family: Roboto;
 }
 
 .notification-modal-header {
