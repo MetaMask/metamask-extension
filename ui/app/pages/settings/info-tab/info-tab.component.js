@@ -76,12 +76,12 @@ export default class InfoTab extends PureComponent {
         </div>
         <div className="info-tab__link-item">
           <a
-            href="mailto:help@metamask.io?subject=Feedback"
+            href="https://metamask.zendesk.com/hc/en-us/requests/new"
             target="_blank"
             rel="noopener noreferrer"
           >
             <span className="info-tab__link-text">
-              { t('emailUs') }
+              { t('contactUs') }
             </span>
           </a>
         </div>

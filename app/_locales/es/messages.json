@@ -313,9 +313,6 @@
   "editContact": {
     "message": "Editar Contacto"
   },
-  "emailUs": {
-    "message": "¡Envíanos un correo!"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask no puede recuperar tu seedphrase. Saber más."
   },
