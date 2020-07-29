@@ -236,7 +236,7 @@
     "gulp-sass": "^4.0.0",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-stylelint": "^13.0.0",
-    "gulp-terser-js": "^5.0.0",
+    "gulp-terser-js": "^5.2.2",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
     "jsdom": "^11.2.0",
