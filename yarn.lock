@@ -1714,6 +1714,34 @@
     web3 "^0.20.7"
     web3-provider-engine "^15.0.4"
 
+"@metamask/controllers@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-2.0.2.tgz#100a5d87b6061751b39edec2288f16f07d471e2d"
+  integrity sha512-KKxNguTEdkzwvfv2Hl4BE2OMGULLeh7df6iAwcEG8ipXWbTWGZsLr13DBrczQxRi8TiNPaksAakv++6sMu6ngA==
+  dependencies:
+    await-semaphore "^0.1.3"
+    eth-contract-metadata "^1.11.0"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-errors "^2.0.2"
+    eth-json-rpc-infura "^4.0.1"
+    eth-keyring-controller "^5.6.1"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-sig-util "^2.3.0"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "0.6.0"
+    ethjs-query "^0.3.8"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    isomorphic-fetch "^2.2.1"
+    jsonschema "^1.2.4"
+    percentile "^1.2.1"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^15.0.4"
+
 "@metamask/eslint-config@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-1.1.0.tgz#03c6fbec8ba3d95fa017d8b98ab5d0701f7458a4"
@@ -10116,7 +10144,7 @@ eth-json-rpc-middleware@^5.0.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-keyring-controller@^5.3.0, eth-keyring-controller@^5.6.1:
+eth-keyring-controller@^5.6.1:
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-5.6.1.tgz#7b7268400704c8f5ce98a055910341177dd207ca"
   integrity sha512-sxJ87bJg7PvvPzj1sY1jJYHQL1HVUhh84Q/a4QPrcnzAAng1yibvvUfww0pCez4XJfHuMkJvUxfF8eAusJM8fQ==
@@ -12039,34 +12067,6 @@ fuse.js@^3.4.6:
   version "3.4.6"
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.6.tgz#545c3411fed88bf2e27c457cab6e73e7af697a45"
   integrity sha512-H6aJY4UpLFwxj1+5nAvufom5b2BT2v45P1MkPvdGIK8fWjQx/7o6tTT1+ALV0yawQvbmvCF0ufl2et8eJ7v7Cg==
-
-gaba@^1.9.3:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/gaba/-/gaba-1.11.0.tgz#7ff49cad2f2b95941222121a1984bb63783fe076"
-  integrity sha512-rQcLgR/FHQ8W6oNza/vxFnkbav0vgauBxm6LKqK6BkbjJGB979qoBRVja9fU/H5dUMiYmHJO9CrHjL0ofG/ukA==
-  dependencies:
-    await-semaphore "^0.1.3"
-    eth-contract-metadata "^1.11.0"
-    eth-ens-namehash "^2.0.8"
-    eth-json-rpc-errors "^2.0.2"
-    eth-json-rpc-infura "^4.0.1"
-    eth-keyring-controller "^5.3.0"
-    eth-method-registry "1.1.0"
-    eth-phishing-detect "^1.1.13"
-    eth-query "^2.1.2"
-    eth-sig-util "^2.3.0"
-    ethereumjs-util "^6.1.0"
-    ethereumjs-wallet "0.6.0"
-    ethjs-query "^0.3.8"
-    human-standard-collectible-abi "^1.0.2"
-    human-standard-token-abi "^2.0.0"
-    isomorphic-fetch "^2.2.1"
-    jsonschema "^1.2.4"
-    percentile "^1.2.1"
-    single-call-balance-checker-abi "^1.0.0"
-    uuid "^3.3.2"
-    web3 "^0.20.7"
-    web3-provider-engine "^15.0.4"
 
 ganache-cli@^6.9.1:
   version "6.9.1"
@@ -14046,11 +14046,6 @@ interpret@^2.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.0.0.tgz#b783ffac0b8371503e9ab39561df223286aa5433"
   integrity sha512-e0/LknJ8wpMMhTiWcjivB+ESwIuvHnBSlBbmP/pSb8CQJldoj1p2qv7xGZ/+BtbTziYRFSz8OsvdbiX45LtYQA==
 
-intersect-objects@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/intersect-objects/-/intersect-objects-1.0.0.tgz#b7630d28994b89b0f04d44728106136549ce816e"
-  integrity sha512-MS1xypHKJhWopnJgn4IbitVvt2vFy2KjINQJAPhAtDejZ+ZbMDfyPc6JsS/mWFRt9Eoku4A4usE4f2loEOoeKQ==
-
 into-stream@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/into-stream/-/into-stream-3.1.0.tgz#96fb0a936c12babd6ff1752a17d05616abd094c6"
@@ -15755,7 +15750,7 @@ json-rpc-engine@^3.4.0, json-rpc-engine@^3.6.0:
     promise-to-callback "^1.0.0"
     safe-event-emitter "^1.0.1"
 
-json-rpc-engine@^5.1.3, json-rpc-engine@^5.1.5, json-rpc-engine@^5.1.8:
+json-rpc-engine@^5.1.3, json-rpc-engine@^5.1.5:
   version "5.1.8"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-5.1.8.tgz#5ba0147ce571899bbaa7133ffbc05317c34a3c7f"
   integrity sha512-vTBSDEPJV1fPAsbm2g5sEuPjsgLdiab2f1CTn2PyRr8nxggUpA996PDlNQDsM0gnrA99F8KIBLq2nIKrOFl1Mg==
@@ -23363,19 +23358,15 @@ rn-host-detect@^1.1.5:
   resolved "https://registry.yarnpkg.com/rn-host-detect/-/rn-host-detect-1.1.5.tgz#fbecb982b73932f34529e97932b9a63e58d8deb6"
   integrity sha512-ufk2dFT3QeP9HyZ/xTuMtW27KnFy815CYitJMqQm+pgG3ZAtHBsrU8nXizNKkqXGy3bQmhEoloVbrfbvMJMqkg==
 
-rpc-cap@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-3.0.1.tgz#127fdc37563736f3e15c4550af31f6866490dd85"
-  integrity sha512-egeRnp+QVennA3obsOhVi/XhNSR4qQk8LHu0YFBiEpUHcm+68FqBkjvx0U/3CSXBmrRc8WRLo6kE3T64gWW02w==
+rpc-cap@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/rpc-cap/-/rpc-cap-3.1.0.tgz#61ae8ca27c43da93f40972393ff34df1a28c3b5e"
+  integrity sha512-DyvT8xJEJVqdWP+fJ4VCI+q+sG30eOhAgaAczZ7/13ah8mtcl2pv4d5MffmTg8kJM4EId2eEExTVhBG8wgaomg==
   dependencies:
-    clone "^2.1.2"
-    eth-json-rpc-errors "^2.0.2"
-    fast-deep-equal "^2.0.1"
-    gaba "^1.9.3"
-    intersect-objects "^1.0.0"
+    "@metamask/controllers" "^2.0.2"
+    eth-rpc-errors "^2.1.1"
     is-subset "^0.1.1"
-    json-rpc-engine "^5.1.8"
-    obs-store "^4.0.3"
+    json-rpc-engine "^5.2.0"
     uuid "^3.3.2"
 
 rsa-pem-to-jwk@^1.1.3:
