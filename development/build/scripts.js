@@ -322,7 +322,7 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
 }
 
 function setupEnvVarInjection ({ bundlerOpts, devMode, test }) {
-  const environment = getEnvironment({ devMode })
+  const environment = getEnvironment({ devMode, test })
   if (environment === 'production' && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable')
   }
