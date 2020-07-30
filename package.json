@@ -195,7 +195,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",
     "babelify": "^10.0.0",
-    "brfs": "^1.6.1",
+    "brfs": "^2.0.2",
     "browserify": "^16.5.1",
     "browserify-derequire": "^1.0.1",
     "browserify-transform-tools": "^1.7.0",
