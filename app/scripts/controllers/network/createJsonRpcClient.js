@@ -7,9 +7,7 @@ import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block
 import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware'
 import BlockTracker from 'eth-block-tracker'
 
-export default createJsonRpcClient
-
-function createJsonRpcClient ({ rpcUrl }) {
+export default function createJsonRpcClient ({ rpcUrl }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
   const blockTracker = new BlockTracker({ provider: blockProvider })

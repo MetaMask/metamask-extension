@@ -7,7 +7,6 @@ import {
   hideSidebar,
   lockMetamask,
   hideWarning,
-  showModal,
 } from '../../../store/actions'
 import {
   getAddressConnectedDomainMap,
@@ -15,8 +14,7 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
-  // getPermittedAccounts,
-} from '../../../selectors/selectors'
+} from '../../../selectors'
 import AccountMenu from './account-menu.component'
 
 /**
@@ -54,9 +52,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(hideWarning())
       dispatch(hideSidebar())
       dispatch(toggleAccountMenu())
-    },
-    showRemoveAccountConfirmationModal: (identity) => {
-      return dispatch(showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
     },
   }
 }

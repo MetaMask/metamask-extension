@@ -21,15 +21,15 @@ proxyquire('../amount-max-button.container.js', {
       return () => ({})
     },
   },
-  '../../../send.selectors.js': {
+  '../../../../../selectors': {
     getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendToken: (s) => `mockSendToken:${s}`,
     getSendFromBalance: (s) => `mockBalance:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
+    getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}`,
   },
-  './amount-max-button.selectors.js': { getMaxModeOn: (s) => `mockMaxModeOn:${s}` },
   './amount-max-button.utils.js': { calcMaxAmount: (mockObj) => mockObj.val + 1 },
-  '../../../../../selectors/custom-gas': { getBasicGasEstimateLoadingStatus: (s) => `mockButtonDataLoading:${s}` },
   '../../../../../store/actions': actionSpies,
   '../../../../../ducks/send/send.duck': duckActionSpies,
 })
@@ -44,7 +44,7 @@ describe('amount-max-button container', function () {
         buttonDataLoading: 'mockButtonDataLoading:mockState',
         gasTotal: 'mockGasTotal:mockState',
         maxModeOn: 'mockMaxModeOn:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
+        sendToken: 'mockSendToken:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
       })
     })
@@ -67,12 +67,12 @@ describe('amount-max-button container', function () {
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { amount: null }
+          { amount: null },
         )
         assert(actionSpies.updateSendAmount.calledOnce)
         assert.equal(
           actionSpies.updateSendAmount.getCall(0).args[0],
-          12
+          12,
         )
       })
     })
@@ -83,7 +83,7 @@ describe('amount-max-button container', function () {
         assert(dispatchSpy.calledOnce)
         assert.equal(
           actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockVal'
+          'mockVal',
         )
       })
     })

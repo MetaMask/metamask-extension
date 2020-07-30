@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../helpers/constants/routes'
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
 import SendFooter from '../send-footer.component.js'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
@@ -40,7 +40,7 @@ describe('SendFooter Component', function () {
         gasTotal="mockGasTotal"
         history={historySpies}
         inError={false}
-        selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+        sendToken={{ mockProp: 'mockSendTokenProp' }}
         sign={propsMethodSpies.sign}
         to="mockTo"
         toAccounts={['mockAccount']}
@@ -48,6 +48,7 @@ describe('SendFooter Component', function () {
         unapprovedTxs={{}}
         update={propsMethodSpies.update}
         sendErrors={{}}
+        mostRecentOverviewPage="mostRecentOverviewPage"
       />
     ), { context: { t: (str) => str, metricsEvent: () => ({}) } })
   })
@@ -78,7 +79,7 @@ describe('SendFooter Component', function () {
       assert.equal(historySpies.push.callCount, 0)
       wrapper.instance().onCancel()
       assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], DEFAULT_ROUTE)
+      assert.equal(historySpies.push.getCall(0).args[0], 'mostRecentOverviewPage')
     })
   })
 
@@ -103,8 +104,8 @@ describe('SendFooter Component', function () {
         expectedResult: true,
         gasIsLoading: false,
       },
-      'should return true if selectedToken is truthy and tokenBalance is falsy': {
-        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+      'should return true if sendToken is truthy and tokenBalance is falsy': {
+        sendToken: { mockProp: 'mockSendTokenProp' },
         tokenBalance: '',
         expectedResult: true,
         gasIsLoading: false,
@@ -112,7 +113,7 @@ describe('SendFooter Component', function () {
       'should return true if gasIsLoading is truthy but all other params are falsy': {
         inError: false,
         gasTotal: '',
-        selectedToken: null,
+        sendToken: null,
         tokenBalance: '',
         expectedResult: true,
         gasIsLoading: true,
@@ -120,14 +121,14 @@ describe('SendFooter Component', function () {
       'should return false if inError is false and all other params are truthy': {
         inError: false,
         gasTotal: '0x123',
-        selectedToken: { mockProp: 'mockSelectedTokenProp' },
+        sendToken: { mockProp: 'mockSendTokenProp' },
         tokenBalance: '123',
         expectedResult: false,
         gasIsLoading: false,
       },
 
     }
-    Object.entries(config).map(([description, obj]) => {
+    Object.entries(config).forEach(([description, obj]) => {
       it(description, function () {
         wrapper.setProps(obj)
         assert.equal(wrapper.instance().formShouldBeDisabled(), obj.expectedResult)
@@ -141,12 +142,12 @@ describe('SendFooter Component', function () {
       assert(propsMethodSpies.addToAddressBookIfNew.calledOnce)
       assert.deepEqual(
         propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
-        ['mockTo', ['mockAccount']]
+        ['mockTo', ['mockAccount']],
       )
     })
 
-    it('should call props.update if editingTransactionId is truthy', function () {
-      wrapper.instance().onSubmit(MOCK_EVENT)
+    it('should call props.update if editingTransactionId is truthy', async function () {
+      await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.update.calledOnce)
       assert.deepEqual(
         propsMethodSpies.update.getCall(0).args[0],
@@ -157,10 +158,10 @@ describe('SendFooter Component', function () {
           from: 'mockAddress',
           gas: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
-          selectedToken: { mockProp: 'mockSelectedTokenProp' },
+          sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
           unapprovedTxs: {},
-        }
+        },
       )
     })
 
@@ -168,9 +169,9 @@ describe('SendFooter Component', function () {
       assert.equal(propsMethodSpies.sign.callCount, 0)
     })
 
-    it('should call props.sign if editingTransactionId is falsy', function () {
+    it('should call props.sign if editingTransactionId is falsy', async function () {
       wrapper.setProps({ editingTransactionId: null })
-      wrapper.instance().onSubmit(MOCK_EVENT)
+      await wrapper.instance().onSubmit(MOCK_EVENT)
       assert(propsMethodSpies.sign.calledOnce)
       assert.deepEqual(
         propsMethodSpies.sign.getCall(0).args[0],
@@ -180,9 +181,9 @@ describe('SendFooter Component', function () {
           from: 'mockAddress',
           gas: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
-          selectedToken: { mockProp: 'mockSelectedTokenProp' },
+          sendToken: { mockProp: 'mockSendTokenProp' },
           to: 'mockTo',
-        }
+        },
       )
     })
 
@@ -190,13 +191,10 @@ describe('SendFooter Component', function () {
       assert.equal(propsMethodSpies.update.callCount, 0)
     })
 
-    it('should call history.push', function (done) {
-      Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT))
-        .then(() => {
-          assert.equal(historySpies.push.callCount, 1)
-          assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
-          done()
-        })
+    it('should call history.push', async function () {
+      await wrapper.instance().onSubmit(MOCK_EVENT)
+      assert.equal(historySpies.push.callCount, 1)
+      assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
     })
   })
 
@@ -217,7 +215,7 @@ describe('SendFooter Component', function () {
           gasTotal="mockGasTotal"
           history={historySpies}
           inError={false}
-          selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+          sendToken={{ mockProp: 'mockSendTokenProp' }}
           sign={propsMethodSpies.sign}
           to="mockTo"
           toAccounts={['mockAccount']}

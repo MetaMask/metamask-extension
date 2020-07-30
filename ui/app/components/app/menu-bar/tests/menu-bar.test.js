@@ -6,6 +6,7 @@ import { mountWithRouter } from '../../../../../../test/lib/render-helpers'
 import MenuBar from '../index'
 
 const initState = {
+  activeTab: {},
   metamask: {
     network: '1',
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -34,11 +35,13 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
+    assert.ok(!wrapper.exists('AccountOptionsMenu'))
     const accountOptions = wrapper.find('.menu-bar__account-options')
     accountOptions.simulate('click')
-    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, true)
+    wrapper.update()
+    assert.ok(wrapper.exists('AccountOptionsMenu'))
   })
 
   it('sets accountDetailsMenuOpen to false when closed', function () {
@@ -46,14 +49,15 @@ describe('MenuBar', function () {
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
-      </Provider>
+      </Provider>,
     )
-    wrapper.find('MenuBar').instance().setState({ accountDetailsMenuOpen: true })
+    const accountOptions = wrapper.find('.menu-bar__account-options')
+    accountOptions.simulate('click')
     wrapper.update()
-
-    const accountDetailsMenu = wrapper.find('AccountDetailsDropdown')
+    assert.ok(wrapper.exists('AccountOptionsMenu'))
+    const accountDetailsMenu = wrapper.find('AccountOptionsMenu')
     accountDetailsMenu.prop('onClose')()
-
-    assert.equal(wrapper.find('MenuBar').instance().state.accountDetailsMenuOpen, false)
+    wrapper.update()
+    assert.ok(!wrapper.exists('AccountOptionsMenu'))
   })
 })

@@ -11,26 +11,22 @@ const DEFAULT_INTERVAL = 180 * 1000
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-class TokenRatesController {
+export default class TokenRatesController {
   /**
    * Creates a TokenRatesController
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, currency, preferences } = {}) {
+  constructor ({ currency, preferences } = {}) {
     this.store = new ObservableStore()
     this.currency = currency
     this.preferences = preferences
-    this.interval = interval
   }
 
   /**
    * Updates exchange rates for all tokens
    */
   async updateExchangeRates () {
-    if (!this.isActive) {
-      return
-    }
     const contractExchangeRates = {}
     const nativeCurrency = this.currency ? this.currency.state.nativeCurrency.toLowerCase() : 'eth'
     const pairs = this._tokens.map((token) => token.address).join(',')
@@ -48,19 +44,6 @@ class TokenRatesController {
       }
     }
     this.store.putState({ contractExchangeRates })
-  }
-
-  /**
-   * @type {Number}
-   */
-  set interval (interval) {
-    this._handle && clearInterval(this._handle)
-    if (!interval) {
-      return
-    }
-    this._handle = setInterval(() => {
-      this.updateExchangeRates()
-    }, interval)
   }
 
   /**
@@ -85,6 +68,19 @@ class TokenRatesController {
     this._tokens = tokens
     this.updateExchangeRates()
   }
-}
 
-export default TokenRatesController
+  start (interval = DEFAULT_INTERVAL) {
+    this._handle && clearInterval(this._handle)
+    if (!interval) {
+      return
+    }
+    this._handle = setInterval(() => {
+      this.updateExchangeRates()
+    }, interval)
+    this.updateExchangeRates()
+  }
+
+  stop () {
+    this._handle && clearInterval(this._handle)
+  }
+}

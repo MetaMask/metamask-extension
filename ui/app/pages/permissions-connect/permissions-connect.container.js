@@ -6,11 +6,18 @@ import {
   getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getPermissionsDomains,
-  getTargetDomainMetadata,
-} from '../../selectors/selectors'
+  getDomainMetadata,
+  getSelectedAddress,
+} from '../../selectors'
+
 import { formatDate } from '../../helpers/utils/util'
-import { approvePermissionsRequest, rejectPermissionsRequest, showModal, getCurrentWindowTab, getRequestAccountTabIds } from '../../store/actions'
+import {
+  approvePermissionsRequest,
+  rejectPermissionsRequest,
+  showModal,
+  getCurrentWindowTab,
+  getRequestAccountTabIds,
+} from '../../store/actions'
 import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
@@ -22,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     location: { pathname },
   } = ownProps
   const permissionsRequests = getPermissionsRequests(state)
+  const currentAddress = getSelectedAddress(state)
 
   const permissionsRequest = permissionsRequests
     .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
@@ -30,10 +38,26 @@ const mapStateToProps = (state, ownProps) => {
   const { origin } = metadata
   const nativeCurrency = getNativeCurrency(state)
 
+  const domainMetadata = getDomainMetadata(state)
+
+  let targetDomainMetadata = null
+  if (origin) {
+    if (domainMetadata[origin]) {
+      targetDomainMetadata = { ...domainMetadata[origin], origin }
+    } else {
+      const targetUrl = new URL(origin)
+      targetDomainMetadata = {
+        host: targetUrl.host,
+        name: targetUrl.hostname,
+        origin,
+      }
+    }
+  }
+
   const accountsWithLabels = getAccountsWithLabels(state)
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {}
-  const addressLastConnectedMap = lastConnectedInfo[origin] || {}
+  const addressLastConnectedMap = lastConnectedInfo[origin]?.accounts || {}
 
   Object.keys(addressLastConnectedMap).forEach((key) => {
     addressLastConnectedMap[key] = formatDate(addressLastConnectedMap[key], 'yyyy-MM-dd')
@@ -51,17 +75,16 @@ const mapStateToProps = (state, ownProps) => {
     throw new Error('Incorrect path for permissions-connect component')
   }
 
-  const targetDomainMetadata = getTargetDomainMetadata(state, permissionsRequest, origin)
-
   return {
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
-    originName: origin,
+    currentAddress,
+    origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,
     addressLastConnectedMap,
-    domains: getPermissionsDomains(state),
+    lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
     page,

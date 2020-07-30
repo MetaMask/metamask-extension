@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import migration38 from '../../../app/scripts/migrations/038'
 
 describe('migration #38', function () {
@@ -28,7 +28,7 @@ describe('migration #38', function () {
 
     migration38.migrate(oldStorage)
       .then((newStorage) => {
-        assert(newStorage.data.ABTestController.abTests.fullScreenVsPopup.match(/control|fullScreen/))
+        assert.equal(newStorage.data.ABTestController.abTests.fullScreenVsPopup, 'control')
         done()
       })
       .catch(done)

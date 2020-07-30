@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "שליחת חוזה (Contract Deployment)"
   },
-  "conversionProgress": {
-    "message": "המרה מתבצעת"
-  },
-  "copiedButton": {
-    "message": "הועתק"
-  },
   "copiedExclamation": {
     "message": "הועתק!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "העתק ללוח"
-  },
-  "copyButton": {
-    "message": "העתק"
   },
   "copyPrivateKey": {
     "message": "זה המפתח הפרטי שלך (נא להקיש כדי להעתיק)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "emailUs": {
-    "message": "שלח/י לנו מייל!"
-  },
   "endOfFlowMessage1": {
     "message": "עברת את הבחינה - יש לשמור את ה-seedphrase שלך במקום בטוח, זה באחריותך!"
   },
@@ -454,9 +442,6 @@
   "from": {
     "message": "מאת"
   },
-  "fromShapeShift": {
-    "message": "מ-ShapeShift"
-  },
   "functionType": {
     "message": "סוג פונקציה"
   },
@@ -530,9 +515,6 @@
   },
   "hide": {
     "message": "הסתר"
-  },
-  "hideToken": {
-    "message": "הסתר טוקן"
   },
   "hideTokenPrompt": {
     "message": "להסתיר טוקן?"
@@ -663,9 +645,6 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "missingYourTokens": {
-    "message": "אין באפשרותך לראות את הטוקנים שלך?"
-  },
   "mobileSyncText": {
     "message": "נא להזין את הססמה שלך כדי לאשר שזה/זו אכן את/ה!"
   },
@@ -760,9 +739,6 @@
   },
   "noAddressForName": {
     "message": "לא הוגדרה כתובת עבור שם זה."
-  },
-  "noDeposits": {
-    "message": "לא התקבלו פיקדונות"
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
@@ -1161,10 +1137,6 @@
   },
   "to": {
     "message": "אל"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ל-ETH באמצעות ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "טוקן"

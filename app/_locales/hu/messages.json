@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Szerződés alkalmazása"
   },
-  "conversionProgress": {
-    "message": "Átváltás folyamatban"
-  },
-  "copiedButton": {
-    "message": "Másolva"
-  },
   "copiedExclamation": {
     "message": "Kimásolva!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Másolás a vágólapra"
-  },
-  "copyButton": {
-    "message": "Másolás"
   },
   "copyPrivateKey": {
     "message": "Ez a saját titkos kulcsod (kattints rá a másoláshoz)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
   },
-  "emailUs": {
-    "message": "Írjon nekünk!"
-  },
   "endOfFlowMessage1": {
     "message": "Átment a teszten - tartsa biztonságban a seed mondatot, ez az ön felelőssége!"
   },
@@ -450,9 +438,6 @@
   "from": {
     "message": "Feladó"
   },
-  "fromShapeShift": {
-    "message": "A ShapeShifttől"
-  },
   "functionType": {
     "message": "Függvénytípus"
   },
@@ -526,9 +511,6 @@
   },
   "hide": {
     "message": "Elrejtés"
-  },
-  "hideToken": {
-    "message": "Token elrejtése"
   },
   "hideTokenPrompt": {
     "message": "Elrejted a tokent?"
@@ -659,9 +641,6 @@
   "metamaskVersion": {
     "message": "MetaMask verzió"
   },
-  "missingYourTokens": {
-    "message": "Nem látja az érméit?"
-  },
   "mobileSyncText": {
     "message": "Kérünk írd be jelszavad, hogy igazold kiléted!"
   },
@@ -756,9 +735,6 @@
   },
   "noAddressForName": {
     "message": "Nem lett cím beállítva ehhez a névhez."
-  },
-  "noDeposits": {
-    "message": "Nem érkezett letét"
   },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
@@ -1160,10 +1136,6 @@
   },
   "to": {
     "message": "Erre:"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 az ETH-hez a ShapeShift által",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "A tokent már hozzáadtuk. "

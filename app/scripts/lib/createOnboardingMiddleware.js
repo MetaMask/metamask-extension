@@ -6,7 +6,7 @@ import extension from 'extensionizer'
  * @param {{ location: string, registerOnboarding: Function }} opts - The middleware options
  * @returns {(req: any, res: any, next: Function, end: Function) => void}
  */
-function createOnboardingMiddleware ({ location, registerOnboarding }) {
+export default function createOnboardingMiddleware ({ location, registerOnboarding }) {
   return async function originMiddleware (req, res, next, end) {
     try {
       if (req.method !== 'wallet_registerOnboarding') {
@@ -25,5 +25,3 @@ function createOnboardingMiddleware ({ location, registerOnboarding }) {
     }
   }
 }
-
-export default createOnboardingMiddleware

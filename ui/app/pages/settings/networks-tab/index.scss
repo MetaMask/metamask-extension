@@ -7,7 +7,7 @@
     justify-content: space-between;
 
     @media screen and (max-width: 575px) {
-      margin-top: 0px;
+      margin-top: 0;
     }
   }
 
@@ -30,7 +30,7 @@
       background-image: url('/images/caret-left-black.svg');
       width: 18px;
       height: 18px;
-      opacity: .5;
+      opacity: 0.5;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -61,7 +61,7 @@
       }
 
       footer {
-        padding: 10px 0px;
+        padding: 10px 0;
       }
     }
 
@@ -82,15 +82,25 @@
       flex-direction: column;
       width: 93%;
     }
+
+    &--warning {
+      background-color: #fefae8;
+      border: 1px solid #ffd33d;
+      width: 93%;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 12px;
+    }
   }
 
   &__network-form-label {
-    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
-    color: #000000;
+    color: #000;
   }
 
   &__networks-list {
@@ -113,7 +123,7 @@
       padding-bottom: 23px;
       justify-content: center;
       align-items: center;
-      border-top: 1px solid #D8D8D8;
+      border-top: 1px solid #d8d8d8;
 
       .button {
         width: 178px;
@@ -143,7 +153,7 @@
 
   &__networks-list-item {
     display: flex;
-    padding: 13px 0px 13px 17px;
+    padding: 13px 0 13px 17px;
     position: relative;
 
     .menu-icon-circle {
@@ -154,7 +164,7 @@
 
     @media screen and (max-width: 575px) {
       padding: 20px 23px 21px 17px;
-      border-bottom: 1px solid #D8D8D8;
+      border-bottom: 1px solid #d8d8d8;
     }
   }
 
@@ -166,12 +176,11 @@
 
   &__networks-list-name {
     margin-left: 11px;
-    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 23px;
-    color: #6A737D;
+    color: #6a737d;
 
     &:hover {
       cursor: pointer;
@@ -203,7 +212,7 @@
 
   &__networks-list-name--selected {
     font-weight: bold;
-    color: #000000;
+    color: #000;
   }
 }
 
@@ -211,14 +220,14 @@
   &__footer {
     display: flex;
     flex-flow: row nowrap;
-    margin: .75rem 0;
+    margin: 0.75rem 0;
 
     .btn-default {
-      margin-right: .375rem;
+      margin-right: 0.375rem;
     }
 
     .btn-secondary {
-      margin-left: .375rem;
+      margin-left: 0.375rem;
     }
 
     .btn-danger {

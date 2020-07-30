@@ -6,6 +6,7 @@ import _getRestrictedMethods
 
 import {
   CAVEAT_NAMES,
+  CAVEAT_TYPES,
   NOTIFICATION_NAMES,
 } from '../../../../../app/scripts/controllers/permissions/enums'
 
@@ -40,7 +41,7 @@ const getIdentities = () => {
       identities[address] = { address, name: `Account ${index}` }
       return identities
     },
-    {}
+    {},
   )
 }
 
@@ -150,10 +151,10 @@ export const getNotifyAllDomains = (notifications = {}) => (notification) => {
  * - e.g. permissions, caveats, and permission requests
  */
 
-const ORIGINS = {
-  a: 'foo.xyz',
-  b: 'bar.abc',
-  c: 'baz.def',
+const DOMAINS = {
+  a: { origin: 'https://foo.xyz', host: 'foo.xyz' },
+  b: { origin: 'https://bar.abc', host: 'bar.abc' },
+  c: { origin: 'https://baz.def', host: 'baz.def' },
 }
 
 const PERM_NAMES = {
@@ -162,10 +163,19 @@ const PERM_NAMES = {
   does_not_exist: 'does_not_exist',
 }
 
-const ACCOUNT_ARRAYS = {
-  a: [ ...keyringAccounts.slice(0, 3) ],
-  b: [keyringAccounts[0]],
-  c: [keyringAccounts[1]],
+const ACCOUNTS = {
+  a: {
+    permitted: keyringAccounts.slice(0, 3),
+    primary: keyringAccounts[0],
+  },
+  b: {
+    permitted: [keyringAccounts[0]],
+    primary: keyringAccounts[0],
+  },
+  c: {
+    permitted: [keyringAccounts[1]],
+    primary: keyringAccounts[1],
+  },
 }
 
 /**
@@ -180,11 +190,15 @@ const CAVEATS = {
    * @returns {Object} An eth_accounts exposedAccounts caveats
    */
   eth_accounts: (accounts) => {
-    return {
-      type: 'filterResponse',
+    return [{
+      type: CAVEAT_TYPES.limitResponseLength,
+      value: 1,
+      name: CAVEAT_NAMES.primaryAccountOnly,
+    }, {
+      type: CAVEAT_TYPES.filterResponse,
       value: accounts,
       name: CAVEAT_NAMES.exposedAccounts,
-    }
+    }]
   },
 }
 
@@ -245,7 +259,7 @@ const PERMS = {
     eth_accounts: (accounts) => {
       return {
         eth_accounts: {
-          caveats: [CAVEATS.eth_accounts(accounts)],
+          caveats: CAVEATS.eth_accounts(accounts),
         } }
     },
 
@@ -273,7 +287,7 @@ const PERMS = {
     eth_accounts: (accounts) => {
       return {
         parentCapability: PERM_NAMES.eth_accounts,
-        caveats: [CAVEATS.eth_accounts(accounts)],
+        caveats: CAVEATS.eth_accounts(accounts),
       }
     },
 
@@ -333,7 +347,7 @@ export const getters = deepFreeze({
     addPermittedAccount: {
       alreadyPermitted: () => {
         return {
-          message: 'Account is already permitted',
+          message: 'Account is already permitted for origin',
         }
       },
       invalidOrigin: () => {
@@ -343,21 +357,25 @@ export const getters = deepFreeze({
       },
       noEthAccountsPermission: () => {
         return {
-          message: 'Origin does not have \'eth_accounts\' permission',
+          message: `Origin does not have 'eth_accounts' permission`,
         }
       },
     },
 
-    legacyExposeAccounts: {
-      badOrigin: () => {
+    removePermittedAccount: {
+      notPermitted: () => {
         return {
-          message: 'Must provide non-empty string origin.',
+          message: 'Account is not permitted for origin',
         }
       },
-      forbiddenUsage: () => {
+      invalidOrigin: () => {
         return {
-          name: 'Error',
-          message: 'May not call legacyExposeAccounts on origin with exposed accounts.',
+          message: 'Unrecognized domain',
+        }
+      },
+      noEthAccountsPermission: () => {
+        return {
+          message: `Origin does not have 'eth_accounts' permission`,
         }
       },
     },
@@ -408,18 +426,10 @@ export const getters = deepFreeze({
       },
     },
 
-    logAccountExposure: {
-      invalidParams: () => {
-        return {
-          message: 'Must provide non-empty string origin and array of accounts.',
-        }
-      },
-    },
-
     pendingApprovals: {
       duplicateOriginOrId: (id, origin) => {
         return {
-          message: `Pending approval with id ${id} or origin ${origin} already exists.`,
+          message: `Pending approval with id '${id}' or origin '${origin}' already exists.`,
         }
       },
       requestAlreadyPending: () => {
@@ -433,6 +443,19 @@ export const getters = deepFreeze({
       requestAlreadyPending: () => {
         return {
           message: 'Already processing eth_requestAccounts. Please wait.',
+        }
+      },
+    },
+
+    notifyAccountsChanged: {
+      invalidOrigin: (origin) => {
+        return {
+          message: `Invalid origin: '${origin}'`,
+        }
+      },
+      invalidAccounts: () => {
+        return {
+          message: 'Invalid accounts',
         }
       },
     },
@@ -465,18 +488,6 @@ export const getters = deepFreeze({
       return {
         method: NOTIFICATION_NAMES.accountsChanged,
         result: accounts,
-      }
-    },
-
-    /**
-     * Gets a test notification that doesn't occur in practice.
-     *
-     * @returns {Object} A notification with the 'test_notification' method name
-     */
-    test: () => {
-      return {
-        method: 'test_notification',
-        result: true,
       }
     },
   },
@@ -619,9 +630,9 @@ export const constants = deepFreeze({
     c: '3',
   },
 
-  ORIGINS: { ...ORIGINS },
+  DOMAINS: { ...DOMAINS },
 
-  ACCOUNT_ARRAYS: { ...ACCOUNT_ARRAYS },
+  ACCOUNTS: { ...ACCOUNTS },
 
   PERM_NAMES: { ...PERM_NAMES },
 
@@ -637,25 +648,25 @@ export const constants = deepFreeze({
 
     case1: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
-              [ACCOUNT_ARRAYS.a[0]]: 1,
-              [ACCOUNT_ARRAYS.a[1]]: 1,
-              [ACCOUNT_ARRAYS.a[2]]: 1,
+              [ACCOUNTS.a.permitted[0]]: 1,
+              [ACCOUNTS.a.permitted[1]]: 1,
+              [ACCOUNTS.a.permitted[2]]: 1,
             },
           },
         },
       },
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 2,
             accounts: {
-              [ACCOUNT_ARRAYS.a[0]]: 2,
-              [ACCOUNT_ARRAYS.a[1]]: 1,
-              [ACCOUNT_ARRAYS.a[2]]: 1,
+              [ACCOUNTS.a.permitted[0]]: 2,
+              [ACCOUNTS.a.permitted[1]]: 1,
+              [ACCOUNTS.a.permitted[2]]: 1,
             },
           },
         },
@@ -664,7 +675,7 @@ export const constants = deepFreeze({
 
     case2: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {},
@@ -675,46 +686,46 @@ export const constants = deepFreeze({
 
     case3: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
         },
-        [ORIGINS.b]: {
+        [DOMAINS.b.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
-              [ACCOUNT_ARRAYS.b[0]]: 1,
+              [ACCOUNTS.b.permitted[0]]: 1,
             },
           },
         },
-        [ORIGINS.c]: {
+        [DOMAINS.c.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
-              [ACCOUNT_ARRAYS.c[0]]: 1,
+              [ACCOUNTS.c.permitted[0]]: 1,
             },
           },
         },
       },
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 2 },
         },
-        [ORIGINS.b]: {
+        [DOMAINS.b.origin]: {
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 1,
             accounts: {
-              [ACCOUNT_ARRAYS.b[0]]: 1,
+              [ACCOUNTS.b.permitted[0]]: 1,
             },
           },
         },
-        [ORIGINS.c]: {
+        [DOMAINS.c.origin]: {
           [PERM_NAMES.test_method]: { lastApproved: 1 },
           [PERM_NAMES.eth_accounts]: {
             lastApproved: 2,
             accounts: {
-              [ACCOUNT_ARRAYS.c[0]]: 1,
-              [ACCOUNT_ARRAYS.b[0]]: 2,
+              [ACCOUNTS.c.permitted[0]]: 1,
+              [ACCOUNTS.b.permitted[0]]: 2,
             },
           },
         },
@@ -723,7 +734,7 @@ export const constants = deepFreeze({
 
     case4: [
       {
-        [ORIGINS.a]: {
+        [DOMAINS.a.origin]: {
           [PERM_NAMES.test_method]: {
             lastApproved: 1,
           },

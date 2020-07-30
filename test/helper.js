@@ -3,6 +3,8 @@ import nock from 'nock'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import log from 'loglevel'
+import { JSDOM } from 'jsdom'
+
 
 nock.disableNetConnect()
 nock.enableNetConnect('localhost')
@@ -45,8 +47,6 @@ global.log = log
 //
 
 // dom
-const { JSDOM } = require('jsdom')
-
 const jsdom = new JSDOM()
 global.window = jsdom.window
 
@@ -57,6 +57,13 @@ global.document = window.document
 // required by `react-tippy`
 global.navigator = window.navigator
 global.Element = window.Element
+// required by `react-popper`
+global.HTMLElement = window.HTMLElement
+
+// required by any components anchored on `popover-content`
+const popoverContent = window.document.createElement('div')
+popoverContent.setAttribute('id', 'popover-content')
+window.document.body.appendChild(popoverContent)
 
 // delete AbortController added by jsdom so it can be polyfilled correctly below
 delete window.AbortController
@@ -80,5 +87,6 @@ if (!window.crypto) {
   window.crypto = {}
 }
 if (!window.crypto.getRandomValues) {
+  // eslint-disable-next-line global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 }

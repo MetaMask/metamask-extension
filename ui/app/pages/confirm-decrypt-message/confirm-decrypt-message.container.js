@@ -11,9 +11,10 @@ import {
 import {
   getTargetAccountWithSendEtherInfo,
   conversionRateSelector,
-} from '../../selectors/selectors'
+} from '../../selectors'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import ConfirmDecryptMessage from './confirm-decrypt-message.component'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 function mapStateToProps (state) {
   const { confirmTransaction,
@@ -35,6 +36,7 @@ function mapStateToProps (state) {
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 
@@ -63,5 +65,5 @@ function mapDispatchToProps (dispatch) {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(ConfirmDecryptMessage)

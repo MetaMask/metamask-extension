@@ -10,16 +10,12 @@ export default class SendAmountRow extends Component {
 
   static propTypes = {
     amount: PropTypes.string,
-    amountConversionRate: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
     gasTotal: PropTypes.string,
     inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
     updateGasFeeError: PropTypes.func,
@@ -35,9 +31,9 @@ export default class SendAmountRow extends Component {
 
   componentDidUpdate (prevProps) {
     const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps
-    const { maxModeOn, amount, gasTotal, selectedToken } = this.props
+    const { maxModeOn, amount, gasTotal, sendToken } = this.props
 
-    if (maxModeOn && selectedToken && !prevMaxModeOn) {
+    if (maxModeOn && sendToken && !prevMaxModeOn) {
       this.updateGas(amount)
     }
 
@@ -50,12 +46,11 @@ export default class SendAmountRow extends Component {
 
   validateAmount (amount) {
     const {
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
       primaryCurrency,
-      selectedToken,
+      sendToken,
       tokenBalance,
       updateGasFeeError,
       updateSendAmountError,
@@ -63,23 +58,21 @@ export default class SendAmountRow extends Component {
 
     updateSendAmountError({
       amount,
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
       primaryCurrency,
-      selectedToken,
+      sendToken,
       tokenBalance,
     })
 
-    if (selectedToken) {
+    if (sendToken) {
       updateGasFeeError({
-        amountConversionRate,
         balance,
         conversionRate,
         gasTotal,
         primaryCurrency,
-        selectedToken,
+        sendToken,
         tokenBalance,
       })
     }
@@ -93,9 +86,9 @@ export default class SendAmountRow extends Component {
   }
 
   updateGas (amount) {
-    const { selectedToken, updateGas } = this.props
+    const { sendToken, updateGas } = this.props
 
-    if (selectedToken) {
+    if (sendToken) {
       updateGas({ amount })
     }
   }
@@ -107,16 +100,24 @@ export default class SendAmountRow extends Component {
   }
 
   renderInput () {
-    const { amount, inError, selectedToken } = this.props
-    const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
+    const { amount, inError, sendToken } = this.props
 
-    return (
-      <Component
-        onChange={this.handleChange}
-        error={inError}
-        value={amount}
-      />
-    )
+    return sendToken ?
+      (
+        <UserPreferencedTokenInput
+          error={inError}
+          onChange={this.handleChange}
+          token={sendToken}
+          value={amount}
+        />
+      )
+      : (
+        <UserPreferencedCurrencyInput
+          error={inError}
+          onChange={this.handleChange}
+          value={amount}
+        />
+      )
   }
 
   render () {

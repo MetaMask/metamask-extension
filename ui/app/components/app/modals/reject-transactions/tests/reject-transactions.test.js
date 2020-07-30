@@ -19,7 +19,7 @@ describe('Reject Transactions Model', function () {
         context: {
           t: (str) => str,
         },
-      }
+      },
     )
   })
 

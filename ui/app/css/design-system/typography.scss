@@ -1,0 +1,151 @@
+$fa-font-path: 'fonts/fontawesome';
+
+@import '../../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+@import '../../../../node_modules/@fortawesome/fontawesome-free/scss/solid';
+@import '../../../../node_modules/@fortawesome/fontawesome-free/scss/regular';
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url('fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url('fonts/Roboto/Roboto-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url('fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url('fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url('fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Roboto Black'), local('Roboto-Black'), url('fonts/Roboto/Roboto-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/Euclid/EuclidCircularB-Regular-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: italic;
+  font-weight: 400;
+  src: url('fonts/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
+}
+
+$font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
+
+// Typography
+@mixin H1 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 2.5rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+
+@mixin H2 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 2rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H3 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.5rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H4 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.125rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H5 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H6 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 0.875rem; // 14px @default
+  line-height: 140%;
+}
+
+@mixin Paragraph {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H7 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 0.75rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H8 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 0.625rem;
+  font-family: $font-family;
+  line-height: 140%;
+}
+
+@mixin H9 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 0.5rem;
+  font-family: $font-family;
+  line-height: 140%;
+}

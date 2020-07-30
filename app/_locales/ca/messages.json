@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Desplegament de Contracte"
   },
-  "conversionProgress": {
-    "message": "Conversió en curs"
-  },
-  "copiedButton": {
-    "message": "Copiat"
-  },
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
@@ -365,9 +356,6 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "emailUs": {
-    "message": "Envia'ns un correu!"
-  },
   "endOfFlowMessage1": {
     "message": "Has passat el test - mantingues la teva seedphrase segura, és la teva responsabilitat!"
   },
@@ -447,9 +435,6 @@
   "from": {
     "message": "Des de"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipus de Funció"
   },
@@ -517,9 +502,6 @@
   },
   "hide": {
     "message": "Amaga"
-  },
-  "hideToken": {
-    "message": "Amagar Fitxa"
   },
   "hideTokenPrompt": {
     "message": "Amagar fitxa?"
@@ -650,9 +632,6 @@
   "metamaskVersion": {
     "message": "Versió MetaMask"
   },
-  "missingYourTokens": {
-    "message": "No veus els teus tokens?"
-  },
   "mobileSyncText": {
     "message": "Si us plau, introdueix la teva contrasenya per confirmar que ets tu!"
   },
@@ -747,9 +726,6 @@
   },
   "noAddressForName": {
     "message": "No existeix cap adreça amb aquest nom."
-  },
-  "noDeposits": {
-    "message": "Cap dipòsit rebut"
   },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
@@ -1142,10 +1118,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ja s'ha afegit."

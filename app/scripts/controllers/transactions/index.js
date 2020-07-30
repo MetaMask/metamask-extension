@@ -25,7 +25,6 @@ import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
 import cleanErrorStack from '../../lib/cleanErrorStack'
 import log from 'loglevel'
-import recipientBlacklistChecker from './lib/recipient-blacklist-checker'
 
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -35,6 +34,10 @@ import {
 } from './enums'
 
 import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
+
+const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
+const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -59,13 +62,12 @@ import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
   @param {Object}  opts.provider - A network provider.
   @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
   @param {Object}  opts.getPermittedAccounts - get accounts that an origin has permissions for
-  @param {Function}  [opts.getGasPrice] - optional gas price calculator
   @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
   @param {number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
   @param {Object}  opts.preferencesStore
 */
 
-class TransactionController extends EventEmitter {
+export default class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.networkStore = opts.networkStore || new ObservableStore({})
@@ -74,7 +76,6 @@ class TransactionController extends EventEmitter {
     this.getPermittedAccounts = opts.getPermittedAccounts
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
-    this.getGasPrice = opts.getGasPrice
     this.inProcessOfSigning = new Set()
 
     this.memStore = new ObservableStore({})
@@ -124,14 +125,19 @@ class TransactionController extends EventEmitter {
     this._updatePendingTxsAfterFirstBlock()
   }
 
-  /** @returns {number} - the chainId*/
+  /**
+   * Gets the current chainId in the network store as a number, returning 0 if
+   * the chainId parses to NaN.
+   *
+   * @returns {number} The numerical chainId.
+   */
   getChainId () {
     const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState)
-    if (Number.isNaN(getChainId)) {
+    const integerChainId = parseInt(networkState)
+    if (Number.isNaN(integerChainId)) {
       return 0
     } else {
-      return getChainId
+      return integerChainId
     }
   }
 
@@ -230,23 +236,26 @@ class TransactionController extends EventEmitter {
 
     const { transactionCategory, getCodeResponse } = await this._determineTransactionCategory(txParams)
     txMeta.transactionCategory = transactionCategory
+
+    // ensure value
+    txMeta.txParams.value = txMeta.txParams.value
+      ? ethUtil.addHexPrefix(txMeta.txParams.value)
+      : '0x0'
+
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
 
     try {
-      // check whether recipient account is blacklisted
-      recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
-      // add default tx params
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse)
     } catch (error) {
       log.warn(error)
+      txMeta = this.txStateManager.getTx(txMeta.id)
       txMeta.loadingDefaults = false
       this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.')
       throw error
     }
 
     txMeta.loadingDefaults = false
-
     // save txMeta
     this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.')
 
@@ -259,50 +268,69 @@ class TransactionController extends EventEmitter {
    * @returns {Promise<object>} - resolves with txMeta
    */
   async addTxGasDefaults (txMeta, getCodeResponse) {
-    const txParams = txMeta.txParams
-    // ensure value
-    txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
-    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
-    let gasPrice = txParams.gasPrice
-    if (!gasPrice) {
-      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+    const defaultGasPrice = await this._getDefaultGasPrice(txMeta)
+    const { gasLimit: defaultGasLimit, simulationFails } = await this._getDefaultGasLimit(txMeta, getCodeResponse)
+
+    txMeta = this.txStateManager.getTx(txMeta.id)
+    if (simulationFails) {
+      txMeta.simulationFails = simulationFails
     }
-    txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
-    // set gasLimit
-    return await this.txGasUtil.analyzeGasUsage(txMeta, getCodeResponse)
+    if (defaultGasPrice && !txMeta.txParams.gasPrice) {
+      txMeta.txParams.gasPrice = defaultGasPrice
+    }
+    if (defaultGasLimit && !txMeta.txParams.gas) {
+      txMeta.txParams.gas = defaultGasLimit
+    }
+    return txMeta
   }
 
   /**
-    Creates a new txMeta with the same txParams as the original
-    to allow the user to resign the transaction with a higher gas values
-    @param {number} originalTxId - the id of the txMeta that
-    you want to attempt to retry
-    @param {string} [gasPrice] - Optional gas price to be increased to use as the retry
-    transaction's gas price
-    @returns {txMeta}
-  */
+   * Gets default gas price, or returns `undefined` if gas price is already set
+   * @param {Object} txMeta - The txMeta object
+   * @returns {Promise<string>} The default gas price
+   */
+  async _getDefaultGasPrice (txMeta) {
+    if (txMeta.txParams.gasPrice) {
+      return
+    }
+    const gasPrice = await this.query.gasPrice()
 
-  async retryTransaction (originalTxId, gasPrice) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
-    const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
-    const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
-    const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
-    // essentially lastGasPrice * 1.1 but
-    // dont trust decimals so a round about way of doing that
-    const lastGasPriceBNBumped = lastGasPriceBN.mul(new ethUtil.BN(110, 10)).div(new ethUtil.BN(100, 10))
-    // transactions that are being retried require a >=%10 bump or the clients will throw an error
-    txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped) ? `0x${suggestedGasPriceBN.toString(16)}` : `0x${lastGasPriceBNBumped.toString(16)}`
+    return ethUtil.addHexPrefix(gasPrice.toString(16))
+  }
 
-    const txMeta = this.txStateManager.generateTxMeta({
-      txParams: originalTxMeta.txParams,
-      lastGasPrice,
-      loadingDefaults: false,
-      type: TRANSACTION_TYPE_RETRY,
-    })
-    this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
-    return txMeta
+  /**
+   * Gets default gas limit, or debug information about why gas estimate failed.
+   * @param {Object} txMeta - The txMeta object
+   * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
+   * @returns {Promise<Object>} Object containing the default gas limit, or the simulation failure object
+   */
+  async _getDefaultGasLimit (txMeta, getCodeResponse) {
+    if (txMeta.txParams.gas) {
+      return {}
+    } else if (
+      txMeta.txParams.to &&
+      txMeta.transactionCategory === SEND_ETHER_ACTION_KEY
+    ) {
+      // if there's data in the params, but there's no contract code, it's not a valid transaction
+      if (txMeta.txParams.data) {
+        const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+        // set error key so ui can display localized error message
+        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+
+        // set the response on the error so that we can see in logs what the actual response was
+        err.getCodeResponse = getCodeResponse
+        throw err
+      }
+
+      // This is a standard ether simple send, gas requirement is exactly 21k
+      return { gasLimit: SIMPLE_GAS_COST }
+    }
+
+    const { blockGasLimit, estimatedGasHex, simulationFails } = await this.txGasUtil.analyzeGasUsage(txMeta)
+
+    // add additional gas buffer to our estimation for safety
+    const gasLimit = this.txGasUtil.addGasBuffer(ethUtil.addHexPrefix(estimatedGasHex), blockGasLimit)
+    return { gasLimit, simulationFails }
   }
 
   /**
@@ -406,7 +434,7 @@ class TransactionController extends EventEmitter {
     // Since this transaction is async,
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
-    // that is already being incrmented & signed.
+    // that is already being incremented & signed.
     if (this.inProcessOfSigning.has(txId)) {
       return
     }
@@ -419,14 +447,14 @@ class TransactionController extends EventEmitter {
       const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
-      let { customNonceValue = null } = txMeta
+      let { customNonceValue } = txMeta
       customNonceValue = Number(customNonceValue)
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
       // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
-      const customOrNonce = customNonceValue || nonce
+      const customOrNonce = (customNonceValue === 0) ? customNonceValue : customNonceValue || nonce
 
       txMeta.txParams.nonce = ethUtil.addHexPrefix(customOrNonce.toString(16))
       // add nonce debugging information to txMeta
@@ -612,14 +640,16 @@ class TransactionController extends EventEmitter {
       status: 'unapproved',
       loadingDefaults: true,
     }).forEach((tx) => {
+
       this.addTxGasDefaults(tx)
         .then((txMeta) => {
           txMeta.loadingDefaults = false
           this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
         }).catch((error) => {
-          tx.loadingDefaults = false
-          this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
-          this.txStateManager.setTxStatusFailed(tx.id, error)
+          const txMeta = this.txStateManager.getTx(tx.id)
+          txMeta.loadingDefaults = false
+          this.txStateManager.updateTx(txMeta, 'failed to estimate gas during boot cleanup.')
+          this.txStateManager.setTxStatusFailed(txMeta.id, error)
         })
     })
 
@@ -759,13 +789,9 @@ class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore () {
-    this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const currentNetworkTxList = this.txStateManager.getFilteredTxList({
-      metamaskNetworkId: this.getNetwork(),
-    })
+    const currentNetworkTxList = this.txStateManager.getTxList(MAX_MEMSTORE_TX_LIST_SIZE)
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList })
   }
-}
 
-export default TransactionController
+}

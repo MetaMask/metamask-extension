@@ -133,7 +133,7 @@ export default class SecurityTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { warning } = this.props
 
     return (
@@ -145,9 +145,5 @@ export default class SecurityTab extends PureComponent {
         { this.renderMetaMetricsOptIn() }
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }

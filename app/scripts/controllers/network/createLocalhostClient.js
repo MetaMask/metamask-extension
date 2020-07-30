@@ -8,9 +8,7 @@ import BlockTracker from 'eth-block-tracker'
 
 const inTest = process.env.IN_TEST === 'true'
 
-export default createLocalhostClient
-
-function createLocalhostClient () {
+export default function createLocalhostClient () {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl: 'http://localhost:8545/' })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
   const blockTracker = new BlockTracker({ provider: blockProvider, pollingInterval: 1000 })

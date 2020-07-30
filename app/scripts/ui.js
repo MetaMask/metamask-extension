@@ -4,6 +4,7 @@ import './lib/freezeGlobals'
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+import '@formatjs/intl-relativetimeformat/polyfill'
 
 import PortStream from 'extension-port-stream'
 import { getEnvironmentType } from './lib/util'
@@ -21,7 +22,6 @@ import { EventEmitter } from 'events'
 import Dnode from 'dnode'
 import Eth from 'ethjs'
 import EthQuery from 'eth-query'
-import urlUtil from 'url'
 import launchMetaMaskUi from '../../ui'
 import StreamProvider from 'web3-stream-provider'
 import { setupMultiplex } from './lib/stream-utils.js'
@@ -36,19 +36,10 @@ async function start () {
 
   // setup sentry error reporting
   const release = global.platform.getVersion()
-  setupSentry({ release, getState })
-  // provide app state to append to error logs
-  function getState () {
-    // get app state
-    const state = window.getCleanAppState
-      ? window.getCleanAppState()
-      : {}
-    // remove unnecessary data
-    delete state.localeMessages
-    delete state.metamask.recentBlocks
-    // return state to be added to request
-    return state
-  }
+  setupSentry({
+    release,
+    getState: () => window.getSentryState?.() || {},
+  })
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType()
@@ -95,11 +86,15 @@ async function queryCurrentActiveTab (windowType) {
 
     extension.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const [activeTab] = tabs
-      const { title, url } = activeTab
-      const { hostname: origin, protocol } = url ? urlUtil.parse(url) : {}
-      resolve({
-        title, origin, protocol, url,
-      })
+      const { id, title, url } = activeTab
+      const { origin, protocol } = url ? new URL(url) : {}
+
+      if (!origin || origin === 'null') {
+        resolve({})
+        return
+      }
+
+      resolve({ id, title, origin, protocol, url })
     })
   })
 }

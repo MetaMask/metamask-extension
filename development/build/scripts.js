@@ -17,6 +17,8 @@ const lavamoatArgs = require('lavamoat-browserify').args
 const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const { promises: fs } = require('fs')
 
+const conf = require('rc')('metamask', {})
+
 module.exports = createScriptTasks
 
 
@@ -87,7 +89,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
         devMode,
         testing,
         watchify: devMode,
-      })
+      }),
     )
   }
 
@@ -142,7 +144,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       events.on('pipeline', (pipeline) => {
         // convert bundle stream to gulp vinyl stream
         pipeline.get('vinyl').push(
-          source(destName)
+          source(destName),
         )
         // setup bundle destination
         browserPlatforms.forEach((platform) => {
@@ -304,7 +306,7 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
     // initialize source maps, gulp-sourcemaps requires files to be buffered
     pipeline.get('sourcemaps:init').push(buffer())
     pipeline.get('sourcemaps:init').push(
-      sourcemaps.init({ loadMaps: true })
+      sourcemaps.init({ loadMaps: true }),
     )
 
     // write sourcemaps
@@ -320,6 +322,10 @@ function setupSourcemaps ({ bundlerOpts, events, devMode }) {
 }
 
 function setupEnvVarInjection ({ bundlerOpts, devMode, test }) {
+  const environment = getEnvironment({ devMode })
+  if (environment === 'production' && !process.env.SENTRY_DSN) {
+    throw new Error('Missing SENTRY_DSN environment variable')
+  }
   Object.assign(bundlerOpts, {
     transform: [
       ...bundlerOpts.transform,
@@ -336,11 +342,15 @@ function setupEnvVarInjection ({ bundlerOpts, devMode, test }) {
       // inject environment variables
       [envify({
         METAMASK_DEBUG: devMode,
-        METAMASK_ENVIRONMENT: getEnvironment({ devMode }),
+        METAMASK_ENVIRONMENT: environment,
+        METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
         NODE_ENV: devMode ? 'development' : 'production',
         IN_TEST: test ? 'true' : false,
         PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
         PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
+        ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
+        CONF: devMode ? conf : ({}),
+        SENTRY_DSN: process.env.SENTRY_DSN,
       }), {
         global: true,
       }],
@@ -357,6 +367,9 @@ function setupMinification ({ events }) {
     pipeline.get('minify').push(terser({
       mangle: {
         reserved: [ 'MetamaskInpageProvider' ],
+      },
+      sourceMap: {
+        content: true,
       },
     }))
   })

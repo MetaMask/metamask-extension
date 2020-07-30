@@ -214,12 +214,6 @@
   "contractDeployment": {
     "message": "Desplegar (Deploy) contrato"
   },
-  "conversionProgress": {
-    "message": "Conversión en progreso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "¡Copiado!"
   },
@@ -234,9 +228,6 @@
   },
   "copyToClipboard": {
     "message": "Copiar al portapapeles"
-  },
-  "copyButton": {
-    "message": " Copiar "
   },
   "copyPrivateKey": {
     "message": "Ésta es tu clave privada (haz click para copiar)"
@@ -322,9 +313,6 @@
   "editContact": {
     "message": "Editar Contacto"
   },
-  "emailUs": {
-    "message": "¡Envíanos un correo!"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask no puede recuperar tu seedphrase. Saber más."
   },
@@ -371,9 +359,6 @@
   },
   "from": {
     "message": "De:"
-  },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
   },
   "functionType": {
     "message": "Tipo de función"
@@ -430,9 +415,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
@@ -542,9 +524,6 @@
   "metamaskVersion": {
     "message": "Versión de MetaMask"
   },
-  "missingYourTokens": {
-    "message": "¿No ves tus tokens?"
-  },
   "myAccounts": {
     "message": "Mis cuentas"
   },
@@ -603,9 +582,6 @@
   },
   "noAddressForName": {
     "message": "No se ha establecido ninguna dirección para este nombre"
-  },
-  "noDeposits": {
-    "message": "No hay depósitos recibidos"
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión"
@@ -923,10 +899,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token está actualmente agregado"

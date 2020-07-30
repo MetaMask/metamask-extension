@@ -1,6 +1,6 @@
 import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/ducks/metamask/metamask'
-import actionConstants from '../../../../../ui/app/store/actionConstants'
+import * as actionConstants from '../../../../../ui/app/store/actionConstants'
 
 describe('MetaMask Reducers', function () {
 
@@ -12,7 +12,6 @@ describe('MetaMask Reducers', function () {
   it('locks MetaMask', function () {
     const unlockMetaMaskState = {
       isUnlocked: true,
-      isInitialzed: false,
       selectedAddress: 'test address',
     }
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
@@ -50,15 +49,6 @@ describe('MetaMask Reducers', function () {
     assert.equal(state.isUnlocked, true)
     assert.equal(state.isInitialized, true)
     assert.equal(state.selectedAddress, 'test address')
-  })
-
-  it('sets select ', function () {
-    const state = reduceMetamask({}, {
-      type: actionConstants.SET_SELECTED_TOKEN,
-      value: 'test token',
-    })
-
-    assert.equal(state.selectedTokenAddress, 'test token')
   })
 
   it('sets account label', function () {
@@ -204,7 +194,6 @@ describe('MetaMask Reducers', function () {
       memo: '0xMemo',
       errors: {},
       editingTransactionId: 22,
-      forceGasMin: '0xGas',
       ensResolution: null,
       ensResolutionError: '',
     }
@@ -231,7 +220,6 @@ describe('MetaMask Reducers', function () {
         errors: {},
         maxModeOn: false,
         editingTransactionId: null,
-        forceGasMin: null,
         toNickname: '' },
     }
 
@@ -249,7 +237,6 @@ describe('MetaMask Reducers', function () {
         memo: '0xMemo',
         errors: {},
         editingTransactionId: 22,
-        forceGasMin: '0xGas',
       },
     }
 

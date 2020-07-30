@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
+import { MESSAGE_TYPE } from './enums'
 
 const hexRe = /^[0-9A-Fa-f]+$/g
 import log from 'loglevel'
@@ -29,9 +30,9 @@ export default class DecryptMessageManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *
    * @typedef {Object} DecryptMessageManager
-   * @property {Object} memStore The observable store where DecryptMessage are saved with persistance.
+   * @property {Object} memStore The observable store where DecryptMessage are saved.
    * @property {Object} memStore.unapprovedDecryptMsgs A collection of all DecryptMessages in the 'unapproved' state
-   * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprobedMsgs
+   * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprovedDecryptMsgs
    * @property {array} messages Holds all messages that have been created by this DecryptMessageManager
    *
    */
@@ -81,7 +82,7 @@ export default class DecryptMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
-        reject(new Error('MetaMask Message for Decryption: from field is required.'))
+        return reject(new Error('MetaMask Decryption: from field is required.'))
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
@@ -89,11 +90,11 @@ export default class DecryptMessageManager extends EventEmitter {
           case 'decrypted':
             return resolve(data.rawData)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message for Decryption: User denied message decryption.'))
+            return reject(ethErrors.provider.userRejectedRequest('MetaMask Decryption: User denied message decryption.'))
           case 'errored':
             return reject(new Error('This message cannot be decrypted'))
           default:
-            return reject(new Error(`MetaMask Message for Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
       })
     })
@@ -124,7 +125,7 @@ export default class DecryptMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_decrypt',
+      type: MESSAGE_TYPE.ETH_DECRYPT,
     }
     this.addMsg(msgData)
 

@@ -17,11 +17,9 @@ proxyquire('../add-recipient.container.js', {
       return () => ({})
     },
   },
-  '../../send.selectors.js': {
+  '../../../../selectors': {
     getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
     getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-  },
-  '../../../../selectors/selectors': {
     getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
     getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
     accountsWithSendEtherInfoSelector: (s) => `mockAccountsWithSendEtherInfoSelector:${s}`,
@@ -55,7 +53,7 @@ describe('add-recipient container', function () {
         assert(actionSpies.updateSendTo.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTo.getCall(0).args,
-          ['mockTo', 'mockNickname']
+          ['mockTo', 'mockNickname'],
         )
       })
     })

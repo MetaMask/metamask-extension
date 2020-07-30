@@ -12,7 +12,7 @@ function shallowRender (props = {}, context = {}) {
         t: (str) => str + '_t',
         ...context,
       },
-    }
+    },
   )
 }
 
@@ -25,7 +25,7 @@ describe('ConfirmSeedPhrase Component', function () {
     assert.equal(
       root.find('.confirm-seed-phrase__seed-word--sorted').length,
       12,
-      'should render 12 seed phrases'
+      'should render 12 seed phrases',
     )
   })
 
@@ -39,7 +39,7 @@ describe('ConfirmSeedPhrase Component', function () {
       },
       {
         metricsEvent: metricsEventSpy,
-      }
+      },
     )
 
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
@@ -77,7 +77,7 @@ describe('ConfirmSeedPhrase Component', function () {
       },
       {
         metricsEvent: metricsEventSpy,
-      }
+      },
     )
 
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
@@ -110,7 +110,7 @@ describe('ConfirmSeedPhrase Component', function () {
       },
       {
         metricsEvent: metricsEventSpy,
-      }
+      },
     )
 
     const seeds = root.find('.confirm-seed-phrase__seed-word--sorted')
@@ -142,10 +142,11 @@ describe('ConfirmSeedPhrase Component', function () {
         history: { push: pushSpy },
         setSeedPhraseBackedUp: () => Promise.resolve(),
         initializeThreeBox: initialize3BoxSpy,
+        completeOnboarding: sinon.spy(),
       },
       {
         metricsEvent: metricsEventSpy,
-      }
+      },
     )
 
     const sorted = root.state().sortedSeedWords

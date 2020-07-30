@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Līgumu pielietošana"
   },
-  "conversionProgress": {
-    "message": "Notiek konvertācija"
-  },
-  "copiedButton": {
-    "message": "Nokopēts"
-  },
   "copiedExclamation": {
     "message": "Nokopēts!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopēt starpliktuvē"
-  },
-  "copyButton": {
-    "message": "Kopēt"
   },
   "copyPrivateKey": {
     "message": "Šī ir jūsu privātā atslēga (noklikšķiniet, lai nokopētu)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "emailUs": {
-    "message": "Raksiet mums e-pastu!"
-  },
   "endOfFlowMessage1": {
     "message": "Jūs izgājāt pārbaudi — glabājiet atkopšanas frāzi drošībā, tā ir jūsu atbildība!"
   },
@@ -450,9 +438,6 @@
   "from": {
     "message": "No"
   },
-  "fromShapeShift": {
-    "message": "No ShapeShift"
-  },
   "functionType": {
     "message": "Funkcijas veids"
   },
@@ -526,9 +511,6 @@
   },
   "hide": {
     "message": "Slēpt"
-  },
-  "hideToken": {
-    "message": "Paslēpt marķieri"
   },
   "hideTokenPrompt": {
     "message": "Paslēpt žetonu?"
@@ -662,9 +644,6 @@
   "metamaskVersion": {
     "message": "MetaMask versija"
   },
-  "missingYourTokens": {
-    "message": "Neredzat savus marķierus?"
-  },
   "mobileSyncText": {
     "message": "Lūdzu, ievadiet paroli, lai apstiprinātu, ka tas esat jūs."
   },
@@ -759,9 +738,6 @@
   },
   "noAddressForName": {
     "message": "Šim vārdam nav iestatīta adrese."
-  },
-  "noDeposits": {
-    "message": "Nav saņemts neviens noguldījums"
   },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
@@ -1163,10 +1139,6 @@
   },
   "to": {
     "message": "Adresāts"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 uz ETH, izmantojot ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Marķieris"

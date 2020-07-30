@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
-import { checkExistingAddresses } from './util'
+import { checkExistingAddresses } from '../../helpers/utils/util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
+import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
 import TokenList from './token-list'
 import TokenSearch from './token-search'
@@ -24,6 +24,7 @@ class AddToken extends Component {
     clearPendingTokens: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
   }
 
   state = {
@@ -307,17 +308,17 @@ class AddToken extends Component {
   }
 
   render () {
-    const { history, clearPendingTokens } = this.props
+    const { history, clearPendingTokens, mostRecentOverviewPage } = this.props
 
     return (
       <PageContainer
         title={this.context.t('addTokens')}
         tabsComponent={this.renderTabs()}
         onSubmit={() => this.handleNext()}
-        disabled={this.hasError() || !this.hasSelected()}
+        disabled={Boolean(this.hasError()) || !this.hasSelected()}
         onCancel={() => {
           clearPendingTokens()
-          history.push(DEFAULT_ROUTE)
+          history.push(mostRecentOverviewPage)
         }}
       />
     )

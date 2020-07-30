@@ -48,9 +48,8 @@ describe('send container', function () {
         editingTransactionId: '0x2',
         gasLimit: '0x3',
         gasPrice: '0x4',
-        recentBlocks: ['mockBlock'],
         selectedAddress: '0x4',
-        selectedToken: { address: '0x1' },
+        sendToken: { address: '0x1' },
         to: 'mockTo',
         value: 'mockValue',
         data: undefined,
@@ -61,19 +60,19 @@ describe('send container', function () {
         assert(dispatchSpy.calledOnce)
         assert.equal(
           actionSpies.setGasTotal.getCall(0).args[0],
-          '0x30x4'
+          '0x30x4',
         )
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
-        const { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data } = mockProps
+        const { gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data } = mockProps
         mapDispatchToPropsObject.updateAndSetGasLimit(
-          Object.assign({}, mockProps, { editingTransactionId: false })
+          Object.assign({}, mockProps, { editingTransactionId: false }),
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateGasData.getCall(0).args[0],
-          { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data }
+          { gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data },
         )
       })
     })
@@ -82,7 +81,7 @@ describe('send container', function () {
       const mockProps = {
         address: '0x10',
         tokenContract: '0x00a',
-        selectedToken: { address: '0x1' },
+        sendToken: { address: '0x1' },
       }
 
       it('should dispatch an action', function () {
@@ -90,7 +89,7 @@ describe('send container', function () {
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateSendTokenBalance.getCall(0).args[0],
-          mockProps
+          mockProps,
         )
       })
     })
@@ -101,7 +100,7 @@ describe('send container', function () {
         assert(dispatchSpy.calledOnce)
         assert.equal(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          'mockError'
+          'mockError',
         )
       })
     })
@@ -112,7 +111,7 @@ describe('send container', function () {
         assert(dispatchSpy.calledOnce)
         assert.equal(
           duckActionSpies.resetSendState.getCall(0).args.length,
-          0
+          0,
         )
       })
     })

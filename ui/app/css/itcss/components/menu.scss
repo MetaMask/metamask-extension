@@ -1,7 +1,7 @@
 .menu {
   border-radius: 4px;
-  background: rgba($black, .8);
-  box-shadow: rgba($black, .15) 0 2px 2px 2px;
+  background: rgba($black, 0.8);
+  box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
   color: $white;
 
@@ -21,11 +21,11 @@
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($white, .05);
+        background-color: rgba($white, 0.05);
       }
 
       &:active {
-        background-color: rgba($white, .1);
+        background-color: rgba($white, 0.1);
       }
     }
 
@@ -42,7 +42,7 @@
 
     &__subtext {
       font-size: 12px;
-      padding: 5px 0px 0px 30px;
+      padding: 5px 0 0 30px;
     }
   }
 

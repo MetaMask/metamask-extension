@@ -251,12 +251,6 @@
   "contractDeployment": {
     "message": "Implantação de Contrato"
   },
-  "conversionProgress": {
-    "message": "Conversão em progresso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "Copiado!"
   },
@@ -271,9 +265,6 @@
   },
   "copyToClipboard": {
     "message": "Copiar para a área de transferência"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Esta é sua chave particular (clique para copiar)"
@@ -362,9 +353,6 @@
   "editContact": {
     "message": "Editar Contato"
   },
-  "emailUs": {
-    "message": "Escreva para nós!"
-  },
   "endOfFlowMessage1": {
     "message": "Você passou no teste — mantenha sua frase semente segura, a responsabilidade é sua!"
   },
@@ -448,9 +436,6 @@
   "from": {
     "message": "De"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipo de Função"
   },
@@ -524,9 +509,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar Token"
   },
   "hideTokenPrompt": {
     "message": "Esconder token?"
@@ -654,9 +636,6 @@
   "metamaskVersion": {
     "message": "Versão do MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Não está vendo seus tokens?"
-  },
   "mobileSyncText": {
     "message": "Insira sua senha para confirmar que é você!"
   },
@@ -751,9 +730,6 @@
   },
   "noAddressForName": {
     "message": "Nenhum endereço foi definido para este nome."
-  },
-  "noDeposits": {
-    "message": "Nenhum depósito recebido"
   },
   "noConversionRateAvailable": {
     "message": "Nenhuma Taxa de Conversão Disponível"
@@ -1155,10 +1131,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 para ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "O token já foi adicionado."

@@ -10,7 +10,7 @@ const CHECKBOX_STATE = {
 
 export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE
 
-const CheckBox = ({ className, disabled, onClick, checked }) => {
+const CheckBox = ({ className, disabled, id, onClick, checked, title }) => {
   if (typeof checked === 'boolean') {
     checked = checked
       ? CHECKBOX_STATE.CHECKED
@@ -26,10 +26,11 @@ const CheckBox = ({ className, disabled, onClick, checked }) => {
       checked={checked === CHECKBOX_STATE.CHECKED}
       className={classnames('check-box', className, {
         'far fa-square': checked === CHECKBOX_STATE.UNCHECKED,
-        'fa fa-check-square': checked === CHECKBOX_STATE.CHECKED,
-        'fa fa-minus-square': checked === CHECKBOX_STATE.INDETERMINATE,
+        'fa fa-check-square check-box__checked': checked === CHECKBOX_STATE.CHECKED,
+        'fa fa-minus-square check-box__indeterminate': checked === CHECKBOX_STATE.INDETERMINATE,
       })}
       disabled={disabled}
+      id={id}
       onClick={
         onClick
           ? (event) => {
@@ -40,6 +41,7 @@ const CheckBox = ({ className, disabled, onClick, checked }) => {
       }
       readOnly
       ref={ref}
+      title={title}
       type="checkbox"
     />
   )
@@ -48,13 +50,16 @@ const CheckBox = ({ className, disabled, onClick, checked }) => {
 CheckBox.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  id: PropTypes.string,
   onClick: PropTypes.func,
   checked: PropTypes.oneOf([...Object.keys(CHECKBOX_STATE), true, false]).isRequired,
+  title: PropTypes.string,
 }
 
 CheckBox.defaultProps = {
   className: undefined,
   disabled: false,
+  id: undefined,
 }
 
 export default CheckBox

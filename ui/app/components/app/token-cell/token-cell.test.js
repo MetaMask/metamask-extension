@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
+import { MemoryRouter } from 'react-router-dom'
 
 import TokenCell from '.'
 import Identicon from '../../ui/identicon'
@@ -15,12 +16,17 @@ describe('Token Cell', function () {
   const state = {
     metamask: {
       currentCurrency: 'usd',
-      selectedTokenAddress: '0xToken',
       selectedAddress: '0xAddress',
       contractExchangeRates: {
         '0xAnotherToken': 0.015,
       },
       conversionRate: 7.00,
+      preferences: {},
+      provider: {
+        chainId: '1',
+        ticker: 'ETH',
+        type: 'mainnet',
+      },
     },
     appState: {
       sidebar: {
@@ -39,15 +45,17 @@ describe('Token Cell', function () {
     onClick = sinon.stub()
     wrapper = mount(
       <Provider store={store}>
-        <TokenCell
-          address="0xAnotherToken"
-          symbol="TEST"
-          string="5.000"
-          currentCurrency="usd"
-          image="./test-image"
-          onClick={onClick}
-        />
-      </Provider>
+        <MemoryRouter>
+          <TokenCell
+            address="0xAnotherToken"
+            symbol="TEST"
+            string="5.000"
+            currentCurrency="usd"
+            image="./test-image"
+            onClick={onClick}
+          />
+        </MemoryRouter>
+      </Provider>,
     )
   })
 
@@ -60,16 +68,12 @@ describe('Token Cell', function () {
     assert.equal(wrapper.find(Identicon).prop('image'), './test-image')
   })
 
-  it('renders token balance', function () {
-    assert.equal(wrapper.find('.token-cell__token-balance').text(), '5.000')
-  })
-
-  it('renders token symbol', function () {
-    assert.equal(wrapper.find('.token-cell__token-symbol').text(), 'TEST')
+  it('renders token balance and symbol', function () {
+    assert.equal(wrapper.find('.list-item__heading').text(), '5.000 TEST')
   })
 
   it('renders converted fiat amount', function () {
-    assert.equal(wrapper.find('.token-cell__fiat-amount').text(), '0.52 USD')
+    assert.equal(wrapper.find('.list-item__subheading').text(), '$0.52 USD')
   })
 
   it('calls onClick when clicked', function () {

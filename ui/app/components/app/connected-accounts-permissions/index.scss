@@ -1,0 +1,59 @@
+.connected-accounts-permissions {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 17px;
+  color: $Grey-500;
+
+  strong {
+    font-weight: bold;
+  }
+
+  p + p {
+    padding-top: 8px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292e;
+
+    button {
+      font-size: 16px;
+      line-height: 24px;
+      background: none;
+      padding: 0;
+      margin-left: 8px;
+    }
+  }
+
+  &__list {
+    padding-top: 8px;
+  }
+
+  &__list-item {
+    display: flex;
+  }
+
+  & &__checkbox {
+    margin: 0 8px 0 0;
+    font-size: 18px;
+  }
+
+  &__list-container {
+    max-height: 0;
+    overflow: hidden;
+    height: auto;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &--expanded {
+      // arbitrarily set hard coded value for effect to work
+      max-height: 100px;
+    }
+  }
+}

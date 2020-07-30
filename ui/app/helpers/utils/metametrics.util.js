@@ -2,10 +2,15 @@
 
 import ethUtil from 'ethereumjs-util'
 
-const inDevelopment = process.env.NODE_ENV === 'development'
+const inDevelopment = process.env.METAMASK_DEBUG || process.env.IN_TEST
+
+let projectId = process.env.METAMETRICS_PROJECT_ID
+if (!projectId) {
+  projectId = inDevelopment ? 1 : 2
+}
 
 const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.php'
-const METAMETRICS_REQUIRED_PARAMS = `?idsite=${inDevelopment ? 1 : 2}&rec=1&apiv=1`
+const METAMETRICS_REQUIRED_PARAMS = `?idsite=${projectId}&rec=1&apiv=1`
 const METAMETRICS_BASE_FULL = METAMETRICS_BASE_URL + METAMETRICS_REQUIRED_PARAMS
 
 const METAMETRICS_TRACKING_URL = inDevelopment
@@ -13,7 +18,7 @@ const METAMETRICS_TRACKING_URL = inDevelopment
   : 'http://www.metamask.io/metametrics-prod'
 
 /** ***************Custom variables*************** **/
-// Custon variable declarations
+// Custom variable declarations
 const METAMETRICS_CUSTOM_GAS_LIMIT_CHANGE = 'gasLimitChange'
 const METAMETRICS_CUSTOM_GAS_PRICE_CHANGE = 'gasPriceChange'
 const METAMETRICS_CUSTOM_FUNCTION_TYPE = 'functionType'
@@ -53,17 +58,18 @@ const METAMETRICS_CUSTOM_NETWORK = 'network'
 const METAMETRICS_CUSTOM_ENVIRONMENT_TYPE = 'environmentType'
 const METAMETRICS_CUSTOM_ACTIVE_CURRENCY = 'activeCurrency'
 const METAMETRICS_CUSTOM_ACCOUNT_TYPE = 'accountType'
-const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
 const METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS = 'numberOfAccounts'
-
+const METAMETRICS_CUSTOM_NUMBER_OF_TOKENS = 'numberOfTokens'
+const METAMETRICS_CUSTOM_VERSION = 'version'
 
 const customDimensionsNameIdMap = {
   [METAMETRICS_CUSTOM_NETWORK]: 5,
   [METAMETRICS_CUSTOM_ENVIRONMENT_TYPE]: 6,
   [METAMETRICS_CUSTOM_ACTIVE_CURRENCY]: 7,
   [METAMETRICS_CUSTOM_ACCOUNT_TYPE]: 8,
-  [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 9,
-  [METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS]: 10,
+  [METAMETRICS_CUSTOM_NUMBER_OF_ACCOUNTS]: 9,
+  [METAMETRICS_CUSTOM_NUMBER_OF_TOKENS]: 10,
+  [METAMETRICS_CUSTOM_VERSION]: 11,
 }
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
@@ -130,6 +136,7 @@ function composeUrl (config) {
     accountType,
     numberOfTokens,
     numberOfAccounts,
+    version,
     previousPath = '',
     currentPath,
     metaMetricsId,
@@ -156,6 +163,7 @@ function composeUrl (config) {
     environmentType,
     activeCurrency,
     accountType,
+    version,
     numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
     numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''

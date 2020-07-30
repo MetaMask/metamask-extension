@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
+import { MESSAGE_TYPE } from './enums'
 
 const hexRe = /^[0-9A-Fa-f]+$/g
 import log from 'loglevel'
@@ -32,7 +33,7 @@ export default class PersonalMessageManager extends EventEmitter {
    *
    * @typedef {Object} PersonalMessageManager
    * @param {Object} opts @deprecated
-   * @property {Object} memStore The observable store where PersonalMessage are saved with persistance.
+   * @property {Object} memStore The observable store where PersonalMessage are saved.
    * @property {Object} memStore.unapprovedPersonalMsgs A collection of all PersonalMessages in the 'unapproved' state
    * @property {number} memStore.unapprovedPersonalMsgCount The count of all PersonalMessages in this.memStore.unapprobedMsgs
    * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
@@ -84,7 +85,7 @@ export default class PersonalMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
-        reject(new Error('MetaMask Message Signature: from field is required.'))
+        return reject(new Error('MetaMask Message Signature: from field is required.'))
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
@@ -125,7 +126,7 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'personal_sign',
+      type: MESSAGE_TYPE.PERSONAL_SIGN,
     }
     this.addMsg(msgData)
 

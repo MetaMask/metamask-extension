@@ -218,7 +218,7 @@ export default class NetworksTab extends PureComponent {
     )
   }
 
-  renderContent () {
+  render () {
     const { setNetworksTabAddMode, setSelectedSettingsRpcUrl, networkIsSelected, networksTabIsInAddMode } = this.props
 
     return (
@@ -244,9 +244,5 @@ export default class NetworksTab extends PureComponent {
         }
       </div>
     )
-  }
-
-  render () {
-    return this.renderContent()
   }
 }

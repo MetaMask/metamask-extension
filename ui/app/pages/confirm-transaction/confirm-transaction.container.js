@@ -17,14 +17,14 @@ import {
   getTokenParams,
 } from '../../store/actions'
 import ConfirmTransaction from './confirm-transaction.component'
-import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction'
+import { unconfirmedTransactionsListSelector } from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state, ownProps) => {
   const {
     metamask: {
       send,
       unapprovedTxs,
-      abTests: { fullScreenVsPopup },
     },
   } = state
   const { match: { params = {} } } = ownProps
@@ -37,19 +37,16 @@ const mapStateToProps = (state, ownProps) => {
     : {}
   const { id: transactionId, transactionCategory } = transaction
 
-  const trackABTest = false
-
   return {
     totalUnapprovedCount: totalUnconfirmed,
     send,
     unapprovedTxs,
     id,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
     transaction,
     isTokenMethodAction: isTokenMethodAction(transactionCategory),
-    trackABTest,
-    fullScreenVsPopupTestGroup: fullScreenVsPopup,
   }
 }
 

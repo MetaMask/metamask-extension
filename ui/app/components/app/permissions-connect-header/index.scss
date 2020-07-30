@@ -1,5 +1,6 @@
 .permissions-connect-header {
   display: flex;
+  flex: 0;
   flex-direction: column;
   justify-content: center;
   width: 92%;
@@ -25,16 +26,28 @@
   }
 
   &__title {
-    @extend %header--24;
+    @include H3;
+
     text-align: center;
     color: $Black-100;
     margin-top: 14px;
   }
 
-  &__text, &__subtitle {
-    @extend %content-text;
+  &__text,
+  &__subtitle {
+    @include H6;
+
     text-align: center;
     color: $Grey-500;
+  }
+
+  &__text {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    /*rtl:ignore*/
+    direction: rtl;
   }
 
   &__subtitle {

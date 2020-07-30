@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/browser'
 
 const warned = {}
 const missingMessageErrors = {}
+const missingSubstitutionErrors = {}
 
 /**
  * Returns a localized message for the given key
@@ -43,20 +44,28 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
 
   const hasSubstitutions = Boolean(substitutions && substitutions.length)
   const hasReactSubstitutions = hasSubstitutions &&
-    substitutions.some((element) => typeof element === 'function' || typeof element === 'object')
+    substitutions.some((element) => element !== null && (typeof element === 'function' || typeof element === 'object'))
 
   // perform substitutions
   if (hasSubstitutions) {
     const parts = phrase.split(/(\$\d)/g)
-    const partsToReplace = phrase.match(/(\$\d)/g)
-
-    if (partsToReplace.length > substitutions.length) {
-      throw new Error(`Insufficient number of substitutions for message: '${phrase}'`)
-    }
 
     const substitutedParts = parts.map((part) => {
       const subMatch = part.match(/\$(\d)/)
-      return subMatch ? substitutions[Number(subMatch[1]) - 1] : part
+      if (!subMatch) {
+        return part
+      }
+      const substituteIndex = Number(subMatch[1]) - 1
+      if (substitutions[substituteIndex] == null && !missingSubstitutionErrors[localeCode]?.[key]) {
+        if (!missingSubstitutionErrors[localeCode]) {
+          missingSubstitutionErrors[localeCode] = {}
+        }
+        missingSubstitutionErrors[localeCode][key] = true
+        const error = new Error(`Insufficient number of substitutions for message: '${phrase}'`)
+        log.error(error)
+        Sentry.captureException(error)
+      }
+      return substitutions[substituteIndex]
     })
 
     phrase = hasReactSubstitutions
@@ -77,3 +86,21 @@ export async function fetchLocale (localeCode) {
   }
 }
 
+const relativeTimeFormatLocaleData = new Set()
+
+export async function loadRelativeTimeFormatLocaleData (localeCode) {
+  const languageTag = localeCode.split('_')[0]
+  if (
+    Intl.RelativeTimeFormat &&
+    typeof Intl.RelativeTimeFormat.__addLocaleData === 'function' &&
+    !relativeTimeFormatLocaleData.has(languageTag)
+  ) {
+    const localeData = await fetchRelativeTimeFormatData(languageTag)
+    Intl.RelativeTimeFormat.__addLocaleData(localeData)
+  }
+}
+
+async function fetchRelativeTimeFormatData (languageTag) {
+  const response = await window.fetch(`./intl/${languageTag}/relative-time-format-data.json`)
+  return await response.json()
+}

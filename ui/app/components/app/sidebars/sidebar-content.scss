@@ -34,7 +34,6 @@
     .page-container__bottom {
       display: flex;
       flex-direction: column;
-      flex-flow: space-between;
       height: 100%;
     }
 
@@ -44,7 +43,7 @@
 
     .basic-tab-content {
       height: auto;
-      margin-bottom: 0px;
+      margin-bottom: 0;
       border-bottom: 1px solid #d2d8dd;
       flex: 1 1 70%;
 
@@ -93,6 +92,7 @@
 
       &__info-row-wrapper {
         display: flex;
+
         @media screen and (min-width: $break-small) {
           flex: 1 1 30%;
         }

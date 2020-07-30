@@ -8,7 +8,7 @@ describe('ModalContent Component', function () {
     const wrapper = shallow(
       <ModalContent
         title="Modal Title"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 1)
@@ -20,7 +20,7 @@ describe('ModalContent Component', function () {
     const wrapper = shallow(
       <ModalContent
         description="Modal Description"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 0)
@@ -33,7 +33,7 @@ describe('ModalContent Component', function () {
       <ModalContent
         title="Modal Title"
         description="Modal Description"
-      />
+      />,
     )
 
     assert.equal(wrapper.find('.modal-content__title').length, 1)

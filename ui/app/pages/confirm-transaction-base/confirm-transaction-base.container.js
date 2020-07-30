@@ -26,9 +26,18 @@ import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util'
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils'
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants'
-import { checksumAddress, addressSlicer, valuesFor } from '../../helpers/utils/util'
-import { getMetaMaskAccounts, getCustomNonceValue, getUseNonceField, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet, getKnownMethodData } from '../../selectors/selectors'
-import { transactionFeeSelector } from '../../selectors/confirm-transaction'
+import { checksumAddress, shortenAddress, valuesFor } from '../../helpers/utils/util'
+import {
+  getAdvancedInlineGasShown,
+  getCustomNonceValue,
+  getIsMainnet,
+  getKnownMethodData,
+  getMetaMaskAccounts,
+  getUseNonceField,
+  getPreferences,
+  transactionFeeSelector,
+} from '../../selectors'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -46,7 +55,7 @@ const customNonceMerge = (txData) => (customNonceValue ? ({
 const mapStateToProps = (state, ownProps) => {
   const { toAddress: propsToAddress, customTxParamsData, match: { params = {} } } = ownProps
   const { id: paramsTransactionId } = params
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask } = state
   const {
@@ -68,7 +77,7 @@ const mapStateToProps = (state, ownProps) => {
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId, transactionCategory } = txData
   const transaction = Object.values(unapprovedTxs).find(
-    ({ id }) => id === (transactionId || Number(paramsTransactionId))
+    ({ id }) => id === (transactionId || Number(paramsTransactionId)),
   ) || {}
   const {
     from: fromAddress,
@@ -89,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
     : (
       casedContractMap[toAddress]
         ? casedContractMap[toAddress].name
-        : addressSlicer(checksumAddress(toAddress))
+        : shortenAddress(checksumAddress(toAddress))
     )
 
   const checksummedAddress = checksumAddress(toAddress)
@@ -170,6 +179,7 @@ const mapStateToProps = (state, ownProps) => {
     metaMetricsSendCount,
     transactionCategory,
     nextNonce,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 
@@ -284,5 +294,5 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(ConfirmTransactionBase)

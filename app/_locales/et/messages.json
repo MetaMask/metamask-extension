@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Lepingu juurutamine"
   },
-  "conversionProgress": {
-    "message": "Teisendamine on pooleli"
-  },
-  "copiedButton": {
-    "message": "Kopeeritud"
-  },
   "copiedExclamation": {
     "message": "Kopeeritud!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Kopeeri lõikelauale"
-  },
-  "copyButton": {
-    "message": "Kopeeri"
   },
   "copyPrivateKey": {
     "message": "See on teie privaatne võti (klõpsake kopeerimiseks)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Muuda kontakti"
   },
-  "emailUs": {
-    "message": "Saatke meile e-kiri!"
-  },
   "endOfFlowMessage1": {
     "message": "Läbisite kontrolli – hoidke seemnefraasi turvaliselt, see on teie vastutusel!"
   },
@@ -450,9 +438,6 @@
   "from": {
     "message": "Saatja"
   },
-  "fromShapeShift": {
-    "message": "ShapeShiftist"
-  },
   "functionType": {
     "message": "Funktsiooni tüüp"
   },
@@ -526,9 +511,6 @@
   },
   "hide": {
     "message": "Peida"
-  },
-  "hideToken": {
-    "message": "Peida luba"
   },
   "hideTokenPrompt": {
     "message": "Peida luba?"
@@ -656,9 +638,6 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "missingYourTokens": {
-    "message": "Te ei näe oma lube?"
-  },
   "mobileSyncText": {
     "message": "Sisestage parool, et saaksime teid tuvastada!"
   },
@@ -753,9 +732,6 @@
   },
   "noAddressForName": {
     "message": "Sellele nimele pole registreeritud ühtegi aadressi."
-  },
-  "noDeposits": {
-    "message": "Sissemakseid pole laekunud"
   },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
@@ -1157,10 +1133,6 @@
   },
   "to": {
     "message": "Saaja"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH-le ShapeShifti kaudu",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Luba"

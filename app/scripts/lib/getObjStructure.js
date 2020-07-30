@@ -1,7 +1,5 @@
 import { cloneDeep } from 'lodash'
 
-export default getObjStructure
-
 // This will create an object that represents the structure of the given object
 // it replaces all values with the result of their type
 
@@ -23,7 +21,7 @@ export default getObjStructure
  * replaced with the javascript type of that value.
  *
  */
-function getObjStructure (obj) {
+export default function getObjStructure (obj) {
   const structure = cloneDeep(obj)
   return deepMap(structure, (value) => {
     return value === null ? 'null' : typeof value

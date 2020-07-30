@@ -1,7 +1,7 @@
 import EthJsEns from 'ethjs-ens'
 import ensNetworkMap from 'ethereum-ens-network-map'
 
-class Ens {
+export default class Ens {
   static getNetworkEnsSupport (network) {
     return Boolean(ensNetworkMap[network])
   }
@@ -21,5 +21,3 @@ class Ens {
     return this._ethJsEns.reverse(address)
   }
 }
-
-export default Ens

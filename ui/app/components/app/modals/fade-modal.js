@@ -25,16 +25,16 @@ const insertKeyframesRule = (keyframes) => {
   const name = 'anim_' + (++index) + (+new Date())
   let css = '@' + 'keyframes ' + name + ' {'
 
-  for (const key in keyframes) {
+  Object.keys(keyframes).forEach((key) => {
     css += key + ' {'
 
-    for (const property in keyframes[key]) {
+    Object.keys(keyframes[key]).forEach((property) => {
       const part = ':' + keyframes[key][property] + ';'
       css += property + part
-    }
+    })
 
     css += '}'
-  }
+  })
 
   css += '}'
 

@@ -1,7 +1,7 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
-const { By, Key, until } = webdriver
+const { By, until } = webdriver
 const {
   tinyDelayMs,
   regularDelayMs,
@@ -44,7 +44,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -61,7 +61,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
       await driver.delay(largeDelayMs)
     })
 
@@ -71,7 +71,7 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('imports a seed phrase', async function () {
-      const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
+      const [seedTextArea] = await driver.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await driver.delay(regularDelayMs)
 
@@ -80,7 +80,7 @@ describe('Using MetaMask with an existing account', function () {
       const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
       confirmPassword.sendKeys('correct horse battery staple')
 
-      await driver.clickElement(By.css('.first-time-flow__checkbox'))
+      await driver.clickElement(By.css('.first-time-flow__terms'))
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
       await driver.delay(regularDelayMs)
@@ -111,21 +111,16 @@ describe('Using MetaMask with an existing account', function () {
       const gasModal = await driver.findElement(By.css('span .modal'))
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('10')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
+      await gasLimitInput.clear()
+      await driver.delay(50)
       await gasLimitInput.sendKeys('25000')
 
       await driver.delay(1000)
@@ -154,9 +149,8 @@ describe('Using MetaMask with an existing account', function () {
       await driver.delay(regularDelayMs)
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
-      await inputAmount.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
-      await inputAmount.sendKeys(Key.BACK_SPACE)
+
+      await inputAmount.clear()
       await driver.delay(50)
       await inputAmount.sendKeys('2.2')
 
@@ -166,20 +160,16 @@ describe('Using MetaMask with an existing account', function () {
       const gasModal = await driver.findElement(By.css('span .modal'))
 
       const [gasPriceInput, gasLimitInput] = await driver.findElements(By.css('.advanced-gas-inputs__gas-edit-row__input'))
-      await gasPriceInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
-      await driver.delay(50)
-      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.clear()
       await driver.delay(50)
       await gasPriceInput.sendKeys('8')
       await driver.delay(50)
       await driver.delay(tinyDelayMs)
       await driver.delay(50)
-      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
-      await driver.delay(50)
 
+      await gasLimitInput.clear()
+      await driver.delay(50)
       await gasLimitInput.sendKeys('100000')
 
       await driver.delay(1000)
@@ -207,12 +197,13 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElements(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
       assert.equal(txValues.length, 1)
       assert.ok(/-2.2\s*ETH/.test(await txValues[0].getText()))
     })

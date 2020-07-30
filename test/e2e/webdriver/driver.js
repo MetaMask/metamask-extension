@@ -61,7 +61,7 @@ class Driver {
           this.driver.wait(until.elementIsEnabled(element), this.timeout),
         )
         return acc
-      }, [])
+      }, []),
     )
     return elements
   }
@@ -69,6 +69,15 @@ class Driver {
   async clickElement (locator) {
     const element = await this.findClickableElement(locator)
     await element.click()
+  }
+
+  async clickPoint (locator, x, y) {
+    const element = await this.findElement(locator)
+    await this.driver
+      .actions()
+      .move({ origin: element, x, y })
+      .click()
+      .perform()
   }
 
   async scrollToElement (element) {
@@ -163,14 +172,16 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure (test) {
-    const artifactDir = `./test-artifacts/${this.browser}/${test.title}`
+  async verboseReportOnFailure (title) {
+    const artifactDir = `./test-artifacts/${this.browser}/${title}`
     const filepathBase = `${artifactDir}/test-failure`
     await fs.mkdir(artifactDir, { recursive: true })
     const screenshot = await this.driver.takeScreenshot()
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
     const htmlSource = await this.driver.getPageSource()
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
+    const uiState = await this.driver.executeScript(() => window.getCleanAppState())
+    await fs.writeFile(`${filepathBase}-state.json`, JSON.stringify(uiState, null, 2))
   }
 
   async checkBrowserForConsoleErrors () {

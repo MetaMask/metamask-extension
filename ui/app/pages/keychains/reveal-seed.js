@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { requestRevealSeedWords } from '../../store/actions'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 import ExportTextContainer from '../../components/ui/export-text-container'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 import Button from '../../components/ui/button'
 
@@ -107,7 +107,7 @@ class RevealSeedPage extends Component {
             type="default"
             large
             className="page-container__footer-button"
-            onClick={() => this.props.history.push(DEFAULT_ROUTE)}
+            onClick={() => this.props.history.push(this.props.mostRecentOverviewPage)}
           >
             {this.context.t('cancel')}
           </Button>
@@ -132,7 +132,7 @@ class RevealSeedPage extends Component {
           type="default"
           large
           className="page-container__footer-button"
-          onClick={() => this.props.history.push(DEFAULT_ROUTE)}
+          onClick={() => this.props.history.push(this.props.mostRecentOverviewPage)}
         >
           {this.context.t('close')}
         </Button>
@@ -166,10 +166,17 @@ class RevealSeedPage extends Component {
 RevealSeedPage.propTypes = {
   requestRevealSeedWords: PropTypes.func,
   history: PropTypes.object,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
 }
 
 RevealSeedPage.contextTypes = {
   t: PropTypes.func,
+}
+
+const mapStateToProps = (state) => {
+  return {
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -178,4 +185,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(RevealSeedPage)
+export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPage)

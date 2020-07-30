@@ -44,7 +44,7 @@ describe('TransactionActivityLog Component', function () {
         onRetry={() => {}}
         primaryTransactionStatus="confirmed"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 
     assert.ok(wrapper.hasClass('transaction-activity-log'))
@@ -92,7 +92,7 @@ describe('TransactionActivityLog Component', function () {
         primaryTransactionStatus="pending"
         isEarliestNonce
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 
     assert.ok(wrapper.hasClass('transaction-activity-log'))
@@ -141,7 +141,7 @@ describe('TransactionActivityLog Component', function () {
         primaryTransactionStatus="pending"
         isEarliestNonce={false}
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } }
+      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     )
 
     assert.ok(wrapper.hasClass('transaction-activity-log'))

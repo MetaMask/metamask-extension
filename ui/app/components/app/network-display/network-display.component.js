@@ -2,19 +2,19 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import {
-  MAINNET_CODE,
-  ROPSTEN_CODE,
-  RINKEBY_CODE,
-  KOVAN_CODE,
-  GOERLI_CODE,
+  MAINNET_NETWORK_ID,
+  ROPSTEN_NETWORK_ID,
+  RINKEBY_NETWORK_ID,
+  KOVAN_NETWORK_ID,
+  GOERLI_NETWORK_ID,
 } from '../../../../../app/scripts/controllers/network/enums'
 
-const networkToClassHash = {
-  [MAINNET_CODE]: 'mainnet',
-  [ROPSTEN_CODE]: 'ropsten',
-  [RINKEBY_CODE]: 'rinkeby',
-  [GOERLI_CODE]: 'goerli',
-  [KOVAN_CODE]: 'kovan',
+const networkIdToTypeMap = {
+  [MAINNET_NETWORK_ID]: 'mainnet',
+  [ROPSTEN_NETWORK_ID]: 'ropsten',
+  [RINKEBY_NETWORK_ID]: 'rinkeby',
+  [GOERLI_NETWORK_ID]: 'goerli',
+  [KOVAN_NETWORK_ID]: 'kovan',
 }
 
 export default class NetworkDisplay extends Component {
@@ -34,7 +34,7 @@ export default class NetworkDisplay extends Component {
 
   renderNetworkIcon () {
     const { network } = this.props
-    const networkClass = networkToClassHash[network]
+    const networkClass = networkIdToTypeMap[network]
 
     return networkClass
       ? <div className={`network-display__icon network-display__icon--${networkClass}`} />
@@ -51,7 +51,7 @@ export default class NetworkDisplay extends Component {
 
   render () {
     const { colored, network, provider: { type, nickname } } = this.props
-    const networkClass = networkToClassHash[network]
+    const networkClass = networkIdToTypeMap[network]
 
     return (
       <div

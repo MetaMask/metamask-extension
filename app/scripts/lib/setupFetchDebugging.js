@@ -1,12 +1,10 @@
-export default setupFetchDebugging
-
 //
 // This is a utility to help resolve cases where `window.fetch` throws a
 // `TypeError: Failed to Fetch` without any stack or context for the request
 // https://github.com/getsentry/sentry-javascript/pull/1293
 //
 
-function setupFetchDebugging () {
+export default function setupFetchDebugging () {
   if (!window.fetch) {
     return
   }

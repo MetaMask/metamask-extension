@@ -248,12 +248,6 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
-  "conversionProgress": {
-    "message": "Provádí se převod"
-  },
-  "copiedButton": {
-    "message": "Zkopírováno"
-  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
@@ -268,9 +262,6 @@
   },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
-  },
-  "copyButton": {
-    "message": " Kopírovat "
   },
   "copyPrivateKey": {
     "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
@@ -359,9 +350,6 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "emailUs": {
-    "message": "Napište nám e-mail!"
-  },
   "endOfFlowMessage1": {
     "message": "Úspešne ste prešli testom – uchovávajte svoju seed frázu v bezpečí.  Je to vaša zodpovednosť!"
   },
@@ -445,9 +433,6 @@
   "from": {
     "message": "Od"
   },
-  "fromShapeShift": {
-    "message": "Z ShapeShift"
-  },
   "functionType": {
     "message": "Typ funkcie"
   },
@@ -518,9 +503,6 @@
   },
   "hide": {
     "message": "Skrýt"
-  },
-  "hideToken": {
-    "message": "Skrýt token"
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
@@ -635,9 +617,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Nevidíte svoje tokeny?"
-  },
   "mobileSyncText": {
     "message": "Zadajte svoje heslo a potvrďte, že ste to vy!"
   },
@@ -732,9 +711,6 @@
   },
   "noAddressForName": {
     "message": "Pro toto jméno nebyla nastavena žádná adresa."
-  },
-  "noDeposits": {
-    "message": "Žádný vklad"
   },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
@@ -1127,10 +1103,6 @@
   },
   "to": {
     "message": "Komu"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token byl už přidán."

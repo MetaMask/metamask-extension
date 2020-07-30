@@ -1,10 +1,5 @@
 # MetaMask Browser Extension
 
-Hey! We are hiring a Senior Mobile Engineer! Apply here: https://boards.greenhouse.io/consensys/jobs/1990589
----
-
-[![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master)
-
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
 MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
@@ -64,7 +59,6 @@ yarn dist
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
-- [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 

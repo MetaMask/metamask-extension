@@ -1,18 +1,16 @@
 import { connect } from 'react-redux'
 import {
   getNativeCurrency,
-} from '../send.selectors.js'
-import {
   getIsMainnet,
   isBalanceCached,
-  preferencesSelector,
-} from '../../../selectors/selectors'
+  getPreferences,
+} from '../../../selectors'
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)
 
 function mapStateToProps (state) {
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
 
   return {

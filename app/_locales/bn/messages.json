@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "কন্ট্র্যাক্ট নিয়োজন"
   },
-  "conversionProgress": {
-    "message": "বিনিময় চলছে"
-  },
-  "copiedButton": {
-    "message": "কপি  করা হয়েছে"
-  },
   "copiedExclamation": {
     "message": "কপি করা হয়েছে!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "ক্লিপবোর্ডে কপি করুন"
-  },
-  "copyButton": {
-    "message": "কপি করুন"
   },
   "copyPrivateKey": {
     "message": "এটি হল আপনার গোপন কী (কপি করতে ক্লিক করুন)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "পরিচিতি সম্পাদনা করুন"
   },
-  "emailUs": {
-    "message": "আমাদের ইমেল করুন!"
-  },
   "endOfFlowMessage1": {
     "message": "আপনি টেস্টটি পাস করেছেন - আপনার সীডফ্রেজ নিরাপদে রাখুন, এটি আপনার দায়িত্ব!"
   },
@@ -454,9 +442,6 @@
   "from": {
     "message": "থেকে"
   },
-  "fromShapeShift": {
-    "message": "ShapeShift থেকে"
-  },
   "functionType": {
     "message": "কার্যকারিতার ধরণ"
   },
@@ -530,9 +515,6 @@
   },
   "hide": {
     "message": "লুকান"
-  },
-  "hideToken": {
-    "message": "টোকেন লুকান"
   },
   "hideTokenPrompt": {
     "message": "টোকেন লুকাবেন?"
@@ -666,9 +648,6 @@
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },
-  "missingYourTokens": {
-    "message": "আপনার টোকেনগুলি দেখতে পাচ্ছেন না?"
-  },
   "mobileSyncText": {
     "message": "এটি যে আপনি তা নিশ্চিত করতে অনুগ্রহ করে আপনার পাসওয়ার্ড লিখুন!"
   },
@@ -763,9 +742,6 @@
   },
   "noAddressForName": {
     "message": "এই নামের জন্য কোনো ঠিকানা সেট করা হয় নি।"
-  },
-  "noDeposits": {
-    "message": "কোনো ডিপোজিট পাওয়া যায় নি"
   },
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
@@ -1167,10 +1143,6 @@
   },
   "to": {
     "message": "প্রতি"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift এর মাধ্যমে ETH এ $1",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "টোকেন"

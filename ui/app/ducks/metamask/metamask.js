@@ -1,4 +1,5 @@
-import actionConstants from '../../store/actionConstants'
+import * as actionConstants from '../../store/actionConstants'
+import { ALERT_TYPES } from '../../../../app/scripts/controllers/alert'
 
 export default function reduceMetamask (state = {}, action) {
   const metamaskState = Object.assign({
@@ -10,9 +11,7 @@ export default function reduceMetamask (state = {}, action) {
     unapprovedTxs: {},
     frequentRpcList: [],
     addressBook: [],
-    selectedTokenAddress: null,
     contractExchangeRates: {},
-    tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
     customNonceValue: '',
@@ -28,20 +27,18 @@ export default function reduceMetamask (state = {}, action) {
       errors: {},
       maxModeOn: false,
       editingTransactionId: null,
-      forceGasMin: null,
       toNickname: '',
       ensResolution: null,
       ensResolutionError: '',
     },
-    coinOptions: {},
     useBlockie: false,
     featureFlags: {},
-    networkEndpointType: undefined,
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
     },
     firstTimeFlowType: null,
     completedOnboarding: false,
@@ -86,33 +83,6 @@ export default function reduceMetamask (state = {}, action) {
         isInitialized: true,
         selectedAddress: action.value,
       }
-
-    case actionConstants.SET_SELECTED_TOKEN: {
-      const newState = {
-        ...metamaskState,
-        selectedTokenAddress: action.value,
-      }
-      const newSend = { ...metamaskState.send }
-
-      if (metamaskState.send.editingTransactionId && !action.value) {
-        delete newSend.token
-        const unapprovedTx = newState.unapprovedTxs[newSend.editingTransactionId] || {}
-        const txParams = unapprovedTx.txParams || {}
-        newState.unapprovedTxs = {
-          ...newState.unapprovedTxs,
-          [newSend.editingTransactionId]: {
-            ...unapprovedTx,
-            txParams: { ...txParams, data: '' },
-          },
-        }
-        newSend.tokenBalance = null
-        newSend.balance = '0'
-        newSend.from = unapprovedTx.from || ''
-      }
-
-      newState.send = newSend
-      return newState
-    }
 
     case actionConstants.SET_ACCOUNT_LABEL:
       const account = action.value.account
@@ -227,6 +197,35 @@ export default function reduceMetamask (state = {}, action) {
         },
       })
 
+    case actionConstants.UPDATE_SEND_TOKEN:
+      const newSend = {
+        ...metamaskState.send,
+        token: action.value,
+      }
+      // erase token-related state when switching back to native currency
+      if (newSend.editingTransactionId && !newSend.token) {
+        const unapprovedTx = newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {}
+        const txParams = unapprovedTx.txParams || {}
+        Object.assign(newSend, {
+          tokenBalance: null,
+          balance: '0',
+          from: unapprovedTx.from || '',
+          unapprovedTxs: {
+            ...newSend.unapprovedTxs,
+            [newSend.editingTransactionId]: {
+              ...unapprovedTx,
+              txParams: {
+                ...txParams,
+                data: '',
+              },
+            },
+          },
+        })
+      }
+      return Object.assign(metamaskState, {
+        send: newSend,
+      })
+
     case actionConstants.UPDATE_SEND_ENS_RESOLUTION:
       return {
         ...metamaskState,
@@ -262,7 +261,6 @@ export default function reduceMetamask (state = {}, action) {
           errors: {},
           maxModeOn: false,
           editingTransactionId: null,
-          forceGasMin: null,
           toNickname: '',
         },
       }
@@ -370,3 +368,11 @@ export default function reduceMetamask (state = {}, action) {
 }
 
 export const getCurrentLocale = (state) => state.metamask.currentLocale
+
+export const getAlertEnabledness = (state) => state.metamask.alertEnabledness
+
+export const getUnconnectedAccountAlertEnabledness = (state) => getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount]
+
+export const getUnconnectedAccountAlertShown = (state) => state.metamask.unconnectedAccountAlertShownOrigins
+
+export const getTokens = (state) => state.metamask.tokens

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import { pipe, partialRight } from 'ramda'
 import GasModalPageContainer from './gas-modal-page-container.component'
+import { captureException } from '@sentry/browser'
 import {
   hideModal,
   setGasLimit,
@@ -28,11 +28,9 @@ import {
   getCurrentCurrency,
   getCurrentEthBalance,
   getIsMainnet,
-  getSelectedToken,
+  getSendToken,
   isEthereumNetwork,
-  preferencesSelector,
-} from '../../../../selectors/selectors.js'
-import {
+  getPreferences,
   getBasicGasEstimateLoadingStatus,
   getGasEstimatesLoadingStatus,
   getCustomGasLimit,
@@ -43,13 +41,11 @@ import {
   getRenderableBasicEstimateData,
   getBasicGasEstimateBlockTime,
   isCustomPriceSafe,
-} from '../../../../selectors/custom-gas'
-import {
-  getTxParams,
-} from '../../../../selectors/transactions'
-import {
   getTokenBalance,
-} from '../../../../pages/send/send.selectors'
+  getSendMaxModeState,
+  getFastPriceEstimateInHexWEI,
+} from '../../../../selectors'
+
 import {
   formatCurrency,
 } from '../../../../helpers/utils/confirm-tx.util'
@@ -68,11 +64,10 @@ import {
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
-import { getMaxModeOn } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.selectors'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
 
 const mapStateToProps = (state, ownProps) => {
-  const { currentNetworkTxList } = state.metamask
+  const { currentNetworkTxList, send } = state.metamask
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {}
   const { txData = {} } = modalProps || {}
   const { transaction = {} } = ownProps
@@ -80,8 +75,18 @@ const mapStateToProps = (state, ownProps) => {
 
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
   const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
+  const sendToken = getSendToken(state)
 
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, selectedTransaction)
+  // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
+  const txParams = selectedTransaction?.txParams
+    ? selectedTransaction.txParams
+    : {
+      gas: send.gasLimit || '0x5208',
+      gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
+      value: sendToken ? '0x0' : send.amount,
+    }
+
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = txParams
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit || '0x5208'
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
@@ -97,21 +102,21 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
-  const maxModeOn = getMaxModeOn(state)
+  const maxModeOn = getSendMaxModeState(state)
 
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
 
-  const { showFiatInTestnets } = preferencesSelector(state)
+  const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
-  const isTokenSelected = Boolean(getSelectedToken(state))
+  const isSendTokenSet = Boolean(sendToken)
 
-  const newTotalEth = maxModeOn && !isTokenSelected ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
+  const newTotalEth = maxModeOn && !isSendTokenSet ? addHexWEIsToRenderableEth(balance, '0x0') : addHexWEIsToRenderableEth(value, customGasTotal)
 
-  const sendAmount = maxModeOn && !isTokenSelected ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
+  const sendAmount = maxModeOn && !isSendTokenSet ? subtractHexWEIsFromRenderableEth(balance, customGasTotal) : addHexWEIsToRenderableEth(value, '0x0')
 
   const insufficientBalance = maxModeOn ? false : !isBalanceSufficient({
     amount: value,
@@ -120,6 +125,12 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
   })
 
+  let currentTimeEstimate = ''
+  try {
+    currentTimeEstimate = getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes)
+  } catch (error) {
+    captureException(error)
+  }
 
   return {
     hideBasic,
@@ -130,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
+    currentTimeEstimate,
     blockTime: getBasicGasEstimateBlockTime(state),
     customPriceIsSafe: isCustomPriceSafe(state),
     maxModeOn,
@@ -162,7 +173,7 @@ const mapStateToProps = (state, ownProps) => {
     gasEstimatesLoading,
     isMainnet,
     isEthereumNetwork: isEthereumNetwork(state),
-    selectedToken: getSelectedToken(state),
+    sendToken,
     balance,
     tokenBalance: getTokenBalance(state),
   }
@@ -218,7 +229,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     customGasPrice,
     customGasTotal,
     balance,
-    selectedToken,
+    sendToken,
     tokenBalance,
     customGasLimit,
     transaction,
@@ -269,7 +280,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchSetAmountToMax({
           balance,
           gasTotal: customGasTotal,
-          selectedToken,
+          sendToken,
           tokenBalance,
         })
       }
@@ -303,23 +314,18 @@ function calcCustomGasLimit (customGasLimitInHex) {
 }
 
 function addHexWEIsToRenderableEth (aHexWEI, bHexWEI) {
-  return pipe(
-    addHexWEIsToDec,
-    formatETHFee
-  )(aHexWEI, bHexWEI)
+  return formatETHFee(addHexWEIsToDec(aHexWEI, bHexWEI))
 }
 
-function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWei) {
-  return pipe(
-    subtractHexWEIsToDec,
-    formatETHFee
-  )(aHexWEI, bHexWei)
+function subtractHexWEIsFromRenderableEth (aHexWEI, bHexWEI) {
+  return formatETHFee(subtractHexWEIsToDec(aHexWEI, bHexWEI))
 }
 
 function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conversionRate) {
-  return pipe(
-    addHexWEIsToDec,
-    partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
-    partialRight(formatCurrency, [convertedCurrency]),
-  )(aHexWEI, bHexWEI)
+  const ethTotal = ethTotalToConvertedCurrency(
+    addHexWEIsToDec(aHexWEI, bHexWEI),
+    convertedCurrency,
+    conversionRate,
+  )
+  return formatCurrency(ethTotal, convertedCurrency)
 }

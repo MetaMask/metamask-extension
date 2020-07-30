@@ -9,7 +9,7 @@ async function buildWebDriver ({ responsive, port } = {}) {
   const extensionPath = `dist/${browser}`
 
   const { driver: seleniumDriver, extensionId, extensionUrl } = await buildBrowserWebDriver(browser, { extensionPath, responsive, port })
-  setupFetchMocking(seleniumDriver)
+  await setupFetchMocking(seleniumDriver)
   const driver = new Driver(seleniumDriver, browser, extensionUrl)
   await driver.navigate()
 
@@ -41,9 +41,9 @@ async function setupFetchMocking (driver) {
     window.origFetch = window.fetch.bind(window)
     window.fetch = async (...args) => {
       const url = args[0]
-      if (url === 'https://ethgasstation.info/json/ethgasAPI.json') {
+      if (url.match(/^http(s)?:\/\/ethgasstation\.info\/json\/ethgasAPI.*/u)) {
         return { json: async () => clone(fetchMockResponses.ethGasBasic) }
-      } else if (url === 'https://ethgasstation.info/json/predictTable.json') {
+      } else if (url.match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)) {
         return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
       } else if (url.match(/chromeextensionmm/)) {
         return { json: async () => clone(fetchMockResponses.metametrics) }

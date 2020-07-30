@@ -15,7 +15,7 @@ import pify from 'pify'
 import Web3 from 'web3'
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi'
 import { bnToHex } from './util'
-import { MAINNET_CODE, RINKEBY_CODE, ROPSTEN_CODE, KOVAN_CODE } from '../controllers/network/enums'
+import { MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID, ROPSTEN_NETWORK_ID, KOVAN_NETWORK_ID } from '../controllers/network/enums'
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -24,8 +24,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
 } from '../controllers/network/contract-addresses'
 
-
-class AccountTracker {
+export default class AccountTracker {
 
   /**
    * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -153,6 +152,14 @@ class AccountTracker {
   }
 
   /**
+   * Removes all addresses and associated balances
+   */
+
+  clearAccounts () {
+    this.store.updateState({ accounts: {} })
+  }
+
+  /**
    * Given a block, updates this AccountTracker's currentBlockGasLimit, and then updates each local account's balance
    * via EthQuery
    *
@@ -189,22 +196,22 @@ class AccountTracker {
   async _updateAccounts () {
     const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
-    const currentNetwork = parseInt(this.network.getNetworkState())
+    const currentNetwork = this.network.getNetworkState()
 
     switch (currentNetwork) {
-      case MAINNET_CODE:
+      case MAINNET_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS)
         break
 
-      case RINKEBY_CODE:
+      case RINKEBY_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_RINKEBY)
         break
 
-      case ROPSTEN_CODE:
+      case ROPSTEN_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN)
         break
 
-      case KOVAN_CODE:
+      case KOVAN_NETWORK_ID.toString():
         await this._updateAccountsViaBalanceChecker(addresses, SINGLE_CALL_BALANCES_ADDRESS_KOVAN)
         break
 
@@ -260,5 +267,3 @@ class AccountTracker {
   }
 
 }
-
-export default AccountTracker

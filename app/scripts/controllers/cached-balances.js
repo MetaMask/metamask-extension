@@ -11,7 +11,7 @@ import ObservableStore from 'obs-store'
  * Background controller responsible for maintaining
  * a cache of account balances in local storage
  */
-class CachedBalancesController {
+export default class CachedBalancesController {
   /**
    * Creates a new controller instance
    *
@@ -66,6 +66,14 @@ class CachedBalancesController {
   }
 
   /**
+   * Removes cachedBalances
+   */
+
+  clearCachedBalances () {
+    this.store.updateState({ cachedBalances: {} })
+  }
+
+  /**
    * Sets up listeners and subscriptions which should trigger an update of cached balances. These updates will
    * happen when the current account changes. Which happens on block updates, as well as on network and account
    * selections.
@@ -78,5 +86,3 @@ class CachedBalancesController {
     this.accountTracker.store.subscribe(update)
   }
 }
-
-export default CachedBalancesController

@@ -4,7 +4,7 @@ import {
   setCompletedOnboarding,
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
-import { getOnboardingInitiator } from '../../first-time-flow.selectors'
+import { getOnboardingInitiator } from '../../../../selectors'
 
 const mapStateToProps = (state) => {
   return {

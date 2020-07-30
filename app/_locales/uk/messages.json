@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Розгортання контракту"
   },
-  "conversionProgress": {
-    "message": "Конверсія триває"
-  },
-  "copiedButton": {
-    "message": "Скопійовано"
-  },
   "copiedExclamation": {
     "message": "Скопійовано!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
-  },
-  "copyButton": {
-    "message": "Копіювати"
   },
   "copyPrivateKey": {
     "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "emailUs": {
-    "message": "Напишіть нам!"
-  },
   "endOfFlowMessage1": {
     "message": "Ви пройшли тест, зберігайте вашу початкову фразу в безпеці - це ваша відповідальність!"
   },
@@ -454,9 +442,6 @@
   "from": {
     "message": "Від"
   },
-  "fromShapeShift": {
-    "message": "Від Ethereum"
-  },
   "functionType": {
     "message": "Тип функції"
   },
@@ -530,9 +515,6 @@
   },
   "hide": {
     "message": "Сховати"
-  },
-  "hideToken": {
-    "message": "Приховати токен"
   },
   "hideTokenPrompt": {
     "message": "Приховати токен?"
@@ -666,9 +648,6 @@
   "metamaskVersion": {
     "message": "Версія MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Не бачите ваших токенів?"
-  },
   "mobileSyncText": {
     "message": "Введіть пароль, щоб підтвердити свою особу!"
   },
@@ -763,9 +742,6 @@
   },
   "noAddressForName": {
     "message": "На це ім'я не встановлено адреси."
-  },
-  "noDeposits": {
-    "message": "Немає отриманих внесків"
   },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
@@ -1167,10 +1143,6 @@
   },
   "to": {
     "message": "Кому"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Токен"

@@ -2,7 +2,7 @@ import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import * as actions from '../../../ui/app/store/actions'
-import actionConstants from '../../../ui/app/store/actionConstants'
+import * as actionConstants from '../../../ui/app/store/actionConstants'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -35,7 +35,7 @@ describe('tx confirmation screen', function () {
           cb()
         },
         getState (cb) {
-          cb()
+          cb(null, {})
         },
       })
 

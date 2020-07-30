@@ -3,7 +3,7 @@ import ExtensionPlatform from '../platforms/extension'
 const NOTIFICATION_HEIGHT = 620
 const NOTIFICATION_WIDTH = 360
 
-class NotificationManager {
+export default class NotificationManager {
 
   /**
    * A collection of methods for controlling the showing and hiding of the notification popup.
@@ -54,20 +54,13 @@ class NotificationManager {
         left,
         top,
       })
+
+      // Firefox currently ignores left/top for create, but it works for update
+      if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
+        await this.platform.updateWindowPosition(popupWindow.id, left, top)
+      }
       this._popupId = popupWindow.id
     }
-  }
-
-  /**
-   * Closes a MetaMask notification if it window exists.
-   *
-   */
-  async closePopup () {
-    const popup = this._getPopup()
-    if (!popup) {
-      return
-    }
-    await this.platform.removeWindow(popup.id)
   }
 
   /**
@@ -75,7 +68,7 @@ class NotificationManager {
    * type 'popup')
    *
    * @private
-   * @param {Function} cb - A node style callback that to whcih the found notification window will be passed.
+   * @param {Function} cb - A node style callback that to which the found notification window will be passed.
    *
    */
   async _getPopup () {
@@ -98,5 +91,3 @@ class NotificationManager {
   }
 
 }
-
-export default NotificationManager

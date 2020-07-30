@@ -43,7 +43,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -151,7 +151,7 @@ describe('MetaMask', function () {
     })
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(By.css('.balance-display .token-amount'))
+      const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
       await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
       await driver.delay(regularDelayMs)
     })
@@ -195,12 +195,13 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElement(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
     })
   })
@@ -237,7 +238,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 2
       }, 10000)
 
-      const txValues = await driver.findElement(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/), 10000)
     })
   })

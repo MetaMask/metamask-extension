@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Implementarea contractului"
   },
-  "conversionProgress": {
-    "message": "Conversie în desfășurare"
-  },
-  "copiedButton": {
-    "message": "Copiat"
-  },
   "copiedExclamation": {
     "message": "Copiat!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Copiați în clipboard"
-  },
-  "copyButton": {
-    "message": "Copiați"
   },
   "copyPrivateKey": {
     "message": "Aceasta este cheia dumneavoastră privată (clic pentru a copia)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Editați contact"
   },
-  "emailUs": {
-    "message": "Trimiteți-ne un email!"
-  },
   "endOfFlowMessage1": {
     "message": "Ați trecut testul – păstrați expresia sursă în siguranță, este răspunderea dvs.!"
   },
@@ -450,9 +438,6 @@
   "from": {
     "message": "De la"
   },
-  "fromShapeShift": {
-    "message": "De la ShapeShift"
-  },
   "functionType": {
     "message": "Tip funcție"
   },
@@ -520,9 +505,6 @@
   },
   "hide": {
     "message": "Ascunde"
-  },
-  "hideToken": {
-    "message": "Ascunde tokenul"
   },
   "hideTokenPrompt": {
     "message": "Ascunde simbol?"
@@ -653,9 +635,6 @@
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Nu vă vedeți token-urile?"
-  },
   "mobileSyncText": {
     "message": "Vă rugăm introduceți parola pentru a vă confirma identitatea!"
   },
@@ -750,9 +729,6 @@
   },
   "noAddressForName": {
     "message": "Nu a fost configurată nicio adresă pentru acest nume."
-  },
-  "noDeposits": {
-    "message": "Nicio depunere primită"
   },
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
@@ -1154,10 +1130,6 @@
   },
   "to": {
     "message": "Către"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 în ETH prin ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Indicativ"

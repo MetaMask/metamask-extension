@@ -53,31 +53,36 @@
 
   &__accounts-container {
     display: flex;
+    position: relative;
     flex-direction: column;
     z-index: 200;
-    scrollbar-width: none;
 
-    max-height: 256px;
-
-    @media screen and (max-width: 575px) {
-      max-height: 228px;
+    @media (max-height: 600px) {
+      max-height: 236px;
     }
   }
 
   &__accounts {
     overflow-y: auto;
     position: relative;
+    max-height: 256px;
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;
     }
 
+    @media screen and (max-width: 575px) {
+      max-height: 228px;
+    }
+
     .keyring-label {
       margin-top: 5px;
+      margin-right: 10px;
       background-color: $dusty-gray;
       color: $black;
       font-weight: normal;
-      letter-spacing: .5px;
+      letter-spacing: 0.5px;
     }
   }
 
@@ -161,10 +166,6 @@
     cursor: pointer;
   }
 
-  &__accounts-container {
-    position: relative;
-  }
-
   &__scroll-button {
     position: absolute;
     bottom: 12px;
@@ -175,7 +176,7 @@
     background: #3f3f3f;
     z-index: 201;
     cursor: pointer;
-    opacity: .8;
+    opacity: 0.8;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -16,7 +16,7 @@ import log from 'loglevel'
  * Controller responsible for maintaining
  * state related to onboarding
  */
-class OnboardingController {
+export default class OnboardingController {
   /**
    * Creates a new controller instance
    *
@@ -72,5 +72,3 @@ class OnboardingController {
     }
   }
 }
-
-export default OnboardingController

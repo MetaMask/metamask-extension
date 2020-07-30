@@ -14,7 +14,7 @@ const BlockieIdenticon = ({ address, diameter }) => {
     if (updatedDataUrl !== dataUrl) {
       setDataUrl(updatedDataUrl)
     }
-  })
+  }, [dataUrl, address])
 
   return (
     <>

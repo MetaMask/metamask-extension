@@ -1,9 +1,7 @@
 @import 'info-tab/index';
-
+@import 'alerts-tab/alerts-tab';
 @import 'networks-tab/index';
-
 @import 'settings-tab/index';
-
 @import 'contact-list-tab/index';
 
 .settings-page {
@@ -25,7 +23,8 @@
     }
   }
 
-  &__subheader, &__subheader--link {
+  &__subheader,
+  &__subheader--link {
     padding: 16px 4px;
     font-size: 20px;
     border-bottom: 1px solid $alto;
@@ -47,7 +46,7 @@
 
   &__subheader--link:hover {
     cursor: pointer;
-    color: #037DD6;
+    color: $primary-blue;
   }
 
   &__subheader--break {
@@ -57,10 +56,11 @@
 
   &__sub-header {
     height: 72px;
-    border-bottom: 1px solid #D8D8D8;
+    border-bottom: 1px solid #d8d8d8;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 16px 0;
 
     @media screen and (max-width: 575px) {
       height: 69px;
@@ -70,7 +70,6 @@
   }
 
   &__sub-header-text {
-    font-family: Roboto;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
@@ -89,7 +88,7 @@
       background-image: url('/images/caret-left-black.svg');
       width: 18px;
       height: 18px;
-      opacity: .5;
+      opacity: 0.5;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -114,7 +113,7 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    border-top: 1px solid #D8D8D8;
+    border-top: 1px solid #d8d8d8;
 
     &__tabs {
       display: flex;
@@ -178,7 +177,7 @@
 
     &--disabled {
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 
@@ -208,7 +207,7 @@
   }
 
   &__button-group {
-    display:flex;
+    display: flex;
     margin-left: auto;
   }
 
@@ -216,7 +215,6 @@
     font-size: 1rem;
     line-height: 1.1875rem;
     padding: 0;
-
   }
 
   &__address-book-button + &__address-book-button {
@@ -244,6 +242,7 @@
   .toggle-button {
     /*rtl:ignore*/
     direction: ltr;
+
     [dir='rtl'] & {
       justify-content: flex-end;
     }

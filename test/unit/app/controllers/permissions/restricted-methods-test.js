@@ -19,12 +19,12 @@ describe('restricted methods', function () {
       await assert.rejects(
         ethAccountsMethod(null, res, null),
         fooError,
-        'Should reject with expected error'
+        'Should reject with expected error',
       )
 
       assert.deepEqual(
         res, { error: fooError },
-        'response should have expected error and no result'
+        'response should have expected error and no result',
       )
     })
 
@@ -67,7 +67,7 @@ describe('restricted methods', function () {
               identities[address] = {}
               return identities
             },
-            {}
+            {},
           )
         },
         getKeyringAccounts: async () => [...keyringAccounts],
@@ -88,7 +88,7 @@ describe('restricted methods', function () {
               identities[address] = { lastSelected: 1000 }
               return identities
             },
-            {}
+            {},
           )
         },
         getKeyringAccounts: async () => [...keyringAccounts],
@@ -110,7 +110,7 @@ describe('restricted methods', function () {
               identities[address] = { lastSelected: index * 1000 }
               return identities
             },
-            {}
+            {},
           )
         },
         getKeyringAccounts: async () => [...keyringAccounts],

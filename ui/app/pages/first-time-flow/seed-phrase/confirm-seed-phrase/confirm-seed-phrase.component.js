@@ -5,7 +5,6 @@ import Button from '../../../../components/ui/button'
 import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
-  DEFAULT_ROUTE,
 } from '../../../../helpers/constants/routes'
 import { exportAsFile } from '../../../../helpers/utils/util'
 import DraggableSeed from './draggable-seed.component'
@@ -23,12 +22,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   static propTypes = {
-    hideSeedPhraseBackupAfterOnboarding: PropTypes.func,
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
     initializeThreeBox: PropTypes.func,
     setSeedPhraseBackedUp: PropTypes.func,
-    showingSeedPhraseBackupAfterOnboarding: PropTypes.bool,
+    completeOnboarding: PropTypes.func,
   }
 
   state = {
@@ -69,12 +67,14 @@ export default class ConfirmSeedPhrase extends PureComponent {
     exportAsFile('', this.props.seedPhrase, 'text/plain')
   }
 
+  setOnboardingCompleted = async () => {
+    await this.props.completeOnboarding()
+  }
+
   handleSubmit = async () => {
     const {
       history,
       setSeedPhraseBackedUp,
-      showingSeedPhraseBackupAfterOnboarding,
-      hideSeedPhraseBackupAfterOnboarding,
       initializeThreeBox,
     } = this.props
 
@@ -91,14 +91,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
         },
       })
 
-      setSeedPhraseBackedUp(true).then(() => {
-        if (showingSeedPhraseBackupAfterOnboarding) {
-          hideSeedPhraseBackupAfterOnboarding()
-          history.push(DEFAULT_ROUTE)
-        } else {
-          initializeThreeBox()
-          history.push(INITIALIZE_END_OF_FLOW_ROUTE)
-        }
+      setSeedPhraseBackedUp(true).then(async () => {
+        initializeThreeBox()
+        this.setOnboardingCompleted()
+        history.push(INITIALIZE_END_OF_FLOW_ROUTE)
       })
     } catch (error) {
       console.error(error.message)

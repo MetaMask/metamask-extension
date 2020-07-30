@@ -3,15 +3,14 @@ import { addInternalMethodPrefix } from './permissions'
 import { normalize as normalizeAddress } from 'eth-sig-util'
 import { isValidAddress, sha3, bufferToHex } from 'ethereumjs-util'
 
-class PreferencesController {
+export default class PreferencesController {
 
   /**
    *
    * @typedef {Object} PreferencesController
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
-	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
-   * @property {string} store.currentAccountTab Indicates the selected tab in the ui
+   * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {object} store.assetImages Contains assets objects related to assets added
@@ -29,7 +28,6 @@ class PreferencesController {
   constructor (opts = {}) {
     const initState = Object.assign({
       frequentRpcListDetail: [],
-      currentAccountTab: 'history',
       accountTokens: {},
       assetImages: {},
       tokens: [],
@@ -54,6 +52,8 @@ class PreferencesController {
       lostIdentities: {},
       forgottenPassword: false,
       preferences: {
+        autoLockTimeLimit: undefined,
+        showFiatInTestnets: false,
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
@@ -61,12 +61,13 @@ class PreferencesController {
       metaMetricsSendCount: 0,
 
       // ENS decentralized website resolution
-      ipfsGateway: 'ipfs.dweb.link',
+      ipfsGateway: 'dweb.link',
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
+    this.store.setMaxListeners(12)
     this.openPopup = opts.openPopup
     this._subscribeProviderType()
 
@@ -205,13 +206,15 @@ class PreferencesController {
             res.result = result
             end()
           }
-          break
+          return
         default:
           end(new Error(`Asset of type ${type} not supported`))
+          return
       }
-    } else {
-      next()
     }
+
+    next()
+    return
   }
 
   /**
@@ -334,9 +337,9 @@ class PreferencesController {
       }
 
       // store lost accounts
-      for (const key in newlyLost) {
+      Object.keys(newlyLost).forEach((key) => {
         lostIdentities[key] = newlyLost[key]
-      }
+      })
     }
 
     this.store.updateState({ identities, lostIdentities })
@@ -478,24 +481,10 @@ class PreferencesController {
   }
 
   /**
-   * Setter for the `currentAccountTab` property
-   *
-   * @param {string} currentAccountTab - Specifies the new tab to be marked as current
-   * @returns {Promise<void>} - Promise resolves with undefined
-   *
-   */
-  setCurrentAccountTab (currentAccountTab) {
-    return new Promise((resolve) => {
-      this.store.updateState({ currentAccountTab })
-      resolve()
-    })
-  }
-
-  /**
    * updates custom RPC details
    *
    * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {number} chainId - Optional chainId of the selected network.
+   * @param {string} chainId - Optional chainId of the selected network.
    * @param {string} ticker   - Optional ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
@@ -523,7 +512,7 @@ class PreferencesController {
    * Adds custom RPC url to state.
    *
    * @param {string} url - The RPC url to add to frequentRpcList.
-   * @param {number} chainId - Optional chainId of the selected network.
+   * @param {string} chainId - Optional chainId of the selected network.
    * @param {string} ticker   - Optional ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<array>} - Promise resolving to updated frequentRpcList.
@@ -759,5 +748,3 @@ class PreferencesController {
     }
   }
 }
-
-export default PreferencesController

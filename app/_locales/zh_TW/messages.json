@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "部署合約"
   },
-  "conversionProgress": {
-    "message": "正在取得匯率"
-  },
-  "copiedButton": {
-    "message": "已複製"
-  },
   "copiedExclamation": {
     "message": "已複製！"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "複製到剪貼簿"
-  },
-  "copyButton": {
-    "message": " 複製 "
   },
   "copyPrivateKey": {
     "message": "這是您的私鑰（點擊複製）"
@@ -365,9 +356,6 @@
   "editContact": {
     "message": "編輯聯絡資訊"
   },
-  "emailUs": {
-    "message": "寄 Email 給我們!"
-  },
   "endOfFlowMessage1": {
     "message": "你通過測試了—安全存放助記詞，這是你的責任！"
   },
@@ -451,9 +439,6 @@
   "from": {
     "message": "來源帳戶"
   },
-  "fromShapeShift": {
-    "message": "來自 ShapeShift"
-  },
   "functionType": {
     "message": "功能類型"
   },
@@ -527,9 +512,6 @@
   },
   "hide": {
     "message": "隱藏"
-  },
-  "hideToken": {
-    "message": "隱藏代幣"
   },
   "hideTokenPrompt": {
     "message": "隱藏代幣？"
@@ -660,9 +642,6 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "missingYourTokens": {
-    "message": "看不到您的代幣？"
-  },
   "mobileSyncText": {
     "message": "請輸入密碼確認身份！"
   },
@@ -757,9 +736,6 @@
   },
   "noAddressForName": {
     "message": "此 ENS 尚未指定位址。"
-  },
-  "noDeposits": {
-    "message": "尚未有存款"
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
@@ -1146,10 +1122,6 @@
   },
   "to": {
     "message": "目的帳戶"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ETH 透過 ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "代碼"

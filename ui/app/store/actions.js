@@ -1,10 +1,10 @@
 import abi from 'human-standard-token-abi'
 import pify from 'pify'
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
-import { getTokenAddressFromTokenObject, checksumAddress } from '../helpers/utils/util'
+import { checksumAddress } from '../helpers/utils/util'
 import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
 import ethUtil from 'ethereumjs-util'
-import { fetchLocale } from '../helpers/utils/i18n-helper'
+import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
 import { getMethodDataAsync } from '../helpers/utils/transactions.util'
 import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
 import switchDirection from '../helpers/utils/switch-direction'
@@ -14,11 +14,19 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
 import { setCustomGasLimit } from '../ducks/gas/gas.duck'
 import txHelper from '../../lib/tx-helper'
 import { getEnvironmentType } from '../../../app/scripts/lib/util'
-import actionConstants from './actionConstants'
+import * as actionConstants from './actionConstants'
+import {
+  getPermittedAccountsForCurrentTab,
+  getSelectedAddress,
+} from '../selectors'
+import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 
 let background = null
+let promisifiedBackground = null
 export function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
+  promisifiedBackground = pify(background)
 }
 
 export function goHome () {
@@ -61,7 +69,6 @@ export function tryUnlockMetamask (password) {
         })
       })
       .then(() => {
-        dispatch(transitionForward())
         dispatch(hideLoadingIndication())
       })
       .catch((err) => {
@@ -69,12 +76,6 @@ export function tryUnlockMetamask (password) {
         dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
-  }
-}
-
-export function transitionForward () {
-  return {
-    type: actionConstants.TRANSITION_FORWARD,
   }
 }
 
@@ -167,7 +168,7 @@ export function createNewVault (password) {
 
 export function verifyPassword (password) {
   return new Promise((resolve, reject) => {
-    background.submitPassword(password, (error) => {
+    background.verifyPassword(password, (error) => {
       if (error) {
         return reject(error)
       }
@@ -192,7 +193,7 @@ export function verifySeedPhrase () {
 export function requestRevealSeedWords (password) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
-    log.debug(`background.submitPassword`)
+    log.debug(`background.verifyPassword`)
 
     try {
       await verifyPassword(password)
@@ -281,29 +282,15 @@ export function removeAccount (address) {
   }
 }
 
-export function addNewKeyring (type, opts) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.addNewKeyring`)
-    background.addNewKeyring(type, opts, (err) => {
-      dispatch(hideLoadingIndication())
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-      dispatch(showAccountsPage())
-    })
-  }
-}
-
 export function importNewAccount (strategy, args) {
   return async (dispatch) => {
     let newState
     dispatch(showLoadingIndication('This may take a while, please be patient.'))
     try {
       log.debug(`background.importAccountWithStrategy`)
-      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      await promisifiedBackground.importAccountWithStrategy(strategy, args)
       log.debug(`background.getState`)
-      newState = await pify(background.getState).call(background)
+      newState = await promisifiedBackground.getState()
     } catch (err) {
       dispatch(hideLoadingIndication())
       dispatch(displayWarning(err.message))
@@ -323,86 +310,79 @@ export function importNewAccount (strategy, args) {
 
 export function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.addNewAccount((err, { identities: newIdentities }) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-        const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
 
-        dispatch(hideLoadingIndication())
-
-        forceUpdateMetamaskState(dispatch)
-        return resolve(newAccountAddress)
-      })
-    })
+    let newIdentities
+    try {
+      const { identities } = await promisifiedBackground.addNewAccount()
+      newIdentities = identities
+    } catch (error) {
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
+    dispatch(hideLoadingIndication())
+    await forceUpdateMetamaskState(dispatch)
+    return newAccountAddress
   }
 }
 
 export function checkHardwareStatus (deviceName, hdPath) {
   log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
 
-        dispatch(hideLoadingIndication())
+    let unlocked
+    try {
+      unlocked = await promisifiedBackground.checkHardwareStatus(deviceName, hdPath)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        forceUpdateMetamaskState(dispatch)
-        return resolve(unlocked)
-      })
-    })
+    dispatch(hideLoadingIndication())
+    await forceUpdateMetamaskState(dispatch)
+    return unlocked
   }
 }
 
 export function forgetDevice (deviceName) {
   log.debug(`background.forgetDevice`, deviceName)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.forgetDevice(deviceName, (err) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
+    try {
+      await promisifiedBackground.forgetDevice(deviceName)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        dispatch(hideLoadingIndication())
-
-        forceUpdateMetamaskState(dispatch)
-        return resolve()
-      })
-    })
+    dispatch(hideLoadingIndication())
+    await forceUpdateMetamaskState(dispatch)
   }
 }
 
 export function connectHardware (deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
 
-        dispatch(hideLoadingIndication())
+    let accounts
+    try {
+      accounts = await promisifiedBackground.connectHardware(deviceName, page, hdPath)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    await forceUpdateMetamaskState(dispatch)
 
-        forceUpdateMetamaskState(dispatch)
-        return resolve(accounts)
-      })
-    })
+    return accounts
   }
 }
 
@@ -434,176 +414,161 @@ export function showQrScanner () {
 }
 
 export function setCurrentCurrency (currencyCode) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
-    background.setCurrentCurrency(currencyCode, (err, data) => {
+    let data
+    try {
+      data = await promisifiedBackground.setCurrentCurrency(currencyCode)
+    } catch (error) {
       dispatch(hideLoadingIndication())
-      if (err) {
-        log.error(err.stack)
-        return dispatch(displayWarning(err.message))
-      }
-      dispatch({
-        type: actionConstants.SET_CURRENT_FIAT,
-        value: {
-          currentCurrency: data.currentCurrency,
-          conversionRate: data.conversionRate,
-          conversionDate: data.conversionDate,
-        },
-      })
+      log.error(error.stack)
+      dispatch(displayWarning(error.message))
+      return
+    }
+    dispatch(hideLoadingIndication())
+    dispatch({
+      type: actionConstants.SET_CURRENT_FIAT,
+      value: {
+        currentCurrency: data.currentCurrency,
+        conversionRate: data.conversionRate,
+        conversionDate: data.conversionDate,
+      },
     })
   }
 }
 
 export function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signMessage`)
-      background.signMessage(msgData, (err, newState) => {
-        log.debug('signMessage called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
-
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    log.debug(`actions calling background.signMessage`)
+    let newState
+    try {
+      newState = await promisifiedBackground.signMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signPersonalMessage`)
-      background.signPersonalMessage(msgData, (err, newState) => {
-        log.debug('signPersonalMessage called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.signPersonalMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.signPersonalMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function decryptMsgInline (decryptedMsgData) {
   log.debug('action - decryptMsgInline')
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.decryptMessageInline`)
-      background.decryptMessageInline(decryptedMsgData, (err, newState) => {
-        log.debug('decryptMsgInline called back')
-        dispatch(updateMetamaskState(newState))
+  return async (dispatch) => {
+    log.debug(`actions calling background.decryptMessageInline`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
+    let newState
+    try {
+      newState = await promisifiedBackground.decryptMessageInline(decryptedMsgData)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
 
-        decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-        return resolve(decryptedMsgData)
-      })
-    })
+    dispatch(updateMetamaskState(newState))
+    decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
+    return decryptedMsgData
   }
 }
 
 export function decryptMsg (decryptedMsgData) {
   log.debug('action - decryptMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.decryptMessage`)
-      background.decryptMessage(decryptedMsgData, (err, newState) => {
-        log.debug('decryptMsg called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.decryptMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(completedTx(decryptedMsgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-        console.log(decryptedMsgData)
-        return resolve(decryptedMsgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.decryptMessage(decryptedMsgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(decryptedMsgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return decryptedMsgData
   }
 }
 
 export function encryptionPublicKeyMsg (msgData) {
   log.debug('action - encryptionPublicKeyMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.encryptionPublicKey`)
-      background.encryptionPublicKey(msgData, (err, newState) => {
-        log.debug('encryptionPublicKeyMsg called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.encryptionPublicKey`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.encryptionPublicKey(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      log.debug(`actions calling background.signTypedMessage`)
-      background.signTypedMessage(msgData, (err, newState) => {
-        log.debug('signTypedMessage called back')
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
+    log.debug(`actions calling background.signTypedMessage`)
 
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(completedTx(msgData.metamaskId))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.signTypedMessage(msgData)
+    } catch (error) {
+      dispatch(hideLoadingIndication())
+      log.error(error)
+      dispatch(displayWarning(error.message))
+      throw error
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.metamaskId))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
@@ -643,7 +608,7 @@ export function updateGasData ({
   gasPrice,
   blockGasLimit,
   selectedAddress,
-  selectedToken,
+  sendToken,
   to,
   value,
   data,
@@ -651,10 +616,10 @@ export function updateGasData ({
   return (dispatch) => {
     dispatch(gasLoadingStarted())
     return estimateGas({
-      estimateGasMethod: background.estimateGas,
+      estimateGasMethod: promisifiedBackground.estimateGas,
       blockGasLimit,
       selectedAddress,
-      selectedToken,
+      sendToken,
       to,
       value,
       estimateGasPrice: gasPrice,
@@ -687,7 +652,7 @@ export function gasLoadingFinished () {
 }
 
 export function updateSendTokenBalance ({
-  selectedToken,
+  sendToken,
   tokenContract,
   address,
 }) {
@@ -698,7 +663,7 @@ export function updateSendTokenBalance ({
     return tokenBalancePromise
       .then((usersToken) => {
         if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          const newTokenBalance = calcTokenBalance({ sendToken, usersToken })
           dispatch(setSendTokenBalance(newTokenBalance))
         }
       })
@@ -762,6 +727,13 @@ export function updateSend (newSend) {
   return {
     type: actionConstants.UPDATE_SEND,
     value: newSend,
+  }
+}
+
+export function updateSendToken (token) {
+  return {
+    type: actionConstants.UPDATE_SEND_TOKEN,
+    value: token,
   }
 }
 
@@ -913,111 +885,87 @@ export function txError (err) {
 }
 
 export function cancelMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.cancelMessage(msgData.id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(completedTx(msgData.id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelPersonalMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelPersonalMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelPersonalMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelDecryptMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelDecryptMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelDecryptMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelEncryptionPublicKeyMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelEncryptionPublicKey(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelEncryptionPublicKey(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
 export function cancelTypedMsg (msgData) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      const id = msgData.id
-      background.cancelTypedMessage(id, (err, newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
 
-        if (err) {
-          return reject(err)
-        }
-
-        dispatch(completedTx(id))
-        dispatch(closeCurrentNotificationWindow())
-
-        return resolve(msgData)
-      })
-    })
+    let newState
+    try {
+      newState = await promisifiedBackground.cancelTypedMessage(msgData.id)
+    } finally {
+      dispatch(hideLoadingIndication())
+    }
+    dispatch(updateMetamaskState(newState))
+    dispatch(completedTx(msgData.id))
+    dispatch(closeCurrentNotificationWindow())
+    return msgData
   }
 }
 
@@ -1083,12 +1031,22 @@ export function cancelTxs (txDataList) {
 }
 
 export function markPasswordForgotten () {
-  return (dispatch) => {
-    return background.markPasswordForgotten(() => {
+  return async (dispatch) => {
+    try {
+      await new Promise((resolve, reject) => {
+        return background.markPasswordForgotten((error) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve()
+        })
+      })
+    } finally {
+      // TODO: handle errors
       dispatch(hideLoadingIndication())
       dispatch(forgotPassword())
-      forceUpdateMetamaskState(dispatch)
-    })
+      await forceUpdateMetamaskState(dispatch)
+    }
   }
 }
 
@@ -1142,9 +1100,29 @@ export function unlockSucceeded (message) {
 }
 
 export function updateMetamaskState (newState) {
-  return {
-    type: actionConstants.UPDATE_METAMASK_STATE,
-    value: newState,
+  return (dispatch, getState) => {
+    const { metamask: currentState } = getState()
+
+    const {
+      currentLocale,
+      selectedAddress,
+    } = currentState
+    const {
+      currentLocale: newLocale,
+      selectedAddress: newSelectedAddress,
+    } = newState
+
+    if (currentLocale && newLocale && currentLocale !== newLocale) {
+      dispatch(updateCurrentLocale(newLocale))
+    }
+    if (selectedAddress !== newSelectedAddress) {
+      dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED })
+    }
+
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    })
   }
 }
 
@@ -1183,47 +1161,57 @@ export function lockMetamask () {
   }
 }
 
-export function setCurrentAccountTab (newTabName) {
-  log.debug(`background.setCurrentAccountTab: ${newTabName}`)
-  return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
-}
-
-export function setSelectedToken (tokenAddress) {
-  return {
-    type: actionConstants.SET_SELECTED_TOKEN,
-    value: tokenAddress || null,
-  }
+async function _setSelectedAddress (dispatch, address) {
+  log.debug(`background.setSelectedAddress`)
+  const tokens = await promisifiedBackground.setSelectedAddress(address)
+  dispatch(updateTokens(tokens))
 }
 
 export function setSelectedAddress (address) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err) => {
+    try {
+      await _setSelectedAddress(dispatch, address)
+    } catch (error) {
       dispatch(hideLoadingIndication())
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-    })
+      dispatch(displayWarning(error.message))
+      return
+    }
+    dispatch(hideLoadingIndication())
   }
 }
 
 export function showAccountDetail (address) {
-  return (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err, tokens) => {
+
+    const state = getState()
+    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(state)
+    const activeTabOrigin = state.activeTab.origin
+    const selectedAddress = getSelectedAddress(state)
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(state)
+    const currentTabIsConnectedToPreviousAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(selectedAddress)
+    const currentTabIsConnectedToNextAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(address)
+    const switchingToUnconnectedAddress = currentTabIsConnectedToPreviousAddress && !currentTabIsConnectedToNextAddress
+
+    try {
+      await _setSelectedAddress(dispatch, address)
+    } catch (error) {
       dispatch(hideLoadingIndication())
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-      dispatch(updateTokens(tokens))
-      dispatch({
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: address,
-      })
-      dispatch(setSelectedToken())
+      dispatch(displayWarning(error.message))
+      return
+    }
+    dispatch(hideLoadingIndication())
+    dispatch({
+      type: actionConstants.SHOW_ACCOUNT_DETAIL,
+      value: address,
     })
+    if (unconnectedAccountAccountAlertIsEnabled && switchingToUnconnectedAddress) {
+      dispatch(switchedToUnconnectedAccount())
+      await setUnconnectedAccountAlertShown(activeTabOrigin)
+    }
   }
 }
 
@@ -1241,16 +1229,29 @@ export function addPermittedAccount (origin, address) {
   }
 }
 
+export function removePermittedAccount (origin, address) {
+  return async (dispatch) => {
+    await new Promise((resolve, reject) => {
+      background.removePermittedAccount(origin, address, (error) => {
+        if (error) {
+          return reject(error)
+        }
+        resolve()
+      })
+    })
+    await forceUpdateMetamaskState(dispatch)
+  }
+}
+
 export function showAccountsPage () {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,
   }
 }
 
-export function showConfTxPage ({ transForward = true, id } = {}) {
+export function showConfTxPage ({ id } = {}) {
   return {
     type: actionConstants.SHOW_CONF_TX_PAGE,
-    transForward,
     id,
   }
 }
@@ -1292,18 +1293,16 @@ export function removeToken (address) {
 export function addTokens (tokens) {
   return (dispatch) => {
     if (Array.isArray(tokens)) {
-      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
     } else {
-      dispatch(setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
           .entries(tokens)
           .map(([_, { address, symbol, decimals }]) => (
             dispatch(addToken(address, symbol, decimals))
-          ))
+          )),
       )
     }
   }
@@ -1346,29 +1345,6 @@ export function updateTokens (newTokens) {
 export function clearPendingTokens () {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
-  }
-}
-
-export function retryTransaction (txId, gasPrice) {
-  log.debug(`background.retryTransaction`)
-  let newTxId
-
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      background.retryTransaction(txId, gasPrice, (err, newState) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-
-        const { currentNetworkTxList } = newState
-        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
-        newTxId = id
-        resolve(newState)
-      })
-    })
-      .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => newTxId)
   }
 }
 
@@ -1444,19 +1420,19 @@ export function createRetryTransaction (txId, customGasPrice, customGasLimit) {
 //
 
 export function setProviderType (type) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { type: currentProviderType } = getState().metamask.provider
     log.debug(`background.setProviderType`, type)
-    background.setProviderType(type, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem changing networks!'))
-      }
-      dispatch(setPreviousProvider(currentProviderType))
-      dispatch(updateProviderType(type))
-      dispatch(setSelectedToken())
-    })
 
+    try {
+      await promisifiedBackground.setProviderType(type)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
+    dispatch(setPreviousProvider(currentProviderType))
+    dispatch(updateProviderType(type))
   }
 }
 
@@ -1475,54 +1451,61 @@ export function setPreviousProvider (type) {
 }
 
 export function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-  return (dispatch) => {
+  return async (dispatch) => {
     log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem changing networks!'))
-      }
-      dispatch({
-        type: actionConstants.SET_RPC_TARGET,
-        value: newRpc,
-      })
+
+    try {
+      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
+
+    dispatch({
+      type: actionConstants.SET_RPC_TARGET,
+      value: newRpc,
     })
   }
 }
 
 export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
-  return (dispatch) => {
+  return async (dispatch) => {
     log.debug(`background.delRpcTarget: ${oldRpc}`)
-    background.delCustomRpc(oldRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem removing network!'))
-      }
-      dispatch(setSelectedToken())
-      background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs, (err) => {
-        if (err) {
-          log.error(err)
-          return dispatch(displayWarning('Had a problem changing networks!'))
-        }
-        dispatch({
-          type: actionConstants.SET_RPC_TARGET,
-          value: newRpc,
-        })
-      })
+    try {
+      promisifiedBackground.delCustomRpc(oldRpc)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem removing network!'))
+      return
+    }
+
+    try {
+      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
+
+    dispatch({
+      type: actionConstants.SET_RPC_TARGET,
+      value: newRpc,
     })
   }
 }
 
 export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
-  return (dispatch) => {
+  return async (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err) => {
-      if (err) {
-        log.error(err)
-        return dispatch(displayWarning('Had a problem changing networks!'))
-      }
-      dispatch(setSelectedToken())
-    })
+
+    try {
+      await promisifiedBackground.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Had a problem changing networks!'))
+      return
+    }
   }
 }
 
@@ -1536,7 +1519,6 @@ export function delRpcTarget (oldRpc) {
           dispatch(displayWarning('Had a problem removing network!'))
           return reject(err)
         }
-        dispatch(setSelectedToken())
         resolve()
       })
     })
@@ -1547,19 +1529,20 @@ export function delRpcTarget (oldRpc) {
 export function addToAddressBook (recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`)
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const chainId = getState().metamask.network
-    background.setAddressBook(checksumAddress(recipient), nickname, chainId, memo, (err, set) => {
-      if (err) {
-        log.error(err)
-        dispatch(displayWarning('Address book failed to update'))
-        throw err
-      }
-      if (!set) {
-        return dispatch(displayWarning('Address book failed to update'))
-      }
-    })
 
+    let set
+    try {
+      set = await promisifiedBackground.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+    } catch (error) {
+      log.error(error)
+      dispatch(displayWarning('Address book failed to update'))
+      throw error
+    }
+    if (!set) {
+      return dispatch(displayWarning('Address book failed to update'))
+    }
   }
 }
 
@@ -1570,16 +1553,8 @@ export function addToAddressBook (recipient, nickname = '', memo = '') {
 export function removeFromAddressBook (chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`)
 
-  return () => {
-    background.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
-  }
-}
-
-export function useEtherscanProvider () {
-  log.debug(`background.useEtherscanProvider`)
-  background.useEtherscanProvider()
-  return {
-    type: actionConstants.USE_ETHERSCAN_PROVIDER,
+  return async () => {
+    await promisifiedBackground.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
   }
 }
 
@@ -1616,12 +1591,12 @@ export function closeCurrentNotificationWindow () {
       !hasUnconfirmedTransactions(getState())) {
       global.platform.closeCurrentWindow()
 
-      dispatch(closeNotifacationWindow())
+      dispatch(closeNotificationWindow())
     }
   }
 }
 
-export function closeNotifacationWindow () {
+export function closeNotificationWindow () {
   return {
     type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
   }
@@ -1710,7 +1685,7 @@ export function exportAccount (password, address) {
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
-          log.error('Error in submiting password.')
+          log.error('Error in submitting password.')
           dispatch(hideLoadingIndication())
           dispatch(displayWarning('Incorrect Password.'))
           return reject(err)
@@ -1729,6 +1704,34 @@ export function exportAccount (password, address) {
 
           return resolve(result)
         })
+      })
+    })
+  }
+}
+
+export function exportAccounts (password, addresses) {
+  return function (dispatch) {
+    log.debug(`background.submitPassword`)
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, function (err) {
+        if (err) {
+          log.error('Error in submitting password.')
+          return reject(err)
+        }
+        log.debug(`background.exportAccounts`)
+        const accountPromises = addresses.map((address) =>
+          new Promise(
+            (resolve, reject) => background.exportAccount(address, function (err, result) {
+              if (err) {
+                log.error(err)
+                dispatch(displayWarning('Had a problem exporting the account.'))
+                return reject(err)
+              }
+              return resolve(result)
+            }),
+          ),
+        )
+        return resolve(Promise.all(accountPromises))
       })
     })
   }
@@ -1833,6 +1836,12 @@ export function updatePreferences (value) {
   }
 }
 
+export function setDefaultHomeActiveTabName (value) {
+  return async () => {
+    await promisifiedBackground.setDefaultHomeActiveTabName(value)
+  }
+}
+
 export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
@@ -1850,7 +1859,7 @@ export function setCompletedOnboarding () {
     dispatch(showLoadingIndication())
 
     try {
-      await pify(background.completeOnboarding).call(background)
+      await promisifiedBackground.completeOnboarding()
     } catch (err) {
       dispatch(displayWarning(err.message))
       throw err
@@ -1867,28 +1876,6 @@ export function completeOnboarding () {
   }
 }
 
-export function setNetworkNonce (networkNonce) {
-  return {
-    type: actionConstants.SET_NETWORK_NONCE,
-    value: networkNonce,
-  }
-}
-
-export function updateNetworkNonce (address) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.getTransactionCount(address, (err, data) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(setNetworkNonce(data))
-        resolve(data)
-      })
-    })
-  }
-}
-
 export function setMouseUserState (isMouseUser) {
   return {
     type: actionConstants.SET_MOUSE_USER_STATE,
@@ -1896,38 +1883,19 @@ export function setMouseUserState (isMouseUser) {
   }
 }
 
-// Call Background Then Update
-//
-// A function generator for a common pattern wherein:
-// We show loading indication.
-// We call a background method.
-// We hide loading indication.
-// If it errored, we show a warning.
-// If it didn't, we update the state.
-export function callBackgroundThenUpdateNoSpinner (method, ...args) {
-  return (dispatch) => {
-    method.call(background, ...args, (err) => {
-      if (err) {
-        return dispatch(displayWarning(err.message))
-      }
-      forceUpdateMetamaskState(dispatch)
-    })
-  }
-}
-
-export function forceUpdateMetamaskState (dispatch) {
+export async function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
-  return new Promise((resolve, reject) => {
-    background.getState((err, newState) => {
-      if (err) {
-        dispatch(displayWarning(err.message))
-        return reject(err)
-      }
 
-      dispatch(updateMetamaskState(newState))
-      resolve(newState)
-    })
-  })
+  let newState
+  try {
+    newState = await promisifiedBackground.getState()
+  } catch (error) {
+    dispatch(displayWarning(error.message))
+    throw error
+  }
+
+  dispatch(updateMetamaskState(newState))
+  return newState
 }
 
 export function toggleAccountMenu () {
@@ -2045,8 +2013,9 @@ export function setIpfsGateway (val) {
 }
 
 export function updateCurrentLocale (key) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication())
+    await loadRelativeTimeFormatLocaleData(key)
     return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
@@ -2088,6 +2057,14 @@ export function setPendingTokens (pendingTokens) {
 
 // Permissions
 
+export function requestAccountsPermissionWithId (origin) {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.requestAccountsPermissionWithId(origin)
+    await forceUpdateMetamaskState(dispatch)
+    return id
+  }
+}
+
 /**
  * Approves the permissions request.
  * @param {Object} request - The permissions request to approve
@@ -2109,21 +2086,13 @@ export function rejectPermissionsRequest (requestId) {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
           dispatch(displayWarning(err.message))
-          reject()
+          return reject(err)
         }
-        resolve()
+        return forceUpdateMetamaskState(dispatch)
+          .then(resolve)
+          .catch(reject)
       })
     })
-  }
-}
-
-/**
- * Exposes the given account(s) to the given origin.
- * Call ONLY as a result of direct user action.
- */
-export function legacyExposeAccounts (origin, accounts) {
-  return () => {
-    return background.legacyExposeAccounts(origin, accounts)
   }
 }
 
@@ -2184,23 +2153,33 @@ export function setLastActiveTime () {
   }
 }
 
-export function setMkrMigrationReminderTimestamp (timestamp) {
-  return (dispatch) => {
-    background.setMkrMigrationReminderTimestamp(timestamp, (err) => {
+export function setConnectedStatusPopoverHasBeenShown () {
+  return () => {
+    background.setConnectedStatusPopoverHasBeenShown((err) => {
       if (err) {
-        return dispatch(displayWarning(err.message))
+        throw new Error(err.message)
       }
     })
   }
 }
 
-export function loadingMethoDataStarted () {
+export function setAlertEnabledness (alertId, enabledness) {
+  return async () => {
+    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
+  }
+}
+
+export async function setUnconnectedAccountAlertShown (origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+}
+
+export function loadingMethodDataStarted () {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
   }
 }
 
-export function loadingMethoDataFinished () {
+export function loadingMethodDataFinished () {
   return {
     type: actionConstants.LOADING_METHOD_DATA_FINISHED,
   }
@@ -2211,16 +2190,17 @@ export function getContractMethodData (data = '') {
     const prefixedData = ethUtil.addHexPrefix(data)
     const fourBytePrefix = prefixedData.slice(0, 10)
     const { knownMethodData } = getState().metamask
-    if (knownMethodData && knownMethodData[fourBytePrefix]) {
+
+    if ((knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) || fourBytePrefix === '0x') {
       return Promise.resolve(knownMethodData[fourBytePrefix])
     }
 
-    dispatch(loadingMethoDataStarted())
+    dispatch(loadingMethodDataStarted())
     log.debug(`loadingMethodData`)
 
     return getMethodDataAsync(fourBytePrefix)
       .then(({ name, params }) => {
-        dispatch(loadingMethoDataFinished())
+        dispatch(loadingMethodDataFinished())
 
         background.addKnownMethodData(fourBytePrefix, { name, params })
 
@@ -2259,7 +2239,7 @@ export function getTokenParams (tokenAddress) {
 
     return fetchSymbolAndDecimals(tokenAddress, existingTokens)
       .then(({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, decimals))
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)))
         dispatch(loadingTokenParamsFinished())
       })
   }
@@ -2279,12 +2259,6 @@ export function setSeedPhraseBackedUp (seedPhraseBackupState) {
           .catch(reject)
       })
     })
-  }
-}
-
-export function hideSeedPhraseBackupAfterOnboarding () {
-  return {
-    type: actionConstants.HIDE_SEED_PHRASE_BACKUP_AFTER_ONBOARDING,
   }
 }
 
@@ -2412,7 +2386,7 @@ export function setRequestAccountTabIds (requestAccountTabIds) {
 
 export function getRequestAccountTabIds () {
   return async (dispatch) => {
-    const requestAccountTabIds = await pify(background.getRequestAccountTabIds).call(background)
+    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds()
     dispatch(setRequestAccountTabIds(requestAccountTabIds))
   }
 }
@@ -2426,7 +2400,7 @@ export function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabsIds () {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await pify(background.getOpenMetamaskTabsIds).call(background)
+    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds()
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
   }
 }

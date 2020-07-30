@@ -14,7 +14,7 @@ export default class SendGasRow extends Component {
     gasTotal: PropTypes.string,
     maxModeOn: PropTypes.bool,
     showCustomizeGasModal: PropTypes.func,
-    selectedToken: PropTypes.object,
+    sendToken: PropTypes.object,
     setAmountToMax: PropTypes.func,
     setGasPrice: PropTypes.func,
     setGasLimit: PropTypes.func,
@@ -59,7 +59,7 @@ export default class SendGasRow extends Component {
     const {
       balance,
       gasTotal,
-      selectedToken,
+      sendToken,
       setAmountToMax,
       tokenBalance,
     } = this.props
@@ -67,7 +67,7 @@ export default class SendGasRow extends Component {
     setAmountToMax({
       balance,
       gasTotal,
-      selectedToken,
+      sendToken,
       tokenBalance,
     })
   }

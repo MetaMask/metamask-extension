@@ -27,11 +27,11 @@ proxyquire('../send-footer.container.js', {
     },
   },
   '../../../store/actions': actionSpies,
-  '../send.selectors': {
+  '../../../selectors': {
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
+    getSendToken: (s) => `mockSendToken:${s}`,
     getSendAmount: (s) => `mockAmount:${s}`,
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFromObject:${s}`,
@@ -42,13 +42,11 @@ proxyquire('../send-footer.container.js', {
     getSendHexData: (s) => `mockHexData:${s}`,
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
     getSendErrors: (s) => `mockSendErrors:${s}`,
-  },
-  './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
-  './send-footer.utils': utilsStubs,
-  '../../../selectors/custom-gas': {
+    isSendFormInError: (s) => `mockInError:${s}`,
     getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => ([{ gasEstimateType: `mockGasEstimateType:${s}` }]),
     getDefaultActiveButtonIndex: () => 0,
   },
+  './send-footer.utils': utilsStubs,
 })
 
 describe('send-footer container', function () {
@@ -71,9 +69,9 @@ describe('send-footer container', function () {
     })
 
     describe('sign()', function () {
-      it('should dispatch a signTokenTx action if selectedToken is defined', function () {
+      it('should dispatch a signTokenTx action if sendToken is defined', function () {
         mapDispatchToPropsObject.sign({
-          selectedToken: {
+          sendToken: {
             address: '0xabc',
           },
           to: 'mockTo',
@@ -87,7 +85,7 @@ describe('send-footer container', function () {
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
             data: undefined,
-            selectedToken: {
+            sendToken: {
               address: '0xabc',
             },
             to: 'mockTo',
@@ -95,15 +93,15 @@ describe('send-footer container', function () {
             from: 'mockFrom',
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
-          }
+          },
         )
         assert.deepEqual(
           actionSpies.signTokenTx.getCall(0).args,
-          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ]
+          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ],
         )
       })
 
-      it('should dispatch a sign action if selectedToken is not defined', function () {
+      it('should dispatch a sign action if sendToken is not defined', function () {
         utilsStubs.constructTxParams.resetHistory()
         mapDispatchToPropsObject.sign({
           to: 'mockTo',
@@ -117,17 +115,17 @@ describe('send-footer container', function () {
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
             data: undefined,
-            selectedToken: undefined,
+            sendToken: undefined,
             to: 'mockTo',
             amount: 'mockAmount',
             from: 'mockFrom',
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
-          }
+          },
         )
         assert.deepEqual(
           actionSpies.signTx.getCall(0).args,
-          [ { value: 'mockAmount' } ]
+          [ { value: 'mockAmount' } ],
         )
       })
     })
@@ -141,7 +139,7 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
           editingTransactionId: 'mockEditingTransactionId',
-          selectedToken: 'mockSelectedToken',
+          sendToken: { address: 'mockAddress' },
           unapprovedTxs: 'mockUnapprovedTxs',
         })
         assert(dispatchSpy.calledOnce)
@@ -155,9 +153,9 @@ describe('send-footer container', function () {
             gas: 'mockGas',
             gasPrice: 'mockGasPrice',
             editingTransactionId: 'mockEditingTransactionId',
-            selectedToken: 'mockSelectedToken',
+            sendToken: { address: 'mockAddress' },
             unapprovedTxs: 'mockUnapprovedTxs',
-          }
+          },
         )
         assert.equal(actionSpies.updateTransaction.getCall(0).args[0], 'mockConstructedUpdatedTxParams')
       })
@@ -170,7 +168,7 @@ describe('send-footer container', function () {
         assert.equal(utilsStubs.addressIsNew.getCall(0).args[0], 'mockToAccounts')
         assert.deepEqual(
           actionSpies.addToAddressBook.getCall(0).args,
-          [ '0xmockNewAddress', 'mockNickname' ]
+          [ '0xmockNewAddress', 'mockNickname' ],
         )
       })
     })

@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions'
-import { getMetaMaskAccounts } from '../../../selectors/selectors'
-import ConnectScreen from './connect-screen'
+import { getMetaMaskAccounts } from '../../../selectors'
+import SelectHardware from './select-hardware'
 import AccountList from './account-list'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 import { formatBalance } from '../../../helpers/utils/util'
+import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 
 class ConnectHardwareForm extends Component {
   state = {
@@ -136,12 +136,13 @@ class ConnectHardwareForm extends Component {
   }
 
   onUnlockAccount = (device) => {
+    const { history, mostRecentOverviewPage, unlockHardwareWalletAccount } = this.props
 
     if (this.state.selectedAccount === null) {
       this.setState({ error: this.context.t('accountSelectionRequired') })
     }
 
-    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
+    unlockHardwareWalletAccount(this.state.selectedAccount, device)
       .then((_) => {
         this.context.metricsEvent({
           eventOpts: {
@@ -150,7 +151,7 @@ class ConnectHardwareForm extends Component {
             name: 'Connected Account with: ' + device,
           },
         })
-        this.props.history.push(DEFAULT_ROUTE)
+        history.push(mostRecentOverviewPage)
       }).catch((e) => {
         this.context.metricsEvent({
           eventOpts: {
@@ -167,7 +168,8 @@ class ConnectHardwareForm extends Component {
   }
 
   onCancel = () => {
-    this.props.history.push(DEFAULT_ROUTE)
+    const { history, mostRecentOverviewPage } = this.props
+    history.push(mostRecentOverviewPage)
   }
 
   renderError () {
@@ -186,7 +188,7 @@ class ConnectHardwareForm extends Component {
   renderContent () {
     if (!this.state.accounts.length) {
       return (
-        <ConnectScreen
+        <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
         />
@@ -213,10 +215,10 @@ class ConnectHardwareForm extends Component {
 
   render () {
     return (
-      <div>
+      <>
         {this.renderError()}
         {this.renderContent()}
-      </div>
+      </>
     )
   }
 }
@@ -234,6 +236,7 @@ ConnectHardwareForm.propTypes = {
   accounts: PropTypes.object,
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
 }
 
 const mapStateToProps = (state) => {
@@ -250,6 +253,7 @@ const mapStateToProps = (state) => {
     accounts,
     address: selectedAddress,
     defaultHdPaths,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
   }
 }
 
@@ -281,5 +285,5 @@ ConnectHardwareForm.contextTypes = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  ConnectHardwareForm
+  ConnectHardwareForm,
 )

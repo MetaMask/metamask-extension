@@ -5,8 +5,8 @@ import ConfirmTokenTransactionBase from './confirm-token-transaction-base.compon
 import {
   contractExchangeRateSelector,
   transactionFeeSelector,
-} from '../../selectors/confirm-transaction'
-import { tokenSelector } from '../../selectors/tokens'
+} from '../../selectors'
+import { getTokens } from '../../ducks/metamask/metamask'
 import {
   getTokenData,
 } from '../../helpers/utils/transactions.util'
@@ -38,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     ethTransactionTotal,
     fiatTransactionTotal,
   } = transactionFeeSelector(state, transaction)
-  const tokens = tokenSelector(state)
+  const tokens = getTokens(state)
   const currentToken = tokens && tokens.find(({ address }) => tokenAddress === address)
   const { decimals, symbol: tokenSymbol } = currentToken || {}
 
@@ -63,5 +63,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(ConfirmTokenTransactionBase)

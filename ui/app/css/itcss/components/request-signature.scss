@@ -3,12 +3,11 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
     align-items: center;
-    font-family: Roboto;
     position: relative;
     height: 100%;
 
@@ -62,8 +61,7 @@
   }
 
   &__header__text {
-    color: #5B5D67;
-    font-family: Roboto;
+    color: #5b5d67;
     font-size: 22px;
     line-height: 29px;
     z-index: 3;
@@ -104,7 +102,6 @@
   &__account-item {
     height: 22px;
     background-color: $white;
-    font-family: Roboto;
     line-height: 16px;
     font-size: 12px;
     width: 124px;
@@ -163,7 +160,6 @@
     height: 48px;
     width: 240px;
     color: $tundora;
-    font-family: Roboto;
     font-size: 18px;
     line-height: 24px;
     text-align: center;
@@ -172,7 +168,6 @@
 
   &__notice,
   &__warning {
-    font-family: "Avenir Next";
     font-size: 14px;
     line-height: 19px;
     text-align: center;
@@ -207,7 +202,6 @@
   &__row-title {
     width: 80px;
     color: $dusty-gray;
-    font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
     margin-top: 12px;
@@ -217,7 +211,6 @@
 
   &__row-value {
     color: $scorpion;
-    font-family: Roboto;
     font-size: 14px;
     line-height: 19px;
     width: 100%;
@@ -230,7 +223,7 @@
   &__help-link {
     cursor: pointer;
     text-decoration: underline;
-    color: $curious-blue;
+    color: $primary-blue;
   }
 
   &__footer {

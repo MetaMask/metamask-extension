@@ -1,33 +1,59 @@
 .connected-status-indicator {
-  display:flex;
+  display: flex;
   align-items: center;
   place-self: center start;
-
   background: none;
   font-size: inherit;
-  padding: 8px 0;
+  padding: 8px;
+  border-radius: 100px;
 
-  &__green-circle, &__yellow-circle, &__grey-circle {
+  &:hover {
+    background-color: #f2f3f4;
+  }
+
+  &:active {
+    background-color: #ededed;
+  }
+
+  &__inner-circle {
+    border-radius: 4px;
+    height: 4px;
+    width: 4px;
+    background-color: transparent;
+  }
+
+  &__green-circle,
+  &__yellow-circle,
+  &__grey-circle {
     border-radius: 4px;
     height: 8px;
     width: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__green-circle {
-    background: #4CD964;
+    border-color: #4cd964;
+  }
+
+  &__green-circle &__inner-circle {
+    background-color: #4cd964;
   }
 
   &__yellow-circle {
-    background: #FFD33D;
+    border-color: #ffd33d;
   }
 
   &__grey-circle {
-    background: $Grey-100;
+    border-color: $Grey-500;
   }
 
   &__text {
     font-size: 10px;
     color: $Grey-500;
-    margin-left: 8px;
+    margin-left: 6px;
+    white-space: nowrap;
   }
 }

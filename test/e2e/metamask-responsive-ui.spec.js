@@ -37,7 +37,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -117,9 +117,12 @@ describe('MetaMask', function () {
 
   describe('Show account information', function () {
     it('show account details dropdown menu', async function () {
-      await driver.clickElement(By.css('button.menu-bar__account-options'))
-      const options = await driver.findElements(By.css('div.menu.account-details-dropdown div.menu__item'))
-      assert.equal(options.length, 4) // HD Wallet type does not have to show the Remove Account option
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      const options = await driver.findElements(By.css('.account-options-menu .menu-item'))
+      assert.equal(options.length, 3) // HD Wallet type does not have to show the Remove Account option
+      // click outside of menu to dismiss
+      // account menu button chosen because the menu never covers it.
+      await driver.clickPoint(By.css('.account-menu__icon'), 0, 0)
       await driver.delay(regularDelayMs)
     })
   })
@@ -163,7 +166,7 @@ describe('MetaMask', function () {
     })
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(By.css('.transaction-view-balance__primary-balance'))
+      const balance = await driver.findElement(By.css('[data-testid="eth-overview__primary-currency"]'))
       await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
       await driver.delay(regularDelayMs)
     })
@@ -208,13 +211,13 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.clickElement(By.css('[data-testid="home__history-tab"]'))
+      await driver.clickElement(By.css('[data-testid="home__activity-tab"]'))
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
 
-      const txValues = await driver.findElement(By.css('.transaction-list-item__amount--primary'))
+      const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
       await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
     })
   })

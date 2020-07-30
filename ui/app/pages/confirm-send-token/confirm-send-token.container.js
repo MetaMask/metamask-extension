@@ -3,9 +3,9 @@ import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import { setSelectedToken, updateSend, showSendTokenPage } from '../../store/actions'
+import { updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
-import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors/confirm-transaction'
+import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors'
 
 const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)
@@ -38,7 +38,6 @@ const mapDispatchToProps = (dispatch) => {
         toNumericBase: 'hex',
       })
 
-      dispatch(setSelectedToken(tokenAddress))
       dispatch(updateSend({
         from,
         gasLimit,
@@ -61,5 +60,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(ConfirmSendToken)

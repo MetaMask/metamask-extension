@@ -3,6 +3,7 @@ import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import log from 'loglevel'
+import { MESSAGE_TYPE } from './enums'
 
 /**
  * Represents, and contains data about, an 'eth_getEncryptionPublicKey' type request. These are created when
@@ -78,7 +79,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   addUnapprovedMessageAsync (address, req) {
     return new Promise((resolve, reject) => {
       if (!address) {
-        reject(new Error('MetaMask Message for EncryptionPublicKey: address field is required.'))
+        return reject(new Error('MetaMask Message: address field is required.'))
       }
       const msgId = this.addUnapprovedMessage(address, req)
       this.once(`${msgId}:finished`, (data) => {
@@ -86,9 +87,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
           case 'received':
             return resolve(data.rawData)
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message for EncryptionPublicKey: User denied message EncryptionPublicKey.'))
+            return reject(ethErrors.provider.userRejectedRequest('MetaMask EncryptionPublicKey: User denied message EncryptionPublicKey.'))
           default:
-            return reject(new Error(`MetaMask Message for EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
+            return reject(new Error(`MetaMask EncryptionPublicKey: Unknown problem: ${JSON.stringify(address)}`))
         }
       })
     })
@@ -114,7 +115,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       msgParams: address,
       time: time,
       status: 'unapproved',
-      type: 'eth_getEncryptionPublicKey',
+      type: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
     }
 
     if (req) {
@@ -282,5 +283,4 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
     this.memStore.updateState({ unapprovedEncryptionPublicKeyMsgs, unapprovedEncryptionPublicKeyMsgCount })
     this.emit('updateBadge')
   }
-
 }

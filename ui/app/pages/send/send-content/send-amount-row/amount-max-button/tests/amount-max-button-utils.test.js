@@ -6,17 +6,17 @@ import {
 describe('amount-max-button utils', function () {
 
   describe('calcMaxAmount()', function () {
-    it('should calculate the correct amount when no selectedToken defined', function () {
+    it('should calculate the correct amount when no sendToken defined', function () {
       assert.deepEqual(calcMaxAmount({
         balance: 'ffffff',
         gasTotal: 'ff',
-        selectedToken: false,
+        sendToken: false,
       }), 'ffff00')
     })
 
-    it('should calculate the correct amount when a selectedToken is defined', function () {
+    it('should calculate the correct amount when a sendToken is defined', function () {
       assert.deepEqual(calcMaxAmount({
-        selectedToken: {
+        sendToken: {
           decimals: 10,
         },
         tokenBalance: '64',

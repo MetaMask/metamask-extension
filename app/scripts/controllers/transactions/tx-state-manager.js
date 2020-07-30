@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
-import txStateHistoryHelper from './lib/tx-state-history-helper'
+import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import createId from '../../lib/random-id'
 import { getFinalStates, normalizeTxParams } from './lib/util'
 /**
@@ -26,7 +26,7 @@ import { getFinalStates, normalizeTxParams } from './lib/util'
   @param {function} opts.getNetwork return network number
   @class
 */
-class TransactionStateManager extends EventEmitter {
+export default class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 
@@ -57,12 +57,39 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} - of txMetas that have been filtered for only the current network
-  */
-  getTxList () {
+   * Returns the full tx list for the current network
+   *
+   * The list is iterated backwards as new transactions are pushed onto it.
+   *
+   * @param {number} [limit] a limit for the number of transactions to return
+   * @returns {Object[]} The {@code txMeta}s, filtered to the current network
+   */
+  getTxList (limit) {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
-    return fullTxList.filter((txMeta) => txMeta.metamaskNetworkId === network)
+
+    const nonces = new Set()
+    const txs = []
+    for (let i = fullTxList.length - 1; i > -1; i--) {
+      const txMeta = fullTxList[i]
+      if (txMeta.metamaskNetworkId !== network) {
+        continue
+      }
+
+      if (limit !== undefined) {
+        const { nonce } = txMeta.txParams
+        if (!nonces.has(nonce)) {
+          if (nonces.size < limit) {
+            nonces.add(nonce)
+          } else {
+            continue
+          }
+        }
+      }
+
+      txs.unshift(txMeta)
+    }
+    return txs
   }
 
   /**
@@ -73,7 +100,7 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} - the tx list whos status is unapproved
+    @returns {array} - the tx list whose status is unapproved
   */
   getUnapprovedTxList () {
     const txList = this.getTxsByMetaData('status', 'unapproved')
@@ -85,7 +112,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is approved if no address is provide
+    @returns {array} - the tx list whose status is approved if no address is provide
     returns all txMetas who's status is approved for the current network
   */
   getApprovedTransactions (address) {
@@ -98,7 +125,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is submitted if no address is provide
+    @returns {array} - the tx list whose status is submitted if no address is provide
     returns all txMetas who's status is submitted for the current network
   */
   getPendingTransactions (address) {
@@ -111,7 +138,7 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} - the tx list whos status is confirmed if no address is provide
+    @returns {array} - the tx list whose status is confirmed if no address is provide
     returns all txMetas who's status is confirmed for the current network
   */
   getConfirmedTransactions (address) {
@@ -126,7 +153,7 @@ class TransactionStateManager extends EventEmitter {
     Adds the txMeta to the list of transactions in the store.
     if the list is over txHistoryLimit it will remove a transaction that
     is in its final state
-    it will allso add the key `history` to the txMeta with the snap shot of the original
+    it will also add the key `history` to the txMeta with the snap shot of the original
     object
     @param {Object} txMeta
     @returns {Object} - the txMeta
@@ -146,7 +173,7 @@ class TransactionStateManager extends EventEmitter {
     // initialize history
     txMeta.history = []
     // capture initial snapshot of txMeta for history
-    const snapshot = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    const snapshot = snapshotFromTxMeta(txMeta)
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
@@ -197,12 +224,14 @@ class TransactionStateManager extends EventEmitter {
     }
 
     // create txMeta snapshot for history
-    const currentState = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    const currentState = snapshotFromTxMeta(txMeta)
     // recover previous tx state obj
-    const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
+    const previousState = replayHistory(txMeta.history)
     // generate history entry and add to history
-    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState, note)
-    txMeta.history.push(entry)
+    const entry = generateHistoryEntry(previousState, currentState, note)
+    if (entry.length) {
+      txMeta.history.push(entry)
+    }
 
     // commit txMeta to state
     const txId = txMeta.id
@@ -453,19 +482,17 @@ class TransactionStateManager extends EventEmitter {
     }
 
     txMeta.status = status
-    setTimeout(() => {
-      try {
-        this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
-        this.emit(`${txMeta.id}:${status}`, txId)
-        this.emit(`tx:status-update`, txId, status)
-        if (['submitted', 'rejected', 'failed'].includes(status)) {
-          this.emit(`${txMeta.id}:finished`, txMeta)
-        }
-        this.emit('update:badge')
-      } catch (error) {
-        log.error(error)
+    try {
+      this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
+      this.emit(`${txMeta.id}:${status}`, txId)
+      this.emit(`tx:status-update`, txId, status)
+      if (['submitted', 'rejected', 'failed'].includes(status)) {
+        this.emit(`${txMeta.id}:finished`, txMeta)
       }
-    })
+      this.emit('update:badge')
+    } catch (error) {
+      log.error(error)
+    }
   }
 
   /**
@@ -481,6 +508,14 @@ class TransactionStateManager extends EventEmitter {
     const transactionList = this.getFullTxList()
     this._saveTxList(transactionList.filter((txMeta) => txMeta.id !== txId))
   }
-}
 
-export default TransactionStateManager
+  /**
+   * Filters out the unapproved transactions
+   */
+
+  clearUnapprovedTxs () {
+    const transactions = this.getFullTxList()
+    const nonUnapprovedTxs = transactions.filter((tx) => tx.status !== 'unapproved')
+    this._saveTxList(nonUnapprovedTxs)
+  }
+}

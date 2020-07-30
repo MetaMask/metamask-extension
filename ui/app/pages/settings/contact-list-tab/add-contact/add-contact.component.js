@@ -119,8 +119,8 @@ export default class AddContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(this.state.error)}
-          onSubmit={() => {
-            addToAddressBook(this.state.ensAddress || this.state.ethAddress, this.state.newName)
+          onSubmit={async () => {
+            await addToAddressBook(this.state.ensAddress || this.state.ethAddress, this.state.newName)
             history.push(CONTACT_LIST_ROUTE)
           }}
           onCancel={() => {

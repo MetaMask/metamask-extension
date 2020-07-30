@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import PubNub from 'pubnub'
 import qrCode from 'qrcode-generator'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
 
 import Button from '../../components/ui/button'
 import LoadingScreen from '../../components/ui/loading-screen'
@@ -24,7 +23,10 @@ export default class MobileSyncPage extends Component {
     selectedAddress: PropTypes.string.isRequired,
     displayWarning: PropTypes.func.isRequired,
     fetchInfoToSync: PropTypes.func.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     requestRevealSeedWords: PropTypes.func.isRequired,
+    exportAccounts: PropTypes.func.isRequired,
+    keyrings: PropTypes.array,
   }
 
 
@@ -32,6 +34,7 @@ export default class MobileSyncPage extends Component {
     screen: PASSWORD_PROMPT_SCREEN,
     password: '',
     seedWords: null,
+    importedAccounts: [],
     error: null,
     syncing: false,
     completed: false,
@@ -62,9 +65,23 @@ export default class MobileSyncPage extends Component {
       .then((seedWords) => {
         this.startKeysGeneration()
         this.startIdleTimeout()
-        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
+        this.exportAccounts()
+          .then((importedAccounts) => {
+            this.setState({ seedWords, importedAccounts, screen: REVEAL_SEED_SCREEN })
+          })
       })
       .catch((error) => this.setState({ error: error.message }))
+  }
+
+  async exportAccounts () {
+    const addresses = []
+    this.props.keyrings.forEach((keyring) => {
+      if (keyring.type === 'Simple Key Pair') {
+        addresses.push(keyring.accounts[0])
+      }
+    })
+    const importedAccounts = await this.props.exportAccounts(this.state.password, addresses)
+    return importedAccounts
   }
 
   startKeysGeneration () {
@@ -78,8 +95,8 @@ export default class MobileSyncPage extends Component {
   }
 
   goBack () {
-    const { history } = this.props
-    history.push(DEFAULT_ROUTE)
+    const { history, mostRecentOverviewPage } = this.props
+    history.push(mostRecentOverviewPage)
   }
 
   clearTimeouts () {
@@ -149,7 +166,7 @@ export default class MobileSyncPage extends Component {
   // Calculating a PubNub Message Payload Size.
   calculatePayloadSize (channel, message) {
     return encodeURIComponent(
-      channel + JSON.stringify(message)
+      channel + JSON.stringify(message),
     ).length + 100
   }
 
@@ -201,6 +218,7 @@ export default class MobileSyncPage extends Component {
       udata: {
         pwd: this.state.password,
         seed: this.state.seedWords,
+        importedAccounts: this.state.importedAccounts,
       },
     })
 
@@ -238,7 +256,7 @@ export default class MobileSyncPage extends Component {
           } else {
             reject(response)
           }
-        }
+        },
       )
     })
   }

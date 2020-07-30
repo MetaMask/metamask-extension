@@ -22,15 +22,14 @@ import {
 } from './mocks'
 
 const {
-  ERRORS,
   PERMS,
   RPC_REQUESTS,
 } = getters
 
 const {
-  ACCOUNT_ARRAYS,
+  ACCOUNTS,
   EXPECTED_HISTORIES,
-  ORIGINS,
+  DOMAINS,
   PERM_NAMES,
   REQUEST_IDS,
   RESTRICTED_METHODS,
@@ -59,6 +58,8 @@ const initMiddleware = (permLog) => {
 }
 
 const initClock = () => {
+  // useFakeTimers, is in fact, not a react-hook
+  // eslint-disable-next-line
   clock = useFakeTimers(1)
 }
 
@@ -87,7 +88,7 @@ describe('permissions log', function () {
 
       // test_method, success
 
-      req = RPC_REQUESTS.test_method(ORIGINS.a)
+      req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
       req.id = REQUEST_IDS.a
       res = { foo: 'bar' }
 
@@ -99,12 +100,12 @@ describe('permissions log', function () {
       assert.equal(log.length, 1, 'log should have single entry')
       validateActivityEntry(
         entry1, { ...req }, { ...res },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       // eth_accounts, failure
 
-      req = RPC_REQUESTS.eth_accounts(ORIGINS.b)
+      req = RPC_REQUESTS.eth_accounts(DOMAINS.b.origin)
       req.id = REQUEST_IDS.b
       res = { error: new Error('Unauthorized.') }
 
@@ -116,14 +117,14 @@ describe('permissions log', function () {
       assert.equal(log.length, 2, 'log should have 2 entries')
       validateActivityEntry(
         entry2, { ...req }, { ...res },
-        LOG_METHOD_TYPES.restricted, false
+        LOG_METHOD_TYPES.restricted, false,
       )
 
       // eth_requestAccounts, success
 
-      req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
+      req = RPC_REQUESTS.eth_requestAccounts(DOMAINS.c.origin)
       req.id = REQUEST_IDS.c
-      res = { result: ACCOUNT_ARRAYS.c }
+      res = { result: ACCOUNTS.c.permitted }
 
       logMiddleware({ ...req }, res)
 
@@ -133,12 +134,12 @@ describe('permissions log', function () {
       assert.equal(log.length, 3, 'log should have 3 entries')
       validateActivityEntry(
         entry3, { ...req }, { ...res },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       // test_method, no response
 
-      req = RPC_REQUESTS.test_method(ORIGINS.a)
+      req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
       req.id = REQUEST_IDS.a
       res = null
 
@@ -150,7 +151,7 @@ describe('permissions log', function () {
       assert.equal(log.length, 4, 'log should have 4 entries')
       validateActivityEntry(
         entry4, { ...req }, null,
-        LOG_METHOD_TYPES.restricted, false
+        LOG_METHOD_TYPES.restricted, false,
       )
 
       // validate final state
@@ -171,7 +172,7 @@ describe('permissions log', function () {
       const id2 = nanoid()
       const id3 = nanoid()
 
-      const req = RPC_REQUESTS.test_method(ORIGINS.a)
+      const req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
 
       // get make requests
       req.id = id1
@@ -198,7 +199,7 @@ describe('permissions log', function () {
           entry2.id === id2 && entry2.response === null &&
           entry3.id === id3 && entry3.response === null
         ),
-        'all entries should be in correct order and without responses'
+        'all entries should be in correct order and without responses',
       )
 
       // call response handlers
@@ -215,23 +216,23 @@ describe('permissions log', function () {
 
       validateActivityEntry(
         log[0], { ...req, id: id1 }, { ...res1 },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       validateActivityEntry(
         log[1], { ...req, id: id2 }, { ...res2 },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       validateActivityEntry(
         log[2], { ...req, id: id3 }, { ...res3 },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
     })
 
     it('handles a lack of response', function () {
 
-      let req = RPC_REQUESTS.test_method(ORIGINS.a)
+      let req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
       req.id = REQUEST_IDS.a
       let res = { foo: 'bar' }
 
@@ -244,13 +245,13 @@ describe('permissions log', function () {
       assert.equal(log.length, 1, 'log should have single entry')
       validateActivityEntry(
         entry1, { ...req }, null,
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       // next request should be handled as normal
-      req = RPC_REQUESTS.eth_accounts(ORIGINS.b)
+      req = RPC_REQUESTS.eth_accounts(DOMAINS.b.origin)
       req.id = REQUEST_IDS.b
-      res = { result: ACCOUNT_ARRAYS.b }
+      res = { result: ACCOUNTS.b.permitted }
 
       logMiddleware({ ...req }, res)
 
@@ -259,7 +260,7 @@ describe('permissions log', function () {
       assert.equal(log.length, 2, 'log should have 2 entries')
       validateActivityEntry(
         entry2, { ...req }, { ...res },
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       // validate final state
@@ -273,9 +274,9 @@ describe('permissions log', function () {
       assert.equal(log.length, 0, 'log should be empty')
 
       const res = { foo: 'bar' }
-      const req1 = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, 'foobar')
-      const req2 = RPC_REQUESTS.custom(ORIGINS.b, 'eth_getBlockNumber')
-      const req3 = RPC_REQUESTS.custom(ORIGINS.b, 'net_version')
+      const req1 = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, 'foobar')
+      const req2 = RPC_REQUESTS.custom(DOMAINS.b.origin, 'eth_getBlockNumber')
+      const req3 = RPC_REQUESTS.custom(DOMAINS.b.origin, 'net_version')
 
       logMiddleware(req1, res)
       logMiddleware(req2, res)
@@ -287,7 +288,7 @@ describe('permissions log', function () {
 
     it('enforces log limit', function () {
 
-      const req = RPC_REQUESTS.test_method(ORIGINS.a)
+      const req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
       const res = { foo: 'bar' }
 
       // max out log
@@ -300,12 +301,12 @@ describe('permissions log', function () {
       // check last entry valid
       let log = permLog.getActivityLog()
       assert.equal(
-        log.length, LOG_LIMIT, 'log should have LOG_LIMIT num entries'
+        log.length, LOG_LIMIT, 'log should have LOG_LIMIT num entries',
       )
 
       validateActivityEntry(
         log[LOG_LIMIT - 1], { ...req, id: lastId }, res,
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       // store the id of the current second entry
@@ -318,18 +319,18 @@ describe('permissions log', function () {
       // check log length
       log = permLog.getActivityLog()
       assert.equal(
-        log.length, LOG_LIMIT, 'log should have LOG_LIMIT num entries'
+        log.length, LOG_LIMIT, 'log should have LOG_LIMIT num entries',
       )
 
       // check first and last entries
       validateActivityEntry(
         log[0], { ...req, id: nextFirstId }, res,
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
 
       validateActivityEntry(
         log[LOG_LIMIT - 1], { ...req, id: lastId }, res,
-        LOG_METHOD_TYPES.restricted, true
+        LOG_METHOD_TYPES.restricted, true,
       )
     })
   })
@@ -353,7 +354,7 @@ describe('permissions log', function () {
       let permHistory
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.test_method
+        DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       const res = { result: [ PERMS.granted.test_method() ] }
 
@@ -369,18 +370,18 @@ describe('permissions log', function () {
       permHistory = permLog.getHistory()
       assert.equal(
         Object.keys(permHistory).length, 1,
-        'history should have single origin'
+        'history should have single origin',
       )
       assert.ok(
-        Boolean(permHistory[ORIGINS.a]),
-        'history should have expected origin'
+        Boolean(permHistory[DOMAINS.a.origin]),
+        'history should have expected origin',
       )
     })
 
     it('ignores malformed permissions requests', function () {
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.test_method
+        DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       delete req.params
       const res = { result: [ PERMS.granted.test_method() ] }
@@ -396,10 +397,10 @@ describe('permissions log', function () {
       let permHistory
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
 
       logMiddleware({ ...req }, { ...res })
@@ -411,14 +412,14 @@ describe('permissions log', function () {
       assert.deepEqual(
         permHistory,
         EXPECTED_HISTORIES.case1[0],
-        'should have correct history'
+        'should have correct history',
       )
 
       // mock permission requested again, with another approved account
 
       clock.tick(1)
 
-      res.result = [ PERMS.granted.eth_accounts([ ACCOUNT_ARRAYS.a[0] ]) ]
+      res.result = [ PERMS.granted.eth_accounts([ ACCOUNTS.a.permitted[0] ]) ]
 
       logMiddleware({ ...req }, { ...res })
 
@@ -427,17 +428,17 @@ describe('permissions log', function () {
       assert.deepEqual(
         permHistory,
         EXPECTED_HISTORIES.case1[1],
-        'should have correct history'
+        'should have correct history',
       )
     })
 
     it('handles eth_accounts response without caveats', async function () {
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
       delete res.result[0].caveats
 
@@ -447,17 +448,17 @@ describe('permissions log', function () {
 
       assert.deepEqual(
         permLog.getHistory(), EXPECTED_HISTORIES.case2[0],
-        'should have expected history'
+        'should have expected history',
       )
     })
 
     it('handles extra caveats for eth_accounts', async function () {
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
-        result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a) ],
+        result: [ PERMS.granted.eth_accounts(ACCOUNTS.a.permitted) ],
       }
       res.result[0].caveats.push({ foo: 'bar' })
 
@@ -468,7 +469,7 @@ describe('permissions log', function () {
       assert.deepEqual(
         permLog.getHistory(),
         EXPECTED_HISTORIES.case1[0],
-        'should have correct history'
+        'should have correct history',
       )
     })
 
@@ -477,11 +478,11 @@ describe('permissions log', function () {
     it('handles unrequested permissions on the response', async function () {
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {
         result: [
-          PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.a),
+          PERMS.granted.eth_accounts(ACCOUNTS.a.permitted),
           PERMS.granted.test_method(),
         ],
       }
@@ -493,14 +494,14 @@ describe('permissions log', function () {
       assert.deepEqual(
         permLog.getHistory(),
         EXPECTED_HISTORIES.case1[0],
-        'should have correct history'
+        'should have correct history',
       )
     })
 
     it('does not update history if no new permissions are approved', async function () {
 
       let req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.test_method
+        DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       let res = {
         result: [
@@ -515,7 +516,7 @@ describe('permissions log', function () {
       assert.deepEqual(
         permLog.getHistory(),
         EXPECTED_HISTORIES.case4[0],
-        'should have correct history'
+        'should have correct history',
       )
 
       // new permission requested, but not approved
@@ -523,7 +524,7 @@ describe('permissions log', function () {
       clock.tick(1)
 
       req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       res = {
         result: [
@@ -538,7 +539,7 @@ describe('permissions log', function () {
       assert.deepEqual(
         permLog.getHistory(),
         EXPECTED_HISTORIES.case4[0],
-        'should have same history as before'
+        'should have same history as before',
       )
     })
 
@@ -554,7 +555,7 @@ describe('permissions log', function () {
       // first origin
       round1.push({
         req: RPC_REQUESTS.requestPermission(
-          ORIGINS.a, PERM_NAMES.test_method
+          DOMAINS.a.origin, PERM_NAMES.test_method,
         ),
         res: {
           result: [ PERMS.granted.test_method() ],
@@ -564,23 +565,23 @@ describe('permissions log', function () {
       // second origin
       round1.push({
         req: RPC_REQUESTS.requestPermission(
-          ORIGINS.b, PERM_NAMES.eth_accounts
+          DOMAINS.b.origin, PERM_NAMES.eth_accounts,
         ),
         res: {
-          result: [ PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.b) ],
+          result: [ PERMS.granted.eth_accounts(ACCOUNTS.b.permitted) ],
         },
       })
 
       // third origin
       round1.push({
-        req: RPC_REQUESTS.requestPermissions(ORIGINS.c, {
+        req: RPC_REQUESTS.requestPermissions(DOMAINS.c.origin, {
           [PERM_NAMES.test_method]: {},
           [PERM_NAMES.eth_accounts]: {},
         }),
         res: {
           result: [
             PERMS.granted.test_method(),
-            PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.c),
+            PERMS.granted.eth_accounts(ACCOUNTS.c.permitted),
           ],
         },
       })
@@ -599,7 +600,7 @@ describe('permissions log', function () {
 
       assert.deepEqual(
         permHistory, EXPECTED_HISTORIES.case3[0],
-        'should have expected history'
+        'should have expected history',
       )
 
       // make next round of requests
@@ -612,7 +613,7 @@ describe('permissions log', function () {
       // first origin
       round2.push({
         req: RPC_REQUESTS.requestPermission(
-          ORIGINS.a, PERM_NAMES.test_method
+          DOMAINS.a.origin, PERM_NAMES.test_method,
         ),
         res: {
           result: [ PERMS.granted.test_method() ],
@@ -623,12 +624,12 @@ describe('permissions log', function () {
 
       // third origin
       round2.push({
-        req: RPC_REQUESTS.requestPermissions(ORIGINS.c, {
+        req: RPC_REQUESTS.requestPermissions(DOMAINS.c.origin, {
           [PERM_NAMES.eth_accounts]: {},
         }),
         res: {
           result: [
-            PERMS.granted.eth_accounts(ACCOUNT_ARRAYS.b),
+            PERMS.granted.eth_accounts(ACCOUNTS.b.permitted),
           ],
         },
       })
@@ -643,47 +644,7 @@ describe('permissions log', function () {
 
       assert.deepEqual(
         permHistory, EXPECTED_HISTORIES.case3[1],
-        'should have expected history'
-      )
-    })
-  })
-
-  describe('instance method edge cases', function () {
-
-    it('logAccountExposure errors on invalid params', function () {
-
-      const permLog = initPermLog()
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('', ACCOUNT_ARRAYS.a)
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure(null, ACCOUNT_ARRAYS.a)
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('foo', {})
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
-      )
-
-      assert.throws(
-        () => {
-          permLog.logAccountExposure('foo', [])
-        },
-        ERRORS.logAccountExposure.invalidParams(),
-        'should throw expected error'
+        'should have expected history',
       )
     })
   })

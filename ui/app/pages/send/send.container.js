@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 
 import {
-  getAmountConversionRate,
   getBlockGasLimit,
   getConversionRate,
   getCurrentNetwork,
@@ -12,9 +11,8 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
-  getRecentBlocks,
-  getSelectedToken,
-  getSelectedTokenContract,
+  getSendToken,
+  getSendTokenContract,
   getSendAmount,
   getSendEditingTransactionId,
   getSendHexDataFeatureFlagState,
@@ -23,12 +21,10 @@ import {
   getSendToNickname,
   getTokenBalance,
   getQrCodeData,
-} from './send.selectors'
-import {
   getSelectedAddress,
   getAddressBook,
-} from '../../selectors/selectors'
-import { getTokens } from './send-content/add-recipient/add-recipient.selectors'
+} from '../../selectors'
+
 import {
   updateSendTo,
   updateSendTokenBalance,
@@ -46,6 +42,7 @@ import {
 import {
   fetchBasicGasEstimates,
 } from '../../ducks/gas/gas.duck'
+import { getTokens } from '../../ducks/metamask/metamask'
 import {
   calcGasTotal,
 } from './send.utils.js'
@@ -59,7 +56,6 @@ function mapStateToProps (state) {
   return {
     addressBook: getAddressBook(state),
     amount: getSendAmount(state),
-    amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
     editingTransactionId,
@@ -70,15 +66,14 @@ function mapStateToProps (state) {
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
     qrCodeData: getQrCodeData(state),
-    recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
-    selectedToken: getSelectedToken(state),
+    sendToken: getSendToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
     to: getSendTo(state),
     toNickname: getSendToNickname(state),
     tokens: getTokens(state),
     tokenBalance: getTokenBalance(state),
-    tokenContract: getSelectedTokenContract(state),
+    tokenContract: getSendTokenContract(state),
   }
 }
 
@@ -89,20 +84,19 @@ function mapDispatchToProps (dispatch) {
       editingTransactionId,
       gasLimit,
       gasPrice,
-      recentBlocks,
       selectedAddress,
-      selectedToken,
+      sendToken,
       to,
       value,
       data,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ gasPrice, recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value, data }))
+        ? dispatch(updateGasData({ gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
-    updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
+    updateSendTokenBalance: ({ sendToken, tokenContract, address }) => {
       dispatch(updateSendTokenBalance({
-        selectedToken,
+        sendToken,
         tokenContract,
         address,
       }))
@@ -128,5 +122,5 @@ function mapDispatchToProps (dispatch) {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(SendEther)

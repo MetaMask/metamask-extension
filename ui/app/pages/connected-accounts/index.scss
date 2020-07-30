@@ -1,0 +1,10 @@
+.connected-accounts {
+  &__footer {
+    a,
+    a:hover {
+      color: $primary-blue;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+}

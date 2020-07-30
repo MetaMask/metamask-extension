@@ -4,9 +4,9 @@ import { compose } from 'redux'
 import {
   getNetworkIdentifier,
   hasPermissionRequests,
-  preferencesSelector,
-} from '../../selectors/selectors'
-import { submittedPendingTransactionsSelector } from '../../selectors/transactions'
+  getPreferences,
+  submittedPendingTransactionsSelector,
+} from '../../selectors'
 import Routes from './routes.component'
 import {
   hideSidebar,
@@ -15,6 +15,7 @@ import {
   setLastActiveTime,
   setMouseUserState,
 } from '../../store/actions'
+import { pageChanged } from '../../ducks/history/history'
 
 function mapStateToProps (state) {
   const { appState } = state
@@ -25,7 +26,7 @@ function mapStateToProps (state) {
     isLoading,
     loadingMessage,
   } = appState
-  const { autoLockTimeLimit = 0 } = preferencesSelector(state)
+  const { autoLockTimeLimit = 0 } = getPreferences(state)
 
   return {
     sidebar,
@@ -54,6 +55,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
+    pageChanged: (path) => dispatch(pageChanged(path)),
   }
 }
 

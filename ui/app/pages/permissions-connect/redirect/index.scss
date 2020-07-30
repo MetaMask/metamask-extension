@@ -1,0 +1,36 @@
+.permissions-redirect {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+
+  &__result {
+    @include H3;
+
+    position: absolute;
+    top: 30%;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: $Black-100;
+  }
+
+  &__icons {
+    display: flex;
+  }
+
+  &__center-icon {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  &__check {
+    width: 40px;
+    height: 40px;
+    background: white url("/images/permissions-check.svg") no-repeat;
+    position: absolute;
+  }
+}

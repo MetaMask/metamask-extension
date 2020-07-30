@@ -2,7 +2,7 @@
 
 .token-list {
   &__title {
-    font-size: .75rem;
+    font-size: 0.75rem;
   }
 
   &__tokens-container {
@@ -24,7 +24,7 @@
     position: relative;
 
     &:hover {
-      border: 2px solid rgba($malibu-blue, .5);
+      border: 2px solid rgba($malibu-blue, 0.5);
     }
 
     &--selected {
@@ -32,7 +32,7 @@
     }
 
     &--disabled {
-      opacity: .4;
+      opacity: 0.4;
       pointer-events: none;
     }
   }
@@ -45,7 +45,7 @@
     background-position: center;
     border-radius: 50%;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba($black, .24);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.24);
     margin-right: 12px;
     flex: 0 0 auto;
   }

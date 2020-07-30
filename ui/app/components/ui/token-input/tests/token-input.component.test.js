@@ -13,17 +13,7 @@ describe('TokenInput Component', function () {
   const t = (key) => `translate ${key}`
 
   describe('rendering', function () {
-    it('should render properly without a token', function () {
-      const wrapper = shallow(
-        <TokenInput />,
-        { context: { t } }
-      )
-
-      assert.ok(wrapper)
-      assert.equal(wrapper.find(UnitInput).length, 1)
-    })
-
-    it('should render properly with a token', function () {
+    it('should render properly', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -35,12 +25,11 @@ describe('TokenInput Component', function () {
       const wrapper = mount(
         <Provider store={store}>
           <TokenInput
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
           />
         </Provider>,
         { context: { t },
@@ -57,7 +46,7 @@ describe('TokenInput Component', function () {
       assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
     })
 
-    it('should render properly with a token and selectedTokenExchangeRate', function () {
+    it('should render properly with tokenExchangeRates', function () {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -69,13 +58,12 @@ describe('TokenInput Component', function () {
       const wrapper = mount(
         <Provider store={store}>
           <TokenInput
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
         { context: { t },
@@ -104,15 +92,14 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -138,16 +125,15 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -173,13 +159,12 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             value="2710"
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             hideConversion
           />
@@ -224,15 +209,14 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -266,16 +250,15 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)
@@ -309,16 +292,15 @@ describe('TokenInput Component', function () {
         <Provider store={store}>
           <TokenInput
             onChange={handleChangeSpy}
-            selectedToken={{
+            token={{
               address: '0x1',
-              decimals: '4',
+              decimals: 4,
               symbol: 'ABC',
             }}
-            suffix="ABC"
-            selectedTokenExchangeRate={2}
+            tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
-        </Provider>
+        </Provider>,
       )
 
       assert.ok(wrapper)

@@ -67,7 +67,7 @@ export default class ContactList extends PureComponent {
           return 1
         } else if (letter1 === letter2) {
           return 0
-        } else if (letter1 < letter2) {
+        } else {
           return -1
         }
       })

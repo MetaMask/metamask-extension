@@ -7,8 +7,16 @@ export const LOG_STORE_KEY = 'permissionsLog'
 
 export const METADATA_STORE_KEY = 'domainMetadata'
 
+export const METADATA_CACHE_MAX_SIZE = 100
+
 export const CAVEAT_NAMES = {
   exposedAccounts: 'exposedAccounts',
+  primaryAccountOnly: 'primaryAccountOnly',
+}
+
+export const CAVEAT_TYPES = {
+  limitResponseLength: 'limitResponseLength',
+  filterResponse: 'filterResponse',
 }
 
 export const NOTIFICATION_NAMES = {
@@ -28,6 +36,7 @@ export const LOG_LIMIT = 100
 
 export const SAFE_METHODS = [
   'web3_sha3',
+  'web3_clientVersion',
   'net_listening',
   'net_peerCount',
   'net_version',
@@ -67,6 +76,7 @@ export const SAFE_METHODS = [
   'eth_sendTransaction',
   'eth_sign',
   'personal_sign',
+  'personal_ecRecover',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',

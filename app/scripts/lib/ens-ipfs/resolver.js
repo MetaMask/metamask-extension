@@ -5,10 +5,7 @@ import registryAbi from './contracts/registry'
 import resolverAbi from './contracts/resolver'
 import contentHash from 'content-hash'
 
-export default resolveEnsToIpfsContentId
-
-
-async function resolveEnsToIpfsContentId ({ provider, name }) {
+export default async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
@@ -35,7 +32,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
     let decodedContentHash = contentHash.decode(rawContentHash)
     const type = contentHash.getCodec(rawContentHash)
 
-    if (type === 'ipfs-ns') {
+    if (type === 'ipfs-ns' || type === 'ipns-ns') {
       decodedContentHash = contentHash.helpers.cidV0ToV1Base32(decodedContentHash)
     }
 
@@ -65,11 +62,8 @@ function hexValueIsEmpty (value) {
 function getRegistryForChainId (chainId) {
   switch (chainId) {
     case 1:
-      // falls through
     case 3:
-      // falls through
     case 4:
-      // falls through
     case 5:
       // Mainnet, Ropsten, Rinkeby, and Goerli, respectively, use the same address
       return '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'

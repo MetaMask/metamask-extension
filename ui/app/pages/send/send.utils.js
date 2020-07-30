@@ -15,7 +15,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
-  ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants'
@@ -29,7 +28,6 @@ export {
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
   estimateGas,
-  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -50,7 +48,6 @@ function calcGasTotal (gasLimit = '0', gasPrice = '0') {
 
 function isBalanceSufficient ({
   amount = '0x0',
-  amountConversionRate = 1,
   balance = '0x0',
   conversionRate = 1,
   gasTotal = '0x0',
@@ -72,7 +69,7 @@ function isBalanceSufficient ({
     {
       value: totalAmount,
       fromNumericBase: 'hex',
-      conversionRate: Number(amountConversionRate) || conversionRate,
+      conversionRate: conversionRate,
       fromCurrency: primaryCurrency,
     },
   )
@@ -104,19 +101,17 @@ function isTokenBalanceSufficient ({
 
 function getAmountErrorObject ({
   amount,
-  amountConversionRate,
   balance,
   conversionRate,
   gasTotal,
   primaryCurrency,
-  selectedToken,
+  sendToken,
   tokenBalance,
 }) {
   let insufficientFunds = false
-  if (gasTotal && conversionRate && !selectedToken) {
+  if (gasTotal && conversionRate && !sendToken) {
     insufficientFunds = !isBalanceSufficient({
       amount,
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
@@ -125,8 +120,8 @@ function getAmountErrorObject ({
   }
 
   let inSufficientTokens = false
-  if (selectedToken && tokenBalance !== null) {
-    const { decimals } = selectedToken
+  if (sendToken && tokenBalance !== null) {
+    const { decimals } = sendToken
     inSufficientTokens = !isTokenBalanceSufficient({
       tokenBalance,
       amount,
@@ -153,7 +148,6 @@ function getAmountErrorObject ({
 }
 
 function getGasFeeErrorObject ({
-  amountConversionRate,
   balance,
   conversionRate,
   gasTotal,
@@ -164,7 +158,6 @@ function getGasFeeErrorObject ({
   if (gasTotal && conversionRate) {
     const insufficientFunds = !isBalanceSufficient({
       amount: '0x0',
-      amountConversionRate,
       balance,
       conversionRate,
       gasTotal,
@@ -179,8 +172,8 @@ function getGasFeeErrorObject ({
   return { gasFee: gasFeeError }
 }
 
-function calcTokenBalance ({ selectedToken, usersToken }) {
-  const { decimals } = selectedToken || {}
+function calcTokenBalance ({ sendToken, usersToken }) {
+  const { decimals } = sendToken || {}
   return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
 }
 
@@ -190,12 +183,12 @@ function doesAmountErrorRequireUpdate ({
   prevBalance,
   prevGasTotal,
   prevTokenBalance,
-  selectedToken,
+  sendToken,
   tokenBalance,
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
-  const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
+  const tokenBalanceHasChanged = sendToken && tokenBalance !== prevTokenBalance
   const amountErrorRequiresUpdate = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
   return amountErrorRequiresUpdate
@@ -203,7 +196,7 @@ function doesAmountErrorRequireUpdate ({
 
 async function estimateGas ({
   selectedAddress,
-  selectedToken,
+  sendToken,
   blockGasLimit = MIN_GAS_LIMIT_HEX,
   to,
   value,
@@ -214,21 +207,21 @@ async function estimateGas ({
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
   // if recipient has no code, gas is 21k max:
-  if (!selectedToken && !data) {
+  if (!sendToken && !data) {
     const code = Boolean(to) && await global.eth.getCode(to)
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
     const codeIsEmpty = !code || code === '0x' || code === '0x0'
     if (codeIsEmpty) {
       return SIMPLE_GAS_COST
     }
-  } else if (selectedToken && !to) {
+  } else if (sendToken && !to) {
     return BASE_TOKEN_GAS_COST
   }
 
-  if (selectedToken) {
+  if (sendToken) {
     paramsForGasEstimate.value = '0x0'
-    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
-    paramsForGasEstimate.to = selectedToken.address
+    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, sendToken })
+    paramsForGasEstimate.to = sendToken.address
   } else {
     if (data) {
       paramsForGasEstimate.data = data
@@ -256,24 +249,22 @@ async function estimateGas ({
   }))
 
   // run tx
-  return new Promise((resolve, reject) => {
-    return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
-      if (err) {
-        const simulationFailed = (
-          err.message.includes('Transaction execution error.') ||
-          err.message.includes('gas required exceeds allowance or always failing transaction')
-        )
-        if (simulationFailed) {
-          const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
-          return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
-        } else {
-          return reject(err)
-        }
-      }
-      const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
-      return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
-    })
-  })
+  try {
+    const estimatedGas = await estimateGasMethod(paramsForGasEstimate)
+    const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
+    return ethUtil.addHexPrefix(estimateWithBuffer)
+  } catch (error) {
+    const simulationFailed = (
+      error.message.includes('Transaction execution error.') ||
+      error.message.includes('gas required exceeds allowance or always failing transaction')
+    )
+    if (simulationFailed) {
+      const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
+      return ethUtil.addHexPrefix(estimateWithBuffer)
+    } else {
+      throw error
+    }
+  }
 }
 
 function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 1.5) {
@@ -308,33 +299,14 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
   return upperGasLimit
 }
 
-function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
-  if (!selectedToken) {
+function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendToken }) {
+  if (!sendToken) {
     return
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
-    (x) => ('00' + x.toString(16)).slice(-2)
+    (x) => ('00' + x.toString(16)).slice(-2),
   ).join('')
-}
-
-function estimateGasPriceFromRecentBlocks (recentBlocks) {
-  // Return 1 gwei if no blocks have been observed:
-  if (!recentBlocks || recentBlocks.length === 0) {
-    return ONE_GWEI_IN_WEI_HEX
-  }
-
-  const lowestPrices = recentBlocks.map((block) => {
-    if (!block.gasPrices || block.gasPrices.length < 1) {
-      return ONE_GWEI_IN_WEI_HEX
-    }
-    return block.gasPrices.reduce((currentLowest, next) => {
-      return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
-    })
-  })
-    .sort((a, b) => (parseInt(a, 16) > parseInt(b, 16) ? 1 : -1))
-
-  return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
 
 function getToAddressForGasUpdate (...addresses) {

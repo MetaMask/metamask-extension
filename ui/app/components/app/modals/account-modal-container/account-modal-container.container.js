@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { hideModal } from '../../../../store/actions'
-import { getSelectedIdentity } from '../../../../selectors/selectors'
+import { getSelectedIdentity } from '../../../../selectors'
 import AccountModalContainer from './account-modal-container.component'
 
 function mapStateToProps (state, ownProps) {

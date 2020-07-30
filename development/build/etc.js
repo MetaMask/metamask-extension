@@ -25,7 +25,7 @@ function createEtcTasks ({ browserPlatforms, livereload }) {
 
   // zip tasks for distribution
   const zip = createTask('zip', composeParallel(
-    ...browserPlatforms.map((platform) => createZipTask(platform))
+    ...browserPlatforms.map((platform) => createZipTask(platform)),
   ))
 
   return { clean, reload, zip }

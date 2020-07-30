@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { addToAddressBook, showQrScanner, qrCodeDetected } from '../../../../store/actions'
 import {
   getQrCodeData,
-} from '../../../send/send.selectors'
+} from '../../../../selectors'
 
 const mapStateToProps = (state) => {
   return {
@@ -23,5 +23,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(AddContact)

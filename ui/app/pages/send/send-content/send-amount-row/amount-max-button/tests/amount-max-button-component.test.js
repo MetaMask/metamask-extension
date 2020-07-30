@@ -25,7 +25,7 @@ describe('AmountMaxButton Component', function () {
         balance="mockBalance"
         gasTotal="mockGasTotal"
         maxModeOn={false}
-        selectedToken={ { address: 'mockTokenAddress' } }
+        sendToken={ { address: 'mockTokenAddress' } }
         setAmountToMax={propsMethodSpies.setAmountToMax}
         setMaxModeTo={propsMethodSpies.setMaxModeTo}
         tokenBalance="mockTokenBalance"
@@ -60,9 +60,9 @@ describe('AmountMaxButton Component', function () {
         [{
           balance: 'mockBalance',
           gasTotal: 'mockGasTotal',
-          selectedToken: { address: 'mockTokenAddress' },
+          sendToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
-        }]
+        }],
       )
     })
 
@@ -85,7 +85,7 @@ describe('AmountMaxButton Component', function () {
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.setMaxModeTo.getCall(0).args,
-        [true]
+        [true],
       )
     })
 

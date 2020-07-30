@@ -1,34 +1,50 @@
 import { connect } from 'react-redux'
 import ConnectedSites from './connected-sites.component'
-import { getOpenMetamaskTabsIds, legacyExposeAccounts, removePermissionsFor } from '../../store/actions'
+import {
+  getOpenMetamaskTabsIds,
+  requestAccountsPermissionWithId,
+  removePermissionsFor,
+  removePermittedAccount,
+} from '../../store/actions'
 import {
   getConnectedDomainsForSelectedAddress,
   getCurrentAccountWithSendEtherInfo,
-  getPermissionsDomains,
-  getPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
+  getPermissionDomains,
+  getPermissionsMetadataHostCounts,
+  getPermittedAccountsByOrigin,
   getSelectedAddress,
-} from '../../selectors/selectors'
-import { getOriginFromUrl } from '../../helpers/utils/util'
+} from '../../selectors'
+import { CONNECT_ROUTE } from '../../helpers/constants/routes'
+import { getMostRecentOverviewPage } from '../../ducks/history/history'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState
-  const { title, url, id } = state.activeTab
-  const permittedAccounts = getPermittedAccountsForCurrentTab(state)
+  const { id } = state.activeTab
   const connectedDomains = getConnectedDomainsForSelectedAddress(state)
+  const originOfCurrentTab = getOriginOfCurrentTab(state)
+  const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state)
+  const selectedAddress = getSelectedAddress(state)
+
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin[
+    originOfCurrentTab
+  ]?.length
 
   let tabToConnect
-  if (url && permittedAccounts.length === 0 && !openMetaMaskTabs[id]) {
+  if (originOfCurrentTab && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
-      title,
-      origin: getOriginFromUrl(url),
+      origin: originOfCurrentTab,
     }
   }
 
   return {
     accountLabel: getCurrentAccountWithSendEtherInfo(state).name,
     connectedDomains,
-    domains: getPermissionsDomains(state),
-    selectedAddress: getSelectedAddress(state),
+    domains: getPermissionDomains(state),
+    domainHostCount: getPermissionsMetadataHostCounts(state),
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    permittedAccountsByOrigin,
+    selectedAddress,
     tabToConnect,
   }
 }
@@ -36,29 +52,57 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
-    disconnectAccount: (domainKey, domain) => {
+    disconnectAccount: (domainKey, address) => {
+      dispatch(removePermittedAccount(domainKey, address))
+    },
+    disconnectAllAccounts: (domainKey, domain) => {
       const permissionMethodNames = domain.permissions.map(({ parentCapability }) => parentCapability)
       dispatch(removePermissionsFor({
         [domainKey]: permissionMethodNames,
       }))
     },
-    legacyExposeAccounts: (origin, account) => dispatch(legacyExposeAccounts(origin, [account])),
+    requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { domains, selectedAddress, tabToConnect } = stateProps
+  const {
+    connectedDomains,
+    domains,
+    mostRecentOverviewPage,
+    selectedAddress,
+    tabToConnect,
+  } = stateProps
   const {
     disconnectAccount,
-    legacyExposeAccounts: dispatchLegacyExposeAccounts,
+    disconnectAllAccounts,
+    requestAccountsPermissionWithId,
   } = dispatchProps
+  const { history } = ownProps
+
+  const closePopover = () => history.push(mostRecentOverviewPage)
 
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    disconnectAccount: (domainKey) => disconnectAccount(domainKey, domains[domainKey]),
-    legacyExposeAccount: () => dispatchLegacyExposeAccounts(tabToConnect.origin, selectedAddress),
+    closePopover,
+    disconnectAccount: (domainKey) => {
+      disconnectAccount(domainKey, selectedAddress)
+      if (connectedDomains.length === 1) {
+        closePopover()
+      }
+    },
+    disconnectAllAccounts: (domainKey) => {
+      disconnectAllAccounts(domainKey, domains[domainKey])
+      if (connectedDomains.length === 1) {
+        closePopover()
+      }
+    },
+    requestAccountsPermission: async () => {
+      const id = await requestAccountsPermissionWithId(tabToConnect.origin)
+      history.push(`${CONNECT_ROUTE}/${id}`)
+    },
   }
 }
 

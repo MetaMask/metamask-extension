@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Penerapan Kontrak"
   },
-  "conversionProgress": {
-    "message": "Konversi sedang berlangsung"
-  },
-  "copiedButton": {
-    "message": "Tersalin"
-  },
   "copiedExclamation": {
     "message": "Disalin!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
-  },
-  "copyButton": {
-    "message": "Salin"
   },
   "copyPrivateKey": {
     "message": "Ini adalah kunci pribadi Anda (klik untuk menyalin)"
@@ -358,9 +349,6 @@
   },
   "editContact": {
     "message": "Sunting Kontak"
-  },
-  "emailUs": {
-    "message": "Kirimkan kami email!"
   },
   "endOfFlowMessage1": {
     "message": "Anda lulus tes - jagalah agar frasa benih Anda aman, itu tanggung jawab Anda!"
@@ -441,9 +429,6 @@
   "from": {
     "message": "Dari"
   },
-  "fromShapeShift": {
-    "message": "Dari ShapeShift"
-  },
   "functionType": {
     "message": "Jenis Fungsi"
   },
@@ -517,9 +502,6 @@
   },
   "hide": {
     "message": "Sembunyikan"
-  },
-  "hideToken": {
-    "message": "Sembunyikan Token"
   },
   "hideTokenPrompt": {
     "message": "Sembunyikan Token?"
@@ -647,9 +629,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Tidak melihat token Anda?"
-  },
   "mobileSyncText": {
     "message": "Harap masukkan sandi untuk mengonfirmasi ini memang Anda!"
   },
@@ -744,9 +723,6 @@
   },
   "noAddressForName": {
     "message": "Belum ada alamat yang dipasang untuk nama ini."
-  },
-  "noDeposits": {
-    "message": "Belum ada setoran yang diterima"
   },
   "noConversionRateAvailable": {
     "message": "Kurs Konversi Tidak Tersedia"
@@ -1148,10 +1124,6 @@
   },
   "to": {
     "message": "Ke"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 ke ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Token sudah ditambahkan."

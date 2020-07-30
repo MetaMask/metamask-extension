@@ -230,11 +230,11 @@ describe('util', function () {
         }
         const oneEthBn = new ethUtil.BN(ethInWei, 10)
 
-        for (const currency in valueTable) {
+        Object.keys(valueTable).forEach((currency) => {
           const value = new ethUtil.BN(valueTable[currency], 10)
           const output = util.normalizeToWei(value, currency)
           assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
-        }
+        })
       })
     })
 
@@ -317,6 +317,35 @@ describe('util', function () {
           assert(result.length >= 6 && result.length <= 12)
         }
       })
+    })
+  })
+
+  describe('checkExistingAddresses', function () {
+    const tokenList = [
+      { address: 'A' },
+      { address: 'n' },
+      { address: 'Q' },
+      { address: 'z' },
+    ]
+
+    it('should return true when a lowercase address matches an uppercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('q', tokenList) === true)
+    })
+
+    it('should return true when an uppercase address matches a lowercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('N', tokenList) === true)
+    })
+
+    it('should return true when a lowercase address matches a lowercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('z', tokenList) === true)
+    })
+
+    it('should return true when an uppercase address matches an uppercase address in the passed list', function () {
+      assert(util.checkExistingAddresses('Q', tokenList) === true)
+    })
+
+    it('should return false when the passed address is not in the passed list', function () {
+      assert(util.checkExistingAddresses('b', tokenList) === false)
     })
   })
 })

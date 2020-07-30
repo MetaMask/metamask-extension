@@ -45,7 +45,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -64,7 +64,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver.delay(largeDelayMs)
       })
 
@@ -74,7 +74,7 @@ describe('MetaMask', function () {
       })
 
       it('imports a seed phrase', async function () {
-        const [seedTextArea] = await driver.findElements(By.css('textarea.first-time-flow__textarea'))
+        const [seedTextArea] = await driver.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver.delay(regularDelayMs)
 
@@ -83,7 +83,7 @@ describe('MetaMask', function () {
         const [confirmPassword] = await driver.findElements(By.id('confirm-password'))
         confirmPassword.sendKeys('correct horse battery staple')
 
-        await driver.clickElement(By.css('.first-time-flow__checkbox'))
+        await driver.clickElement(By.css('.first-time-flow__terms'))
 
         await driver.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
         await driver.delay(regularDelayMs)
@@ -96,7 +96,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver.findElement(By.css('.balance-display .token-amount'))
+        const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
         await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver.delay(regularDelayMs)
       })
@@ -170,7 +170,7 @@ describe('MetaMask', function () {
       })
 
       it('clicks the "Import Wallet" option', async function () {
-        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+        await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import wallet')]`))
         await driver2.delay(largeDelayMs)
       })
 
@@ -180,7 +180,7 @@ describe('MetaMask', function () {
       })
 
       it('imports a seed phrase', async function () {
-        const [seedTextArea] = await driver2.findElements(By.css('textarea.first-time-flow__textarea'))
+        const [seedTextArea] = await driver2.findElements(By.css('input[placeholder="Paste seed phrase from clipboard"]'))
         await seedTextArea.sendKeys(testSeedPhrase)
         await driver2.delay(regularDelayMs)
 
@@ -189,7 +189,7 @@ describe('MetaMask', function () {
         const [confirmPassword] = await driver2.findElements(By.id('confirm-password'))
         confirmPassword.sendKeys('correct horse battery staple')
 
-        await driver2.clickElement(By.css('.first-time-flow__checkbox'))
+        await driver2.clickElement(By.css('.first-time-flow__terms'))
 
         await driver2.clickElement(By.xpath(`//button[contains(text(), 'Import')]`))
         await driver2.delay(regularDelayMs)
@@ -202,7 +202,7 @@ describe('MetaMask', function () {
       })
 
       it('balance renders', async function () {
-        const balance = await driver2.findElement(By.css('.balance-display .token-amount'))
+        const balance = await driver2.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
         await driver2.wait(until.elementTextMatches(balance, /25\s*ETH/))
         await driver2.delay(regularDelayMs)
       })
@@ -223,7 +223,7 @@ describe('MetaMask', function () {
 
       it('finds the blockies toggle turned on', async function () {
         await driver.delay(regularDelayMs)
-        const toggleLabel = await driver.findElement(By.css('.toggle-button__status-label'))
+        const toggleLabel = await driver.findElement(By.css('.toggle-button__status'))
         const toggleLabelText = await toggleLabel.getText()
         assert.equal(toggleLabelText, 'ON')
       })

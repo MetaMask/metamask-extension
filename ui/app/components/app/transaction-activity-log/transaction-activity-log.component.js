@@ -5,7 +5,7 @@ import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers
 import { formatDate } from '../../../helpers/utils/util'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
-import prefixForNetwork from '../../../../lib/etherscan-prefix-for-network'
+import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
@@ -30,40 +30,38 @@ export default class TransactionActivityLog extends PureComponent {
     const { primaryTransaction } = this.props
     const { metamaskNetworkId } = primaryTransaction
 
-    const prefix = prefixForNetwork(metamaskNetworkId)
+    const prefix = getEtherscanNetworkPrefix(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
 
     global.platform.openTab({ url: etherscanUrl })
   }
 
-  renderInlineRetry (index, activity) {
+  renderInlineRetry (index) {
     const { t } = this.context
     const { inlineRetryIndex, primaryTransaction = {}, onRetry, isEarliestNonce } = this.props
     const { status } = primaryTransaction
-    const { id } = activity
 
     return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineRetryIndex
       ? (
         <div
           className="transaction-activity-log__action-link"
-          onClick={() => onRetry(id)}
+          onClick={onRetry}
         >
           { t('speedUpTransaction') }
         </div>
       ) : null
   }
 
-  renderInlineCancel (index, activity) {
+  renderInlineCancel (index) {
     const { t } = this.context
     const { inlineCancelIndex, primaryTransaction = {}, onCancel, isEarliestNonce } = this.props
     const { status } = primaryTransaction
-    const { id } = activity
 
     return isEarliestNonce && status !== CONFIRMED_STATUS && index === inlineCancelIndex
       ? (
         <div
           className="transaction-activity-log__action-link"
-          onClick={() => onCancel(id)}
+          onClick={onCancel}
         >
           { t('speedUpCancellation') }
         </div>
@@ -76,14 +74,14 @@ export default class TransactionActivityLog extends PureComponent {
     const ethValue = index === 0
       ? `${getValueFromWeiHex({
         value,
-        fromCurrency: nativeCurrency,
-        toCurrency: nativeCurrency,
+        fromCurrency: 'ETH',
+        toCurrency: 'ETH',
         conversionRate,
         numberOfDecimals: 6,
       })} ${nativeCurrency}`
       : getEthConversionFromWeiHex({
         value,
-        fromCurrency: nativeCurrency,
+        fromCurrency: 'ETH',
         conversionRate,
         numberOfDecimals: 3,
       })
@@ -107,8 +105,8 @@ export default class TransactionActivityLog extends PureComponent {
           >
             { activityText }
           </div>
-          { this.renderInlineRetry(index, activity) }
-          { this.renderInlineCancel(index, activity) }
+          { this.renderInlineRetry(index) }
+          { this.renderInlineCancel(index) }
         </div>
       </div>
     )
@@ -117,6 +115,10 @@ export default class TransactionActivityLog extends PureComponent {
   render () {
     const { t } = this.context
     const { className, activities } = this.props
+
+    if (activities.length === 0) {
+      return null
+    }
 
     return (
       <div className={classnames('transaction-activity-log', className)}>

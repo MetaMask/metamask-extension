@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "Despliegue de contratos"
   },
-  "conversionProgress": {
-    "message": "Conversión en curso"
-  },
-  "copiedButton": {
-    "message": "Copiado"
-  },
   "copiedExclamation": {
     "message": "Copiado"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "Copiar al portapapeles"
-  },
-  "copyButton": {
-    "message": "Copiar"
   },
   "copyPrivateKey": {
     "message": "Esta es tu clave privada (haz clic para copiar)"
@@ -365,9 +356,6 @@
   "editContact": {
     "message": "Editar contacto"
   },
-  "emailUs": {
-    "message": "¡Envíanos un correo electrónico!"
-  },
   "endOfFlowMessage1": {
     "message": "Pasaste la prueba. Es responsabilidad tuya mantener la frase de inicialización segura."
   },
@@ -451,9 +439,6 @@
   "from": {
     "message": "De"
   },
-  "fromShapeShift": {
-    "message": "De ShapeShift"
-  },
   "functionType": {
     "message": "Tipo de función"
   },
@@ -521,9 +506,6 @@
   },
   "hide": {
     "message": "Ocultar"
-  },
-  "hideToken": {
-    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
     "message": "¿Ocultar token?"
@@ -651,9 +633,6 @@
   "metamaskVersion": {
     "message": "Versión de MetaMask"
   },
-  "missingYourTokens": {
-    "message": "¿No puedes ver tus tokens?"
-  },
   "mobileSyncText": {
     "message": "Ingresa tu contraseña para confirmar que eres tú."
   },
@@ -748,9 +727,6 @@
   },
   "noAddressForName": {
     "message": "No se ha establecido ninguna dirección para este nombre."
-  },
-  "noDeposits": {
-    "message": "No se han recibido depósitos"
   },
   "noConversionRateAvailable": {
     "message": "No hay ninguna tasa de conversión disponible"
@@ -1148,14 +1124,10 @@
     "message": "Esto creará una billetera y una frase de inicialización nuevas"
   },
   "tips": {
-    "message": "Propinas"
+    "message": "Consejos"
   },
   "to": {
     "message": "A"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 a ETH a través de ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "El token ya se ha agregado."

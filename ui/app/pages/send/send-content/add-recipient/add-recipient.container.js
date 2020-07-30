@@ -2,12 +2,11 @@ import { connect } from 'react-redux'
 import {
   getSendEnsResolution,
   getSendEnsResolutionError,
-} from '../../send.selectors.js'
-import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,
   getAddressBookEntry,
-} from '../../../../selectors/selectors'
+} from '../../../../selectors'
+
 import {
   updateSendTo,
 } from '../../../../store/actions'

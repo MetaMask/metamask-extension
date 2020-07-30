@@ -12,5 +12,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withModalProps,
-  connect(null, mapDispatchToProps)
+  connect(null, mapDispatchToProps),
 )(ConfirmResetAccount)

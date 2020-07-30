@@ -14,7 +14,7 @@ import createOriginMiddleware from '../lib/createOriginMiddleware'
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 
-class ThreeBoxController {
+export default class ThreeBoxController {
   constructor (opts = {}) {
     const {
       preferencesController,
@@ -244,5 +244,3 @@ class ThreeBoxController {
     }
   }
 }
-
-export default ThreeBoxController

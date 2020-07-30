@@ -52,6 +52,12 @@ const migrations = [
   require('./039').default,
   require('./040').default,
   require('./041').default,
+  require('./042').default,
+  require('./043').default,
+  require('./044').default,
+  require('./045').default,
+  require('./046').default,
+  require('./047').default,
 ]
 
 export default migrations

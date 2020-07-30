@@ -7,21 +7,34 @@
   margin-right: auto;
   height: 100%;
 
+  .fa-info-circle {
+    color: $Grey-200;
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 0.9rem;
+  }
+
+  .fa-info-circle:hover {
+    color: $Grey-300;
+  }
+
   @media screen and (min-width: 576px) {
     width: 426px;
   }
 
 
   &__title {
-    @extend %header--18;
+    @include H4;
   }
 
-  &__text, &__text-blue, &__text-grey {
-    @extend %content-text;
+  &__text,
+  &__text-blue,
+  &__text-grey {
+    @include H6;
   }
 
   &__text-blue {
-    color: $curious-blue;
+    color: $primary-blue;
     cursor: pointer;
   }
 
@@ -30,18 +43,20 @@
   }
 
   &__accounts-list {
+    flex: 2 1 0;
     width: 92%;
-    border: 1px solid #D0D5DA;
+    max-height: max-content;
+    border: 1px solid #d0d5da;
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 8px;
-    max-height: 238px;
     overflow-y: auto;
   }
 
   &__accounts-list-header--one-item,
   &__accounts-list-header--two-items {
     display: flex;
+    flex: 0;
     margin-top: 36px;
     width: 100%;
     padding-left: 15px;
@@ -60,6 +75,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    min-width: 0;
   }
 
   &__list-check-box {
@@ -78,28 +94,13 @@
     display: flex;
     margin-left: 16px;
     align-items: center;
-
-    .fa-info-circle, .fa-info-circle:hover {
-      color: $silver;
-      cursor: pointer;
-      margin-left: 8px;
-      font-size: 0.9rem;
-    }
-
-    .fa-info-circle {
-      cursor: pointer;
-    }
-
-    .fa-info-circle:hover {
-      color: $mid-gray;
-    }
   }
 
   &__account {
     display: flex;
     align-items: center;
     padding: 16px;
-    border-bottom: 1px solid #D2D8DD;
+    border-bottom: 1px solid #d2d8dd;
     justify-content: space-between;
 
     &:last-of-type {
@@ -107,7 +108,7 @@
     }
 
     &:hover {
-      background: aliceblue;
+      background: $Grey-000;
       cursor: pointer;
     }
 
@@ -115,27 +116,31 @@
       display: flex;
       flex-direction: column;
       margin-left: 16px;
+      min-width: 0;
     }
 
     &__label {
-      @extend %content-text;
+      @include H6;
+
       color: $Black-100;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     &__balance {
-      @extend %content-text;
-      font-size: 12px;
+      @include H7;
+
       color: $Grey-500;
     }
 
     &__last-connected {
-      @extend %content-text;
-      font-size: 10px;
-      line-height: 140.62%;
+      @include H8;
+
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      color: #037DD6;
+      color: $primary-blue;
     }
   }
 
@@ -145,7 +150,7 @@
 
   &__footer-container {
     width: 100%;
-    flex: 1 1 auto;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -164,7 +169,7 @@
     padding-top: 16px;
     padding-bottom: 16px;
     margin-top: 8px;
-    border-top: 1px solid #D6D9DC;
+    border-top: 1px solid #d6d9dc;
 
     @media screen and (min-width: 576px) {
       border-top: none;
@@ -183,5 +188,4 @@
       margin-right: 16px;
     }
   }
-
 }

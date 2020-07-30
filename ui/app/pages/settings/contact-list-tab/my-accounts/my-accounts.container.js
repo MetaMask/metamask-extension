@@ -2,9 +2,9 @@ import ViewContact from './my-accounts.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { accountsWithSendEtherInfoSelector } from '../../../../selectors/selectors'
+import { accountsWithSendEtherInfoSelector } from '../../../../selectors'
 
-const mapStateToProps = (state,) => {
+const mapStateToProps = (state) => {
   const myAccounts = accountsWithSendEtherInfoSelector(state)
 
   return {
@@ -14,5 +14,5 @@ const mapStateToProps = (state,) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(ViewContact)

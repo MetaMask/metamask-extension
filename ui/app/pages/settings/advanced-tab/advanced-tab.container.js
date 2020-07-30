@@ -13,13 +13,14 @@ import {
   setUseNonceField,
   setIpfsGateway,
 } from '../../../store/actions'
-import { preferencesSelector } from '../../../selectors/selectors'
+import { getPreferences } from '../../../selectors'
 
 export const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state
   const {
     featureFlags: {
       sendHexData,
+      transactionTime,
       advancedInlineGas,
     } = {},
     threeBoxSyncingAllowed,
@@ -27,12 +28,13 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  const { showFiatInTestnets, autoLockTimeLimit } = preferencesSelector(state)
+  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state)
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
+    transactionTime,
     showFiatInTestnets,
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
@@ -48,6 +50,7 @@ export const mapDispatchToProps = (dispatch) => {
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setAdvancedInlineGasFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
+    setTransactionTimeFeatureFlag: (shouldShow) => dispatch(setFeatureFlag('transactionTime', shouldShow)),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value))
@@ -70,5 +73,5 @@ export const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(AdvancedTab)

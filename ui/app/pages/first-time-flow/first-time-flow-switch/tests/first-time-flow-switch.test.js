@@ -13,7 +13,7 @@ describe('FirstTimeFlowSwitch', function () {
 
   it('redirects to /welcome route with no props', function () {
     const wrapper = mountWithRouter(
-      <FirstTimeFlowSwitch.WrappedComponent />
+      <FirstTimeFlowSwitch.WrappedComponent />,
     )
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length, 1)
   })
@@ -23,7 +23,7 @@ describe('FirstTimeFlowSwitch', function () {
       completedOnboarding: true,
     }
     const wrapper = mountWithRouter(
-      <FirstTimeFlowSwitch.WrappedComponent {...props} />
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: DEFAULT_ROUTE } }).length, 1)
@@ -36,7 +36,7 @@ describe('FirstTimeFlowSwitch', function () {
     }
 
     const wrapper = mountWithRouter(
-      <FirstTimeFlowSwitch.WrappedComponent {...props} />
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: LOCK_ROUTE } }).length, 1)
@@ -50,7 +50,7 @@ describe('FirstTimeFlowSwitch', function () {
     }
 
     const wrapper = mountWithRouter(
-      <FirstTimeFlowSwitch.WrappedComponent {...props} />
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length, 1)
@@ -64,7 +64,7 @@ describe('FirstTimeFlowSwitch', function () {
     }
 
     const wrapper = mountWithRouter(
-      <FirstTimeFlowSwitch.WrappedComponent {...props} />
+      <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     )
 
     assert.equal(wrapper.find('Lifecycle').find({ to: { pathname: INITIALIZE_UNLOCK_ROUTE } }).length, 1)

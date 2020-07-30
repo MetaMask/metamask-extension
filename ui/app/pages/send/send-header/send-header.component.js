@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerHeader from '../../../components/ui/page-container/page-container-header'
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes'
 
 export default class SendHeader extends Component {
 
   static propTypes = {
     clearSend: PropTypes.func,
     history: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string,
     titleKey: PropTypes.string,
   }
 
@@ -16,8 +16,9 @@ export default class SendHeader extends Component {
   }
 
   onClose () {
-    this.props.clearSend()
-    this.props.history.push(DEFAULT_ROUTE)
+    const { clearSend, history, mostRecentOverviewPage } = this.props
+    clearSend()
+    history.push(mostRecentOverviewPage)
   }
 
   render () {

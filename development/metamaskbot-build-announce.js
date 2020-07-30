@@ -78,15 +78,17 @@ async function start () {
     }
   }
 
+  const summaryPlatform = 'chrome'
+  const summaryPage = 'home'
   let commentBody
-  if (!benchmarkResults.chrome) {
-    console.log(`No results for Chrome found; skipping benchmark`)
+  if (!benchmarkResults[summaryPlatform]) {
+    console.log(`No results for ${summaryPlatform} found; skipping benchmark`)
     commentBody = artifactsBody
   } else {
     try {
-      const chromePageLoad = Math.round(parseFloat(benchmarkResults.chrome.notification.average.load))
-      const chromePageLoadMarginOfError = Math.round(parseFloat(benchmarkResults.chrome.notification.marginOfError.load))
-      const benchmarkSummary = `Page Load Metrics (${chromePageLoad} ± ${chromePageLoadMarginOfError} ms)`
+      const summaryPageLoad = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load))
+      const summaryPageLoadMarginOfError = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].marginOfError.load))
+      const benchmarkSummary = `Page Load Metrics (${summaryPageLoad} ± ${summaryPageLoadMarginOfError} ms)`
 
       const allPlatforms = new Set()
       const allPages = new Set()

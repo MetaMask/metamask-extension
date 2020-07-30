@@ -233,12 +233,6 @@
   "contractDeployment": {
     "message": "Deployment ng Contract"
   },
-  "conversionProgress": {
-    "message": "Kasalukuyang ipinapapalit"
-  },
-  "copiedButton": {
-    "message": "Nakopya"
-  },
   "copiedExclamation": {
     "message": "Nakopya!"
   },
@@ -253,9 +247,6 @@
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
-  },
-  "copyButton": {
-    "message": "Kopyahin "
   },
   "copyPrivateKey": {
     "message": "Ito ang iyong pribadong private key (i-click para kopyahin)"
@@ -341,9 +332,6 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
-  "emailUs": {
-    "message": "Mag-email sa amin!"
-  },
   "endOfFlowMessage1": {
     "message": "Pumasa ka sa test - panatilihing ligtas ang iyong seedphrase, responsibilidad mo ito!"
   },
@@ -420,9 +408,6 @@
   "from": {
     "message": "Mula sa"
   },
-  "fromShapeShift": {
-    "message": "Mula sa ShapeShift"
-  },
   "functionType": {
     "message": "Uri ng Function"
   },
@@ -490,9 +475,6 @@
   },
   "hide": {
     "message": "Itago"
-  },
-  "hideToken": {
-    "message": "Itago ang Token"
   },
   "hideTokenPrompt": {
     "message": "Itago ang Token?"
@@ -604,9 +586,6 @@
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Hindi mo ba nakikita ang iyong mga token?"
-  },
   "mobileSyncText": {
     "message": "Pakilagay ang iyong password para kumpirmahing ikaw ito!"
   },
@@ -697,9 +676,6 @@
   },
   "noAddressForName": {
     "message": "Walang address na na-set para sa pangalang ito."
-  },
-  "noDeposits": {
-    "message": "Walang mga depositong natanggap"
   },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
@@ -1070,10 +1046,6 @@
   },
   "to": {
     "message": "Para sa"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."

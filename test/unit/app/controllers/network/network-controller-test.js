@@ -18,7 +18,6 @@ describe('NetworkController', function () {
         .reply(200)
 
       networkController = new NetworkController()
-      networkController.initializeProvider(networkControllerProviderConfig)
     })
 
     afterEach(function () {
@@ -34,8 +33,9 @@ describe('NetworkController', function () {
         assert.equal(providerProxy.test, true)
       })
     })
+
     describe('#getNetworkState', function () {
-      it('should return loading when new', function () {
+      it('should return "loading" when new', function () {
         const networkState = networkController.getNetworkState()
         assert.equal(networkState, 'loading', 'network is loading')
       })
@@ -51,11 +51,13 @@ describe('NetworkController', function () {
 
     describe('#setProviderType', function () {
       it('should update provider.type', function () {
+        networkController.initializeProvider(networkControllerProviderConfig)
         networkController.setProviderType('mainnet')
         const type = networkController.getProviderConfig().type
         assert.equal(type, 'mainnet', 'provider type is updated')
       })
       it('should set the network to loading', function () {
+        networkController.initializeProvider(networkControllerProviderConfig)
         networkController.setProviderType('mainnet')
         const loading = networkController.isNetworkLoading()
         assert.ok(loading, 'network is loading')
@@ -67,13 +69,22 @@ describe('NetworkController', function () {
     it('getNetworkDisplayName should return the correct network name', function () {
       const tests = [
         {
-          input: 3,
+          input: '3',
           expected: 'Ropsten',
         }, {
-          input: 4,
+          input: '4',
           expected: 'Rinkeby',
         }, {
-          input: 42,
+          input: '42',
+          expected: 'Kovan',
+        }, {
+          input: '0x3',
+          expected: 'Ropsten',
+        }, {
+          input: '0x4',
+          expected: 'Rinkeby',
+        }, {
+          input: '0x2a',
           expected: 'Kovan',
         }, {
           input: 'ropsten',

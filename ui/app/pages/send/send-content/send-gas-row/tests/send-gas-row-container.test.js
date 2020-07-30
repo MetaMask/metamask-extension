@@ -30,8 +30,8 @@ proxyquire('../send-gas-row.container.js', {
       return () => ({})
     },
   },
-  '../send-amount-row/amount-max-button/amount-max-button.selectors': {
-    getMaxModeOn: (s) => `mockMaxModeOn:${s}`,
+  '../../../../selectors': {
+    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
   },
   '../../send.utils.js': {
     isBalanceSufficient: ({
@@ -65,7 +65,7 @@ describe('send-gas-row container', function () {
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.showModal.getCall(0).args[0],
-          { name: 'CUSTOMIZE_GAS', hideBasic: true }
+          { name: 'CUSTOMIZE_GAS', hideBasic: true },
         )
       })
     })

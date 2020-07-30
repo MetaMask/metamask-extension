@@ -25,7 +25,13 @@ export default class ChooseAccount extends Component {
     cancelPermissionsRequest: PropTypes.func.isRequired,
     permissionsRequestId: PropTypes.string.isRequired,
     selectedAccountAddresses: PropTypes.object.isRequired,
-    targetDomainMetadata: PropTypes.object,
+    targetDomainMetadata: PropTypes.shape({
+      extensionId: PropTypes.string,
+      icon: PropTypes.string,
+      host: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }),
   }
 
   state = {
@@ -104,16 +110,14 @@ export default class ChooseAccount extends Component {
                       value={balance}
                       style={{ color: '#6A737D' }}
                       suffix={nativeCurrency}
-                      hideLabel
                     />
                   </div>
                 </div>
                 { addressLastConnectedMap[address]
                   ? (
-                    <div className="permissions-connect-choose-account__account__last-connected">
-                      <span>{ this.context.t('lastConnected') }</span>
-                      { addressLastConnectedMap[address] }
-                    </div>
+                    <Tooltip title={`${this.context.t('lastConnected')} ${addressLastConnectedMap[address]}`}>
+                      <i className="fa fa-info-circle" />
+                    </Tooltip>
                   )
                   : null
                 }
@@ -193,30 +197,31 @@ export default class ChooseAccount extends Component {
       <div className="permissions-connect-choose-account">
         <PermissionsConnectHeader
           icon={targetDomainMetadata.icon}
-          iconName={targetDomainMetadata.origin}
+          iconName={targetDomainMetadata.name}
           headerTitle={t('connectWithMetaMask')}
           headerText={accounts.length > 0
-            ? t('chooseAccountsToUse')
+            ? t('selectAccounts')
             : t('connectAccountOrCreate')
           }
+          siteOrigin={targetDomainMetadata.origin}
         />
-        { this.renderAccountsListHeader() }
-        { this.renderAccountsList() }
+        {this.renderAccountsListHeader()}
+        {this.renderAccountsList()}
         <div className="permissions-connect-choose-account__footer-container">
           <PermissionsConnectFooter />
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
-              onClick={ () => cancelPermissionsRequest(permissionsRequestId) }
+              onClick={() => cancelPermissionsRequest(permissionsRequestId)}
               type="default"
             >
-              { t('cancel') }
+              {t('cancel')}
             </Button>
             <Button
-              onClick={ () => selectAccounts(selectedAccounts) }
+              onClick={() => selectAccounts(selectedAccounts)}
               type="primary"
-              disabled={ selectedAccounts.size === 0 }
+              disabled={selectedAccounts.size === 0}
             >
-              { t('next') }
+              {t('next')}
             </Button>
           </div>
         </div>

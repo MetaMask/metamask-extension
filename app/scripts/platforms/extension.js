@@ -3,7 +3,7 @@ import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
 import { getEnvironmentType, checkForError } from '../lib/util'
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
 
-class ExtensionPlatform {
+export default class ExtensionPlatform {
 
   //
   // Public
@@ -36,9 +36,9 @@ class ExtensionPlatform {
     })
   }
 
-  closeWindow (windowId) {
+  focusWindow (windowId) {
     return new Promise((resolve, reject) => {
-      extension.windows.remove(windowId, () => {
+      extension.windows.update(windowId, { focused: true }, () => {
         const error = checkForError()
         if (error) {
           return reject(error)
@@ -48,9 +48,9 @@ class ExtensionPlatform {
     })
   }
 
-  focusWindow (windowId) {
+  updateWindowPosition (windowId, left, top) {
     return new Promise((resolve, reject) => {
-      extension.windows.update(windowId, { focused: true }, () => {
+      extension.windows.update(windowId, { left, top }, () => {
         const error = checkForError()
         if (error) {
           return reject(error)
@@ -105,6 +105,7 @@ class ExtensionPlatform {
       })
     } catch (e) {
       cb(e)
+      return
     }
   }
 
@@ -227,5 +228,3 @@ class ExtensionPlatform {
     }
   }
 }
-
-export default ExtensionPlatform

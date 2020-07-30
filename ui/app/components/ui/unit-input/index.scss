@@ -36,7 +36,6 @@
   &__input {
     color: #4d4d4d;
     font-size: 1rem;
-    font-family: Roboto;
     border: none;
     max-width: 22ch;
     height: 16px;
@@ -64,7 +63,6 @@
   }
 
   &__disabled {
-    background-color: #F2F3F4;
+    background-color: #f2f3f4;
   }
-
 }

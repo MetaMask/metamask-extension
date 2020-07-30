@@ -21,10 +21,10 @@ describe('AdvancedTab Component', function () {
         context: {
           t: (s) => `_${s}`,
         },
-      }
+      },
     )
 
-    assert.equal(root.find('.settings-page__content-row').length, 10)
+    assert.equal(root.find('.settings-page__content-row').length, 11)
   })
 
   it('should update autoLockTimeLimit', function () {
@@ -43,10 +43,10 @@ describe('AdvancedTab Component', function () {
         context: {
           t: (s) => `_${s}`,
         },
-      }
+      },
     )
 
-    const autoTimeout = root.find('.settings-page__content-row').at(7)
+    const autoTimeout = root.find('.settings-page__content-row').at(8)
     const textField = autoTimeout.find(TextField)
 
     textField.props().onChange({ target: { value: 1440 } })

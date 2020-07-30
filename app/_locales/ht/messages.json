@@ -133,12 +133,6 @@
   "contractDeployment": {
     "message": "Kontra Deplwaman"
   },
-  "conversionProgress": {
-    "message": "Konvèsyon nan Pwogrè"
-  },
-  "copiedButton": {
-    "message": "Kopye"
-  },
   "copiedExclamation": {
     "message": "Kopye!"
   },
@@ -147,9 +141,6 @@
   },
   "copyToClipboard": {
     "message": "Kopi clipboard"
-  },
-  "copyButton": {
-    "message": " Kopi "
   },
   "copyPrivateKey": {
     "message": "Sa a se kle prive ou (klike pou ou kopye)"
@@ -214,9 +205,6 @@
   "edit": {
     "message": "Korije"
   },
-  "emailUs": {
-    "message": "Imèl nou!"
-  },
   "enterPassword": {
     "message": "Mete modpas"
   },
@@ -248,9 +236,6 @@
   },
   "from": {
     "message": "Soti nan"
-  },
-  "fromShapeShift": {
-    "message": "Soti nan ShapeShift"
   },
   "functionType": {
     "message": "Kalite Fonksyon"
@@ -298,9 +283,6 @@
   },
   "hide": {
     "message": "Kache"
-  },
-  "hideToken": {
-    "message": "Kache Token"
   },
   "hideTokenPrompt": {
     "message": "Kache Token?"
@@ -398,9 +380,6 @@
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
   },
-  "missingYourTokens": {
-    "message": "Ou pa wè token ou a?"
-  },
   "myAccounts": {
     "message": "Kont mwen"
   },
@@ -441,9 +420,6 @@
   },
   "noAddressForName": {
     "message": "Pa gen adrès ki etabli pou non sa a."
-  },
-  "noDeposits": {
-    "message": "Pa gen depo ou te resevwa"
   },
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"
@@ -719,10 +695,6 @@
   },
   "to": {
     "message": "Pou"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 pou ETH pa ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "tokenAlreadyAdded": {
     "message": "Ou te deja ajoute token."

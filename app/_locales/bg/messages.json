@@ -257,12 +257,6 @@
   "contractDeployment": {
     "message": "Разгръщане на договор"
   },
-  "conversionProgress": {
-    "message": "Извършва се конвертиране"
-  },
-  "copiedButton": {
-    "message": "Копирано"
-  },
   "copiedExclamation": {
     "message": "Копирано!"
   },
@@ -277,9 +271,6 @@
   },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
-  },
-  "copyButton": {
-    "message": "Копиране"
   },
   "copyPrivateKey": {
     "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
@@ -368,9 +359,6 @@
   "editContact": {
     "message": "Редактиране на контакт"
   },
-  "emailUs": {
-    "message": "Изпратете ни имейл!"
-  },
   "endOfFlowMessage1": {
     "message": "Преминахте теста - пазете основната си фраза на сигурно място, това е Ваша отговорност!"
   },
@@ -450,9 +438,6 @@
   "from": {
     "message": "От"
   },
-  "fromShapeShift": {
-    "message": "От ShapeShift"
-  },
   "functionType": {
     "message": "Тип функция"
   },
@@ -526,9 +511,6 @@
   },
   "hide": {
     "message": "Скриване"
-  },
-  "hideToken": {
-    "message": "Скриване на жетон"
   },
   "hideTokenPrompt": {
     "message": "Скриване на жетон?"
@@ -662,9 +644,6 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "missingYourTokens": {
-    "message": "Не виждате жетоните си?"
-  },
   "mobileSyncText": {
     "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
   },
@@ -759,9 +738,6 @@
   },
   "noAddressForName": {
     "message": "За това име не е зададен адрес."
-  },
-  "noDeposits": {
-    "message": "Не са получени депозити"
   },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
@@ -1163,10 +1139,6 @@
   },
   "to": {
     "message": "На"
-  },
-  "toETHviaShapeShift": {
-    "message": "$1 до ETH чрез ShapeShift",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "Жетон"

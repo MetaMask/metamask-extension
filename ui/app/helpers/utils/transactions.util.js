@@ -6,7 +6,8 @@ import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_STATUS_CONFIRMED,
 } from '../../../../app/scripts/controllers/transactions/enums'
-import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
+import { MESSAGE_TYPE } from '../../../../app/scripts/lib/enums'
+import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
 import fetchWithCache from './fetch-with-cache'
 
 import {
@@ -137,9 +138,9 @@ export function getTransactionActionKey (transaction) {
   }
 
   if (msgParams) {
-    if (type === 'eth_decrypt') {
+    if (type === MESSAGE_TYPE.ETH_DECRYPT) {
       return DECRYPT_REQUEST_KEY
-    } else if (type === 'eth_getEncryptionPublicKey') {
+    } else if (type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
       return ENCRYPTION_PUBLIC_KEY_REQUEST_KEY
     } else {
       return SIGNATURE_REQUEST_KEY
@@ -236,8 +237,8 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
   }
-  const prefix = prefixForNetwork(networkId)
+  const prefix = getEtherscanNetworkPrefix(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`
 }

@@ -29,11 +29,10 @@ import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
 import AppStateController from './controllers/app-state'
-import InfuraController from './controllers/infura'
 import CachedBalancesController from './controllers/cached-balances'
+import AlertController from './controllers/alert'
 import OnboardingController from './controllers/onboarding'
 import ThreeBoxController from './controllers/threebox'
-import RecentBlocksController from './controllers/recent-blocks'
 import IncomingTransactionsController from './controllers/incoming-transactions'
 import MessageManager from './lib/message-manager'
 import DecryptMessageManager from './lib/decrypt-message-manager'
@@ -43,7 +42,6 @@ import TypedMessageManager from './lib/typed-message-manager'
 import TransactionController from './controllers/transactions'
 import TokenRatesController from './controllers/token-rates'
 import DetectTokensController from './controllers/detect-tokens'
-import ABTestController from './controllers/ab-test'
 import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
@@ -52,10 +50,8 @@ import getBuyEthUrl from './lib/buy-eth-url'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
 import { version } from '../manifest/_base.json'
-import ethUtil, { BN } from 'ethereumjs-util'
+import ethUtil from 'ethereumjs-util'
 
-const GWEI_BN = new BN('1000000000')
-import percentile from 'percentile'
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
 import log from 'loglevel'
 import TrezorKeyring from 'eth-trezor-keyring'
@@ -68,7 +64,7 @@ import {
   AddressBookController,
   CurrencyRateController,
   PhishingController,
-} from 'gaba'
+} from '@metamask/controllers'
 
 import backEndMetaMetricsEvent from './lib/backend-metametrics'
 
@@ -109,7 +105,7 @@ export default class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // next, we will initialize the controllers
-    // controller initializaiton order matters
+    // controller initialization order matters
 
     this.networkController = new NetworkController(initState.NetworkController)
 
@@ -125,15 +121,11 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
+      showUnlockRequest: opts.showUnlockRequest,
       preferencesStore: this.preferencesController.store,
     })
 
     this.currencyRateController = new CurrencyRateController(undefined, initState.CurrencyController)
-
-    this.infuraController = new InfuraController({
-      initState: initState.InfuraController,
-    })
-    this.infuraController.scheduleInfuraNetworkCheck()
 
     this.phishingController = new PhishingController()
 
@@ -146,12 +138,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenRatesController = new TokenRatesController({
       currency: this.currencyRateController,
       preferences: this.preferencesController.store,
-    })
-
-    this.recentBlocksController = new RecentBlocksController({
-      blockTracker: this.blockTracker,
-      provider: this.provider,
-      networkController: this.networkController,
     })
 
     this.ensController = new EnsController({
@@ -178,9 +164,11 @@ export default class MetamaskController extends EventEmitter {
       if (activeControllerConnections > 0) {
         this.accountTracker.start()
         this.incomingTransactionsController.start()
+        this.tokenRatesController.start()
       } else {
         this.accountTracker.stop()
         this.incomingTransactionsController.stop()
+        this.tokenRatesController.stop()
       }
     })
 
@@ -226,11 +214,12 @@ export default class MetamaskController extends EventEmitter {
       keyringMemStore: this.keyringController.memStore,
     })
 
-    this.abTestController = new ABTestController({
-      initState: initState.ABTestController,
-    })
-
     this.addressBookController = new AddressBookController(undefined, initState.AddressBookController)
+
+    this.alertController = new AlertController({
+      initState: initState.AlertController,
+      preferencesStore: this.preferencesController.store,
+    })
 
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
@@ -251,7 +240,6 @@ export default class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
@@ -279,7 +267,14 @@ export default class MetamaskController extends EventEmitter {
     })
 
     this.networkController.on('networkDidChange', () => {
-      this.setCurrentCurrency(this.currencyRateController.state.currentCurrency, function () {})
+      this.setCurrentCurrency(
+        this.currencyRateController.state.currentCurrency,
+        (error) => {
+          if (error) {
+            throw error
+          }
+        },
+      )
     })
 
     this.networkController.lookupNetwork()
@@ -289,10 +284,6 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyManager = new EncryptionPublicKeyManager()
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
 
-    // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => {
-      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
-    })
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
@@ -302,11 +293,10 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
-      InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
-      ABTestController: this.abTestController.store,
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
@@ -326,20 +316,26 @@ export default class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
-      RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
-      InfuraController: this.infuraController.store,
+      AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
-      ABTestController: this.abTestController.store,
       // ENS Controller
       EnsController: this.ensController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
+
+    const password = process.env.CONF?.password
+    if (
+      password && !this.isUnlocked() &&
+      this.onboardingController.completedOnboarding
+    ) {
+      this.submitPassword(password)
+    }
   }
 
   /**
@@ -439,10 +435,10 @@ export default class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const networkController = this.networkController
     const onboardingController = this.onboardingController
+    const alertController = this.alertController
     const permissionsController = this.permissionsController
     const preferencesController = this.preferencesController
     const threeBoxController = this.threeBoxController
-    const abTestController = this.abTestController
     const txController = this.txController
 
     return {
@@ -459,10 +455,10 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      getGasPrice: (cb) => cb(null, this.getGasPrice()),
-
-      // coinbase
       buyEth: this.buyEth.bind(this),
+      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
+      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
+      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
 
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
@@ -482,6 +478,7 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
+      verifyPassword: nodeify(this.verifyPassword, this),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -494,15 +491,11 @@ export default class MetamaskController extends EventEmitter {
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
-      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
       completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
       addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
-
-      // BlacklistController
-      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(this.addressBookController.set, this.addressBookController),
@@ -510,7 +503,8 @@ export default class MetamaskController extends EventEmitter {
 
       // AppStateController
       setLastActiveTime: nodeify(this.appStateController.setLastActiveTime, this.appStateController),
-      setMkrMigrationReminderTimestamp: nodeify(this.appStateController.setMkrMigrationReminderTimestamp, this.appStateController),
+      setDefaultHomeActiveTabName: nodeify(this.appStateController.setDefaultHomeActiveTabName, this.appStateController),
+      setConnectedStatusPopoverHasBeenShown: nodeify(this.appStateController.setConnectedStatusPopoverHasBeenShown, this.appStateController),
 
       // EnsController
       tryReverseResolveAddress: nodeify(this.ensController.reverseResolveAddress, this.ensController),
@@ -519,14 +513,12 @@ export default class MetamaskController extends EventEmitter {
       setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
-      addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
-      retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
@@ -559,6 +551,10 @@ export default class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(onboardingController.setSeedPhraseBackedUp, onboardingController),
 
+      // alert controller
+      setAlertEnabledness: nodeify(alertController.setAlertEnabledness, alertController),
+      setUnconnectedAccountAlertShown: nodeify(this.alertController.setUnconnectedAccountAlertShown, this.alertController),
+
       // 3Box
       setThreeBoxSyncingPermission: nodeify(threeBoxController.setThreeBoxSyncingPermission, threeBoxController),
       restoreFromThreeBox: nodeify(threeBoxController.restoreFromThreeBox, threeBoxController),
@@ -567,20 +563,15 @@ export default class MetamaskController extends EventEmitter {
       turnThreeBoxSyncingOn: nodeify(threeBoxController.turnThreeBoxSyncingOn, threeBoxController),
       initializeThreeBox: nodeify(this.initializeThreeBox, this),
 
-      // a/b test controller
-      getAssignedABTestGroupName: nodeify(abTestController.getAssignedABTestGroupName, abTestController),
-
       // permissions
       approvePermissionsRequest: nodeify(permissionsController.approvePermissionsRequest, permissionsController),
       clearPermissions: permissionsController.clearPermissions.bind(permissionsController),
-      getApprovedAccounts: nodeify(permissionsController.getAccounts.bind(permissionsController)),
+      getApprovedAccounts: nodeify(permissionsController.getAccounts, permissionsController),
       rejectPermissionsRequest: nodeify(permissionsController.rejectPermissionsRequest, permissionsController),
       removePermissionsFor: permissionsController.removePermissionsFor.bind(permissionsController),
       addPermittedAccount: nodeify(permissionsController.addPermittedAccount, permissionsController),
-      legacyExposeAccounts: nodeify(permissionsController.legacyExposeAccounts, permissionsController),
-
-      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
+      removePermittedAccount: nodeify(permissionsController.removePermittedAccount, permissionsController),
+      requestAccountsPermissionWithId: nodeify(permissionsController.requestAccountsPermissionWithId, permissionsController),
     }
   }
 
@@ -637,6 +628,19 @@ export default class MetamaskController extends EventEmitter {
 
       // clear known identities
       this.preferencesController.setAddresses([])
+
+      // clear permissions
+      this.permissionsController.clearPermissions()
+
+      // clear accounts in accountTracker
+      this.accountTracker.clearAccounts()
+
+      // clear cachedBalances
+      this.cachedBalancesController.clearCachedBalances()
+
+      // clear unapproved transactions
+      this.txController.txStateManager.clearUnapprovedTxs()
+
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(password, seed)
 
@@ -723,7 +727,7 @@ export default class MetamaskController extends EventEmitter {
             const tokenAddress = ethUtil.toChecksumAddress(address)
             return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
           })
-        )
+        ),
       )
     })
 
@@ -738,10 +742,15 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType('Simple Key Pair')
     const hdAccounts = await hdKeyring.getAccounts()
+    const simpleKeyPairKeyringAccounts = await Promise.all(
+      simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
+    )
+    const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce((acc, accounts) => [...acc, ...accounts], [])
     const accounts = {
       hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map((address) => ethUtil.toChecksumAddress(address)),
-      simpleKeyPair: [],
+      simpleKeyPair: simpleKeyPairAccounts.filter((item, pos) => (simpleKeyPairAccounts.indexOf(item) === pos)).map((address) => ethUtil.toChecksumAddress(address)),
       ledger: [],
       trezor: [],
     }
@@ -782,7 +791,7 @@ export default class MetamaskController extends EventEmitter {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
-    await this.txController.pendingTxTracker.updatePendingTxs()
+    await this.blockTracker.checkForLatestBlock()
 
     try {
       const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState()
@@ -798,6 +807,15 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return this.keyringController.fullUpdate()
+  }
+
+  /**
+   * Submits a user's password to check its validity.
+   *
+   * @param {string} password The user's password
+   */
+  async verifyPassword (password) {
+    await this.keyringController.verifyPassword(password)
   }
 
   /**
@@ -1010,6 +1028,8 @@ export default class MetamaskController extends EventEmitter {
    *
    */
   async removeAccount (address) {
+    // Remove all associated permissions
+    await this.permissionsController.removeAllAccountPermissions(address)
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller
@@ -1109,6 +1129,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1167,6 +1188,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1187,7 +1209,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-  * Only decypt message and don't touch transaction state
+  * Only decrypt message and don't touch transaction state
   *
   * @param {Object} msgParams - The params of the message to decrypt.
   * @returns {Promise<Object>} - A full state update.
@@ -1251,6 +1273,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1308,6 +1331,7 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
@@ -1367,24 +1391,13 @@ export default class MetamaskController extends EventEmitter {
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
+      return
     }
   }
 
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
-
-  /**
-   * Allows a user to try to speed up a transaction by retrying it
-   * with higher gas.
-   *
-   * @param {string} txId - The ID of the transaction to speed up.
-   */
-  async retryTransaction (txId, gasPrice) {
-    await this.txController.retryTransaction(txId, gasPrice)
-    const state = await this.getState()
-    return state
-  }
 
   /**
    * Allows a user to attempt to cancel a previously submitted transaction by creating a new
@@ -1464,7 +1477,7 @@ export default class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, sender) {
     const { usePhishDetect } = this.preferencesController.store.getState()
     const hostname = (new URL(sender.url)).hostname
-    // Check if new connection is blacklisted if phishing detection is on
+    // Check if new connection is blocked if phishing detection is on
     if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
       this.sendPhishingWarning(connectionStream, hostname)
@@ -1503,7 +1516,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {string} hostname - The URL that triggered the suspicion.
+   * @param {string} hostname - The hostname that triggered the suspicion.
    */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
@@ -1534,7 +1547,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
     dnode.on('remote', (remote) => {
       // push updates to popup
@@ -1554,7 +1567,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, sender, isInternal) {
     const origin = isInternal
       ? 'metamask'
-      : (new URL(sender.url)).hostname
+      : (new URL(sender.url)).origin
     let extensionId
     if (sender.id !== extension.runtime.id) {
       extensionId = sender.id
@@ -1564,7 +1577,7 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id
     }
 
-    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId })
+    const engine = this.setupProviderEngine({ origin, location: sender.url, extensionId, tabId, isInternal })
 
     // setup connection
     const providerStream = createEngineStream({ engine })
@@ -1586,19 +1599,20 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
    * @param {Object} options - Provider engine options
-   * @param {string} options.origin - The hostname of the sender
+   * @param {string} options.origin - The origin of the sender
    * @param {string} options.location - The full URL of the sender
    * @param {extensionId} [options.extensionId] - The extension ID of the sender, if the sender is an external extension
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {boolean} [options.isInternal] - True if called for a connection to an internal process
    **/
-  setupProviderEngine ({ origin, location, extensionId, tabId }) {
+  setupProviderEngine ({ origin, location, extensionId, tabId, isInternal = false }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
     const provider = this.provider
@@ -1626,8 +1640,10 @@ export default class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
-    // permissions
-    engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    if (!isInternal) {
+      // permissions
+      engine.push(this.permissionsController.createMiddleware({ origin, extensionId }))
+    }
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     // forward to metamask primary provider
@@ -1658,7 +1674,7 @@ export default class MetamaskController extends EventEmitter {
         if (err) {
           log.error(err)
         }
-      }
+      },
     )
   }
 
@@ -1794,40 +1810,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * A method for estimating a good gas price at recent prices.
-   * Returns the lowest price that would have been included in
-   * 50% of recent blocks.
-   *
-   * @returns {string} - A hex representation of the suggested wei gas price.
-   */
-  getGasPrice () {
-    const { recentBlocksController } = this
-    const { recentBlocks } = recentBlocksController.store.getState()
-
-    // Return 1 gwei if no blocks have been observed:
-    if (recentBlocks.length === 0) {
-      return '0x' + GWEI_BN.toString(16)
-    }
-
-    const lowestPrices = recentBlocks.map((block) => {
-      if (!block.gasPrices || block.gasPrices.length < 1) {
-        return GWEI_BN
-      }
-      return block.gasPrices
-        .map((hexPrefix) => hexPrefix.substr(2))
-        .map((hex) => new BN(hex, 16))
-        .sort((a, b) => {
-          return a.gt(b) ? 1 : -1
-        })[0]
-    })
-      .map((number) => number.div(GWEI_BN).toNumber())
-
-    const percentileNum = percentile(65, lowestPrices)
-    const percentileNumBn = new BN(percentileNum)
-    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
-  }
-
-  /**
    * Returns the nonce that will be associated with a transaction once approved
    * @param {string} address - The hex string address for the transaction
    * @returns {Promise<number>}
@@ -1876,8 +1858,10 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.update(currencyState)
       this.currencyRateController.configure(currencyState)
       cb(null, this.currencyRateController.state)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1903,7 +1887,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider and updating it
    * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
@@ -1919,7 +1903,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
-   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
    * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
@@ -1958,8 +1942,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUseBlockie(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1972,8 +1958,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUseNonceField(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -1986,8 +1974,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setUsePhishDetect(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2000,8 +1990,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setIpfsGateway(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2014,8 +2006,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
       cb(null, metaMetricsId)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2023,8 +2017,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setMetaMetricsSendCount(val)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2037,8 +2033,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.preferencesController.setFirstTimeFlowType(type)
       cb(null)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2052,8 +2050,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       const direction = this.preferencesController.setCurrentLocale(key)
       cb(null, direction)
+      return
     } catch (err) {
       cb(err)
+      return
     }
   }
 
@@ -2079,18 +2079,7 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen (open) {
     this._isClientOpen = open
-    this.isClientOpenAndUnlocked = this.isUnlocked() && open
     this.detectTokensController.isOpen = open
-  }
-
-  /**
-   * A method for activating the retrieval of price data,
-   * which should only be fetched when the UI is visible.
-   * @private
-   * @param {boolean} active - True if price data should be getting fetched.
-   */
-  set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
   }
 
   /**
@@ -2103,10 +2092,10 @@ export default class MetamaskController extends EventEmitter {
   */
 
   /**
-   * Adds a domain to the PhishingController whitelist
-   * @param {string} hostname - the domain to whitelist
+   * Adds a domain to the PhishingController safelist
+   * @param {string} hostname - the domain to safelist
    */
-  whitelistPhishingDomain (hostname) {
+  safelistPhishingDomain (hostname) {
     return this.phishingController.bypass(hostname)
   }
 

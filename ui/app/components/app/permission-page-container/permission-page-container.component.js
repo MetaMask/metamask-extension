@@ -12,17 +12,18 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    permissionsDescriptions: PropTypes.object.isRequired,
     request: PropTypes.object,
-    redirect: PropTypes.bool,
-    permissionRejected: PropTypes.bool,
     requestMetadata: PropTypes.object,
-    targetDomainMetadata: PropTypes.object.isRequired,
+    targetDomainMetadata: PropTypes.shape({
+      extensionId: PropTypes.string,
+      icon: PropTypes.string,
+      host: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      origin: PropTypes.string.isRequired,
+    }),
   }
 
   static defaultProps = {
-    redirect: null,
-    permissionRejected: null,
     request: {},
     requestMetadata: {},
     selectedIdentities: [],
@@ -36,7 +37,7 @@ export default class PermissionPageContainer extends Component {
 
   state = {
     selectedPermissions: this.getRequestedMethodState(
-      this.getRequestedMethodNames(this.props)
+      this.getRequestedMethodNames(this.props),
     ),
   }
 
@@ -57,7 +58,7 @@ export default class PermissionPageContainer extends Component {
         acc[methodName] = true
         return acc
       },
-      {}
+      {},
     )
   }
 
@@ -116,10 +117,7 @@ export default class PermissionPageContainer extends Component {
     const {
       requestMetadata,
       targetDomainMetadata,
-      permissionsDescriptions,
       selectedIdentities,
-      redirect,
-      permissionRejected,
       allIdentitiesSelected,
     } = this.props
 
@@ -129,30 +127,22 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
-          permissionsDescriptions={permissionsDescriptions}
           onPermissionToggle={this.onPermissionToggle}
           selectedIdentities={selectedIdentities}
-          redirect={redirect}
-          permissionRejected={permissionRejected}
           allIdentitiesSelected={allIdentitiesSelected}
         />
-        { !redirect
-          ? (
-            <div className="permission-approval-container__footers">
-              <PermissionsConnectFooter />
-              <PageContainerFooter
-                cancelButtonType="default"
-                onCancel={() => this.onCancel()}
-                cancelText={this.context.t('cancel')}
-                onSubmit={() => this.onSubmit()}
-                submitText={this.context.t('submit')}
-                submitButtonType="confirm"
-                buttonSizeLarge={false}
-              />
-            </div>
-          )
-          : null
-        }
+        <div className="permission-approval-container__footers">
+          <PermissionsConnectFooter />
+          <PageContainerFooter
+            cancelButtonType="default"
+            onCancel={() => this.onCancel()}
+            cancelText={this.context.t('cancel')}
+            onSubmit={() => this.onSubmit()}
+            submitText={this.context.t('connect')}
+            submitButtonType="confirm"
+            buttonSizeLarge={false}
+          />
+        </div>
       </div>
     )
   }

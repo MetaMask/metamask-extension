@@ -65,12 +65,14 @@ class HideTokenConfirmationModal extends Component {
           <div className="hide-token-confirmation__buttons">
             <button
               className="btn-default hide-token-confirmation__button btn--large"
+              data-testid="hide-token-confirmation__cancel"
               onClick={() => hideModal()}
             >
               {this.context.t('cancel')}
             </button>
             <button
               className="btn-secondary hide-token-confirmation__button btn--large"
+              data-testid="hide-token-confirmation__hide"
               onClick={() => hideToken(address)}
             >
               {this.context.t('hide')}

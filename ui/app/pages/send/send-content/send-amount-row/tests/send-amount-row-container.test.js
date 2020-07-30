@@ -19,7 +19,7 @@ proxyquire('../send-amount-row.container.js', {
       return () => ({})
     },
   },
-  './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
+  '../../../../selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': {
     getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
     getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
@@ -47,7 +47,7 @@ describe('send-amount-row container', function () {
         assert(actionSpies.setMaxModeTo.calledOnce)
         assert.equal(
           actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockBool'
+          'mockBool',
         )
       })
     })
@@ -59,7 +59,7 @@ describe('send-amount-row container', function () {
         assert(actionSpies.updateSendAmount.calledOnce)
         assert.equal(
           actionSpies.updateSendAmount.getCall(0).args[0],
-          'mockAmount'
+          'mockAmount',
         )
       })
     })
@@ -71,7 +71,7 @@ describe('send-amount-row container', function () {
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockGasFeeErrorChange: true }
+          { some: 'data', mockGasFeeErrorChange: true },
         )
       })
     })
@@ -83,7 +83,7 @@ describe('send-amount-row container', function () {
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.deepEqual(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          { some: 'data', mockChange: true }
+          { some: 'data', mockChange: true },
         )
       })
     })

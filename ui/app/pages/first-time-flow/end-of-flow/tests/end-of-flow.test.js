@@ -12,12 +12,11 @@ describe('End of Flow Screen', function () {
     history: {
       push: sinon.spy(),
     },
-    completeOnboarding: sinon.spy(),
   }
 
   beforeEach(function () {
     wrapper = mountWithRouter(
-      <EndOfFlowScreen.WrappedComponent {...props} />
+      <EndOfFlowScreen.WrappedComponent {...props} />,
     )
   })
 
@@ -30,7 +29,6 @@ describe('End of Flow Screen', function () {
     endOfFlowButton.simulate('click')
 
     setImmediate(() => {
-      assert(props.completeOnboarding.calledOnce)
       assert(props.history.push.calledOnceWithExactly(DEFAULT_ROUTE))
       done()
     })

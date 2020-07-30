@@ -1,17 +1,55 @@
 import assert from 'assert'
-import { getAddressBook, getConnectedDomainsForSelectedAddress } from '../selectors.js'
-import mockState from './selectors-test-data'
+import * as selectors from '../selectors'
+import mockState from '../../../../test/data/mock-state.json'
 
-describe('selectors', function () {
+describe('Selectors', function () {
 
-  describe('getAddressBook()', function () {
+  describe('#getSelectedAddress', function () {
+    it('returns undefined if selectedAddress is undefined', function () {
+      assert.equal(selectors.getSelectedAddress({ metamask: {} }), undefined)
+    })
+
+    it('returns selectedAddress', function () {
+      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+      assert.equal(selectors.getSelectedAddress({ metamask: { selectedAddress } }), selectedAddress)
+    })
+
+  })
+
+  it('returns selected identity', function () {
+    assert.deepEqual(
+      selectors.getSelectedIdentity(mockState),
+      {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        name: 'Test Account',
+      },
+    )
+  })
+
+  it('returns selected account', function () {
+    const account = selectors.getSelectedAccount(mockState)
+    assert.equal(account.balance, '0x0')
+    assert.equal(account.address, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+  })
+
+  describe('#getTokenExchangeRates', function () {
+    it('returns token exchange rates', function () {
+      const tokenExchangeRates = selectors.getTokenExchangeRates(mockState)
+      assert.deepEqual(tokenExchangeRates, {
+        '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
+        '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
+      })
+    })
+  })
+
+  describe('#getAddressBook', function () {
     it('should return the address book', function () {
       assert.deepEqual(
-        getAddressBook(mockState),
+        selectors.getAddressBook(mockState),
         [
           {
-            'address': '0x06195827297c7a80a443b6894d3bdb8824b43896',
-            'chainId': '3',
+            'address': '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            'chainId': '4',
             'isEns': false,
             'memo': '',
             'name': 'Address Book Account 1',
@@ -21,154 +59,33 @@ describe('selectors', function () {
     })
   })
 
-  describe('getConnectedDomainsForSelectedAddress', function () {
-    it('should return the list of connected domains when there is 1 connected account', function () {
-      const mockState = {
-        metamask: {
-          selectedAddress: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-          domainMetadata: {
-            'peepeth.com': {
-              'icon': 'https://peepeth.com/favicon-32x32.png',
-              'name': 'Peepeth',
-            },
-            'remix.ethereum.org': {
-              'icon': 'https://remix.ethereum.org/icon.png',
-              'name': 'Remix - Ethereum IDE',
-            },
-          },
-          domains: {
-            'peepeth.com': {
-              'permissions': [
-                {
-                  '@context': [
-                    'https://github.com/MetaMask/rpc-cap',
-                  ],
-                  'caveats': [
-                    {
-                      'name': 'exposedAccounts',
-                      'type': 'filterResponse',
-                      'value': [
-                        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      ],
-                    },
-                  ],
-                  'date': 1585676177970,
-                  'id': '840d72a0-925f-449f-830a-1aa1dd5ce151',
-                  'invoker': 'peepeth.com',
-                  'parentCapability': 'eth_accounts',
-                },
-              ],
-            },
-            'remix.ethereum.org': {
-              'permissions': [
-                {
-                  '@context': [
-                    'https://github.com/MetaMask/rpc-cap',
-                  ],
-                  'caveats': [
-                    {
-                      'type': 'filterResponse',
-                      'value': [
-                        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      ],
-                      'name': 'exposedAccounts',
-                    },
-                  ],
-                  'date': 1585685128948,
-                  'id': '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
-                  'invoker': 'remix.ethereum.org',
-                  'parentCapability': 'eth_accounts',
-                },
-              ],
-            },
-          },
-        },
-      }
-      const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [{
-        extensionId,
-        icon: 'https://peepeth.com/favicon-32x32.png',
-        key: 'peepeth.com',
-        name: 'Peepeth',
-      }, {
-        extensionId,
-        name: 'Remix - Ethereum IDE',
-        icon: 'https://remix.ethereum.org/icon.png',
-        key: 'remix.ethereum.org',
-      }])
-    })
-
-    it('should return the list of connected domains when there are 2 connected accounts', function () {
-      const mockState = {
-        metamask: {
-          selectedAddress: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          domainMetadata: {
-            'peepeth.com': {
-              'icon': 'https://peepeth.com/favicon-32x32.png',
-              'name': 'Peepeth',
-            },
-            'remix.ethereum.org': {
-              'icon': 'https://remix.ethereum.org/icon.png',
-              'name': 'Remix - Ethereum IDE',
-            },
-          },
-          domains: {
-            'peepeth.com': {
-              'permissions': [
-                {
-                  '@context': [
-                    'https://github.com/MetaMask/rpc-cap',
-                  ],
-                  'caveats': [
-                    {
-                      'name': 'exposedAccounts',
-                      'type': 'filterResponse',
-                      'value': [
-                        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      ],
-                    },
-                  ],
-                  'date': 1585676177970,
-                  'id': '840d72a0-925f-449f-830a-1aa1dd5ce151',
-                  'invoker': 'peepeth.com',
-                  'parentCapability': 'eth_accounts',
-                },
-              ],
-            },
-            'remix.ethereum.org': {
-              'permissions': [
-                {
-                  '@context': [
-                    'https://github.com/MetaMask/rpc-cap',
-                  ],
-                  'caveats': [
-                    {
-                      'type': 'filterResponse',
-                      'value': [
-                        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                        '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                      ],
-                      'name': 'exposedAccounts',
-                    },
-                  ],
-                  'date': 1585685128948,
-                  'id': '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
-                  'invoker': 'remix.ethereum.org',
-                  'parentCapability': 'eth_accounts',
-                },
-              ],
-            },
-          },
-        },
-      }
-      const extensionId = undefined
-      assert.deepEqual(getConnectedDomainsForSelectedAddress(mockState), [{
-        extensionId,
-        name: 'Remix - Ethereum IDE',
-        icon: 'https://remix.ethereum.org/icon.png',
-        key: 'remix.ethereum.org',
-      }])
-    })
+  it('returns accounts with balance, address, and name from identity and accounts in state', function () {
+    const accountsWithSendEther = selectors.accountsWithSendEtherInfoSelector(mockState)
+    assert.equal(accountsWithSendEther.length, 2)
+    assert.equal(accountsWithSendEther[0].balance, '0x0')
+    assert.equal(accountsWithSendEther[0].address, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+    assert.equal(accountsWithSendEther[0].name, 'Test Account')
   })
 
+  it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', function () {
+    const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(mockState)
+    assert.equal(currentAccountwithSendEther.balance, '0x0')
+    assert.equal(currentAccountwithSendEther.address, '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+    assert.equal(currentAccountwithSendEther.name, 'Test Account')
+  })
+
+  it('#getGasIsLoading', function () {
+    const gasIsLoading = selectors.getGasIsLoading(mockState)
+    assert.equal(gasIsLoading, false)
+  })
+
+  it('#getCurrentCurrency', function () {
+    const currentCurrency = selectors.getCurrentCurrency(mockState)
+    assert.equal(currentCurrency, 'usd')
+  })
+
+  it('#getTotalUnapprovedCount', function () {
+    const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState)
+    assert.equal(totalUnapprovedCount, 1)
+  })
 })

@@ -1,12 +1,14 @@
 const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
 const LOCK_ROUTE = '/lock'
+const ASSET_ROUTE = '/asset'
 const SETTINGS_ROUTE = '/settings'
 const GENERAL_ROUTE = '/settings/general'
 const CONNECTIONS_ROUTE = '/settings/connections'
 const ADVANCED_ROUTE = '/settings/advanced'
 const SECURITY_ROUTE = '/settings/security'
 const ABOUT_US_ROUTE = '/settings/about-us'
+const ALERTS_ROUTE = '/settings/alerts'
 const NETWORKS_ROUTE = '/settings/networks'
 const CONTACT_LIST_ROUTE = '/settings/contact-list'
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
@@ -28,6 +30,7 @@ const SEND_ROUTE = '/send'
 const CONNECT_ROUTE = '/connect'
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
 const CONNECTED_ROUTE = '/connected'
+const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
 
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
@@ -54,6 +57,8 @@ const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
 
 export {
   DEFAULT_ROUTE,
+  ALERTS_ROUTE,
+  ASSET_ROUTE,
   UNLOCK_ROUTE,
   LOCK_ROUTE,
   SETTINGS_ROUTE,
@@ -104,4 +109,5 @@ export {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
 }

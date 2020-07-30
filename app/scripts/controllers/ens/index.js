@@ -7,7 +7,7 @@ import Ens from './ens'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ZERO_X_ERROR_ADDRESS = '0x'
 
-class EnsController {
+export default class EnsController {
   constructor ({ ens, provider, networkStore } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
@@ -90,5 +90,3 @@ class EnsController {
     })
   }
 }
-
-export default EnsController

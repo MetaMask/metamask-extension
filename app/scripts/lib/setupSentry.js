@@ -5,24 +5,83 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage'
 
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT
-const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
 const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
-export default setupSentry
+// This describes the subset of Redux state attached to errors sent to Sentry
+// These properties have some potential to be useful for debugging, and they do
+// not contain any identifiable information.
+export const SENTRY_STATE = {
+  gas: true,
+  history: true,
+  metamask: {
+    alertEnabledness: true,
+    completedOnboarding: true,
+    connectedStatusPopoverHasBeenShown: true,
+    conversionDate: true,
+    conversionRate: true,
+    currentBlockGasLimit: true,
+    currentCurrency: true,
+    currentLocale: true,
+    customNonceValue: true,
+    defaultHomeActiveTabName: true,
+    featureFlags: true,
+    firstTimeFlowType: true,
+    forgottenPassword: true,
+    incomingTxLastFetchedBlocksByNetwork: true,
+    ipfsGateway: true,
+    isAccountMenuOpen: true,
+    isInitialized: true,
+    isUnlocked: true,
+    metaMetricsId: true,
+    metaMetricsSendCount: true,
+    nativeCurrency: true,
+    network: true,
+    nextNonce: true,
+    participateInMetaMetrics: true,
+    preferences: true,
+    provider: {
+      nickname: true,
+      ticker: true,
+      type: true,
+    },
+    seedPhraseBackedUp: true,
+    settings: {
+      chainId: true,
+      ticker: true,
+      nickname: true,
+    },
+    showRestorePrompt: true,
+    threeBoxDisabled: true,
+    threeBoxLastUpdated: true,
+    threeBoxSynced: true,
+    threeBoxSyncingAllowed: true,
+    unapprovedDecryptMsgCount: true,
+    unapprovedEncryptionPublicKeyMsgCount: true,
+    unapprovedMsgCount: true,
+    unapprovedPersonalMsgCount: true,
+    unapprovedTypedMessagesCount: true,
+    useBlockie: true,
+    useNonceField: true,
+    usePhishDetect: true,
+    welcomeScreenSeen: true,
+  },
+  unconnectedAccount: true,
+}
 
-// Setup sentry remote error reporting
-function setupSentry (opts) {
-  const { release, getState } = opts
+export default function setupSentry ({ release, getState }) {
   let sentryTarget
-  // detect brave
-  const isBrave = Boolean(window.chrome.ipcRenderer)
 
-  if (METAMASK_DEBUG || process.env.IN_TEST) {
+  if (METAMASK_DEBUG) {
+    return
+  } else if (METAMASK_ENVIRONMENT === 'production') {
+    if (!process.env.SENTRY_DSN) {
+      throw new Error(`Missing SENTRY_DSN environment variable in production environment`)
+    }
+    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`)
+    sentryTarget = process.env.SENTRY_DSN
+  } else {
     console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`)
     sentryTarget = SENTRY_DSN_DEV
-  } else {
-    console.log(`Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_PROD`)
-    sentryTarget = SENTRY_DSN_PROD
   }
 
   Sentry.init({
@@ -37,10 +96,6 @@ function setupSentry (opts) {
     beforeSend: (report) => rewriteReport(report),
   })
 
-  Sentry.configureScope((scope) => {
-    scope.setExtra('isBrave', isBrave)
-  })
-
   function rewriteReport (report) {
     try {
       // simplify certain complex error messages (e.g. Ethjs)
@@ -50,6 +105,9 @@ function setupSentry (opts) {
       // append app state
       if (getState) {
         const appState = getState()
+        if (!report.extra) {
+          report.extra = {}
+        }
         report.extra.appState = appState
       }
     } catch (err) {

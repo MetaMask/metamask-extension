@@ -1,7 +1,7 @@
 import ObservableStore from 'obs-store'
 import EventEmitter from 'events'
 
-class AppStateController extends EventEmitter {
+export default class AppStateController extends EventEmitter {
   /**
    * @constructor
    * @param opts
@@ -12,6 +12,7 @@ class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
+      showUnlockRequest,
       preferencesStore,
     } = opts
     const { preferences } = preferencesStore.getState()
@@ -21,7 +22,8 @@ class AppStateController extends EventEmitter {
     this.onInactiveTimeout = onInactiveTimeout || (() => {})
     this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
-      mkrMigrationReminderTimestamp: null,
+      connectedStatusPopoverHasBeenShown: true,
+      defaultHomeActiveTabName: null,
     }, initState))
     this.timer = null
 
@@ -29,8 +31,13 @@ class AppStateController extends EventEmitter {
     this.waitingForUnlock = []
     addUnlockListener(this.handleUnlock.bind(this))
 
-    preferencesStore.subscribe((state) => {
-      this._setInactiveTimeout(state.preferences.autoLockTimeLimit)
+    this._showUnlockRequest = showUnlockRequest
+
+    preferencesStore.subscribe(({ preferences }) => {
+      const currentState = this.store.getState()
+      if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
+        this._setInactiveTimeout(preferences.autoLockTimeLimit)
+      }
     })
 
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
@@ -40,18 +47,36 @@ class AppStateController extends EventEmitter {
    * Get a Promise that resolves when the extension is unlocked.
    * This Promise will never reject.
    *
+   * @param {boolean} shouldShowUnlockRequest - Whether the extension notification
+   * popup should be opened.
    * @returns {Promise<void>} A promise that resolves when the extension is
    * unlocked, or immediately if the extension is already unlocked.
    */
-  getUnlockPromise () {
+  getUnlockPromise (shouldShowUnlockRequest) {
     return new Promise((resolve) => {
       if (this.isUnlocked()) {
         resolve()
       } else {
-        this.waitingForUnlock.push({ resolve })
-        this.emit('updateBadge')
+        this.waitForUnlock(resolve, shouldShowUnlockRequest)
       }
     })
+  }
+
+  /**
+   * Adds a Promise's resolve function to the waitingForUnlock queue.
+   * Also opens the extension popup if specified.
+   *
+   * @param {Promise.resolve} resolve - A Promise's resolve function that will
+   * be called when the extension is unlocked.
+   * @param {boolean} shouldShowUnlockRequest - Whether the extension notification
+   * popup should be opened.
+   */
+  waitForUnlock (resolve, shouldShowUnlockRequest) {
+    this.waitingForUnlock.push({ resolve })
+    this.emit('updateBadge')
+    if (shouldShowUnlockRequest) {
+      this._showUnlockRequest()
+    }
   }
 
   /**
@@ -66,9 +91,22 @@ class AppStateController extends EventEmitter {
     }
   }
 
-  setMkrMigrationReminderTimestamp (timestamp) {
+  /**
+   * Sets the default home tab
+   * @param {string} [defaultHomeActiveTabName] - the tab name
+   */
+  setDefaultHomeActiveTabName (defaultHomeActiveTabName) {
     this.store.updateState({
-      mkrMigrationReminderTimestamp: timestamp,
+      defaultHomeActiveTabName,
+    })
+  }
+
+  /**
+   * Record that the user has seen the connected status info popover
+   */
+  setConnectedStatusPopoverHasBeenShown () {
+    this.store.updateState({
+      connectedStatusPopoverHasBeenShown: true,
     })
   }
 
@@ -117,6 +155,3 @@ class AppStateController extends EventEmitter {
     this.timer = setTimeout(() => this.onInactiveTimeout(), timeoutMinutes * 60 * 1000)
   }
 }
-
-export default AppStateController
-

@@ -2,7 +2,7 @@ import ContactListTab from './contact-list-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { getAddressBook } from '../../../selectors/selectors'
+import { getAddressBook } from '../../../selectors'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 
@@ -29,7 +29,7 @@ const mapStateToProps = (state, ownProps) => {
   const showingMyAccounts = Boolean(
     pathname.match(CONTACT_MY_ACCOUNTS_ROUTE) ||
     pathname.match(CONTACT_MY_ACCOUNTS_VIEW_ROUTE) ||
-    pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE)
+    pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE),
   )
   const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
 
@@ -50,5 +50,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(ContactListTab)

@@ -14,9 +14,12 @@ import { createSwappableProxy, createEventEmitterProxy } from 'swappable-obj-pro
 
 const networks = { networkList: {} }
 
-import { ROPSTEN, RINKEBY, KOVAN, MAINNET, LOCALHOST, GOERLI } from './enums'
-
-const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI]
+import {
+  RINKEBY,
+  MAINNET,
+  LOCALHOST,
+  INFURA_PROVIDER_TYPES,
+} from './enums'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -97,7 +100,7 @@ export default class NetworkController extends EventEmitter {
     if (!type) {
       return
     }
-    network = networks.networkList[type] && networks.networkList[type].chainId ? networks.networkList[type].chainId : network
+    network = networks.networkList[type]?.chainId || network
     return this.networkStore.putState(network)
   }
 
@@ -208,7 +211,7 @@ export default class NetworkController extends EventEmitter {
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
-      chainId: chainId,
+      chainId,
       rpcUrl,
       ticker: ticker || 'ETH',
       nickname,

@@ -30,7 +30,6 @@ import NotificationManager from './lib/notification-manager.js'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
-import reportFailedTxToSentry from './lib/reportFailedTxToSentry'
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code'
 import getObjStructure from './lib/getObjStructure'
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup'
@@ -84,9 +83,6 @@ initialize().catch(log.error)
  * @property {boolean} loadingDefaults - TODO: Document
  * @property {Object} txParams - The tx params as passed to the network provider.
  * @property {Object[]} history - A history of mutations to this TransactionMeta object.
- * @property {boolean} gasPriceSpecified - True if the suggesting dapp specified a gas price, prevents auto-estimation.
- * @property {boolean} gasLimitSpecified - True if the suggesting dapp specified a gas limit, prevents auto-estimation.
- * @property {string} estimatedGas - A hex string represented the estimated gas limit required to complete the transaction.
  * @property {string} origin - A string representing the interface that suggested the transaction.
  * @property {Object} nonceDetails - A metadata object containing information used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction, ready to submit to the network.
@@ -105,14 +101,11 @@ initialize().catch(log.error)
  * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {address} selectedTokenAddress - Used to indicate if a token is globally selected. Should be deprecated in favor of UI-centric token selection.
- * @property {Object} tokenExchangeRates - Info about current token prices.
+ * @property {Object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {Object} send - TODO: Document
- * @property {Object} coinOptions - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
  * @property {Object} featureFlags - An object for optional feature flags.
- * @property {string} networkEndpointType - TODO: Document
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {Object} provider - The current selected network provider.
@@ -134,14 +127,10 @@ initialize().catch(log.error)
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
- * @property {string} currentAccountTab - A view identifying string for displaying the current displayed view, allows user to have a preferred tab in the old UI (between tokens and history).
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
- * @property {Object} infuraNetworkStatus - An object of infura network status checks.
- * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
- * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -241,7 +230,8 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     showUnapprovedTx: triggerUi,
     showPermissionRequest: triggerUi,
-    openPopup: openPopup,
+    showUnlockRequest: triggerUi,
+    openPopup,
     // initial state
     initState,
     // initial locale code
@@ -262,19 +252,6 @@ function setupController (initState, initLangCode) {
     provider: controller.provider,
   })
 
-  // report failed transactions to Sentry
-  controller.txController.on(`tx:status-update`, (txId, status) => {
-    if (status !== 'failed') {
-      return
-    }
-    const txMeta = controller.txController.txStateManager.getTx(txId)
-    try {
-      reportFailedTxToSentry({ sentry, txMeta })
-    } catch (e) {
-      console.error(e)
-    }
-  })
-
   // setup state persistence
   pump(
     asStream(controller.store),
@@ -283,7 +260,7 @@ function setupController (initState, initLangCode) {
     createStreamSink(persistData),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error)
-    }
+    },
   )
 
   /**
@@ -325,7 +302,7 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
+  const metamaskBlockedPorts = [
     'trezor-connect',
   ]
 
@@ -349,7 +326,7 @@ function setupController (initState, initLangCode) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
-    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
       return false
     }
 
@@ -390,7 +367,7 @@ function setupController (initState, initLangCode) {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id
         const url = new URL(remotePort.sender.url)
-        const origin = url.hostname
+        const { origin } = url
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {
@@ -477,7 +454,7 @@ async function openPopup () {
           resolve()
         }
       }, 1000)
-    }
+    },
   )
 }
 

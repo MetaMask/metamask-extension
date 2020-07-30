@@ -23,6 +23,7 @@ module.exports = {
     '@metamask/eslint-config/config/nodejs',
     '@metamask/eslint-config/config/mocha',
     'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
   ],
 
   plugins: [
@@ -40,7 +41,14 @@ module.exports = {
   },
 
   rules: {
+    /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
+    'array-callback-return': 'error',
+    'callback-return': 'error',
+    'global-require': 'error',
+    'guard-for-in': 'error',
+    /* End v2 rules */
     'arrow-parens': 'error',
+    'no-tabs': 'error',
     'no-mixed-operators': 'error',
     'import/default': 'error',
     'import/export': 'error',
@@ -49,7 +57,7 @@ module.exports = {
     'import/newline-after-import': 'error',
     'import/no-absolute-path': 'error',
     'import/no-amd': 'error',
-    'import/no-anonymous-default-export': ['error', { 'allowObject': true }],
+    'import/no-anonymous-default-export': 'error',
     'import/no-duplicates': 'error',
     'import/no-dynamic-require': 'error',
     'import/no-mutable-exports': 'error',
@@ -90,6 +98,23 @@ module.exports = {
     'babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
   },
+
+  overrides: [{
+    files: [
+      'app/scripts/migrations/*.js',
+      '*.stories.js',
+    ],
+    rules: {
+      'import/no-anonymous-default-export': ['error', { 'allowObject': true }],
+    },
+  }, {
+    files: [
+      'app/scripts/migrations/*.js',
+    ],
+    rules: {
+      'global-require': 'off',
+    },
+  }],
 
   settings: {
     'react': {

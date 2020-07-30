@@ -254,12 +254,6 @@
   "contractDeployment": {
     "message": "컨트랙트 배포"
   },
-  "conversionProgress": {
-    "message": "변환 진행 중"
-  },
-  "copiedButton": {
-    "message": "복사됨"
-  },
   "copiedExclamation": {
     "message": "복사됨!"
   },
@@ -274,9 +268,6 @@
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
-  },
-  "copyButton": {
-    "message": " 복사 "
   },
   "copyPrivateKey": {
     "message": "비밀 키입니다 (클릭하여 복사)"
@@ -365,9 +356,6 @@
   "editContact": {
     "message": "연락처 수정"
   },
-  "emailUs": {
-    "message": "저자에게 메일 보내기!"
-  },
   "endOfFlowMessage1": {
     "message": "인증을 통과했습니다 - 시드 구문을 안전하게 보관하세요. 그것은 당신의 의무입니다."
   },
@@ -451,9 +439,6 @@
   "from": {
     "message": "보내는 이"
   },
-  "fromShapeShift": {
-    "message": "ShapeShift로부터"
-  },
   "functionType": {
     "message": "함수 유형"
   },
@@ -524,9 +509,6 @@
   },
   "hide": {
     "message": "숨기기"
-  },
-  "hideToken": {
-    "message": "토큰 숨기기"
   },
   "hideTokenPrompt": {
     "message": "토큰 숨기기?"
@@ -660,9 +642,6 @@
   "metamaskVersion": {
     "message": "메타마스크 버전"
   },
-  "missingYourTokens": {
-    "message": "당신의 토큰이 보이지 않나요?"
-  },
   "mobileSyncText": {
     "message": "본인 여부를 확인하기 위해 비밀번호를 입력해 주세요!"
   },
@@ -757,9 +736,6 @@
   },
   "noAddressForName": {
     "message": "이 이름에 대해 주소가 설정되어 있지 않습니다."
-  },
-  "noDeposits": {
-    "message": "입금 내역이 없습니다."
   },
   "noConversionRateAvailable": {
     "message": "변환 비율을 찾을 수 없습니다"
@@ -1158,10 +1134,6 @@
   },
   "to": {
     "message": "받는이"
-  },
-  "toETHviaShapeShift": {
-    "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
-    "description": "system will fill in deposit type in start of message"
   },
   "token": {
     "message": "토큰"

@@ -1,4 +1,4 @@
-import actionConstants from '../../store/actionConstants'
+import * as actionConstants from '../../store/actionConstants'
 
 // actionConstants
 const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED'
@@ -31,8 +31,6 @@ export default function reduceApp (state = {}, action) {
     accountDetail: {
       subview: 'transactions',
     },
-    // Used to render transition direction
-    transForward: true,
     // Used to display loading indicator
     isLoading: false,
     // Used to display error text
@@ -40,7 +38,6 @@ export default function reduceApp (state = {}, action) {
     buyView: {},
     isMouseUser: false,
     gasIsLoading: false,
-    networkNonce: null,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
@@ -139,13 +136,6 @@ export default function reduceApp (state = {}, action) {
         ),
       }
 
-    // transition methods
-    case actionConstants.TRANSITION_FORWARD:
-      return {
-        ...appState,
-        transForward: true,
-      }
-
     case actionConstants.FORGOT_PASSWORD:
       return {
         ...appState,
@@ -155,14 +145,12 @@ export default function reduceApp (state = {}, action) {
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
-        transForward: true,
         warning: null,
       }
 
     case actionConstants.LOCK_METAMASK:
       return {
         ...appState,
-        transForward: false,
         warning: null,
       }
 
@@ -176,7 +164,6 @@ export default function reduceApp (state = {}, action) {
           accountExport: 'none',
           privateKey: '',
         },
-        transForward: false,
         warning: null,
       }
 
@@ -189,13 +176,11 @@ export default function reduceApp (state = {}, action) {
           accountExport: 'none',
           privateKey: '',
         },
-        transForward: false,
       }
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
-        transForward: true,
         isLoading: false,
         warning: null,
         scrollToBottom: false,
@@ -206,7 +191,6 @@ export default function reduceApp (state = {}, action) {
       return {
         ...appState,
         txId: action.id,
-        transForward: action.transForward,
         warning: null,
         isLoading: false,
       }
@@ -215,7 +199,6 @@ export default function reduceApp (state = {}, action) {
       if (action.value.unconfirmedActionsCount > 0) {
         return {
           ...appState,
-          transForward: false,
           txId: null,
           warning: null,
         }
@@ -224,7 +207,6 @@ export default function reduceApp (state = {}, action) {
           ...appState,
           // indicate notification should close
           shouldClose: true,
-          transForward: false,
           warning: null,
           txId: null,
           accountDetail: {
@@ -312,12 +294,6 @@ export default function reduceApp (state = {}, action) {
       return {
         ...appState,
         gasIsLoading: false,
-      }
-
-    case actionConstants.SET_NETWORK_NONCE:
-      return {
-        ...appState,
-        networkNonce: action.value,
       }
 
     case actionConstants.SET_PREVIOUS_PROVIDER:

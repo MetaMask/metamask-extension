@@ -1,7 +1,3 @@
-.account-dropdown-name {
-  font-family: Roboto;
-}
-
 .account-dropdown-balance {
   color: $dusty-gray;
   line-height: 19px;
@@ -9,7 +5,6 @@
 
 .account-dropdown-edit-button {
   color: $dusty-gray;
-  font-family: Roboto;
 
   &:hover {
     color: $white;
@@ -52,7 +47,7 @@
     }
 
     div:last-of-type {
-      color: rgba(220, 153, 18, 0.6901960784313725)
+      color: rgba(220, 153, 18, 0.6901960784313725);
     }
   }
 
@@ -69,7 +64,6 @@
 
   &__account-primary-balance,
   &__account-secondary-balance {
-    font-family: Roboto;
     line-height: 16px;
     font-size: 12px;
   }
@@ -78,7 +72,7 @@
     position: absolute;
     top: 3px;
     left: -8px;
-    color: $curious-blue;
+    color: $primary-blue;
   }
 
   &__account-primary-balance {
@@ -99,11 +93,11 @@
 
   &__dropdown {
     &:hover {
-      background: rgba($alto, .2);
+      background: rgba($alto, 0.2);
       cursor: pointer;
 
       input {
-        background: rgba($alto, .1);
+        background: rgba($alto, 0.1);
       }
     }
   }

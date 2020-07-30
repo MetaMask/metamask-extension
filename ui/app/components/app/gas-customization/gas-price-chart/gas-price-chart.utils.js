@@ -176,7 +176,7 @@ export function setSelectedCircle ({
 
   chart.internal.selectPoint(
     generateDataUIObj(currentX.toNumber(), numberOfValues, newTimeEstimate),
-    numberOfValues
+    numberOfValues,
   )
 }
 
@@ -322,7 +322,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
 
     if (dataToShow.length) {
       this.tooltip.html(
-        this.config.tooltip_contents.call(this, selectedData, this.axis.getXAxisTickFormat(), this.getYFormat(), this.color)
+        this.config.tooltip_contents.call(this, selectedData, this.axis.getXAxisTickFormat(), this.getYFormat(), this.color),
       ).style('display', 'flex')
 
       // Get tooltip dimensions

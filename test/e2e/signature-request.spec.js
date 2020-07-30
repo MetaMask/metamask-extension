@@ -41,7 +41,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -51,7 +51,7 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('successfuly signs typed data', function () {
+  describe('successfully signs typed data', function () {
     let extension
     let popup
     let dapp
@@ -84,17 +84,15 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
-
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
 
       await driver.waitUntilXWindowHandles(2)
       await driver.switchToWindow(dapp)
     })
 
     it('creates a sign typed data signature request', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Sign')]`), 10000)
+      await driver.clickElement(By.id('signTypedData'), 10000)
       await driver.delay(largeDelayMs)
 
       await driver.delay(regularDelayMs)
@@ -109,7 +107,7 @@ describe('MetaMask', function () {
       const address = content[1]
       assert.equal(await title.getText(), 'Signature Request')
       assert.equal(await name.getText(), 'Ether Mail')
-      assert.equal(await origin.getText(), '127.0.0.1')
+      assert.equal(await origin.getText(), 'http://127.0.0.1:8080')
       assert.equal(await address.getText(), publicAddress.slice(0, 8) + '...' + publicAddress.slice(publicAddress.length - 8))
     })
 
@@ -122,7 +120,8 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      await driver.clickElement(By.css('.account-details__details-button'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.delay(regularDelayMs)
 
       const addressInput = await driver.findElement(By.css('.qr-ellip-address'))

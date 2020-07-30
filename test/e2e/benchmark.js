@@ -16,7 +16,7 @@ async function measurePage (pageName) {
     const passwordField = await driver.findElement(By.css('#password'))
     await passwordField.sendKeys('correct horse battery staple')
     await passwordField.sendKeys(Key.ENTER)
-    await driver.findElement(By.css('.account-details__account-name'))
+    await driver.findElement(By.css('.selected-account__name'))
     await driver.navigate(pageName)
     await driver.delay(1000)
     metrics = await driver.collectMetrics()
@@ -43,7 +43,7 @@ const standardDeviationResult = calculateResult((array) => {
   const squareDiffs = array.map((value) => Math.pow(value - average, 2))
   return Math.sqrt(calculateAverage(squareDiffs))
 })
-// 95% margin of error calculated using Student's t-distrbution
+// 95% margin of error calculated using Student's t-distribution
 const calculateMarginOfError = (array) => ttest(array).confidence()[1] - calculateAverage(array)
 const marginOfErrorResult = calculateResult((array) => calculateMarginOfError(array))
 
@@ -110,7 +110,7 @@ async function getFirstParentDirectoryThatExists (directory) {
 async function main () {
   const args = process.argv.slice(2)
 
-  let pages = ['notification']
+  let pages = ['home']
   let numSamples = DEFAULT_NUM_SAMPLES
   let outputPath
   let outputDirectory

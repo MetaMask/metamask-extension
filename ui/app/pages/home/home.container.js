@@ -2,17 +2,27 @@ import Home from './home.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-import { getCurrentEthBalance, getDaiV1Token, getFirstPermissionRequest } from '../../selectors/selectors'
+import {
+  unconfirmedTransactionsCountSelector,
+  getCurrentEthBalance,
+  getFirstPermissionRequest,
+  getTotalUnapprovedCount,
+} from '../../selectors'
+
 import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
   setShowRestorePromptToFalse,
+  setConnectedStatusPopoverHasBeenShown,
+  setDefaultHomeActiveTabName,
 } from '../../store/actions'
 import { setThreeBoxLastUpdated } from '../../ducks/app/app'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../app/scripts/lib/enums'
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state
@@ -23,11 +33,17 @@ const mapStateToProps = (state) => {
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
+    connectedStatusPopoverHasBeenShown,
+    defaultHomeActiveTabName,
   } = metamask
   const accountBalance = getCurrentEthBalance(state)
   const { forgottenPassword, threeBoxLastUpdated } = appState
+  const totalUnapprovedCount = getTotalUnapprovedCount(state)
 
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  const envType = getEnvironmentType()
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION
+
   const firstPermissionsRequest = getFirstPermissionRequest(state)
   const firstPermissionsRequestId = (firstPermissionsRequest && firstPermissionsRequest.metadata)
     ? firstPermissionsRequest.metadata.id
@@ -39,12 +55,15 @@ const mapStateToProps = (state) => {
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder: !seedPhraseBackedUp && (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
     isPopup,
+    isNotification,
     threeBoxSynced,
     showRestorePrompt,
     selectedAddress,
     threeBoxLastUpdated,
-    hasDaiV1Token: Boolean(getDaiV1Token(state)),
     firstPermissionsRequestId,
+    totalUnapprovedCount,
+    connectedStatusPopoverHasBeenShown,
+    defaultHomeActiveTabName,
   }
 }
 
@@ -63,9 +82,11 @@ const mapDispatchToProps = (dispatch) => ({
   },
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
+  setConnectedStatusPopoverHasBeenShown: () => dispatch(setConnectedStatusPopoverHasBeenShown()),
+  onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
 })
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(Home)

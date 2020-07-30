@@ -76,7 +76,7 @@ describe('TransactionAction Component', function () {
           transaction={transaction}
           className="test-class"
         />,
-        { context: { t } }
+        { context: { t } },
       )
 
       assert.ok(wrapper)
@@ -110,7 +110,7 @@ describe('TransactionAction Component', function () {
           transaction={transaction}
           className="test-class"
         />,
-        { context: { t } }
+        { context: { t } },
       )
 
       assert.ok(wrapper)

@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert'
+import sinon from 'sinon'
 
 import {
   METADATA_STORE_KEY,
@@ -28,8 +29,8 @@ const {
 } = getters
 
 const {
-  ACCOUNT_ARRAYS,
-  ORIGINS,
+  ACCOUNTS,
+  DOMAINS,
   PERM_NAMES,
 } = constants
 
@@ -57,21 +58,26 @@ describe('permissions middleware', function () {
 
     beforeEach(function () {
       permController = initPermController()
+      permController.notifyAccountsChanged = sinon.fake()
     })
 
     it('grants permissions on user approval', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {}
 
+      const userApprovalPromise = getUserApprovalPromise(permController)
+
       const pendingApproval = assert.doesNotReject(
         aMiddleware(req, res),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -81,79 +87,97 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq, ACCOUNTS.a.permitted)
       await pendingApproval
 
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
 
       assert.equal(
         res.result.length, 1,
-        'origin should have single approved permission'
+        'origin should have single approved permission',
       )
 
       validatePermission(
         res.result[0],
         PERM_NAMES.eth_accounts,
-        ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        DOMAINS.a.origin,
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted),
       )
 
-      const aAccounts = await permController.getAccounts(ORIGINS.a)
+      const aAccounts = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.a,
-        'origin should have correct accounts'
+        aAccounts, [ACCOUNTS.a.primary],
+        'origin should have correct accounts',
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.calledOnceWith(
+          DOMAINS.a.origin, aAccounts,
+        ),
+        'expected notification call should have been made',
       )
     })
 
     it('handles serial approved requests that overwrite existing permissions', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
       // create first request
 
       const req1 = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res1 = {}
 
       // send, approve, and validate first request
-      // note use of ACCOUNT_ARRAYS.a
+      // note use of ACCOUNTS.a.permitted
+
+      let userApprovalPromise = getUserApprovalPromise(permController)
 
       const pendingApproval1 = assert.doesNotReject(
         aMiddleware(req1, res1),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       const id1 = permController.pendingApprovals.keys().next().value
       const approvedReq1 = PERMS.approvedRequest(id1, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq1, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq1, ACCOUNTS.a.permitted)
       await pendingApproval1
 
       assert.ok(
         res1.result && !res1.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
 
       assert.equal(
         res1.result.length, 1,
-        'origin should have single approved permission'
+        'origin should have single approved permission',
       )
 
       validatePermission(
         res1.result[0],
         PERM_NAMES.eth_accounts,
-        ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        DOMAINS.a.origin,
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted),
       )
 
-      const accounts1 = await permController.getAccounts(ORIGINS.a)
+      const accounts1 = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        accounts1, ACCOUNT_ARRAYS.a,
-        'origin should have correct accounts'
+        accounts1, [ACCOUNTS.a.primary],
+        'origin should have correct accounts',
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.calledOnceWith(
+          DOMAINS.a.origin, accounts1,
+        ),
+        'expected notification call should have been made',
       )
 
       // create second request
@@ -164,70 +188,90 @@ describe('permissions middleware', function () {
       }
 
       const req2 = RPC_REQUESTS.requestPermissions(
-        ORIGINS.a, { ...requestedPerms2 }
+        DOMAINS.a.origin, { ...requestedPerms2 },
       )
       const res2 = {}
 
       // send, approve, and validate second request
-      // note use of ACCOUNT_ARRAYS.b
+      // note use of ACCOUNTS.b.permitted
+
+      userApprovalPromise = getUserApprovalPromise(permController)
 
       const pendingApproval2 = assert.doesNotReject(
         aMiddleware(req2, res2),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       const id2 = permController.pendingApprovals.keys().next().value
       const approvedReq2 = PERMS.approvedRequest(id2, { ...requestedPerms2 })
 
-      await permController.approvePermissionsRequest(approvedReq2, ACCOUNT_ARRAYS.b)
+      await permController.approvePermissionsRequest(approvedReq2, ACCOUNTS.b.permitted)
       await pendingApproval2
 
       assert.ok(
         res2.result && !res2.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
 
       assert.equal(
         res2.result.length, 2,
-        'origin should have single approved permission'
+        'origin should have single approved permission',
       )
 
       validatePermission(
         res2.result[0],
         PERM_NAMES.eth_accounts,
-        ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.b)]
+        DOMAINS.a.origin,
+        CAVEATS.eth_accounts(ACCOUNTS.b.permitted),
       )
 
       validatePermission(
         res2.result[1],
         PERM_NAMES.test_method,
-        ORIGINS.a,
+        DOMAINS.a.origin,
       )
 
-      const accounts2 = await permController.getAccounts(ORIGINS.a)
+      const accounts2 = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        accounts2, ACCOUNT_ARRAYS.b,
-        'origin should have correct accounts'
+        accounts2, [ACCOUNTS.b.primary],
+        'origin should have correct accounts',
+      )
+
+      assert.equal(
+        permController.notifyAccountsChanged.callCount, 2,
+        'should have called notification method 2 times in total',
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.lastCall.calledWith(
+          DOMAINS.a.origin, accounts2,
+        ),
+        'expected notification call should have been made',
       )
     })
 
     it('rejects permissions on user rejection', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
       const req = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.eth_accounts
+        DOMAINS.a.origin, PERM_NAMES.eth_accounts,
       )
       const res = {}
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
+
+      const userApprovalPromise = getUserApprovalPromise(permController)
 
       const requestRejection = assert.rejects(
         aMiddleware(req, res),
         expectedError,
         'request should be rejected with correct error',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 1,
@@ -244,29 +288,34 @@ describe('permissions middleware', function () {
           !res.result && res.error &&
           res.error.message === expectedError.message
         ),
-        'response should have expected error and no result'
+        'response should have expected error and no result',
       )
 
-      const aAccounts = await permController.getAccounts(ORIGINS.a)
+      const aAccounts = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        aAccounts, [], 'origin should have have correct accounts'
+        aAccounts, [], 'origin should have have correct accounts',
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.notCalled,
+        'should not have called notification method',
       )
     })
 
     it('rejects requests with unknown permissions', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
       const req = RPC_REQUESTS.requestPermissions(
-        ORIGINS.a, {
+        DOMAINS.a.origin, {
           ...PERMS.requests.does_not_exist(),
           ...PERMS.requests.test_method(),
-        }
+        },
       )
       const res = {}
 
       const expectedError = ERRORS.rejectPermissionsRequest.methodNotFound(
-        PERM_NAMES.does_not_exist
+        PERM_NAMES.does_not_exist,
       )
 
       await assert.rejects(
@@ -285,7 +334,12 @@ describe('permissions middleware', function () {
           !res.result && res.error &&
           res.error.message === expectedError.message
         ),
-        'response should have expected error and no result'
+        'response should have expected error and no result',
+      )
+
+      assert.ok(
+        permController.notifyAccountsChanged.notCalled,
+        'should not have called notification method',
       )
     })
 
@@ -295,32 +349,40 @@ describe('permissions middleware', function () {
 
       // two middlewares for two origins
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
-      const bMiddleware = getPermissionsMiddleware(permController, ORIGINS.b)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
+      const bMiddleware = getPermissionsMiddleware(permController, DOMAINS.b.origin)
 
       // create and start processing first request for first origin
 
       const reqA1 = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.test_method
+        DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       const resA1 = {}
 
+      let userApprovalPromise = getUserApprovalPromise(permController)
+
       const requestApproval1 = assert.doesNotReject(
         aMiddleware(reqA1, resA1),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       // create and start processing first request for second origin
 
       const reqB1 = RPC_REQUESTS.requestPermission(
-        ORIGINS.b, PERM_NAMES.test_method
+        DOMAINS.b.origin, PERM_NAMES.test_method,
       )
       const resB1 = {}
 
+      userApprovalPromise = getUserApprovalPromise(permController)
+
       const requestApproval2 = assert.doesNotReject(
         bMiddleware(reqB1, resB1),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
+
+      await userApprovalPromise
 
       assert.equal(
         permController.pendingApprovals.size, 2,
@@ -331,22 +393,27 @@ describe('permissions middleware', function () {
       // which should throw
 
       const reqA2 = RPC_REQUESTS.requestPermission(
-        ORIGINS.a, PERM_NAMES.test_method
+        DOMAINS.a.origin, PERM_NAMES.test_method,
       )
       const resA2 = {}
 
-      await assert.rejects(
+      userApprovalPromise = getUserApprovalPromise(permController)
+
+      const requestApprovalFail = assert.rejects(
         aMiddleware(reqA2, resA2),
         expectedError,
         'request should be rejected with correct error',
       )
+
+      await userApprovalPromise
+      await requestApprovalFail
 
       assert.ok(
         (
           !resA2.result && resA2.error &&
           resA2.error.message === expectedError.message
         ),
-        'response should have expected error and no result'
+        'response should have expected error and no result',
       )
 
       // first requests for both origins should remain
@@ -360,7 +427,7 @@ describe('permissions middleware', function () {
 
       for (const id of permController.pendingApprovals.keys()) {
         await permController.approvePermissionsRequest(
-          PERMS.approvedRequest(id, PERMS.requests.test_method())
+          PERMS.approvedRequest(id, PERMS.requests.test_method()),
         )
       }
       await requestApproval1
@@ -368,20 +435,20 @@ describe('permissions middleware', function () {
 
       assert.ok(
         resA1.result && !resA1.error,
-        'first response should have result and no error'
+        'first response should have result and no error',
       )
       assert.equal(
         resA1.result.length, 1,
-        'first origin should have single approved permission'
+        'first origin should have single approved permission',
       )
 
       assert.ok(
         resB1.result && !resB1.error,
-        'second response should have result and no error'
+        'second response should have result and no error',
       )
       assert.equal(
         resB1.result.length, 1,
-        'second origin should have single approved permission'
+        'second origin should have single approved permission',
       )
 
       assert.equal(
@@ -401,9 +468,9 @@ describe('permissions middleware', function () {
 
     it('prevents restricted method access for unpermitted domain', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
-      const req = RPC_REQUESTS.test_method(ORIGINS.a)
+      const req = RPC_REQUESTS.test_method(DOMAINS.a.origin)
       const res = {}
 
       const expectedError = ERRORS.rpcCap.unauthorized()
@@ -419,27 +486,27 @@ describe('permissions middleware', function () {
           !res.result && res.error &&
           res.error.code === expectedError.code
         ),
-        'response should have expected error and no result'
+        'response should have expected error and no result',
       )
     })
 
     it('allows restricted method access for permitted domain', async function () {
 
-      const bMiddleware = getPermissionsMiddleware(permController, ORIGINS.b)
+      const bMiddleware = getPermissionsMiddleware(permController, DOMAINS.b.origin)
 
-      grantPermissions(permController, ORIGINS.b, PERMS.finalizedRequests.test_method())
+      grantPermissions(permController, DOMAINS.b.origin, PERMS.finalizedRequests.test_method())
 
-      const req = RPC_REQUESTS.test_method(ORIGINS.b, true)
+      const req = RPC_REQUESTS.test_method(DOMAINS.b.origin, true)
       const res = {}
 
       await assert.doesNotReject(
         bMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(
         res.result && res.result === 1,
-        'response should have correct result'
+        'response should have correct result',
       )
     })
   })
@@ -454,50 +521,50 @@ describe('permissions middleware', function () {
 
     it('returns empty array for non-permitted domain', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
-      const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_accounts(DOMAINS.a.origin)
       const res = {}
 
       await assert.doesNotReject(
         aMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
       assert.deepEqual(
         res.result, [],
-        'response should have correct result'
+        'response should have correct result',
       )
     })
 
     it('returns correct accounts for permitted domain', async function () {
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
       grantPermissions(
-        permController, ORIGINS.a,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.a)
+        permController, DOMAINS.a.origin,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.a.permitted),
       )
 
-      const req = RPC_REQUESTS.eth_accounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_accounts(DOMAINS.a.origin)
       const res = {}
 
       await assert.doesNotReject(
         aMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.a,
-        'response should have correct result'
+        res.result, [ACCOUNTS.a.primary],
+        'response should have correct result',
       )
     })
   })
@@ -514,14 +581,14 @@ describe('permissions middleware', function () {
 
       const userApprovalPromise = getUserApprovalPromise(permController)
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
-      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_requestAccounts(DOMAINS.a.origin)
       const res = {}
 
       const pendingApproval = assert.doesNotReject(
         aMiddleware(req, res),
-        'should not reject permissions request'
+        'should not reject permissions request',
       )
 
       await userApprovalPromise
@@ -534,40 +601,40 @@ describe('permissions middleware', function () {
       const id = permController.pendingApprovals.keys().next().value
       const approvedReq = PERMS.approvedRequest(id, PERMS.requests.eth_accounts())
 
-      await permController.approvePermissionsRequest(approvedReq, ACCOUNT_ARRAYS.a)
+      await permController.approvePermissionsRequest(approvedReq, ACCOUNTS.a.permitted)
 
-      // at this point, the permission should have been granted
-      const perms = permController.permissions.getPermissionsForDomain(ORIGINS.a)
+      // wait for permission to be granted
+      await pendingApproval
+
+      const perms = permController.permissions.getPermissionsForDomain(DOMAINS.a.origin)
 
       assert.equal(
         perms.length, 1,
-        'domain should have correct number of permissions'
+        'domain should have correct number of permissions',
       )
 
       validatePermission(
         perms[0],
         PERM_NAMES.eth_accounts,
-        ORIGINS.a,
-        [CAVEATS.eth_accounts(ACCOUNT_ARRAYS.a)]
+        DOMAINS.a.origin,
+        CAVEATS.eth_accounts(ACCOUNTS.a.permitted),
       )
-
-      await pendingApproval
 
       // we should also see the accounts on the response
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
 
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.a,
-        'result should have correct accounts'
+        res.result, [ACCOUNTS.a.primary],
+        'result should have correct accounts',
       )
 
       // we should also be able to get the accounts independently
-      const aAccounts = await permController.getAccounts(ORIGINS.a)
+      const aAccounts = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        aAccounts, ACCOUNT_ARRAYS.a, 'origin should have have correct accounts'
+        aAccounts, [ACCOUNTS.a.primary], 'origin should have have correct accounts',
       )
     })
 
@@ -575,9 +642,9 @@ describe('permissions middleware', function () {
 
       const userApprovalPromise = getUserApprovalPromise(permController)
 
-      const aMiddleware = getPermissionsMiddleware(permController, ORIGINS.a)
+      const aMiddleware = getPermissionsMiddleware(permController, DOMAINS.a.origin)
 
-      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.a)
+      const req = RPC_REQUESTS.eth_requestAccounts(DOMAINS.a.origin)
       const res = {}
 
       const expectedError = ERRORS.rejectPermissionsRequest.rejection()
@@ -605,39 +672,39 @@ describe('permissions middleware', function () {
           !res.result && res.error &&
           res.error.message === expectedError.message
         ),
-        'response should have expected error and no result'
+        'response should have expected error and no result',
       )
 
-      const aAccounts = await permController.getAccounts(ORIGINS.a)
+      const aAccounts = await permController.getAccounts(DOMAINS.a.origin)
       assert.deepEqual(
-        aAccounts, [], 'origin should have have correct accounts'
+        aAccounts, [], 'origin should have have correct accounts',
       )
     })
 
     it('directly returns accounts for permitted domain', async function () {
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin)
 
       grantPermissions(
-        permController, ORIGINS.c,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+        permController, DOMAINS.c.origin,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.c.permitted),
       )
 
-      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
+      const req = RPC_REQUESTS.eth_requestAccounts(DOMAINS.c.origin)
       const res = {}
 
       await assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.c,
-        'response should have correct result'
+        res.result, [ACCOUNTS.c.primary],
+        'response should have correct result',
       )
     })
 
@@ -650,26 +717,26 @@ describe('permissions middleware', function () {
 
       permController.getUnlockPromise = () => unlockPromise
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin)
 
       grantPermissions(
-        permController, ORIGINS.c,
-        PERMS.finalizedRequests.eth_accounts(ACCOUNT_ARRAYS.c)
+        permController, DOMAINS.c.origin,
+        PERMS.finalizedRequests.eth_accounts(ACCOUNTS.c.permitted),
       )
 
-      const req = RPC_REQUESTS.eth_requestAccounts(ORIGINS.c)
+      const req = RPC_REQUESTS.eth_requestAccounts(DOMAINS.c.origin)
       const res = {}
 
       // this will block until we resolve the unlock Promise
       const requestApproval = assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       // this will reject because of the already pending request
       await assert.rejects(
         cMiddleware({ ...req }, {}),
-        ERRORS.eth_requestAccounts.requestAlreadyPending()
+        ERRORS.eth_requestAccounts.requestAlreadyPending(),
       )
 
       // now unlock and let through the first request
@@ -679,35 +746,40 @@ describe('permissions middleware', function () {
 
       assert.ok(
         res.result && !res.error,
-        'response should have result and no error'
+        'response should have result and no error',
       )
       assert.deepEqual(
-        res.result, ACCOUNT_ARRAYS.c,
-        'response should have correct result'
+        res.result, [ACCOUNTS.c.primary],
+        'response should have correct result',
       )
     })
   })
 
   describe('wallet_sendDomainMetadata', function () {
 
-    let permController
+    let permController, clock
 
     beforeEach(function () {
       permController = initPermController()
+      clock = sinon.useFakeTimers(1)
+    })
+
+    afterEach(function () {
+      clock.restore()
     })
 
     it('records domain metadata', async function () {
 
       const name = 'BAZ'
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin)
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
       const res = {}
 
       await assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(res.result, 'result should be true')
@@ -716,8 +788,14 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore,
-        { [ORIGINS.c]: { name, extensionId: undefined } },
-        'metadata should have been added to store'
+        {
+          [DOMAINS.c.origin]: {
+            name,
+            host: DOMAINS.c.host,
+            lastUpdated: 1,
+          },
+        },
+        'metadata should have been added to store',
       )
     })
 
@@ -727,14 +805,14 @@ describe('permissions middleware', function () {
 
       const name = 'BAZ'
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c, extensionId)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin, extensionId)
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
       const res = {}
 
       await assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(res.result, 'result should be true')
@@ -743,8 +821,8 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore,
-        { [ORIGINS.c]: { name, extensionId } },
-        'metadata should have been added to store'
+        { [DOMAINS.c.origin]: { name, extensionId, lastUpdated: 1 } },
+        'metadata should have been added to store',
       )
     })
 
@@ -752,14 +830,14 @@ describe('permissions middleware', function () {
 
       const name = null
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin)
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c, name)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin, name)
       const res = {}
 
       await assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(res.result, 'result should be true')
@@ -768,21 +846,21 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore, {},
-        'metadata should not have been added to store'
+        'metadata should not have been added to store',
       )
     })
 
     it('should not record domain metadata if no metadata', async function () {
 
-      const cMiddleware = getPermissionsMiddleware(permController, ORIGINS.c)
+      const cMiddleware = getPermissionsMiddleware(permController, DOMAINS.c.origin)
 
-      const req = RPC_REQUESTS.wallet_sendDomainMetadata(ORIGINS.c)
+      const req = RPC_REQUESTS.wallet_sendDomainMetadata(DOMAINS.c.origin)
       delete req.domainMetadata
       const res = {}
 
       await assert.doesNotReject(
         cMiddleware(req, res),
-        'should not reject'
+        'should not reject',
       )
 
       assert.ok(res.result, 'result should be true')
@@ -791,7 +869,7 @@ describe('permissions middleware', function () {
 
       assert.deepEqual(
         metadataStore, {},
-        'metadata should not have been added to store'
+        'metadata should not have been added to store',
       )
     })
   })

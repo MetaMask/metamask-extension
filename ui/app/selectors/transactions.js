@@ -1,30 +1,19 @@
 import { createSelector } from 'reselect'
 import {
-  UNAPPROVED_STATUS,
-  APPROVED_STATUS,
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
+  PRIORITY_STATUS_HASH,
+  PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
-import { selectedTokenAddressSelector } from './tokens'
-import { getFastPriceEstimateInHexWEI } from './custom-gas'
 import {
-  getIsMainnet,
-  getSelectedToken,
   getSelectedAddress,
-} from './selectors'
+} from '.'
 import txHelper from '../../lib/tx-helper'
-
-export const shapeShiftTxListSelector = (state) => {
-  if (getIsMainnet(state)) {
-    return state.metamask.shapeShiftTxList
-  }
-  return []
-}
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags
@@ -52,7 +41,7 @@ export const selectedAddressTxListSelector = createSelector(
   currentNetworkTxListSelector,
   (selectedAddress, transactions = []) => {
     return transactions.filter(({ txParams }) => txParams.from === selectedAddress)
-  }
+  },
 )
 
 export const unapprovedMessagesSelector = createSelector(
@@ -68,7 +57,7 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network
+    network,
   ) => txHelper(
     {},
     unapprovedMsgs,
@@ -76,48 +65,27 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs,
     unapprovedEncryptionPublicKeyMsgs,
     unapprovedTypedMessages,
-    network
-  ) || []
+    network,
+  ) || [],
 )
-
-const pendingStatusHash = {
-  [UNAPPROVED_STATUS]: true,
-  [APPROVED_STATUS]: true,
-  [SUBMITTED_STATUS]: true,
-}
-
-const priorityStatusHash = {
-  ...pendingStatusHash,
-  [CONFIRMED_STATUS]: true,
-}
 
 export const transactionSubSelector = createSelector(
   unapprovedMessagesSelector,
-  shapeShiftTxListSelector,
   incomingTxListSelector,
-  (unapprovedMessages = [], shapeShiftTxList = [], incomingTxList = []) => {
-    return unapprovedMessages.concat(shapeShiftTxList, incomingTxList)
-  }
+  (unapprovedMessages = [], incomingTxList = []) => {
+    return unapprovedMessages.concat(incomingTxList)
+  },
 )
 
-const transactionSelectorReturnHelper = (selectedTokenAddress, transactions) => {
-  return selectedTokenAddress
-    ? transactions
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : transactions
-      .sort((a, b) => b.time - a.time)
-}
-
 export const transactionsSelector = createSelector(
-  selectedTokenAddressSelector,
   transactionSubSelector,
   selectedAddressTxListSelector,
-  (selectedTokenAddress, subSelectorTxList = [], selectedAddressTxList = []) => {
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList)
 
-    return transactionSelectorReturnHelper(selectedTokenAddress, txsToRender)
-  }
+    return txsToRender
+      .sort((a, b) => b.time - a.time)
+  },
 )
 
 /**
@@ -213,16 +181,15 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
  * @name mergeNonNonceTransactionGroups
  * @private
  * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array
- * of nonce-ordered transactionGroups by time. Shapeshift transactionGroups need to be sorted by time
- * within the list of transactions as they do not have nonces.
+ * of nonce-ordered transactionGroups by time.
  * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
  * nonce.
  * @param {transactionGroup[]} nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
  * but intended to be ordered by timestamp
  */
 const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransactionGroups) => {
-  nonNonceTransactionGroups.forEach((shapeshiftGroup) => {
-    insertTransactionGroupByTime(orderedTransactionGroups, shapeshiftGroup)
+  nonNonceTransactionGroups.forEach((transactionGroup) => {
+    insertTransactionGroupByTime(orderedTransactionGroups, transactionGroup)
   })
 }
 
@@ -235,13 +202,12 @@ export const nonceSortedTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => {
     const unapprovedTransactionGroups = []
-    const shapeshiftTransactionGroups = []
     const incomingTransactionGroups = []
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
     transactions.forEach((transaction) => {
-      const { txParams: { nonce } = {}, status, type, time: txTime, key, transactionCategory } = transaction
+      const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
 
       if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
         const transactionGroup = {
@@ -252,9 +218,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           hasCancelled: false,
         }
 
-        if (key === 'shapeshift') {
-          shapeshiftTransactionGroups.push(transactionGroup)
-        } else if (transactionCategory === 'incoming') {
+        if (transactionCategory === 'incoming') {
           incomingTransactionGroups.push(transactionGroup)
         } else {
           insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
@@ -263,7 +227,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
 
-        if (status in priorityStatusHash) {
+        if (status in PRIORITY_STATUS_HASH) {
           const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
 
           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
@@ -301,10 +265,9 @@ export const nonceSortedTransactionsSelector = createSelector(
     })
 
     const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
-    mergeNonNonceTransactionGroups(orderedTransactionGroups, shapeshiftTransactionGroups)
     mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
-  }
+  },
 )
 
 /**
@@ -316,8 +279,8 @@ export const nonceSortedTransactionsSelector = createSelector(
 export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in pendingStatusHash)
-  )
+    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
+  ),
 )
 
 /**
@@ -330,26 +293,14 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
     transactions
-      .filter(({ primaryTransaction }) => !(primaryTransaction.status in pendingStatusHash))
+      .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
       .reverse()
-  )
+  ),
 )
 
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
     transactions.filter((transaction) => transaction.status === SUBMITTED_STATUS)
-  )
+  ),
 )
-
-export const getTxParams = (state, selectedTransaction = {}) => {
-  const { metamask: { send } } = state
-  const { txParams } = selectedTransaction
-  return txParams || {
-    from: send.from,
-    gas: send.gasLimit || '0x5208',
-    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
-    to: send.to,
-    value: getSelectedToken(state) ? '0x0' : send.amount,
-  }
-}

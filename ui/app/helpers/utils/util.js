@@ -8,6 +8,12 @@ export function formatDate (date, format = 'M/d/y \'at\' T') {
   return DateTime.fromMillis(date).toFormat(format)
 }
 
+export function formatDateWithYearContext (date, formatThisYear = 'MMM d', fallback = 'MMM d, y') {
+  const dateTime = DateTime.fromMillis(date)
+  const now = DateTime.local()
+  return dateTime.toFormat(now.year === dateTime.year ? formatThisYear : fallback)
+}
+
 const valueTable = {
   wei: '1000000000000000000',
   kwei: '1000000000000000',
@@ -22,9 +28,9 @@ const valueTable = {
   tether: '0.000000000001',
 }
 const bnTable = {}
-for (const currency in valueTable) {
+Object.keys(valueTable).forEach((currency) => {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10)
-}
+})
 
 export function isEthNetwork (netId) {
   if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
@@ -131,7 +137,6 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
   }
   return formatted
 }
-
 
 export function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   let balance = formattedBalance.split(' ')[0]
@@ -251,10 +256,6 @@ export function exportAsFile (filename, data, type = 'text/csv') {
   }
 }
 
-export function getTokenAddressFromTokenObject (token) {
-  return Object.values(token)[0].address.toLowerCase()
-}
-
 /**
  * Safely checksumms a potentially-null address
  *
@@ -267,7 +268,18 @@ export function checksumAddress (address) {
   return checksummed
 }
 
-export function addressSlicer (address = '') {
+/**
+ * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Returns the given address if it is no longer than 10 characters.
+ * Shortened addresses are 13 characters long.
+ *
+ * Example output: 0xabcd...1234
+ *
+ * @param {string} address - The address to shorten.
+ * @returns {string} The shortened address, or the original if it was no longer
+ * than 10 characters.
+ */
+export function shortenAddress (address = '') {
   if (address.length < 11) {
     return address
   }
@@ -282,12 +294,62 @@ export function isValidAddressHead (address) {
   return addressLengthIsLessThanFull && addressIsHex
 }
 
-export function getOriginFromUrl (url) {
-  url = new URL(url)
-  const origin = url.hostname
-  return origin
-}
-
 export function getAccountByAddress (accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress)
+}
+
+/**
+ * Strips the following schemes from URL strings:
+ * - http
+ * - https
+ *
+ * @param {string} urlString - The URL string to strip the scheme from.
+ * @returns {string} The URL string, without the scheme, if it was stripped.
+ */
+export function stripHttpSchemes (urlString) {
+  return urlString.replace(/^https?:\/\//u, '')
+}
+
+/**
+ * Checks whether a URL-like value (object or string) is an extension URL.
+ *
+ * @param {string | URL | object} urlLike - The URL-like value to test.
+ * @returns {boolean} Whether the URL-like value is an extension URL.
+ */
+export function isExtensionUrl (urlLike) {
+
+  const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:']
+
+  if (typeof urlLike === 'string') {
+    for (const protocol of EXT_PROTOCOLS) {
+      if (urlLike.startsWith(protocol)) {
+        return true
+      }
+    }
+  }
+
+  if (urlLike?.protocol) {
+    return EXT_PROTOCOLS.includes(urlLike.protocol)
+  }
+  return false
+}
+
+/**
+ * Checks whether an address is in a passed list of objects with address properties. The check is performed on the
+ * lowercased version of the addresses.
+ *
+ * @param {string} address - The hex address to check
+ * @param {array} list - The array of objects to check
+ * @returns {boolean} Whether or not the address is in the list
+ */
+export function checkExistingAddresses (address, list = []) {
+  if (!address) {
+    return false
+  }
+
+  const matchesAddress = (obj) => {
+    return obj.address.toLowerCase() === address.toLowerCase()
+  }
+
+  return list.some(matchesAddress)
 }

@@ -42,7 +42,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await driver.verboseReportOnFailure(driver, this.currentTest)
+      await driver.verboseReportOnFailure(this.currentTest.title)
     }
   })
 
@@ -85,8 +85,8 @@ describe('MetaMask', function () {
       await driver.clickElement(By.xpath(`//button[contains(text(), '${enLocaleMessages.remindMeLater.message}')]`))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.account-details__details-button'))
-      await driver.delay(regularDelayMs)
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
     })
 
     it('gets the current accounts address', async function () {
@@ -123,10 +123,8 @@ describe('MetaMask', function () {
 
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.permissions-connect-choose-account__account'))
-
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Submit')]`))
+      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connect')]`))
 
       await driver.waitUntilXWindowHandles(2)
       await driver.switchToWindow(extension)
@@ -134,11 +132,12 @@ describe('MetaMask', function () {
     })
 
     it('shows connected sites', async function () {
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Connected Sites')]`))
+      await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
+      await driver.clickElement(By.css('[data-testid="account-options-menu__connected-sites"]'))
 
-      await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected Sites')]`))
+      await driver.findElement(By.xpath(`//h2[contains(text(), 'Connected sites')]`))
 
-      const domains = await driver.findClickableElements(By.css('.connected-sites__domain-name'))
+      const domains = await driver.findClickableElements(By.css('.connected-sites-list__domain-name'))
       assert.equal(domains.length, 1)
     })
 

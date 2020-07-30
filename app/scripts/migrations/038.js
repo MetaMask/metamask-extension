@@ -1,7 +1,5 @@
 const version = 38
 import { cloneDeep } from 'lodash'
-import ABTestController from '../controllers/ab-test'
-import { getRandomArrayItem } from '../lib/util'
 
 /**
  * The purpose of this migration is to assign all users to a test group for the fullScreenVsPopup a/b test
@@ -28,7 +26,7 @@ function transformState (state) {
         ...ABTestControllerState,
         abTests: {
           ...abTests,
-          fullScreenVsPopup: getRandomArrayItem(ABTestController.abTestGroupNames.fullScreenVsPopup),
+          fullScreenVsPopup: 'control',
         },
       },
     }

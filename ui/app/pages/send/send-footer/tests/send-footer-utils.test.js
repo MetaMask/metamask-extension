@@ -35,7 +35,7 @@ describe('send-footer utils', function () {
           prop1: '0x123',
           prop2: '0x456',
           prop3: '0xx',
-        }
+        },
       )
     })
   })
@@ -48,7 +48,7 @@ describe('send-footer utils', function () {
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xdef'),
-        false
+        false,
       )
     })
 
@@ -59,7 +59,7 @@ describe('send-footer utils', function () {
           { address: '0xdef' },
           { address: '0xghi' },
         ], '0xxyz'),
-        true
+        true,
       )
     })
   })
@@ -69,7 +69,7 @@ describe('send-footer utils', function () {
       assert.deepEqual(
         constructTxParams({
           data: 'someData',
-          selectedToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -83,14 +83,14 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
-    it('should return a new txParams object with value and to properties if there is no selectedToken', function () {
+    it('should return a new txParams object with value and to properties if there is no sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          selectedToken: false,
+          sendToken: undefined,
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -104,14 +104,14 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
 
-    it('should return a new txParams object without a to property and a 0 value if there is a selectedToken', function () {
+    it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
       assert.deepEqual(
         constructTxParams({
-          selectedToken: true,
+          sendToken: { address: '0x0' },
           to: 'mockTo',
           amount: 'mockAmount',
           from: 'mockFrom',
@@ -124,7 +124,7 @@ describe('send-footer utils', function () {
           from: '0xmockFrom',
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
-        }
+        },
       )
     })
   })
@@ -137,7 +137,7 @@ describe('send-footer utils', function () {
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: false,
+        sendToken: false,
         to: 'mockTo',
         unapprovedTxs: {
           '0x123': {},
@@ -169,7 +169,7 @@ describe('send-footer utils', function () {
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: false,
+        sendToken: false,
         to: 'mockTo',
         unapprovedTxs: {
           '0x123': {},
@@ -196,14 +196,14 @@ describe('send-footer utils', function () {
       })
     })
 
-    it('should have token property values if selectedToken is truthy', function () {
+    it('should have token property values if sendToken is truthy', function () {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
         from: 'mockFrom',
         gas: 'mockGas',
         gasPrice: 'mockGasPrice',
-        selectedToken: {
+        sendToken: {
           address: 'mockTokenAddress',
         },
         to: 'mockTo',
