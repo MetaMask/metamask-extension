@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import AccountListItem from '../send/account-list-item/account-list-item.component'
+import AccountListItem from '../../components/app/account-list-item'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 
@@ -99,7 +99,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
         <div className="request-encryption-public-key__account-item">
           <AccountListItem
             account={fromAccount}
-            displayBalance={false}
           />
         </div>
       </div>

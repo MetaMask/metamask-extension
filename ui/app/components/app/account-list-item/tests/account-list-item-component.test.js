@@ -3,9 +3,8 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import * as utils from '../../../../helpers/utils/util'
-import Identicon from '../../../../components/ui/identicon'
-import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display'
-import AccountListItem from '../account-list-item.component'
+import Identicon from '../../../ui/identicon'
+import AccountListItem from '../account-list-item'
 
 describe('AccountListItem Component', function () {
   let wrapper, propsMethodSpies, checksumAddressStub
@@ -22,11 +21,7 @@ describe('AccountListItem Component', function () {
         <AccountListItem
           account={ { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' } }
           className="mockClassName"
-          conversionRate={4}
-          currentCurrency="mockCurrentyCurrency"
-          nativeCurrency="ETH"
           displayAddress={false}
-          displayBalance={false}
           handleClick={propsMethodSpies.handleClick}
           icon={<i className="mockIcon" />}
         />
@@ -112,37 +107,6 @@ describe('AccountListItem Component', function () {
     it('should not render the account address as a checksumAddress if name is not provided', function () {
       wrapper.setProps({ account: { address: 'someAddressButNoName' } })
       assert.equal(wrapper.find('.account-list-item__account-address').length, 0)
-    })
-
-    it('should render a CurrencyDisplay with the correct props if displayBalance is true', function () {
-      wrapper.setProps({ displayBalance: true })
-      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
-      assert.deepEqual(
-        wrapper.find(UserPreferencedCurrencyDisplay).at(0).props(),
-        {
-          type: 'PRIMARY',
-          value: 'mockBalance',
-          hideTitle: true,
-        },
-      )
-    })
-
-    it('should only render one CurrencyDisplay if showFiat is false', function () {
-      wrapper.setProps({ showFiat: false, displayBalance: true })
-      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 1)
-      assert.deepEqual(
-        wrapper.find(UserPreferencedCurrencyDisplay).at(0).props(),
-        {
-          type: 'PRIMARY',
-          value: 'mockBalance',
-          hideTitle: true,
-        },
-      )
-    })
-
-    it('should not render a CurrencyDisplay if displayBalance is false', function () {
-      wrapper.setProps({ displayBalance: false })
-      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 0)
     })
   })
 })
