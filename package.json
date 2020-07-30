@@ -196,7 +196,7 @@
     "babel-loader": "^8.0.6",
     "babelify": "^10.0.0",
     "bify-package-factor": "^1.0.7",
-    "brfs": "^1.6.1",
+    "brfs": "^2.0.2",
     "browserify": "^16.5.1",
     "browserify-derequire": "^1.0.1",
     "chai": "^4.1.0",
