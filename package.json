@@ -266,7 +266,7 @@
     "selenium-webdriver": "^4.0.0-alpha.5",
     "serve-handler": "^6.1.2",
     "sesify": "^4.2.1",
-    "sesify-viz": "^3.0.5",
+    "sesify-viz": "^3.0.10",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",
