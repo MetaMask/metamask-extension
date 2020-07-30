@@ -23957,29 +23957,6 @@ sesify-viz@^3.0.10:
     pify "^4.0.1"
     yargs "^14.0.0"
 
-sesify@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/sesify/-/sesify-4.2.1.tgz#ac98d190b6403abbf90016ec6f3a6d16eef8747e"
-  integrity sha512-fbgkQCs6KhVK6IhWx+e9MW2cNIzpMSKigIbF6KdAPWGrA6U0D6lDgLErfTB7Sllhv8sYFOwTppIOec+AHdU00g==
-  dependencies:
-    JSONStream "^1.3.5"
-    acorn-globals "^4.3.3"
-    acorn-walk "^6.1.1"
-    combine-source-map "^0.8.0"
-    defined "^1.0.0"
-    fromentries "^1.1.0"
-    json-stable-stringify "^1.0.1"
-    merge-deep "^3.0.2"
-    module-name-from-path "git+https://git@github.com/kumavis/module-name-from-path.git"
-    offset-sourcemap-lines "^1.0.1"
-    pify "^4.0.1"
-    resolve-package-path "^1.2.7"
-    safe-buffer "^5.1.2"
-    sesify-tofu "^2.0.4"
-    tape "^4.9.1"
-    through2 "^3.0.0"
-    umd "^3.0.3"
-
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
