@@ -15,7 +15,7 @@ import Web3 from '../controllers/ConfluxWeb'
 import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
 import { bnToHex } from './util'
-import { MAINNET_CODE, TESTNET_CODE } from '../controllers/network/enums'
+// import { MAINNET_CODE, TESTNET_CODE } from '../controllers/network/enums'
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../controllers/network/contract-addresses'
 
 class AccountTracker {
@@ -181,47 +181,12 @@ class AccountTracker {
   async _updateAccounts () {
     const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
-    const currentNetwork = parseInt(this.network.getNetworkState())
+    // const currentNetwork = parseInt(this.network.getNetworkState())
 
-    switch (currentNetwork) {
-      case MAINNET_CODE:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS
-        )
-        break
-
-      case TESTNET_CODE:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS
-        )
-        break
-
-        // case RINKEBY_CODE:
-        //   await this._updateAccountsViaBalanceChecker(
-        //     addresses,
-        //     SINGLE_CALL_BALANCES_ADDRESS_RINKEBY
-        //   )
-        //   break
-
-        // case ROPSTEN_CODE:
-        //   await this._updateAccountsViaBalanceChecker(
-        //     addresses,
-        //     SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN
-        //   )
-        //   break
-
-        // case KOVAN_CODE:
-        //   await this._updateAccountsViaBalanceChecker(
-        //     addresses,
-        //     SINGLE_CALL_BALANCES_ADDRESS_KOVAN
-        //   )
-        //   break
-
-      default:
-        await Promise.all(addresses.map(this._updateAccount.bind(this)))
-    }
+    await this._updateAccountsViaBalanceChecker(
+      addresses,
+      SINGLE_CALL_BALANCES_ADDRESS
+    )
   }
 
   /**

@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 0.3.4 Thu Jul 30 2020
+- fix: wrong chainId failing balance check (#204)
+
 ## 0.3.3 Mon Jul 27 2020
 - fix(add-recipient): remove ens error (#199)
 - fix(i18n): use only zh_CN zh_TW en (#200)

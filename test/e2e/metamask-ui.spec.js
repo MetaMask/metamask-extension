@@ -812,7 +812,7 @@ describe('MetaMask', function () {
       const navigationElement = await driver.findElement(
         By.css('.confirm-page-container-navigation')
       )
-      await driver.delay(tinyDelayMs)
+      await driver.delay(tinyDelayMs * 2)
       const navigationText = await navigationElement.getText()
       assert.equal(navigationText.includes('4'), true, 'transaction rejected')
     })
@@ -1260,7 +1260,7 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -1392,7 +1392,7 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -1586,7 +1586,7 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -1732,7 +1732,7 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//button[contains(text(), 'Confirm')]`)
       )
-      await driver.delay(regularDelayMs)
+      await driver.delay(regularDelayMs * 2)
     })
 
     it('finds the transaction in the transactions list', async function () {
