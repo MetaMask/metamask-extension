@@ -316,23 +316,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       bundler = bundler.external(opts.externalDependencies)
     }
 
-    let environment
-    if (opts.devMode) {
-      environment = 'development'
-    } else if (opts.testing) {
-      environment = 'testing'
-    } else if (process.env.CIRCLE_BRANCH === 'master') {
-      environment = 'production'
-    } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
-      environment = 'release-candidate'
-    } else if (process.env.CIRCLE_BRANCH === 'develop') {
-      environment = 'staging'
-    } else if (process.env.CIRCLE_PULL_REQUEST) {
-      environment = 'pull-request'
-    } else {
-      environment = 'other'
-    }
-
+    const environment = getEnvironment({ devMode: opts.devMode, test: opts.testing })
     if (environment === 'production' && !process.env.SENTRY_DSN) {
       throw new Error('Missing SENTRY_DSN environment variable')
     }
@@ -371,4 +355,23 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
 function beep () {
   process.stdout.write('\x07')
+}
+
+function getEnvironment ({ devMode, test }) {
+  // get environment slug
+  if (devMode) {
+    return 'development'
+  } else if (test) {
+    return 'testing'
+  } else if (process.env.CIRCLE_BRANCH === 'master') {
+    return 'production'
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+    return 'release-candidate'
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    return 'staging'
+  } else if (process.env.CIRCLE_PULL_REQUEST) {
+    return 'pull-request'
+  } else {
+    return 'other'
+  }
 }
