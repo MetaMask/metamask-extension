@@ -409,6 +409,9 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
+  "contactUs": {
+    "message": "Contact us!"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -534,9 +537,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "emailUs": {
-    "message": "Email us!"
   },
   "endOfFlowMessage1": {
     "message": "You passed the test - keep your seedphrase safe, it's your responsibility!"
@@ -1196,7 +1196,7 @@
     "message": "Restore"
   },
   "revealSeedWords": {
-    "message": "Reveal Seed Words"
+    "message": "Reveal Seed Phrase"
   },
   "revealSeedWordsTitle": {
     "message": "Seed Phrase"

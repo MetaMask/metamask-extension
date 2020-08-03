@@ -9,7 +9,6 @@
     flex-direction: column;
     align-items: center;
     padding: 0 16px;
-    font-family: Roboto, 'sans-serif';
     font-size: 14px;
     font-weight: normal;
     line-height: 20px;
@@ -28,7 +27,6 @@
 
 .menu-item {
   background: none;
-  font-family: inherit;
   font-size: inherit;
   display: grid;
   grid-template-columns: min-content auto;

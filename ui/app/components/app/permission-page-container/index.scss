@@ -31,7 +31,7 @@
   }
 
   &__title {
-    @extend %header--18;
+    @include H4;
 
     line-height: 25px;
     text-align: center;
@@ -84,7 +84,7 @@
   }
 
   &__permissions-header {
-    @extend %content-text;
+    @include H6;
 
     line-height: 20px;
     color: #6a737d;

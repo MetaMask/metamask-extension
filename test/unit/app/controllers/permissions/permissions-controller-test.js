@@ -15,6 +15,7 @@ import {
 } from '../../../../../app/scripts/controllers/permissions'
 
 import {
+  getRequestUserApprovalHelper,
   grantPermissions,
 } from './helpers'
 
@@ -55,12 +56,6 @@ const initPermController = (notifications = initNotifications()) => {
     ...getPermControllerOpts(),
     notifyDomain: getNotifyDomain(notifications),
     notifyAllDomains: getNotifyAllDomains(notifications),
-  })
-}
-
-const getMockRequestUserApprovalFunction = (permController) => (id, origin) => {
-  return new Promise((resolve, reject) => {
-    permController.pendingApprovals.set(id, { origin, resolve, reject })
   })
 }
 
@@ -951,13 +946,11 @@ describe('permissions controller', function () {
 
   describe('approvePermissionsRequest', function () {
 
-    let permController, mockRequestUserApproval
+    let permController, requestUserApproval
 
     beforeEach(function () {
       permController = initPermController()
-      mockRequestUserApproval = getMockRequestUserApprovalFunction(
-        permController,
-      )
+      requestUserApproval = getRequestUserApprovalHelper(permController)
     })
 
     it('does nothing if called on non-existing request', async function () {
@@ -994,14 +987,14 @@ describe('permissions controller', function () {
         PERMS.requests.eth_accounts(),
       )
 
-      const requestRejection = assert.rejects(
-        mockRequestUserApproval(REQUEST_IDS.a),
+      const rejectionPromise = assert.rejects(
+        requestUserApproval(REQUEST_IDS.a),
         ERRORS.validatePermittedAccounts.invalidParam(),
-        'should reject bad accounts',
+        'should reject with "null" accounts',
       )
 
       await permController.approvePermissionsRequest(request, null)
-      await requestRejection
+      await rejectionPromise
 
       assert.equal(
         permController.pendingApprovals.size, 0,
@@ -1014,7 +1007,7 @@ describe('permissions controller', function () {
       const request = PERMS.approvedRequest(REQUEST_IDS.a, {})
 
       const requestRejection = assert.rejects(
-        mockRequestUserApproval(REQUEST_IDS.a),
+        requestUserApproval(REQUEST_IDS.a),
         ERRORS.approvePermissionsRequest.noPermsRequested(),
         'should reject if no permissions in request',
       )
@@ -1036,7 +1029,7 @@ describe('permissions controller', function () {
 
       const requestApproval = assert.doesNotReject(
         async () => {
-          perms = await mockRequestUserApproval(REQUEST_IDS.a)
+          perms = await requestUserApproval(REQUEST_IDS.a)
         },
         'should not reject single valid request',
       )
@@ -1065,14 +1058,14 @@ describe('permissions controller', function () {
 
       const approval1 = assert.doesNotReject(
         async () => {
-          perms1 = await mockRequestUserApproval(REQUEST_IDS.a)
+          perms1 = await requestUserApproval(REQUEST_IDS.a, DOMAINS.a.origin)
         },
         'should not reject request',
       )
 
       const approval2 = assert.doesNotReject(
         async () => {
-          perms2 = await mockRequestUserApproval(REQUEST_IDS.b)
+          perms2 = await requestUserApproval(REQUEST_IDS.b, DOMAINS.b.origin)
         },
         'should not reject request',
       )
@@ -1105,13 +1098,11 @@ describe('permissions controller', function () {
 
   describe('rejectPermissionsRequest', function () {
 
-    let permController, mockRequestUserApproval
+    let permController, requestUserApproval
 
     beforeEach(async function () {
       permController = initPermController()
-      mockRequestUserApproval = getMockRequestUserApprovalFunction(
-        permController,
-      )
+      requestUserApproval = getRequestUserApprovalHelper(permController)
     })
 
     it('does nothing if called on non-existing request', async function () {
@@ -1135,7 +1126,7 @@ describe('permissions controller', function () {
     it('rejects single existing request', async function () {
 
       const requestRejection = assert.rejects(
-        mockRequestUserApproval(REQUEST_IDS.a),
+        requestUserApproval(REQUEST_IDS.a),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error',
       )
@@ -1152,13 +1143,13 @@ describe('permissions controller', function () {
     it('rejects requests regardless of order', async function () {
 
       const requestRejection1 = assert.rejects(
-        mockRequestUserApproval(REQUEST_IDS.b),
+        requestUserApproval(REQUEST_IDS.b, DOMAINS.b.origin),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error',
       )
 
       const requestRejection2 = assert.rejects(
-        mockRequestUserApproval(REQUEST_IDS.c),
+        requestUserApproval(REQUEST_IDS.c, DOMAINS.c.origin),
         ERRORS.rejectPermissionsRequest.rejection(),
         'should reject with expected error',
       )

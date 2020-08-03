@@ -66,7 +66,6 @@
 
 .network-name {
   padding: 0 4px;
-  font-family: Roboto;
   font-size: 12px;
   line-height: 14px;
   flex: 1 1 auto;
@@ -168,17 +167,15 @@
   height: 25px;
   width: 120px;
   color: $white;
-  font-family: Roboto;
   font-size: 18px;
   line-height: 25px;
   text-align: center;
 }
 
 .network-dropdown-content {
-  height: 36px;
+  min-height: 36px;
   width: 265px;
   color: $dusty-gray;
-  font-family: Roboto;
   font-size: 14px;
   line-height: 18px;
 }

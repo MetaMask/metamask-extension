@@ -33,7 +33,6 @@
   &__header,
   &__header--edit {
     &__name {
-      font-family: Roboto;
       font-style: normal;
       font-weight: normal;
       font-size: 24px;
@@ -106,7 +105,8 @@
           height: 20px;
           padding: 0;
           background: none;
-          padding-left: 10px;
+          padding-left: 0;
+          margin-left: 10px;
         }
       }
 
@@ -178,7 +178,6 @@
     }
 
     &__header {
-      font-family: Roboto;
       font-style: normal;
       font-weight: normal;
       font-size: 18px;
@@ -192,7 +191,6 @@
     }
 
     &__text {
-      font-family: Roboto;
       font-style: normal;
       font-weight: normal;
       font-size: 14px;
