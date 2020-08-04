@@ -20,7 +20,15 @@ start().catch((error) => {
 
 
 async function start () {
-  const targetFiles = [`inpage.js`, `contentscript.js`, `ui.js`, `background.js`]
+  const targetFiles = [
+    `background.js`,
+    // `bg-libs`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
+    // `contentscript.js`, skipped because the validator is erroneously sampling the inlined `inpage.js` script
+    `inpage.js`,
+    'phishing-detect.js',
+    `ui.js`,
+    // `ui-libs.js`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
+  ]
   let valid = true
 
   for (const buildName of targetFiles) {
