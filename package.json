@@ -37,6 +37,7 @@
     "lint:shellcheck": "./development/shellcheck.sh",
     "lint:styles": "stylelint '*/**/*.scss'",
     "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname false --allowed-schemes \"https:\" \"git+https:\"",
+    "validate-source-maps": "node ./development/sourcemap-validator.js",
     "verify-locales": "node ./development/verify-locale-strings.js",
     "verify-locales:fix": "node ./development/verify-locale-strings.js --fix",
     "mozilla-lint": "addons-linter dist/firefox",
