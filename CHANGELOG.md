@@ -4,7 +4,7 @@
 
 ## 5.1.3 Tue Aug 04 2020
 
-- [#407](https://github.com/poanetwork/nifty-wallet/pull/407) - Remove excess extension permissions
+- [#407](https://github.com/poanetwork/nifty-wallet/pull/407) - Remove excess extension permissions: webRequest
 
 ## 5.1.2 Fri Jul 10 2020
 
