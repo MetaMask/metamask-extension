@@ -47,13 +47,6 @@ async function setupFetchMocking (driver) {
       }
       return window.origFetch(...args)
     }
-    if (window.chrome && window.chrome.webRequest) {
-      window.chrome.webRequest.onBeforeRequest.addListener(cancelInfuraRequest, { urls: ['https://*.infura.io/*'] }, ['blocking'])
-    }
-    function cancelInfuraRequest (requestDetails) {
-      console.log(`fetchMocking - Canceling request: "${requestDetails.url}"`)
-      return { cancel: true }
-    }
     function clone (obj) {
       return JSON.parse(JSON.stringify(obj))
     }
