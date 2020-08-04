@@ -13,13 +13,23 @@ const fsAsync = pify(fs)
 // if not working it may error or print minified garbage
 //
 
-start().catch(console.error)
+start().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})
 
 
 async function start () {
   const targetFiles = [`inpage.js`, `contentscript.js`, `ui.js`, `background.js`]
+  let valid = true
+
   for (const buildName of targetFiles) {
-    await validateSourcemapForFile({ buildName })
+    const fileIsValid = await validateSourcemapForFile({ buildName })
+    valid = valid && fileIsValid
+  }
+
+  if (!valid) {
+    process.exit(1)
   }
 }
 
@@ -59,6 +69,7 @@ async function validateSourcemapForFile ({ buildName }) {
 
   console.log(`  sampling from ${consumer.sources.length} files`)
   let sampleCount = 0
+  let valid = true
 
   const buildLines = rawBuild.split('\n')
   const targetString = 'new Error'
@@ -71,6 +82,7 @@ async function validateSourcemapForFile ({ buildName }) {
       const result = consumer.originalPositionFor(position)
       // warn if source content is missing
       if (!result.source) {
+        valid = false
         console.warn(`!! missing source for position: ${JSON.stringify(position)}`)
         // const buildLine = buildLines[position.line - 1]
         console.warn(`   origin in build:`)
@@ -86,6 +98,7 @@ async function validateSourcemapForFile ({ buildName }) {
       const portion = line.slice(result.column)
       const isMaybeValid = portion.includes(targetString)
       if (!isMaybeValid) {
+        valid = false
         console.error('Sourcemap seems invalid:')
         console.log(`\n========================== ${result.source} ====================================\n`)
         console.log(line)
@@ -94,6 +107,7 @@ async function validateSourcemapForFile ({ buildName }) {
     })
   })
   console.log(`  checked ${sampleCount} samples`)
+  return valid
 }
 
 function indicesOf (substring, string) {
