@@ -195,7 +195,8 @@ const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransa
 
 /**
  * @name removeFailedTransactions
- * @description Iterates over nonce sorted transactions groups and checks if if the first transactions has failed and not generated a tx hash.
+ * @description Iterates over nonce sorted transactions groups and checks if the first transactions has failed and not generated a tx hash. Shift and update initialTransaction.
+ * @returns {orderedTransactionGroups[]}
 */
 
 const removeFailedTransactions = (orderedTransactionGroups) => {
