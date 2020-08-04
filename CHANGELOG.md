@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 5.1.4 Tue Aug 04 2020
+
+Removal of webRequest permission was not applied in the previous version. Applying it here.
+
 ## 5.1.3 Tue Aug 04 2020
 
 - [#407](https://github.com/poanetwork/nifty-wallet/pull/407) - Remove excess extension permissions: webRequest
