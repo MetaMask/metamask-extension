@@ -1722,7 +1722,7 @@ export default class MetamaskController extends EventEmitter {
 
     delete connections[id]
 
-    if (Object.keys(connections.length === 0)) {
+    if (Object.keys(connections).length === 0) {
       delete this.connections[origin]
     }
   }
