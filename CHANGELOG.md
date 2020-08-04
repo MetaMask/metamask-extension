@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 5.1.3 Tue Aug 04 2020
+
+- [#407](https://github.com/poanetwork/nifty-wallet/pull/407) - Remove excess extension permissions
+
 ## 5.1.2 Fri Jul 10 2020
 
 - [#400](https://github.com/poanetwork/nifty-wallet/pull/400) - (Fix) Fix RNS resolving
