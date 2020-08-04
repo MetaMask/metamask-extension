@@ -194,6 +194,21 @@ const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransa
 }
 
 /**
+ * @name removeFailedTransactions
+ * @description Iterates over nonce sorted transactions groups and checks if if the first transactions has failed and not generated a tx hash.
+*/
+
+const removeFailedTransactions = (orderedTransactionGroups) => {
+  for (let i = 0; i < orderedTransactionGroups.length; i++) {
+
+    if (orderedTransactionGroups[i].transactions.length >= 2 && orderedTransactionGroups[i].transactions[0].status === 'failed' && !orderedTransactionGroups[i].transactions[0].hash) {
+      orderedTransactionGroups[i].transactions.shift()
+      orderedTransactionGroups[i].initialTransaction = orderedTransactionGroups[i].transactions[0]
+    }
+  }
+}
+
+/**
  * @name nonceSortedTransactionsSelector
  * @description Returns an array of transactionGroups sorted by nonce in ascending order.
  * @returns {transactionGroup[]}
@@ -265,6 +280,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     })
 
     const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
+    removeFailedTransactions(orderedTransactionGroups)
     mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
   },
