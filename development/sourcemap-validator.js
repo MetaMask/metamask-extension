@@ -99,15 +99,26 @@ async function validateSourcemapForFile ({ buildName }) {
       const isMaybeValid = portion.includes(targetString)
       if (!isMaybeValid) {
         valid = false
-        console.error('Sourcemap seems invalid:')
-        console.log(`\n========================== ${result.source} ====================================\n`)
-        console.log(line)
-        console.log(`\n==============================================================================\n`)
+        console.error(`Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`)
       }
     })
   })
   console.log(`  checked ${sampleCount} samples`)
   return valid
+}
+
+const CODE_FENCE_LENGTH = 80
+const TITLE_PADDING_LENGTH = 1
+
+function getFencedCode (filename, code) {
+  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(TITLE_PADDING_LENGTH)}`
+  const openingFenceLength = Math.max(CODE_FENCE_LENGTH - (filename.length + (TITLE_PADDING_LENGTH * 2)), 0)
+  const startOpeningFenceLength = Math.floor(openingFenceLength / 2)
+  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2)
+  const openingFence = `${'='.repeat(startOpeningFenceLength)}${title}${'='.repeat(endOpeningFenceLength)}`
+  const closingFence = '='.repeat(CODE_FENCE_LENGTH)
+
+  return `${openingFence}\n${code}\n${closingFence}\n`
 }
 
 function indicesOf (substring, string) {
