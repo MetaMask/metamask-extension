@@ -47,7 +47,7 @@ SearchableItemList.propTypes = {
   itemSelectorError: PropTypes.string,
   itemsToSearch: PropTypes.array,
   onClickItem: PropTypes.func,
-  Placeholder: PropTypes.element,
+  Placeholder: PropTypes.func,
   className: PropTypes.string,
   searchPlaceholderText: PropTypes.string,
   fuseSearchKeys: PropTypes.arrayOf(PropTypes.shape({

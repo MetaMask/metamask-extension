@@ -78,7 +78,7 @@ SearchableItemList.propTypes = {
     rightSecondaryLabel: PropTypes.string,
   })),
   onClickItem: PropTypes.func,
-  Placeholder: PropTypes.element,
+  Placeholder: PropTypes.func,
   listTitle: PropTypes.string,
   maxListItems: PropTypes.number,
   searchQuery: PropTypes.string,

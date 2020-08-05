@@ -92,7 +92,7 @@ export default function ListItemSearch ({
 ListItemSearch.propTypes = {
   onSearch: PropTypes.func,
   error: PropTypes.string,
-  listToSearch: PropTypes.array.required,
+  listToSearch: PropTypes.array.isRequired,
   searchByKeys: PropTypes.arrayOf(PropTypes.string),
   fuseSearchKeys: PropTypes.arrayOf(PropTypes.object),
   searchPlaceholderText: PropTypes.string,
