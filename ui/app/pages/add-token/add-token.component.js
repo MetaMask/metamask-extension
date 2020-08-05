@@ -46,18 +46,17 @@ class AddToken extends Component {
 
   componentDidMount () {
     this.tokenInfoGetter = tokenInfoGetter()
-    const { tokensToSearch } = this.state
     const { pendingTokens = {} } = this.props
-    const pendingTokensCopy = { ...pendingTokens }
-    if (Object.keys(pendingTokensCopy).length > 0) {
-      const newTokensToSearch = [ ...tokensToSearch ]
+    const pendingTokenKeys = Object.keys(pendingTokens)
+
+    if (pendingTokenKeys.length > 0) {
       let customToken = {}
-      Object.entries(pendingTokensCopy).forEach(([tokenAddress, token]) => {
+      pendingTokenKeys.forEach((tokenAddress) => {
+        const token = pendingTokens[tokenAddress]
         const { isCustom } = token
+
         if (isCustom) {
           customToken = { ...token }
-        } else if (!checkExistingAddresses(tokenAddress, newTokensToSearch)) {
-          newTokensToSearch.push({ ...token, selected: true })
         }
       })
 
@@ -67,7 +66,7 @@ class AddToken extends Component {
         decimals: customDecimals = 0,
       } = customToken
 
-      this.setState({ tokensToSearch: newTokensToSearch, customAddress, customSymbol, customDecimals })
+      this.setState({ customAddress, customSymbol, customDecimals })
     }
   }
 
@@ -95,7 +94,7 @@ class AddToken extends Component {
 
   hasSelected () {
     const { customAddress = '', tokensToSearch } = this.state
-    return customAddress || tokensToSearch.find((tokenToSearch) => tokenToSearch.selected)
+    return customAddress || tokensToSearch.some((tokenToSearch) => tokenToSearch.selected)
   }
 
   handleNext () {
