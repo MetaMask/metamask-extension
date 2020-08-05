@@ -24,7 +24,7 @@ export default function SearchableItemList ({
             results.slice(0, maxListItems)
               .map((result, i) => {
                 const {
-                  backgroundImageUrl,
+                  iconUrl,
                   selected,
                   disabled,
                   primaryLabel,
@@ -44,7 +44,7 @@ export default function SearchableItemList ({
                   >
                     <div
                       className="searchable-item-list__item-icon"
-                      style={{ backgroundImage: backgroundImageUrl && `url(${backgroundImageUrl})` }}
+                      style={{ backgroundImage: iconUrl && `url(${iconUrl})` }}
                     />
                     <div className="searchable-item-list__labels">
                       <div className="searchable-item-list__item-labels">
