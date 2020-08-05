@@ -16,6 +16,12 @@ import TokenSearch from './token-search'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
+const getLastCustomTokenFromPendingTokens = (pendingTokens) => {
+  return Object.entries(pendingTokens)
+    .reverse()
+    .find(([_, token]) => token.isCustom)
+}
+
 class AddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -32,9 +38,9 @@ class AddToken extends Component {
   }
 
   state = {
-    customAddress: '',
-    customSymbol: '',
-    customDecimals: 0,
+    customAddress: getLastCustomTokenFromPendingTokens(this.props.pendingTokens)?.address || '',
+    customSymbol: getLastCustomTokenFromPendingTokens(this.props.pendingTokens)?.symbol || '',
+    customDecimals: getLastCustomTokenFromPendingTokens(this.props.pendingTokens)?.decimals || 0,
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
@@ -44,31 +50,7 @@ class AddToken extends Component {
     tokensToSearch: initializeTokenListForSearchability(contractMap, this.props.tokens, this.props.pendingTokens),
   }
 
-  componentDidMount () {
-    this.tokenInfoGetter = tokenInfoGetter()
-    const { pendingTokens = {} } = this.props
-    const pendingTokenKeys = Object.keys(pendingTokens)
-
-    if (pendingTokenKeys.length > 0) {
-      let customToken = {}
-      pendingTokenKeys.forEach((tokenAddress) => {
-        const token = pendingTokens[tokenAddress]
-        const { isCustom } = token
-
-        if (isCustom) {
-          customToken = { ...token }
-        }
-      })
-
-      const {
-        address: customAddress = '',
-        symbol: customSymbol = '',
-        decimals: customDecimals = 0,
-      } = customToken
-
-      this.setState({ customAddress, customSymbol, customDecimals })
-    }
-  }
+  tokenInfoGetter = tokenInfoGetter()
 
   handleToggleToken (token) {
     const { tokensToSearch = {} } = this.state
