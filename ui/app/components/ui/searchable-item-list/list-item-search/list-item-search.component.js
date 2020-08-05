@@ -76,7 +76,7 @@ export default function ListItemSearch ({
 
   return (
     <TextField
-      id="search-list-items"
+      data-testid="search-list-items"
       className="searchable-item-list__search"
       placeholder={searchPlaceholderText}
       type="text"
