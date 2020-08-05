@@ -8,11 +8,15 @@ class AccountList extends Component {
   getHdPaths () {
     return [
       {
-        label: `Ledger Live`,
+        label: `Standard (m/44'/60'/0'/0)`,
+        value: `m/44'/60'/0'/0`,
+      },
+      {
+        label: `Ledger Live (m/44'/60'/0'/0/0)`,
         value: `m/44'/60'/0'/0/0`,
       },
       {
-        label: `Legacy (MEW / MyCrypto)`,
+        label: `Legacy (MEW / MyCrypto, m/44'/60'/0')`,
         value: `m/44'/60'/0'`,
       },
     ]
