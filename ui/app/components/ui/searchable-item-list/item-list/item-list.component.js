@@ -68,7 +68,15 @@ export default function SearchableItemList ({
 }
 
 SearchableItemList.propTypes = {
-  results: PropTypes.array,
+  results: PropTypes.arrayOf(PropTypes.shape({
+    iconUrl: PropTypes.string,
+    selected: PropTypes.bool,
+    disabled: PropTypes.bool,
+    primaryLabel: PropTypes.string,
+    secondaryLabel: PropTypes.string,
+    rightPrimaryLabel: PropTypes.string,
+    rightSecondaryLabel: PropTypes.string,
+  })),
   onClickItem: PropTypes.func,
   Placeholder: PropTypes.element,
   listTitle: PropTypes.string,
