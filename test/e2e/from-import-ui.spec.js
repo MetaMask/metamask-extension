@@ -105,7 +105,7 @@ describe('Using MetaMask with an existing account', function () {
       const [address] = await driver.findElements(By.css('.readonly-input__input'))
       assert.equal(await address.getAttribute('value'), testAddress)
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
       await driver.delay(largeDelayMs)
     })
 
@@ -116,7 +116,7 @@ describe('Using MetaMask with an existing account', function () {
       const detailModal = await driver.findElement(By.css('span .modal'))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
       await driver.wait(until.stalenessOf(detailModal))
       await driver.delay(regularDelayMs)
     })

@@ -128,7 +128,7 @@ describe('MetaMask', function () {
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
 
       await driver.wait(until.stalenessOf(accountModal))
       await driver.delay(regularDelayMs)
