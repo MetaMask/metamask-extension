@@ -369,7 +369,6 @@ export default class MobileSyncPage extends Component {
           {t('syncWithMobileScanThisCode')}
         </label>
         <div
-          className="div qr-wrapper"
           style={{
             display: 'flex',
             justifyContent: 'center',

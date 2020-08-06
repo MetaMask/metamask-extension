@@ -29,6 +29,28 @@ html {
   }
 }
 
+/*
+  This error class is used in the following files still:
+  /ui/app/pages/create-account/connect-hardware/index.js
+  /ui/app/pages/create-account/import-account/json.js
+  /ui/app/pages/create-account/import-account/private-key.js
+  /ui/app/pages/first-time-flow/create-password/import-with-seed-phrase/import-with-seed-phrase.component.js
+  /ui/app/pages/keychains/restore-vault.js
+*/
+.error {
+  color: #f7861c;
+  margin-bottom: 9px;
+}
+
+/*
+  This warning class is used in the following files still:
+  /ui/app/pages/create-account/import-account/json.js
+  /ui/app/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
+*/
+.warning {
+  color: #ffae00;
+}
+
 /* stylelint-disable */
 #app-content {
   overflow-x: hidden;

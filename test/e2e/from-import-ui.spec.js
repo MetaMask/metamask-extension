@@ -99,7 +99,7 @@ describe('Using MetaMask with an existing account', function () {
     it('shows the correct account address', async function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.qr-code__wrapper'))
       await driver.delay(regularDelayMs)
 
       const [address] = await driver.findElements(By.css('input.qr-ellip-address'))
@@ -112,7 +112,7 @@ describe('Using MetaMask with an existing account', function () {
     it('shows a QR code for the account', async function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.qr-code__wrapper'))
       const detailModal = await driver.findElement(By.css('span .modal'))
       await driver.delay(regularDelayMs)
 
