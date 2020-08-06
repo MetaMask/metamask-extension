@@ -8,6 +8,7 @@ export default function backEndMetaMetricsEvent (metaMaskState, eventData) {
     sendMetaMetricsEvent({
       ...stateEventData,
       ...eventData,
+      category: 'Background',
       currentPath: '/background',
     })
   }
