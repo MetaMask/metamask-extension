@@ -192,7 +192,7 @@ class FadeModal extends Component {
     const backdrop = this.props.backdrop
       ? (
         <div
-          className="backdrop"
+          className="modal__backdrop"
           style={backdropStyle}
           onClick={this.props.closeOnClick
             ? this.handleBackdropClick
@@ -208,7 +208,7 @@ class FadeModal extends Component {
       <span>
         <div className="modal" style={modalStyle}>
           <div
-            className="content"
+            className="modal__content"
             ref={(el) => (this.content = el)}
             tabIndex="-1"
             style={contentStyle}
