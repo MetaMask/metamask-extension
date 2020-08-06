@@ -6,11 +6,9 @@ import AddTokenButton from '../add-token-button'
 import TokenList from '../token-list'
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes'
 import AssetListItem from '../asset-list-item'
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
+import { useUserPreferencedCurrencyDisplays } from '../../../hooks/useUserPreferencedCurrencyDisplays'
 import { getCurrentAccountWithSendEtherInfo, getNativeCurrency, getShouldShowFiat } from '../../../selectors'
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay'
 
 const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
@@ -32,24 +30,10 @@ const AssetList = ({ onClickAsset }) => {
     },
   })
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 })
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 })
-
-  const [primaryCurrencyDisplay] = useCurrencyDisplay(
-    selectedAccountBalance,
-    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency },
-  )
-
-  const [secondaryCurrencyDisplay] = useCurrencyDisplay(
-    selectedAccountBalance,
-    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency },
-  )
+  const { primaryCurrencyDisplay, secondaryCurrencyDisplay } = useUserPreferencedCurrencyDisplays(selectedAccountBalance, {
+    primaryPreferenceOpts: { ethNumberOfDecimals: 4 },
+    secondaryPreferenceOpts: { ethNumberOfDecimals: 4 },
+  })
 
   return (
     <>
