@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hideModal } from '../../../store/actions'
+import { hideModal } from '../../../../store/actions'
 
 class NotificationModal extends Component {
   static contextProps = {
