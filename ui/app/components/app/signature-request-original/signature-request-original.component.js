@@ -7,7 +7,7 @@ import { ObjectInspector } from 'react-inspector'
 import { ENVIRONMENT_TYPE_NOTIFICATION, MESSAGE_TYPE } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
-import AccountListItem from '../../../pages/send/account-list-item/account-list-item.component'
+import AccountListItem from '../account-list-item'
 import { conversionUtil } from '../../../helpers/utils/conversion-util'
 import Button from '../../ui/button'
 
@@ -95,7 +95,6 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__account-item">
           <AccountListItem
             account={fromAccount}
-            displayBalance={false}
           />
         </div>
       </div>

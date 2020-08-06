@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import classnames from 'classnames'
 
-import AccountListItem from '../send/account-list-item/account-list-item.component'
+import AccountListItem from '../../components/app/account-list-item'
 import Button from '../../components/ui/button'
 import Identicon from '../../components/ui/identicon'
 import Tooltip from '../../components/ui/tooltip-v2'
@@ -119,7 +119,6 @@ export default class ConfirmDecryptMessage extends Component {
         <div className="request-decrypt-message__account-item">
           <AccountListItem
             account={fromAccount}
-            displayBalance={false}
           />
         </div>
       </div>
