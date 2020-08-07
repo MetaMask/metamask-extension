@@ -13,7 +13,7 @@ const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.ph
 const METAMETRICS_REQUIRED_PARAMS = `?idsite=${projectId}&rec=1&apiv=1`
 const METAMETRICS_BASE_FULL = METAMETRICS_BASE_URL + METAMETRICS_REQUIRED_PARAMS
 
-const METAMETRICS_TRACKING_URL = inDevelopment
+export const METAMETRICS_TRACKING_URL = inDevelopment
   ? 'http://www.metamask.io/metametrics'
   : 'http://www.metamask.io/metametrics-prod'
 
@@ -119,7 +119,6 @@ function composeParamAddition (paramValue, paramName) {
   * @property {string} config.currentPath The location path the user is on at the time of the event
   * @property {string} config.metaMetricsId A random id assigned to a user at the time of opting in to metametrics. A hexadecimal number
   * @property {string} config.confirmTransactionOrigin The origin on a transaction
-  * @property {string} config.url The url to track an event at. Overrides `currentPath`
   * @property {boolean} config.excludeMetaMetricsId Whether or not the tracked event data should be associated with a metametrics id
   * @property {boolean} config.isNewVisit Whether or not the event should be tracked as a new visit/user sessions
   * @returns {string} - Returns a url to be passed to fetch to make the appropriate request to matomo.
@@ -141,7 +140,6 @@ function composeUrl (config) {
     currentPath,
     metaMetricsId,
     confirmTransactionOrigin,
-    url: configUrl,
     excludeMetaMetricsId,
     isNewVisit,
   } = config
@@ -167,10 +165,10 @@ function composeUrl (config) {
     numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
     numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''
-  const url = configUrl || currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
+  const url = currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = ((url || currentPath) && `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(url || currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}`) || ''
+  const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)?.[0] || url)).slice(2, 8)}` : ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId
