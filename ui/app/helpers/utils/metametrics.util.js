@@ -137,7 +137,7 @@ function composeUrl (config) {
     numberOfAccounts,
     version,
     previousPath = '',
-    currentPath = '',
+    currentPath,
     metaMetricsId,
     confirmTransactionOrigin,
     excludeMetaMetricsId,

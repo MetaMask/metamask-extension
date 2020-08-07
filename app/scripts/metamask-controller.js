@@ -67,7 +67,7 @@ import {
   PhishingController,
 } from '@metamask/controllers'
 
-import backEndMetaMetricsEvent from './lib/background-metametrics'
+import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -1841,16 +1841,14 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('Must provide action and name.')
     }
 
-    if (this.preferencesController.getParticipateInMetaMetrics()) {
-      const metamaskState = await this.getState()
-      backEndMetaMetricsEvent(metamaskState, {
-        customVariables,
-        eventOpts: {
-          action,
-          name,
-        },
-      })
-    }
+    const metamaskState = await this.getState()
+    backgroundMetaMetricsEvent(metamaskState, {
+      customVariables,
+      eventOpts: {
+        action,
+        name,
+      },
+    })
   }
 
   //=============================================================================
