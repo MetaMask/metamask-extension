@@ -212,16 +212,6 @@
   padding: 9px 13px 8px;
 }
 
-.modal-close-x::after {
-  content: '\00D7';
-  font-size: 2em;
-  color: $dusty-gray;
-  position: absolute;
-  top: 25px;
-  right: 17.5px;
-  cursor: pointer;
-}
-
 // Hide token confirmation
 
 .hide-token-confirmation {
@@ -283,55 +273,6 @@
 
     width: 141px;
     margin: 0 5px;
-  }
-}
-
-//Notification Modal
-
-.notification-modal {
-  &__wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-    border: 1px solid $alto;
-    box-shadow: 0 0 2px 2px $alto;
-  }
-
-  &__header {
-    background: $wild-sand;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-    font-size: 22px;
-    color: $nile-blue;
-  }
-
-  &__message {
-    padding: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    font-size: 17px;
-    color: $nile-blue;
-  }
-
-  &__buttons {
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-    margin-bottom: 24px;
-    padding: 0 42px;
-
-    &__btn {
-      cursor: pointer;
-    }
-  }
-
-  &__link {
-    color: $primary-blue;
   }
 }
 
@@ -497,39 +438,4 @@
   .simple-dropdown__selected {
     text-align: center;
   }
-}
-
-//Notification Modal
-
-.notification-modal-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
-  border: 1px solid $alto;
-  box-shadow: 0 0 2px 2px $alto;
-}
-
-.notification-modal-header {
-  background: $wild-sand;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-  font-size: 22px;
-  color: $nile-blue;
-}
-
-.notification-modal-message {
-  padding: 20px;
-}
-
-.notification-modal-message {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  font-size: 17px;
-  color: $nile-blue;
 }
