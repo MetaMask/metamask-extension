@@ -41,7 +41,7 @@ export function MetaMetricsProvider ({ children }) {
   const numberOfAccounts = useSelector(getNumberOfAccounts)
   const history = useHistory()
   const [state, setState] = useState(() => ({
-    currentPath: window.location.href,
+    currentPath: (new URL(window.location.href)).pathname,
     previousPath: '',
   }))
 
@@ -49,7 +49,7 @@ export function MetaMetricsProvider ({ children }) {
 
   useEffect(() => {
     const unlisten = history.listen(() => setState((prevState) => ({
-      currentPath: window.location.href,
+      currentPath: (new URL(window.location.href)).pathname,
       previousPath: prevState.currentPath,
     })))
     // remove this listener if the component is no longer mounted
@@ -59,8 +59,8 @@ export function MetaMetricsProvider ({ children }) {
   const metricsEvent = useCallback((config = {}, overrides = {}) => {
     const { eventOpts = {} } = config
     const { name = '' } = eventOpts
-    const { pathname: overRidePathName = '' } = overrides
-    const isSendFlow = Boolean(name.match(/^send|^confirm/) || overRidePathName.match(/send|confirm/))
+    const { currentPath: overrideCurrentPath = '' } = overrides
+    const isSendFlow = Boolean(name.match(/^send|^confirm/) || overrideCurrentPath.match(/send|confirm/))
 
     if (participateInMetaMetrics || config.isOptIn) {
       return sendMetaMetricsEvent({
