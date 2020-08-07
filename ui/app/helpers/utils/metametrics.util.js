@@ -13,7 +13,7 @@ const METAMETRICS_BASE_URL = 'https://chromeextensionmm.innocraft.cloud/piwik.ph
 const METAMETRICS_REQUIRED_PARAMS = `?idsite=${projectId}&rec=1&apiv=1`
 const METAMETRICS_BASE_FULL = METAMETRICS_BASE_URL + METAMETRICS_REQUIRED_PARAMS
 
-export const METAMETRICS_TRACKING_URL = inDevelopment
+const METAMETRICS_TRACKING_URL = inDevelopment
   ? 'http://www.metamask.io/metametrics'
   : 'http://www.metamask.io/metametrics-prod'
 
@@ -74,7 +74,7 @@ const customDimensionsNameIdMap = {
 
 function composeUrlRefParamAddition (previousPath, confirmTransactionOrigin) {
   const externalOrigin = confirmTransactionOrigin && confirmTransactionOrigin !== 'metamask'
-  return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(previousPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}`
+  return `&urlref=${externalOrigin ? 'EXTERNAL' : encodeURIComponent(`${METAMETRICS_TRACKING_URL}${previousPath}`)}`
 }
 
 // composes query params of the form &dimension[0-999]=[value]
@@ -115,8 +115,8 @@ function composeParamAddition (paramValue, paramName) {
   * @property {string} config.accountType The account type being used at the time of the event: 'hardware', 'imported' or 'default'
   * @property {number} config.numberOfTokens The number of tokens that the user has added at the time of the event
   * @property {number} config.numberOfAccounts The number of accounts the user has added at the time of the event
-  * @property {string} config.previousPath The location path the user was on prior to the path they are on at the time of the event
-  * @property {string} config.currentPath The location path the user is on at the time of the event
+  * @property {string} config.previousPath The pathname of the URL the user was on prior to the URL they are on at the time of the event
+  * @property {string} config.currentPath The pathname of the URL the user is on at the time of the event
   * @property {string} config.metaMetricsId A random id assigned to a user at the time of opting in to metametrics. A hexadecimal number
   * @property {string} config.confirmTransactionOrigin The origin on a transaction
   * @property {boolean} config.excludeMetaMetricsId Whether or not the tracked event data should be associated with a metametrics id
@@ -165,10 +165,10 @@ function composeUrl (config) {
     numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
     numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
   }) : ''
-  const url = currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
+  const url = currentPath ? `&url=${encodeURIComponent(`${METAMETRICS_TRACKING_URL}${currentPath}`)}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)?.[0] || url)).slice(2, 8)}` : ''
+  const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath)).slice(2, 8)}` : ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId

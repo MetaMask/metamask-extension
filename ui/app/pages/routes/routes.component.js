@@ -52,8 +52,6 @@ import {
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes'
 
-import { METAMETRICS_TRACKING_URL } from '../../helpers/utils/metametrics.util'
-
 import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 
@@ -101,8 +99,7 @@ export default class Routes extends Component {
       if (action === 'PUSH') {
         pageChanged(locationObj.pathname)
         this.context.metricsEvent({}, {
-          currentPath: `${METAMETRICS_TRACKING_URL}${locationObj.pathname}`,
-          pathname: locationObj.pathname,
+          currentPath: locationObj.pathname,
           pageOpts: {
             hideDimensions: true,
           },
