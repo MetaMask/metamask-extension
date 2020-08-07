@@ -4,7 +4,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 /**
  * Create middleware for handling certain methods and preprocessing permissions requests.
  */
-export default function createMethodMiddleware ({
+export default function createPermissionsMethodMiddleware ({
   addDomainMetadata,
   getAccounts,
   getUnlockPromise,

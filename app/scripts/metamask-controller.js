@@ -19,6 +19,7 @@ import createEngineStream from 'json-rpc-middleware-stream/engineStream'
 import createFilterMiddleware from 'eth-json-rpc-filters'
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
+import createMethodMiddleware from './lib/createMethodMiddleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
@@ -66,7 +67,7 @@ import {
   PhishingController,
 } from '@metamask/controllers'
 
-import backEndMetaMetricsEvent from './lib/backend-metametrics'
+import backgroundMetaMetricsEvent from './lib/background-metametrics'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -249,18 +250,11 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta)
 
         const { txReceipt } = txMeta
-        const participateInMetaMetrics = this.preferencesController.getParticipateInMetaMetrics()
-        if (txReceipt && txReceipt.status === '0x0' && participateInMetaMetrics) {
-          const metamaskState = await this.getState()
-          backEndMetaMetricsEvent(metamaskState, {
-            customVariables: {
-              errorMessage: txMeta.simulationFails?.reason,
-            },
-            eventOpts: {
-              category: 'Background',
-              action: 'Transactions',
-              name: 'On Chain Failure',
-            },
+        if (txReceipt && txReceipt.status === '0x0') {
+          this.sendBackgroundMetaMetrics({
+            action: 'Transactions',
+            name: 'On Chain Failure',
+            customVariables: { errorMessage: txMeta.simulationFails?.reason },
           })
         }
       }
@@ -1637,6 +1631,10 @@ export default class MetamaskController extends EventEmitter {
       location,
       registerOnboarding: this.onboardingController.registerOnboarding,
     }))
+    engine.push(createMethodMiddleware({
+      origin,
+      sendMetrics: this.sendBackgroundMetaMetrics.bind(this),
+    }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
     engine.push(subscriptionManager.middleware)
@@ -1835,6 +1833,22 @@ export default class MetamaskController extends EventEmitter {
       nonceLock.releaseLock()
     }
     return nonceLock.nextNonce
+  }
+
+  async sendBackgroundMetaMetrics ({ action, name, customVariables } = {}) {
+
+    if (!action || !name) {
+      throw new Error('Must provide action and name.')
+    }
+
+    const metamaskState = await this.getState()
+    backgroundMetaMetricsEvent(metamaskState, {
+      customVariables,
+      eventOpts: {
+        action,
+        name,
+      },
+    })
   }
 
   //=============================================================================
