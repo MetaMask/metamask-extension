@@ -168,7 +168,7 @@ function composeUrl (config) {
   const url = currentPath ? `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, METAMETRICS_TRACKING_URL))}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
-  const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)[0])).slice(2, 8)}` : ''
+  const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath.match(/chrome-extension:\/\/\w+\/(.+)/)?.[0] || url)).slice(2, 8)}` : ''
   const uid = metaMetricsId && !excludeMetaMetricsId
     ? `&uid=${metaMetricsId.slice(2, 18)}`
     : excludeMetaMetricsId
