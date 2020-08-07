@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.7 Fri Aug 07 2020
+
 ## 8.0.6 Wed Jul 22 2020
 - [#9030](https://github.com/MetaMask/metamask-extension/pull/9030): Hide "delete" button when editing contact of wallet account
 - [#9031](https://github.com/MetaMask/metamask-extension/pull/9031): Fix crash upon removing contact
