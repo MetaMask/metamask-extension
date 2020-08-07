@@ -89,7 +89,7 @@ describe('MetaMask', function () {
     })
 
     it('gets the current accounts address', async function () {
-      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
+      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
       publicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 

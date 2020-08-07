@@ -102,7 +102,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.findVisibleElement(By.css('.qr-code__wrapper'))
       await driver.delay(regularDelayMs)
 
-      const [address] = await driver.findElements(By.css('input.qr-ellip-address'))
+      const [address] = await driver.findElements(By.css('.readonly-input__input'))
       assert.equal(await address.getAttribute('value'), testAddress)
 
       await driver.clickElement(By.css('.account-modal-close'))

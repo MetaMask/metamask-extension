@@ -59,7 +59,6 @@ function QrCodeView (props) {
       />
       <ReadOnlyInput
         wrapperClass="ellip-address-wrapper"
-        inputClass="qr-ellip-address"
         value={checksumAddress(data)}
       />
     </div>

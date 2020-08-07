@@ -124,7 +124,7 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
       await driver.delay(regularDelayMs)
 
-      const addressInput = await driver.findElement(By.css('.qr-ellip-address'))
+      const addressInput = await driver.findElement(By.css('.readonly-input__input'))
       const newPublicAddress = await addressInput.getAttribute('value')
       const accountModal = await driver.findElement(By.css('span .modal'))
 
