@@ -146,7 +146,6 @@ export default class ExportPrivateKeyModal extends Component {
         <span className="account-name">{name}</span>
         <ReadOnlyInput
           wrapperClass="ellip-address-wrapper"
-          inputClass="qr-ellip-address ellip-address"
           value={checksumAddress(address)}
         />
         <div className="account-modal-divider" />

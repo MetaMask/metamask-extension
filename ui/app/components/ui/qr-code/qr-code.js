@@ -3,8 +3,8 @@ import React from 'react'
 import qrCode from 'qrcode-generator'
 import { connect } from 'react-redux'
 import { isHexPrefixed } from 'ethereumjs-util'
-import ReadOnlyInput from './readonly-input'
-import { checksumAddress } from '../../helpers/utils/util'
+import ReadOnlyInput from '../readonly-input/readonly-input'
+import { checksumAddress } from '../../../helpers/utils/util'
 
 export default connect(mapStateToProps)(QrCodeView)
 
@@ -24,20 +24,20 @@ function QrCodeView (props) {
   qrImage.make()
 
   return (
-    <div className="div flex-column flex-center">
+    <div className="qr-code">
       {
         Array.isArray(message)
           ? (
-            <div className="message-container">
+            <div className="qr-code__message-container">
               {props.Qr.message.map((message, index) => (
-                <div className="qr-message" key={index}>
+                <div className="qr_code__message" key={index}>
                   {message}
                 </div>
               ))}
             </div>
           )
           : message && (
-            <div className="qr-header">
+            <div className="qr-code__header">
               {message}
             </div>
           )
@@ -45,21 +45,20 @@ function QrCodeView (props) {
       {
         props.warning
           ? (props.warning && (
-            <span className="error flex-center">
+            <span className="qr_code__error">
               {props.warning}
             </span>
           ))
           : null
       }
       <div
-        className="div qr-wrapper"
+        className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
           __html: qrImage.createTableTag(4),
         }}
       />
       <ReadOnlyInput
         wrapperClass="ellip-address-wrapper"
-        inputClass="qr-ellip-address"
         value={checksumAddress(data)}
       />
     </div>

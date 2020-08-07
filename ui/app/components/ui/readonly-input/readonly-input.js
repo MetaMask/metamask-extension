@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import classnames from 'classnames'
 
 export default function ReadOnlyInput (props) {
   const {
@@ -13,9 +14,9 @@ export default function ReadOnlyInput (props) {
   const InputType = textarea ? 'textarea' : 'input'
 
   return (
-    <div className={wrapperClass}>
+    <div className={classnames('readonly-input', wrapperClass)}>
       <InputType
-        className={inputClass}
+        className={classnames('readonly-input__input', inputClass)}
         value={value}
         readOnly
         onFocus={(event) => event.target.select()}

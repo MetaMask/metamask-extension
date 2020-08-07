@@ -1,0 +1,25 @@
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__message-container > div:first-child {
+    margin-top: 18px;
+    font-size: 15px;
+    color: #4d4d4d;
+  }
+
+  &__message {
+    font-size: 12px;
+    color: #f7861c;
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f7861c;
+    margin-bottom: 9px;
+  }
+}
