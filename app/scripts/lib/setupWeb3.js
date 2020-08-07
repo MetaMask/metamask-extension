@@ -1,26 +1,67 @@
+/*global Web3*/
 
 // TODO:deprecate:2020
+// Delete this file
 
-export default function setupDappAutoReload (web3, observable) {
+import 'web3/dist/web3.min.js'
+
+const shouldLogUsage = !([
+  'docs.metamask.io',
+  'metamask.github.io',
+  'metamask.io',
+].includes(window.location.hostname))
+
+export default function setupWeb3 (log) {
   // export web3 as a global, checking for usage
   let reloadInProgress = false
   let lastTimeUsed
   let lastSeenNetwork
   let hasBeenWarned = false
 
+  const web3 = new Web3(window.ethereum)
+  web3.setProvider = function () {
+    log.debug('MetaMask - overrode web3.setProvider')
+  }
+  log.debug('MetaMask - injected web3')
+
+  Object.defineProperty(window.ethereum, '_web3Ref', {
+    enumerable: false,
+    writable: true,
+    configurable: true,
+    value: web3.eth,
+  })
+
   const web3Proxy = new Proxy(web3, {
     get: (_web3, key) => {
+
       // get the time of use
       lastTimeUsed = Date.now()
+
       // show warning once on web3 access
-      if (!hasBeenWarned && key !== 'currentProvider') {
+      if (!hasBeenWarned) {
         console.warn(`MetaMask: We will stop injecting web3 in Q4 2020.\nPlease see this article for more information: https://medium.com/metamask/no-longer-injecting-web3-js-4a899ad6e59e`)
         hasBeenWarned = true
       }
+
+      if (shouldLogUsage) {
+        window.ethereum.request({
+          method: 'metamask_logInjectedWeb3Usage',
+          params: [{ action: 'window.web3 get', name: key }],
+        })
+      }
+
       // return value normally
       return _web3[key]
     },
     set: (_web3, key, value) => {
+
+      if (shouldLogUsage) {
+        window.ethereum.request({
+          method: 'metamask_logInjectedWeb3Usage',
+          params: [{ action: 'window.web3 set', name: key }],
+        })
+      }
+
       // set value normally
       _web3[key] = value
     },
@@ -33,7 +74,7 @@ export default function setupDappAutoReload (web3, observable) {
     value: web3Proxy,
   })
 
-  observable.subscribe(function (state) {
+  window.ethereum._publicConfigStore.subscribe((state) => {
     // if the auto refresh on network change is false do not
     // do anything
     if (!window.ethereum.autoRefreshOnNetworkChange) {

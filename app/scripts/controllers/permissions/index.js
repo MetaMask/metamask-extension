@@ -7,7 +7,7 @@ import { CapabilitiesController as RpcCap } from 'rpc-cap'
 import { ethErrors } from 'eth-json-rpc-errors'
 import { cloneDeep } from 'lodash'
 
-import createMethodMiddleware from './methodMiddleware'
+import createPermissionsMethodMiddleware from './permissionsMethodMiddleware'
 import PermissionsLogController from './permissionsLog'
 
 // Methods that do not require any permissions to use:
@@ -90,7 +90,7 @@ export class PermissionsController {
 
     engine.push(this.permissionsLog.createMiddleware())
 
-    engine.push(createMethodMiddleware({
+    engine.push(createPermissionsMethodMiddleware({
       addDomainMetadata: this.addDomainMetadata.bind(this),
       getAccounts: this.getAccounts.bind(this, origin),
       getUnlockPromise: () => this._getUnlockPromise(true),

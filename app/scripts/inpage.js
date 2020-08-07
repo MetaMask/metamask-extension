@@ -1,5 +1,3 @@
-/*global Web3*/
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -37,9 +35,7 @@ import LocalMessageDuplexStream from 'post-message-stream'
 import { initProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:2020
-import 'web3/dist/web3.min.js'
-
-import setupDappAutoReload from './lib/auto-reload.js'
+import setupWeb3 from './lib/setupWeb3.js'
 
 restoreContextAfterImports()
 
@@ -59,11 +55,9 @@ initProvider({
   connectionStream: metamaskStream,
 })
 
-//
 // TODO:deprecate:2020
-//
+// Setup web3
 
-// setup web3
 
 if (typeof window.web3 !== 'undefined') {
   throw new Error(`MetaMask detected another web3.
@@ -73,18 +67,5 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-const web3 = new Web3(window.ethereum)
-web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
-}
-log.debug('MetaMask - injected web3')
-
-Object.defineProperty(window.ethereum, '_web3Ref', {
-  enumerable: false,
-  writable: true,
-  configurable: true,
-  value: web3.eth,
-})
-
-// setup dapp auto reload AND proxy web3
-setupDappAutoReload(web3, window.ethereum._publicConfigStore)
+// proxy web3, assign to window, and set up site auto reload
+setupWeb3(log)
