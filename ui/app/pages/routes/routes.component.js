@@ -52,6 +52,8 @@ import {
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes'
 
+import { METAMETRICS_TRACKING_URL } from '../../helpers/utils/metametrics.util'
+
 import { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 
@@ -98,11 +100,9 @@ export default class Routes extends Component {
     this.props.history.listen((locationObj, action) => {
       if (action === 'PUSH') {
         pageChanged(locationObj.pathname)
-        const url = `&url=${encodeURIComponent('http://www.metamask.io/metametrics' + locationObj.pathname)}`
         this.context.metricsEvent({}, {
-          currentPath: '',
+          currentPath: `${METAMETRICS_TRACKING_URL}${locationObj.pathname}`,
           pathname: locationObj.pathname,
-          url,
           pageOpts: {
             hideDimensions: true,
           },
