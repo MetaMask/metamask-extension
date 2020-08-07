@@ -67,7 +67,7 @@ import {
   PhishingController,
 } from '@metamask/controllers'
 
-import backEndMetaMetricsEvent from './lib/backend-metametrics'
+import backEndMetaMetricsEvent from './lib/background-metametrics'
 
 export default class MetamaskController extends EventEmitter {
 
@@ -251,7 +251,7 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta
         if (txReceipt && txReceipt.status === '0x0') {
-          this.sendBackendMetaMetrics({
+          this.sendBackgroundMetaMetrics({
             action: 'Transactions',
             name: 'On Chain Failure',
             customVariables: { errorMessage: txMeta.simulationFails?.reason },
@@ -1633,7 +1633,7 @@ export default class MetamaskController extends EventEmitter {
     }))
     engine.push(createMethodMiddleware({
       origin,
-      sendMetrics: this.sendBackendMetaMetrics.bind(this),
+      sendMetrics: this.sendBackgroundMetaMetrics.bind(this),
     }))
     // filter and subscription polyfills
     engine.push(filterMiddleware)
@@ -1835,7 +1835,7 @@ export default class MetamaskController extends EventEmitter {
     return nonceLock.nextNonce
   }
 
-  async sendBackendMetaMetrics ({ action, name, customVariables } = {}) {
+  async sendBackgroundMetaMetrics ({ action, name, customVariables } = {}) {
 
     if (!action || !name) {
       throw new Error('Must provide action and name.')
