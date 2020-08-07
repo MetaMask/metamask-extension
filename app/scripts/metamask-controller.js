@@ -257,7 +257,7 @@ export default class MetamaskController extends EventEmitter {
               errorMessage: txMeta.simulationFails?.reason,
             },
             eventOpts: {
-              category: 'backend',
+              category: 'Background',
               action: 'Transactions',
               name: 'On Chain Failure',
             },

@@ -14,7 +14,7 @@ export default function backEndMetaMetricsEvent (metaMaskState, eventData) {
     sendMetaMetricsEvent({
       ...stateEventData,
       ...eventData,
-      url: METAMETRICS_TRACKING_URL + '/backend',
+      url: METAMETRICS_TRACKING_URL + '/background',
     })
   }
 }
