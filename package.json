@@ -22,8 +22,6 @@
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive \"test/unit/**/permissions/*.js\"",
     "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
-    "test:web3:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-web3.sh",
-    "test:web3:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-web3.sh",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-all.sh",
     "test:coverage": "nyc --silent --check-coverage yarn test:unit:strict && nyc --silent --no-clean yarn test:unit:lax && nyc report --reporter=text --reporter=html",
     "test:coverage:strict": "nyc --check-coverage yarn test:unit:strict",
