@@ -35,10 +35,6 @@ import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import { initProvider } from '@metamask/inpage-provider'
 
-// TODO:deprecate:2020
-import setupWeb3 from './lib/setupWeb3'
-/* eslint-enable import/first */
-
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -57,16 +53,35 @@ initProvider({
   connectionStream: metamaskStream,
 })
 
-// TODO:deprecate:2020
-// Setup web3
+// If there's no existing window.web3, we inject a web3 "shim" to not break
+// dapps that rely on window.web3.currentProvider.
+if (!window.web3) {
+  const SHIM_IDENTIFIER = '__isMetaMaskShim__'
+  const web3Shim = new Proxy(
+    {
+      currentProvider: window.ethereum,
+      __isMetaMaskShim__: true,
+    },
+    {
+      get: (target, property, ...args) => {
+        if (property === 'currentProvider') {
+          console.warn(
+            'You are accessing the MetaMask window.web3 shim. Just use window.ethereum instead. For details, see: https://docs.metamask.io/guide/ethereum-provider.html',
+          )
+        } else if (property !== SHIM_IDENTIFIER) {
+          console.error(
+            `You are accessing the MetaMask window.web3 shim. The property '${property}' does not exist. For details, see: https://docs.metamask.io/guide/ethereum-provider.html`,
+          )
+        }
+        return Reflect.get(target, property, ...args)
+      },
+    },
+  )
 
-if (typeof window.web3 === 'undefined') {
-  // proxy web3, assign to window, and set up site auto reload
-  setupWeb3(log)
-} else {
-  log.warn(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
-     and try again.`)
+  Object.defineProperty(window, 'web3', {
+    value: Object.freeze(web3Shim),
+    enumerable: false,
+    configurable: true,
+    writable: true,
+  })
 }
