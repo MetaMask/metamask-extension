@@ -1,8 +1,4 @@
 .signature-request-message {
-  flex: 1 60%;
-  display: flex;
-  flex-direction: column;
-
   &__title {
     font-weight: 500;
     font-size: 14px;
@@ -11,7 +7,6 @@
   }
 
   h2 {
-    flex: 1 1 0;
     text-align: left;
     font-size: 0.8rem;
     border-bottom: 1px solid #d2d8dd;
@@ -21,7 +16,6 @@
   }
 
   &--root {
-    flex: 1 100%;
     background-color: #f8f9fb;
     padding-bottom: 0.5rem;
     overflow: auto;
@@ -45,22 +39,23 @@
 
   &--node,
   &--node-leaf {
-    padding-left: 0.8rem;
+    padding-left: 0.4rem;
 
     &-label {
       color: #5b5d67;
+      font-weight: 600;
     }
 
     &-value {
       color: black;
-      margin-left: 0.5rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
       overflow: hidden;
+      word-wrap: break-word;
     }
   }
 
   &--node-leaf {
-    display: flex;
+    span {
+      display: block;
+    }
   }
 }
