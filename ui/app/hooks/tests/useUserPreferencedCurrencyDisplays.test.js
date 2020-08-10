@@ -4,6 +4,7 @@ import * as reactRedux from 'react-redux'
 import { useUserPreferencedCurrencyDisplays } from '../useUserPreferencedCurrencyDisplays'
 import sinon from 'sinon'
 import { getCurrentCurrency, getNativeCurrency, getConversionRate, getPreferences, getShouldShowFiat } from '../../selectors'
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
 
 const tests = [
   {
@@ -16,11 +17,9 @@ const tests = [
     },
     input: {
       value: '0x10f699ca86b32800',
+      type: PRIMARY,
     },
-    result: {
-      primaryCurrencyDisplay: '1.222333 ETH',
-      secondaryCurrencyDisplay: '$342.80 USD',
-    },
+    result: '1.222333 ETH',
   },
   {
     state: {
@@ -32,12 +31,10 @@ const tests = [
     },
     input: {
       value: '0x10f699ca86b32800',
-      primaryPreferenceOpts: { ethNumberOfDecimals: 4 },
+      type: SECONDARY,
+      opts: { numberOfDecimals: 4 },
     },
-    result: {
-      primaryCurrencyDisplay: '1.2223 ETH',
-      secondaryCurrencyDisplay: '$342.80 USD',
-    },
+    result: '$342.80 USD',
   },
   {
     state: {
@@ -51,22 +48,17 @@ const tests = [
     },
     input: {
       value: '0x10f699ca86b32800',
-      primaryPreferenceOpts: { numberOfDecimals: 4 },
-      secondaryPreferenceOpts: { numberOfDecimals: 2 },
-      primaryCurrencyOpts: { prefix: '!!!' },
-      secondaryCurrencyOpts: { prefix: '!!!' },
+      type: SECONDARY,
+      opts: { numberOfDecimals: 2 },
     },
-    result: {
-      primaryCurrencyDisplay: '!!!61.1167 ETH',
-      secondaryCurrencyDisplay: '!!!1.22Ƀ BTC',
-    },
+    result: '1.22Ƀ BTC',
   },
 ]
 
 
 describe('useUserPreferencedCurrencyDisplays', function () {
-  tests.forEach(({ input: { value, ...restProps }, result, state }) => {
-    describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, function () {
+  tests.forEach(({ input: { value, type, opts }, result, state }) => {
+    describe(`when input is { value: ${value}, type: ${type}, decimals: ${opts?.numberOfDecimals || 'n/a'} }`, function () {
       const stub = sinon.stub(reactRedux, 'useSelector')
       stub.callsFake((selector) => {
         if (selector === getCurrentCurrency) {
@@ -81,14 +73,11 @@ describe('useUserPreferencedCurrencyDisplays', function () {
           return state?.preferences?.showFiat
         }
       })
-      const hookReturn = renderHook(() => useUserPreferencedCurrencyDisplays(value, restProps))
-      const { primaryCurrencyDisplay, secondaryCurrencyDisplay } = hookReturn.result.current
+      const hookReturn = renderHook(() => useUserPreferencedCurrencyDisplays(value, type, opts))
+      const resultDisplay = hookReturn.result.current
       stub.restore()
-      it(`should return ${result.primaryCurrencyDisplay} as primaryCurrencyDisplay`, function () {
-        assert.equal(primaryCurrencyDisplay, result.primaryCurrencyDisplay)
-      })
-      it(`should return ${result.secondaryCurrencyDisplay} as secondaryCurrencyDisplay`, function () {
-        assert.equal(secondaryCurrencyDisplay, result.secondaryCurrencyDisplay)
+      it(`should return ${result}`, function () {
+        assert.equal(resultDisplay, result)
       })
     })
   })

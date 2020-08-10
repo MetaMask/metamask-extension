@@ -9,6 +9,7 @@ import AssetListItem from '../asset-list-item'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import { useUserPreferencedCurrencyDisplays } from '../../../hooks/useUserPreferencedCurrencyDisplays'
 import { getCurrentAccountWithSendEtherInfo, getNativeCurrency, getShouldShowFiat } from '../../../selectors'
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 
 const AssetList = ({ onClickAsset }) => {
   const history = useHistory()
@@ -30,10 +31,8 @@ const AssetList = ({ onClickAsset }) => {
     },
   })
 
-  const { primaryCurrencyDisplay, secondaryCurrencyDisplay } = useUserPreferencedCurrencyDisplays(selectedAccountBalance, {
-    primaryPreferenceOpts: { ethNumberOfDecimals: 4 },
-    secondaryPreferenceOpts: { ethNumberOfDecimals: 4 },
-  })
+  const primaryCurrencyDisplay = useUserPreferencedCurrencyDisplays(selectedAccountBalance, PRIMARY, { numberOfDecimals: 4 })
+  const secondaryCurrencyDisplay = useUserPreferencedCurrencyDisplays(selectedAccountBalance, SECONDARY, { numberOfDecimals: 4 })
 
   return (
     <>

@@ -1,56 +1,48 @@
+import { getPreferences, getShouldShowFiat, getNativeCurrency } from '../selectors'
+import { useSelector } from 'react-redux'
+import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
-import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 
 /**
 * Defines the shape of the options parameter for useUserPreferencedCurrencyDisplays
 * @typedef {Object} UseUserPreferencedCurrencyDisplayOptions
-* @property {UseUserPreferencedCurrencyOptions} [primaryPreferenceOpts]    - The configuration options for getting the primary currency user preferences
-* @property {UseUserPreferencedCurrencyOptions} [secondaryPreferenceOpts]  - The configuration options for getting the secondary currency user preferences
-* @property {UseCurrencyOptions} [primaryCurrencyOpts]                     - The configuration options for getting the primary currency display
-* @property {UseCurrencyOptions} [secondaryCurrencyOpts]                   - The configuration options for getting the secondary currency display
+* @property {number} [numberOfDecimals] - umber of significant decimals to display
 */
 
-/**
- * Defines the return shape of useUserPreferencedCurrencyDisplays
- * @typedef {Object} UserPreferencedCurrencyDisplays
- * @property {string} primaryCurrencyDisplay   - a display string of the PRIMARY type
- * @property {string} secondaryCurrencyDisplay - a display string of the SECONDARY type
- */
 
 /**
 * useUserPreferencedCurrencyDisplays hook
 *
-* Given a hexadecimal encoded value string and optional objects of parameters used for formatting the
-* displays, produces two fully formed strings: one for the primary display type and one for the secondary
-* display type
+* Given a hexadecimal encoded value string, display type and optional objects of parameters used for formatting the
+* displays, produces a string for displaying currency to a user according to their preferences
 * @param {string} inputValue                                - The value to format for display
+* @param {"PRIMARY" | "SECONDARY"} type                     - what display type is being rendered
 * @param {UseUserPreferencedCurrencyDisplayOptions} opts    - An object of options for formatting the return values
-* @return {[string, CurrencyDisplayParts]}
+* @return {[string]}
 */
-export function useUserPreferencedCurrencyDisplays (inputValue, {
-  primaryPreferenceOpts = {},
-  secondaryPreferenceOpts = {},
-  primaryCurrencyOpts = {},
-  secondaryCurrencyOpts = {},
-}) {
+export function useUserPreferencedCurrencyDisplays (inputValue, type, opts = {}) {
+  const nativeCurrency = useSelector(getNativeCurrency)
   const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, primaryPreferenceOpts)
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, secondaryPreferenceOpts)
+    useNativeCurrencyAsPrimaryCurrency,
+  } = useSelector(getPreferences)
+  const showFiat = useSelector(getShouldShowFiat)
 
-  const [primaryCurrencyDisplay] = useCurrencyDisplay(
+  let currency, numberOfDecimals
+  if (!showFiat || (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)) {
+    // Display ETH
+    currency = nativeCurrency || ETH
+    numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 6
+  } else if ((type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)) {
+    // Display Fiat
+    numberOfDecimals = opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2
+  }
+
+  const [useUserPreferencedCurrencyDisplay] = useCurrencyDisplay(
     inputValue,
-    { numberOfDecimals: primaryNumberOfDecimals, currency: primaryCurrency, ...primaryCurrencyOpts },
-  )
-  const [secondaryCurrencyDisplay] = useCurrencyDisplay(
-    inputValue,
-    { numberOfDecimals: secondaryNumberOfDecimals, currency: secondaryCurrency, ...secondaryCurrencyOpts },
+    { numberOfDecimals, currency, ...opts },
   )
 
-  return { primaryCurrencyDisplay, secondaryCurrencyDisplay }
+  return useUserPreferencedCurrencyDisplay
 }
