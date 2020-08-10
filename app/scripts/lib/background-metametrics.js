@@ -1,7 +1,7 @@
 import { getBackgroundMetaMetricState } from '../../../ui/app/selectors'
 import { sendMetaMetricsEvent } from '../../../ui/app/helpers/utils/metametrics.util'
 
-export default function backgroundMetaMetricsEvent (metaMaskState, eventData) {
+export default function backgroundMetaMetricsEvent (metaMaskState, version, eventData) {
 
   eventData.eventOpts['category'] = 'Background'
 
@@ -10,6 +10,7 @@ export default function backgroundMetaMetricsEvent (metaMaskState, eventData) {
     sendMetaMetricsEvent({
       ...stateEventData,
       ...eventData,
+      version,
       currentPath: '/background',
     })
   }
