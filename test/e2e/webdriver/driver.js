@@ -180,7 +180,9 @@ class Driver {
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
     const htmlSource = await this.driver.getPageSource()
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
-    const uiState = await this.driver.executeScript(() => window.getCleanAppState())
+    const uiState = await this.driver.executeScript(
+      () => window.getCleanAppState && window.getCleanAppState(),
+    )
     await fs.writeFile(`${filepathBase}-state.json`, JSON.stringify(uiState, null, 2))
   }
 
