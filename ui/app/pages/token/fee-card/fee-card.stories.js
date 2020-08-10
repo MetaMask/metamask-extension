@@ -23,7 +23,6 @@ export const WithSecondRow = () => {
         onSecondRowClick={action('Second row link clicked')}
         secondRowText={text('secondRowText', 'This calls a contract')}
         secondRowLinkText={text('secondRowLinkText', 'Learn More')}
-        hideSecondRow={false}
       />
     </div>
   )

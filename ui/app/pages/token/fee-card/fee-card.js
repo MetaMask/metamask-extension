@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 
 export default function FeeCard ({
   onFeeRowClick = null,
-  feeRowText = '',
+  feeRowText,
   feeRowLinkText = '',
-  primaryFee = '',
+  primaryFee,
   secondaryFee = '',
   onSecondRowClick = null,
   secondRowText = '',
