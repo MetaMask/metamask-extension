@@ -1850,6 +1850,7 @@ export default class MetamaskController extends EventEmitter {
         customVariables,
         eventOpts: {
           action,
+          category: 'Background',
           name,
         },
       },
