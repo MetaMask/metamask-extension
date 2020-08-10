@@ -206,6 +206,9 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
             mangle: {
               reserved: [ 'MetamaskInpageProvider' ],
             },
+            sourceMap: {
+              content: true,
+            },
           }))
       }
 
@@ -313,33 +316,23 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
       bundler = bundler.external(opts.externalDependencies)
     }
 
-    let environment
-    if (opts.devMode) {
-      environment = 'development'
-    } else if (opts.testing) {
-      environment = 'testing'
-    } else if (process.env.CIRCLE_BRANCH === 'master') {
-      environment = 'production'
-    } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
-      environment = 'release-candidate'
-    } else if (process.env.CIRCLE_BRANCH === 'develop') {
-      environment = 'staging'
-    } else if (process.env.CIRCLE_PULL_REQUEST) {
-      environment = 'pull-request'
-    } else {
-      environment = 'other'
+    const environment = getEnvironment({ devMode: opts.devMode, test: opts.testing })
+    if (environment === 'production' && !process.env.SENTRY_DSN) {
+      throw new Error('Missing SENTRY_DSN environment variable')
     }
 
     // Inject variables into bundle
     bundler.transform(envify({
       METAMASK_DEBUG: opts.devMode,
       METAMASK_ENVIRONMENT: environment,
+      METAMETRICS_PROJECT_ID: process.env.METAMETRICS_PROJECT_ID,
       NODE_ENV: opts.devMode ? 'development' : 'production',
       IN_TEST: opts.testing ? 'true' : false,
       PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
       PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
       ETH_GAS_STATION_API_KEY: process.env.ETH_GAS_STATION_API_KEY || '',
       CONF: opts.devMode ? conf : ({}),
+      SENTRY_DSN: process.env.SENTRY_DSN,
     }), {
       global: true,
     })
@@ -362,4 +355,23 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
 
 function beep () {
   process.stdout.write('\x07')
+}
+
+function getEnvironment ({ devMode, test }) {
+  // get environment slug
+  if (devMode) {
+    return 'development'
+  } else if (test) {
+    return 'testing'
+  } else if (process.env.CIRCLE_BRANCH === 'master') {
+    return 'production'
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+    return 'release-candidate'
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    return 'staging'
+  } else if (process.env.CIRCLE_PULL_REQUEST) {
+    return 'pull-request'
+  } else {
+    return 'other'
+  }
 }

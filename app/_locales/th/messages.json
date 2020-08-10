@@ -178,9 +178,6 @@
   "editContact": {
     "message": "แก้ไขผู้ติดต่อ"
   },
-  "emailUs": {
-    "message": "อีเมลหาเรา!"
-  },
   "endOfFlowMessage1": {
     "message": "คุณผ่านการทดสอบแล้ว กรุณารับผิดชอบในการรักษา Seed Phrase ให้ปลอดภัย"
   },
