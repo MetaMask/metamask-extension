@@ -1,0 +1,31 @@
+.info-tooltip {
+  img {
+    height: 10px;
+    width: 10px;
+  }
+
+  &__tooltip-content {
+    background: white;
+    color: black;
+    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.18);
+    border-radius: 8px;
+  }
+}
+
+.tooltip {
+  .tooltip-arrow.info-tooltip__top-tooltip-arrow {
+    border-top-color: $white;
+  }
+
+  .tooltip-arrow.info-tooltip__bottom-tooltip-arrow {
+    border-bottom-color: $white;
+  }
+
+  .tooltip-arrow.info-tooltip__left-tooltip-arrow {
+    border-left-color: $white;
+  }
+
+  .tooltip-arrow.info-tooltip__right-tooltip-arrow {
+    border-right-color: $white;
+  }
+}
