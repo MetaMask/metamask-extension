@@ -1,16 +1,19 @@
 import ethUtil from 'ethereumjs-util';
 import contractMap from '@metamask/contract-metadata';
+import { isConfusing } from 'unicode-confusables';
 import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
+  CONFUSING_ENS_ERROR,
 } from '../../send.constants';
 
 import {
   isValidAddress,
   isEthNetwork,
   checkExistingAddresses,
+  isValidDomainName,
 } from '../../../../helpers/utils/util';
 
 export function getToErrorObject(to, hasHexData = false, network) {
@@ -36,6 +39,9 @@ export function getToWarningObject(to, tokens = [], sendToken = null) {
       checkExistingAddresses(to, tokens))
   ) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR;
+  } else if (isValidDomainName(to) && isConfusing(to)) {
+    toWarning = CONFUSING_ENS_ERROR;
   }
+
   return { to: toWarning };
 }
