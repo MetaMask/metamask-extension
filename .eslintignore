@@ -3,14 +3,9 @@
 node_modules/**
 dist/**
 builds/**
-test-builds/**
+test-*/**
 docs/**
 coverage/
 
-app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
 app/vendor/**
-
-ui/lib/blockies.js
-
-package-lock.json
