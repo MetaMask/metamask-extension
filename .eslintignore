@@ -3,7 +3,7 @@
 node_modules/**
 dist/**
 builds/**
-test-builds/**
+test-*/**
 docs/**
 coverage/
 
@@ -12,5 +12,3 @@ app/scripts/chromereload.js
 app/vendor/**
 
 ui/lib/blockies.js
-
-package-lock.json
