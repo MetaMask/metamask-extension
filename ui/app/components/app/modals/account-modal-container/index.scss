@@ -17,12 +17,14 @@
     top: 13px;
     left: 17px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
 
-  &__text {
-    margin-top: 2px;
+  &__back-text {
     font-size: 14px;
     line-height: 18px;
+    padding-left: 3px;
   }
 
   &__close {
