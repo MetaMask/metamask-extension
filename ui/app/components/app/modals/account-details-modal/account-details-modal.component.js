@@ -42,9 +42,9 @@ export default class AccountDetailsModal extends Component {
     }
 
     return (
-      <AccountModalContainer>
+      <AccountModalContainer className="account-details-modal">
         <EditableLabel
-          className="account-modal__name"
+          className="account-details-modal__name"
           defaultValue={name}
           onSubmit={(label) => setAccountLabel(address, label)}
         />
@@ -56,11 +56,11 @@ export default class AccountDetailsModal extends Component {
           }}
         />
 
-        <div className="account-modal-divider" />
+        <div className="account-details-modal__divider" />
 
         <Button
           type="secondary"
-          className="account-modal__button"
+          className="account-details-modal__button"
           onClick={() => {
             global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
           }}
@@ -75,7 +75,7 @@ export default class AccountDetailsModal extends Component {
           ? (
             <Button
               type="secondary"
-              className="account-modal__button"
+              className="account-details-modal__button"
               onClick={() => showExportPrivateKeyModal()}
             >
               {this.context.t('exportPrivateKey')}
