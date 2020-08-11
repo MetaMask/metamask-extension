@@ -7,6 +7,9 @@
 @import './reset.scss';
 @import './design-system/index';
 @import './base-styles.scss';
+@import '../components/app/app-components';
+@import '../components/ui/ui-components';
+@import '../pages/pages';
 
 /*
   ITCSS
