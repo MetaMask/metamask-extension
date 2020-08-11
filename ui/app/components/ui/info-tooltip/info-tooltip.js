@@ -18,9 +18,11 @@ export default function InfoTooltip ({
       <Tooltip
         interactive
         position={position}
-        title={contentText}
+        containerClassName="info-tooltip__tooltip-container"
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
+        html={contentText}
+        theme="info"
       >
         <img src="images/mm-info-icon.svg" />
       </Tooltip>
