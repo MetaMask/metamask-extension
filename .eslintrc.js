@@ -46,6 +46,7 @@ module.exports = {
     'callback-return': 'error',
     'global-require': 'error',
     'guard-for-in': 'error',
+    'no-case-declarations': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',

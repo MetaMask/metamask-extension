@@ -110,7 +110,7 @@ export default function reduceApp (state = {}, action) {
 
 
     // modal methods:
-    case actionConstants.MODAL_OPEN:
+    case actionConstants.MODAL_OPEN: {
       const { name, ...modalProps } = action.payload
 
       return {
@@ -124,6 +124,7 @@ export default function reduceApp (state = {}, action) {
           previousModalState: { ...appState.modal.modalState },
         },
       }
+    }
 
     case actionConstants.MODAL_CLOSE:
       return {
@@ -232,7 +233,7 @@ export default function reduceApp (state = {}, action) {
         warning: '',
       }
 
-    case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
+    case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.value
       const newDefaults = { ...appState.defaultHdPaths }
       newDefaults[device] = path
@@ -241,6 +242,7 @@ export default function reduceApp (state = {}, action) {
         ...appState,
         defaultHdPaths: newDefaults,
       }
+    }
 
     case actionConstants.SHOW_LOADING:
       return {

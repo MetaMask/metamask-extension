@@ -154,7 +154,7 @@ export default class TypedMessageManager extends EventEmitter {
         }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
-      case 'V4':
+      case 'V4': {
         assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
         let data
         assert.doesNotThrow(() => {
@@ -167,6 +167,7 @@ export default class TypedMessageManager extends EventEmitter {
         const activeChainId = parseInt(this.networkController.getNetworkState())
         chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
         break
+      }
       default:
         assert.fail(`Unknown typed data version "${params.version}"`)
     }
