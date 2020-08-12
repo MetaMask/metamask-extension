@@ -287,11 +287,11 @@ export default class TransactionController extends EventEmitter {
   /**
    * Gets default gas price, or returns `undefined` if gas price is already set
    * @param {Object} txMeta - The txMeta object
-   * @returns {Promise<string>} The default gas price
+   * @returns {Promise<string|undefined>} The default gas price
    */
   async _getDefaultGasPrice (txMeta) {
     if (txMeta.txParams.gasPrice) {
-      return
+      return undefined
     }
     const gasPrice = await this.query.gasPrice()
 

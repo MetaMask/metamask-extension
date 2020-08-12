@@ -37,7 +37,8 @@ describe('nodeify', function () {
     try {
       nodified((err, result) => {
         if (err) {
-          return done(new Error(`should not have thrown any error: ${err.message}`))
+          done(new Error(`should not have thrown any error: ${err.message}`))
+          return
         }
         assert.equal(42, result, 'got expected result')
       })
@@ -54,7 +55,8 @@ describe('nodeify', function () {
     try {
       nodified((err, result) => {
         if (result) {
-          return done(new Error('should not have returned any result'))
+          done(new Error('should not have returned any result'))
+          return
         }
         assert.ok(err, 'got expected error')
         assert.ok(err.message.includes('boom!'), 'got expected error message')

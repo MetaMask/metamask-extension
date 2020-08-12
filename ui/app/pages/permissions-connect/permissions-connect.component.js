@@ -85,7 +85,8 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds()
 
     if (!permissionsRequest) {
-      return history.push(DEFAULT_ROUTE)
+      history.push(DEFAULT_ROUTE)
+      return
     }
 
     const environmentType = getEnvironmentType()

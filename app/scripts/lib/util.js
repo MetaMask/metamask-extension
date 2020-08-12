@@ -135,12 +135,12 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 /**
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
- * @returns {Error}
+ * @returns {Error|undefined}
  */
 function checkForError () {
   const lastError = extension.runtime.lastError
   if (!lastError) {
-    return
+    return undefined
   }
   // if it quacks like an Error, its an Error
   if (lastError.stack && lastError.message) {

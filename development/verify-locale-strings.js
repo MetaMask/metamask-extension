@@ -97,6 +97,7 @@ async function getLocale (code) {
       log.error(`Error opening your locale ("${code}") file: `, e)
     }
     process.exit(1)
+    return undefined
   }
 }
 
@@ -111,6 +112,7 @@ async function writeLocale (code, locale) {
       log.error(`Error writing your locale ("${code}") file: `, e)
     }
     process.exit(1)
+    return undefined
   }
 }
 
@@ -156,6 +158,8 @@ async function verifyLocale (code, fix = false) {
     }
     return true
   }
+
+  return false
 }
 
 async function verifyEnglishLocale (fix = false) {

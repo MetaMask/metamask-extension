@@ -101,7 +101,8 @@ class JsonImportSubview extends Component {
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')
-      return displayWarning(message)
+      displayWarning(message)
+      return
     }
 
     const password = this.inputRef.current.value

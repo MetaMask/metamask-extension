@@ -131,7 +131,7 @@ export default class MobileSyncPage extends Component {
         const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
-          return false
+          return
         }
 
         if (message.event === 'start-sync') {
@@ -203,7 +203,7 @@ export default class MobileSyncPage extends Component {
 
   async startSyncing () {
     if (this.syncing) {
-      return false
+      return
     }
     this.syncing = true
     this.setState({ syncing: true })

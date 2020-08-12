@@ -46,7 +46,7 @@ class ConnectHardwareForm extends Component {
 
   connectToHardwareWallet = (device) => {
     if (this.state.accounts.length) {
-      return null
+      return
     }
 
     // Default values

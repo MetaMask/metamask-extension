@@ -48,7 +48,7 @@ export default class SendContent extends Component {
     const { isOwnedAccount, showAddToAddressBookModal, contact = {} } = this.props
 
     if (isOwnedAccount || contact.name) {
-      return
+      return null
     }
 
     return (

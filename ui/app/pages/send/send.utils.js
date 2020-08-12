@@ -301,7 +301,7 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendToken }) {
   if (!sendToken) {
-    return
+    return undefined
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
