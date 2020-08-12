@@ -48,6 +48,7 @@ module.exports = {
     'global-require': 'error',
     'guard-for-in': 'error',
     'no-case-declarations': 'error',
+    'no-loop-func': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
     /* End v2 rules */
