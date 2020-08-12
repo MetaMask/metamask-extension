@@ -50,6 +50,7 @@ module.exports = {
     'no-case-declarations': 'error',
     'no-empty': 'error',
     'no-eq-null': 'error',
+    'no-global-assign': 'error',
     'no-loop-func': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',

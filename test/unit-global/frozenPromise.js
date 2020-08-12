@@ -1,7 +1,3 @@
-
-/* eslint-disable no-native-reassign */
-
-// this is what we're testing
 import '../../app/scripts/lib/freezeGlobals'
 
 import assert from 'assert'
@@ -10,6 +6,7 @@ describe('Promise global is immutable', function () {
 
   it('throws when reassinging promise (syntax 1)', function () {
     try {
+      // eslint-disable-next-line no-global-assign,no-native-reassign
       Promise = {}
       assert.fail('did not throw error')
     } catch (err) {
