@@ -49,6 +49,7 @@ module.exports = {
     'guard-for-in': 'error',
     'no-case-declarations': 'error',
     'no-useless-catch': 'error',
+    'no-useless-concat': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',

@@ -23,7 +23,7 @@ const insertRule = (css) => {
 const insertKeyframesRule = (keyframes) => {
   // random name
   const name = 'anim_' + (++index) + (+new Date())
-  let css = '@' + 'keyframes ' + name + ' {'
+  let css = `@keyframes ${name} {`
 
   Object.keys(keyframes).forEach((key) => {
     css += key + ' {'
