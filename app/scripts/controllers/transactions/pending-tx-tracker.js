@@ -239,11 +239,11 @@ export default class PendingTransactionTracker extends EventEmitter {
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
-    return completed.some((other) =>
+    return completed.some(
       // This is called while the transaction is in-flight, so it is possible that the
       // list of completed transactions now includes the transaction we were looking at
       // and if that is the case, don't consider the transaction to have taken its own nonce
-      !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce,
+      (other) => !(other.id === txMeta.id) && other.txParams.nonce === txMeta.txParams.nonce,
     )
   }
 }

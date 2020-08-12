@@ -47,6 +47,7 @@ module.exports = {
     'consistent-return': 'error',
     'global-require': 'error',
     'guard-for-in': 'error',
+    'implicit-arrow-linebreak': 'error',
     'no-case-declarations': 'error',
     'no-useless-catch': 'error',
     /* End v2 rules */
