@@ -1463,6 +1463,7 @@ export function setProviderType (type) {
     }
     dispatch(setPreviousProvider(currentProviderType))
     dispatch(updateProviderType(type))
+    dispatch(setFeatureFlag('advancedInlineGas', type !== 'mainnet'))
   }
 }
 
