@@ -1756,20 +1756,18 @@ export function exportAccounts (password, addresses) {
           return
         }
         log.debug(`background.exportAccounts`)
-        const accountPromises = addresses.map((address) =>
-          new Promise(
-            (resolve, reject) => background.exportAccount(address, function (err, result) {
-              if (err) {
-                log.error(err)
-                dispatch(displayWarning('Had a problem exporting the account.'))
-                reject(err)
-                return
-              }
-              resolve(result)
+        const accountPromises = addresses.map((address) => new Promise(
+          (resolve, reject) => background.exportAccount(address, function (err, result) {
+            if (err) {
+              log.error(err)
+              dispatch(displayWarning('Had a problem exporting the account.'))
+              reject(err)
               return
-            }),
-          ),
-        )
+            }
+            resolve(result)
+            return
+          }),
+        ))
         resolve(Promise.all(accountPromises))
         return
       })
