@@ -14,7 +14,9 @@ export default {
         versionedData.data.config.provider.type = 'rpc'
         versionedData.data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
       }
-    } catch (e) {}
+    } catch (_) {
+      // empty
+    }
     return Promise.resolve(versionedData)
   },
 }

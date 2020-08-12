@@ -49,7 +49,9 @@ async function validateSourcemapForFile ({ buildName }) {
   try {
     const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}`)
     rawBuild = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   if (!rawBuild) {
     throw new Error(`SourcemapValidator - failed to load source file for "${buildName}"`)
   }
@@ -58,12 +60,16 @@ async function validateSourcemapForFile ({ buildName }) {
   try {
     const filePath = path.join(__dirname, `/../dist/sourcemaps/`, `${buildName}.map`)
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   // attempt to load in dev mode
   try {
     const filePath = path.join(__dirname, `/../dist/${platform}/`, `${buildName}.map`)
     rawSourceMap = await fsAsync.readFile(filePath, 'utf8')
-  } catch (err) {}
+  } catch (_) {
+    // empty
+  }
   if (!rawSourceMap) {
     throw new Error(`SourcemapValidator - failed to load sourcemaps for "${buildName}"`)
   }
