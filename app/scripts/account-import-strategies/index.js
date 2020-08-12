@@ -8,7 +8,7 @@ const accountImporter = {
   importAccount (strategy, args) {
     try {
       const importer = this.strategies[strategy]
-      const privateKeyHex = importer.apply(null, args)
+      const privateKeyHex = importer(...args)
       return Promise.resolve(privateKeyHex)
     } catch (e) {
       return Promise.reject(e)
