@@ -51,6 +51,7 @@ module.exports = {
     'no-empty': 'error',
     'no-eq-null': 'error',
     'no-loop-func': 'error',
+    'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
     /* End v2 rules */

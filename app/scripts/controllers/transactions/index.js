@@ -684,7 +684,7 @@ export default class TransactionController extends EventEmitter {
       if (!('retryCount' in txMeta)) {
         txMeta.retryCount = 0
       }
-      txMeta.retryCount++
+      txMeta.retryCount += 1
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
   }

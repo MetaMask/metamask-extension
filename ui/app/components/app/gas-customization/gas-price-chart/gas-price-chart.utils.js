@@ -163,7 +163,7 @@ export function setSelectedCircle ({
     while (lowerX === higherX) {
       higherX = getCoordinateData(`.c3-circle-${count}`).x
       higherY = getCoordinateData(`.c3-circle-${count}`).y
-      count++
+      count += 1
     }
   }
 

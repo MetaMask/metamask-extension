@@ -1519,7 +1519,7 @@ export default class MetamaskController extends EventEmitter {
     const api = this.getApi()
     const dnode = Dnode(api)
     // report new active controller connection
-    this.activeControllerConnections++
+    this.activeControllerConnections += 1
     this.emit('controllerConnectionChanged', this.activeControllerConnections)
     // connect dnode api to remote connection
     pump(
@@ -1528,7 +1528,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // report new active controller connection
-        this.activeControllerConnections--
+        this.activeControllerConnections -= 1
         this.emit('controllerConnectionChanged', this.activeControllerConnections)
         // report any error
         if (err) {

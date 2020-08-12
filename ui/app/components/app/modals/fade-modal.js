@@ -22,6 +22,7 @@ const insertRule = (css) => {
 
 const insertKeyframesRule = (keyframes) => {
   // random name
+  // eslint-disable-next-line no-plusplus
   const name = 'anim_' + (++index) + (+new Date())
   let css = `@keyframes ${name} {`
 

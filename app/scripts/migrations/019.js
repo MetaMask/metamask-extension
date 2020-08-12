@@ -72,7 +72,7 @@ function getHighestContinuousFrom (txList, startPoint) {
 
   let highest = startPoint
   while (nonces.includes(highest)) {
-    highest++
+    highest += 1
   }
 
   return highest
