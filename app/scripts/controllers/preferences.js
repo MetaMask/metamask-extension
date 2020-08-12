@@ -198,7 +198,7 @@ export default class PreferencesController {
     ) {
       const { type, options } = req.params
       switch (type) {
-        case 'ERC20':
+        case 'ERC20': {
           const result = await this._handleWatchAssetERC20(options)
           if (result instanceof Error) {
             end(result)
@@ -207,6 +207,7 @@ export default class PreferencesController {
             end()
           }
           return
+        }
         default:
           end(new Error(`Asset of type ${type} not supported`))
           return
