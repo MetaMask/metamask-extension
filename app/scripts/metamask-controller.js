@@ -601,8 +601,6 @@ export default class MetamaskController extends EventEmitter {
         this.selectFirstIdentity()
       }
       return vault
-    } catch (err) {
-      throw err
     } finally {
       releaseLock()
     }
@@ -658,8 +656,6 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
       return vault
-    } catch (err) {
-      throw err
     } finally {
       releaseLock()
     }
@@ -1402,13 +1398,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
-    try {
-      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
-      const state = await this.getState()
-      return state
-    } catch (error) {
-      throw error
-    }
+    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    const state = await this.getState()
+    return state
   }
 
   async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
