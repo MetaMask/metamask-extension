@@ -263,10 +263,10 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         let text
         d.forEach((el) => {
           if (el && (el.value || el.value === 0) && !text) {
-            text = "<table class='" + 'custom-tooltip' + "'>" + "<tr><th colspan='2'>" + titleFormat(el.x) + '</th></tr>'
+            text = `<table class='custom-tooltip'><tr><th colspan='2'>${titleFormat(el.x)}</th></tr>`
           }
         })
-        return text + '</table>' + "<div class='tooltip-arrow'></div>"
+        return `${text}</table><div class='tooltip-arrow'></div>`
       },
       position: function () {
         if (d3.select('#overlayed-circle').empty()) {
