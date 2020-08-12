@@ -131,7 +131,7 @@ export default class MobileSyncPage extends Component {
         const { channel, message } = data
         // handle message
         if (channel !== this.channelName || !message) {
-          return false
+          return
         }
 
         if (message.event === 'start-sync') {
@@ -145,8 +145,6 @@ export default class MobileSyncPage extends Component {
           this.disconnectWebsockets()
           this.setState({ syncing: false, completed: true })
         }
-
-        return true
       },
     }
 
