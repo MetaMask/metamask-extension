@@ -111,7 +111,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       id: unapprovedTxsAll[0].id,
     }))
   }
-  store.dispatch(actions.setFeatureFlag('advancedInlineGas', metamaskState.provider.type !== 'mainnet'))
+  store.dispatch(actions.setFeatureFlag('advancedInlineGas', metamaskState.provider.type !== 'mainnet' || !process.env.IN_TEST))
   backgroundConnection.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
