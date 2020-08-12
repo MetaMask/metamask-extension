@@ -14,7 +14,9 @@ export default {
       if (versionedData.data.config.provider.rpcTarget === oldTestRpc) {
         versionedData.data.config.provider.rpcTarget = newTestRpc
       }
-    } catch (e) {}
+    } catch (_) {
+      // empty
+    }
     return Promise.resolve(versionedData)
   },
 }

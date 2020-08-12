@@ -25,7 +25,9 @@ export default {
           break
         // No default
       }
-    } catch (_) {}
+    } catch (_) {
+      // empty
+    }
     return Promise.resolve(safeVersionedData)
   },
 }

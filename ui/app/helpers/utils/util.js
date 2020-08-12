@@ -189,8 +189,9 @@ export function shortenBalance (balance, decimalsToKeep = 1) {
 export function normalizeToWei (amount, currency) {
   try {
     return amount.mul(bnTable.wei).div(bnTable[currency])
-  } catch (e) {}
-  return amount
+  } catch (e) {
+    return amount
+  }
 }
 
 export function normalizeEthStringToWei (str) {
