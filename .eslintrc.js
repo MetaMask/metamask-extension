@@ -48,6 +48,7 @@ module.exports = {
     'global-require': 'error',
     'guard-for-in': 'error',
     'no-case-declarations': 'error',
+    'no-dupe-else-if': 'error',
     'no-empty': 'error',
     'no-loop-func': 'error',
     'no-useless-catch': 'error',
