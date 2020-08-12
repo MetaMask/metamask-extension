@@ -36,7 +36,9 @@ export default class SendGasRow extends Component {
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context
     const { showCustomizeGasModal, advancedInlineGasShown } = this.props
-    if (advancedInlineGasShown === true) return
+    if (advancedInlineGasShown === true) {
+      return
+    }
     return (
       <div
         className="advanced-gas-options-btn"
