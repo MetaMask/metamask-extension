@@ -51,6 +51,7 @@ module.exports = {
     'no-case-declarations': 'error',
     'no-empty': 'error',
     'no-eq-null': 'error',
+    'no-global-assign': 'error',
     'no-loop-func': 'error',
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-useless-catch': 'error',
