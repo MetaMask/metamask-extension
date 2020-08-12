@@ -56,7 +56,10 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         return part
       }
       const substituteIndex = Number(subMatch[1]) - 1
-      if (substitutions[substituteIndex] == null && !missingSubstitutionErrors[localeCode]?.[key]) {
+      if (
+        (substitutions[substituteIndex] === null || substitutions[substituteIndex] === undefined) &&
+        !missingSubstitutionErrors[localeCode]?.[key]
+      ) {
         if (!missingSubstitutionErrors[localeCode]) {
           missingSubstitutionErrors[localeCode] = {}
         }
