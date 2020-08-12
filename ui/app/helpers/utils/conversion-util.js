@@ -99,7 +99,7 @@ const converter = ({
   }
 
   if (fromCurrency !== toCurrency) {
-    if (conversionRate == null) {
+    if (conversionRate === null || conversionRate === undefined) {
       throw new Error(`Converting from ${fromCurrency} to ${toCurrency} requires a conversionRate, but one was not provided`)
     }
     let rate = toBigNumber.dec(conversionRate)

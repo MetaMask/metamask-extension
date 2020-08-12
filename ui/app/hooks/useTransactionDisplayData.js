@@ -99,7 +99,7 @@ export function useTransactionDisplayData (transactionGroup) {
   // 3. Deposit
   // 4. Site interaction
   // 5. Approval
-  if (transactionCategory == null) {
+  if (transactionCategory === null || transactionCategory === undefined) {
     category = TRANSACTION_CATEGORY_SIGNATURE_REQUEST
     title = t('signatureRequest')
     subtitle = origin

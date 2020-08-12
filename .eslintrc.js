@@ -49,6 +49,7 @@ module.exports = {
     'guard-for-in': 'error',
     'no-case-declarations': 'error',
     'no-empty': 'error',
+    'no-eq-null': 'error',
     'no-loop-func': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
