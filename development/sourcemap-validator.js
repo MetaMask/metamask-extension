@@ -91,7 +91,7 @@ async function validateSourcemapForFile ({ buildName }) {
   const matchesPerLine = buildLines.map((line) => indicesOf(targetString, line))
   matchesPerLine.forEach((matchIndices, lineIndex) => {
     matchIndices.forEach((matchColumn) => {
-      sampleCount++
+      sampleCount += 1
       const position = { line: lineIndex + 1, column: matchColumn }
       const result = consumer.originalPositionFor(position)
       // warn if source content is missing

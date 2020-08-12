@@ -173,8 +173,10 @@ export default class MobileSyncPage extends Component {
   chunkString (str, size) {
     const numChunks = Math.ceil(str.length / size)
     const chunks = new Array(numChunks)
-    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    for (let i = 0, o = 0; i < numChunks;) {
       chunks[i] = str.substr(o, size)
+      i += 1
+      o += size
     }
     return chunks
   }
