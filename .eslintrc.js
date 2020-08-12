@@ -105,6 +105,10 @@ module.exports = {
       'logical': 'parens-new-line',
       'prop': 'parens-new-line',
     }],
+
+    'no-invalid-this': 'off',
+    'babel/no-invalid-this': 'error',
+
     'babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
   },
@@ -123,6 +127,15 @@ module.exports = {
     ],
     rules: {
       'global-require': 'off',
+    },
+  }, {
+    files: [
+      'test/**/*-test.js',
+      'test/**/*.spec.js',
+    ],
+    rules: {
+      // Mocha will re-assign `this` in a test context
+      'babel/no-invalid-this': 'off',
     },
   }],
 
