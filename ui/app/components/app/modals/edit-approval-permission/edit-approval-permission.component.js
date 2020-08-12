@@ -167,7 +167,7 @@ export default class EditApprovalPermission extends PureComponent {
     const { selectedOptionIsUnlimited, customSpendLimit } = this.state
 
     if (selectedOptionIsUnlimited || !customSpendLimit) {
-      return
+      return undefined
     }
 
     let customSpendLimitNumber
@@ -186,6 +186,8 @@ export default class EditApprovalPermission extends PureComponent {
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
       return t('spendLimitTooLarge')
     }
+
+    return undefined
   }
 
   render () {

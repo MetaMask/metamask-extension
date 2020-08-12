@@ -225,7 +225,8 @@ export default class SendTransactionScreen extends Component {
     } = this.props
 
     if (!query) {
-      return this.setState({ toError: '', toWarning: '' })
+      this.setState({ toError: '', toWarning: '' })
+      return
     }
 
     const toErrorObject = getToErrorObject(query, hasHexData, network)

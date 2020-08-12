@@ -44,7 +44,7 @@ class FixtureServer {
       return
     }
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       this._server.close()
       this._server.once('error', reject)
       this._server.once('close', resolve)

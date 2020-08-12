@@ -32,6 +32,7 @@ describe('useCancelTransaction', function () {
             balance: '0x3',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {
@@ -75,6 +76,7 @@ describe('useCancelTransaction', function () {
             balance: '0x9C2007651B2500000',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {

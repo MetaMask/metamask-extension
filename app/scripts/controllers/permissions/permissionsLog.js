@@ -116,7 +116,8 @@ export default class PermissionsLogController {
         requestedMethods = [ 'eth_accounts' ]
       } else {
         // no-op
-        return next()
+        next()
+        return
       }
 
       // call next with a return handler for capturing the response

@@ -80,6 +80,8 @@ export function MetaMetricsProvider ({ children }) {
         ...overrides,
       })
     }
+
+    return undefined
   }, [
     network,
     environmentType,

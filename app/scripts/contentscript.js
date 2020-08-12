@@ -228,7 +228,7 @@ function redirectToPhishingWarning () {
 async function domIsReady () {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) {
-    return
+    return undefined
   }
   // wait for load
   return new Promise((resolve) => window.addEventListener('DOMContentLoaded', resolve, { once: true }))

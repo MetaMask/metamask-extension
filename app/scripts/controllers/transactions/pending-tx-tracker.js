@@ -129,7 +129,7 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     // Exponential backoff to limit retries at publishing
     if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
-      return
+      return undefined
     }
 
     // Only auto-submit already-signed txs:

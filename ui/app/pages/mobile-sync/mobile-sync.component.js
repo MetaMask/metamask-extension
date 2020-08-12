@@ -145,6 +145,8 @@ export default class MobileSyncPage extends Component {
           this.disconnectWebsockets()
           this.setState({ syncing: false, completed: true })
         }
+
+        return true
       },
     }
 
@@ -203,7 +205,7 @@ export default class MobileSyncPage extends Component {
 
   async startSyncing () {
     if (this.syncing) {
-      return false
+      return
     }
     this.syncing = true
     this.setState({ syncing: true })

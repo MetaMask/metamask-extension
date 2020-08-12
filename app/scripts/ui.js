@@ -62,7 +62,8 @@ async function start () {
     const container = document.getElementById('app-content')
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
-        return displayCriticalError(container, err)
+        displayCriticalError(container, err)
+        return
       }
 
       const state = store.getState()
@@ -102,7 +103,8 @@ async function queryCurrentActiveTab (windowType) {
 function initializeUi (activeTab, container, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
 
     launchMetaMaskUi({

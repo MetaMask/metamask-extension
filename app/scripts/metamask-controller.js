@@ -1349,7 +1349,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers the callback in newUnsignedTypedMessage.
    *
    * @param  {Object} msgParams - The params passed to eth_signTypedData.
-   * @returns {Object} - Full state update.
+   * @returns {Object|undefined} - Full state update.
    */
   async signTypedMessage (msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
@@ -1372,6 +1372,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.info('MetaMaskController - eth_signTypedData failed.', error)
       this.typedMessageManager.errorMessage(msgId, error)
+      return undefined
     }
   }
 

@@ -327,7 +327,7 @@ function setupController (initState, initLangCode) {
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return false
+      return
     }
 
     if (isMetaMaskInternalProcess) {

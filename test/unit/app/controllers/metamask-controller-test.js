@@ -819,7 +819,8 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.name !== 'phishing') {
-          return cb()
+          cb()
+          return
         }
         assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
         resolve()

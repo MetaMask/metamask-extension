@@ -233,6 +233,8 @@ export default class AddRecipient extends Component {
         </Dialog>
       )
     }
+
+    return null
   }
 
 }

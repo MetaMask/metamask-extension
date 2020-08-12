@@ -44,6 +44,7 @@ module.exports = {
     /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
     'array-callback-return': 'error',
     'callback-return': 'error',
+    'consistent-return': 'error',
     'global-require': 'error',
     'guard-for-in': 'error',
     'no-case-declarations': 'error',

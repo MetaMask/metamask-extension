@@ -82,19 +82,24 @@ export default class DecryptMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
-        return reject(new Error('MetaMask Decryption: from field is required.'))
+        reject(new Error('MetaMask Decryption: from field is required.'))
+        return
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'decrypted':
-            return resolve(data.rawData)
+            resolve(data.rawData)
+            return
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Decryption: User denied message decryption.'))
+            reject(ethErrors.provider.userRejectedRequest('MetaMask Decryption: User denied message decryption.'))
+            return
           case 'errored':
-            return reject(new Error('This message cannot be decrypted'))
+            reject(new Error('This message cannot be decrypted'))
+            return
           default:
-            return reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
+            reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return
         }
       })
     })
