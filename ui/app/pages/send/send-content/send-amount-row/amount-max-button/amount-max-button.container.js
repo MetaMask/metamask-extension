@@ -7,7 +7,7 @@ import {
   getSendMaxModeState,
   getBasicGasEstimateLoadingStatus,
 } from '../../../../../selectors'
-import { calcMaxAmount } from './amount-max-button.utils.js'
+import { calcMaxAmount } from './amount-max-button.utils'
 import {
   updateSendAmount,
   setMaxModeTo,

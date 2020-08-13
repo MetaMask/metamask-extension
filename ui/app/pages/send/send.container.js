@@ -45,7 +45,7 @@ import {
 import { getTokens } from '../../ducks/metamask/metamask'
 import {
   calcGasTotal,
-} from './send.utils.js'
+} from './send.utils'
 import {
   isValidDomainName,
 } from '../../helpers/utils/util'

@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SendAmountRow from '../send-amount-row.component.js'
+import SendAmountRow from '../send-amount-row.component'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import AmountMaxButton from '../amount-max-button/amount-max-button.container'

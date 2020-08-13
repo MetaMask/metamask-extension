@@ -1,7 +1,7 @@
 import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
-import ConfirmDetailRow from '../confirm-detail-row.component.js'
+import ConfirmDetailRow from '../confirm-detail-row.component'
 import sinon from 'sinon'
 
 const propsMethodSpies = {

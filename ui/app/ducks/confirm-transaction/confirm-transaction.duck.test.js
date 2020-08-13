@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import sinon from 'sinon'
 
-import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck.js'
+import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck'
 
 const initialState = {
   txData: {},

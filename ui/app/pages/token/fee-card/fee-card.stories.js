@@ -1,5 +1,5 @@
 import React from 'react'
-import FeeCard from './fee-card.js'
+import FeeCard from './fee-card'
 import { action } from '@storybook/addon-actions'
 import { text } from '@storybook/addon-knobs/react'
 

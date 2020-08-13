@@ -24,7 +24,7 @@ import Eth from 'ethjs'
 import EthQuery from 'eth-query'
 import launchMetaMaskUi from '../../ui'
 import StreamProvider from 'web3-stream-provider'
-import { setupMultiplex } from './lib/stream-utils.js'
+import { setupMultiplex } from './lib/stream-utils'
 import log from 'loglevel'
 
 start().catch(log.error)

@@ -1,7 +1,7 @@
 import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
-import SendContent from '../send-content.component.js'
+import SendContent from '../send-content.component'
 
 import PageContainerContent from '../../../../components/ui/page-container/page-container-content.component'
 import SendAmountRow from '../send-amount-row/send-amount-row.container'
