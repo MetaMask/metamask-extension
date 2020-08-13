@@ -57,6 +57,7 @@ module.exports = {
     'no-loop-func': 'error',
     'no-nested-ternary': 'error',
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
+    'no-process-exit': 'error',
     'no-prototype-builtins': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
@@ -142,6 +143,15 @@ module.exports = {
     rules: {
       // Mocha will re-assign `this` in a test context
       'babel/no-invalid-this': 'off',
+    },
+  }, {
+    files: [
+      'development/**/*.js',
+      'test/e2e/benchmark.js',
+      'test/helper.js',
+    ],
+    rules: {
+      'no-process-exit': 'off',
     },
   }],
 
