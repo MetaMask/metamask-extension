@@ -56,6 +56,7 @@ module.exports = {
     'no-global-assign': 'error',
     'no-loop-func': 'error',
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
+    'no-prototype-builtins': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
     'prefer-spread': 'error',
