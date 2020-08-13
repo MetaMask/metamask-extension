@@ -292,7 +292,7 @@ export default class TypedMessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('TypedMessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`TypedMessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)
