@@ -909,7 +909,7 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txValues[0], /-1\s*TST/u), 10000)
 
       const txStatuses = await driver.findElements(By.css('.list-item__heading'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/ui), 10000)
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Send\sTST/u), 10000)
     })
   })
 
