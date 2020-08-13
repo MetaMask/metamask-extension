@@ -157,15 +157,19 @@ function composeUrl (config) {
 
   const urlref = previousPath && composeUrlRefParamAddition(previousPath, confirmTransactionOrigin)
 
-  const dimensions = !pageOpts.hideDimensions ? composeCustomDimensionParamAddition({
-    network,
-    environmentType,
-    activeCurrency,
-    accountType,
-    version,
-    numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
-    numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
-  }) : ''
+  const dimensions = pageOpts.hideDimensions
+    ? ''
+    : (
+      composeCustomDimensionParamAddition({
+        network,
+        environmentType,
+        activeCurrency,
+        accountType,
+        version,
+        numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
+        numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
+      })
+    )
   const url = currentPath ? `&url=${encodeURIComponent(`${METAMETRICS_TRACKING_URL}${currentPath}`)}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`

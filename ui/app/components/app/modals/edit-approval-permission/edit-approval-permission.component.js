@@ -204,7 +204,7 @@ export default class EditApprovalPermission extends PureComponent {
     return (
       <Modal
         onSubmit={() => {
-          setCustomAmount(!selectedOptionIsUnlimited ? customSpendLimit : '')
+          setCustomAmount(selectedOptionIsUnlimited ? '' : customSpendLimit)
           hideModal()
         }}
         submitText={t('save')}

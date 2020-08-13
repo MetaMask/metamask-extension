@@ -30,10 +30,10 @@ export default class SeedPhrase extends PureComponent {
     if (!seedPhrase) {
       verifySeedPhrase()
         .then((verifiedSeedPhrase) => {
-          if (!verifiedSeedPhrase) {
-            history.push(DEFAULT_ROUTE)
-          } else {
+          if (verifiedSeedPhrase) {
             this.setState({ verifiedSeedPhrase })
+          } else {
+            history.push(DEFAULT_ROUTE)
           }
         })
     }

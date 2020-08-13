@@ -51,12 +51,12 @@ export default class AmountMaxButton extends Component {
         name: 'Clicked "Amount Max"',
       },
     })
-    if (!maxModeOn) {
-      setMaxModeTo(true)
-      this.setMaxAmount()
-    } else {
+    if (maxModeOn) {
       setMaxModeTo(false)
       clearMaxAmount()
+    } else {
+      setMaxModeTo(true)
+      this.setMaxAmount()
     }
   }
 

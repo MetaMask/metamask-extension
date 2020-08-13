@@ -25,12 +25,14 @@ async function start () {
 
   // check if version has artifacts or not
   const versionHasArtifacts = versionAlreadyExists && await checkIfVersionHasArtifacts()
-  if (!versionHasArtifacts) {
-    // upload sentry source and sourcemaps
-    await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
-  } else {
+  if (versionHasArtifacts) {
     console.log(`Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`)
+    return
   }
+
+  // upload sentry source and sourcemaps
+  await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
+
 }
 
 async function checkIfAuthWorks () {

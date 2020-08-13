@@ -63,31 +63,32 @@ export default class Modal extends PureComponent {
         <div className={classnames('modal-container__content', contentClass)}>
           { children }
         </div>
-        { !hideFooter
-          ? (
-            <div className="modal-container__footer">
-              {
-                onCancel && (
-                  <Button
-                    type={cancelType}
-                    onClick={onCancel}
-                    className="modal-container__footer-button"
-                  >
-                    { cancelText }
-                  </Button>
-                )
-              }
-              <Button
-                type={submitType}
-                onClick={onSubmit}
-                disabled={submitDisabled}
-                className="modal-container__footer-button"
-              >
-                { submitText }
-              </Button>
-            </div>
-          )
-          : null
+        {
+          hideFooter
+            ? null
+            : (
+              <div className="modal-container__footer">
+                {
+                  onCancel && (
+                    <Button
+                      type={cancelType}
+                      onClick={onCancel}
+                      className="modal-container__footer-button"
+                    >
+                      {cancelText}
+                    </Button>
+                  )
+                }
+                <Button
+                  type={submitType}
+                  onClick={onSubmit}
+                  disabled={submitDisabled}
+                  className="modal-container__footer-button"
+                >
+                  {submitText}
+                </Button>
+              </div>
+            )
         }
       </div>
     )

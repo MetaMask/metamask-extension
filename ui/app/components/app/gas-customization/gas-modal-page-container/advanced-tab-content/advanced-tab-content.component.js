@@ -86,9 +86,9 @@ export default class AdvancedTabContent extends Component {
             ? (
               <div>
                 <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
-                {!gasEstimatesLoading
-                  ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
-                  : <Loading />
+                {gasEstimatesLoading
+                  ? <Loading />
+                  : <GasPriceChart {...gasChartProps} updateCustomGasPrice={this.onGasChartUpdate} />
                 }
                 <div className="advanced-tab__fee-chart__speed-buttons">
                   <span>{ t('slower') }</span>

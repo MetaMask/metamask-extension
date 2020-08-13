@@ -81,10 +81,7 @@ async function start () {
   const summaryPlatform = 'chrome'
   const summaryPage = 'home'
   let commentBody
-  if (!benchmarkResults[summaryPlatform]) {
-    console.log(`No results for ${summaryPlatform} found; skipping benchmark`)
-    commentBody = artifactsBody
-  } else {
+  if (benchmarkResults[summaryPlatform]) {
     try {
       const summaryPageLoad = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load))
       const summaryPageLoadMarginOfError = Math.round(parseFloat(benchmarkResults[summaryPlatform][summaryPage].marginOfError.load))
@@ -147,6 +144,9 @@ async function start () {
       console.error(`Error constructing benchmark results: '${error}'`)
       commentBody = artifactsBody
     }
+  } else {
+    console.log(`No results for ${summaryPlatform} found; skipping benchmark`)
+    commentBody = artifactsBody
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody })
