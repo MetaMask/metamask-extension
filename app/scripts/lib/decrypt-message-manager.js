@@ -65,7 +65,8 @@ export default class DecryptMessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
