@@ -24,7 +24,7 @@ describe('DetectTokensController', function () {
 
 
     nock('https://api.infura.io')
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200)
 
     keyringMemStore = new ObservableStore({ isUnlocked: false })

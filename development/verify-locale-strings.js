@@ -169,11 +169,11 @@ async function verifyEnglishLocale (fix = false) {
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them
-  const templateStringRegex = /\bt\(`.*`\)/g
+  const templateStringRegex = /\bt\(`.*`\)/ug
   const templateUsage = []
 
   // match the keys from the locale file
-  const keyRegex = /'(\w+)'|"(\w+)"/g
+  const keyRegex = /'(\w+)'|"(\w+)"/ug
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
     for (const match of matchAll.call(fileContents, keyRegex)) {

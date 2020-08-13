@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
 
-  const pathNameTail = pathname.match(/[^/]+$/)[0]
+  const pathNameTail = pathname.match(/[^/]+$/u)[0]
   const pathNameTailIsAddress = pathNameTail.includes('0x')
 
   const viewingContact = Boolean(pathname.match(CONTACT_VIEW_ROUTE) || pathname.match(CONTACT_MY_ACCOUNTS_VIEW_ROUTE))

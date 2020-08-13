@@ -155,8 +155,8 @@ function doctypeCheck () {
  */
 function suffixCheck () {
   const prohibitedTypes = [
-    /\.xml$/,
-    /\.pdf$/,
+    /\.xml$/u,
+    /\.pdf$/u,
   ]
   const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
@@ -202,7 +202,7 @@ function blockedDomainCheck () {
   let currentRegex
   for (let i = 0; i < blockedDomains.length; i++) {
     const blockedDomain = blockedDomains[i].replace('.', '\\.')
-    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`)
+    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`, 'u')
     if (!currentRegex.test(currentUrl)) {
       return true
     }

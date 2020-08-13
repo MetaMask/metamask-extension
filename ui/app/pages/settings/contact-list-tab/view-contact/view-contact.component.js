@@ -15,7 +15,7 @@ function quadSplit (address) {
     '0x ' +
     address
       .slice(2)
-      .match(/.{1,4}/g)
+      .match(/.{1,4}/ug)
       .join(' ')
   )
 }

@@ -61,7 +61,7 @@ const main = async () => {
   }
 
   while (args.length) {
-    if (/^(--port|-p)$/i.test(args[0])) {
+    if (/^(--port|-p)$/ui.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing port argument')
       }

@@ -92,12 +92,12 @@ describe('MetaMaskController', function () {
 
     nock('https://api.infura.io')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200)
 
     nock('https://min-api.cryptocompare.com')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200, '{"JPY":12415.9}')
 
     metamaskController = new MetaMaskController({

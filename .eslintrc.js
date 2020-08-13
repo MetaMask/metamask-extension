@@ -59,6 +59,7 @@ module.exports = {
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
     'prefer-spread': 'error',
+    'require-unicode-regexp': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',

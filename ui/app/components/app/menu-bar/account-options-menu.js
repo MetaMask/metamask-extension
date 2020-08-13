@@ -97,7 +97,7 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
           rpcPrefs.blockExplorerUrl
             ? (
               <span className="account-options-menu__explorer-origin">
-                { rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1] }
+                { rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1] }
               </span>
             )
             : null

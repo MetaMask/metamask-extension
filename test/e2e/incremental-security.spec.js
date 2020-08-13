@@ -127,7 +127,7 @@ describe('MetaMask', function () {
       await driver.clickElement(By.css('#send'))
 
       const txStatus = await driver.findElement(By.css('#success'))
-      await driver.wait(until.elementTextMatches(txStatus, /Success/), 15000)
+      await driver.wait(until.elementTextMatches(txStatus, /Success/u), 15000)
     })
 
     it('switches back to MetaMask', async function () {
@@ -136,7 +136,7 @@ describe('MetaMask', function () {
 
     it('should have the correct amount of eth', async function () {
       const balances = await driver.findElements(By.css('.currency-display-component__text'))
-      await driver.wait(until.elementTextMatches(balances[0], /1/), 15000)
+      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000)
       const balance = await balances[0].getText()
 
       assert.equal(balance, '1')
@@ -193,7 +193,7 @@ describe('MetaMask', function () {
 
     it('should have the correct amount of eth', async function () {
       const balances = await driver.findElements(By.css('.currency-display-component__text'))
-      await driver.wait(until.elementTextMatches(balances[0], /1/), 15000)
+      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000)
       const balance = await balances[0].getText()
 
       assert.equal(balance, '1')
