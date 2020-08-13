@@ -202,7 +202,7 @@
     "chalk": "^3.0.0",
     "chromedriver": "^79.0.0",
     "concurrently": "^5.2.0",
-    "copy-webpack-plugin": "^5.1.1",
+    "copy-webpack-plugin": "^6.0.3",
     "coveralls": "^3.0.0",
     "css-loader": "^2.1.1",
     "del": "^3.0.0",
