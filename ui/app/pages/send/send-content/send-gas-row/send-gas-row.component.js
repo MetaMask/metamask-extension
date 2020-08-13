@@ -36,7 +36,8 @@ export default class SendGasRow extends Component {
   renderAdvancedOptionsButton () {
     const { metricsEvent } = this.context
     const { showCustomizeGasModal, advancedInlineGasShown } = this.props
-    if (advancedInlineGasShown === true) {
+    // Tests should behave in same way as mainnet, but are using Localhost
+    if (advancedInlineGasShown === true && !process.env.IN_TEST) {
       return
     }
     return (

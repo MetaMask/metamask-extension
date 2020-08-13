@@ -98,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate)
 
-  const hideBasic = state.appState.modal.modalState.props.hideBasic || state.metamask.featureFlags.advancedInlineGas
+  const hideBasic = state.appState.modal.modalState.props.hideBasic || (state.metamask.featureFlags.advancedInlineGas && !process.env.IN_TEST)
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 

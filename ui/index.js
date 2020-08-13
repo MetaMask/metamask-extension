@@ -111,7 +111,10 @@ async function startApp (metamaskState, backgroundConnection, opts) {
       id: unapprovedTxsAll[0].id,
     }))
   }
-  store.dispatch(actions.setFeatureFlag('advancedInlineGas', metamaskState.provider.type !== 'mainnet' && !process.env.IN_TEST))
+  // Tests should behave in same way as mainnet, but are using Localhost
+  if (!process.env.IN_TEST) {
+    store.dispatch(actions.setFeatureFlag('advancedInlineGas', metamaskState.provider.type !== 'mainnet'))
+  }
   backgroundConnection.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
