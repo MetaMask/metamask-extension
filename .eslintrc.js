@@ -58,6 +58,7 @@ module.exports = {
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
+    'prefer-rest-params': 'error',
     'prefer-spread': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
