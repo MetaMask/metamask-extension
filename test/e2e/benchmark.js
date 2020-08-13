@@ -92,7 +92,7 @@ async function isWritable (directory) {
 }
 
 async function getFirstParentDirectoryThatExists (directory) {
-  while (true) {
+  for (;;) {
     try {
       await fs.access(directory, fsConstants.F_OK)
       return directory
