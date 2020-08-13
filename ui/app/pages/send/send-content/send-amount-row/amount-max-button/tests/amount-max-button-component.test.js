@@ -13,7 +13,7 @@ describe('AmountMaxButton Component', function () {
     setMaxModeTo: sinon.spy(),
   }
 
-  const MOCK_EVENT = { preventDefault: () => {} }
+  const MOCK_EVENT = { preventDefault: () => undefined }
 
   before(function () {
     sinon.spy(AmountMaxButton.prototype, 'setMaxAmount')
@@ -33,7 +33,7 @@ describe('AmountMaxButton Component', function () {
     ), {
       context: {
         t: (str) => str + '_t',
-        metricsEvent: () => {},
+        metricsEvent: () => undefined,
       },
     })
     instance = wrapper.instance()

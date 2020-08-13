@@ -14,9 +14,6 @@ describe('Message Manager', function () {
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
-    it('should also return transactions from local storage if any', function () {
-
-    })
   })
 
   describe('#addMsg', function () {

@@ -12,7 +12,7 @@ describe('useRetryTransaction', function () {
   describe('when transaction meets retry enabled criteria', function () {
     const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }))
     const trackEvent = sinon.spy()
-    const event = { preventDefault: () => {}, stopPropagation: () => {} }
+    const event = { preventDefault: () => undefined, stopPropagation: () => undefined }
 
     before(function () {
       sinon.stub(reactRedux, 'useDispatch').returns(dispatch)

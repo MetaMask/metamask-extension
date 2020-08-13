@@ -20,7 +20,7 @@ import {
  * - Immutable mock values like Ethereum accounts and expected states
  */
 
-export const noop = () => {}
+export const noop = () => undefined
 
 /**
  * Mock Permissions Controller and Middleware

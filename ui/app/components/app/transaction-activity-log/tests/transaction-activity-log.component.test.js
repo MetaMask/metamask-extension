@@ -40,8 +40,8 @@ describe('TransactionActivityLog Component', function () {
         inlineRetryIndex={-1}
         inlineCancelIndex={-1}
         nativeCurrency="ETH"
-        onCancel={() => {}}
-        onRetry={() => {}}
+        onCancel={() => undefined}
+        onRetry={() => undefined}
         primaryTransactionStatus="confirmed"
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
@@ -87,8 +87,8 @@ describe('TransactionActivityLog Component', function () {
         inlineRetryIndex={2}
         inlineCancelIndex={3}
         nativeCurrency="ETH"
-        onCancel={() => {}}
-        onRetry={() => {}}
+        onCancel={() => undefined}
+        onRetry={() => undefined}
         primaryTransactionStatus="pending"
         isEarliestNonce
       />,
@@ -136,8 +136,8 @@ describe('TransactionActivityLog Component', function () {
         inlineRetryIndex={2}
         inlineCancelIndex={3}
         nativeCurrency="ETH"
-        onCancel={() => {}}
-        onRetry={() => {}}
+        onCancel={() => undefined}
+        onRetry={() => undefined}
         primaryTransactionStatus="pending"
         isEarliestNonce={false}
       />,

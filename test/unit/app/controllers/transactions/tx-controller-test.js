@@ -47,7 +47,7 @@ describe('Transaction Controller', function () {
         ethTx.sign(fromAccount.key)
         resolve()
       }),
-      getPermittedAccounts: () => {},
+      getPermittedAccounts: () => undefined,
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })

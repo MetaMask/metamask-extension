@@ -158,7 +158,7 @@ function shallowRenderSendAmountRow () {
       updateGasFeeError={updateGasFeeError}
       updateSendAmount={updateSendAmount}
       updateSendAmountError={updateSendAmountError}
-      updateGas={() => {}}
+      updateGas={() => undefined}
     />
   ), { context: { t: (str) => str + '_t' } })
   const instance = wrapper.instance()

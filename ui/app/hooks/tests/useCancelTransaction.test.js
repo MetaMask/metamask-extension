@@ -46,7 +46,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({
@@ -90,7 +90,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({

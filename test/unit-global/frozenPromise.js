@@ -25,7 +25,7 @@ describe('Promise global is immutable', function () {
 
   it('throws when mutating existing Promise property', function () {
     try {
-      Promise.all = () => {}
+      Promise.all = () => undefined
       assert.fail('did not throw error')
     } catch (err) {
       assert.ok(err, 'did throw error')

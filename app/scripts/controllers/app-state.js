@@ -19,7 +19,7 @@ export default class AppStateController extends EventEmitter {
 
     super()
 
-    this.onInactiveTimeout = onInactiveTimeout || (() => {})
+    this.onInactiveTimeout = onInactiveTimeout || (() => undefined)
     this.store = new ObservableStore(Object.assign({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,

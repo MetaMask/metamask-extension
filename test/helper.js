@@ -80,7 +80,7 @@ require('abortcontroller-polyfill/dist/polyfill-patch-fetch')
 window.localStorage = {}
 
 // override metamask-logo
-window.requestAnimationFrame = () => {}
+window.requestAnimationFrame = () => undefined
 
 // crypto.getRandomValues
 if (!window.crypto) {

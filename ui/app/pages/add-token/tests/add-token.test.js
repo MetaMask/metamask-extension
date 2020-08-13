@@ -19,7 +19,7 @@ describe('Add Token', function () {
 
   const props = {
     history: {
-      push: sinon.stub().callsFake(() => {}),
+      push: sinon.stub().callsFake(() => undefined),
     },
     setPendingTokens: sinon.spy(),
     clearPendingTokens: sinon.spy(),

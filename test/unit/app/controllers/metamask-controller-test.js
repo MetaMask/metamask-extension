@@ -19,7 +19,7 @@ import proxyquire from 'proxyquire'
 class ThreeBoxControllerMock {
   constructor () {
     this.store = {
-      subscribe: () => {},
+      subscribe: () => undefined,
       getState: () => ({}),
     }
     this.init = threeBoxSpies.init
@@ -78,7 +78,7 @@ const CUSTOM_RPC_URL = 'http://localhost:8545'
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.createSandbox()
-  const noop = () => {}
+  const noop = () => undefined
 
   beforeEach(function () {
 
@@ -113,7 +113,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => {} },
+      platform: { showTransactionNotification: () => undefined },
     })
     // disable diagnostics
     metamaskController.diagnostics = null

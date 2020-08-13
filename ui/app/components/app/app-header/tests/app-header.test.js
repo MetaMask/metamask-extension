@@ -30,7 +30,7 @@ describe('App Header', function () {
       <AppHeader.WrappedComponent {...props} />, {
         context: {
           t: (str) => str,
-          metricsEvent: () => {},
+          metricsEvent: () => undefined,
         },
       },
     )
@@ -54,8 +54,8 @@ describe('App Header', function () {
       const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
-        preventDefault: () => {},
-        stopPropagation: () => {},
+        preventDefault: () => undefined,
+        stopPropagation: () => undefined,
       })
 
       assert(props.showNetworkDropdown.calledOnce)
@@ -66,8 +66,8 @@ describe('App Header', function () {
       const network = wrapper.find({ network: 'test' })
 
       network.simulate('click', {
-        preventDefault: () => {},
-        stopPropagation: () => {},
+        preventDefault: () => undefined,
+        stopPropagation: () => undefined,
       })
 
       assert(props.hideNetworkDropdown.calledOnce)

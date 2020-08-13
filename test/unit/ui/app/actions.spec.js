@@ -19,7 +19,7 @@ const mockStore = (state = defaultState) => configureStore(middleware)(state)
 
 describe('Actions', function () {
 
-  const noop = () => {}
+  const noop = () => undefined
 
   const currentNetworkId = '42'
 
