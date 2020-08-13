@@ -58,6 +58,7 @@ module.exports = {
     'no-nested-ternary': 'error',
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-prototype-builtins': 'error',
+    'no-template-curly-in-string': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
     'prefer-rest-params': 'error',

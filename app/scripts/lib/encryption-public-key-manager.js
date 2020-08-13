@@ -247,7 +247,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('EncryptionPublicKeyManager - Message not found for id: "${msgId}".')
+      throw new Error(`EncryptionPublicKeyManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)
