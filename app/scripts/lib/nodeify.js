@@ -15,9 +15,7 @@ const callbackNoop = function (err) {
  *
  */
 export default function nodeify (fn, context) {
-  return function () {
-    // parse arguments
-    const args = [].slice.call(arguments)
+  return function (...args) {
     const lastArg = args[args.length - 1]
     const lastArgIsCallback = typeof lastArg === 'function'
     let callback
