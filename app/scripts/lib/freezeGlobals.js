@@ -30,11 +30,11 @@ function freeze (target, key, value, enumerable = true) {
     configurable: false, writable: false,
   }
 
-  if (value !== undefined) {
+  if (value === undefined) {
+    target[key] = deepFreeze(target[key])
+  } else {
     opts.value = deepFreeze(value)
     opts.enumerable = enumerable
-  } else {
-    target[key] = deepFreeze(target[key])
   }
 
   Object.defineProperty(target, key, opts)

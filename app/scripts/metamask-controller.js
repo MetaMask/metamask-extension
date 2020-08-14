@@ -710,15 +710,16 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(accountTokens).forEach((address) => {
       const checksummedAddress = ethUtil.toChecksumAddress(address)
       filteredAccountTokens[checksummedAddress] = {}
-      Object.keys(accountTokens[address]).forEach(
-        (networkType) => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
-          accountTokens[address][networkType] :
-          accountTokens[address][networkType].filter(({ address }) => {
-            const tokenAddress = ethUtil.toChecksumAddress(address)
-            return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
-          })
-        ),
-      )
+      Object.keys(accountTokens[address]).forEach((networkType) => {
+        filteredAccountTokens[checksummedAddress][networkType] = networkType === 'mainnet'
+          ? (
+            accountTokens[address][networkType].filter(({ address }) => {
+              const tokenAddress = ethUtil.toChecksumAddress(address)
+              return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+            })
+          )
+          : accountTokens[address][networkType]
+      })
     })
 
     const preferences = {

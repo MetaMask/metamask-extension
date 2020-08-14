@@ -194,10 +194,10 @@ export default class MobileSyncPage extends Component {
           storeInHistory: false,
         },
         (status, response) => {
-          if (!status.error) {
-            resolve()
-          } else {
+          if (status.error) {
             reject(response)
+          } else {
+            resolve()
           }
         })
     })
@@ -253,10 +253,10 @@ export default class MobileSyncPage extends Component {
           storeInHistory: false,
         },
         (status, response) => {
-          if (!status.error) {
-            resolve()
-          } else {
+          if (status.error) {
             reject(response)
+          } else {
+            resolve()
           }
         },
       )

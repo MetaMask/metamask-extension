@@ -16,9 +16,10 @@ describe('nodeify', function () {
       if (!err) {
         assert.equal(res, 'barbaz')
         done()
-      } else {
-        done(new Error(err.toString()))
+        return
       }
+
+      done(new Error(err.toString()))
     })
   })
 

@@ -220,7 +220,7 @@ export default class ConfirmDecryptMessage extends Component {
             className="request-decrypt-message__message-text"
           >
             { !hasDecrypted && !hasError ? txData.msgParams.data : rawMessage }
-            { !hasError ? '' : errorMessage }
+            { hasError ? errorMessage : '' }
           </div>
           <div
             className={classnames({
@@ -236,10 +236,10 @@ export default class ConfirmDecryptMessage extends Component {
             })}
             onClick={(event) => {
               decryptMessageInline(txData, event).then((result) => {
-                if (!result.error) {
-                  this.setState({ hasDecrypted: true, rawMessage: result.rawData })
-                } else {
+                if (result.error) {
                   this.setState({ hasError: true, errorMessage: this.context.t('decryptInlineError', [result.error]) })
+                } else {
+                  this.setState({ hasDecrypted: true, rawMessage: result.rawData })
                 }
               })
             }}

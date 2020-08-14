@@ -37,13 +37,14 @@ export default class TransactionBreakdown extends PureComponent {
           { t('transaction') }
         </div>
         <TransactionBreakdownRow title="Nonce">
-          {typeof nonce !== 'undefined'
-            ? (
+          {typeof nonce === 'undefined'
+            ? null
+            : (
               <HexToDecimal
                 className="transaction-breakdown__value"
                 value={nonce}
               />
-            ) : null
+            )
           }
         </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('amount')}>
@@ -57,14 +58,14 @@ export default class TransactionBreakdown extends PureComponent {
           title={`${t('gasLimit')} (${t('units')})`}
           className="transaction-breakdown__row-title"
         >
-          {typeof gas !== 'undefined'
-            ? (
+          {typeof gas === 'undefined'
+            ? '?'
+            : (
               <HexToDecimal
                 className="transaction-breakdown__value"
                 value={gas}
               />
             )
-            : '?'
           }
         </TransactionBreakdownRow>
         {
@@ -81,8 +82,9 @@ export default class TransactionBreakdown extends PureComponent {
           )
         }
         <TransactionBreakdownRow title={t('gasPrice')}>
-          {typeof gasPrice !== 'undefined'
-            ? (
+          {typeof gasPrice === 'undefined'
+            ? '?'
+            : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
                 data-testid="transaction-breakdown__gas-price"
@@ -92,7 +94,6 @@ export default class TransactionBreakdown extends PureComponent {
                 hideLabel
               />
             )
-            : '?'
           }
         </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('total')}>

@@ -424,7 +424,7 @@ export default class TransactionStateManager extends EventEmitter {
     @param {erroObject} err - error object
   */
   setTxStatusFailed (txId, err) {
-    const error = !err ? new Error('Internal metamask failure') : err
+    const error = err || new Error('Internal metamask failure')
 
     const txMeta = this.getTx(txId)
     txMeta.err = {
