@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SenderToRecipient from '../../ui/sender-to-recipient'
+import { PageContainerFooter } from '../../ui/page-container'
 import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from '.'
 
 export default class ConfirmPageContainer extends Component {
@@ -163,8 +164,26 @@ export default class ConfirmPageContainer extends Component {
               submitText={this.context.t('confirm')}
               disabled={disabled}
               unapprovedTxCount={unapprovedTxCount}
-              rejectText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
             />
+          )
+        }
+        {
+          contentComponent && (
+            <PageContainerFooter
+              onCancel={() => onCancel()}
+              cancelText={this.context.t('reject')}
+              onSubmit={() => onSubmit()}
+              submitText={this.context.t('confirm')}
+              submitButtonType="confirm"
+              disabled={disabled}
+            >
+              {unapprovedTxCount > 1 && (
+                <a onClick={() => onCancelAll()}>
+                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                </a>
+              )}
+            </PageContainerFooter>
           )
         }
       </div>

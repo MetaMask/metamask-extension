@@ -32,7 +32,7 @@ export default class ConfirmPageContainerContent extends Component {
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
-    rejectText: PropTypes.string,
+    rejectNText: PropTypes.string,
   }
 
   renderContent () {
@@ -84,7 +84,7 @@ export default class ConfirmPageContainerContent extends Component {
       submitText,
       disabled,
       unapprovedTxCount,
-      rejectText,
+      rejectNText,
     } = this.props
 
     return (
@@ -133,7 +133,7 @@ export default class ConfirmPageContainerContent extends Component {
         >
           {unapprovedTxCount > 1 && (
             <a onClick={() => onCancelAll()}>
-              {rejectText}
+              {rejectNText}
             </a>
           )}
         </PageContainerFooter>
