@@ -86,7 +86,7 @@ export default class ExportPrivateKeyModal extends Component {
     )
   }
 
-  renderButtons (privateKey, address, hideModal, clearAccountDetails) {
+  renderButtons (privateKey, address, hideModal) {
     return (
       <div className="export-private-key-modal__buttons">
         {!privateKey && (
@@ -103,10 +103,7 @@ export default class ExportPrivateKeyModal extends Component {
           privateKey
             ? (
               <Button
-                onClick={() => {
-                  hideModal()
-                  clearAccountDetails()
-                }}
+                onClick={() => hideModal()}
                 type="secondary"
                 large
                 className="export-private-key-modal__button"
@@ -136,7 +133,6 @@ export default class ExportPrivateKeyModal extends Component {
       warning,
       showAccountDetailModal,
       hideModal,
-      clearAccountDetails,
       previousModalState,
     } = this.props
     const { name, address } = selectedIdentity
@@ -170,7 +166,7 @@ export default class ExportPrivateKeyModal extends Component {
           }
         </div>
         <div className="export-private-key-modal__password--warning">{this.context.t('privateKeyWarning')}</div>
-        {this.renderButtons(privateKey, address, hideModal, clearAccountDetails)}
+        {this.renderButtons(privateKey, address, hideModal)}
       </AccountModalContainer>
     )
   }
