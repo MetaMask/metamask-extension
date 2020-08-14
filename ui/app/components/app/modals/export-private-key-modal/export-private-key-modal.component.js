@@ -41,6 +41,7 @@ export default class ExportPrivateKeyModal extends Component {
 
   exportAccountAndGetPrivateKey = (password, address) => {
     const { exportAccount } = this.props
+
     exportAccount(password, address)
       .then((privateKey) => this.setState({
         privateKey,
