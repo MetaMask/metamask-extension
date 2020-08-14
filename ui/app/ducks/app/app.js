@@ -137,6 +137,12 @@ export default function reduceApp (state = {}, action) {
         ),
       }
 
+    case actionConstants.CLEAR_ACCOUNT_DETAILS:
+      return {
+        ...appState,
+        accountDetail: {},
+      }
+
     case actionConstants.FORGOT_PASSWORD:
       return {
         ...appState,
