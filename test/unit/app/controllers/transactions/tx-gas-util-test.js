@@ -9,7 +9,7 @@ describe('txUtils', function () {
   before(function () {
     txUtils = new TxUtils(new Proxy({}, {
       get: () => {
-        return () => {}
+        return () => undefined
       },
     }))
   })

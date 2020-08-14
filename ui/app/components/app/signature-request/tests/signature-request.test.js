@@ -10,9 +10,9 @@ describe('Signature Request Component', function () {
     it('should render a div with one child', function () {
       const wrapper = shallow((
         <SignatureRequest
-          clearConfirmTransaction={() => {}}
-          cancel={() => {}}
-          sign={() => {}}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          sign={() => undefined}
           txData={{
             msgParams: {
               data: '{"message": {"from": {"name": "hello"}}}',

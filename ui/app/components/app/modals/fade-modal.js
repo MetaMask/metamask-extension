@@ -134,8 +134,8 @@ class FadeModal extends Component {
   }
 
   static defaultProps = {
-    onShow: function () {},
-    onHide: function () {},
+    onShow: () => undefined,
+    onHide: () => undefined,
     keyboard: true,
     backdrop: true,
     closeOnClick: true,

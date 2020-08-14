@@ -50,7 +50,7 @@ class Mock3Box {
           },
         }
       },
-      logout: () => {},
+      logout: () => undefined,
     })
   }
 

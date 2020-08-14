@@ -53,6 +53,7 @@ module.exports = {
     'no-constant-condition': 'error',
     'no-dupe-else-if': 'error',
     'no-empty': 'error',
+    'no-empty-function': 'error',
     'no-eq-null': 'error',
     'no-global-assign': 'error',
     'no-loop-func': 'error',

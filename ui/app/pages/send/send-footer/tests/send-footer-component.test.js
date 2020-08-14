@@ -18,7 +18,7 @@ describe('SendFooter Component', function () {
   const historySpies = {
     push: sinon.spy(),
   }
-  const MOCK_EVENT = { preventDefault: () => {} }
+  const MOCK_EVENT = { preventDefault: () => undefined }
 
   before(function () {
     sinon.spy(SendFooter.prototype, 'onCancel')

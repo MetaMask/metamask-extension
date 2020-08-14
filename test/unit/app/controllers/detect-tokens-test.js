@@ -14,7 +14,7 @@ describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox()
   let keyringMemStore, network, preferences
 
-  const noop = () => {}
+  const noop = () => undefined
 
   const networkControllerProviderConfig = {
     getAccounts: noop,

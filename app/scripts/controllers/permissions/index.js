@@ -132,7 +132,7 @@ export class PermissionsController {
       const req = { method: 'eth_accounts' }
       const res = {}
       this.permissions.providerMiddlewareFunction(
-        { origin }, req, res, () => {}, _end,
+        { origin }, req, res, () => undefined, _end,
       )
 
       function _end () {
@@ -187,7 +187,7 @@ export class PermissionsController {
       const res = {}
 
       this.permissions.providerMiddlewareFunction(
-        domain, req, res, () => {}, _end,
+        domain, req, res, () => undefined, _end,
       )
 
       function _end (_err) {

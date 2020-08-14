@@ -372,7 +372,7 @@ describe('preferences controller', function () {
     beforeEach(function () {
       req = { params: {} }
       res = {}
-      asy = { next: () => {}, end: () => {} }
+      asy = { next: () => undefined, end: () => undefined }
       stubNext = sandbox.stub(asy, 'next')
       stubEnd = sandbox.stub(asy, 'end').returns(0)
       stubHandleWatchAssetERC20 = sandbox.stub(preferencesController, '_handleWatchAssetERC20')
@@ -382,7 +382,7 @@ describe('preferences controller', function () {
     })
 
     it('shouldn not do anything if method not corresponds', async function () {
-      const asy = { next: () => {}, end: () => {} }
+      const asy = { next: () => undefined, end: () => undefined }
       const stubNext = sandbox.stub(asy, 'next')
       const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask'
@@ -391,7 +391,7 @@ describe('preferences controller', function () {
       sandbox.assert.called(stubNext)
     })
     it('should do something if method is supported', async function () {
-      const asy = { next: () => {}, end: () => {} }
+      const asy = { next: () => undefined, end: () => undefined }
       const stubNext = sandbox.stub(asy, 'next')
       const stubEnd = sandbox.stub(asy, 'end').returns(0)
       req.method = 'metamask_watchAsset'
@@ -415,7 +415,7 @@ describe('preferences controller', function () {
       assert.deepEqual(res, {})
     })
     it('should trigger handle add asset if type supported', async function () {
-      const asy = { next: () => {}, end: () => {} }
+      const asy = { next: () => undefined, end: () => undefined }
       req.method = 'metamask_watchAsset'
       req.params.type = 'ERC20'
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
@@ -442,7 +442,7 @@ describe('preferences controller', function () {
       req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
-      preferencesController.openPopup = async () => {}
+      preferencesController.openPopup = async () => undefined
 
       await preferencesController._handleWatchAssetERC20(req.params.options)
       const suggested = preferencesController.getSuggestedTokens()
