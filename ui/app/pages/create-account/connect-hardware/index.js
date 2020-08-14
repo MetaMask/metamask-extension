@@ -35,13 +35,13 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async (device) => {
+    for (const device of ['trezor', 'ledger']) {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({ unlocked: true })
         this.getPage(device, 0, this.props.defaultHdPaths[device])
       }
-    })
+    }
   }
 
   connectToHardwareWallet = (device) => {
