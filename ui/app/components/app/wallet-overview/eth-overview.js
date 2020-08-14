@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom'
 import Button from '../../ui/button'
 import Identicon from '../../ui/identicon'
 import { I18nContext } from '../../../contexts/i18n'
-import WalletOverview from './wallet-overview'
 import { SEND_ROUTE } from '../../../helpers/constants/routes'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
 import Tooltip from '../../ui/tooltip'
@@ -16,6 +15,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
 import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
 import PaperAirplane from '../../ui/icon/paper-airplane-icon'
+import WalletOverview from './wallet-overview'
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch()

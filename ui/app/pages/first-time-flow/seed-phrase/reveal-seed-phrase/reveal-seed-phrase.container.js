@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
-import RevealSeedPhrase from './reveal-seed-phrase.component'
 import {
   setCompletedOnboarding,
   setSeedPhraseBackedUp,
 } from '../../../../store/actions'
 import { getOnboardingInitiator } from '../../../../selectors'
+import RevealSeedPhrase from './reveal-seed-phrase.component'
 
 const mapStateToProps = (state) => {
   return {

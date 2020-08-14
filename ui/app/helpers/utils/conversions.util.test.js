@@ -1,5 +1,5 @@
-import * as utils from './conversions.util'
 import assert from 'assert'
+import * as utils from './conversions.util'
 
 describe('decETHToDecWEI', function () {
   it('should correctly convert 1 ETH to WEI', function () {

@@ -1,8 +1,8 @@
+import assert from 'assert'
 import { shallow } from 'enzyme'
 import React from 'react'
-import ListItem from '../list-item.component'
-import assert from 'assert'
 import Sinon from 'sinon'
+import ListItem from '../list-item.component'
 import Preloader from '../../icon/preloader/preloader-icon.component'
 import Send from '../../icon/send-icon.component'
 

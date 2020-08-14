@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import ConfirmTransactionBase from '../confirm-transaction-base'
-import ConfirmApproveContent from './confirm-approve-content'
-import { getCustomTxParamsData } from './confirm-approve.util'
 import { showModal } from '../../store/actions'
 import {
   getTokenData,
@@ -21,6 +19,8 @@ import {
 } from '../../selectors/confirm-transaction'
 import { getCurrentCurrency, getDomainMetadata } from '../../selectors/selectors'
 import { currentNetworkTxListSelector } from '../../selectors/transactions'
+import { getCustomTxParamsData } from './confirm-approve.util'
+import ConfirmApproveContent from './confirm-approve-content'
 
 export default function ConfirmApprove () {
   const dispatch = useDispatch()

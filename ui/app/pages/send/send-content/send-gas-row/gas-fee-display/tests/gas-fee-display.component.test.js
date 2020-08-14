@@ -1,9 +1,9 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 import GasFeeDisplay from '../gas-fee-display.component'
 import UserPreferencedCurrencyDisplay from '../../../../../../components/app/user-preferenced-currency-display'
-import sinon from 'sinon'
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),

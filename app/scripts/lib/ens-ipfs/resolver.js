@@ -1,9 +1,9 @@
 import namehash from 'eth-ens-namehash'
 import Eth from 'ethjs-query'
 import EthContract from 'ethjs-contract'
+import contentHash from 'content-hash'
 import registryAbi from './contracts/registry'
 import resolverAbi from './contracts/resolver'
-import contentHash from 'content-hash'
 
 export default async function resolveEnsToIpfsContentId ({ provider, name }) {
   const eth = new Eth(provider)

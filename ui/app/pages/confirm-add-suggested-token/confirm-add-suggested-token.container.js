@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 import { withRouter } from 'react-router-dom'
 import { addToken, removeSuggestedTokens } from '../../store/actions'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
 
 const mapStateToProps = (state) => {
   const { metamask: { pendingTokens, suggestedTokens, tokens } } = state

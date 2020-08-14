@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import Dropdown from '.'
 import { boolean, select, text } from '@storybook/addon-knobs/react'
+import Dropdown from '.'
 
 export default {
   title: 'Dropdown',

@@ -1,6 +1,6 @@
-import { NETWORK_TYPES } from '../helpers/constants/common'
 import { stripHexPrefix, addHexPrefix } from 'ethereumjs-util'
 import { createSelector } from 'reselect'
+import { NETWORK_TYPES } from '../helpers/constants/common'
 import {
   shortenAddress,
   checksumAddress,

@@ -1,16 +1,18 @@
 import ObservableStore from 'obs-store'
 
+/* eslint-disable import/order */
 const Box = process.env.IN_TEST
   ? require('../../../development/mock-3box')
   : require('3box')
+/* eslint-enable import/order */
 
 import log from 'loglevel'
-import migrations from '../migrations'
-import Migrator from '../lib/migrator'
 import JsonRpcEngine from 'json-rpc-engine'
 import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine'
-import createMetamaskMiddleware from './network/createMetamaskMiddleware'
+import Migrator from '../lib/migrator'
+import migrations from '../migrations'
 import createOriginMiddleware from '../lib/createOriginMiddleware'
+import createMetamaskMiddleware from './network/createMetamaskMiddleware'
 
 const SYNC_TIMEOUT = 60 * 1000 // one minute
 

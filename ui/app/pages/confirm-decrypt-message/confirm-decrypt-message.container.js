@@ -13,8 +13,8 @@ import {
   conversionRateSelector,
 } from '../../selectors'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmDecryptMessage from './confirm-decrypt-message.component'
 
 function mapStateToProps (state) {
   const { confirmTransaction,

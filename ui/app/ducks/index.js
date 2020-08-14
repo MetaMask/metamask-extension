@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 import metamaskReducer from './metamask/metamask'
 import localeMessagesReducer from './locale/locale'
 import sendReducer from './send/send.duck'
@@ -7,7 +8,6 @@ import confirmTransactionReducer from './confirm-transaction/confirm-transaction
 import gasReducer from './gas/gas.duck'
 import { unconnectedAccount } from './alerts'
 import historyReducer from './history/history'
-import { ALERT_TYPES } from '../../../app/scripts/controllers/alert'
 
 export default combineReducers({
   [ALERT_TYPES.unconnectedAccount]: unconnectedAccount,

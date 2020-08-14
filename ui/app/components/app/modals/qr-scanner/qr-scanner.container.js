@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
+import { hideModal, qrCodeDetected } from '../../../../store/actions'
 import QrScanner from './qr-scanner.component'
 
-import { hideModal, qrCodeDetected } from '../../../../store/actions'
 
 const mapDispatchToProps = (dispatch) => {
   return {

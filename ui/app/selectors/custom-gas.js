@@ -1,11 +1,9 @@
+import { addHexPrefix } from 'ethereumjs-util'
 import {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
 } from '../helpers/utils/conversion-util'
-import {
-  getCurrentCurrency, getIsMainnet, getPreferences,
-} from '.'
 import {
   formatCurrency,
 } from '../helpers/utils/confirm-tx.util'
@@ -18,9 +16,11 @@ import {
 import {
   calcGasTotal,
 } from '../pages/send/send.utils'
-import { addHexPrefix } from 'ethereumjs-util'
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common'
+import {
+  getCurrentCurrency, getIsMainnet, getPreferences,
+} from '.'
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5
 

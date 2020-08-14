@@ -1,9 +1,9 @@
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
+import sinon from 'sinon'
 import * as tokenUtil from '../../helpers/utils/token-util'
 import * as txUtil from '../../helpers/utils/transactions.util'
 import { useTokenDisplayValue } from '../useTokenDisplayValue'
-import sinon from 'sinon'
 
 const tests = [
   {

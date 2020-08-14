@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { findLastIndex } from 'lodash'
-import TransactionActivityLog from './transaction-activity-log.component'
 import { conversionRateSelector, getNativeCurrency } from '../../../selectors'
+import TransactionActivityLog from './transaction-activity-log.component'
 import { combineTransactionHistories } from './transaction-activity-log.util'
 import {
   TRANSACTION_RESUBMITTED_EVENT,

@@ -3,9 +3,9 @@ import { compose } from 'redux'
 import ethUtil from 'ethereumjs-util'
 import { multiplyCurrencies } from '../../../../helpers/utils/conversion-util'
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props'
-import CancelTransaction from './cancel-transaction.component'
 import { showModal, createCancelTransaction } from '../../../../store/actions'
 import { getHexGasTotal } from '../../../../helpers/utils/confirm-tx.util'
+import CancelTransaction from './cancel-transaction.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state

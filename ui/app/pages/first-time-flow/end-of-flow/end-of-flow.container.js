@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import EndOfFlow from './end-of-flow.component'
 import { getOnboardingInitiator } from '../../../selectors'
+import EndOfFlow from './end-of-flow.component'
 
 const firstTimeFlowTypeNameMap = {
   create: 'New Wallet Created',

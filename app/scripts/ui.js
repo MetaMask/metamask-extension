@@ -6,26 +6,26 @@ import './lib/freezeGlobals'
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import '@formatjs/intl-relativetimeformat/polyfill'
 
+import { EventEmitter } from 'events'
 import PortStream from 'extension-port-stream'
-import { getEnvironmentType } from './lib/util'
 
+
+import extension from 'extensionizer'
+
+import Dnode from 'dnode'
+import Eth from 'ethjs'
+import EthQuery from 'eth-query'
+import StreamProvider from 'web3-stream-provider'
+import log from 'loglevel'
+import launchMetaMaskUi from '../../ui'
+import { setupMultiplex } from './lib/stream-utils'
+import setupSentry from './lib/setupSentry'
+import ExtensionPlatform from './platforms/extension'
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from './lib/enums'
-
-import extension from 'extensionizer'
-import ExtensionPlatform from './platforms/extension'
-
-import setupSentry from './lib/setupSentry'
-import { EventEmitter } from 'events'
-import Dnode from 'dnode'
-import Eth from 'ethjs'
-import EthQuery from 'eth-query'
-import launchMetaMaskUi from '../../ui'
-import StreamProvider from 'web3-stream-provider'
-import { setupMultiplex } from './lib/stream-utils'
-import log from 'loglevel'
+import { getEnvironmentType } from './lib/util'
 
 start().catch(log.error)
 

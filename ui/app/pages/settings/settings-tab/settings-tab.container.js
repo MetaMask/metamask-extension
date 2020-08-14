@@ -1,4 +1,3 @@
-import SettingsTab from './settings-tab.component'
 import { connect } from 'react-redux'
 import {
   setCurrentCurrency,
@@ -8,6 +7,7 @@ import {
   setParticipateInMetaMetrics,
 } from '../../../store/actions'
 import { getPreferences } from '../../../selectors'
+import SettingsTab from './settings-tab.component'
 
 const mapStateToProps = (state) => {
   const { appState: { warning }, metamask } = state

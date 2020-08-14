@@ -10,22 +10,35 @@ import pump from 'pump'
 import Dnode from 'dnode'
 import extension from 'extensionizer'
 import ObservableStore from 'obs-store'
-import ComposableObservableStore from './lib/ComposableObservableStore'
 import asStream from 'obs-store/lib/asStream'
-import AccountTracker from './lib/account-tracker'
 import RpcEngine from 'json-rpc-engine'
 import { debounce } from 'lodash'
 import createEngineStream from 'json-rpc-middleware-stream/engineStream'
 import createFilterMiddleware from 'eth-json-rpc-filters'
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
+import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
+import KeyringController from 'eth-keyring-controller'
+import { Mutex } from 'await-semaphore'
+import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'
+import TrezorKeyring from 'eth-trezor-keyring'
+import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
+import EthQuery from 'eth-query'
+import nanoid from 'nanoid'
+import contractMap from 'eth-contract-metadata'
+import {
+  AddressBookController,
+  CurrencyRateController,
+  PhishingController,
+} from '@metamask/controllers'
+import ComposableObservableStore from './lib/ComposableObservableStore'
+import AccountTracker from './lib/account-tracker'
 import createLoggerMiddleware from './lib/createLoggerMiddleware'
 import createMethodMiddleware from './lib/createMethodMiddleware'
 import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
 import { setupMultiplex } from './lib/stream-utils'
-import KeyringController from 'eth-keyring-controller'
 import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
 import PreferencesController from './controllers/preferences'
@@ -48,22 +61,8 @@ import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import selectChainId from './lib/select-chain-id'
-import { Mutex } from 'await-semaphore'
-import ethUtil from 'ethereumjs-util'
-
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
-import log from 'loglevel'
-import TrezorKeyring from 'eth-trezor-keyring'
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring'
-import EthQuery from 'eth-query'
-import nanoid from 'nanoid'
-import contractMap from 'eth-contract-metadata'
 
-import {
-  AddressBookController,
-  CurrencyRateController,
-  PhishingController,
-} from '@metamask/controllers'
 
 import backgroundMetaMetricsEvent from './lib/background-metametrics'
 

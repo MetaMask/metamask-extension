@@ -1,11 +1,11 @@
 import React from 'react'
+import { color, number } from '@storybook/addon-knobs/react'
 import Approve from './approve-icon.component'
 import Copy from './copy-icon.component'
 import Interaction from './interaction-icon.component'
 import Preloader from './preloader'
 import Receive from './receive-icon.component'
 import Send from './send-icon.component'
-import { color, number } from '@storybook/addon-knobs/react'
 
 export default {
   title: 'Icon',

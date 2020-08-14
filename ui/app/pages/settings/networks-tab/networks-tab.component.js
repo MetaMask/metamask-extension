@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import classnames from 'classnames'
 import Button from '../../../components/ui/button'
-import NetworkForm from './network-form'
 import NetworkDropdownIcon from '../../../components/app/dropdowns/components/network-dropdown-icon'
+import NetworkForm from './network-form'
 
 export default class NetworksTab extends PureComponent {
   static contextTypes = {

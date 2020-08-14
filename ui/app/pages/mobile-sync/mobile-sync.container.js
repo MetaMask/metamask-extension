@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { displayWarning, requestRevealSeedWords, fetchInfoToSync, exportAccounts } from '../../store/actions'
-import MobileSyncPage from './mobile-sync.component'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import { getMetaMaskKeyrings } from '../../selectors'
+import MobileSyncPage from './mobile-sync.component'
 
 const mapDispatchToProps = (dispatch) => {
   return {

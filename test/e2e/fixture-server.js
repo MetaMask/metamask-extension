@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs')
-const Koa = require('koa')
 const path = require('path')
+const Koa = require('koa')
 
 const CURRENT_STATE_KEY = '__CURRENT__'
 const DEFAULT_STATE_KEY = '__DEFAULT__'

@@ -1,5 +1,5 @@
-import { valuesFor } from '../app/helpers/utils/util'
 import log from 'loglevel'
+import { valuesFor } from '../app/helpers/utils/util'
 
 export default function txHelper (unapprovedTxs, unapprovedMsgs, personalMsgs, decryptMsgs, encryptionPublicKeyMsgs, typedMessages, network) {
   log.debug('tx-helper called with params:')

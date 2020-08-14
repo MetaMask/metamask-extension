@@ -1,8 +1,8 @@
 import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
-import createId from './random-id'
 import log from 'loglevel'
+import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 /**

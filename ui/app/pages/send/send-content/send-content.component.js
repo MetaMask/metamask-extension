@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
+import Dialog from '../../../components/ui/dialog'
 import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
-import Dialog from '../../../components/ui/dialog'
 
 export default class SendContent extends Component {
 

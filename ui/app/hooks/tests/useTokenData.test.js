@@ -1,6 +1,6 @@
-import { useTokenData } from '../useTokenData'
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
+import { useTokenData } from '../useTokenData'
 
 const tests = [
   {

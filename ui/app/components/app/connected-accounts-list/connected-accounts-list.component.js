@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { MenuItem } from '../../ui/menu'
 import ConnectedAccountsListItem from './connected-accounts-list-item'
 import ConnectedAccountsListOptions from './connected-accounts-list-options'
-import { MenuItem } from '../../ui/menu'
 
 export default class ConnectedAccountsList extends PureComponent {
   static contextTypes = {

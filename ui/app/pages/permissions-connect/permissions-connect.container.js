@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import PermissionApproval from './permissions-connect.component'
 import {
   getPermissionsRequests,
   getNativeCurrency,
@@ -22,6 +21,7 @@ import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes'
+import PermissionApproval from './permissions-connect.component'
 
 const mapStateToProps = (state, ownProps) => {
   const {

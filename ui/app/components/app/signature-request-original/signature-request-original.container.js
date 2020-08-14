@@ -10,8 +10,8 @@ import {
 } from '../../../selectors'
 import { getAccountByAddress } from '../../../helpers/utils/util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck'
-import SignatureRequestOriginal from './signature-request-original.component'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
+import SignatureRequestOriginal from './signature-request-original.component'
 
 function mapStateToProps (state) {
   return {

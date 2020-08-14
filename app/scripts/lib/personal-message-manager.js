@@ -2,11 +2,11 @@ import EventEmitter from 'events'
 import ObservableStore from 'obs-store'
 import ethUtil from 'ethereumjs-util'
 import { ethErrors } from 'eth-json-rpc-errors'
+import log from 'loglevel'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 const hexRe = /^[0-9A-Fa-f]+$/ug
-import log from 'loglevel'
 
 /**
  * Represents, and contains data about, an 'personal_sign' type signature request. These are created when a

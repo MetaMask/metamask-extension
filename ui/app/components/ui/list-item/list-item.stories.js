@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ListItem from './list-item.component'
 import { text } from '@storybook/addon-knobs/react'
 import Send from '../icon/send-icon.component'
 import Interaction from '../icon/interaction-icon.component'
@@ -8,6 +7,7 @@ import Approve from '../icon/approve-icon.component'
 import Receive from '../icon/receive-icon.component'
 import Preloader from '../icon/preloader'
 import Button from '../button'
+import ListItem from './list-item.component'
 
 export default {
   title: 'ListItem',

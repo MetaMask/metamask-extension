@@ -7,15 +7,15 @@ import {
   getSendMaxModeState,
   getBasicGasEstimateLoadingStatus,
 } from '../../../../../selectors'
-import { calcMaxAmount } from './amount-max-button.utils'
 import {
   updateSendAmount,
   setMaxModeTo,
 } from '../../../../../store/actions'
-import AmountMaxButton from './amount-max-button.component'
 import {
   updateSendErrors,
 } from '../../../../../ducks/send/send.duck'
+import { calcMaxAmount } from './amount-max-button.utils'
+import AmountMaxButton from './amount-max-button.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmountMaxButton)
 

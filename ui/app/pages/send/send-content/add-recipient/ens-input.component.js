@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
-import { ellipsify } from '../../send.utils'
 
 import { debounce } from 'lodash'
 import copyToClipboard from 'copy-to-clipboard/index'
 import ENS from 'ethjs-ens'
 import networkMap from 'ethereum-ens-network-map'
 import log from 'loglevel'
+import { ellipsify } from '../../send.utils'
+import { isValidDomainName, isValidAddress, isValidAddressHead } from '../../../../helpers/utils/util'
 
 
 // Local Constants

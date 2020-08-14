@@ -1,7 +1,7 @@
 import assert from 'assert'
 import sinon from 'sinon'
-import TokenRatesController from '../../../../app/scripts/controllers/token-rates'
 import ObservableStore from 'obs-store'
+import TokenRatesController from '../../../../app/scripts/controllers/token-rates'
 
 describe('TokenRatesController', function () {
   it('should listen for preferences store updates', function () {

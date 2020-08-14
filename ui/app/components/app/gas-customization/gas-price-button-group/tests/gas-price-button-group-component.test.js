@@ -1,7 +1,7 @@
-import React from 'react'
 import assert from 'assert'
-import shallow from '../../../../../../lib/shallow-with-context'
+import React from 'react'
 import sinon from 'sinon'
+import shallow from '../../../../../../lib/shallow-with-context'
 import GasPriceButtonGroup from '../gas-price-button-group.component'
 
 import ButtonGroup from '../../../../ui/button-group'

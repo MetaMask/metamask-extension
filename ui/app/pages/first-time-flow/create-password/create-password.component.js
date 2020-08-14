@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
-import NewAccount from './new-account'
 import MetaFoxLogo from '../../../components/ui/metafox-logo'
-import ImportWithSeedPhrase from './import-with-seed-phrase'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../helpers/constants/routes'
+import NewAccount from './new-account'
+import ImportWithSeedPhrase from './import-with-seed-phrase'
 
 export default class CreatePassword extends PureComponent {
   static propTypes = {

@@ -2,13 +2,13 @@ const assert = require('assert')
 const webdriver = require('selenium-webdriver')
 
 const { By, Key, until } = webdriver
+const enLocaleMessages = require('../../app/_locales/en/messages.json')
 const {
   regularDelayMs,
   largeDelayMs,
 } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('./ganache')
-const enLocaleMessages = require('../../app/_locales/en/messages.json')
 
 const ganacheServer = new Ganache()
 

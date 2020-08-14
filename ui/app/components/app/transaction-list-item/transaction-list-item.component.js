@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { useHistory } from 'react-router-dom'
 import ListItem from '../../ui/list-item'
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData'
 import Preloader from '../../ui/icon/preloader'
@@ -10,7 +11,6 @@ import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
 import Button from '../../ui/button'
 import Tooltip from '../../ui/tooltip'
 import TransactionListItemDetails from '../transaction-list-item-details'
-import { useHistory } from 'react-router-dom'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
 import {
   TRANSACTION_CATEGORY_SIGNATURE_REQUEST,

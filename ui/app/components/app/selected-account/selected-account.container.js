@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
+import { getSelectedIdentity } from '../../../selectors'
 import SelectedAccount from './selected-account.component'
 
-import { getSelectedIdentity } from '../../../selectors'
 
 const mapStateToProps = (state) => {
   return {
