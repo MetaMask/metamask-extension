@@ -61,6 +61,7 @@ module.exports = {
     'no-loop-func': 'error',
     'no-negated-condition': 'error',
     'no-nested-ternary': 'error',
+    'no-param-reassign': 'error',
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-process-exit': 'error',
     'no-prototype-builtins': 'error',

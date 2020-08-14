@@ -10,13 +10,14 @@ import {
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
+    let [a1, b1] = [a, b]
     if (String(a).match(/^0x.+/u)) {
-      a = Number(String(a).slice(2))
+      a1 = Number(String(a).slice(2))
     }
     if (String(b).match(/^0x.+/u)) {
-      b = Number(String(b).slice(2))
+      b1 = Number(String(b).slice(2))
     }
-    return a + b
+    return a1 + b1
   }),
   conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
   conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value >= obj2.value),

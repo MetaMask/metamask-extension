@@ -10,9 +10,8 @@ const defaultOptions = {
 }
 
 class Ganache {
-  async start (options) {
-    options = Object.assign({}, defaultOptions, options)
-
+  async start (opts) {
+    const options = { ...defaultOptions, ...opts }
     const port = options.port
     this._server = ganache.server(options)
 

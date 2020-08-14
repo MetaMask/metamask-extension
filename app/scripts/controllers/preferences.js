@@ -689,6 +689,7 @@ export default class PreferencesController {
   _getTokenRelatedStates (selectedAddress) {
     const accountTokens = this.store.getState().accountTokens
     if (!selectedAddress) {
+      // eslint-disable-next-line no-param-reassign
       selectedAddress = this.store.getState().selectedAddress
     }
     const providerType = this.network.providerStore.getState().type

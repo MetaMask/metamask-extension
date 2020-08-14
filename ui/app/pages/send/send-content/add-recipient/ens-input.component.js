@@ -78,8 +78,8 @@ export default class EnsInput extends Component {
     updateEnsResolutionError('')
   }
 
-  lookupEnsName = (recipient) => {
-    recipient = recipient.trim()
+  lookupEnsName = (ensName) => {
+    const recipient = ensName.trim()
 
     log.info(`ENS attempting to resolve name: ${recipient}`)
     this.ens.lookup(recipient)

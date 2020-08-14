@@ -92,17 +92,18 @@ async function isWritable (directory) {
 }
 
 async function getFirstParentDirectoryThatExists (directory) {
+  let nextDirectory = directory
   for (;;) {
     try {
-      await fs.access(directory, fsConstants.F_OK)
-      return directory
+      await fs.access(nextDirectory, fsConstants.F_OK)
+      return nextDirectory
     } catch (error) {
       if (error.code !== 'ENOENT') {
         throw error
-      } else if (directory === path.dirname(directory)) {
+      } else if (nextDirectory === path.dirname(nextDirectory)) {
         throw new Error('Failed to find parent directory that exists')
       }
-      directory = path.dirname(directory)
+      nextDirectory = path.dirname(nextDirectory)
     }
   }
 }

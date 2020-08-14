@@ -258,16 +258,14 @@ export function setFetchingData (isFetching) {
 }
 
 export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
-  gasLimit = addHexPrefix(gasLimit)
-  gasPrice = addHexPrefix(gasPrice)
   return (dispatch, getState) => {
     const { confirmTransaction: { txData } } = getState()
     const newTxData = {
       ...txData,
       txParams: {
         ...txData.txParams,
-        gas: gasLimit,
-        gasPrice,
+        gas: addHexPrefix(gasLimit),
+        gasPrice: addHexPrefix(gasPrice),
       },
     }
 

@@ -262,6 +262,7 @@ export default class TransactionStateManager extends EventEmitter {
     if (typeof txParams.data === 'undefined') {
       delete txParams.data
     }
+    // eslint-disable-next-line no-param-reassign
     txParams = normalizeTxParams(txParams, false)
     this.validateTxParams(txParams)
     return txParams

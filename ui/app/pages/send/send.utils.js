@@ -238,6 +238,7 @@ async function estimateGas ({
 
   // if not, fall back to block gasLimit
   if (!blockGasLimit) {
+    // eslint-disable-next-line no-param-reassign
     blockGasLimit = MIN_GAS_LIMIT_HEX
   }
 

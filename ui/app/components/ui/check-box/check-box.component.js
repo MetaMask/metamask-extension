@@ -12,6 +12,7 @@ export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE
 
 const CheckBox = ({ className, disabled, id, onClick, checked, title }) => {
   if (typeof checked === 'boolean') {
+    // eslint-disable-next-line no-param-reassign
     checked = checked
       ? CHECKBOX_STATE.CHECKED
       : CHECKBOX_STATE.UNCHECKED

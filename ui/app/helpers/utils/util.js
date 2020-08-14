@@ -241,6 +241,7 @@ export function getRandomFileName () {
 }
 
 export function exportAsFile (filename, data, type = 'text/csv') {
+  // eslint-disable-next-line no-param-reassign
   filename = filename || getRandomFileName()
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
   const blob = new window.Blob([data], { type })
