@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 8.0.8 Fri Aug 14 2020
+
 ## 8.0.7 Fri Aug 07 2020
 - [#9065](https://github.com/MetaMask/metamask-extension/pull/9065): Change title of "Reveal Seed Words" page to "Reveal Seed Phrase"
 - [#8974](https://github.com/MetaMask/metamask-extension/pull/8974): Add tooltip to copy button for contacts and seed phrase
