@@ -28,7 +28,8 @@ export default function launchMetamaskUi (opts, cb) {
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
     startApp(metamaskState, backgroundConnection, opts)
       .then((store) => {
@@ -188,7 +189,8 @@ window.logStateString = function (cb) {
   const state = window.getCleanAppState()
   global.platform.getPlatformInfo((err, platform) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
     state.platform = platform
     const stateString = JSON.stringify(state, null, 2)

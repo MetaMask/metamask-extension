@@ -23,6 +23,7 @@ async function getSymbolFromContract (tokenAddress) {
     return result[0]
   } catch (error) {
     log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+    return undefined
   }
 }
 
@@ -35,6 +36,7 @@ async function getDecimalsFromContract (tokenAddress) {
     return decimalsBN && decimalsBN.toString()
   } catch (error) {
     log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+    return undefined
   }
 }
 

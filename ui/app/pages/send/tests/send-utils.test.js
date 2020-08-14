@@ -10,10 +10,10 @@ import {
 
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b) => {
-    if (String(a).match(/^0x.+/)) {
+    if (String(a).match(/^0x.+/u)) {
       a = Number(String(a).slice(2))
     }
-    if (String(b).match(/^0x.+/)) {
+    if (String(b).match(/^0x.+/u)) {
       b = Number(String(b).slice(2))
     }
     return a + b
@@ -294,8 +294,8 @@ describe('send utils', function () {
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
         ({ to }) => {
-          if (typeof to === 'string' && to.match(/willFailBecauseOf:/)) {
-            throw new Error(to.match(/:(.+)$/)[1])
+          if (typeof to === 'string' && to.match(/willFailBecauseOf:/u)) {
+            throw new Error(to.match(/:(.+)$/u)[1])
           }
           return { toString: (n) => `0xabc${n}` }
         },
@@ -311,7 +311,7 @@ describe('send utils', function () {
     beforeEach(function () {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x'),
+          (address) => Promise.resolve(address.match(/isContract/u) ? 'not-0x' : '0x'),
         ),
       }
     })

@@ -35,7 +35,7 @@ import LocalMessageDuplexStream from 'post-message-stream'
 import { initProvider } from '@metamask/inpage-provider'
 
 // TODO:deprecate:2020
-import setupWeb3 from './lib/setupWeb3.js'
+import setupWeb3 from './lib/setupWeb3'
 
 restoreContextAfterImports()
 

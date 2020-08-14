@@ -14,7 +14,7 @@ describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox()
   let keyringMemStore, network, preferences
 
-  const noop = () => {}
+  const noop = () => undefined
 
   const networkControllerProviderConfig = {
     getAccounts: noop,
@@ -24,7 +24,7 @@ describe('DetectTokensController', function () {
 
 
     nock('https://api.infura.io')
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200)
 
     keyringMemStore = new ObservableStore({ isUnlocked: false })

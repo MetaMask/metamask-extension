@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { showModal } from '../../../store/actions'
 import { CONNECTED_ROUTE } from '../../../helpers/constants/routes'
 import { Menu, MenuItem } from '../../ui/menu'
-import genAccountLink from '../../../../lib/account-link'
+import getAccountLink from '../../../../lib/account-link'
 import { getCurrentKeyring, getCurrentNetwork, getRpcPrefsForCurrentProvider, getSelectedIdentity } from '../../../selectors'
 import { useI18nContext } from '../../../hooks/useI18nContext'
 import { useMetricEvent } from '../../../hooks/useMetricEvent'
@@ -90,14 +90,14 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
       <MenuItem
         onClick={() => {
           viewOnEtherscanEvent()
-          global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
+          global.platform.openTab({ url: getAccountLink(address, network, rpcPrefs) })
           onClose()
         }}
         subtitle={
           rpcPrefs.blockExplorerUrl
             ? (
               <span className="account-options-menu__explorer-origin">
-                { rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1] }
+                { rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1] }
               </span>
             )
             : null

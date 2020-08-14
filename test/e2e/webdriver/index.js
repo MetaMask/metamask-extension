@@ -45,7 +45,7 @@ async function setupFetchMocking (driver) {
         return { json: async () => clone(fetchMockResponses.ethGasBasic) }
       } else if (url.match(/http(s?):\/\/ethgasstation\.info\/json\/predictTable.*/u)) {
         return { json: async () => clone(fetchMockResponses.ethGasPredictTable) }
-      } else if (url.match(/chromeextensionmm/)) {
+      } else if (url.match(/chromeextensionmm/u)) {
         return { json: async () => clone(fetchMockResponses.metametrics) }
       }
       return window.origFetch(...args)

@@ -122,7 +122,7 @@ export default class EnsInput extends Component {
 
     if (!networkHasEnsSupport && !isValidAddress(input) && !isValidAddressHead(input)) {
       updateEnsResolution('')
-      updateEnsResolutionError(!networkHasEnsSupport ? 'Network does not support ENS' : '')
+      updateEnsResolutionError(networkHasEnsSupport ? '' : 'Network does not support ENS')
       return
     }
 
@@ -236,7 +236,7 @@ export default class EnsInput extends Component {
     const { loadingEns, ensFailure, ensResolution, toError } = this.state
 
     if (toError) {
-      return
+      return null
     }
 
     if (loadingEns) {
@@ -269,6 +269,8 @@ export default class EnsInput extends Component {
         />
       )
     }
+
+    return null
   }
 }
 

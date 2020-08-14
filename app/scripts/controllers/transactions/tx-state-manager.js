@@ -164,10 +164,10 @@ export default class TransactionStateManager extends EventEmitter {
       txMeta.txParams = this.normalizeAndValidateTxParams(txMeta.txParams)
     }
 
-    this.once(`${txMeta.id}:signed`, function () {
+    this.once(`${txMeta.id}:signed`, () => {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
-    this.once(`${txMeta.id}:rejected`, function () {
+    this.once(`${txMeta.id}:rejected`, () => {
       this.removeAllListeners(`${txMeta.id}:signed`)
     })
     // initialize history
@@ -424,7 +424,7 @@ export default class TransactionStateManager extends EventEmitter {
     @param {erroObject} err - error object
   */
   setTxStatusFailed (txId, err) {
-    const error = !err ? new Error('Internal metamask failure') : err
+    const error = err || new Error('Internal metamask failure')
 
     const txMeta = this.getTx(txId)
     txMeta.err = {

@@ -1,5 +1,5 @@
 import { decimalToHex } from '../../helpers/utils/conversions.util'
-import { calcTokenValue } from '../../helpers/utils/token-util.js'
+import { calcTokenValue } from '../../helpers/utils/token-util'
 import { getTokenData } from '../../helpers/utils/transactions.util'
 
 export function getCustomTxParamsData (data, { customPermissionAmount, decimals }) {

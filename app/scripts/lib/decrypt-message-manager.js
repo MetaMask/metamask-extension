@@ -5,7 +5,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
-const hexRe = /^[0-9A-Fa-f]+$/g
+const hexRe = /^[0-9A-Fa-f]+$/ug
 import log from 'loglevel'
 
 /**
@@ -65,7 +65,8 @@ export default class DecryptMessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -82,19 +83,24 @@ export default class DecryptMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
-        return reject(new Error('MetaMask Decryption: from field is required.'))
+        reject(new Error('MetaMask Decryption: from field is required.'))
+        return
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'decrypted':
-            return resolve(data.rawData)
+            resolve(data.rawData)
+            return
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Decryption: User denied message decryption.'))
+            reject(ethErrors.provider.userRejectedRequest('MetaMask Decryption: User denied message decryption.'))
+            return
           case 'errored':
-            return reject(new Error('This message cannot be decrypted'))
+            reject(new Error('This message cannot be decrypted'))
+            return
           default:
-            return reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
+            reject(new Error(`MetaMask Decryption: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return
         }
       })
     })
@@ -248,7 +254,7 @@ export default class DecryptMessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('DecryptMessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`DecryptMessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)

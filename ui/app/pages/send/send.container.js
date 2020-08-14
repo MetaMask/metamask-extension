@@ -45,7 +45,7 @@ import {
 import { getTokens } from '../../ducks/metamask/metamask'
 import {
   calcGasTotal,
-} from './send.utils.js'
+} from './send.utils'
 import {
   isValidDomainName,
 } from '../../helpers/utils/util'
@@ -90,9 +90,9 @@ function mapDispatchToProps (dispatch) {
       value,
       data,
     }) => {
-      !editingTransactionId
-        ? dispatch(updateGasData({ gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data }))
-        : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+      editingTransactionId
+        ? dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
+        : dispatch(updateGasData({ gasPrice, selectedAddress, sendToken, blockGasLimit, to, value, data }))
     },
     updateSendTokenBalance: ({ sendToken, tokenContract, address }) => {
       dispatch(updateSendTokenBalance({

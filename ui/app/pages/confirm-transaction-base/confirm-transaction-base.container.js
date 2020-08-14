@@ -93,13 +93,10 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress]
   const { name: fromName } = identities[fromAddress]
   const toAddress = propsToAddress || txParamsToAddress
-  const toName = identities[toAddress]
-    ? identities[toAddress].name
-    : (
-      casedContractMap[toAddress]
-        ? casedContractMap[toAddress].name
-        : shortenAddress(checksumAddress(toAddress))
-    )
+
+  const toName = identities[toAddress]?.name ||
+    casedContractMap[toAddress]?.name ||
+    shortenAddress(checksumAddress(toAddress))
 
   const checksummedAddress = checksumAddress(toAddress)
   const addressBookObject = addressBook[checksummedAddress]

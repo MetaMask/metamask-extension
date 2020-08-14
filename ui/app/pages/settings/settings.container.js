@@ -42,7 +42,7 @@ const ROUTES_TO_I18N_KEYS = {
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps
   const { pathname } = location
-  const pathNameTail = pathname.match(/[^/]+$/)[0]
+  const pathNameTail = pathname.match(/[^/]+$/u)[0]
 
   const isAddressEntryPage = pathNameTail.includes('0x')
   const isMyAccountsPage = pathname.match('my-accounts')

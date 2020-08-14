@@ -108,6 +108,7 @@ describe('useCurrencyDisplay', function () {
         } else if (selector === getConversionRate) {
           return 280.45
         }
+        return undefined
       })
       const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps))
       const [ displayValue, parts ] = hookReturn.result.current

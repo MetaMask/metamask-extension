@@ -307,7 +307,7 @@ describe('util', function () {
     describe('#getRandomFileName', function () {
       it('should only return a string containing alphanumeric characters', function () {
         const result = util.getRandomFileName()
-        assert(result.match(/^[a-zA-Z0-9]*$/g))
+        assert(result.match(/^[a-zA-Z0-9]*$/ug))
       })
 
       // 50 samples

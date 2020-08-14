@@ -24,7 +24,7 @@
   }
 
   &__back {
-    @extend %content-text;
+    @include H6;
 
     color: $Grey-600;
     cursor: pointer;
@@ -35,9 +35,8 @@
   }
 
   &__page-count {
-    @extend %content-text;
+    @include H7;
 
-    font-size: 12px;
     color: #6a737d;
     grid-column: 2;
     justify-self: end;

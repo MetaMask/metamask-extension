@@ -99,24 +99,24 @@ describe('Using MetaMask with an existing account', function () {
     it('shows the correct account address', async function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.qr-code__wrapper'))
       await driver.delay(regularDelayMs)
 
-      const [address] = await driver.findElements(By.css('input.qr-ellip-address'))
+      const [address] = await driver.findElements(By.css('.readonly-input__input'))
       assert.equal(await address.getAttribute('value'), testAddress)
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
       await driver.delay(largeDelayMs)
     })
 
     it('shows a QR code for the account', async function () {
       await driver.clickElement(By.css('[data-testid="account-options-menu-button"]'))
       await driver.clickElement(By.css('[data-testid="account-options-menu__account-details"]'))
-      await driver.findVisibleElement(By.css('.qr-wrapper'))
+      await driver.findVisibleElement(By.css('.qr-code__wrapper'))
       const detailModal = await driver.findElement(By.css('span .modal'))
       await driver.delay(regularDelayMs)
 
-      await driver.clickElement(By.css('.account-modal-close'))
+      await driver.clickElement(By.css('.account-modal__close'))
       await driver.wait(until.stalenessOf(detailModal))
       await driver.delay(regularDelayMs)
     })
@@ -223,7 +223,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const txValues = await driver.findElements(By.css('.transaction-list-item__primary-currency'))
       assert.equal(txValues.length, 1)
-      assert.ok(/-1\s*ETH/.test(await txValues[0].getText()))
+      assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()))
     })
   })
 

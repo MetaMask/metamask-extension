@@ -173,10 +173,10 @@ export default class ConfirmSeedPhrase extends PureComponent {
                   className="confirm-seed-phrase__seed-word--sorted"
                   selected={isSelected}
                   onClick={() => {
-                    if (!isSelected) {
-                      this.handleSelectSeedWord(index)
-                    } else {
+                    if (isSelected) {
                       this.handleDeselectSeedWord(index)
+                    } else {
+                      this.handleSelectSeedWord(index)
                     }
                   }}
                   word={word}

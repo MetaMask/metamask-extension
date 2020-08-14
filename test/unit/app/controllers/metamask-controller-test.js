@@ -19,7 +19,7 @@ import proxyquire from 'proxyquire'
 class ThreeBoxControllerMock {
   constructor () {
     this.store = {
-      subscribe: () => {},
+      subscribe: () => undefined,
       getState: () => ({}),
     }
     this.init = threeBoxSpies.init
@@ -78,7 +78,7 @@ const CUSTOM_RPC_URL = 'http://localhost:8545'
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.createSandbox()
-  const noop = () => {}
+  const noop = () => undefined
 
   beforeEach(function () {
 
@@ -92,12 +92,12 @@ describe('MetaMaskController', function () {
 
     nock('https://api.infura.io')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200)
 
     nock('https://min-api.cryptocompare.com')
       .persist()
-      .get(/.*/)
+      .get(/.*/u)
       .reply(200, '{"JPY":12415.9}')
 
     metamaskController = new MetaMaskController({
@@ -113,7 +113,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => {} },
+      platform: { showTransactionNotification: () => undefined },
     })
     // disable diagnostics
     metamaskController.diagnostics = null
@@ -819,7 +819,8 @@ describe('MetaMaskController', function () {
       const { promise, resolve } = deferredPromise()
       const streamTest = createThoughStream((chunk, _, cb) => {
         if (chunk.name !== 'phishing') {
-          return cb()
+          cb()
+          return
         }
         assert.equal(chunk.data.hostname, (new URL(phishingMessageSender.url)).hostname)
         resolve()

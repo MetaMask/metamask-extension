@@ -399,29 +399,28 @@ export function fetchGasEstimates (blockTime) {
             const next = arr[i + 1]
             if (!next) {
               return [{ expectedWait, gasprice }]
-            } else {
-              const supplementalPrice = getRandomArbitrary(gasprice, next.gasprice)
-              const supplementalTime = extrapolateY({
-                higherY: next.expectedWait,
-                lowerY: expectedWait,
-                higherX: next.gasprice,
-                lowerX: gasprice,
-                xForExtrapolation: supplementalPrice,
-              })
-              const supplementalPrice2 = getRandomArbitrary(supplementalPrice, next.gasprice)
-              const supplementalTime2 = extrapolateY({
-                higherY: next.expectedWait,
-                lowerY: supplementalTime,
-                higherX: next.gasprice,
-                lowerX: supplementalPrice,
-                xForExtrapolation: supplementalPrice2,
-              })
-              return [
-                { expectedWait, gasprice },
-                { expectedWait: supplementalTime, gasprice: supplementalPrice },
-                { expectedWait: supplementalTime2, gasprice: supplementalPrice2 },
-              ]
             }
+            const supplementalPrice = getRandomArbitrary(gasprice, next.gasprice)
+            const supplementalTime = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: expectedWait,
+              higherX: next.gasprice,
+              lowerX: gasprice,
+              xForExtrapolation: supplementalPrice,
+            })
+            const supplementalPrice2 = getRandomArbitrary(supplementalPrice, next.gasprice)
+            const supplementalTime2 = extrapolateY({
+              higherY: next.expectedWait,
+              lowerY: supplementalTime,
+              higherX: next.gasprice,
+              lowerX: supplementalPrice,
+              xForExtrapolation: supplementalPrice2,
+            })
+            return [
+              { expectedWait, gasprice },
+              { expectedWait: supplementalTime, gasprice: supplementalPrice },
+              { expectedWait: supplementalTime2, gasprice: supplementalPrice2 },
+            ]
           }))
           const withOutliersRemoved = inliersByIQR(withSupplementalTimeEstimates.slice(0).reverse(), 'expectedWait').reverse()
           const timeMappedToSeconds = withOutliersRemoved.map(({ expectedWait, gasprice }) => {
@@ -453,11 +452,11 @@ export function fetchGasEstimates (blockTime) {
 
 export function setCustomGasPriceForRetry (newPrice) {
   return (dispatch) => {
-    if (newPrice !== '0x0') {
-      dispatch(setCustomGasPrice(newPrice))
-    } else {
+    if (newPrice === '0x0') {
       const { fast } = loadLocalStorageData('BASIC_PRICE_ESTIMATES')
       dispatch(setCustomGasPrice(decGWEIToHexWEI(fast)))
+    } else {
+      dispatch(setCustomGasPrice(newPrice))
     }
   }
 }

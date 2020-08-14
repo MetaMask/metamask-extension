@@ -489,7 +489,7 @@ export default class AdvancedTab extends PureComponent {
 
 function addUrlProtocolPrefix (urlString) {
   if (!urlString.match(
-    /(^http:\/\/)|(^https:\/\/)/,
+    /(^http:\/\/)|(^https:\/\/)/u,
   )) {
     return 'https://' + urlString
   }

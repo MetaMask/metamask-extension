@@ -5,7 +5,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
-const hexRe = /^[0-9A-Fa-f]+$/g
+const hexRe = /^[0-9A-Fa-f]+$/ug
 import log from 'loglevel'
 
 /**
@@ -68,7 +68,8 @@ export default class PersonalMessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -85,17 +86,21 @@ export default class PersonalMessageManager extends EventEmitter {
   addUnapprovedMessageAsync (msgParams, req) {
     return new Promise((resolve, reject) => {
       if (!msgParams.from) {
-        return reject(new Error('MetaMask Message Signature: from field is required.'))
+        reject(new Error('MetaMask Message Signature: from field is required.'))
+        return
       }
       const msgId = this.addUnapprovedMessage(msgParams, req)
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'signed':
-            return resolve(data.rawSig)
+            resolve(data.rawSig)
+            return
           case 'rejected':
-            return reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            reject(ethErrors.provider.userRejectedRequest('MetaMask Message Signature: User denied message signature.'))
+            return
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return
         }
       })
     })

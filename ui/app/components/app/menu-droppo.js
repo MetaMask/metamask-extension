@@ -37,8 +37,6 @@ export default class MenuDroppoComponent extends Component {
 
     if (isOpen) {
       this.outsideClickHandler = onClickOutside
-    } else if (isOpen) {
-      this.outsideClickHandler = null
     }
   }
 

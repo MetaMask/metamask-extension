@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import AccountListItem from '../../../../pages/send/account-list-item/account-list-item.component'
+import AccountListItem from '../../account-list-item'
 import NetworkDisplay from '../../network-display'
 
 export default class SignatureRequestHeader extends PureComponent {
@@ -16,7 +16,6 @@ export default class SignatureRequestHeader extends PureComponent {
         <div className="signature-request-header--account">
           {fromAccount && (
             <AccountListItem
-              displayBalance={false}
               account={fromAccount}
             />
           )}

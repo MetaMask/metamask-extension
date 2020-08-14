@@ -32,6 +32,7 @@ describe('useCancelTransaction', function () {
             balance: '0x3',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {
@@ -45,7 +46,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({
@@ -75,6 +76,7 @@ describe('useCancelTransaction', function () {
             balance: '0x9C2007651B2500000',
           }
         }
+        return undefined
       })
     })
     transactions.forEach((transactionGroup) => {
@@ -88,7 +90,7 @@ describe('useCancelTransaction', function () {
       it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() => useCancelTransaction(transactionGroup))
         assert.equal(typeof result.current[1], 'function')
-        result.current[1]({ preventDefault: () => {}, stopPropagation: () => {} })
+        result.current[1]({ preventDefault: () => undefined, stopPropagation: () => undefined })
         assert.equal(
           dispatch.calledWith(
             showModal({

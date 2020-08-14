@@ -23,7 +23,7 @@ describe('Reveal Seed Phrase', function () {
       <RevealSeedPhrase.WrappedComponent {...props} />, {
         context: {
           t: (str) => str,
-          metricsEvent: () => {},
+          metricsEvent: () => undefined,
         },
       },
     )

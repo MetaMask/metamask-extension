@@ -21,7 +21,7 @@ proxyquire('../send.container.js', {
       return () => ({})
     },
   },
-  'react-router-dom': { withRouter: () => {} },
+  'react-router-dom': { withRouter: () => undefined },
   'redux': { compose: (_, arg2) => () => arg2() },
   '../../store/actions': actionSpies,
   '../../ducks/send/send.duck': duckActionSpies,

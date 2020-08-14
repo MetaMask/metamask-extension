@@ -121,6 +121,7 @@ export default class ContactListTab extends Component {
     } else if (!hideAddressBook && showingMyAccounts) {
       return (<MyAccounts />)
     }
+    return null
   }
 
   render () {

@@ -13,7 +13,7 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} from '../../../../../ui/app/helpers/constants/transactions.js'
+} from '../../../../../ui/app/helpers/constants/transactions'
 
 import { createTestProviderTools, getTestAccounts } from '../../../../stub/provider'
 
@@ -47,7 +47,7 @@ describe('Transaction Controller', function () {
         ethTx.sign(fromAccount.key)
         resolve()
       }),
-      getPermittedAccounts: () => {},
+      getPermittedAccounts: () => undefined,
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })

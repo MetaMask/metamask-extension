@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import ButtonGroup from '../button-group.component.js'
+import ButtonGroup from '../button-group.component'
 
 describe('ButtonGroup Component', function () {
   let wrapper

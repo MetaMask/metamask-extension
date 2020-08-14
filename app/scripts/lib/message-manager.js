@@ -64,7 +64,8 @@ export default class MessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -225,7 +226,7 @@ export default class MessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('MessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`MessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)

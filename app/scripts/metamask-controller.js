@@ -24,7 +24,7 @@ import createOriginMiddleware from './lib/createOriginMiddleware'
 import createTabIdMiddleware from './lib/createTabIdMiddleware'
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware'
-import { setupMultiplex } from './lib/stream-utils.js'
+import { setupMultiplex } from './lib/stream-utils'
 import KeyringController from 'eth-keyring-controller'
 import EnsController from './controllers/ens'
 import NetworkController from './controllers/network'
@@ -47,7 +47,6 @@ import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
-import getBuyEthUrl from './lib/buy-eth-url'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
 import { version } from '../manifest/_base.json'
@@ -449,7 +448,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      buyEth: this.buyEth.bind(this),
       safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
@@ -601,8 +599,6 @@ export default class MetamaskController extends EventEmitter {
         this.selectFirstIdentity()
       }
       return vault
-    } catch (err) {
-      throw err
     } finally {
       releaseLock()
     }
@@ -658,8 +654,6 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
       return vault
-    } catch (err) {
-      throw err
     } finally {
       releaseLock()
     }
@@ -714,15 +708,16 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(accountTokens).forEach((address) => {
       const checksummedAddress = ethUtil.toChecksumAddress(address)
       filteredAccountTokens[checksummedAddress] = {}
-      Object.keys(accountTokens[address]).forEach(
-        (networkType) => (filteredAccountTokens[checksummedAddress][networkType] = networkType !== 'mainnet' ?
-          accountTokens[address][networkType] :
-          accountTokens[address][networkType].filter(({ address }) => {
-            const tokenAddress = ethUtil.toChecksumAddress(address)
-            return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
-          })
-        ),
-      )
+      Object.keys(accountTokens[address]).forEach((networkType) => {
+        filteredAccountTokens[checksummedAddress][networkType] = networkType === 'mainnet'
+          ? (
+            accountTokens[address][networkType].filter(({ address }) => {
+              const tokenAddress = ethUtil.toChecksumAddress(address)
+              return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+            })
+          )
+          : accountTokens[address][networkType]
+      })
     })
 
     const preferences = {
@@ -1349,7 +1344,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers the callback in newUnsignedTypedMessage.
    *
    * @param  {Object} msgParams - The params passed to eth_signTypedData.
-   * @returns {Object} - Full state update.
+   * @returns {Object|undefined} - Full state update.
    */
   async signTypedMessage (msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
@@ -1372,6 +1367,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.info('MetaMaskController - eth_signTypedData failed.', error)
       this.typedMessageManager.errorMessage(msgId, error)
+      return undefined
     }
   }
 
@@ -1401,13 +1397,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
-    try {
-      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
-      const state = await this.getState()
-      return state
-    } catch (error) {
-      throw error
-    }
+    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    const state = await this.getState()
+    return state
   }
 
   async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
@@ -1526,7 +1518,7 @@ export default class MetamaskController extends EventEmitter {
     const api = this.getApi()
     const dnode = Dnode(api)
     // report new active controller connection
-    this.activeControllerConnections++
+    this.activeControllerConnections += 1
     this.emit('controllerConnectionChanged', this.activeControllerConnections)
     // connect dnode api to remote connection
     pump(
@@ -1535,7 +1527,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // report new active controller connection
-        this.activeControllerConnections--
+        this.activeControllerConnections -= 1
         this.emit('controllerConnectionChanged', this.activeControllerConnections)
         // report any error
         if (err) {
@@ -1850,6 +1842,7 @@ export default class MetamaskController extends EventEmitter {
         customVariables,
         eventOpts: {
           action,
+          category: 'Background',
           name,
         },
       },
@@ -1881,24 +1874,6 @@ export default class MetamaskController extends EventEmitter {
     } catch (err) {
       cb(err)
       return
-    }
-  }
-
-  /**
-   * A method for forwarding the user to the easiest way to obtain ether,
-   * or the network "gas" currency, for the current selected network.
-   *
-   * @param {string} address - The address to fund.
-   * @param {string} amount - The amount of ether desired, as a base 10 string.
-   */
-  buyEth (address, amount) {
-    if (!amount) {
-      amount = '5'
-    }
-    const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
-    if (url) {
-      this.platform.openTab({ url })
     }
   }
 

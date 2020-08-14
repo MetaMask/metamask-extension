@@ -97,6 +97,7 @@ async function getLocale (code) {
       log.error(`Error opening your locale ("${code}") file: `, e)
     }
     process.exit(1)
+    return undefined
   }
 }
 
@@ -111,6 +112,7 @@ async function writeLocale (code, locale) {
       log.error(`Error writing your locale ("${code}") file: `, e)
     }
     process.exit(1)
+    return undefined
   }
 }
 
@@ -156,6 +158,8 @@ async function verifyLocale (code, fix = false) {
     }
     return true
   }
+
+  return false
 }
 
 async function verifyEnglishLocale (fix = false) {
@@ -165,11 +169,11 @@ async function verifyEnglishLocale (fix = false) {
   // match "t(`...`)" because constructing message keys from template strings
   // prevents this script from finding the messages, and then inappropriately
   // deletes them
-  const templateStringRegex = /\bt\(`.*`\)/g
+  const templateStringRegex = /\bt\(`.*`\)/ug
   const templateUsage = []
 
   // match the keys from the locale file
-  const keyRegex = /'(\w+)'|"(\w+)"/g
+  const keyRegex = /'(\w+)'|"(\w+)"/ug
   const usedMessages = new Set()
   for await (const fileContents of getFileContents(javascriptFiles)) {
     for (const match of matchAll.call(fileContents, keyRegex)) {

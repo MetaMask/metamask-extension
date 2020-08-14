@@ -85,7 +85,8 @@ export default class PermissionConnect extends Component {
     getRequestAccountTabIds()
 
     if (!permissionsRequest) {
-      return history.push(DEFAULT_ROUTE)
+      history.push(DEFAULT_ROUTE)
+      return
     }
 
     const environmentType = getEnvironmentType()
@@ -161,26 +162,24 @@ export default class PermissionConnect extends Component {
     const { redirecting } = this.state
     const { page } = this.props
     const { t } = this.context
-    return !redirecting
-      ? (
-        <div
-          className="permissions-connect__top-bar"
-        >
-          { page === '2'
+    return redirecting
+      ? null
+      : (
+        <div className="permissions-connect__top-bar">
+          {page === '2'
             ? (
               <div className="permissions-connect__back" onClick={() => this.goBack()}>
                 <i className="fas fa-chevron-left" />
-                { t('back') }
+                {t('back')}
               </div>
             )
             : null
           }
           <div className="permissions-connect__page-count">
-            { t('xOfY', [ page, '2' ]) }
+            {t('xOfY', [page, '2'])}
           </div>
         </div>
       )
-      : null
   }
 
   render () {

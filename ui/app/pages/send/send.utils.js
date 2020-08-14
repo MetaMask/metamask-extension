@@ -301,7 +301,7 @@ function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', sendToken }) {
   if (!sendToken) {
-    return
+    return undefined
   }
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
@@ -314,7 +314,7 @@ function getToAddressForGasUpdate (...addresses) {
 }
 
 function removeLeadingZeroes (str) {
-  return str.replace(/^0*(?=\d)/, '')
+  return str.replace(/^0*(?=\d)/u, '')
 }
 
 function ellipsify (text, first = 6, last = 4) {

@@ -157,24 +157,30 @@ function composeUrl (config) {
 
   const urlref = previousPath && composeUrlRefParamAddition(previousPath, confirmTransactionOrigin)
 
-  const dimensions = !pageOpts.hideDimensions ? composeCustomDimensionParamAddition({
-    network,
-    environmentType,
-    activeCurrency,
-    accountType,
-    version,
-    numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
-    numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
-  }) : ''
+  const dimensions = pageOpts.hideDimensions
+    ? ''
+    : (
+      composeCustomDimensionParamAddition({
+        network,
+        environmentType,
+        activeCurrency,
+        accountType,
+        version,
+        numberOfTokens: (customVariables && customVariables.numberOfTokens) || numberOfTokens,
+        numberOfAccounts: (customVariables && customVariables.numberOfAccounts) || numberOfAccounts,
+      })
+    )
   const url = currentPath ? `&url=${encodeURIComponent(`${METAMETRICS_TRACKING_URL}${currentPath}`)}` : ''
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
   const pv_id = currentPath ? `&pv_id=${ethUtil.bufferToHex(ethUtil.sha3(currentPath)).slice(2, 8)}` : ''
-  const uid = metaMetricsId && !excludeMetaMetricsId
-    ? `&uid=${metaMetricsId.slice(2, 18)}`
-    : excludeMetaMetricsId
-      ? '&uid=0000000000000000'
-      : ''
+
+  let uid = ''
+  if (excludeMetaMetricsId) {
+    uid = '&uid=0000000000000000'
+  } else if (metaMetricsId) {
+    uid = `&uid=${metaMetricsId.slice(2, 18)}`
+  }
 
   return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
 }

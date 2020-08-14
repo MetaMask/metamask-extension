@@ -28,7 +28,7 @@ describe('Security Tab', function () {
       <SecurityTab.WrappedComponent {...props} />, {
         context: {
           t: (str) => str,
-          metricsEvent: () => {},
+          metricsEvent: () => undefined,
         },
       },
     )

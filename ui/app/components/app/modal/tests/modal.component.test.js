@@ -48,10 +48,10 @@ describe('Modal Component', function () {
   it('should render a modal with different button types', function () {
     const wrapper = shallow(
       <Modal
-        onCancel={() => {}}
+        onCancel={() => undefined}
         cancelText="Cancel"
         cancelType="secondary"
-        onSubmit={() => {}}
+        onSubmit={() => undefined}
         submitText="Submit"
         submitType="confirm"
       />,
@@ -66,9 +66,9 @@ describe('Modal Component', function () {
   it('should render a modal with children', function () {
     const wrapper = shallow(
       <Modal
-        onCancel={() => {}}
+        onCancel={() => undefined}
         cancelText="Cancel"
-        onSubmit={() => {}}
+        onSubmit={() => undefined}
         submitText="Submit"
       >
         <div className="test-child" />

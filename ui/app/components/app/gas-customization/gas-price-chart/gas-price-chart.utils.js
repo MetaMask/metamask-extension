@@ -124,6 +124,7 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
     .style('visibility', 'visible')
 }
 
+/* eslint-disable babel/no-invalid-this */
 export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOnly }) {
   const circle = this.main
     .select('.c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
@@ -144,6 +145,7 @@ export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOn
       .attr('cy', cy)
   }
 }
+/* eslint-enable babel/no-invalid-this */
 
 export function setSelectedCircle ({
   chart,
@@ -163,7 +165,7 @@ export function setSelectedCircle ({
     while (lowerX === higherX) {
       higherX = getCoordinateData(`.c3-circle-${count}`).x
       higherY = getCoordinateData(`.c3-circle-${count}`).y
-      count++
+      count += 1
     }
   }
 
@@ -263,10 +265,10 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         let text
         d.forEach((el) => {
           if (el && (el.value || el.value === 0) && !text) {
-            text = "<table class='" + 'custom-tooltip' + "'>" + "<tr><th colspan='2'>" + titleFormat(el.x) + '</th></tr>'
+            text = `<table class='custom-tooltip'><tr><th colspan='2'>${titleFormat(el.x)}</th></tr>`
           }
         })
-        return text + '</table>' + "<div class='tooltip-arrow'></div>"
+        return `${text}</table><div class='tooltip-arrow'></div>`
       },
       position: function () {
         if (d3.select('#overlayed-circle').empty()) {

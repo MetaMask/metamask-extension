@@ -37,6 +37,7 @@ export default class ConnectedAccountsList extends PureComponent {
           `Warning: Failed prop type: '${propName}' of component '${componentName}' requires prop 'removePermittedAccount'.`,
         )
       }
+      return undefined
     },
   }
 
@@ -148,9 +149,9 @@ export default class ConnectedAccountsList extends PureComponent {
                       : null
                   }
                   action={
-                    address !== selectedAddress
-                      ? this.renderListItemAction(address)
-                      : null
+                    address === selectedAddress
+                      ? null
+                      : this.renderListItemAction(address)
                   }
                 />
               )

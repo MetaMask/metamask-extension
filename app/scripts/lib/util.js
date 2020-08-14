@@ -55,19 +55,19 @@ const getEnvironmentType = (url = window.location.href) => getEnvironmentTypeMem
  */
 const getPlatform = (_) => {
   const ua = window.navigator.userAgent
-  if (ua.search('Firefox') !== -1) {
-    return PLATFORM_FIREFOX
-  } else {
+  if (ua.search('Firefox') === -1) {
     if (window && window.chrome && window.chrome.ipcRenderer) {
       return PLATFORM_BRAVE
-    } else if (ua.search('Edge') !== -1) {
-      return PLATFORM_EDGE
-    } else if (ua.search('OPR') !== -1) {
-      return PLATFORM_OPERA
-    } else {
-      return PLATFORM_CHROME
     }
+    if (ua.search('Edge') !== -1) {
+      return PLATFORM_EDGE
+    }
+    if (ua.search('OPR') !== -1) {
+      return PLATFORM_OPERA
+    }
+    return PLATFORM_CHROME
   }
+  return PLATFORM_FIREFOX
 }
 
 /**
@@ -135,12 +135,12 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 /**
  * Returns an Error if extension.runtime.lastError is present
  * this is a workaround for the non-standard error object that's used
- * @returns {Error}
+ * @returns {Error|undefined}
  */
 function checkForError () {
   const lastError = extension.runtime.lastError
   if (!lastError) {
-    return
+    return undefined
   }
   // if it quacks like an Error, its an Error
   if (lastError.stack && lastError.message) {

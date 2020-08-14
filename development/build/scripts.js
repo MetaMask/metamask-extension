@@ -25,7 +25,7 @@ module.exports = createScriptTasks
 
 const dependencies = Object.keys((packageJSON && packageJSON.dependencies) || {})
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
+const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u))
 const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
@@ -365,7 +365,7 @@ function getEnvironment ({ devMode, test }) {
     return 'testing'
   } else if (process.env.CIRCLE_BRANCH === 'master') {
     return 'production'
-  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/.test(process.env.CIRCLE_BRANCH)) {
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)) {
     return 'release-candidate'
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
     return 'staging'

@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import sinon from 'sinon'
 
-import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck.js'
+import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck'
 
 const initialState = {
   txData: {},
@@ -482,7 +482,7 @@ describe('Confirm Transaction Duck', function () {
     beforeEach(function () {
       global.eth = {
         getCode: sinon.stub().callsFake(
-          (address) => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x'),
+          (address) => Promise.resolve(address && address.match(/isContract/u) ? 'not-0x' : '0x'),
         ),
       }
     })

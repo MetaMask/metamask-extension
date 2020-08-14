@@ -6,7 +6,7 @@ import { getNetworkDisplayName } from '../../../../../app/scripts/controllers/ne
 describe('NetworkController', function () {
   describe('controller', function () {
     let networkController
-    const noop = () => {}
+    const noop = () => undefined
     const networkControllerProviderConfig = {
       getAccounts: noop,
     }

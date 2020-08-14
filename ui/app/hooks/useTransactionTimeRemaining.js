@@ -85,6 +85,7 @@ export function useTransactionTimeRemaining (
       }, 10000)
       return () => clearInterval(interval.current)
     }
+    return undefined
   }, [
     isMainNet,
     transactionTimeFeatureActive,

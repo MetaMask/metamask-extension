@@ -9,7 +9,7 @@ describe('SelectedAccount Component', function () {
       <SelectedAccount
         selectedIdentity={{ name: 'testName', address: '0x1b82543566f41a7db9a9a75fc933c340ffb55c9d' }}
       />
-    ), { context: { t: () => {} } })
+    ), { context: { t: () => undefined } })
     // Checksummed version of address is displayed
     assert.equal(wrapper.find('.selected-account__address').text(), '0x1B82...5C9D')
     assert.equal(wrapper.find('.selected-account__name').text(), 'testName')

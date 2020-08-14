@@ -152,7 +152,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       const balance = await driver.findElement(By.css('[data-testid="wallet-balance"] .list-item__heading'))
-      await driver.wait(until.elementTextMatches(balance, /25\s*ETH/))
+      await driver.wait(until.elementTextMatches(balance, /25\s*ETH/u))
       await driver.delay(regularDelayMs)
     })
   })
@@ -202,7 +202,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
+      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000)
     })
   })
 
@@ -239,7 +239,7 @@ describe('MetaMask', function () {
       }, 10000)
 
       const txValues = await driver.findElement(By.css('.transaction-list-item__primary-currency'))
-      await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/), 10000)
+      await driver.wait(until.elementTextMatches(txValues, /-2\s*ETH/u), 10000)
     })
   })
 })

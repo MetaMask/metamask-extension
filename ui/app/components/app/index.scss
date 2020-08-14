@@ -1,5 +1,7 @@
+@import 'account-list-item/index';
 @import 'account-menu/index';
 @import 'add-token-button/index';
+@import '../ui/alert/index';
 @import 'alerts/alerts';
 @import 'app-header/index';
 @import 'asset-list-item/asset-list-item';
@@ -9,6 +11,7 @@
 @import 'confirm-page-container/index';
 @import '../ui/currency-input/index';
 @import '../ui/currency-display/index';
+@import '../ui/editable-label/index';
 @import '../ui/error-message/index';
 @import '../ui/export-text-container/index';
 @import '../ui/identicon/index';
@@ -21,10 +24,13 @@
 @import '../ui/page-container/index';
 @import '../../pages/index';
 @import 'permission-page-container/index';
+@import '../ui/qr-code/index';
+@import '../ui/readonly-input/index';
 @import 'selected-account/index';
 @import '../ui/sender-to-recipient/index';
 @import '../ui/tabs/index';
 @import '../ui/token-balance/index';
+@import 'signature-request-original/index';
 @import 'token-cell/token-cell';
 @import 'transaction-activity-log/index';
 @import 'transaction-breakdown/index';
@@ -54,6 +60,7 @@
 @import '../ui/dropdown/dropdown';
 @import 'permissions-connect-header/index';
 @import 'permissions-connect-footer/index';
+@import 'tab-bar/index';
 @import 'wallet-overview/index';
 @import '../ui/account-mismatch-warning/index';
 @import '../ui/icon-border/icon-border';

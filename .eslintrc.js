@@ -44,8 +44,32 @@ module.exports = {
     /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
     'array-callback-return': 'error',
     'callback-return': 'error',
+    'consistent-return': 'error',
     'global-require': 'error',
     'guard-for-in': 'error',
+    'implicit-arrow-linebreak': 'error',
+    'import/extensions': ['error', 'never', { 'json': 'always' }],
+    'import/no-extraneous-dependencies': 'error',
+    'max-statements-per-line': ['error', { 'max': 1 }],
+    'no-case-declarations': 'error',
+    'no-constant-condition': 'error',
+    'no-dupe-else-if': 'error',
+    'no-empty': 'error',
+    'no-empty-function': 'error',
+    'no-eq-null': 'error',
+    'no-global-assign': 'error',
+    'no-loop-func': 'error',
+    'no-negated-condition': 'error',
+    'no-nested-ternary': 'error',
+    'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
+    'no-process-exit': 'error',
+    'no-prototype-builtins': 'error',
+    'no-template-curly-in-string': 'error',
+    'no-useless-catch': 'error',
+    'no-useless-concat': 'error',
+    'prefer-rest-params': 'error',
+    'prefer-spread': 'error',
+    'require-unicode-regexp': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',
     'no-tabs': 'error',
@@ -95,11 +119,22 @@ module.exports = {
       'logical': 'parens-new-line',
       'prop': 'parens-new-line',
     }],
+
+    'no-invalid-this': 'off',
+    'babel/no-invalid-this': 'error',
+
     'babel/semi': ['error', 'never'],
     'mocha/no-setup-in-describe': 'off',
   },
 
   overrides: [{
+    files: [
+      'test/e2e/**/*.js',
+    ],
+    rules: {
+      'mocha/no-hooks-for-single-case': 'off',
+    },
+  }, {
     files: [
       'app/scripts/migrations/*.js',
       '*.stories.js',
@@ -113,6 +148,24 @@ module.exports = {
     ],
     rules: {
       'global-require': 'off',
+    },
+  }, {
+    files: [
+      'test/**/*-test.js',
+      'test/**/*.spec.js',
+    ],
+    rules: {
+      // Mocha will re-assign `this` in a test context
+      'babel/no-invalid-this': 'off',
+    },
+  }, {
+    files: [
+      'development/**/*.js',
+      'test/e2e/benchmark.js',
+      'test/helper.js',
+    ],
+    rules: {
+      'no-process-exit': 'off',
     },
   }],
 

@@ -67,7 +67,7 @@ describe('Gas Duck', function () {
     { expectedTime: 1, expectedWait: 0.5, gasprice: 20, somethingElse: 'foobar' },
   ]
   const fakeFetch = (url) => new Promise((resolve) => {
-    const dataToResolve = url.match(/ethgasAPI/)
+    const dataToResolve = url.match(/ethgasAPI/u)
       ? mockEthGasApiResponse
       : mockPredictTableResponse
     resolve({

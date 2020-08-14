@@ -38,8 +38,10 @@ let nonDeletableCount = 0
 let status
 while (transactions.length <= 100) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
+  // This is an old migration, let's allow it
+  // eslint-disable-next-line no-loop-func
   if (!deletableTxStates.find((s) => s === status)) {
-    nonDeletableCount++
+    nonDeletableCount += 1
   }
   transactions.push({ status })
 }
@@ -65,7 +67,7 @@ describe('storage is migrated successfully and the proper transactions are remov
         const migratedTransactions = migratedData.data.TransactionController.transactions
         migratedTransactions.forEach((tx) => {
           if (!deletableTxStates.find((s) => s === tx.status)) {
-            leftoverNonDeletableTxCount++
+            leftoverNonDeletableTxCount += 1
           }
         })
         assert.equal(leftoverNonDeletableTxCount, nonDeletableCount, "migration shouldn't delete transactions we want to keep")

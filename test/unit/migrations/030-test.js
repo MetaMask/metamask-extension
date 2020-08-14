@@ -1,5 +1,5 @@
 import assert from 'assert'
-import migrationTemplate from '../../../app/scripts/migrations/030.js'
+import migrationTemplate from '../../../app/scripts/migrations/030'
 
 const storage = {
   meta: {},

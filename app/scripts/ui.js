@@ -24,7 +24,7 @@ import Eth from 'ethjs'
 import EthQuery from 'eth-query'
 import launchMetaMaskUi from '../../ui'
 import StreamProvider from 'web3-stream-provider'
-import { setupMultiplex } from './lib/stream-utils.js'
+import { setupMultiplex } from './lib/stream-utils'
 import log from 'loglevel'
 
 start().catch(log.error)
@@ -62,7 +62,8 @@ async function start () {
     const container = document.getElementById('app-content')
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
-        return displayCriticalError(container, err)
+        displayCriticalError(container, err)
+        return
       }
 
       const state = store.getState()
@@ -102,7 +103,8 @@ async function queryCurrentActiveTab (windowType) {
 function initializeUi (activeTab, container, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      return cb(err)
+      cb(err)
+      return
     }
 
     launchMetaMaskUi({

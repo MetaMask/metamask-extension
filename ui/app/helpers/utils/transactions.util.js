@@ -181,9 +181,10 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
     const { submittedTime, txParams: { nonce: currentNonce } = {} } = current
 
     if (currentNonce === nonce) {
-      return acc.submittedTime
-        ? submittedTime > acc.submittedTime ? current : acc
-        : current
+      if (!acc.submittedTime) {
+        return current
+      }
+      return submittedTime > acc.submittedTime ? current : acc
     } else {
       return acc
     }
@@ -237,7 +238,7 @@ export function getStatusKey (transaction) {
  */
 export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/tx/${hash}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`
   }
   const prefix = getEtherscanNetworkPrefix(networkId)
   return `https://${prefix}etherscan.io/tx/${hash}`

@@ -1,0 +1,248 @@
+.request-signature {
+  &__container {
+    width: 380px;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-flow: column nowrap;
+    z-index: 25;
+    align-items: center;
+    position: relative;
+    height: 100%;
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      top: 0;
+      box-shadow: none;
+    }
+
+    @media screen and (min-width: $break-large) {
+      height: 620px;
+    }
+  }
+
+  &__typed-container {
+    padding: 17px;
+
+    h1 {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > div {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__header {
+    height: 64px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  &__header-background {
+    position: absolute;
+    background-color: $athens-grey;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__header__text {
+    color: #5b5d67;
+    font-size: 22px;
+    line-height: 29px;
+    z-index: 3;
+  }
+
+  &__header__tip-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__header__tip {
+    height: 25px;
+    width: 25px;
+    background: $athens-grey;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: -8px;
+    z-index: 1;
+  }
+
+  &__account-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+
+  &__account {
+    color: $dusty-gray;
+    margin-left: 17px;
+  }
+
+  &__account-text {
+    font-size: 14px;
+  }
+
+  &__account-item {
+    height: 22px;
+    background-color: $white;
+    line-height: 16px;
+    font-size: 12px;
+    width: 124px;
+
+    .account-list-item {
+      margin-top: 6px;
+    }
+
+    .account-list-item__account-name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .account-list-item__top-row {
+      margin: 0;
+    }
+  }
+
+  &__balance {
+    color: $dusty-gray;
+    margin-right: 17px;
+    width: 124px;
+  }
+
+  &__balance-text {
+    text-align: right;
+    font-size: 14px;
+  }
+
+  &__balance-value {
+    text-align: right;
+    margin-top: 2.5px;
+  }
+
+  &__request-icon {
+    margin-top: 25px;
+  }
+
+  &__body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    height: 0;
+  }
+
+  &__request-info {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__headline {
+    height: 48px;
+    width: 240px;
+    color: $tundora;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  &__notice,
+  &__warning {
+    font-size: 14px;
+    line-height: 19px;
+    text-align: center;
+    margin-top: 41px;
+    margin-bottom: 11px;
+    width: 100%;
+  }
+
+  &__notice {
+    color: $dusty-gray;
+  }
+
+  &__warning {
+    color: $crimson;
+  }
+
+  &__rows {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-top: 1px solid $geyser;
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__row {
+    display: flex;
+    flex-flow: column;
+    flex: 1 0 auto;
+  }
+
+  &__row-title {
+    width: 80px;
+    color: $dusty-gray;
+    font-size: 16px;
+    line-height: 22px;
+    margin-top: 12px;
+    margin-left: 18px;
+    width: 100%;
+  }
+
+  &__row-value {
+    color: $scorpion;
+    font-size: 14px;
+    line-height: 19px;
+    width: 100%;
+    overflow-wrap: break-word;
+    border-bottom: 1px solid #d2d8dd;
+    padding: 6px 18px 15px;
+    white-space: pre-line;
+  }
+
+  &__help-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: $primary-blue;
+  }
+
+  &__footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    position: relative;
+    flex: 0 0 auto;
+    border-top: 1px solid $geyser;
+    padding: 1.6rem;
+
+    button {
+      width: 165px;
+    }
+
+    &__cancel-button {
+      margin-right: 1.2rem;
+    }
+  }
+}

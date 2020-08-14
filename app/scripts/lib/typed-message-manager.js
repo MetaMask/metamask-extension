@@ -61,7 +61,8 @@ export default class TypedMessageManager extends EventEmitter {
   getUnapprovedMsgs () {
     return this.messages.filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg; return result
+        result[msg.id] = msg
+        return result
       }, {})
   }
 
@@ -154,7 +155,7 @@ export default class TypedMessageManager extends EventEmitter {
         }, 'Signing data must be valid EIP-712 typed data.')
         break
       case 'V3':
-      case 'V4':
+      case 'V4': {
         assert.equal(typeof params.data, 'string', '"params.data" must be a string.')
         let data
         assert.doesNotThrow(() => {
@@ -167,6 +168,7 @@ export default class TypedMessageManager extends EventEmitter {
         const activeChainId = parseInt(this.networkController.getNetworkState())
         chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
         break
+      }
       default:
         assert.fail(`Unknown typed data version "${params.version}"`)
     }
@@ -291,7 +293,7 @@ export default class TypedMessageManager extends EventEmitter {
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
     if (!msg) {
-      throw new Error('TypedMessageManager - Message not found for id: "${msgId}".')
+      throw new Error(`TypedMessageManager - Message not found for id: "${msgId}".`)
     }
     msg.status = status
     this._updateMsg(msg)

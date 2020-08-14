@@ -22,8 +22,9 @@ const insertRule = (css) => {
 
 const insertKeyframesRule = (keyframes) => {
   // random name
+  // eslint-disable-next-line no-plusplus
   const name = 'anim_' + (++index) + (+new Date())
-  let css = '@' + 'keyframes ' + name + ' {'
+  let css = `@keyframes ${name} {`
 
   Object.keys(keyframes).forEach((key) => {
     css += key + ' {'
@@ -133,8 +134,8 @@ class FadeModal extends Component {
   }
 
   static defaultProps = {
-    onShow: function () {},
-    onHide: function () {},
+    onShow: () => undefined,
+    onHide: () => undefined,
     keyboard: true,
     backdrop: true,
     closeOnClick: true,
@@ -192,7 +193,7 @@ class FadeModal extends Component {
     const backdrop = this.props.backdrop
       ? (
         <div
-          className="backdrop"
+          className="modal__backdrop"
           style={backdropStyle}
           onClick={this.props.closeOnClick
             ? this.handleBackdropClick
@@ -208,7 +209,7 @@ class FadeModal extends Component {
       <span>
         <div className="modal" style={modalStyle}>
           <div
-            className="content"
+            className="modal__content"
             ref={(el) => (this.content = el)}
             tabIndex="-1"
             style={contentStyle}

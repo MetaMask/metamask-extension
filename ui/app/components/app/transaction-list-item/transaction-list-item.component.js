@@ -86,13 +86,15 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
       return null
     }
 
-    return !cancelEnabled ? (
-      <Tooltip title={t('notEnoughGas')}>
-        <div>
-          {cancelButton}
-        </div>
-      </Tooltip>
-    ) : cancelButton
+    return cancelEnabled
+      ? cancelButton
+      : (
+        <Tooltip title={t('notEnoughGas')}>
+          <div>
+            {cancelButton}
+          </div>
+        </Tooltip>
+      )
 
   }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
 

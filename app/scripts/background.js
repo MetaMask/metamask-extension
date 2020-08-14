@@ -26,7 +26,7 @@ import Migrator from './lib/migrator'
 import migrations from './migrations'
 import PortStream from 'extension-port-stream'
 import createStreamSink from './lib/createStreamSink'
-import NotificationManager from './lib/notification-manager.js'
+import NotificationManager from './lib/notification-manager'
 import MetamaskController from './metamask-controller'
 import rawFirstTimeState from './first-time-state'
 import setupSentry from './lib/setupSentry'
@@ -327,7 +327,7 @@ function setupController (initState, initLangCode) {
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return false
+      return
     }
 
     if (isMetaMaskInternalProcess) {

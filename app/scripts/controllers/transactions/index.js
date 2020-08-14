@@ -16,7 +16,7 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} from '../../../../ui/app/helpers/constants/transactions.js'
+} from '../../../../ui/app/helpers/constants/transactions'
 
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
@@ -287,11 +287,11 @@ export default class TransactionController extends EventEmitter {
   /**
    * Gets default gas price, or returns `undefined` if gas price is already set
    * @param {Object} txMeta - The txMeta object
-   * @returns {Promise<string>} The default gas price
+   * @returns {Promise<string|undefined>} The default gas price
    */
   async _getDefaultGasPrice (txMeta) {
     if (txMeta.txParams.gasPrice) {
-      return
+      return undefined
     }
     const gasPrice = await this.query.gasPrice()
 
@@ -560,9 +560,9 @@ export default class TransactionController extends EventEmitter {
 
       // It seems that sometimes the numerical values being returned from
       // this.query.getTransactionReceipt are BN instances and not strings.
-      const gasUsed = typeof txReceipt.gasUsed !== 'string'
-        ? txReceipt.gasUsed.toString(16)
-        : txReceipt.gasUsed
+      const gasUsed = typeof txReceipt.gasUsed === 'string'
+        ? txReceipt.gasUsed
+        : txReceipt.gasUsed.toString(16)
 
       txMeta.txReceipt = {
         ...txReceipt,
@@ -684,7 +684,7 @@ export default class TransactionController extends EventEmitter {
       if (!('retryCount' in txMeta)) {
         txMeta.retryCount = 0
       }
-      txMeta.retryCount++
+      txMeta.retryCount += 1
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
   }

@@ -261,10 +261,10 @@ export function getPermissionsMetadataHostCounts (state) {
   const metadata = getPermissionDomainsMetadata(state)
   return Object.values(metadata).reduce((counts, { host }) => {
     if (host) {
-      if (!counts[host]) {
-        counts[host] = 1
-      } else {
+      if (counts[host]) {
         counts[host] += 1
+      } else {
+        counts[host] = 1
       }
     }
     return counts
