@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Select from 'react-select'
-import genAccountLink from '../../../../lib/account-link.js'
+import genAccountLink from '../../../../lib/account-link'
 import Button from '../../../components/ui/button'
 
 class AccountList extends Component {

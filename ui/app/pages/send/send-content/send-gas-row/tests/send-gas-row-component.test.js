@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SendGasRow from '../send-gas-row.component.js'
+import SendGasRow from '../send-gas-row.component'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import GasFeeDisplay from '../gas-fee-display/gas-fee-display.component'

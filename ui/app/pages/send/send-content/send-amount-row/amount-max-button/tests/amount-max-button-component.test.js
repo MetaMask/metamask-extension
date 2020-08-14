@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import AmountMaxButton from '../amount-max-button.component.js'
+import AmountMaxButton from '../amount-max-button.component'
 
 describe('AmountMaxButton Component', function () {
   let wrapper

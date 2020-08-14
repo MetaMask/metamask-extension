@@ -3,7 +3,7 @@
 // TODO:deprecate:2020
 // Delete this file
 
-import 'web3/dist/web3.min.js'
+import 'web3/dist/web3.min'
 
 const shouldLogUsage = !([
   'docs.metamask.io',

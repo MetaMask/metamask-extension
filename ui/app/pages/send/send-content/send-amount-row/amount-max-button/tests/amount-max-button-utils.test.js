@@ -1,7 +1,7 @@
 import assert from 'assert'
 import {
   calcMaxAmount,
-} from '../amount-max-button.utils.js'
+} from '../amount-max-button.utils'
 
 describe('amount-max-button utils', function () {
 

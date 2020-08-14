@@ -13,7 +13,7 @@ import {
   SEND_ETHER_ACTION_KEY,
   DEPLOY_CONTRACT_ACTION_KEY,
   CONTRACT_INTERACTION_KEY,
-} from '../../../../../ui/app/helpers/constants/transactions.js'
+} from '../../../../../ui/app/helpers/constants/transactions'
 
 import { createTestProviderTools, getTestAccounts } from '../../../../stub/provider'
 

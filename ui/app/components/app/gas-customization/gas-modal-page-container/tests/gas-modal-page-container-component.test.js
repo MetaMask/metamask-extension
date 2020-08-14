@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import shallow from '../../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
-import GasModalPageContainer from '../gas-modal-page-container.component.js'
+import GasModalPageContainer from '../gas-modal-page-container.component'
 import timeout from '../../../../../../lib/test-timeout'
 
 import PageContainer from '../../../../ui/page-container'

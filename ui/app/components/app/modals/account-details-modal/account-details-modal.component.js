@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
-import genAccountLink from '../../../../../lib/account-link.js'
+import genAccountLink from '../../../../../lib/account-link'
 import QrView from '../../../ui/qr-code'
 import EditableLabel from '../../../ui/editable-label'
 import Button from '../../../ui/button'

@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
-import SendFooter from '../send-footer.component.js'
+import SendFooter from '../send-footer.component'
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer'
 
 describe('SendFooter Component', function () {

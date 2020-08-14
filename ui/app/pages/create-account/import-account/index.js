@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 
 // Subviews
-import JsonImportView from './json.js'
-
-import PrivateKeyImportView from './private-key.js'
+import JsonImportView from './json'
+import PrivateKeyImportView from './private-key'
 
 export default class AccountImportSubview extends Component {
   static contextTypes = {

@@ -48,6 +48,7 @@ module.exports = {
     'global-require': 'error',
     'guard-for-in': 'error',
     'implicit-arrow-linebreak': 'error',
+    'import/extensions': ['error', 'never', { 'json': 'always' }],
     'no-case-declarations': 'error',
     'no-constant-condition': 'error',
     'no-dupe-else-if': 'error',

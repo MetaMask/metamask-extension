@@ -1,1 +1,1 @@
-export { default } from './initialized.container.js'
+export { default } from './initialized.container'

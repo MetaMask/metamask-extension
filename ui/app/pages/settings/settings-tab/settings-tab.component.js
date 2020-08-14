@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import availableCurrencies from '../../../helpers/constants/available-conversions'
+import availableCurrencies from '../../../helpers/constants/available-conversions.json'
 import SimpleDropdown from '../../../components/app/dropdowns/simple-dropdown'
 import ToggleButton from '../../../components/ui/toggle-button'
 import locales from '../../../../../app/_locales/index.json'
