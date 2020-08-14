@@ -115,6 +115,7 @@ function composeParamAddition (paramValue, paramName) {
   * @property {string} config.accountType The account type being used at the time of the event: 'hardware', 'imported' or 'default'
   * @property {number} config.numberOfTokens The number of tokens that the user has added at the time of the event
   * @property {number} config.numberOfAccounts The number of accounts the user has added at the time of the event
+  * @property {string} config.version The current version of the MetaMask extension
   * @property {string} config.previousPath The pathname of the URL the user was on prior to the URL they are on at the time of the event
   * @property {string} config.currentPath The pathname of the URL the user is on at the time of the event
   * @property {string} config.metaMetricsId A random id assigned to a user at the time of opting in to metametrics. A hexadecimal number

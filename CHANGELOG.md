@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 8.0.8 Fri Aug 14 2020
+- [#9211](https://github.com/MetaMask/metamask-extension/pull/9211): Fix Etherscan redirect on notification click
+- [#9237](https://github.com/MetaMask/metamask-extension/pull/9237): Reduce volume of web3 usage metrics
+- [#9227](https://github.com/MetaMask/metamask-extension/pull/9227): Permit all-caps addresses
+
 ## 8.0.7 Fri Aug 07 2020
 - [#9065](https://github.com/MetaMask/metamask-extension/pull/9065): Change title of "Reveal Seed Words" page to "Reveal Seed Phrase"
 - [#8974](https://github.com/MetaMask/metamask-extension/pull/8974): Add tooltip to copy button for contacts and seed phrase
