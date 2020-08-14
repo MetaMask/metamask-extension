@@ -75,7 +75,7 @@ export function isValidDomainName (address) {
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
-    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/)
+    .match(/^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u)
   return match !== null
 }
 
@@ -102,7 +102,7 @@ export function parseBalance (balance) {
   let afterDecimal
   const wei = numericBalance(balance)
   const weiString = wei.toString()
-  const trailingZeros = /0+$/
+  const trailingZeros = /0+$/u
 
   const beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
   afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
@@ -122,7 +122,7 @@ export function formatBalance (balance, decimalsToKeep, needsParse = true, ticke
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
-        const sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
+        const sigFigs = afterDecimal.match(/^0*(.{2})/u) // default: grabs 2 most significant digits
         if (sigFigs) {
           afterDecimal = sigFigs[0]
         }
@@ -219,7 +219,7 @@ export function normalizeNumberToWei (n, currency) {
 }
 
 export function isHex (str) {
-  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
+  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/u))
 }
 
 export function getContractAtAddress (tokenAddress) {

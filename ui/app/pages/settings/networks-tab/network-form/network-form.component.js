@@ -214,7 +214,7 @@ export default class NetworkForm extends PureComponent {
 
   isValidWhenAppended = (url) => {
     const appendedRpc = `http://${url}`
-    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/)
+    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u)
   }
 
   validateBlockExplorerURL = (url, stateKey) => {

@@ -5,7 +5,7 @@ import { ethErrors } from 'eth-json-rpc-errors'
 import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
-const hexRe = /^[0-9A-Fa-f]+$/g
+const hexRe = /^[0-9A-Fa-f]+$/ug
 import log from 'loglevel'
 
 /**

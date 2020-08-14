@@ -66,7 +66,7 @@ export default class AccountDetailsModal extends Component {
           }}
         >
           {rpcPrefs.blockExplorerUrl
-            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/)[1]])
+            ? this.context.t('blockExplorerView', [rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1]])
             : this.context.t('viewOnEtherscan')
           }
         </Button>

@@ -314,7 +314,7 @@ function getToAddressForGasUpdate (...addresses) {
 }
 
 function removeLeadingZeroes (str) {
-  return str.replace(/^0*(?=\d)/, '')
+  return str.replace(/^0*(?=\d)/u, '')
 }
 
 function ellipsify (text, first = 6, last = 4) {

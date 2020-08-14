@@ -117,7 +117,7 @@ async function main () {
   let existingParentDirectory
 
   while (args.length) {
-    if (/^(--pages|-p)$/i.test(args[0])) {
+    if (/^(--pages|-p)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing pages argument')
       }
@@ -128,7 +128,7 @@ async function main () {
         }
       }
       args.splice(0, 2)
-    } else if (/^(--samples|-s)$/i.test(args[0])) {
+    } else if (/^(--samples|-s)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing number of samples')
       }
@@ -137,7 +137,7 @@ async function main () {
         throw new Error(`Invalid 'samples' argument given: '${args[1]}'`)
       }
       args.splice(0, 2)
-    } else if (/^(--out|-o)$/i.test(args[0])) {
+    } else if (/^(--out|-o)$/u.test(args[0])) {
       if (args[1] === undefined) {
         throw new Error('Missing output filename')
       }

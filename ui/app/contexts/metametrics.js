@@ -60,7 +60,7 @@ export function MetaMetricsProvider ({ children }) {
     const { eventOpts = {} } = config
     const { name = '' } = eventOpts
     const { currentPath: overrideCurrentPath = '' } = overrides
-    const isSendFlow = Boolean(name.match(/^send|^confirm/) || overrideCurrentPath.match(/send|confirm/))
+    const isSendFlow = Boolean(name.match(/^send|^confirm/u) || overrideCurrentPath.match(/send|confirm/u))
 
     if (participateInMetaMetrics || config.isOptIn) {
       return sendMetaMetricsEvent({

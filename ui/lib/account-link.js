@@ -1,6 +1,6 @@
 export default function getAccountLink (address, network, rpcPrefs) {
   if (rpcPrefs && rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/, '')}/address/${address}`
+    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/address/${address}`
   }
 
   const net = parseInt(network)
