@@ -1808,6 +1808,12 @@ export function setAccountLabel (account, label) {
   }
 }
 
+export function clearAccountDetails () {
+  return {
+    type: actionConstants.CLEAR_ACCOUNT_DETAILS,
+  }
+}
+
 export function showSendTokenPage () {
   return {
     type: actionConstants.SHOW_SEND_TOKEN_PAGE,
