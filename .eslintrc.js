@@ -127,6 +127,13 @@ module.exports = {
 
   overrides: [{
     files: [
+      'test/e2e/**/*.js',
+    ],
+    rules: {
+      'mocha/no-hooks-for-single-case': 'off',
+    },
+  }, {
+    files: [
       'app/scripts/migrations/*.js',
       '*.stories.js',
     ],
