@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import AccountModalContainer from '../account-modal-container'
-import genAccountLink from '../../../../../lib/account-link'
+import getAccountLink from '../../../../../lib/account-link'
 import QrView from '../../../ui/qr-code'
 import EditableLabel from '../../../ui/editable-label'
 import Button from '../../../ui/button'
@@ -62,7 +62,7 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={() => {
-            global.platform.openTab({ url: genAccountLink(address, network, rpcPrefs) })
+            global.platform.openTab({ url: getAccountLink(address, network, rpcPrefs) })
           }}
         >
           {rpcPrefs.blockExplorerUrl
