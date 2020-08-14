@@ -49,6 +49,7 @@ module.exports = {
     'guard-for-in': 'error',
     'implicit-arrow-linebreak': 'error',
     'import/extensions': ['error', 'never', { 'json': 'always' }],
+    'import/no-extraneous-dependencies': 'error',
     'max-statements-per-line': ['error', { 'max': 1 }],
     'no-case-declarations': 'error',
     'no-constant-condition': 'error',
