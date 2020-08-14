@@ -47,7 +47,6 @@ import { PermissionsController } from './controllers/permissions'
 import getRestrictedMethods from './controllers/permissions/restrictedMethods'
 import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
-import getBuyEthUrl from './lib/buy-eth-url'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
 import { version } from '../manifest/_base.json'
@@ -449,7 +448,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      buyEth: this.buyEth.bind(this),
       safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
       getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
       getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
@@ -1876,24 +1874,6 @@ export default class MetamaskController extends EventEmitter {
     } catch (err) {
       cb(err)
       return
-    }
-  }
-
-  /**
-   * A method for forwarding the user to the easiest way to obtain ether,
-   * or the network "gas" currency, for the current selected network.
-   *
-   * @param {string} address - The address to fund.
-   * @param {string} amount - The amount of ether desired, as a base 10 string.
-   */
-  buyEth (address, amount) {
-    if (!amount) {
-      amount = '5'
-    }
-    const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
-    if (url) {
-      this.platform.openTab({ url })
     }
   }
 
