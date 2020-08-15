@@ -19,17 +19,18 @@ function transformState (state) {
   const { ABTestController: ABTestControllerState = {} } = state
   const { abTests = {} } = ABTestControllerState
 
-  if (!abTests.fullScreenVsPopup) {
-    state = {
-      ...state,
-      ABTestController: {
-        ...ABTestControllerState,
-        abTests: {
-          ...abTests,
-          fullScreenVsPopup: 'control',
-        },
-      },
-    }
+  if (abTests.fullScreenVsPopup) {
+    return state
   }
-  return state
+
+  return {
+    ...state,
+    ABTestController: {
+      ...ABTestControllerState,
+      abTests: {
+        ...abTests,
+        fullScreenVsPopup: 'control',
+      },
+    },
+  }
 }

@@ -323,20 +323,22 @@ async function fetchExternalBasicGasAndTimeEstimates (dispatch) {
 }
 
 function extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation }) {
+  /* eslint-disable no-param-reassign */
   higherY = new BigNumber(higherY, 10)
   lowerY = new BigNumber(lowerY, 10)
   higherX = new BigNumber(higherX, 10)
   lowerX = new BigNumber(lowerX, 10)
   xForExtrapolation = new BigNumber(xForExtrapolation, 10)
+  /* eslint-enable no-param-reassign */
   const slope = (higherY.minus(lowerY)).div(higherX.minus(lowerX))
   const newTimeEstimate = slope.times(higherX.minus(xForExtrapolation)).minus(higherY).negated()
 
   return Number(newTimeEstimate.toPrecision(10))
 }
 
-function getRandomArbitrary (min, max) {
-  min = new BigNumber(min, 10)
-  max = new BigNumber(max, 10)
+function getRandomArbitrary (minStr, maxStr) {
+  const min = new BigNumber(minStr, 10)
+  const max = new BigNumber(maxStr, 10)
   const random = new BigNumber(String(Math.random()), 10)
   return new BigNumber(random.times(max.minus(min)).plus(min)).toPrecision(10)
 }

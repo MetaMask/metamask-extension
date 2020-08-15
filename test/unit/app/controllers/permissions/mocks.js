@@ -108,6 +108,7 @@ export function getPermissionsMiddleware (permController, origin, extensionId) {
   return (req, res = {}, next = noop, end) => {
     return new Promise((resolve, reject) => {
 
+      // eslint-disable-next-line no-param-reassign
       end = end || _end
 
       middleware(req, res, next, end)

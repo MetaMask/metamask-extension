@@ -101,8 +101,7 @@ export default class NetworkController extends EventEmitter {
     if (!type) {
       return
     }
-    network = networks.networkList[type]?.chainId || network
-    this.networkStore.putState(network)
+    this.networkStore.putState(networks.networkList[type]?.chainId || network)
   }
 
   isNetworkLoading () {

@@ -511,8 +511,7 @@ export function decryptMsgInline (decryptedMsgData) {
     }
 
     dispatch(updateMetamaskState(newState))
-    decryptedMsgData = newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-    return decryptedMsgData
+    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
   }
 }
 

@@ -136,9 +136,8 @@ class Driver {
   }
 
   async switchToWindowWithTitle (title, windowHandles) {
-    if (!windowHandles) {
-      windowHandles = await this.driver.getAllWindowHandles()
-    }
+    // eslint-disable-next-line no-param-reassign
+    windowHandles = windowHandles || await this.driver.getAllWindowHandles()
 
     for (const handle of windowHandles) {
       await this.driver.switchTo().window(handle)
@@ -158,6 +157,7 @@ class Driver {
    * @returns {Promise<void>}
    */
   async closeAllWindowHandlesExcept (exceptions, windowHandles) {
+    // eslint-disable-next-line no-param-reassign
     windowHandles = windowHandles || await this.driver.getAllWindowHandles()
 
     for (const handle of windowHandles) {

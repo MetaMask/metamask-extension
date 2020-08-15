@@ -247,6 +247,7 @@ export default class SignatureRequestOriginal extends Component {
           {
             rows.map(({ name, value }, index) => {
               if (typeof value === 'boolean') {
+                // eslint-disable-next-line no-param-reassign
                 value = value.toString()
               }
               return (

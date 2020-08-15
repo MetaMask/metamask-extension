@@ -271,6 +271,7 @@ export default class TransactionController extends EventEmitter {
     const defaultGasPrice = await this._getDefaultGasPrice(txMeta)
     const { gasLimit: defaultGasLimit, simulationFails } = await this._getDefaultGasLimit(txMeta, getCodeResponse)
 
+    // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTx(txMeta.id)
     if (simulationFails) {
       txMeta.simulationFails = simulationFails
