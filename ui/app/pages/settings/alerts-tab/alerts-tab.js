@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ALERT_TYPES } from '../../../../../app/scripts/controllers/alert'
-import Tooltip from '../../../components/ui/tooltip-v2'
+import Tooltip from '../../../components/ui/tooltip'
 import ToggleButton from '../../../components/ui/toggle-button'
 import { setAlertEnabledness } from '../../../store/actions'
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask'

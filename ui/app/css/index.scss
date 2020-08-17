@@ -22,5 +22,9 @@
 @import './itcss/objects/index';
 @import './itcss/components/index';
 @import './itcss/trumps/index';
-// Other imports
+
+/*
+  Third Party Library Styles
+*/
+@import '../../../node_modules/react-tippy/dist/tippy';
 @import '../../../node_modules/react-select/dist/react-select';

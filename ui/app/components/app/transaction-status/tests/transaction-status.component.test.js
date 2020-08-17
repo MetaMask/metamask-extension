@@ -4,7 +4,7 @@ import { mount } from 'enzyme'
 import sinon from 'sinon'
 import * as i18nHook from '../../../../hooks/useI18nContext'
 import TransactionStatus from '../transaction-status.component'
-import Tooltip from '../../../ui/tooltip-v2'
+import Tooltip from '../../../ui/tooltip'
 
 describe('TransactionStatus Component', function () {
   before(function () {
