@@ -572,7 +572,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -625,7 +625,7 @@ describe('Actions', function () {
       metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {
@@ -713,7 +713,7 @@ describe('Actions', function () {
       messages = metamaskController.typedMessageManager.getUnapprovedMsgs()
       typedMessages = metamaskController.typedMessageManager.messages
       msgId = Object.keys(messages)[0]
-      typedMessages[0].msgParams.metamaskId = parseInt(msgId)
+      typedMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     afterEach(function () {

@@ -3,6 +3,7 @@ export default function getAccountLink (address, network, rpcPrefs) {
     return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/address/${address}`
   }
 
+  // eslint-disable-next-line radix
   const net = parseInt(network)
   switch (net) {
     case 1: // main net

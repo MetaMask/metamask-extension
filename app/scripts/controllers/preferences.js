@@ -529,6 +529,7 @@ export default class PreferencesController {
     }
     if (url !== 'http://localhost:8545') {
       let checkedChainId
+      // eslint-disable-next-line radix
       if (!!chainId && !Number.isNaN(parseInt(chainId))) {
         checkedChainId = chainId
       }
