@@ -1,6 +1,9 @@
 .add-to-address-book-modal {
-  @extend %col-nowrap;
-  @extend %modal;
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: $white;
+  border-radius: 10px;
+  box-shadow: 0 5px 16px rgba($black, 0.25);
 
   &__content {
     @extend %col-nowrap;
@@ -19,8 +22,12 @@
   }
 
   &__input {
-    @extend %input;
-
+    background: $white;
+    border: 1px solid $Grey-100;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 0.625rem 0.75rem;
+    font-size: 1.25rem;
     margin-top: 0.75rem;
 
     &::placeholder {

@@ -3,113 +3,14 @@
  */
 
 /* lib */
-
-.full-size {
-  height: 100%;
-  width: 100%;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.full-flex-height {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-.full-height {
-  height: 100%;
-}
-
 .flex-column {
   display: flex;
   flex-direction: column;
 }
 
-.space-between {
-  justify-content: space-between;
-}
-
-.space-around {
-  justify-content: space-around;
-}
-
-.flex-column-bottom {
-  display: flex;
-  flex-direction: column-reverse;
-}
-
 .flex-row {
   display: flex;
   flex-direction: row;
-}
-
-.flex-space-between {
-  justify-content: space-between;
-}
-
-.flex-space-around {
-  justify-content: space-around;
-}
-
-.flex-right {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
-.flex-left {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-}
-
-.flex-fixed {
-  flex: none;
-}
-
-.flex-basis-auto {
-  flex-basis: auto;
-}
-
-.flex-grow {
-  flex: 1 1 auto;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-justify-center {
-  justify-content: center;
-}
-
-.flex-align-center {
-  align-items: center;
-}
-
-.flex-self-end {
-  align-self: flex-end;
-}
-
-.flex-self-stretch {
-  align-self: stretch;
-}
-
-.flex-vertical {
-  flex-direction: column;
-}
-
-.z-bump {
-  z-index: 1;
 }
 
 .pointer {
@@ -130,157 +31,13 @@
   transform: scale(0.97);
 }
 
-.cursor-disabled {
-  cursor: not-allowed;
-}
-
-.margin-bottom-sml {
-  margin-bottom: 20px;
-}
-
-.margin-bottom-med {
-  margin-bottom: 40px;
-}
-
-.margin-right-left {
-  margin: 0 20px;
-}
-
-.bold {
-  font-weight: 500;
-}
-
-.text-transform-uppercase {
-  text-transform: uppercase;
-}
-
-.font-small {
-  font-size: 12px;
-}
-
-.font-medium {
-  font-size: 1.2em;
-}
-
-hr.horizontal-line {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 1em 0;
-  padding: 0;
-}
-
-.hover-white:hover {
-  background: $white;
-}
-
-.red-dot {
-  background: #e91550;
-  color: $white;
-  border-radius: 10px;
-}
-
-.diamond {
-  transform: rotate(45deg);
-  background: #038789;
-}
-
-.hollow-diamond {
-  transform: rotate(45deg);
-  border: 3px solid #690496;
-}
-
-.golden-square {
-  background: #ebb33f;
-}
-
-.pending-dot {
-  background: $red;
-  left: 14px;
-  top: 14px;
-  color: $white;
-  border-radius: 10px;
-  height: 20px;
-  min-width: 20px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  z-index: 1;
-}
-
-.keyring-label {
-  z-index: 1;
-  font-size: 8px;
-  line-height: 8px;
-  background: rgba(255, 255, 255, 0.4);
-  color: #fff;
-  border-radius: 10px;
-  padding: 4px;
-  text-align: center;
-  height: 15px;
-}
-
-.tabSection {
-  min-width: 350px;
-}
-
-.menu-icon {
-  display: inline-block;
-  height: 12px;
-  min-width: 12px;
-  margin: 13px;
-}
-
-.ether-icon {
-  background: rgb(0, 163, 68);
-  border-radius: 20px;
-}
-
-.testnet-icon {
-  background: #2465e1;
-}
-
 .drop-menu-item {
   display: flex;
   align-items: center;
-}
-
-.invisible {
-  visibility: hidden;
-}
-
-.one-line-concat {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .critical-error {
   text-align: center;
   margin-top: 20px;
   color: $red;
-}
-
-/*
-  Misc
- */
-
-// TODO: move into component-level contextual 'active' state
-.letter-spacey {
-  letter-spacing: 0.1em;
-}
-
-.active {
-  color: #909090;
-}
-
-.check {
-  margin-left: 7px;
-  color: #f7861c;
-  flex: 1 0 auto;
-  display: flex;
-  justify-content: flex-end;
 }

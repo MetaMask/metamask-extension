@@ -53,7 +53,15 @@
   }
 
   &__input {
-    @extend %input-2;
+    border: 2px solid $Grey-200;
+    border-radius: 6px;
+    color: $Grey-800;
+    padding: 0.875rem 1rem;
+    font-size: 1.125rem;
+
+    &:focus-within {
+      border-color: $Blue-500;
+    }
 
     margin-top: 0.25rem;
 
