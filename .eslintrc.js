@@ -50,6 +50,7 @@ module.exports = {
     'implicit-arrow-linebreak': 'error',
     'import/extensions': ['error', 'never', { 'json': 'always' }],
     'import/no-extraneous-dependencies': 'error',
+    'import/unambiguous': 'error',
     'max-statements-per-line': ['error', { 'max': 1 }],
     'no-case-declarations': 'error',
     'no-constant-condition': 'error',
@@ -167,6 +168,20 @@ module.exports = {
     ],
     rules: {
       'no-process-exit': 'off',
+    },
+  }, {
+    files: [
+      '.eslintrc.js',
+      'babel.config.js',
+      'nyc.config.js',
+      'stylelint.config.js',
+      'development/**/*.js',
+      'test/e2e/**/*.js',
+      'test/env.js',
+      'test/setup.js',
+    ],
+    parserOptions: {
+      sourceType: 'script',
     },
   }],
 
