@@ -112,8 +112,8 @@ async function startApp (metamaskState, backgroundConnection, opts) {
     }))
   }
 
-  backgroundConnection.on('update', function (metamaskState) {
-    store.dispatch(actions.updateMetamaskState(metamaskState))
+  backgroundConnection.on('update', function (state) {
+    store.dispatch(actions.updateMetamaskState(state))
   })
 
   // global metamask api - used by tooling

@@ -76,6 +76,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     disconnectAccount,
     disconnectAllAccounts,
+    // eslint-disable-next-line no-shadow
     requestAccountsPermissionWithId,
   } = dispatchProps
   const { history } = ownProps

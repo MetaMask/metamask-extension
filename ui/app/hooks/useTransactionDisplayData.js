@@ -84,7 +84,7 @@ export function useTransactionDisplayData (transactionGroup) {
   // transfers, we pass an additional argument to these hooks that will be
   // false for non-token transactions. This additional argument forces the
   // hook to return null
-  const token = isTokenCategory && knownTokens.find((token) => token.address === recipientAddress)
+  const token = isTokenCategory && knownTokens.find(({ address }) => address === recipientAddress)
   const tokenData = useTokenData(initialTransaction?.txParams?.data, isTokenCategory)
   const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
   const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)

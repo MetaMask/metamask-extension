@@ -242,8 +242,8 @@ export default class PermissionConnect extends Component {
                   render={() => (
                     <PermissionPageContainer
                       request={permissionsRequest || {}}
-                      approvePermissionsRequest={(request, accounts) => {
-                        approvePermissionsRequest(request, accounts)
+                      approvePermissionsRequest={(...args) => {
+                        approvePermissionsRequest(...args)
                         this.redirect(true)
                       }}
                       rejectPermissionsRequest={(requestId) => this.cancelPermissionsRequest(requestId)}

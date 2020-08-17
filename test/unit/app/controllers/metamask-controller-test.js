@@ -7,6 +7,7 @@ import { obj as createThoughStream } from 'through2'
 import firstTimeState from '../../localhostState'
 import createTxMeta from '../../../lib/createTxMeta'
 import EthQuery from 'eth-query'
+import proxyquire from 'proxyquire'
 
 const threeBoxSpies = {
   init: sinon.stub(),
@@ -14,7 +15,6 @@ const threeBoxSpies = {
   turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
 }
-import proxyquire from 'proxyquire'
 
 class ThreeBoxControllerMock {
   constructor () {
@@ -113,7 +113,7 @@ describe('MetaMaskController', function () {
         },
       },
       initState: cloneDeep(firstTimeState),
-      platform: { showTransactionNotification: () => undefined },
+      platform: { showTransactionNotification: () => undefined, getVersion: () => 'foo' },
     })
     // disable diagnostics
     metamaskController.diagnostics = null
@@ -758,11 +758,10 @@ describe('MetaMaskController', function () {
     })
 
     it('errors with no from in msgParams', async function () {
-      const msgParams = {
-        'data': data,
-      }
       try {
-        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        await metamaskController.newUnsignedPersonalMessage({
+          'data': data,
+        })
         assert.fail('should have thrown')
       } catch (error) {
         assert.equal(error.message, 'MetaMask Message Signature: from field is required.')

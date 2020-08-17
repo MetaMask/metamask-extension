@@ -44,6 +44,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { transactionId, defaultNewGasPrice, ...restStateProps } = stateProps
+  // eslint-disable-next-line no-shadow
   const { createCancelTransaction, ...restDispatchProps } = dispatchProps
 
   return {

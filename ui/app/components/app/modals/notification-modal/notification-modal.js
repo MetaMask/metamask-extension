@@ -14,6 +14,7 @@ class NotificationModal extends Component {
       message,
       showCancelButton = false,
       showConfirmButton = false,
+      // eslint-disable-next-line no-shadow
       hideModal,
       onConfirm,
     } = this.props

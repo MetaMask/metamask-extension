@@ -77,12 +77,12 @@ describe('GasPriceButtonGroup Component', function () {
       assert.equal(noButtonActiveByDefault, true)
     })
 
-    function renderButtonArgsTest (i, mockButtonPropsAndFlags) {
+    function renderButtonArgsTest (i, mockPropsAndFlags) {
       assert.deepEqual(
         GasPriceButtonGroup.prototype.renderButton.getCall(i).args,
         [
           Object.assign({}, mockGasPriceButtonGroupProps.gasButtonInfo[i]),
-          mockButtonPropsAndFlags,
+          mockPropsAndFlags,
           i,
         ],
       )

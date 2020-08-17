@@ -76,9 +76,11 @@ class RestoreVaultPage extends Component {
   onClick = () => {
     const { password, seedPhrase } = this.state
     const {
+      // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
+      // eslint-disable-next-line no-shadow
       initializeThreeBox,
     } = this.props
 

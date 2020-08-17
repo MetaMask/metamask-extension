@@ -46,19 +46,19 @@ for (const arg of process.argv.slice(2)) {
   }
 }
 
-main(specifiedLocale, fix)
+main()
   .catch((error) => {
     log.error(error)
     process.exit(1)
   })
 
-async function main (specifiedLocale, fix) {
+async function main () {
   if (specifiedLocale) {
     log.info(`Verifying selected locale "${specifiedLocale}":\n`)
     const locale = localeIndex.find((localeMeta) => localeMeta.code === specifiedLocale)
     const failed = locale.code === 'en' ?
-      await verifyEnglishLocale(fix) :
-      await verifyLocale(locale, fix)
+      await verifyEnglishLocale() :
+      await verifyLocale(locale)
     if (failed) {
       process.exit(1)
     }
@@ -116,7 +116,7 @@ async function writeLocale (code, locale) {
   }
 }
 
-async function verifyLocale (code, fix = false) {
+async function verifyLocale (code) {
   const englishLocale = await getLocale('en')
   const targetLocale = await getLocale(code)
 
@@ -162,7 +162,7 @@ async function verifyLocale (code, fix = false) {
   return false
 }
 
-async function verifyEnglishLocale (fix = false) {
+async function verifyEnglishLocale () {
   const englishLocale = await getLocale('en')
   const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
 

@@ -32,6 +32,7 @@ describe('Actions', function () {
   beforeEach(async function () {
 
     metamaskController = new MetaMaskController({
+      platform: { getVersion: () => 'foo' },
       provider,
       keyringController: new KeyringController({}),
       showUnapprovedTx: noop,
@@ -337,9 +338,9 @@ describe('Actions', function () {
 
       importAccountWithStrategySpy = sinon.spy(background, 'importAccountWithStrategy')
 
-      const importPrivkey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
-
-      await store.dispatch(actions.importNewAccount('Private Key', [ importPrivkey ]))
+      await store.dispatch(actions.importNewAccount('Private Key', [
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
+      ]))
       assert(importAccountWithStrategySpy.calledOnce)
     })
 
