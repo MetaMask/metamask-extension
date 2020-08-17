@@ -97,6 +97,7 @@ export default class ConfirmTransactionBase extends Component {
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    isMainnet: PropTypes.bool,
   }
 
   state = {
@@ -236,6 +237,7 @@ export default class ConfirmTransactionBase extends Component {
       hideFiatConversion,
       nextNonce,
       getNextNonce,
+      isMainnet,
     } = this.props
 
     if (hideDetails) {
@@ -254,7 +256,7 @@ export default class ConfirmTransactionBase extends Component {
               onHeaderClick={() => this.handleEditGas()}
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
-            {advancedInlineGasShown
+            {advancedInlineGasShown || (!isMainnet && !process.env.IN_TEST)
               ? (
                 <AdvancedGasInputs
                   updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}

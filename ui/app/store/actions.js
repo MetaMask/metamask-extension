@@ -1463,10 +1463,6 @@ export function setProviderType (type) {
     }
     dispatch(setPreviousProvider(currentProviderType))
     dispatch(updateProviderType(type))
-    // Tests should behave in same way as mainnet, but are using Localhost
-    if (!process.env.IN_TEST) {
-      dispatch(setFeatureFlag('advancedInlineGas', type !== 'mainnet'))
-    }
   }
 }
 

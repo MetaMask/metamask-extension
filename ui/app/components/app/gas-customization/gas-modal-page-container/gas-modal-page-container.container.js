@@ -98,8 +98,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate)
 
-  const hideBasic = state.appState.modal.modalState.props.hideBasic || (state.metamask.featureFlags.advancedInlineGas && !process.env.IN_TEST)
-
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
   const maxModeOn = getSendMaxModeState(state)
@@ -111,6 +109,8 @@ const mapStateToProps = (state, ownProps) => {
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
   const showFiat = Boolean(isMainnet || showFiatInTestnets)
+
+  const hideBasic = state.appState.modal.modalState.props.hideBasic || (!isMainnet && !process.env.IN_TEST)
 
   const isSendTokenSet = Boolean(sendToken)
 

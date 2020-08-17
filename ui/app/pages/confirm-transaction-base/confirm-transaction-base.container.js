@@ -177,6 +177,7 @@ const mapStateToProps = (state, ownProps) => {
     transactionCategory,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    isMainnet,
   }
 }
 
