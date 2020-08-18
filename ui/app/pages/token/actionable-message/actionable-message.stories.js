@@ -43,3 +43,16 @@ export const TwoActions = () => (
     />
   </div>
 )
+
+export const LeftAligned = () => (
+  <div style={{ height: '200px', width: '300px' }}>
+    <ActionableMessage
+      message={text('Message', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')}
+      primaryAction={{
+        label: text('LeftAligned Label', 'Dismiss'),
+        onClick: action('LeftAligned Click 1'),
+      }}
+      className="actionable-message--left-aligned"
+    />
+  </div>
+)

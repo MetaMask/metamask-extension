@@ -2,7 +2,7 @@
   background: $Blue-000;
   border: 1px solid $Blue-200;
   border-radius: 8px;
-  padding: 8px 28px 8px 28px;
+  padding: 16px;
   margin-top: 18px;
   display: flex;
   flex-flow: column;
@@ -12,6 +12,7 @@
 
   &__message {
     color: $Blue-600;
+    text-align: center;
   }
 
   &__actions {
@@ -40,6 +41,15 @@
 
     .actionable-message__action--secondary {
       text-decoration: underline;
+    }
+  }
+
+  &--left-aligned {
+    .actionable-message__message,
+    .actionable-message__actions {
+      justify-content: flex-start;
+      text-align: left;
+      width: 100%;
     }
   }
 }

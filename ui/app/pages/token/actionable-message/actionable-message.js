@@ -13,24 +13,26 @@ export default function ActionableMessage ({
       <div className="actionable-message__message">
         {message}
       </div>
-      <div className="actionable-message__actions">
-        {primaryAction && (
-          <div
-            className={classnames('actionable-message__action', 'actionable-message__action--primary')}
-            onClick={primaryAction.onClick}
-          >
-            {primaryAction.label}
-          </div>
-        )}
-        {secondaryAction && (
-          <div
-            className={classnames('actionable-message__action', 'actionable-message__action--secondary')}
-            onClick={secondaryAction.onClick}
-          >
-            {secondaryAction.label}
-          </div>
-        )}
-      </div>
+      {(primaryAction || secondaryAction) && (
+        <div className="actionable-message__actions">
+          {primaryAction && (
+            <div
+              className={classnames('actionable-message__action', 'actionable-message__action--primary')}
+              onClick={primaryAction.onClick}
+            >
+              {primaryAction.label}
+            </div>
+          )}
+          {secondaryAction && (
+            <div
+              className={classnames('actionable-message__action', 'actionable-message__action--secondary')}
+              onClick={secondaryAction.onClick}
+            >
+              {secondaryAction.label}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
