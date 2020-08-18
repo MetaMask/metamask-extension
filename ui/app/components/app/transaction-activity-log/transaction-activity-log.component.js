@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../../helpers/utils/conversions.util'
 import { formatDate } from '../../../helpers/utils/util'
+import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
 import TransactionActivityLogIcon from './transaction-activity-log-icon'
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants'
-import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {

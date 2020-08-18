@@ -1,7 +1,7 @@
 import React from 'react'
-import FeeCard from './fee-card'
 import { action } from '@storybook/addon-actions'
 import { text } from '@storybook/addon-knobs/react'
+import FeeCard from './fee-card'
 
 const containerStyle = {
   width: '300px',

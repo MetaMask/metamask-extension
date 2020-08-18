@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import GasModalPageContainer from './gas-modal-page-container.component'
 import { captureException } from '@sentry/browser'
+import { addHexPrefix } from 'ethereumjs-util'
 import {
   hideModal,
   setGasLimit,
@@ -63,8 +63,8 @@ import {
   calcGasTotal,
   isBalanceSufficient,
 } from '../../../../pages/send/send.utils'
-import { addHexPrefix } from 'ethereumjs-util'
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils'
+import GasModalPageContainer from './gas-modal-page-container.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { currentNetworkTxList, send } = state.metamask

@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
 import * as i18nHook from '../../../../hooks/useI18nContext'

@@ -1,4 +1,3 @@
-import ContactListTab from './contact-list-tab.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -14,6 +13,7 @@ import {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
 } from '../../../helpers/constants/routes'
+import ContactListTab from './contact-list-tab.component'
 
 
 const mapStateToProps = (state, ownProps) => {

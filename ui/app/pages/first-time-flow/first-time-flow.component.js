@@ -1,14 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
-import FirstTimeFlowSwitch from './first-time-flow-switch'
-import Welcome from './welcome'
-import SelectAction from './select-action'
-import EndOfFlow from './end-of-flow'
 import Unlock from '../unlock-page'
-import CreatePassword from './create-password'
-import SeedPhrase from './seed-phrase'
-import MetaMetricsOptInScreen from './metametrics-opt-in'
 import {
   DEFAULT_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
@@ -20,6 +13,13 @@ import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
 } from '../../helpers/constants/routes'
+import FirstTimeFlowSwitch from './first-time-flow-switch'
+import Welcome from './welcome'
+import SelectAction from './select-action'
+import EndOfFlow from './end-of-flow'
+import CreatePassword from './create-password'
+import SeedPhrase from './seed-phrase'
+import MetaMetricsOptInScreen from './metametrics-opt-in'
 
 export default class FirstTimeFlow extends PureComponent {
   static propTypes = {

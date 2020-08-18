@@ -1,8 +1,8 @@
 const path = require('path')
+const createStaticServer = require('../../development/create-static-server')
 const Ganache = require('./ganache')
 const FixtureServer = require('./fixture-server')
 const { buildWebDriver } = require('./webdriver')
-const createStaticServer = require('../../development/create-static-server')
 
 const tinyDelayMs = 200
 const regularDelayMs = tinyDelayMs * 2

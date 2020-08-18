@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import log from 'loglevel'
+import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 import Modal from '../../modal'
 import Identicon from '../../../ui/identicon'
 import TextField from '../../../ui/text-field'
 import { calcTokenAmount } from '../../../../helpers/utils/token-util'
-import classnames from 'classnames'
-import BigNumber from 'bignumber.js'
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10)
 

@@ -9,6 +9,10 @@ const GAS_LIMIT_PATH = '/txParams/gas'
 const REPLACE_OP = 'replace'
 
 import {
+  TRANSACTION_TYPE_CANCEL,
+  TRANSACTION_TYPE_RETRY,
+} from '../../../../../app/scripts/controllers/transactions/enums'
+import {
   // event constants
   TRANSACTION_CREATED_EVENT,
   TRANSACTION_SUBMITTED_EVENT,
@@ -25,10 +29,6 @@ import {
   DROPPED_STATUS,
 } from './transaction-activity-log.constants'
 
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_TYPE_RETRY,
-} from '../../../../../app/scripts/controllers/transactions/enums'
 
 const eventPathsHash = {
   [STATUS_PATH]: true,

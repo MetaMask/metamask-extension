@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { shallow } from 'enzyme'
 import TransactionBreakdownRow from '../transaction-breakdown-row.component'
 import Button from '../../../../ui/button'

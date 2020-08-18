@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import ConfirmSendToken from './confirm-send-token.component'
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 import { updateSend, showSendTokenPage } from '../../store/actions'
 import { conversionUtil } from '../../helpers/utils/conversion-util'
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors'
+import ConfirmSendToken from './confirm-send-token.component'
 
 const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)

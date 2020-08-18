@@ -17,8 +17,8 @@ const { makeStringTransform } = require('browserify-transform-tools')
 
 const conf = require('rc')('metamask', {})
 
-const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 const packageJSON = require('../../package.json')
+const { createTask, composeParallel, composeSeries, runInChildProcess } = require('./task')
 
 module.exports = createScriptTasks
 

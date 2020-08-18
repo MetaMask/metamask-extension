@@ -5,10 +5,10 @@ import { checkExistingAddresses } from '../../helpers/utils/util'
 import { tokenInfoGetter } from '../../helpers/utils/token-util'
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes'
 import TextField from '../../components/ui/text-field'
-import TokenList from './token-list'
-import TokenSearch from './token-search'
 import PageContainer from '../../components/ui/page-container'
 import { Tabs, Tab } from '../../components/ui/tabs'
+import TokenList from './token-list'
+import TokenSearch from './token-search'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 

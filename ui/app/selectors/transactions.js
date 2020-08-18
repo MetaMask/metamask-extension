@@ -10,10 +10,10 @@ import {
   TRANSACTION_TYPE_RETRY,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
+import txHelper from '../../lib/tx-helper'
 import {
   getSelectedAddress,
 } from '.'
-import txHelper from '../../lib/tx-helper'
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags

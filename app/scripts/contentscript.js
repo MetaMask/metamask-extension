@@ -1,5 +1,5 @@
-import pump from 'pump'
 import querystring from 'querystring'
+import pump from 'pump'
 import LocalMessageDuplexStream from 'post-message-stream'
 import ObjectMultiplex from 'obj-multiplex'
 import extension from 'extensionizer'

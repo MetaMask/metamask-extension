@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import Modal from '../modal.component'

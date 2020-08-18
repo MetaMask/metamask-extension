@@ -1,8 +1,8 @@
 import assert from 'assert'
 import { renderHook } from '@testing-library/react-hooks'
 import * as reactRedux from 'react-redux'
-import { useCurrencyDisplay } from '../useCurrencyDisplay'
 import sinon from 'sinon'
+import { useCurrencyDisplay } from '../useCurrencyDisplay'
 import { getCurrentCurrency, getNativeCurrency, getConversionRate } from '../../selectors'
 
 const tests = [

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import ConfirmTransactionSwitch from './confirm-transaction-switch.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors'
+import ConfirmTransactionSwitch from './confirm-transaction-switch.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask: { unapprovedTxs } } = state

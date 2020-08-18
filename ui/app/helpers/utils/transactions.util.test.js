@@ -1,5 +1,5 @@
-import * as utils from './transactions.util'
 import assert from 'assert'
+import * as utils from './transactions.util'
 
 describe('Transactions utils', function () {
   describe('getTokenData', function () {

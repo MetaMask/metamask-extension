@@ -1,6 +1,6 @@
 import React from 'react'
-import InfoTooltip from './info-tooltip'
 import { text } from '@storybook/addon-knobs/react'
+import InfoTooltip from './info-tooltip'
 
 export default {
   title: 'InfoTooltip',

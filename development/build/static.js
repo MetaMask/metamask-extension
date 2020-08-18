@@ -1,5 +1,5 @@
-const fs = require('fs-extra')
 const path = require('path')
+const fs = require('fs-extra')
 const watch = require('gulp-watch')
 const glob = require('fast-glob')
 

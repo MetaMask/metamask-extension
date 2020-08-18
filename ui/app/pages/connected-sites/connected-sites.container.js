@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import ConnectedSites from './connected-sites.component'
 import {
   getOpenMetamaskTabsIds,
   requestAccountsPermissionWithId,
@@ -17,6 +16,7 @@ import {
 } from '../../selectors'
 import { CONNECT_ROUTE } from '../../helpers/constants/routes'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConnectedSites from './connected-sites.component'
 
 const mapStateToProps = (state) => {
   const { openMetaMaskTabs } = state.appState

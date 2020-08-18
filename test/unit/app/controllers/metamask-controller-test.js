@@ -4,10 +4,10 @@ import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import ethUtil from 'ethereumjs-util'
 import { obj as createThoughStream } from 'through2'
-import firstTimeState from '../../localhostState'
-import createTxMeta from '../../../lib/createTxMeta'
 import EthQuery from 'eth-query'
 import proxyquire from 'proxyquire'
+import firstTimeState from '../../localhostState'
+import createTxMeta from '../../../lib/createTxMeta'
 
 const threeBoxSpies = {
   init: sinon.stub(),

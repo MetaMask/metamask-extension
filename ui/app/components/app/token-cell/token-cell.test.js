@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
@@ -7,8 +7,8 @@ import { mount } from 'enzyme'
 import sinon from 'sinon'
 import { MemoryRouter } from 'react-router-dom'
 
-import TokenCell from '.'
 import Identicon from '../../ui/identicon'
+import TokenCell from '.'
 
 describe('Token Cell', function () {
   let wrapper

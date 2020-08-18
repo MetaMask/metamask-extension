@@ -1,5 +1,5 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 import shallow from '../../../../../lib/shallow-with-context'
 import SignatureRequest from '../signature-request.component'
 

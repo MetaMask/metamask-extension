@@ -1,6 +1,6 @@
 import EthQuery from 'ethjs-query'
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 import log from 'loglevel'
+import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util'
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or

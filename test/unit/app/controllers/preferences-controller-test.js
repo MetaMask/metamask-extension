@@ -1,8 +1,8 @@
 import assert from 'assert'
 import ObservableStore from 'obs-store'
+import sinon from 'sinon'
 import PreferencesController from '../../../../app/scripts/controllers/preferences'
 import { addInternalMethodPrefix } from '../../../../app/scripts/controllers/permissions'
-import sinon from 'sinon'
 
 describe('preferences controller', function () {
   let preferencesController

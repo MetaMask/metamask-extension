@@ -1,12 +1,12 @@
 import EventEmitter from 'events'
-import ObservableStore from 'obs-store'
-import createId from './random-id'
 import assert from 'assert'
+import ObservableStore from 'obs-store'
 import { ethErrors } from 'eth-json-rpc-errors'
 import sigUtil from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import log from 'loglevel'
 import jsonschema from 'jsonschema'
+import createId from './random-id'
 import { MESSAGE_TYPE } from './enums'
 
 /**

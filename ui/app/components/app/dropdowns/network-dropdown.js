@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as actions from '../../../store/actions'
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
 import { Dropdown, DropdownMenuItem } from './components/dropdown'
 import NetworkDropdownIcon from './components/network-dropdown-icon'
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes'
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [

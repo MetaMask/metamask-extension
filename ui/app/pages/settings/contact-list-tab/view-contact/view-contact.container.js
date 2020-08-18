@@ -1,4 +1,3 @@
-import ViewContact from './view-contact.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -11,6 +10,7 @@ import {
   CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../../../helpers/constants/routes'
+import ViewContact from './view-contact.component'
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps

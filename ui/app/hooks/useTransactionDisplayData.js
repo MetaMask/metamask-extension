@@ -2,11 +2,8 @@ import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
 import { getTransactionActionKey, getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
-import { useI18nContext } from './useI18nContext'
-import { useTokenFiatAmount } from './useTokenFiatAmount'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenToAddress } from '../helpers/utils/token-util'
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
 import { formatDateWithYearContext, shortenAddress, stripHttpSchemes } from '../helpers/utils/util'
 import {
   CONTRACT_INTERACTION_KEY,
@@ -24,10 +21,13 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions'
+import { getTokens } from '../ducks/metamask/metamask'
+import { useI18nContext } from './useI18nContext'
+import { useTokenFiatAmount } from './useTokenFiatAmount'
+import { useUserPreferencedCurrency } from './useUserPreferencedCurrency'
 import { useCurrencyDisplay } from './useCurrencyDisplay'
 import { useTokenDisplayValue } from './useTokenDisplayValue'
 import { useTokenData } from './useTokenData'
-import { getTokens } from '../ducks/metamask/metamask'
 
 /**
  * @typedef {Object} TransactionDisplayData

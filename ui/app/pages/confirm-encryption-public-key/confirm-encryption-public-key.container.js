@@ -14,8 +14,8 @@ import {
 } from '../../selectors'
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
-import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component'
 
 function mapStateToProps (state) {
   const { confirmTransaction,

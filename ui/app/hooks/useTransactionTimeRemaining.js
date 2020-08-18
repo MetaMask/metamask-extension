@@ -1,9 +1,9 @@
-import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags, getIsMainnet } from '../selectors'
-import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
 import { useSelector } from 'react-redux'
 import { useRef, useEffect, useState, useMemo } from 'react'
 import { isEqual } from 'lodash'
 import { captureException } from '@sentry/browser'
+import { hexWEIToDecGWEI } from '../helpers/utils/conversions.util'
+import { getEstimatedGasPrices, getEstimatedGasTimes, getFeatureFlags, getIsMainnet } from '../selectors'
 import { getRawTimeEstimateData } from '../helpers/utils/gas-time-estimates.util'
 import { getCurrentLocale } from '../ducks/metamask/metamask'
 

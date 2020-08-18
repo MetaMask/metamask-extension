@@ -1,4 +1,3 @@
-import Settings from './settings.component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -24,6 +23,7 @@ import {
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../helpers/constants/routes'
+import Settings from './settings.component'
 
 const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',

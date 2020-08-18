@@ -1,6 +1,6 @@
 import assert from 'assert'
-import ComposableObservableStore from '../../../app/scripts/lib/ComposableObservableStore'
 import ObservableStore from 'obs-store'
+import ComposableObservableStore from '../../../app/scripts/lib/ComposableObservableStore'
 
 describe('ComposableObservableStore', function () {
   it('should register initial state', function () {

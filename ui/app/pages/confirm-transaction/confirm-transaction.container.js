@@ -16,9 +16,9 @@ import {
   getContractMethodData,
   getTokenParams,
 } from '../../store/actions'
-import ConfirmTransaction from './confirm-transaction.component'
 import { unconfirmedTransactionsListSelector } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
+import ConfirmTransaction from './confirm-transaction.component'
 
 const mapStateToProps = (state, ownProps) => {
   const {

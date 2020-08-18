@@ -1,6 +1,6 @@
 const fs = require('fs')
-const { SourceMapConsumer } = require('source-map')
 const path = require('path')
+const { SourceMapConsumer } = require('source-map')
 const pify = require('pify')
 
 const fsAsync = pify(fs)

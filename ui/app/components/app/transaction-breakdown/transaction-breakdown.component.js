@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import TransactionBreakdownRow from './transaction-breakdown-row'
 import CurrencyDisplay from '../../ui/currency-display'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import HexToDecimal from '../../ui/hex-to-decimal'
 import { GWEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common'
+import TransactionBreakdownRow from './transaction-breakdown-row'
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {

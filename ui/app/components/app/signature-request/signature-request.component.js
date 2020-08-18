@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import Identicon from '../../ui/identicon'
 import Header from './signature-request-header'
 import Footer from './signature-request-footer'
 import Message from './signature-request-message'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import Identicon from '../../ui/identicon'
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {

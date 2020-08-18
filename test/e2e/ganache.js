@@ -1,5 +1,5 @@
-const ganache = require('ganache-core')
 const { promisify } = require('util')
+const ganache = require('ganache-core')
 
 const defaultOptions = {
   blockTime: 2,

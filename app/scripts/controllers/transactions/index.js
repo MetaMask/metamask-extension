@@ -9,6 +9,8 @@ import abiDecoder from 'abi-decoder'
 
 abiDecoder.addABI(abi)
 
+import NonceTracker from 'nonce-tracker'
+import log from 'loglevel'
 import {
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER,
@@ -18,13 +20,13 @@ import {
   CONTRACT_INTERACTION_KEY,
 } from '../../../../ui/app/helpers/constants/transactions'
 
+import cleanErrorStack from '../../lib/cleanErrorStack'
+import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
-import NonceTracker from 'nonce-tracker'
 import * as txUtils from './lib/util'
-import cleanErrorStack from '../../lib/cleanErrorStack'
-import log from 'loglevel'
 
 import {
   TRANSACTION_TYPE_CANCEL,
@@ -33,8 +35,6 @@ import {
   TRANSACTION_STATUS_APPROVED,
 } from './enums'
 
-import { hexToBn, bnToHex, BnMultiplyByFraction } from '../../lib/util'
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys'
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100 // Number of transactions (by unique nonces) to keep in memory
