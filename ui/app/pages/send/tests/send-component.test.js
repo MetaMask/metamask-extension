@@ -435,6 +435,7 @@ describe('Send Component', function () {
       )
 
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7A3BedD70cd4510',
         toError: null,
         toWarning: null,
@@ -449,6 +450,7 @@ describe('Send Component', function () {
 
       clock.tick(1001)
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipient',
         toWarning: null,
@@ -464,6 +466,7 @@ describe('Send Component', function () {
 
       clock.tick(1001)
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
         toWarning: null,
@@ -479,6 +482,7 @@ describe('Send Component', function () {
 
       clock.tick(1001)
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '0x80F061544cC398520615B5d3e7a3BedD70cd4510',
         toError: 'invalidAddressRecipientNotEthNetwork',
         toWarning: null,
@@ -486,6 +490,7 @@ describe('Send Component', function () {
 
       instance.onRecipientInputChange('')
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '',
         toError: '',
         toWarning: '',
@@ -501,6 +506,7 @@ describe('Send Component', function () {
 
       clock.tick(1001)
       assert.deepEqual(instance.state, {
+        internalSearch: false,
         query: '0x13cb85823f78Cff38f0B0E90D3e975b8CB3AAd64',
         toError: null,
         toWarning: 'knownAddressRecipient',

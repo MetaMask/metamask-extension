@@ -38,6 +38,7 @@ export default class EnsInput extends Component {
     onValidAddressTyped: PropTypes.func,
     contact: PropTypes.object,
     value: PropTypes.string,
+    internalSearch: PropTypes.bool,
   }
 
   state = {
@@ -46,12 +47,12 @@ export default class EnsInput extends Component {
     ensResolution: undefined,
   }
 
-  componentDidMount() {
-    const { network } = this.props
+  componentDidMount () {
+    const { network, internalSearch } = this.props
     const networkHasEnsSupport = getNetworkEnsSupport(network)
     this.setState({ ensResolution: ZERO_ADDRESS })
 
-    if (networkHasEnsSupport) {
+    if (networkHasEnsSupport && !internalSearch) {
       const provider = global.ethereumProvider
       this.ens = new ENS({ provider, network })
       this.checkName = debounce(this.lookupEnsName, 200)
@@ -60,7 +61,7 @@ export default class EnsInput extends Component {
 
   componentDidUpdate(prevProps) {
     const { input } = this.state
-    const { network, value } = this.props
+    const { network, value, internalSearch } = this.props
 
     let newValue
 
@@ -80,6 +81,9 @@ export default class EnsInput extends Component {
 
     if (newValue !== undefined) {
       this.onChange({ target: { value: newValue } })
+    }
+    if (!internalSearch && prevProps.internalSearch) {
+      this.resetInput()
     }
   }
 
@@ -137,18 +141,14 @@ export default class EnsInput extends Component {
   }
 
   onChange = (e) => {
-    const {
-      network,
-      onChange,
-      updateEnsResolution,
-      updateEnsResolutionError,
-      onValidAddressTyped,
-    } = this.props
+    const { network, onChange, updateEnsResolution, updateEnsResolutionError, onValidAddressTyped, internalSearch } = this.props
     const input = e.target.value
     const networkHasEnsSupport = getNetworkEnsSupport(network)
 
     this.setState({ input }, () => onChange(input))
-
+    if (internalSearch) {
+      return null
+    }
     // Empty ENS state if input is empty
     // maybe scan ENS
 
@@ -158,10 +158,8 @@ export default class EnsInput extends Component {
       !isValidAddressHead(input)
     ) {
       updateEnsResolution('')
-      updateEnsResolutionError(
-        networkHasEnsSupport ? '' : 'Network does not support ENS',
-      )
-      return
+      updateEnsResolutionError(networkHasEnsSupport ? '' : 'Network does not support ENS')
+      return null
     }
 
     if (isValidDomainName(input)) {
@@ -172,6 +170,7 @@ export default class EnsInput extends Component {
       updateEnsResolution('')
       updateEnsResolutionError('')
     }
+    return null
   }
 
   render() {
