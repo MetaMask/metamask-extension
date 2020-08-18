@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { debounce } from 'lodash'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
-
-import { Menu, Item, Divider, CloseArea } from '../dropdowns/components/menu'
+import classnames from 'classnames'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
@@ -21,6 +20,42 @@ import {
 } from '../../../helpers/constants/routes'
 import TextField from '../../ui/text-field'
 import SearchIcon from '../../ui/search-icon'
+
+export function AccountMenuItem (props) {
+  const {
+    icon,
+    children,
+    text,
+    subText,
+    className,
+    onClick,
+  } = props
+
+  const itemClassName = classnames('account-menu__item', className, {
+    'account-menu__item--clickable': Boolean(onClick),
+  })
+  return children
+    ? <div className={itemClassName} onClick={onClick}>{children}</div>
+    : (
+      <div
+        className={itemClassName}
+        onClick={onClick}
+      >
+        {icon ? <div className="account-menu__item__icon">{icon}</div> : null}
+        {text ? <div className="account-menu__item__text">{text}</div> : null}
+        {subText ? <div className="account-menu__item__subtext">{subText}</div> : null}
+      </div>
+    )
+}
+
+AccountMenuItem.propTypes = {
+  icon: PropTypes.node,
+  children: PropTypes.node,
+  text: PropTypes.node,
+  subText: PropTypes.node,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+}
 
 export default class AccountMenu extends Component {
   static contextTypes = {
@@ -106,7 +141,7 @@ export default class AccountMenu extends Component {
         fullWidth
         theme="material-white-padded"
       />,
-      <Divider key="search-divider" />,
+      <div className="account-menu__divider" key="search-divider" />,
     ]
   }
 
@@ -277,13 +312,16 @@ export default class AccountMenu extends Component {
       history,
     } = this.props
 
+    if (!isAccountMenuOpen) {
+      return null
+    }
+
     return (
-      <Menu
+      <div
         className="account-menu"
-        isShowing={isAccountMenuOpen}
       >
-        <CloseArea onClick={toggleAccountMenu} />
-        <Item className="account-menu__header">
+        <div className="account-menu__close-area" onClick={toggleAccountMenu} />
+        <AccountMenuItem className="account-menu__header">
           { t('myAccounts') }
           <button
             className="account-menu__lock-button"
@@ -294,8 +332,8 @@ export default class AccountMenu extends Component {
           >
             { t('lock') }
           </button>
-        </Item>
-        <Divider />
+        </AccountMenuItem>
+        <div className="account-menu__divider" />
         <div className="account-menu__accounts-container">
           {shouldShowAccountsSearch ? this.renderAccountsSearch() : null}
           <div
@@ -309,8 +347,8 @@ export default class AccountMenu extends Component {
           </div>
           { this.renderScrollButton() }
         </div>
-        <Divider />
-        <Item
+        <div className="account-menu__divider" />
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -330,7 +368,7 @@ export default class AccountMenu extends Component {
           )}
           text={t('createAccount')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -350,7 +388,7 @@ export default class AccountMenu extends Component {
           )}
           text={t('importAccount')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             metricsEvent({
@@ -374,8 +412,8 @@ export default class AccountMenu extends Component {
           )}
           text={t('connectHardwareWallet')}
         />
-        <Divider />
-        <Item
+        <div className="account-menu__divider" />
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             history.push(ABOUT_US_ROUTE)
@@ -385,7 +423,7 @@ export default class AccountMenu extends Component {
           }
           text={t('infoHelp')}
         />
-        <Item
+        <AccountMenuItem
           onClick={() => {
             toggleAccountMenu()
             history.push(SETTINGS_ROUTE)
@@ -405,7 +443,7 @@ export default class AccountMenu extends Component {
           )}
           text={t('settings')}
         />
-      </Menu>
+      </div>
     )
   }
 }
