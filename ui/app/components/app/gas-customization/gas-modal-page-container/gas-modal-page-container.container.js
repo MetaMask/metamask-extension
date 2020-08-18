@@ -98,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate)
 
-  const hideBasic = state.appState.modal.modalState.props.hideBasic
+  const { hideBasic } = state.appState.modal.modalState.props
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 

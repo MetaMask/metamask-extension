@@ -75,7 +75,7 @@ async function startApp (metamaskState, backgroundConnection, opts) {
   }
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-    const origin = draftInitialState.activeTab.origin
+    const { origin } = draftInitialState.activeTab
     const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(draftInitialState)
     const selectedAddress = getSelectedAddress(draftInitialState)
     const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(draftInitialState)

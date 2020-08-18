@@ -42,7 +42,7 @@ export default class EnsInput extends Component {
   }
 
   componentDidMount () {
-    const network = this.props.network
+    const { network } = this.props
     const networkHasEnsSupport = getNetworkEnsSupport(network)
     this.setState({ ensResolution: ZERO_ADDRESS })
 

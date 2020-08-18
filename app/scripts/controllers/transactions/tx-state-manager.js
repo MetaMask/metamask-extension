@@ -178,7 +178,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const transactions = this.getFullTxList()
     const txCount = transactions.length
-    const txHistoryLimit = this.txHistoryLimit
+    const { txHistoryLimit } = this
 
     // checks if the length of the tx history is
     // longer then desired persistence limit

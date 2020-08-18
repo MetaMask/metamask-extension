@@ -51,7 +51,7 @@ export default function AccountOptionsMenu ({ anchorElement, onClose }) {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider)
   const selectedIdentity = useSelector(getSelectedIdentity)
 
-  const address = selectedIdentity.address
+  const { address } = selectedIdentity
   const isRemovable = keyring.type !== 'HD Key Tree'
 
   return (

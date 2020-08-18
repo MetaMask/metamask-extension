@@ -17,7 +17,7 @@ export default class MenuDroppoComponent extends Component {
   }
 
   renderPrimary () {
-    const isOpen = this.props.isOpen
+    const { isOpen } = this.props
     if (!isOpen) {
       return null
     }
@@ -32,8 +32,7 @@ export default class MenuDroppoComponent extends Component {
   }
 
   manageListeners () {
-    const isOpen = this.props.isOpen
-    const onClickOutside = this.props.onClickOutside
+    const { isOpen, onClickOutside } = this.props
 
     if (isOpen) {
       this.outsideClickHandler = onClickOutside
@@ -41,7 +40,7 @@ export default class MenuDroppoComponent extends Component {
   }
 
   globalClickOccurred = (event) => {
-    const target = event.target
+    const { target } = event
     // eslint-disable-next-line react/no-find-dom-node
     const container = findDOMNode(this)
 
@@ -70,7 +69,7 @@ export default class MenuDroppoComponent extends Component {
   render () {
     const { containerClassName = '', style } = this.props
     const speed = this.props.speed || '300ms'
-    const useCssTransition = this.props.useCssTransition
+    const { useCssTransition } = this.props
     const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
     this.manageListeners()

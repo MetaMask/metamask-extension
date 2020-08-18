@@ -138,7 +138,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
  * @returns {Error|undefined}
  */
 function checkForError () {
-  const lastError = extension.runtime.lastError
+  const { lastError } = extension.runtime
   if (!lastError) {
     return undefined
   }

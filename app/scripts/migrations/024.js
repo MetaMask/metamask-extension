@@ -28,7 +28,7 @@ function transformState (state) {
   if (!newState.TransactionController) {
     return newState
   }
-  const transactions = newState.TransactionController.transactions
+  const { transactions } = newState.TransactionController
   newState.TransactionController.transactions = transactions.map((txMeta, _) => {
     if (
       txMeta.status === 'unapproved' &&

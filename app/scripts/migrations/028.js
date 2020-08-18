@@ -26,8 +26,7 @@ function transformState (state) {
 
   if (newState.PreferencesController) {
     if (newState.PreferencesController.tokens && newState.PreferencesController.identities) {
-      const identities = newState.PreferencesController.identities
-      const tokens = newState.PreferencesController.tokens
+      const { identities, tokens } = newState.PreferencesController
       newState.PreferencesController.accountTokens = {}
       Object.keys(identities).forEach((identity) => {
         newState.PreferencesController.accountTokens[identity] = { 'mainnet': tokens }

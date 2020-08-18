@@ -12,7 +12,7 @@ const defaultOptions = {
 class Ganache {
   async start (opts) {
     const options = { ...defaultOptions, ...opts }
-    const port = options.port
+    const { port } = options
     this._server = ganache.server(options)
 
     const listen = promisify(this._server.listen).bind(this._server)

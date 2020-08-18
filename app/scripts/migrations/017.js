@@ -29,7 +29,7 @@ function transformState (state) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-    const transactions = newState.TransactionController.transactions
+    const { transactions } = newState.TransactionController
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (!txMeta.status === 'failed') {
         return txMeta

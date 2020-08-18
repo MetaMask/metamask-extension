@@ -49,7 +49,7 @@ export default class ExtensionStore {
    * @returns {Object} - the key-value map from local storage
    */
   _get () {
-    const local = extension.storage.local
+    const { local } = extension.storage
     return new Promise((resolve, reject) => {
       local.get(null, (/** @type {any} */ result) => {
         const err = checkForError()
@@ -69,7 +69,7 @@ export default class ExtensionStore {
    * @private
    */
   _set (obj) {
-    const local = extension.storage.local
+    const { local } = extension.storage
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
         const err = checkForError()

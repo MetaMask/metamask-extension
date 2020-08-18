@@ -12,12 +12,11 @@ function capitalizeFirstLetter (string) {
 
 async function start () {
 
-  const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
-  const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
+  const { GITHUB_COMMENT_TOKEN, CIRCLE_PULL_REQUEST } = process.env
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
-  const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
+  const { CIRCLE_SHA1 } = process.env
   console.log('CIRCLE_SHA1', CIRCLE_SHA1)
-  const CIRCLE_BUILD_NUM = process.env.CIRCLE_BUILD_NUM
+  const { CIRCLE_BUILD_NUM } = process.env
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM)
 
   if (!CIRCLE_PULL_REQUEST) {

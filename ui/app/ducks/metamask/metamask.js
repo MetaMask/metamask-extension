@@ -85,7 +85,7 @@ export default function reduceMetamask (state = {}, action) {
       }
 
     case actionConstants.SET_ACCOUNT_LABEL: {
-      const account = action.value.account
+      const { account } = action.value
       const name = action.value.label
       const id = {}
       id[account] = Object.assign({}, metamaskState.identities[account], { name })

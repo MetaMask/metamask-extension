@@ -406,7 +406,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - status
    */
   getState () {
-    const vault = this.keyringController.store.getState().vault
+    const { vault } = this.keyringController.store.getState()
     const isInitialized = !!vault
 
     return {
@@ -423,14 +423,16 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} - Object containing API functions.
    */
   getApi () {
-    const keyringController = this.keyringController
-    const networkController = this.networkController
-    const onboardingController = this.onboardingController
-    const alertController = this.alertController
-    const permissionsController = this.permissionsController
-    const preferencesController = this.preferencesController
-    const threeBoxController = this.threeBoxController
-    const txController = this.txController
+    const {
+      keyringController,
+      networkController,
+      onboardingController,
+      alertController,
+      permissionsController,
+      preferencesController,
+      threeBoxController,
+      txController,
+    } = this
 
     return {
       // etc
@@ -612,7 +614,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       let accounts, lastBalance
 
-      const keyringController = this.keyringController
+      const { keyringController } = this
 
       // clear known identities
       this.preferencesController.setAddresses([])
@@ -744,7 +746,7 @@ export default class MetamaskController extends EventEmitter {
 
     // transactions
 
-    let transactions = this.txController.store.getState().transactions
+    let { transactions } = this.txController.store.getState()
     // delete tx for other accounts that we're not importing
     transactions = transactions.filter((tx) => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
@@ -942,7 +944,7 @@ export default class MetamaskController extends EventEmitter {
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
-    const keyringController = this.keyringController
+    const { keyringController } = this
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
@@ -1112,7 +1114,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} msgId - The id of the message to cancel.
    */
   cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
+    const { messageManager } = this
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
@@ -1347,7 +1349,7 @@ export default class MetamaskController extends EventEmitter {
   async signTypedMessage (msgParams) {
     log.info('MetaMaskController - eth_signTypedData')
     const msgId = msgParams.metamaskId
-    const version = msgParams.version
+    const { version } = msgParams
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
 
@@ -1460,7 +1462,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, sender) {
     const { usePhishDetect } = this.preferencesController.store.getState()
-    const hostname = (new URL(sender.url)).hostname
+    const { hostname } = new URL(sender.url)
     // Check if new connection is blocked if phishing detection is on
     if (usePhishDetect && this.phishingController.test(hostname)) {
       log.debug('MetaMask - sending phishing warning for', hostname)
@@ -1599,8 +1601,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine ({ origin, location, extensionId, tabId, isInternal = false }) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
-    const provider = this.provider
-    const blockTracker = this.blockTracker
+    const { provider, blockTracker } = this
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })

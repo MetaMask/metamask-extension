@@ -56,7 +56,7 @@ export default class TxGasUtil {
     @returns {string} - the estimated gas limit as a hex string
   */
   async estimateTxGas (txMeta) {
-    const txParams = txMeta.txParams
+    const { txParams } = txMeta
 
     // estimate tx gas requirements
     return await this.query.estimateGas(txParams)
