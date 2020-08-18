@@ -1538,6 +1538,9 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAdvancedSlippageInfo": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
+  },
   "swapAmountReceived": {
     "message": "Minimum amount received"
   },
@@ -1549,6 +1552,9 @@
   },
   "swapCheckingQuote": {
     "message": "Checking $1..."
+  },
+  "swapCustom": {
+    "message": "custom"
   },
   "swapFinalizing": {
     "message": "Finalizing..."
@@ -1570,6 +1576,9 @@
   },
   "swapLearnMoreContractsAuditReview": {
     "message": "Review our official contracts audit"
+  },
+  "swapLowSlippageError": {
+    "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -1625,11 +1634,17 @@
   "swapStartSwapping": {
     "message": "Start swapping"
   },
+  "swapsAdvancedOptions": {
+    "message": "Advanced Options"
+  },
   "swapsBestQuote": {
     "message": "Best Quote"
   },
   "swapsErrorFetchingQuotes": {
     "message": "Error fetching quotes"
+  },
+  "swapsMaxSlippage": {
+    "message": "Max slippage"
   },
   "swapsNoQuotesAvailable": {
     "message": "No quotes available"
