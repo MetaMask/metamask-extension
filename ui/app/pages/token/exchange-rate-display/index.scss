@@ -19,8 +19,8 @@
     margin-top: 2px;
     transition: transform 0.5s ease-in-out;
   }
-}
 
-.exchange-rate-display-white {
-  color: $white;
+  &--white {
+    color: $white;
+  }
 }

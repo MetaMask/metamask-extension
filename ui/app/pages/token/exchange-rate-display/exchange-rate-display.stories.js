@@ -39,7 +39,7 @@ export const WhiteOnBlue = () => {
         secondaryTokenValue={text('secondaryTokenValue', '200000000000000000')}
         secondaryTokenDecimals={number('secondaryTokenDecimals', 18)}
         secondaryTokenSymbol={text('secondaryTokenSymbol', 'ABC')}
-        className="exchange-rate-display-white"
+        className="exchange-rate-display--white"
         arrowColor="white"
       />
     </div>
