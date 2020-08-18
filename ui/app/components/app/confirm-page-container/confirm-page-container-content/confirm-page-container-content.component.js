@@ -124,15 +124,15 @@ export default class ConfirmPageContainerContent extends Component {
           )
         }
         <PageContainerFooter
-          onCancel={() => onCancel()}
+          onCancel={onCancel}
           cancelText={cancelText}
-          onSubmit={() => onSubmit()}
+          onSubmit={onSubmit}
           submitText={submitText}
           submitButtonType="confirm"
           disabled={disabled}
         >
           {unapprovedTxCount > 1 && (
-            <a onClick={() => onCancelAll()}>
+            <a onClick={onCancelAll}>
               {rejectNText}
             </a>
           )}
