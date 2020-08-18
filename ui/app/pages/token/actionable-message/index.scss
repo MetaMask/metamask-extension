@@ -27,15 +27,19 @@
     font-weight: bold;
     cursor: pointer;
   }
-}
 
-.actionable-message--warning {
-  background: $Yellow-100;
-  border: 1px solid $Yellow-500;
-  justify-content: center;
+  &--warning {
+    background: $Yellow-100;
+    border: 1px solid $Yellow-500;
+    justify-content: center;
 
-  .actionable-message__message,
-  .actionable-message__action {
-    color: $Black-100;
+    .actionable-message__message,
+    .actionable-message__action {
+      color: $Black-100;
+    }
+
+    .actionable-message__action--secondary {
+      text-decoration: underline;
+    }
   }
 }
