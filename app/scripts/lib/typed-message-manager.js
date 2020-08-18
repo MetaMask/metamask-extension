@@ -165,6 +165,7 @@ export default class TypedMessageManager extends EventEmitter {
         assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
         assert.equal(validation.errors.length, 0, 'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.')
         const chainId = data.domain.chainId
+        // eslint-disable-next-line radix
         const activeChainId = parseInt(this.networkController.getNetworkState())
         chainId && assert.equal(chainId, activeChainId, `Provided chainId "${chainId}" must match the active chainId "${activeChainId}"`)
         break

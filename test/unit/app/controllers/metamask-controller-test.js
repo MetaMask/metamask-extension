@@ -694,7 +694,7 @@ describe('MetaMaskController', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
-      messages[0].msgParams.metamaskId = parseInt(msgId)
+      messages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('persists address from msg params', function () {
@@ -714,7 +714,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelMessage(msgIdInt, noop)
       assert.equal(messages[0].status, 'rejected')
     })
@@ -754,7 +754,7 @@ describe('MetaMaskController', function () {
       metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10)
     })
 
     it('errors with no from in msgParams', async function () {
@@ -785,7 +785,7 @@ describe('MetaMaskController', function () {
     })
 
     it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId)
+      const msgIdInt = parseInt(msgId, 10)
       metamaskController.cancelPersonalMessage(msgIdInt, noop)
       assert.equal(personalMessages[0].status, 'rejected')
     })

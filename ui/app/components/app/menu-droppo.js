@@ -111,8 +111,8 @@ export default class MenuDroppoComponent extends Component {
               <ReactCSSTransitionGroup
                 className="css-transition-group"
                 transitionName="menu-droppo"
-                transitionEnterTimeout={parseInt(speed)}
-                transitionLeaveTimeout={parseInt(speed)}
+                transitionEnterTimeout={parseInt(speed, 10)}
+                transitionLeaveTimeout={parseInt(speed, 10)}
               >
                 {this.renderPrimary()}
               </ReactCSSTransitionGroup>

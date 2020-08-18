@@ -72,6 +72,7 @@ module.exports = {
     'no-useless-concat': 'error',
     'prefer-rest-params': 'error',
     'prefer-spread': 'error',
+    'radix': 'error',
     'require-unicode-regexp': 'error',
     /* End v2 rules */
     'arrow-parens': 'error',

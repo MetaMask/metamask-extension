@@ -307,7 +307,7 @@ describe('Transaction Controller', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       const rawTx = await txController.signTransaction('1')
       const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
-      assert.equal(ethTx.getChainId(), parseInt(currentNetworkId))
+      assert.equal(ethTx.getChainId(), 42)
     })
   })
 

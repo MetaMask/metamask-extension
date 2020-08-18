@@ -28,6 +28,7 @@ function transformState (state) {
     const frequentRpcListDetail = newState.PreferencesController.frequentRpcListDetail
     if (frequentRpcListDetail) {
       frequentRpcListDetail.forEach((rpc, index) => {
+        // eslint-disable-next-line radix
         if (!!rpc.chainId && Number.isNaN(parseInt(rpc.chainId))) {
           delete frequentRpcListDetail[index].chainId
         }
@@ -36,10 +37,12 @@ function transformState (state) {
     }
   }
   if (state.NetworkController) {
+    // eslint-disable-next-line radix
     if (newState.NetworkController.network && Number.isNaN(parseInt(newState.NetworkController.network))) {
       delete newState.NetworkController.network
     }
 
+    // eslint-disable-next-line radix
     if (newState.NetworkController.provider && newState.NetworkController.provider.chainId && Number.isNaN(parseInt(newState.NetworkController.provider.chainId))) {
       delete newState.NetworkController.provider.chainId
     }

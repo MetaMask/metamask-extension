@@ -55,7 +55,7 @@ describe('migrations', function () {
           }
           return acc
         }, [])
-        .map((num) => parseInt(num))
+        .map((num) => parseInt(num, 10))
     })
 
     it('should include all migrations', function () {
@@ -75,7 +75,7 @@ describe('migrations', function () {
           }
           return acc
         }, [])
-        .map((num) => parseInt(num))
+        .map((num) => parseInt(num, 10))
 
       migrationNumbers.forEach((num) => {
         if (num >= 33) {

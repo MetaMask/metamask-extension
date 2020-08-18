@@ -133,6 +133,7 @@ export default class TransactionController extends EventEmitter {
    */
   getChainId () {
     const networkState = this.networkStore.getState()
+    // eslint-disable-next-line radix
     const integerChainId = parseInt(networkState)
     if (Number.isNaN(integerChainId)) {
       return 0
