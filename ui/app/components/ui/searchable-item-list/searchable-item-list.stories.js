@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import SearchableItemList from '.'
 import TokenListPlaceholder from '../../../pages/add-token/token-list-placeholder'
+import SearchableItemList from '.'
 
 const tokens = [
   { primaryLabel: '0x (ZRX)', name: '0x', iconUrl: `.storybook/images/0x.svg`, erc20: true, symbol: 'ZRX', decimals: 18, address: '0xE41d2489571d322189246DaFA5ebDe1F4699F498' },
