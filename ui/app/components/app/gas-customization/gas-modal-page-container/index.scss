@@ -34,10 +34,11 @@
       font-size: 14px;
       color: #4eade7;
       position: absolute;
-      top: 16px;
+      top: 4px;
       right: 16px;
       cursor: pointer;
       overflow: hidden;
+      width: min-content;
     }
 
     &__title {

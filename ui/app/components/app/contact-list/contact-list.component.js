@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import RecipientGroup from './recipient-group/recipient-group.component'
 import Button from '../../ui/button'
+import RecipientGroup from './recipient-group/recipient-group.component'
 
 export default class ContactList extends PureComponent {
   static propTypes = {
