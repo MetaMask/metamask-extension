@@ -14,12 +14,12 @@
     }
 
     .page-container__header-close-text {
-      @extend %link;
-
       font-size: 1rem;
       line-height: 1.1875rem;
       position: absolute;
       right: 1rem;
+      top: 6px;
+      width: min-content;
     }
   }
 
@@ -50,13 +50,13 @@
       overflow-y: auto;
 
       &__link {
-        @extend %link;
         @extend %row-nowrap;
 
         padding: 1rem;
         font-size: 1rem;
         border-bottom: 1px solid $alto;
         align-items: center;
+        justify-content: flex-start;
       }
 
       &__back-caret {
@@ -78,13 +78,12 @@
       @extend %col-nowrap;
 
       &__load-more {
-        @extend %link;
-
         font-size: 0.75rem;
         line-height: 1.0625rem;
         padding: 0.5rem;
         text-align: center;
         border-bottom: 1px solid $alto;
+        justify-content: flex-start;
       }
     }
 

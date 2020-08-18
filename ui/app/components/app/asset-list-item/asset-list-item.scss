@@ -17,7 +17,7 @@
     margin-left: 8px;
   }
 
-  &__send-token-button {
+  & &__send-token-button {
     display: none;
     text-transform: uppercase;
     width: fit-content;
@@ -33,7 +33,7 @@
       display: flex;
     }
 
-    &__send-token-button {
+    & &__send-token-button {
       display: inline-block;
     }
 

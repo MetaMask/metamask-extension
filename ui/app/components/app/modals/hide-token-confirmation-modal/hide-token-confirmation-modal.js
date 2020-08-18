@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../../../../store/actions'
 import Identicon from '../../../ui/identicon'
+import Button from '../../../ui/button'
 
 function mapStateToProps (state) {
   return {
@@ -63,20 +64,22 @@ class HideTokenConfirmationModal extends Component {
             {this.context.t('readdToken')}
           </div>
           <div className="hide-token-confirmation__buttons">
-            <button
-              className="btn-default hide-token-confirmation__button btn--large"
+            <Button
+              type="default"
+              className="hide-token-confirmation__button"
               data-testid="hide-token-confirmation__cancel"
               onClick={() => hideModal()}
             >
               {this.context.t('cancel')}
-            </button>
-            <button
-              className="btn-secondary hide-token-confirmation__button btn--large"
+            </Button>
+            <Button
+              type="secondary"
+              className="hide-token-confirmation__button"
               data-testid="hide-token-confirmation__hide"
               onClick={() => hideToken(address)}
             >
               {this.context.t('hide')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -83,7 +83,7 @@
     color: $Grey-400;
   }
 
-  &__button {
+  .wallet-overview &__button {
     @extend %asset-buttons;
   }
 }
@@ -115,7 +115,7 @@
     color: $Grey-400;
   }
 
-  &__button {
+  .wallet-overview &__button {
     @extend %asset-buttons;
   }
 }

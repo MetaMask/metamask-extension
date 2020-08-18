@@ -29,10 +29,6 @@
     }
   }
 
-  &__link-text {
-    @extend %link;
-  }
-
   &__version-number {
     padding-top: 5px;
     font-size: 13px;

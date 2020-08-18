@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import RecipientGroup from './recipient-group/recipient-group.component'
+import Button from '../../ui/button'
 
 export default class ContactList extends PureComponent {
   static propTypes = {
@@ -37,12 +38,13 @@ export default class ContactList extends PureComponent {
         />
         {
           showLoadMore && (
-            <div
+            <Button
+              type="link"
               className="send__select-recipient-wrapper__recent-group-wrapper__load-more"
               onClick={() => this.setState({ isShowingAllRecent: true })}
             >
               {t('loadMore')}
-            </div>
+            </Button>
           )
         }
       </div>
