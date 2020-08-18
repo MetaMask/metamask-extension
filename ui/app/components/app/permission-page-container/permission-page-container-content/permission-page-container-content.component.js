@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import PermissionsConnectHeader from '../../permissions-connect-header'
-import Tooltip from '../../../ui/tooltip-v2'
+import Tooltip from '../../../ui/tooltip'
 import CheckBox from '../../../ui/check-box'
 
 export default class PermissionPageContainerContent extends PureComponent {

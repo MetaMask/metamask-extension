@@ -89,7 +89,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     return cancelEnabled
       ? cancelButton
       : (
-        <Tooltip title={t('notEnoughGas')}>
+        <Tooltip title={t('notEnoughGas')} position="bottom">
           <div>
             {cancelButton}
           </div>
