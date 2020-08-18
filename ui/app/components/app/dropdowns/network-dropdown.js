@@ -86,7 +86,7 @@ class NetworkDropdown extends Component {
 
   renderCustomOption (provider) {
     const { rpcTarget, type, ticker, nickname } = provider
-    const network = this.props.network
+    const { network } = this.props
 
     if (type !== 'rpc') {
       return null
@@ -136,7 +136,7 @@ class NetworkDropdown extends Component {
       if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
         return null
       } else {
-        const chainId = entry.chainId
+        const { chainId } = entry
         return (
           <DropdownMenuItem
             key={`common${rpc}`}

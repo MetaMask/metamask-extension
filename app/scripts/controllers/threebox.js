@@ -35,7 +35,7 @@ export default class ThreeBoxController {
         if (origin !== '3Box') {
           return []
         }
-        const isUnlocked = getKeyringControllerState().isUnlocked
+        const { isUnlocked } = getKeyringControllerState()
 
         const accounts = await this.keyringController.getAccounts()
 

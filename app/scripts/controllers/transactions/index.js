@@ -756,8 +756,7 @@ export default class TransactionController extends EventEmitter {
   _setupBlockTrackerListener () {
     let listenersAreActive = false
     const latestBlockHandler = this._onLatestBlock.bind(this)
-    const blockTracker = this.blockTracker
-    const txStateManager = this.txStateManager
+    const { blockTracker, txStateManager } = this
 
     txStateManager.on('tx:status-update', updateSubscription)
     updateSubscription()

@@ -22,7 +22,7 @@ import {
 } from './enums'
 
 const env = process.env.METAMASK_ENV
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const { METAMASK_DEBUG } = process.env
 
 let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {

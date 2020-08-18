@@ -136,7 +136,7 @@ function shouldInjectProvider () {
  * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
 function doctypeCheck () {
-  const doctype = window.document.doctype
+  const { doctype } = window.document
   if (doctype) {
     return doctype.name === 'html'
   } else {

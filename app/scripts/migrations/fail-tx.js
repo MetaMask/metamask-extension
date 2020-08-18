@@ -20,7 +20,7 @@ function transformState (state, condition, reason) {
   const newState = state
   const { TransactionController } = newState
   if (TransactionController && TransactionController.transactions) {
-    const transactions = TransactionController.transactions
+    const { transactions } = TransactionController
 
     newState.TransactionController.transactions = transactions.map((txMeta) => {
       if (!condition(txMeta)) {

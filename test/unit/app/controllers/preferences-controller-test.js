@@ -39,7 +39,7 @@ describe('preferences controller', function () {
         '0x7e57e2',
       ])
 
-      const accountTokens = preferencesController.store.getState().accountTokens
+      const { accountTokens } = preferencesController.store.getState()
 
       assert.deepEqual(accountTokens, {
         '0xda22le': {},

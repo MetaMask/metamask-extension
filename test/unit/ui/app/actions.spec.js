@@ -12,7 +12,7 @@ import * as actions from '../../../../ui/app/store/actions'
 import MetaMaskController from '../../../../app/scripts/metamask-controller'
 import firstTimeState from '../../localhostState'
 
-const provider = createTestProviderTools({ scaffold: {} }).provider
+const { provider } = createTestProviderTools({ scaffold: {} })
 const middleware = [thunk]
 const defaultState = { metamask: {} }
 const mockStore = (state = defaultState) => configureStore(middleware)(state)

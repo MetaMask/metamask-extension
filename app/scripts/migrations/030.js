@@ -25,7 +25,7 @@ export default {
 function transformState (state) {
   const newState = state
   if (state.PreferencesController) {
-    const frequentRpcListDetail = newState.PreferencesController.frequentRpcListDetail
+    const { frequentRpcListDetail } = newState.PreferencesController
     if (frequentRpcListDetail) {
       frequentRpcListDetail.forEach((rpc, index) => {
         // eslint-disable-next-line radix

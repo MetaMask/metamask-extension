@@ -71,6 +71,18 @@ module.exports = {
     'no-template-curly-in-string': 'error',
     'no-useless-catch': 'error',
     'no-useless-concat': 'error',
+    'prefer-destructuring': ['error', {
+      'VariableDeclarator': {
+        'array': false,
+        'object': true,
+      },
+      'AssignmentExpression': {
+        'array': false,
+        'object': false,
+      },
+    }, {
+      'enforceForRenamedProperties': false,
+    }],
     'prefer-rest-params': 'error',
     'prefer-spread': 'error',
     'radix': 'error',

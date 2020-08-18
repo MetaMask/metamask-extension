@@ -62,8 +62,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     core.prod,
   )
 
-  const dev = core.dev
-  const testDev = core.testDev
+  const { dev, testDev } = core
 
   const test = composeParallel(
     deps.background,

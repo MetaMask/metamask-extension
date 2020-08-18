@@ -26,7 +26,7 @@ function transformState (state) {
 
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
-      const transactions = newState.TransactionController.transactions
+      const { transactions } = newState.TransactionController
       newState.TransactionController.transactions = transactions.filter((txMeta) => txMeta.status !== 'rejected')
     }
   }

@@ -406,11 +406,11 @@ function setupController (initState, initLangCode) {
   function updateBadge () {
     let label = ''
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
-    const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgCount = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedDecryptMsgCount = controller.decryptMessageManager.unapprovedDecryptMsgCount
-    const unapprovedEncryptionPublicKeyMsgCount = controller.encryptionPublicKeyManager.unapprovedEncryptionPublicKeyMsgCount
-    const unapprovedTypedMessagesCount = controller.typedMessageManager.unapprovedTypedMessagesCount
+    const { unapprovedMsgCount } = controller.messageManager
+    const { unapprovedPersonalMsgCount } = controller.personalMessageManager
+    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager
+    const { unapprovedEncryptionPublicKeyMsgCount } = controller.encryptionPublicKeyManager
+    const { unapprovedTypedMessagesCount } = controller.typedMessageManager
     const pendingPermissionRequests = Object.keys(controller.permissionsController.permissions.state.permissionsRequests).length
     const waitingForUnlockCount = controller.appStateController.waitingForUnlock.length
     const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgCount + unapprovedDecryptMsgCount + unapprovedEncryptionPublicKeyMsgCount +

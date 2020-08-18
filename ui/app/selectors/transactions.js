@@ -21,7 +21,7 @@ export const incomingTxListSelector = (state) => {
     return []
   }
 
-  const network = state.metamask.network
+  const { network } = state.metamask
   const selectedAddress = getSelectedAddress(state)
   return Object.values(state.metamask.incomingTransactions)
     .filter(({ metamaskNetworkId, txParams }) => (
