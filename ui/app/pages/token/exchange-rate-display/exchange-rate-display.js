@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { calcTokenAmount } from '../../../helpers/utils/token-util.js'
+import { calcTokenAmount } from '../../../helpers/utils/token-util'
 
 export default function ExchangeRateDisplay ({
   primaryTokenValue,
