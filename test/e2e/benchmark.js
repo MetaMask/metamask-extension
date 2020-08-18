@@ -62,10 +62,10 @@ async function profilePageLoad (pages, numSamples) {
     }
 
     const result = {
-      firstPaint: runResults.map((result) => result.paint['first-paint']),
-      domContentLoaded: runResults.map((result) => result.navigation[0] && result.navigation[0].domContentLoaded),
-      load: runResults.map((result) => result.navigation[0] && result.navigation[0].load),
-      domInteractive: runResults.map((result) => result.navigation[0] && result.navigation[0].domInteractive),
+      firstPaint: runResults.map((metrics) => metrics.paint['first-paint']),
+      domContentLoaded: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].domContentLoaded),
+      load: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].load),
+      domInteractive: runResults.map((metrics) => metrics.navigation[0] && metrics.navigation[0].domInteractive),
     }
 
     results[pageName] = {

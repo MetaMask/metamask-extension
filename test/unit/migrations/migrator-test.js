@@ -86,8 +86,8 @@ describe('migrations', function () {
   })
 
   describe('Migrator', function () {
-    const migrator = new Migrator({ migrations: stubMigrations })
     it('migratedData version should be version 3', async function () {
+      const migrator = new Migrator({ migrations: stubMigrations })
       const migratedData = await migrator.migrateData(versionedData)
       assert.equal(migratedData.meta.version, stubMigrations[2].version)
     })

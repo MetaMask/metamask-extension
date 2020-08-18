@@ -71,7 +71,7 @@ describe('Gas Duck', function () {
       ? mockEthGasApiResponse
       : mockPredictTableResponse
     resolve({
-      json: () => new Promise((resolve) => resolve(dataToResolve)),
+      json: () => Promise.resolve(dataToResolve),
     })
   })
 

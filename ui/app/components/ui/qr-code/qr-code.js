@@ -29,9 +29,9 @@ function QrCodeView (props) {
         Array.isArray(message)
           ? (
             <div className="qr-code__message-container">
-              {props.Qr.message.map((message, index) => (
+              {props.Qr.message.map((msg, index) => (
                 <div className="qr_code__message" key={index}>
-                  {message}
+                  {msg}
                 </div>
               ))}
             </div>

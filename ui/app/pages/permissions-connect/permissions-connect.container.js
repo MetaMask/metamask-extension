@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
   const currentAddress = getSelectedAddress(state)
 
   const permissionsRequest = permissionsRequests
-    .find((permissionsRequest) => permissionsRequest.metadata.id === permissionsRequestId)
+    .find((req) => req.metadata.id === permissionsRequestId)
 
   const { metadata = {} } = permissionsRequest || {}
   const { origin } = metadata

@@ -1724,13 +1724,13 @@ export function exportAccount (password, address) {
           return
         }
         log.debug(`background.exportAccount`)
-        background.exportAccount(address, function (err, result) {
+        background.exportAccount(address, function (err2, result) {
           dispatch(hideLoadingIndication())
 
-          if (err) {
-            log.error(err)
+          if (err2) {
+            log.error(err2)
             dispatch(displayWarning('Had a problem exporting the account.'))
-            reject(err)
+            reject(err2)
             return
           }
 
@@ -1756,14 +1756,14 @@ export function exportAccounts (password, addresses) {
         }
         log.debug(`background.exportAccounts`)
         const accountPromises = addresses.map((address) => new Promise(
-          (resolve, reject) => background.exportAccount(address, function (err, result) {
-            if (err) {
-              log.error(err)
+          (resolve2, reject2) => background.exportAccount(address, function (err2, result) {
+            if (err2) {
+              log.error(err2)
               dispatch(displayWarning('Had a problem exporting the account.'))
-              reject(err)
+              reject2(err2)
               return
             }
-            resolve(result)
+            resolve2(result)
             return
           }),
         ))

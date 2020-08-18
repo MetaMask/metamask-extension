@@ -49,14 +49,14 @@ function createStyleTasks ({ livereload }) {
     return async function () {
       if (devMode) {
         watch(pattern, async (event) => {
-          await buildScss(devMode)
+          await buildScss()
           livereload.changed(event.path)
         })
       }
       await buildScss(devMode)
     }
 
-    async function buildScss (devMode) {
+    async function buildScss () {
       await pump(...[
         // pre-process
         gulp.src(src),

@@ -34,15 +34,15 @@ describe('TransactionStateManager', function () {
     it('should emit a signed event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       const clock = sinon.useFakeTimers()
-      const noop = sinon.spy()
+      const onSigned = sinon.spy()
 
       txStateManager.addTx(tx)
-      txStateManager.on('1:signed', noop)
+      txStateManager.on('1:signed', onSigned)
       txStateManager.setTxStatusSigned(1)
       clock.runAll()
       clock.restore()
 
-      assert.ok(noop.calledOnce)
+      assert.ok(onSigned.calledOnce)
     })
   })
 
@@ -59,15 +59,15 @@ describe('TransactionStateManager', function () {
     it('should emit a rejected event to signal the execution of callback', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       const clock = sinon.useFakeTimers()
-      const noop = sinon.spy()
+      const onSigned = sinon.spy()
 
       txStateManager.addTx(tx)
-      txStateManager.on('1:rejected', noop)
+      txStateManager.on('1:rejected', onSigned)
       txStateManager.setTxStatusRejected(1)
       clock.runAll()
       clock.restore()
 
-      assert.ok(noop.calledOnce)
+      assert.ok(onSigned.calledOnce)
     })
   })
 

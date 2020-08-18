@@ -473,8 +473,8 @@ export default class TransactionController extends EventEmitter {
       // this is try-catch wrapped so that we can guarantee that the nonceLock is released
       try {
         this.txStateManager.setTxStatusFailed(txId, err)
-      } catch (err) {
-        log.error(err)
+      } catch (err2) {
+        log.error(err2)
       }
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) {
@@ -701,7 +701,7 @@ export default class TransactionController extends EventEmitter {
       TOKEN_METHOD_APPROVE,
       TOKEN_METHOD_TRANSFER,
       TOKEN_METHOD_TRANSFER_FROM,
-    ].find((tokenMethodName) => tokenMethodName === name && name.toLowerCase())
+    ].find((methodName) => methodName === name && name.toLowerCase())
 
     let result
     if (txParams.data && tokenMethodName) {

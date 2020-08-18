@@ -220,6 +220,7 @@ const mapDispatchToProps = (dispatch) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     gasPriceButtonGroupProps,
+    // eslint-disable-next-line no-shadow
     isConfirm,
     txId,
     isSpeedUp,

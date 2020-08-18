@@ -48,8 +48,7 @@ export default class AlertController {
     )
     this.store = new ObservableStore(state)
 
-    const { selectedAddress } = preferencesStore.getState()
-    this.selectedAddress = selectedAddress
+    this.selectedAddress = preferencesStore.getState().selectedAddress
 
     preferencesStore.subscribe(({ selectedAddress }) => {
       const currentState = this.store.getState()

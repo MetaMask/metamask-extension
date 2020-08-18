@@ -49,7 +49,6 @@ import nodeify from './lib/nodeify'
 import accountImporter from './account-import-strategies'
 import selectChainId from './lib/select-chain-id'
 import { Mutex } from 'await-semaphore'
-import { version } from '../manifest/_base.json'
 import ethUtil from 'ethereumjs-util'
 
 import seedPhraseVerifier from './lib/seed-phrase-verifier'
@@ -81,15 +80,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
     this.opts = opts
+    this.platform = opts.platform
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0
-
-    // platform-specific api
-    this.platform = opts.platform
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds
@@ -221,6 +218,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     })
 
+    const version = this.platform.getVersion()
     this.threeBoxController = new ThreeBoxController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -335,6 +333,7 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper: initialize a provider.
    */
   initializeProvider () {
+    const version = this.platform.getVersion()
     const providerOpts = {
       static: {
         eth_syncing: false,
@@ -594,8 +593,8 @@ export default class MetamaskController extends EventEmitter {
         vault = await this.keyringController.fullUpdate()
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
-        const accounts = await this.keyringController.getAccounts()
-        this.preferencesController.setAddresses(accounts)
+        const addresses = await this.keyringController.getAccounts()
+        this.preferencesController.setAddresses(addresses)
         this.selectFirstIdentity()
       }
       return vault
@@ -711,9 +710,9 @@ export default class MetamaskController extends EventEmitter {
       Object.keys(accountTokens[address]).forEach((networkType) => {
         filteredAccountTokens[checksummedAddress][networkType] = networkType === 'mainnet'
           ? (
-            accountTokens[address][networkType].filter(({ address }) => {
-              const tokenAddress = ethUtil.toChecksumAddress(address)
-              return contractMap[tokenAddress] ? contractMap[tokenAddress].erc20 : true
+            accountTokens[address][networkType].filter(({ address: tokenAddress }) => {
+              const checksumAddress = ethUtil.toChecksumAddress(tokenAddress)
+              return contractMap[checksumAddress] ? contractMap[checksumAddress].erc20 : true
             })
           )
           : accountTokens[address][networkType]
@@ -2058,6 +2057,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo (initState) {
     if (!('firstTimeInfo' in initState)) {
+      const version = this.platform.getVersion()
       initState.firstTimeInfo = {
         version,
         date: Date.now(),

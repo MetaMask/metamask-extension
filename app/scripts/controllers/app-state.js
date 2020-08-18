@@ -15,8 +15,6 @@ export default class AppStateController extends EventEmitter {
       showUnlockRequest,
       preferencesStore,
     } = opts
-    const { preferences } = preferencesStore.getState()
-
     super()
 
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined)
@@ -40,6 +38,7 @@ export default class AppStateController extends EventEmitter {
       }
     })
 
+    const { preferences } = preferencesStore.getState()
     this._setInactiveTimeout(preferences.autoLockTimeLimit)
   }
 

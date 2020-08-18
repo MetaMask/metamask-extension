@@ -72,7 +72,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   }, [isUnapproved, history, id])
 
   const cancelButton = useMemo(() => {
-    const cancelButton = (
+    const btn = (
       <Button
         onClick={cancelTransaction}
         rounded
@@ -87,11 +87,11 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     }
 
     return cancelEnabled
-      ? cancelButton
+      ? btn
       : (
         <Tooltip title={t('notEnoughGas')} position="bottom">
           <div>
-            {cancelButton}
+            {btn}
           </div>
         </Tooltip>
       )

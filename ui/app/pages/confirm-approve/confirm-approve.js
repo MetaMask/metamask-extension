@@ -107,6 +107,7 @@ export default function ConfirmApprove () {
           showCustomizeGasModal={() => dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData }))}
           showEditApprovalPermissionModal={
             ({
+              /* eslint-disable no-shadow */
               customTokenAmount,
               decimals,
               origin,
@@ -114,6 +115,7 @@ export default function ConfirmApprove () {
               tokenAmount,
               tokenBalance,
               tokenSymbol,
+              /* eslint-enable no-shadow */
             }) => dispatch(
               showModal({
                 name: 'EDIT_APPROVAL_PERMISSION',

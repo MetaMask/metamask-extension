@@ -14,8 +14,7 @@ const insertRule = (css) => {
     extraSheet = extraSheet.sheet || extraSheet.styleSheet
   }
 
-  const index = (extraSheet.cssRules || extraSheet.rules).length
-  extraSheet.insertRule(css, index)
+  extraSheet.insertRule(css, (extraSheet.cssRules || extraSheet.rules).length)
 
   return extraSheet
 }
