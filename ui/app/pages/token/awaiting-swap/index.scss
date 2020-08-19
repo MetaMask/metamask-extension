@@ -1,0 +1,47 @@
+.awaiting-swap {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  height: 100%;
+
+  div {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__status-image {
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__header {
+    @include H3;
+
+    color: $Black-100;
+  }
+
+  &__main-descrption {
+    @include H6;
+
+    color: $Grey-500;
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  &__time-estimate {
+    @include H7;
+
+    color: $Black-100;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  &__view-on-etherscan {
+    @include H7;
+
+    color: $Blue-500;
+    margin-top: 24px;
+    cursor: pointer;
+  }
+}
