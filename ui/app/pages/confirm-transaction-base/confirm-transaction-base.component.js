@@ -97,6 +97,7 @@ export default class ConfirmTransactionBase extends Component {
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    isMainnet: PropTypes.bool,
   }
 
   state = {
@@ -236,11 +237,14 @@ export default class ConfirmTransactionBase extends Component {
       hideFiatConversion,
       nextNonce,
       getNextNonce,
+      isMainnet,
     } = this.props
 
     if (hideDetails) {
       return null
     }
+
+    const notMainnetOrTest = !(isMainnet || process.env.IN_TEST)
 
     return (
       detailsComponent || (
@@ -249,12 +253,12 @@ export default class ConfirmTransactionBase extends Component {
             <ConfirmDetailRow
               label="Gas Fee"
               value={hexTransactionFee}
-              headerText="Edit"
-              headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() => this.handleEditGas()}
+              headerText={notMainnetOrTest ? '' : 'Edit'}
+              headerTextClassName={notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'}
+              onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
-            {advancedInlineGasShown
+            {advancedInlineGasShown || notMainnetOrTest
               ? (
                 <AdvancedGasInputs
                   updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}

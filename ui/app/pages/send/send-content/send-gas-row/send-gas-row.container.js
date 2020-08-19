@@ -17,6 +17,7 @@ import {
   getBasicGasEstimateLoadingStatus,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
+  getIsMainnet,
 } from '../../../../selectors'
 import {
   isBalanceSufficient,
@@ -74,6 +75,7 @@ function mapStateToProps (state) {
     maxModeOn: getSendMaxModeState(state),
     sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
+    isMainnet: getIsMainnet(state),
   }
 }
 
