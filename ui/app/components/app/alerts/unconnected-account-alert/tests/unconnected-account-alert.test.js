@@ -1,15 +1,16 @@
-import React from 'react'
 import assert from 'assert'
+import React from 'react'
 
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 
 import { fireEvent } from '@testing-library/react'
+import configureMockStore from 'redux-mock-store'
+
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers'
 
-import configureMockStore from 'redux-mock-store'
 import * as actions from '../../../../../store/actions'
-import UnconnectedAccountAlert from '../index'
+import UnconnectedAccountAlert from '..'
 
 describe('Unconnected Account Alert', function () {
 
