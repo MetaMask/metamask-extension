@@ -1633,7 +1633,10 @@
     "message": "Advanced Options"
   },
   "swapsBestQuote": {
-    "message": "Best Quote"
+    "message": "Best quote"
+  },
+  "swapsConvertToAbout": {
+    "message": "Convert $1 to about"
   },
   "swapsErrorFetchingQuotes": {
     "message": "Error fetching quotes"
