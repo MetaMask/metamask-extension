@@ -56,6 +56,7 @@ module.exports = {
     }, {
       'enforceForRenamedProperties': false,
     }],
+    'prefer-object-spread': 'error',
     'react/no-unused-prop-types': 'error',
     'react/no-unused-state': 'error',
     'react/jsx-boolean-value': 'error',
