@@ -3,7 +3,8 @@ import { snapshotFromTxMeta } from '../../app/scripts/controllers/transactions/l
 export default function createTxMeta (partialMeta) {
   const txMeta = {
     status: 'unapproved',
-    txParams: {}, ...partialMeta,
+    txParams: {},
+    ...partialMeta,
   }
   // initialize history
   txMeta.history = []
