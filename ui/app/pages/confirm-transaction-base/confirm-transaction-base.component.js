@@ -244,6 +244,8 @@ export default class ConfirmTransactionBase extends Component {
       return null
     }
 
+    const notMainnetOrTest = !(isMainnet || process.env.IN_TEST)
+
     return (
       detailsComponent || (
         <div className="confirm-page-container-content__details">
@@ -251,12 +253,12 @@ export default class ConfirmTransactionBase extends Component {
             <ConfirmDetailRow
               label="Gas Fee"
               value={hexTransactionFee}
-              headerText="Edit"
-              headerTextClassName="confirm-detail-row__header-text--edit"
-              onHeaderClick={() => this.handleEditGas()}
+              headerText={notMainnetOrTest ? '' : 'Edit'}
+              headerTextClassName={notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'}
+              onHeaderClick={notMainnetOrTest ? null : this.handleEditGas}
               secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
             />
-            {advancedInlineGasShown || (!isMainnet && !process.env.IN_TEST)
+            {advancedInlineGasShown || notMainnetOrTest
               ? (
                 <AdvancedGasInputs
                   updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
