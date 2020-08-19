@@ -1,5 +1,6 @@
 import punycode from 'punycode'
 import abi from 'human-standard-token-abi'
+import BigNumber from 'bignumber.js'
 import ethUtil from 'ethereumjs-util'
 import { DateTime } from 'luxon'
 
@@ -354,4 +355,19 @@ export function checkExistingAddresses (address, list = []) {
   }
 
   return list.some(matchesAddress)
+}
+
+/**
+ * Given a number and specified precision, returns that number in base 10 with a maximum of precision
+ * significant digits, but without any trailing zeros after the decimal point To be used when wishing
+ * to display only as much digits to the user as necessary
+ *
+ * @param {string | number | BigNumber} n - The number to format
+ * @param {number} precision - The maximum number of significant digits in the return value
+ * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
+ */
+export function toPrecisionWithoutTrailingZeros (n, precision) {
+  return (new BigNumber(n))
+    .toPrecision(precision)
+    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1')
 }
