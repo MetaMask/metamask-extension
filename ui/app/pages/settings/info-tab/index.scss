@@ -21,6 +21,11 @@
     }
   }
 
+  &__link-text {
+    width: max-content;
+    padding: 0;
+  }
+
   &__link-item {
     padding: 15px 0;
 
